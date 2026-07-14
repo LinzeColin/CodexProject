@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KMFA 回款与应收账龄工作台</title>
+  <style>
+    :root{--ink:#17211d;--muted:#5e6863;--line:#d9dfdc;--surface:#ffffff;--soft:#f4f7f5;--green:#176b4d;--green-soft:#e7f3ed;--red:#a53b36;--red-soft:#faecea;--blue:#285f88;--focus:#0b6e99}
+    *{box-sizing:border-box;letter-spacing:0}
+    body{margin:0;background:#eef2f0;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;font-size:14px}
+    a{color:var(--blue)} button{font:inherit}
+    .appbar{background:#18231f;color:#fff;border-bottom:3px solid #59a37d}
+    .appbar-inner{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{font-size:19px;font-weight:750} .phase{color:#c8d5cf;font-size:12px}
+    main{max-width:1180px;margin:auto;padding:22px}
+    .headline{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:18px}
+    h1{font-size:28px;line-height:1.2;margin:0 0 8px} h2{font-size:18px;margin:0}
+    p{line-height:1.6} .subtitle{margin:0;color:var(--muted)}
+    .status-strip{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .badge,.state{display:inline-flex;align-items:center;min-height:26px;padding:3px 8px;border:1px solid var(--line);border-radius:4px;font-weight:700;font-size:12px;white-space:nowrap}
+    .badge.danger,.state.blocked{color:var(--red);background:var(--red-soft);border-color:#e7bbb7}
+    .badge.grade,.state.ok{color:var(--green);background:var(--green-soft);border-color:#b9d9c8}
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--surface);margin-bottom:18px}
+    .metric{padding:15px;border-right:1px solid var(--line)} .metric:last-child{border-right:0}
+    .metric strong{display:block;font-size:24px} .metric span{color:var(--muted);font-size:12px}
+    .band{background:var(--surface);border:1px solid var(--line);margin-bottom:18px}
+    .band-header{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .table-wrap{overflow-x:auto} table{width:100%;border-collapse:collapse;min-width:680px}
+    th,td{text-align:left;padding:11px 14px;border-bottom:1px solid #e8ecea} th{font-size:12px;color:var(--muted);background:var(--soft)}
+    .issue-layout{display:grid;grid-template-columns:230px minmax(0,1fr)}
+    .issue-nav{border-right:1px solid var(--line);padding:10px;display:grid;gap:6px;align-content:start;background:var(--soft)}
+    .issue-button{border:1px solid transparent;background:transparent;text-align:left;padding:10px;border-radius:4px;color:var(--ink);cursor:pointer}
+    .issue-button:hover,.issue-button:focus-visible{border-color:#9cb9aa;outline:2px solid transparent}
+    .issue-button.active{background:#fff;border-color:#92b7a5;color:var(--green);font-weight:750}
+    .issue-panel{display:none;padding:18px} .issue-panel.active{display:block}
+    .panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .kicker{font-size:12px;color:var(--muted);margin:0 0 4px}
+    dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+    dl div{border-left:3px solid #8cab9c;padding:4px 10px} dt{font-size:12px;color:var(--muted)} dd{margin:5px 0 0;line-height:1.5}
+    .limit{border:1px solid #e4beb9;background:var(--red-soft);padding:10px 12px;margin:0;color:#74302c}
+    .footer-band{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 16px;background:#f8faf9}
+    .links{display:flex;gap:14px;flex-wrap:wrap} #interaction-status{color:var(--muted);margin:0}
+    @media(max-width:760px){main{padding:14px}.headline{display:block}.status-strip{justify-content:flex-start;margin-top:12px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.issue-layout{display:block}.issue-nav{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(2,minmax(0,1fr))}dl{grid-template-columns:1fr}.footer-band{display:block}.links{margin-top:10px}h1{font-size:24px}}
+  </style>
+</head>
+<body data-ui-ready="false" data-active-issue="invoiced_not_collected">
+  <header class="appbar"><div class="appbar-inner"><div class="brand">KMFA</div><div class="phase">S13-P2 · 回款与应收账龄</div></div></header>
+  <main>
+    <section class="headline"><div><h1>回款与应收账龄工作台</h1><p class="subtitle">结构接入与私有只读探针已完成；业务明细仍受行级证据门禁限制。</p></div><div class="status-strip"><span class="badge grade">Q4 / D</span><span class="badge danger">NO_GO</span><span class="badge">内部复核</span></div></section>
+    <section class="metrics" aria-label="状态摘要"><div class="metric"><strong>5 / 5</strong><span>结构主题已接入</span></div><div class="metric"><strong>3 / 5</strong><span>私有容器可解析</span></div><div class="metric"><strong>0 / 5</strong><span>行级绑定已证明</span></div><div class="metric"><strong>0</strong><span>可执行业务项</span></div></section>
+    <section class="band"><div class="band-header"><h2>来源主题状态</h2><span class="state blocked">不含业务金额</span></div><div class="table-wrap"><table><thead><tr><th>主题</th><th>结构</th><th>私有解析</th><th>行级绑定</th></tr></thead><tbody><tr>
+          <td>回款表</td>
+          <td><span class="state ok">结构已接入</span></td>
+          <td><span class="state blocked">需原生 WPS 转换</span></td>
+          <td><span class="state blocked">行级未证明</span></td>
+        </tr><tr>
+          <td>应收账龄</td>
+          <td><span class="state ok">结构已接入</span></td>
+          <td><span class="state blocked">需原生 WPS 转换</span></td>
+          <td><span class="state blocked">行级未证明</span></td>
+        </tr><tr>
+          <td>客户账龄</td>
+          <td><span class="state ok">结构已接入</span></td>
+          <td><span class="state ok">可解析容器</span></td>
+          <td><span class="state blocked">行级未证明</span></td>
+        </tr><tr>
+          <td>日记账</td>
+          <td><span class="state ok">结构已接入</span></td>
+          <td><span class="state ok">可解析容器</span></td>
+          <td><span class="state blocked">行级未证明</span></td>
+        </tr><tr>
+          <td>开票计划</td>
+          <td><span class="state ok">结构已接入</span></td>
+          <td><span class="state ok">可解析容器</span></td>
+          <td><span class="state blocked">行级未证明</span></td>
+        </tr></tbody></table></div></section>
+    <section class="band"><div class="band-header"><h2>四类问题方法定义</h2><span class="state blocked">0 项已证明</span></div><div class="issue-layout"><nav class="issue-nav" aria-label="问题类型"><button type="button" data-issue-button="invoiced_not_collected" class="issue-button active">已开票未回款</button><button type="button" data-issue-button="completed_not_settled" class="issue-button">完工未结算</button><button type="button" data-issue-button="settled_not_invoiced" class="issue-button">结算未开票</button><button type="button" data-issue-button="overdue_receivable" class="issue-button">超期应收</button></nav><div><section data-issue-panel="invoiced_not_collected" class="issue-panel active">
+          <div class="panel-heading"><div><p class="kicker">复核序列 1</p><h2>已开票未回款</h2></div><span class="state blocked">0 项已证明</span></div>
+          <dl><div><dt>识别状态</dt><dd>方法定义已锁定，行级证据未证明</dd></div><div><dt>优先级</dt><dd>仅方法顺序，不是业务催收优先级</dd></div><div><dt>责任事项</dt><dd>财务复核角色，未指派个人</dd></div></dl>
+          <p class="limit">不得据此联系客户、催收、作法律判断、开票、付款或执行银行操作。</p>
+        </section><section data-issue-panel="completed_not_settled" class="issue-panel">
+          <div class="panel-heading"><div><p class="kicker">复核序列 2</p><h2>完工未结算</h2></div><span class="state blocked">0 项已证明</span></div>
+          <dl><div><dt>识别状态</dt><dd>方法定义已锁定，行级证据未证明</dd></div><div><dt>优先级</dt><dd>仅方法顺序，不是业务催收优先级</dd></div><div><dt>责任事项</dt><dd>项目与财务联合复核角色，未指派个人</dd></div></dl>
+          <p class="limit">不得据此联系客户、催收、作法律判断、开票、付款或执行银行操作。</p>
+        </section><section data-issue-panel="settled_not_invoiced" class="issue-panel">
+          <div class="panel-heading"><div><p class="kicker">复核序列 3</p><h2>结算未开票</h2></div><span class="state blocked">0 项已证明</span></div>
+          <dl><div><dt>识别状态</dt><dd>方法定义已锁定，行级证据未证明</dd></div><div><dt>优先级</dt><dd>仅方法顺序，不是业务催收优先级</dd></div><div><dt>责任事项</dt><dd>开票复核角色，未指派个人</dd></div></dl>
+          <p class="limit">不得据此联系客户、催收、作法律判断、开票、付款或执行银行操作。</p>
+        </section><section data-issue-panel="overdue_receivable" class="issue-panel">
+          <div class="panel-heading"><div><p class="kicker">复核序列 4</p><h2>超期应收</h2></div><span class="state blocked">0 项已证明</span></div>
+          <dl><div><dt>识别状态</dt><dd>方法定义已锁定，行级证据未证明</dd></div><div><dt>优先级</dt><dd>仅方法顺序，不是业务催收优先级</dd></div><div><dt>责任事项</dt><dd>应收复核角色，未指派个人</dd></div></dl>
+          <p class="limit">不得据此联系客户、催收、作法律判断、开票、付款或执行银行操作。</p>
+        </section></div></div><div class="footer-band"><p id="interaction-status" aria-live="polite">已显示“已开票未回款”方法定义；不是业务催收优先级。</p><div class="links"><a data-report-link="weekly" href="../../../V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_weekly_draft.html">经营周报初稿</a><a data-report-link="monthly" href="../../../V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_monthly_draft.html">经营月报初稿</a><a data-report-link="cross-table" href="../../../V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/exports/html/cross_table_quality_workbench.html">跨表复核</a></div></div></section>
+  </main>
+  <script>
+    const labels={"invoiced_not_collected":"已开票未回款","completed_not_settled":"完工未结算","settled_not_invoiced":"结算未开票","overdue_receivable":"超期应收"};
+    const buttons=[...document.querySelectorAll('[data-issue-button]')];
+    const panels=[...document.querySelectorAll('[data-issue-panel]')];
+    const status=document.getElementById('interaction-status');
+    function activate(issue){buttons.forEach(button=>button.classList.toggle('active',button.dataset.issueButton===issue));panels.forEach(panel=>panel.classList.toggle('active',panel.dataset.issuePanel===issue));document.body.dataset.activeIssue=issue;document.body.dataset.lastAction=`issue:${issue}:${Date.now()}`;status.textContent=`已切换至“${labels[issue]}”方法定义；仍无已证明业务项。`;}
+    buttons.forEach(button=>button.addEventListener('click',()=>activate(button.dataset.issueButton)));
+    document.body.dataset.uiReady='true';
+  </script>
+</body>
+</html>

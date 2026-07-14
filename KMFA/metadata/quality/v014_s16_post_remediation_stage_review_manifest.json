@@ -1,0 +1,382 @@
+{
+  "acceptance_id": "ACC-V014-S16-POST-REMEDIATION-STAGE-REVIEW",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-S16-POST-REMEDIATION-STAGE-REVIEW",
+    "check_count": 11,
+    "check_fail_count": 0,
+    "check_pass_count": 11,
+    "checks": [
+      {
+        "check_id": "V014-S16-REVIEW-ACC-001",
+        "name": "phase_chain",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-002",
+        "name": "phase_tests",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-003",
+        "name": "zero_business_rows",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-004",
+        "name": "zero_project_matches",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-005",
+        "name": "zero_lifecycle_records",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-006",
+        "name": "zero_customer_outputs",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-007",
+        "name": "findings_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-008",
+        "name": "navigation",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-009",
+        "name": "browser",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-010",
+        "name": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16-REVIEW-ACC-011",
+        "name": "downstream_closed",
+        "status": "PASS"
+      }
+    ],
+    "schema_version": "kmfa.v014.s16_post_remediation_review_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "baseline_control_row_count": 54,
+    "baseline_fail_count": 0,
+    "baseline_file_count": 6,
+    "baseline_pass_count": 54,
+    "baseline_warn_count": 0,
+    "console_error_count": 0,
+    "cross_page_link_http_check_count": 6,
+    "cross_page_navigation_check_count": 6,
+    "current_control_row_count": 43,
+    "current_fail_count": 0,
+    "current_page_audits": {
+      "p1": {
+        "control_row_count": 15,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 15,
+        "warn_count": 0
+      },
+      "p2": {
+        "control_row_count": 15,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 15,
+        "warn_count": 0
+      },
+      "p3": {
+        "control_row_count": 13,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 13,
+        "warn_count": 0
+      }
+    },
+    "current_page_count": 3,
+    "current_pass_count": 43,
+    "current_warn_count": 0,
+    "horizontal_overflow_count": 0,
+    "representative_interaction_check_count": 6,
+    "status": "PASS",
+    "viewport_check_count": 6
+  },
+  "current_s16_chain_validated": true,
+  "decision": "NO_GO",
+  "formula_id": "FORM-KMFA-V014-S16-POST-REMEDIATION-STAGE-REVIEW-001",
+  "generated_at": "2026-07-12T02:46:11+10:00",
+  "go_no_go": {
+    "app_reinstall_allowed": false,
+    "business_execution_allowed": false,
+    "collection_action_allowed": false,
+    "customer_contact_allowed": false,
+    "customer_ranking_allowed": false,
+    "decision": "NO_GO",
+    "difference_closure_allowed": false,
+    "formal_report_release_allowed": false,
+    "github_upload_allowed": false,
+    "invoice_issuance_allowed": false,
+    "legal_decision_allowed": false,
+    "payment_or_bank_action_allowed": false,
+    "persistent_business_write_allowed": false,
+    "phase_id": "V014_S16_POST_REMEDIATION_STAGE_REVIEW",
+    "project_id": "KMFA",
+    "s17_p1_allowed_in_this_run": false,
+    "safety_or_technical_signature_allowed": false,
+    "schema_version": "kmfa.v014.s16_post_remediation_review_go_no_go.v1",
+    "site_construction_allowed": false,
+    "stage16_review_validated": true,
+    "stage_id": "S16"
+  },
+  "historical_five_project_matches_quarantined": true,
+  "historical_four_customer_summaries_quarantined": true,
+  "historical_four_lifecycle_records_quarantined": true,
+  "historical_s16_review_dynamic_state_is_authoritative": false,
+  "historical_s16_review_validated": true,
+  "model_registry_key": "kmfa_v014_s16_post_remediation_stage_review",
+  "next_phase": "S17-P1",
+  "next_required_step": "下一轮仅执行 S17-P1；不得执行 S17-P2/P3、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或业务执行。",
+  "parameter_ids": [
+    "PARAM-KMFA-1789",
+    "PARAM-KMFA-1790",
+    "PARAM-KMFA-1791"
+  ],
+  "phase_id": "V014_S16_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_amount_committed": false,
+    "contract_invoice_or_payment_detail_committed": false,
+    "credential_or_secret_committed": false,
+    "customer_ranking_or_risk_detail_committed": false,
+    "private_runtime_committed": false,
+    "project_customer_or_counterparty_plaintext_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_names_committed": false,
+    "raw_schema_or_header_committed": false,
+    "zip_excel_pdf_private_csv_committed": false
+  },
+  "quality_gate": {
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "incomplete_reconciliation_count": 1,
+    "nonzero_delta_reconciliation_count": 9,
+    "one_cent_tolerance_minor_unit": 0,
+    "open_final_difference_accepted_count": 3,
+    "zero_delta_reconciliation_count": 2
+  },
+  "raw_boundary": {
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_snapshot_validation_performed": true,
+    "raw_write_performed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "review_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "collection_action_performed": false,
+    "customer_contact_performed": false,
+    "customer_ranking_performed": false,
+    "difference_closure_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "invoice_issuance_performed": false,
+    "legal_decision_performed": false,
+    "payment_or_bank_action_performed": false,
+    "persistent_business_write_performed": false,
+    "s16_p1_performed": true,
+    "s16_p2_performed": true,
+    "s16_p3_performed": true,
+    "s17_p1_performed": false,
+    "safety_or_technical_signature_performed": false,
+    "site_construction_performed": false,
+    "stage16_review_performed": true
+  },
+  "review_findings": [
+    {
+      "finding_id": "KMFA-V014-S16-REV-F01",
+      "fix": "将旧 review 仅作为历史夹具，当前动态事实保持 0/0/0",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "旧 Stage 16 review 使用 5 个项目匹配、4 条生命周期记录和 4 个客户摘要"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F02",
+      "fix": "增加三页六边、六视口、六交互、HTTP 与真实导航整体复验",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "三个 phase 的浏览器证据各自独立，未证明 Stage 16 三页互通"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F03",
+      "fix": "增加项目状态生命周期入口并纳入双向导航复验",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P1 缺少 P2 当前阶段入口"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F04",
+      "fix": "增加客户经营分析入口并纳入双向导航复验",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P1 缺少 P3 当前阶段入口"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F05",
+      "fix": "更新为三个 phase 与整体复审完成且 S17 仅可下一 run",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P1 footer 仍显示 S16-P2 仅可下一轮执行"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F06",
+      "fix": "增加客户经营分析入口并纳入双向导航复验",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P2 缺少 P3 当前阶段入口"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F07",
+      "fix": "更新为 Stage 16 review 完成且现场及资金动作继续阻断",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P2 footer 仍显示 S16-P3 仅可下一轮执行"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F08",
+      "fix": "增加外协采购归集入口并纳入双向导航复验",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P3 缺少 P1 当前阶段入口"
+    },
+    {
+      "finding_id": "KMFA-V014-S16-REV-F09",
+      "fix": "更新为 Stage 16 review 完成且客户及法律动作继续人工阻断",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P3 footer 仍显示整体复审仅可下一轮执行"
+    }
+  ],
+  "review_scope": "v014_s16_post_remediation_stage_review_only",
+  "reviewed_head": "92d2904a1d7e0be8e26330585382a816fc7a4876",
+  "reviewed_phase_manifests": {
+    "S16-P1": "KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json",
+    "S16-P2": "KMFA/stage_artifacts/V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE/machine/project_status_lifecycle_manifest.json",
+    "S16-P3": "KMFA/stage_artifacts/V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS/machine/customer_business_analysis_manifest.json",
+    "historical_S16_review": "KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
+  },
+  "roadmap_phase_id": "STAGE-REVIEW",
+  "schema_version": "kmfa.v014.s16_post_remediation_review_manifest.v1",
+  "stage_id": "S16",
+  "status": "completed_validated_local_only_stage16_review_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S16-POST-REMEDIATION-STAGE-REVIEW",
+    "anomaly_or_risk_item_count": 0,
+    "app_reinstall_performed": false,
+    "authoritative_row_binding_count": 0,
+    "authoritative_value_binding_count": 0,
+    "automatic_customer_ranking_count": 0,
+    "baseline_html_control_row_count": 54,
+    "baseline_html_pass_count": 54,
+    "broken_cross_page_link_count": 0,
+    "browser_status": "PASS",
+    "browser_viewport_check_count": 6,
+    "business_execution_performed": false,
+    "collection_action_performed": false,
+    "console_error_count": 0,
+    "cross_page_link_count": 6,
+    "cross_page_link_http_check_count": 6,
+    "cross_page_navigation_check_count": 6,
+    "cross_page_navigation_strongly_connected": true,
+    "current_data_quality_grade": "Q4",
+    "current_html_control_row_count": 43,
+    "current_html_pass_count": 43,
+    "current_report_grade": "D",
+    "current_stage_page_count": 3,
+    "customer_contact_performed": false,
+    "customer_ranking_performed": false,
+    "customer_summary_count": 0,
+    "decision": "NO_GO",
+    "difference_closure_performed": false,
+    "fixed_review_finding_count": 9,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "handoff_guard_count": 7,
+    "horizontal_overflow_count": 0,
+    "incomplete_reconciliation_count": 1,
+    "invoice_issuance_performed": false,
+    "legal_decision_performed": false,
+    "lifecycle_record_count": 0,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "open_review_finding_count": 0,
+    "payment_or_bank_action_performed": false,
+    "persistent_business_write_performed": false,
+    "phase_focused_test_count": 32,
+    "phase_focused_test_pass_count": 32,
+    "phase_id": "V014_S16_POST_REMEDIATION_STAGE_REVIEW",
+    "phase_results": {
+      "S16-P1": "PASS",
+      "S16-P2": "PASS",
+      "S16-P3": "PASS"
+    },
+    "phase_strict_validator_count": 3,
+    "phase_strict_validator_pass_count": 3,
+    "phase_unique_candidate_sheet_count_sum": 6698,
+    "project_id": "KMFA",
+    "project_match_record_count": 0,
+    "public_business_value_count": 0,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "representative_interaction_check_count": 6,
+    "review_finding_count": 9,
+    "review_rule_count": 12,
+    "roadmap_phase_id": "STAGE-REVIEW",
+    "s16_p1_performed": true,
+    "s16_p2_performed": true,
+    "s16_p3_performed": true,
+    "s17_p1_performed": false,
+    "safety_or_technical_signature_performed": false,
+    "schema_version": "kmfa.v014.s16_post_remediation_review_summary.v1",
+    "site_construction_performed": false,
+    "source_lane_count": 15,
+    "stage16_review_performed": true,
+    "stage_id": "S16",
+    "status": "completed_validated_local_only_stage16_review_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S16-POST-REMEDIATION-STAGE-REVIEW-20260712",
+    "unallocated_cost_pool_item_count": 0,
+    "version": "0.1.4-s16-post-remediation-stage-review",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S16-POST-REMEDIATION-STAGE-REVIEW-20260712",
+  "taskpack_contract": {
+    "procurement_project_customer_actions_remain_human": true,
+    "raw_read_only_contract_applied": true,
+    "roadmap_read": true,
+    "stage16_three_phase_contract_reviewed": true,
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "browser_desktop_mobile": "PASS",
+    "final_validation_recorded": true,
+    "governance_and_safety_scans": "PASS",
+    "phase_focused_tests": "PASS",
+    "phase_strict_validators": "PASS",
+    "raw_alignment": "PASS",
+    "review_focused_test": "PASS",
+    "review_strict_validator": "PASS"
+  },
+  "version": "0.1.4-s16-post-remediation-stage-review"
+}

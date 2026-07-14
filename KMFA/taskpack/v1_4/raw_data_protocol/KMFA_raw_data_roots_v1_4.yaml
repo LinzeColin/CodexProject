@@ -1,0 +1,55 @@
+version: v1.4
+project: KMFA
+raw_data_policy: immutable_read_only
+repo_root: /Users/linzezhang/Documents/Codex/CodexProject
+project_path: /Users/linzezhang/Documents/Codex/CodexProject/KMFA
+raw_roots:
+  - id: local_kmfa_metadata_raw_root
+    label: 用户本机KMFA原始数据目录
+    path: /Users/linzezhang/Downloads/KMFA_MetaData
+    access: read_only
+    priority: highest_raw_source
+    allowed_operations:
+      - list
+      - stat
+      - read
+      - hash
+      - copy_to_local_runtime
+    forbidden_operations:
+      - write
+      - delete
+      - move
+      - rename
+      - chmod
+      - chown
+      - in_place_convert
+      - generate_cache_inside_raw_root
+      - generate_temp_inside_raw_root
+      - generate_report_inside_raw_root
+    derived_workspace: /Users/linzezhang/Documents/Codex/CodexProject/KMFA/local_runtime/raw_ingest/
+    metadata_output: /Users/linzezhang/Documents/Codex/CodexProject/KMFA/metadata/imports/
+    github_commit_policy:
+      allowed:
+        - schema
+        - templates
+        - hash_manifest_without_sensitive_values
+        - status_index
+        - formula_and_mapping_rules
+      forbidden:
+        - raw_files
+        - credentials
+        - unmasked_financial_detail
+        - bank_account_full_number
+        - customer_contract_full_text
+        - payroll_detail
+reference_consistency:
+  rule: same_raw_source_same_reference_value
+  on_inconsistency:
+    - invalidate_derived_cache
+    - rerun_import
+    - rerun_mapping
+    - rerun_canonicalization
+    - rerun_metrics
+    - rerun_report_references
+    - emit_mismatch_report
+    - downgrade_report_grade_until_resolved

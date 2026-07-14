@@ -1,0 +1,339 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-WDA-RETIREMENT-20260713",
+  "project_id": "ROOT",
+  "task_id": "CODEXPROJECT-GOV-P0-WDA-RETIRE-20260713",
+  "acceptance_ids": [
+    "ACC-CODEXPROJECT-GOV-P0-WDA-RETIRE-20260713"
+  ],
+  "iteration_id": "ITER-20260713-WDA-RETIREMENT",
+  "generated_at": "2026-07-13T11:09:43+10:00",
+  "implementation_base_sha": "d26a9f2379b48fb5d01aba256f8f03d614c49305",
+  "content_tree_hash": "sha256-retirement-files-excluding-this-manifest:7ec7c6782210e992b3206deba3723adc9d8d0fdcc30a35810135e788edd2eede",
+  "content_records": [
+    {
+      "path": "README.md",
+      "sha256": "8080315732dfc57123f0f09f4534bbfe6424d967e8669f74313f2bb9e0fcca3b"
+    },
+    {
+      "path": "docs/governance/STANDARD.md",
+      "sha256": "dcfb4aa59108ec7b57094ae1d1e5dec093aa00e4ab72d8a8da587180c8832ad3"
+    },
+    {
+      "path": "governance/projects.yaml",
+      "sha256": "2c4859171f4b506e5a642e739504d67238d68b55d254cd3da3d421006e66a213"
+    },
+    {
+      "path": "governance/task_records/GOV-WDA-RETIREMENT-20260713/功能清单.md",
+      "sha256": "21a8e0c45a53fe5086e3f5b0f48ed9a536414966658d773bcfafa38266c821af"
+    },
+    {
+      "path": "governance/task_records/GOV-WDA-RETIREMENT-20260713/开发记录.md",
+      "sha256": "1594e0773d602c30e0669695a5c75ab2033be281f2f815db104ff6bd8a24fafd"
+    },
+    {
+      "path": "governance/task_records/GOV-WDA-RETIREMENT-20260713/模型参数文件.md",
+      "sha256": "42ade280a23cd421050cfdaa05414c7f838de5642e7934a340e352e7e78c3647"
+    },
+    {
+      "path": "scripts/lean_governance.py",
+      "sha256": "c07e6147a980e6648865fb450e468e1ac45779fda58251c5c392a072041ae846"
+    },
+    {
+      "path": "scripts/validate_project_governance.py",
+      "sha256": "0e39c148b576690a4901376b1b3921541727e08e55c44c81d9f526dd894a5e9e"
+    },
+    {
+      "path": "tests/governance/test_retired_project_registry.py",
+      "sha256": "4b68ef4d658a69a32e73720da242c8075e8b97e6802b483610a093e383212fe1"
+    }
+  ],
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/context_sources/resource_routes.json",
+    "OpenAIDatabase/config/context_sources/three_layer_context.json",
+    "OpenAIDatabase/config/evaluation/personalization_harness.json",
+    "OpenAIDatabase/data/derived/personalization/chatgpt_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/claude_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/codex_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json",
+    "OpenAIDatabase/data/derived/personalization/other_agent_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/personalization_export.json",
+    "OpenAIDatabase/data/derived/personalization/personalization_prompt_human_zh.md",
+    "OpenAIDatabase/data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl",
+    "OpenAIDatabase/data/run_logs/evidence/OAIDB-SM-P0-R1-final-gates.txt",
+    "OpenAIDatabase/data/run_logs/evidence/TASK-OAI-D-001-build-exports.txt",
+    "OpenAIDatabase/data/run_logs/export_runs/2026-07-12.jsonl",
+    "OpenAIDatabase/data/run_logs/export_runs/2026-07-13.jsonl",
+    "OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml",
+    "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "OpenAIDatabase/docs/governance/model_registry.yaml",
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_personalization_exports.py",
+    "OpenAIDatabase/scripts/evaluate_personalization_context.py",
+    "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-WDA-RETIREMENT-20260713.json",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/功能清单.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/开发记录.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/模型参数文件.md",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/context_sources/resource_routes.json",
+    "OpenAIDatabase/config/context_sources/three_layer_context.json",
+    "OpenAIDatabase/config/evaluation/personalization_harness.json",
+    "OpenAIDatabase/data/derived/personalization/chatgpt_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/claude_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/codex_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json",
+    "OpenAIDatabase/data/derived/personalization/other_agent_personalization.md",
+    "OpenAIDatabase/data/derived/personalization/personalization_export.json",
+    "OpenAIDatabase/data/derived/personalization/personalization_prompt_human_zh.md",
+    "OpenAIDatabase/data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl",
+    "OpenAIDatabase/data/run_logs/evidence/OAIDB-SM-P0-R1-final-gates.txt",
+    "OpenAIDatabase/data/run_logs/evidence/TASK-OAI-D-001-build-exports.txt",
+    "OpenAIDatabase/data/run_logs/export_runs/2026-07-12.jsonl",
+    "OpenAIDatabase/data/run_logs/export_runs/2026-07-13.jsonl",
+    "OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml",
+    "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "OpenAIDatabase/docs/governance/model_registry.yaml",
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_personalization_exports.py",
+    "OpenAIDatabase/scripts/evaluate_personalization_context.py",
+    "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-WDA-RETIREMENT-20260713.json",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/功能清单.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/开发记录.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/模型参数文件.md",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "required_governance_files": [
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/功能清单.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/开发记录.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/模型参数文件.md",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_retired_project_registry.py",
+    "governance/run_manifests/GOV-WDA-RETIREMENT-20260713.json"
+  ],
+  "updated_governance_files": [
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/功能清单.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/开发记录.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/模型参数文件.md",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_retired_project_registry.py",
+    "governance/run_manifests/GOV-WDA-RETIREMENT-20260713.json"
+  ],
+  "test_commands": [
+    "python3.12 -B -m unittest tests.governance.test_retired_project_registry -q",
+    "python3.12 -B scripts/validate_project_governance.py --all",
+    "python3.12 -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+    "python3.12 -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python3.12 -B -m unittest discover -s tests/governance -p 'test_*.py' -q (compare exact failing test names with implementation base)",
+    "git diff --quiet d26a9f2379b48fb5d01aba256f8f03d614c49305 -- WDA",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "focused retired-project registry tests",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "7 tests passed; active/retired contract, 12-project fanout, direct WDA fail-closed, explicit retired-project error identity, README separation, and WDA tree invariance covered"
+    },
+    {
+      "command": "all active-project structural validation",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "12 active required projects checked; errors 0; warnings 0; former 10 WDA schema errors absent because WDA is formally retired"
+    },
+    {
+      "command": "changed-scope selector",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "selected_project_count=12; required=12/12; retired_project_ids=[WDA]; retired_changed_files=[]; unknown_changed_files=[]"
+    },
+    {
+      "command": "authoritative changed-only governance CI",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "decision=SHIP; legacy_exit_code=0; validation_checked_project_count=12; zero_tracked_write=true; stable_summary_hash=sha256:9693b10ac561f86f364a57d41a542c89c44e23977e03338b06bd48add608de73"
+    },
+    {
+      "command": "full historical governance unittest baseline comparison",
+      "exit_code": 1,
+      "result": "PASS_NO_NEW_FAILURES",
+      "observed": "implementation base: 370 tests, failures=122, errors=57; retirement tree: 376 tests, failures=120, errors=58; exact introduced failing test names=[]; resolved failing test=test_all_registered_projects_pass_current_validator; six added tests pass"
+    },
+    {
+      "command": "WDA tree invariance",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "HEAD:WDA and implementation-base:WDA both 590af7312e72b3c68302020aabbba8f396f1a398; 24 tracked files; no origin/main or task diff"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "no whitespace or conflict-marker errors"
+    }
+  ],
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "docs/governance/STANDARD.md",
+    "README.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/功能清单.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/开发记录.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/模型参数文件.md",
+    "governance/run_manifests/GOV-WDA-RETIREMENT-20260713.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Formal WDA retirement from active required CodexProject governance without deleting history",
+  "ci_run_reference": "LOCAL_PRECOMMIT_WDA_RETIREMENT_CHANGED_ONLY_SHIP",
+  "owner_decision": {
+    "confirmed_at": "2026-07-13",
+    "statement": "WDA 已经搁置且废弃，目前没有 active or useful thread session；由 Codex 在仓库治理内解决。",
+    "authority": "Owner",
+    "effect": "Retire WDA from active/required governance; preserve tracked history; require explicit Owner authorization to reactivate."
+  },
+  "retirement_contract": {
+    "active_project_count": 12,
+    "retired_project_count": 1,
+    "retired_project_id": "WDA",
+    "status": "retired",
+    "preserve_history": true,
+    "reactivation_requires_owner_authorization": true,
+    "direct_retired_path_change": "FAIL_CLOSED_RETIRED_PROJECT_CHANGE",
+    "baseline_waiver_added": false,
+    "advisory_exclusion_used": false
+  },
+  "wda_tree_sha": "590af7312e72b3c68302020aabbba8f396f1a398",
+  "wda_tracked_file_count": 24,
+  "wda_files_changed": false,
+  "retirement_changed_files": [
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/功能清单.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/开发记录.md",
+    "governance/task_records/GOV-WDA-RETIREMENT-20260713/模型参数文件.md",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_retired_project_registry.py",
+    "governance/run_manifests/GOV-WDA-RETIREMENT-20260713.json"
+  ],
+  "product_model_delta": "NOT_CHANGED",
+  "governance_model_delta": "Added one lifecycle rule model, one fail-closed formula, and six task-record parameters.",
+  "raw_private_data_read_or_written": false,
+  "other_project_status_changed": false,
+  "rollback": "Revert only this retirement commit to restore WDA to the active required registry. No WDA files or business data require restoration.",
+  "status": "PASS",
+  "gate_status": "ACCEPTED_PRECOMMIT",
+  "failure_recovery": [
+    {
+      "failure": "Focused test initially asserted an exception class loaded under a different module identity.",
+      "action": "Asserted the GovernanceDiffError class owned by the loaded lean_governance module; no production behavior changed."
+    },
+    {
+      "failure": "Extra scheduled/all-scope diagnostics exposed unrelated pre-existing KMFA, ADP, legacy manifest, and information-quality debt.",
+      "action": "Kept those diagnostics truthful and non-authoritative; did not modify other projects or weaken the required changed-only gate. Baseline comparison proved no new governance unittest failures."
+    },
+    {
+      "failure": "Dashboard --root-artifact-dir redirects root artifacts but still rewrites tracked per-project derived status files.",
+      "action": "Restored only the 36 tool-created ASSURANCE_STATUS/STATUS/OWNER_STATUS changes to HEAD, confirmed the task diff returned to its exact 10-file allowlist, and removed write-mode dashboard generation from acceptance."
+    }
+  ],
+  "ci_full_evidence_ref": {
+    "evidence_id": "7074ecf6edfc",
+    "sha256": "sha256:7074ecf6edfc08c22ee75691373fbe4d4ef2d639bcc415002d32a0a08471de0b",
+    "decision": "SHIP",
+    "stable_summary_hash": "sha256:9693b10ac561f86f364a57d41a542c89c44e23977e03338b06bd48add608de73"
+  },
+  "non_authoritative_diagnostics": [
+    {
+      "command": "python3.12 -B scripts/lean_governance.py validate --all --semantic --drift-report",
+      "exit_code": 1,
+      "observed": "65 pre-existing all-scope semantic/legacy-attestation issues in KMFA, arxiv-daily-push, and old root manifests; active structural validator itself returned 0 errors"
+    },
+    {
+      "command": "python3.12 -B scripts/validate_information_quality.py --all --fast --fail-on-error",
+      "exit_code": 1,
+      "observed": "1678 pre-existing legacy information-quality findings, including an obsolete expected-project set; not the PR/main authoritative changed-scope contract"
+    },
+    {
+      "command": "python3.12 -B scripts/generate_governance_dashboard.py --write --all --root-artifact-dir /tmp/governance-wda-retirement-views",
+      "exit_code": 0,
+      "observed": "Root artifacts went to /tmp, but the write-mode generator also rewrote 36 tracked project derived status files. Those exact tool-created changes were restored to HEAD; command is excluded from this task's read-only acceptance gates."
+    }
+  ],
+  "acceptance_results": {
+    "formal_retirement_registry": "PASS",
+    "active_required_fanout_12_of_12": "PASS",
+    "wda_history_preserved": "PASS",
+    "direct_retired_path_change_fail_closed": "PASS",
+    "no_baseline_waiver_or_advisory_exclusion": "PASS",
+    "no_other_project_status_change": "PASS",
+    "authoritative_changed_scope_ci": "PASS",
+    "independent_review": "PASS"
+  },
+  "independent_review": {
+    "result": "PASS_NO_P0_P1",
+    "scope": "exact 10-file WDA retirement diff",
+    "verified": [
+      "WDA and all other project task diffs are empty",
+      "7 focused tests pass",
+      "12 active projects pass structural validation with 0 errors and 0 warnings",
+      "retired changes and explicit WDA targeting fail closed with retired-specific errors",
+      "content records and content tree hash recompute exactly",
+      "authoritative changed-only CI is SHIP with selector 12 of 12 and zero tracked writes",
+      "no waiver or new exclusion was introduced"
+    ]
+  }
+}

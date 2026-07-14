@@ -1,0 +1,63 @@
+{
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_code": "source_resolution_intake_blocker_audit_phase_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_go_no_go_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_resolution_intake_blocker_audit_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_resolution_intake_blocker_audit_ready_absent",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_resolution_intake_blocker_audit_queue_read",
+      "status": "PASS"
+    },
+    {
+      "check_code": "second_resolution_intake_blocker_observation_recorded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "resolution_intake_blocker_audit_threshold_not_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_recheck_queue_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_kind_recheck_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-10T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_RECHECK_AFTER_FINAL_CHECK_CLOSURE",
+  "project_id": "KMFA",
+  "record_type": "v014_authorized_source_reference_owner_agent_resolution_intake_blocker_recheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_authorized_source_reference_owner_agent_resolution_intake_blocker_recheck_matrix.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-RECHECK-AFTER-FINAL-CHECK-CLOSURE-20260710",
+  "version": "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-recheck-after-final-check-closure"
+}

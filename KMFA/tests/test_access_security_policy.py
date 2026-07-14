@@ -34,12 +34,24 @@ class AccessSecurityPolicyTests(unittest.TestCase):
         self.assertTrue(manifest["quality_gate"]["role_permission_matrix_complete"])
         self.assertTrue(manifest["quality_gate"]["sensitive_public_repo_policy_enforced"])
         self.assertTrue(manifest["quality_gate"]["audit_log_policy_complete"])
+        self.assertTrue(manifest["quality_gate"]["raw_sensitive_public_repo_allowed"])
+        self.assertTrue(manifest["quality_gate"]["github_upload_allowed"])
+        self.assertTrue(manifest["quality_gate"]["phase_completion_upload_allowed"])
+        self.assertFalse(manifest["quality_gate"]["credential_secret_public_repo_allowed"])
         self.assertFalse(manifest["quality_gate"]["notification_delivery_allowed"])
         self.assertFalse(manifest["quality_gate"]["formal_report_allowed"])
-        self.assertFalse(manifest["quality_gate"]["github_upload_allowed"])
         self.assertFalse(manifest["stage_scope"]["s17_p2_scope_included"])
         self.assertFalse(manifest["stage_scope"]["s17_p3_scope_included"])
         self.assertFalse(manifest["stage_scope"]["stage17_review_scope_included"])
+        self.assertEqual(
+            manifest["summary"]["public_repo_safety_status"],
+            "owner_authorized_plaintext_github_allowed_except_credentials",
+        )
+        owner_policy = manifest["owner_authorized_plaintext_github_policy"]
+        self.assertTrue(owner_policy["allowed"])
+        self.assertTrue(owner_policy["requires_explicit_owner_authorization"])
+        self.assertTrue(owner_policy["requires_upload_manifest"])
+        self.assertEqual(owner_policy["denied_categories"], ["credential_secret"])
 
     def test_role_permissions_cover_management_finance_reviewer_and_readonly(self) -> None:
         manifest, role_matrix, sensitive_policies, audit_policies = build_default_access_security_policy(
@@ -57,8 +69,13 @@ class AccessSecurityPolicyTests(unittest.TestCase):
         for role_id, row in roles.items():
             self.assertEqual(row["record_type"], "access_role_permission")
             self.assertGreaterEqual(len(row["allowed_public_safe_actions"]), 2)
-            self.assertFalse(row["raw_business_data_access_in_public_repo"])
-            self.assertFalse(row["sensitive_file_public_commit_allowed"])
+            if role_id == "readonly":
+                self.assertFalse(row["raw_business_data_access_in_public_repo"])
+                self.assertFalse(row["sensitive_file_public_commit_allowed"])
+            else:
+                self.assertTrue(row["raw_business_data_access_in_public_repo"])
+                self.assertTrue(row["sensitive_file_public_commit_allowed"])
+                self.assertTrue(row["owner_authorization_required_for_sensitive_commit"])
             self.assertFalse(row["credential_access_allowed"])
             self.assertFalse(row["business_execution_allowed"])
             self.assertFalse(row["bypass_quality_gate_allowed"])
@@ -68,9 +85,9 @@ class AccessSecurityPolicyTests(unittest.TestCase):
             if role_id == "readonly":
                 self.assertEqual(row["max_write_scope"], "none")
             else:
-                self.assertEqual(row["max_write_scope"], "metadata_only")
+                self.assertEqual(row["max_write_scope"], "metadata_and_owner_authorized_plaintext_upload_manifest")
 
-    def test_sensitive_policy_blocks_public_repo_sensitive_material(self) -> None:
+    def test_sensitive_policy_allows_owner_authorized_plaintext_except_credentials(self) -> None:
         manifest, role_matrix, sensitive_policies, audit_policies = build_default_access_security_policy(
             generated_at="2026-07-01T23:55:00+10:00"
         )
@@ -85,12 +102,23 @@ class AccessSecurityPolicyTests(unittest.TestCase):
         self.assertEqual(set(categories), set(REQUIRED_SENSITIVE_POLICY_CATEGORIES))
         for category_id, row in categories.items():
             self.assertEqual(row["record_type"], "public_repo_sensitive_data_policy")
-            self.assertFalse(row["public_repo_allowed"])
-            self.assertFalse(row["git_upload_allowed"])
-            self.assertFalse(row["value_plaintext_allowed"])
-            self.assertTrue(row["metadata_hash_or_ref_only_allowed"])
-            self.assertEqual(row["handling"], "private_storage_or_hash_only_metadata")
-            self.assertIn("raw_private_commit_scan", row["enforcement_controls"])
+            self.assertIn("explicit_owner_authorization_required", row["enforcement_controls"])
+            if category_id == "credential_secret":
+                self.assertFalse(row["public_repo_allowed"])
+                self.assertFalse(row["git_upload_allowed"])
+                self.assertFalse(row["value_plaintext_allowed"])
+                self.assertTrue(row["metadata_hash_or_ref_only_allowed"])
+                self.assertFalse(row["credential_secret_allowed"])
+                self.assertEqual(row["handling"], "secret_or_credential_never_plaintext_public_repo")
+            else:
+                self.assertTrue(row["public_repo_allowed"])
+                self.assertTrue(row["git_upload_allowed"])
+                self.assertTrue(row["value_plaintext_allowed"])
+                self.assertFalse(row["metadata_hash_or_ref_only_allowed"])
+                self.assertTrue(row["metadata_hash_or_ref_allowed"])
+                self.assertTrue(row["requires_explicit_owner_authorization"])
+                self.assertFalse(row["credential_secret_allowed"])
+                self.assertEqual(row["handling"], "owner_authorized_plaintext_github_upload")
 
     def test_audit_policy_records_import_processing_report_export_and_notification(self) -> None:
         manifest, role_matrix, sensitive_policies, audit_policies = build_default_access_security_policy(
@@ -169,7 +197,18 @@ class AccessSecurityPolicyTests(unittest.TestCase):
             )
 
         broken_sensitive = copy.deepcopy(sensitive_policies)
-        broken_sensitive[0]["public_repo_allowed"] = True
+        broken_sensitive[0]["public_repo_allowed"] = False
+        with self.assertRaises(AccessSecurityPolicyError):
+            validate_access_security_policy_artifacts(
+                manifest,
+                role_matrix,
+                broken_sensitive,
+                audit_policies,
+            )
+
+        broken_sensitive = copy.deepcopy(sensitive_policies)
+        categories = {row["category_id"]: row for row in broken_sensitive}
+        categories["credential_secret"]["public_repo_allowed"] = True
         with self.assertRaises(AccessSecurityPolicyError):
             validate_access_security_policy_artifacts(
                 manifest,
@@ -189,6 +228,16 @@ class AccessSecurityPolicyTests(unittest.TestCase):
 
         broken_manifest = copy.deepcopy(manifest)
         broken_manifest["stage_scope"]["stage17_review_scope_included"] = True
+        with self.assertRaises(AccessSecurityPolicyError):
+            validate_access_security_policy_artifacts(
+                broken_manifest,
+                role_matrix,
+                sensitive_policies,
+                audit_policies,
+            )
+
+        broken_manifest = copy.deepcopy(manifest)
+        broken_manifest["quality_gate"]["raw_sensitive_public_repo_allowed"] = False
         with self.assertRaises(AccessSecurityPolicyError):
             validate_access_security_policy_artifacts(
                 broken_manifest,

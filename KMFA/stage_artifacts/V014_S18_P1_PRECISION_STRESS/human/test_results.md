@@ -1,0 +1,25 @@
+# KMFA v0.1.4 S18-P1 Precision Stress Test Results
+
+- py_compile: PASS
+- focused_unittest: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s18_p1_precision_stress -q`)
+- s17_stage_review_dependency_validator: PASS
+- s18_p1_validator: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s18_p1_precision_stress.py`)
+- project_governance_validator: PASS
+- lean_governance_validator: PASS
+- changed_only_governance_sync: PASS
+- no_float_money_check: PASS
+- no_omission_check: PASS (`requirements=20, P0=9, P1=8, status_records=864, tasks=162, v1.2_html=45+`)
+- changed_untracked_structured_parse: PASS (`json=2, jsonl=10, csv=2, files=34`)
+- ruby_yaml_parse: PASS (`yaml=4`)
+- raw_private_suffix_scan: PASS
+- high_signal_secret_scan: PASS
+- scoped_s18_p1_public_artifact_boundary_scan: PASS
+- git_diff_check: PASS
+- github_upload: NOT_PERFORMED / DEFERRED
+- s18_p2: NOT_PERFORMED
+- s18_p3: NOT_PERFORMED
+- stage18_review: NOT_PERFORMED
+- raw_private_inbox_access: NOT_PERFORMED
+- production_restore_or_app_reinstall: NOT_PERFORMED
+- external_or_live_connector: NOT_PERFORMED
+- formal_report_or_business_execution: NOT_PERFORMED

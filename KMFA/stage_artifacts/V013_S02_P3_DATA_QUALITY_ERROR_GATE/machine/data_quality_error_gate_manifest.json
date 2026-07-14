@@ -1,0 +1,116 @@
+{
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "complete_trusted_report_display_allowed": false,
+  "current_data_quality_grade": "Q2",
+  "current_data_quality_grade_reason": "Raw files and container/schema readiness are visible through S02-P1/S02-P2 aggregate evidence, but row-value extraction, owner-authorized semantic mapping, zero-delta, and full lineage are not complete.",
+  "current_report_grade": "D",
+  "data_matches_raw_claim_allowed": false,
+  "delivery_allowed": false,
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "hard_block_count": 6,
+  "hard_blocks": [
+    "raw_value_matching_blocked_authorized_mapping_required",
+    "owner_authorized_semantic_mapping_missing",
+    "raw_row_value_extraction_not_performed",
+    "zero_delta_not_performed",
+    "lineage_full_check_not_performed",
+    "formal_report_release_blocked"
+  ],
+  "internal_review_report_allowed": false,
+  "next_required_step": "Stage 2 review may run only after S02-P1, S02-P2, and S02-P3 validators pass; GitHub main upload remains deferred until the overall completion upload gate.",
+  "phase_id": "S02-P3",
+  "phase_scope": "data_quality_error_gate_public_safe_lock",
+  "policy_refs": [
+    "KMFA/metadata/quality/quality_grade_policy.yaml",
+    "KMFA/metadata/reports/report_grade_policy.yaml",
+    "KMFA/metadata/reports/report_release_gate.yaml",
+    "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
+  ],
+  "preview_allowed": false,
+  "project_id": "KMFA",
+  "public_manifest_contains_field_plaintext": false,
+  "public_manifest_contains_raw_filenames": false,
+  "public_manifest_contains_raw_values": false,
+  "public_manifest_contains_sheet_names": false,
+  "public_manifest_contains_zip_member_names": false,
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_hashes_committed": false,
+    "raw_file_names_committed": false,
+    "sheet_names_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "quality_grade_policy_validated": true,
+  "quality_grades": [
+    "Q0",
+    "Q1",
+    "Q2",
+    "Q3",
+    "Q4",
+    "Q5"
+  ],
+  "quality_to_report_gate": {
+    "Q0": {
+      "maximum_report_grade": "D",
+      "release_permission": "blocked"
+    },
+    "Q1": {
+      "maximum_report_grade": "D",
+      "release_permission": "blocked"
+    },
+    "Q2": {
+      "maximum_report_grade": "D",
+      "release_permission": "blocked"
+    },
+    "Q3": {
+      "maximum_report_grade": "C",
+      "release_permission": "preview_only"
+    },
+    "Q4": {
+      "maximum_report_grade": "B",
+      "release_permission": "internal_review_report"
+    },
+    "Q5": {
+      "maximum_report_grade": "A",
+      "release_permission": "formal_internal_report"
+    }
+  },
+  "raw_business_value_extraction_performed": false,
+  "raw_dir": "/Users/linzezhang/Downloads/KMFA_MetaData",
+  "raw_dir_mutation_allowed": false,
+  "raw_dir_mutation_performed": false,
+  "raw_dir_read_performed_by_s02_p3": false,
+  "raw_row_value_extraction_performed": false,
+  "raw_value_matching_performed": false,
+  "raw_value_matching_readiness_status": "blocked_authorized_mapping_required",
+  "release_gate_policy_validated": true,
+  "release_permission": "blocked",
+  "report_grade_policy_validated": true,
+  "report_grades": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "s02_p1_dependency_validated": true,
+  "s02_p2_dependency_validated": true,
+  "schema_version": "kmfa.v013_s02_p3_data_quality_error_gate.v1",
+  "source_public_manifests": [
+    "KMFA/stage_artifacts/V013_S02_P1_RAW_READINESS/machine/raw_readiness_manifest.json",
+    "KMFA/stage_artifacts/V013_S02_P2_RAW_MAPPING_READINESS/machine/raw_mapping_readiness_manifest.json"
+  ],
+  "stage_id": "S02",
+  "stage_review_performed": false,
+  "task_id": "KMFA-V013-S02-P3-DATA-QUALITY-ERROR-GATE-20260702",
+  "version": "0.1.3"
+}

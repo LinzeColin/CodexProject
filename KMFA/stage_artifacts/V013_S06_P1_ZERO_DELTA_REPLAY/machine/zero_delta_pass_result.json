@@ -1,0 +1,13 @@
+{
+  "minimum_fail_difference_cents": 1,
+  "mismatch_count": 0,
+  "mismatches": [],
+  "public_safe_fixture_only": true,
+  "raw_business_data_used": false,
+  "record_type": "zero_delta_validation_result",
+  "schema_version": "kmfa.zero_delta_validation_result.v1",
+  "stage_phase": "S06-P1",
+  "status": "passed",
+  "zero_delta_cents": 0,
+  "zero_delta_passed": true
+}

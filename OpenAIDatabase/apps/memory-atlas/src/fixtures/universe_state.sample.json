@@ -342,6 +342,37 @@
       "conflict_zones",
       "stale_orbits"
     ],
+    "data_map_2_0": [
+      "source_snapshot",
+      "dominant_clusters",
+      "rising_clusters",
+      "declining_clusters",
+      "stale_orbits",
+      "memory_terrain",
+      "recommended_next_actions"
+    ],
+    "search_2_0": [
+      "source_snapshot",
+      "memory_weather",
+      "dominant_clusters",
+      "rising_clusters",
+      "declining_clusters",
+      "conflict_zones",
+      "black_holes",
+      "proto_stars",
+      "stale_orbits",
+      "recommended_next_actions"
+    ],
+    "review_summary_iteration": [
+      "memory_weather",
+      "rising_clusters",
+      "declining_clusters",
+      "conflict_zones",
+      "black_holes",
+      "proto_stars",
+      "stale_orbits",
+      "recommended_next_actions"
+    ],
     "inspector": [
       "memory_weather",
       "conflict_zones",

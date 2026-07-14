@@ -1,0 +1,110 @@
+{
+  "schema_version": "kmfa.v014.global_residual_replay_matrix.v1",
+  "project_id": "KMFA",
+  "phase_id": "V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION",
+  "check_count": 20,
+  "check_pass_count": 20,
+  "check_fail_count": 0,
+  "checks": [
+    {
+      "check_id": "GRQ-01",
+      "check_name": "source_private_inputs_unchanged",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-02",
+      "check_name": "raw_snapshot_exact_match",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-03",
+      "check_name": "residual_queue_72",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-04",
+      "check_name": "all_records_classified",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-05",
+      "check_name": "target_replay_37",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-06",
+      "check_name": "integer_metric_replay_16",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-07",
+      "check_name": "non_numeric_exclusion_8",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-08",
+      "check_name": "closed_or_excluded_61",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-09",
+      "check_name": "open_residual_11",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-10",
+      "check_name": "ambiguous_source_open_8",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-11",
+      "check_name": "accepted_cash_open_3",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-12",
+      "check_name": "nonzero_differences_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-13",
+      "check_name": "zero_differences_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-14",
+      "check_name": "incomplete_comparison_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-15",
+      "check_name": "forced_zero_prohibited",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-16",
+      "check_name": "owner_authorization_recorded",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-17",
+      "check_name": "private_outputs_ignored",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-18",
+      "check_name": "business_consistency_not_overclaimed",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-19",
+      "check_name": "stage_review_not_performed",
+      "passed": true
+    },
+    {
+      "check_id": "GRQ-20",
+      "check_name": "github_not_uploaded",
+      "passed": true
+    }
+  ]
+}

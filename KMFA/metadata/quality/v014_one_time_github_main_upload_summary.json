@@ -1,0 +1,19 @@
+{
+  "schema_version": "kmfa.v014.one_time_github_main_upload_quality_summary.v1",
+  "record_type": "v014_one_time_github_main_upload_quality_summary",
+  "project_id": "KMFA",
+  "phase_id": "V014_ONE_TIME_GITHUB_MAIN_UPLOAD",
+  "current_stage_validator_pass_count": 18,
+  "open_review_finding_count": 0,
+  "integration_full_suite_test_count": 1767,
+  "integration_full_suite_pass_count": 1767,
+  "integration_full_suite_pending": false,
+  "authorized_push_count": 1,
+  "force_push_allowed": false,
+  "github_main_upload_performed": true,
+  "app_reinstall_performed": false,
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "difference_state": "3-9-2-1"
+}

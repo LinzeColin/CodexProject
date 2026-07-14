@@ -1,0 +1,72 @@
+{
+  "check_count": 16,
+  "check_fail_count": 0,
+  "check_pass_count": 16,
+  "checks": [
+    {
+      "check_id": "s16_p2_dependency",
+      "status": "PASS"
+    },
+    {
+      "check_id": "upstream_dependencies",
+      "status": "PASS"
+    },
+    {
+      "check_id": "four_lanes",
+      "status": "PASS"
+    },
+    {
+      "check_id": "candidate_coverage",
+      "status": "PASS"
+    },
+    {
+      "check_id": "parser_coverage",
+      "status": "PASS"
+    },
+    {
+      "check_id": "probe_repeatability",
+      "status": "PASS"
+    },
+    {
+      "check_id": "processed_private_alignment",
+      "status": "PASS"
+    },
+    {
+      "check_id": "binding_contract",
+      "status": "PASS"
+    },
+    {
+      "check_id": "zero_customer_summaries",
+      "status": "PASS"
+    },
+    {
+      "check_id": "four_risk_rules",
+      "status": "PASS"
+    },
+    {
+      "check_id": "zero_risk_items",
+      "status": "PASS"
+    },
+    {
+      "check_id": "four_handoff_guards",
+      "status": "PASS"
+    },
+    {
+      "check_id": "browser",
+      "status": "PASS"
+    },
+    {
+      "check_id": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "quality_gate",
+      "status": "PASS"
+    },
+    {
+      "check_id": "no_downstream",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s16_p3.acceptance_matrix.v1"
+}

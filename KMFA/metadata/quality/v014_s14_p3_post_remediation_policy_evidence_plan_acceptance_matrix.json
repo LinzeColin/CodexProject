@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "browser_pass": true,
+    "current_s14_p2_dependency": true,
+    "five_directory_definitions": true,
+    "five_gap_records": true,
+    "five_risk_tips": true,
+    "no_review_release_execution": true,
+    "private_probe_roundtrip_exact": true,
+    "quality_locked": true,
+    "raw_exact": true,
+    "twenty_three_evidence_categories": true,
+    "zero_authoritative_evidence_binding": true,
+    "zero_policy_conclusions_actions": true
+  },
+  "decision": "NO_GO",
+  "fail_count": 0,
+  "pass_count": 12,
+  "schema_version": "kmfa.v014.s14_p3_acceptance_matrix.v1"
+}

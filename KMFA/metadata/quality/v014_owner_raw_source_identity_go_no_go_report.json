@@ -1,0 +1,31 @@
+{
+  "app_reinstall_allowed": false,
+  "blocker_ids": [
+    "RAW_SOURCE_IDENTITY_OWNER_DECISION_NOT_SUPPLIED",
+    "PUBLIC_MEMBER_HASH_BACKFILL_STILL_BLOCKED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_OWNER_DECISION",
+    "FORMAL_REPORT_BLOCKED_BY_OWNER_DECISION",
+    "GITHUB_UPLOAD_BLOCKED_BY_OWNER_DECISION",
+    "APP_REINSTALL_BLOCKED_BY_OWNER_DECISION"
+  ],
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_reason": "Owner raw source identity intake is ready, but no active owner or authorized decision record has been supplied. Raw alignment, public hash backfill, lineage closure, report release, GitHub upload, app reinstall and business execution remain blocked.",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_recommended_phase": "V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION",
+  "next_required_input": "owner_decision_code_or_corrected_registered_source_package",
+  "owner_decision_intake_ready": true,
+  "owner_decision_supplied": false,
+  "phase_id": "V014_OWNER_RAW_SOURCE_IDENTITY_DECISION",
+  "project_id": "KMFA",
+  "public_member_hash_backfill_allowed": false,
+  "raw_alignment_complete": false,
+  "record_type": "v014_owner_raw_source_identity_go_no_go_report",
+  "resolved_blocker_ids": [
+    "OWNER_DECISION_INTAKE_READY"
+  ],
+  "task_id": "KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-20260705",
+  "version": "0.1.4"
+}

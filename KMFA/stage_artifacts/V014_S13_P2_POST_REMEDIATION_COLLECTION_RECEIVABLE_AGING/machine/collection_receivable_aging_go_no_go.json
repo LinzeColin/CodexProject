@@ -1,0 +1,18 @@
+{
+  "app_reinstall_performed": false,
+  "business_decision_basis_allowed": false,
+  "business_execution_performed": false,
+  "business_priority_allowed": false,
+  "collection_action_allowed": false,
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "method_definition_allowed": true,
+  "phase_id": "V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING",
+  "project_id": "KMFA",
+  "responsibility_assignment_allowed": false,
+  "s13_p3_performed": false,
+  "schema_version": "kmfa.v014.s13_p2_post_remediation.go_no_go.v1",
+  "stage13_review_performed": false,
+  "stage_id": "S13"
+}

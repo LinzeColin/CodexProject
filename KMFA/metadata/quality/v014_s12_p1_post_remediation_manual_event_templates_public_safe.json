@@ -1,0 +1,110 @@
+{
+  "approved_event_reversal_policy_fixture": {
+    "approved_event_reversal_required_for_change": true,
+    "approved_event_silent_update_allowed": false,
+    "current_business_resolution_applied": false,
+    "fixture_only": true,
+    "historical_approved_event_count": 1,
+    "historical_reverse_event_count": 1,
+    "reverse_chain_validated": true,
+    "schema_version": "kmfa.v014.s12_p1.approved_event_reversal_policy_fixture.v1",
+    "source_ref": "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/machine/manual_resolution_events_manifest.json"
+  },
+  "phase_id": "V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS",
+  "schema_version": "kmfa.v014.s12_p1.manual_event_templates.v1",
+  "template_count": 4,
+  "templates": [
+    {
+      "actor_ref": "actor_ref://owner_or_authorized_delegate/session-only",
+      "append_only": true,
+      "approval_state": "draft",
+      "event_action": "propose_field_mapping_rule",
+      "event_id": "CAND-EVT-S12P1-001",
+      "event_time_policy": "browser_session_clock_at_creation",
+      "event_type": "mapping_rule",
+      "event_version": "SESSION-CANDIDATE-S12P1-001.001",
+      "impact_scope": [
+        "source_check_matrix",
+        "field_mapping_catalog"
+      ],
+      "manual_action_kind": "field_mapping",
+      "persistent_business_write_allowed": false,
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "reason_code": "FIELD_MAPPING_REVIEW_REQUIRED",
+      "record_type": "public_safe_session_event_template",
+      "schema_version": "kmfa.v014.s12_p1.manual_event_template.v1",
+      "session_candidate_only": true,
+      "silent_update_allowed": false
+    },
+    {
+      "actor_ref": "actor_ref://owner_or_authorized_delegate/session-only",
+      "append_only": true,
+      "approval_state": "draft",
+      "event_action": "propose_project_match_review",
+      "event_id": "CAND-EVT-S12P1-002",
+      "event_time_policy": "browser_session_clock_at_creation",
+      "event_type": "approval_event",
+      "event_version": "SESSION-CANDIDATE-S12P1-001.002",
+      "impact_scope": [
+        "project_identity_review_queue",
+        "project_cost_pending_actions"
+      ],
+      "manual_action_kind": "project_matching",
+      "persistent_business_write_allowed": false,
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "reason_code": "PROJECT_MATCH_REVIEW_REQUIRED",
+      "record_type": "public_safe_session_event_template",
+      "schema_version": "kmfa.v014.s12_p1.manual_event_template.v1",
+      "session_candidate_only": true,
+      "silent_update_allowed": false
+    },
+    {
+      "actor_ref": "actor_ref://owner_or_authorized_delegate/session-only",
+      "append_only": true,
+      "approval_state": "draft",
+      "event_action": "propose_difference_handling",
+      "event_id": "CAND-EVT-S12P1-003",
+      "event_time_policy": "browser_session_clock_at_creation",
+      "event_type": "resolution_event",
+      "event_version": "SESSION-CANDIDATE-S12P1-001.003",
+      "impact_scope": [
+        "scope_reconciliation_queue",
+        "restricted_report_grade"
+      ],
+      "manual_action_kind": "difference_handling",
+      "persistent_business_write_allowed": false,
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "reason_code": "DIFFERENCE_HANDLING_REVIEW_REQUIRED",
+      "record_type": "public_safe_session_event_template",
+      "schema_version": "kmfa.v014.s12_p1.manual_event_template.v1",
+      "session_candidate_only": true,
+      "silent_update_allowed": false
+    },
+    {
+      "actor_ref": "actor_ref://owner_or_authorized_delegate/session-only",
+      "append_only": true,
+      "approval_state": "draft",
+      "event_action": "add_review_note_candidate",
+      "event_id": "CAND-EVT-S12P1-004",
+      "event_time_policy": "browser_session_clock_at_creation",
+      "event_type": "comment",
+      "event_version": "SESSION-CANDIDATE-S12P1-001.004",
+      "impact_scope": [
+        "manual_resolution_workbench",
+        "review_note_log"
+      ],
+      "manual_action_kind": "note",
+      "persistent_business_write_allowed": false,
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "reason_code": "OWNER_NOTE_DRAFTED",
+      "record_type": "public_safe_session_event_template",
+      "schema_version": "kmfa.v014.s12_p1.manual_event_template.v1",
+      "session_candidate_only": true,
+      "silent_update_allowed": false
+    }
+  ]
+}

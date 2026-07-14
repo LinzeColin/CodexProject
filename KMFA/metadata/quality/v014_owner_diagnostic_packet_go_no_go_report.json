@@ -1,0 +1,20 @@
+{
+  "acceptance_id": "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-DIAGNOSTIC-PACKET",
+  "app_reinstall_allowed": false,
+  "blocked_until": "explicit_business_resolution_for_non_actionable_groups_before_full_reconciliation",
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "delivery_allowed": false,
+  "diagnostic_conclusion": "owner_diagnostic_packet_ready_final_no_go_locked",
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_allowed": false,
+  "owner_decision_item_count": 1,
+  "owner_diagnostic_packet_ready": true,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_DIAGNOSTIC_PACKET",
+  "project_id": "KMFA",
+  "record_type": "v014_owner_diagnostic_packet_go_no_go_report",
+  "schema_version": "kmfa.v014_owner_diagnostic_packet_go_no_go.v1",
+  "status": "completed_validated_local_only_owner_diagnostic_packet_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-DIAGNOSTIC-PACKET-20260706",
+  "version": "0.1.4-owner-diagnostic-packet"
+}

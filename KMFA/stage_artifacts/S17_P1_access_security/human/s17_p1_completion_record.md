@@ -26,10 +26,10 @@
 ## 验收结果
 
 - 覆盖 4 类角色: management、finance、reviewer、readonly。
-- 覆盖 15 类公开仓库敏感材料禁入策略，全部要求 private storage 或 hash/ref-only metadata。
+- 覆盖 15 类公开仓库敏感材料策略；2026-07-08 owner 规则变更后，非 credential 类敏感材料允许 owner 授权、secret 扫描和 upload manifest 登记后明文进入 `KMFA/metadata/`。
 - 覆盖 5 类审计动作: import、processing、report、export、notification。
 - 通知在 S17-P1 只定义 audit log policy，不发送邮件、短信或完整报告正文。
-- 公开仓库只保存 refs、hashes、statuses、policy metadata 和证据索引，不保存 raw business data、zip、Excel、PDF、private CSV、sqlite/db、字段明文、真实金额、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或 credentials。
+- Credential/secret 仍禁止提交 GitHub，包括账号密码、token、API key、webhook secret、signing key 和私钥；本记录未登记具体明文文件。
 
 ## 风险与边界
 

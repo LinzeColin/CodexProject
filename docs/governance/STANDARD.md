@@ -267,6 +267,21 @@ Each project registry entry is deliberately small:
 project_id, path, ci_mode, migration.version
 ```
 
+`projects` contains active projects only. A retired project remains discoverable
+without participating in active validation, dashboards, information quality, semantic
+checks, or root changed-scope fanout by moving to `retired_projects` with this
+fail-closed contract:
+
+```text
+project_id, path, status=retired, retired_at, retirement_reason,
+preserve_history=true, reactivation_requires_owner_authorization=true, evidence_refs
+```
+
+Active and retired IDs and paths must be disjoint. Retired entries must not carry
+`ci_mode` or `migration`. Their tracked history stays in place; changing a retired
+path fails with `RETIRED_PROJECT_CHANGE` until an explicit Owner-authorized
+reactivation task first restores it to `projects`.
+
 Project entries must not carry semantic coverage, extractor state, model
 behavior globs, active-count claims, task targets, evidence summaries, or other
 computed governance state. Those facts remain in project-level governance

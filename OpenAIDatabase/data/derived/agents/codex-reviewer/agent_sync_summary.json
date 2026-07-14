@@ -1,0 +1,20 @@
+{
+  "adapter_mode": "minimal_adapter",
+  "agent_id": "codex-reviewer",
+  "credential_boundary": "credentials_not_transcript",
+  "event_count": 1,
+  "event_ids": [
+    "r6-independent-review"
+  ],
+  "generated_at": "2026-07-10T17:01:59Z",
+  "message_count": 1,
+  "redaction_counts": {
+    "local_absolute_path": 1,
+    "phone": 1
+  },
+  "schema_version": "memory_atlas_future_agent_sync_summary.v1",
+  "source_formats": [
+    "markdown_report"
+  ],
+  "source_id": "future-agent"
+}

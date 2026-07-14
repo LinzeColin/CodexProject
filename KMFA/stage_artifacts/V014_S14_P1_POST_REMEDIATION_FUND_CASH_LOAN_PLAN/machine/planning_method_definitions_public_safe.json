@@ -1,0 +1,69 @@
+{
+  "methods": [
+    {
+      "bank_operation_allowed": false,
+      "cash_forecast_decision_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_row_value_binding",
+      "formal_report_allowed": false,
+      "identified_business_item_count": 0,
+      "loan_management_action_allowed": false,
+      "method_definition_complete": true,
+      "method_id": "cash_pressure",
+      "method_note": "需权威期初、流入、流出、期末及期间绑定后才能识别压力项。",
+      "payment_approval_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "monthly_cash",
+        "fund_plan",
+        "account_list"
+      ],
+      "review_sequence": 1,
+      "row_level_binding_required": true,
+      "visible_name": "现金压力"
+    },
+    {
+      "bank_operation_allowed": false,
+      "cash_forecast_decision_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_row_value_binding",
+      "formal_report_allowed": false,
+      "identified_business_item_count": 0,
+      "loan_management_action_allowed": false,
+      "method_definition_complete": true,
+      "method_id": "loan_due",
+      "method_note": "需权威贷款合同、到期日、金额和主体绑定后才能形成到期提示。",
+      "payment_approval_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "loan_detail",
+        "account_list"
+      ],
+      "review_sequence": 2,
+      "row_level_binding_required": true,
+      "visible_name": "贷款到期"
+    },
+    {
+      "bank_operation_allowed": false,
+      "cash_forecast_decision_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_row_value_binding",
+      "formal_report_allowed": false,
+      "identified_business_item_count": 0,
+      "loan_management_action_allowed": false,
+      "method_definition_complete": true,
+      "method_id": "account_balance_summary",
+      "method_note": "需账户身份、币种、期间和余额字段绑定后才能形成汇总。",
+      "payment_approval_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "account_list",
+        "monthly_cash"
+      ],
+      "review_sequence": 3,
+      "row_level_binding_required": true,
+      "visible_name": "账户余额汇总"
+    }
+  ],
+  "schema_version": "kmfa.v014.s14_p1_methods.v1"
+}

@@ -1,0 +1,17 @@
+{
+  "abnormal_project_method_output_allowed": true,
+  "actual_abnormal_project_release_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "fact_table_schema_output_allowed": true,
+  "field_review_item_output_allowed": true,
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "payroll_export_allowed": false,
+  "performance_fact_release_allowed": false,
+  "phase_id": "V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST",
+  "project_id": "KMFA",
+  "salary_or_bonus_action_allowed": false,
+  "schema_version": "kmfa.v014.s15_p2.post_remediation.go_no_go.v1",
+  "stage_id": "S15"
+}

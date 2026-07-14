@@ -1,0 +1,52 @@
+{
+  "amount_fields": [
+    "contract_amount_cents",
+    "total_expense_cents",
+    "revenue_cents",
+    "cash_received_cents"
+  ],
+  "authoritative_records": [
+    {
+      "cash_received_cents": 460000,
+      "contract_amount_cents": 720000,
+      "record_id": "SYN-A0-PROJECT-001",
+      "revenue_cents": 680000,
+      "source": "A0_Q5_SYNTHETIC_BASELINE",
+      "total_expense_cents": 315000
+    },
+    {
+      "cash_received_cents": 915000,
+      "contract_amount_cents": 1250000,
+      "record_id": "SYN-A0-PROJECT-002",
+      "revenue_cents": 1180000,
+      "source": "A0_Q5_SYNTHETIC_BASELINE",
+      "total_expense_cents": 640000
+    }
+  ],
+  "fixture_id": "KMFA-V013-S06P1-PUBLIC-SAFE-PASS-FIXTURE",
+  "key_fields": [
+    "record_id"
+  ],
+  "public_safe_fixture_only": true,
+  "raw_business_data_used": false,
+  "schema_version": "kmfa.v013_s06_p1.zero_delta_fixture.v1",
+  "source_fixture_ref": "KMFA/metadata/fixtures/a0_project_cost_fixture.json",
+  "system_records": [
+    {
+      "cash_received_cents": 460000,
+      "contract_amount_cents": 720000,
+      "record_id": "SYN-A0-PROJECT-001",
+      "revenue_cents": 680000,
+      "source": "SYSTEM_RECOMPUTE_SYNTHETIC",
+      "total_expense_cents": 315000
+    },
+    {
+      "cash_received_cents": 915000,
+      "contract_amount_cents": 1250000,
+      "record_id": "SYN-A0-PROJECT-002",
+      "revenue_cents": 1180000,
+      "source": "SYSTEM_RECOMPUTE_SYNTHETIC",
+      "total_expense_cents": 640000
+    }
+  ]
+}

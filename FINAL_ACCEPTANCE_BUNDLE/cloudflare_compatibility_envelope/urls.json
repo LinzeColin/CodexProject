@@ -1,0 +1,72 @@
+{
+  "schema_version": "cloudflare_compatibility_urls.v1",
+  "acceptance_id": "ACC-CF-L2-20260710",
+  "generated_at": "2026-07-10T09:26:02Z",
+  "projects": [
+    {
+      "project_id": "linze-home-hub",
+      "actual_url": "https://home.linzezhang.com",
+      "fallback_url": "https://github.com/LinzeColin/LinzeHomeHub",
+      "workers_dev_url": "https://linze-home-hub.linzezhang35.workers.dev",
+      "verification": "http_200_current_main_deployment_and_live_visual_acceptance_passed",
+      "deployment_id": "7962cc4e-686a-4afe-898a-7e3476d9fdc2",
+      "version_id": "2a05edc7-1feb-4856-a869-31f96467e16d",
+      "deployed_commit": "3dc34a3d7fd051c57c7aa8b47a02e767245ce640",
+      "evidence_commit": "59347956c03ee2810358887f20cb13bdc2ef9289"
+    },
+    {
+      "project_id": "nab",
+      "actual_url": "https://nab.linzezhang.com",
+      "fallback_url": "https://github.com/LinzeColin/Archive/tree/main/nab",
+      "workers_dev_url": "https://nab.linzezhang35.workers.dev",
+      "verification": "http_200_current_archive_main_deployment",
+      "deployment_id": "2dbbeb7f-92d0-4ad1-8bc1-36a4c1b71004",
+      "version_id": "ef260ee4-ca7e-4783-adc9-d9297a77ecb5",
+      "deployed_commit": "10129d6c40883941e0845cb15222a46b7b2e3dc9",
+      "evidence_commit": "d0721022cfb48ae3edf439fffeb92c36ed00cefc"
+    },
+    {
+      "project_id": "eei",
+      "actual_url": "https://codex-eei.linzezhang35.workers.dev",
+      "workers_dev_url": "https://codex-eei.linzezhang35.workers.dev",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/EEI/apps/cloudflare-public",
+      "verification": "root_and_public_surface_json_http_200",
+      "deployment_id": "26f6b03a-8c3d-40b2-a162-050236e1652b",
+      "version_id": "d84eb7f9-f564-4e0b-b202-d95a86b2b225",
+      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700",
+      "evidence_commit": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
+    },
+    {
+      "project_id": "openaidatabase",
+      "actual_url": "https://memoryatlas.linzezhang.com",
+      "protected_domain_url": "https://memoryatlas.linzezhang.com",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/apps/memory-atlas",
+      "verification": "access_challenge_allowed_user_app_load_runtime_json_fetch_and_published_artifact_verified",
+      "deployment_id": "82988d29-504a-437e-a8b5-621a59e701af",
+      "deployed_commit": "5a24333eb2afa766f5f7416b877a8a560c5302ab",
+      "evidence_commit": "00f4187f43960a3b25fc696ae2a15951f4431763"
+    },
+    {
+      "project_id": "pfi",
+      "actual_url": "https://codex-pfi.linzezhang35.workers.dev",
+      "workers_dev_url": "https://codex-pfi.linzezhang35.workers.dev",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/PFI/web/cloudflare-public",
+      "verification": "root_and_public_surface_json_http_200",
+      "deployment_id": "7c6d216e-0fd3-43e6-904b-404aac0d776e",
+      "version_id": "c371544d-4184-48be-80a1-3ca23f11b576",
+      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700",
+      "evidence_commit": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
+    },
+    {
+      "project_id": "serenity-alipay",
+      "actual_url": "https://serenity-alipay.linzezhang35.workers.dev",
+      "workers_dev_url": "https://serenity-alipay.linzezhang35.workers.dev",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/Serenity-Alipay/app/cloudflare-public",
+      "verification": "root_and_public_surface_json_http_200_after_propagation",
+      "deployment_id": "bf27bdbc-c199-4e39-9009-8250ae2eb7df",
+      "version_id": "d7a0a069-9754-4a86-ab37-aa7833352049",
+      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700",
+      "evidence_commit": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
+    }
+  ]
+}

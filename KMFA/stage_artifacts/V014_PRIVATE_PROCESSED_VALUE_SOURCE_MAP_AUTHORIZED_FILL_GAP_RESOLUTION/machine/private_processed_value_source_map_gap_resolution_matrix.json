@@ -1,0 +1,55 @@
+{
+  "blocked_follow_on_actions": {
+    "app_reinstall_allowed": false,
+    "business_execution_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "lineage_full_check_allowed": false,
+    "processed_value_materialization_replay_allowed": false,
+    "raw_to_processed_value_comparison_allowed": false
+  },
+  "bucket_counts": {
+    "context_group_bucket_count": 22,
+    "private_ref_shape_bucket_count": 16,
+    "source_root_bucket_count": 1
+  },
+  "gap_reason_buckets": [
+    {
+      "auto_fill_allowed": false,
+      "gap_item_count": 113,
+      "gap_reason": "authorized_metadata_hash_sibling_not_found",
+      "raw_value_extraction_allowed_by_this_phase": false,
+      "resolution_lane": "owner_authorized_private_value_source_intake"
+    }
+  ],
+  "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+  "project_id": "KMFA",
+  "public_commit_policy": "aggregate_counts_only_no_private_refs_or_values",
+  "record_type": "v014_private_processed_value_source_map_gap_resolution_matrix",
+  "resolution_lanes": [
+    {
+      "gap_item_count": 113,
+      "lane_id": "PVSMAF-GAP-LANE-001",
+      "lane_name": "owner_authorized_private_value_source_intake",
+      "owner_or_authorized_delegate_required": true,
+      "public_value_commit_allowed": false
+    },
+    {
+      "gap_item_count": 113,
+      "lane_id": "PVSMAF-GAP-LANE-002",
+      "lane_name": "metadata_hash_sibling_backfill_after_authorized_intake",
+      "owner_or_authorized_delegate_required": true,
+      "public_value_commit_allowed": false
+    },
+    {
+      "gap_item_count": 113,
+      "lane_id": "PVSMAF-GAP-LANE-003",
+      "lane_name": "materialization_replay_after_complete_private_source_map",
+      "owner_or_authorized_delegate_required": false,
+      "public_value_commit_allowed": false
+    }
+  ],
+  "schema_version": "kmfa.v014_private_processed_value_source_map_gap_resolution_matrix.v1",
+  "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+  "version": "0.1.4"
+}

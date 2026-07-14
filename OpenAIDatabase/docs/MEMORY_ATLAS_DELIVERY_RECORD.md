@@ -1,5 +1,3876 @@
 # Memory Atlas Delivery Record
 
+## Current Status Supersession: v1.2 Remediation R8
+
+当前状态：`R8_ACCEPTANCE_AND_LIVE_DELIVERY_VERIFIED_PENDING_SINGLE_FINAL_PUSH`。
+
+2026-07-12 最终 runtime commit
+`12734c10bf37ee7afc86d62f72e70369a1bcd732` 已完成 17/17 聚合门禁、58/58
+需求、四条升级线和 S01-S14 全部 VERIFIED；exact-commit tracked-only recovery、
+两份 source package、512-file raw/ledger、fresh npm install/build、Pages parity 和
+workspace cleanup 全部 PASS。
+
+两份 Memory Atlas app、Application Support source/runtime 与 pinned release 已安装到该
+runtime commit。Cloudflare Pages production deployment
+`e0cb0004-d6c6-4182-965c-5b09cbab10c1` 的 Source 为 `12734c1`。授权 Chrome 在
+1470x661、1440x900、390x844 三个精确 CDP 视口均显示“记忆决策台 · v1.2 / 发生了什么”，
+六项快捷操作完整，区块 overlap=0、horizontal overflow=0、console issue=0；线上
+`memory_atlas.json` 返回 200，SHA-256 为
+`b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc`，包含
+435 nodes、2,325 edges、401 timeline rows，与本地 runtime 字节一致。未授权 custom
+和 immutable preview 均返回 Access challenge。
+
+R8 同时删除了外部 automation 写入的 zero-part `SENSITIVE_SCAN_BLOCKED` session
+metadata，并把 `codex-session` automation 改为只有 `part_count > 0` 且存在可恢复
+encrypted part 才允许 stage/commit/push。三处无关 WDA worktree 变更保持原样且排除在
+Memory Atlas staging 之外。
+
+剩余动作仅为：生成本记录的直接子提交、执行唯一一次 `main` push、验证 remote HEAD
+和 GitHub codeload 全量恢复。完成这些外部验证前仍不得宣称 goal complete。
+
+## Current Status Supersession: v1.2 Remediation R7
+
+当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R7 已在本地候选把真实 ChatGPT official export、Codex point-in-time
+snapshot 和 R6 reviewer event 转换为 512 份脱敏公开 raw。512 行不可变 manifest 与
+512 行 hash ledger 均通过，drift/deleted/new 为 0/0/0；完整审计未发现 credential、
+private text、unmarked binary、invalid marker、invalid JSON 或 oversize 文件。
+
+唯一 release `memory-atlas-v1-2-r7-20260710` 的 snapshot SHA-256 为
+`b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc`，derived、
+release、temporary local-runtime candidate 和 Pages candidate 字节一致。tracked-only
+恢复演练对功能候选 `f65668b9` 归档 8,372 个 tracked files、0 个 worktree-only files，
+恢复两份原始 source package，并通过 fresh npm install/build、raw audit 和 Pages parity。
+
+R7 将汇总推进到 `VERIFIED 53 / PARTIAL 2 / FAILED 3 / NOT_VERIFIED 0`。这仍不是
+最终发布：remote clone 未验证，线上/installed app 未更新，R8 overall audit、双历史
+整合、单次 push、exact pushed commit 重装/部署和线上复验未执行。最终 fetch 得到
+`origin/main=37d757be958e1546b5263e86d2193663b184bbe8`；record 前 local `main` 为
+ahead 52 / behind 17。证据位于 `机器治理/证据与日志/remediation/v1_2_r7/`。
+
+### R6 Visualization Baseline
+
+2026-07-10 R6 已在本地源码候选建立精确十二项 P0 可视化决策工作台。217 条
+脱敏 derived facet event 统一驱动 source/time/project/task 四轴筛选、键盘数据点、内联
+证据工作区和机会证据 exact join；Formula what-if 只使用本地 React 状态，不写配置、
+raw 或长期记忆。真实浏览器在 1470x661、1440x900、390x844 完整重复 12 项交互和
+四轴矩阵：事件型卡片真实内容变化数为 11/10/11/11，Formula 为 80→84→80，三个
+视口的 overlap、clipping、horizontal overflow 均为 0。独立终审为 0 High / 0 Medium。
+证据位于 `机器治理/证据与日志/remediation/v1_2_r6/`。
+
+R6 将验收汇总推进到 `VERIFIED 48 / PARTIAL 5 / FAILED 4 / NOT_VERIFIED 1`，但
+线上/installed app 未更新，tracked web snapshot 仍为 278 memories / 340 nodes /
+1,771 edges，R7 的 immutable snapshot parity、raw/archive proof 与 GitHub clean
+recovery 尚未完成；R8 overall audit、双历史整合、单次 push、重装和部署也未开始。
+`origin/main` 仍为 `07a6e50d593c7b9c74b8f3870b614be86a87160d`；R6
+implementation/review head 在 record 前为 ahead 33 / behind 12。
+
+### R5 Owner Daily Baseline
+
+2026-07-10 R5 已在本地源码候选建立真实 Owner Daily 产品入口。CLI、loopback API
+和渲染工作区共用一个固定八步 no-write runner；首次运行会继续收集全部结果，失败项
+只能按 server allowlist 单步重试。真实浏览器证明 7/1 partial failure 后只重试 audit，
+同一结果合并为 8/0 PASS；remote Origin、extra argv/body 和 unknown step 均被拒绝；
+source/runtime hash 不变，static Owner Daily POST=0。三个目标视口无横向溢出，对话框
+具备初始焦点和 Tab/Shift+Tab 闭环。证据位于
+`机器治理/证据与日志/remediation/v1_2_r5/`。
+
+R5 当时将验收汇总推进到 `VERIFIED 41 / PARTIAL 10 / FAILED 5 / NOT_VERIFIED 2`，但
+P0 核心可视化/筛选、线上 snapshot parity、GitHub clean recovery、final audit 接入和
+最终发布仍未完成。线上和已安装 app 均未更新。`origin/main` 仍为
+`07a6e50d593c7b9c74b8f3870b614be86a87160d`；R5 hardening head 在 record 前为
+ahead 20 / behind 12。R5 没有 merge、rebase 或 push，双历史整合继续留给 R8。
+
+### R4 Proposal Workflow Baseline
+
+2026-07-10 R4 已在本地源码候选建立真实 proposal 人工复核、一次性授权、精确
+apply、固定 validation、失败自动回滚、持久人工回滚和中断事务恢复。真实浏览器在
+临时 installer-shaped runtime 中证明：授权会改变 allowlisted fixture 文件；关闭再打开
+工作区后 rollback point 仍可见并精确恢复；invalid JSON 自动恢复；raw target 只复核；
+static command/proposal POST=0。目录 fd 和 no-follow 写入阻止父目录变化把写入导向安装
+副本外；缺失父目录不会在 transaction 前创建。证据位于
+`机器治理/证据与日志/remediation/v1_2_r4/`。
+
+R4 当时将验收汇总推进到 `VERIFIED 40 / PARTIAL 11 / FAILED 5 / NOT_VERIFIED 2`。
+R4 没有 owner-daily、P0 可视化/筛选、snapshot parity、clean recovery 或最终发布；
+线上和已安装 app 均未更新。
+
+### R3 Command Workflow Baseline
+
+当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R3 已在本地源码候选把 Command Palette 六项动作接入受控 loopback
+runtime。真实浏览器通过临时 installer-shaped `source/runtime` 和 synthetic fixtures
+完成 ChatGPT/Codex 脱敏同步、derived-only 周报、只读提案状态、三类个性化提示和
+ChatGPT prefill-only 深度探索。请求只能提供精确 `command_id`，子进程固定 argv、
+`shell=false`、环境清洗且超时时清理完整 process group。静态托管证据为命令 POST=0，
+只显示 `http://127.0.0.1:4177` 本地交接；深度探索只有显式 GET，无自动提交。
+证据位于 `机器治理/证据与日志/remediation/v1_2_r3/`。
+
+R3 将验收汇总推进到 `VERIFIED 38 / PARTIAL 13 / FAILED 5 / NOT_VERIFIED 2`，但
+不包含真实 proposal approval/apply/rollback、owner-daily、snapshot parity、final audit
+接入、GitHub clean recovery 或最终发布。线上和已安装 app 均未更新。`origin/main`
+已外部前进到 `bd06ee38c1b8c52bcafd68b3c3b0a752a53cae62`；R3 implementation head
+为 ahead 6 / behind 10。R3 没有 merge、rebase 或 push，十个 Cloudflare L2 commits
+留给 R8 显式整合。
+
+### R2 Identity And Information Architecture Baseline
+
+2026-07-10 R2 已在本地源码候选建立 `Memory Atlas / 记忆决策台 · v1.2`
+发行身份、判断/探索/复盘问题式导航和默认机器详情折叠。1470x661、1440x900、
+390x844 真实 Chromium 门禁证明默认首页无 Stage/CLI/path/内部安全词匹配，四类技术
+详情默认关闭且可从键盘操作，布局和焦点顺序通过；移动端正序 10 路由、逆序 9 步
+均完整包含于导航 scrollport，四边裁切为 0。证据位于
+`机器治理/证据与日志/remediation/v1_2_r2/`。
+
+R2 当时不包含真实命令执行、proposal apply/rollback、owner-daily、P0 可视化工作流、
+snapshot parity、GitHub clean recovery 或最终发布；线上和已安装 app 仍是旧候选。
+收口 fetch 发现 `origin/main` 已由独立 Cloudflare L2 工作前进到
+`b864009c657c6a9cebbf451e30389c1aa5809700`，本地为 ahead 4 / behind 7。R2 未
+merge、rebase 或 push；R8 最终同步必须保留两侧历史并整合 HomeHub 返回链接。
+
+### R1 Layout Baseline
+
+2026-07-10 R1 已在本地源码候选修复首页 Grid 阻断，并以 1470x661、1440x900、
+390x844 的真实 Chromium 门禁证明五个主区块无重叠、无横向溢出、无视口逃逸，
+Command Palette 和 Home Overview 关键内容可滚动到达。证据位于
+`机器治理/证据与日志/remediation/v1_2_r1/`。
+
+R1 只完成布局补救。线上网站、已安装 app、命令执行、proposal
+工作流、owner-daily、snapshot parity、final audit 接入和 GitHub recovery 仍未完成，
+因此不得恢复 complete 语义。
+
+### R0 Reopened Baseline
+
+2026-07-10 R0 真实浏览器复核证明，历史 `v1_2_final_delivery_completed...`、
+`v1_2_final_review_passed...` 和 `COMPLETE_WITH_OPERATOR_EVIDENCE` 只证明当时的
+source/governance/deployment 合同，不证明 v1.2 用户产品完成。它们已被
+`机器治理/证据与日志/remediation/v1_2_r0/status.json` supersede。
+
+直接反证包括：三个目标视口首页重叠、Command Palette 无执行动作、默认首屏暴露
+Stage/CLI 内部信息、线上 snapshot 比本地少 63 nodes 和 363 edges、final audit 缺少
+v1.2 首页真实多视口门禁、raw audit 以空数据通过。
+
+原 Roadmap 和 TaskPack 已按历史 SHA-256 精确恢复到
+`docs/source_packages/memory_atlas_v1_2/`。完整差距矩阵位于
+`机器治理/证据与日志/remediation/v1_2_r0/requirements_gap_matrix.csv`。
+
+R8 全部真实验收前禁止再次更新 GitHub main、重装 app 或重新部署。下方记录保留为
+历史证据，不得单独用于宣称当前版本完成。
+
+## v1.2 Final Delivery
+
+状态：`v1_2_final_delivery_completed_with_protected_cloudflare_live_evidence`。
+
+任务 ID：`MA-V12-FINAL-DELIVERY-CLEANUP`。
+
+验收 ID：`ACC-MA-V12-FINAL-DELIVERY-CLEANUP`。
+
+Cloudflare Pages project `openai-memory-atlas` 已从 clean commit
+`5a24333eb2afa766f5f7416b877a8a560c5302ab` 部署成功，production deployment 为
+`82988d29-504a-437e-a8b5-621a59e701af`，`commit_dirty=false`。发布快照生成时间为
+`2026-07-10T06:52:07.110Z`，SHA-256 为
+`f2613b612cc5afcf225e8884b6b37996681751ccc31514d104707406aa0a753c`。
+
+Access 保护覆盖三类 hostname：`memoryatlas.linzezhang.com`、
+`openai-memory-atlas.pages.dev` 和 `*.openai-memory-atlas.pages.dev`。每个 application
+只有一条 owner email allowlist policy，无 `everyone` rule；literal email 未写入 GitHub。
+未授权请求对 custom、production Pages 和 preview Pages 的根路径及
+`/memory_atlas.json` 均返回 Access challenge。允许身份 Chrome 会话已加载当前“记忆星图”，
+页面显示 2026-07-10 快照，并实际 fetch 受保护的 `memory_atlas.json` 和 runtime state。
+
+父提交证据合同已修复：live evidence 记录精确 deployed commit；最终 evidence commit 只能是
+它的直接子提交，且只能包含交付记录白名单。最终一次 GitHub push 后必须验证
+`HEAD == origin/main`，再重装 `/Applications/Memory Atlas.app` 与
+`~/Downloads/Memory Atlas.app`，确认 launcher/runtime manifest 匹配最终 `HEAD`。
+最后删除可再生 `node_modules`、`dist`、`tsconfig.tsbuildinfo`、`.wrangler` 和
+Memory Atlas `/private/tmp` 临时文件，保留 app、Application Support source/runtime 与
+Downloads roadmap/task pack。
+
+机器证据：
+
+- `机器治理/证据与日志/final_delivery/v1_2_final_delivery_cleanup_status.json`
+- `机器治理/证据与日志/final_delivery/memory_atlas_cloudflare_live_evidence.json`
+
+安全事件记录：首次 real deployment 时仅 custom domain 受 Access，默认 production
+`pages.dev` 与 immutable preview URL 曾短暂返回脱敏 publish artifact。发现后立即发布
+无数据 fail-closed placeholder、用同名 safe-marker JSON 覆盖 CDN key，并删除两条
+real-artifact deployment；随后为 production Pages 和 preview wildcard 分别新增 owner
+allowlist Access application，再部署 clean real artifact。暴露内容不包含 raw database、
+transcript、cookie、session、token、key 或 credential，但该保护缺口仍按真实事件记录。
+
+边界：
+
+- No raw mutation。
+- No credential change。
+- No open branch。
+- No pull request。
+- No destructive cleanup outside reproducible Memory Atlas build/tmp artifacts。
+- Access policy change limited to the three Memory Atlas hostname classes。
+- Completion audit target: `COMPLETE_WITH_OPERATOR_EVIDENCE`。
+- Remaining external gate: none。
+
+## v1.2 Final Review
+
+状态：`v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。
+
+任务 ID：`MA-V12-FINAL-REVIEW`。
+
+验收 ID：`ACC-MA-V12-FINAL-REVIEW`。
+
+Validator：`validate:v1.2-final-review`。
+
+v1.2 Final Review 已完成。终审覆盖四线14Stage 的 `S01-S14 Review` 链，机器状态写入
+`机器治理/证据与日志/final_review/v1_2_final_review_status.json`。验收主题包括
+raw append-only、credential audit、Chinese UX、visual ROI、report contract、proposal apply、
+owner-daily 和 final audit。下一步为 pending GitHub main sync、app reinstall 和 local cleanup；
+当前仍需 remote branch reconciliation required。
+
+产物：
+
+- `docs/reviews/memory_atlas_v1_2_final_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_final_review.cjs`
+- `机器治理/证据与日志/final_review/v1_2_final_review_status.json`
+
+验收关键词：
+
+- `validate:v1.2-final-review`
+- `ACC-MA-V12-FINAL-REVIEW`
+- `MA-V12-FINAL-REVIEW`
+- `v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`
+- v1.2 Final Review
+- 四线14Stage
+- S01-S14 Review
+- raw append-only
+- credential audit
+- Chinese UX
+- visual ROI
+- report contract
+- proposal apply
+- owner-daily
+- final audit
+- pending GitHub main sync
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No app reinstall。
+- No local deep clean。
+
+Machine-readable boundary summary: Memory Atlas v1.2 Final Review; MA-V12-FINAL-REVIEW; ACC-MA-V12-FINAL-REVIEW; v1_2_final_review_passed_pending_github_main_sync_no_upload_yet; validate:v1.2-final-review; v1.2 Final Review; 四线14Stage; S01-S14 Review; raw append-only; credential audit; Chinese UX; visual ROI; report contract; proposal apply; owner-daily; final audit; No GitHub main upload; No remote push; No raw mutation; pending GitHub main sync.
+
+## v1.2 S14 Review
+
+状态：`stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。
+
+任务 ID：`MA-V12-S14-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S14-REVIEW`。
+
+Validator：`validate:v1.2-s14-review`。
+
+S14 Review 已完成。S14 P1、S14 P2、S14 P3 阶段链通过复审：`owner-daily` 可 dry-run，
+`atlasctl_unified_cli.v1_2_s14_p1` 保持低负担命令面，
+`atlasctl_final_audit.v1_2_s14_p2` 覆盖四线核心 gate，
+`stage_pass_gate_status.v1_2_s14_p3.json` 让所有 stage pass gate 状态可查。开发记录中文可读，
+维护命令少而清晰。下一步为 pending v1.2 Final Review。
+
+产物：
+
+- `docs/reviews/memory_atlas_v1_2_s14_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s14_review.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s14-review`
+- `ACC-MA-V12-S14-REVIEW`
+- `MA-V12-S14-REVIEW`
+- `stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`
+- `S14 Review`
+- `S14 P1`
+- `S14 P2`
+- `S14 P3`
+- `owner-daily`
+- `atlasctl_unified_cli.v1_2_s14_p1`
+- `atlasctl_final_audit.v1_2_s14_p2`
+- `stage_pass_gate_status.v1_2_s14_p3.json`
+- 开发记录中文可读
+- 维护命令少而清晰
+- 所有 stage pass gate 状态可查
+- pending v1.2 Final Review
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No app reinstall。
+- No local deep clean。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 Review; MA-V12-S14-REVIEW; ACC-MA-V12-S14-REVIEW; stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload; validate:v1.2-s14-review; S14 Review; S14 P1; S14 P2; S14 P3; owner-daily; atlasctl_unified_cli.v1_2_s14_p1; atlasctl_final_audit.v1_2_s14_p2; stage_pass_gate_status.v1_2_s14_p3.json; 开发记录中文可读; 维护命令少而清晰; 所有 stage pass gate 状态可查; No GitHub main upload; No remote push; No raw mutation; pending v1.2 Final Review.
+
+## v1.2 S14 P3 Development Records
+
+状态：`phase_s14_p3_development_record_completed_pending_s14_review`。
+
+任务 ID：`MA-V12-S14P3`。
+
+验收 ID：`ACC-MA-V12-S14P3`。
+
+Validator：`validate:v1.2-s14-p3`。
+
+S14 P3 已完成开发记录与运行手册：`人类可读/09_验收标准与运行手册.md` 提供最少维护命令，
+`机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json` 记录所有
+stage pass gate 状态。验收关键词为开发记录中文可读、维护命令少而清晰、所有 stage pass
+gate 状态可查。下一步为 pending S14 Review。
+
+产物：
+
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s14_p3.cjs`
+- `人类可读/09_验收标准与运行手册.md`
+- `机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`
+
+验收关键词：
+
+- `validate:v1.2-s14-p3`
+- `ACC-MA-V12-S14P3`
+- `MA-V12-S14P3`
+- `phase_s14_p3_development_record_completed_pending_s14_review`
+- 开发记录中文可读
+- 维护命令少而清晰
+- 所有 stage pass gate 状态可查
+- pending S14 Review
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No app reinstall。
+- No local deep clean。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P3; MA-V12-S14P3; ACC-MA-V12-S14P3; phase_s14_p3_development_record_completed_pending_s14_review; validate:v1.2-s14-p3; 人类可读/09_验收标准与运行手册.md; 机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json; 开发记录中文可读; 维护命令少而清晰; 所有 stage pass gate 状态可查; No GitHub main upload; No remote push; No raw mutation; pending S14 Review.
+
+## v1.2 S14 P2 Final Audit Gate
+
+状态：`phase_s14_p2_final_audit_gate_completed_pending_s14_p3`。
+
+任务 ID：`MA-V12-S14P2`。
+
+验收 ID：`ACC-MA-V12-S14P2`。
+
+Validator：`validate:v1.2-s14-p2`。
+
+S14 P2 已完成。`atlasctl_final_audit.v1_2_s14_p2` 通过
+`python3 scripts/atlasctl.py audit` 执行总门禁，覆盖 `unit_tests`、`frontend_build`、
+Chinese UX、visual ROI、raw append-only、credential audit 和 report contract。失败时
+每个 gate 返回中文解释，并只保留短 stdout/stderr tail；`high_token_auto_summary=false`。
+下一步为 pending S14 P3。
+
+产物：
+
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s14_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收关键词：
+
+- `validate:v1.2-s14-p2`
+- `ACC-MA-V12-S14P2`
+- `MA-V12-S14P2`
+- `phase_s14_p2_final_audit_gate_completed_pending_s14_p3`
+- `atlasctl_final_audit.v1_2_s14_p2`
+- `unit_tests`
+- `frontend_build`
+- Chinese UX
+- visual ROI
+- raw append-only
+- credential audit
+- report contract
+- pending S14 P3
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No app reinstall。
+- No local deep clean。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P2; MA-V12-S14P2; ACC-MA-V12-S14P2; phase_s14_p2_final_audit_gate_completed_pending_s14_p3; validate:v1.2-s14-p2; atlasctl_final_audit.v1_2_s14_p2; unit_tests; frontend_build; Chinese UX; visual ROI; raw append-only; credential audit; report contract; No GitHub main upload; No remote push; No raw mutation; pending S14 P3.
+
+## v1.2 S14 P1 Unified CLI
+
+状态：`phase_s14_p1_unified_cli_completed_pending_s14_p2`。
+
+任务 ID：`MA-V12-S14P1`。
+
+验收 ID：`ACC-MA-V12-S14P1`。
+
+Validator：`validate:v1.2-s14-p1`。
+
+S14 P1 已完成。`atlasctl_unified_cli.v1_2_s14_p1` 通过
+`python3 scripts/atlasctl.py run --profile owner-daily --dry-run` 提供统一低负担
+命令面。`owner-daily` profile 覆盖 `sync`、`analyze`、`build-atlas`、`audit`、
+`push`、`proposals`、`generate-personalization-prompt` 和 `deep-explore`，所有入口均
+以 dry-run 方式验收。`audit --dry-run` 只返回可用检查列表和 S14 P1 边界，final audit
+gate 留给 pending S14 P2。
+
+产物：
+
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s14_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收关键词：
+
+- `validate:v1.2-s14-p1`
+- `ACC-MA-V12-S14P1`
+- `MA-V12-S14P1`
+- `phase_s14_p1_unified_cli_completed_pending_s14_p2`
+- `atlasctl_unified_cli.v1_2_s14_p1`
+- `owner-daily`
+- `deep-explore`
+- pending S14 P2
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No app reinstall。
+- No local deep clean。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P1; MA-V12-S14P1; ACC-MA-V12-S14P1; phase_s14_p1_unified_cli_completed_pending_s14_p2; validate:v1.2-s14-p1; atlasctl_unified_cli.v1_2_s14_p1; owner-daily; sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore; No GitHub main upload; No remote push; No raw mutation; pending S14 P2.
+
+## v1.2 S13 Review
+
+状态：`stage_s13_review_passed_pending_s14_no_github_main_upload`。
+
+任务 ID：`MA-V12-S13-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S13-REVIEW`。
+
+Validator：`validate:v1.2-s13-review`。
+
+S13 Review 已完成。复审确认 S13 P1 Proposal 状态机、S13 P2 Diff narrator 和 S13 P3
+Apply 与回滚共同满足 S13 stage gate。`proposal_state_machine.v1_2_s13_p1` 要求人类授权
+后才能 apply；`diff_narrator.v1_2_s13_p2` 覆盖改了什么、为什么改、影响什么、如何验证、
+如何回滚；`proposal_apply.v1_2_s13_p3` 确认 `sample_unauthorized` 未授权 `FAIL_CLOSED`，
+`sample` 授权 dry-run 有 `validation_after_apply` 和 rollback point。下一步为 pending S14 P1。
+
+产物：
+
+- `docs/reviews/memory_atlas_v1_2_s13_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_review.cjs`
+- `docs/reviews/memory_atlas_v1_2_s13_p1_proposal_state_machine.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p2_diff_narrator.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p3_apply_rollback.md`
+
+验收关键词：
+
+- `validate:v1.2-s13-review`
+- `ACC-MA-V12-S13-REVIEW`
+- `MA-V12-S13-REVIEW`
+- `stage_s13_review_passed_pending_s14_no_github_main_upload`
+- `proposal_state_machine.v1_2_s13_p1`
+- `diff_narrator.v1_2_s13_p2`
+- `proposal_apply.v1_2_s13_p3`
+- S13 Review
+- S13 P1
+- S13 P2
+- S13 P3
+- Proposal 状态机
+- Diff narrator
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- `FAIL_CLOSED`
+- pending S14 P1
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- 真实 pending proposal 未获人类授权前不 apply。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 Review; MA-V12-S13-REVIEW; ACC-MA-V12-S13-REVIEW; stage_s13_review_passed_pending_s14_no_github_main_upload; validate:v1.2-s13-review; S13 Review; S13 P1; S13 P2; S13 P3; proposal_state_machine.v1_2_s13_p1; diff_narrator.v1_2_s13_p2; proposal_apply.v1_2_s13_p3; Proposal 状态机; Diff narrator; Apply 与回滚; sample_unauthorized; sample; FAIL_CLOSED; No GitHub main upload; No remote push; No raw mutation; pending S14 P1.
+
+## v1.2 S13 P3 Apply 与回滚
+
+状态：`phase_s13_p3_apply_rollback_completed_pending_s13_review`。
+
+任务 ID：`MA-V12-S13P3`。
+
+验收 ID：`ACC-MA-V12-S13P3`。
+
+Validator：`validate:v1.2-s13-p3`。
+
+S13 P3 已完成。机器合同为 `proposal_apply.v1_2_s13_p3`。本阶段建立授权 apply、
+validation 和 rollback point 的安全闭环。`sample_unauthorized` 未授权时 fail-closed；
+`sample` 授权 dry-run 可进入 apply 路径；模拟 validation failure 会进入
+`rollback_or_needs_revision`。当前真实 pending proposal applied 数为 0。下一步为
+pending S13 Review。
+
+产物：
+
+- `机器治理/运行门禁/proposal_apply.v1_2_s13_p3.json`
+- `data/derived/proposals/proposal_apply_report.json`
+- `机器治理/证据与日志/proposal_apply/proposal_apply_evidence.v1_2_s13_p3.json`
+- `scripts/build_memory_atlas_proposal_apply.py`
+- `scripts/atlasctl.py`
+- `人类可读/36_Apply回滚说明.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p3_apply_rollback.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p3.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s13-p3`
+- `ACC-MA-V12-S13P3`
+- `MA-V12-S13P3`
+- `phase_s13_p3_apply_rollback_completed_pending_s13_review`
+- `proposal_apply.v1_2_s13_p3`
+- S13 P3
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- authorization required
+- validation_after_apply
+- rollback_or_needs_revision
+- pending S13 Review
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- 真实 pending proposal 未获人类授权前不 apply。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P3; MA-V12-S13P3; ACC-MA-V12-S13P3; phase_s13_p3_apply_rollback_completed_pending_s13_review; validate:v1.2-s13-p3; proposal_apply.v1_2_s13_p3; S13 P3; Apply 与回滚; sample_unauthorized; sample; authorization required; validation_after_apply; rollback_or_needs_revision; No GitHub main upload; No remote push; No raw mutation; pending S13 Review.
+
+## v1.2 S13 P2 Diff narrator
+
+状态：`phase_s13_p2_diff_narrator_completed_pending_s13_p3`。
+
+任务 ID：`MA-V12-S13P2`。
+
+验收 ID：`ACC-MA-V12-S13P2`。
+
+Validator：`validate:v1.2-s13-p2`。
+
+S13 P2 已完成。机器合同为 `diff_narrator.v1_2_s13_p2`。本阶段把 proposal
+diff 转成中文 Diff narrator，解释改了什么、为什么改、影响什么、如何验证、如何回滚。
+完整机器 diff 不进入人类首页，机器 diff 保留在治理证据文件。下一步为 pending S13 P3。
+
+产物：
+
+- `机器治理/运行门禁/diff_narrator.v1_2_s13_p2.json`
+- `data/derived/proposals/diff_narrator_report.json`
+- `机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`
+- `scripts/build_memory_atlas_diff_narrator.py`
+- `scripts/atlasctl.py`
+- `人类可读/35_DiffNarrator说明.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p2_diff_narrator.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p2.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s13-p2`
+- `ACC-MA-V12-S13P2`
+- `MA-V12-S13P2`
+- `phase_s13_p2_diff_narrator_completed_pending_s13_p3`
+- `diff_narrator.v1_2_s13_p2`
+- S13 P2
+- Diff narrator
+- 改了什么
+- 为什么改
+- 影响什么
+- 如何验证
+- 如何回滚
+- 机器 diff
+- pending S13 P3
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P2; MA-V12-S13P2; ACC-MA-V12-S13P2; phase_s13_p2_diff_narrator_completed_pending_s13_p3; validate:v1.2-s13-p2; diff_narrator.v1_2_s13_p2; S13 P2; Diff narrator; 改了什么; 为什么改; 影响什么; 如何验证; 如何回滚; 机器 diff; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P3.
+
+## v1.2 S13 P1 Proposal 状态机
+
+状态：`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。
+
+任务 ID：`MA-V12-S13P1`。
+
+验收 ID：`ACC-MA-V12-S13P1`。
+
+Validator：`validate:v1.2-s13-p1`。
+
+S13 P1 已完成。机器合同为 `proposal_state_machine.v1_2_s13_p1`。本阶段固定 Proposal
+状态机：`draft`、`pending_human_review`、`approved_by_human`、`applying`、`applied`、
+`validated`、`committed`、`failed_validation`、`rollback_or_needs_revision`。proposal expiry
+已集成；当前 5 个 proposal 均为 `pending_human_review`，未授权不会 apply。
+
+产物：
+
+- `机器治理/运行门禁/proposal_state_machine.v1_2_s13_p1.json`
+- `data/derived/proposals/proposal_state_machine_report.json`
+- `scripts/build_memory_atlas_proposal_state_machine.py`
+- `scripts/atlasctl.py`
+- `人类可读/34_Proposal状态机说明.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p1_proposal_state_machine.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p1.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s13-p1`
+- `ACC-MA-V12-S13P1`
+- `MA-V12-S13P1`
+- `phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`
+- `proposal_state_machine.v1_2_s13_p1`
+- S13 P1
+- Proposal 状态机
+- `failed_validation`
+- `rollback_or_needs_revision`
+- proposal expiry
+- pending S13 P2
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P1; MA-V12-S13P1; ACC-MA-V12-S13P1; phase_s13_p1_proposal_state_machine_completed_pending_s13_p2; validate:v1.2-s13-p1; proposal_state_machine.v1_2_s13_p1; S13 P1; Proposal 状态机; draft; pending_human_review; approved_by_human; applying; applied; validated; committed; failed_validation; rollback_or_needs_revision; proposal expiry; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P2.
+
+## v1.2 S12 Review
+
+状态：`stage_s12_review_passed_pending_s13_no_github_main_upload`。
+
+任务 ID：`MA-V12-S12-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S12-REVIEW`。
+
+Validator：`validate:v1.2-s12-review`。
+
+S12 Review 已完成。复审确认 S12 P1 Command Palette、S12 P2 Personalization Prompt 和
+S12 P3 ChatGPT 深度探索共同满足 S12 stage gate。命令集合只保留已接受命令和两个明确扩展：
+`generate_personalization_prompt` 与 `chatgpt_deep_explore`。`prefill_only` 不发送，
+`auto_submit` 默认 FAIL_CLOSED，并返回中文失败说明。
+
+产物：
+
+- `docs/reviews/memory_atlas_v1_2_s12_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_review.cjs`
+- `CHANGELOG.md`
+- `功能清单.md`
+- `开发记录.md`
+- `模型参数文件.md`
+- `docs/MEMORY_ATLAS_DELIVERY_RECORD.md`
+- `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`
+
+验收关键词：
+
+- `validate:v1.2-s12-review`
+- `ACC-MA-V12-S12-REVIEW`
+- `MA-V12-S12-REVIEW`
+- `stage_s12_review_passed_pending_s13_no_github_main_upload`
+- S12 Review
+- S12 P1
+- S12 P2
+- S12 P3
+- Command Palette
+- Personalization Prompt
+- ChatGPT 深度探索
+- `prefill_only`
+- `auto_submit`
+- S13 P1
+
+边界：
+
+- No silent send。
+- No cookie/token/secret export。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 Review; MA-V12-S12-REVIEW; ACC-MA-V12-S12-REVIEW; stage_s12_review_passed_pending_s13_no_github_main_upload; validate:v1.2-s12-review; S12 Review; S12 P1; S12 P2; S12 P3; Command Palette; Personalization Prompt; ChatGPT 深度探索; prefill_only; auto_submit; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P1.
+
+## v1.2 S12 P3 ChatGPT Deep Exploration
+
+状态：`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。
+
+任务 ID：`MA-V12-S12P3`。
+
+验收 ID：`ACC-MA-V12-S12P3`。
+
+Validator：`validate:v1.2-s12-p3`。
+
+S12 P3 已完成。合同为 `chatgpt_deep_explore.v1_2_s12_p3`。命令面板新增用户触发的
+ChatGPT 深度探索入口；`atlasctl.py chatgpt-deep-explore` 可生成最新记忆分析报告、
+深度探索提示和 ChatGPT launch URL。默认 `prefill_only`，`auto_submit` 是配置受控模式，
+默认 fail closed，不会静默发送。
+
+产物：
+
+- `apps/memory-atlas/src/App.tsx`
+- `scripts/atlasctl.py`
+- `scripts/build_chatgpt_deep_explore_prompt.py`
+- `机器治理/运行门禁/chatgpt_deep_explore.v1_2_s12_p3.json`
+- `data/derived/chatgpt_deep_explore/latest_memory_analysis_prompt.md`
+- `data/derived/chatgpt_deep_explore/chatgpt_deep_explore_export.json`
+- `人类可读/33_ChatGPT深度探索说明.md`
+- `docs/reviews/memory_atlas_v1_2_s12_p3_chatgpt_deep_explore.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p3.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s12-p3`
+- `ACC-MA-V12-S12P3`
+- `MA-V12-S12P3`
+- `phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`
+- `chatgpt_deep_explore.v1_2_s12_p3`
+- ChatGPT 深度探索
+- `prefill_only`
+- `auto_submit`
+- 用户触发
+- pending S12 Review
+
+边界：
+
+- No silent send。
+- No cookie/token/secret export。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P3; MA-V12-S12P3; ACC-MA-V12-S12P3; phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review; validate:v1.2-s12-p3; chatgpt_deep_explore.v1_2_s12_p3; ChatGPT 深度探索; prefill_only; auto_submit; 用户触发; No silent send; No cookie/token/secret export; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S12 Review.
+
+## v1.2 S12 P2 Personalization Prompt
+
+状态：`phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。
+
+任务 ID：`MA-V12-S12P2`。
+
+验收 ID：`ACC-MA-V12-S12P2`。
+
+Validator：`validate:v1.2-s12-p2`。
+
+S12 P2 已完成。Prompt 合同为 `personalization_prompt.v1_2_s12_p2`。已生成
+ChatGPT、Codex、other agent 三类 prompt，均包含中文人类说明和机器可复制文本。来源为
+latest memory、behavior、latent、self_iteration、decision debt 和 agent collaboration
+等脱敏派生报告。
+
+涉及文件：
+
+- `scripts/build_personalization_exports.py`
+- `scripts/atlasctl.py`
+- `data/derived/personalization/personalization_prompt_human_zh.md`
+- `data/derived/personalization/chatgpt_personalization.md`
+- `data/derived/personalization/codex_personalization.md`
+- `data/derived/personalization/other_agent_personalization.md`
+- `data/derived/personalization/personalization_export.json`
+- `机器治理/运行门禁/personalization_prompt.v1_2_s12_p2.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p2.cjs`
+
+验收：
+
+- `validate:v1.2-s12-p2`
+- `ACC-MA-V12-S12P2`
+- `MA-V12-S12P2`
+- `phase_s12_p2_personalization_prompt_completed_pending_s12_p3`
+- `personalization_prompt.v1_2_s12_p2`
+- ChatGPT
+- Codex
+- other agent
+- 中文人类说明
+- 机器可复制文本
+- S12 P3
+- No GitHub main upload
+
+边界：
+
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+- No automatic send。
+- No S12 P3 ChatGPT deep explore execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P2; MA-V12-S12P2; ACC-MA-V12-S12P2; phase_s12_p2_personalization_prompt_completed_pending_s12_p3; validate:v1.2-s12-p2; personalization_prompt.v1_2_s12_p2; ChatGPT; Codex; other agent; 中文人类说明; 机器可复制文本; latest memory; behavior; latent; self_iteration; S12 P3; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
+## v1.2 S12 P1 Command Palette
+
+状态：`phase_s12_p1_command_palette_completed_pending_s12_p2`。
+
+任务 ID：`MA-V12-S12P1`。
+
+验收 ID：`ACC-MA-V12-S12P1`。
+
+Validator：`validate:v1.2-s12-p1`。
+
+S12 P1 已完成。首页新增命令面板，运行合同为
+`command_palette.v1_2_s12_p1`。命令只包含同步 ChatGPT、同步 Codex、生成本周报告、
+查看待授权 proposal、生成 personalization prompt。`generate_personalization_prompt`
+仅提供 ChatGPT、Codex、other agent 的 dry-run 合同，不写文件，不发送到 ChatGPT。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `scripts/atlasctl.py`
+- `机器治理/运行门禁/command_palette.v1_2_s12_p1.json`
+- `docs/reviews/memory_atlas_v1_2_s12_p1_command_palette.md`
+- `人类可读/31_CommandPalette命令面板说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p1.cjs`
+
+验收：
+
+- `validate:v1.2-s12-p1`
+- `ACC-MA-V12-S12P1`
+- `MA-V12-S12P1`
+- `phase_s12_p1_command_palette_completed_pending_s12_p2`
+- `command_palette.v1_2_s12_p1`
+- `generate_personalization_prompt`
+- S12 P2
+- No GitHub main upload
+
+边界：
+
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+- No automatic send。
+- No S12 P2 completion。
+- No S12 P3 execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P1; MA-V12-S12P1; ACC-MA-V12-S12P1; phase_s12_p1_command_palette_completed_pending_s12_p2; validate:v1.2-s12-p1; command_palette.v1_2_s12_p1; 同步 ChatGPT; 同步 Codex; 生成本周报告; 查看待授权 proposal; generate_personalization_prompt; ChatGPT; Codex; other agent; S12 P2; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
+## v1.2 S11 Review
+
+状态：`stage_s11_review_passed_pending_s12_no_github_main_upload`。
+
+任务 ID：`MA-V12-S11-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S11-REVIEW`。
+
+Validator：`validate:v1.2-s11-review`。
+
+S11 Review 已完成。复审确认 S11 P1、S11 P2、S11 P3 和 S11 P4 共同提供 12 张 P0 图谱：
+`cluster_tree`、`bubble_map`、`topic_cluster_explorer`、`task_treemap`、
+`automation_vs_augmentation`、`roi_scatter`、`opportunity_radar`、
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline`
+和 `formula_explorer`。每张图都有中文问题和行动说明、Visual ROI Gate、
+`source/time/project/task` 过滤，并且不是静态装饰图。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s11_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_review.cjs`
+- `机器治理/可视化配置/human_question_map.v1_2_s11_p4.json`
+- `CHANGELOG.md`
+- `功能清单.md`
+- `开发记录.md`
+- `模型参数文件.md`
+
+验收：
+
+- `validate:v1.2-s11-review`
+- `ACC-MA-V12-S11-REVIEW`
+- `MA-V12-S11-REVIEW`
+- `stage_s11_review_passed_pending_s12_no_github_main_upload`
+- `S11 P1`
+- `S11 P2`
+- `S11 P3`
+- `S11 P4`
+- `source/time/project/task`
+- `Visual ROI Gate`
+- S12 P1
+- No GitHub main upload
+
+边界：
+
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+- No S12 implementation。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 Review; MA-V12-S11-REVIEW; ACC-MA-V12-S11-REVIEW; stage_s11_review_passed_pending_s12_no_github_main_upload; validate:v1.2-s11-review; S11 P1; S11 P2; S11 P3; S11 P4; Visual ROI Gate; source/time/project/task; S12 P1; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
+## v1.2 S11 P4 Human Question Map
+
+状态：`phase_s11_p4_human_question_map_completed_pending_s11_review`。
+
+任务 ID：`MA-V12-S11P4`。
+
+验收 ID：`ACC-MA-V12-S11P4`。
+
+Validator：`validate:v1.2-s11-p4`。
+
+S11 P4 已完成。首页新增 Human Question Map，统一映射 S11 P1-P3 共 12 张 P0 图谱：
+`cluster_tree`、`bubble_map`、`topic_cluster_explorer`、`task_treemap`、
+`automation_vs_augmentation`、`roi_scatter`、`opportunity_radar`、
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline`
+和 `formula_explorer`。每张图都有中文 insight header、human question、action value、
+Visual ROI Gate 和 `source/time/project/task` 过滤。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `机器治理/可视化配置/human_question_map.v1_2_s11_p4.json`
+- `docs/reviews/memory_atlas_v1_2_s11_p4_human_question_map.md`
+- `人类可读/30_HumanQuestionMap说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p4.cjs`
+
+验收：
+
+- `validate:v1.2-s11-p4`
+- `ACC-MA-V12-S11P4`
+- `MA-V12-S11P4`
+- `human_question_map.v1_2_s11_p4`
+- `Human Question Map`
+- `Visual ROI Gate`
+- `source/time/project/task`
+- pending S11 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 Review completion。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P4; MA-V12-S11P4; ACC-MA-V12-S11P4; phase_s11_p4_human_question_map_completed_pending_s11_review; validate:v1.2-s11-p4; human_question_map.v1_2_s11_p4; Human Question Map; Visual ROI Gate; cluster_tree; bubble_map; topic_cluster_explorer; task_treemap; automation_vs_augmentation; roi_scatter; opportunity_radar; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer; source/time/project/task; pending S11 Review; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## v1.2 S11 P3 Workflow/latent/governance Visuals
+
+状态：`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。
+
+任务 ID：`MA-V12-S11P3`。
+
+验收 ID：`ACC-MA-V12-S11P3`。
+
+Validator：`validate:v1.2-s11-p3`。
+
+S11 P3 已完成。首页新增 Workflow/latent/governance 多维图谱，包含
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline`
+和 `formula_explorer`。每个图都有中文 insight header、human question 和 action value，
+并跟随 `source/time/project/task` 过滤。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `机器治理/可视化配置/workflow_latent_governance_visuals.v1_2_s11_p3.json`
+- `docs/reviews/memory_atlas_v1_2_s11_p3_workflow_latent_governance_visuals.md`
+- `人类可读/29_WorkflowLatentGovernance可视化说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p3.cjs`
+
+验收：
+
+- `validate:v1.2-s11-p3`
+- `ACC-MA-V12-S11P3`
+- `MA-V12-S11P3`
+- `workflow_latent_governance_visuals.v1_2_s11_p3`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- `source/time/project/task`
+- pending S11 P4
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 P4 Human Question Map completion。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P3; MA-V12-S11P3; ACC-MA-V12-S11P3; phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4; validate:v1.2-s11-p3; workflow_latent_governance_visuals.v1_2_s11_p3; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer; source/time/project/task; pending S11 P4; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## v1.2 S11 P2 Economic-like Visuals
+
+状态：`phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`。
+
+任务 ID：`MA-V12-S11P2`。
+
+验收 ID：`ACC-MA-V12-S11P2`。
+
+Validator：`validate:v1.2-s11-p2`。
+
+S11 P2 已完成。首页新增 Economic-like 多维图谱，包含 `task_treemap`、
+`automation_vs_augmentation`、`roi_scatter` 和 `opportunity_radar`。每个图都有中文
+insight header、human question 和 action value，并跟随 `source/time/project/task`
+过滤。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `机器治理/可视化配置/economic_like_visuals.v1_2_s11_p2.json`
+- `docs/reviews/memory_atlas_v1_2_s11_p2_economic_like_visuals.md`
+- `人类可读/28_EconomicLike经济可视化说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p2.cjs`
+
+验收：
+
+- `validate:v1.2-s11-p2`
+- `ACC-MA-V12-S11P2`
+- `MA-V12-S11P2`
+- `economic_like_visuals.v1_2_s11_p2`
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+- `source/time/project/task`
+- pending S11 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 P3/P4 work。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P2; MA-V12-S11P2; ACC-MA-V12-S11P2; phase_s11_p2_economic_like_visuals_completed_pending_s11_p3; validate:v1.2-s11-p2; economic_like_visuals.v1_2_s11_p2; task_treemap; automation_vs_augmentation; roi_scatter; opportunity_radar; source/time/project/task; pending S11 P3; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## v1.2 S11 P1 Clio-like Visuals
+
+状态：`phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`。
+
+任务 ID：`MA-V12-S11P1`。
+
+验收 ID：`ACC-MA-V12-S11P1`。
+
+Validator：`validate:v1.2-s11-p1`。
+
+S11 P1 已完成。首页新增 Clio-like 多维图谱，包含 `cluster_tree`、`bubble_map` 和
+`topic_cluster_explorer`。每个图都有中文 insight header、human question 和 action value，
+并跟随 `source/time/project/task` 过滤。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json`
+- `docs/reviews/memory_atlas_v1_2_s11_p1_clio_like_visuals.md`
+- `人类可读/27_ClioLike多维可视化说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p1.cjs`
+
+验收：
+
+- `validate:v1.2-s11-p1`
+- `ACC-MA-V12-S11P1`
+- `MA-V12-S11P1`
+- `clio_like_visuals.v1_2_s11_p1`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `source/time/project/task`
+- pending S11 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 P2/P3/P4 work。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P1; MA-V12-S11P1; ACC-MA-V12-S11P1; phase_s11_p1_clio_like_visuals_completed_pending_s11_p2; validate:v1.2-s11-p1; clio_like_visuals.v1_2_s11_p1; cluster_tree; bubble_map; topic_cluster_explorer; source/time/project/task; pending S11 P2; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## v1.2 S10 Review
+
+状态：`stage_s10_review_passed_pending_s11_no_github_main_upload`。
+
+任务 ID：`MA-V12-S10-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S10-REVIEW`。
+
+Validator：`validate:v1.2-s10-review`。
+
+S10 Review 已完成。复审确认 S10 P1 首页 arrival briefing、S10 P2 全局中文和
+S10 P3 机器字段默认折叠共同满足 stage gate：首页能回答上次来以后发生了什么，核心
+UI 默认中文，机器字段默认折叠，Chinese UX linter 通过，默认路径呈现结论 / 变化 /
+证据 / 行动。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s10_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_review.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs`
+- `scripts/atlasctl.py`
+- `scripts/audit_memory_atlas_visual_acceptance.py`
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 implementation。
+- No app reinstall。
+
+下一步是 S11 P1。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 Review; MA-V12-S10-REVIEW; ACC-MA-V12-S10-REVIEW; stage_s10_review_passed_pending_s11_no_github_main_upload; validate:v1.2-s10-review; S10 P1; S10 P2; S10 P3; 首页能回答上次来以后发生了什么; 核心 UI 默认中文; 机器字段默认折叠; Chinese UX linter; S11 P1; No GitHub main upload; No raw mutation; No proposal apply execution.
+
+## v1.2 S10 P3 Machine Detail Folding
+
+状态：`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。
+
+任务 ID：`MA-V12-S10P3`。
+
+验收 ID：`ACC-MA-V12-S10P3`。
+
+Validator：`validate:v1.2-s10-p3`。
+
+S10 P3 建立 `machine_detail_folding.v1_2_s10_p3`。默认首页、搜索、复盘、
+总结闭环和 Inspector 的机器字段默认折叠，中文“高级详情”入口保留 schema、query、
+matched_reason、evidence_refs、proposal_candidate、proposal id 和 Agent 字段。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/styles.css`
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs`
+- `docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md`
+- `人类可读/26_机器字段高级详情说明.md`
+
+验收：
+
+- `validate:v1.2-s10-p3`
+- `ACC-MA-V12-S10P3`
+- `MA-V12-S10P3`
+- `machine_detail_folding.v1_2_s10_p3`
+- 机器字段默认折叠
+- 高级详情入口
+- `phase_s10_p3_machine_detail_folding_completed_pending_s10_review`
+- pending S10 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S10 Review work。
+- No S11 work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P3; MA-V12-S10P3; ACC-MA-V12-S10P3; phase_s10_p3_machine_detail_folding_completed_pending_s10_review; validate:v1.2-s10-p3; machine_detail_folding.v1_2_s10_p3; 机器字段默认折叠; 高级详情入口; pending S10 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution.
+
+## v1.2 S10 P2 Global Chinese UX
+
+状态：`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。
+
+任务 ID：`MA-V12-S10P2`。
+
+验收 ID：`ACC-MA-V12-S10P2`。
+
+Validator：`validate:v1.2-s10-p2`。
+
+S10 P2 建立 `global_chinese_ux.v1_2_s10_p2`。核心 UI 默认中文；代码、API、
+字段名、schema 和 `data-*` 可保留英文，但用户可见层必须提供中文解释。
+Chinese UX linter 已升级为 S10 P2。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs`
+- `docs/reviews/memory_atlas_v1_2_s10_p2_global_chinese_ux.md`
+- `人类可读/25_全局中文说明.md`
+
+验收：
+
+- `validate:v1.2-s10-p2`
+- `ACC-MA-V12-S10P2`
+- `MA-V12-S10P2`
+- `global_chinese_ux.v1_2_s10_p2`
+- `Chinese UX linter`
+- `phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`
+- pending S10 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S10 P3 work。
+- No S10 Review work。
+- No S13 apply state machine work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P2; MA-V12-S10P2; ACC-MA-V12-S10P2; phase_s10_p2_global_chinese_ux_completed_pending_s10_p3; validate:v1.2-s10-p2; global_chinese_ux.v1_2_s10_p2; Chinese UX linter; pending S10 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution.
+
+## v1.2 S10 P1 Home Arrival Briefing
+
+状态：`phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`。
+
+任务 ID：`MA-V12-S10P1`。
+
+验收 ID：`ACC-MA-V12-S10P1`。
+
+Validator：`validate:v1.2-s10-p1`。
+
+S10 P1 在首页首屏新增 `home_arrival_briefing.v1_2_s10_p1`。用户打开首页后先看到
+“上次来以后发生了什么”，并能看到新增重要资料、增强结论、减弱或过期结论、待授权
+proposal 和同步失败。
+
+涉及文件：
+
+- `PRODUCT.md`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs`
+- `docs/reviews/memory_atlas_v1_2_s10_p1_home_arrival_briefing.md`
+- `人类可读/24_首页上次来以后发生了什么说明.md`
+
+验收：
+
+- `validate:v1.2-s10-p1`
+- `ACC-MA-V12-S10P1`
+- `MA-V12-S10P1`
+- `home_arrival_briefing.v1_2_s10_p1`
+- `phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`
+- pending S10 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S10 P2/P3 work。
+- No S13 apply state machine work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P1; MA-V12-S10P1; ACC-MA-V12-S10P1; phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2; validate:v1.2-s10-p1; home_arrival_briefing.v1_2_s10_p1; pending S10 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution.
+
+## v1.2 S09 Review
+
+状态：`stage_s09_review_passed_pending_s10_no_github_main_upload`。
+
+任务 ID：`MA-V12-S09-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S09-REVIEW`。
+
+Validator：`validate:v1.2-s09-review`。
+
+S09 Review 复审 S09 P1 latent signals、S09 P2 self-iteration suggestions 和
+S09 P3 Decision Debt Ledger。复审确认 S09 满足 stage gate，且没有 raw mutation、
+proposal apply execution、pressure list、psychological diagnosis output 或 personality
+label output。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s09_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_review.cjs`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s09-review`
+- `ACC-MA-V12-S09-REVIEW`
+- `MA-V12-S09-REVIEW`
+- S09 Review
+- `stage_s09_review_passed_pending_s10_no_github_main_upload`
+- pending S10 P1
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No pressure list。
+- No psychological diagnosis output。
+- No personality label output。
+- No S10 work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 Review; MA-V12-S09-REVIEW; ACC-MA-V12-S09-REVIEW; stage_s09_review_passed_pending_s10_no_github_main_upload; validate:v1.2-s09-review; S09 Review; latent_signals.json; self_iteration_suggestions.json; decision_debt_ledger.json; pending S10 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output; No S10 work.
+
+## v1.2 S09 P3 Decision Debt
+
+状态：`phase_s09_p3_decision_debt_completed_pending_s09_review`。
+
+任务 ID：`MA-V12-S09P3`。
+
+验收 ID：`ACC-MA-V12-S09P3`。
+
+Validator：`validate:v1.2-s09-p3`。
+
+S09 P3 建立独立 Decision Debt Ledger。每条记录必须有 source debt、evidence refs、
+linked self-iteration suggestions、最小下一步、预期交付件和停止条件。当前输出 8 条候选。
+
+涉及文件：
+
+- `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`
+- `scripts/build_memory_atlas_decision_debt.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+- `docs/reviews/memory_atlas_v1_2_s09_p3_decision_debt.md`
+- `人类可读/23_决策债说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p3.cjs`
+- `tests/test_s09p3_decision_debt.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s09-p3`
+- `ACC-MA-V12-S09P3`
+- `MA-V12-S09P3`
+- S09 P3
+- `phase_s09_p3_decision_debt_completed_pending_s09_review`
+- `decision_debt_ledger.json`
+- pending S09 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No pressure list。
+- No psychological diagnosis output。
+- No personality label output。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P3 Decision Debt; MA-V12-S09P3; ACC-MA-V12-S09P3; phase_s09_p3_decision_debt_completed_pending_s09_review; validate:v1.2-s09-p3; S09 P3; decision_debt_ledger.json; decision_debt_count=8; pending S09 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output.
+
+## v1.2 S09 P2 Self Iteration
+
+状态：`phase_s09_p2_self_iteration_completed_pending_s09_p3`。
+
+任务 ID：`MA-V12-S09P2`。
+
+验收 ID：`ACC-MA-V12-S09P2`。
+
+Validator：`validate:v1.2-s09-p2`。
+
+S09 P2 生成 evidence-backed self-iteration suggestions。每条 suggestion 必须有
+target type、target files、evidence refs、proposal、action half-life；每个 proposal
+必须有 `expires_at` 和 warn/stale/archive 有效期规则。当前输出 5 条建议，覆盖
+memory、config、AGENTS、style 和 personalization。
+
+涉及文件：
+
+- `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `scripts/build_memory_atlas_self_iteration.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `docs/reviews/memory_atlas_v1_2_s09_p2_self_iteration.md`
+- `人类可读/22_自我迭代建议说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p2.cjs`
+- `tests/test_s09p2_self_iteration.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s09-p2`
+- `ACC-MA-V12-S09P2`
+- `MA-V12-S09P2`
+- S09 P2
+- `phase_s09_p2_self_iteration_completed_pending_s09_p3`
+- `self_iteration_suggestions.json`
+- pending S09 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No credential target。
+- No permanent pending proposal。
+- No decision debt ledger。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P2 Self Iteration; MA-V12-S09P2; ACC-MA-V12-S09P2; phase_s09_p2_self_iteration_completed_pending_s09_p3; validate:v1.2-s09-p2; S09 P2; self_iteration_suggestions.json; suggestion_count=5; pending S09 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No credential target; No permanent pending proposal; No decision debt ledger.
+
+## v1.2 S09 P1 Latent Signals
+
+状态：`phase_s09_p1_latent_signals_completed_pending_s09_p2`。
+
+任务 ID：`MA-V12-S09P1`。
+
+验收 ID：`ACC-MA-V12-S09P1`。
+
+Validator：`validate:v1.2-s09-p1`。
+
+S09 P1 生成 evidence-backed latent signals。每条 signal 必须包含 claim、supporting
+evidence、contradicting evidence、alternative explanation、confidence、Evidence
+Strength Badge 和 next validation。当前输出 5 条候选信号，最高置信度为 0.63。
+
+涉及文件：
+
+- `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`
+- `scripts/build_memory_atlas_latent_signals.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `docs/reviews/memory_atlas_v1_2_s09_p1_latent_signals.md`
+- `人类可读/21_潜性信号说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p1.cjs`
+- `tests/test_s09p1_latent_signals.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s09-p1`
+- `ACC-MA-V12-S09P1`
+- `MA-V12-S09P1`
+- S09 P1
+- `phase_s09_p1_latent_signals_completed_pending_s09_p2`
+- `latent_signals.json`
+- pending S09 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No psychological diagnosis output。
+- No personality label output。
+- No self-iteration suggestions。
+- No decision debt ledger。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P1 Latent Signals; MA-V12-S09P1; ACC-MA-V12-S09P1; phase_s09_p1_latent_signals_completed_pending_s09_p2; validate:v1.2-s09-p1; S09 P1; latent_signals.json; signal_count=5; pending S09 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No psychological diagnosis output; No personality label output; No self-iteration suggestions; No decision debt ledger.
+
+## v1.2 S08 Review
+
+状态：`stage_s08_review_passed_pending_s09_no_github_main_upload`。
+
+任务 ID：`MA-V12-S08-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S08-REVIEW`。
+
+Validator：`validate:v1.2-s08-review`。
+
+S08 Review 复审 S08 P1 Codex/Agent 协作质量、S08 P2 授权边界和 S08 P3 lightweight
+stage flight recorder。复审确认系统能解释 ChatGPT/Codex/其他 agent 的协作质量与边界，
+且没有把授权和协作治理扩展成高负担框架。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s08_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_review.cjs`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s08-review`
+- `ACC-MA-V12-S08-REVIEW`
+- `MA-V12-S08-REVIEW`
+- S08 Review
+- `stage_s08_review_passed_pending_s09_no_github_main_upload`
+- pending S09 P1
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No multi-agent system。
+- No complex Delegation Contract UI。
+- No proposal apply execution。
+- No S09 work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 Review; MA-V12-S08-REVIEW; ACC-MA-V12-S08-REVIEW; stage_s08_review_passed_pending_s09_no_github_main_upload; validate:v1.2-s08-review; S08 Review; pending S09 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No multi-agent system; No complex Delegation Contract UI; No proposal apply execution; No S09 work.
+
+## v1.2 S08 P3 Stage Flight Recorder
+
+状态：`phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`。
+
+任务 ID：`MA-V12-S08P3`。
+
+验收 ID：`ACC-MA-V12-S08P3`。
+
+Validator：`validate:v1.2-s08-p3`。
+
+S08 P3 定义并生成 lightweight stage flight recorder。字段配置位于
+`机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`，builder 位于
+`scripts/build_memory_atlas_stage_flight.py`，输出位于
+`data/derived/agent_collaboration/stage_flight_recorder.json`。输出使用 10 个轻量字段记录
+S08 P1/P2/P3 phase records，不携带 raw/transcript payload，不生成臃肿人类文档。
+
+涉及文件：
+
+- `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `scripts/build_memory_atlas_stage_flight.py`
+- `scripts/atlasctl.py`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p3.cjs`
+- `tests/test_s08p3_stage_flight.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s08-p3`
+- `ACC-MA-V12-S08P3`
+- `MA-V12-S08P3`
+- S08 P3
+- `phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`
+- `stage_flight_recorder.json`
+- pending S08 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No raw/transcript payloads。
+- No bulky human documentation。
+- No complex Delegation Contract UI。
+- No multi-agent system。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P3 Stage Flight Recorder; MA-V12-S08P3; ACC-MA-V12-S08P3; phase_s08_p3_stage_flight_recorder_completed_pending_s08_review; validate:v1.2-s08-p3; S08 P3; stage_flight_recorder.json; required_field_count=10; phase_record_count=3; pending S08 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No raw/transcript payloads; No bulky human documentation; No complex Delegation Contract UI; No multi-agent system.
+
+## v1.2 S08 P2 Agent Authorization Boundary
+
+状态：`phase_s08_p2_authorization_boundary_completed_pending_s08_p3`。
+
+任务 ID：`MA-V12-S08P2`。
+
+验收 ID：`ACC-MA-V12-S08P2`。
+
+Validator：`validate:v1.2-s08-p2`。
+
+S08 P2 定义并生成 Agent 授权边界。配置位于
+`机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`，builder 位于
+`scripts/build_memory_atlas_agent_authorization.py`，输出位于
+`data/derived/agent_collaboration/agent_authorization_boundary_report.json`。报告明确
+raw 不可修改，proposal 需人类授权并进入 `approved_by_human` 后才能 apply，当前 phase
+不执行 proposal apply。
+
+涉及文件：
+
+- `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `scripts/build_memory_atlas_agent_authorization.py`
+- `scripts/atlasctl.py`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `人类可读/20_Agent授权边界说明.md`
+- `docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p2.cjs`
+- `tests/test_s08p2_agent_authorization.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s08-p2`
+- `ACC-MA-V12-S08P2`
+- `MA-V12-S08P2`
+- S08 P2
+- `phase_s08_p2_authorization_boundary_completed_pending_s08_p3`
+- `agent_authorization_boundary_report.json`
+- pending S08 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No complex Delegation Contract UI。
+- No multi-agent system。
+- No proposal apply execution。
+- No stage flight recorder。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P2 Agent Authorization Boundary; MA-V12-S08P2; ACC-MA-V12-S08P2; phase_s08_p2_authorization_boundary_completed_pending_s08_p3; validate:v1.2-s08-p2; S08 P2; agent_authorization_boundary_report.json; approved_by_human; raw_apply_target_allowed=false; current_phase_executes_apply=false; pending S08 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No proposal apply execution; No stage flight recorder.
+
+## v1.2 S08 P1 Agent Collaboration Metrics
+
+状态：`phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`。
+
+任务 ID：`MA-V12-S08P1`。
+
+验收 ID：`ACC-MA-V12-S08P1`。
+
+Validator：`validate:v1.2-s08-p1`。
+
+S08 P1 定义并生成 Codex/Agent 协作质量报告。配置位于
+`机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`，builder 位于
+`scripts/build_memory_atlas_agent_collaboration.py`，输出位于
+`data/derived/agent_collaboration/agent_collaboration_quality_report.json`。报告覆盖
+planning clarity、execution clarity、review burden、rework count、scope clarity、
+testability 和 rollbackability，并保留 chatgpt、codex、other_agent 通用字段。
+
+涉及文件：
+
+- `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `scripts/build_memory_atlas_agent_collaboration.py`
+- `scripts/atlasctl.py`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `人类可读/19_Agent协作质量指标说明.md`
+- `docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p1.cjs`
+- `tests/test_s08p1_agent_collaboration.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s08-p1`
+- `ACC-MA-V12-S08P1`
+- `MA-V12-S08P1`
+- S08 P1
+- `phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`
+- `agent_collaboration_quality_report.json`
+- pending S08 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No complex Delegation Contract UI。
+- No multi-agent system。
+- No authorization apply boundary。
+- No stage flight recorder。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics; MA-V12-S08P1; ACC-MA-V12-S08P1; phase_s08_p1_collaboration_metrics_completed_pending_s08_p2; validate:v1.2-s08-p1; S08 P1; agent_collaboration_quality_report.json; planning_clarity; execution_clarity; review_burden; rework_count; scope_clarity; testability; rollbackability; pending S08 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No authorization apply boundary; No stage flight recorder.
+
+## v1.2 S07 Review
+
+状态：`stage_s07_review_passed_pending_s08_no_github_main_upload`。
+
+任务 ID：`MA-V12-S07-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S07-REVIEW`。
+
+Validator：`validate:v1.2-s07-review`。
+
+S07 Review 复审 S07 P1 Personal Economic Proxy、S07 P2 Information ROI 与
+Visual ROI Gate、S07 P3 Formula What-if。复审确认 S07 stage gate 已满足：
+Personal Economic Proxy 可生成，每个分数有中文解释和公式来源，外部经济数据库只预留不深做，
+Formula What-if 可查看或配置。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s07_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_review.cjs`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- `data/derived/information_roi/information_roi_gate.json`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s07-review`
+- `ACC-MA-V12-S07-REVIEW`
+- `MA-V12-S07-REVIEW`
+- S07 Review
+- Personal Economic Proxy
+- Information ROI
+- Formula What-if
+- pending S08 P1
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No external economic database。
+- No precise income prediction。
+- No financial advice。
+- No S08 work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 Review; MA-V12-S07-REVIEW; ACC-MA-V12-S07-REVIEW; stage_s07_review_passed_pending_s08_no_github_main_upload; validate:v1.2-s07-review; Personal Economic Proxy; Information ROI; Formula What-if; S07 Review; pending S08 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No external economic database; No precise income prediction; No financial advice; No S08 work.
+
+## v1.2 S07 P3 Formula What-if
+
+状态：`phase_s07_p3_formula_what_if_completed_pending_s07_review`。
+
+任务 ID：`MA-V12-S07P3`。
+
+验收 ID：`ACC-MA-V12-S07P3`。
+
+Validator：`validate:v1.2-s07-p3`。
+
+S07 P3 定义并生成 Formula What-if 配置预览。配置位于
+`机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`，builder 位于
+`scripts/build_memory_atlas_formula_what_if.py`，输出位于
+`data/derived/economic_proxy/formula_what_if_preview.json`。输出以 proposal-only 方式
+展示不同权重假设，不写回 active formula config。
+
+涉及文件：
+
+- `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `scripts/build_memory_atlas_formula_what_if.py`
+- `scripts/atlasctl.py`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- `人类可读/18_FormulaWhatIf配置预览说明.md`
+- `docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s07-p3`
+- `ACC-MA-V12-S07P3`
+- `MA-V12-S07P3`
+- S07 P3
+- Formula What-if
+- pending S07 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation in this phase。
+- No external economic database。
+- No precise income prediction。
+- No financial advice。
+- No active formula config mutation。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P3 Formula What-if; MA-V12-S07P3; ACC-MA-V12-S07P3; phase_s07_p3_formula_what_if_completed_pending_s07_review; validate:v1.2-s07-p3; Formula What-if; formula_what_if_preview.json; S07 P3; pending S07 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No financial advice; No active formula config mutation.
+
+## v1.2 S07 P2 Information ROI
+
+状态：`phase_s07_p2_information_roi_completed_pending_s07_p3`。
+
+任务 ID：`MA-V12-S07P2`。
+
+验收 ID：`ACC-MA-V12-S07P2`。
+
+Validator：`validate:v1.2-s07-p2`。
+
+S07 P2 定义并生成 Information ROI 与 Visual ROI Gate。公式配置位于
+`机器治理/参数与公式/information_roi.v1_2_s07_p2.json`，Visual ROI Gate 配置位于
+`机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`，builder 位于
+`scripts/build_memory_atlas_information_roi.py`，输出位于
+`data/derived/information_roi/information_roi_gate.json`。输出覆盖 insight、card、chart，
+并要求没有决策价值的图表不进 P0。
+
+涉及文件：
+
+- `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `scripts/build_memory_atlas_information_roi.py`
+- `scripts/atlasctl.py`
+- `data/derived/information_roi/information_roi_gate.json`
+- `人类可读/17_InformationROI与VisualROIGate说明.md`
+- `docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s07-p2`
+- `ACC-MA-V12-S07P2`
+- `MA-V12-S07P2`
+- S07 P2
+- Information ROI
+- Visual ROI Gate
+- pending S07 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation in this phase。
+- No external economic database。
+- No precise income prediction。
+- No S07 P3 what-if UI。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P2 Information ROI; MA-V12-S07P2; ACC-MA-V12-S07P2; phase_s07_p2_information_roi_completed_pending_s07_p3; validate:v1.2-s07-p2; Information ROI; Visual ROI Gate; information_roi_gate.json; S07 P2; pending S07 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P3 what-if UI.
+
+## v1.2 S07 P1 Personal Economic Proxy
+
+状态：`phase_s07_p1_economic_proxy_completed_pending_s07_p2`。
+
+任务 ID：`MA-V12-S07P1`。
+
+验收 ID：`ACC-MA-V12-S07P1`。
+
+Validator：`validate:v1.2-s07-p1`。
+
+S07 P1 定义并生成 Personal Economic Proxy。公式配置位于
+`机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`，builder 位于
+`scripts/build_memory_atlas_economic_proxy.py`，输出位于
+`data/derived/economic_proxy/personal_economic_proxy.json`。每个 score card 均保留
+中文解释、公式来源、参数引用和 evidence_refs。
+
+涉及文件：
+
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `scripts/build_memory_atlas_economic_proxy.py`
+- `scripts/atlasctl.py`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- `人类可读/16_PersonalEconomicProxy公式说明.md`
+- `docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s07-p1`
+- `ACC-MA-V12-S07P1`
+- `MA-V12-S07P1`
+- S07 P1
+- Personal Economic Proxy
+- pending S07 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No external economic database in this phase.
+- No precise income prediction in this phase.
+- No S07 P2 information ROI gate in this phase.
+- No S07 P3 what-if UI in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P1 Personal Economic Proxy; MA-V12-S07P1; ACC-MA-V12-S07P1; phase_s07_p1_economic_proxy_completed_pending_s07_p2; validate:v1.2-s07-p1; Personal Economic Proxy; pending S07 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P2 information ROI gate; No S07 P3 what-if UI.
+
+## v1.2 S06 Review
+
+状态：`stage_s06_review_passed_pending_s07_no_github_main_upload`。
+
+任务 ID：`MA-V12-S06-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S06-REVIEW`。
+
+S06 Review 复审 Memory Atlas v1.2 S06 P1/P2/P3，并补齐展示门禁。它确认
+`data/derived/behavior_intelligence/clusters.json`、`low_value_loops.json` 和
+`opportunities.json` 均保留证据引用，并将显示摘要写入
+`data/derived/visualization/memory_atlas.json` 的 `behavior_intelligence`。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s06_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_review.cjs`
+- `scripts/build_memory_atlas_data.py`
+- `data/derived/visualization/memory_atlas.json`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/types.ts`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-review`
+- `ACC-MA-V12-S06-REVIEW`
+- `MA-V12-S06-REVIEW`
+- S06 Review
+- `behavior_intelligence`
+- `data-s06-review-display`
+- pending S07 P1
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No psychological diagnosis in this phase.
+- No external economic database in this phase.
+- No infinite pressure list in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 Review; MA-V12-S06-REVIEW; ACC-MA-V12-S06-REVIEW; stage_s06_review_passed_pending_s07_no_github_main_upload; validate:v1.2-s06-review; memory_atlas_v1_2_s06_review.md; behavior_intelligence; S06 Review; pending S07 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No external economic database; No infinite pressure list.
+
+## v1.2 S06 P3 Opportunity Discovery
+
+状态：`phase_s06_p3_opportunity_discovery_completed_pending_s06_review`。
+
+任务 ID：`MA-V12-S06P3`。
+
+验收 ID：`ACC-MA-V12-S06P3`。
+
+S06 P3 实现 Memory Atlas v1.2 的机会发现和 为什么不是现在 卡片。它从 S05
+canonical events、S06 P1 clusters 与 S06 P2 low-value loops 生成
+`data/derived/behavior_intelligence/opportunities.json`，并扩展
+`atlasctl audit --check insight-evidence` 覆盖 S06 P3 派生项。
+
+涉及文件：
+
+- `scripts/build_memory_atlas_opportunities.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/opportunities.json`
+- `人类可读/15_机会发现与为什么不是现在卡片.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-p3`
+- `ACC-MA-V12-S06P3`
+- `MA-V12-S06P3`
+- S06 P3
+- `build_memory_atlas_opportunities.py`
+- `atlasctl.py analyze --stage opportunities`
+- `opportunities.json`
+- 为什么不是现在
+- automation、productization、template、compounding、defer
+- pending S06 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No external economic database in this phase.
+- No psychological diagnosis in this phase.
+- No infinite pressure list in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P3 Opportunity Discovery; MA-V12-S06P3; ACC-MA-V12-S06P3; phase_s06_p3_opportunity_discovery_completed_pending_s06_review; validate:v1.2-s06-p3; build_memory_atlas_opportunities.py; atlasctl.py analyze --stage opportunities; opportunities.json; S06 P3; pending S06 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No psychological diagnosis; No infinite pressure list.
+
+## v1.2 S06 P2 Low-Value Loops
+
+状态：`phase_s06_p2_low_value_loops_completed_pending_s06_p3`。
+
+任务 ID：`MA-V12-S06P2`。
+
+验收 ID：`ACC-MA-V12-S06P2`。
+
+S06 P2 实现 Memory Atlas v1.2 的低价值循环候选、Decision Debt Ledger 和
+Action Half-Life。它从 S05 canonical events 与 S06 P1 clusters 生成
+`data/derived/behavior_intelligence/low_value_loops.json`，并扩展
+`atlasctl audit --check insight-evidence` 覆盖 S06 P2 派生项。
+
+涉及文件：
+
+- `scripts/build_memory_atlas_low_value_loops.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/low_value_loops.json`
+- `人类可读/14_低价值循环与DecisionDebt说明.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-p2`
+- `ACC-MA-V12-S06P2`
+- `MA-V12-S06P2`
+- S06 P2
+- `build_memory_atlas_low_value_loops.py`
+- `atlasctl.py analyze --stage low-value-loops`
+- `low_value_loops.json`
+- Decision Debt Ledger
+- Action Half-Life
+- pending S06 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No psychological diagnosis in this phase.
+- No opportunity cards in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P2 Low-Value Loops; MA-V12-S06P2; ACC-MA-V12-S06P2; phase_s06_p2_low_value_loops_completed_pending_s06_p3; validate:v1.2-s06-p2; build_memory_atlas_low_value_loops.py; atlasctl.py analyze --stage low-value-loops; low_value_loops.json; S06 P2; pending S06 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No opportunity cards.
+
+## v1.2 S06 P1 Cluster Builder
+
+状态：`phase_s06_p1_cluster_builder_completed_pending_s06_p2`。
+
+任务 ID：`MA-V12-S06P1`。
+
+验收 ID：`ACC-MA-V12-S06P1`。
+
+S06 P1 实现 Memory Atlas v1.2 的 Cluster builder。它从 S05 canonical events 生成
+主题簇和层级簇，并为每个 cluster 保留中文摘要、代表事件、过滤维度和 evidence refs。
+
+涉及文件：
+
+- `scripts/build_memory_atlas_clusters.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/clusters.json`
+- `人类可读/13_行为簇与层级簇说明.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-p1`
+- `ACC-MA-V12-S06P1`
+- `MA-V12-S06P1`
+- S06 P1
+- `build_memory_atlas_clusters.py`
+- `atlasctl.py analyze --stage clusters`
+- `clusters.json`
+- `source/time/project/task/language`
+- pending S06 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No low-value loop detection in this phase.
+- No opportunity cards in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P1 Cluster Builder; MA-V12-S06P1; ACC-MA-V12-S06P1; phase_s06_p1_cluster_builder_completed_pending_s06_p2; validate:v1.2-s06-p1; build_memory_atlas_clusters.py; atlasctl.py analyze --stage clusters; clusters.json; S06 P1; pending S06 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No low-value loop detection; No opportunity cards.
+
+## v1.2 S05 Review
+
+状态：`stage_s05_review_passed_pending_s06_no_github_main_upload`。
+
+任务 ID：`MA-V12-S05-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S05-REVIEW`。
+
+S05 Review 完成 Memory Atlas v1.2 Anthropic 化 Facet 抽取与事件语义层的整体复审。
+复审覆盖 S05 P1 schema、S05 P2 extractor 和 S05 P3 evidence_refs，确认行为事件与
+facets 可进入后续 cluster、ROI、latent、visualization。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s05_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs`
+- `data/derived/behavior_intelligence/events.json`
+- `人类可读/12_Facet字段与事件语义说明.md`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-review`
+- `ACC-MA-V12-S05-REVIEW`
+- `MA-V12-S05-REVIEW`
+- S05 Review
+- S05 整体复审已通过
+- pending S06 P1
+- No GitHub main upload in this review
+
+边界：
+
+- No remote push in this review.
+- No raw mutation in this review.
+- No fake events.
+- No app reinstall in this review.
+- No GitHub main upload in this review.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 Review; MA-V12-S05-REVIEW; ACC-MA-V12-S05-REVIEW; stage_s05_review_passed_pending_s06_no_github_main_upload; validate:v1.2-s05-review; memory_atlas_v1_2_s05_review.md; S05 Review; S05 整体复审已通过; pending S06 P1; No GitHub main upload in this review; No remote push in this review; No raw mutation in this review; No fake events.
+
+## v1.2 S05 P3 Evidence Refs
+
+状态：`phase_s05_p3_evidence_refs_completed_pending_s05_review`。
+
+任务 ID：`MA-V12-S05P3`。
+
+验收 ID：`ACC-MA-V12-S05P3`。
+
+S05 P3 实现 Memory Atlas v1.2 的轻量 evidence_refs。它不实现 Raw-to-Insight
+Replay UI，只在 canonical behavior events 中保留 source_id、record_id 和指向
+raw、manifest、derived 或 missing reason 的证据引用。
+
+涉及文件：
+
+- `scripts/extract_memory_atlas_facets.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/events.json`
+- `docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-p3`
+- `ACC-MA-V12-S05P3`
+- `MA-V12-S05P3`
+- S05 P3
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `events.json`
+- 217 events
+- 434 evidence_refs
+- pending S05 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No fake events.
+- No Raw-to-Insight Replay UI in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P3 Evidence Refs; MA-V12-S05P3; ACC-MA-V12-S05P3; phase_s05_p3_evidence_refs_completed_pending_s05_review; validate:v1.2-s05-p3; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; 434 evidence_refs; S05 P3; pending S05 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
+## v1.2 S05 P2 Facet Extractor
+
+状态：`phase_s05_p2_facet_extractor_completed_pending_s05_p3`。
+
+任务 ID：`MA-V12-S05P2`。
+
+验收 ID：`ACC-MA-V12-S05P2`。
+
+S05 P2 实现 Memory Atlas v1.2 的 facet extractor。它从已有 public raw、
+processed manifest 和 derived snapshot 中生成 canonical behavior events，并把缺失来源写入
+source_status missing reason，而不是生成 fake events。
+
+涉及文件：
+
+- `scripts/extract_memory_atlas_facets.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/events.json`
+- `docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-p2`
+- `ACC-MA-V12-S05P2`
+- `MA-V12-S05P2`
+- S05 P2
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `events.json`
+- 217 events
+- pending S05 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No fake events.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P2 Facet Extractor; MA-V12-S05P2; ACC-MA-V12-S05P2; phase_s05_p2_facet_extractor_completed_pending_s05_p3; validate:v1.2-s05-p2; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; S05 P2; pending S05 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
+## v1.2 S05 P1 Facet Schema
+
+状态：`phase_s05_p1_facet_schema_completed_pending_s05_p2`。
+
+任务 ID：`MA-V12-S05P1`。
+
+验收 ID：`ACC-MA-V12-S05P1`。
+
+S05 P1 定义 Memory Atlas v1.2 的 facet/canonical event schema。它覆盖
+ChatGPT、Codex 和 future agent 的后续事件语义层，并用中文解释英文机器字段。
+
+涉及文件：
+
+- `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
+- `人类可读/12_Facet字段与事件语义说明.md`
+- `docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-p1`
+- `ACC-MA-V12-S05P1`
+- `MA-V12-S05P1`
+- S05 P1
+- `facet_event_schema.v1_2_s05_p1.json`
+- `12_Facet字段与事件语义说明.md`
+- pending S05 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No extractor in this phase.
+- No fake events in this phase.
+- No raw mutation in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P1 Facet Schema; MA-V12-S05P1; ACC-MA-V12-S05P1; phase_s05_p1_facet_schema_completed_pending_s05_p2; validate:v1.2-s05-p1; facet_event_schema.v1_2_s05_p1.json; 12_Facet字段与事件语义说明.md; memory_atlas_v1_2_s05_p1_facet_schema.md; S05 P1; pending S05 P2; No GitHub main upload in this phase; No remote push in this phase; No extractor in this phase; No fake events in this phase; No raw mutation in this phase.
+
+## v1.2 S04 Review
+
+状态：`stage_s04_review_passed_pending_s05_no_github_main_upload`。
+
+任务 ID：`MA-V12-S04-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S04-REVIEW`。
+
+S04 Review 完成 Memory Atlas v1.2 自动同步 MVP 的整体复审。复审覆盖
+ChatGPT 只读同步、official export fallback、Codex local sync、future-agent
+minimal adapter、raw + derived + run log 输出、build-atlas dry-run 和 GitHub
+backup dry-run/apply 本地控制面。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s04_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_review.cjs`
+- `apps/memory-atlas/package.json`
+- `人类可读/00_快速入口.md`
+- `人类可读/01_v1.2四线14Stage升级总览.md`
+- `机器治理/README.md`
+- `机器治理/同步与备份/README.md`
+- `机器治理/运行门禁/README.md`
+
+验收：
+
+- `validate:v1.2-s04-review`
+- `ACC-MA-V12-S04-REVIEW`
+- `MA-V12-S04-REVIEW`
+- S04 Review
+- `memory_atlas_v1_2_s04_review.md`
+- pending S05 P1
+- No GitHub main upload in this review
+
+边界：
+
+- No remote push in this review.
+- No app reinstall.
+- No ChatGPT mutation.
+- No credential capture.
+- No fake sync data.
+- No GitHub main upload in this review.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 Review; MA-V12-S04-REVIEW; ACC-MA-V12-S04-REVIEW; stage_s04_review_passed_pending_s05_no_github_main_upload; validate:v1.2-s04-review; memory_atlas_v1_2_s04_review.md; S04 Review; pending S05 P1; No GitHub main upload in this review; No remote push in this review; No app reinstall; No ChatGPT mutation; No credential capture; No fake sync data.
+
+## v1.2 S04 P3 GitHub Backup
+
+状态：`phase_s04_p3_github_backup_completed_pending_s04_review`。
+
+任务 ID：`MA-V12-S04P3`。
+
+验收 ID：`ACC-MA-V12-S04P3`。
+
+S04 P3 实现 Memory Atlas v1.2 的 GitHub backup 本地控制面。备份范围覆盖
+raw、derived、reports 和 run logs；dry-run 不写文件；apply 只本地 git add/commit，
+不执行远端 push。
+
+涉及文件：
+
+- `机器治理/同步与备份/github_backup_policy.v1_2_s04_p3.json`
+- `scripts/github_backup.py`
+- `scripts/atlasctl.py`
+- `人类可读/11_GitHub备份DryRun与Apply.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p3.cjs`
+- `tests/test_s04p3_github_backup.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s04-p3`
+- `ACC-MA-V12-S04P3`
+- `MA-V12-S04P3`
+- S04 P3
+- `memory_atlas_v1_2_s04_p3_github_backup.md`
+- `github_backup_policy.v1_2_s04_p3.json`
+- `github_backup.py`
+- `atlasctl.py`
+- pending S04 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No app reinstall.
+- No ChatGPT mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P3 GitHub Backup; MA-V12-S04P3; ACC-MA-V12-S04P3; phase_s04_p3_github_backup_completed_pending_s04_review; validate:v1.2-s04-p3; memory_atlas_v1_2_s04_p3_github_backup.md; github_backup_policy.v1_2_s04_p3.json; github_backup.py; atlasctl.py; S04 P3; pending S04 Review; No GitHub main upload in this phase; No remote push in this phase; No app reinstall; No ChatGPT mutation.
+
+## v1.2 S04 P2 Codex/Future Agent Sync
+
+状态：`phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`。
+
+任务 ID：`MA-V12-S04P2`。
+
+验收 ID：`ACC-MA-V12-S04P2`。
+
+S04 P2 实现 Memory Atlas v1.2 的 Codex local sync 与 future-agent minimal adapter
+同步入口。每个来源均固定 raw + derived + run log 输出合同；dry-run 不写文件，
+apply 缺少输入时不能生成伪数据。
+
+涉及文件：
+
+- `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`
+- `scripts/sync_codex_memory_data.py`
+- `scripts/sync_future_agent_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/10_Codex与FutureAgent同步.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p2.cjs`
+- `tests/test_s04p2_codex_agent_sync.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s04-p2`
+- `ACC-MA-V12-S04P2`
+- `MA-V12-S04P2`
+- S04 P2
+- `memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `codex_agent_sync_policy.v1_2_s04_p2.json`
+- `sync_codex_memory_data.py`
+- `sync_future_agent_data.py`
+- `atlasctl.py`
+- pending S04 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No GitHub backup apply.
+- No credential storage.
+- No browser mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync; MA-V12-S04P2; ACC-MA-V12-S04P2; phase_s04_p2_codex_agent_sync_completed_pending_s04_p3; validate:v1.2-s04-p2; memory_atlas_v1_2_s04_p2_codex_agent_sync.md; codex_agent_sync_policy.v1_2_s04_p2.json; sync_codex_memory_data.py; sync_future_agent_data.py; atlasctl.py; S04 P2; pending S04 P3; No GitHub main upload in this phase; No GitHub backup apply; No credential storage; No browser mutation.
+
+## v1.2 S04 P1 ChatGPT Sync
+
+状态：`phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`。
+
+任务 ID：`MA-V12-S04P1`。
+
+验收 ID：`ACC-MA-V12-S04P1`。
+
+S04 P1 实现 Memory Atlas v1.2 的 ChatGPT 只读同步入口。浏览器 connector 在本阶段为
+read-only contract；遇到密码/验证码立即停止；不得发送消息、删除、归档或重命名会话。
+可执行路径为 official export ZIP/conversations.json fallback。
+
+涉及文件：
+
+- `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `scripts/sync_chatgpt_memory_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/09_ChatGPT只读同步与官方导出Fallback.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p1.cjs`
+- `tests/test_s04p1_chatgpt_sync.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s04-p1`
+- `ACC-MA-V12-S04P1`
+- `MA-V12-S04P1`
+- S04 P1
+- `memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+- `chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `sync_chatgpt_memory_data.py`
+- `atlasctl.py`
+- pending S04 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No Codex local sync.
+- No future-agent adapter.
+- No GitHub backup apply.
+- No browser mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P1 ChatGPT Sync; MA-V12-S04P1; ACC-MA-V12-S04P1; phase_s04_p1_chatgpt_sync_completed_pending_s04_p2; validate:v1.2-s04-p1; memory_atlas_v1_2_s04_p1_chatgpt_sync.md; chatgpt_readonly_sync_policy.v1_2_s04_p1.json; sync_chatgpt_memory_data.py; atlasctl.py; S04 P1; pending S04 P2; No GitHub main upload in this phase; No Codex local sync; No future-agent adapter; No GitHub backup apply; No browser mutation.
+
+## v1.2 S03 Review
+
+状态：`stage_s03_review_passed_pending_s04_no_github_main_upload`。
+
+任务 ID：`MA-V12-S03-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S03-REVIEW`。
+
+S03 Review 完成 Memory Atlas v1.2 的 S03 阶段复审。复审覆盖 S03 P1、S03 P2
+和 S03 P3，确认 raw 可公开备份、append-only、credential exclusion 和
+raw manifest/hash 均可验证。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s03_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_review.cjs`
+- `apps/memory-atlas/package.json`
+- `人类可读/00_快速入口.md`
+- `人类可读/01_v1.2四线14Stage升级总览.md`
+- `机器治理/README.md`
+- `机器治理/同步与备份/README.md`
+- `机器治理/证据与日志/README.md`
+- `机器治理/运行门禁/README.md`
+
+验收：
+
+- `validate:v1.2-s03-review`
+- `ACC-MA-V12-S03-REVIEW`
+- `MA-V12-S03-REVIEW`
+- S03 Review
+- `memory_atlas_v1_2_s03_review.md`
+- pending S04 P1
+- No GitHub main upload in this review
+
+边界：
+
+- No connector implementation.
+- No real transcript ingestion.
+- No UI work.
+- No public raw file mutation.
+- No GitHub main upload in this review.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 Review; MA-V12-S03-REVIEW; ACC-MA-V12-S03-REVIEW; stage_s03_review_passed_pending_s04_no_github_main_upload; validate:v1.2-s03-review; memory_atlas_v1_2_s03_review.md; S03 Review; pending S04 P1; No GitHub main upload in this review; No connector implementation; No real transcript ingestion; No UI work; No public raw file mutation.
+
+## v1.2 S03 P3 Machine Ledger
+
+状态：`phase_s03_p3_machine_ledger_completed_pending_s03_review`。
+
+任务 ID：`MA-V12-S03P3`。
+
+验收 ID：`ACC-MA-V12-S03P3`。
+
+S03 P3 实现 Memory Atlas v1.2 的 raw manifest/hash 机器账本。它生成
+`raw_manifest.s03_p3_baseline.jsonl` 和 `raw_hash_ledger.jsonl`，并通过
+`scripts/raw_archive_manifest.py` 提供 append-only audit。当前没有真实 raw transcript，
+因此 baseline ledger 可以为空；后续新增 raw 只能追加。
+
+涉及文件：
+
+- `scripts/raw_archive_manifest.py`
+- `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`
+- `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`
+- `人类可读/08_Raw机器账本说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s03-p3`
+- `ACC-MA-V12-S03P3`
+- S03 P3
+- `memory_atlas_v1_2_s03_p3_machine_ledger.md`
+- `raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `raw_archive_manifest.py`
+- raw manifest/hash can be generated
+- source/file/hash/imported_at
+- pending S03 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No connector implementation.
+- No real transcript ingestion.
+- No UI work.
+- No public raw file mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P3 Machine Ledger; MA-V12-S03P3; ACC-MA-V12-S03P3; phase_s03_p3_machine_ledger_completed_pending_s03_review; validate:v1.2-s03-p3; memory_atlas_v1_2_s03_p3_machine_ledger.md; raw_manifest_ledger_policy.v1_2_s03_p3.json; raw_archive_manifest.py; raw_manifest.s03_p3_baseline.jsonl; raw_hash_ledger.jsonl; S03 P3; pending S03 Review; No GitHub main upload in this phase; No connector implementation; No real transcript ingestion; No UI work; No public raw file mutation.
+
+## v1.2 S03 P2 Credential Exclusion
+
+状态：`phase_s03_p2_credential_exclusion_completed_pending_s03_p3`。
+
+任务 ID：`MA-V12-S03P2`。
+
+验收 ID：`ACC-MA-V12-S03P2`。
+
+S03 P2 实现 Memory Atlas v1.2 的 credential is not memory 轻量门禁。
+普通 transcript 仍然是 memory；cookie、session token、password、api key、
+private key、oauth token 和 browser credential store 不能进入 GitHub。
+
+涉及文件：
+
+- `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
+- `scripts/privacy_guard.py`
+- `scripts/sync_codex_memory_data.py`
+- `人类可读/07_凭证排除说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s03-p2`
+- `ACC-MA-V12-S03P2`
+- S03 P2
+- `memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+- `credential_exclusion_policy.v1_2_s03_p2.json`
+- credential is not memory
+- pending S03 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No S03 P3 manifest generation.
+- No connector implementation.
+- No complex UI.
+- No real transcript ingestion.
+- No public raw file mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P2 Credential Exclusion; MA-V12-S03P2; ACC-MA-V12-S03P2; phase_s03_p2_credential_exclusion_completed_pending_s03_p3; validate:v1.2-s03-p2; memory_atlas_v1_2_s03_p2_credential_exclusion.md; credential_exclusion_policy.v1_2_s03_p2.json; credential is not memory; S03 P2; pending S03 P3; No GitHub main upload in this phase; No S03 P3 manifest generation; No connector implementation; No complex UI; No real transcript ingestion; No public raw file mutation.
+
+## v1.2 S03 P1 Public Raw Path
+
+状态：`phase_s03_p1_public_raw_path_defined_pending_s03_p2`。
+
+任务 ID：`MA-V12-S03P1`。
+
+验收 ID：`ACC-MA-V12-S03P1`。
+
+S03 P1 定义 Memory Atlas v1.2 的 public raw archive path、raw manifest/hash file、
+append-only rule 和 hash drift fail rule。该 phase 不导入真实 transcript，不实现
+credential gate，不生成 manifest ledger，不实现 connector。
+
+涉及文件：
+
+- `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- `人类可读/06_Raw明文公开与只读归档说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s03-p1`
+- `ACC-MA-V12-S03P1`
+- S03 P1
+- `memory_atlas_v1_2_s03_p1_public_raw_path.md`
+- `raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- pending S03 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No S03 P2 credential gate.
+- No S03 P3 manifest generation.
+- No connector implementation.
+- No transcript ingestion in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P1 Public Raw Path; MA-V12-S03P1; ACC-MA-V12-S03P1; phase_s03_p1_public_raw_path_defined_pending_s03_p2; validate:v1.2-s03-p1; memory_atlas_v1_2_s03_p1_public_raw_path.md; raw_public_archive_policy.v1_2_s03_p1.json; data/public_raw/README.md; S03 P1; pending S03 P2; No GitHub main upload in this phase; No S03 P2 credential gate; No S03 P3 manifest generation; No connector implementation; No transcript ingestion in this phase.
+
+## v1.2 S02 Review
+
+状态：`stage_s02_review_passed_pending_s03_no_github_main_upload`。
+
+任务 ID：`MA-V12-S02-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S02-REVIEW`。
+
+S02 Review 复审 S02 P1、S02 P2、S02 P3 的 source model、source registry、
+人类同步说明、public_backup_mode、transcript/credential boundary 和 future agent
+扩展。S02 整体复审已通过，下一步为 pending S03 P1。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s02_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_review.cjs`
+- `apps/memory-atlas/package.json`
+- `人类可读/00_快速入口.md`
+- `机器治理/运行门禁/README.md`
+
+验收：
+
+- `validate:v1.2-s02-review`
+- `ACC-MA-V12-S02-REVIEW`
+- S02 Review
+- `memory_atlas_v1_2_s02_review.md`
+- pending S03 P1
+- No GitHub main upload in this review
+
+边界：
+
+- No connector implementation.
+- No GitHub main upload in this review.
+- No app reinstall.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 Review; MA-V12-S02-REVIEW; ACC-MA-V12-S02-REVIEW; stage_s02_review_passed_pending_s03_no_github_main_upload; validate:v1.2-s02-review; memory_atlas_v1_2_s02_review.md; S02 Review; pending S03 P1; No GitHub main upload in this review; No connector implementation; No raw archive change.
+
+## v1.2 S02 P3 Human Sync Explanation
+
+状态：`phase_s02_p3_human_sync_explanation_completed_pending_s02_review`。
+
+任务 ID：`MA-V12-S02P3`。
+
+验收 ID：`ACC-MA-V12-S02P3`。
+
+S02 P3 创建 `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`，明确
+ChatGPT、Codex、后续其他 agent 数据备份进 GitHub。该 phase 只创建人类说明页，
+不实现 connector，不写 raw archive。
+
+涉及文件：
+
+- `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `docs/reviews/memory_atlas_v1_2_s02_p3_human_sync_explanation.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s02-p3`
+- `ACC-MA-V12-S02P3`
+- S02 P3
+- `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `memory_atlas_v1_2_s02_p3_human_sync_explanation.md`
+- pending S02 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No connector implementation.
+- No GitHub main upload in this phase.
+- No app reinstall.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P3 Human Sync Explanation; MA-V12-S02P3; ACC-MA-V12-S02P3; phase_s02_p3_human_sync_explanation_completed_pending_s02_review; validate:v1.2-s02-p3; memory_atlas_v1_2_s02_p3_human_sync_explanation.md; 人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md; S02 P3; pending S02 Review; No GitHub main upload in this phase; No connector implementation; No raw archive change.
+
+## v1.2 S02 P2 Source Registry
+
+状态：`phase_s02_p2_source_registry_completed_pending_s02_p3`。
+
+任务 ID：`MA-V12-S02P2`。
+
+验收 ID：`ACC-MA-V12-S02P2`。
+
+S02 P2 建立 `sync_source_registry.json`，注册 ChatGPT、Codex 和
+future_agent_template。该 phase 只建立 registry，不创建人类同步说明页，不实现 connector。
+
+涉及文件：
+
+- `机器治理/同步与备份/sync_source_registry.json`
+- `docs/reviews/memory_atlas_v1_2_s02_p2_source_registry.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s02-p2`
+- `ACC-MA-V12-S02P2`
+- S02 P2
+- `sync_source_registry.json`
+- `memory_atlas_v1_2_s02_p2_source_registry.md`
+- pending S02 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No human sync page in this phase.
+- No connector implementation.
+- No GitHub main upload in this phase.
+- No app reinstall.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P2 Source Registry; MA-V12-S02P2; ACC-MA-V12-S02P2; phase_s02_p2_source_registry_completed_pending_s02_p3; validate:v1.2-s02-p2; memory_atlas_v1_2_s02_p2_source_registry.md; sync_source_registry.json; S02 P2; pending S02 P3; No GitHub main upload in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
+## v1.2 S02 P1 Source Data Model
+
+状态：`phase_s02_p1_source_data_model_completed_pending_s02_p2`。
+
+任务 ID：`MA-V12-S02P1`。
+
+验收 ID：`ACC-MA-V12-S02P1`。
+
+S02 P1 定义 ChatGPT、Codex、后续其他 agent 的统一 source data model。该 phase
+只定义模型，不建立 source registry，不创建人类同步说明页，不实现 connector。
+
+涉及文件：
+
+- `机器治理/数据契约/source_data_model.v1_2_s02_p1.json`
+- `docs/reviews/memory_atlas_v1_2_s02_p1_source_data_model.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s02-p1`
+- `ACC-MA-V12-S02P1`
+- S02 P1
+- `source_data_model.v1_2_s02_p1.json`
+- `memory_atlas_v1_2_s02_p1_source_data_model.md`
+- pending S02 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No source registry file in this phase.
+- No human sync page in this phase.
+- No connector implementation.
+- No GitHub main upload in this phase.
+- No app reinstall.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P1 Source Data Model; MA-V12-S02P1; ACC-MA-V12-S02P1; phase_s02_p1_source_data_model_completed_pending_s02_p2; validate:v1.2-s02-p1; memory_atlas_v1_2_s02_p1_source_data_model.md; source_data_model.v1_2_s02_p1.json; S02 P1; pending S02 P2; No GitHub main upload in this phase; No source registry file in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
+## v1.2 S01 Review
+
+状态：`stage_s01_review_passed_pending_s02_no_github_main_upload`。
+
+任务 ID：`MA-V12-S01-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S01-REVIEW`。
+
+S01 Review 复审 S01 P1、S01 P2、S01 P3 的文件、记录、validator、stop condition
+和 pass gate。S01 整体复审已通过，下一步为 pending S02 P1。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s01_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs`
+- `apps/memory-atlas/package.json`
+- `人类可读/00_快速入口.md`
+- `机器治理/运行门禁/README.md`
+
+验收：
+
+- `validate:v1.2-s01-review`
+- `ACC-MA-V12-S01-REVIEW`
+- S01 Review
+- `memory_atlas_v1_2_s01_review.md`
+- pending S02 P1
+- No GitHub main upload in this review
+
+边界：
+
+- No S02 work.
+- No GitHub main upload in this review.
+- No app reinstall.
+- No raw archive change.
+- No runtime directory move.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 Review; MA-V12-S01-REVIEW; ACC-MA-V12-S01-REVIEW; stage_s01_review_passed_pending_s02_no_github_main_upload; validate:v1.2-s01-review; memory_atlas_v1_2_s01_review.md; S01 Review; pending S02 P1; No GitHub main upload in this review; No S02 work; No app reinstall; No raw archive change; No runtime directory move.
+
+## v1.2 S01 P3 Requirements Freeze
+
+状态：`phase_s01_p3_requirements_freeze_completed_pending_s01_review`。
+
+任务 ID：`MA-V12-S01P3`。
+
+验收 ID：`ACC-MA-V12-S01P3`。
+
+S01 P3 写入 v1.2 需求冻结：四线范围、14 Stage 执行规则、raw 公开授权、凭证排除、
+后续其他 agent source registry 扩展规则进入机器门禁。README、AGENTS、人类入口和
+运行门禁说明已桥接旧 raw/private 边界。
+
+涉及文件：
+
+- `机器治理/运行门禁/v1.2需求冻结清单.json`
+- `docs/reviews/memory_atlas_v1_2_s01_p3_requirements_freeze.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs`
+
+验收：
+
+- `validate:v1.2-s01-p3`
+- `ACC-MA-V12-S01P3`
+- S01 P3
+- `v1.2需求冻结清单.json`
+- README/AGENTS bridge
+- No GitHub main upload in this phase
+
+边界：
+
+- No S01 review.
+- No S02.
+- No app reinstall.
+- No GitHub main upload in this phase.
+- No apps/scripts/tests/config move.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P3 Requirements Freeze; MA-V12-S01P3; ACC-MA-V12-S01P3; phase_s01_p3_requirements_freeze_completed_pending_s01_review; validate:v1.2-s01-p3; memory_atlas_v1_2_s01_p3_requirements_freeze.md; v1.2需求冻结清单.json; S01 P3; No GitHub main upload in this phase; No S01 review; No S02; No app reinstall; No apps/scripts/tests/config move; No raw archive change.
+
+## v1.2 S01 P2 Double Plane Creation
+
+状态：`phase_s01_p2_double_plane_created_pending_s01_p3`。
+
+任务 ID：`MA-V12-S01P2`。
+
+验收 ID：`ACC-MA-V12-S01P2`。
+
+S01 P2 创建 v1.2 双平面：`人类可读/` 作为用户阅读入口，`机器治理/` 作为机器配置、
+验收、证据和运行门禁入口。根目录三件套继续保留为 owner 门面，现有运行代码目录未移动。
+
+涉及文件：
+
+- `人类可读/00_快速入口.md`
+- `人类可读/01_v1.2四线14Stage升级总览.md`
+- `机器治理/README.md`
+- `docs/reviews/memory_atlas_v1_2_s01_p2_double_plane_creation.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p2.cjs`
+
+验收：
+
+- `validate:v1.2-s01-p2`
+- `ACC-MA-V12-S01P2`
+- S01 P2
+- `人类可读/00_快速入口.md`
+- `机器治理/README.md`
+- root owner three files preserved
+- No GitHub main upload in this phase
+
+边界：
+
+- No S01 P3.
+- No v1.2 requirements freeze config in this phase.
+- No GitHub main upload in this phase.
+- No apps/scripts/tests/config move.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P2 Double Plane Creation; MA-V12-S01P2; ACC-MA-V12-S01P2; phase_s01_p2_double_plane_created_pending_s01_p3; validate:v1.2-s01-p2; memory_atlas_v1_2_s01_p2_double_plane_creation.md; S01 P2; No GitHub main upload in this phase; No S01 P3; No v1.2 requirements freeze config in this phase; No apps/scripts/tests/config move; No raw archive change.
+
+## v1.2 S01 P1 Current State Audit
+
+状态：`phase_s01_p1_current_state_audited_pending_s01_p2`。
+
+任务 ID：`MA-V12-S01P1`。
+
+验收 ID：`ACC-MA-V12-S01P1`。
+
+S01 P1 完成 v1.2 正式执行前的现状核验：确认 TaskPack/Roadmap 输入、canonical
+repo、三件套、Memory Atlas package、现有治理和运行目录位置、双平面缺口，以及
+v1.1.x raw/private 边界中需要被 v1.2 替换或桥接的规则。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s01_p1_current_state_audit.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s01-p1`
+- `ACC-MA-V12-S01P1`
+- S01 P1
+- TaskPack/Roadmap hashes recorded
+- old boundary replacement needs listed
+- No GitHub main upload in this phase
+
+边界：
+
+- No S01 P2.
+- No S01 P3.
+- No GitHub main upload in this phase.
+- No apps/scripts/tests/config move.
+- No AGENTS taskpack dump.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P1 Current State Audit; MA-V12-S01P1; ACC-MA-V12-S01P1; phase_s01_p1_current_state_audited_pending_s01_p2; validate:v1.2-s01-p1; memory_atlas_v1_2_s01_p1_current_state_audit.md; S01 P1; No GitHub main upload in this phase; No S01 P2; No S01 P3; No apps/scripts/tests/config move; No AGENTS taskpack dump; No raw archive change.
+
+## v1.1.7 Final GitHub Main Upload
+
+状态：`final_github_main_upload_completed`。
+
+任务 ID：`MA-V117-FINAL-UPLOAD`。
+
+验收 ID：`ACC-MA-V117-FINAL-GITHUB-MAIN`。
+
+本 final upload 将 Memory Atlas v1.1.7 Stage 0-10 的完整开发、验收、
+治理记录和恢复资料同步到 GitHub main。GitHub main points at the final
+upload commit，并作为后续 agent 的恢复源。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_final_upload.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-final-upload`
+- `validate:v1.1.7-stage10`
+- `ACC-MA-V117-FINAL-GITHUB-MAIN`
+- GitHub main points at the final upload commit
+- No remote development branch
+- No open pull request
+
+边界：
+
+- No remote development branch.
+- No open pull request.
+- No Cloudflare live deploy.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+
+Machine-readable boundary summary: Final GitHub Main Upload; MA-V117-FINAL-UPLOAD; ACC-MA-V117-FINAL-GITHUB-MAIN; final_github_main_upload_completed; validate:v1.1.7-final-upload; validate:v1.1.7-stage10; GitHub main points at the final upload commit; No remote development branch; No open pull request; No Cloudflare live deploy; No raw/private data read; No direct active-memory writeback; No proposal queue write.
+
+## v1.1.7 Stage 10 Review：Final Hardening Gate
+
+状态：`stage_10_review_passed_pending_final_github_main_upload`。
+
+任务 ID：`MA-V117-S10-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S10-REVIEW`。
+
+Stage 10 Review 固定 Stage 10 Phase 10.1 Final hardening upload readiness，
+并把本地最终验收门槛绑定到 whole-project validator。该 review 只补 review
+artifact、stage-level validator、Part 2 schema compatibility hardening 和治理记录。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage10_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage10.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_part2_stage1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage10`
+- `ACC-MA-V117-S10-REVIEW`
+- Stage 10 Review
+- Stage 10 Phase 10.1
+- Final hardening upload readiness
+- `validate:v1.1.7-stage10-phase1`
+- `validate:whole-project`
+- `validate:part2-stage1`
+- schema compatibility hardening
+- legacy whole-project validator hardening
+- Chinese-first copy hardening
+- `memory_starfield_spike_fixture.v1_1_7_stage4_phase2`
+- `memory_river_spike_fixture.v1_1_7_stage5_phase2`
+- pending final one-time GitHub main upload
+
+边界：
+
+- No intermediate GitHub upload.
+- No GitHub main upload in this review.
+- No remote development branch.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+
+Machine-readable boundary summary: Stage 10 Review; MA-V117-S10-REVIEW; ACC-MA-V117-S10-REVIEW; stage_10_review_passed_pending_final_github_main_upload; validate:v1.1.7-stage10; Stage 10 Phase 10.1; Final hardening upload readiness; validate:v1.1.7-stage10-phase1; validate:whole-project; validate:part2-stage1; schema compatibility hardening; legacy whole-project validator hardening; Chinese-first copy hardening; memory_starfield_spike_fixture.v1_1_7_stage4_phase2; memory_river_spike_fixture.v1_1_7_stage5_phase2; pending final one-time GitHub main upload; No intermediate GitHub upload; No GitHub main upload in this review; No remote development branch; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## v1.1.7 Stage 10 Phase 10.1：Final Hardening Upload Readiness
+
+状态：`phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`。
+
+任务 ID：`MA-V117-S10P01`。
+
+验收 ID：`ACC-MA-V117-S10P01`。
+
+合同 ID：`memory_atlas_v1_1_7_final_hardening_upload_readiness_contract`。
+
+本 phase 建立 Stage 10 final hardening/upload readiness 合同，固定后续
+Stage 10 review 必须证明的六类矩阵：
+
+- `performance_safety_accessibility_matrix`
+- `release_rollback_matrix`
+- `final_validation_matrix`
+- `github_main_upload_matrix`
+- `governance_sync_matrix`
+- `new_machine_recovery_matrix`
+
+涉及文件：
+
+- `docs/product/memory_atlas_v1_1_7_final_hardening_upload_readiness_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage10_phase1_final_hardening_upload_readiness_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage10_phase1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage10-phase1`
+- `ACC-MA-V117-S10P01`
+- Stage 10 Phase 10.1
+- desktop target 45-60 FPS
+- reduced-motion fallback
+- Stage 9 review must be complete
+- pending Stage 10 review
+
+边界：
+
+- No intermediate GitHub upload.
+- No GitHub main upload in this phase.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+
+Machine-readable boundary summary: Stage 10 Phase 10.1; MA-V117-S10P01; ACC-MA-V117-S10P01; phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review; memory_atlas_v1_1_7_final_hardening_upload_readiness_contract; validate:v1.1.7-stage10-phase1; performance_safety_accessibility_matrix; release_rollback_matrix; final_validation_matrix; github_main_upload_matrix; governance_sync_matrix; new_machine_recovery_matrix; desktop target 45-60 FPS; reduced-motion fallback; Stage 9 review must be complete; pending Stage 10 review; No intermediate GitHub upload; No GitHub main upload in this phase; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## v1.1.7 Stage 9 Review：Cross-board Shared State Gate
+
+状态：`stage_9_review_passed_pending_stage10_no_github_main_upload`。
+
+任务 ID：`MA-V117-S9-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S9-REVIEW`。
+
+Stage 9 is review-passed and pending Stage 10. 本 review 固定一个已完成
+phase gate：Phase 9.1 Cross-board shared state、synchronized filters 和
+Inspector explanation layer。它只补 Stage 9 review artifact、stage-level
+validator 和治理记录。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage9_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage9.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage9`
+- `ACC-MA-V117-S9-REVIEW`
+- Phase 9.1
+- Cross-board shared state
+- synchronized filters
+- Inspector explanation layer
+- `cross_board_shared_state.v1_1_7_stage9_phase1`
+- `inspector_explanation_layer.v1_1_7_stage9_phase1`
+- `shared_state_filters`
+- `synchronized_filters`
+- `inspector_explanation_layer`
+- pending Stage 10
+
+边界：
+
+- No Stage 10 work.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Stage 9 Review; MA-V117-S9-REVIEW; ACC-MA-V117-S9-REVIEW; stage_9_review_passed_pending_stage10_no_github_main_upload; validate:v1.1.7-stage9; Phase 9.1; Cross-board shared state; synchronized filters; Inspector explanation layer; cross_board_shared_state.v1_1_7_stage9_phase1; inspector_explanation_layer.v1_1_7_stage9_phase1; shared_state_filters; synchronized_filters; inspector_explanation_layer; pending Stage 10; No Stage 10 work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 9 Phase 9.1：Cross-board Shared State
+
+状态：`phase_9_1_cross_board_shared_state_completed_pending_stage9_review`。
+
+任务 ID：`MA-V117-S9P01`。
+
+验收 ID：`ACC-MA-V117-S9P01`。
+
+本 phase 将 Cross-board shared state、synchronized filters 和 Inspector
+explanation layer 固定为 production runtime 的可验收接口。Runtime version 为
+`cross_board_shared_state.v1_1_7_stage9_phase1`，Inspector layer version 为
+`inspector_explanation_layer.v1_1_7_stage9_phase1`。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage9_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_cross_board_shared_state_browser.cjs`
+- `docs/product/memory_atlas_v1_1_7_stage9_phase1_cross_board_shared_state_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage9_phase1_cross_board_shared_state_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage9-phase1`
+- `validate:cross-board-shared-state-browser`
+- `ACC-MA-V117-S9P01`
+- Browser gate 覆盖 app root marker、Interaction Lens marker、`window.__memoryAtlasStage9Phase1()`、shared_state_filters、synchronized_filters、Inspector explanation layer、screenshot 和 console safety。
+
+边界：
+
+- No Stage 9 review.
+- No Stage 10.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Phase 9.1; Cross-board shared state; MA-V117-S9P01; ACC-MA-V117-S9P01; phase_9_1_cross_board_shared_state_completed_pending_stage9_review; validate:v1.1.7-stage9-phase1; validate:cross-board-shared-state-browser; cross_board_shared_state.v1_1_7_stage9_phase1; inspector_explanation_layer.v1_1_7_stage9_phase1; shared_state_filters; synchronized_filters; inspector_explanation_layer; Inspector explanation layer; No Stage 9 review; No Stage 10; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 8 Review：Summary Closure Gate
+
+状态：`stage_8_review_passed_pending_stage9_no_github_main_upload`。
+
+任务 ID：`MA-V117-S8-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S8-REVIEW`。
+
+Stage 8 is review-passed and pending Stage 9. 本 review 固定一个已完成
+phase gate：Phase 8.1 Summary and iteration closure。它只补 Stage 8 review
+artifact、stage-level validator 和治理记录。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage8_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage8.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage8`
+- `ACC-MA-V117-S8-REVIEW`
+- Phase 8.1
+- Summary and iteration closure
+- pending Stage 9
+
+边界：
+
+- No Stage 9 work.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Stage 8 Review; MA-V117-S8-REVIEW; ACC-MA-V117-S8-REVIEW; stage_8_review_passed_pending_stage9_no_github_main_upload; validate:v1.1.7-stage8; Phase 8.1; Summary and iteration closure; summary_iteration_closure_runtime.v1_1_7_stage8_phase1; memory_atlas_summary_closure.v1_1_7_stage8_phase1; change_comparison; stale_conflict_signals; proposal_candidates; pending Stage 9; No Stage 9 work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 8 Phase 8.1：Summary and Iteration Closure Runtime
+
+状态：`phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`。
+
+任务 ID：`MA-V117-S8P01`。
+
+验收 ID：`ACC-MA-V117-S8P01`。
+
+本 phase 将 Summary and iteration closure 接入 production `summary` view。
+Runtime version 为 `summary_iteration_closure_runtime.v1_1_7_stage8_phase1`，
+closure schema version 为 `memory_atlas_summary_closure.v1_1_7_stage8_phase1`。
+运行时基于 Stage 7.2 `memory_atlas_review_summary.v1_1_7_stage7_phase2` 派生
+`change_comparison`、`stale_conflict_signals` 和 `proposal_candidates`。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage8_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_summary_iteration_closure_browser.cjs`
+- `docs/product/summary_iteration_closure_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage8_phase1_summary_iteration_closure_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage8-phase1`
+- `validate:summary-iteration-closure-browser`
+- `ACC-MA-V117-S8P01`
+- Browser gate 覆盖 runtime root、change comparison、stale/conflict signals、proposal candidates、debug signal、screenshot 和 console safety。
+
+边界：
+
+- No Stage 8 review.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Phase 8.1; Summary and iteration closure; MA-V117-S8P01; ACC-MA-V117-S8P01; phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review; validate:v1.1.7-stage8-phase1; validate:summary-iteration-closure-browser; summary_iteration_closure_runtime.v1_1_7_stage8_phase1; memory_atlas_summary_closure.v1_1_7_stage8_phase1; memory_atlas_review_summary.v1_1_7_stage7_phase2; change_comparison; stale_conflict_signals; proposal_candidates; No Stage 8 review; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 7 Review：Search and Review Runtime Gate
+
+状态：`stage_7_review_passed_pending_stage8_no_github_main_upload`。
+
+任务 ID：`MA-V117-S7-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S7-REVIEW`。
+
+Stage 7 is review-passed and pending Stage 8. 本 review 固定两个已完成
+phase gate：Phase 7.1 Search 2.0，以及 Phase 7.2 Review / Summary /
+Iteration。它只补 Stage 7 review artifact、stage-level validator 和治理记录。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage7_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage7`
+- `ACC-MA-V117-S7-REVIEW`
+- Phase 7.1
+- Phase 7.2
+- Search 2.0
+- Review / Summary / Iteration
+- pending Stage 8
+
+边界：
+
+- No Stage 8 work.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Stage 7 Review; MA-V117-S7-REVIEW; ACC-MA-V117-S7-REVIEW; stage_7_review_passed_pending_stage8_no_github_main_upload; validate:v1.1.7-stage7; Phase 7.1; Phase 7.2; Search 2.0; Review / Summary / Iteration; pending Stage 8; No Stage 8 work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 7 Phase 7.2：Review / Summary / Iteration Runtime
+
+状态：`phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`。
+
+任务 ID：`MA-V117-S7P02`。
+
+验收 ID：`ACC-MA-V117-S7P02`。
+
+本 phase 将 Review / Summary / Iteration 接入 production `summary` view。
+Runtime version 为 `review_summary_iteration_runtime.v1_1_7_stage7_phase2`，
+schema version 为 `memory_atlas_review_summary.v1_1_7_stage7_phase2`。运行时回答八个复盘问题，并显示
+`proposal_candidate`、`evidence_refs` 和 `iteration_backlog`。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_review_summary_iteration_browser.cjs`
+- `docs/product/review_summary_iteration_workflow_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage7_phase2_review_summary_iteration_runtime_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage7-phase2`
+- `validate:review-summary-iteration-browser`
+- `ACC-MA-V117-S7P02`
+- Browser gate 覆盖 runtime root、八问、schema output、debug signal、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 7.2; Review / Summary / Iteration; MA-V117-S7P02; ACC-MA-V117-S7P02; phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase2; validate:review-summary-iteration-browser; review_summary_iteration_runtime.v1_1_7_stage7_phase2; memory_atlas_review_summary.v1_1_7_stage7_phase2; proposal_candidate; evidence_refs; iteration_backlog; No Stage 8 summary closure; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 7 Phase 7.1：Search 2.0 Runtime
+
+状态：`phase_7_1_search_2_0_runtime_completed_pending_stage7_review`。
+
+任务 ID：`MA-V117-S7P01`。
+
+验收 ID：`ACC-MA-V117-S7P01`。
+
+本 phase 将 Search 2.0 接入 production Search view。Runtime version 为
+`search_2_0_runtime.v1_1_7_stage7_phase1`，session summary version 为
+`search_2_0_session_summary.v1_1_7_stage7_phase1`。搜索结果显示
+`matched_reason`、`evidence_refs`、`proposal_candidate`，并提供
+`jump_to_starfield`、`jump_to_river`、`open_inspector` 三类动作。空结果
+显示 `zero_result_recovery`，只给 later review hint，不执行 Review /
+Summary / Iteration runtime。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_search_2_0_browser.cjs`
+- `docs/product/search_2_0_workflow_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage7_phase1_search_2_0_runtime_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage7-phase1`
+- `validate:search-2-0-browser`
+- `ACC-MA-V117-S7P01`
+- Browser gate 覆盖 result fields、debug signal、zero recovery、Starfield/River/Inspector jumps、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 7.1; Search 2.0; MA-V117-S7P01; ACC-MA-V117-S7P01; phase_7_1_search_2_0_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase1; validate:search-2-0-browser; search_2_0_runtime.v1_1_7_stage7_phase1; search_2_0_session_summary.v1_1_7_stage7_phase1; matched_reason; evidence_refs; No Review / Summary / Iteration runtime; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 6 Review：Data Map Gate
+
+状态：`stage_6_review_passed_pending_stage7_no_github_main_upload`。
+
+任务 ID：`MA-V117-S6-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S6-REVIEW`。
+
+Stage 6 is review-passed and pending Stage 7. 本 review 固定两个已完成
+phase：
+
+1. Phase 6.1：Structure Model。
+2. Phase 6.2：Details & Editing。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage6_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage6`
+- `ACC-MA-V117-S6-REVIEW`
+- Clean-tree gate 覆盖 Stage 5 continuity、Phase 6.1、Phase 6.2、records、canonical remote 和 no-upload boundary。
+
+Machine-readable boundary summary: Stage 6 Review; MA-V117-S6-REVIEW; ACC-MA-V117-S6-REVIEW; stage_6_review_passed_pending_stage7_no_github_main_upload; validate:v1.1.7-stage6; Phase 6.1; Phase 6.2; pending Stage 7; No Stage 7 work; No Search 2.0 work; No Review / Summary / Iteration runtime work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 6 Phase 6.2：Details & Editing
+
+状态：`phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`。
+
+任务 ID：`MA-V117-S6P02`。
+
+验收 ID：`ACC-MA-V117-S6P02`。
+
+本 phase 在 production Data Guide 中加入 `数据导图详情面板` 和
+`数据导图 proposal 入口`。详情面板版本为
+`data_map_detail_panel.v1_1_7_stage6_phase2`，proposal 入口版本为
+`data_map_proposal_entry.v1_1_7_stage6_phase2`。点击节点后可见 asset、
+theme、suggested action、importance、priority；proposal 入口保持
+proposal-only，只导出 proposal JSON，不直接写 active memory。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_detail_proposal_browser.cjs`
+- `docs/product/data_map_iteration_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage6_phase2_data_map_detail_proposal_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage6-phase2`
+- `validate:data-map-detail-proposal-browser`
+- `ACC-MA-V117-S6P02`
+- Browser gate 覆盖节点点击、详情字段、proposal export、debug signal、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 6.2; Details & Editing; MA-V117-S6P02; ACC-MA-V117-S6P02; phase_6_2_data_map_detail_proposal_completed_pending_stage6_review; validate:v1.1.7-stage6-phase2; validate:data-map-detail-proposal-browser; data_map_detail_panel.v1_1_7_stage6_phase2; data_map_proposal_entry.v1_1_7_stage6_phase2; 数据导图详情面板; 数据导图 proposal 入口; proposal-only; No Stage 6 review; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 6 Phase 6.1：Data Map Structure Model
+
+状态：`phase_6_1_data_map_structure_model_completed_pending_stage6_review`。
+
+任务 ID：`MA-V117-S6P01`。
+
+验收 ID：`ACC-MA-V117-S6P01`。
+
+本 phase 将 production Data Guide 固定为
+`data_map_structure_model.v1_1_7_stage6_phase1`，并加入
+`data_map_relation_explanation.v1_1_7_stage6_phase1`。四层结构为
+`source_layer`、`profile_layer`、`project_decision_layer`、
+`action_opportunity_layer`。每层记录 node types、fields、interaction 和
+detail entry。Relation Explanation 支持点击关系后展示 source、strength、
+evidence、time，并保持 default collapsed fallback。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_structure_browser.cjs`
+- `docs/product/data_map_iteration_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage6_phase1_data_map_structure_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage6-phase1`
+- `validate:data-map-structure-browser`
+- `ACC-MA-V117-S6P01`
+- Browser gate 覆盖四层结构、relation click、debug signal、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 6.1; Structure Model; Relation Explanation; MA-V117-S6P01; ACC-MA-V117-S6P01; phase_6_1_data_map_structure_model_completed_pending_stage6_review; validate:v1.1.7-stage6-phase1; validate:data-map-structure-browser; data_map_structure_model.v1_1_7_stage6_phase1; data_map_relation_explanation.v1_1_7_stage6_phase1; source_layer; profile_layer; project_decision_layer; action_opportunity_layer; No Phase 6.2; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 5 Review：Memory River Gate
+
+状态：`stage_5_review_passed_pending_stage6_no_github_main_upload`。
+
+任务 ID：`MA-V117-S5-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S5-REVIEW`。
+
+Stage 5 is review-passed and pending Stage 6. 本 review 固定三个已完成
+phase：
+
+1. Phase 5.1：Interaction Contract。
+2. Phase 5.2：C3 River Spike。
+3. Phase 5.3：Timeline Integration。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage5_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage5`
+- `ACC-MA-V117-S5-REVIEW`
+- Stage 4 review continuity、Phase 5.1 / Phase 5.2 / Phase 5.3 validators、records、package script 和 no-upload boundary 均需通过。
+- Browser evidence remains `validate:memory-river-spike-browser` and `validate:memory-river-integration-browser`。
+
+Machine-readable boundary summary: Stage 5 Review; MA-V117-S5-REVIEW; ACC-MA-V117-S5-REVIEW; stage_5_review_passed_pending_stage6_no_github_main_upload; validate:v1.1.7-stage5; Phase 5.1; Phase 5.2; Phase 5.3; pending Stage 6; No Stage 6 work; No Data Map work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 5 Phase 5.3：Timeline Integration
+
+状态：`phase_5_3_timeline_integration_completed_pending_stage5_review`。
+
+任务 ID：`MA-V117-S5P03`。
+
+验收 ID：`ACC-MA-V117-S5P03`。
+
+本 phase 将 production Timeline 默认接入
+`memory_river_integration.v1_1_7_stage5_phase3`，保持 default memory-river，
+并保留 legacy rollback。回滚路径包括 in-app `Legacy` toggle、
+`timelineRenderer=legacy`、`timeline=legacy`、localStorage 和 env override。
+Browser gate 覆盖 default Memory River、legacy rollback、URL rollback、brush
+interaction、selected range、evidence layers、screenshot 和 console safety。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/config/visualFlags.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_integration_browser.cjs`
+- `docs/product/memory_atlas_timeline_replacement_plan.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase3_timeline_integration_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage5-phase3`
+- `validate:memory-river-integration-browser`
+- `ACC-MA-V117-S5P03`
+- old Timeline rollback available；new page default enabled。
+
+Machine-readable boundary summary: Phase 5.3; MA-V117-S5P03; ACC-MA-V117-S5P03; phase_5_3_timeline_integration_completed_pending_stage5_review; validate:v1.1.7-stage5-phase3; validate:memory-river-integration-browser; memory_river_integration.v1_1_7_stage5_phase3; default memory-river; legacy rollback; timelineRenderer=legacy; brush interaction; No Stage 5 review; No Stage 6; No raw/private data read; No direct active-memory writeback; No agent apply; No deploy; No GitHub main upload; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 5 Phase 5.2：C3 River Spike
+
+状态：`phase_5_2_c3_river_spike_completed_pending_stage5_review`。
+
+任务 ID：`MA-V117-S5P02`。
+
+验收 ID：`ACC-MA-V117-S5P02`。
+
+本 phase 将 isolated `memory-river-spike` 升级为
+`memory_river_c3_spike.v1_1_7_stage5_phase2`。交付面覆盖 year/month/week/day
+time scale、zoom、brush selected range summary、theme trend lanes、Black Hole /
+Proto-Star date positioning、reduced motion 和浏览器截图验收。
+
+涉及文件：
+
+- `apps/memory-atlas/src/experiments/memory-river-spike/README.md`
+- `apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts`
+- `apps/memory-atlas/src/experiments/memory-river-spike/index.html`
+- `apps/memory-atlas/src/experiments/memory-river-spike/main.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_spike_browser.cjs`
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase2_c3_river_spike_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage5-phase2`
+- `validate:memory-river-spike-browser`
+- `ACC-MA-V117-S5P02`
+- Browser gate 覆盖 time levels、zoom、brush selected range、trend lanes、Black Hole / Proto-Star positioning、reduced motion 和 screenshot。
+
+Machine-readable boundary summary: Stage 5 Phase 5.2 C3 River Spike; MA-V117-S5P02; ACC-MA-V117-S5P02; phase_5_2_c3_river_spike_completed_pending_stage5_review; validate:v1.1.7-stage5-phase2; validate:memory-river-spike-browser; memory_river_c3_spike.v1_1_7_stage5_phase2; Phase 5.2; No production Timeline replacement; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 5 Phase 5.1：Memory River Interaction Contract
+
+状态：`phase_5_1_interaction_contract_completed_pending_stage5_review`。
+
+任务 ID：`MA-V117-S5P01`。
+
+验收 ID：`ACC-MA-V117-S5P01`。
+
+本 phase 固定 `memory_river_interaction_contract.v1_1_7_stage5_phase1` 和
+`memory_river_feedback_contract.v1_1_7_stage5_phase1`。Memory River 必须不是
+日期列表、表格或 static scatter；交互合同覆盖 zoom、brush、theme_lanes、
+event_points、status_bands 和 detail_panel；反馈合同覆盖 visual_feedback、
+optional_audio、pseudo_haptic、reduced_motion、feedback_disable_control、
+audio_default_off 和 vibration_not_required。
+
+涉及文件：
+
+- `docs/product/memory_river_interaction_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase1_interaction_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage5-phase1`
+- `ACC-MA-V117-S5P01`
+- Stage 4 review continuity、interaction contract、feedback contract、acceptance、records、package script 和 no-runtime/no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Stage 5 Phase 5.1 Interaction Contract; MA-V117-S5P01; ACC-MA-V117-S5P01; phase_5_1_interaction_contract_completed_pending_stage5_review; memory_river_interaction_contract.v1_1_7_stage5_phase1; memory_river_feedback_contract.v1_1_7_stage5_phase1; No Stage 5.2; No C3 River Spike; No Timeline replacement; No runtime UI/CSS; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 4 Review：Memory Starfield Gate
+
+状态：`stage_4_review_passed_pending_stage5_no_github_main_upload`。
+
+任务 ID：`MA-V117-S4-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S4-REVIEW`。
+
+Stage 4 is review-passed and pending Stage 5. 本 review 固定三个已完成 phase：
+
+1. Phase 4.1：Visual Contract Update。
+2. Phase 4.2：C3 Starfield Spike。
+3. Phase 4.3：Integration。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage4_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage4`
+- `ACC-MA-V117-S4-REVIEW`
+- Stage 3 review continuity、Phase 4.1 / Phase 4.2 / Phase 4.3 validators、records、package script 和 no-upload boundary 均需通过。
+- Browser evidence validators remain `validate:memory-starfield-spike-browser` and `validate:memory-starfield-integration-browser`.
+
+Machine-readable boundary summary: Stage 4 Review; Phase 4.1; Phase 4.2; Phase 4.3; pending Stage 5; No GitHub main upload; No Stage 5 work; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
+## Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
+
+状态：`phase_4_3_integration_completed_pending_stage4_review`。
+
+任务 ID：`MA-V117-S4P03`。
+
+验收 ID：`ACC-MA-V117-S4P03`。
+
+本 phase 固定 `memory_starfield_integration.v1_1_7_stage4_phase3` 和
+`memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3`。Production Galaxy
+默认进入 new memory-starfield，保留 `legacy` 作为 Feature Flag rollback；质量、
+颜色、亮度和轨迹来自 redacted `universe_state.sample.json` Snapshot Mapping，
+不可用时 fallback 到 atlas nodes。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/GalaxyScene.tsx`
+- `apps/memory-atlas/src/config/visualFlags.ts`
+- `apps/memory-atlas/src/models/starfieldMapping.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_starfield_integration_browser.cjs`
+- `docs/acceptance/memory_atlas_v1_1_7_stage4_phase3_integration_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage4-phase3`
+- `validate:memory-starfield-integration-browser`
+- `ACC-MA-V117-S4P03`
+- Browser validator 必须证明默认 new memory-starfield、legacy rollback、
+  snapshot mapping、formula panel 和 screenshot。
+
+Machine-readable boundary summary: Stage 4 Phase 4.3 Integration; MA-V117-S4P03; ACC-MA-V117-S4P03; phase_4_3_integration_completed_pending_stage4_review; memory_starfield_integration.v1_1_7_stage4_phase3; memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3; No Stage 5; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 4 Phase 4.2：C3 Starfield Spike
+
+状态：`phase_4_2_c3_starfield_spike_completed_pending_stage4_review`。
+
+任务 ID：`MA-V117-S4P02`。
+
+验收 ID：`ACC-MA-V117-S4P02`。
+
+本 phase 固定 `memory_starfield_c3_spike.v1_1_7_stage4_phase2`。C3
+Starfield Spike 在 isolated experiment 内覆盖 GPU particle spike、Flow Field /
+Curl Noise、Cluster Gravity、Hover Cards B2、浏览器 FPS 和 screenshot gate。
+生产 Galaxy 未替换，生产 route/navigation/feature flag default 未改。
+
+涉及文件：
+
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/shaders/flowField.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/fixture.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_starfield_spike_browser.cjs`
+- `docs/acceptance/memory_atlas_v1_1_7_stage4_phase2_c3_starfield_spike_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage4-phase2`
+- `validate:memory-starfield-spike-browser`
+- `ACC-MA-V117-S4P02`
+- Browser validator 必须证明 `>=10k particles`、`>=30 FPS`、`curl_noise_shader`、particle trails、gravity sources、Hover Cards B2 和 screenshot。
+
+Machine-readable boundary summary: C3 Starfield Spike; memory_starfield_c3_spike.v1_1_7_stage4_phase2; No production Galaxy replacement; No production route/navigation change; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 4 Phase 4.1：Visual Contract Update
+
+状态：`phase_4_1_visual_contract_update_completed_pending_stage4_review`。
+
+任务 ID：`MA-V117-S4P01`。
+
+验收 ID：`ACC-MA-V117-S4P01`。
+
+本 phase 固定 `memory_starfield_visual_contract.v1_1_7_stage4_phase1` 和
+`memory_terrain_layer.v1_1_7_stage4_phase1`。Visual Contract Update 把
+Memory Starfield 从主观视觉方向升级为可测验收，要求星云、流场、粒子轨迹、
+引力源、黑洞、新生星云和地形层，并定义长期主题、成长带、迁移流、遗迹、
+黑洞和机会六类地形语义。
+
+涉及文件：
+
+- `docs/product/memory_starfield_visual_contract.md`
+- `docs/architecture/memory_terrain_layer.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage4_phase1_visual_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage4-phase1`
+- `ACC-MA-V117-S4P01`
+- Stage 3 continuity、visual contract、terrain layer、acceptance、records、package script 和 no-runtime/no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Visual Contract Update; memory_starfield_visual_contract.v1_1_7_stage4_phase1; memory_terrain_layer.v1_1_7_stage4_phase1; No Phase 4.2; No runtime renderer replacement; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 3 Review：Default Home Gate
+
+状态：`stage_3_review_passed_pending_stage4_no_github_main_upload`。
+
+任务 ID：`MA-V117-S3-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S3-REVIEW`。
+
+Stage 3 is review-passed and pending Stage 4. 本 review 固定两个已完成 phase：
+
+1. Phase 3.1：Default Home Structure。
+2. Phase 3.2：Home Detail Operations。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage3_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage3`
+- `ACC-MA-V117-S3-REVIEW`
+- Stage 2 review continuity、Phase 3.1 / Phase 3.2 validators、records、package script 和 no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Stage 3 Review; Phase 3.1; Phase 3.2; pending Stage 4; No GitHub main upload; No Stage 4 work; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 3 Phase 3.2：Home Detail Operations
+
+状态：`phase_3_2_home_detail_operations_completed_pending_stage3_review`。
+
+任务 ID：`MA-V117-S3P02`。
+
+验收 ID：`ACC-MA-V117-S3P02`。
+
+本 phase 固定 `memory_overview_detail_operations.v1_1_7_stage3_phase2`。
+Memory Overview 首页继续以 `home` 为默认入口，并把 Top Actions Section、
+Level Assets Section、Theme Categories Section 升级为可见、可点击、可解释的
+Home Detail Operations。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase2_home_detail_operations_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase2.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage3-phase2`
+- `ACC-MA-V117-S3P02`
+- Top Actions Section 必须显示 suggestion、reason、priority、status，并通过 `ActionDetailDrawer` 打开 clickable detail entry。
+- Level Assets Section 必须显示 `core_profile`、`project`、`decision`、`temporary`、`stale`，并通过 `AssetDetailPanel` 打开 clickable detail entry。
+- Theme Categories Section 必须显示 `rising`、`declining`、`conflict`、`opportunity`、`stable`，并通过 `ThemeDetailPanel` 打开 clickable detail entry。
+
+Machine-readable boundary summary: Home Detail Operations; memory_overview_detail_operations.v1_1_7_stage3_phase2; Top Actions Section; Level Assets Section; Theme Categories Section; No Stage 3 Review; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 3 Phase 3.1：Default Home Structure
+
+状态：`phase_3_1_default_home_structure_completed_pending_stage3_review`。
+
+任务 ID：`MA-V117-S3P01`。
+
+验收 ID：`ACC-MA-V117-S3P01`。
+
+本 phase 固定 `memory_overview_default_home.v1_1_7_stage3_phase1`。默认入口为
+`home`，Memory Overview 首屏通过结构 rail 和 section markers 呈现 status
+summary、suggested actions、weather、black holes、proto-stars、assets、themes
+和 entry points。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase1_default_home_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase1.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage3-phase1`
+- `ACC-MA-V117-S3P01`
+- 默认 route 必须是 `home`。
+- Default Home Structure 必须包含 8 个结构 section。
+- 页面必须是 guided work surface，not a pile of cards。
+
+Machine-readable boundary summary: Default Home Structure; memory_overview_default_home.v1_1_7_stage3_phase1; No Stage 3 Phase 3.2; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 2 Review：Proposal Layer Gate
+
+状态：`stage_2_review_passed_pending_stage3_no_github_main_upload`。
+
+任务 ID：`MA-V117-S2-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S2-REVIEW`。
+
+Stage 2 is review-passed and pending Stage 3. 本 review 固定两个已完成 phase：
+
+1. Phase 2.1：Editable Draft Model and Draft State Store。
+2. Phase 2.2：Proposal UI, Proposal Diff Preview and Export / Rollback Contract。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage2_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage2`
+- `ACC-MA-V117-S2-REVIEW`
+- Stage 1 review continuity、Phase 2.1 / Phase 2.2 validators、records、package script 和 no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Stage 2 Review; Phase 2.1; Phase 2.2; pending Stage 3; No GitHub main upload; No Stage 3 work; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 2 Phase 2.2：Proposal UI
+
+状态：`phase_2_2_proposal_ui_completed_pending_stage2_review`。
+
+任务 ID：`MA-V117-S2P02`。
+
+验收 ID：`ACC-MA-V117-S2P02`。
+
+本 phase 在现有 Inspector writeback panel 中接入 Proposal UI。用户可以调整
+`importance` 和 `priority`，看到 `original_value`、`proposed_value`、
+`impact_summary` 和 `rollback_metadata`，并导出
+`memory_atlas_proposal_export.v1` JSON 供后续 human/agent review。
+
+涉及文件：
+
+- `apps/memory-atlas/src/components/ProposalEditor.tsx`
+- `apps/memory-atlas/src/components/ProposalDiffPreview.tsx`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage2_phase2_proposal_ui_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase2.cjs`
+
+验收：
+
+- `validate:v1.1.7-stage2-phase2`
+- `ACC-MA-V117-S2P02`
+- UI 必须显示原值、新值、影响说明和 rollback metadata。
+- Export / Rollback Contract 必须保留 proposal-only、conflict check 和 agent/human apply gate。
+
+Machine-readable boundary summary: Proposal UI; ProposalEditor; ProposalDiffPreview; Export / Rollback Contract; No GitHub main upload; No raw/private data read; No direct writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 2 Phase 2.1：Editable Draft Model
+
+状态：`phase_2_1_editable_draft_model_completed_pending_stage2_review`。
+
+任务 ID：`MA-V117-S2P01`。
+
+验收 ID：`ACC-MA-V117-S2P01`。
+
+本 phase 建立 proposal 编辑层的 Editable Draft Model。它定义字段白名单
+`importance`、`priority`、`status`、`theme_override`、`action_state`、`note`，
+并新增 Draft State Store，用 `memory_atlas_proposal_draft.v1` schema 和
+`memory-atlas.proposal-drafts.v1` store key 保存本地未提交调整。
+
+涉及文件：
+
+- `docs/architecture/proposal_edit_model.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage2_phase1_editable_draft_acceptance.md`
+- `apps/memory-atlas/src/state/proposalDraftStore.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase1.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage2-phase1`
+- `ACC-MA-V117-S2P01`
+- Draft Store 必须支持 refresh warning、undo draft change、serialize、parse、load、save、clear。
+- 所有 draft change 必须包含 `proposal_only`、`requires_conflict_check`、`requires_agent_or_human_apply` 和 `rollback_hint`。
+
+Machine-readable boundary summary: Editable Draft Model; Draft State Store; No Proposal UI; No GitHub main upload; No raw/private data read; No direct writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 1 Review：Shared State and Detail Layer Gate
+
+状态：`stage_1_review_passed_pending_stage2_no_github_main_upload`。
+
+任务 ID：`MA-V117-S1-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S1-REVIEW`。
+
+Stage 1 is review-passed and pending Stage 2. 本 review 固定四个已完成 phase：
+
+1. Phase 1.1：Universe State shared schema and consumer map。
+2. Phase 1.2：Next Action Top 5 and ActionDetailDrawer。
+3. Phase 1.3：Level Asset cards and AssetDetailPanel。
+4. Phase 1.4：Topic Classification cards and ThemeDetailPanel。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage1_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage1`
+- `ACC-MA-V117-S1-REVIEW`
+- Stage 0 review continuity、Phase 1.1 / Phase 1.2 / Phase 1.3 / Phase 1.4 validators、records、package script 和 no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Stage 1 Review; pending Stage 2; No GitHub main upload; No Stage 2 work; No raw/private data read; No direct writeback; No proposal write; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
+## v1.1.7 Stage 1 Phase 1.4：Topic Classification Detail
+
+状态：`phase_1_4_topic_classification_detail_completed_pending_stage1_review`。
+
+任务 ID：`MA-V117-S1P04`。
+
+验收 ID：`ACC-MA-V117-S1P04`。
+
+本 phase 把主题分类从统计条升级为可排序、可解释、可点击的 Topic Classification 明细。
+首页显示 Topic Classification cards；点击后打开 ThemeDetailPanel，展示主题状态、主题强度、趋势、ROI、冲突、置信度、记录数、近期记录数、代表记录、证据、关联资产/行动、Starfield handoff、River handoff 和 proposal-only 边界。
+
+涉及文件：
+
+- `docs/architecture/theme_category_model.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase4_topic_classification_acceptance.md`
+- `apps/memory-atlas/src/components/ThemeDetailPanel.tsx`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase4.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage1-phase4`
+- `ACC-MA-V117-S1P04`
+- 每条 Topic Classification 必须包含 `topic_state`、`topic_strength`、`trend`、`confidence`、`record_count`、`evidence_refs`、`matched_reason`、`linked_asset_ids`、`linked_action_ids`、`starfield_handoff`、`river_handoff` 和 `proposal_only`。
+- ThemeDetailPanel 只读展示主题分类明细，不写 proposal JSON，不直接修改 active memory。
+
+Machine-readable boundary summary: Topic Classification; ThemeDetailPanel; topic_strength; matched_reason; proposal_only; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
+# Memory Atlas Delivery Record
+
 更新时间：2026-07-01
 
 本文件记录 Memory Atlas 的功能清单、交付运行方式、验收标准、历史过程记录、待开发清单和下一位 agent 的接手顺序。模型假设、处理方法、公式和阈值不写在这里，见 `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`。
@@ -714,6 +4585,249 @@ build、不截图、不安装本地 app、不部署 Cloudflare、不修改 Acces
   确认后一次性执行。
 
 Machine-readable boundary summary: No production runtime feature work; No raw/private data read; No direct writeback; No GitHub main upload in review artifact.
+
+## v1.1.7 Stage 0 Phase 0.1：Chinese Display Foundation
+
+状态：`phase_0_1_chinese_display_foundation_completed_pending_stage0_review`。
+
+任务 ID：`MA-V117-S0P01`。
+
+验收 ID：`ACC-MA-V117-S0P01`。
+
+本 phase 建立中文显示基础，包括 UTF-8/Unicode 静态扫描、中文 UI copy
+registry、关键运行时文案接入、中文字体 fallback 和长中文布局容错。不做 Help
+面板、不做空/错误状态工作流、不做明细可见性合同、不截图、不 build、不安装本地
+app、不部署 Cloudflare、不读取 raw/private 数据、不直接写长期记忆、不写 proposal、
+不执行 agent apply、不上传 GitHub main。
+
+新增/更新产物：
+
+- `apps/memory-atlas/src/i18n/types.ts`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase1_chinese_display_acceptance.md`
+- `validate:v1.1.7-stage0-phase1`
+
+验收边界：
+
+- Phase 0.1 通过不表示浏览器截图、Help 面板、空/错误状态工作流或 Stage 0
+  整体复审已完成。
+- Stage 0 Phase 0.2 和 Phase 0.3 未进入。
+- Stage 0-8 全部完成前不上传 GitHub main。
+
+Machine-readable boundary summary: No raw/private data read; No direct writeback; No proposal write; No GitHub main upload.
+
+## v1.1.7 Stage 0 Phase 0.2：Usage Help And Empty/Error States
+
+状态：`phase_0_2_usage_help_completed_pending_stage0_review`。
+
+任务 ID：`MA-V117-S0P02`。
+
+验收 ID：`ACC-MA-V117-S0P02`。
+
+本 phase 建立系统使用说明与空错态，包括 3 分钟 Help 使用路径、Presentation /
+Analysis 读法说明、Inspector / Proposal-only / Search Review 工作流说明、空快照、
+筛选无结果、加载失败、WebGL 不可用和 proposal 不可写的中文解释。不做 Stage
+0.3 明细字段合同、不做 Stage 1 schema、不截图、不 build、不安装本地 app、不部署
+Cloudflare、不读取 raw/private 数据、不直接写长期记忆、不写 proposal、不执行 agent
+apply、不上传 GitHub main。
+
+新增/更新产物：
+
+- `apps/memory-atlas/src/components/help/MemoryAtlasHelpPanel.tsx`
+- `apps/memory-atlas/src/components/EmptyState.tsx`
+- `apps/memory-atlas/src/components/ErrorState.tsx`
+- `apps/memory-atlas/src/i18n/types.ts`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/GalaxyScene.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_atlas_v1_1_7_stage0_phase2_usage_help_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase2_usage_help_acceptance.md`
+- `docs/product/memory_atlas_usage_guide.md`
+- `validate:v1.1.7-stage0-phase2`
+
+验收边界：
+
+- Phase 0.2 通过不表示浏览器截图、真实 WebGL 失败模拟、Stage 0.3 明细字段
+  合同、Search 2.0、Review workflow 或 Stage 0 整体复审已完成。
+- Stage 0 Phase 0.3 未进入。
+- Stage 0-8 全部完成前不上传 GitHub main。
+
+Machine-readable boundary summary: No raw/private data read; No direct writeback; No proposal write; No GitHub main upload.
+
+## v1.1.7 Stage 0 Phase 0.3：Detail Visibility Field Contract
+
+状态：`phase_0_3_detail_visibility_contract_completed_pending_stage0_review`。
+
+任务 ID：`MA-V117-S0P03`。
+
+验收 ID：`ACC-MA-V117-S0P03`。
+
+本 phase 定义明细可见性字段合同，覆盖 suggested_action_detail、
+tier_asset_detail、topic_classification_detail 三类对象的必备字段、来源、
+展示位置、编辑权限、proposal-only、no-direct-writeback 和 no-mock fallback 边界。
+不做运行时 UI、不做 Stage 1 schema、不截图、不 build、不安装本地 app、不部署
+Cloudflare、不读取 raw/private 数据、不直接写长期记忆、不写 proposal、不执行 agent
+apply、不上传 GitHub main。
+
+新增/更新产物：
+
+- `docs/product/detail_visibility_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase3_detail_visibility_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs`
+- `validate:v1.1.7-stage0-phase3`
+
+验收边界：
+
+- Phase 0.3 通过不表示运行时明细工作台、生成数据字段、浏览器截图、Search 2.0、
+  Review workflow、Data Map 2.0 或 Stage 0 整体复审已完成。
+- Stage 0 三个 phase 已本地完成，但 Stage 0 整体复审未执行。
+- Stage 0-8 全部完成前不上传 GitHub main。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload.
+
+## v1.1.7 Stage 0 Review
+
+状态：`stage_0_review_passed_pending_stage1_no_github_main_upload`。
+
+任务 ID：`MA-V117-S0-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S0-REVIEW`。
+
+本 review gate 运行并固定 Stage 0 三个 phase 的验收链：
+
+- Phase 0.1：`validate:v1.1.7-stage0-phase1`
+- Phase 0.2：`validate:v1.1.7-stage0-phase2`
+- Phase 0.3：`validate:v1.1.7-stage0-phase3`
+
+新增/更新产物：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage0_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0.cjs`
+- `validate:v1.1.7-stage0`
+
+验收边界：
+
+- Stage 0 review 通过不表示 Stage 1-8、运行时明细工作台、浏览器截图、build、
+  deploy 或最终 GitHub main 上传完成。
+- 下一步只能进入 Stage 1 的一个 phase。
+- 整个 Stage 0-8 项目完成前不上传 GitHub main。
+
+Machine-readable boundary summary: No Stage 1 work; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
+## v1.1.7 Stage 1 Phase 1.1：Universe State Schema
+
+状态：`phase_1_1_universe_state_schema_completed_pending_stage1_review`。
+
+任务 ID：`MA-V117-S1P01`。
+
+验收 ID：`ACC-MA-V117-S1P01`。
+
+本 phase 把 Universe State 从早期 overview/starfield/river 共享状态，扩展为
+Roadmap v2 Stage 1 的共享 schema gate。它确认同一 deterministic sample 和
+schema 可被后续 `data_map_2_0`、`search_2_0`、
+`review_summary_iteration`、Inspector 与 ROI 使用。
+
+新增/更新产物：
+
+- `docs/architecture/universe_state_snapshot.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/models/universeState.ts`
+- `apps/memory-atlas/src/fixtures/universe_state.schema.json`
+- `apps/memory-atlas/src/fixtures/universe_state.sample.json`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase1_universe_state_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase1.cjs`
+- `validate:v1.1.7-stage1-phase1`
+
+验收边界：
+
+- `recommended_next_actions` 必须保持 `proposal_only: true`。
+- Universe State privacy flags 必须保持 all false。
+- 本 phase 不实现 Phase 1.2 建议动作明细 UI、Phase 1.3 层级资产模型、
+  Phase 1.4 主题分类模型、proposal editor、Search 2.0 UI、Review workflow、
+  Data Map 2.0 production UI 或 Summary proposal export。
+- 整个 Stage 0-8 项目完成前不上传 GitHub main。
+
+Machine-readable boundary summary: data_map_2_0; search_2_0; review_summary_iteration; No Phase 1.2 work; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
+## v1.1.7 Stage 1 Phase 1.2：Next Action Detail
+
+状态：`phase_1_2_next_action_detail_completed_pending_stage1_review`。
+
+任务 ID：`MA-V117-S1P02`。
+
+验收 ID：`ACC-MA-V117-S1P02`。
+
+本 phase 把 Home Overview 建议动作升级为可排序、可解释、可点击的 Next
+Action 明细。首页显示 Top 5 action cards；点击后打开 Action Detail Drawer，
+展示为什么建议、关联主题、预计收益、风险、对应证据、下一步和 proposal-only
+安全提示。
+
+新增/更新产物：
+
+- `docs/architecture/next_action_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/ActionDetailDrawer.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase2_next_action_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase2.cjs`
+- `validate:v1.1.7-stage1-phase2`
+
+验收边界：
+
+- 每条 Next Action 必须包含 `title`、`reason`、`roi_score`、`effort_cost`、
+  `urgency`、`source`、`evidence_refs`、`status`、`next_step` 和
+  `proposal_only`。
+- Action Detail Drawer 只读展示建议动作明细，不写 proposal JSON，不直接修改
+  active memory。
+- 本 phase 不实现 Phase 1.3 tier asset、Phase 1.4 topic classification、
+  proposal editor、Search 2.0、Review workflow、Data Map 2.0、浏览器截图、
+  production build、本地 app install、Cloudflare deploy 或 GitHub main 上传。
+- 整个 Stage 0-8 项目完成前不上传 GitHub main。
+
+Machine-readable boundary summary: Next Action; Action Detail Drawer; roi_score; urgency; proposal_only; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
+## v1.1.7 Stage 1 Phase 1.3：Level Asset Detail
+
+状态：`phase_1_3_tier_asset_detail_completed_pending_stage1_review`。
+
+任务 ID：`MA-V117-S1P03`。
+
+验收 ID：`ACC-MA-V117-S1P03`。
+
+本 phase 把层级资产从数字统计升级为可排序、可解释、可点击的 Level Asset 明细。
+首页显示 Level Asset cards；点击后打开 AssetDetailPanel，展示资产层级、主题、
+价值、更新时间、置信度、状态、证据、关联动作/主题、建议动作和 proposal-only
+安全提示。
+
+新增/更新产物：
+
+- `docs/architecture/level_asset_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/AssetDetailPanel.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase3_tier_asset_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase3.cjs`
+- `validate:v1.1.7-stage1-phase3`
+
+验收边界：
+
+- 每条 Level Asset 必须包含 `asset_tier`、theme、`value_score`、updated_at、
+  importance、priority、confidence、`staleness_status`、evidence_refs、
+  linked_action_ids、linked_topic_ids、recommended_asset_action 和 `proposal_only`。
+- AssetDetailPanel 只读展示层级资产明细，不写 proposal JSON，不直接修改
+  active memory。
+- 本 phase 不实现 Phase 1.4 topic classification、proposal editor、Search 2.0、
+  Review workflow、Data Map 2.0、浏览器截图、production build、本地 app install、
+  Cloudflare deploy 或 GitHub main 上传。
+- 整个 Stage 0-8 项目完成前不上传 GitHub main。
+
+Machine-readable boundary summary: Level Asset; AssetDetailPanel; value_score; staleness_status; proposal_only; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
 
 ### Stage 8 Phase 1：Release Rollback Contract
 

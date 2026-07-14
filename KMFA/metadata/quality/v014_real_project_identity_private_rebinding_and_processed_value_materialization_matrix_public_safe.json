@@ -1,0 +1,90 @@
+{
+  "check_count": 16,
+  "check_fail_count": 0,
+  "check_pass_count": 16,
+  "checks": [
+    {
+      "check_id": "RPIM-01",
+      "check_name": "source_private_inputs_unchanged",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-02",
+      "check_name": "raw_snapshot_exact_match",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-03",
+      "check_name": "four_real_identity_bindings",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-04",
+      "check_name": "four_unique_pdf_sources",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-05",
+      "check_name": "authority_margin_exact",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-06",
+      "check_name": "processed_metrics_materialized",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-07",
+      "check_name": "target_values_materialized",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-08",
+      "check_name": "cash_targets_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-09",
+      "check_name": "comparison_counts",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-10",
+      "check_name": "nonzero_differences_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-11",
+      "check_name": "full_materialization_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-12",
+      "check_name": "business_consistency_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-13",
+      "check_name": "raw_not_committed",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-14",
+      "check_name": "github_not_uploaded",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-15",
+      "check_name": "app_not_reinstalled",
+      "passed": true
+    },
+    {
+      "check_id": "RPIM-16",
+      "check_name": "stage_review_not_performed",
+      "passed": true
+    }
+  ],
+  "phase_id": "V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014_real_project_identity_materialization_matrix.v1"
+}

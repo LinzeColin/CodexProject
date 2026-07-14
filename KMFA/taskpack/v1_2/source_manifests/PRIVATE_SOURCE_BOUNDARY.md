@@ -5,8 +5,8 @@
 ## 不进入公开 GitHub 的内容
 
 - `90_用户原始上传数据_仅本地私有_禁止提交GitHub/`
-- `销售绩效考核.zip`
-- `财务.zip`
+- `PRIVATE_RAW_SOURCE_005.zip`
+- `PRIVATE_RAW_SOURCE_004.zip`
 - `WPS.zip`
 - `Screen Recording 2026-06-29 at 12.32.30.mov`
 - 任何原始 Excel、PDF、数据库、银行流水、合同、工资、税务申报或凭证明文。

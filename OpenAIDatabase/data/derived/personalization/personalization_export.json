@@ -1,49 +1,144 @@
 {
+  "acceptance_id": "ACC-MA-V12-S12P2",
   "behavior": {
-    "atlas_edges": 1771,
-    "atlas_nodes": 340,
+    "atlas_edges": 2325,
+    "atlas_nodes": 435,
     "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
-    "message_count": 11661,
-    "range_end": "2026-07-01",
-    "range_start": "2026-06-29",
-    "session_count": 16,
+    "message_count": 17963,
+    "range_end": "2026-07-10",
+    "range_start": "2026-07-04",
+    "session_count": 128,
     "source": "real_codex_local_data",
-    "tool_call_count": 53580,
+    "tool_call_count": 80075,
     "top_topics": [
       {
-        "count": 324,
+        "count": 1275,
         "label": "Codex 本地数据 / agent 工作流"
       },
       {
-        "count": 289,
+        "count": 1154,
         "label": "GitHub 备份 / durable state"
       },
       {
-        "count": 283,
-        "label": "安全边界 / secret / 权限"
-      },
-      {
-        "count": 273,
+        "count": 1125,
         "label": "高质量交付 / 验证 / CI"
       },
       {
-        "count": 30,
-        "label": "Memory Atlas / 记忆可视化"
+        "count": 1077,
+        "label": "安全边界 / secret / 权限"
       },
       {
-        "count": 11,
+        "count": 348,
         "label": "长期记忆数据库 / RAG"
       },
       {
-        "count": 7,
-        "label": "前端交互 / Three.js / Dashboard"
+        "count": 190,
+        "label": "金融 / trading / 风险边界"
       },
       {
-        "count": 5,
-        "label": "金融 / trading / 风险边界"
+        "count": 73,
+        "label": "Memory Atlas / 记忆可视化"
+      },
+      {
+        "count": 53,
+        "label": "前端交互 / Three.js / Dashboard"
       }
     ]
   },
+  "bundle_acceptance_id": "ACC-OAIDB-SM-P0-R1",
+  "bundle_generator_version": "openai_database.shared_memory_bundle.v2",
+  "bundle_id": "sha256:8d2988a20e3c5301072256683083dc583ad7dcabb098a961910dc0638eb5e151",
+  "bundle_manifest": "data/derived/personalization/memory_bundle_manifest.json",
+  "bundle_task_id": "OAIDB-SM-P0-R1",
+  "canonical_source_files": [
+    "config/context_sources/three_layer_context.json",
+    "data/derived/codex/codex_agent_recommendations.json",
+    "data/derived/decision_log/DECISION_LOG.md",
+    "data/derived/monthly/2026-06.monthly_memory_pack.md",
+    "data/derived/profile/CORE_PROFILE.md",
+    "data/derived/project_index/PROJECT_INDEX.md",
+    "data/derived/timeline/TIMELINE.md",
+    "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
+    "data/memory/active/active_memory.jsonl",
+    "data/memory/active/active_memory.md",
+    "data/memory/curation/core_profile_review.json",
+    "data/processed/codex/codex_activity_snapshot.json",
+    "data/processed/codex/codex_daily_activity.jsonl",
+    "data/processed/codex/codex_session_manifest.jsonl"
+  ],
+  "canonical_source_hash": "sha256:b401739571bcd68832a32c8b7e2585b75434ebb301dc5140dd497b9bceb1ce5b",
+  "canonical_source_records": [
+    {
+      "content_hash": "sha256:d2d20a9cd4699c84e4655bc6d238a9ee009374320216ece91310d483de669327",
+      "exists": true,
+      "path": "config/context_sources/three_layer_context.json"
+    },
+    {
+      "content_hash": "sha256:4adbc9492a9275c69513c5eaba6c7c12479e982668a17054013530c0ea4fed15",
+      "exists": true,
+      "path": "data/derived/codex/codex_agent_recommendations.json"
+    },
+    {
+      "content_hash": "sha256:b8f2d9feaa984347a23ca03832bc0b8d9891e5123ed2ba0ea431f5b8660c0ae3",
+      "exists": true,
+      "path": "data/derived/decision_log/DECISION_LOG.md"
+    },
+    {
+      "content_hash": "sha256:9fa2a78203acd43e2a4db12a9912f11f06ed4f7c8aca2d12cd9d8892f431035a",
+      "exists": true,
+      "path": "data/derived/monthly/2026-06.monthly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:afed32fec69fdc400abeabab01508306fcf38c0892b89e02675254e67c37f00b",
+      "exists": true,
+      "path": "data/derived/profile/CORE_PROFILE.md"
+    },
+    {
+      "content_hash": "sha256:e11b18def4701b4ac8a71d4cbaf9b14e69999f7c1abf065386607feb6af3e5b8",
+      "exists": true,
+      "path": "data/derived/project_index/PROJECT_INDEX.md"
+    },
+    {
+      "content_hash": "sha256:034eb443abdbc7043df6bb25a7df0267256ec0e1b76aa547827de4f6e2083125",
+      "exists": true,
+      "path": "data/derived/timeline/TIMELINE.md"
+    },
+    {
+      "content_hash": "sha256:ceef5bdaa244483e6d6362b80a7aae030fca6be7ca240d5e50a5b8c006c2d2e3",
+      "exists": true,
+      "path": "data/derived/weekly/2026-06-15.weekly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+      "exists": true,
+      "path": "data/memory/active/active_memory.jsonl"
+    },
+    {
+      "content_hash": "sha256:fcf9e4bd19233ddb62f3d9d26c2a9a204ab6fc7c1aa079e94081e69499833b93",
+      "exists": true,
+      "path": "data/memory/active/active_memory.md"
+    },
+    {
+      "content_hash": "sha256:ac0ef2dfa9c23652cc635d88d3010aab20c0bd0d457aa28b23d9b5ed94fd5446",
+      "exists": true,
+      "path": "data/memory/curation/core_profile_review.json"
+    },
+    {
+      "content_hash": "sha256:22cbf2ae5859b779da070ecaf4949864f7500cbc665880f19a41dc1237b464cb",
+      "exists": true,
+      "path": "data/processed/codex/codex_activity_snapshot.json"
+    },
+    {
+      "content_hash": "sha256:492ba54b5f71029f427c045eb80619a7467e91f530f9b7f8a3ad49a11d0f4371",
+      "exists": true,
+      "path": "data/processed/codex/codex_daily_activity.jsonl"
+    },
+    {
+      "content_hash": "sha256:bb672737aed7da7ff3a761134cec8ddf99ae1cd93109c33295ea9f9274fc8f31",
+      "exists": true,
+      "path": "data/processed/codex/codex_session_manifest.jsonl"
+    }
+  ],
   "data_sources": {
     "active": [
       {
@@ -134,7 +229,106 @@
     "registry_path": "config/data_sources/source_registry.json",
     "schema_version": "memory_atlas_data_source_registry.v1"
   },
-  "generated_at": "2026-07-01T05:50:07Z",
+  "generated_at": "2026-07-13T00:06:53Z",
+  "latest_inputs": {
+    "agent_collaboration": {
+      "metrics": [
+        "规划清晰度 / needs_review / 整体协作样本的规划清晰度来自项目/任务标注、下一步和证据覆盖率；低分表示需要人在交给 agent 前先补目标、范围或证据。",
+        "执行清晰度 / usable / 整体协作样本的执行清晰度由输出类型、机会下一步和 ROI action 支撑；它帮助判断任务是否能直接进入 Codex/agent 执行。",
+        "复审负担健康度 / weak / 整体协作样本的复审负担健康度会被低价值循环、decision debt 和 evidence gap 拉低；高分才表示复审压力较低。",
+        "返工控制健康度 / needs_review / 整体协作样本的返工控制健康度保留 repeated rework 和 action half-life 原始计数；低分表示需要先收口完成标准。",
+        "范围清晰度 / weak / 整体协作样本的范围清晰度由项目/任务标注和 scope creep 候选共同决定；它不是任务价值判断，只提示边界是否足够清楚。",
+        "可测试性 / weak / 整体协作样本的可测试性来自 validator/gate 线索、ROI gate 和清晰下一步；它用于判断是否适合继续交给 Codex 执行。"
+      ],
+      "summary_zh": "本报告用 planning、execution、review、rework、scope、testability 和 rollbackability 七类指标解释 ChatGPT/Codex/后续 agent 的协作质量。它只做证据化指标，不创建多 agent 系统，也不实现复杂 Delegation Contract UI。"
+    },
+    "behavior": {
+      "cluster_count": 278,
+      "event_count": 491,
+      "top_behavior_topics": [
+        {
+          "count": 1275,
+          "label": "Codex 本地数据 / agent 工作流"
+        },
+        {
+          "count": 1154,
+          "label": "GitHub 备份 / durable state"
+        },
+        {
+          "count": 1125,
+          "label": "高质量交付 / 验证 / CI"
+        },
+        {
+          "count": 1077,
+          "label": "安全边界 / secret / 权限"
+        },
+        {
+          "count": 348,
+          "label": "长期记忆数据库 / RAG"
+        },
+        {
+          "count": 190,
+          "label": "金融 / trading / 风险边界"
+        },
+        {
+          "count": 73,
+          "label": "Memory Atlas / 记忆可视化"
+        },
+        {
+          "count": 53,
+          "label": "前端交互 / Three.js / Dashboard"
+        }
+      ],
+      "top_topics": [
+        "项目：Memory Atlas / 该行为簇基于 90 条带证据引用的事件，主要围绕「项目：Memory Atlas」。来源包含 codex、future_agent，时间覆盖 2026-07，常见任务类型为 design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。",
+        "AI 记忆与 agent 工作流 / 该行为簇基于 49 条带证据引用的事件，主要围绕「AI 记忆与 agent 工作流」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-03、2026-05、2026-06，常见任务类型为 未标注、engineering、data，语言以 mixed、en、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。",
+        "经营与管理决策 / 该行为簇基于 26 条带证据引用的事件，主要围绕「经营与管理决策」。来源包含 chatgpt，时间覆盖 2025-11、2025-12、2026-01、2026-02，常见任务类型为 未标注、design，语言以 zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。",
+        "项目：Finance / 该行为簇基于 17 条带证据引用的事件，主要围绕「项目：Finance」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-06、2026-07，常见任务类型为 未标注、design、automation，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。",
+        "项目：KMFA / 该行为簇基于 13 条带证据引用的事件，主要围绕「项目：KMFA」。来源包含 codex、chatgpt，时间覆盖 2026-01、2026-04、2026-07，常见任务类型为 design、未标注、writing，语言以 mixed、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。",
+        "项目：Notion / 该行为簇基于 12 条带证据引用的事件，主要围绕「项目：Notion」。来源包含 chatgpt、codex，时间覆盖 2026-06、2026-07，常见任务类型为 未标注、design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。",
+        "产品、设计与可视化 / 该行为簇基于 12 条带证据引用的事件，主要围绕「产品、设计与可视化」。来源包含 chatgpt，时间覆盖 2026-02、2026-06、2026-07，常见任务类型为 design、product，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。",
+        "自动化与流程治理 / 该行为簇基于 10 条带证据引用的事件，主要围绕「自动化与流程治理」。来源包含 chatgpt，时间覆盖 2025-12、2026-01、2026-03、2026-06，常见任务类型为 未标注、automation，语言以 zh、mixed 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。"
+      ]
+    },
+    "decision_debt": {
+      "decision_debt_count": 8,
+      "items": [
+        "自动化与流程治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+        "风险、合规与治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+        "财务与价值分析 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+        "经营与管理决策 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+        "项目：macOS Operations / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+        "产品、设计与可视化 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。"
+      ]
+    },
+    "latent": {
+      "claims": [
+        "可能存在把「经营与管理决策」固化为可恢复资产的复利空间。 / medium / 只沉淀能被另一 agent 从 GitHub 恢复并运行的最小资产；无法复跑的说明先不扩写。",
+        "可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。 / medium / 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。",
+        "可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。 / medium / 下次出现同类主题时，先要求一个可验收文件或命令；若无法定义，就归档为暂不推进候选。",
+        "可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。 / medium / 下一次同类优化前写明质量上限和停止条件；达到上限后只修阻断验收的问题。",
+        "可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。 / medium / 下一次同类 run 开始前写出非目标列表；若新增需求不在非目标例外内，就进入下一 phase 而非本轮扩张。"
+      ],
+      "signal_count": 5
+    },
+    "latest_memory": [
+      "OpenAIDatabase 是 durable memory source / GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 / high",
+      "任意 agent personalization / 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 / high",
+      "真实数据优先 / 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 / high",
+      "默认中文输出 / 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 / high",
+      "报告面向人类 ROI 和成长 / 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 / high"
+    ],
+    "self_iteration": {
+      "suggestion_count": 5,
+      "suggestions": [
+        "memory / 下一次交接时可更快恢复 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。，但只有通过复跑证据后才写入长期记忆。 / 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。",
+        "config / 若 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。 成立，可减少重复操作；若不成立，proposal 到期后归档。 / 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。",
+        "AGENTS / 下一次同类 run 可更早锁定非目标列表，但不会在本 phase 改写 AGENTS。 / 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。",
+        "style / 人类页面应更短、更可读；若影响验收可追溯性，则不采纳。 / 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。",
+        "personalization / 后续对话可更快形成可验收产物；若没有复用价值，proposal 到期归档。 / 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。"
+      ]
+    }
+  },
   "layers": [
     {
       "canonical_files": [
@@ -213,40 +407,15 @@
     "changes": {
       "added": [],
       "deleted_or_demoted": [],
-      "modified": [
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 272,
-            "id": "codex_signal_github_as_memory_source",
-            "importance": "高",
-            "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 272 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
-            "title": "OpenAIDatabase 是 durable memory source"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 271,
-            "id": "codex_signal_github_as_memory_source",
-            "importance": "高",
-            "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 271 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
-            "title": "OpenAIDatabase 是 durable memory source"
-          }
-        }
-      ]
+      "modified": []
     },
     "current": [
       {
         "confidence": "high",
-        "evidence_count": 272,
+        "evidence_count": 1036,
         "id": "codex_signal_github_as_memory_source",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 272 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 1036 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
@@ -254,10 +423,10 @@
       },
       {
         "confidence": "high",
-        "evidence_count": 51,
+        "evidence_count": 759,
         "id": "codex_signal_agent_personalization",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 51 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 759 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
@@ -265,21 +434,10 @@
       },
       {
         "confidence": "high",
-        "evidence_count": 19,
-        "id": "codex_signal_prefer_chinese",
-        "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 19 次相关信号。",
-        "scope": "ChatGPT / Codex / future agents",
-        "source": "real_codex_local_sessions",
-        "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
-        "title": "默认中文输出"
-      },
-      {
-        "confidence": "high",
-        "evidence_count": 19,
+        "evidence_count": 424,
         "id": "codex_signal_real_data_required",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 19 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 424 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
@@ -287,10 +445,21 @@
       },
       {
         "confidence": "high",
-        "evidence_count": 12,
+        "evidence_count": 212,
+        "id": "codex_signal_prefer_chinese",
+        "importance": "高",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 212 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
+        "title": "默认中文输出"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 174,
         "id": "codex_signal_human_readable_reports",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 12 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 174 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
@@ -299,44 +468,20 @@
     ],
     "purpose": "给任意 ChatGPT / Codex / future agent 作为长期记忆和 RAG 入口。"
   },
+  "memory_bundle_manifest": "data/derived/personalization/memory_bundle_manifest.json",
   "meta_data": {
     "changes": {
       "added": [],
       "deleted_or_demoted": [],
-      "modified": [
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 275,
-            "id": "codex_signal_no_plaintext_secrets_in_git",
-            "importance": "高",
-            "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 275 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
-            "title": "GitHub secret 边界"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 274,
-            "id": "codex_signal_no_plaintext_secrets_in_git",
-            "importance": "高",
-            "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 274 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
-            "title": "GitHub secret 边界"
-          }
-        }
-      ]
+      "modified": []
     },
     "current": [
       {
         "confidence": "high",
-        "evidence_count": 275,
+        "evidence_count": 1035,
         "id": "codex_signal_no_plaintext_secrets_in_git",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 275 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 1035 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
@@ -344,10 +489,10 @@
       },
       {
         "confidence": "high",
-        "evidence_count": 46,
+        "evidence_count": 278,
         "id": "codex_signal_authorization_gate",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 46 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 278 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
@@ -360,10 +505,10 @@
     "items": [
       {
         "confidence": "high",
-        "evidence_count": 272,
+        "evidence_count": 1036,
         "id": "codex_signal_github_as_memory_source",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 272 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 1036 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
@@ -371,10 +516,10 @@
       },
       {
         "confidence": "high",
-        "evidence_count": 51,
+        "evidence_count": 759,
         "id": "codex_signal_agent_personalization",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 51 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 759 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
@@ -382,21 +527,10 @@
       },
       {
         "confidence": "high",
-        "evidence_count": 19,
-        "id": "codex_signal_prefer_chinese",
-        "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 19 次相关信号。",
-        "scope": "ChatGPT / Codex / future agents",
-        "source": "real_codex_local_sessions",
-        "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
-        "title": "默认中文输出"
-      },
-      {
-        "confidence": "high",
-        "evidence_count": 19,
+        "evidence_count": 424,
         "id": "codex_signal_real_data_required",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 19 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 424 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
@@ -404,10 +538,21 @@
       },
       {
         "confidence": "high",
-        "evidence_count": 12,
+        "evidence_count": 212,
+        "id": "codex_signal_prefer_chinese",
+        "importance": "高",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 212 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
+        "title": "默认中文输出"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 174,
         "id": "codex_signal_human_readable_reports",
         "importance": "高",
-        "reason": "从 16 个真实 Codex session 的用户消息和任务目标中检测到 12 次相关信号。",
+        "reason": "从 128 个真实 Codex session 的用户消息和任务目标中检测到 174 次相关信号。",
         "scope": "ChatGPT / Codex / future agents",
         "source": "real_codex_local_sessions",
         "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
@@ -416,36 +561,36 @@
     ],
     "top_topics": [
       {
-        "count": 324,
+        "count": 1275,
         "label": "Codex 本地数据 / agent 工作流"
       },
       {
-        "count": 289,
+        "count": 1154,
         "label": "GitHub 备份 / durable state"
       },
       {
-        "count": 283,
-        "label": "安全边界 / secret / 权限"
-      },
-      {
-        "count": 273,
+        "count": 1125,
         "label": "高质量交付 / 验证 / CI"
       },
       {
-        "count": 30,
-        "label": "Memory Atlas / 记忆可视化"
+        "count": 1077,
+        "label": "安全边界 / secret / 权限"
       },
       {
-        "count": 11,
+        "count": 348,
         "label": "长期记忆数据库 / RAG"
       },
       {
-        "count": 7,
-        "label": "前端交互 / Three.js / Dashboard"
+        "count": 190,
+        "label": "金融 / trading / 风险边界"
       },
       {
-        "count": 5,
-        "label": "金融 / trading / 风险边界"
+        "count": 73,
+        "label": "Memory Atlas / 记忆可视化"
+      },
+      {
+        "count": 53,
+        "label": "前端交互 / Three.js / Dashboard"
       }
     ]
   },
@@ -461,6 +606,233 @@
     ],
     "core_profile_path": "data/derived/profile/CORE_PROFILE.md"
   },
+  "projection_hashes": {
+    "chatgpt": "sha256:0ebb29e64338f472bbef007ebf506b78f863bb053731bdccae8896d438784083",
+    "claude": "sha256:3a42026f45735596e6c5d525ccaf72ac089f88035471bc751d5463188bf79ea3",
+    "codex": "sha256:6526d836f3a853d9776582779b245f8cdd588798979faadad805e9b2c185a7ab"
+  },
+  "projection_input_files": [
+    "config/context_sources/resource_routes.json",
+    "config/context_sources/three_layer_context.json",
+    "config/data_sources/source_registry.json",
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/behavior_intelligence/events.json",
+    "data/derived/behavior_intelligence/latent_signals.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/codex/codex_agent_recommendations.json",
+    "data/derived/decision_log/DECISION_LOG.md",
+    "data/derived/monthly/2026-06.monthly_memory_pack.md",
+    "data/derived/profile/CORE_PROFILE.md",
+    "data/derived/project_index/PROJECT_INDEX.md",
+    "data/derived/timeline/TIMELINE.md",
+    "data/derived/visualization/memory_atlas.json",
+    "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
+    "data/memory/active/active_memory.jsonl",
+    "data/memory/active/active_memory.md",
+    "data/memory/curation/core_profile_review.json",
+    "data/processed/codex/codex_activity_snapshot.json",
+    "data/processed/codex/codex_daily_activity.jsonl",
+    "data/processed/codex/codex_session_manifest.jsonl"
+  ],
+  "projection_input_hash": "sha256:101744d06257e126de6f6f7231767f65b016bb81ee352106740a2a7e9e083d6b",
+  "projection_input_records": [
+    {
+      "content_hash": "sha256:5940767d58bf30958e5284b549c2346a97873f0673defb8ecf22f7d3ed62df07",
+      "exists": true,
+      "path": "config/context_sources/resource_routes.json"
+    },
+    {
+      "content_hash": "sha256:d2d20a9cd4699c84e4655bc6d238a9ee009374320216ece91310d483de669327",
+      "exists": true,
+      "path": "config/context_sources/three_layer_context.json"
+    },
+    {
+      "content_hash": "sha256:99e54ec070dfd2d4531fab42bc43e7f7f5913fa14380fe9bf3e0a6f88a77a6aa",
+      "exists": true,
+      "path": "config/data_sources/source_registry.json"
+    },
+    {
+      "content_hash": "sha256:1b81bd15b17e64ad7fbbce5c04f80f17234192e81dad6f3e0062c47dafa89689",
+      "exists": true,
+      "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+    },
+    {
+      "content_hash": "sha256:53d4a6fcef2d93d3b1e457f5848de91ac973e02fdee3d8eeafd5b0c54abbd98e",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/clusters.json"
+    },
+    {
+      "content_hash": "sha256:0d8dafb4f604944adf23ba694705c7b9b66b89fbf0f71e6d199cdd323507a8d5",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/decision_debt_ledger.json"
+    },
+    {
+      "content_hash": "sha256:89d3eb8540cabfeeb951b54fa2d3e31a77438f476c026f44c75b76258766ad2a",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/events.json"
+    },
+    {
+      "content_hash": "sha256:24eb5b1f3cc36bd0a938abede7aeb99a56a5536ad21873ca66fe266bd006a03c",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/latent_signals.json"
+    },
+    {
+      "content_hash": "sha256:fcb38add9395fda93c05f1a52bf5d9abbc12b01e82697101205ad8f815b78b70",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/self_iteration_suggestions.json"
+    },
+    {
+      "content_hash": "sha256:4adbc9492a9275c69513c5eaba6c7c12479e982668a17054013530c0ea4fed15",
+      "exists": true,
+      "path": "data/derived/codex/codex_agent_recommendations.json"
+    },
+    {
+      "content_hash": "sha256:b8f2d9feaa984347a23ca03832bc0b8d9891e5123ed2ba0ea431f5b8660c0ae3",
+      "exists": true,
+      "path": "data/derived/decision_log/DECISION_LOG.md"
+    },
+    {
+      "content_hash": "sha256:9fa2a78203acd43e2a4db12a9912f11f06ed4f7c8aca2d12cd9d8892f431035a",
+      "exists": true,
+      "path": "data/derived/monthly/2026-06.monthly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:afed32fec69fdc400abeabab01508306fcf38c0892b89e02675254e67c37f00b",
+      "exists": true,
+      "path": "data/derived/profile/CORE_PROFILE.md"
+    },
+    {
+      "content_hash": "sha256:e11b18def4701b4ac8a71d4cbaf9b14e69999f7c1abf065386607feb6af3e5b8",
+      "exists": true,
+      "path": "data/derived/project_index/PROJECT_INDEX.md"
+    },
+    {
+      "content_hash": "sha256:034eb443abdbc7043df6bb25a7df0267256ec0e1b76aa547827de4f6e2083125",
+      "exists": true,
+      "path": "data/derived/timeline/TIMELINE.md"
+    },
+    {
+      "content_hash": "sha256:b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "exists": true,
+      "path": "data/derived/visualization/memory_atlas.json"
+    },
+    {
+      "content_hash": "sha256:ceef5bdaa244483e6d6362b80a7aae030fca6be7ca240d5e50a5b8c006c2d2e3",
+      "exists": true,
+      "path": "data/derived/weekly/2026-06-15.weekly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+      "exists": true,
+      "path": "data/memory/active/active_memory.jsonl"
+    },
+    {
+      "content_hash": "sha256:fcf9e4bd19233ddb62f3d9d26c2a9a204ab6fc7c1aa079e94081e69499833b93",
+      "exists": true,
+      "path": "data/memory/active/active_memory.md"
+    },
+    {
+      "content_hash": "sha256:ac0ef2dfa9c23652cc635d88d3010aab20c0bd0d457aa28b23d9b5ed94fd5446",
+      "exists": true,
+      "path": "data/memory/curation/core_profile_review.json"
+    },
+    {
+      "content_hash": "sha256:22cbf2ae5859b779da070ecaf4949864f7500cbc665880f19a41dc1237b464cb",
+      "exists": true,
+      "path": "data/processed/codex/codex_activity_snapshot.json"
+    },
+    {
+      "content_hash": "sha256:492ba54b5f71029f427c045eb80619a7467e91f530f9b7f8a3ad49a11d0f4371",
+      "exists": true,
+      "path": "data/processed/codex/codex_daily_activity.jsonl"
+    },
+    {
+      "content_hash": "sha256:bb672737aed7da7ff3a761134cec8ddf99ae1cd93109c33295ea9f9274fc8f31",
+      "exists": true,
+      "path": "data/processed/codex/codex_session_manifest.jsonl"
+    }
+  ],
+  "prompt_version": "personalization_prompt.v1_2_s12_p2",
+  "prompts": {
+    "chatgpt": {
+      "human_explanation_zh": "给 ChatGPT 使用的最新个性化提示词，来自 latest memory、behavior、latent、self_iteration 和协作质量等脱敏派生报告。",
+      "machine_copyable_text": "You are the ChatGPT assistant for Linze.\nTask contract: MA-V12-S12P2 / ACC-MA-V12-S12P2 / personalization_prompt.v1_2_s12_p2.\nUse this as the latest memory / behavior / latent / self_iteration personalization prompt.\n\nCore operating style:\n- Default to Chinese for user-facing replies; keep code, APIs, library names and errors in English when useful.\n- Be accurate, executable, evidence-backed, high ROI and low-noise.\n- Preserve one-phase-per-run boundaries for staged Memory Atlas work.\n- Prefer numbered choices, status tables, clear assumptions, validation commands and stop conditions over broad free-text interviews.\n\nlatest memory:\n- OpenAIDatabase 是 durable memory source / GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 / high\n- 任意 agent personalization / 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 / high\n- 真实数据优先 / 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 / high\n- 默认中文输出 / 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 / high\n- 报告面向人类 ROI 和成长 / 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 / high\n\nbehavior:\n- events=491; clusters=278.\n- 项目：Memory Atlas / 该行为簇基于 90 条带证据引用的事件，主要围绕「项目：Memory Atlas」。来源包含 codex、future_agent，时间覆盖 2026-07，常见任务类型为 design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- AI 记忆与 agent 工作流 / 该行为簇基于 49 条带证据引用的事件，主要围绕「AI 记忆与 agent 工作流」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-03、2026-05、2026-06，常见任务类型为 未标注、engineering、data，语言以 mixed、en、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 经营与管理决策 / 该行为簇基于 26 条带证据引用的事件，主要围绕「经营与管理决策」。来源包含 chatgpt，时间覆盖 2025-11、2025-12、2026-01、2026-02，常见任务类型为 未标注、design，语言以 zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Finance / 该行为簇基于 17 条带证据引用的事件，主要围绕「项目：Finance」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-06、2026-07，常见任务类型为 未标注、design、automation，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：KMFA / 该行为簇基于 13 条带证据引用的事件，主要围绕「项目：KMFA」。来源包含 codex、chatgpt，时间覆盖 2026-01、2026-04、2026-07，常见任务类型为 design、未标注、writing，语言以 mixed、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Notion / 该行为簇基于 12 条带证据引用的事件，主要围绕「项目：Notion」。来源包含 chatgpt、codex，时间覆盖 2026-06、2026-07，常见任务类型为 未标注、design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 产品、设计与可视化 / 该行为簇基于 12 条带证据引用的事件，主要围绕「产品、设计与可视化」。来源包含 chatgpt，时间覆盖 2026-02、2026-06、2026-07，常见任务类型为 design、product，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 自动化与流程治理 / 该行为簇基于 10 条带证据引用的事件，主要围绕「自动化与流程治理」。来源包含 chatgpt，时间覆盖 2025-12、2026-01、2026-03、2026-06，常见任务类型为 未标注、automation，语言以 zh、mixed 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n\nlatent:\n- latent_signal_count=5.\n- 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。 / medium / 只沉淀能被另一 agent 从 GitHub 恢复并运行的最小资产；无法复跑的说明先不扩写。\n- 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。 / medium / 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。\n- 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。 / medium / 下次出现同类主题时，先要求一个可验收文件或命令；若无法定义，就归档为暂不推进候选。\n- 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。 / medium / 下一次同类优化前写明质量上限和停止条件；达到上限后只修阻断验收的问题。\n- 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。 / medium / 下一次同类 run 开始前写出非目标列表；若新增需求不在非目标例外内，就进入下一 phase 而非本轮扩张。\n\nself_iteration:\n- suggestion_count=5.\n- memory / 下一次交接时可更快恢复 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。，但只有通过复跑证据后才写入长期记忆。 / 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。\n- config / 若 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。 成立，可减少重复操作；若不成立，proposal 到期后归档。 / 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。\n- AGENTS / 下一次同类 run 可更早锁定非目标列表，但不会在本 phase 改写 AGENTS。 / 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。\n- style / 人类页面应更短、更可读；若影响验收可追溯性，则不采纳。 / 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。\n- personalization / 后续对话可更快形成可验收产物；若没有复用价值，proposal 到期归档。 / 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。\n\ndecision and collaboration context:\n- decision_debt_count=8.\n- 自动化与流程治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 风险、合规与治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 财务与价值分析 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 经营与管理决策 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 项目：macOS Operations / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 产品、设计与可视化 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- collaboration_summary=本报告用 planning、execution、review、rework、scope、testability 和 rollbackability 七类指标解释 ChatGPT/Codex/后续 agent 的协作质量。它只做证据化指标，不创建多 agent 系统，也不实现复杂 Delegation Contract UI。\n\nSafety and phase boundaries:\n- No automatic send.\n- No raw mutation.\n- No proposal apply execution.\n- No cookie, token, browser profile or plaintext secret export.\n- No S12 P3 ChatGPT deep explore execution in this phase.",
+      "output_file": "data/derived/personalization/chatgpt_personalization.md",
+      "raw_mutation": false,
+      "sends_to_chatgpt": false,
+      "source_reports": [
+        "data/derived/personalization/personalization_export.json",
+        "data/derived/behavior_intelligence/events.json",
+        "data/derived/behavior_intelligence/clusters.json",
+        "data/derived/behavior_intelligence/latent_signals.json",
+        "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+        "data/derived/behavior_intelligence/decision_debt_ledger.json",
+        "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+      ],
+      "target_id": "chatgpt",
+      "target_label": "ChatGPT",
+      "user_trigger_required": true
+    },
+    "claude": {
+      "human_explanation_zh": "给 Claude Code 使用的最新个性化提示词，来自 latest memory、behavior、latent、self_iteration 和协作质量等脱敏派生报告。",
+      "machine_copyable_text": "You are the Claude Code assistant for Linze.\nTask contract: MA-V12-S12P2 / ACC-MA-V12-S12P2 / personalization_prompt.v1_2_s12_p2.\nUse this as the latest memory / behavior / latent / self_iteration personalization prompt.\n\nCore operating style:\n- Default to Chinese for user-facing replies; keep code, APIs, library names and errors in English when useful.\n- Be accurate, executable, evidence-backed, high ROI and low-noise.\n- Preserve one-phase-per-run boundaries for staged Memory Atlas work.\n- Prefer numbered choices, status tables, clear assumptions, validation commands and stop conditions over broad free-text interviews.\n\nlatest memory:\n- OpenAIDatabase 是 durable memory source / GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 / high\n- 任意 agent personalization / 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 / high\n- 真实数据优先 / 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 / high\n- 默认中文输出 / 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 / high\n- 报告面向人类 ROI 和成长 / 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 / high\n\nbehavior:\n- events=491; clusters=278.\n- 项目：Memory Atlas / 该行为簇基于 90 条带证据引用的事件，主要围绕「项目：Memory Atlas」。来源包含 codex、future_agent，时间覆盖 2026-07，常见任务类型为 design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- AI 记忆与 agent 工作流 / 该行为簇基于 49 条带证据引用的事件，主要围绕「AI 记忆与 agent 工作流」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-03、2026-05、2026-06，常见任务类型为 未标注、engineering、data，语言以 mixed、en、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 经营与管理决策 / 该行为簇基于 26 条带证据引用的事件，主要围绕「经营与管理决策」。来源包含 chatgpt，时间覆盖 2025-11、2025-12、2026-01、2026-02，常见任务类型为 未标注、design，语言以 zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Finance / 该行为簇基于 17 条带证据引用的事件，主要围绕「项目：Finance」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-06、2026-07，常见任务类型为 未标注、design、automation，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：KMFA / 该行为簇基于 13 条带证据引用的事件，主要围绕「项目：KMFA」。来源包含 codex、chatgpt，时间覆盖 2026-01、2026-04、2026-07，常见任务类型为 design、未标注、writing，语言以 mixed、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Notion / 该行为簇基于 12 条带证据引用的事件，主要围绕「项目：Notion」。来源包含 chatgpt、codex，时间覆盖 2026-06、2026-07，常见任务类型为 未标注、design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 产品、设计与可视化 / 该行为簇基于 12 条带证据引用的事件，主要围绕「产品、设计与可视化」。来源包含 chatgpt，时间覆盖 2026-02、2026-06、2026-07，常见任务类型为 design、product，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 自动化与流程治理 / 该行为簇基于 10 条带证据引用的事件，主要围绕「自动化与流程治理」。来源包含 chatgpt，时间覆盖 2025-12、2026-01、2026-03、2026-06，常见任务类型为 未标注、automation，语言以 zh、mixed 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n\nlatent:\n- latent_signal_count=5.\n- 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。 / medium / 只沉淀能被另一 agent 从 GitHub 恢复并运行的最小资产；无法复跑的说明先不扩写。\n- 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。 / medium / 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。\n- 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。 / medium / 下次出现同类主题时，先要求一个可验收文件或命令；若无法定义，就归档为暂不推进候选。\n- 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。 / medium / 下一次同类优化前写明质量上限和停止条件；达到上限后只修阻断验收的问题。\n- 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。 / medium / 下一次同类 run 开始前写出非目标列表；若新增需求不在非目标例外内，就进入下一 phase 而非本轮扩张。\n\nself_iteration:\n- suggestion_count=5.\n- memory / 下一次交接时可更快恢复 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。，但只有通过复跑证据后才写入长期记忆。 / 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。\n- config / 若 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。 成立，可减少重复操作；若不成立，proposal 到期后归档。 / 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。\n- AGENTS / 下一次同类 run 可更早锁定非目标列表，但不会在本 phase 改写 AGENTS。 / 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。\n- style / 人类页面应更短、更可读；若影响验收可追溯性，则不采纳。 / 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。\n- personalization / 后续对话可更快形成可验收产物；若没有复用价值，proposal 到期归档。 / 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。\n\ndecision and collaboration context:\n- decision_debt_count=8.\n- 自动化与流程治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 风险、合规与治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 财务与价值分析 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 经营与管理决策 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 项目：macOS Operations / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 产品、设计与可视化 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- collaboration_summary=本报告用 planning、execution、review、rework、scope、testability 和 rollbackability 七类指标解释 ChatGPT/Codex/后续 agent 的协作质量。它只做证据化指标，不创建多 agent 系统，也不实现复杂 Delegation Contract UI。\n\nSafety and phase boundaries:\n- No automatic send.\n- No raw mutation.\n- No proposal apply execution.\n- No cookie, token, browser profile or plaintext secret export.\n- No S12 P3 ChatGPT deep explore execution in this phase.",
+      "output_file": "data/derived/personalization/claude_personalization.md",
+      "raw_mutation": false,
+      "sends_to_chatgpt": false,
+      "source_reports": [
+        "data/derived/personalization/personalization_export.json",
+        "data/derived/behavior_intelligence/events.json",
+        "data/derived/behavior_intelligence/clusters.json",
+        "data/derived/behavior_intelligence/latent_signals.json",
+        "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+        "data/derived/behavior_intelligence/decision_debt_ledger.json",
+        "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+      ],
+      "target_id": "claude",
+      "target_label": "Claude Code",
+      "user_trigger_required": true
+    },
+    "codex": {
+      "human_explanation_zh": "给 Codex 使用的最新个性化提示词，来自 latest memory、behavior、latent、self_iteration 和协作质量等脱敏派生报告。",
+      "machine_copyable_text": "You are the Codex assistant for Linze.\nTask contract: MA-V12-S12P2 / ACC-MA-V12-S12P2 / personalization_prompt.v1_2_s12_p2.\nUse this as the latest memory / behavior / latent / self_iteration personalization prompt.\n\nCore operating style:\n- Default to Chinese for user-facing replies; keep code, APIs, library names and errors in English when useful.\n- Be accurate, executable, evidence-backed, high ROI and low-noise.\n- Preserve one-phase-per-run boundaries for staged Memory Atlas work.\n- Prefer numbered choices, status tables, clear assumptions, validation commands and stop conditions over broad free-text interviews.\n\nlatest memory:\n- OpenAIDatabase 是 durable memory source / GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 / high\n- 任意 agent personalization / 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 / high\n- 真实数据优先 / 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 / high\n- 默认中文输出 / 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 / high\n- 报告面向人类 ROI 和成长 / 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 / high\n\nbehavior:\n- events=491; clusters=278.\n- 项目：Memory Atlas / 该行为簇基于 90 条带证据引用的事件，主要围绕「项目：Memory Atlas」。来源包含 codex、future_agent，时间覆盖 2026-07，常见任务类型为 design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- AI 记忆与 agent 工作流 / 该行为簇基于 49 条带证据引用的事件，主要围绕「AI 记忆与 agent 工作流」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-03、2026-05、2026-06，常见任务类型为 未标注、engineering、data，语言以 mixed、en、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 经营与管理决策 / 该行为簇基于 26 条带证据引用的事件，主要围绕「经营与管理决策」。来源包含 chatgpt，时间覆盖 2025-11、2025-12、2026-01、2026-02，常见任务类型为 未标注、design，语言以 zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Finance / 该行为簇基于 17 条带证据引用的事件，主要围绕「项目：Finance」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-06、2026-07，常见任务类型为 未标注、design、automation，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：KMFA / 该行为簇基于 13 条带证据引用的事件，主要围绕「项目：KMFA」。来源包含 codex、chatgpt，时间覆盖 2026-01、2026-04、2026-07，常见任务类型为 design、未标注、writing，语言以 mixed、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Notion / 该行为簇基于 12 条带证据引用的事件，主要围绕「项目：Notion」。来源包含 chatgpt、codex，时间覆盖 2026-06、2026-07，常见任务类型为 未标注、design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 产品、设计与可视化 / 该行为簇基于 12 条带证据引用的事件，主要围绕「产品、设计与可视化」。来源包含 chatgpt，时间覆盖 2026-02、2026-06、2026-07，常见任务类型为 design、product，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 自动化与流程治理 / 该行为簇基于 10 条带证据引用的事件，主要围绕「自动化与流程治理」。来源包含 chatgpt，时间覆盖 2025-12、2026-01、2026-03、2026-06，常见任务类型为 未标注、automation，语言以 zh、mixed 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n\nlatent:\n- latent_signal_count=5.\n- 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。 / medium / 只沉淀能被另一 agent 从 GitHub 恢复并运行的最小资产；无法复跑的说明先不扩写。\n- 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。 / medium / 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。\n- 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。 / medium / 下次出现同类主题时，先要求一个可验收文件或命令；若无法定义，就归档为暂不推进候选。\n- 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。 / medium / 下一次同类优化前写明质量上限和停止条件；达到上限后只修阻断验收的问题。\n- 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。 / medium / 下一次同类 run 开始前写出非目标列表；若新增需求不在非目标例外内，就进入下一 phase 而非本轮扩张。\n\nself_iteration:\n- suggestion_count=5.\n- memory / 下一次交接时可更快恢复 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。，但只有通过复跑证据后才写入长期记忆。 / 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。\n- config / 若 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。 成立，可减少重复操作；若不成立，proposal 到期后归档。 / 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。\n- AGENTS / 下一次同类 run 可更早锁定非目标列表，但不会在本 phase 改写 AGENTS。 / 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。\n- style / 人类页面应更短、更可读；若影响验收可追溯性，则不采纳。 / 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。\n- personalization / 后续对话可更快形成可验收产物；若没有复用价值，proposal 到期归档。 / 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。\n\ndecision and collaboration context:\n- decision_debt_count=8.\n- 自动化与流程治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 风险、合规与治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 财务与价值分析 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 经营与管理决策 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 项目：macOS Operations / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 产品、设计与可视化 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- collaboration_summary=本报告用 planning、execution、review、rework、scope、testability 和 rollbackability 七类指标解释 ChatGPT/Codex/后续 agent 的协作质量。它只做证据化指标，不创建多 agent 系统，也不实现复杂 Delegation Contract UI。\n\nSafety and phase boundaries:\n- No automatic send.\n- No raw mutation.\n- No proposal apply execution.\n- No cookie, token, browser profile or plaintext secret export.\n- No S12 P3 ChatGPT deep explore execution in this phase.",
+      "output_file": "data/derived/personalization/codex_personalization.md",
+      "raw_mutation": false,
+      "sends_to_chatgpt": false,
+      "source_reports": [
+        "data/derived/personalization/personalization_export.json",
+        "data/derived/behavior_intelligence/events.json",
+        "data/derived/behavior_intelligence/clusters.json",
+        "data/derived/behavior_intelligence/latent_signals.json",
+        "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+        "data/derived/behavior_intelligence/decision_debt_ledger.json",
+        "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+      ],
+      "target_id": "codex",
+      "target_label": "Codex",
+      "user_trigger_required": true
+    },
+    "other_agent": {
+      "human_explanation_zh": "给 other agent 使用的最新个性化提示词，来自 latest memory、behavior、latent、self_iteration 和协作质量等脱敏派生报告。",
+      "machine_copyable_text": "You are the other agent assistant for Linze.\nTask contract: MA-V12-S12P2 / ACC-MA-V12-S12P2 / personalization_prompt.v1_2_s12_p2.\nUse this as the latest memory / behavior / latent / self_iteration personalization prompt.\n\nCore operating style:\n- Default to Chinese for user-facing replies; keep code, APIs, library names and errors in English when useful.\n- Be accurate, executable, evidence-backed, high ROI and low-noise.\n- Preserve one-phase-per-run boundaries for staged Memory Atlas work.\n- Prefer numbered choices, status tables, clear assumptions, validation commands and stop conditions over broad free-text interviews.\n\nlatest memory:\n- OpenAIDatabase 是 durable memory source / GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 / high\n- 任意 agent personalization / 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 / high\n- 真实数据优先 / 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 / high\n- 默认中文输出 / 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 / high\n- 报告面向人类 ROI 和成长 / 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 / high\n\nbehavior:\n- events=491; clusters=278.\n- 项目：Memory Atlas / 该行为簇基于 90 条带证据引用的事件，主要围绕「项目：Memory Atlas」。来源包含 codex、future_agent，时间覆盖 2026-07，常见任务类型为 design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- AI 记忆与 agent 工作流 / 该行为簇基于 49 条带证据引用的事件，主要围绕「AI 记忆与 agent 工作流」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-03、2026-05、2026-06，常见任务类型为 未标注、engineering、data，语言以 mixed、en、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 经营与管理决策 / 该行为簇基于 26 条带证据引用的事件，主要围绕「经营与管理决策」。来源包含 chatgpt，时间覆盖 2025-11、2025-12、2026-01、2026-02，常见任务类型为 未标注、design，语言以 zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Finance / 该行为簇基于 17 条带证据引用的事件，主要围绕「项目：Finance」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-06、2026-07，常见任务类型为 未标注、design、automation，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：KMFA / 该行为簇基于 13 条带证据引用的事件，主要围绕「项目：KMFA」。来源包含 codex、chatgpt，时间覆盖 2026-01、2026-04、2026-07，常见任务类型为 design、未标注、writing，语言以 mixed、zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 项目：Notion / 该行为簇基于 12 条带证据引用的事件，主要围绕「项目：Notion」。来源包含 chatgpt、codex，时间覆盖 2026-06、2026-07，常见任务类型为 未标注、design、engineering，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 产品、设计与可视化 / 该行为簇基于 12 条带证据引用的事件，主要围绕「产品、设计与可视化」。来源包含 chatgpt，时间覆盖 2026-02、2026-06、2026-07，常见任务类型为 design、product，语言以 mixed、zh、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n- 自动化与流程治理 / 该行为簇基于 10 条带证据引用的事件，主要围绕「自动化与流程治理」。来源包含 chatgpt，时间覆盖 2025-12、2026-01、2026-03、2026-06，常见任务类型为 未标注、automation，语言以 zh、mixed 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。\n\nlatent:\n- latent_signal_count=5.\n- 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。 / medium / 只沉淀能被另一 agent 从 GitHub 恢复并运行的最小资产；无法复跑的说明先不扩写。\n- 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。 / medium / 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。\n- 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。 / medium / 下次出现同类主题时，先要求一个可验收文件或命令；若无法定义，就归档为暂不推进候选。\n- 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。 / medium / 下一次同类优化前写明质量上限和停止条件；达到上限后只修阻断验收的问题。\n- 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。 / medium / 下一次同类 run 开始前写出非目标列表；若新增需求不在非目标例外内，就进入下一 phase 而非本轮扩张。\n\nself_iteration:\n- suggestion_count=5.\n- memory / 下一次交接时可更快恢复 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。，但只有通过复跑证据后才写入长期记忆。 / 可能存在把「经营与管理决策」固化为可恢复资产的复利空间。\n- config / 若 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。 成立，可减少重复操作；若不成立，proposal 到期后归档。 / 可能存在把「AI 记忆与 agent 工作流、项目：Finance」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。\n- AGENTS / 下一次同类 run 可更早锁定非目标列表，但不会在本 phase 改写 AGENTS。 / 可能存在「AI 记忆与 agent 工作流、项目：Finance、项目：KMFA」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。\n- style / 人类页面应更短、更可读；若影响验收可追溯性，则不采纳。 / 可能存在「AI 记忆与 agent 工作流、产品、设计与可视化、经营与管理决策」需要先设质量上限，而不是继续增加细节优化的信号。\n- personalization / 后续对话可更快形成可验收产物；若没有复用价值，proposal 到期归档。 / 可能存在把「经营与管理决策、自动化与流程治理、财务与价值分析」先压缩成单个交付件、验收命令或停止条件的收口空间。\n\ndecision and collaboration context:\n- decision_debt_count=8.\n- 自动化与流程治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 风险、合规与治理 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 财务与价值分析 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 经营与管理决策 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 项目：macOS Operations / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- 产品、设计与可视化 / 如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。\n- collaboration_summary=本报告用 planning、execution、review、rework、scope、testability 和 rollbackability 七类指标解释 ChatGPT/Codex/后续 agent 的协作质量。它只做证据化指标，不创建多 agent 系统，也不实现复杂 Delegation Contract UI。\n\nSafety and phase boundaries:\n- No automatic send.\n- No raw mutation.\n- No proposal apply execution.\n- No cookie, token, browser profile or plaintext secret export.\n- No S12 P3 ChatGPT deep explore execution in this phase.",
+      "output_file": "data/derived/personalization/other_agent_personalization.md",
+      "raw_mutation": false,
+      "sends_to_chatgpt": false,
+      "source_reports": [
+        "data/derived/personalization/personalization_export.json",
+        "data/derived/behavior_intelligence/events.json",
+        "data/derived/behavior_intelligence/clusters.json",
+        "data/derived/behavior_intelligence/latent_signals.json",
+        "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+        "data/derived/behavior_intelligence/decision_debt_ledger.json",
+        "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+      ],
+      "target_id": "other_agent",
+      "target_label": "other agent",
+      "user_trigger_required": true
+    }
+  },
   "routes": {
     "chatgpt_personalization": {
       "description": "Compact export for ChatGPT Project / custom instructions style personalization.",
@@ -474,6 +846,37 @@
         "profile",
         "preference",
         "taste"
+      ]
+    },
+    "claude_personalization": {
+      "conditional_resources": [
+        {
+          "condition": "Load only when the task needs deeper cross-agent context than the compact Claude projection.",
+          "path": "data/derived/agent_context/AGENT_CONTEXT.md"
+        },
+        {
+          "condition": "Load only when the task needs stable profile detail beyond the compact projection.",
+          "path": "data/derived/profile/CORE_PROFILE.md"
+        },
+        {
+          "condition": "Load only for explicit project-continuity intent; project status remains in project governance.",
+          "path": "data/derived/project_index/PROJECT_INDEX.md"
+        },
+        {
+          "condition": "Load only for explicit durable-decision intent.",
+          "path": "data/derived/decision_log/DECISION_LOG.md"
+        }
+      ],
+      "description": "Minimal Claude Code startup projection generated from the shared provider-neutral memory bundle.",
+      "intent": "claude_personalization",
+      "read_order": [
+        "data/derived/personalization/claude_personalization.md"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "history",
+        "pattern"
       ]
     },
     "codex_personalization": {
@@ -559,13 +962,19 @@
   ],
   "safety": {
     "local_absolute_paths_included": false,
+    "no_automatic_send": true,
+    "no_proposal_apply_execution": true,
+    "no_raw_mutation": true,
     "plaintext_high_risk_secrets_included": false,
     "plaintext_secrets_included": false,
     "raw_private_data_included": false,
     "raw_transcripts_included": false,
+    "s12_p3_chatgpt_deep_explore_execution": false,
+    "sends_to_chatgpt": false,
+    "user_trigger_required": true,
     "writeback_policy": "proposal_only_with_agent_or_human_apply_and_git_rollback"
   },
-  "schema_version": "openai_database.personalization_export.v1",
+  "schema_version": "openai_database.personalization_export.v1_2_s12_p2",
   "source": "redacted_derived_openai_database_context",
   "source_files": {
     "codex_recommendations": "data/derived/codex/codex_agent_recommendations.json",
@@ -576,11 +985,83 @@
     "memory_atlas": "data/derived/visualization/memory_atlas.json",
     "route_config": "config/context_sources/resource_routes.json"
   },
+  "source_report_freshness": {
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json": {
+      "acceptance_id": "ACC-MA-V12-S08P1",
+      "exists": true,
+      "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+      "reported_generated_at": "2026-07-08T06:32:23Z",
+      "status": "phase_s08_p1_collaboration_metrics_completed_pending_s08_p2",
+      "task_id": "MA-V12-S08P1"
+    },
+    "data/derived/behavior_intelligence/clusters.json": {
+      "acceptance_id": "ACC-MA-V12-S06P1",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/clusters.json",
+      "reported_generated_at": "2026-07-10T21:38:04Z",
+      "status": "phase_s06_p1_cluster_builder_completed_pending_s06_p2",
+      "task_id": "MA-V12-S06P1"
+    },
+    "data/derived/behavior_intelligence/decision_debt_ledger.json": {
+      "acceptance_id": "ACC-MA-V12-S09P3",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/decision_debt_ledger.json",
+      "reported_generated_at": "2026-07-10T21:38:46Z",
+      "status": "phase_s09_p3_decision_debt_completed_pending_s09_review",
+      "task_id": "MA-V12-S09P3"
+    },
+    "data/derived/behavior_intelligence/events.json": {
+      "acceptance_id": "ACC-MA-V12-S05P3",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/events.json",
+      "reported_generated_at": "2026-07-10T21:37:57Z",
+      "status": "phase_s05_p3_evidence_refs_completed_pending_s05_review",
+      "task_id": "MA-V12-S05P3"
+    },
+    "data/derived/behavior_intelligence/latent_signals.json": {
+      "acceptance_id": "ACC-MA-V12-S09P1",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/latent_signals.json",
+      "reported_generated_at": "2026-07-10T21:38:33Z",
+      "status": "phase_s09_p1_latent_signals_completed_pending_s09_p2",
+      "task_id": "MA-V12-S09P1"
+    },
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json": {
+      "acceptance_id": "ACC-MA-V12-S09P2",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+      "reported_generated_at": "2026-07-10T21:38:39Z",
+      "status": "phase_s09_p2_self_iteration_completed_pending_s09_p3",
+      "task_id": "MA-V12-S09P2"
+    },
+    "data/derived/personalization/personalization_export.json": {
+      "exists": true,
+      "path": "data/derived/personalization/personalization_export.json",
+      "source_role": "machine_export_output"
+    }
+  },
+  "source_reports": [
+    "data/derived/personalization/personalization_export.json",
+    "data/derived/behavior_intelligence/events.json",
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/latent_signals.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+  ],
+  "status": "phase_s12_p2_personalization_prompt_completed_pending_s12_p3",
   "sync_required_targets": [
     "profile",
     "preference",
     "taste",
     "history",
     "pattern"
-  ]
+  ],
+  "targets": [
+    "chatgpt",
+    "codex",
+    "claude",
+    "other_agent"
+  ],
+  "task_id": "MA-V12-S12P2"
 }

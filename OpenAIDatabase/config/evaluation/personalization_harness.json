@@ -11,8 +11,29 @@
     "docs/PERSONAL_CONTEXT_ARCHITECTURE.md",
     "data/derived/personalization/chatgpt_personalization.md",
     "data/derived/personalization/codex_personalization.md",
+    "data/derived/personalization/claude_personalization.md",
+    "data/derived/personalization/memory_bundle_manifest.json",
     "data/derived/personalization/personalization_export.json"
   ],
+  "required_projection_providers": [
+    "chatgpt",
+    "codex",
+    "claude"
+  ],
+  "required_bundle_fields": [
+    "bundle_id",
+    "canonical_source_hash",
+    "projection_input_hash",
+    "generator_version",
+    "source_files",
+    "source_records",
+    "projection_input_files",
+    "projection_input_records",
+    "projections"
+  ],
+  "projection_size_limits": {
+    "claude": 4096
+  },
   "required_export_sections": [
     "Core Profile",
     "Preferences And Taste",

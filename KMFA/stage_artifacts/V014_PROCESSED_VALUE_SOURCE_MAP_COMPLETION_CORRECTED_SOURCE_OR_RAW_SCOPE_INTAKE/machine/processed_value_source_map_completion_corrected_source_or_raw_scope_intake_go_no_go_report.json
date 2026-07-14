@@ -1,0 +1,20 @@
+{
+  "acceptance_id": "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-RAW-SCOPE-INTAKE",
+  "app_reinstall_allowed": false,
+  "blocked_until": "private_raw_comparison_preflight_before_any_raw_value_matching_or_delivery_claim",
+  "business_execution_allowed": false,
+  "corrected_source_package_supplied": false,
+  "decision": "NO_GO",
+  "delivery_allowed": false,
+  "diagnostic_conclusion": "private_raw_comparison_scope_registered_delivery_still_blocked",
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_allowed": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_RAW_SCOPE_INTAKE",
+  "private_raw_comparison_preflight_ready": true,
+  "project_id": "KMFA",
+  "record_type": "v014_corrected_source_or_raw_scope_intake_go_no_go_report",
+  "schema_version": "kmfa.v014_corrected_source_or_raw_scope_intake_go_no_go.v1",
+  "status": "completed_validated_local_only_corrected_source_or_raw_scope_intake_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-RAW-SCOPE-INTAKE-20260706",
+  "version": "0.1.4-corrected-source-or-raw-scope-intake"
+}

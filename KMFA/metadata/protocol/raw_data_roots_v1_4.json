@@ -1,0 +1,52 @@
+{
+  "schema_version": "kmfa.raw_data_roots.v1_4",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_phase": "S02-P1",
+  "status": "active_public_safe_protocol_only",
+  "raw_roots": [
+    {
+      "raw_root_id": "local_kmfa_metadata_raw_root",
+      "path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+      "access_policy": "read_only_when_phase_authorized",
+      "current_phase_read_performed": false,
+      "current_phase_list_performed": false,
+      "current_phase_mutation_performed": false,
+      "current_phase_inventory_performed": false,
+      "allowed_public_repo_categories": [
+        "schema",
+        "protocol",
+        "status",
+        "evidence_ref",
+        "hash_or_aggregate_only_when_authorized"
+      ],
+      "forbidden_public_repo_categories": [
+        "raw_files",
+        "raw_filenames",
+        "raw_hashes_without_phase_authorization",
+        "field_or_header_plaintext",
+        "row_values",
+        "business_amount_values",
+        "credentials",
+        "contracts",
+        "payroll",
+        "tax_filings",
+        "bank_statements"
+      ]
+    }
+  ],
+  "private_runtime_policy": {
+    "preferred_project_runtime": "KMFA/.codex_private_runtime/",
+    "git_ignore_required": true,
+    "public_repo_private_runtime_commit_allowed": false
+  },
+  "phase_boundary": {
+    "s02_p1_protocol_only": true,
+    "s02_p2_started": false,
+    "s02_p3_started": false,
+    "stage2_review_performed": false,
+    "github_upload_performed": false,
+    "formal_report_performed": false,
+    "business_execution_performed": false
+  }
+}

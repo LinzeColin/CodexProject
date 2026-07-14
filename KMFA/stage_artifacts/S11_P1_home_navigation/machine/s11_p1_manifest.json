@@ -8,7 +8,7 @@
     "test_results": "KMFA/stage_artifacts/S11_P1_home_navigation/human/test_results.md",
     "validator": "KMFA/tools/check_s11_p1_home_navigation.py"
   },
-  "content_hash": "sha256:58ab2d0c26d446a69b2cd9448c808a742c4bfe9d5e6bc84e97f8e1927c5c8136",
+  "content_hash": "sha256:b8310387c8dc92aa6d14d277cc06c931b7057ded2eb5e03e3addf2cc28e79fa2",
   "generated_at": "2026-07-01T09:00:00+10:00",
   "next_gate": "S11_P2_REQUIRED_OR_STAGE11_REVIEW_AFTER_ALL_PHASES",
   "project_id": "KMFA",

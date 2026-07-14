@@ -1,0 +1,14 @@
+{
+  "business_decision_basis_allowed": false,
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+  "project_id": "KMFA",
+  "restricted_preview_exports_created": true,
+  "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_go_no_go.v1",
+  "stage10_review_performed": false,
+  "stage_id": "S10"
+}

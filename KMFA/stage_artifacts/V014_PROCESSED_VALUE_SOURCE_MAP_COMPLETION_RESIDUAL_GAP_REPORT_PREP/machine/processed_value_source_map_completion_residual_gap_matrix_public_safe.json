@@ -1,0 +1,47 @@
+{
+  "aggregate_blocker_count": 4,
+  "categories": [
+    {
+      "aggregate_group_count": 3,
+      "aggregate_target_slot_count": 12,
+      "blocks_delivery": true,
+      "blocks_full_comparison": true,
+      "gap_code": "NON_ACTIONABLE_GROUPS",
+      "owner_action": "提供修正源包或授权后续私有对账范围。",
+      "public_description": "部分已识别缺口只能保持 NO-GO，不能作为交付或报告依据。"
+    },
+    {
+      "aggregate_blocker_count": 4,
+      "blocks_delivery": true,
+      "blocks_full_comparison": true,
+      "gap_code": "FULL_RECONCILIATION_BLOCKED",
+      "owner_action": "先确认缺口处理方式，再进入单独对账 phase。",
+      "public_description": "完整 source-map reapplication 和 raw-to-processed comparison 尚未可执行。"
+    },
+    {
+      "aggregate_blocker_count": 4,
+      "blocks_delivery": true,
+      "blocks_full_comparison": false,
+      "gap_code": "FORMAL_REPORT_BLOCKED",
+      "owner_action": "不得绕过报告等级和差异队列。",
+      "public_description": "正式报告、经营决策依据和业务动作仍被质量门禁阻断。"
+    },
+    {
+      "aggregate_blocker_count": 4,
+      "blocks_delivery": true,
+      "blocks_full_comparison": false,
+      "gap_code": "UPLOAD_AND_APP_BLOCKED",
+      "owner_action": "继续本地 phase，不执行上传或安装。",
+      "public_description": "GitHub main upload 和 app reinstall 必须等 v1.4 整体复审后一次性执行。"
+    }
+  ],
+  "decision": "NO_GO",
+  "gap_category_count": 4,
+  "non_actionable_group_count": 3,
+  "non_actionable_target_slot_count": 12,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_RESIDUAL_GAP_REPORT_PREP",
+  "project_id": "KMFA",
+  "record_type": "v014_residual_gap_matrix_public_safe",
+  "schema_version": "kmfa.v014_residual_gap_matrix_public_safe.v1",
+  "version": "0.1.4-residual-gap-report-prep"
+}

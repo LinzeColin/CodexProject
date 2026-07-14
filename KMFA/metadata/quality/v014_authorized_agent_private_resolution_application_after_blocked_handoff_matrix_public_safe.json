@@ -1,0 +1,80 @@
+{
+  "check_count": 14,
+  "check_fail_count": 0,
+  "check_pass_count": 14,
+  "checks": [
+    {
+      "check_id": "AAPR-01",
+      "check_name": "source_queue_read_only",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-02",
+      "check_name": "raw_snapshot_exact_match",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-03",
+      "check_name": "raw_not_mutated",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-04",
+      "check_name": "structural_resolution_count",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-05",
+      "check_name": "formula_mapping_count",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-06",
+      "check_name": "taxonomy_mapping_count",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-07",
+      "check_name": "business_value_unresolved_count",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-08",
+      "check_name": "comparison_not_claimed_complete",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-09",
+      "check_name": "processed_consistency_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-10",
+      "check_name": "business_consistency_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-11",
+      "check_name": "raw_not_committed",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-12",
+      "check_name": "github_not_uploaded",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-13",
+      "check_name": "app_not_reinstalled",
+      "passed": true
+    },
+    {
+      "check_id": "AAPR-14",
+      "check_name": "business_not_executed",
+      "passed": true
+    }
+  ],
+  "phase_id": "V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014_authorized_agent_private_resolution_matrix.v1"
+}

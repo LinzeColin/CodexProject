@@ -52,13 +52,34 @@ Build command: npm ci --prefix apps/memory-atlas && npm run build --prefix apps/
 Build output directory: apps/memory-atlas/dist
 ```
 
+### Cloudflare deployment mode contract
+
+The current production path is **Pages Direct Upload**. The deploy helper sends
+the already-audited build with the explicit `wrangler pages deploy` command, so
+Pages does not consume the repository-root `wrangler.jsonc` as a Pages config.
+
+The root config is deliberately a **Workers Static Assets** migration-ready
+configuration. It is retained for a separately approved future `wrangler
+deploy` migration and must not be interpreted as proof that production already
+runs on Workers. The machine-readable mode identifier is:
+
+```text
+pages_direct_upload_with_workers_migration_ready_config
+```
+
+Cloudflare's Workers Static Assets reference is:
+https://developers.cloudflare.com/workers/static-assets/
+
 The repository includes `wrangler.jsonc` with:
 
 ```json
 {
   "name": "openai-memory-atlas",
-  "pages_build_output_dir": "apps/memory-atlas/dist",
-  "compatibility_date": "2026-06-16"
+  "compatibility_date": "2026-07-10",
+  "assets": {
+    "directory": "./apps/memory-atlas/dist",
+    "not_found_handling": "single-page-application"
+  }
 }
 ```
 

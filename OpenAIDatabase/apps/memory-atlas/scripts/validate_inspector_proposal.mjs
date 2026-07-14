@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,7 +8,19 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const appRoot = resolve(scriptDir, "..");
 const repoRoot = resolve(appRoot, "../..");
 
-const appSource = readFileSync(resolve(appRoot, "src/App.tsx"), "utf8");
+const runtimeSourcePaths = [
+  "src/shared/atlas/contracts.ts",
+  "src/shared/atlas/inspectorWriteback.ts",
+  "src/features/settings/InspectorWorkspace.tsx",
+  "src/features/actions/WritebackProposalPanel.tsx",
+  "src/components/ProposalEditor.tsx",
+];
+const appSource = runtimeSourcePaths
+  .map((relativePath) => readFileSync(resolve(appRoot, relativePath), "utf8"))
+  .join("\n");
+const i18nPath = resolve(appRoot, "src/i18n/zh-CN.ts");
+const i18nSource = existsSync(i18nPath) ? readFileSync(i18nPath, "utf8") : "";
+const uiSource = `${appSource}\n${i18nSource}`;
 const cssSource = readFileSync(resolve(appRoot, "src/styles.css"), "utf8");
 const packageSource = readFileSync(resolve(appRoot, "package.json"), "utf8");
 const visualAudit = readFileSync(resolve(repoRoot, "scripts/audit_memory_atlas_visual_acceptance.py"), "utf8");
@@ -61,20 +73,22 @@ function validateExplanationPanel(failures) {
 }
 
 function validateProposalOnlyWriteback(failures) {
-  const required = [
+  const runtimeRequired = [
     "interface WritebackProposalDraftInput",
     "function buildWritebackProposalDraft",
     'proposalIdPrefix: "atlas_preview"',
     'data-proposal-only="true"',
     'data-active-memory-mutation="false"',
     "proposalJsonPreview",
-    "JSON 提案预览",
     "direct_frontend_mutation_of_active_memory: false",
     "requires_agent_or_human_apply: true",
     "requires_conflict_check: true",
+  ];
+  const copyRequired = [
+    "JSON 提案预览",
     "保存 JSON 提案",
   ];
-  if (!hasAll(appSource, required)) failures.push("Writeback panel does not expose proposal-only JSON contract or safety fields");
+  if (!hasAll(appSource, runtimeRequired) || !hasAll(uiSource, copyRequired)) failures.push("Writeback panel does not expose proposal-only JSON contract or safety fields");
   if (!hasAll(cssSource, [
     ".writeback-safety-strip",
     ".writeback-json-preview",
@@ -85,16 +99,18 @@ function validateProposalOnlyWriteback(failures) {
 }
 
 function validateDebugSeparation(failures) {
-  const required = [
+  const runtimeRequired = [
     "const [debugOpen, setDebugOpen] = useState(false)",
     'data-debug-lite={debugOpen ? "open" : "closed"}',
     'data-default-raw-summary="hidden"',
     'className="inspector-debug-toggle"',
     'data-debug-panel="true"',
-    "隐藏 Debug",
-    "显示 Debug",
   ];
-  if (!hasAll(appSource, required)) failures.push("Debug panel is not default-closed, toggleable, or explicitly marked");
+  const copyRequired = [
+    "隐藏高级详情",
+    "显示高级详情",
+  ];
+  if (!hasAll(appSource, runtimeRequired) || !hasAll(uiSource, copyRequired)) failures.push("Debug panel is not default-closed, toggleable, or explicitly marked");
   const debugPanelIndex = appSource.indexOf('data-debug-panel="true"');
   const rawSummaryIndex = appSource.indexOf('className="raw-summary-inline"');
   if (rawSummaryIndex === -1 || debugPanelIndex === -1 || rawSummaryIndex < debugPanelIndex) {

@@ -1,0 +1,16 @@
+private_runtime/
+*.sqlite
+*.db
+*.zip
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.xlsx
+*.xls
+*.csv
+*.pdf
+*.doc
+*.docx
+!README.md
+!.gitignore

@@ -1,0 +1,6 @@
+requirement_id,before_status,after_status,r8_evidence,remaining_gap,next_remediation_phase
+S03-AC05,PARTIAL,VERIFIED,"Three rendered viewports contain no raw manifest/hash/path/import timestamp details, while the 512-file sanitized public-raw manifest and append-only ledger pass independently.",None,FINAL_DELIVERY_COMPLETE
+S04-AC04,PARTIAL,VERIFIED,"The final tracked recovery set passes exact-commit recovery, and isolated dry-run/apply backup-mode tests prove local commit behavior with zero remote push.",None,FINAL_DELIVERY_COMPLETE
+S10-AC04,FAILED,VERIFIED,"A real three-viewport browser gate checks zh-CN language, Chinese decision labels, untranslated-label denylist, layout containment, reachability and console/network health.",None,FINAL_DELIVERY_COMPLETE
+S14-AC02,FAILED,VERIFIED,The aggregate final audit executes and passes explicit gates for all four v1.2 upgrade lines.,None,FINAL_DELIVERY_COMPLETE
+S14-AC05,FAILED,VERIFIED,The corrected R0-R8 ledger replays without gaps and exposes current requirement counts plus S01-S14 status instead of historical marker-only PASS claims.,None,FINAL_DELIVERY_COMPLETE

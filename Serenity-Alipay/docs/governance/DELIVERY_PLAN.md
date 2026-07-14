@@ -20,7 +20,7 @@ Old root files are compatibility indexes only:
 
 machine_summary:
 
-- task_count: 9
+- task_count: 10
 
 No historical task is marked `completed` unless direct acceptance and evidence
 are present in the canonical registry. Current historical implementation facts

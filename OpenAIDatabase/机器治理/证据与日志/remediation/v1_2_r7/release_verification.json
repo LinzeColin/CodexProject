@@ -1,0 +1,24 @@
+{
+  "counts": {
+    "active_memory_count": 278,
+    "codex_session_count": 128,
+    "conversation_count": 379,
+    "edge_count": 2325,
+    "memory_node_count": 396,
+    "node_count": 435,
+    "theme_node_count": 9
+  },
+  "errors": [],
+  "raw_manifest_sha256": "1a4fa71303903ca896c82640f7b4550cee47f3cc8ec600f81d03f7603e120c96",
+  "release_id": "memory-atlas-v1-2-r7-20260710",
+  "release_manifest_path": "data/releases/memory_atlas/v1_2/memory-atlas-v1-2-r7-20260710/release_manifest.json",
+  "release_manifest_sha256": "dcc1b2f71af18de82e0987fdf7becc451f82288ec90992d4931b18539ac3ac50",
+  "schema_version": "memory_atlas.release_verification.v1",
+  "snapshot_path": "data/releases/memory_atlas/v1_2/memory-atlas-v1-2-r7-20260710/memory_atlas.json",
+  "snapshot_sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+  "source_package_hashes": [
+    "699a8fe5f99a5edc88fec1f8940c4339f7b9b291bd31830f946f521f80904a71",
+    "38e21ae3e94d860e6a40c70a629c8f7048f889164358df7b184bd8caf7bf2472"
+  ],
+  "status": "PASS"
+}

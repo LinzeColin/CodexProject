@@ -1,0 +1,133 @@
+{
+  "schema_version": "kmfa.v014_s02_p1_metadata_protocol.v1",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_id": "S02",
+  "phase_id": "S02-P1",
+  "stage_phase": "S02-P1",
+  "task_id": "KMFA-V014-S02-P1-METADATA-PROTOCOL-20260703",
+  "acceptance_id": "ACC-V014-S02-P1-METADATA-PROTOCOL",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "dependency": {
+    "required_review": "S01_STAGE_REVIEW",
+    "dependency_manifest": "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/machine/stage1_review_manifest.json",
+    "dependency_expected_status": "review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete"
+  },
+  "phase_scope": {
+    "current_phase_only": true,
+    "metadata_protocol_only": true,
+    "s02_p2_started": false,
+    "s02_p3_started": false,
+    "stage2_review_performed": false,
+    "github_upload_performed": false,
+    "raw_inventory_performed": false,
+    "raw_value_matching_performed": false,
+    "formal_report_performed": false,
+    "business_execution_performed": false,
+    "next_phase": "S02-P2",
+    "next_phase_started": false
+  },
+  "metadata_protocol": {
+    "required_directories": [
+      "metadata/sources",
+      "metadata/imports",
+      "metadata/schema_maps",
+      "metadata/quality",
+      "metadata/lineage",
+      "metadata/reports",
+      "metadata/approvals"
+    ],
+    "protocol_directory": "metadata/protocol",
+    "required_identifiers": [
+      "import_run_id",
+      "source_id",
+      "file_hash",
+      "formula_version",
+      "mapping_version"
+    ],
+    "metadata_storage_policy_public_repo_sensitive_plaintext_allowed": false,
+    "business_records_committed": false,
+    "raw_data_roots_policy": "KMFA/metadata/protocol/raw_data_roots_v1_4.json",
+    "public_repo_allowed_categories": [
+      "hash",
+      "manifest_index",
+      "status",
+      "evidence_ref",
+      "schema_version",
+      "mapping_version",
+      "quality_grade",
+      "lineage_ref",
+      "approval_event_metadata"
+    ]
+  },
+  "raw_data_boundary": {
+    "raw_inbox_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_inbox_read_by_this_phase": false,
+    "raw_inbox_listed_by_this_phase": false,
+    "raw_inbox_modified_by_this_phase": false,
+    "raw_inbox_deleted_by_this_phase": false,
+    "raw_inbox_moved_by_this_phase": false,
+    "raw_inbox_renamed_by_this_phase": false,
+    "raw_inbox_overwritten_by_this_phase": false,
+    "raw_inbox_written_by_this_phase": false,
+    "raw_inventory_performed": false,
+    "raw_payload_extracted_from_delivery_zip": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "business_values_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "sqlite_or_db_committed": false,
+    "credentials_committed": false
+  },
+  "public_repo_safety": {
+    "raw_business_data_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "sqlite_or_db_committed": false,
+    "credentials_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "github_main_upload_allowed": false,
+    "current_go_no_go": "NO_GO",
+    "current_report_grade": "D",
+    "release_permission": "blocked"
+  },
+  "validation_summary": {
+    "metadata_protocol_check": "PASS",
+    "s01_stage_review_dependency": "PASS",
+    "v014_s02_p1_validator": "PASS",
+    "governance_validator": "PASS",
+    "raw_private_scan": "PASS",
+    "secret_scan": "PASS",
+    "diff_check": "PASS"
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/human/s02_p1_completion_record.md",
+    "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/machine/s02_p1_metadata_protocol_manifest.json",
+    "KMFA/metadata/protocol/metadata_protocol.yaml",
+    "KMFA/metadata/protocol/directory_manifest.json",
+    "KMFA/metadata/protocol/raw_data_roots_v1_4.json",
+    "KMFA/tools/metadata_protocol_check.py",
+    "KMFA/tools/check_v014_s02_p1_metadata_protocol.py",
+    "KMFA/tests/test_v014_s02_p1_metadata_protocol.py"
+  ],
+  "next_recommended_phase": "S02-P2",
+  "next_phase_instruction": "Start S02-P2 in a separate run only after user instruction; keep GitHub upload deferred until v1.4 Stage 1-18 complete overall review."
+}

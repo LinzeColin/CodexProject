@@ -254,7 +254,7 @@ async function installFeedbackProbe(context) {
 async function openTimeline(page) {
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 20000 });
   await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => undefined);
-  await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+  await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
   await page.waitForSelector(".memory-river-canvas", { timeout: 15000 });
 }
 

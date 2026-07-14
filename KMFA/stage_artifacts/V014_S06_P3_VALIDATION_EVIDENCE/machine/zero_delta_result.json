@@ -1,0 +1,19 @@
+{
+  "event_time": "2026-07-04T12:20:00+10:00",
+  "forbidden_plaintext": true,
+  "metadata_quality_target": "KMFA/metadata/quality",
+  "minimum_fail_difference_cents": 1,
+  "mismatch_count": 1,
+  "project_status_count": 2,
+  "public_safe_fixture_only": true,
+  "raw_business_data_used": false,
+  "record_type": "s06_p3_zero_delta_result",
+  "result_id": "ZDR-S06P3-5b850af69e284b2e",
+  "schema_version": "kmfa.s06_p3.zero_delta_result.v1",
+  "source_mismatch_report_ref": "KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/machine/mismatch_report.csv",
+  "source_zero_delta_result_ref": "KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/machine/zero_delta_one_cent_mismatch_result.json",
+  "stage_phase": "S06-P3",
+  "status": "failed",
+  "zero_delta_cents": 0,
+  "zero_delta_passed": false
+}

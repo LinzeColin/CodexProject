@@ -7,10 +7,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS_ROOT = ROOT / "scripts"
 SCRIPT = ROOT / "scripts/sync_codex_memory_data.py"
 
 
 def load_module():
+    if str(SCRIPTS_ROOT) not in sys.path:
+        sys.path.insert(0, str(SCRIPTS_ROOT))
     spec = importlib.util.spec_from_file_location("sync_codex_memory_data", SCRIPT)
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
@@ -190,6 +193,7 @@ class CodexMemorySyncTests(unittest.TestCase):
 
             with tempfile.TemporaryDirectory() as td:
                 repo = Path(td)
+                (repo / "data/public_raw/codex").mkdir(parents=True)
                 (repo / "data/processed/codex").mkdir(parents=True)
                 result = module.git_commit_and_push(repo, push=True)
         finally:
@@ -197,6 +201,7 @@ class CodexMemorySyncTests(unittest.TestCase):
             module.subprocess.run = original_subprocess_run
 
         self.assertEqual(result, {"committed": True, "pushed": True, "reason": "updated"})
+        self.assertIn("data/public_raw/codex", commands[0][0])
         self.assertEqual(commands[-1][0], ["git", "push", "origin", "HEAD:main"])
 
     def test_git_add_skips_missing_untracked_optional_exports(self):

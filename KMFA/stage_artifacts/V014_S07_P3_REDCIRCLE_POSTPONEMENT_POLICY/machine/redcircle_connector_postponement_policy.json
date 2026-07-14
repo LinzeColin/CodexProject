@@ -1,0 +1,46 @@
+{
+  "automatic_connector_allowed": false,
+  "connector_status": "postponed_until_after_file_mvp",
+  "covered_export_types": [
+    "operating",
+    "contract",
+    "collection",
+    "finance"
+  ],
+  "d15_file_mvp_automatic_connector_allowed": false,
+  "external_connector_included": false,
+  "future_connector_controls": {
+    "hash_retention_required": true,
+    "manual_approval_required": true,
+    "read_only_required": true,
+    "rollback_plan_required": true,
+    "source_file_committed": false,
+    "source_header_plaintext_committed": false,
+    "source_payload_values_committed": false
+  },
+  "generated_at": "2026-07-04T11:30:00+10:00",
+  "hard_block_refs": [
+    "block:redcircle-automatic-connector-before-stage7-review",
+    "block:missing-readonly-contract",
+    "block:missing-hash-retention",
+    "block:missing-rollback-plan",
+    "block:missing-manual-approval"
+  ],
+  "manual_export_file_allowed": true,
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "redcircle_native_file_committed": false,
+    "source_file_committed": false,
+    "source_header_plaintext_committed": false,
+    "source_payload_values_committed": false,
+    "xlsx_committed": false,
+    "zip_committed": false
+  },
+  "record_type": "v014_redcircle_connector_postponement_policy",
+  "schema_version": "kmfa.v014_redcircle_connector_postponement_policy.v1",
+  "stage_phase": "S07-P3"
+}

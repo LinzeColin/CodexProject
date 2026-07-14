@@ -1,0 +1,36 @@
+{
+  "app_reinstall_allowed": false,
+  "app_reinstall_performed": false,
+  "blocker_ids": [
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OPEN_RECONCILIATION_REMAINS",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "FINAL_OVERALL_REVIEW_PENDING",
+    "GITHUB_MAIN_UPLOAD_DEFERRED",
+    "APP_REINSTALL_DEFERRED"
+  ],
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "business_execution_performed": false,
+  "decision": "NO_GO",
+  "delivery_allowed": false,
+  "external_connector_allowed": false,
+  "external_connector_performed": false,
+  "final_overall_review_performed": false,
+  "github_upload_allowed": false,
+  "github_upload_performed": false,
+  "maximum_report_grade": "D",
+  "next_required_phase": "V014_FINAL_OVERALL_REVIEW",
+  "official_report_release_allowed": false,
+  "persistent_business_write_allowed": false,
+  "phase_id": "V014_S18_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "record_type": "v014_s18_post_remediation_stage_review_go_no_go",
+  "resolved_blocker_ids": [
+    "S18_P3_PENDING",
+    "STAGE18_REVIEW_PENDING"
+  ],
+  "schema_version": "kmfa.v014.s18_post_remediation_stage_review_go_no_go.v1",
+  "stage18_review_performed": true,
+  "stage_id": "S18"
+}

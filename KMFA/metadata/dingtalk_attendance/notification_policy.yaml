@@ -1,0 +1,32 @@
+project_id: KMFA
+skill_id: kmfa-dingtalk-attendance-skill
+automation_name: 每日早晚钉钉考勤检查
+delivery_enabled: false
+delivery_disabled_status: NOT_SENT_OWNER_DISABLED
+recipient_policy:
+  zhang_linze_dingtalk_user_id: 1iv-1t2oesv2yd
+  boss_dingtalk_user_id: CONFIG_REQUIRED
+channel_priority:
+  - dingtalk_group_robot
+  - dws_chat_bot
+  - dingtalk_work_notification
+missing_config_status: NOTIFIER_CONFIG_MISSING
+ready_rule: any_supported_channel_ready
+group_robot_required_env:
+  - DINGTALK_ROBOT_URL
+  - DINGTALK_ROBOT_SIGNING_KEY
+work_notification_required_env:
+  - DINGTALK_BOSS_USER_ID
+  - DINGTALK_APP_KEY
+  - DINGTALK_APP_CREDENTIAL
+  - DINGTALK_CORP_ID
+  - DINGTALK_AGENT_ID
+dispatch_status_enum:
+  - SENT
+  - FAILED
+  - NOTIFIER_CONFIG_MISSING
+  - DINGTALK_ROBOT_ERROR
+required_message_keyword: 开明考勤
+latest_report_only_supported: true
+report_loss_allowed_when_notification_missing: false
+public_repo_notification_payload_allowed: false

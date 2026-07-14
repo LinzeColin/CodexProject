@@ -1,0 +1,15 @@
+{
+  "content_sha256": "d59b915f30a0cf8e13394b6a4629ccd40ccd27fc5b83a1d507949e22930aef2b",
+  "conversation_id": "6a30ba5a-7650-83ec-99b8-d239abe4cd99",
+  "created_at": "2026-06-16T02:53:19Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 0,
+  "messages": [],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "情绪控制训练建议",
+  "updated_at": "2026-06-16T03:01:13Z"
+}

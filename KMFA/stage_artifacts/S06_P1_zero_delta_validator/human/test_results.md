@@ -37,7 +37,7 @@
 
 ## 边界确认
 
-- 本次未读取或提交 `/Users/linzezhang/Downloads/应收账龄表2025.xlsx` 或 `/Users/linzezhang/Downloads/生产项目状态表.xlsx`。
+- 本次未读取或提交 `/Users/linzezhang/Downloads/PRIVATE_RAW_SOURCE_002.xlsx` 或 `/Users/linzezhang/Downloads/PRIVATE_RAW_SOURCE_003.xlsx`。
 - 本次未提交真实 Excel、PDF、zip、私有 CSV、银行流水、合同、薪资、税务申报或字段明文。
 - 本次未写入 `KMFA/metadata/quality/zero_delta_results.jsonl` 或正式运行时 `mismatch_report.csv`。
 - 本次未执行 S06-P2、S06-P3、Stage 6 整体复审或 GitHub upload。

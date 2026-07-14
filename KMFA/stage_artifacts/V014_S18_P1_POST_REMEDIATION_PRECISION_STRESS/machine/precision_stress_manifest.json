@@ -1,0 +1,316 @@
+{
+  "acceptance_id": "ACC-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS",
+    "check_count": 19,
+    "check_fail_count": 0,
+    "check_pass_count": 19,
+    "checks": [
+      {
+        "check_id": "S18P1-CURRENT-ACC-01",
+        "name": "stage17_dependency",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-02",
+        "name": "scenario_coverage",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-03",
+        "name": "amount_precision",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-04",
+        "name": "amount_rejections",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-05",
+        "name": "no_float",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-06",
+        "name": "zero_delta",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-07",
+        "name": "one_cent_block",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-08",
+        "name": "three_runs",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-09",
+        "name": "consistent_state",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-10",
+        "name": "duplicate_idempotency",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-11",
+        "name": "batch_size",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-12",
+        "name": "blocking_errors",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-13",
+        "name": "performance",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-14",
+        "name": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-15",
+        "name": "grade_lock",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-16",
+        "name": "s18_p2_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-17",
+        "name": "stage_review_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-18",
+        "name": "upload_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "S18P1-CURRENT-ACC-19",
+        "name": "business_closed",
+        "status": "PASS"
+      }
+    ],
+    "schema_version": "kmfa.v014.s18_p1_post_remediation_acceptance_matrix.v1"
+  },
+  "artifact_refs": {
+    "acceptance": "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/acceptance_matrix_public_safe.json",
+    "error_reports": "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/precision_stress_error_reports_public_safe.jsonl",
+    "go_no_go": "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/go_no_go_report.json",
+    "import_runs": "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/import_consistency_runs_public_safe.jsonl",
+    "manifest": "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/precision_stress_manifest.json",
+    "report": "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/human/precision_stress_report_zh.md",
+    "scenarios": "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/precision_stress_scenario_results_public_safe.jsonl"
+  },
+  "branch": "codex/kmfa",
+  "content_hash": "sha256:90f9d9a43ba74a37c5f03fc78dc6e665c5feb693a9decb4c5ed3f439e57d6296",
+  "decision": "NO_GO",
+  "formula_id": "FORM-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-001",
+  "generated_at": "2026-07-12T06:43:15+10:00",
+  "go_no_go": {
+    "app_reinstall_allowed": false,
+    "business_execution_allowed": false,
+    "decision": "NO_GO",
+    "difference_closure_allowed": false,
+    "external_connector_allowed": false,
+    "formal_report_release_allowed": false,
+    "github_upload_allowed": false,
+    "persistent_business_write_allowed": false,
+    "phase_id": "V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS",
+    "production_restore_allowed": false,
+    "project_id": "KMFA",
+    "s18_p1_validated": true,
+    "s18_p2_allowed_in_this_run": false,
+    "s18_p3_allowed": false,
+    "schema_version": "kmfa.v014.s18_p1_post_remediation_go_no_go.v1",
+    "stage18_review_allowed": false,
+    "stage_id": "S18"
+  },
+  "historical_s18_p1_baseline": {
+    "dynamic_state_authoritative": false,
+    "error_report_count": 2,
+    "evidence_ref": "KMFA/stage_artifacts/V014_S18_P1_PRECISION_STRESS/machine/precision_stress_manifest.json",
+    "import_run_count": 3,
+    "scenario_count": 5,
+    "synthetic_file_count": 1200,
+    "validated": true
+  },
+  "historical_s18_p1_dynamic_state_authoritative": false,
+  "historical_s18_p1_structural_baseline_validated": true,
+  "model_registry_key": "kmfa_v014_s18_p1_post_remediation_precision_stress",
+  "next_phase": "S18-P2",
+  "next_required_step": "下一轮只能单独执行 S18-P2 全量回归和验收；不得执行 S18-P3、Stage 18 整体复审、GitHub upload、app reinstall、正式报告、外部连接器、生产恢复、差异关闭、持久业务写入或业务执行。",
+  "parameter_ids": [
+    "PARAM-KMFA-1807",
+    "PARAM-KMFA-1808",
+    "PARAM-KMFA-1809"
+  ],
+  "phase_boundaries": {
+    "actual_synthetic_stress_execution_performed": true,
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "difference_closure_performed": false,
+    "external_connector_called": false,
+    "formal_report_generated": false,
+    "github_upload_performed": false,
+    "historical_s18_p1_structural_baseline_reused": true,
+    "lineage_full_check_performed": false,
+    "persistent_business_write_performed": false,
+    "private_raw_snapshot_validation_performed": true,
+    "production_restore_performed": false,
+    "raw_copy_or_backup_performed": false,
+    "s18_p1_precision_stress_performed": true,
+    "s18_p2_full_regression_performed": false,
+    "s18_p3_integration_preparation_performed": false,
+    "stage17_post_remediation_review_dependency_reused": true,
+    "stage18_review_performed": false
+  },
+  "phase_id": "V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_amount_committed": false,
+    "business_detail_committed": false,
+    "credential_committed": false,
+    "database_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "office_or_pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "reviewed_head": "fa59f3e3354073dbee5c6859a9fdb3e159851181",
+  "roadmap_phase_id": "S18-P1",
+  "schema_version": "kmfa.v014.s18_p1_post_remediation_precision_stress_manifest.v1",
+  "stage17_review_dependency": {
+    "decision": "NO_GO",
+    "evidence_ref": "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/stage17_post_remediation_review_manifest.json",
+    "phase_id": "V014_S17_POST_REMEDIATION_STAGE_REVIEW",
+    "status": "completed_validated_local_only_stage17_review_no_go_upload_deferred",
+    "validated": true
+  },
+  "stage_id": "S18",
+  "status": "completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS",
+    "amount_case_count": 9,
+    "amount_case_pass_count": 9,
+    "amount_rejection_case_count": 9,
+    "amount_rejection_pass_count": 9,
+    "app_reinstall_performed": false,
+    "blocking_error_report_count": 2,
+    "business_execution_performed": false,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "first_run_inserted_record_count": 1198,
+    "github_upload_performed": false,
+    "import_run_count": 3,
+    "incomplete_reconciliation_count": 1,
+    "later_run_duplicate_record_count": 2396,
+    "max_elapsed_ms": 9,
+    "nonzero_delta_reconciliation_count": 9,
+    "one_cent_mismatch_count": 1,
+    "one_cent_mismatch_rejected": true,
+    "open_final_difference_accepted_count": 3,
+    "performance_budget_ms": 1500,
+    "phase_id": "V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS",
+    "project_id": "KMFA",
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "repository_no_float_scan_passed": true,
+    "roadmap_phase_id": "S18-P1",
+    "s18_p1_performed": true,
+    "s18_p2_performed": false,
+    "s18_p3_performed": false,
+    "scenario_count": 5,
+    "scenario_pass_count": 5,
+    "schema_version": "kmfa.v014.s18_p1_post_remediation_precision_stress_summary.v1",
+    "stage17_review_dependency_validated": true,
+    "stage18_review_performed": false,
+    "stage_id": "S18",
+    "status": "completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred",
+    "synthetic_batch_item_count": 1200,
+    "task_id": "KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-20260712",
+    "tracked_forbidden_suffix_count": 0,
+    "tracked_private_runtime_path_count": 0,
+    "unique_final_state_hash_count": 1,
+    "valid_synthetic_record_count": 1198,
+    "version": "0.1.4-s18-p1-post-remediation-precision-stress",
+    "zero_delta_exact_passed": true,
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-20260712",
+  "taskpack_contract": {
+    "html_baseline_read": true,
+    "html_baseline_ref_count": 6,
+    "html_baseline_stats": [
+      {
+        "byte_count": 8939,
+        "ref": "KMFA/taskpack/v1_4/html_uiux/00_KMFA_HTML_human_flow_entry_v1_4.html",
+        "sha256": "d2ae0e8b38440e3afcb821489db3299272a064f6076d03aee34aaeb74e0ecbe2"
+      },
+      {
+        "byte_count": 15535,
+        "ref": "KMFA/taskpack/v1_4/html_uiux/KMFA_Codex开发任务控制台可点击预览_v1_4.html",
+        "sha256": "097a1247d323a5d8fad48de8333e831f8012f6f8a1afa1a2470fb39d774cc878"
+      },
+      {
+        "byte_count": 15831,
+        "ref": "KMFA/taskpack/v1_4/html_uiux/KMFA_待处理事项工作台可点击预览_v1_4.html",
+        "sha256": "da352e9a2072a41601eba9fa4717eca95d7d212680bbaae6e28ac3b4d4ecb951"
+      },
+      {
+        "byte_count": 21844,
+        "ref": "KMFA/taskpack/v1_4/html_uiux/KMFA_数据源检查板可点击预览_v1_4.html",
+        "sha256": "56f7891efc37801596dc2ba2b7fb95ce15e7cbe8ba8bea5d671248ee90ceea61"
+      },
+      {
+        "byte_count": 39235,
+        "ref": "KMFA/taskpack/v1_4/html_uiux/KMFA_系统全流程可点击验收样板_v1_4.html",
+        "sha256": "8b5373888c19902782091a2ac76f16e6d628be0ac73d89296d15d584ca89f6f8"
+      },
+      {
+        "byte_count": 16897,
+        "ref": "KMFA/taskpack/v1_4/html_uiux/KMFA_经营分析报告可点击预览_v1_4.html",
+        "sha256": "220a95ec77434ea54b67a4479e462d5886e7621628adb674a8c9e08ba198baac"
+      }
+    ],
+    "roadmap_phase_id": "S18-P1",
+    "roadmap_read": true,
+    "source_refs": [
+      "KMFA/taskpack/v1_4/taskpack/01_KMFA_Codex_TaskPack_v1_4_public_safe.md",
+      "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md",
+      "KMFA/taskpack/v1_4/html_uiux/00_KMFA_HTML_human_flow_entry_v1_4.html",
+      "KMFA/taskpack/v1_4/html_uiux/KMFA_Codex开发任务控制台可点击预览_v1_4.html",
+      "KMFA/taskpack/v1_4/html_uiux/KMFA_待处理事项工作台可点击预览_v1_4.html",
+      "KMFA/taskpack/v1_4/html_uiux/KMFA_数据源检查板可点击预览_v1_4.html",
+      "KMFA/taskpack/v1_4/html_uiux/KMFA_系统全流程可点击验收样板_v1_4.html",
+      "KMFA/taskpack/v1_4/html_uiux/KMFA_经营分析报告可点击预览_v1_4.html"
+    ],
+    "task_count": 3,
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "actual_precision_stress_suite": "PASS",
+    "final_validation_recorded": true,
+    "focused_tests": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "raw_alignment": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s18-p1-post-remediation-precision-stress"
+}

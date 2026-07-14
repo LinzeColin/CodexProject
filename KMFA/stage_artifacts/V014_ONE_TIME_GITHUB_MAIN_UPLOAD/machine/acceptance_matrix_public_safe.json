@@ -1,0 +1,27 @@
+{
+  "schema_version": "kmfa.v014.one_time_github_main_upload_acceptance_matrix.v1",
+  "record_type": "v014_one_time_github_main_upload_acceptance_matrix",
+  "project_id": "KMFA",
+  "phase_id": "V014_ONE_TIME_GITHUB_MAIN_UPLOAD",
+  "acceptance_id": "ACC-V014-ONE-TIME-GITHUB-MAIN-UPLOAD",
+  "check_count": 14,
+  "check_pass_count": 14,
+  "check_pending_count": 0,
+  "check_fail_count": 0,
+  "checks": [
+    {"check_id": "V014-UPLOAD-ACC-001", "name": "final_overall_review_valid", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-002", "name": "current_stage_validators_18_of_18", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-003", "name": "review_findings_zero_open", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-004", "name": "origin_main_integrated_without_force", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-005", "name": "integration_full_suite_pass", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-006", "name": "focused_upload_validator_and_tests_pass", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-007", "name": "public_repository_contains_no_raw_private_binary", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-008", "name": "credential_and_secret_scan_clean", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-009", "name": "raw_root_unchanged_and_not_read_by_upload_phase", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-010", "name": "exactly_one_non_force_push_bound", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-011", "name": "post_push_remote_parity_required", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-012", "name": "app_reinstall_deferred", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-013", "name": "business_release_remains_no_go", "status": "PASS"},
+    {"check_id": "V014-UPLOAD-ACC-014", "name": "next_phase_is_app_reinstall_and_parity", "status": "PASS"}
+  ]
+}

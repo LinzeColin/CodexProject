@@ -1,0 +1,128 @@
+{
+  "schema_version": "proposal_state_machine.v1_2_s13_p1",
+  "task_id": "MA-V12-S13P1",
+  "acceptance_id": "ACC-MA-V12-S13P1",
+  "status": "phase_s13_p1_proposal_state_machine_completed_pending_s13_p2",
+  "validator": "validate:v1.2-s13-p1",
+  "proposal_state_machine": {
+    "states": [
+      "draft",
+      "pending_human_review",
+      "approved_by_human",
+      "applying",
+      "applied",
+      "validated",
+      "committed",
+      "failed_validation",
+      "rollback_or_needs_revision"
+    ],
+    "transitions": [
+      {
+        "from": "draft",
+        "to": "pending_human_review",
+        "requires": "proposal_required_fields_complete"
+      },
+      {
+        "from": "pending_human_review",
+        "to": "approved_by_human",
+        "requires": "human_approval"
+      },
+      {
+        "from": "pending_human_review",
+        "to": "rollback_or_needs_revision",
+        "requires": "human_rejects_or_expiry_archive"
+      },
+      {
+        "from": "approved_by_human",
+        "to": "applying",
+        "requires": "S13_P3_apply_command_and_clean_rollback_point"
+      },
+      {
+        "from": "applying",
+        "to": "applied",
+        "requires": "patch_applied_to_allowed_targets"
+      },
+      {
+        "from": "applied",
+        "to": "validated",
+        "requires": "validation_commands_pass"
+      },
+      {
+        "from": "validated",
+        "to": "committed",
+        "requires": "local_commit_created"
+      },
+      {
+        "from": "applying",
+        "to": "failed_validation",
+        "requires": "apply_or_validation_failure"
+      },
+      {
+        "from": "applied",
+        "to": "failed_validation",
+        "requires": "validation_failure"
+      },
+      {
+        "from": "failed_validation",
+        "to": "rollback_or_needs_revision",
+        "requires": "rollback_or_revision_decision"
+      }
+    ],
+    "failure_path": [
+      "failed_validation",
+      "rollback_or_needs_revision"
+    ],
+    "terminal_states": [
+      "committed",
+      "rollback_or_needs_revision"
+    ],
+    "human_approval_required_before_applying": true,
+    "current_phase_executes_apply": false,
+    "diff_narrator_deferred_to": "S13 P2",
+    "apply_execution_deferred_to": "S13 P3"
+  },
+  "proposal_expiry": {
+    "integrated": true,
+    "warn_after_days": 7,
+    "stale_after_days": 30,
+    "archive_after_days": 90,
+    "expired_proposals_cannot_enter_applying": true,
+    "expiry_source": "data/derived/behavior_intelligence/self_iteration_suggestions.json"
+  },
+  "required_proposal_fields": [
+    "proposal_id",
+    "target_files",
+    "approval",
+    "expires_at",
+    "validation_commands",
+    "rollback_plan_zh"
+  ],
+  "forbidden_apply_targets": [
+    "raw_archive",
+    "public_raw",
+    "credentials"
+  ],
+  "forbidden_path_fragments": [
+    "data/public_raw/",
+    "data/raw/",
+    "data/private_imports/",
+    "credentials",
+    "cookies",
+    "tokens"
+  ],
+  "source_reports": [
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/agent_collaboration/agent_authorization_boundary_report.json"
+  ],
+  "output": "data/derived/proposals/proposal_state_machine_report.json",
+  "scope_boundary": {
+    "raw_mutation": false,
+    "proposal_apply_execution": false,
+    "github_main_upload": false,
+    "remote_push": false,
+    "diff_narrator_generation": false,
+    "rollback_execution": false
+  },
+  "next_phase": "S13 P2"
+}

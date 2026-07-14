@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Sync real local Codex activity into OpenAIDatabase derived data.
+"""Sync real local Codex activity into GitHub-safe Memory Atlas data.
 
-The sync is intentionally redacted. It reads real local Codex session logs, but
-does not commit raw transcript text, local absolute paths, cookies, sessions, or
-plaintext secrets. The output is a GitHub-safe behavior/profile layer for
-Memory Atlas and future agents.
+The default remains a redacted behavior/profile summary. An explicit R7 mode
+also exports sanitized public transcripts while excluding local paths,
+credentials and non-text binary payloads.
 """
 
 from __future__ import annotations
@@ -21,13 +20,26 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from privacy_guard import credential_exclusion_hits, redact_credentials_in_text
+from public_raw_sanitizer import (
+    MAX_PUBLIC_RAW_FILE_BYTES,
+    PublicRawLimitError,
+    PublicRawSanitizationError,
+    merge_counts,
+    sanitize_jsonl_event,
+    sanitize_public_value,
+)
+
 
 DEFAULT_CODEX_HOME = Path.home() / ".codex"
 UTC = timezone.utc
+SOURCE_ID = "codex"
+CODEX_PUBLIC_RAW_ROOT = Path("data/public_raw/codex")
 SESSION_INDEX = "session_index.jsonl"
 SESSION_OUTPUT = Path("data/processed/codex/codex_session_manifest.jsonl")
 DAILY_OUTPUT = Path("data/processed/codex/codex_daily_activity.jsonl")
 SNAPSHOT_OUTPUT = Path("data/processed/codex/codex_activity_snapshot.json")
+DERIVED_SNAPSHOT_OUTPUT = Path("data/derived/codex/codex_activity_snapshot.json")
 RECOMMENDATION_OUTPUT = Path("data/derived/codex/codex_agent_recommendations.json")
 REPORT_OUTPUT = Path("data/derived/codex/codex_behavior_report.md")
 SYNC_LOG_DIR = Path("data/run_logs/sync_runs")
@@ -39,6 +51,10 @@ SECRET_PATTERNS = [
     re.compile(r"Bearer\s+[A-Za-z0-9._\-]+", re.I),
     re.compile(r"-----BEGIN [A-Z ]+PRIVATE KEY-----.*?-----END [A-Z ]+PRIVATE KEY-----", re.S),
 ]
+
+
+class AppendOnlyViolation(ValueError):
+    pass
 ABSOLUTE_PATH_RE = re.compile(r"/Users/[^/\s]+(?:/[^\s'\"<>]+)+")
 EMAIL_RE = re.compile(r"([A-Za-z0-9._%+\-])[A-Za-z0-9._%+\-]*@([A-Za-z0-9.\-]+\.[A-Za-z]{2,})")
 
@@ -111,9 +127,37 @@ def write_if_changed(path: Path, payload: str) -> None:
             tmp_path.unlink()
 
 
+def write_json_append_only(path: Path, data: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    payload_size = len(payload.encode("utf-8"))
+    if payload_size > MAX_PUBLIC_RAW_FILE_BYTES:
+        raise PublicRawLimitError(
+            f"{path.name} is {payload_size} bytes; public raw limit is "
+            f"{MAX_PUBLIC_RAW_FILE_BYTES} bytes"
+        )
+    if path.exists():
+        current = path.read_text(encoding="utf-8", errors="ignore")
+        if current == payload:
+            return
+        raise AppendOnlyViolation(f"append-only public raw target already exists with different content: {path}")
+    tmp_path = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        tmp_path.write_text(payload, encoding="utf-8")
+        os.replace(tmp_path, path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+
+
 def stable_hash(value: Any, length: int = 16) -> str:
     payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:length]
+
+
+def compact_timestamp(value: str) -> str:
+    text = value.replace("-", "").replace(":", "")
+    return text.replace("+0000", "Z").replace("+00:00", "Z")
 
 
 def parse_time(value: Any) -> datetime | None:
@@ -139,6 +183,8 @@ def day_key(value: datetime | None) -> str:
 
 def redact_text(value: str, limit: int = 160) -> str:
     text = value
+    credential_exclusion_hits(text, source="sync_codex_memory_data.redact_text")
+    text, _credential_counts = redact_credentials_in_text(text)
     for pattern in SECRET_PATTERNS:
         text = pattern.sub("[REDACTED_SECRET]", text)
     text = ABSOLUTE_PATH_RE.sub("[REDACTED_PATH]", text)
@@ -189,6 +235,165 @@ def iter_session_files(codex_home: Path) -> list[Path]:
     if archived_root.exists():
         files.extend(archived_root.glob("*.jsonl"))
     return sorted(set(files), key=lambda path: str(path))
+
+
+def safe_public_identifier(value: str, fallback: str) -> str:
+    text = re.sub(r"[^A-Za-z0-9._-]+", "_", value.strip()).strip("._-")
+    return text or fallback
+
+
+def scan_codex_session_jsonl(source: Path) -> dict[str, Any]:
+    digest = hashlib.sha256()
+    session_id = ""
+    event_count = 0
+    decode_error_count = 0
+    with source.open("rb") as handle:
+        for raw_line in handle:
+            digest.update(raw_line)
+            try:
+                event = json.loads(raw_line.decode("utf-8", errors="strict"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                decode_error_count += 1
+                continue
+            if not isinstance(event, dict):
+                continue
+            event_count += 1
+            payload = event.get("payload") if isinstance(event.get("payload"), dict) else {}
+            if event.get("type") == "session_meta" and payload.get("id"):
+                session_id = str(payload["id"])
+    source_sha256 = digest.hexdigest()
+    return {
+        "session_id": safe_public_identifier(session_id, f"session-{source_sha256[:16]}"),
+        "source_sha256": source_sha256,
+        "source_size_bytes": source.stat().st_size,
+        "event_count": event_count,
+        "decode_error_count": decode_error_count,
+    }
+
+
+def export_codex_session_jsonl(
+    source: Path,
+    codex_home: Path,
+    output_root: Path,
+) -> dict[str, Any]:
+    source = source.resolve()
+    codex_home = codex_home.expanduser().resolve()
+    output_root = output_root.resolve()
+    try:
+        source_relative = source.relative_to(codex_home).as_posix()
+    except ValueError as exc:
+        raise PublicRawSanitizationError("Codex session source must be inside codex_home") from exc
+
+    scan = scan_codex_session_jsonl(source)
+    sanitized_relative, provenance_counts = sanitize_public_value(source_relative)
+    if not isinstance(sanitized_relative, str):
+        raise PublicRawSanitizationError("Codex source provenance must remain text")
+
+    sessions_root = output_root / "sessions"
+    sessions_root.mkdir(parents=True, exist_ok=True)
+    session_id = str(scan["session_id"])
+    source_sha12 = str(scan["source_sha256"])[:12]
+    staged: list[dict[str, Any]] = []
+    current = bytearray()
+    current_event_count = 0
+    redaction_counts = dict(provenance_counts)
+    replay_digest = hashlib.sha256()
+    replay_event_count = 0
+
+    def stage_current_chunk() -> None:
+        nonlocal current, current_event_count
+        if not current:
+            return
+        part_number = len(staged) + 1
+        filename = f"{session_id}.{source_sha12}.part-{part_number:04d}.jsonl"
+        final_path = sessions_root / filename
+        temp_path = sessions_root / f".{filename}.{os.getpid()}.tmp"
+        payload = bytes(current)
+        temp_path.write_bytes(payload)
+        staged.append(
+            {
+                "temp_path": temp_path,
+                "final_path": final_path,
+                "sha256": hashlib.sha256(payload).hexdigest(),
+                "size_bytes": len(payload),
+                "event_count": current_event_count,
+            }
+        )
+        current = bytearray()
+        current_event_count = 0
+
+    try:
+        with source.open("rb") as handle:
+            for raw_line in handle:
+                replay_digest.update(raw_line)
+                try:
+                    event = json.loads(raw_line.decode("utf-8", errors="strict"))
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    continue
+                if not isinstance(event, dict):
+                    continue
+                replay_event_count += 1
+                sanitized_event, event_counts = sanitize_jsonl_event(event)
+                redaction_counts = merge_counts(redaction_counts, event_counts)
+                encoded = (
+                    json.dumps(sanitized_event, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+                    + "\n"
+                ).encode("utf-8")
+                if len(encoded) > MAX_PUBLIC_RAW_FILE_BYTES:
+                    raise PublicRawLimitError(
+                        f"Codex event in {sanitized_relative} is {len(encoded)} bytes; "
+                        f"limit is {MAX_PUBLIC_RAW_FILE_BYTES} bytes"
+                    )
+                if current and len(current) + len(encoded) > MAX_PUBLIC_RAW_FILE_BYTES:
+                    stage_current_chunk()
+                current.extend(encoded)
+                current_event_count += 1
+        stage_current_chunk()
+
+        if replay_digest.hexdigest() != scan["source_sha256"] or replay_event_count != scan["event_count"]:
+            raise PublicRawSanitizationError("Codex session changed while public transcript export was running")
+
+        for chunk in staged:
+            final_path = chunk["final_path"]
+            if final_path.exists() and final_path.read_bytes() != chunk["temp_path"].read_bytes():
+                raise AppendOnlyViolation(
+                    f"append-only public raw target already exists with different content: {final_path}"
+                )
+        for chunk in staged:
+            final_path = chunk["final_path"]
+            temp_path = chunk["temp_path"]
+            if final_path.exists():
+                temp_path.unlink()
+            else:
+                os.replace(temp_path, final_path)
+    finally:
+        for chunk in staged:
+            temp_path = chunk["temp_path"]
+            if temp_path.exists():
+                temp_path.unlink()
+
+    chunks = [
+        {
+            "ref": chunk["final_path"].relative_to(output_root).as_posix(),
+            "sha256": chunk["sha256"],
+            "size_bytes": chunk["size_bytes"],
+            "event_count": chunk["event_count"],
+        }
+        for chunk in staged
+    ]
+    return {
+        "schema_version": "memory_atlas_public_raw_codex_session_export.v1",
+        "session_id": session_id,
+        "source_relative_path": sanitized_relative,
+        "source_sha256": scan["source_sha256"],
+        "source_size_bytes": scan["source_size_bytes"],
+        "event_count": scan["event_count"],
+        "decode_error_count": scan["decode_error_count"],
+        "chunk_count": len(chunks),
+        "chunk_refs": [chunk["ref"] for chunk in chunks],
+        "chunks": chunks,
+        "redaction_counts": redaction_counts,
+    }
 
 
 def load_session_index(codex_home: Path) -> dict[str, dict[str, Any]]:
@@ -375,6 +580,7 @@ def parse_session_file(path: Path, codex_home: Path, index: dict[str, dict[str, 
         "preference_signals": signal_labels,
         "activity_score": int(activity_score),
         "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
+        "credential_boundary": "credentials_not_transcript",
     }
 
 
@@ -589,18 +795,86 @@ def build_snapshot(rows: list[dict[str, Any]], daily: list[dict[str, Any]], reco
     }
 
 
+def build_public_raw_snapshot(
+    rows: list[dict[str, Any]],
+    snapshot: dict[str, Any],
+    transcript_exports: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    public_transcripts_included = transcript_exports is not None
+    exports = transcript_exports or []
+    payload = {
+        "schema_version": "memory_atlas_public_raw_codex_snapshot.v1",
+        "source_id": SOURCE_ID,
+        "generated_at": snapshot["generated_at"],
+        "session_count": len(rows),
+        "message_count": snapshot["message_count"],
+        "tool_call_count": snapshot["tool_call_count"],
+        "backup_policy": (
+            "sanitized_public_transcripts_no_plaintext_secret"
+            if public_transcripts_included
+            else "redacted_summary_only_no_raw_transcript_no_plaintext_secret"
+        ),
+        "credential_boundary": "credentials_not_transcript",
+        "sync_mode": "codex_local_sync",
+        "sessions": rows,
+        "public_transcripts_included": public_transcripts_included,
+        "public_transcript_event_count": sum(int(row.get("event_count") or 0) for row in exports),
+        "public_transcript_chunk_count": sum(int(row.get("chunk_count") or 0) for row in exports),
+        "public_transcript_exports": exports,
+    }
+    sanitized, redaction_counts = sanitize_public_value(payload)
+    if not isinstance(sanitized, dict):
+        raise PublicRawSanitizationError("Codex public raw snapshot must remain an object")
+    sanitized["redaction_counts"] = redaction_counts
+    return sanitized
+
+
+def public_raw_snapshot_path(snapshot_payload: dict[str, Any]) -> Path:
+    run_id = compact_timestamp(str(snapshot_payload["generated_at"]))
+    digest = stable_hash({
+        "generated_at": snapshot_payload["generated_at"],
+        "session_count": snapshot_payload["session_count"],
+        "message_count": snapshot_payload["message_count"],
+        "sessions": [
+            {
+                "session_id": row.get("session_id"),
+                "content_sha256": row.get("content_sha256"),
+                "source_file_hash": row.get("source_file_hash"),
+            }
+            for row in snapshot_payload.get("sessions", [])
+        ],
+        "public_transcript_chunks": [
+            ref
+            for export in snapshot_payload.get("public_transcript_exports", [])
+            for ref in export.get("chunk_refs", [])
+        ],
+    }, 12)
+    return CODEX_PUBLIC_RAW_ROOT / f"codex_public_raw_snapshot.{run_id}.{digest}.json"
+
+
 def recommendation_lines(items: list[dict[str, Any]]) -> list[str]:
     if not items:
         return ["- 暂无"]
     return [f"- {item['title']}：{item['statement']}（证据 {item.get('evidence_count', 0)}）" for item in items]
 
 
-def build_report(snapshot: dict[str, Any], recommendations: dict[str, Any]) -> str:
+def build_report(
+    snapshot: dict[str, Any],
+    recommendations: dict[str, Any],
+    *,
+    public_transcripts: bool = False,
+) -> str:
+    source_description = (
+        "真实本地 Codex session 派生摘要及 sanitized public transcripts，"
+        "不包含 plaintext secret、本机绝对路径或非文本二进制正文。"
+        if public_transcripts
+        else "真实本地 Codex session 派生摘要，不包含原始全文和 plaintext secret。"
+    )
     lines = [
         "# Codex 行为与记忆同步报告",
         "",
         f"- 生成时间：{snapshot['generated_at']}",
-        f"- 数据来源：真实本地 Codex session 派生摘要，不包含原始全文和 plaintext secret。",
+        f"- 数据来源：{source_description}",
         f"- 覆盖范围：{snapshot['range_start']} 至 {snapshot['range_end']}，{snapshot['session_count']} 个 session，{snapshot['message_count']} 条消息，{snapshot['tool_call_count']} 次工具调用。",
         f"- 统计口径：覆盖范围按最早 session 开始日到最新 session 更新日；热度日历仍按 session 最新活动日聚合（{snapshot.get('activity_range_start', '')} 至 {snapshot.get('activity_range_end', '')}）。",
         "",
@@ -628,7 +902,12 @@ def build_report(snapshot: dict[str, Any], recommendations: dict[str, Any]) -> s
     lines.extend(["", "### 删除/降级建议"])
     lines.extend(recommendation_lines(recommendations["meta_data"]["deleted"]))
     lines.extend(["", "## 需要做什么", "- 把新增 Memory / Meta Data 建议在人审后同步到长期记忆和 AGENTS.md 规则。", "- 每周自动运行本脚本，更新 Codex 行为数据和 Memory Atlas 快照。"])
-    lines.extend(["", "## 风险", "- 原始 Codex transcript 不进入 GitHub；需要深度原文分析时应由授权本地 agent 临时读取。", "- plaintext secret 只允许存为 secret_ref 元数据，不提交到仓库。", ""])
+    transcript_risk = (
+        "- GitHub 仅包含 sanitized public transcripts；原始日志、凭据和被省略的二进制正文仍不可恢复。"
+        if public_transcripts
+        else "- 原始 Codex transcript 不进入 GitHub；需要深度原文分析时应由授权本地 agent 临时读取。"
+    )
+    lines.extend(["", "## 风险", transcript_risk, "- plaintext secret 只允许存为 secret_ref 元数据，不提交到仓库。", ""])
     return "\n".join(lines)
 
 
@@ -654,6 +933,17 @@ def append_sync_log(database_dir: Path, result: dict[str, Any]) -> Path:
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / f"{generated_at[:10]}.jsonl"
     head = git_head(database_dir)
+    public_transcripts = bool(result.get("public_transcripts"))
+    source_description = (
+        "local Codex logs exported as sanitized public transcript chunks"
+        if public_transcripts
+        else "local Codex session logs redacted in memory only"
+    )
+    residual_risk = (
+        "original Codex logs, credentials and omitted binary bodies stay private"
+        if public_transcripts
+        else "raw transcripts stay local and are not committed"
+    )
     row = {
         "timestamp": generated_at,
         "category": "sync_runs",
@@ -662,12 +952,16 @@ def append_sync_log(database_dir: Path, result: dict[str, Any]) -> Path:
         "status": result.get("status", "UNKNOWN"),
         "task": "sync_codex_memory_data",
         "updated_targets": ["profile", "preference", "history", "pattern"],
-        "source_files": ["local Codex session logs redacted in memory only"],
+        "source_files": [source_description],
         "output_files": list(result.get("outputs", {}).values()),
         "context_used": [
             {
-                "source": "local Codex session logs redacted in memory only",
-                "reason": "sync input; raw transcripts stay local",
+                "source": source_description,
+                "reason": (
+                    "sync input; sanitized public transcript chunks are versioned"
+                    if public_transcripts
+                    else "sync input; raw transcripts stay local"
+                ),
             }
         ],
         "tools_used": [
@@ -682,10 +976,10 @@ def append_sync_log(database_dir: Path, result: dict[str, Any]) -> Path:
             }
         ],
         "failure_recovery": [],
-        "risks": ["raw transcripts stay local and are not committed"],
+        "risks": [residual_risk],
         "base_commit": head,
         "result_commit": head,
-        "residual_risks": ["raw transcripts stay local and are not committed"],
+        "residual_risks": [residual_risk],
     }
     with log_path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
@@ -694,6 +988,7 @@ def append_sync_log(database_dir: Path, result: dict[str, Any]) -> Path:
 
 def git_commit_and_push(repo_root: Path, push: bool) -> dict[str, Any]:
     targets = [
+        "data/public_raw/codex",
         "data/processed/codex",
         "data/derived/codex",
         "data/derived/agent_context",
@@ -736,6 +1031,8 @@ def sync_codex_data(
     commit: bool,
     push: bool,
     force_full_scan: bool = False,
+    dry_run: bool = False,
+    public_transcripts: bool = False,
 ) -> dict[str, Any]:
     database_dir = database_dir.resolve()
     codex_home = codex_home.expanduser().resolve()
@@ -743,7 +1040,8 @@ def sync_codex_data(
     cache = {} if force_full_scan else cached_session_rows(database_dir)
     session_rows: list[dict[str, Any]] = []
     cache_stats = {"cached": 0, "parsed": 0, "skipped": 0}
-    for path in iter_session_files(codex_home):
+    session_files = iter_session_files(codex_home)
+    for path in session_files:
         row = None if force_full_scan else cache_hit_for_session(path, cache)
         if row is not None:
             session_rows.append(row)
@@ -759,14 +1057,38 @@ def sync_codex_data(
     daily_rows = build_daily(session_rows)
     recommendations = build_recommendations(session_rows, database_dir / RECOMMENDATION_OUTPUT)
     snapshot = build_snapshot(session_rows, daily_rows, recommendations)
+    transcript_exports: list[dict[str, Any]] | None = None
+    if public_transcripts:
+        transcript_exports = []
+        if not dry_run:
+            for source in session_files:
+                export = export_codex_session_jsonl(
+                    source,
+                    codex_home,
+                    database_dir / CODEX_PUBLIC_RAW_ROOT,
+                )
+                export["chunk_refs"] = [
+                    (CODEX_PUBLIC_RAW_ROOT / ref).as_posix() for ref in export["chunk_refs"]
+                ]
+                for chunk in export["chunks"]:
+                    chunk["ref"] = (CODEX_PUBLIC_RAW_ROOT / chunk["ref"]).as_posix()
+                transcript_exports.append(export)
+    public_raw = build_public_raw_snapshot(session_rows, snapshot, transcript_exports)
+    public_raw_rel = public_raw_snapshot_path(public_raw)
 
-    write_jsonl(database_dir / SESSION_OUTPUT, session_rows)
-    write_jsonl(database_dir / DAILY_OUTPUT, daily_rows)
-    write_json(database_dir / RECOMMENDATION_OUTPUT, recommendations)
-    write_json(database_dir / SNAPSHOT_OUTPUT, snapshot)
-    write_text(database_dir / REPORT_OUTPUT, build_report(snapshot, recommendations))
+    if not dry_run:
+        write_json_append_only(database_dir / public_raw_rel, public_raw)
+        write_jsonl(database_dir / SESSION_OUTPUT, session_rows)
+        write_jsonl(database_dir / DAILY_OUTPUT, daily_rows)
+        write_json(database_dir / RECOMMENDATION_OUTPUT, recommendations)
+        write_json(database_dir / SNAPSHOT_OUTPUT, snapshot)
+        write_json(database_dir / DERIVED_SNAPSHOT_OUTPUT, snapshot)
+        write_text(
+            database_dir / REPORT_OUTPUT,
+            build_report(snapshot, recommendations, public_transcripts=public_transcripts),
+        )
 
-    if build_atlas:
+    if build_atlas and not dry_run:
         run_command(
             [
                 sys.executable,
@@ -799,9 +1121,23 @@ def sync_codex_data(
 
     result = {
         "status": "PASS",
+        "source_id": SOURCE_ID,
         "generated_at": snapshot["generated_at"],
-        "database_dir": str(database_dir),
-        "codex_home": str(codex_home),
+        "database_dir": "." if public_transcripts else str(database_dir),
+        "codex_home": "[LOCAL_CODEX_HOME]" if public_transcripts else str(codex_home),
+        "dry_run": dry_run,
+        "writes_files": not dry_run,
+        "raw_root": CODEX_PUBLIC_RAW_ROOT.as_posix(),
+        "derived_summary": DERIVED_SNAPSHOT_OUTPUT.as_posix(),
+        "run_log_dir": SYNC_LOG_DIR.as_posix(),
+        "append_only": True,
+        "public_transcripts": public_transcripts,
+        "public_transcript_event_count": public_raw["public_transcript_event_count"],
+        "public_transcript_chunk_count": public_raw["public_transcript_chunk_count"],
+        "public_transcript_exports": transcript_exports or [],
+        "public_transcript_chunk_refs": [
+            ref for export in transcript_exports or [] for ref in export.get("chunk_refs", [])
+        ],
         "session_count": len(session_rows),
         "day_count": len(daily_rows),
         "range_start": snapshot["range_start"],
@@ -810,9 +1146,11 @@ def sync_codex_data(
         "tool_call_count": snapshot["tool_call_count"],
         "cache": cache_stats,
         "outputs": {
+            "public_raw_snapshot": str(public_raw_rel),
             "sessions": str(SESSION_OUTPUT),
             "daily": str(DAILY_OUTPUT),
             "snapshot": str(SNAPSHOT_OUTPUT),
+            "derived_snapshot": str(DERIVED_SNAPSHOT_OUTPUT),
             "recommendations": str(RECOMMENDATION_OUTPUT),
             "report": str(REPORT_OUTPUT),
             "agent_context": "data/derived/agent_context/agent_context_pack.json",
@@ -820,9 +1158,11 @@ def sync_codex_data(
         },
         "git": {"committed": False, "pushed": False, "reason": "not_requested"},
     }
-    log_path = append_sync_log(database_dir, result)
-    result["outputs"]["sync_log"] = str(log_path.relative_to(database_dir))
-    if commit:
+    result["outputs"]["sync_log"] = str(SYNC_LOG_DIR / f"{snapshot['generated_at'][:10]}.jsonl")
+    if not dry_run:
+        log_path = append_sync_log(database_dir, result)
+        result["outputs"]["sync_log"] = str(log_path.relative_to(database_dir))
+    if commit and not dry_run:
         result["git"] = git_commit_and_push(database_dir, push)
     return result
 
@@ -835,19 +1175,33 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--commit", action="store_true", help="Commit changed Codex derived data and Memory Atlas snapshot.")
     parser.add_argument("--push", action="store_true", help="Push after committing. Implies --commit.")
     parser.add_argument("--force-full-scan", action="store_true", help="Ignore cached per-session summaries and parse every Codex session file.")
+    parser.add_argument("--public-transcripts", action="store_true", help="Write sanitized versioned public transcript chunks.")
+    parser.add_argument("--dry-run", action="store_true", help="Read local Codex data and report output contracts without writing files.")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    result = sync_codex_data(
-        args.database_dir,
-        args.codex_home,
-        build_atlas=args.build_atlas,
-        commit=args.commit or args.push,
-        push=args.push,
-        force_full_scan=args.force_full_scan,
-    )
+    try:
+        result = sync_codex_data(
+            args.database_dir,
+            args.codex_home,
+            build_atlas=args.build_atlas,
+            commit=args.commit or args.push,
+            push=args.push,
+            force_full_scan=args.force_full_scan,
+            dry_run=args.dry_run,
+            public_transcripts=args.public_transcripts,
+        )
+    except (AppendOnlyViolation, PublicRawLimitError, PublicRawSanitizationError) as exc:
+        print(json.dumps({
+            "status": "FAIL",
+            "source_id": SOURCE_ID,
+            "reason": "public_transcript_export_failed",
+            "error": str(exc),
+            "writes_files": False,
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 5
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 

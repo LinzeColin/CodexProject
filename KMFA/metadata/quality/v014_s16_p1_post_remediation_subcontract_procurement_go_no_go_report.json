@@ -1,0 +1,21 @@
+{
+  "anomaly_candidate_materialization_allowed": false,
+  "bank_operation_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "payment_approval_allowed": false,
+  "payment_execution_allowed": false,
+  "phase_id": "V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT",
+  "procurement_execution_allowed": false,
+  "project_id": "KMFA",
+  "project_match_materialization_allowed": false,
+  "s16_p2_allowed_in_this_run": false,
+  "s16_p3_allowed_in_this_run": false,
+  "schema_version": "kmfa.v014.s16_p1.go_no_go.v1",
+  "stage16_review_allowed_in_this_run": false,
+  "stage_id": "S16",
+  "structure_candidate_review_allowed": true,
+  "unallocated_cost_materialization_allowed": false
+}

@@ -2,9 +2,9 @@
 
 model_count: 1
 formula_count: 1
-parameter_count: 22
-task_count: 6
-acceptance_count: 6
+parameter_count: 23
+task_count: 10
+acceptance_count: 10
 
 ## 当前交付
 
@@ -20,6 +20,12 @@ acceptance_count: 6
 
 `S6PZT01`：PFI V0.2 Stage 6 synthetic E2E、回归治理、交付回滚、本地入口刷新和缓存清理。
 
+`PFI-V024-R1-20260710`：恢复 v0.2.4 closeout canonical history，并让 sparse PFI worktree 只读使用 tracked `MetaDatabase/PFI` 真实数据。
+
+`PFI-V024-OVERALL-REREVIEW-20260710`：按原 `v0.2.3-repair` Task Pack/Roadmap 复核 Stage 0-9、Phase R1、真实数据与 final-delivery boundary；本 gate 不执行 upload 或 app reinstall。
+
+`PFI-V024-FINAL-DELIVERY-20260710`：冻结 product commit、重装三处 app entry、执行只读 runtime parity，并用唯一一次 push 完成 GitHub/app/local closeout。
+
 ## 下一步
 
-`POSTS6T01`：外部 Alpha context consumer、真实数据连接、PDF/ZIP、CDR/Open Banking 或 production release evidence gate 任选其一单独开 pursuing goal。真实环境验证、自动实盘下单、外部仓库修改和支付提交仍是独立阻塞，不属于 Stage 6 closeout。
+`PFI-V024-FINAL-DELIVERY`：tracked transaction 已准备；唯一 push 后必须运行 live verifier，pass 即解析最终 postcondition，且不允许第二个 closeout commit。future version 未开始；真实环境交易、自动实盘下单和支付提交仍不在范围。

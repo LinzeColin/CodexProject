@@ -1,0 +1,251 @@
+{
+  "four_line_coverage": [
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "unit_tests",
+        "visual_workflows",
+        "report_contract_audit"
+      ],
+      "line_id": "L1_BEHAVIOR_INTELLIGENCE",
+      "name_zh": "行为智能与洞察",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "frontend_build",
+        "chinese_ux_audit",
+        "rendered_chinese_ux",
+        "visual_roi_audit",
+        "visual_workflows",
+        "stage7_visual",
+        "stage7_performance"
+      ],
+      "line_id": "L2_INFO_ROI_CHINESE_VISUALS",
+      "name_zh": "信息 ROI、中文与多维可视化",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "github_backup_modes",
+        "tracked_only_recovery",
+        "raw_append_only_audit",
+        "stage7_privacy_accessibility",
+        "credential_audit"
+      ],
+      "line_id": "L3_GITHUB_BACKUP_RECOVERY",
+      "name_zh": "ChatGPT、Codex 与后续 Agent 的 GitHub 备份恢复",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "frontend_build",
+        "rendered_chinese_ux",
+        "command_workflows",
+        "proposal_e2e",
+        "owner_daily_e2e",
+        "stage7_privacy_accessibility"
+      ],
+      "line_id": "L4_UIUX_GOVERNED_ACTIONS",
+      "name_zh": "UIUX、授权变更与低负担运维",
+      "status": "PASS"
+    }
+  ],
+  "generated_at": "2026-07-11T23:28:15Z",
+  "phase": "R8_OVERALL_ACCEPTANCE_AND_SINGLE_FINAL_DELIVERY",
+  "query_contract": {
+    "current_truth": "机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_r8.json",
+    "full_acceptance": "机器治理/证据与日志/remediation/v1_2_r8/final_acceptance.json",
+    "requirement_delta": "机器治理/证据与日志/remediation/v1_2_r8/requirements_gap_delta.csv"
+  },
+  "requirements": {
+    "failed": 0,
+    "not_verified": 0,
+    "partial": 0,
+    "remaining_non_verified": [],
+    "total": 58,
+    "verified": 58
+  },
+  "runtime_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+  "schema_version": "memory_atlas.stage_pass_gate_status.v1_2_r8",
+  "stage_pass_gates": [
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S01-AC01",
+        "S01-AC02",
+        "S01-AC03",
+        "S01-AC04"
+      ],
+      "stage_id": "S01",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 3,
+      "requirement_ids": [
+        "S02-AC01",
+        "S02-AC02",
+        "S02-AC03"
+      ],
+      "stage_id": "S02",
+      "status": "VERIFIED",
+      "verified_requirement_count": 3
+    },
+    {
+      "requirement_count": 5,
+      "requirement_ids": [
+        "S03-AC01",
+        "S03-AC02",
+        "S03-AC03",
+        "S03-AC04",
+        "S03-AC05"
+      ],
+      "stage_id": "S03",
+      "status": "VERIFIED",
+      "verified_requirement_count": 5
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S04-AC01",
+        "S04-AC02",
+        "S04-AC03",
+        "S04-AC04"
+      ],
+      "stage_id": "S04",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S05-AC01",
+        "S05-AC02",
+        "S05-AC03",
+        "S05-AC04"
+      ],
+      "stage_id": "S05",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S06-AC01",
+        "S06-AC02",
+        "S06-AC03",
+        "S06-AC04"
+      ],
+      "stage_id": "S06",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S07-AC01",
+        "S07-AC02",
+        "S07-AC03",
+        "S07-AC04"
+      ],
+      "stage_id": "S07",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S08-AC01",
+        "S08-AC02",
+        "S08-AC03",
+        "S08-AC04"
+      ],
+      "stage_id": "S08",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S09-AC01",
+        "S09-AC02",
+        "S09-AC03",
+        "S09-AC04"
+      ],
+      "stage_id": "S09",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S10-AC01",
+        "S10-AC02",
+        "S10-AC03",
+        "S10-AC04"
+      ],
+      "stage_id": "S10",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S11-AC01",
+        "S11-AC02",
+        "S11-AC03",
+        "S11-AC04"
+      ],
+      "stage_id": "S11",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S12-AC01",
+        "S12-AC02",
+        "S12-AC03",
+        "S12-AC04"
+      ],
+      "stage_id": "S12",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 5,
+      "requirement_ids": [
+        "S13-AC01",
+        "S13-AC02",
+        "S13-AC03",
+        "S13-AC04",
+        "S13-AC05"
+      ],
+      "stage_id": "S13",
+      "status": "VERIFIED",
+      "verified_requirement_count": 5
+    },
+    {
+      "requirement_count": 5,
+      "requirement_ids": [
+        "S14-AC01",
+        "S14-AC02",
+        "S14-AC03",
+        "S14-AC04",
+        "S14-AC05"
+      ],
+      "stage_id": "S14",
+      "status": "VERIFIED",
+      "verified_requirement_count": 5
+    }
+  ],
+  "status": "PASS",
+  "supersedes": [
+    "机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json",
+    "all marker-only v1.2 aggregate PASS claims created before remediation R0"
+  ]
+}

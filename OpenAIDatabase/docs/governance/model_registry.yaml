@@ -194,16 +194,32 @@ models:
   - model_id: "MOD-011"
     name: "Personalization export and resource routing"
     kind: "deterministic_workflow_model"
-    purpose: "Map the three-layer private context source into ChatGPT and Codex personalization exports, route future agents to the smallest sufficient resources, and log sync/export/evaluation/agent runs."
+    purpose: "Map canonical OpenAIDatabase context and every actual projection input into deterministic ChatGPT, Codex, and Claude projections with recomputable provider-neutral provenance, route agents to the smallest sufficient resources, and log sync/export/evaluation/agent runs."
     owner: "OpenAIDatabase"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "personalization-routing-v0"
+    model_version: "personalization-routing-v2"
     assumptions: ["ASM-001", "ASM-004", "ASM-007"]
     formula_ids: ["FORM-011"]
     parameter_ids: ["PARAM-083", "PARAM-084", "PARAM-085", "PARAM-086", "PARAM-087", "PARAM-088", "PARAM-089", "PARAM-090", "PARAM-091", "PARAM-092"]
     inputs: ["three_layer_context.json", "resource_routes.json", "agent_context_pack", "Codex recommendations", "Core Profile", "Memory Atlas snapshot"]
-    outputs: ["chatgpt_personalization.md", "codex_personalization.md", "personalization_export.json", "resource route JSON", "run log JSONL"]
+    outputs: ["chatgpt_personalization.md", "codex_personalization.md", "claude_personalization.md", "personalization_export.json", "memory_bundle_manifest.json", "resource route JSON", "run log JSONL"]
     code_refs: ["OpenAIDatabase/scripts/build_personalization_exports.py:1", "OpenAIDatabase/scripts/route_agent_resources.py:1", "OpenAIDatabase/scripts/evaluate_personalization_context.py:1", "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"]
-    test_refs: ["OpenAIDatabase/tests/test_personalization_architecture.py:1"]
-    evidence_refs: ["OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md:1", "OpenAIDatabase/config/context_sources/three_layer_context.json:1", "OpenAIDatabase/config/context_sources/resource_routes.json:1"]
+    test_refs: ["OpenAIDatabase/tests/test_personalization_architecture.py:1", "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"]
+    evidence_refs: ["OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md:1", "OpenAIDatabase/config/context_sources/three_layer_context.json:1", "OpenAIDatabase/config/context_sources/resource_routes.json:1", "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json"]
+  - model_id: "MOD-MACDATA-PROM2-001"
+    name: "Device preflight and archive cleanup policy"
+    kind: "deterministic_workflow_model"
+    purpose: "Enforce the proM2 MacData device preflight, GitHub archive upload, remote hash verification, and owner-confirmed post-upload cleanup gates."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "macdata-prom2-v1"
+    assumptions: ["ASM-001"]
+    formula_ids: ["FORM-MACDATA-PROM2-001"]
+    parameter_ids: ["PARAM-MACDATA-PROM2-001", "PARAM-MACDATA-PROM2-002", "PARAM-MACDATA-PROM2-003", "PARAM-MACDATA-PROM2-004"]
+    inputs: ["local macOS hardware profile", "owner confirmations", "device_config.json", "repository metrics"]
+    outputs: ["MacData JSON record", "Chinese run report", "GitHub archive commit", "remote verification result", "cleanup report"]
+    code_refs: ["OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py:1"]
+    test_refs: ["OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py:1"]
+    evidence_refs: ["OpenAIDatabase/macdata/proM2/config/device_config.json:1", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json:1"]

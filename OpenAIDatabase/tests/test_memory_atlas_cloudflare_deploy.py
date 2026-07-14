@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import os
 import sys
 import tempfile
@@ -31,6 +32,40 @@ class MemoryAtlasCloudflareDeployTests(unittest.TestCase):
         commands = [entry["command"] for entry in result["commands"]]
         self.assertIn(["npx", "wrangler", "pages", "deploy", "apps/memory-atlas/dist", "--project-name", "openai-memory-atlas"], commands)
         self.assertTrue(all(entry["status"] == "DRY_RUN" for entry in result["commands"]))
+
+    def test_deploy_verifies_current_release_and_exact_parity_without_rebuilding_data(self) -> None:
+        module = load_module()
+        args = module.parse_args([])
+
+        result = module.deploy(args)
+
+        commands = [entry["command"] for entry in result["commands"]]
+        flattened = "\n".join(" ".join(command) for command in commands)
+        verify_command = [
+            "python3",
+            "scripts/materialize_memory_atlas_release.py",
+            "verify",
+            "--database-dir",
+            ".",
+        ]
+        parity_command = [
+            "python3",
+            "scripts/audit_memory_atlas_snapshot_parity.py",
+            "--database-dir",
+            ".",
+            "--local-runtime-env",
+            "MEMORY_ATLAS_LOCAL_RUNTIME_CANDIDATE",
+            "--pages-candidate",
+            "apps/memory-atlas/dist/memory_atlas.json",
+        ]
+
+        self.assertEqual(commands[0], verify_command)
+        self.assertIn(parity_command, commands)
+        self.assertLess(commands.index(["npm", "run", "build", "--prefix", "apps/memory-atlas"]), commands.index(parity_command))
+        self.assertLess(commands.index(parity_command), commands.index(["npx", "wrangler", "pages", "deploy", "apps/memory-atlas/dist", "--project-name", "openai-memory-atlas"]))
+        self.assertNotIn("build_memory_atlas_data.py", flattened)
+        self.assertNotIn("/Users/", flattened)
+        self.assertNotIn(str(args.repo_root.resolve()), json.dumps(result))
 
     def test_execute_requires_explicit_authorization_env(self) -> None:
         module = load_module()
@@ -106,6 +141,7 @@ class MemoryAtlasCloudflareDeployTests(unittest.TestCase):
                 "CLOUDFLARE_API_TOKEN": "token-not-written",
                 "MEMORY_ATLAS_ACCESS_HOSTNAME": "openai-memory-atlas.pages.dev",
                 "MEMORY_ATLAS_ALLOWED_EMAIL": "user@example.com",
+                "MEMORY_ATLAS_LOCAL_RUNTIME_CANDIDATE": "/tmp/memory-atlas-test-runtime/memory_atlas.json",
             }
             with patch.dict(os.environ, env, clear=False):
                 with patch.object(module, "run_command", return_value={"command": [], "status": "PASS", "stdout": "", "stderr": ""}):

@@ -1,0 +1,246 @@
+{
+  "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK",
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "git": {
+    "branch": "codex/kmfa",
+    "head": "4a256520b77b2b4e68213b656aaf8a30a470daf4",
+    "status_short_branch": "## codex/kmfa...origin/codex/kmfa [ahead 537, behind 8]\n M KMFA/CHANGELOG.md\n M KMFA/HANDOFF.md\n M KMFA/VERSION\n M KMFA/docs/governance/ASSURANCE_STATUS.yaml\n M KMFA/docs/governance/DEVELOPMENT_LEDGER.md\n M KMFA/docs/governance/MODEL_SPEC.md\n M KMFA/docs/governance/OWNER_STATUS.md\n M KMFA/docs/governance/STATUS.md\n M KMFA/docs/governance/TRACEABILITY_MATRIX.csv\n M KMFA/docs/governance/VERSION_MATRIX.yaml\n M KMFA/docs/governance/delivery_tasks.yaml\n M KMFA/docs/governance/development_events.jsonl\n M KMFA/docs/governance/formula_registry.yaml\n M KMFA/docs/governance/model_registry.yaml\n M KMFA/docs/governance/parameter_registry.csv\n M KMFA/metadata/model_registry.yaml\n M KMFA/metadata/stage_status.jsonl\n M KMFA/metadata/traceability/v1_4_stage_phase_task_status.jsonl\n M KMFA/功能清单.md\n M KMFA/开发记录.md\n M KMFA/模型参数文件.md\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_go_no_go_report.json\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_manifest.json\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_matrix_public_safe.json\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_summary.json\n?? KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/\n?? KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py\n?? KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py\n?? KMFA/tools/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py"
+  },
+  "go_no_go_report": {
+    "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK",
+    "app_reinstall_allowed": false,
+    "business_execution_allowed": false,
+    "business_value_consistency_verified": false,
+    "closed_discrepancy_count": 0,
+    "decision": "NO_GO",
+    "full_raw_to_processed_value_comparison_complete": false,
+    "generated_at": "2026-07-07T00:00:00+10:00",
+    "github_upload_allowed": false,
+    "missing_response_blocker_cleared": true,
+    "next_recommended_phase": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT",
+    "next_required_input": "source_map_correction_or_authoritative_value_resolution_required_before_full_raw_to_processed_comparison",
+    "non_actionable_diagnostic_response_count": 72,
+    "open_residual_difference_count": 72,
+    "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK",
+    "project_id": "KMFA",
+    "raw_to_processed_value_comparison_allowed": false,
+    "readiness_conclusion": "missing_response_blocker_cleared_but_source_map_correction_not_ready",
+    "record_type": "v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_go_no_go",
+    "schema_version": "kmfa.v014_residual_difference_response_import_readiness_recheck_go_no_go.v1",
+    "source_map_correction_blocker_count": 72,
+    "source_map_correction_ready": false,
+    "status": "completed_validated_local_only_residual_difference_response_import_readiness_rechecked_no_go",
+    "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-20260707",
+    "valid_diagnostic_response_count": 72,
+    "version": "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+  },
+  "matrix": {
+    "check_count": 13,
+    "check_fail_count": 0,
+    "check_pass_count": 13,
+    "checks": [
+      {
+        "check_code": "source_response_import_loaded",
+        "status": "PASS"
+      },
+      {
+        "check_code": "source_response_import_valid",
+        "status": "PASS"
+      },
+      {
+        "check_code": "valid_responses_present",
+        "status": "PASS"
+      },
+      {
+        "check_code": "missing_response_blocker_cleared",
+        "status": "PASS"
+      },
+      {
+        "check_code": "all_responses_non_actionable",
+        "status": "PASS"
+      },
+      {
+        "check_code": "source_map_actionability_absent",
+        "status": "PASS"
+      },
+      {
+        "check_code": "all_residual_differences_still_open",
+        "status": "PASS"
+      },
+      {
+        "check_code": "no_discrepancy_closure",
+        "status": "PASS"
+      },
+      {
+        "check_code": "source_map_correction_blocked",
+        "status": "PASS"
+      },
+      {
+        "check_code": "track_counts_locked",
+        "status": "PASS"
+      },
+      {
+        "check_code": "decision_counts_locked",
+        "status": "PASS"
+      },
+      {
+        "check_code": "raw_inbox_untouched",
+        "status": "PASS"
+      },
+      {
+        "check_code": "downstream_gates_closed",
+        "status": "PASS"
+      }
+    ],
+    "decision": "NO_GO",
+    "generated_at": "2026-07-07T00:00:00+10:00",
+    "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK",
+    "project_id": "KMFA",
+    "record_type": "v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_matrix_public_safe",
+    "schema_version": "kmfa.v014_residual_difference_response_import_readiness_recheck_matrix_public_safe.v1",
+    "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-20260707",
+    "version": "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+  },
+  "metadata_artifacts": [
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_summary.json",
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_manifest.json",
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_go_no_go_report.json",
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_matrix_public_safe.json"
+  ],
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK",
+  "private_artifact_flags": {
+    "all_private_artifacts_gitignored": true,
+    "read_source_private_response_import_outputs": true,
+    "wrote_private_readiness_diagnostic": true,
+    "wrote_private_source_map_blocker_queue": true
+  },
+  "project_id": "KMFA",
+  "public_artifacts": [
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/human/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.md",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/human/go_no_go_record.md",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/human/test_results.md",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/machine/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_summary.json",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/machine/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_manifest.json",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/machine/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_go_no_go_report.json",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/machine/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_matrix_public_safe.json"
+  ],
+  "readiness_conclusion": "missing_response_blocker_cleared_but_source_map_correction_not_ready",
+  "record_type": "v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_manifest",
+  "schema_version": "kmfa.v014_residual_difference_response_import_readiness_recheck_manifest.v1",
+  "source_public_artifact_count": 4,
+  "status": "completed_validated_local_only_residual_difference_response_import_readiness_rechecked_no_go",
+  "summary": {
+    "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK",
+    "actionable_resolution_count": 0,
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "business_value_consistency_verified": false,
+    "closed_discrepancy_count": 0,
+    "decision": "NO_GO",
+    "diagnostic_response_blocker_count": 0,
+    "formal_report_allowed": false,
+    "full_raw_to_processed_value_comparison_complete": false,
+    "full_reconciliation_allowed": false,
+    "generated_at": "2026-07-07T00:00:00+10:00",
+    "github_upload_performed": false,
+    "invalid_diagnostic_response_count": 0,
+    "lineage_full_check_complete": false,
+    "missing_response_blocker_cleared": true,
+    "next_recommended_phase": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT",
+    "next_required_input": "source_map_correction_or_authoritative_value_resolution_required_before_full_raw_to_processed_comparison",
+    "non_actionable_diagnostic_response_count": 72,
+    "open_residual_difference_count": 72,
+    "owner_select_one_authoritative_candidate_count": 24,
+    "pending_diagnostic_response_count": 0,
+    "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK",
+    "private_readiness_diagnostic_gitignored": true,
+    "private_readiness_diagnostic_written": true,
+    "private_report_gitignored": true,
+    "private_report_written": true,
+    "private_source_map_blocker_queue_gitignored": true,
+    "private_source_map_blocker_queue_written": true,
+    "processed_consistency_verified": false,
+    "project_id": "KMFA",
+    "provide_authoritative_source_reference_or_owner_exclusion_count": 40,
+    "provide_formula_or_non_numeric_mapping_count": 8,
+    "public_safety": {
+      "business_value_committed": false,
+      "credential_or_secret_committed": false,
+      "field_header_plaintext_committed": false,
+      "private_readiness_diagnostic_committed": false,
+      "private_ref_or_fingerprint_committed": false,
+      "private_source_map_blocker_queue_committed": false,
+      "public_safe_aggregate_only": true,
+      "raw_archive_member_name_committed": false,
+      "raw_digest_committed": false,
+      "raw_file_committed": false,
+      "raw_filename_committed": false,
+      "row_value_committed": false,
+      "source_private_non_actionable_queue_committed": false,
+      "source_private_response_items_committed": false,
+      "source_private_response_record_committed": false
+    },
+    "raw_boundary": {
+      "discrepancy_closure_written_by_this_phase": false,
+      "private_readiness_diagnostic_written_by_this_phase": true,
+      "private_source_map_blocker_queue_written_by_this_phase": true,
+      "raw_data_root_readonly_policy_active": true,
+      "raw_inbox_copy_performed_by_this_phase": false,
+      "raw_inbox_delete_performed_by_this_phase": false,
+      "raw_inbox_field_or_header_read_performed_by_this_phase": false,
+      "raw_inbox_file_content_hash_performed_by_this_phase": false,
+      "raw_inbox_list_performed_by_this_phase": false,
+      "raw_inbox_move_performed_by_this_phase": false,
+      "raw_inbox_mutated_by_this_phase": false,
+      "raw_inbox_normalize_performed_by_this_phase": false,
+      "raw_inbox_overwrite_performed_by_this_phase": false,
+      "raw_inbox_parse_performed_by_this_phase": false,
+      "raw_inbox_read_performed_by_this_phase": false,
+      "raw_inbox_rename_performed_by_this_phase": false,
+      "raw_inbox_stat_performed_by_this_phase": false,
+      "raw_inbox_value_extraction_performed_by_this_phase": false,
+      "raw_inbox_write_performed_by_this_phase": false,
+      "source_map_correction_written_by_this_phase": false,
+      "source_response_import_private_items_mutated_by_this_phase": false,
+      "source_response_import_private_items_read_by_this_phase": true,
+      "source_response_import_private_non_actionable_queue_mutated_by_this_phase": false,
+      "source_response_import_private_non_actionable_queue_read_by_this_phase": true,
+      "source_response_import_private_record_mutated_by_this_phase": false,
+      "source_response_import_private_record_read_by_this_phase": true,
+      "source_response_import_public_manifest_read_by_this_phase": true,
+      "source_response_import_public_summary_read_by_this_phase": true,
+      "user_declared_raw_data_immutable": true
+    },
+    "raw_to_processed_value_comparison_performed_by_this_phase": false,
+    "raw_to_processed_value_comparison_ready": false,
+    "readiness_conclusion": "missing_response_blocker_cleared_but_source_map_correction_not_ready",
+    "record_type": "v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_summary",
+    "report_discrepancy_no_context_candidate_count": 40,
+    "report_discrepancy_non_numeric_or_calculation_context_count": 8,
+    "report_discrepancy_tied_ambiguous_candidates_count": 24,
+    "response_import_readiness_recheck_performed": true,
+    "safe_auto_resolution_count": 0,
+    "schema_version": "kmfa.v014_residual_difference_response_import_readiness_recheck_summary.v1",
+    "source_go_no_go_decision": "NO_GO",
+    "source_manifest_phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT",
+    "source_map_actionable_response_count": 0,
+    "source_map_correction_blocker_count": 72,
+    "source_map_correction_ready": false,
+    "source_map_correction_written_by_this_phase": false,
+    "source_matrix_check_fail_count": 0,
+    "source_non_actionable_queue_item_count": 72,
+    "source_phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT",
+    "source_response_item_count": 72,
+    "source_response_record_item_count": 72,
+    "status": "completed_validated_local_only_residual_difference_response_import_readiness_rechecked_no_go",
+    "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-20260707",
+    "valid_diagnostic_response_count": 72,
+    "valid_diagnostic_response_imported_count": 72,
+    "version": "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+  },
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+}

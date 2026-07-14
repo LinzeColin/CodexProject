@@ -27,6 +27,12 @@ DATA_SOURCE_REGISTRY_SOURCE = "config/data_sources/source_registry.json"
 CODEX_SESSION_SOURCE = "data/processed/codex/codex_session_manifest.jsonl"
 CODEX_DAILY_SOURCE = "data/processed/codex/codex_daily_activity.jsonl"
 CODEX_RECOMMENDATION_SOURCE = "data/derived/codex/codex_agent_recommendations.json"
+BEHAVIOR_CLUSTER_SOURCE = "data/derived/behavior_intelligence/clusters.json"
+LOW_VALUE_LOOP_SOURCE = "data/derived/behavior_intelligence/low_value_loops.json"
+OPPORTUNITY_SOURCE = "data/derived/behavior_intelligence/opportunities.json"
+HUMAN_QUESTION_MAP_SOURCE = "机器治理/可视化配置/human_question_map.v1_2_s11_p4.json"
+BEHAVIOR_EVENT_SOURCE = "data/derived/behavior_intelligence/events.json"
+FORMULA_WHAT_IF_SOURCE = "data/derived/economic_proxy/formula_what_if_preview.json"
 PROPOSAL_SCHEMA_VERSION = "memory_change_proposal.v1"
 EDITABLE_MEMORY_FIELDS = [
     "statement",
@@ -42,6 +48,24 @@ EDITABLE_MEMORY_FIELDS = [
 ]
 REDACTED_HASH_RE = re.compile(r"redacted_source_hash=([A-Za-z0-9_-]+)")
 CANDIDATE_RUN_RE = re.compile(r"run_(\d{8}T\d{6}Z)\.memory_candidates\.jsonl$")
+P0_VISUAL_IDS = (
+    "cluster_tree",
+    "bubble_map",
+    "topic_cluster_explorer",
+    "task_treemap",
+    "automation_vs_augmentation",
+    "roi_scatter",
+    "opportunity_radar",
+    "agent_decision_sankey",
+    "friction_heatmap",
+    "latent_radar",
+    "evidence_timeline",
+    "formula_explorer",
+)
+VISUAL_FILTER_DIMENSIONS = ["source", "time", "project", "task"]
+UNLABELED_FACET = "未标注"
+MAX_FACET_EVENTS = 1000
+MAX_FACET_EVIDENCE_REFS = 3
 
 TIER_ORDER = {"核心画像": 0, "一般": 1, "临时": 2}
 TIER_WEIGHT = {"核心画像": 1.0, "一般": 0.66, "临时": 0.28}
@@ -151,6 +175,393 @@ def read_json(path: Path) -> dict[str, Any]:
     except json.JSONDecodeError:
         return {}
     return payload if isinstance(payload, dict) else {}
+
+
+def as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
+
+
+def limited_evidence_refs(item: dict[str, Any], limit: int = 3) -> list[dict[str, Any]]:
+    refs: list[dict[str, Any]] = []
+    for ref in as_list(item.get("evidence_refs"))[:limit]:
+        if not isinstance(ref, dict):
+            continue
+        refs.append(
+            {
+                "ref_id": str(ref.get("ref_id") or ""),
+                "ref_type": str(ref.get("ref_type") or ""),
+                "source_id": str(ref.get("source_id") or ""),
+                "evidence_level": str(ref.get("evidence_level") or ""),
+                "path": str(ref.get("path") or ""),
+                "reason": str(ref.get("reason") or ""),
+            }
+        )
+    return refs
+
+
+def normalized_facet_value(value: Any) -> str:
+    text = str(value or "").strip()
+    return UNLABELED_FACET if not text or text.casefold() == "unknown" else text
+
+
+def public_relative_path(value: Any) -> str:
+    path = str(value or "").strip()
+    if not path or os.path.isabs(path):
+        return ""
+    parts = Path(path).parts
+    return path if ".." not in parts else ""
+
+
+def bounded_string_list(value: Any, limit: int = 8) -> list[str]:
+    return sorted({item.strip() for item in as_list(value) if isinstance(item, str) and item.strip()})[:limit]
+
+
+def summarize_facet_evidence_refs(item: dict[str, Any]) -> list[dict[str, Any]]:
+    refs: list[dict[str, Any]] = []
+    for ref in as_list(item.get("evidence_refs")):
+        if not isinstance(ref, dict):
+            continue
+        refs.append(
+            {
+                "ref_id": str(ref.get("ref_id") or ""),
+                "ref_type": str(ref.get("ref_type") or ""),
+                "source_id": str(ref.get("source_id") or ""),
+                "evidence_level": str(ref.get("evidence_level") or ""),
+                "path": public_relative_path(ref.get("path")),
+                "reason": str(ref.get("reason") or ""),
+            }
+        )
+        if len(refs) == MAX_FACET_EVIDENCE_REFS:
+            break
+    return refs
+
+
+def summarize_behavior_event(item: dict[str, Any]) -> dict[str, Any]:
+    """Project a behavior event into the bounded public visual-filter contract."""
+    source_id = str(item.get("source_id") or item.get("source") or "").strip()
+    return {
+        "event_id": str(item.get("event_id") or ""),
+        "occurred_at": str(item.get("occurred_at") or "").strip(),
+        "source_id": normalized_facet_value(source_id),
+        "project": normalized_facet_value(item.get("project")),
+        "task_type": normalized_facet_value(item.get("task_type")),
+        "topic": str(item.get("topic") or "").strip(),
+        "intent": str(item.get("intent") or "").strip(),
+        "friction": bounded_string_list(item.get("friction")),
+        "value_signal": bounded_string_list(item.get("value_signal")),
+        "evidence_refs": summarize_facet_evidence_refs(item),
+    }
+
+
+def facet_event_sort_key(item: dict[str, Any]) -> tuple[int, str, str]:
+    occurred_at = str(item.get("occurred_at") or "")
+    try:
+        parsed = datetime.fromisoformat(occurred_at.replace("Z", "+00:00"))
+    except ValueError:
+        return (1, "", str(item.get("event_id") or ""))
+    if parsed.tzinfo is None:
+        return (0, parsed.replace(tzinfo=UTC).isoformat(), str(item.get("event_id") or ""))
+    return (0, parsed.astimezone(UTC).isoformat(), str(item.get("event_id") or ""))
+
+
+def build_facet_events(database_dir: Path) -> tuple[list[dict[str, Any]], dict[str, list[str]]]:
+    payload = read_json(database_dir / BEHAVIOR_EVENT_SOURCE)
+    if not str(payload.get("schema_version") or "").startswith("memory_atlas_behavior_events.v1"):
+        return [], {"source": [], "project": [], "task": []}
+    events = [summarize_behavior_event(item) for item in as_list(payload.get("events")) if isinstance(item, dict)]
+    events = sorted(events, key=facet_event_sort_key)[:MAX_FACET_EVENTS]
+    return events, {
+        "source": sorted({item["source_id"] for item in events}),
+        "project": sorted({item["project"] for item in events}),
+        "task": sorted({item["task_type"] for item in events}),
+    }
+
+
+def build_visual_workflow_registry(database_dir: Path) -> dict[str, Any]:
+    payload = read_json(database_dir / HUMAN_QUESTION_MAP_SOURCE)
+    empty = {
+        "schema_version": "memory_atlas_visual_workflows.v1_2_r6",
+        "p0_visual_count": 0,
+        "filter_dimensions": VISUAL_FILTER_DIMENSIONS,
+        "visuals": [],
+        "excluded_candidates": [],
+    }
+    visuals = as_list(payload.get("visuals"))
+    if (
+        payload.get("schema_version") != "human_question_map.v1_2_s11_p4"
+        or payload.get("filter_dimensions") != VISUAL_FILTER_DIMENSIONS
+        or len(visuals) != len(P0_VISUAL_IDS)
+        or not all(isinstance(item, dict) for item in visuals)
+    ):
+        return empty
+    visual_ids = [str(item.get("id") or "") for item in visuals]
+    by_id = {str(item.get("id") or ""): item for item in visuals}
+    if len(set(visual_ids)) != len(visual_ids) or set(by_id) != set(P0_VISUAL_IDS):
+        return empty
+
+    sanitized_visuals: list[dict[str, Any]] = []
+    for visual_id in P0_VISUAL_IDS:
+        item = by_id[visual_id]
+        if (
+            item.get("filter_dimensions") != VISUAL_FILTER_DIMENSIONS
+            or not all(str(item.get(field) or "").strip() for field in ("family", "title", "insight_header_zh", "human_question_zh", "action_value_zh"))
+            or item.get("visual_roi_gate_pass") is not True
+            or item.get("p0_included") is not True
+        ):
+            return empty
+        sanitized_visuals.append(
+            {
+                "id": visual_id,
+                "family": str(item["family"]).strip(),
+                "title_zh": str(item["title"]).strip(),
+                "insight_header_zh": str(item["insight_header_zh"]).strip(),
+                "human_question_zh": str(item["human_question_zh"]).strip(),
+                "action_value_zh": str(item["action_value_zh"]).strip(),
+                "visual_roi_gate_pass": True,
+                "p0_included": True,
+            }
+        )
+    excluded_candidates = [
+        {
+            "id": str(item.get("id") or ""),
+            "title_zh": str(item.get("title") or ""),
+            "reason_zh": str(item.get("reason_zh") or ""),
+            "visual_roi_gate_pass": item.get("visual_roi_gate_pass") is True,
+            "p0_included": item.get("p0_included") is True,
+        }
+        for item in as_list(payload.get("excluded_candidates"))
+        if isinstance(item, dict) and str(item.get("id") or "").strip()
+    ]
+    return {**empty, "p0_visual_count": len(sanitized_visuals), "visuals": sanitized_visuals, "excluded_candidates": excluded_candidates}
+
+
+def finite_number(value: Any) -> float | int | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        return None
+    return value
+
+
+def build_formula_what_if_summary(database_dir: Path) -> dict[str, Any]:
+    payload = read_json(database_dir / FORMULA_WHAT_IF_SOURCE)
+    empty = {
+        "schema_version": "memory_atlas_formula_what_if_display.v1_2_r6",
+        "simulator_mode": "",
+        "base_score": 0,
+        "summary_zh": "",
+        "default_weights": {},
+        "adjustable_weight_bounds": {},
+        "baseline_signals": {},
+        "rework_score": 0,
+        "score_floor": 0,
+        "score_ceiling": 100,
+        "neutral_rework_score": 50,
+        "rework_penalty_scale": 0.35,
+        "formula_source": "",
+        "scenarios": [],
+        "safety": {
+            "active_config_write": False,
+            "proposal_required_before_apply": True,
+            "raw_mutation": False,
+            "financial_advice": False,
+            "precise_income_prediction": False,
+        },
+    }
+    if payload.get("schema_version") != "memory_atlas_formula_what_if_preview.v1_2_s07_p3":
+        return empty
+    parameters = payload.get("parameters") if isinstance(payload.get("parameters"), dict) else {}
+    default_weights = {
+        str(key): number
+        for key, value in parameters.get("default_weights", {}).items()
+        if (number := finite_number(value)) is not None
+    } if isinstance(parameters.get("default_weights"), dict) else {}
+    bounds: dict[str, dict[str, float | int]] = {}
+    if isinstance(parameters.get("adjustable_weight_bounds"), dict):
+        for key, value in sorted(parameters["adjustable_weight_bounds"].items()):
+            if not isinstance(value, dict) or key not in default_weights:
+                continue
+            minimum, maximum, step = (finite_number(value.get(field)) for field in ("min", "max", "step"))
+            if minimum is None or maximum is None or step is None or minimum > maximum or step <= 0:
+                continue
+            bounds[str(key)] = {"min": minimum, "max": maximum, "step": step}
+    scenarios = [item for item in as_list(payload.get("scenarios")) if isinstance(item, dict)]
+    baseline = next((item for item in scenarios if item.get("scenario_id") == "baseline"), {})
+    if not default_weights or not bounds or not baseline:
+        return empty
+    signals = baseline.get("score_components", {}).get("signals", {}) if isinstance(baseline.get("score_components"), dict) else {}
+    baseline_signals = {
+        str(key): score
+        for key, value in signals.items()
+        if isinstance(value, dict) and (score := finite_number(value.get("score"))) is not None
+    } if isinstance(signals, dict) else {}
+    rework_score = finite_number(baseline.get("score_components", {}).get("rework_score")) if isinstance(baseline.get("score_components"), dict) else None
+    score_floor = finite_number(parameters.get("score_floor"))
+    score_ceiling = finite_number(parameters.get("score_ceiling"))
+    neutral_rework_score = finite_number(parameters.get("neutral_rework_score"))
+    rework_penalty_scale = finite_number(parameters.get("rework_penalty_scale"))
+    formula_source = public_relative_path(baseline.get("formula_source") or payload.get("config_path"))
+    sanitized_scenarios = []
+    for item in scenarios:
+        scenario_id = str(item.get("scenario_id") or "").strip()
+        if not scenario_id:
+            continue
+        weights = {
+            str(key): number
+            for key, value in item.get("adjustable_weights", {}).items()
+            if key in default_weights and (number := finite_number(value)) is not None
+        } if isinstance(item.get("adjustable_weights"), dict) else {}
+        score = finite_number(item.get("weighted_proxy_score"))
+        delta = finite_number(item.get("score_delta_vs_baseline"))
+        sanitized_scenarios.append(
+            {
+                "scenario_id": scenario_id,
+                "name_zh": str(item.get("name_zh") or "").strip(),
+                "description_zh": str(item.get("description_zh") or "").strip(),
+                "weighted_proxy_score": score if score is not None else 0,
+                "score_delta_vs_baseline": delta if delta is not None else 0,
+                "adjustable_weights": weights,
+                "formula_source": public_relative_path(item.get("formula_source")) or formula_source,
+            }
+        )
+    base_score = finite_number(payload.get("base_score"))
+    return {
+        **empty,
+        "simulator_mode": str(payload.get("simulator_mode") or "").strip(),
+        "base_score": base_score if base_score is not None else 0,
+        "summary_zh": str(payload.get("human_readable_summary_zh") or "").strip(),
+        "default_weights": dict(sorted(default_weights.items())),
+        "adjustable_weight_bounds": bounds,
+        "baseline_signals": dict(sorted(baseline_signals.items())),
+        "rework_score": rework_score if rework_score is not None else 0,
+        "score_floor": score_floor if score_floor is not None else 0,
+        "score_ceiling": score_ceiling if score_ceiling is not None else 100,
+        "neutral_rework_score": neutral_rework_score if neutral_rework_score is not None else 50,
+        "rework_penalty_scale": rework_penalty_scale if rework_penalty_scale is not None else 0.35,
+        "formula_source": formula_source,
+        "scenarios": sanitized_scenarios,
+    }
+
+
+def summarize_behavior_cluster(item: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "cluster_id": str(item.get("cluster_id") or ""),
+        "cluster_type": str(item.get("cluster_type") or ""),
+        "label_zh": str(item.get("label_zh") or ""),
+        "summary_zh": str(item.get("summary_zh") or ""),
+        "event_count": int(item.get("event_count") or 0),
+        "evidence_refs": limited_evidence_refs(item),
+        "representative_event_ids": [str(event_id) for event_id in as_list(item.get("representative_event_ids"))[:5]],
+        "filter_dimensions": item.get("filter_dimensions") if isinstance(item.get("filter_dimensions"), dict) else {},
+    }
+
+
+def summarize_low_value_loop(item: dict[str, Any], debt_by_loop: dict[str, dict[str, Any]], half_life_by_loop: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    loop_id = str(item.get("loop_id") or "")
+    debt = debt_by_loop.get(loop_id, {})
+    half_life = half_life_by_loop.get(loop_id, {})
+    return {
+        "loop_id": loop_id,
+        "loop_type": str(item.get("loop_type") or ""),
+        "label_zh": str(item.get("label_zh") or ""),
+        "summary_zh": str(item.get("summary_zh") or ""),
+        "score": int(item.get("score") or 0),
+        "event_count": int(item.get("event_count") or 0),
+        "evidence_refs": limited_evidence_refs(item),
+        "decision_debt": {
+            "debt_id": str(debt.get("debt_id") or ""),
+            "decision_area": str(debt.get("decision_area") or ""),
+            "suggested_closure_question": str(debt.get("suggested_closure_question") or ""),
+            "status": str(debt.get("status") or ""),
+        },
+        "action_half_life_days": int(half_life.get("action_half_life_days") or 0),
+        "action_half_life_note": str(half_life.get("interpretation_zh") or ""),
+    }
+
+
+def summarize_opportunity(item: dict[str, Any]) -> dict[str, Any]:
+    why_not_now = item.get("why_not_now_card") if isinstance(item.get("why_not_now_card"), dict) else {}
+    return {
+        "opportunity_id": str(item.get("opportunity_id") or ""),
+        "opportunity_type": str(item.get("opportunity_type") or ""),
+        "label_zh": str(item.get("label_zh") or ""),
+        "summary_zh": str(item.get("summary_zh") or ""),
+        "score": int(item.get("score") or 0),
+        "confidence": str(item.get("confidence") or ""),
+        "next_step_zh": str(item.get("next_step_zh") or ""),
+        "opportunity_half_life_days": int(item.get("opportunity_half_life_days") or 0),
+        "defer_reason_zh": str(item.get("defer_reason_zh") or ""),
+        "evidence_refs": limited_evidence_refs(item),
+        "why_not_now_card": {
+            "card_id": str(why_not_now.get("card_id") or ""),
+            "reason_zh": str(why_not_now.get("reason_zh") or ""),
+            "defer_until_signal_zh": str(why_not_now.get("defer_until_signal_zh") or ""),
+            "not_pressure_list": why_not_now.get("not_pressure_list") is True,
+        },
+    }
+
+
+def build_behavior_intelligence_summary(database_dir: Path) -> dict[str, Any]:
+    clusters_payload = read_json(database_dir / BEHAVIOR_CLUSTER_SOURCE)
+    loops_payload = read_json(database_dir / LOW_VALUE_LOOP_SOURCE)
+    opportunities_payload = read_json(database_dir / OPPORTUNITY_SOURCE)
+    topic_clusters = [item for item in as_list(clusters_payload.get("topic_clusters")) if isinstance(item, dict)]
+    hierarchy_clusters = [item for item in as_list(clusters_payload.get("hierarchy_clusters")) if isinstance(item, dict)]
+    loop_clusters = [item for item in as_list(loops_payload.get("loop_clusters")) if isinstance(item, dict)]
+    debts = [item for item in as_list(loops_payload.get("decision_debt_ledger")) if isinstance(item, dict)]
+    half_lives = [item for item in as_list(loops_payload.get("action_half_life")) if isinstance(item, dict)]
+    opportunities = [item for item in as_list(opportunities_payload.get("opportunity_clusters")) if isinstance(item, dict)]
+    debt_by_loop = {str(item.get("loop_id") or ""): item for item in debts}
+    half_life_by_loop = {str(item.get("loop_id") or ""): item for item in half_lives}
+    facet_events, facet_filter_options = build_facet_events(database_dir)
+
+    clusters = sorted(topic_clusters + hierarchy_clusters, key=lambda item: int(item.get("event_count") or 0), reverse=True)
+    loop_clusters_sorted = sorted(loop_clusters, key=lambda item: int(item.get("score") or 0), reverse=True)
+    opportunities_sorted = sorted(opportunities, key=lambda item: int(item.get("score") or 0), reverse=True)
+
+    return {
+        "schema_version": "memory_atlas_behavior_intelligence_display.v1_2_s06_review",
+        "stage": "S06",
+        "status": "stage_s06_review_passed_pending_s07_no_github_main_upload",
+        "task_ids": [
+            str(clusters_payload.get("task_id") or ""),
+            str(loops_payload.get("task_id") or ""),
+            str(opportunities_payload.get("task_id") or ""),
+        ],
+        "acceptance_ids": [
+            str(clusters_payload.get("acceptance_id") or ""),
+            str(loops_payload.get("acceptance_id") or ""),
+            str(opportunities_payload.get("acceptance_id") or ""),
+        ],
+        "source_files": {
+            "clusters": BEHAVIOR_CLUSTER_SOURCE,
+            "low_value_loops": LOW_VALUE_LOOP_SOURCE,
+            "opportunities": OPPORTUNITY_SOURCE,
+        },
+        "counts": {
+            "topic_clusters": int(clusters_payload.get("topic_cluster_count") or len(topic_clusters)),
+            "hierarchy_clusters": int(clusters_payload.get("hierarchy_cluster_count") or len(hierarchy_clusters)),
+            "clusters": int(clusters_payload.get("cluster_count") or len(topic_clusters) + len(hierarchy_clusters)),
+            "low_value_loops": int(loops_payload.get("loop_cluster_count") or len(loop_clusters)),
+            "decision_debt": int(loops_payload.get("decision_debt_count") or len(debts)),
+            "action_half_life": int(loops_payload.get("action_half_life_count") or len(half_lives)),
+            "opportunities": int(opportunities_payload.get("opportunity_count") or len(opportunities)),
+            "defer_cards": int(opportunities_payload.get("defer_card_count") or 0),
+        },
+        "clusters": [summarize_behavior_cluster(item) for item in clusters[:8]],
+        "facet_event_count": len(facet_events),
+        "facet_events": facet_events,
+        "facet_filter_options": facet_filter_options,
+        "low_value_loops": [
+            summarize_low_value_loop(item, debt_by_loop, half_life_by_loop) for item in loop_clusters_sorted[:6]
+        ],
+        "opportunities": [summarize_opportunity(item) for item in opportunities_sorted[:6]],
+        "phase_boundary": {
+            "does_not_modify_raw": True,
+            "does_not_output_psychological_diagnosis": True,
+            "does_not_create_infinite_pressure_list": True,
+            "does_not_use_external_economic_database": True,
+            "next_phase": "S07 P1",
+        },
+    }
 
 
 def load_data_source_registry(database_dir: Path) -> dict[str, Any]:
@@ -1092,6 +1503,9 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
     codex_session_path = database_dir / CODEX_SESSION_SOURCE
     codex_daily_path = database_dir / CODEX_DAILY_SOURCE
     codex_recommendation_path = database_dir / CODEX_RECOMMENDATION_SOURCE
+    behavior_intelligence = build_behavior_intelligence_summary(database_dir)
+    visual_workflows = build_visual_workflow_registry(database_dir)
+    formula_what_if = build_formula_what_if_summary(database_dir)
 
     active_rows = [normalize_memory_row(row) for row in read_jsonl(active_path)]
     candidate_rows = [normalize_memory_row(row) for row in load_latest_candidates(database_dir)]
@@ -1208,6 +1622,12 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
                 "codex_session_manifest": str(codex_session_path.relative_to(database_dir)),
                 "codex_daily_activity": str(codex_daily_path.relative_to(database_dir)),
                 "codex_agent_recommendations": str(codex_recommendation_path.relative_to(database_dir)),
+                "behavior_clusters": BEHAVIOR_CLUSTER_SOURCE,
+                "behavior_low_value_loops": LOW_VALUE_LOOP_SOURCE,
+                "behavior_opportunities": OPPORTUNITY_SOURCE,
+                "human_question_map": HUMAN_QUESTION_MAP_SOURCE,
+                "behavior_events": BEHAVIOR_EVENT_SOURCE,
+                "formula_what_if": FORMULA_WHAT_IF_SOURCE,
             },
             "data_source_registry": {
                 "schema_version": data_source_registry.get("schema_version", ""),
@@ -1255,6 +1675,9 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
         "timeline": memory_timeline,
         "contribution": contribution,
         "data_sources": data_sources,
+        "behavior_intelligence": behavior_intelligence,
+        "visual_workflows": visual_workflows,
+        "formula_what_if": formula_what_if,
         "agent_recommendations": codex_recommendations
         or {
             "schema_version": "codex_agent_recommendations.empty",

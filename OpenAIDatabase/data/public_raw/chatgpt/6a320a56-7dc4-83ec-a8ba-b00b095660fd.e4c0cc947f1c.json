@@ -1,0 +1,84 @@
+{
+  "content_sha256": "e4c0cc947f1cfca390ba288edd87621771acd6742bfe0efcd782562ba0bc7165",
+  "conversation_id": "6a320a56-7dc4-83ec-a8ba-b00b095660fd",
+  "created_at": "2026-06-17T02:45:47Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 11,
+  "messages": [
+    {
+      "created_at": "2026-06-17T03:07:04Z",
+      "message_id": "0bff8cd3-e0a6-4311-a35f-37bc6e6f8647",
+      "role": "user",
+      "text": "那什么时候允许对这支股票进行卖空融券？"
+    },
+    {
+      "created_at": "2026-06-17T02:55:38Z",
+      "message_id": "0c2462f8-8e70-46f1-9328-9ab033772412",
+      "role": "user",
+      "text": "Q2 2026 财报发布日大概是什么时候"
+    },
+    {
+      "created_at": "2026-06-17T02:55:53Z",
+      "message_id": "0f3d5623-641d-4617-9ce1-2cda6a60c39d",
+      "role": "assistant",
+      "text": "I’ll first verify whether an official SpaceX/SPCX IR, SEC, exchange, or prospectus calendar exists; if not, I’ll estimate a practical Q2 2026 results window from 10-Q deadlines and comparable Nasdaq IPO reporting patterns."
+    },
+    {
+      "created_at": "2026-06-17T03:01:46Z",
+      "message_id": "494348ed-5cbb-45a7-b4f4-10a724818005",
+      "role": "assistant",
+      "text": "## 结论\n\n**Q2 2026 财报发布日，目前最合理的估计是：2026 年 8 月 6 日，周四；可操作观察窗口是 8 月 6 日—8 月 14 日。**\n\n原因是：第三方 IR 数据平台 Quartr 目前列出 SpaceX 下一次财报为 **Q2 2026，2026 年 8 月 6 日**；但我没有在 SpaceX 官方 IR 的可抓取 Events 页面里看到明确日期，所以应把 **8 月 6 日**视为“强参考日期”，不是最终官方公告。SpaceX 的 8-K 还说明，公司会主要通过官网 IR 页面和 X 账号发布季度/年度业绩，而不是传统新闻线服务。citeturn551148view0turn408010view0turn661059view0\n\n---\n\n## 时间判断表\n\n| 口径 | 日期 | 可信度 | 用途 |\n|---|---:|---:|---|\n| **当前最佳估计** | **[REDACTED_PHONE]，周四** | 中高 | 交易/解禁提前观察主窗口 |\n| 若按 SEC 40 天 10-Q 截止口径 | [REDACTED_PHONE]，周一 | 中 | 加速/大型加速申报人适用的硬截止参考 |\n| 若按非加速申报人口径 | [REDACTED_PHONE]，周五 | 中 | 新上市公司更保守的硬截止参考 |\n| 解禁实际观察窗口 | **8 月 7 日—8 月 10 日附近** | 中 | 取决于财报是在盘前、盘中还是盘后发布 |\n\nSEC 的 Form 10-Q 指令规定：大型加速申报人和加速申报人的 10-Q 截止日是季度结束后 40 天，其他申报人是季度结束后 45 天。Q2 截止日是 [REDACTED_PHONE]，因此 40 天口径落在 [REDACTED_PHONE]，但当天是周日，交易/申报层面通常顺延到 [REDACTED_PHONE]；45 天口径则是 [REDACTED_PHONE]。citeturn263319view0  \n另外，SEC 对 accelerated / large accelerated filer 的定义还要求公司已受 Exchange Act 报告要求约束至少 12 个日历月，并已提交至少一份年度报告；因此刚 IPO 后是否能直接按大型加速口径处理，不能只看市值，需要看其具体申报身份。citeturn945762view0\n\n---\n\n## 对“解禁”的直接影响\n\nSpaceX 招股文件里的触发点不是“10-Q 文件提交日”，而是 **quarterly financial results 的 public release date**。文件写明：对 180 天锁定股，Q2 2026 财报公开发布后的 **第二个完整 Nasdaq 交易日** 起，最多 20% 可转让；并且不包括 flash numbers 或 preliminary / partial earnings。citeturn324673view2\n\n所以你真正要盯的是：\n\n| 假设 Q2 财报发布时间 | 第一批 20% 解禁可能窗口 | 说明 |\n|---|---:|---|\n| 8 月 6 日盘前发布 | 8 月 7 日或 8 月 10 日 | 取决于“第二个完整交易日”的执行解释 |\n| 8 月 6 日盘后发布 | **8 月 10 日**更保守 | 8 月 7 日为第一个完整交易日，8 月 10 日为第二个 |\n| 8 月 7 日发布 | 8 月 11 日附近 | 顺延一个交易日 |\n| 延至 8 月 10 日发布 | 8 月 12 日附近 | 若公司选择接近 40 天截止日发布 |\n\n---\n\n## 我的默认判断\n\n**交易上按 [REDACTED_PHONE] 财报、[REDACTED_PHONE] 左右首批解禁压力开始反映来准备。**  \n保守一点，观察区间拉到 **[REDACTED_PHONE] 至 [REDACTED_PHONE]**；真正的价格/成交量冲击，重点看财报发布后 **第 1—3 个完整 Nasdaq 交易日**。"
+    },
+    {
+      "created_at": "2026-06-17T03:10:31Z",
+      "message_id": "65bfd8a2-01bc-4bbb-be6c-518a3886d551",
+      "role": "assistant",
+      "text": "The key update is that IPO stocks do not have a universal “N days after listing” shorting rule; early SPCX would likely depend on Reg SHO locate and hard-to-borrow status."
+    },
+    {
+      "created_at": "2026-06-17T02:47:10Z",
+      "message_id": "9cd3e4e7-71cc-4e7d-b819-eeba87d26f3c",
+      "role": "assistant",
+      "text": "I"
+    },
+    {
+      "created_at": "2026-06-17T02:53:17Z",
+      "message_id": "a663ae88-123b-47e6-9af5-50ee5f029085",
+      "role": "assistant",
+      "text": "## 结论与下一步\n\n**结论：SpaceX 的限制交易解禁不是传统“一次性 180 天解禁”，而是分层、分批、带业绩触发的锁定结构。**  \n建议你按 **[REDACTED_PHONE] 作为锁定期起算日 T** 来看，而不是只看 [REDACTED_PHONE] 首个交易日；因为发行定价在 6 月 11 日完成，股票 6 月 12 日开始在 Nasdaq 交易，代码为 **SPCX**。SpaceX IPO 定价为 **135 美元/股**，发行募资约 **750 亿美元**，对应 IPO 估值约 **1.77 万亿美元**。citeturn229101view0turn460564view1\n\n**下一步：**你先判断自己看的股票属于哪一类：  \nA. 二级市场普通买入；B. IPO 配售/定向配售；C. 员工/早期投资人 180 天锁定股；D. 扩展锁定股；E. 创始人股。真正影响流通盘和卖压的主要是 **C/D/E**。\n\n---\n\n## 1. 快速状态表\n\n| 事项 | 当前结论 |\n|---|---|\n| 股票代码 | SPCX，Nasdaq 交易 |\n| IPO 定价日 / 锁定期基准日 | [REDACTED_PHONE] |\n| 首个公开交易日 | [REDACTED_PHONE] |\n| 传统 180 天锁定？ | 不是单一 180 天；SpaceX 采用分批自动解禁 |\n| 最早主要解禁触发 | 2026 年 Q2 财报发布后的第 2 个完整 Nasdaq 交易日，可释放部分 180 天锁定股 |\n| 2026 年关键卖压窗口 | Q2 财报后、8 月下旬、9 月、10 月、Q3 财报后、12 月 8 日 |\n| 2027 年关键卖压窗口 | Q4 2026 财报后、[REDACTED_PHONE]、Q1 2027 财报后、[REDACTED_PHONE]、[REDACTED_PHONE]、Q2 2027 财报后 |\n| 创始人股 | 366 天锁定，且无提前释放条款 |\n\n---\n\n## 2. 先分清楚：哪些股票受限制，哪些不受限制\n\n### A. 普通二级市场买入者\n\n如果你是在 Nasdaq 二级市场买入 SPCX，通常不是“锁定股持有人”，不适用员工/早期投资人 lock-up 解禁表。你面对的是市场流动性、价格波动、券商规则，而不是 SpaceX 内部股东锁定协议。\n\n### B. IPO 定向配售 / Directed Share Program\n\n招股文件显示，SpaceX 为定向配售计划预留了最高 **5%** 的 Class A 普通股；CII 对 SpaceX 锁定结构的分析指出，定向配售计划下出售的股份不受 lock-up restriction 约束。citeturn304797view0turn460564view3\n\n### C. 一般 180 天锁定股\n\n这类是最需要关注的 2026 年解禁主体。招股文件写明：除扩展锁定股和创始人股外，其他存量普通股受 **180-day lock-up period** 约束，但存在自动提前释放机制。citeturn304797view3turn175112view0\n\n### D. 扩展锁定股\n\n部分大股东持股进入 **extended lock-up period**，释放从 2027 年一季度开始，直到 2027 年 Q2 财报后全部释放。招股文件还说明，扩展锁定股加创始人股合计约 **78 亿股**，超过发行前已发行股份的 **63%**。citeturn304797view2turn175112view0\n\n### E. 创始人股\n\n创始人所持股份受 **366 天锁定**，且在锁定期内 **没有提前释放条款**。citeturn304797view1\n\n---\n\n## 3. 2026 年：一般 180 天锁定股解禁时间线\n\n> 下表按 **T = [REDACTED_PHONE]** 计算。百分比是指“该类被锁定股份中可转让的比例”，不是公司总股本比例。若日期落在周末或非交易日，实际可交易通常要看下一个 Nasdaq 交易日及公司/券商执行规则。\n\n| 阶段 | 日期 / 触发条件 | 可释放比例 | 说明 |\n|---:|---|---:|---|\n| 0 | [REDACTED_PHONE] | — | IPO 定价 / 锁定期基准日 |\n| 1 | [REDACTED_PHONE] | IPO 新股开始交易 | Nasdaq 交易启动，代码 SPCX |\n| 2 | **Q2 2026 财报发布后的第 2 个完整 Nasdaq 交易日** | 最多 20% | 第一批业绩触发解禁；具体日期取决于 SpaceX 实际发布 Q2 财报的日期 |\n| 3 | 同上，但需满足股价条件 | 额外最多 10% | 若 Class A 收盘价在截至 Q2 财报日的连续 10 个交易日中至少 5 天达到 IPO 价上方 30%；按 135 美元 IPO 价计算，阈值为 **175.50 美元** |\n| 4 | **[REDACTED_PHONE]**，T+70 | 额外最多 7% | 第一批固定日期解禁 |\n| 5 | **[REDACTED_PHONE]**，T+90 | 额外最多 7% | 第二批固定日期解禁 |\n| 6 | **[REDACTED_PHONE]**，T+105 | 额外最多 7% | 第三批固定日期解禁 |\n| 7 | **[REDACTED_PHONE]**，T+120 | 额外最多 7% | 第四批固定日期解禁 |\n| 8 | **[REDACTED_PHONE]**，T+135 | 额外最多 7% | 该日为周六，实际交易层面通常看下一交易日 |\n| 9 | **Q3 2026 财报发布后的第 2 个完整 Nasdaq 交易日** | 额外最多 28% | 第二个重大业绩触发解禁 |\n| 10 | **[REDACTED_PHONE]**，T+180 | 剩余全部 | 一般 180 天锁定股全部释放 |\n\nSpaceX 的招股文件明确列出：Q2 财报后可释放 20%，股价达标可再释放 10%，随后在 T+70、T+90、T+105、T+120、T+135 各释放 7%，Q3 财报后再释放 28%，T+180 全部释放。citeturn175112view0turn989664view0\n\n---\n\n## 4. 2027 年：扩展锁定股解禁时间线\n\n扩展锁定股不走 2026 年的一般 180 天曲线，而是从 2027 年开始释放；这部分不包括创始人股。citeturn304797view4turn175112view0\n\n| 阶段 | 日期 / 触发条件 | 可释放比例 | 说明 |\n|---:|---|---:|---|\n| 1 | **Q4 2026 财报发布后的第 2 个完整 Nasdaq 交易日** | 最多 20% | 扩展锁定股第一批释放 |\n| 2 | **[REDACTED_PHONE]**，T+280 | 额外最多 10% | 固定日期释放 |\n| 3 | **Q1 2027 财报发布后的第 2 个完整 Nasdaq 交易日** | 额外最多 20% | 业绩触发释放 |\n| 4 | **[REDACTED_PHONE]**，T+340 | 额外最多 10% | 固定日期释放 |\n| 5 | **[REDACTED_PHONE]**，T+366 | 额外最多 20% | 固定日期释放；该日为周六，实际交易层面通常看下一交易日 |\n| 6 | **Q2 2027 财报发布后的第 2 个完整 Nasdaq 交易日** | 剩余全部 | 扩展锁定股全部释放 |\n\n---\n\n## 5. 创始人股时间线\n\n创始人股的核心规则更简单：**366 天锁定，无提前释放。**招股文件写明，创始人所持普通股在承销协议日起第 366 天的交易日收盘后解除限制，且创始人股在锁定期内不适用提前释放条款。citeturn304797view1\n\n| 阶段 | 日期 / 条件 | 说明 |\n|---:|---|---|\n| 0 | [REDACTED_PHONE] 附近 | 承销协议 / IPO 定价基础日 |\n| 1 | [REDACTED_PHONE] 附近，T+366 | 创始人股锁定期到期；若按市场交易执行，需看实际交易日与公司内幕交易窗口 |\n| 2 | 到期后 | 不等于一定卖出，只代表合同限制解除；仍可能受内幕交易、公司交易窗口、Rule 144/Form 144、10b5-1 等规则影响 |\n\n---\n\n## 6. 最值得盯的几个风险窗口\n\n**第一优先级：Q2 2026 财报后。**  \n这是最早可能出现较大新增供给的窗口：一般 180 天锁定股可先释放最多 20%，如果股价满足 30% 上涨条件，还可能额外释放 10%。\n\n**第二优先级：[REDACTED_PHONE] 至 [REDACTED_PHONE]。**  \n固定日期释放连续出现：T+70、T+90、T+105、T+120、T+135。即使每次只有“最多 7%”，连续释放会改变市场对流通盘的预期。\n\n**第三优先级：Q3 2026 财报后与 [REDACTED_PHONE]。**  \nQ3 财报后最多再释放 28%，12 月 8 日一般 180 天锁定股剩余部分全部解禁。Business Insider 也强调，SpaceX 初始公开流通股比例很低，锁定期日历会显著影响未来几个月的供给结构。citeturn381202view3\n\n**第四优先级：2027 年扩展锁定股。**  \n这部分规模很大，和创始人股合计超过发行前股份的 63%。释放节奏跨越 Q4 2026 财报后、[REDACTED_PHONE]、Q1 2027 财报后、[REDACTED_PHONE]、[REDACTED_PHONE]、Q2 2027 财报后。citeturn304797view2turn175112view0\n\n---\n\n## 7. 一句话版时间线\n\n**SpaceX 解禁路线：**  \n[REDACTED_PHONE] 上市交易 → Q2 2026 财报后释放 20%/可能再 10% → [REDACTED_PHONE]、09-09、09-24、10-09、10-24 分别释放 7% → Q3 2026 财报后释放 28% → [REDACTED_PHONE] 一般 180 天锁定股全部解禁 → 2027 年 Q1 至 Q2 分批释放扩展锁定股 → [REDACTED_PHONE] 左右创始人 366 天锁定期到期。"
+    },
+    {
+      "created_at": "2026-06-17T03:07:23Z",
+      "message_id": "ab3c2244-7c82-4230-b693-242b38f02a9e",
+      "role": "assistant",
+      "text": "I’ll separate the rule-based short-sale eligibility from the practical borrow availability, since brokers may not offer lendable shares on the same timeline."
+    },
+    {
+      "created_at": "2026-06-17T02:45:42Z",
+      "message_id": "c905bba5-22f0-4bab-a4dd-41a66564f190",
+      "role": "user",
+      "text": "spacex股票限制交易解禁阶段的时间线"
+    },
+    {
+      "created_at": "2026-06-17T02:59:04Z",
+      "message_id": "cca48945-1fd1-4951-b85a-2ba5ccfcb1fe",
+      "role": "assistant",
+      "text": "I found no specific Q2 earnings date; the prospectus only defines it as the public release for the quarter ending [REDACTED_PHONE]."
+    },
+    {
+      "created_at": "2026-06-17T03:11:55Z",
+      "message_id": "d673b6c4-aeb6-4109-83e0-5d239730d9f5",
+      "role": "assistant",
+      "text": "## 结论\n\n**这支 SpaceX / SPCX 股票在规则层面已经可以被卖空。最早从 [REDACTED_PHONE] 上市交易当天就可以卖空，但前提是券商能完成 Reg SHO 的 locate，也就是有合理依据相信股票可以借到并在结算日交付。** Nasdaq 对 IPO 股票卖空的说明很明确：IPO 后可以立即卖空，但必须先满足 Regulation SHO Rule 203(b)(1) 的 locate 要求。citeturn602036view0\n\n但你在券商 App 里能不能点“卖空 / short / 融券”，不是由一个统一“解禁日”决定，而是由 **券源、券商风控、借券费率、账户权限、保证金要求**共同决定。换句话说：\n\n> **法律允许时间：[REDACTED_PHONE] 起。**  \n> **普通投资者较可能看到券源改善的时间：[REDACTED_PHONE] 起、Q2 财报解禁后、8 月—12 月分批解禁后。**\n\n---\n\n## 1. 时间线判断表\n\n| 时间 | 状态 | 对卖空/融券的意义 |\n|---:|---|---|\n| **[REDACTED_PHONE]，上市首日** | 规则上可卖空 | 只要券商能 locate，就可以执行 short sale；不需要等 180 天锁定期结束 |\n| **[REDACTED_PHONE]，周一** | IPO 首日交易后的 T+1 结算日 | 美国股票交易已进入 T+1 结算；6 月 12 日周五交易通常在 6 月 15 日周一结算，IPO 分配股更完整进入账户和托管链条，券源通常会改善一些。citeturn918949view3 |\n| **[REDACTED_PHONE] 后** | 取决于券商库存 | 专业机构/prime broker 可能已经能借；普通零售券商可能仍显示 hard-to-borrow 或 no shares available |\n| **Q2 2026 财报后第 2 个完整交易日附近** | 第一批锁定股可释放 | 最关键的新增券源窗口之一。SpaceX 分层锁定结构允许最多 20% 的相关限制股在 Q2 财报后释放，若股价触发条件满足还可能额外释放 10%。citeturn762905view3turn762905view0 |\n| **[REDACTED_PHONE]、09-09、09-24、10-09、10-24 附近** | 多批固定比例解禁 | 每批解禁会增加潜在可卖出和可出借股份，但是否进入融券池取决于持有人是否参与证券借贷 |\n| **Q3 2026 财报后** | 进一步大批解禁 | SpaceX 锁定结构还有一批 28% 在后续财报后释放。citeturn762905view3 |\n| **[REDACTED_PHONE] 附近** | 一般 180 天锁定股剩余部分释放 | 对融券供给最有利的后期节点之一，但仍不是“卖空才开始”的日期 |\n\n---\n\n## 2. 为什么不是“180 天后才能卖空”？\n\n因为 **卖空的是“你借来的可交付股份”**，不是一定要等内部人自己的锁定股解禁。IPO 当天的可借券源可能来自：\n\n| 券源来源 | 上市初期是否可能出借 | 说明 |\n|---|---:|---|\n| IPO 分配给机构的股份 | 可能 | Nasdaq 说明，机构和零售投资者拿到 IPO allocation 后，可以基于结算日会到账的认知出借股份。citeturn602036view0 |\n| 零售投资者持股 | 可能，但取决于是否开通股票收益增强/证券借贷计划 | 很多零售账户默认不会自动出借，或者需要签署 lending program |\n| 券商自营/库存 | 可能 | 大券商或 prime broker 更容易有券源 |\n| 锁定股 | 通常不行或受限 | Nasdaq 指出，受 lock-up 或其他转让限制的股份，可能不能用于满足 Reg SHO 的 locate。citeturn602036view1 |\n| 承销商 greenshoe / overallotment | 是承销稳定机制，不等于普通投资者可借券源 | Reuters 报道 SpaceX 承销商已行使 greenshoe，购买额外 83.3 million 股；这增加了总发行规模和市场供给，但不保证你的券商有融券额度。citeturn762905view2 |\n\n所以真正逻辑是：\n\n**可交易股份 + 可出借意愿 + 券商能 locate = 可以卖空。**  \n不是：**锁定期结束 = 才能卖空。**\n\n---\n\n## 3. 当前是否已经有做空活动？\n\n从市场数据角度看，**已经有短卖相关数据出现**。Fintel 的 SPCX 页面显示其 short-interest tracker 包含 FINRA 来源的 off-exchange short volume，并列出 SPCX 的 off-exchange short volume 数据；FINRA 本身也说明每日 short sale volume files 会按证券汇总正常交易时段通过 TRF/ADF/ORF 报告的短卖成交，并通常在交易日当天美东 18:00 前发布。citeturn380487view2turn135613view1\n\n但要注意：**short sale volume ≠ short interest**。  \nShort sale volume 是当天成交里被标记为 short 的成交量；short interest 才是未平仓空头余额。FINRA 说明 short interest 是会员公司持有的空头仓位报告，通常按月中和月末结算日统计，并在之后发布。citeturn380487view6\n\n---\n\n## 4. 对你实际操作最重要的判断\n\n### 我的默认判断\n\n**如果你问“什么时候理论上允许”：答案是 [REDACTED_PHONE] 已允许。**\n\n**如果你问“什么时候普通投资者更容易借到券”：我会分三个窗口看：**\n\n| 优先级 | 时间窗口 | 预期 |\n|---:|---|---|\n| 1 | **[REDACTED_PHONE] 起** | 首批 IPO 分配股完成 T+1 结算后，券源比上市当天更可能出现 |\n| 2 | **Q2 财报后第 2 个完整交易日附近，约 [REDACTED_PHONE] 左右** | 第一批锁定股释放，潜在可出借股票明显增加 |\n| 3 | **8 月下旬—12 月初的多批解禁窗口** | 融券池可能逐步扩大，借券费率可能下降，但若做空需求更强，费率也可能反而上升 |\n\n---\n\n## 5. 你在券商端应该看哪几个字段\n\n不同券商显示不一样，但核心字段通常是这些：\n\n| 字段 | 怎么解读 |\n|---|---|\n| **Shortable / Shares Available / SLB Availability** | 是否有可借股份；如果是 0，不代表违法，只代表你的券商没有券 |\n| **Borrow Fee / Stock Loan Fee / Hard-to-Borrow Rate** | 年化借券成本；热门 IPO 可能极高 |\n| **Easy-to-Borrow / Hard-to-Borrow** | HTB 表示必须特殊 locate，可能随时被 recall |\n| **Margin Requirement** | 保证金要求；美国 Reg T 下，短卖初始保证金一般是空头市值的 150%，其中 100% 来自短卖所得，客户还需额外存入 50%。citeturn380487view5 |\n| **Locate Required / Pre-borrow Required** | 是否要预先锁定券源 |\n| **Restricted / Not available for short sale** | 券商内部风控禁止，不等于交易所统一禁止 |\n\nIBKR 也说明，借券成本会受证券借贷市场供需影响，某些股票借券成本可能很高，且借券费率和收益会因安排不同而变化。citeturn380487view3\n\n---\n\n## 6. 还有哪些替代做空方式？\n\n如果你的券商没有 SPCX 可融券，可能还有两类替代路径：\n\n| 工具 | 是否需要借股 | 适合场景 | 主要风险 |\n|---|---:|---|---|\n| **买 Put 期权** | 不需要你直接借股 | 明确看跌、想限定最大亏损 | 权利金损耗、隐含波动率高、流动性风险 |\n| **反向/杠杆反向 ETF** | 不需要你自己借股 | 短线战术做空 | 日内/日度复利偏离、波动损耗、产品结构风险 |\n\n目前市场上已有针对 SPCX 的反向杠杆 ETF，例如 Leverage Shares 2x Short SPCX Daily ETF，代码 **SSPC**，目标是提供 SPCX 每日表现的 **-2x**，产品页面也明确提示这是短期投资工具并带有显著风险。citeturn304938view1\n\n---\n\n## 7. 最简答案\n\n**SPCX 从 [REDACTED_PHONE] 上市当天起，规则上就可以卖空；不需要等锁定期解禁。**  \n但普通投资者能不能实际融到券，取决于券商是否有 locate 和库存。实际券源最可能在 **[REDACTED_PHONE] 结算后**开始改善，之后在 **Q2 财报后第 2 个完整交易日、8 月至 12 月多批锁定股释放窗口**进一步改善。最重要的检查项是券商页面里的 **shortable shares、borrow fee、hard-to-borrow、margin requirement**。"
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {
+    "phone": 56
+  },
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "SpaceX股票解禁时间线",
+  "updated_at": "2026-06-17T03:11:56Z"
+}

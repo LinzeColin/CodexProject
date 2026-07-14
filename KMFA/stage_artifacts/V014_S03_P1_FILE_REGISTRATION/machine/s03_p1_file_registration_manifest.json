@@ -1,0 +1,131 @@
+{
+  "acceptance_id": "ACC-V014-S03-P1-FILE-REGISTRATION",
+  "dependency": {
+    "dependency_expected_status": "review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete",
+    "dependency_manifest": "KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/machine/stage2_review_manifest.json",
+    "required_review": "V014_S02_STAGE_REVIEW"
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/human/s03_p1_completion_record.md",
+    "KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/human/rollback_plan.md",
+    "KMFA/metadata/imports/v014_s03_p1_public_raw_file_register.json",
+    "KMFA/metadata/protocol/raw_data_roots_v1_4_s03_p1.json"
+  ],
+  "next_recommended_phase": "S03-P2",
+  "phase_id": "S03-P1",
+  "phase_scope": {
+    "business_execution_performed": false,
+    "current_phase_only": true,
+    "field_mapping_performed": false,
+    "file_registration_only": true,
+    "formal_report_performed": false,
+    "github_upload_performed": false,
+    "next_phase": "S03-P2",
+    "next_phase_started": false,
+    "raw_root_read_only_inventory_authorized": true,
+    "raw_value_matching_performed": false,
+    "s03_p2_started": false,
+    "s03_p3_started": false,
+    "safe_zip_extract_capability_in_scope": true,
+    "safe_zip_extract_performed": false,
+    "stage3_review_performed": false
+  },
+  "private_runtime_ref": "KMFA/.codex_private_runtime/V014_S03_P1_FILE_REGISTRATION/private_raw_file_manifest.json",
+  "project_id": "KMFA",
+  "public_register_ref": "KMFA/metadata/imports/v014_s03_p1_public_raw_file_register.json",
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "directory_tree_plaintext_committed": false,
+    "excel_workbook_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "raw_or_normalized_values_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "raw_root_status": {
+    "access_authorized_for_phase": true,
+    "delete_performed": false,
+    "hash_performed": true,
+    "list_performed": true,
+    "move_performed": false,
+    "overwrite_performed": false,
+    "raw_root_id": "local_kmfa_metadata_raw_root",
+    "raw_root_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_root_stat_unchanged_after_scan": true,
+    "read_only_scan_performed": true,
+    "rename_performed": false,
+    "stat_performed": true,
+    "write_performed": false
+  },
+  "release_state": {
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "current_data_quality_grade": "Q1",
+    "current_go_no_go": "NO_GO",
+    "current_report_grade": "D",
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "github_main_upload_allowed": false,
+    "release_permission": "blocked"
+  },
+  "safe_zip_support": {
+    "safe_zip_extract_performed": false,
+    "safe_zip_extract_supported": true,
+    "unsafe_member_policy": [
+      "reject_absolute_paths",
+      "reject_parent_traversal",
+      "reject_empty_path_parts",
+      "reject_symlink_entries"
+    ],
+    "zip_member_names_committed": false
+  },
+  "scan_summary": {
+    "container_type_counts": {
+      "xlsx_unknown_magic": 2,
+      "zip_archive": 3
+    },
+    "directory_count": 0,
+    "extension_counts": {
+      ".xlsx": 2,
+      ".zip": 3
+    },
+    "file_count": 5,
+    "file_format_counts": {
+      "xlsx": 2,
+      "zip": 3
+    },
+    "max_relative_depth": 0,
+    "size_bucket_counts": {
+      "lt_100mb": 3,
+      "lt_10mb": 1,
+      "lt_1mb": 1
+    },
+    "supported_file_count": 5,
+    "total_size_bytes": 62788056,
+    "unsupported_file_count": 0,
+    "wps_or_ole_guidance_count": 0
+  },
+  "schema_version": "kmfa.v014_s03_p1_file_registration.v1",
+  "stage_id": "S03",
+  "stage_phase": "S03-P1",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "task_id": "KMFA-V014-S03-P1-FILE-REGISTRATION-20260703",
+  "validation_summary": {
+    "diff_check": "PASS",
+    "focused_unit_test": "PASS",
+    "governance_validator": "PASS",
+    "raw_private_scan": "PASS",
+    "s02_stage_review_dependency": "PASS",
+    "secret_scan": "PASS",
+    "v014_s03_p1_validator": "PASS"
+  },
+  "version": "0.1.4"
+}

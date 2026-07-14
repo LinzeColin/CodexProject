@@ -1,0 +1,518 @@
+{
+  "acceptance_id": "ACC-MA-V12-S07P3",
+  "active_formula_config_path": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+  "base_score": 72,
+  "config_path": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+  "dry_run": false,
+  "formulas": [
+    {
+      "expression_zh": "What-if 分 = clamp(加权正向 proxy 分 - max(0, 返工成本 proxy - neutral_rework_score) * rework_cost_weight * low_value_loop_penalty_weight * rework_penalty_scale, score_floor, score_ceiling)",
+      "formula_id": "FORM-MA-V12-S07P3-001",
+      "interpretation_zh": "用于比较不同参数权重下的内部 proxy 方向，不是精确收入预测，也不是财务建议。",
+      "name_zh": "Formula What-if proxy 分",
+      "parameter_refs": [
+        "score_floor",
+        "score_ceiling",
+        "neutral_rework_score",
+        "rework_penalty_scale",
+        "default_weights",
+        "adjustable_weight_bounds"
+      ],
+      "score_key": "formula_what_if_proxy_score"
+    },
+    {
+      "expression_zh": "每个 scenario 只生成参数变更预览；active_config_write 必须为 false，proposal_required_before_apply 必须为 true。",
+      "formula_id": "FORM-MA-V12-S07P3-002",
+      "interpretation_zh": "用户可以查看或配置权重，但参数变更不直接写入 active formula config。",
+      "name_zh": "What-if 参数变更 proposal",
+      "parameter_refs": [
+        "default_weights",
+        "adjustable_weight_bounds"
+      ],
+      "score_key": "what_if_parameter_proposal"
+    }
+  ],
+  "generated_at": "2026-07-10T21:38:28Z",
+  "human_readable_summary_zh": "Formula What-if Simulator 当前为配置预览：可查看时间节省、复用价值、长期复利、返工成本和低价值循环惩罚等权重变化，但不会直接修改 active formula config。",
+  "input_paths": [
+    "data/derived/economic_proxy/personal_economic_proxy.json",
+    "data/derived/information_roi/information_roi_gate.json"
+  ],
+  "output_path": "data/derived/economic_proxy/formula_what_if_preview.json",
+  "parameters": {
+    "adjustable_weight_bounds": {
+      "automation_alignment_weight": {
+        "explanation_zh": "调整自动化/增强比例信号对 what-if 分数的影响。",
+        "max": 2.0,
+        "min": 0.25,
+        "step": 0.05
+      },
+      "low_value_loop_penalty_weight": {
+        "explanation_zh": "调整低价值循环惩罚对 what-if 分数的影响。",
+        "max": 2.0,
+        "min": 0.25,
+        "step": 0.05
+      },
+      "opportunity_value_weight": {
+        "explanation_zh": "调整候选机会信号对 what-if 分数的影响。",
+        "max": 2.0,
+        "min": 0.25,
+        "step": 0.05
+      },
+      "reuse_value_weight": {
+        "explanation_zh": "调整复用价值信号对 what-if 分数的影响。",
+        "max": 2.0,
+        "min": 0.25,
+        "step": 0.05
+      },
+      "rework_cost_weight": {
+        "explanation_zh": "调整返工成本信号对 what-if 分数的惩罚影响。",
+        "max": 2.0,
+        "min": 0.25,
+        "step": 0.05
+      },
+      "skill_compounding_weight": {
+        "explanation_zh": "调整长期复利信号对 what-if 分数的影响。",
+        "max": 2.0,
+        "min": 0.25,
+        "step": 0.05
+      },
+      "time_saved_weight": {
+        "explanation_zh": "调整时间节省信号对 what-if 分数的影响。",
+        "max": 2.0,
+        "min": 0.25,
+        "step": 0.05
+      }
+    },
+    "default_weights": {
+      "automation_alignment_weight": 1.0,
+      "low_value_loop_penalty_weight": 1.0,
+      "opportunity_value_weight": 1.0,
+      "reuse_value_weight": 1.0,
+      "rework_cost_weight": 1.0,
+      "skill_compounding_weight": 1.0,
+      "time_saved_weight": 1.0
+    },
+    "epsilon": 0.05,
+    "neutral_rework_score": 50,
+    "rework_penalty_scale": 0.35,
+    "score_ceiling": 100,
+    "score_floor": 0
+  },
+  "phase_boundary": {
+    "does_not_claim_precise_income_prediction": true,
+    "does_not_modify_raw": true,
+    "does_not_modify_runtime_ui": true,
+    "does_not_mutate_active_formula_config": true,
+    "does_not_provide_financial_advice": true,
+    "does_not_use_external_economic_database": true,
+    "next_phase": "S07 Review",
+    "requires_proposal_before_apply": true
+  },
+  "scenario_count": 5,
+  "scenarios": [
+    {
+      "adjustable_weights": {
+        "automation_alignment_weight": 1.0,
+        "low_value_loop_penalty_weight": 1.0,
+        "opportunity_value_weight": 1.0,
+        "reuse_value_weight": 1.0,
+        "rework_cost_weight": 1.0,
+        "skill_compounding_weight": 1.0,
+        "time_saved_weight": 1.0
+      },
+      "description_zh": "保持当前默认权重，用于和其他 what-if 场景比较。",
+      "formula_id": "FORM-MA-V12-S07P3-001",
+      "formula_source": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+      "name_zh": "基线权重",
+      "parameter_change_proposal": {
+        "active_config_write": false,
+        "explanation_zh": "这是 what-if 参数预览，不会直接修改 active formula config。若未来采纳，需要另走 proposal/apply gate。",
+        "formula_id": "FORM-MA-V12-S07P3-002",
+        "proposal_required_before_apply": true,
+        "proposed_weight_overrides": {},
+        "target_active_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json"
+      },
+      "scenario_id": "baseline",
+      "score_components": {
+        "rework_penalty": 0.0,
+        "rework_score": 47.0,
+        "signals": {
+          "automation_enhancement_ratio_proxy": {
+            "score": 73.0,
+            "weight": 1.0,
+            "weighted_signal": 73.0
+          },
+          "opportunity_score_proxy": {
+            "score": 86.0,
+            "weight": 1.0,
+            "weighted_signal": 86.0
+          },
+          "reuse_value_proxy": {
+            "score": 68.0,
+            "weight": 1.0,
+            "weighted_signal": 68.0
+          },
+          "skill_compounding_proxy": {
+            "score": 57.0,
+            "weight": 1.0,
+            "weighted_signal": 57.0
+          },
+          "time_saved_proxy": {
+            "score": 100.0,
+            "weight": 1.0,
+            "weighted_signal": 100.0
+          }
+        },
+        "weighted_positive_score": 76.8
+      },
+      "score_delta_vs_baseline": 0,
+      "top_parameter_impacts": [],
+      "weighted_proxy_score": 77
+    },
+    {
+      "adjustable_weights": {
+        "automation_alignment_weight": 1.15,
+        "low_value_loop_penalty_weight": 1.0,
+        "opportunity_value_weight": 1.0,
+        "reuse_value_weight": 0.95,
+        "rework_cost_weight": 1.0,
+        "skill_compounding_weight": 0.9,
+        "time_saved_weight": 1.35
+      },
+      "description_zh": "提高时间节省权重，观察自动化和重复工作节省信号是否值得前置。",
+      "formula_id": "FORM-MA-V12-S07P3-001",
+      "formula_source": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+      "name_zh": "时间节省优先",
+      "parameter_change_proposal": {
+        "active_config_write": false,
+        "explanation_zh": "这是 what-if 参数预览，不会直接修改 active formula config。若未来采纳，需要另走 proposal/apply gate。",
+        "formula_id": "FORM-MA-V12-S07P3-002",
+        "proposal_required_before_apply": true,
+        "proposed_weight_overrides": {
+          "automation_alignment_weight": 1.15,
+          "reuse_value_weight": 0.95,
+          "skill_compounding_weight": 0.9,
+          "time_saved_weight": 1.35
+        },
+        "target_active_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json"
+      },
+      "scenario_id": "time_saved_first",
+      "score_components": {
+        "rework_penalty": 0.0,
+        "rework_score": 47.0,
+        "signals": {
+          "automation_enhancement_ratio_proxy": {
+            "score": 73.0,
+            "weight": 1.15,
+            "weighted_signal": 83.95
+          },
+          "opportunity_score_proxy": {
+            "score": 86.0,
+            "weight": 1.0,
+            "weighted_signal": 86.0
+          },
+          "reuse_value_proxy": {
+            "score": 68.0,
+            "weight": 0.95,
+            "weighted_signal": 64.6
+          },
+          "skill_compounding_proxy": {
+            "score": 57.0,
+            "weight": 0.9,
+            "weighted_signal": 51.3
+          },
+          "time_saved_proxy": {
+            "score": 100.0,
+            "weight": 1.35,
+            "weighted_signal": 135.0
+          }
+        },
+        "weighted_positive_score": 78.66
+      },
+      "score_delta_vs_baseline": 2,
+      "top_parameter_impacts": [
+        {
+          "default": 1.0,
+          "parameter": "time_saved_weight",
+          "scenario": 1.35,
+          "single_parameter_score_delta": 1
+        },
+        {
+          "default": 1.0,
+          "parameter": "reuse_value_weight",
+          "scenario": 0.95,
+          "single_parameter_score_delta": 0
+        },
+        {
+          "default": 1.0,
+          "parameter": "skill_compounding_weight",
+          "scenario": 0.9,
+          "single_parameter_score_delta": 0
+        },
+        {
+          "default": 1.0,
+          "parameter": "automation_alignment_weight",
+          "scenario": 1.15,
+          "single_parameter_score_delta": 0
+        }
+      ],
+      "weighted_proxy_score": 79
+    },
+    {
+      "adjustable_weights": {
+        "automation_alignment_weight": 1.0,
+        "low_value_loop_penalty_weight": 1.0,
+        "opportunity_value_weight": 1.0,
+        "reuse_value_weight": 1.4,
+        "rework_cost_weight": 1.0,
+        "skill_compounding_weight": 1.2,
+        "time_saved_weight": 0.95
+      },
+      "description_zh": "提高复用价值和长期复利权重，观察模板、脚本、validator 和产品入口是否更值得沉淀。",
+      "formula_id": "FORM-MA-V12-S07P3-001",
+      "formula_source": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+      "name_zh": "复用资产优先",
+      "parameter_change_proposal": {
+        "active_config_write": false,
+        "explanation_zh": "这是 what-if 参数预览，不会直接修改 active formula config。若未来采纳，需要另走 proposal/apply gate。",
+        "formula_id": "FORM-MA-V12-S07P3-002",
+        "proposal_required_before_apply": true,
+        "proposed_weight_overrides": {
+          "reuse_value_weight": 1.4,
+          "skill_compounding_weight": 1.2,
+          "time_saved_weight": 0.95
+        },
+        "target_active_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json"
+      },
+      "scenario_id": "reuse_asset_first",
+      "score_components": {
+        "rework_penalty": 0.0,
+        "rework_score": 47.0,
+        "signals": {
+          "automation_enhancement_ratio_proxy": {
+            "score": 73.0,
+            "weight": 1.0,
+            "weighted_signal": 73.0
+          },
+          "opportunity_score_proxy": {
+            "score": 86.0,
+            "weight": 1.0,
+            "weighted_signal": 86.0
+          },
+          "reuse_value_proxy": {
+            "score": 68.0,
+            "weight": 1.4,
+            "weighted_signal": 95.2
+          },
+          "skill_compounding_proxy": {
+            "score": 57.0,
+            "weight": 1.2,
+            "weighted_signal": 68.4
+          },
+          "time_saved_proxy": {
+            "score": 100.0,
+            "weight": 0.95,
+            "weighted_signal": 95.0
+          }
+        },
+        "weighted_positive_score": 75.24
+      },
+      "score_delta_vs_baseline": -2,
+      "top_parameter_impacts": [
+        {
+          "default": 1.0,
+          "parameter": "reuse_value_weight",
+          "scenario": 1.4,
+          "single_parameter_score_delta": -1
+        },
+        {
+          "default": 1.0,
+          "parameter": "skill_compounding_weight",
+          "scenario": 1.2,
+          "single_parameter_score_delta": -1
+        },
+        {
+          "default": 1.0,
+          "parameter": "time_saved_weight",
+          "scenario": 0.95,
+          "single_parameter_score_delta": 0
+        }
+      ],
+      "weighted_proxy_score": 75
+    },
+    {
+      "adjustable_weights": {
+        "automation_alignment_weight": 1.0,
+        "low_value_loop_penalty_weight": 1.0,
+        "opportunity_value_weight": 1.05,
+        "reuse_value_weight": 1.15,
+        "rework_cost_weight": 1.0,
+        "skill_compounding_weight": 1.5,
+        "time_saved_weight": 1.0
+      },
+      "description_zh": "提高长期复利权重，观察跨时间重复出现的能力和工作流是否更值得固化。",
+      "formula_id": "FORM-MA-V12-S07P3-001",
+      "formula_source": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+      "name_zh": "长期复利优先",
+      "parameter_change_proposal": {
+        "active_config_write": false,
+        "explanation_zh": "这是 what-if 参数预览，不会直接修改 active formula config。若未来采纳，需要另走 proposal/apply gate。",
+        "formula_id": "FORM-MA-V12-S07P3-002",
+        "proposal_required_before_apply": true,
+        "proposed_weight_overrides": {
+          "opportunity_value_weight": 1.05,
+          "reuse_value_weight": 1.15,
+          "skill_compounding_weight": 1.5
+        },
+        "target_active_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json"
+      },
+      "scenario_id": "long_term_compounding_first",
+      "score_components": {
+        "rework_penalty": 0.0,
+        "rework_score": 47.0,
+        "signals": {
+          "automation_enhancement_ratio_proxy": {
+            "score": 73.0,
+            "weight": 1.0,
+            "weighted_signal": 73.0
+          },
+          "opportunity_score_proxy": {
+            "score": 86.0,
+            "weight": 1.05,
+            "weighted_signal": 90.3
+          },
+          "reuse_value_proxy": {
+            "score": 68.0,
+            "weight": 1.15,
+            "weighted_signal": 78.2
+          },
+          "skill_compounding_proxy": {
+            "score": 57.0,
+            "weight": 1.5,
+            "weighted_signal": 85.5
+          },
+          "time_saved_proxy": {
+            "score": 100.0,
+            "weight": 1.0,
+            "weighted_signal": 100.0
+          }
+        },
+        "weighted_positive_score": 74.91
+      },
+      "score_delta_vs_baseline": -2,
+      "top_parameter_impacts": [
+        {
+          "default": 1.0,
+          "parameter": "skill_compounding_weight",
+          "scenario": 1.5,
+          "single_parameter_score_delta": -2
+        },
+        {
+          "default": 1.0,
+          "parameter": "reuse_value_weight",
+          "scenario": 1.15,
+          "single_parameter_score_delta": 0
+        },
+        {
+          "default": 1.0,
+          "parameter": "opportunity_value_weight",
+          "scenario": 1.05,
+          "single_parameter_score_delta": 0
+        }
+      ],
+      "weighted_proxy_score": 75
+    },
+    {
+      "adjustable_weights": {
+        "automation_alignment_weight": 1.0,
+        "low_value_loop_penalty_weight": 1.25,
+        "opportunity_value_weight": 1.0,
+        "reuse_value_weight": 1.0,
+        "rework_cost_weight": 1.35,
+        "skill_compounding_weight": 1.0,
+        "time_saved_weight": 1.1
+      },
+      "description_zh": "提高返工成本和低价值循环惩罚，观察边界收口、减少 scope creep 的优先级。",
+      "formula_id": "FORM-MA-V12-S07P3-001",
+      "formula_source": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+      "name_zh": "返工降低优先",
+      "parameter_change_proposal": {
+        "active_config_write": false,
+        "explanation_zh": "这是 what-if 参数预览，不会直接修改 active formula config。若未来采纳，需要另走 proposal/apply gate。",
+        "formula_id": "FORM-MA-V12-S07P3-002",
+        "proposal_required_before_apply": true,
+        "proposed_weight_overrides": {
+          "low_value_loop_penalty_weight": 1.25,
+          "rework_cost_weight": 1.35,
+          "time_saved_weight": 1.1
+        },
+        "target_active_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json"
+      },
+      "scenario_id": "rework_reduction_first",
+      "score_components": {
+        "rework_penalty": 0.0,
+        "rework_score": 47.0,
+        "signals": {
+          "automation_enhancement_ratio_proxy": {
+            "score": 73.0,
+            "weight": 1.0,
+            "weighted_signal": 73.0
+          },
+          "opportunity_score_proxy": {
+            "score": 86.0,
+            "weight": 1.0,
+            "weighted_signal": 86.0
+          },
+          "reuse_value_proxy": {
+            "score": 68.0,
+            "weight": 1.0,
+            "weighted_signal": 68.0
+          },
+          "skill_compounding_proxy": {
+            "score": 57.0,
+            "weight": 1.0,
+            "weighted_signal": 57.0
+          },
+          "time_saved_proxy": {
+            "score": 100.0,
+            "weight": 1.1,
+            "weighted_signal": 110.0
+          }
+        },
+        "weighted_positive_score": 77.25
+      },
+      "score_delta_vs_baseline": 0,
+      "top_parameter_impacts": [
+        {
+          "default": 1.0,
+          "parameter": "time_saved_weight",
+          "scenario": 1.1,
+          "single_parameter_score_delta": 0
+        },
+        {
+          "default": 1.0,
+          "parameter": "rework_cost_weight",
+          "scenario": 1.35,
+          "single_parameter_score_delta": 0
+        },
+        {
+          "default": 1.0,
+          "parameter": "low_value_loop_penalty_weight",
+          "scenario": 1.25,
+          "single_parameter_score_delta": 0
+        }
+      ],
+      "weighted_proxy_score": 77
+    }
+  ],
+  "schema_version": "memory_atlas_formula_what_if_preview.v1_2_s07_p3",
+  "simulator_mode": "config_preview_only",
+  "source_task_ids": {
+    "economic_proxy": "MA-V12-S07P1",
+    "information_roi": "MA-V12-S07P2"
+  },
+  "status": "phase_s07_p3_formula_what_if_completed_pending_s07_review",
+  "task_id": "MA-V12-S07P3",
+  "writes_files": true
+}

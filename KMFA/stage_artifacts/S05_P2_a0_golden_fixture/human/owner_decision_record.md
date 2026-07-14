@@ -17,14 +17,14 @@
 
 ## 私有源复核结论
 
-- 已按 owner 指示只读检查本机私有 `销售绩效考核.zip` 和 `财务.zip`。
-- `销售绩效考核.zip` 中的 Excel workbook 包含多项目明细和汇总；其 `项目成本` sheet 为空，不能单独构成一个 A0 项目成本黄金基准。
-- `财务.zip` 中存在项目成本、经营分析、资金流和待完工项目等交叉来源支持材料，但这些材料支持的是 cross-source review，不改变该 Excel workbook 不是单一 A0 项目基准的事实。
+- 已按 owner 指示只读检查本机私有 `PRIVATE_RAW_SOURCE_005.zip` 和 `PRIVATE_RAW_SOURCE_004.zip`。
+- `PRIVATE_RAW_SOURCE_005.zip` 中的 Excel workbook 包含多项目明细和汇总；其 `项目成本` sheet 为空，不能单独构成一个 A0 项目成本黄金基准。
+- `PRIVATE_RAW_SOURCE_004.zip` 中存在项目成本、经营分析、资金流和待完工项目等交叉来源支持材料，但这些材料支持的是 cross-source review，不改变该 Excel workbook 不是单一 A0 项目基准的事实。
 - 因此该 Excel candidate 从 S05-P2 A0 golden fixture 闭环中降级为 `cross_source_support_only`，不进入 Q4/Q5。
 
 ## 公开仓库安全边界
 
-- 未提交 `销售绩效考核.zip`、`财务.zip`、PDF、Excel、解包文件或私有 CSV。
+- 未提交 `PRIVATE_RAW_SOURCE_005.zip`、`PRIVATE_RAW_SOURCE_004.zip`、PDF、Excel、解包文件或私有 CSV。
 - 未提交合同额、支出合计、毛利、毛利率、成本分类明文。
 - 未提交银行流水、合同、薪资、税务申报或业务明细。
 - 决策记录只保存 public-safe decision code、candidate/file id、false flags、scope 和证据引用。

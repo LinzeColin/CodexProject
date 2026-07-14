@@ -23,13 +23,18 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from audit_memory_atlas_goal_completion import current_git_commit  # noqa: E402
+from memory_atlas_cloudflare_contract import (  # noqa: E402
+    DEPLOYMENT_MODE,
+    PAGES_DEPLOY_COMMAND,
+    PROJECT_NAME,
+    PUBLISH_DIR_ARG,
+)
 
 
 AUTH_ENV = "MEMORY_ATLAS_CLOUDFLARE_AUTHORIZED"
 AUTH_VALUE = "I_AUTHORIZE_THIS_DEPLOY"
-PROJECT_NAME = "openai-memory-atlas"
-PUBLISH_DIR = Path("apps/memory-atlas/dist")
-PUBLISH_DIR_ARG = PUBLISH_DIR.as_posix()
+LOCAL_RUNTIME_ENV = "MEMORY_ATLAS_LOCAL_RUNTIME_CANDIDATE"
+PUBLISH_DIR = Path(PUBLISH_DIR_ARG)
 
 
 class DeploymentError(RuntimeError):
@@ -61,6 +66,7 @@ def assert_authorized(args: argparse.Namespace) -> None:
         "CLOUDFLARE_API_TOKEN",
         "MEMORY_ATLAS_ACCESS_HOSTNAME",
         "MEMORY_ATLAS_ALLOWED_EMAIL",
+        LOCAL_RUNTIME_ENV,
     ]
     missing = [name for name in required_env if not os.environ.get(name)]
     if missing:
@@ -70,6 +76,18 @@ def assert_authorized(args: argparse.Namespace) -> None:
 def parse_deployment_url(output: str) -> str:
     candidates = re.findall(r"https://[A-Za-z0-9_.-]+\.pages\.dev[^\s]*", output)
     return candidates[0].rstrip(".,)") if candidates else ""
+
+
+def portable_output_path(path: Path | None, repo_root: Path) -> str:
+    if path is None:
+        return ""
+    candidate = path.expanduser()
+    if not candidate.is_absolute():
+        return candidate.as_posix()
+    try:
+        return candidate.resolve().relative_to(repo_root.resolve()).as_posix()
+    except ValueError:
+        return f"<external>/{candidate.name}"
 
 
 def sanitized_evidence(args: argparse.Namespace, repo_root: Path, deployment_url: str) -> dict[str, Any]:
@@ -105,17 +123,26 @@ def sanitized_evidence(args: argparse.Namespace, repo_root: Path, deployment_url
 
 def deploy(args: argparse.Namespace) -> dict[str, Any]:
     repo_root = args.repo_root.resolve()
-    publish_dir = repo_root / PUBLISH_DIR
     assert_authorized(args)
     commands = [
-        ["python3", "scripts/build_memory_atlas_data.py", "--database-dir", ".", "--output", "data/derived/visualization/memory_atlas.json"],
+        ["python3", "scripts/materialize_memory_atlas_release.py", "verify", "--database-dir", "."],
         ["npm", "ci", "--prefix", "apps/memory-atlas"],
         ["npm", "run", "build", "--prefix", "apps/memory-atlas"],
+        [
+            "python3",
+            "scripts/audit_memory_atlas_snapshot_parity.py",
+            "--database-dir",
+            ".",
+            "--local-runtime-env",
+            LOCAL_RUNTIME_ENV,
+            "--pages-candidate",
+            f"{PUBLISH_DIR_ARG}/memory_atlas.json",
+        ],
         ["python3", "scripts/audit_memory_atlas_release.py", "--publish-dir", PUBLISH_DIR_ARG],
         ["python3", "scripts/audit_memory_atlas_visual_acceptance.py"],
         ["python3", "scripts/audit_memory_atlas_acceptance.py", "--publish-dir", PUBLISH_DIR_ARG],
         ["python3", "scripts/preflight_cloudflare_pages_access.py", "--publish-dir", PUBLISH_DIR_ARG, "--require-live-env"],
-        ["npx", "wrangler", "pages", "deploy", PUBLISH_DIR_ARG, "--project-name", PROJECT_NAME],
+        PAGES_DEPLOY_COMMAND,
     ]
 
     results: list[dict[str, Any]] = []
@@ -138,10 +165,11 @@ def deploy(args: argparse.Namespace) -> dict[str, Any]:
         "status": "DRY_RUN" if not args.execute else "DEPLOY_COMMANDS_COMPLETED",
         "authorization_required_for_execute": f"export {AUTH_ENV}={AUTH_VALUE!r}",
         "project_name": PROJECT_NAME,
-        "publish_dir": str(publish_dir),
+        "publish_dir": PUBLISH_DIR_ARG,
+        "deployment_mode": DEPLOYMENT_MODE,
         "commands": results,
         "deployment_url": deployment_url,
-        "evidence_out": str(args.evidence_out) if args.evidence_out else "",
+        "evidence_out": portable_output_path(args.evidence_out, repo_root),
         "evidence_ready": bool(evidence),
         "next_required_manual_verification": [
             "Open protected hostname before authentication and confirm Cloudflare Access challenge.",

@@ -1,0 +1,17 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "decision": "NO_GO",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "run_application_readiness_against_private_retry_template",
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY",
+  "project_id": "KMFA",
+  "reason": "private_retry_input_prepared_but_application_and_reconciliation_not_performed",
+  "record_type": "v014_corrected_source_or_owner_exclusion_resolution_input_retry_go_no_go",
+  "resolution_application_performed_by_this_phase": false,
+  "resolution_application_readiness_allowed_next_phase": true,
+  "schema_version": "kmfa.v014_corrected_source_or_owner_exclusion_resolution_input_retry_go_no_go.v1",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-RETRY-20260706"
+}

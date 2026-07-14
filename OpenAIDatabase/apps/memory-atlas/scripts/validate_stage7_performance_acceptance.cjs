@@ -130,7 +130,7 @@ function isIgnoredRuntimeProbe(response) {
 }
 
 async function waitForGalaxy(page) {
-  await page.getByRole("button", { name: /银河星云/ }).click({ timeout: 5000 });
+  await page.locator('[data-nav-view="galaxy"]').click({ timeout: 5000 });
   await page.waitForSelector(".galaxy-webgl-canvas", { timeout: 25000 });
   await page.waitForFunction(() => {
     const signal = window.__memoryAtlasGalaxySignal?.();
@@ -226,7 +226,7 @@ async function validateAutoCanResume(page) {
 }
 
 async function validateCleanupHooks(page) {
-  await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+  await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
   await page.waitForFunction(() => {
     const lifecycle = window.__memoryAtlasGalaxyLifecycle;
     return Boolean(

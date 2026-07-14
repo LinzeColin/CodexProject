@@ -1,0 +1,48 @@
+{
+  "codex_model": "gpt-5.3-codex-spark",
+  "collect_air_ladder_status": true,
+  "collect_brew": true,
+  "collect_development_load": false,
+  "collect_docker": false,
+  "default_archive_branch": "macdata-airM2",
+  "default_remote": "origin",
+  "device_key": "airM2",
+  "device_label_cn": "M2 MacBook Air",
+  "device_role_cn": "工作前台 / 移动终端 / 云端入口",
+  "du_repo_timeout_seconds": 15,
+  "expected_chip_keywords": [
+    "M2"
+  ],
+  "expected_memory_gb_min": 8,
+  "expected_model_keywords": [
+    "MacBook Air"
+  ],
+  "forbidden_auto_schedulers": [
+    "launchd",
+    "cron",
+    "background daemon",
+    "login item"
+  ],
+  "forbidden_secret_sources": [
+    "API key",
+    "token",
+    "password",
+    "cookies",
+    "sessions",
+    "Keychain",
+    "shell history",
+    "full environment dump",
+    ".env raw content"
+  ],
+  "local_relative_dir": "OpenAIDatabase/macdata/airM2",
+  "no_automatic_local_scheduler": true,
+  "reasoning_effort": "xhigh",
+  "retention_days": 3,
+  "schedule_cron": "10 1 * * *",
+  "schema_version": "macdata-device-config-v1",
+  "storage_red_free_gb": 40,
+  "storage_yellow_free_gb": 70,
+  "swap_red_gb": 4,
+  "swap_yellow_gb": 1,
+  "timezone": "Australia/Sydney"
+}

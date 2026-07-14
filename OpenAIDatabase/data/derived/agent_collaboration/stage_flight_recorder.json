@@ -1,0 +1,272 @@
+{
+  "acceptance_id": "ACC-MA-V12-S08P3",
+  "config_path": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+  "dry_run": false,
+  "field_policy": {
+    "development_record_summary_only": true,
+    "max_required_fields": 12,
+    "no_bulky_human_docs": true,
+    "no_raw_content": true,
+    "no_transcript_payloads": true
+  },
+  "generated_at": "2026-07-08T07:19:42Z",
+  "machine_output_check_summary": {
+    "bulky_human_documentation": false,
+    "check_count": 4,
+    "fail_count": 0,
+    "pass_count": 4,
+    "phase_record_count": 3,
+    "required_field_count": 10
+  },
+  "machine_output_checks": [
+    {
+      "assertion": "stage flight recorder required_fields length must be <= max_required_fields",
+      "check_id": "S08P3-CHECK-001",
+      "evidence_refs": [
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+          "ref_id": "s08p3_flight_recorder_config",
+          "ref_type": "stage_flight",
+          "source_id": "governance"
+        }
+      ],
+      "explanation_zh": "required_fields 当前为 10 个，未超过 max_required_fields。",
+      "failure_action_zh": "字段过多时停止进入 S08 Review，删减为最小运行证据字段。",
+      "name_zh": "字段数量保持轻量",
+      "status": "PASS"
+    },
+    {
+      "assertion": "stage flight recorder must not include transcript payloads, raw content or bulky human docs",
+      "check_id": "S08P3-CHECK-002",
+      "evidence_refs": [
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+          "ref_id": "s08p3_flight_recorder_config",
+          "ref_type": "stage_flight",
+          "source_id": "governance"
+        }
+      ],
+      "explanation_zh": "field_policy 明确 no_transcript_payloads、no_raw_content、no_bulky_human_docs 均为 true。",
+      "failure_action_zh": "发现 raw/transcript 载荷或臃肿人类文档时停止并移除。",
+      "name_zh": "不携带 raw 或 transcript 载荷",
+      "status": "PASS"
+    },
+    {
+      "assertion": "phase_records must cover S08 P1, S08 P2 and S08 P3 with evidence_refs",
+      "check_id": "S08P3-CHECK-003",
+      "evidence_refs": [
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+          "ref_id": "s08p1_collaboration_report",
+          "ref_type": "stage_flight",
+          "source_id": "derived"
+        },
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "data/derived/agent_collaboration/agent_authorization_boundary_report.json",
+          "ref_id": "s08p2_authorization_report",
+          "ref_type": "stage_flight",
+          "source_id": "derived"
+        },
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+          "ref_id": "s08p3_flight_recorder_config",
+          "ref_type": "stage_flight",
+          "source_id": "governance"
+        }
+      ],
+      "explanation_zh": "phase_records 覆盖 S08 P1、S08 P2、S08 P3，且每条都有 evidence_refs 和 validation_refs。",
+      "failure_action_zh": "缺失 phase 证据时停止进入 S08 Review，补齐轻量 evidence_refs。",
+      "name_zh": "覆盖 S08 三个 phase",
+      "status": "PASS"
+    },
+    {
+      "assertion": "S08 P3 must only summarize necessary information in development records",
+      "check_id": "S08P3-CHECK-004",
+      "evidence_refs": [
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+          "ref_id": "s08p3_flight_recorder_config",
+          "ref_type": "stage_flight",
+          "source_id": "governance"
+        }
+      ],
+      "explanation_zh": "scope_boundary 标记 development_record_summary_only=true，human_readable_page_required=false。",
+      "failure_action_zh": "若生成额外臃肿人类说明，删除或压缩到开发记录必要摘要。",
+      "name_zh": "只在开发记录总结必要信息",
+      "status": "PASS"
+    }
+  ],
+  "output_path": "data/derived/agent_collaboration/stage_flight_recorder.json",
+  "phase_boundary": {
+    "does_not_create_multi_agent_system": true,
+    "does_not_generate_bulky_human_docs": true,
+    "does_not_implement_complex_delegation_contract_ui": true,
+    "does_not_include_raw_or_transcript_payloads": true,
+    "does_not_modify_raw": true,
+    "does_not_upload_github_main": true,
+    "lightweight_stage_flight_recorder": true,
+    "next_phase": "S08 Review",
+    "records_necessary_info_in_development_records": true
+  },
+  "phase_records": [
+    {
+      "acceptance_id": "ACC-MA-V12-S08P1",
+      "boundary_flags": {
+        "complex_delegation_contract_ui": false,
+        "github_main_upload": false,
+        "multi_agent_system_implementation": false,
+        "raw_mutation": false
+      },
+      "evidence_refs": [
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+          "ref_id": "s08p1_collaboration_report",
+          "ref_type": "stage_flight",
+          "source_id": "derived"
+        }
+      ],
+      "next_gate": "S08 P2",
+      "phase_id": "S08 P1",
+      "stage_id": "S08",
+      "status": "phase_s08_p1_collaboration_metrics_completed_pending_s08_p2",
+      "summary_zh": "S08 P1 生成 Codex/Agent 协作质量报告，保持证据化中文摘要。",
+      "task_id": "MA-V12-S08P1",
+      "validation_refs": [
+        "validate:v1.2-s08-p1",
+        "python scripts/atlasctl.py audit --check agent-collaboration"
+      ]
+    },
+    {
+      "acceptance_id": "ACC-MA-V12-S08P2",
+      "boundary_flags": {
+        "complex_delegation_contract_ui": false,
+        "github_main_upload": false,
+        "multi_agent_system_implementation": false,
+        "raw_mutation": false
+      },
+      "evidence_refs": [
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "data/derived/agent_collaboration/agent_authorization_boundary_report.json",
+          "ref_id": "s08p2_authorization_report",
+          "ref_type": "stage_flight",
+          "source_id": "derived"
+        }
+      ],
+      "next_gate": "S08 P3",
+      "phase_id": "S08 P2",
+      "stage_id": "S08",
+      "status": "phase_s08_p2_authorization_boundary_completed_pending_s08_p3",
+      "summary_zh": "S08 P2 定义授权边界，确认 raw 不可修改且 proposal 需人类授权。",
+      "task_id": "MA-V12-S08P2",
+      "validation_refs": [
+        "validate:v1.2-s08-p2",
+        "python scripts/atlasctl.py audit --check agent-authorization"
+      ]
+    },
+    {
+      "acceptance_id": "ACC-MA-V12-S08P3",
+      "boundary_flags": {
+        "complex_delegation_contract_ui": false,
+        "github_main_upload": false,
+        "multi_agent_system_implementation": false,
+        "raw_mutation": false
+      },
+      "evidence_refs": [
+        {
+          "evidence_level": "lightweight_run_evidence",
+          "path": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+          "ref_id": "s08p3_flight_recorder_config",
+          "ref_type": "stage_flight",
+          "source_id": "governance"
+        }
+      ],
+      "next_gate": "S08 Review",
+      "phase_id": "S08 P3",
+      "stage_id": "S08",
+      "status": "phase_s08_p3_stage_flight_recorder_completed_pending_s08_review",
+      "summary_zh": "S08 P3 只记录 lightweight stage flight recorder 字段，不生成臃肿人类文档。",
+      "task_id": "MA-V12-S08P3",
+      "validation_refs": [
+        "validate:v1.2-s08-p3",
+        "python scripts/atlasctl.py audit --check stage-flight"
+      ]
+    }
+  ],
+  "recorder_mode": "lightweight_run_evidence_fields",
+  "required_fields": [
+    {
+      "description_zh": "Stage 编号，例如 S08。",
+      "field_id": "stage_id",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description_zh": "Phase 编号，例如 S08 P3。",
+      "field_id": "phase_id",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description_zh": "任务 ID。",
+      "field_id": "task_id",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description_zh": "验收 ID。",
+      "field_id": "acceptance_id",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description_zh": "当前 phase 或 stage 的状态。",
+      "field_id": "status",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description_zh": "一句中文运行摘要。",
+      "field_id": "summary_zh",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description_zh": "指向配置、derived 输出、validator 或开发记录的轻量证据引用。",
+      "field_id": "evidence_refs",
+      "required": true,
+      "type": "array"
+    },
+    {
+      "description_zh": "用于复跑的 validator 或 atlasctl 命令。",
+      "field_id": "validation_refs",
+      "required": true,
+      "type": "array"
+    },
+    {
+      "description_zh": "raw、GitHub upload、复杂 UI、多 agent 等边界布尔值。",
+      "field_id": "boundary_flags",
+      "required": true,
+      "type": "object"
+    },
+    {
+      "description_zh": "下一 gate。",
+      "field_id": "next_gate",
+      "required": true,
+      "type": "string"
+    }
+  ],
+  "schema_version": "memory_atlas_stage_flight_recorder.v1_2_s08_p3",
+  "stage_id": "S08",
+  "stage_summary_zh": "S08 已具备协作质量、授权边界和轻量运行证据，可进入 S08 Review。",
+  "status": "phase_s08_p3_stage_flight_recorder_completed_pending_s08_review",
+  "task_id": "MA-V12-S08P3",
+  "writes_files": true
+}

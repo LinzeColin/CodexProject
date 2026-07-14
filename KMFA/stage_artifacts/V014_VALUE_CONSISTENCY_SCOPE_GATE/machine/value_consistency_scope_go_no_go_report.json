@@ -1,0 +1,39 @@
+{
+  "app_reinstall_allowed": false,
+  "authoritative_raw_baseline_locked": true,
+  "blocker_ids": [
+    "RAW_VALUE_MATCHING_NOT_PERFORMED",
+    "PROCESSED_DATA_RECONCILIATION_NOT_PERFORMED",
+    "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_VALUE_CONSISTENCY",
+    "FORMAL_REPORT_RELEASE_BLOCKED_BY_LINEAGE",
+    "GITHUB_UPLOAD_BLOCKED_BY_NO_GO",
+    "APP_REINSTALL_BLOCKED_BY_NO_GO",
+    "BUSINESS_EXECUTION_BLOCKED_BY_NO_GO"
+  ],
+  "business_execution_allowed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "decision_reason": "Value-consistency scope, raw read-only mutation guard and difference-report obligation are locked, but raw business-value matching, processed-data reconciliation and lineage full check have not been performed.",
+  "difference_report_required_on_repeated_mismatch": true,
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_recommended_phase": "V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN",
+  "phase_id": "V014_VALUE_CONSISTENCY_SCOPE_GATE",
+  "processed_data_reconciliation_performed": false,
+  "project_id": "KMFA",
+  "raw_inbox_mutation_guard_locked": true,
+  "raw_value_matching_performed": false,
+  "record_type": "v014_value_consistency_scope_go_no_go_report",
+  "resolved_blocker_ids": [
+    "AUTHORITATIVE_RAW_BASELINE_LOCKED",
+    "VALUE_CONSISTENCY_SCOPE_LOCKED",
+    "RAW_INBOX_MUTATION_GUARD_LOCKED",
+    "DIFFERENCE_REPORT_OBLIGATION_LOCKED"
+  ],
+  "schema_version": "kmfa.v014_value_consistency_scope_go_no_go.v1",
+  "task_id": "KMFA-V014-VALUE-CONSISTENCY-SCOPE-GATE-20260705",
+  "value_consistency_scope_locked": true,
+  "version": "0.1.4"
+}

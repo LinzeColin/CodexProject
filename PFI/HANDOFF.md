@@ -1,6 +1,6 @@
 # PFI Handoff
 
-Last updated: 2026-07-01 Australia/Sydney
+Last updated: 2026-07-11 Australia/Sydney
 
 ## Current v0.2.4 Repair Pack Handoff
 
@@ -10,8 +10,16 @@ PFI v0.2.4 是 v0.2.3 closeout 后的修补包。用户提供的来源文件命�
 当前状态：
 
 - 当前事实源：`/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi`。
-- 当前 run：`v0.2.4 overall project review`。
-- 每次 run work 最多完成一个 phase、一个 whole-stage review、一个独立 upload gate 或一个明确指定的 overall review gate；本轮只完成 v0.2.4 overall project review，不进入未来版本。
+- 当前 run：`v0.2.4 final delivery`，唯一 Acceptance `ACC-PFI-V024-FINAL-DELIVERY`；product commit `17b9f59794740f927c5f531ba1aa334621a832e5`，evidence commit 必须为直接子提交并以唯一一次 push 上传。
+- 当前 final delivery：三处 app entry 重装完成；strict native audit、lite acceptance `29/0/2`、只读 runtime `8/0`、v0.2.3 `200 passed`、v0.2.4 `242 passed`、独立 reviewer `APPROVED`。
+- app/localhost/disk bundle hash 与两入口 5 个 filename-bound inline asset hash 一致；console/page/http errors 为 0。
+- `.venv`、`data`、`reports` 安装前后 metadata hash 相同，未修改；runtime 使用 `/private/tmp` 隔离 HOME、data 与 pycache。
+- Tracked status 为 `pending_live_verifier`，下一 gate 仍是 `PFI-V024-FINAL-DELIVERY`；唯一 push 后 live verifier 证明 `HEAD == origin/main == remote main` 且 worktree clean，即解析最终 postcondition，不提交第二个 closeout commit；future version 未开始。
+- re-review semantic audit：40/40 manifest unit、10/10 whole-stage acceptance、84 JSON、11/11 UI validation、46 PNG decode、Git ref == current HEAD 与精确真实数据合同均通过；focused `12 passed`、v0.2.3 `200 passed`、v0.2.4 `231 passed`。
+- 完整 semantic validator 在当前 sparse checkout 仍报告未展开的 root/其他项目路径与 sparse-excluded Cloudflare test_ref；该 test_ref 已由 `git cat-file` 证明存在于 HEAD，本轮未扩大 sparse。
+- Phase R1 修复两项当前一致性问题：canonical owner render 丢失 v0.2.4 closeout 历史；sparse PFI worktree 将当前 Git tree 中的 tracked `MetaDatabase/PFI` 误判为缺失。
+- 当前真实数据合同：`storage_mode=git_tree`、4 个 raw CSV、8815 条 processed 记录、as of `2026-06-03`；未展开 sparse 路径，未复制或改写财务数据。
+- final delivery 记录：`PFI/docs/pfi_v024/FINAL_DELIVERY.md`、`PFI/docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json`。
 - 本轮记录 Phase 9.3 用户验收材料已准备，等待用户回复；用户随后回复 `1`，作为 whole-stage review 的确认来源。不重装 app bundle，不修改 launcher C/Info.plist 或真实数据源。
 - 来源资料：`/Users/linzezhang/Downloads/PFI/PFI_v0.2.3_Repair_Roadmap.md` 和 `/Users/linzezhang/Downloads/PFI/PFI_v0.2.3_Repair_TaskPack.zip`。
 - 当前 main 复核结论：TaskPack 内关于 `pfi_v023` docs/tests 缺失、`shell.js` 阻断的 GitHub audit 已对当前 checkout 过时；当前 `PFI/docs/pfi_v023` 存在，`test_v023_*.py` 存在，`PFI/web/app/shell.js` 通过 `node --check`。

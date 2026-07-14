@@ -1,0 +1,55 @@
+{
+  "blocker_audit_check_count": 10,
+  "blocker_audit_check_fail_count": 0,
+  "blocker_audit_check_pass_count": 10,
+  "checks": [
+    {
+      "check_code": "source_phase_is_diagnostic_readiness_recheck",
+      "status": "PASS"
+    },
+    {
+      "check_code": "prior_observation_count_one",
+      "status": "PASS"
+    },
+    {
+      "check_code": "current_observation_count_two",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocked_threshold_not_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocker_queue_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_residual_differences_still_blocked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_valid_diagnostic_response",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_actionable_resolution",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_AUDIT",
+  "project_id": "KMFA",
+  "record_type": "v014_residual_difference_owner_or_agent_diagnostic_blocker_audit_matrix_public_safe",
+  "schema_version": "kmfa.v014_residual_difference_owner_or_agent_diagnostic_blocker_audit_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-AUDIT-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-blocker-audit"
+}

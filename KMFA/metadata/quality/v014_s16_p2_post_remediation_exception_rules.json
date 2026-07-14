@@ -1,0 +1,58 @@
+{
+  "exception_rule_count": 4,
+  "rules": [
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威开工状态存在，但权威完工状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "commenced",
+      "label": "开工未完工",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "completed",
+      "rule_id": "commenced_not_completed",
+      "visible_label": "开工未完工"
+    },
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威完工状态存在，但权威结算状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "completed",
+      "label": "完工未结算",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "settled",
+      "rule_id": "completed_not_settled",
+      "visible_label": "完工未结算"
+    },
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威结算状态存在，但权威开票状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "settled",
+      "label": "结算未开票",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "invoiced",
+      "rule_id": "settled_not_invoiced",
+      "visible_label": "结算未开票"
+    },
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威开票状态存在，但权威回款状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "invoiced",
+      "label": "开票未回款",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "collected",
+      "rule_id": "invoiced_not_collected",
+      "visible_label": "开票未回款"
+    }
+  ],
+  "schema_version": "kmfa.v014.s16_p2.exception_rules.v1"
+}

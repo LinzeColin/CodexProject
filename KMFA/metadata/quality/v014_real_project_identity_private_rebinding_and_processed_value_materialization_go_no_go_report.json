@@ -1,0 +1,15 @@
+{
+  "blocking_reason_codes": [
+    "cash_source_not_uniquely_bound",
+    "nonzero_authority_vs_system_differences_remain",
+    "global_residual_queue_not_replayed"
+  ],
+  "decision": "NO_GO",
+  "github_upload_performed": false,
+  "incomplete_cash_reconciliation_count": 4,
+  "nonzero_delta_reconciliation_count": 6,
+  "phase_id": "V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014_real_project_identity_materialization_go_no_go.v1",
+  "unresolved_cash_value_target_slot_count": 12
+}

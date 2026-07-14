@@ -1,0 +1,50 @@
+{
+  "checkpoint_count": 4,
+  "checkpoints": [
+    {
+      "approval_or_release_result_count": 0,
+      "automatic_execution_allowed": false,
+      "business_record_created": false,
+      "checkpoint_id": "V014-S15P3-POST-HUMAN-001",
+      "checkpoint_key": "fact_quality_acceptance",
+      "current_status": "not_performed",
+      "human_action_required": true,
+      "sequence": 1,
+      "visible_label": "绩效事实质量确认"
+    },
+    {
+      "approval_or_release_result_count": 0,
+      "automatic_execution_allowed": false,
+      "business_record_created": false,
+      "checkpoint_id": "V014-S15P3-POST-HUMAN-002",
+      "checkpoint_key": "compensation_policy_mapping_approval",
+      "current_status": "not_performed",
+      "human_action_required": true,
+      "sequence": 2,
+      "visible_label": "薪酬政策映射审批"
+    },
+    {
+      "approval_or_release_result_count": 0,
+      "automatic_execution_allowed": false,
+      "business_record_created": false,
+      "checkpoint_id": "V014-S15P3-POST-HUMAN-003",
+      "checkpoint_key": "final_compensation_approval",
+      "current_status": "not_performed",
+      "human_action_required": true,
+      "sequence": 3,
+      "visible_label": "最终薪酬审批"
+    },
+    {
+      "approval_or_release_result_count": 0,
+      "automatic_execution_allowed": false,
+      "business_record_created": false,
+      "checkpoint_id": "V014-S15P3-POST-HUMAN-004",
+      "checkpoint_key": "payment_release_approval",
+      "current_status": "not_performed",
+      "human_action_required": true,
+      "sequence": 4,
+      "visible_label": "发放放行审批"
+    }
+  ],
+  "schema_version": "kmfa.v014.s15_p3.post_remediation.human_boundaries.v1"
+}

@@ -1,0 +1,37 @@
+{
+  "app_reinstall_allowed": false,
+  "application_status": "owner_confirmation_recorded_for_separate_backfill_gate",
+  "blocker_ids": [
+    "PUBLIC_MEMBER_HASH_BACKFILL_SEPARATE_GATE_REQUIRED",
+    "PUBLIC_MEMBER_HASH_BACKFILL_STILL_BLOCKED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
+    "FORMAL_REPORT_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
+    "GITHUB_UPLOAD_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
+    "APP_REINSTALL_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION"
+  ],
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_applied": true,
+  "decision_code": "confirm_current_container_as_authoritative",
+  "decision_reason": "Owner confirmation has been recorded public-safely, but later gates must still complete public member hash backfill, raw-alignment closure, lineage closure and release checks before upload, app reinstall, formal report or business execution can proceed.",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_recommended_action": "rerun_this_application_gate_after_owner_decision",
+  "next_required_input": "separate_public_safe_hash_backfill_and_lineage_gate",
+  "owner_decision_intake_ready": true,
+  "owner_decision_supplied": true,
+  "phase_id": "V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION",
+  "project_id": "KMFA",
+  "public_member_hash_backfill_allowed": false,
+  "raw_alignment_complete": false,
+  "record_type": "v014_raw_source_identity_decision_application_go_no_go_report",
+  "resolved_blocker_ids": [
+    "OWNER_DECISION_INTAKE_READY",
+    "OWNER_DECISION_RECORD_VALIDATED_PUBLIC_SAFE",
+    "RAW_SOURCE_IDENTITY_OWNER_CONFIRMATION_APPLIED"
+  ],
+  "schema_version": "kmfa.v014_raw_source_identity_decision_application_go_no_go.v1",
+  "task_id": "KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-20260705",
+  "version": "0.1.4"
+}

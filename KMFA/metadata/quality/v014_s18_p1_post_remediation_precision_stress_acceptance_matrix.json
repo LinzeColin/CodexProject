@@ -1,0 +1,104 @@
+{
+  "acceptance_id": "ACC-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS",
+  "check_count": 19,
+  "check_fail_count": 0,
+  "check_pass_count": 19,
+  "checks": [
+    {
+      "check_id": "S18P1-CURRENT-ACC-01",
+      "name": "stage17_dependency",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-02",
+      "name": "scenario_coverage",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-03",
+      "name": "amount_precision",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-04",
+      "name": "amount_rejections",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-05",
+      "name": "no_float",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-06",
+      "name": "zero_delta",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-07",
+      "name": "one_cent_block",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-08",
+      "name": "three_runs",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-09",
+      "name": "consistent_state",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-10",
+      "name": "duplicate_idempotency",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-11",
+      "name": "batch_size",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-12",
+      "name": "blocking_errors",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-13",
+      "name": "performance",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-14",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-15",
+      "name": "grade_lock",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-16",
+      "name": "s18_p2_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-17",
+      "name": "stage_review_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-18",
+      "name": "upload_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P1-CURRENT-ACC-19",
+      "name": "business_closed",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s18_p1_post_remediation_acceptance_matrix.v1"
+}

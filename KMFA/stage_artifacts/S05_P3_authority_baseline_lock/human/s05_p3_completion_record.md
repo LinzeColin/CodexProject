@@ -27,7 +27,7 @@
 
 - S05-P3 只锁定 hash/source-anchor 完整的 40 条 PDF 字段记录。
 - S05-P3 不提交合同额、支出合计、毛利、毛利率、成本分类明文。
-- S05-P3 不提交 `销售绩效考核.zip`、`财务.zip`、PDF、Excel、私有 CSV 或解包文件。
+- S05-P3 不提交 `PRIVATE_RAW_SOURCE_005.zip`、`PRIVATE_RAW_SOURCE_004.zip`、PDF、Excel、私有 CSV 或解包文件。
 - S05-P3 不生成正式报告，不执行 zero-delta，不建立事实层，不做 UI，不上传 GitHub。
 - `formal_report_allowed=false`，因为 Stage 5 review、zero-delta、lineage 和报告发布门禁尚未完成。
 
