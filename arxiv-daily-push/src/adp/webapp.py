@@ -230,7 +230,22 @@ def system() -> HTMLResponse:
 def radar_page() -> HTMLResponse:
     conn = _conn()
     try:
-        return _render("radar.html", page="radar", radar=weekly_radar(conn))
+        from .shadow_biorxiv import is_promoted, load_report
+
+        return _render("radar.html", page="radar", radar=weekly_radar(conn),
+                       shadow=load_report(), biorxiv_promoted=is_promoted(conn))
+    finally:
+        conn.close()
+
+
+@app.post("/api/r5/promote")
+def api_r5_promote() -> JSONResponse:
+    """R5 上板/撤板——只由 Owner 在雷达页点击触发（自迭代边界：系统只能提案）."""
+    conn = _conn()
+    try:
+        from .shadow_biorxiv import promote
+
+        return JSONResponse(promote(conn))
     finally:
         conn.close()
 

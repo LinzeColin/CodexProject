@@ -44,6 +44,8 @@ def main(argv: list[str] | None = None) -> int:
     p_backfill.add_argument("date", help="YYYY-MM-DD（Sydney）")
     sub.add_parser("migrate-legacy", help="R2 迁移：旧发送记录→delivery 事件；旧评分→只存档")
     sub.add_parser("corrections", help="检测版本/撤稿并传播纠错（run 内已自动执行）")
+    p_shadow = sub.add_parser("shadow-biorxiv", help="R5：bioRxiv 影子回填与报表（零入库）")
+    p_shadow.add_argument("--days", type=int, default=14)
 
     args = parser.parse_args(argv)
     conn = store.connect()
@@ -173,6 +175,13 @@ def main(argv: list[str] | None = None) -> int:
             report = detect_and_propagate(conn)
             report["unresolved"] = unresolved(conn)
             print(json.dumps(report, ensure_ascii=False, indent=1))
+            return 0
+        if args.command == "shadow-biorxiv":
+            from .shadow_biorxiv import shadow_backfill
+
+            report = shadow_backfill(conn, config.load_thresholds(), days=args.days)
+            summary = {k: v for k, v in report.items() if k != "rows"}
+            print(json.dumps(summary, ensure_ascii=False, indent=1))
             return 0
     finally:
         conn.close()

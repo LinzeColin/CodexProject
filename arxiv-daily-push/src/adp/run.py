@@ -88,6 +88,26 @@ def _run_stages(conn: sqlite3.Connection, *, run_id: str, trigger: str, as_of: d
         fetch_counts = fetch_window(conn, days=fetch_days, as_of=as_of)
         counts["抓取新增"] = fetch_counts["新版本"]
         degraded.extend(fetch_counts.get("降级项") or [])
+        # R5：bioRxiv——上板后真实入库参选；影子期只追加当日影子报表行（零入库零干扰）
+        from . import shadow_biorxiv
+
+        try:
+            if shadow_biorxiv.is_promoted(conn):
+                bio_counts = shadow_biorxiv.ingest_promoted_day(conn, as_of=as_of)
+                counts["bioRxiv新增"] = bio_counts["新版本"]
+            else:
+                from datetime import timedelta as _td
+
+                shadow_row = shadow_biorxiv.shadow_day(
+                    conn, (as_of - _td(days=1)).strftime("%Y-%m-%d"), thresholds, as_of=as_of)
+                report = shadow_biorxiv.load_report()
+                if report is not None and shadow_row is not None:
+                    if not any(r.get("date") == shadow_row["date"] for r in report["rows"]):
+                        report["rows"].append(shadow_row)
+                        shadow_biorxiv.report_path().write_text(
+                            json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+        except Exception as exc:
+            degraded.append(f"biorxiv_shadow:{type(exc).__name__}")
     from .corrections import detect_and_propagate
 
     corrections_report = detect_and_propagate(conn)

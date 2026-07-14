@@ -35,6 +35,40 @@
 </div>
 
 <div class="card">
+  <h2>R5 · bioRxiv 生物预印本{% if biorxiv_promoted %}<span class="badge ok">已上板</span>{% else %}<span class="badge info">影子模式</span>{% endif %}</h2>
+  {% if shadow %}
+  <p>影子窗口 {{ shadow.window_days }} 天：{{ shadow.days_with_data }} 天有数据 ·
+     候选合计 {{ shadow.total_candidates }} 篇 · 过弃权线 {{ shadow.days_above_abstain_line }} 天 ·
+     若参选将换头名 <b>{{ shadow.days_would_flip_top }}</b> 天 · 抓取失败 {{ shadow.fetch_errors }} 次</p>
+  <table>
+    <tr><th>日期</th><th>影子头名</th><th>影子分</th><th>主线分</th><th>换头名?</th></tr>
+    {% for r in shadow.rows[-7:] %}
+    {% if r.get('candidates') %}
+    <tr><td class="mt">{{ r.date }}</td>
+        <td>{{ (r.shadow_top or '—')[:56] }}<div class="mt">{{ r.shadow_top_category or '' }}</div></td>
+        <td>{{ '%.1f'|format(r.shadow_score) if r.shadow_score is not none else '—' }}</td>
+        <td>{{ '%.1f'|format(r.main_score) if r.main_score is not none else '—' }}</td>
+        <td>{{ '✳' if r.would_flip_top else '—' }}</td></tr>
+    {% else %}
+    <tr><td class="mt">{{ r.date }}</td><td class="mt" colspan="4">{{ r.get('error') or r.get('note') or '无数据' }}</td></tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+  <h3>上板提案（预览 → 你点应用 → 回执）</h3>
+  <p class="mt">{{ shadow.proposal.action }} · 源权重提案 {{ shadow.proposal.weight_proposal.source_weight }}
+     （{{ shadow.proposal.weight_proposal.note }}）</p>
+  <ul class="mt">{% for s in shadow.proposal.safeguards %}<li>{{ s }}</li>{% endfor %}</ul>
+  <p>
+    <a class="btn" href="/docs-r5" onclick="alert('提案一页纸在仓库 docs/v03/R5_启用提案_bioRxiv.md'); return false;">查看启用提案一页</a>
+    <button class="primary" onclick="r5Promote()">{{ '撤回影子模式' if biorxiv_promoted else '应用上板（Owner 决策）' }}</button>
+    <span id="r5Receipt" class="mt"></span>
+  </p>
+  {% else %}
+  <p class="mt">影子报表尚未生成：<code>adp shadow-biorxiv --days 14</code></p>
+  {% endif %}
+</div>
+
+<div class="card">
   <h2>知识债务账本</h2>
   {% if radar.debts %}
   <table>
@@ -45,4 +79,14 @@
   </table>
   {% else %}<p class="mt">当前无未清债务。</p>{% endif %}
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function r5Promote() {
+  const r = await post('/api/r5/promote');
+  document.getElementById('r5Receipt').textContent =
+    r.promoted ? '已上板（回执在 config_changes 镜像）。' : '已撤回影子模式（回执已记录）。';
+  setTimeout(() => location.reload(), 800);
+}
+</script>
 {% endblock %}

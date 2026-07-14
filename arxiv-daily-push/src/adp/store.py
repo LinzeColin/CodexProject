@@ -209,7 +209,8 @@ def record_source_health(conn: sqlite3.Connection, source_id: str, *, ok: bool) 
     return health
 
 
-def ingest_document(conn: sqlite3.Connection, item: dict[str, Any]) -> tuple[str, str, bool, bool]:
+def ingest_document(conn: sqlite3.Connection, item: dict[str, Any],
+                    *, source_id: str = "SRC-ARXIV") -> tuple[str, str, bool, bool]:
     """标准化文档入库；返回 (doc_id, doc_version_id, is_new_doc, is_new_version).
 
     去重/版本链: 同 stable_id 只有一个 document；同版本号幂等跳过（不变量 6 的发现域面）。
@@ -226,8 +227,8 @@ def ingest_document(conn: sqlite3.Connection, item: dict[str, Any]) -> tuple[str
     if is_new_doc:
         conn.execute(
             """INSERT INTO documents (id, source_id, stable_id, canonical_url, title, content_hash, first_seen_at)
-               VALUES (?, 'SRC-ARXIV', ?, ?, ?, ?, ?)""",
-            (doc_id, stable_id, item["canonical_url"], item["title"], content_hash, item["retrieved_at"]),
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (doc_id, source_id, stable_id, item["canonical_url"], item["title"], content_hash, item["retrieved_at"]),
         )
         try:
             conn.execute(
