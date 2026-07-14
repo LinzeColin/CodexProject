@@ -110,7 +110,8 @@ class Stage039RetryDeadLetterStageReviewTests(unittest.TestCase):
         stage = batch["stage_progress"]["STAGE-039"]
         self.assertTrue(
             batch["status"] == "stage039_completed_reviewed_local"
-            or batch["status"].startswith("stage040_"),
+            or batch["status"].startswith("stage040_")
+            or batch["status"] == "reviewed_ready_for_upload_no_github_upload",
             batch["status"],
         )
         self.assertEqual("completed_reviewed_local", stage["status"])
@@ -133,6 +134,9 @@ class Stage039RetryDeadLetterStageReviewTests(unittest.TestCase):
                 "IDS-STAGE040-P4": "IDS-STAGE040-REVIEW-GATE",
                 "IDS-STAGE040-REVIEW": (
                     "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+                ),
+                "IDS-V0_1-BATCH-031-040-REVIEW-GATE": (
+                    "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
                 ),
             }
             self.assertIn(roadmap["current_phase_id"], expected_gate_by_phase)

@@ -1,10 +1,17 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-14T09:58:18Z"
-status: "stage040_completed_reviewed_local"
+updated_at_utc: "2026-07-14T10:44:16Z"
+status: "reviewed_ready_for_upload_no_github_upload"
+review_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_REVIEW_GATE.md"
 
 transition_history:
+  batch_review_state:
+    status: "reviewed_ready_for_upload_no_github_upload"
+    current_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+    next_allowed_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+    github_upload_allowed: false
   stage040_review_state:
     status: "stage040_completed_reviewed_local"
     current_task_id: "IDS-V0_1-STAGE040-REVIEW"
@@ -86,6 +93,8 @@ data_boundary:
 
 upload_gate:
   push_allowed: false
+  review_gate: "BATCH031_040_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
   blocked_until:
     - "STAGE-031 through STAGE-040 all completed."
     - "Every completed Stage has durable local evidence."
@@ -419,7 +428,7 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-040:
-    status: "stage040_completed_reviewed_local"
+    status: "completed_reviewed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
@@ -541,8 +550,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE040-REVIEW"
-  next_allowed_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+  current_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+  next_allowed_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
   github_upload_allowed: false
-  current_run: "STAGE-040 whole-stage review found one Critical and two Important issues, repaired all three, revalidated Phase 1-4 and external source integrity, and closed ACC-STAGE-040 as completed_reviewed_local without entering the batch review."
-  no_upload_reason: "BATCH031_040 now has STAGE-031 through STAGE-040 completed_reviewed_local, but the separate ten-stage batch review and upload gates have not run, so push_allowed stays false."
+  current_run: "Independent BATCH031-040 review reverified the exact ten approved taskpack members, ten whole-stage review artifacts, Stage036-040 interface chain, stage checkers, governance route, and Git index. One Critical and two Important batch-level findings were repaired; no GitHub, PR, issue, merge, app reinstall, raw metadata content access, production runtime, or STAGE-041 action ran."
+  no_upload_reason: "The batch review passed locally, but the separate IDS-V0_1-BATCH-031-040-UPLOAD-GATE has not run; push_allowed remains false."
