@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-15 Australia/Sydney - Readable HTML email preview beside MIME .eml
+
+- `deliver_lesson` now writes a browser-openable `.html` preview next to the MIME `.eml` outbox artifact (the wire format reads as encoded text when opened directly, which the Owner perceived as garbled); existing previews backfilled and the Friday checklist documents the distinction. No behavior change to authorization, idempotency, or learning-state separation.
+
 ## 2026-07-14 Australia/Sydney - V0.3 rebuild R0: decision freeze and drift repair
 
 - Imported the Owner-accepted V0.3 rebuild task pack as the active development contract at `docs/v03/` (PRD, architecture, delivery roadmap R0-R6, <110 KB total); V7.2 remains the frozen fail-closed machine lock for the legacy runtime.
