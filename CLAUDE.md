@@ -1,4 +1,6 @@
 @AGENTS.md
+
+> ⚠️ **仓库拆分迁移进行中。禁止恢复任何消失的目录。** 详见 AGENTS.md 顶部的迁移指令。
 @OpenAIDatabase/data/derived/personalization/claude_personalization.md
 
 # Claude Code adapter
