@@ -4,8 +4,8 @@
 
 - source_base_commit: `996986b0e00b458c376c84ea037dd06f4c548ad0`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:b6e0f68316b2ee0841be9357f234382e93071cdf4dee10e6016044afd84ba329`
-- snapshot_event_time: `2026-07-14T23:30:00+10:00`
+- source_snapshot_hash: `sha256:d3d567d0c081787922ed5089edc677109ee1c39fa891ffca635f6333dd37c1d4`
+- snapshot_event_time: `2026-07-14T22:30:00+10:00`
 - generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -53,5 +53,5 @@
 - Pending/stale events: `393`
 - Tree-bound events: `19`
 - Commit-bound events: `11`
-- Legacy unbound events: `335`
+- Legacy unbound events: `334`
 - Unresolved fact IDs: `1`

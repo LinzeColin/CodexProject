@@ -174,7 +174,8 @@ agent_revalidation_required: true
 agent_revalidation_policy: Every active or completed Stage2 agent must read V7.2, review its completed work against V7.2, repair non-compliance before starting new work, and record a revalidation receipt in its PR or closeout.
 rebuild_v03:
   # R0-4: V0.3 重构为当前活动开发合同；V7.2 保持为旧运行时机器锁（失败关闭不变）。
-  # 三处版本指针：本段 / docs/v03/STATUS.yaml / HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md 顶部——三处答案必须一致。
+  # 三处版本指针：本段 / docs/v03/STATUS.yaml / arxiv-daily-push/AGENTS.md「V0.3 重构指针」节——三处答案必须一致。
+  # （原第三指针 HANDOFF/01 已随仓库拆分迁移移除，owner commit f2966dfca。）
   status: active_development_contract
   accepted_at: "2026-07-14"
   acceptance_basis: owner_goal_directive_2026_07_14

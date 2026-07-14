@@ -33,26 +33,26 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
     degraded: list[str] = []
     counts: dict[str, Any] = {"扫描": 0, "过门": 0, "选中": 0, "讲义": 0, "到期复习": 0, "已交付": 0}
 
-    existing = conn.execute(
-        "SELECT run_id FROM selections WHERE as_of_date=?", (as_of_date,)
-    ).fetchone()
-    if existing:
-        entry = {
-            "run_id": run_id, "trigger": trigger, "result": "未运行",
-            "side_effects_authorized": False, "counts": counts,
-            "降级项": [], "弃权原因": None,
-            "note": f"当日已有运行 {existing['run_id']}，幂等跳过",
-            "duration_seconds": round(time.monotonic() - started, 1),
-        }
-        return write_manifest(conn, entry)
-
-    thresholds = config.load_thresholds()
+    # 对抗性验证修复：幂等检查与阈值加载也在 try 内（此前这里的异常会逃逸、
+    # 不留任何「失败」manifest——违反不变量 9）。
     try:
+        completed = _completed_run_for_date(conn, as_of_date)
+        if completed:
+            entry = {
+                "run_id": run_id, "trigger": trigger, "result": "未运行",
+                "side_effects_authorized": False, "counts": counts,
+                "降级项": [], "弃权原因": None,
+                "note": f"当日已有成功运行 {completed}，幂等跳过",
+                "duration_seconds": round(time.monotonic() - started, 1),
+            }
+            return write_manifest(conn, entry)
+
+        thresholds = config.load_thresholds()
         return _run_stages(conn, run_id=run_id, trigger=trigger, as_of=as_of,
                            as_of_date=as_of_date, fetch=fetch, fetch_days=fetch_days,
                            thresholds=thresholds, counts=counts, degraded=degraded,
                            started=started)
-    except Exception as exc:  # 复审修复：任何异常必须留下「失败」manifest（不变量 9）
+    except Exception as exc:  # 任何异常必须留下「失败」manifest（不变量 9）
         entry = {
             "run_id": run_id, "trigger": trigger, "result": "失败",
             "side_effects_authorized": False, "counts": counts,
@@ -60,10 +60,24 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
             "note": f"{type(exc).__name__}: {exc}",
             "duration_seconds": round(time.monotonic() - started, 1),
         }
-        try:
-            return write_manifest(conn, entry)
-        except Exception:
-            return write_manifest(None, entry)
+        return write_manifest(conn, entry)
+
+
+def _completed_run_for_date(conn: sqlite3.Connection, as_of_date: str) -> str | None:
+    """幂等键 = 当日是否已有**成功**运行（正常/降级/弃权）.
+
+    对抗性验证修复：此前以 selections 行为键——一次中途崩溃的 run 已提交
+    selections 行，会把这一天永久标记为「已运行」而没有任何成功产出。
+    失败/未运行的 manifest 不阻止重跑。
+    """
+    for row in conn.execute(
+        "SELECT run_id, manifest_json FROM run_manifests WHERE run_id LIKE ?",
+        (f"{as_of_date}T%",),
+    ):
+        entry = json.loads(row["manifest_json"])
+        if entry.get("result") in {"正常", "降级", "弃权"}:
+            return row["run_id"]
+    return None
 
 
 def _run_stages(conn: sqlite3.Connection, *, run_id: str, trigger: str, as_of: datetime,
@@ -156,4 +170,8 @@ def _export_lesson(conn: sqlite3.Connection, lesson_id: str) -> str:
     payload["sections_json"] = json.loads(payload["sections_json"])
     payload["claim_bindings_json"] = json.loads(payload["claim_bindings_json"])
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
-    return str(path.relative_to(config.PROJECT_ROOT))
+    try:
+        # ADP_DATA_DIR 指向项目外（如测试临时目录）时 relative_to 会抛错并砸掉整个 run
+        return str(path.relative_to(config.PROJECT_ROOT))
+    except ValueError:
+        return str(path)

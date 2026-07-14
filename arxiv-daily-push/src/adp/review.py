@@ -46,7 +46,14 @@ def grade_recall(conn: sqlite3.Connection, item_id: str, grade: int, thresholds:
     at = at or datetime.now(timezone.utc)
     # 复审修复：防重号不含档位——同日同条目只产生一次学习完成事件（不变量 6），
     # 改评不追加事件也不二次推进 FSRS；纠错重开当日重评可传显式 key。
-    key = idempotency_key or f"{item_id}:{at.date().isoformat()}"
+    # 对抗性验证修复：「同日」按系统时区（Sydney）而非 UTC 判定——UTC 午夜=悉尼上午 10 点，
+    # 否则同一个悉尼上午的两次评分会跨 UTC 日期而被视为两天。
+    from zoneinfo import ZoneInfo
+
+    from .config import TIMEZONE
+
+    local_day = at.astimezone(ZoneInfo(TIMEZONE)).date().isoformat()
+    key = idempotency_key or f"{item_id}:{local_day}"
     duplicate = conn.execute(
         """SELECT id FROM learning_events WHERE kind='self_grade' AND undone_by IS NULL
            AND json_extract(payload_json, '$.idempotency_key') = ?""",

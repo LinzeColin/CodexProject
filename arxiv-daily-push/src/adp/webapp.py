@@ -87,7 +87,9 @@ def today() -> HTMLResponse:
     conn = _conn()
     try:
         thresholds = config.load_thresholds()
-        selection = conn.execute("SELECT * FROM selections ORDER BY as_of_date DESC LIMIT 1").fetchone()
+        selection = conn.execute(
+            "SELECT * FROM selections ORDER BY as_of_date DESC, run_id DESC LIMIT 1"
+        ).fetchone()
         lesson_row = _latest_lesson(conn)
         lesson = _lesson_view(conn, lesson_row) if lesson_row else None
         state = learning_state(conn, lesson_row["id"]) if lesson_row else None

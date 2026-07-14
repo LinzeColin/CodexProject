@@ -108,11 +108,16 @@ def _binding_summary(sections: list[dict[str, Any]], dropped: int) -> dict[str, 
 
 
 def validate_traceability(conn: sqlite3.Connection, lesson_id: str) -> dict[str, Any]:
-    """机器面校验：每个句子的 claim 绑定必须存在（DOC_META 除外，属官方元数据）."""
-    row = conn.execute("SELECT sections_json FROM lessons WHERE id=?", (lesson_id,)).fetchone()
+    """机器面校验：每个句子的 claim 绑定必须存在且属于本讲义的论文版本.
+
+    对抗性验证修复：存在性检查限定 doc_version_id——被错误重指到别的论文的
+    声明同样判为不可溯源，而不是「全库任意声明皆可」。
+    """
+    row = conn.execute("SELECT sections_json, doc_version_id FROM lessons WHERE id=?", (lesson_id,)).fetchone()
     if row is None:
         return {"ok": False, "error": "lesson_not_found"}
     sections = json.loads(row["sections_json"])
+    doc_version_id = row["doc_version_id"]
     missing = []
     bindings = 0
     for section_index, section in enumerate(sections):
@@ -122,7 +127,10 @@ def validate_traceability(conn: sqlite3.Connection, lesson_id: str) -> dict[str,
             if not claim_id:
                 missing.append({f"s{section_index}.{sent_index}": "unbound"})
             elif claim_id != DOC_META:
-                exists = conn.execute("SELECT 1 FROM claims WHERE id=?", (claim_id,)).fetchone()
+                exists = conn.execute(
+                    "SELECT 1 FROM claims WHERE id=? AND doc_version_id=?",
+                    (claim_id, doc_version_id),
+                ).fetchone()
                 if not exists:
                     missing.append({f"s{section_index}.{sent_index}": claim_id})
     return {"ok": not missing and bindings > 0, "bindings": bindings, "missing": missing}
@@ -285,8 +293,14 @@ def _glossary_sentences(claims: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 seen[term] = index
     if not seen:
         return [_sent("摘要未出现需要解释的专有术语。")]
+    def _quote(text: str, limit: int = 80) -> str:
+        if len(text) <= limit:
+            return text
+        cut = text[:limit].rsplit(" ", 1)[0]  # 词边界截断，避免"…reaches fo"式断词
+        return f"{cut}…"
+
     return [
-        {"text": f"术语 {term}——出处见声明：{claims[idx]['text'][:80]}",
+        {"text": f"术语 {term}——出处见声明：{_quote(claims[idx]['text'])}",
          "claim": claims[idx]["id"]}
         for term, idx in list(seen.items())[:6]
     ]

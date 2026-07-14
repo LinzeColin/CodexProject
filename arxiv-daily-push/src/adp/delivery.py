@@ -158,8 +158,13 @@ def weekly_radar(conn: sqlite3.Connection, *, now: datetime | None = None) -> di
 
     selections = []
     selected_count = abstain_count = 0
+    # 每日取最新一次决策（失败重跑后同日可能有多行；run_id 为悉尼 ISO，字典序即时间序）
     for row in conn.execute(
-        "SELECT * FROM selections WHERE as_of_date >= ? ORDER BY as_of_date", (week_start,)
+        """SELECT s.* FROM selections s
+           JOIN (SELECT as_of_date, MAX(run_id) AS max_run FROM selections GROUP BY as_of_date) latest
+             ON latest.as_of_date = s.as_of_date AND latest.max_run = s.run_id
+           WHERE s.as_of_date >= ? ORDER BY s.as_of_date""",
+        (week_start,),
     ):
         if row["abstain"]:
             abstain_count += 1

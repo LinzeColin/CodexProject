@@ -36,6 +36,14 @@ def _assert_final_commit_binding_allows_current_mvp_prep(
     testcase.assertTrue(any(marker in assurance for marker in assurance_markers), assurance)
 
 
+
+# 仓库拆分迁移（owner commit f2966dfca）移除了根级 HANDOFF/；这些依赖该历史工件的
+# final-bundle/S3 证据面测试在其缺席时冻结跳过（运行时 fail-closed 门另有独立测试保护），
+# HANDOFF 在 ADP 迁移后的新仓库回归时自动复活。
+_HANDOFF_ROOT_PRESENT = (Path(__file__).resolve().parents[2] / "HANDOFF" / "00_下一Agent先读.md").exists()
+_HANDOFF_SKIP_REASON = "root HANDOFF/ removed by repo-split migration (f2966dfca); legacy bundle evidence surface frozen"
+
+
 class GovernanceCurrentStateTests(unittest.TestCase):
     def test_human_review_markdown_formula_does_not_use_machine_implementation_refs(self) -> None:
         formula_registry = (ADP_ROOT / "docs/governance/formula_registry.yaml").read_text(encoding="utf-8")
@@ -1623,6 +1631,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, model_spec)
 
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
     def test_s3_daily_operation_handoff_records_post_acceptance_blocker(self) -> None:
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
@@ -1981,6 +1991,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("handoff_first_main_commit=91f22b876b05f373229ef4bf5de2e67bdb927c0b", model_params)
         self.assertNotIn("current_main=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
 
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
     def test_daily_operation_enablement_preflight_root_gate_is_owner_readable(self) -> None:
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
@@ -2288,6 +2300,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(event["scheduler_enabled"])
         self.assertFalse(event["release_packaging_enabled"])
         self.assertFalse(event["production_restore_enabled"])
+
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
 
     def test_persistent_authorization_prerequisites_are_fail_closed_and_governed(self) -> None:
         task_id = "ADP-MVP-READY-S3-PERSISTENT-AUTH-PREREQUISITE-FAIL-CLOSED"

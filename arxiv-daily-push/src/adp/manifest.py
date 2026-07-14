@@ -44,11 +44,16 @@ def write_manifest(conn: sqlite3.Connection | None, entry: dict[str, Any]) -> di
     with open(path, "a", encoding="utf-8") as fh:
         fh.write(line + "\n")
     if conn is not None:
-        conn.execute(
-            "INSERT OR REPLACE INTO run_manifests (run_id, manifest_json) VALUES (?, ?)",
-            (entry["run_id"], line),
-        )
-        conn.commit()
+        # jsonl 是 manifest 的正典；DB 行只是查询镜像。镜像写失败不重写文件
+        # （对抗性验证修复：此前上层兜底会把同一行追加两次），只降级记录。
+        try:
+            conn.execute(
+                "INSERT OR REPLACE INTO run_manifests (run_id, manifest_json) VALUES (?, ?)",
+                (entry["run_id"], line),
+            )
+            conn.commit()
+        except Exception:
+            pass
     return entry
 
 

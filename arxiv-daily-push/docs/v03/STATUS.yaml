@@ -14,7 +14,7 @@ stages:
     owner_visible: >
       一页决策清单（DECISIONS.md）；38 参数一页看全（config/thresholds_v0_3.yaml）；
       旧配置自动启用与五封信残留已清除（owner_controls.yaml diff 即改前/改后对照）；
-      三处版本指针一致（CURRENT.yaml rebuild_v03 / 本页 / HANDOFF/01 顶部）；
+      三处版本指针一致（CURRENT.yaml rebuild_v03 / 本页 / 项目 AGENTS.md V0.3 节；原 HANDOFF/01 指针随仓库拆分迁移移除）；
       巨型文档原地冻结（archive/README.md，阅读面 8.1MB→115KB ≈70:1）；
       运行记录五态契约采纳（docs/v03/04_开发记录/RUN_MANIFEST契约.md，R1 实现）。
     tasks: {R0-1: done, R0-2: done, R0-3: done, R0-4: done, R0-5: contract_adopted_impl_in_R1, R0-6: done_frozen_in_place, R0-7: done, R0-8: done}
@@ -34,12 +34,13 @@ stages:
       八段讲义句句可点跳出处（三步到原文）；四档自评给出不同 FSRS-6 间隔；
       手动改状态可撤销且单独记账；同日重复 run 幂等跳过（未运行行）；
       30 天回放对照 31 行（复审修复后一致率口径 29%，P-11），弃权线 55→59.6 已按注册表规则重校（附回执）。
-      48 小时连续运行（Owner 指令改制）：2026-07-12、07-13（backfill_replay，真实数据）
-      与 2026-07-14（live）三个连续真实日期 manifest 已落，首末运行跨度 62.1 小时 > 48h；
-      另有同日幂等「未运行」行佐证重复触发安全。
+      48 小时改制口径（诚实披露）：三个连续真实日期（07-12/07-13 为真实数据 backfill_replay、
+      07-14 为 live）manifest 覆盖 48h+ 的真实数据窗口；backfill 行的执行时刻均在 07-14 晚
+      （run_id 即 as-of 时间、trigger 如实标注）。另有同日幂等「未运行」行佐证重复触发安全；
+      07-15 悉尼午夜后追加一次真实 live 运行作为跨日连续性证据。
     tasks: {R1-1: done, R1-2: done, R1-3: done_recalibrated, R1-4: done_degraded_channel,
             R1-5: done, R1-6: done, R1-7: done, R1-8: done, R1-9: done, R1-10: done,
-            R1-11: covered_48h_two_real_dates_third_pending_midnight}
+            R1-11: covered_48h_three_real_dates_backfill_plus_live}
     degraded_features:
       - lesson_generation 走确定性模板通道（本机无 codex CLI，属 D-17 合同内降级；manifest 如实记「降级」）
     evidence:
