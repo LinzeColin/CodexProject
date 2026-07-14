@@ -33,7 +33,7 @@ PYTHONPATH=src var/venv/bin/python -m adp run
 ### 已降级功能清单（周五到点交付制：带清单交付，不带「正在修」）
 
 - 讲义生成走确定性模板（本机无 codex CLI；装上即自动升级，manifest 会从「降级」转「正常」）。
-- 邮件为 .eml 预览 + 失败关闭（零生产副作用指令）；你签发 data/authorization/send_authorization.json 凭证后同一管道即真发。
+- 邮件为预览 + 失败关闭（零生产副作用指令）：**人读预览开 data/outbox/*.html**（浏览器直开）；同名 .eml 是真实邮件线格式（MIME 编码，文本打开显示为编码字符是正常现象，不是乱码 bug）。你签发 data/authorization/send_authorization.json 凭证后同一管道即真发。
 
 ### 反向指标（验收与测试.md 固定栏目）
 

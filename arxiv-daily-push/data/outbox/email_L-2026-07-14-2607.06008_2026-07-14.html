@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<body style="margin:0; padding:0; background:#f3eee1;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3eee1; padding:16px 0;">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0"
+       style="background:#fbf7ec; border:1px solid #d8cfba; border-radius:12px; font-family:-apple-system,'PingFang SC',sans-serif;">
+  <tr><td style="padding:24px 28px 8px;">
+    <p style="margin:0; font-size:12px; color:#8b7a5c;">ADP 个人前沿学习系统 · 学习镜像 · 2026-07-14</p>
+    <h1 style="margin:8px 0 4px; font-size:19px; line-height:1.5; color:#2f2618;">PolyWorkBench: Benchmarking Multilingual Long-Horizon LLM Agents</h1>
+    <p style="margin:0 0 8px; font-size:13px;">
+      <a href="https://arxiv.org/abs/2607.06008v2" style="color:#8a5c16;">arXiv 原文</a>
+      <span style="color:#8b7a5c;"> · 生成通道 deterministic_degraded · 讲义 L-2026-07-14-2607.06008</span></p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">1. 人话版</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">这篇论文在做什么：Large language model (LLM) agents have shown strong performance in long-horizon tasks that require planning, tool use, and interaction with external environments. 论文《PolyWorkBench: Benchmarking Multilingual Long-Horizon LLM Agents》发表于 2026-07-07，作者 8 人，原文见 https://arxiv.org/abs/2607.06008v2。</p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">2. 领域脉络</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">本文主类目 cs.AI：人工智能——让机器完成需要智能的任务的总领域。 交叉类目 cs.CL：自然语言处理——让机器理解与生成人类语言。</p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">3. 机制拆解</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows. To enable comprehensive evaluation, we propose a hybrid framework that combines structural grading, executable verification, and LLM-based semantic assessment. This design allows us to capture both functional correctness and linguistic consistency across complex workflows.</p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">4. 证据与数字</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">PolyWorkBench consists of 67 tasks across five domains, including commerce, knowledge work, legal analysis, localization, and manufacturing, where agents must process heterogeneous multilingual inputs, perform iterative reasoning, invoke external tools, and produce structured outputs.</p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">5. 反例与边界</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language.</p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">6. 跨领域连接与意外收获</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">本文横跨 2 个类目（cs.AI, cs.CL），关注其在你兴趣板块间的迁移面。 意外收获：However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language. 意外收获：Our analysis suggests that multilinguality introduces compounding effects across reasoning and execution steps, highlighting the importance of jointly modeling language variation and procedural decision-making in agent evaluation.</p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">7. 可复用方法</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows.</p>
+  </td></tr>
+  
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">8. 术语表</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">术语 LLM——出处见声明：Large language model (LLM) agents have shown strong performance in long-horizon  术语 PolyWorkBench——出处见声明：In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents </p>
+  </td></tr>
+  
+  <tr><td style="padding:18px 28px 24px;">
+    <p style="margin:0; padding:12px 14px; background:#f3eee1; border-radius:8px; font-size:12.5px; color:#8b7a5c;">
+      本邮件只是网页讲义的镜像通道。<b>发送状态 ≠ 学习状态</b>：只有你在系统里完成主动回忆并自评，
+      才会产生「已学会」。打开 <a href="http://127.0.0.1:8787/" style="color:#8a5c16;">今天学什么</a> 完成回忆。
+    </p>
+  </td></tr>
+</table>
+<p style="font-size:11px; color:#8b7a5c; margin:10px 0 0;">Thank you to arXiv for use of its open access interoperability.</p>
+</td></tr>
+</table>
+</body>
+</html>

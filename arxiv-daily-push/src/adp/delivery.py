@@ -122,6 +122,10 @@ def deliver_lesson(conn: sqlite3.Connection, lesson_id: str, *, channel: str = "
     message.add_alternative(html, subtype="html")
     preview_path = outbox / f"{key.replace(':', '_')}.eml"
     preview_path.write_bytes(bytes(message))
+    # .eml 是 MIME 编码（base64/quoted-printable），文本编辑器打开必然是"乱码"——
+    # 那是邮件线格式不是错误；给 Owner 的人读预览是旁边这份 .html（浏览器直开）。
+    preview_html_path = outbox / f"{key.replace(':', '_')}.html"
+    preview_html_path.write_text(html, encoding="utf-8")
 
     if auth["side_effects_authorized"]:
         # 真实发送通道保留给授权后的受控运行；本次交付合同全程零生产副作用。
@@ -143,8 +147,9 @@ def deliver_lesson(conn: sqlite3.Connection, lesson_id: str, *, channel: str = "
     conn.commit()
     return {
         "delivered": delivered, "duplicate": False, "idempotency_key": key, "result": result,
-        "preview": str(preview_path), "subject": subject,
-        "note": "发送状态 ≠ 学习状态：本次交付未产生任何学习事件（不变量 1）。",
+        "preview": str(preview_path), "preview_html": str(preview_html_path), "subject": subject,
+        "note": "发送状态 ≠ 学习状态：本次交付未产生任何学习事件（不变量 1）。"
+                "人读预览请开 .html（.eml 是 MIME 线格式，文本打开显示为编码字符是正常的）。",
     }
 
 
