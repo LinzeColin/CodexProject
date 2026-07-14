@@ -64,7 +64,7 @@ Source of truth is the current code and tests, but the expected rules are:
 - `NOTIFICATION_HIDDEN_NAMES` should remain empty unless the user explicitly authorizes a display-only hiding rule.
 - All status rollups are natural-month rollups.
 - Effective attendance day means both morning and evening punches exist on the same natural day.
-- Notification `今日异常 / 无考勤` is driven only by the same-day official report row for current attendance-group members. `缺卡`, `未打卡`, `旷工`, `迟到`, and `早退` count when the exact official `考勤结果` or official count columns mark them; personal summary children and raw record counts are diagnostic only.
+- Morning/evening `今日异常 / 无考勤` is a temporary snapshot driven by current per-member `record get + summary` reads for every attendance-group member. A successful empty punch result is valid coverage; failed/missed/wrong-date/unparseable reads fail closed.
 - Current-month cumulative counts are annotations for people already shown because they hit today's status. They must never create a today no-record/anomaly row by themselves.
 - Empty notification sections render nothing: no title and no `无`.
 - If collection is complete and there is no same-day anomaly, the notification says `本次 N 人全部考勤正常`.
@@ -72,7 +72,7 @@ Source of truth is the current code and tests, but the expected rules are:
 - Notification display rule: 10 or fewer people shows all names; over 10 shows total plus Top 10.
 - Top 10 ordering: monthly count or days descending, latest date descending, then stable name sort.
 - DWS collection logic must not be changed when only notification wording or ledger indexing is requested.
-- Scheduled production uses the exact official report collector only. Do not add a per-member `record get` / `summary` sweep before or after it; that legacy diagnostic path is non-authoritative and can multiply the run into hours.
+- Morning/evening use the scoped per-member current-data collector. Final alone uses the independent official XLS/XLSX and 48-required-field strict reconciliation; final waiting or failure cannot block a current reminder.
 - Morning and evening outputs are temporary reminders. The later official final reconciliation is the only daily result eligible for new monthly notification rollups.
 - Legacy, morning, and evening archives remain audit-only for monthly notification values.
 - Delivery is owner-disabled. Production and resend entries return `NOT_SENT_OWNER_DISABLED` and must not invoke a sender.

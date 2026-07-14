@@ -679,8 +679,29 @@ class R6Coordinator:
             "monthly_written",
             "actual_workday",
             "run_id",
+            "integrity_error",
+            "error_code",
         )
-        return {key: result[key] for key in allowed if key in result}
+        aggregate = {key: result[key] for key in allowed if key in result}
+        coverage = result.get("coverage_stats")
+        if isinstance(coverage, Mapping):
+            allowed_coverage = (
+                "expected_people",
+                "queried_people",
+                "successful_people",
+                "missing_people",
+                "failed_batch_index",
+                "failed_batch_expected",
+                "failed_batch_actual",
+                "query_failure_count",
+                "parse_failure_count",
+            )
+            aggregate["coverage_stats"] = {
+                key: coverage[key]
+                for key in allowed_coverage
+                if key in coverage and (coverage[key] is None or isinstance(coverage[key], int))
+            }
+        return aggregate
 
     def _write(self) -> None:
         self.root.mkdir(parents=True, exist_ok=True)
@@ -713,6 +734,29 @@ class R6Coordinator:
                     monthly="YES" if (final or {}).get("monthly_written") is True else "NO",
                 )
             )
+        detail_lines: list[str] = []
+        for work_date, day in sorted(self.state["work_dates"].items()):
+            for run_slot, slot in sorted((day.get("slots") or {}).items()):
+                if not isinstance(slot, Mapping) or not slot.get("error_code"):
+                    continue
+                coverage = slot.get("coverage_stats") or {}
+                detail_lines.append(
+                    "- {date} {slot_name}：{code}；{detail}；期望人数 {expected}，已查询 {queried}，"
+                    "成功 {successful}，缺失 {missing}，查询失败 {query_failed}，解析失败 {parse_failed}".format(
+                        date=work_date,
+                        slot_name=run_slot,
+                        code=slot.get("error_code"),
+                        detail=slot.get("integrity_error") or "无错误详情",
+                        expected=coverage.get("expected_people", "UNKNOWN"),
+                        queried=coverage.get("queried_people", "UNKNOWN"),
+                        successful=coverage.get("successful_people", "UNKNOWN"),
+                        missing=coverage.get("missing_people", "UNKNOWN"),
+                        query_failed=coverage.get("query_failure_count", "UNKNOWN"),
+                        parse_failed=coverage.get("parse_failure_count", "UNKNOWN"),
+                    )
+                )
+        if detail_lines:
+            lines.extend(["", "## 实时提醒完整性错误", "", *detail_lines])
         status_temp = self.status_path.with_suffix(".md.tmp")
         status_temp.write_text("\n".join(lines) + "\n", encoding="utf-8")
         os.chmod(status_temp, 0o600)
@@ -1073,6 +1117,11 @@ def _slot_runner(*, run_slot: str) -> dict[str, Any]:
         "notification_status": result.get("notification_status"),
         "member_count": int(stats.get("member_count") or 0),
         "run_id": str((result.get("run_plan") or {}).get("run_id") or ""),
+        **{
+            key: result[key]
+            for key in ("integrity_error", "error_code", "coverage_stats")
+            if key in result
+        },
     }
 
 

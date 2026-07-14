@@ -32,6 +32,8 @@ current_availability: NO_SEND_RUNTIME_VERIFIED_NOT_PRODUCTION_ACCEPTED
 - 自然计数绑定真实 Codex automation task evidence、实际 commit、两个 prompt 指纹、automation ID 与触发时间；artifact 恢复保留原始来源，版本变化自动清零。
 - 唯一修正完成后连续 5 个实际工作日自然无发送验收重新从 `0/5` 开始。
 - 发送继续硬关闭：`NOT_SENT_OWNER_DISABLED`，消息数与目标调用数必须为 0。
+- 2026-07-13 evening 暴露的根因已按私有 session 控制证据修复：temporary reminder 不再要求每人存在 official `query-data` 报表行，改为考勤组逐人实时 `record get + summary`；成功空打卡仍计完整覆盖，查询/漏查/日期/解析失败继续 fail closed。
+- 私有 R6 state 与中文《运行状态》现保留 `integrity_error`、错误代码和脱敏覆盖统计；历史失败当时未持久化的第三批实际返回人数不可恢复，未作猜测。
 
 next_action: existing morning/evening natural automations accumulate five qualifying workdays; fail closed on the first unresolved real breakpoint
 

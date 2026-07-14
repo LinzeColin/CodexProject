@@ -163,9 +163,16 @@ class OfficialAttendanceParityError(DwsAttendanceError):
 class RealtimeReminderIntegrityError(DwsAttendanceError):
     """Raised when live reminder evidence is incomplete or cannot be parsed."""
 
-    def __init__(self, code: str, detail: str) -> None:
+    def __init__(
+        self,
+        code: str,
+        detail: str,
+        *,
+        coverage_stats: Mapping[str, Any] | None = None,
+    ) -> None:
         self.code = code
         self.detail = detail
+        self.coverage_stats = dict(coverage_stats or {})
         super().__init__(f"{code}: {detail}")
 
 
@@ -507,10 +514,9 @@ def collect_realtime_reminder_attendance(
     org_members = list_org_members(runner=runner, dept_ids=dept_ids)
     try:
         group_scope = _collect_attendance_group_scope(runner=runner)
-        report_columns = _resolve_official_report_columns(runner=runner)
     except OfficialAttendanceParityError as exc:
         raise RealtimeReminderIntegrityError(
-            "REALTIME_REMINDER_SCOPE_OR_COLUMNS_FAILED",
+            "REALTIME_REMINDER_SCOPE_FAILED",
             exc.detail,
         ) from exc
     scoped_user_ids = set(group_scope["member_user_ids"])
@@ -528,27 +534,53 @@ def collect_realtime_reminder_attendance(
             "no organization member belongs to an attendance group",
         )
 
-    realtime_by_user, query_evidence = _query_realtime_reminder_report(
-        runner=runner,
+    try:
+        rows = _collect_member_attendance_rows(
+            members=members,
+            work_date=work_date,
+            summary_datetime=summary_datetime,
+            runner=runner,
+        )
+    except DwsAttendanceError as exc:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_QUERY_FAILED",
+            str(exc),
+            coverage_stats={
+                "expected_people": len(members),
+                "queried_people": 0,
+                "successful_people": 0,
+                "missing_people": len(members),
+                "query_failure_count": 1,
+                "parse_failure_count": 0,
+            },
+        ) from exc
+    query_stats = _validate_realtime_member_queries(
+        rows=rows,
         members=members,
         work_date=work_date,
-        run_type=run_type,
-        column_ids=report_columns["column_ids"],
     )
-    rows = _build_realtime_reminder_rows(members=members, realtime_by_user=realtime_by_user)
+    for row in rows:
+        derived = row["derived"]
+        derived.update(
+            {
+                "realtime_reminder_covered": True,
+                "realtime_reminder_run_type": run_type,
+                "realtime_work_date": work_date,
+                "realtime_reminder_anomaly": bool(
+                    derived.get("record_anomaly") or derived.get("summary_today_anomaly")
+                ),
+                "realtime_reminder_issues": list(derived.get("summary_today_issues") or []),
+            }
+        )
     anomaly_rows = [row for row in rows if row["derived"]["realtime_reminder_anomaly"] is True]
     anomaly_names = [row["member"]["name"] for row in anomaly_rows]
-    stats = {
+    stats = build_collection_stats(rows)
+    stats.update({
         "realtime_reminder_integrity_status": "PASS",
         "realtime_reminder_run_type": run_type,
         "attendance_group_count": len(group_scope["group_ids"]),
         "attendance_group_member_count": len(members),
         "member_count": len(members),
-        "attendance_required_count": len(members),
-        "record_nonempty_count": len(members),
-        "unexpected_empty_record_count": 0,
-        "unexpected_empty_record_names": [],
-        "incomplete_record_names": [],
         "realtime_reminder_expected_count": len(members),
         "realtime_reminder_coverage_count": len(rows),
         "realtime_reminder_query_failure_count": 0,
@@ -558,9 +590,9 @@ def collect_realtime_reminder_attendance(
         "attendance_anomaly_count": len(anomaly_rows),
         "attendance_anomaly_names": anomaly_names,
         "command_failure_count": 0,
-        "legacy_diagnostic_mode": "SKIPPED_REALTIME_REPORT_AUTHORITATIVE",
-        "legacy_diagnostic_skipped_count": len(members),
-    }
+        "realtime_query_mode": "ATTENDANCE_GROUP_PER_MEMBER_RECORD_AND_SUMMARY",
+        **query_stats,
+    })
     return {
         "dws_live": True,
         "uses_mock_data": False,
@@ -573,16 +605,117 @@ def collect_realtime_reminder_attendance(
         "stats": stats,
         "realtime_reminder_evidence": {
             "private": True,
-            "source": "dws attendance report query-data realtime reminder",
+            "source": "dws attendance record get and attendance summary",
             "run_type": run_type,
             "work_date": work_date,
-            "query_start": f"{work_date} 00:00:00",
-            "query_end": f"{work_date} 23:59:59",
             "attendance_group_scope": group_scope,
-            "report_columns": report_columns,
-            "query_batches": query_evidence,
+            "coverage": query_stats,
         },
     }
+
+
+def _validate_realtime_member_queries(
+    *,
+    rows: list[dict[str, Any]],
+    members: list[dict[str, str]],
+    work_date: str,
+) -> dict[str, int]:
+    """Require usable per-person current data; an empty punch list remains usable."""
+
+    expected_people = len(members)
+    parsed_people = 0
+    query_failure_count = 0
+    parse_failure_count = 0
+    first_failure = ""
+    for row in rows:
+        record_final = row["record"]["final"]
+        summary_final = row["summary"]["final"]
+        if not _is_success(record_final) or not _is_success(summary_final):
+            query_failure_count += 1
+            if not first_failure:
+                first_failure = "a scoped member record or summary query failed"
+            continue
+        record_payload = record_final.get("payload")
+        summary_payload = summary_final.get("payload")
+        record_result = record_payload.get("result") if isinstance(record_payload, Mapping) else None
+        summary_result = summary_payload.get("result") if isinstance(summary_payload, Mapping) else None
+        if (
+            not isinstance(record_result, Mapping)
+            or not isinstance(record_result.get("recordList"), list)
+            or not isinstance(summary_result, Mapping)
+            or not isinstance(summary_result.get("items"), list)
+        ):
+            parse_failure_count += 1
+            if not first_failure:
+                first_failure = "a scoped member query returned an unrecognized result structure"
+            continue
+        record_list = record_result["recordList"]
+        if not all(isinstance(item, Mapping) for item in record_list):
+            parse_failure_count += 1
+            if not first_failure:
+                first_failure = "a scoped member punch list contains an unrecognized record"
+            continue
+        if any(
+            parsed_date is not None and parsed_date != work_date
+            for item in record_list
+            for parsed_date in (_realtime_punch_work_date(item),)
+        ):
+            parse_failure_count += 1
+            if not first_failure:
+                first_failure = "a scoped member punch record does not match the requested work date"
+            continue
+        parsed_people += 1
+
+    coverage = {
+        "expected_people": expected_people,
+        "queried_people": len(rows),
+        "successful_people": parsed_people,
+        "missing_people": max(expected_people - parsed_people, 0),
+        "query_failure_count": query_failure_count,
+        "parse_failure_count": parse_failure_count,
+    }
+    if len(rows) != expected_people:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_COVERAGE_MISMATCH",
+            f"expected {expected_people} scoped members, collected {len(rows)}",
+            coverage_stats=coverage,
+        )
+    if query_failure_count:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_QUERY_FAILED",
+            first_failure,
+            coverage_stats=coverage,
+        )
+    if parse_failure_count:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_PARSE_FAILED",
+            first_failure,
+            coverage_stats=coverage,
+        )
+    if parsed_people != expected_people:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_COVERAGE_MISMATCH",
+            f"expected {expected_people} scoped members, parsed {parsed_people}",
+            coverage_stats=coverage,
+        )
+    return coverage
+
+
+def _realtime_punch_work_date(record: Mapping[str, Any]) -> str | None:
+    for key in ("userCheckTime", "baseCheckTime", "planCheckTime", "checkTime"):
+        value = record.get(key)
+        if value is None or value == "":
+            continue
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            seconds = float(value) / 1000 if abs(float(value)) >= 10_000_000_000 else float(value)
+            try:
+                return datetime.fromtimestamp(seconds, ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d")
+            except (OverflowError, OSError, ValueError):
+                return None
+        match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", str(value))
+        if match:
+            return match.group(1)
+    return None
 
 
 def _build_realtime_reminder_rows(
