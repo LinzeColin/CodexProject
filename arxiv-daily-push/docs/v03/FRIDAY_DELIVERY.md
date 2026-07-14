@@ -37,7 +37,7 @@ PYTHONPATH=src var/venv/bin/python -m adp run
 ### 新增页面能力（本周五）
 
 - **前沿雷达 · R5 卡**：bioRxiv 影子 14 天报表 + 上板提案（预览→你点应用→回执，可随时撤回）
-- **手机镜像（R6）**：https://home.linzezhang.com（带钥匙链接见 deploy/cloudflare/README.md）——只读镜像+回忆评分回传；无痕/无钥匙=401
+- **手机镜像（R6）**：https://home.linzezhang.com 直接打开（钥匙登录已按你的指令取消；公开可读的代价与 Access 私有化选项见 deploy/cloudflare/README.md）——只读镜像+回忆评分回传
 
 ### 本周彩蛋
 

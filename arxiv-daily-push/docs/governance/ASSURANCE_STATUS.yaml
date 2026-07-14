@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260715-ADP-V11-FRONTEND-R5-R6"
-source_snapshot_hash: "sha256:98b95e593826811eea06a63bc9c84ad1067449c013dc45789b42318f92a897e6"
+as_of_event_id: "EVENT-20260715-ADP-R6-OPEN-ACCESS"
+source_snapshot_hash: "sha256:287f80e7644b64f941a179525d8834799220ee788ff796418fbe6886fbd909ab"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-15T00:45:00+10:00"
+snapshot_event_time: "2026-07-15T01:35:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 43
+    precommit_pending_events: 44
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
