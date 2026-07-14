@@ -2,6 +2,8 @@
 {% block content %}
 <h1>学习队列</h1>
 
+{% include "_correction_banner.html" %}
+
 <div class="card">
   <h2>今日到期复习（上限 12，超出顺延并记债务）</h2>
   {% if due %}

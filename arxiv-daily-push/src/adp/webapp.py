@@ -89,6 +89,8 @@ def _lesson_view(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
 def today() -> HTMLResponse:
     conn = _conn()
     try:
+        from .corrections import unresolved
+
         thresholds = config.load_thresholds()
         selection = conn.execute("SELECT * FROM selections ORDER BY as_of_date DESC LIMIT 1").fetchone()
         lesson_row = _latest_lesson(conn)
@@ -98,6 +100,7 @@ def today() -> HTMLResponse:
         return _render(
             "today.html", page="today", selection=selection, lesson=lesson, state=state,
             intervals=intervals, grades=GRADES, manual_states=MANUAL_STATES,
+            corrections=unresolved(conn),
         )
     finally:
         conn.close()
@@ -121,7 +124,43 @@ def queue() -> HTMLResponse:
                           "title": doc["title"] if doc else row["id"], "state": state,
                           "reopened": row["status"] == "reopened"})
         due = due_items(conn)
-        return _render("queue.html", page="queue", items=items, due=due, manual_states=MANUAL_STATES)
+        from .corrections import unresolved
+
+        return _render("queue.html", page="queue", items=items, due=due,
+                       manual_states=MANUAL_STATES, corrections=unresolved(conn))
+    finally:
+        conn.close()
+
+
+@app.get("/corrections", response_class=HTMLResponse)
+def corrections_page(q: str = "") -> HTMLResponse:
+    """证据与纠错入口：声明检索（三步到原文）+ 纠错通知 + 矛盾/债务."""
+    conn = _conn()
+    try:
+        from .corrections import unresolved
+
+        hits = []
+        if q:
+            for row in store.search(conn, "fts_claims", q, limit=20):
+                resolved_claim = resolve_claim(conn, row["claim_id"])
+                if resolved_claim:
+                    hits.append(resolved_claim)
+        resolved_history = conn.execute(
+            "SELECT * FROM corrections WHERE resolved=1 ORDER BY created_at DESC LIMIT 10"
+        ).fetchall()
+        return _render("corrections.html", page="corrections", q=q, hits=hits,
+                       corrections=unresolved(conn), resolved_history=resolved_history)
+    finally:
+        conn.close()
+
+
+@app.post("/api/corrections/{correction_id}/resolve")
+def api_resolve_correction(correction_id: int) -> JSONResponse:
+    conn = _conn()
+    try:
+        from .corrections import resolve
+
+        return JSONResponse({"resolved": resolve(conn, correction_id)})
     finally:
         conn.close()
 

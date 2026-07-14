@@ -60,6 +60,7 @@ footer { position:fixed; bottom:0; left:0; right:0; background:var(--pn); border
     <a href="/" class="{{ 'active' if page=='today' }}">今天学什么</a>
     <a href="/queue" class="{{ 'active' if page=='queue' }}">学习队列</a>
     <a href="/radar" class="{{ 'active' if page=='radar' }}">前沿雷达</a>
+    <a href="/corrections" class="{{ 'active' if page=='corrections' }}">证据与纠错</a>
     <a href="/system" class="{{ 'active' if page=='system' }}">系统与来源</a>
   </nav>
   <span style="margin-left:auto">
@@ -85,6 +86,7 @@ async function post(url, body) {
     body: body ? JSON.stringify(body) : null});
   return res.json();
 }
+async function resolveCorrection(id) { await post(`/api/corrections/${id}/resolve`); location.reload(); }
 </script>
 {% block scripts %}{% endblock %}
 </body>

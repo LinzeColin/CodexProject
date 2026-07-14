@@ -124,6 +124,45 @@ class InvariantTests(unittest.TestCase):
         self.assertTrue(undone)
         self.assertIsNone(learning_state(self.conn, self.lesson_id)["manual_state"])
 
+    def test_inv4_correction_reopens_affected_knowledge_and_reminds(self) -> None:
+        """防事故：论文出了 v2/撤稿，旧讲义与掌握度仍被当作有效（纠错不传播）."""
+        from adp.corrections import detect_and_propagate, resolve, unresolved
+        from adp.review import grade_recall, learning_state, manual_mark
+
+        grade_recall(self.conn, self.lesson_id, 3, self._thresholds())
+        manual_mark(self.conn, self.lesson_id, "已掌握")  # 手动标记不得豁免纠错提醒
+        self.assertEqual(learning_state(self.conn, self.lesson_id)["evidence_state"], "已学会")
+
+        # 注入一次真实形态的版本更新（同 stable_id 的 v2）
+        item = _item(version=2)
+        item["metadata"]["arxiv"]["summary"] = ABSTRACT + " We add a new ablation study."
+        self.store.ingest_document(self.conn, item)
+
+        report = detect_and_propagate(self.conn)
+        self.assertEqual(report["corrections_created"], 1)
+        detail = report["details"][0]
+        self.assertEqual(detail["lesson_id"], self.lesson_id)
+        self.assertIn(self.lesson_id, detail["affected"]["lessons"])
+        self.assertTrue(detail["affected"]["claims"])  # 受影响声明被找回
+
+        state = learning_state(self.conn, self.lesson_id)
+        self.assertEqual(state["evidence_state"], "重开待复习")
+        self.assertTrue(state["reopened"])
+        row = self.conn.execute("SELECT status FROM lessons WHERE id=?", (self.lesson_id,)).fetchone()
+        self.assertEqual(row["status"], "reopened")
+        self.assertEqual(len(unresolved(self.conn)), 1)  # 强提醒数据源非空
+        debt = self.conn.execute(
+            "SELECT COUNT(*) n FROM debts WHERE kind='evidence_stale' AND status='open'"
+        ).fetchone()["n"]
+        self.assertEqual(debt, 1)
+
+        # 幂等：再次检测不重复开纠错
+        self.assertEqual(detect_and_propagate(self.conn)["corrections_created"], 0)
+        # 重新复习后关闭
+        grade_recall(self.conn, self.lesson_id, 3, self._thresholds(), idempotency_key="after-reopen")
+        self.assertTrue(resolve(self.conn, detail["correction_id"]))
+        self.assertEqual(len(unresolved(self.conn)), 0)
+
     def test_inv5_no_side_effect_without_authorization(self) -> None:
         """防事故：未授权时真实发送发生或 manifest 谎报已交付."""
         from adp.delivery import authorization_state, deliver_lesson

@@ -42,6 +42,8 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("export", help="一键导出全部数据（JSONL）")
     p_backfill = sub.add_parser("backfill", help="按真实历史日期补跑（数据须已在库内）")
     p_backfill.add_argument("date", help="YYYY-MM-DD（Sydney）")
+    sub.add_parser("migrate-legacy", help="R2 迁移：旧发送记录→delivery 事件；旧评分→只存档")
+    sub.add_parser("corrections", help="检测版本/撤稿并传播纠错（run 内已自动执行）")
 
     args = parser.parse_args(argv)
     conn = store.connect()
@@ -145,6 +147,18 @@ def main(argv: list[str] | None = None) -> int:
             as_of = datetime.fromisoformat(f"{args.date}T07:00:00+10:00")
             entry = run_once(conn, trigger="backfill_replay", as_of=as_of, fetch=False)
             print(json.dumps(entry, ensure_ascii=False, indent=1))
+            return 0
+        if args.command == "migrate-legacy":
+            from .corrections import migrate_legacy
+
+            print(json.dumps(migrate_legacy(conn, config.PROJECT_ROOT), ensure_ascii=False, indent=1))
+            return 0
+        if args.command == "corrections":
+            from .corrections import detect_and_propagate, unresolved
+
+            report = detect_and_propagate(conn)
+            report["unresolved"] = unresolved(conn)
+            print(json.dumps(report, ensure_ascii=False, indent=1))
             return 0
     finally:
         conn.close()

@@ -47,11 +47,15 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
 
     thresholds = config.load_thresholds()
 
-    # 1 发现 + 2 证据（声明抽取在入库时完成）
+    # 1 发现 + 2 证据（声明抽取在入库时完成；新版本触发纠错传播）
     if fetch:
         fetch_counts = fetch_window(conn, days=fetch_days, as_of=as_of)
         counts["抓取新增"] = fetch_counts["新版本"]
         degraded.extend(fetch_counts.get("降级项") or [])
+    from .corrections import detect_and_propagate
+
+    corrections_report = detect_and_propagate(conn)
+    counts["纠错"] = corrections_report["corrections_created"]
 
     # 3 选择
     candidates = candidates_for_date(conn, as_of_date)
@@ -81,6 +85,12 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
         if not trace["ok"]:
             degraded.append(f"traceability_incomplete:{len(trace['missing'])}")
         lesson_artifacts.append(_export_lesson(conn, lesson_id))
+        # 2 证据（增强面）：只对选中篇做 OpenAlex/S2 增强，失败只降级（R2）
+        if fetch:
+            from .enrich import enrich_document
+
+            enrichment = enrich_document(conn, top["candidate"]["doc_id"])
+            degraded.extend(enrichment.get("degraded") or [])
 
     # 5 排程
     counts["到期复习"] = len(due_items(conn, at=as_of))

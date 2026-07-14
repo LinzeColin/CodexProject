@@ -49,7 +49,22 @@ stages:
       - tests/test_adp_invariants.py · tests/test_adp_selection.py (912 tests OK)
   R2:
     gate: correction_reopens_knowledge
-    status: pending
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      声明全部落库可检索（7900+ 条，FTS5；证据与纠错页任意声明三步到原文）；
+      选中篇自动做 OpenAlex/Semantic Scholar 增强（S2 真实成功、证据级升「全文级」，
+      OpenAlex 404 如实降级不阻塞——正是合同行为）；
+      注入一次论文改版演示：自动生成纠错→受影响讲义/声明/复习态影响图→讲义重开为
+      「重开待复习」→今日页/队列页红色强提醒（手动标记不豁免）→重新复习后一键关闭；
+      旧发送记录 M1–M4 已迁移为 delivery 事件（不映射学会），旧评分快照只存档不复算。
+    tasks: {R2-1_enrich: done_degradable, R2-2_claims_searchable: done, R2-3_version_detect_reopen: done,
+            R2-4_strong_reminder: done, R2-5_legacy_sent_migration: done, R2-6_legacy_scores_archive: done}
+    evidence:
+      - tests/test_adp_invariants.py::test_inv4 (注入改版全链路)
+      - src/adp/corrections.py · src/adp/enrich.py
+      - deliveries 表 legacy_email M1-M4 · legacy_archive 表评分快照
+      - /corrections 页（检索+纠错通知+差异对照）
   R3:
     gate: idempotent_mirror_and_radar_one_friday
     status: pending

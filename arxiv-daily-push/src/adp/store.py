@@ -136,6 +136,11 @@ CREATE TABLE IF NOT EXISTS legacy_archive (
   ref TEXT NOT NULL, payload_json TEXT NOT NULL, migrated_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS enrichments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, doc_id TEXT NOT NULL,
+  payload_json TEXT NOT NULL, fetched_at TEXT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_events_item ON learning_events(item_id, at);
 CREATE INDEX IF NOT EXISTS idx_versions_doc ON doc_versions(doc_id, version_no);
 CREATE INDEX IF NOT EXISTS idx_claims_docver ON claims(doc_version_id);
