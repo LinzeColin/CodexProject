@@ -5,7 +5,8 @@
   "compatibility_date": "2026-07-01",
   "workers_dev": true,
   "routes": [
-    { "pattern": "home.linzezhang.com", "custom_domain": true }
+    // Owner 指令（2026-07-15）：home.linzezhang.com 是主页域名，归还；ADP 用自己的子域
+    { "pattern": "adp.linzezhang.com", "custom_domain": true }
   ],
   "d1_databases": [
     {
