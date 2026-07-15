@@ -676,12 +676,12 @@ const THEME_NAV = { warm: 'sidebar', minimal: 'topbar', fresh: 'topbar', techno:
 const THEME_FX = { warm: 'none', minimal: 'minimal', fresh: 'none', techno: 'techno', cosmos: 'cosmos', forest: 'none' };
 // 首屏结构（今天页顶部，按主题切 DOM）：video=整屏对标视频，dash=知识体征仪表盘，none=无首屏（v1.1 规范）
 const THEME_HERO = { warm: 'none', minimal: 'video', fresh: 'none', techno: 'video', cosmos: 'dash', forest: 'video' };
-const VIDEO_HOST = 'https://d8j0ntlcm91z4.cloudfront.net';
-// 对标案例原版视频直链（v1.1 §视频资产；NOVA/宇宙星河已 403 失效，改用银河背景仪表盘，故无 cosmos 视频）
+// 视频自托管在 Worker 静态资产（同源 /media/*.mp4；从 v1.1 §视频资产的对标原视频压制为 720p 无音轨 web loop，
+// 存进 deploy/cloudflare/assets/media/），彻底摆脱外部 CloudFront 依赖（原 NOVA/宇宙星河那条已 403 失效，故 cosmos 用仪表盘无视频）。
 const HERO_VIDEO = {
-  minimal: VIDEO_HOST + '/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4',
-  techno: VIDEO_HOST + '/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260306_115329_5e00c9c5-4d69-49b7-94c3-9c31c60bb644.mp4',
-  forest: VIDEO_HOST + '/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4',
+  minimal: '/media/velorah.mp4',   // Velorah（简约专注）
+  techno: '/media/voyage.mp4',     // Space Voyage（炫技）
+  forest: '/media/aethera.mp4',    // Aethera（森林河流）
 };
 // 首绘前在 <html> 上定 data-theme + data-nav，颜色与导航结构都无闪烁（storage 被禁时安全回退）
 const HEAD_INIT = `<script>(function(){try{var m=${JSON.stringify(THEME_NAV)},fx=${JSON.stringify(THEME_FX)},hr=${JSON.stringify(THEME_HERO)};var s=localStorage.getItem('adp-theme');if(!Object.prototype.hasOwnProperty.call(m,s))s='warm';
@@ -1063,7 +1063,7 @@ function notFoundPage() {
 const SEC_HEADERS = {
   'x-content-type-options': 'nosniff',
   'referrer-policy': 'strict-origin-when-cross-origin',
-  'content-security-policy': "default-src 'self'; img-src 'self' data:; media-src 'self' https://d8j0ntlcm91z4.cloudfront.net; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+  'content-security-policy': "default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
 };
 const htmlResp = (html, status = 200) => new Response(html, {
   // no-store（不是 no-cache）：这些浏览器对 no-cache 仍会缓存并不重新校验，导致用户一直看到旧页面、拿不到新部署。

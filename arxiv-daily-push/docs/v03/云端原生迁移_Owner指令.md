@@ -31,6 +31,16 @@ Owner 选定实现路径：**零成本重建到 Cloudflare 免费平台**（Work
 | Stage 3++++ | 六主题氛围动效层恢复（银河/流云/海面光/坡地，从 base.html 移植） | **已完成并实测** |
 | Stage 3+++++ | 动效加强可见 + no-store 修缓存（用户之前一直拿到旧页面看不到更新） | **已完成并实测** |
 | Stage 3×6 | 恢复今天页 hero 首屏（三主题整屏视频 + 宇宙星河知识体征仪表盘，按 v1.1 规范） | **已完成并实测** |
+| Stage 3×7 | hero 视频自托管（压制存进 Worker 静态资产 /media，去掉外部 CloudFront，免费同源持久） | **已完成并实测** |
+
+## hero 视频自托管——去掉外部 CloudFront 依赖（2026-07-15 追加）
+
+hero 视频原本挂在外部 CloudFront 上（正在失效，已死一条）。Owner 全权授权处理、但不想碰 Cloudflare 后台。R2（v1.1 红线 4 的建议）需要在后台一次性开通（属计费/条款动作，未替 Owner 代按）；改用 **Cloudflare Workers 静态资产**自托管——免费、同源、随部署持久、零后台操作：
+- 下载三条仍存活的对标视频，用 ffmpeg（经 pip 包 imageio-ffmpeg 取得二进制，未装系统软件）压成 1280×720 H.264 无音轨 faststart loop：**62MB → 7MB**（velorah 1.5MB / voyage 1.9MB / aethera 2.5MB，手机也更快）；
+- 存进 `deploy/cloudflare/assets/media/`，`wrangler_cloud.jsonc` 加 `assets.directory ./assets`，`HERO_VIDEO` 改指同源 `/media/*.mp4`，CSP `media-src` 收回 `'self'`（CloudFront 彻底移除）；
+- 7MB mp4 用 `git add -f` 越过 `arxiv-daily-push/.gitignore` 的 `media/` 规则提交——持久化必须把它们纳入版本（已无可再生的源；CLAUDE.md 允许任务确需时收录二进制）。
+
+实测：`/media/velorah.mp4 /voyage.mp4 /aethera.mp4` 均 200 video/mp4 同源返回，响应 CSP `media-src` 只剩 `'self'`，简约专注从 `/media/velorah.mp4` 正常播放（paused=false、currentTime 递增、videoWidth 1280）。宇宙星河仍用仪表盘（它那条 NOVA 源本就已死）。**至此六主题动效全部自托管，不依赖任何外部服务**。
 
 ## 恢复今天页 hero 首屏——真正的原版动效（2026-07-15 追加）
 

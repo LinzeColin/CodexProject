@@ -18,6 +18,9 @@
       "database_id": "d0a7fc44-6de5-4bf4-bd71-7df868a410a3"
     }
   ],
+  // 静态资产：hero 首屏视频自托管（同源 /media/*.mp4），从对标原视频压制的 720p 无音轨 loop；
+  // 匹配到资产的请求直接由 Cloudflare 边缘返回，未匹配的走 worker（应用页面）。免费、零外部依赖、随部署持久。
+  "assets": { "directory": "./assets" },
   // 每日 20:30 UTC（=悉尼 06:30）跑完整流水线：抓取→选择→讲义→建卡→run_log
   "triggers": { "crons": ["30 20 * * *"] }
 }
