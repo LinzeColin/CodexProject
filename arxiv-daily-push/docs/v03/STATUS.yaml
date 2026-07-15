@@ -122,11 +122,12 @@ stages:
     status: live
     completed_at: "2026-07-15"
     owner_visible: >
-      Owner 指令（2026-07-15）：板块二～五上线。板块二（Nature/Science/Cell 官方 RSS）、
-      板块三（Google News 政策聚合 + RSSHub 路由保留：公共实例限流如实降级）、
-      板块四（美联储/SEC 官方 RSS）为「雷达浏览流」——真实抓取（6/7 源成功、
-      累计入库 138 条，重复运行幂等；RSSHub 路由连续失败已自动停用并跳过后续抓取）、
-      逐源健康纳管（连续 3 次失败自动停用且不再抓取）；板块五聚合板块二～四。
+      Owner 指令（2026-07-15）：板块二～五上线并**扩展数据源**（boards-v03-2，共 44 条 RSS）。
+      板块二 23 家顶级期刊（Nature 及子刊/Science 及子刊/Cell 及子刊/PNAS/Lancet/NEJM/JAMA/BMJ/PLOS/eLife/IEEE Spectrum）、
+      板块三 6 条（5 条部委/领域 Google News 聚合 + RSSHub 路由，限流自动停用）、
+      板块四 11 条（美联储/SEC/FTC/NIST/白宫总统令 + 聚合）为「雷达浏览流」；
+      板块一另附 arXiv cs.CL/cs.CV + medRxiv 浏览流。真实抓取 43/44 源成功、累计入库 1050 条；
+      逐源健康纳管（连续 3 次失败自动停用且不再抓取）；板块五聚合各板块浏览流。
       雷达页每板块展示数据源明细：来源名/平台/网站/订阅方式/官方或聚合/健康/累计条数/最近抓取。
       边界（如实）：板块二～四不进每日精选候选池——池整合与多样性 10→17 是任务包明文的
       独立提案（提案→回放→应用→回执）；bioRxiv 上板仍是雷达页 Owner 专属按钮。
@@ -147,8 +148,9 @@ stages:
       无登录入口的写操作分级：隧道来访只放行浏览+主动回忆评分，Owner 决策类 POST
       （上板/试点决策/状态编辑/纠错/撤销/迁移）远程一律 403 仅限本机（remote_guard+保护测试）。
       2026-07-15 收尾：你点授权后 adp-origin 回源记录已建，直连端到端实测
-      （云端打开完整系统 183ms、/radar 200、远程决策 POST 403）；主页
-      home.linzezhang.com 已上线（极简枢纽 Worker，链接 ADP 与五板块）。
+      （云端打开完整系统 183ms、/radar 200、远程决策 POST 403）。主页
+      home.linzezhang.com 归还给你自己的 linze-home-hub Worker（曾被本项目误占，
+      已解绑并删除误建 Worker，本仓库不再放主页代码）。
       降级披露：R2 周快照待你在仪表盘启用 R2（30 秒），当前落本地 30 份滚动；
       访问控制历史：钥匙方案已按 Owner 指令移除（git 历史 a0a79743 可恢复）。
     evidence:

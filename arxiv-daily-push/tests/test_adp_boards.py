@@ -152,6 +152,35 @@ class BoardsTests(unittest.TestCase):
         finally:
             boards_mod.registry_path = original
 
+    def test_retention_caps_board_items_and_dedups_display(self) -> None:
+        """防事故：44 源日增千条无界增长拖慢雷达页；重叠类目源同一篇重复显示."""
+        now = "2026-07-14T00:00:00+00:00"
+        cap = self.boards.BOARD_ITEMS_KEEP_PER_BOARD
+        # 灌入超过上限的板块二条目 + 两条同 url（模拟 cs.CL/cs.CV 交叉列表）
+        for i in range(cap + 50):
+            self.conn.execute(
+                """INSERT INTO board_items (id, board_id, source_id, title, url, summary, published_at, fetched_at)
+                   VALUES (?, 'board2', 'src', ?, ?, '', ?, ?)""",
+                (f"id{i}", f"t{i}", f"https://e.com/{i}",
+                 f"2026-07-{(i % 28) + 1:02d}T00:00:00+00:00", now))
+        self.conn.execute(
+            """INSERT INTO board_items (id, board_id, source_id, title, url, summary, published_at, fetched_at)
+               VALUES ('dupA','board2','arxiv-cscl','X','https://arxiv.org/abs/1','','2026-07-28T00:00:00+00:00',?)""",
+            (now,))
+        self.conn.execute(
+            """INSERT INTO board_items (id, board_id, source_id, title, url, summary, published_at, fetched_at)
+               VALUES ('dupB','board2','arxiv-cscv','X','https://arxiv.org/abs/1','','2026-07-28T00:00:00+00:00',?)""",
+            (now,))
+        self.conn.commit()
+        self.boards._prune_board_items(self.conn)
+        self.conn.commit()
+        n = self.conn.execute("SELECT COUNT(*) n FROM board_items WHERE board_id='board2'").fetchone()["n"]
+        self.assertLessEqual(n, cap)  # 滚动保留上限生效
+        overview = self.boards.board_overview(self.conn)
+        b2 = next(b for b in overview if b["id"] == "board2")
+        urls = [it["url"] for it in b2["items"]]
+        self.assertEqual(len(urls), len(set(urls)))  # 展示去重：同 url 不重复出现
+
     def test_radar_page_renders_boards_with_source_detail(self) -> None:
         """防事故：雷达页崩溃或丢掉数据源明细（Owner 核心诉求）."""
         from fastapi.testclient import TestClient
