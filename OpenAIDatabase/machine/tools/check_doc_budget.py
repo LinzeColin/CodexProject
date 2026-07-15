@@ -48,6 +48,8 @@ ALLOW = {
     "and", "or", "with", "for", "by", "raw", "live", "board", "top", "public",
     "the", "a", "of", "to", "in", "on", "in_progress", "blocked", "active",
     "done", "pending", "planned", "provider", "candidate", "comparison",
+    "goal", "non_goals", "users", "numbers", "data_shapes", "invariants",
+    "terms", "product", "glossary",
     "agent", "agents", "codex", "schema", "release", "token", "tokens",
     "linzecolin", "codexproject", "kmos", "metadatabase", "agentdatabase",
     "governance", "kmfa", "kmids", "whkmsalary", "kmdatabase", "linzedatabase",
@@ -75,7 +77,7 @@ def load_glossary(docs: Path) -> set:
     if not f.exists():
         return set()
     body = f.read_text(encoding="utf-8")
-    m = re.search(r"##\s*六、术语对照.*?(?=\n##\s|\Z)", body, re.S)
+    m = re.search(r"##\s*[一二三四五六七八九十]*、?\s*术语对照.*?(?=\n##\s|\Z)", body, re.S)
     if not m:
         return set()
     return {w.lower() for w in ENGLISH_WORD.findall(m.group(0))}

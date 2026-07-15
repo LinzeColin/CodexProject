@@ -81,9 +81,27 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--project", required=True)
     ap.add_argument("--legacy")
+    ap.add_argument("--from-features", action="store_true")
     args = ap.parse_args()
 
     project = Path(args.project).resolve()
+    facts_dir = project / "machine" / "facts"
+    # --from-features：机器平面已有 features.json，直接据此补 glossary/product
+    if args.from_features:
+        import json as _json
+        ff = facts_dir / "features.json"
+        features = _json.loads(ff.read_text(encoding="utf-8")) if ff.is_file() else []
+        terms = seed_glossary_terms(features)
+        (facts_dir / "glossary.json").write_text(_json.dumps(
+            {"numbers": [], "data_shapes": [], "invariants": [],
+             "terms": [{"英文": t, "中文": "待补中文", "说明": "来自功能名，待复审确认释义"}
+                       for t in sorted(terms)]}, ensure_ascii=False, indent=2), encoding="utf-8")
+        pf = facts_dir / "product.json"
+        if not pf.is_file():
+            pf.write_text(_json.dumps({"goal": "", "users": [], "non_goals": []},
+                                      ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"✅ {project.name}: 从 {len(features)} 个已有功能补 {len(terms)} 个术语 -> glossary")
+        return 0
     legacy = Path(args.legacy) if args.legacy else find_legacy(project)
     if not legacy or not legacy.is_file():
         print(f"FAIL: 找不到旧功能清单（{project}）")
@@ -114,11 +132,26 @@ def main() -> int:
     (facts / "features.json").write_text(
         json.dumps(features, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    # 自动把功能名里的英文业务术语预登记进口径字典第六节草案。
-    # 这些术语来自真实功能名，机械可提取；Owner 之后补中文释义即可。
+    # glossary.json：功能名里的英文术语进机器平面术语表（渲染 03 时并入）
     terms = seed_glossary_terms(features)
-    if terms:
-        seed_glossary(project, terms)
+    glossary = {
+        "numbers": [], "data_shapes": [], "invariants": [],
+        "terms": [{"英文": t, "中文": "待补中文", "说明": "来自功能名，待复审确认释义"}
+                  for t in sorted(terms)],
+    }
+    (facts / "glossary.json").write_text(
+        json.dumps(glossary, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # product.json：产品需求的机器平面事实。旧功能清单摘要里能抽的先抽，
+    # 抽不到的留空 -> 渲染出"待补"，由后续机器平面补全，不手写。
+    product = {
+        "goal": summary.get("product_goal", ""),
+        "users": [],
+        "non_goals": [],
+    }
+    pf = facts / "product.json"
+    if not pf.is_file():  # 不覆盖已有的更完整 product 事实
+        pf.write_text(json.dumps(product, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"✅ {project.name}: 抽取 {len(features)} 个功能 + {len(summary)} 个摘要字段"
           f" + {len(terms)} 个术语 -> machine/facts")
@@ -151,20 +184,6 @@ def seed_glossary_terms(features):
     return terms
 
 
-def seed_glossary(project, terms):
-    """把术语写进 文档/03_口径字典.md 第六节草案（若该文件仍是占位骨架）。"""
-    gloss = project / "文档" / "03_口径字典.md"
-    if not gloss.is_file():
-        return
-    body = gloss.read_text(encoding="utf-8")
-    # 只在仍是占位骨架时注入，不覆盖 Owner 已裁定内容
-    if "待你" not in body and "待裁定" not in body:
-        return
-    rows = "\n".join(f"| {t} | 待补中文 | 来自功能名，待你确认释义 |" for t in sorted(terms))
-    if "## 六、术语对照" in body:
-        # 追加到第六节表格末尾
-        body = body.rstrip() + "\n" + rows + "\n"
-    gloss.write_text(body, encoding="utf-8")
 
 
 if __name__ == "__main__":

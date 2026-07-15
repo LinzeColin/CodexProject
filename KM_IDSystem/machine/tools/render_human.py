@@ -5,28 +5,29 @@ render_human.py —— 从机器平面渲染人类平面七文件
 
 双平面原则：
 - 机器平面 machine/facts/*.json 是唯一事实源。
-- 人类平面 文档/ 是渲染产物，不是手写产物。
-- 例外：文档/01_产品需求.md 和 文档/03_口径字典.md 是 Owner 手写区，
-  本渲染器只读、绝不覆盖。渲染时会校验它们存在且非空。
+- 人类平面 文档/ 七个文件全部是渲染产物，无一手写。
+  agent 负责生产机器平面事实，渲染器把它们渲染成七文件；负责人只复审，不手写。
+- 因此没有任何"手写区"。每次渲染都会覆盖全部七个文件。
 
-为什么人类平面必须渲染而不能手写（见 交接给ClaudeCode.md）：
-  「功能清单里没有功能」的根因是它允许被手写。任何允许 agent 手写的
-  人类可读文件，最终必然退化成 append-only 日志。这是结构决定的。
+为什么人类平面必须渲染而不能手写：
+  「功能清单里没有功能」的根因是它允许被手写。任何允许手写的人类可读文件，
+  最终必然退化成 append-only 日志。这是结构决定的。产品需求与口径字典同样如此，
+  所以它们也从机器平面渲染，不留手写口子。
 
 事实源约定（每个渲染文件的头注释也声明了同一份映射）：
   00_我在哪.md      <- facts/status.json, facts/blockers.json, facts/roadmap.json
+  01_产品需求.md    <- facts/product.json
   02_系统架构.md    <- facts/features.json, facts/data_contract.yaml, facts/config.yaml
+  03_口径字典.md    <- facts/glossary.json
   04_操作流程.md    <- facts/flows.json
   05_执行与验收.md  <- facts/plan.json, facts/acceptance.json, runs/*.json
   06_运维手册.md    <- facts/config.yaml, facts/ops.json, facts/changelog.json
 
-缺失的事实源不会让渲染崩溃：渲染出的对应章节标记为 `UNKNOWN`，
-随后三道门（check_doc_budget / check_blocker_stop）据此判 FAIL。
-「绿的门是假门」——事实没接通时，人类平面就应显示 UNKNOWN 并让门保持红。
+缺失的事实源不会让渲染崩溃：对应章节如实显示"待补"，
+随后三道门据此把关。「绿的门是假门」——事实没接通时就该留白并让门保持红。
 
-用法:  python3 machine/tools/render_human.py [--root .] [--check]
-  --check  只校验手写区存在与非空，不写文件（供 CI 用）
-退出码: 0=渲染完成  1=手写区缺失或为空
+用法:  python3 machine/tools/render_human.py [--root .]
+退出码: 0=渲染完成
 """
 import argparse
 import json
@@ -35,9 +36,8 @@ import sys
 from pathlib import Path
 
 GENERATED = (
-    "<!-- 本文件由 machine/tools/render_human.py 生成。手写内容会在下次渲染时被覆盖。 -->"
+    "<!-- 本文件由 machine/tools/render_human.py 从机器平面生成。请勿手写——下次渲染会覆盖。 -->"
 )
-HANDWRITTEN = {"01_产品需求.md", "03_口径字典.md"}
 # 单个字段还没值时的占位——短、明确、不装懂
 UNKNOWN = "待补"
 
@@ -53,59 +53,14 @@ def blank_note(what, whence):
     whence = re.sub(r"(machine/[\w./-]+)", r"`\1`", whence)
     return f"> 暂时还没有{what}。等{whence}之后，这里会自动出现内容。现在空着是如实反映——没接上就是没接上。"
 
-# 口径字典占位骨架。第六节预登记通用治理术语，使中文门对它们豁免。
-# 这些是跨项目通用的治理词汇；项目专属术语由 Owner 在本文件补登。
-GLOSSARY_SKELETON = """<!-- 手写区。render_human.py 只读此文件，不会覆盖。 -->
-<!-- 这是全项目唯一裁定"一个数字是什么"的地方。有争议以本文件为准。 -->
-<!-- 中文门规则：人类平面正文出现的任何英文术语，必须在本文件第六节有条目，否则渲染 FAIL。 -->
-
-# 口径字典
-
-> 状态：**待你（项目负责人）裁定**。以下为骨架，请逐条补全。
-
-## 一、关键数字口径
-
-| 项 | 裁定 | 状态 |
-|---|---|---|
-| — | 待裁定 | 待补 |
-
-## 二、外部数据形态
-
-| 来源 | 必须长什么样 | 状态 |
-|---|---|---|
-| — | 待裁定 | 待补 |
-
-## 三、恒定为真的规则
-
-| 规则 | 说明 |
-|---|---|
-| — | 待补 |
-
-## 四、证据等级定义
-
-| 等级 | 含义 |
-|---|---|
-| `已提取` | 从代码/配置提取并核对 |
-| `已声明` | 只有文档说法，未核对 |
-
-## 五、报告等级定义
-
-| 等级 | 含义 |
-|---|---|
-| — | 待裁定 |
-
-## 六、术语对照
-
-> 人类平面正文出现的英文术语必须在此登记，否则中文门 FAIL。
-
-| 英文 | 中文 | 说明 |
-|---|---|---|
-| Owner | 负责人 | 项目/产品的决策与验收责任人 |
-| Stage | 阶段 | 路线图一级单元 |
-| Phase | 步骤 | 阶段下的二级单元 |
-| Task | 任务 | 步骤下的三级单元 |
-| Roadmap | 路线图 | 阶段→步骤→任务的完整计划 |
-"""
+# 跨项目通用治理术语，渲染 03_口径字典 时并入术语表，使中文门对它们豁免。
+COMMON_GLOSSARY = [
+    ("Owner", "负责人", "项目/产品的决策与复审责任人"),
+    ("Stage", "阶段", "路线图一级单元"),
+    ("Phase", "步骤", "阶段下的二级单元"),
+    ("Task", "任务", "步骤下的三级单元"),
+    ("Roadmap", "路线图", "阶段→步骤→任务的完整计划"),
+]
 
 
 def load_json(path: Path, default):
@@ -203,16 +158,93 @@ def render_00(facts: Path):
 
 ## 四、这套文档怎么读
 
-想了解什么，就翻对应的一份：
+想了解什么，就翻对应的一份。七份全部由机器平面自动生成，你只需复审：
 
-| 想知道 | 翻哪份 | 谁维护 |
-|---|---|---|
-| 这东西为谁做、要解决什么、不碰什么 | `01_产品需求.md` | 你定 |
-| 有哪些功能、数据怎么流、参数为什么这么设 | `02_系统架构.md` | 自动生成 |
-| 每个数字到底怎么算、外部数据得长什么样 | `03_口径字典.md` | 你裁定 |
-| 业务上一步步怎么走 | `04_操作流程.md` | 自动生成 |
-| 这一轮在做什么、怎么算做完、做到哪了 | `05_执行与验收.md` | 自动生成 |
-| 怎么跑起来、参数改哪、报错了怎么办 | `06_运维手册.md` | 自动生成 |
+| 想知道 | 翻哪份 |
+|---|---|
+| 这东西为谁做、要解决什么、不碰什么 | `01_产品需求.md` |
+| 有哪些功能、数据怎么流、参数为什么这么设 | `02_系统架构.md` |
+| 每个数字到底怎么算、外部数据得长什么样 | `03_口径字典.md` |
+| 业务上一步步怎么走 | `04_操作流程.md` |
+| 这一轮在做什么、怎么算做完、做到哪了 | `05_执行与验收.md` |
+| 怎么跑起来、参数改哪、报错了怎么办 | `06_运维手册.md` |
+"""
+    return body
+
+
+def render_01(facts: Path):
+    """产品需求。事实源：machine/facts/product.json。"""
+    prod = load_json(facts / "product.json", {})
+    users = [(u.get("who", ""), u.get("want", "")) for u in prod.get("users", [])]
+    nots = prod.get("non_goals", [])
+    goal = prod.get("goal") or ""
+    body = f"""{GENERATED}
+<!-- 事实源：machine/facts/product.json -->
+<!-- 上限 200 行 -->
+
+# 产品需求
+
+## 一、产品目标
+
+{goal if goal else blank_note("产品目标", "在机器平面写清目标（machine/facts/product.json 的 goal）")}
+
+## 二、给谁用
+
+{table(users, ["用户", "他要什么"], empty=blank_note("目标用户", "在机器平面登记用户（machine/facts/product.json 的 users）"))}
+
+## 三、不做什么
+
+{chr(10).join(f"- {n}" for n in nots) if nots else blank_note("不做清单", "在机器平面登记非目标（machine/facts/product.json 的 non_goals）")}
+"""
+    return body
+
+
+def render_03(facts: Path):
+    """口径字典。事实源：machine/facts/glossary.json。"""
+    g = load_json(facts / "glossary.json", {})
+    numbers = [(n.get("项", n.get("item", "")), n.get("裁定", n.get("rule", "")),
+                n.get("状态", n.get("status", ""))) for n in g.get("numbers", [])]
+    shapes = [(s.get("来源", s.get("source", "")), s.get("要求", s.get("shape", "")),
+               s.get("状态", s.get("status", ""))) for s in g.get("data_shapes", [])]
+    rules = [(r.get("规则", r.get("rule", "")), r.get("说明", r.get("note", "")))
+             for r in g.get("invariants", [])]
+    # 术语表 = 通用治理术语 + 项目专属术语（机器平面提供）
+    terms = list(COMMON_GLOSSARY) + [
+        (t.get("英文", t.get("en", "")), t.get("中文", t.get("zh", "待补中文")),
+         t.get("说明", t.get("note", "")))
+        for t in g.get("terms", [])
+    ]
+    body = f"""{GENERATED}
+<!-- 事实源：machine/facts/glossary.json -->
+<!-- 全项目唯一裁定"一个数字是什么"的地方。有争议以本文件为准。 -->
+<!-- 中文门：正文出现的英文术语必须在第五节术语表登记，否则渲染 FAIL。 -->
+
+# 口径字典
+
+## 一、关键数字口径
+
+{table(numbers, ["项", "裁定", "状态"], empty=blank_note("数字口径", "在机器平面裁定（machine/facts/glossary.json 的 numbers）"))}
+
+## 二、外部数据形态
+
+{table(shapes, ["来源", "必须长什么样", "状态"], empty=blank_note("外部数据形态", "在机器平面登记（machine/facts/glossary.json 的 data_shapes）"))}
+
+## 三、恒定为真的规则
+
+{table(rules, ["规则", "说明"], empty=blank_note("恒真规则", "在机器平面登记（machine/facts/glossary.json 的 invariants）"))}
+
+## 四、证据等级定义
+
+| 等级 | 含义 |
+|---|---|
+| `已提取` | 从代码或配置提取并核对 |
+| `已声明` | 只有文档说法，未核对 |
+
+## 五、术语对照
+
+正文出现的英文术语在此登记。
+
+{table(terms, ["英文", "中文", "说明"])}
 """
     return body
 
@@ -408,19 +440,9 @@ python3 machine/tools/check_blocker_stop.py      # 阻塞重审门
 
 # ---------- 主流程 ----------
 
-def check_handwritten(docs: Path, failures: list):
-    for name in sorted(HANDWRITTEN):
-        f = docs / name
-        if not f.is_file():
-            failures.append(f"手写区缺失: 文档/{name}（Owner 必须提供）")
-        elif len(f.read_text(encoding="utf-8").strip()) < 40:
-            failures.append(f"手写区为空: 文档/{name}（Owner 必须填写）")
-
-
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
-    ap.add_argument("--check", action="store_true", help="只校验手写区，不写文件")
     args = ap.parse_args()
 
     root = Path(args.root)
@@ -429,19 +451,12 @@ def main() -> int:
     runs = root / "machine" / "runs"
     project_name = root.resolve().name
 
-    failures: list = []
-    check_handwritten(docs, failures)
-    if args.check:
-        if failures:
-            print("FAIL —— 手写区\n" + "\n".join("  ✗ " + x for x in failures))
-            return 1
-        print("PASS —— 手写区存在且非空")
-        return 0
-
     docs.mkdir(parents=True, exist_ok=True)
     rendered = {
         "00_我在哪.md": render_00(facts),
+        "01_产品需求.md": render_01(facts),
         "02_系统架构.md": render_02(facts),
+        "03_口径字典.md": render_03(facts),
         "04_操作流程.md": render_04(facts),
         "05_执行与验收.md": render_05(facts, runs),
         "06_运维手册.md": render_06(facts, project_name),
@@ -449,24 +464,7 @@ def main() -> int:
     for name, body in rendered.items():
         (docs / name).write_text(body.rstrip() + "\n", encoding="utf-8")
 
-    # 手写区不存在时生成占位骨架（供 Owner 填），已存在则绝不覆盖
-    for name in sorted(HANDWRITTEN):
-        f = docs / name
-        if not f.is_file():
-            title = name.split("_", 1)[1].replace(".md", "")
-            if name == "03_口径字典.md":
-                f.write_text(GLOSSARY_SKELETON, encoding="utf-8")
-            else:
-                f.write_text(
-                    "<!-- 手写区。render_human.py 只读此文件，不会覆盖。 -->\n"
-                    "<!-- 上限 200 行。 -->\n\n# " + title + "\n\n"
-                    "> 状态：**待你（项目负责人）填写并冻结**。\n",
-                    encoding="utf-8",
-                )
-
-    print(f"渲染完成：{len(rendered)} 个渲染文件 + {len(HANDWRITTEN)} 个手写区已就绪")
-    if failures:
-        print("注意 —— 手写区待补：\n" + "\n".join("  · " + x for x in failures))
+    print(f"渲染完成：{len(rendered)} 个文件全部由机器平面生成")
     return 0
 
 

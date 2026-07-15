@@ -28,9 +28,8 @@ SEVEN = [
     "00_我在哪.md", "01_产品需求.md", "02_系统架构.md", "03_口径字典.md",
     "04_操作流程.md", "05_执行与验收.md", "06_运维手册.md",
 ]
-RENDERED = ["00_我在哪.md", "02_系统架构.md", "04_操作流程.md",
-            "05_执行与验收.md", "06_运维手册.md"]
-HANDWRITTEN = ["01_产品需求.md", "03_口径字典.md"]
+# 七文件全部渲染，无手写区——渲染一致门覆盖全部七个。
+RENDERED = list(SEVEN)
 
 
 def discover(root: Path):
@@ -77,24 +76,6 @@ def check_project(proj: Path, failures: list):
             failures.append(
                 f"[{name}] 渲染一致门: 文档/{f} 与机器平面不一致"
                 f"（人类平面被手工篡改，或事实源已变但未重渲染）")
-
-    # 手写区必须含实质内容，而非仅占位骨架。
-    # 「绿的门是假门」：占位不算已填。
-    PLACEHOLDER_MARKS = ("待你", "待 Owner", "待填", "待裁定", "待补全", "待补")
-    for f in HANDWRITTEN:
-        p = docs / f
-        if not p.is_file():
-            failures.append(f"[{name}] 手写区: 文档/{f} 缺失（Owner 待填）")
-            continue
-        text = p.read_text(encoding="utf-8")
-        # 剔除 HTML 注释与标题后的实质正文
-        body = "\n".join(
-            l for l in text.splitlines()
-            if l.strip() and not l.strip().startswith(("<!--", "#", ">"))
-        ).strip()
-        if len(body) < 40 or any(m in text for m in PLACEHOLDER_MARKS):
-            failures.append(
-                f"[{name}] 手写区: 文档/{f} 仍是占位骨架，未填实质内容（Owner 待填）")
 
     # 3. 三道门
     for tool, arg in [("check_doc_budget.py", ["--docs", "文档"]),
