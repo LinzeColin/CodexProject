@@ -1,0 +1,19 @@
+{
+  // ADP 云端原生 Worker（Owner 2026-07-15：网页即主体，整套系统跑在 Cloudflare）。
+  // Stage 1/2 用 workers.dev 验证，不占 adp.linzezhang.com；Stage 3 再切自定义域。
+  // 部署：cd deploy/cloudflare && npx wrangler deploy --config wrangler_cloud.jsonc
+  "name": "adp-cloud",
+  "main": "worker_cloud.js",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "adp-mirror",
+      "database_id": "d0a7fc44-6de5-4bf4-bd71-7df868a410a3"
+    }
+  ],
+  // 每日 20:30 UTC（=悉尼 06:30）跑完整流水线：抓取→选择→讲义→建卡→run_log
+  "triggers": { "crons": ["30 20 * * *"] }
+}

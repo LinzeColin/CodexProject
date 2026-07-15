@@ -58,3 +58,4 @@
 | 2026-07-15 | J4 | 板块二～五上线（Owner 指令）：注册表 boards_v0_3.yaml（PARAM-ADP-1123）+ feedparser 浏览流（http/https 白名单、未来日期丢弃、网络不占写事务、源 id 唯一）+ 逐源健康纳管（连败3自动停用并跳过后续抓取）+ 雷达页数据源明细（来源/平台/网站/方式/官方性/健康/计数/最近抓取）；真实抓取 6/7 源、board_items 累计 138 条（幂等）、RSSHub 403 已自动停用；板块二～四不进精选池（独立提案） | 绿（真实数据在线） |
 | 2026-07-15 | J4 | 扩展数据源（Owner 指令，boards-v03-2）：板块二 23 家顶级期刊+板块三 6 条政策聚合+板块四 11 条美国官方+板块一附预印本浏览流，共 44 条 RSS（全部真实探测）；真实抓取 43/44 源、累计 1050 条 | 绿 |
 | 2026-07-15 | 主页 | 归还 home.linzezhang.com（Owner 指令）：custom_domain 从误建 home Worker 改回 Owner 原有 linze-home-hub，删除误建 Worker 与仓库内 deploy/cloudflare/home/，未动主页内容 | 绿（实测恢复） |
+| 2026-07-15 | 云端原生 | Stage 1（Owner 指令：网页即主体+全 arXiv+bioRxiv 正常入库+全板块进选择）：新 worker_cloud.js+wrangler_cloud.jsonc+schema_cloud.sql，一个 Worker+一个 D1 跑全五环节，每日 cron；实测 adp-cloud.workers.dev（arXiv 220 全领域/bio 30/217+候选/选中 econ 论文/回忆→FSRS 3天间隔）；免费档子请求靠 batch+轮转 feed 解决；板块三 Google News 被数据中心 IP 拦（Stage 2 换源） | 绿（云端实测） |

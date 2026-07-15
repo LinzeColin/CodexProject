@@ -39,7 +39,7 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1106/1106 active parameters, 123/124 active formulas)
+- implementation_congruence: `PARTIAL` (1107/1107 active parameters, 123/124 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,8 +71,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 - model_count: `122`
 - total_formulas: `124`
 - active_formulas: `124`
-- total_parameters: `1123`
-- active_parameters: `1106`
+- total_parameters: `1124`
+- active_parameters: `1107`
 - active_values_changed_by_this_view: `0`
 
 ## 13. 测试与验收
@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 - tree_bound_events: `17`
 - commit_bound_events: `13`
 - legacy_unbound_events: `334`
-- precommit_pending_events: `49`
-- pending_or_stale_events: `399`
-- freshness_counts: `pending_or_stale_events=399; legacy_unbound_events=334`
+- precommit_pending_events: `50`
+- pending_or_stale_events: `400`
+- freshness_counts: `pending_or_stale_events=400; legacy_unbound_events=334`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:60fc309a2b3c01373665fd844e6d3448b659e27c685dffd9c7f7c7a6d3442f20`
-- snapshot_event_time: `2026-07-15T12:40:00+10:00`
+- source_snapshot_hash: `sha256:76d4b017bdb5e6740016057bdf1328fcb85418d99686436f852f5c8457203fb0`
+- snapshot_event_time: `2026-07-15T13:20:00+10:00`
 - generator_version: `4.0.1`
 - version: `0.23.1`
 - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`

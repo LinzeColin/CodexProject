@@ -7,11 +7,13 @@ machine_summary:
 
 - model_count: 122
 - formula_count: 124
-- parameter_count: 1123
+- parameter_count: 1124
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
+
+- `V03-J5-CLOUD-NATIVE` adds `PARAM-ADP-1124` only (no model or formula IDs). It registers the cloud-native abstain threshold (59.6, same as the local engine) read by deploy/cloudflare/worker_cloud.js. Stage 1 of the Owner-directed cloud rebuild: the whole loop (all-arXiv via OAI-PMH, bioRxiv normal ingestion, all boards into cross-board daily selection, deterministic lesson, vendored FSRS-6) runs on a single Cloudflare Worker + D1 + cron, live-verified on a separate adp-cloud worker; the local Python engine and adp.linzezhang.com are untouched until the Stage 3 cutover. No SMTP/scheduler/Release/restore/DAILY_OPERATION change; legacy V7.2 stays frozen.
 
 - `V03-J4-BOARDS-REGISTRY` adds `PARAM-ADP-1123` only (no model or formula IDs). It registers `config/boards_v0_3.yaml` (registry_ver boards-v03-2 after the 2026-07-15 source-expansion directive; 44 RSS/API sources: 5 on board1 incl. arXiv cs.CL/cs.CV + medRxiv browse streams, 23 top journals on board2, 6 China-policy streams on board3, 11 US-official on board4, board5 aggregate) as the single source of truth for the five radar boards and their data sources per the Owner directive of 2026-07-15. Boards 2-4 (and board1's browse streams) are radar feed streams ingested into the separate board_items table with per-source health accounting (3 consecutive failures auto-disable and skip further fetches); they do NOT enter the daily selection candidate pool - pool integration and the diversity 10->17 change remain a separate proposal->replay->apply->receipt path. No SMTP/scheduler/Release/restore/DAILY_OPERATION change; legacy V7.2 stays frozen fail-closed.
 

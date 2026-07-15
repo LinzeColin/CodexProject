@@ -117,6 +117,24 @@ stages:
       - data/shadow_biorxiv_report.json
       - docs/v03/R5_启用提案_bioRxiv.md
       - src/adp/shadow_biorxiv.py
+  J5_cloud_native:
+    gate: whole_system_runs_on_cloudflare_web_is_primary_not_a_mac_mirror
+    status: stage1_live_verified
+    completed_at: "2026-07-15"
+    owner_visible: >
+      Owner 指令（2026-07-15）：网页即主体，整套系统跑云端，不依赖 Mac；全 arXiv；
+      bioRxiv 正常入库；所有板块进每日精选。选定「零成本重建到 Cloudflare 免费平台」。
+      Stage 1 已落地并实测：一个 Worker（adp-cloud）+ 一个 D1 跑全五环节（抓取→选择→
+      讲义→回忆→FSRS），每日 cron；页面直读写 D1，回忆评分即时进 FSRS（云端即真相）。
+      实测 adp-cloud.linzezhang35.workers.dev：arXiv 220（含 econ/stat/cs 全领域，OAI-PMH）、
+      bioRxiv 30（正常入库）、跨全部板块 217+ 候选选 1（选中 econ 论文）、回忆→下次复习 3 天。
+      免费档子请求上限（~50/次）靠 D1 batch + 板块 feed 轮转解决。
+      已知降级：板块三 Google News 被数据中心 IP 拦，Stage 2 换源。
+      Stage 2（六主题全 UI + 修板块三）、Stage 3（切 adp.linzezhang.com、退役隧道/镜像）待做。
+      迁移期 adp.linzezhang.com 仍走旧 worker，互不影响。
+    evidence:
+      - deploy/cloudflare/worker_cloud.js · wrangler_cloud.jsonc · schema_cloud.sql
+      - docs/v03/云端原生迁移_Owner指令.md
   J4_boards:
     gate: boards_2_to_5_live_with_transparent_sources
     status: live
