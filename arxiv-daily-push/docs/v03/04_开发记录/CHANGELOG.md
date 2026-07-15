@@ -59,3 +59,4 @@
 | 2026-07-15 | J4 | 扩展数据源（Owner 指令，boards-v03-2）：板块二 23 家顶级期刊+板块三 6 条政策聚合+板块四 11 条美国官方+板块一附预印本浏览流，共 44 条 RSS（全部真实探测）；真实抓取 43/44 源、累计 1050 条 | 绿 |
 | 2026-07-15 | 主页 | 归还 home.linzezhang.com（Owner 指令）：custom_domain 从误建 home Worker 改回 Owner 原有 linze-home-hub，删除误建 Worker 与仓库内 deploy/cloudflare/home/，未动主页内容 | 绿（实测恢复） |
 | 2026-07-15 | 云端原生 | Stage 1（Owner 指令：网页即主体+全 arXiv+bioRxiv 正常入库+全板块进选择）：新 worker_cloud.js+wrangler_cloud.jsonc+schema_cloud.sql，一个 Worker+一个 D1 跑全五环节，每日 cron；实测 adp-cloud.workers.dev（arXiv 220 全领域/bio 30/217+候选/选中 econ 论文/回忆→FSRS 3天间隔）；免费档子请求靠 batch+轮转 feed 解决；板块三 Google News 被数据中心 IP 拦（Stage 2 换源） | 绿（云端实测） |
+| 2026-07-15 | 云端原生 | Stage 2：六主题全 UI 从 base.html 移植（六令牌+三导航+主题下拉，实测 warm↔cosmos 切换）；板块三换中文媒体 RSS（人民网/中新网/新浪，实测 75 条无乱码）；抓取改每板取最久未抓 4 个保证覆盖；字符集感知（gb2312→gb18030）+孤儿源清理；修 nav.nav-side 选择器 bug；四板块 270/121/75/140 | 绿（云端实测） |

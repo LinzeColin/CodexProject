@@ -119,7 +119,7 @@ stages:
       - src/adp/shadow_biorxiv.py
   J5_cloud_native:
     gate: whole_system_runs_on_cloudflare_web_is_primary_not_a_mac_mirror
-    status: stage1_live_verified
+    status: stage2_live_verified
     completed_at: "2026-07-15"
     owner_visible: >
       Owner 指令（2026-07-15）：网页即主体，整套系统跑云端，不依赖 Mac；全 arXiv；
@@ -129,9 +129,12 @@ stages:
       实测 adp-cloud.linzezhang35.workers.dev：arXiv 220（含 econ/stat/cs 全领域，OAI-PMH）、
       bioRxiv 30（正常入库）、跨全部板块 217+ 候选选 1（选中 econ 论文）、回忆→下次复习 3 天。
       免费档子请求上限（~50/次）靠 D1 batch + 板块 feed 轮转解决。
-      已知降级：板块三 Google News 被数据中心 IP 拦，Stage 2 换源。
-      Stage 2（六主题全 UI + 修板块三）、Stage 3（切 adp.linzezhang.com、退役隧道/镜像）待做。
-      迁移期 adp.linzezhang.com 仍走旧 worker，互不影响。
+      Stage 2 已完成并实测：六主题全 UI（warm/minimal/fresh/techno/cosmos/forest 令牌 +
+      侧栏/顶栏/悬浮坞三导航 + 主题下拉 localStorage）从 base.html 移植进 worker；
+      板块三换为可从云端抓的中文媒体 RSS（人民网时政/财经、中国新闻网、新浪，实测 75 条无乱码）；
+      抓取改「每板取最久未抓取 4 个」保证每板覆盖；字符集感知抓取（gb2312→gb18030）；孤儿源清理。
+      四板块条目 board1 270/board2 121/board3 75/board4 140；主题切换实测（warm 侧栏↔cosmos 坞）。
+      Stage 3（切 adp.linzezhang.com 到 adp-cloud、退役隧道/镜像）待做；迁移期旧 worker 仍在，互不影响。
     evidence:
       - deploy/cloudflare/worker_cloud.js · wrangler_cloud.jsonc · schema_cloud.sql
       - docs/v03/云端原生迁移_Owner指令.md

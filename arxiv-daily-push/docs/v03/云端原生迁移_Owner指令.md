@@ -23,8 +23,18 @@ Owner 选定实现路径：**零成本重建到 Cloudflare 免费平台**（Work
 | 阶段 | 内容 | 状态 |
 |---|---|---|
 | Stage 1 | D1 云端 schema（cn_*）+ 每日流水线 + today/queue/radar/system 基础页 | **已完成并实测** |
-| Stage 2 | 六主题全 UI 移植 + 修复板块三来源（Google News 被数据中心 IP 拦） | 待做 |
+| Stage 2 | 六主题全 UI 移植（从 base.html）+ 修复板块三来源 + 每板轮转 + 字符集感知抓取 | **已完成并实测** |
 | Stage 3 | 切 adp.linzezhang.com 到 adp-cloud、退役隧道/镜像、复审+治理+合入收尾 | 待做 |
+
+## Stage 2 实测（2026-07-15）
+
+- **六主题全 UI**：warm/minimal/fresh/techno/cosmos/forest 六组令牌 + 三种导航结构（侧栏/顶栏/悬浮坞，由 data-nav 驱动）+ 主题下拉（localStorage 记忆）全部移植进 worker_cloud.js，实测页面含全部六主题与三导航。
+- **板块三修复**：Google News 从数据中心 IP 被拦，换为可从云端抓的中文媒体 RSS（人民网时政/财经、中国新闻网、新浪国内焦点）；实测四源 active、板块三 75 条真实政策/时政条目，中文无乱码（学习卡/刘国中调研/科技金融/国台办…）。
+- **每板轮转**：从"按天轮转"改为"每板取最久未抓取的 4 个"，保证每个板块每次都有覆盖（此前板块三会因排在其它未抓源之后被饿死）。
+- **字符集感知抓取**：按 XML 声明选 TextDecoder（gb2312/gbk→gb18030），防未来中文源乱码。
+- **孤儿源清理**：seedSources 删除注册表已移除的旧源与其条目（换掉的 Google News 不再残留）。
+- 四板块条目：board1 270 / board2 121 / board3 75 / board4 140。
+- **对抗复审修复**：主题应用移到 `<head>` 首绘前（消除颜色/导航闪烁）；localStorage 读写加 try/catch（隐私模式不卡死）；`item.official` 决定证据权重（http/https 同等，板块三 http 源不再被打低分）；停用源 3 天后自动重试（板块三不会被临时封而永久变黑）；孤儿源清理保护被选择/复习引用的条目；悬浮坞不再遮挡页脚；深色主题原生下拉用暗色配色；顶栏导航居中。复审后重跑「正常」无降级。
 
 ## Stage 1 实测（adp-cloud.linzezhang35.workers.dev，2026-07-15）
 

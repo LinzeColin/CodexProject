@@ -33,11 +33,11 @@ const REGISTRY = [
     { id: 'ieee-spectrum', name: 'IEEE Spectrum', platform: 'spectrum.ieee.org 官方 RSS', website: 'https://spectrum.ieee.org', method: 'rss', feed: 'https://spectrum.ieee.org/feeds/feed.rss', official: 1 },
   ]},
   { board: 'board3', name: '板块三 · 中国政策法规', sources: [
-    { id: 'gnews-cn-policy', name: '政策要闻（国务院/工信部/发改委）', platform: 'Google News RSS 聚合', website: 'https://news.google.com', method: 'rss', feed: 'https://news.google.com/rss/search?q=%E5%9B%BD%E5%8A%A1%E9%99%A2%20OR%20%E5%B7%A5%E4%BF%A1%E9%83%A8%20OR%20%E5%8F%91%E6%94%B9%E5%A7%94%20%E6%94%BF%E7%AD%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', official: 0 },
-    { id: 'gnews-cn-tech-policy', name: '科技政策（科技部/网信办）', platform: 'Google News RSS 聚合', website: 'https://news.google.com', method: 'rss', feed: 'https://news.google.com/rss/search?q=%E7%A7%91%E6%8A%80%E9%83%A8%20OR%20%E7%BD%91%E4%BF%A1%E5%8A%9E%20%E6%94%BF%E7%AD%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', official: 0 },
-    { id: 'gnews-cn-finance-reg', name: '金融监管（央行/证监会）', platform: 'Google News RSS 聚合', website: 'https://news.google.com', method: 'rss', feed: 'https://news.google.com/rss/search?q=%E4%B8%AD%E5%9B%BD%E4%BA%BA%E6%B0%91%E9%93%B6%E8%A1%8C%20OR%20%E8%AF%81%E7%9B%91%E4%BC%9A%20OR%20%E9%87%91%E8%9E%8D%E7%9B%91%E7%AE%A1&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', official: 0 },
-    { id: 'gnews-cn-ai-reg', name: '人工智能治理与法规', platform: 'Google News RSS 聚合', website: 'https://news.google.com', method: 'rss', feed: 'https://news.google.com/rss/search?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%20%E7%9B%91%E7%AE%A1%20OR%20%E6%B3%95%E8%A7%84%20OR%20%E5%8A%9E%E6%B3%95&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', official: 0 },
-    { id: 'gnews-cn-nmpa', name: '药监与医疗器械（国家药监局）', platform: 'Google News RSS 聚合', website: 'https://news.google.com', method: 'rss', feed: 'https://news.google.com/rss/search?q=%E5%9B%BD%E5%AE%B6%E8%8D%AF%E7%9B%91%E5%B1%80%20OR%20NMPA%20%E5%AE%A1%E6%89%B9&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', official: 0 },
+    // Google News 从数据中心 IP 被拦（429/403），换为可从云端抓的官方/主流媒体 RSS
+    { id: 'people-politics', name: '人民网 · 时政（政策/政府）', platform: 'people.com.cn 官方 RSS', website: 'http://politics.people.com.cn', method: 'rss', feed: 'http://www.people.com.cn/rss/politics.xml', official: 1, cadence: '每日' },
+    { id: 'people-finance', name: '人民网 · 经济与财经政策', platform: 'people.com.cn 官方 RSS', website: 'http://finance.people.com.cn', method: 'rss', feed: 'http://www.people.com.cn/rss/finance.xml', official: 1, cadence: '每日' },
+    { id: 'chinanews-scroll', name: '中国新闻网 · 滚动新闻', platform: 'chinanews.com.cn 官方 RSS', website: 'https://www.chinanews.com.cn', method: 'rss', feed: 'https://www.chinanews.com.cn/rss/scroll-news.xml', official: 0, cadence: '每日' },
+    { id: 'sina-china-focus', name: '新浪 · 国内焦点', platform: 'sina.com.cn 官方 RSS', website: 'https://news.sina.com.cn/china', method: 'rss', feed: 'https://rss.sina.com.cn/news/china/focus15.xml', official: 0, cadence: '每日' },
   ]},
   { board: 'board4', name: '板块四 · 美国科技金融', sources: [
     { id: 'fed-press', name: '美联储新闻稿', platform: 'federalreserve.gov 官方 RSS', website: 'https://www.federalreserve.gov', method: 'rss', feed: 'https://www.federalreserve.gov/feeds/press_all.xml', official: 1 },
@@ -66,10 +66,9 @@ const CANDIDATE_WINDOW_DAYS = 7;
 // 对策：D1 写入全部 batch（一次 batch = 一个子请求）；板块 feed 按天轮转抓取。
 const ARXIV_CAP = 220;          // 单次入库 arXiv 上限（跨所有领域采样，控制子请求/CPU）
 const ARXIV_PAGES = 2;
-const FEED_ROTATE_SIZE = 12;    // 每次轮转抓取的板块 feed 数（全部约 28 个，2~3 天覆盖一轮）
+const FEED_PER_BOARD = 4;       // 每板每次抓取的 feed 数（按最久未抓取优先）——保证每板都有覆盖
 const BATCH_CHUNK = 80;         // 每个 D1 batch 的语句数上限
 function chunk(arr, n) { const o = []; for (let i = 0; i < arr.length; i += n) o.push(arr.slice(i, i + n)); return o; }
-function dayOfYear() { const d = new Date(); return Math.floor((d - new Date(Date.UTC(d.getUTCFullYear(), 0, 0))) / 864e5); }
 
 // ───────────────────────── 工具 ─────────────────────────
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -186,6 +185,18 @@ async function batchWrite(env, stmts) {
   for (const c of chunk(stmts, BATCH_CHUNK)) if (c.length) await env.DB.batch(c);
 }
 
+// 字符集感知抓取：按 XML 声明选 TextDecoder（gb2312/gbk→gb18030），防中文源乱码
+async function fetchFeedText(url) {
+  const r = await fetch(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(15000) });
+  if (!r.ok) throw new Error('http ' + r.status);
+  const buf = await r.arrayBuffer();
+  const head = new TextDecoder('ascii').decode(buf.slice(0, 200));
+  const m = head.match(/encoding="([^"]+)"/i);
+  let enc = (m ? m[1] : 'utf-8').toLowerCase();
+  if (enc === 'gb2312' || enc === 'gbk') enc = 'gb18030';
+  try { return new TextDecoder(enc).decode(buf); } catch { return new TextDecoder('utf-8').decode(buf); }
+}
+
 async function seedSources(env) {
   const stmts = [];
   for (const b of REGISTRY) for (const s of b.sources) {
@@ -195,7 +206,16 @@ async function seedSources(env) {
        ON CONFLICT(id) DO UPDATE SET name=excluded.name, platform=excluded.platform, website=excluded.website, method=excluded.method, feed_url=excluded.feed_url, official=excluded.official`
     ).bind(s.id, b.board, s.name, s.platform || '', s.website || '', s.method, s.feed || null, s.official || 0, s.cadence || '每日'));
   }
-  if (stmts.length) await env.DB.batch(stmts);
+  // 清理注册表已移除的旧源（及其条目），避免雷达页残留（如换掉的 Google News）
+  const ids = REGISTRY.flatMap(b => b.sources.map(s => s.id));
+  const ph = ids.map(() => '?').join(',');
+  stmts.push(env.DB.prepare(`DELETE FROM cn_sources WHERE id NOT IN (${ph})`).bind(...ids));
+  // 保护被选择/复习引用的条目，避免删出悬空外键（today/queue 页会 join 到 null）
+  stmts.push(env.DB.prepare(
+    `DELETE FROM cn_items WHERE kind='feed' AND source_id NOT IN (${ph})
+       AND id NOT IN (SELECT item_id FROM cn_reviews)
+       AND id NOT IN (SELECT item_id FROM cn_selections WHERE item_id IS NOT NULL)`).bind(...ids));
+  await env.DB.batch(stmts);
 }
 
 function healthStmt(env, sourceId, ok, prevFails) {
@@ -211,8 +231,8 @@ async function ingestAll(env, counts) {
   const itemStmts = [];
   const healthStmts = [];
 
-  // 读取所有 feed 源的当前健康（一次查询）
-  const { results: srcHealth } = await env.DB.prepare('SELECT id, health, consecutive_failures FROM cn_sources').all();
+  // 读取所有 feed 源的健康与上次抓取时间（一次查询）
+  const { results: srcHealth } = await env.DB.prepare('SELECT id, health, consecutive_failures, last_fetch FROM cn_sources').all();
   const hmap = Object.fromEntries((srcHealth || []).map(r => [r.id, r]));
 
   // arXiv 全站（OAI-PMH，所有领域）
@@ -234,14 +254,22 @@ async function ingestAll(env, counts) {
   // 板块 RSS：按天轮转抓一批（免费档子请求预算），跳过已自动停用的源
   const feeds = [];
   for (const b of REGISTRY) for (const s of b.sources) if (s.method === 'rss') feeds.push({ b: b.board, s });
-  const eligible = feeds.filter(f => (hmap[f.s.id]?.health) !== 'disabled_auto');
-  const start = (dayOfYear() * FEED_ROTATE_SIZE) % Math.max(1, eligible.length);
-  const rotated = eligible.length <= FEED_ROTATE_SIZE ? eligible
-    : Array.from({ length: FEED_ROTATE_SIZE }, (_, i) => eligible[(start + i) % eligible.length]);
+  // 每板取最久未抓取的 FEED_PER_BOARD 个（新源 last_fetch 空排最前）——保证每个板块每次都有覆盖。
+  // 自愈：已停用的源在停用 3 天后重新纳入重试（防板块三因源被临时封而永久变黑）。
+  const eligible = feeds.filter(f => {
+    const h = hmap[f.s.id];
+    if (h?.health !== 'disabled_auto') return true;
+    return !h.last_fetch || (Date.now() - Date.parse(h.last_fetch)) > 3 * 864e5;
+  });
+  const byBoard = {};
+  for (const f of eligible) (byBoard[f.b] ||= []).push(f);
+  const rotated = [];
+  for (const bid in byBoard) {
+    byBoard[bid].sort((a, b) => (hmap[a.s.id]?.last_fetch || '').localeCompare(hmap[b.s.id]?.last_fetch || ''));
+    rotated.push(...byBoard[bid].slice(0, FEED_PER_BOARD));
+  }
   const settled = await Promise.allSettled(rotated.map(f =>
-    fetch(f.s.feed, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(15000) })
-      .then(r => r.ok ? r.text() : Promise.reject(new Error('http ' + r.status)))
-      .then(xml => ({ f, items: parseFeed(xml) }))));
+    fetchFeedText(f.s.feed).then(xml => ({ f, items: parseFeed(xml) }))));
   let feedNew = 0;
   for (let i = 0; i < rotated.length; i++) {
     const res = settled[i], f = rotated[i];
@@ -288,7 +316,7 @@ function scoreItem(item, ctx) {
     transfer: cats.length >= 2 ? 1 : (item.kind === 'feed' ? 0.6 : 0.5),
     forgetting: 0.5,
     urgency: recency,
-    evidence: item.url.startsWith('https://') ? (item.official ? 1 : 0.7) : 0.3,
+    evidence: item.official ? 1 : (/^https?:\/\//.test(item.url) ? 0.7 : 0.3),  // 官方源 http/https 同等（板块三是 http）
     diversity,
   };
   let score = 0; const contrib = {};
@@ -466,37 +494,81 @@ async function runDaily(env, trigger) {
   return { runId, result, counts, note };
 }
 
-// ───────────────────────── UI ─────────────────────────
+// ───────────────────────── UI（六主题设计语言，从 base.html 移植） ─────────────────────────
+const NAV = [['/', '今天'], ['/queue', '复习队列'], ['/radar', '前沿雷达'], ['/system', '系统与来源']];
+const THEME_OPTIONS = [['warm', '暖纸学习'], ['minimal', '简约专注'], ['fresh', '清新干净'], ['techno', '炫技'], ['cosmos', '宇宙星河'], ['forest', '森林河流']];
 const CSS = `
-:root{--bg:#f3eee1;--fg:#4a3d28;--card:#fdfaf2;--bd:#d8cfba;--ac:#8a5c16;--mt:#8b7a5c;--ink:#2f2618}
+/* 六组主题令牌（颜色/圆角/字体/玻璃），由 data-theme 驱动 */
+:root,[data-theme="warm"]{--bg:#f3eee1;--pn:#fdfaf2;--ink:#2f2618;--tx:#4a3d28;--mt:#8b7a5c;--ac:#8a5c16;--warn:#a4462c;--bd:#d8cfba;--ok:#4f6f3a;--radius:3px;--radius-lg:12px;--pill:3px;--font-body:'Noto Sans SC',-apple-system,sans-serif;--font-display:'Noto Serif SC',serif;--display-weight:900;--display-style:normal;--display-ls:-0.02em;--glass-bg:var(--pn);--glass-blur:0px;--hairline:var(--bd);--shadow:0 1px 3px rgba(47,38,24,.08)}
+[data-theme="minimal"]{--bg:#002a3b;--pn:rgba(255,255,255,.045);--ink:#f4f7f9;--tx:#c9d6dc;--mt:#a5a5ad;--ac:#e8f1f5;--warn:#ff9b7a;--bd:rgba(255,255,255,.14);--ok:#8fd0b8;--radius:999px;--radius-lg:18px;--pill:999px;--font-body:'Noto Sans SC',-apple-system,sans-serif;--font-display:'Instrument Serif','Noto Serif SC',serif;--display-weight:400;--display-style:normal;--display-ls:-0.03em;--glass-bg:rgba(255,255,255,.045);--glass-blur:5px;--hairline:rgba(255,255,255,.12);--shadow:0 18px 50px rgba(0,10,16,.45)}
+[data-theme="fresh"]{--bg:#eef6f2;--pn:#fff;--ink:#0d3b2e;--tx:#2a5748;--mt:#5e8a7d;--ac:#0c8f6f;--warn:#c4552f;--bd:#d7e8e0;--ok:#0c8f6f;--radius:14px;--radius-lg:22px;--pill:999px;--font-body:'Noto Sans SC',-apple-system,sans-serif;--font-display:'Noto Sans SC',sans-serif;--display-weight:700;--display-style:normal;--display-ls:-0.01em;--glass-bg:#fff;--glass-blur:0px;--hairline:#d7e8e0;--shadow:0 10px 30px rgba(12,84,64,.10)}
+[data-theme="techno"]{--bg:#8fb0d9;--pn:rgba(255,255,255,.16);--ink:#10233c;--tx:#243b58;--mt:#4a6488;--ac:#10233c;--warn:#b34a2e;--bd:rgba(255,255,255,.45);--ok:#1d6f5c;--radius:9999px;--radius-lg:26px;--pill:9999px;--font-body:'Noto Sans SC',-apple-system,sans-serif;--font-display:'Instrument Serif','Noto Serif SC',serif;--display-weight:400;--display-style:italic;--display-ls:-0.04em;--glass-bg:rgba(255,255,255,.16);--glass-blur:4px;--hairline:rgba(255,255,255,.4);--shadow:0 16px 44px rgba(28,52,94,.22)}
+[data-theme="cosmos"]{--bg:#060913;--pn:rgba(9,14,27,.58);--ink:#e8eeff;--tx:#b9c6e4;--mt:#6e7ba3;--ac:#89AACC;--warn:#ff8f6b;--bd:rgba(137,170,204,.22);--ok:#63d1a2;--radius:0px;--radius-lg:0px;--pill:0px;--font-body:'Space Grotesk','Noto Sans SC',sans-serif;--font-display:'Space Grotesk','Noto Sans SC',sans-serif;--display-weight:700;--display-style:normal;--display-ls:-0.03em;--glass-bg:rgba(9,14,27,.58);--glass-blur:10px;--hairline:rgba(137,170,204,.22);--shadow:0 0 8px rgba(137,170,204,.18)}
+[data-theme="forest"]{--bg:#fbfaf7;--pn:#fff;--ink:#000;--tx:#4c4c48;--mt:#6F6F6F;--ac:#2e7d5b;--warn:#a4462c;--bd:#e4e1d8;--ok:#2e7d5b;--radius:999px;--radius-lg:18px;--pill:999px;--font-body:'Noto Sans SC',-apple-system,sans-serif;--font-display:'Instrument Serif','Noto Serif SC',serif;--display-weight:400;--display-style:normal;--display-ls:-0.025em;--glass-bg:#fff;--glass-blur:0px;--hairline:#e4e1d8;--shadow:0 8px 26px rgba(30,40,30,.08)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Noto Sans SC",sans-serif}
-header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--bd);padding:12px 16px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;z-index:9}
-header b{color:var(--ink);font-size:17px}
-nav a{color:var(--ac);text-decoration:none;margin-right:12px;font-size:14.5px}
-nav a.active{font-weight:700;border-bottom:2px solid var(--ac)}
-main{max-width:760px;margin:0 auto;padding:16px 16px 48px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin:14px 0}
-h1{font-size:21px;color:var(--ink);margin:.2em 0}h2{font-size:16.5px;color:var(--ink)}h3{font-size:14.5px;color:var(--ac);margin:14px 0 4px}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.9 var(--font-body);transition:background .3s,color .3s}
+a{color:var(--ac);text-decoration:none}
+h1,h2,h3{color:var(--ink);line-height:1.5;font-family:var(--font-display);font-weight:var(--display-weight);font-style:var(--display-style);letter-spacing:var(--display-ls)}
+h1{font-size:22px;margin:.2em 0}h2{font-size:17px}h3{font-size:15px;margin:14px 0 4px;color:var(--ac)}
 .mt{color:var(--mt);font-size:13px}
-.badge{display:inline-block;border:1px solid var(--bd);border-radius:999px;padding:1px 9px;font-size:12px;margin-left:6px}
-.badge.ok{color:#2f7a34;border-color:#b6d8b8}.badge.info{color:#8a5c16}
-button{min-height:44px;padding:9px 16px;border-radius:10px;border:1px solid var(--bd);background:var(--card);font-size:15px;color:var(--fg);cursor:pointer}
-button.picked{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:760px;margin:0 auto;padding:18px 18px 60px}
+.card{background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));border:1px solid var(--hairline);border-radius:var(--radius-lg);padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
+.badge{display:inline-block;border:1px solid var(--hairline);border-radius:999px;padding:1px 10px;font-size:12px;margin-left:6px;color:var(--mt)}
+.badge.ok{color:var(--ok);border-color:var(--ok)}
+button{min-height:44px;padding:9px 17px;border-radius:var(--pill);border:1px solid var(--bd);background:var(--glass-bg);font-size:15px;color:var(--tx);cursor:pointer;font-family:var(--font-body)}
+button.picked{background:var(--ac);color:var(--bg);border-color:var(--ac)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
-td,th{padding:6px 8px;border-bottom:1px solid #e7dfcc;text-align:left;vertical-align:top}
-a{color:var(--ac)}
+td,th{padding:7px 8px;border-bottom:1px solid var(--hairline);text-align:left;vertical-align:top}
 .gradeRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-footer{max-width:760px;margin:0 auto;padding:12px 16px 40px;color:var(--mt);font-size:12px}
+select#theme{min-height:38px;border-radius:var(--pill);border:1px solid var(--bd);background:var(--glass-bg);color:var(--tx);padding:6px 12px;font-size:13.5px;margin-left:auto}
+/* 页头 */
+header.top{position:relative;z-index:30;display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--hairline);background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));flex-wrap:wrap}
+header.top b{color:var(--ink);font-size:17px;font-family:var(--font-display);font-style:var(--display-style);letter-spacing:var(--display-ls)}
+/* 三种导航（结构开关 body[data-nav]） */
+nav.nav-top,nav.nav-side,nav.nav-dock{display:none}
+nav.nav-top{justify-content:center;gap:6px;padding:8px 12px}nav.nav-top a{padding:6px 16px;border-radius:var(--pill)}
+nav.nav-top a.active{background:var(--ac);color:var(--bg)}
+:root[data-nav="topbar"] nav.nav-top{display:flex;flex:1}
+nav.nav-side{position:fixed;left:0;top:0;bottom:0;width:216px;padding:18px 12px;border-right:1px solid var(--hairline);background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));overflow:auto}
+nav.nav-side a{display:block;padding:8px 14px;margin:3px 0;border-radius:var(--pill);border-left:3px solid transparent;white-space:nowrap}
+nav.nav-side a.active{border-left-color:var(--ac);color:var(--ac);background:var(--bg)}
+[data-theme="forest"] nav.nav-side a{border-left:none}[data-theme="forest"] nav.nav-side a.active{background:#000;color:#fff}
+:root[data-nav="sidebar"] nav.nav-side{display:block}
+:root[data-nav="sidebar"] main,:root[data-nav="sidebar"] header.top{margin-left:216px}
+nav.nav-dock{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);gap:4px;padding:6px;border:1px solid var(--hairline);border-radius:999px;background:var(--glass-bg);backdrop-filter:blur(8px);z-index:40;box-shadow:var(--shadow)}
+nav.nav-dock a{padding:7px 15px;border-radius:var(--pill);font-size:13.5px}
+nav.nav-dock a.active{background:var(--ac);color:var(--bg)}
+:root[data-nav="dock"] nav.nav-dock{display:flex}:root[data-nav="dock"] footer.receipt{padding-bottom:92px}
+/* 深色主题让原生下拉/表单用暗色配色（否则选项在浅色弹层上几乎看不清） */
+:root[data-theme="minimal"],:root[data-theme="cosmos"]{color-scheme:dark}
+:root[data-theme="warm"],:root[data-theme="fresh"],:root[data-theme="forest"],:root[data-theme="techno"]{color-scheme:light}
+@media(max-width:640px){nav.nav-side{display:none!important}:root[data-nav] main,:root[data-nav] header.top{margin-left:0!important}:root[data-nav="sidebar"] nav.nav-top{display:flex;flex:1}}
+footer.receipt{max-width:760px;margin:0 auto;padding:14px 18px 48px;color:var(--mt);font-size:12px}
 `;
-const PAGE = (page, body) => `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+const navLinks = (cls, page) => `<nav class="${cls}">${NAV.map(([h, t]) => `<a href="${h}"${h === page ? ' class="active"' : ''}>${t}</a>`).join('')}</nav>`;
+// 主题-导航映射 + 安全读写（storage 被禁时不抛）；HEAD_INIT 在首绘前定主题防闪烁
+const THEME_NAV = { warm: 'sidebar', minimal: 'topbar', fresh: 'topbar', techno: 'dock', cosmos: 'dock', forest: 'sidebar' };
+// 首绘前在 <html> 上定 data-theme + data-nav，颜色与导航结构都无闪烁（storage 被禁时安全回退）
+const HEAD_INIT = `<script>(function(){try{var s=localStorage.getItem('adp-theme')||'warm';var m=${JSON.stringify(THEME_NAV)};
+var r=document.documentElement;r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]||'sidebar');}catch(e){}})();</script>`;
+const THEME_JS = `
+var THEMES=${JSON.stringify(THEME_NAV)};
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function applyTheme(n){var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]||'sidebar');lsSet('adp-theme',n);}
+(function(){var s=lsGet('adp-theme')||'warm';var sel=document.getElementById('theme');if(sel){sel.value=s;sel.onchange=function(){applyTheme(sel.value);};}applyTheme(s);})();
+`;
+const PAGE = (page, body) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>ADP 前沿学习</title>
-<style>${CSS}</style></head><body>
-<header><b>ADP 前沿学习</b><nav>
-${[['/','今天'],['/queue','复习队列'],['/radar','前沿雷达'],['/system','系统与来源']].map(([h,t]) =>
-  `<a href="${h}"${h===page?' class="active"':''}>${t}</a>`).join('')}
-</nav></header><main>${body}</main>
-<footer>整套系统运行在 Cloudflare（抓取·选择·讲义·回忆·排程都在云端）；每日 cron 自动更新。</footer>
+<style>${CSS}</style>${HEAD_INIT}</head>
+<body>
+${navLinks('nav-side', page)}
+<header class="top"><b>ADP 前沿学习</b>${navLinks('nav-top', page)}
+<select id="theme">${THEME_OPTIONS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></header>
+<main>${body}</main>
+${navLinks('nav-dock', page)}
+<footer class="receipt">整套系统运行在 Cloudflare（抓取·选择·讲义·回忆·排程都在云端）；每日 cron 自动更新，不依赖任何本机。</footer>
+<script>${THEME_JS}</script>
 </body></html>`;
 
 async function todayPage(env) {
