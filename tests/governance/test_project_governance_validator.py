@@ -1929,6 +1929,32 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         sync.validate_diff_contract(validation, changes)
         self.assertFalse(validation.errors)
 
+    def test_data_archive_manifest_is_snapshot_not_config_change(self) -> None:
+        # A manifest.json inside a data/ archive directory is part of the data
+        # snapshot, not a parameter/config change. Otherwise removing an archive's
+        # own manifest would demand parameter_registry edits for a change that
+        # touches no parameters.
+        sync = load_sync_module()
+        project = {"project_id": "OpenAIDatabase", "path": "OpenAIDatabase"}
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            ["OpenAIDatabase/data/raw_archives/chatgpt/2026-07-07/manifest.json"],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertIn("data_snapshot_change", changes[0].classifications)
+        self.assertNotIn("parameter_or_config_change", changes[0].classifications)
+
+    def test_config_dir_json_still_classified_as_config_change(self) -> None:
+        # Guard the other direction: a real config/ json must still be a config change.
+        sync = load_sync_module()
+        project = {"project_id": "OpenAIDatabase", "path": "OpenAIDatabase"}
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            ["OpenAIDatabase/config/visualization/model_parameters/weights.json"],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertIn("parameter_or_config_change", changes[0].classifications)
+
     def test_review9_s4pat02_model_extraction_is_project_governance_only(self) -> None:
         sync = load_sync_module()
         project = {

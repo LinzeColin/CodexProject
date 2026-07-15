@@ -348,9 +348,18 @@ def classify_project_file(project: dict[str, Any], path: str) -> set[str]:
         classes.add("test_or_evidence_change")
     if lower.startswith(("artifacts/", "evidence/", "outputs/")) or "evidence" in lower:
         classes.add("test_or_evidence_change")
-    if lower.startswith(("data/", "datasets/")):
+    is_data_path = lower.startswith(("data/", "datasets/"))
+    if is_data_path:
         classes.add("data_snapshot_change")
-    if lower.startswith(("config/", "configs/")) or lower.endswith((".toml", ".yaml", ".yml", ".json", ".ini")):
+    # A manifest/config-shaped file that lives under a data snapshot directory is
+    # part of that snapshot, not a parameter or configuration change. Without this
+    # guard, removing a data archive's own manifest.json would demand edits to the
+    # parameter registry, forcing dishonest entries for a change that touches no
+    # parameters.
+    if not is_data_path and (
+        lower.startswith(("config/", "configs/"))
+        or lower.endswith((".toml", ".yaml", ".yml", ".json", ".ini"))
+    ):
         classes.add("parameter_or_config_change")
     behavior_keywords = (
         "scoring",

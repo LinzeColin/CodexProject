@@ -26,7 +26,7 @@ parameter_profile_versions:
   macdata_prom2: "macdata-prom2-parameters-v1"
   memory_atlas_release_validation: "memory-atlas-release-validation-v1"
 data_snapshot_version: "public_redacted_read_only_visualization"
-current_iteration: "ITER-20260713-OAIDB-SM-P0-R1-P1-CORRECTION-ACCEPTANCE"
+current_iteration: "ITER-20260715-BOMBA-ARCHIVE-OFFLOAD"
 current_phase: "SM-P0-RUN1"
 current_gate: "ACC-OAIDB-SM-P0-R1-PASSED-LOCAL"
 legacy_version_labels:

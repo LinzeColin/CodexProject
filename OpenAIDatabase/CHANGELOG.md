@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased - Archive offload (bomb A)
+
+- 将 5 个大型运行时归档（101 个 90MB 分片，共 6.08GB）迁至私有 AgentDatabase 的 Release，全部 sha256 逐字节校验；原位留迁移说明。数据零丢失，仓库摆脱大文件膨胀。
+
 ## Unreleased - OpenAIDatabase Shared Memory RUN 1
 
 - Extended the existing personalization pipeline to deterministically generate ChatGPT, Codex, and Claude projections from one canonical source set, with a shared `bundle_id`, `canonical_source_hash`, and provider-neutral manifest.
