@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260715-ADP-J5-THEME-FX-LAYERS-RESTORE"
-source_snapshot_hash: "sha256:bddaf0e4206cfae0d91300174ff3df5da221ff8096f71ac8d216d3bb98c5a39f"
+as_of_event_id: "EVENT-20260715-ADP-J5-BOLD-FX-NO-STORE"
+source_snapshot_hash: "sha256:417f578296275572014d41e03958c4866253dbcc10c40ed7b057287821229179"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-15T18:20:00+10:00"
+snapshot_event_time: "2026-07-15T19:10:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,23 +62,43 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 55
+    precommit_pending_events: 56
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "VERIFIED"
-  release_gate: "UNKNOWN"
+  status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
+  release_gate: "V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION"
   blocker_ids:
-    - "FACT-arxiv-daily-push-IMPLEMENTATION-FORMULA-REVIEW"
+    - "persistent_daily_operation_authorization_missing"
+  v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
+  v7_contract_hash: "e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74"
+  v7_roadmap_hash: "7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1"
+  v7_parallel_audit: "ADP-V7.2-FINAL-BASELINE-REVIEW"
+  v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
+  open_p0_findings: 8
+  open_p1_findings: 37
+  production_forbidden_until: "DAILY_OPERATION separately authorized after accepted evidence; daily operation safety preflight passes; persistent operation boundary explicitly approved"
+  stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
+  stage2_integrated_production_accepted: true
+  current_zero_proof_open_p0_findings: 0
+  current_zero_proof_open_p1_findings: 0
+  baseline_counts_mutated: false
+  parallel_shadow_source_task: "NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW"
+  current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "NONE"
-  status: "not_applicable"
-  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
-  acceptance_ids: []
-  owner: "project owner"
-  human_owner_role: "project_owner"
-  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
-  stale_candidates: []
+  task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+  status: "blocked_persistent_daily_operation_authorization_missing"
+  reason: "持久 DAILY_OPERATION 授权门已运行但阻断，因为 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 不存在。运行时必须保持禁用。"
+  acceptance_ids:
+    - "ACC-S2PMT07-FINAL-REVIEW"
+    - "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"
+  owner: "content_owner + engineering_owner"
+  human_owner_role: "content_owner + engineering_owner"
+  unblock_condition: "提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，然后运行单独 enablement preflight；在该 gate 通过前，SMTP、scheduler、Release、restore 和 DAILY_OPERATION 必须保持禁用。"
+  stale_candidates:
+    -
+      task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
+      reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
   decision_id: "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701"

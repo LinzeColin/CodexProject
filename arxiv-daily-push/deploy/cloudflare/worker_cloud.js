@@ -571,7 +571,7 @@ footer.receipt{max-width:760px;margin:0 auto;padding:14px 18px 48px;color:var(--
 .deep-btn{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:8px 16px;border-radius:var(--pill);border:1px solid var(--ac);background:var(--ac);color:var(--bg);font-size:14px;font-weight:600;margin:6px 6px 2px 0;text-decoration:none}
 .deep-btn.ghost{background:transparent;color:var(--ac)}
 .deep-btn:hover{opacity:.9}
-/* ── 每主题氛围动效层（从 base.html 六主题设计语言移植；纯 CSS/SVG，无外部依赖，CSP 安全） ── */
+/* ── 每主题氛围动效层（从 base.html 移植并大幅加强可见度；纯 CSS/SVG，无外部依赖，CSP 安全） ── */
 main{position:relative;z-index:1}
 nav.nav-side{z-index:20}
 footer.receipt{position:relative;z-index:1}
@@ -579,31 +579,37 @@ footer.receipt{position:relative;z-index:1}
 :root[data-fx="cosmos"] .fx-cosmos{display:block}
 :root[data-fx="techno"] .fx-techno{display:block}
 :root[data-fx="minimal"] .fx-minimal{display:block}
-/* 宇宙星河：银河四层（漂移光带 + 星云 + 双层星点 + 流星） */
-.fx-cosmos .band{position:absolute;left:-20%;top:10%;width:150%;height:34%;background:linear-gradient(100deg,rgba(137,170,204,.16),rgba(78,133,191,.10),rgba(160,140,255,.08));filter:blur(26px);transform:rotate(-14deg);animation:banddrift 90s linear infinite alternate}
-@keyframes banddrift{to{transform:rotate(-14deg) translateX(6%)}}
-.fx-cosmos .neb{position:absolute;width:44vw;height:44vw;border-radius:50%;filter:blur(70px);opacity:.32}
-.fx-cosmos .neb.blue{background:#4E85BF;top:-12vw;right:-10vw}
-.fx-cosmos .neb.violet{background:#7a5cc9;bottom:-16vw;left:-12vw}
-.fx-cosmos .neb.teal{background:#2d7f8e;top:38%;left:52%;width:26vw;height:26vw;opacity:.22}
-.fx-cosmos .stars{position:absolute;inset:0;background-repeat:repeat;background-image:radial-gradient(1px 1px at 12px 44px,rgba(255,255,255,.9) 50%,transparent 51%),radial-gradient(1px 1px at 78px 12px,rgba(200,220,255,.7) 50%,transparent 51%),radial-gradient(1.5px 1.5px at 133px 89px,rgba(255,255,255,.8) 50%,transparent 51%),radial-gradient(1px 1px at 190px 160px,rgba(180,205,255,.6) 50%,transparent 51%);background-size:210px 210px}
-.fx-cosmos .stars.near{background-size:340px 340px;animation:twinkle 4.4s ease-in-out infinite alternate}
-@keyframes twinkle{to{opacity:.45}}
-.fx-cosmos .meteor{position:absolute;top:12%;left:-8%;width:130px;height:1.5px;background:linear-gradient(90deg,rgba(255,255,255,.9),transparent);transform:rotate(16deg);opacity:0;animation:meteor 11s linear infinite}
-@keyframes meteor{0%,92%{opacity:0;left:-8%;top:12%}93%{opacity:1}100%{opacity:0;left:96%;top:52%}}
-/* 简约专注：海面顶光 + 海底暗角 */
-.fx-minimal .toplight{position:absolute;left:50%;top:-30vh;width:120vw;height:70vh;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(163,214,235,.20),transparent 65%)}
-.fx-minimal .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,10,18,.55),transparent 60%)}
-/* 炫技：白色流体云漂移 */
-.fx-techno .cloud{position:absolute;width:56vw;height:24vw;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.65),transparent 72%);filter:blur(28px);animation:clouddrift 22s ease-in-out infinite alternate}
-.fx-techno .cloud.c2{top:44%;left:48%;width:44vw;animation-duration:17s;opacity:.7}
-.fx-techno .cloud.c3{top:70%;left:-8%;width:52vw;animation-duration:26s;opacity:.5}
-@keyframes clouddrift{to{transform:translateX(9vw)}}
-/* 森林河流：水带 + 坡地 */
+/* 宇宙星河：明亮银河（星云辉光常驻在屏 + 极光光带扫动 + 密集亮星闪烁 + 高频流星），卡片调透让银河透出 */
+.fx-cosmos{background:radial-gradient(58% 42% at 22% 18%,rgba(78,133,191,.42),transparent 70%),radial-gradient(56% 44% at 84% 78%,rgba(122,92,201,.40),transparent 70%),radial-gradient(52% 40% at 62% 48%,rgba(45,127,142,.26),transparent 72%)}
+:root[data-theme="cosmos"] .card{background:rgba(9,14,27,.40)}
+.fx-cosmos .band{position:absolute;left:-25%;top:-8%;width:150%;height:64%;background:conic-gradient(from 130deg at 50% 50%,rgba(137,170,204,0),rgba(122,92,201,.32),rgba(78,133,191,.28),rgba(99,209,162,.22),rgba(137,170,204,0));filter:blur(46px);transform:rotate(-10deg);animation:banddrift 22s ease-in-out infinite alternate}
+@keyframes banddrift{to{transform:rotate(-3deg) translateX(9%) translateY(6%)}}
+.fx-cosmos .neb{position:absolute;width:54vw;height:54vw;border-radius:50%;filter:blur(60px);opacity:.6;animation:nebfloat 28s ease-in-out infinite alternate}
+.fx-cosmos .neb.blue{background:#4E85BF;top:-8vw;right:-4vw}
+.fx-cosmos .neb.violet{background:#7a5cc9;bottom:-10vw;left:-6vw;animation-duration:36s}
+.fx-cosmos .neb.teal{background:#2d7f8e;top:40%;left:44%;width:36vw;height:36vw;opacity:.42;animation-duration:32s}
+@keyframes nebfloat{to{transform:translate(6vw,-4vw) scale(1.14)}}
+.fx-cosmos .stars{position:absolute;inset:0;background-repeat:repeat;background-image:radial-gradient(1.6px 1.6px at 20px 30px,#fff 60%,transparent 61%),radial-gradient(1.4px 1.4px at 92px 68px,rgba(210,225,255,.95) 60%,transparent 61%),radial-gradient(2.2px 2.2px at 150px 120px,#fff 60%,transparent 61%),radial-gradient(1.4px 1.4px at 60px 160px,rgba(200,220,255,.9) 60%,transparent 61%),radial-gradient(1.8px 1.8px at 190px 40px,#fff 60%,transparent 61%);background-size:200px 200px}
+.fx-cosmos .stars.near{background-size:300px 300px;animation:twinkle 3.4s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:1}to{opacity:.35}}
+.fx-cosmos .meteor{position:absolute;top:8%;left:-12%;width:200px;height:2px;background:linear-gradient(90deg,#fff,rgba(255,255,255,.5),transparent);box-shadow:0 0 7px #fff;transform:rotate(18deg);opacity:0;animation:meteor 6s linear infinite}
+@keyframes meteor{0%,82%{opacity:0;left:-12%;top:8%}84%{opacity:1}100%{opacity:0;left:100%;top:64%}}
+/* 简约专注：海面顶光 + 移动光柱 + 海底暗角 */
+.fx-minimal{background:radial-gradient(120vw 62vh at 50% -12vh,rgba(163,214,235,.30),transparent 62%)}
+.fx-minimal .toplight{position:absolute;left:50%;top:-28vh;width:78vw;height:92vh;transform:translateX(-50%) rotate(6deg);background:linear-gradient(180deg,rgba(185,228,247,.32),transparent 72%);filter:blur(22px);animation:shaft 11s ease-in-out infinite alternate}
+@keyframes shaft{to{transform:translateX(-40%) rotate(-5deg)}}
+.fx-minimal .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 118%,rgba(0,10,18,.6),transparent 58%)}
+/* 炫技：白色流体云漂移（更大更明显） */
+.fx-techno .cloud{position:absolute;width:72vw;height:34vw;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.92),transparent 70%);filter:blur(24px);animation:clouddrift 15s ease-in-out infinite alternate}
+.fx-techno .cloud.c2{top:40%;left:44%;width:58vw;animation-duration:12s;opacity:.85}
+.fx-techno .cloud.c3{top:66%;left:-14%;width:66vw;animation-duration:19s;opacity:.72}
+@keyframes clouddrift{to{transform:translateX(15vw) translateY(-4vw)}}
+/* 森林河流：水带 + 坡地（更高更明显，缓慢起伏） */
 :root[data-theme="forest"] .waterband{height:6px;border-radius:999px;margin:2px 0 12px;background:linear-gradient(90deg,#2e7d5b,#3c7ea0);opacity:.85}
-.forest-slopes{display:none;position:fixed;bottom:0;left:0;right:0;height:120px;pointer-events:none;z-index:0}
+.forest-slopes{display:none;position:fixed;bottom:0;left:0;right:0;height:210px;pointer-events:none;z-index:0;animation:sway 14s ease-in-out infinite alternate}
 :root[data-theme="forest"] .forest-slopes{display:block}
 .forest-slopes svg{width:100%;height:100%;display:block}
+@keyframes sway{to{transform:translateX(-3%)}}
 /* 卡片入场：淡入上移 */
 .card{animation:frise .5s cubic-bezier(.2,.7,.2,1) both}
 @keyframes frise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -924,7 +930,9 @@ const SEC_HEADERS = {
   'content-security-policy': "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
 };
 const htmlResp = (html, status = 200) => new Response(html, {
-  status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache', ...SEC_HEADERS },
+  // no-store（不是 no-cache）：这些浏览器对 no-cache 仍会缓存并不重新校验，导致用户一直看到旧页面、拿不到新部署。
+  // no-store 强制每次都重新拉取，保证改动即时生效。
+  status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store, must-revalidate', ...SEC_HEADERS },
 });
 const jsonResp = (obj, status = 200) => new Response(JSON.stringify(obj), {
   status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...SEC_HEADERS },
