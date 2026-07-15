@@ -2,12 +2,12 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `c7492e1799170ef69e6a333a5071f761648accac`
+- source_base_commit: `0c789bdb49ed11c6924222d2229bd5ca9e7ef158`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:10898553f542e7cf9e7e5136ec43504ad01c3174993b3f7cdc101b419a24830c`
+- source_snapshot_hash: `sha256:78e8bc10a900b07eecdde5040f21e2292e97a5d2fac7569fc71240cbe462ed67`
 - snapshot_event_time: `2026-07-15T12:40:15+10:00`
 - generator_version: `4.0.1`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:0c789bdb49ed11c6924222d2229bd5ca9e7ef158`
 
 ## Current State
 
@@ -37,8 +37,8 @@
 - Readiness: `FAILED`
 - Release gate: `A209_EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `116`
+- Pending/stale events: `115`
 - Tree-bound events: `0`
-- Commit-bound events: `22`
+- Commit-bound events: `23`
 - Legacy unbound events: `19`
 - Unresolved fact IDs: `6`
