@@ -1,11 +1,11 @@
 project_id: "EEI"
 as_of_event_id: "EVENT-20260715-EEI-A209-MAIN-HANDOFF"
-source_snapshot_hash: "sha256:8519d0ca4ace276a4efe56bca185af7915650c064f8ba4974a6aa3072a8eab8e"
-source_base_commit: "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
+source_snapshot_hash: "sha256:063ee9416093112db30f65b1f3fc5e8b68493d03b80c880d864d3f33259b8cde"
+source_base_commit: "c7492e1799170ef69e6a333a5071f761648accac"
 source_tree_hash: "356fcd0bb5d3b892b331d28351fe9e99a64c8457"
 snapshot_event_time: "2026-07-15T12:23:54+10:00"
 generator_version: "4.0.1"
-final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+final_commit_binding: "COMMIT_BOUND:c7492e1799170ef69e6a333a5071f761648accac"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -62,9 +62,9 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 21
+    commit_bound_events: 22
     legacy_unbound_events: 19
-    precommit_pending_events: 95
+    precommit_pending_events: 94
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:

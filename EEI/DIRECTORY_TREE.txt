@@ -191,6 +191,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1306_scale_benchmark_operator_contract.json
 │   │   │   └── t1306_scale_benchmark_smoke.json
 │   │   ├── a209
+│   │   │   ├── t1307_operator_soak_24h.checkpoints.jsonl
+│   │   │   ├── t1307_operator_soak_24h.json
 │   │   │   ├── t1307_operator_soak_4h.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_4h.json
 │   │   │   ├── t1307_operator_soak_background_progress.json
