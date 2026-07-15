@@ -56,3 +56,5 @@
 | 2026-07-15 | R6 | 完整系统上云直连（Owner 指令）：Worker 反代 Tunnel(adp/3bc9d50e)→本机8787 六主题系统，失败自动回落镜像（已实测：兜底路 200、隧道注册、常驻守卫 403；直连路待 DNS 确认后实测）；评分端点与镜像回传均拒绝编造讲义 ID；前端如实呈现 403/503；LaunchAgents 常驻 web+connector | 绿（待 DNS 确认） |
 | 2026-07-15 | R6 | 直连收尾：Owner 点授权→adp-origin 回源 CNAME 建立→端到端实测（云端完整系统 183ms、/radar 200、远程决策 403）；主页 home.linzezhang.com 上线（极简枢纽 Worker） | 绿（全链路实测） |
 | 2026-07-15 | J4 | 板块二～五上线（Owner 指令）：注册表 boards_v0_3.yaml（PARAM-ADP-1123）+ feedparser 浏览流（http/https 白名单、未来日期丢弃、网络不占写事务、源 id 唯一）+ 逐源健康纳管（连败3自动停用并跳过后续抓取）+ 雷达页数据源明细（来源/平台/网站/方式/官方性/健康/计数/最近抓取）；真实抓取 6/7 源、board_items 累计 138 条（幂等）、RSSHub 403 已自动停用；板块二～四不进精选池（独立提案） | 绿（真实数据在线） |
+| 2026-07-15 | J4 | 扩展数据源（Owner 指令，boards-v03-2）：板块二 23 家顶级期刊+板块三 6 条政策聚合+板块四 11 条美国官方+板块一附预印本浏览流，共 44 条 RSS（全部真实探测）；真实抓取 43/44 源、累计 1050 条 | 绿 |
+| 2026-07-15 | 主页 | 归还 home.linzezhang.com（Owner 指令）：custom_domain 从误建 home Worker 改回 Owner 原有 linze-home-hub，删除误建 Worker 与仓库内 deploy/cloudflare/home/，未动主页内容 | 绿（实测恢复） |

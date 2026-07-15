@@ -1,40 +1,224 @@
 {
- "at": "2026-07-15T01:23:49+00:00",
+ "at": "2026-07-15T02:19:31+00:00",
  "sources": {
-  "nature-current": {
+  "rsshub-gov-zhengce": {
+   "ok": false,
+   "skipped": "disabled_auto"
+  },
+  "arxiv-cscl": {
+   "ok": true,
+   "new": 0,
+   "entries": 225
+  },
+  "arxiv-cscv": {
+   "ok": true,
+   "new": 0,
+   "entries": 323
+  },
+  "medrxiv": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
+  },
+  "nature": {
    "ok": true,
    "new": 0,
    "entries": 75
+  },
+  "nature-medicine": {
+   "ok": true,
+   "new": 0,
+   "entries": 8
+  },
+  "nature-biotech": {
+   "ok": true,
+   "new": 0,
+   "entries": 8
+  },
+  "nature-machine-intel": {
+   "ok": true,
+   "new": 0,
+   "entries": 8
+  },
+  "nature-comms": {
+   "ok": true,
+   "new": 0,
+   "entries": 8
+  },
+  "nature-neuro": {
+   "ok": true,
+   "new": 0,
+   "entries": 8
+  },
+  "nature-methods": {
+   "ok": true,
+   "new": 0,
+   "entries": 8
+  },
+  "nature-ml": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
+  },
+  "science-current": {
+   "ok": true,
+   "new": 0,
+   "entries": 39
+  },
+  "science-advances": {
+   "ok": true,
+   "new": 0,
+   "entries": 76
   },
   "science-news": {
    "ok": true,
    "new": 0,
    "entries": 10
   },
-  "cell-current": {
+  "cell": {
    "ok": true,
    "new": 0,
    "entries": 23
+  },
+  "cell-neuron": {
+   "ok": true,
+   "new": 0,
+   "entries": 16
+  },
+  "cell-immunity": {
+   "ok": true,
+   "new": 0,
+   "entries": 23
+  },
+  "cell-systems": {
+   "ok": true,
+   "new": 0,
+   "entries": 12
+  },
+  "pnas": {
+   "ok": true,
+   "new": 0,
+   "entries": 121
+  },
+  "lancet": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
+  },
+  "nejm": {
+   "ok": true,
+   "new": 0,
+   "entries": 70
+  },
+  "jama": {
+   "ok": true,
+   "new": 0,
+   "entries": 40
+  },
+  "bmj": {
+   "ok": true,
+   "new": 0,
+   "entries": 6
+  },
+  "plos-biology": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
+  },
+  "plos-comp-biol": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
+  },
+  "elife": {
+   "ok": true,
+   "new": 0,
+   "entries": 100
+  },
+  "ieee-spectrum": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
   },
   "gnews-cn-policy": {
    "ok": true,
    "new": 0,
    "entries": 100
   },
-  "rsshub-gov-zhengce": {
-   "ok": false,
-   "health": "disabled_auto",
-   "error": "HTTPError: HTTP Error 403: Forbidden"
+  "gnews-cn-tech-policy": {
+   "ok": true,
+   "new": 0,
+   "entries": 34
+  },
+  "gnews-cn-finance-reg": {
+   "ok": true,
+   "new": 2,
+   "entries": 100
+  },
+  "gnews-cn-ai-reg": {
+   "ok": true,
+   "new": 0,
+   "entries": 100
+  },
+  "gnews-cn-nmpa": {
+   "ok": true,
+   "new": 0,
+   "entries": 53
   },
   "fed-press": {
    "ok": true,
    "new": 0,
    "entries": 20
   },
+  "fed-monetary": {
+   "ok": true,
+   "new": 0,
+   "entries": 15
+  },
+  "fed-speeches": {
+   "ok": true,
+   "new": 0,
+   "entries": 15
+  },
   "sec-press": {
    "ok": true,
    "new": 0,
    "entries": 25
+  },
+  "sec-speeches": {
+   "ok": true,
+   "new": 0,
+   "entries": 25
+  },
+  "ftc-press": {
+   "ok": true,
+   "new": 0,
+   "entries": 10
+  },
+  "ftc-tech": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
+  },
+  "nist-news": {
+   "ok": true,
+   "new": 0,
+   "entries": 40
+  },
+  "whitehouse-actions": {
+   "ok": true,
+   "new": 0,
+   "entries": 30
+  },
+  "gnews-us-tech": {
+   "ok": true,
+   "new": 0,
+   "entries": 78
+  },
+  "gnews-us-econ": {
+   "ok": true,
+   "new": 0,
+   "entries": 100
   }
  }
 }
