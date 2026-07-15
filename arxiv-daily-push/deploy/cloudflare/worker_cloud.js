@@ -568,6 +568,9 @@ footer.receipt{max-width:760px;margin:0 auto;padding:14px 18px 48px;color:var(--
 .btn-sm{min-height:34px;padding:5px 12px;font-size:13px;white-space:nowrap}
 .pill-link{display:inline-block;font-size:12.5px;border:1px solid var(--hairline);border-radius:999px;padding:2px 11px;margin:2px 4px 2px 0;color:var(--ac)}
 .reveal{border:1px dashed var(--hairline);border-radius:var(--radius-lg);padding:12px 14px;margin-top:10px;background:var(--bg)}
+.deep-btn{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:8px 16px;border-radius:var(--pill);border:1px solid var(--ac);background:var(--ac);color:var(--bg);font-size:14px;font-weight:600;margin:6px 6px 2px 0;text-decoration:none}
+.deep-btn.ghost{background:transparent;color:var(--ac)}
+.deep-btn:hover{opacity:.9}
 `;
 const navActive = (h, page) => h === '/' ? page === '/' : page.startsWith(h);
 const navLinks = (cls, page) => `<nav class="${cls}" aria-label="主导航">${NAV.map(([h, t]) => `<a href="${h}"${navActive(h, page) ? ' class="active" aria-current="page"' : ''}>${t}</a>`).join('')}</nav>`;
@@ -615,7 +618,8 @@ async function todayPage(env) {
     <p class="mt">决策日期 ${esc(sel.as_of_date)} · ${esc(BOARD_NAMES[sel.board_id] || sel.board_id || '')}${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p></div>`;
   if (item) {
     body += `<div class="card"><h1>${esc(item.title)}</h1>
-      <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a></p>`;
+      <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a></p>
+      <p style="margin:4px 0 2px">${deepDiveBtn(item)}</p>`;
     if (lesson) for (const [i, s] of JSON.parse(lesson.sections_json).entries())
       body += `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`;
     body += `</div><div class="card"><h2>主动回忆</h2>
@@ -712,6 +716,31 @@ function vitalsCard(v) {
 const STUDY_JS = `<script>async function study(btn){btn.disabled=true;var o=btn.textContent;btn.textContent='加入中…';
 try{var res=await fetch('/api/study/'+encodeURIComponent(btn.dataset.id),{method:'POST'});var j=await res.json();
 btn.textContent=j.already?'已在队列':'已加入复习';}catch(e){btn.textContent='失败';btn.disabled=false;}}</script>`;
+// ───────────────────────── ChatGPT 深度追问（带上当前条目，让 ChatGPT 联网深搜 + 深度思考 + 给 surprise） ─────────────────────────
+const CHATGPT_URL = 'https://chatgpt.com/';
+function deepDivePrompt(item) {
+  const L = ['请对下面这份研究内容做一次「联网深度检索 + 深度思考」的顶级专业讲解。', '', '【标题】' + (item.title || '')];
+  if (item.authors) L.push('【作者】' + item.authors);
+  if (item.categories) L.push('【类目】' + item.categories);
+  if (item.url) L.push('【原文】' + item.url);
+  if (item.summary) L.push('【摘要】' + String(item.summary).slice(0, 600));
+  L.push('', '我的要求：',
+    '1. 先联网深度搜索：遍历相关论文、权威综述、官方资料与最新进展，交叉验证，并附可核查来源链接。',
+    '2. 再深度思考：讲清它要解决的真问题、核心方法与关键假设、真正的创新点，以及局限与争议。',
+    '3. 面向一个想彻底学懂的人，做详细、专业、全面、有深度的讲解，复杂处配恰当类比。',
+    '4. 给我一些 surprise：意料之外的关联、反直觉的结论、以及大多数人会忽略的角度。',
+    '5. 结尾给「若要继续深入，接下来该读什么 / 做什么」的清单。');
+  return L.join('\n');
+}
+function deepDiveTopicPrompt(q) {
+  return ['请围绕下面这个主题做一次「联网深度检索 + 深度思考」的专业讲解：', '', '【主题】' + q, '',
+    '要求：联网遍历权威来源并交叉验证、附可核查链接；讲清来龙去脉、核心概念、最新进展与争议；面向想学懂的人做详细全面有深度的讲解、复杂处用类比；给我一些意料之外的 surprise；结尾给继续深入的阅读/行动清单。'].join('\n');
+}
+// hints=search 提示 ChatGPT 预选联网搜索（被忽略也无妨，提示词已明确要求联网深搜）
+const chatgptHref = (prompt) => CHATGPT_URL + '?hints=search&q=' + encodeURIComponent(prompt);
+function deepDiveBtn(item, label) {
+  return `<a class="deep-btn" href="${esc(chatgptHref(deepDivePrompt(item)))}" target="_blank" rel="noopener noreferrer" title="把这条的信息带到 ChatGPT，让它联网深搜 + 深度讲解并给你一些 surprise">🔮 ${esc(label || '让 ChatGPT 全网深度追问')}</a>`;
+}
 function lessonHTML(lesson) {
   if (!lesson) return '';
   return JSON.parse(lesson.sections_json).map((s, i) =>
@@ -751,7 +780,8 @@ async function reviewPage(env) {
     const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
     const reveal = lesson ? lessonHTML(lesson) : `<p>${esc((dueRow.summary || '').slice(0, 500))}</p>`;
     body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(dueRow.title)}</h1>
-      <p class="mt"><a href="${safeHref(dueRow.url)}" rel="noopener">原文</a> · <a href="/item/${encodeURIComponent(dueRow.item_id)}">详情</a></p></div>`;
+      <p class="mt"><a href="${safeHref(dueRow.url)}" rel="noopener">原文</a> · <a href="/item/${encodeURIComponent(dueRow.item_id)}">详情</a></p>
+      <p style="margin:4px 0 0">${deepDiveBtn(dueRow)}</p></div>`;
     body += graderHTML(dueRow.item_id, reveal, '/review');
   } else {
     body += `<div class="card"><h1>复习完成 🎉</h1><p class="mt">当前没有到期的复习项。去 <a href="/">今天</a> 学一篇，或在 <a href="/radar">雷达</a> / 搜索里挑条目「学这个」加入队列。</p></div>`;
@@ -790,7 +820,9 @@ async function searchPage(env, q) {
     const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';  // 先转义 \ 本身（ESCAPE 字符），再转义 % _
     const { results } = await env.DB.prepare(
       "SELECT * FROM cn_items WHERE title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT 40").bind(like).all();
-    body += `<p class="mt">「${esc(q)}」找到 ${(results || []).length} 条${(results || []).length === 40 ? '（仅显示前 40）' : ''}</p>${itemListHTML(results || [])}`;
+    body += `<p class="mt">「${esc(q)}」找到 ${(results || []).length} 条${(results || []).length === 40 ? '（仅显示前 40）' : ''}</p>
+      <p style="margin:2px 0 6px"><a class="deep-btn ghost" href="${esc(chatgptHref(deepDiveTopicPrompt(q)))}" target="_blank" rel="noopener noreferrer">🔮 让 ChatGPT 全网深度检索这个主题</a></p>
+      ${itemListHTML(results || [])}`;
   } else body += '<p class="mt">在右上角搜索框输入关键词。</p>';
   body += '</div>';
   return PAGE('/search', body + STUDY_JS, { title: '搜索' + (q ? '：' + q : ''), q });
@@ -818,7 +850,8 @@ async function itemPage(env, id) {
     <h1>${esc(item.title)}</h1>
     <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
     ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
-    ${review ? '' : `<button class="btn-sm" data-id="${esc(item.id)}" onclick="study(this)">加入复习队列</button>`}</div>`;
+    ${review ? '' : `<button class="btn-sm" data-id="${esc(item.id)}" onclick="study(this)">加入复习队列</button>`}
+    <p style="margin:8px 0 0">${deepDiveBtn(item)}</p></div>`;
   if (lesson) body += `<div class="card"><h2>讲义</h2>${lessonHTML(lesson)}</div>`;
   if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc((item.summary || '').slice(0, 500))}</p>`, null);
   return PAGE('/', body + STUDY_JS, { title: item.title.slice(0, 40) });

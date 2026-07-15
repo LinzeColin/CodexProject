@@ -26,6 +26,14 @@ Owner 选定实现路径：**零成本重建到 Cloudflare 免费平台**（Work
 | Stage 2 | 六主题全 UI 移植（从 base.html）+ 修复板块三来源 + 每板轮转 + 字符集感知抓取 | **已完成并实测** |
 | Stage 3 | 切 adp.linzezhang.com 到 adp-cloud、退役隧道/镜像、复审+治理+合入收尾 | **已完成并实测** |
 | Stage 3+ | 商用级功能拓展（学习数据面板/引导复习会话/板块浏览/搜索/往期/学任意条目）+ 打磨（meta/favicon/安全头/404/aria） | **已完成并实测** |
+| Stage 3++ | ChatGPT 深度追问按钮（今天/条目/复习/搜索）+ 本地无用信息清理（退役隧道/镜像残留） | **已完成并实测** |
+
+## ChatGPT 深度追问 + 本地清理（2026-07-15 追加）
+
+Owner 指令：删除本地无用信息；增加跳转 ChatGPT 的功能，让 ChatGPT 全网遍历、深度思考、深度搜索并给一些 surprise、详细专业全面深度讲解对应内容。
+
+- **ChatGPT 深度追问按钮**：今天/条目详情/复习页每条都加「🔮 让 ChatGPT 全网深度追问」——把该条的标题/作者/类目/原文链接/摘要拼成中文提示词，经 `https://chatgpt.com/?hints=search&q=` 新标签跳转；提示词明确要求：先联网深度搜索并交叉验证、附可核查来源；再深度思考讲清真问题/核心方法/关键假设/创新点/局限争议；面向想彻底学懂的人做详细专业全面有深度的讲解、复杂处用类比；给一些意料之外的 surprise；结尾给「继续深入该读什么/做什么」清单。搜索页另加「对当前主题的深度检索」。渲染侧 href 经 `esc`（encodeURIComponent 后仅余字面 `&`→`&amp;`），无注入面。实测 adp.linzezhang.com 今天/条目/复习/搜索四处均已上线，提示词解码正确（worst-case URL ~6.2KB，浏览器/ChatGPT 均可承载）。
+- **本地清理**：Stage 3 切换后，本机 com.linze.adp.web（uvicorn 8787）与 com.linze.adp.tunnel（cloudflared）隧道/镜像架构已无域名指向。卸载并删除两 LaunchAgent 的已安装副本、`~/.cloudflared/adp-tunnel-token`、`var/bin/cloudflared`（38MB）与死日志；仓库内 `deploy/cloudflare/launchd/` 模板保留（可一键重装），无任何被跟踪文件变更。删后 adp.linzezhang.com 仍全路由 200，证明本机残留确为无用。
 
 ## Stage 3 + 商用级拓展实测（2026-07-15）
 

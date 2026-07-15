@@ -62,3 +62,5 @@
 | 2026-07-15 | 云端原生 | Stage 2：六主题全 UI 从 base.html 移植（六令牌+三导航+主题下拉，实测 warm↔cosmos 切换）；板块三换中文媒体 RSS（人民网/中新网/新浪，实测 75 条无乱码）；抓取改每板取最久未抓 4 个保证覆盖；字符集感知（gb2312→gb18030）+孤儿源清理；修 nav.nav-side 选择器 bug；四板块 270/121/75/140 | 绿（云端实测） |
 | 2026-07-15 | 云端原生 | Stage 3 切域名：adp.linzezhang.com 从 adp-mirror 解绑绑到 adp-cloud（Owner「我检查的就是这个网站」），全路由实测 200 不依赖 Mac，旧 worker/隧道休眠 | 绿（实测切换） |
 | 2026-07-15 | 商用拓展 | 学习数据面板+引导复习会话 /review+板块浏览 /board+搜索 /search+往期 /history+条目详情 /item+学任意条目 /api/study；打磨 meta/og/favicon/theme-color/安全头CSP/404/aria；实测 study→review 全流程 | 绿（云端实测） |
+| 2026-07-15 | ChatGPT | 今天/条目/复习/搜索页加「让 ChatGPT 全网深度追问」按钮：带标题/作者/类目/原文/摘要跳转 chatgpt.com/?q=，提示词要求联网深搜+深度思考+surprise+详细专业全面讲解；实测四处上线、解码正确 | 绿（云端实测） |
+| 2026-07-15 | 本地清理 | 删除退役隧道/镜像本机残留：卸载 com.linze.adp.web/tunnel 两 LaunchAgent+删 plist/令牌/cloudflared 二进制(38MB)/死日志，仓库模板保留可逆；删后站点仍全路由 200 | 绿（实测） |
