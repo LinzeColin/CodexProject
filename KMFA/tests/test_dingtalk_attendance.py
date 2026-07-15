@@ -107,6 +107,29 @@ def _official_pass_stats(
     }
 
 
+def _realtime_pass_stats(
+    *,
+    run_type: str = "evening",
+    member_count: int = 2,
+    anomaly_names: list[str] | None = None,
+) -> dict[str, object]:
+    names = list(anomaly_names or [])
+    return {
+        "attendance_group_member_count": member_count,
+        "member_count": member_count,
+        "realtime_reminder_integrity_status": "PASS",
+        "realtime_reminder_run_type": run_type,
+        "realtime_reminder_expected_count": member_count,
+        "realtime_reminder_coverage_count": member_count,
+        "realtime_reminder_query_failure_count": 0,
+        "realtime_reminder_parse_failure_count": 0,
+        "realtime_reminder_anomaly_count": len(names),
+        "realtime_reminder_anomaly_names": names,
+        "attendance_anomaly_count": len(names),
+        "attendance_anomaly_names": names,
+    }
+
+
 def _write_certificate_bound_final_manifest(
     month_dir: Path,
     *,
@@ -879,7 +902,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 calls.append("evening")
                 return {
                     "status": "COMPLETED",
-                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "notification_status": "SENT",
                     "member_count": 42,
                 }
 
@@ -1014,7 +1037,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                         },
                         runner=lambda: {
                             "status": "COMPLETED",
-                            "notification_status": "NOT_SENT_OWNER_DISABLED",
+                            "notification_status": "SENT",
                             "member_count": 42,
                         },
                         completed_probe=lambda: None,
@@ -1046,7 +1069,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(summary["evening"]["natural_success_dates"], ["2026-07-13", "2026-07-18"])
         self.assertEqual(summary["final_reconciliation"]["pass_count"], 1)
         self.assertEqual(summary["final_reconciliation"]["pass_dates"], ["2026-07-13"])
-        self.assertEqual(summary["delivery"]["owner_disabled_count"], 4)
+        self.assertEqual(summary["delivery"]["owner_disabled_count"], 0)
+        self.assertEqual(summary["delivery"]["sent_count"], 4)
         self.assertNotIn("target_work_days", summary)
         self.assertNotIn("natural_completed_work_days", summary)
 
@@ -1083,7 +1107,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "KMFA.tools.dingtalk_attendance.automatic_closure._slot_runner",
                 side_effect=lambda **_: order.append("reminder") or {
                     "status": "COMPLETED",
-                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "notification_status": "SENT",
                     "member_count": 45,
                 },
             ),
@@ -1145,7 +1169,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "KMFA.tools.dingtalk_attendance.automatic_closure._slot_runner",
                 return_value={
                     "status": "COMPLETED",
-                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "notification_status": "SENT",
                     "member_count": 2,
                     "run_id": "dingtalk_attendance_morning_20260713_085450",
                 },
@@ -1174,7 +1198,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             )
 
         self.assertEqual(result["reminder"]["status"], "COMPLETED")
-        self.assertEqual(result["reminder"]["notification_status"], "NOT_SENT_OWNER_DISABLED")
+        self.assertEqual(result["reminder"]["notification_status"], "SENT")
         self.assertEqual(result["final"]["work_date"], "2026-07-12")
         self.assertEqual(result["final"]["status"], "WAITING_OFFICIAL_REPORT")
         self.assertEqual(result["status"], "COMPLETED")
@@ -1305,7 +1329,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     },
                     runner=lambda: {
                         "status": "COMPLETED",
-                        "notification_status": "NOT_SENT_OWNER_DISABLED",
+                        "notification_status": "SENT",
                         "member_count": 42,
                     },
                     completed_probe=lambda: None,
@@ -1798,7 +1822,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(plan["business_date_timezone"], "Asia/Shanghai")
         self.assertFalse(plan["scheduler_timezone_configured"])
         self.assertEqual(plan["schedule"]["morning"], "10:35")
-        self.assertEqual(plan["schedule"]["evening"], "20:00")
+        self.assertEqual(plan["schedule"]["evening"], "20:05")
         self.assertEqual(plan["schedule_clock"]["evening"], "local_wall_clock")
         self.assertEqual(
             plan["summary_datetime_source"],
@@ -2637,7 +2661,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 trigger_source="automation",
                 runner=lambda: {
                     "status": "COMPLETED",
-                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "notification_status": "SENT",
                     "member_count": 42,
                     "run_id": "dingtalk_attendance_evening_20260713_180222",
                 },
@@ -2934,14 +2958,16 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "collection_stats": {},
                 "run_plan": {"run_id": "dingtalk_attendance_evening_20260713_180222"},
             },
-        ):
+        ) as run_mock:
             result = automatic_closure._slot_runner(run_slot="evening")
 
         self.assertEqual(result["error_code"], "REALTIME_REMINDER_QUERY_FAILED")
         self.assertEqual(result["coverage_stats"]["missing_people"], 1)
+        self.assertEqual(run_mock.call_args.kwargs["notification_target_filter"], "group")
 
     def test_run_attendance_passes_run_type_and_uses_realtime_reminder_gate(self) -> None:
         captured: dict[str, object] = {}
+        dispatch_calls: list[dict[str, object]] = []
         runner = RealtimeMorningReplayRunner()
 
         def realtime_collector(**kwargs: object) -> dict[str, object]:
@@ -2952,6 +2978,20 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 run_type=str(kwargs["run_type"]),
                 runner=runner,
             )
+
+        def fake_dispatch(**kwargs: object) -> dict[str, object]:
+            dispatch_calls.append(dict(kwargs))
+            output_status = kwargs["output_status"]
+            assert isinstance(output_status, dict)
+            receipt = {
+                "notification_status": "SENT",
+                "messages": [{"report": "attendance_notification", "status": "SENT"}],
+                "target_results": [{"type": "group", "status": "SENT"}],
+            }
+            Path(str(output_status["dispatch_receipt"])).write_text(
+                json.dumps(receipt, ensure_ascii=False), encoding="utf-8"
+            )
+            return receipt
 
         with tempfile.TemporaryDirectory() as tmpdir:
             archive_root = Path(tmpdir)
@@ -2972,6 +3012,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 patch.object(ATTENDANCE_RUNNER, "build_run_plan", return_value=plan),
                 patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}),
                 patch.object(ATTENDANCE_RUNNER, "build_stats_with_rest_required_people", side_effect=lambda stats, **_: stats),
+                patch.object(ATTENDANCE_RUNNER, "dispatch_reports_to_targets", side_effect=fake_dispatch),
             ):
                 result = run_attendance(
                     run_type="morning",
@@ -2984,10 +3025,9 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertEqual(captured["run_type"], "morning")
         self.assertEqual(result["status"], "COMPLETED")
-        self.assertEqual(result["notification_status"], "NOT_SENT_OWNER_DISABLED")
-        self.assertEqual(receipt["notification_status"], "NOT_SENT_OWNER_DISABLED")
-        self.assertEqual(receipt["messages"], [])
-        self.assertEqual(receipt["target_results"], [])
+        self.assertEqual(result["notification_status"], "SENT")
+        self.assertEqual(receipt["notification_status"], "SENT")
+        self.assertEqual(dispatch_calls[0]["target_filter"], "group")
 
     def test_run_attendance_realtime_incomplete_payload_fails_before_archive(self) -> None:
         def incomplete_collector(**kwargs: object) -> dict[str, object]:
@@ -4666,7 +4706,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual(receipt_payload["management_report"], str(management))
             self.assertEqual(receipt_payload["hr_report"], str(hr))
 
-    def test_send_latest_report_uses_latest_manifest_without_collection(self) -> None:
+    def test_send_latest_report_does_not_resend_legacy_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             month_dir = root / "202607"
@@ -4726,21 +4766,9 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 delivery_enabled=True,
             )
 
-            self.assertEqual(result["status"], "SENT")
+            self.assertEqual(result["status"], "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED")
             self.assertEqual(result["manifest"], str(manifest))
-            self.assertEqual([item["title"] for item in sent], ["开明考勤提醒"])
-            self.assertEqual(result["notification_template_text"], sent[0]["text"])
-            self.assertIn("开明考勤提醒｜2026-07-07｜晚间暂时提醒", result["notification_template_text"])
-            self.assertNotIn("evening", result["notification_template_text"])
-            self.assertNotIn("morning", result["notification_template_text"])
-            self.assertNotIn("run_id：", str(sent[0]["text"]))
-            self.assertNotIn("北京时间：", str(sent[0]["text"]))
-            self.assertNotIn("OneDrive 报告路径：", str(sent[0]["text"]))
-            self.assertNotIn(str(management), str(sent[0]["text"]))
-            self.assertNotIn(str(hr), str(sent[0]["text"]))
-            self.assertEqual(result["notification_delivery_table"], "| 发送对象 | 是否成功 |\n|---|---|\n| 张霖泽 | 是 |")
-            self.assertNotIn("# 开明考勤管理报告", str(sent[0]["text"]))
-            self.assertNotIn("# 开明考勤 HR 报告", str(sent[0]["text"]))
+            self.assertEqual(sent, [])
             self.assertTrue(receipt.exists())
 
     def test_send_latest_report_rejects_legacy_manifest_without_exact_official_parity(self) -> None:
@@ -4934,7 +4962,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     "run_type": "evening",
                     "work_date": "2026-07-07",
                     "current_time": "18:15",
-                    "stats": _official_pass_stats(),
+                    "stats": _realtime_pass_stats(),
                     "management_report": str(management),
                     "hr_report": str(hr),
                     "dispatch_receipt": str(receipt),
@@ -5015,9 +5043,120 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 sender=lambda **kwargs: sent.append(dict(kwargs)) or {"status": "SENT"},
             )
 
-            self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
+            self.assertEqual(result["notification_status"], "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED")
             self.assertEqual(sent, [])
             self.assertTrue(receipt.exists())
+
+    def test_dispatch_duplicate_guard_blocks_same_work_date_and_slot_without_sender_call(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            prior_receipt = root / "prior.dispatch.json"
+            current_receipt = root / "current.dispatch.json"
+            targets_resolved = root / "notification_targets_resolved.json"
+            prior_receipt.write_text(
+                json.dumps(
+                    {
+                        "notification_status": "SENT",
+                        "run_id": "dingtalk_attendance_evening_20260716_200500",
+                        "run_type": "evening",
+                        "work_date": "2026-07-16",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            targets_resolved.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "生产管理群",
+                                "type": "group",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "resolved_channel": "dingtalk_group_robot_env",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            sent: list[dict[str, object]] = []
+
+            result = dispatch_reports_to_targets(
+                output_status={
+                    "run_id": "dingtalk_attendance_evening_20260716_200501",
+                    "run_type": "evening",
+                    "work_date": "2026-07-16",
+                    "stats": _realtime_pass_stats(),
+                    "management_report": str(root / "management.md"),
+                    "hr_report": str(root / "hr.md"),
+                    "dispatch_receipt": str(current_receipt),
+                },
+                targets_resolved_path=targets_resolved,
+                target_filter="group",
+                env={},
+                sender=lambda **kwargs: sent.append(dict(kwargs)) or {"status": "SENT"},
+            )
+
+            self.assertEqual(result["notification_status"], "NOT_SENT_DUPLICATE_GUARD")
+            self.assertEqual(sent, [])
+            self.assertTrue(current_receipt.exists())
+
+    def test_dispatch_persists_send_started_before_external_group_call(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            management = root / "management.md"
+            hr = root / "hr.md"
+            receipt = root / "current.dispatch.json"
+            targets_resolved = root / "notification_targets_resolved.json"
+            management.write_text("management", encoding="utf-8")
+            hr.write_text("hr", encoding="utf-8")
+            targets_resolved.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "生产管理群",
+                                "type": "group",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "resolved_channel": "dingtalk_group_robot_env",
+                                "webhook_env_key": "ROBOT_URL",
+                                "secret_env_key": "ROBOT_SECRET",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            def fake_sender(**_: object) -> dict[str, object]:
+                intent = json.loads(receipt.read_text(encoding="utf-8"))
+                self.assertEqual(intent["notification_status"], "SEND_STARTED")
+                return {"status": "SENT", "channel": "dingtalk_group_robot"}
+
+            result = dispatch_reports_to_targets(
+                output_status={
+                    "run_id": "dingtalk_attendance_evening_20260716_200500",
+                    "run_type": "evening",
+                    "work_date": "2026-07-16",
+                    "current_time": "20:05",
+                    "stats": _realtime_pass_stats(),
+                    "management_report": str(management),
+                    "hr_report": str(hr),
+                    "dispatch_receipt": str(receipt),
+                },
+                targets_resolved_path=targets_resolved,
+                target_filter="group",
+                env={"ROBOT_URL": "https://example.invalid", "ROBOT_SECRET": "placeholder-secret"},
+                sender=fake_sender,
+            )
+
+            self.assertEqual(result["notification_status"], "SENT")
 
     def test_probe_notification_targets_resolves_personal_target_and_redacts_public_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

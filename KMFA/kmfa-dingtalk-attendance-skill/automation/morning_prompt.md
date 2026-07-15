@@ -1,14 +1,14 @@
 Use $kmfa-dingtalk-attendance-skill. If browser export is required, also use $chrome:control-chrome.
 
-Work only in `/Users/linzezhang/CodexProject` on `main`. This is the natural morning run for automation `kmfa`. Business dates use `Asia/Shanghai`; do not alter the scheduler or its timezone configuration.
+Work only in `/Users/linzezhang/CodexProject` on `main`. This is the natural morning run for automation `kmfa` at the owner's fixed local wall-clock 10:35. Business dates use `Asia/Shanghai`; do not add or alter scheduler timezone configuration.
 
 This automation prompt file preserves the existing REST rules; it does not redefine notification text.
 
-Goal: first run and save today's morning temporary reminder, then independently process the latest pending completed work date with an official DingTalk XLS/XLSX export. Official-report waiting or failure must never delay, block, or change today's reminder. Delivery is hard-disabled.
+Goal: first run and save today's morning temporary reminder, send the frozen notification template exactly once to the existing group target only after real-time integrity passes, then independently process the latest pending completed work date with an official DingTalk XLS/XLSX export. Official-report waiting or failure must never delay, block, or change today's reminder.
 
 Required sequence:
 
-1. Confirm branch `main`, `HEAD == origin/main`, no extra worktree, canonical skill present, and tracked files clean. Do not touch the five unrelated pre-existing untracked files.
+1. Confirm branch `main`, fetch `origin/main`, require the attendance runtime code, rules, configuration, and both prompt mirrors to match `origin/main`, and require the attendance scope to have no tracked or untracked changes. Unrelated repository migration state must not be inspected, changed, or used to block this attendance run. Do not create an extra worktree.
 2. Run the package preflight, runtime inspection, offline validation, month gate, and attendance config-only healthcheck. Fail closed if current read-only DWS authorization is not ready.
 3. Run exactly:
 
@@ -27,14 +27,14 @@ TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingt
 
 8. The automatic chain must freeze the workbook fingerprint privately, reconstruct all 48 required fields, generate the formal certificate, and pass that certificate directly to `final_reconciliation.py`. Never request or supply manual `--independent-reconciliation-evidence`.
 9. Official final PASS derives the unique non-empty UserId count `N` from that day's workbook. Official/DWS/matched people must be `N/N/N`, the 48 required field names remain fixed, compared cells must be `N×48`, and missing/extra/required-missing/true-difference must all be zero. `部门` remains optional and unverified when no reliable source exists.
-10. Require `notification_status=NOT_SENT_OWNER_DISABLED`; message count and target calls must stay zero. Do not probe, resend, or invoke any sender.
+10. Require `realtime_reminder_integrity_status=PASS` before group delivery. A successful run must return `notification_status=SENT`; any incomplete coverage, query, date, or parsing result must fail closed with zero sender calls. Persist the send intent before the external call, reject an existing send or send intent for the same work date and slot, and never resend. Do not run a notification probe or alter the target registry.
 
 Contract preservation: `DWS_AUTH_REQUIRED` remains the fail-closed authorization result. Do not fabricate data. Today's temporary reminder requires `realtime_reminder_integrity_status=PASS` and fails closed as `REALTIME_REMINDER_INTEGRITY_FAILED` when current coverage, query, or parsing is incomplete. Official XLS/XLSX parity and `OFFICIAL_ATTENDANCE_PARITY_FAILED` apply only to final reconciliation and must never block or change the reminder. Any changed prompt must be committed and pushed to GitHub `main`. Protect `.env.local`, SQLite, raw JSON, private runtime, and report bodies.
 
 Frozen boundaries:
 
 - Do not modify notification templates or any notification text.
-- Do not modify schedule, time, timezone, automation ID, cwd, sending targets, or another skill.
+- Keep the owner-authorized local 10:35 schedule, no scheduler timezone field, the existing automation ID/cwd/group target, and every other skill unchanged.
 - Do not create a branch, worktree, PR, Draft PR, or issue.
 - Do not commit official workbooks, employee data, raw attendance, private state, local paths, DWS IDs, SQLite, secrets, or report bodies.
 - A manual run never counts toward the five-workday natural acceptance gate.

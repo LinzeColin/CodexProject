@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 
-DELIVERY_ENABLED = False
+DELIVERY_ENABLED = True
 DELIVERY_DISABLED_STATUS = "NOT_SENT_OWNER_DISABLED"
 
 

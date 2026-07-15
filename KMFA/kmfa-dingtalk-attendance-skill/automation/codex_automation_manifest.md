@@ -19,21 +19,21 @@ scheduler timezone field, or multiple RRULE lines. Business dates and report
 cutoffs remain Beijing time inside the runner; they do not shift the owner's
 fixed scheduler wall-clock time.
 
-The `kmfa-3` owner-set 20:00 wall-clock time is permanent. Do not convert it
+The `kmfa-3` owner-set 20:05 wall-clock time is permanent. Do not convert it
 when the host UTC offset or daylight-saving state changes.
 
 | Local id | Name | Business/run time | Scheduler rule | Execution | Prompt mirror |
 | --- | --- | --- | --- | --- | --- |
-| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | Daily 10:35 | `RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/morning_prompt.md` |
-| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | Daily local wall-clock 20:00 | `RRULE:FREQ=WEEKLY;BYHOUR=20;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/evening_prompt.md` |
+| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | Daily local wall-clock 10:35 | `RRULE:FREQ=DAILY;BYHOUR=10;BYMINUTE=35` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/morning_prompt.md` |
+| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | Daily local wall-clock 20:05 | `RRULE:FREQ=DAILY;BYHOUR=20;BYMINUTE=5` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/evening_prompt.md` |
 
 Current local Codex cwd list for both automations:
 
 ```text
-/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa
+/Users/linzezhang/CodexProject
 ```
 
-Run KMFA git, skill, tests, and scripts from `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`.
+Run KMFA git, skill, tests, and scripts from `/Users/linzezhang/CodexProject`.
 The upstream DWS archive has its own separate automation and is not part of the
 KMFA attendance automation cwd list.
 

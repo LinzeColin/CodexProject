@@ -11,11 +11,14 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, TIMEZONE, ZHANG_LINZE_USER_ID
+from KMFA.tools.dingtalk_attendance.collection_integrity import (
+    REMINDER_RUN_TYPES,
+    collection_integrity_failure_reason,
+)
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notification_template import (
     build_notification_message,
     notification_context_from_output_status,
-    official_report_parity_failure_reason,
 )
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
@@ -37,6 +40,32 @@ TARGETS_RESOLVED_PATH = PRIVATE_RUNTIME_DIR / "notification_targets_resolved.jso
 PUBLIC_TARGETS_MANIFEST_PATH = ROOT / "metadata" / "dingtalk_attendance" / "notification_targets_manifest.json"
 DEFAULT_TARGET_LABEL = "张霖泽"
 DEFAULT_REPORTS = ("management", "hr")
+SEND_STARTED_STATUS = "SEND_STARTED"
+DELIVERY_ATTEMPT_STATUSES = frozenset({"SENT", SEND_STARTED_STATUS, "NOT_SENT_DUPLICATE_GUARD"})
+
+
+def _existing_delivery_attempt(
+    *,
+    receipt_path: Path,
+    run_type: str,
+    work_date: str,
+) -> dict[str, Any] | None:
+    if not receipt_path.parent.is_dir():
+        return None
+    for candidate in sorted(receipt_path.parent.glob("*.dispatch.json")):
+        try:
+            payload = json.loads(candidate.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(payload, dict):
+            continue
+        if (
+            str(payload.get("run_type") or "") == run_type
+            and str(payload.get("work_date") or "") == work_date
+            and str(payload.get("notification_status") or "") in DELIVERY_ATTEMPT_STATUSES
+        ):
+            return payload
+    return None
 
 
 def default_targets_config() -> dict[str, Any]:
@@ -199,13 +228,41 @@ def dispatch_reports_to_targets(
 ) -> dict[str, Any]:
     receipt_path = Path(str(output_status["dispatch_receipt"]))
     stats = output_status.get("stats", {})
-    parity_failure = official_report_parity_failure_reason(stats if isinstance(stats, Mapping) else {})
-    if parity_failure:
+    run_type = str(output_status.get("run_type") or "")
+    work_date = str(output_status.get("work_date") or "")
+    integrity_failure = collection_integrity_failure_reason(
+        stats if isinstance(stats, Mapping) else {}, run_type=run_type
+    )
+    if integrity_failure:
+        failure_status = (
+            "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED"
+            if run_type in REMINDER_RUN_TYPES
+            else "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED"
+        )
         receipt = _targets_receipt(
-            status="NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            status=failure_status,
             output_status=output_status,
             target_results=[],
-            failure_reason=parity_failure,
+            failure_reason=integrity_failure,
+        )
+        _write_json(receipt_path, receipt)
+        return receipt
+    existing_attempt = _existing_delivery_attempt(
+        receipt_path=receipt_path,
+        run_type=run_type,
+        work_date=work_date,
+    )
+    if existing_attempt is not None:
+        if (
+            str(existing_attempt.get("run_id") or "") == str(output_status.get("run_id") or "")
+            and existing_attempt.get("notification_status") == "SENT"
+        ):
+            return existing_attempt
+        receipt = _targets_receipt(
+            status="NOT_SENT_DUPLICATE_GUARD",
+            output_status=output_status,
+            target_results=[],
+            failure_reason="an earlier send or send attempt already exists for this work date and run slot",
         )
         _write_json(receipt_path, receipt)
         return receipt
@@ -231,6 +288,14 @@ def dispatch_reports_to_targets(
     target_results: list[dict[str, Any]] = []
     messages: list[dict[str, Any]] = []
     notification_template_text = ""
+
+    send_intent = _targets_receipt(
+        status=SEND_STARTED_STATUS,
+        output_status=output_status,
+        target_results=[],
+        failure_reason="send intent persisted before external delivery",
+    )
+    _write_json(receipt_path, send_intent)
 
     for target in targets:
         if not isinstance(target, Mapping) or not target.get("enabled", True):

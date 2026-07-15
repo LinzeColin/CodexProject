@@ -85,7 +85,7 @@ TRACKED_PRIVATE_RUNTIME_FILES = [".gitkeep", "README.md"]
 PROMPT_CONTRACT_NEEDLES = {
     "calls_skill": ("$kmfa-dingtalk-attendance-skill",),
     "uses_beijing_time": ("Asia/Shanghai",),
-    "preserves_github_sync": ("HEAD == origin/main", "GitHub `main`"),
+    "preserves_github_sync": ("origin/main", "GitHub `main`"),
     "fails_closed_for_dws": ("DWS_AUTH_REQUIRED", "Do not fabricate data"),
     "protects_private_runtime": (".env.local", "SQLite", "raw JSON", "report bodies"),
 }
@@ -194,7 +194,7 @@ def validate_dingtalk_attendance_files(root: Path) -> dict[str, Any]:
     if (
         not isinstance(schedule, dict)
         or schedule.get("morning") != "10:35"
-        or schedule.get("evening") != "20:00"
+        or schedule.get("evening") != "20:05"
         or schedule.get("evening_clock") != "local_wall_clock"
         or schedule.get("business_date_timezone") != "Asia/Shanghai"
         or schedule.get("scheduler_timezone_configured") is not False
@@ -202,9 +202,9 @@ def validate_dingtalk_attendance_files(root: Path) -> dict[str, Any]:
     ):
         errors.append("automation schedule drift")
     morning_prompt = (metadata_root / "codex_automation" / "morning_1035.prompt.md").read_text(encoding="utf-8")
-    if "do not alter the scheduler" not in morning_prompt:
+    if "fixed local wall-clock 10:35" not in morning_prompt:
         errors.append("morning prompt scheduler freeze drift")
-    if (metadata_root / "codex_automation" / "evening_2000.prompt.md").read_text(encoding="utf-8").find("20:00") < 0:
+    if (metadata_root / "codex_automation" / "evening_2000.prompt.md").read_text(encoding="utf-8").find("20:05") < 0:
         errors.append("evening prompt schedule drift")
     if manifest.get("onedrive_root") != ONEDRIVE_ROOT:
         errors.append("onedrive root drift")

@@ -2,7 +2,7 @@
 
 The KMFA 钉钉考勤 skill provides the public-safe structure for `每日早晚钉钉考勤检查`.
 
-Current owner usability status is `UNAVAILABLE`. Morning and evening results are temporary reminders. A completed work date receives a separate official final reconciliation, and new monthly notification rollups use only canonical final archives. Legacy and temporary-reminder archives remain audit-only. Attendance delivery is owner-disabled.
+Current owner usability status is `AWAITING_NATURAL_GROUP_DELIVERY_EVIDENCE`. Morning and evening results remain temporary reminders. Scheduled delivery uses the frozen template and existing group target only after exact real-time integrity PASS, with zero sender calls on failure and a work-date/run-slot duplicate guard. Manual/latest-report resend remains disabled. A completed work date receives a separate official final reconciliation, and new monthly notification rollups use only canonical final archives.
 
 The module is live-only and uses the local `dws` CLI as its current DingTalk attendance backend. It does not create sample employees, sample punches, or fixture attendance records. When DWS is unavailable, scripts return `DWS_UNAVAILABLE`.
 
@@ -19,7 +19,7 @@ Official parity gates are fail closed:
 - returned users and dates must match the request scope;
 - every official status must be classifiable;
 - any query, coverage, date, or status failure returns `OFFICIAL_ATTENDANCE_PARITY_FAILED` and sends no notification.
-- live runs, resend commands, and every attendance dispatch boundary require the same exact official parity fields before target probing or sender invocation; legacy manifests cannot be resent as current attendance truth.
+- morning/evening dispatch boundaries require their exact real-time reminder integrity fields; final retains independent official parity. Legacy manifests cannot be resent as current attendance truth.
 
 Required official columns are `考勤结果`, `应出勤天数`, `出勤天数`, `休息天数`, `迟到次数`, `早退次数`, `上班缺卡次数`, `下班缺卡次数`, and `旷工天数`. Field IDs are dynamic and are never hard-coded. The DWS API permits up to 20 users per call; KMFA intentionally uses 5 per batch to reduce timeout risk.
 

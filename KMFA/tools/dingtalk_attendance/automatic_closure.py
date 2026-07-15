@@ -389,10 +389,7 @@ class R6Coordinator:
             self._write()
             return {"status": "INTERRUPTED", "work_date": work_date, "run_slot": run_slot}
 
-        valid = (
-            result.get("status") == "COMPLETED"
-            and result.get("notification_status") == DELIVERY_DISABLED_STATUS
-        )
+        valid = result.get("status") == "COMPLETED" and result.get("notification_status") == "SENT"
         status = "COMPLETED" if valid else "FAILED"
         day["slots"][run_slot] = {
             "status": status,
@@ -1134,10 +1131,10 @@ def _completed_reminder_probe(*, work_date: str, run_slot: str, archive_root: Pa
             and run_type_from_run_id(run_id) == run_slot
             and str(manifest.get("work_date") or "") == work_date
             and realtime_reminder_integrity_failure_reason(stats, run_type=run_slot) is None
-            and receipt.get("notification_status") == DELIVERY_DISABLED_STATUS
+            and receipt.get("notification_status") in {"SENT", DELIVERY_DISABLED_STATUS}
         ):
             return {
-                "notification_status": DELIVERY_DISABLED_STATUS,
+                "notification_status": receipt.get("notification_status"),
                 "member_count": int(stats.get("member_count") or 0),
                 "run_id": run_id,
                 "realtime_integrity_status": stats.get("realtime_reminder_integrity_status"),
@@ -1192,7 +1189,12 @@ def _completed_final_probe(*, work_date: str, archive_root: Path) -> dict[str, A
 
 
 def _slot_runner(*, run_slot: str) -> dict[str, Any]:
-    result = run_attendance(run_type=run_slot, timezone=TIMEZONE, allow_dws_commands=True)
+    result = run_attendance(
+        run_type=run_slot,
+        timezone=TIMEZONE,
+        allow_dws_commands=True,
+        notification_target_filter="group",
+    )
     stats = result.get("collection_stats") or {}
     archive_status = result.get("onedrive_archive_status") or {}
     return {

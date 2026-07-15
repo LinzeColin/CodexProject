@@ -8,7 +8,7 @@ KMFA/kmfa-dingtalk-attendance-skill/
 
 This folder packages the public-safe operating instructions, automation prompts, configuration templates, validators, PostgreSQL schema, stage-2 consensus protocol, and handoff rules for KMFA 钉钉考勤 skill.
 
-Current status is `UNAVAILABLE`. Morning and evening outputs are temporary reminders only. A completed work date receives a separate final reconciliation after a fresh exact-parity read from DingTalk's official report. Attendance delivery is owner-disabled and returns `NOT_SENT_OWNER_DISABLED` without invoking a sender. New monthly notification values read canonical `final` archives only.
+Current status is `SCHEDULED_GROUP_DELIVERY_ENABLED_AWAITING_NATURAL_EVIDENCE`. Morning and evening outputs remain temporary reminders. They send the frozen template to the existing group target only after exact real-time integrity PASS, with a work-date/run-slot duplicate guard; failure makes zero sender calls. Manual/latest-report resend remains disabled. A completed work date receives a separate final reconciliation, and new monthly notification values read canonical `final` archives only.
 
 It intentionally excludes private runtime data, DingTalk credentials, DWS resolved identifiers, SQLite, raw OneDrive archives, and report bodies.
 

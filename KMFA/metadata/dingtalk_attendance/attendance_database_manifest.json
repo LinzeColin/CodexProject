@@ -76,7 +76,9 @@
     "morning": "TEMPORARY_REMINDER",
     "evening": "TEMPORARY_REMINDER",
     "final": "OFFICIAL_FINAL_RECONCILIATION",
-    "delivery_enabled": false
+    "delivery_enabled": true,
+    "scheduled_delivery_target_filter": "group",
+    "duplicate_guard": "work_date_plus_run_slot"
   },
   "private_runtime_sqlite": true,
   "project_id": "KMFA",
@@ -89,7 +91,7 @@
   },
   "schedule": {
     "business_date_timezone": "Asia/Shanghai",
-    "evening": "20:00",
+    "evening": "20:05",
     "evening_clock": "local_wall_clock",
     "morning": "10:35",
     "morning_clock": "business_clock",

@@ -1,8 +1,10 @@
 project_id: KMFA
 skill_id: kmfa-dingtalk-attendance-skill
 automation_name: 每日早晚钉钉考勤检查
-delivery_enabled: false
+delivery_enabled: true
 delivery_disabled_status: NOT_SENT_OWNER_DISABLED
+scheduled_delivery_target_filter: group
+duplicate_guard_key: work_date_plus_run_slot
 recipient_policy:
   zhang_linze_dingtalk_user_id: 1iv-1t2oesv2yd
   boss_dingtalk_user_id: CONFIG_REQUIRED
@@ -23,6 +25,8 @@ work_notification_required_env:
   - DINGTALK_AGENT_ID
 dispatch_status_enum:
   - SENT
+  - SEND_STARTED
+  - NOT_SENT_DUPLICATE_GUARD
   - FAILED
   - NOTIFIER_CONFIG_MISSING
   - DINGTALK_ROBOT_ERROR

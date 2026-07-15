@@ -27,6 +27,7 @@ from KMFA.tools.dingtalk_attendance import (
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import DWS_COMMAND_ALLOW_ENV, dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.delivery_policy import (
+    DELIVERY_ENABLED,
     DELIVERY_DISABLED_STATUS,
     write_delivery_disabled_receipt,
 )
@@ -71,7 +72,7 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 RUN_TYPES = ("morning", "evening")
 PLAN_RUN_TYPES = (*RUN_TYPES, "final")
-SCHEDULE = {"morning": "10:35", "evening": "20:00"}
+SCHEDULE = {"morning": "10:35", "evening": "20:05"}
 
 
 def build_run_plan(
@@ -580,7 +581,7 @@ def run_attendance(
     *,
     allow_dws_commands: bool = False,
     work_date: str | None = None,
-    notification_target_filter: str = "all",
+    notification_target_filter: str = "group",
     env: Mapping[str, str] | None = None,
     collector: Callable[..., dict[str, Any]] = collect_realtime_reminder_attendance,
     cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
@@ -725,7 +726,14 @@ def run_attendance(
         }
     )
     try:
-        dispatch_receipt = write_delivery_disabled_receipt(output_status)
+        if DELIVERY_ENABLED:
+            dispatch_receipt = dispatch_reports_to_targets(
+                output_status=output_status,
+                target_filter=notification_target_filter,
+                env=env,
+            )
+        else:
+            dispatch_receipt = write_delivery_disabled_receipt(output_status)
     finally:
         cleanup_status.update(cleanup())
         _write_cleanup_audit(output_status, cleanup_status)
@@ -905,7 +913,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-type", required=True, choices=RUN_TYPES)
     parser.add_argument("--timezone", default=TIMEZONE)
     parser.add_argument("--work-date", help="YYYY-MM-DD business date override for controlled reruns/tests.")
-    parser.add_argument("--notification-targets", default="all", choices=("all", "personal", "group"))
+    parser.add_argument("--notification-targets", default="group", choices=("all", "personal", "group"))
     parser.add_argument("--send-latest-report-only", action="store_true", help="Send the latest private reports without DWS collection.")
     parser.add_argument(
         "--allow-dws-commands",

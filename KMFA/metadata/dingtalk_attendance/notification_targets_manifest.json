@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "automation_name": "每日早晚钉钉考勤检查",
-  "delivery_enabled": false,
+  "delivery_enabled": true,
   "delivery_disabled_status": "NOT_SENT_OWNER_DISABLED",
   "updated_at": "2026-07-07T13:28:33.184109+08:00",
   "sensitive_values_committed": false,

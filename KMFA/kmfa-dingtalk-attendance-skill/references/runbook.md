@@ -75,7 +75,7 @@ Source of truth is the current code and tests, but the expected rules are:
 - Morning/evening use the scoped per-member current-data collector. Final alone uses the independent official XLS/XLSX and 48-required-field strict reconciliation; final waiting or failure cannot block a current reminder.
 - Morning and evening outputs are temporary reminders. The later official final reconciliation is the only daily result eligible for new monthly notification rollups.
 - Legacy, morning, and evening archives remain audit-only for monthly notification values.
-- Delivery is owner-disabled. Production and resend entries return `NOT_SENT_OWNER_DISABLED` and must not invoke a sender.
+- Scheduled morning/evening group delivery is owner-enabled only after exact real-time integrity PASS and is protected by work-date/run-slot deduplication. Manual/latest-report resend remains owner-disabled.
 
 ## 5. Safe Offline Commands
 
