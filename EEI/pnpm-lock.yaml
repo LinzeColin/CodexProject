@@ -11,6 +11,8 @@ importers:
 
   .: {}
 
+  apps/cloudflare-public: {}
+
   apps/web:
     dependencies:
       lucide-react:

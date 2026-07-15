@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260715-EEI-MAIN-CI-REMEDIATION"
-source_snapshot_hash: "sha256:78e8bc10a900b07eecdde5040f21e2292e97a5d2fac7569fc71240cbe462ed67"
+as_of_event_id: "EVENT-20260715-EEI-PNPM-LOCK-CI-REMEDIATION"
+source_snapshot_hash: "sha256:e20879d7f6547ffaf092cf475f947dfe516e50317c4b320803c116f5a93dd52f"
 source_base_commit: "0c789bdb49ed11c6924222d2229bd5ca9e7ef158"
 source_tree_hash: "356fcd0bb5d3b892b331d28351fe9e99a64c8457"
-snapshot_event_time: "2026-07-15T12:40:15+10:00"
+snapshot_event_time: "2026-07-15T12:48:26+10:00"
 generator_version: "4.0.1"
-final_commit_binding: "COMMIT_BOUND:0c789bdb49ed11c6924222d2229bd5ca9e7ef158"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -64,7 +64,7 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 23
     legacy_unbound_events: 19
-    precommit_pending_events: 94
+    precommit_pending_events: 95
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
