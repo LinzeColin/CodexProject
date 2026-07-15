@@ -510,6 +510,58 @@ const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'],
 const FAVICON = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>');
 const META_DESC = 'ADP 前沿学习——每日跨全领域 arXiv 与顶级期刊、政策、科技金融精选一篇，配讲义、主动回忆与 FSRS 间隔复习，整套系统跑在 Cloudflare。';
 const THEME_OPTIONS = [['warm', '暖纸学习'], ['minimal', '简约专注'], ['fresh', '清新干净'], ['techno', '炫技'], ['cosmos', '宇宙星河'], ['forest', '森林河流']];
+// 首屏 hero 设计语言（v1.1 §首屏与导航结构；video=整屏视频，dash=知识体征仪表盘），仅今天页出现
+const HERO_CSS = `
+.hero{display:none;position:relative;overflow:hidden;margin:0;z-index:5}
+:root[data-hero="video"] .hero-video{display:block}
+:root[data-hero="dash"] .hero-cosmic{display:block}
+.hero-video{height:74vh;min-height:420px}
+:root[data-theme="techno"] .hero-video{height:80vh}
+:root[data-theme="forest"] .hero-video{height:72vh}
+.hero-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-video .mask{position:absolute;inset:0}
+:root[data-theme="minimal"] .hero-video .mask{background:linear-gradient(180deg,rgba(0,42,59,.5),rgba(0,42,59,.18) 45%,rgba(0,42,59,.95))}
+:root[data-theme="techno"] .hero-video .mask{background:linear-gradient(180deg,rgba(143,176,217,.35),rgba(143,176,217,.05) 45%,#8fb0d9)}
+:root[data-theme="forest"] .hero-video .mask{background:linear-gradient(180deg,rgba(251,250,247,1),rgba(251,250,247,.78) 30%,rgba(251,250,247,.6) 60%,rgba(251,250,247,1))}
+.hero-inner{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 8vw;gap:14px}
+:root[data-nav="sidebar"] .hero-video .hero-inner{padding-left:calc(216px + 4vw)}
+.hero .eyebrow{letter-spacing:.3em;text-transform:uppercase;font-size:12px;color:var(--mt)}
+:root[data-theme="minimal"] .hero .eyebrow{color:rgba(255,255,255,.75)}
+:root[data-theme="forest"] .hero .eyebrow{color:#6F6F6F}
+.hero .display{margin:0;font-family:var(--font-display);font-weight:var(--display-weight);font-style:var(--display-style);font-size:clamp(30px,7vw,72px);line-height:1.02;letter-spacing:var(--display-ls);max-width:18em;color:var(--ink)}
+:root[data-theme="minimal"] .hero .display{color:#fff}
+:root[data-theme="techno"] .hero .display{color:#0f2038;line-height:.92}
+:root[data-theme="forest"] .hero .display{color:#000}
+.hero .sub{max-width:620px;font-size:15px;line-height:1.7;color:var(--tx);margin:0}
+:root[data-theme="minimal"] .hero .sub{color:rgba(255,255,255,.72)}
+:root[data-theme="forest"] .hero .sub{color:#4c4c48}
+:root[data-theme="techno"] .hero .sub{color:#243b58}
+.hero .cta{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:999px;text-decoration:none;font-size:15px;border:1px solid var(--bd);color:var(--ink)}
+:root[data-theme="minimal"] .hero .cta{color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(5px)}
+:root[data-theme="techno"] .hero .cta{color:#10233c;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(20px)}
+:root[data-theme="forest"] .hero .cta{color:#fff;background:#000;border:1px solid #000}
+.fr{opacity:0;transform:translateY(18px);animation:frise .8s cubic-bezier(.2,.7,.2,1) forwards}
+.fr.d1{animation-delay:.1s}.fr.d2{animation-delay:.28s}.fr.d3{animation-delay:.46s}
+.bw{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(24px);animation:bwin .9s cubic-bezier(.16,.8,.26,1) forwards}
+@keyframes bwin{50%{filter:blur(5px);transform:translateY(-3px);opacity:.7}to{filter:blur(0);transform:none;opacity:1}}
+/* 宇宙星河：知识体征仪表盘 */
+.hero-cosmic{max-width:880px;margin:0 auto;padding:22px 16px 4px}
+.cosmic-live{display:flex;align-items:center;gap:10px;padding:0 2px 12px}
+.cosmic-live .dot{width:7px;height:7px;background:#63d1a2;border-radius:50%;box-shadow:0 0 8px rgba(99,209,162,.8);animation:pulse 2.4s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.dash{border:1px solid var(--hairline);background:rgba(9,14,27,.5);backdrop-filter:blur(10px);display:grid;grid-template-columns:200px 1fr 1.2fr}
+.dash>div{padding:16px;border-right:1px solid var(--hairline)}
+.dash>div:last-child{border-right:none}
+.gauge{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.gauge .num{font-family:'Space Grotesk',var(--font-body);font-variant-numeric:tabular-nums;font-size:32px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+.vitals-d{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;align-content:center}
+.vitals-d>div{padding:4px 8px;border-left:1px solid var(--hairline)}
+.vitals-d>div:first-child{border-left:none}
+.vitals-d .v{font-family:'Space Grotesk',var(--font-body);font-variant-numeric:tabular-nums;font-size:20px;color:var(--ink)}
+.sparkline{width:100%;height:70px;margin-top:6px}
+.cosmic-rule{border:none;border-top:1px solid var(--hairline);margin:14px 0 0}
+@media(max-width:780px){.dash{grid-template-columns:1fr}.dash>div{border-right:none;border-bottom:1px solid var(--hairline)}:root[data-nav="sidebar"] .hero-video .hero-inner{padding-left:8vw}.hero-video{height:64vh;min-height:360px}}
+`;
 const CSS = `
 /* 六组主题令牌（颜色/圆角/字体/玻璃），由 data-theme 驱动 */
 :root,[data-theme="warm"]{--bg:#f3eee1;--pn:#fdfaf2;--ink:#2f2618;--tx:#4a3d28;--mt:#8b7a5c;--ac:#8a5c16;--warn:#a4462c;--bd:#d8cfba;--ok:#4f6f3a;--radius:3px;--radius-lg:12px;--pill:3px;--font-body:'Noto Sans SC',-apple-system,sans-serif;--font-display:'Noto Serif SC',serif;--display-weight:900;--display-style:normal;--display-ls:-0.02em;--glass-bg:var(--pn);--glass-blur:0px;--hairline:var(--bd);--shadow:0 1px 3px rgba(47,38,24,.08)}
@@ -613,7 +665,8 @@ footer.receipt{position:relative;z-index:1}
 /* 卡片入场：淡入上移 */
 .card{animation:frise .5s cubic-bezier(.2,.7,.2,1) both}
 @keyframes frise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.fr,.bw{opacity:1!important;transform:none!important;filter:none!important}}
+${HERO_CSS}
 `;
 const navActive = (h, page) => h === '/' ? page === '/' : page.startsWith(h);
 const navLinks = (cls, page) => `<nav class="${cls}" aria-label="主导航">${NAV.map(([h, t]) => `<a href="${h}"${navActive(h, page) ? ' class="active" aria-current="page"' : ''}>${t}</a>`).join('')}</nav>`;
@@ -621,22 +674,48 @@ const navLinks = (cls, page) => `<nav class="${cls}" aria-label="主导航">${NA
 const THEME_NAV = { warm: 'sidebar', minimal: 'topbar', fresh: 'topbar', techno: 'dock', cosmos: 'dock', forest: 'sidebar' };
 // 每主题氛围动效层开关（cosmos 银河 / techno 流云 / minimal 海面光；forest 坡地由 data-theme 驱动）
 const THEME_FX = { warm: 'none', minimal: 'minimal', fresh: 'none', techno: 'techno', cosmos: 'cosmos', forest: 'none' };
+// 首屏结构（今天页顶部，按主题切 DOM）：video=整屏对标视频，dash=知识体征仪表盘，none=无首屏（v1.1 规范）
+const THEME_HERO = { warm: 'none', minimal: 'video', fresh: 'none', techno: 'video', cosmos: 'dash', forest: 'video' };
+const VIDEO_HOST = 'https://d8j0ntlcm91z4.cloudfront.net';
+// 对标案例原版视频直链（v1.1 §视频资产；NOVA/宇宙星河已 403 失效，改用银河背景仪表盘，故无 cosmos 视频）
+const HERO_VIDEO = {
+  minimal: VIDEO_HOST + '/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4',
+  techno: VIDEO_HOST + '/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260306_115329_5e00c9c5-4d69-49b7-94c3-9c31c60bb644.mp4',
+  forest: VIDEO_HOST + '/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4',
+};
 // 首绘前在 <html> 上定 data-theme + data-nav，颜色与导航结构都无闪烁（storage 被禁时安全回退）
-const HEAD_INIT = `<script>(function(){try{var m=${JSON.stringify(THEME_NAV)},fx=${JSON.stringify(THEME_FX)};var s=localStorage.getItem('adp-theme');if(!Object.prototype.hasOwnProperty.call(m,s))s='warm';
-var r=document.documentElement;r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]);r.setAttribute('data-fx',fx[s]||'none');}catch(e){}})();</script>`;
+const HEAD_INIT = `<script>(function(){try{var m=${JSON.stringify(THEME_NAV)},fx=${JSON.stringify(THEME_FX)},hr=${JSON.stringify(THEME_HERO)};var s=localStorage.getItem('adp-theme');if(!Object.prototype.hasOwnProperty.call(m,s))s='warm';
+var r=document.documentElement;r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]);r.setAttribute('data-fx',fx[s]||'none');r.setAttribute('data-hero',hr[s]||'none');}catch(e){}})();</script>`;
 const THEME_JS = `
 var THEMES=${JSON.stringify(THEME_NAV)};
 var THEMEFX=${JSON.stringify(THEME_FX)};
+var THEMEHERO=${JSON.stringify(THEME_HERO)};
+var HEROVIDEO=${JSON.stringify(HERO_VIDEO)};
+var reducedMotion=false;try{reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function isTheme(n){return Object.prototype.hasOwnProperty.call(THEMES,n);}
-function applyTheme(n){if(!isTheme(n))n='warm';var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]);r.setAttribute('data-fx',THEMEFX[n]||'none');lsSet('adp-theme',n);
+function applyTheme(n){if(!isTheme(n))n='warm';var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]);r.setAttribute('data-fx',THEMEFX[n]||'none');
+var hasHero=document.querySelector('.hero-video,.hero-cosmic');r.setAttribute('data-hero',hasHero?(THEMEHERO[n]||'none'):'none');lsSet('adp-theme',n);
+syncHeroVideo(n);if(n==='techno')blurTextIn();if(n==='cosmos')animateGauge();
 var m=document.querySelector('meta[name=theme-color]');if(m){m.content=getComputedStyle(r).getPropertyValue('--bg').trim();}}
+// 视频首屏实现红线（v1.1 §实现红线）：src 由 JS 赋值、muted/loop 显式布尔、play().catch，未静音会被自动播放策略拦成冻结首帧
+function syncHeroVideo(n){var v=document.getElementById('heroVideo');if(!v)return;var url=HEROVIDEO[n];
+var want=document.documentElement.getAttribute('data-hero')==='video'&&url&&!reducedMotion;
+if(want){if(v.dataset.current!==url){v.muted=true;v.loop=true;v.playsInline=true;v.autoplay=true;v.src=url;v.dataset.current=url;v.oncanplay=function(){v.play().catch(function(){});};}v.play().catch(function(){});}
+else{try{v.pause();}catch(e){}if(!url){v.removeAttribute('src');v.dataset.current='';try{v.load();}catch(e){}}}}
+function blurTextIn(){var ws=document.querySelectorAll('.hero .display .bw');for(var i=0;i<ws.length;i++){(function(w,i){w.style.animation='none';void w.offsetWidth;w.style.animation='';w.style.animationDelay=(i*0.045)+'s';})(ws[i],i);}}
+function animateGauge(){var num=document.getElementById('gaugeNum'),arc=document.getElementById('gaugeArc');if(!num)return;
+var target=parseFloat(num.dataset.value||'0'),maxv=parseFloat(num.dataset.max||'104'),circ=2*Math.PI*54;
+function settle(){num.textContent=String(Math.round(target)).padStart(3,'0');if(arc)arc.style.strokeDashoffset=circ*(1-(target/maxv)*0.75);}
+if(reducedMotion||document.visibilityState!=='visible'){settle();return;}
+var start=null;function step(ts){if(!start)start=ts;var p=Math.min(1,(ts-start)/1200);var val=target*(0.5-Math.cos(Math.PI*p)/2);num.textContent=String(Math.round(val)).padStart(3,'0');if(arc)arc.style.strokeDashoffset=circ*(1-(val/maxv)*0.75);if(p<1)requestAnimationFrame(step);}
+requestAnimationFrame(step);setTimeout(settle,1500);}
 (function(){var s=lsGet('adp-theme');if(!isTheme(s))s='warm';var sel=document.getElementById('theme');if(sel){sel.value=s;sel.onchange=function(){applyTheme(sel.value);};}applyTheme(s);})();
 `;
 // 氛围动效层（固定背景，aria-hidden，纯 CSS/SVG 驱动；仅当前主题对应层显示）
 const FX_LAYERS = `<div class="fx fx-cosmos" aria-hidden="true"><div class="band"></div><div class="neb blue"></div><div class="neb violet"></div><div class="neb teal"></div><div class="stars"></div><div class="stars near"></div><div class="meteor"></div></div><div class="fx fx-minimal" aria-hidden="true"><div class="toplight"></div><div class="vignette"></div></div><div class="fx fx-techno" aria-hidden="true"><div class="cloud" style="top:6%;left:-10%"></div><div class="cloud c2"></div><div class="cloud c3"></div></div><div class="forest-slopes" aria-hidden="true"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,120 L0,70 Q360,10 720,64 T1440,52 L1440,120 Z" fill="#2e7d5b" opacity="0.16"/><path d="M0,120 L0,96 Q480,44 900,92 T1440,84 L1440,120 Z" fill="#3c7ea0" opacity="0.14"/></svg></div>`;
-const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar" data-fx="none"><head><meta charset="utf-8">
+const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar" data-fx="none" data-hero="none"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${opts.title ? esc(opts.title) + ' · ' : ''}ADP 前沿学习</title>
 <meta name="description" content="${esc(META_DESC)}">
@@ -650,21 +729,78 @@ ${navLinks('nav-side', page)}
 <header class="top"><b><a href="/" style="color:inherit">ADP 前沿学习</a></b>${navLinks('nav-top', page)}
 <form action="/search" method="get" class="searchbox" role="search"><input name="q" placeholder="搜索条目…" aria-label="搜索" value="${esc(opts.q || '')}"></form>
 <select id="theme" aria-label="主题">${THEME_OPTIONS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></header>
+${opts.hero || ''}
 <main>${body}</main>
 ${navLinks('nav-dock', page)}
 <footer class="receipt">整套系统运行在 Cloudflare（抓取·选择·讲义·回忆·排程都在云端）；每日 cron 自动更新，不依赖任何本机。 · <a href="/history">往期精选</a></footer>
 <script>${THEME_JS}</script>
 </body></html>`;
 
+// ───────────────────────── 首屏 hero（v1.1：video 整屏视频 / dash 知识体征仪表盘） ─────────────────────────
+function blurChars(text) {
+  return [...String(text)].map(c => c === ' ' ? ' ' : `<span class="bw">${esc(c)}</span>`).join('');
+}
+function sparkSVG(scores) {
+  const max = 104, n = scores.length;
+  if (!n) return '';
+  const xy = (i, s) => [n === 1 ? 50 : (i / (n - 1)) * 100, 38 - Math.max(0, Math.min(1, s / max)) * 34];
+  const line = scores.map((s, i) => xy(i, s).map(z => z.toFixed(1)).join(',')).join(' ');
+  const dots = scores.map((s, i) => { const [x, y] = xy(i, s); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.7" fill="${s <= 0 ? 'var(--mt)' : 'var(--ac)'}"/>`; }).join('');
+  return `<polyline points="${line}" fill="none" stroke="var(--ac)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>${dots}`;
+}
+function heroSection(sel, item, v, spark) {
+  const abstain = !sel || sel.abstain;
+  const eyebrow = abstain ? '今日弃权 · 宁缺毋滥' : (BOARD_NAMES[sel.board_id] || '每日前沿');
+  const title = (abstain ? '今天没有达标的精选' : (item ? item.title : '今日精选')).slice(0, 46);
+  const sub = ((abstain ? (sel && sel.abstain_reason) : (sel && sel.why)) || '').slice(0, 100);
+  const score = sel && sel.score != null ? Number(sel.score) : 0;
+  const circ = 2 * Math.PI * 54;
+  const video = `<section class="hero hero-video" aria-label="今日首屏">
+    <video id="heroVideo" muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <div class="mask"></div>
+    <div class="hero-inner">
+      <div class="eyebrow fr d1">${esc(eyebrow)}</div>
+      <h1 class="display">${blurChars(title)}</h1>
+      <p class="sub fr d3">${esc(sub)}</p>
+      <a class="cta fr d3" href="#todaymain">开始学习 ↓</a>
+    </div>
+  </section>`;
+  const dash = `<section class="hero hero-cosmic" aria-label="今日知识体征">
+    <div class="cosmic-live"><span class="dot"></span><span class="microlabel">LIVE · 今日知识体征</span></div>
+    <div class="dash">
+      <div class="gauge">
+        <svg width="128" height="128" viewBox="0 0 128 128" aria-hidden="true">
+          <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#89AACC"/><stop offset="1" stop-color="#4E85BF"/></linearGradient></defs>
+          <circle cx="64" cy="64" r="54" fill="none" stroke="var(--hairline)" stroke-width="8"/>
+          <circle id="gaugeArc" cx="64" cy="64" r="54" fill="none" stroke="url(#gg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${circ.toFixed(1)}" transform="rotate(135 64 64)" style="filter:drop-shadow(0 0 6px rgba(137,170,204,.5))"/>
+        </svg>
+        <div class="num" id="gaugeNum" data-value="${score}" data-max="104">000</div>
+        <div class="microlabel">${abstain ? '最高分 / 104' : '今日精选分 / 104'}</div>
+      </div>
+      <div class="vitals-d">
+        <div><div class="v">${v.streak}</div><div class="microlabel">STREAK</div></div>
+        <div><div class="v">${v.retention != null ? v.retention + '%' : '—'}</div><div class="microlabel">RETENTION</div></div>
+        <div><div class="v">${v.due}</div><div class="microlabel">REVIEW DEBT</div></div>
+      </div>
+      <div><div class="microlabel">近 ${spark.length} 次精选分</div><svg class="sparkline" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">${sparkSVG(spark)}</svg></div>
+    </div>
+    <hr class="cosmic-rule">
+  </section>`;
+  return video + dash;
+}
+
 async function todayPage(env) {
   const v = await computeVitals(env);
   const sel = await env.DB.prepare('SELECT * FROM cn_selections ORDER BY as_of_date DESC LIMIT 1').first();
+  const { results: recent } = await env.DB.prepare('SELECT score, abstain FROM cn_selections ORDER BY as_of_date DESC LIMIT 7').all();
+  const spark = (recent || []).map(r => r.abstain ? 0 : (r.score || 0)).reverse();
   if (!sel) return PAGE('/', vitalsCard(v) + `<div class="card"><h1>还没有内容</h1><p class="mt">每日流水线尚未运行。可在 <a href="/system">系统页</a> 手动触发一次。</p></div>`);
-  if (sel.abstain) return PAGE('/', vitalsCard(v) + `<div class="card"><h1>今日弃权</h1><p>${esc(sel.abstain_reason)}</p><p class="mt">决策日期 ${esc(sel.as_of_date)}——宁缺毋滥。可去 <a href="/radar">雷达</a> 挑条目「学这个」，或看 <a href="/history">往期</a>。</p></div>`);
+  const item = sel.abstain ? null : await env.DB.prepare('SELECT * FROM cn_items WHERE id=?').bind(sel.item_id).first();
+  const hero = heroSection(sel, item, v, spark);
+  if (sel.abstain) return PAGE('/', `<span id="todaymain"></span>` + vitalsCard(v) + `<div class="card"><h1>今日弃权</h1><p>${esc(sel.abstain_reason)}</p><p class="mt">决策日期 ${esc(sel.as_of_date)}——宁缺毋滥。可去 <a href="/radar">雷达</a> 挑条目「学这个」，或看 <a href="/history">往期</a>。</p></div>`, { hero });
   const lesson = await env.DB.prepare('SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1').bind(sel.item_id).first();
-  const item = await env.DB.prepare('SELECT * FROM cn_items WHERE id=?').bind(sel.item_id).first();
   const review = await env.DB.prepare('SELECT * FROM cn_reviews WHERE item_id=?').bind(sel.item_id).first();
-  let body = vitalsCard(v) + `<div class="card"><h2>为什么今天选它</h2><p>${esc(sel.why)}</p>
+  let body = `<span id="todaymain"></span>` + vitalsCard(v) + `<div class="card"><h2>为什么今天选它</h2><p>${esc(sel.why)}</p>
     <p class="mt">决策日期 ${esc(sel.as_of_date)} · ${esc(BOARD_NAMES[sel.board_id] || sel.board_id || '')}${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p></div>`;
   if (item) {
     body += `<div class="card"><h1>${esc(item.title)}</h1>
@@ -684,7 +820,7 @@ async function todayPage(env) {
         document.getElementById('r').textContent=j.duplicate?('今天已评过（事件 #'+j.id+'），未重复计。'):('已记录 → 下次复习 '+j.due_at+'（间隔 '+j.interval+' 天，证据态：'+j.evidence_state+'）');
       }</script></div>`;
   }
-  return PAGE('/', body);
+  return PAGE('/', body, { hero });
 }
 
 async function radarPage(env) {
@@ -927,7 +1063,7 @@ function notFoundPage() {
 const SEC_HEADERS = {
   'x-content-type-options': 'nosniff',
   'referrer-policy': 'strict-origin-when-cross-origin',
-  'content-security-policy': "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+  'content-security-policy': "default-src 'self'; img-src 'self' data:; media-src 'self' https://d8j0ntlcm91z4.cloudfront.net; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
 };
 const htmlResp = (html, status = 200) => new Response(html, {
   // no-store（不是 no-cache）：这些浏览器对 no-cache 仍会缓存并不重新校验，导致用户一直看到旧页面、拿不到新部署。

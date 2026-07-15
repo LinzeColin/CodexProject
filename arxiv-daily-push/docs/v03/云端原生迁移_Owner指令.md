@@ -30,6 +30,16 @@ Owner 选定实现路径：**零成本重建到 Cloudflare 免费平台**（Work
 | Stage 3+++ | 主题选择器自愈修复（无效/原型键存储值不再让 6 主题变空） | **已完成并实测** |
 | Stage 3++++ | 六主题氛围动效层恢复（银河/流云/海面光/坡地，从 base.html 移植） | **已完成并实测** |
 | Stage 3+++++ | 动效加强可见 + no-store 修缓存（用户之前一直拿到旧页面看不到更新） | **已完成并实测** |
+| Stage 3×6 | 恢复今天页 hero 首屏（三主题整屏视频 + 宇宙星河知识体征仪表盘，按 v1.1 规范） | **已完成并实测** |
+
+## 恢复今天页 hero 首屏——真正的原版动效（2026-07-15 追加）
+
+Owner 提供了真正的 v1.1 设计方案包，并指出改了十遍原版动效还是没有。读规范后明确了根因：真正的招牌动效**从来不是**我一直在调的氛围背景层，而是**今天页的 hero 首屏**——云端移植时被整个丢掉了。已按 v1.1《首屏与导航结构契约》补回（`deploy/cloudflare/worker_cloud.js`）：
+- **简约专注 / 炫技 / 森林**：今天页顶部整屏 **hero 视频**（三条仍存活的 CloudFront 对标视频 Velorah / Space Voyage / Aethera）+ eyebrow → 大字标题（当日精选；炫技逐字 BlurText）→ 副文 → 玻璃 CTA，压主题色渐变遮罩；
+- **宇宙星河**：**知识体征仪表盘**——SVG 环形量表从 000 数到当日精选分/104 + STREAK/RETENTION/REVIEW DEBT 三格 + 近 7 次精选分折线，压在银河上（它自己的 NOVA 视频 URL 已 403 失效）；
+- **暖纸/清新**：按原设计无首屏。
+
+视频严格照 v1.1 实现红线：src 由 JS 赋值、muted/loop 显式布尔、play().catch + oncanplay 兜底（避免红线 1 警告的「冻结首帧」）；CSP 加 media-src 放行视频域。逐主题在**全新 no-cache 标签页**实测：minimal/techno/forest 视频真的在播（paused=false、currentTime 递增、videoWidth>0），宇宙星河量表数到 094。部署 adp-cloud（905513ff）。**遗留提示：对标视频在外部 CloudFront 且已有一条失效，按 v1.1 红线 4 应转存 Owner 自有 R2 存储以求持久**。
 
 ## 动效加强可见 + 缓存修复（2026-07-15 追加）
 

@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260715-ADP-J5-BOLD-FX-NO-STORE"
-source_snapshot_hash: "sha256:417f578296275572014d41e03958c4866253dbcc10c40ed7b057287821229179"
+as_of_event_id: "EVENT-20260715-ADP-J5-HERO-FIRST-SCREEN-RESTORE"
+source_snapshot_hash: "sha256:7eb1b88fb65113e0d49f885a8790426083abbd8e191237cae0b210664bc8f815"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-15T19:10:00+10:00"
+snapshot_event_time: "2026-07-15T20:10:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 56
+    precommit_pending_events: 57
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

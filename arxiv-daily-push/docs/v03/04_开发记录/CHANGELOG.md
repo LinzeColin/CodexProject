@@ -67,3 +67,4 @@
 | 2026-07-15 | 主题修复 | 六主题切换器读 localStorage 未校验→旧版/无效值或原型键(constructor/__proto__)让切换框变空、配色卡默认（Owner：6主题没了）；改用 hasOwnProperty 校验+回退 warm+自愈；实测 aurora/constructor 自愈、森林河流跨页保持 | 绿（云端实测） |
 | 2026-07-15 | 动效恢复 | Stage 2 只搬颜色丢了 base.html 每主题动效层（Owner：只换色、动效全没了）；纯 CSS/SVG 忠实补回银河/流云/海面光/坡地+卡片入场+reduced-motion，data-fx 驱动，外部视频不移；逐主题桌面+手机实测 | 绿（云端实测） |
 | 2026-07-15 | 动效加强+缓存 | Owner 仍看不到动效：DOM 证明层已渲染但太淡，且浏览器在 no-cache 下仍缓存整页(算出旧css)导致根本没拿到部署；改 no-store 强制刷新 + 大幅加强银河/流云可见度(星云辉光/极光/亮星/流星+卡片调透)；全新标签页实测清晰可见 | 绿（云端实测） |
+| 2026-07-15 | hero首屏 | Owner 给 v1.1 包指出真正动效是今天页 hero 首屏(移植时丢了)：补回 minimal/techno/forest 整屏对标视频(Velorah/SpaceVoyage/Aethera)+大字/BlurText/玻璃CTA/渐变遮罩，cosmos 知识体征仪表盘(环形量表数到分/STREAK/折线)；视频照红线 src由JS赋值+muted/loop布尔+play+canplay兜底防冻帧+CSP media-src；全新标签页实测三视频在播、量表数到094；外部视频待转R2 | 绿（云端实测） |
