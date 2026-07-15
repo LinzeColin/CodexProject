@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260715-ADP-J4-BOARDS-HOME-TUNNEL-CLOSEOUT"
-source_snapshot_hash: "sha256:b9c59cace479c34b88a159069408992c9d2a4cd7f857c961d0e0af6aaf406d64"
+as_of_event_id: "EVENT-20260715-ADP-J4-SOURCES-EXPANDED-HOMEPAGE-RETURNED"
+source_snapshot_hash: "sha256:60fc309a2b3c01373665fd844e6d3448b659e27c685dffd9c7f7c7a6d3442f20"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-15T11:40:00+10:00"
+snapshot_event_time: "2026-07-15T12:40:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 48
+    precommit_pending_events: 49
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
