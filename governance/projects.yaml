@@ -92,11 +92,6 @@ projects:
     ci_mode: "required"
     migration:
       version: "lean-v2"
-  - project_id: "Serenity-Alipay"
-    path: "Serenity-Alipay"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
   - project_id: "arxiv-daily-push"
     path: "arxiv-daily-push"
     ci_mode: "required"
@@ -174,3 +169,15 @@ migrated_projects:
     reactivation_requires_owner_authorization: true
     evidence_refs:
       - "governance/run_manifests/GOV-SPLIT-WAVE1-20260715.json"
+  - project_id: "Serenity-Alipay"
+    path: "Serenity-Alipay"
+    status: "migrated"
+    migrated_at: "2026-07-15"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "Serenity-Alipay"
+    source_tree_sha: "36596ed1470bdc115a7faeb9cbf710dfc6719848"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE2-20260715.json"
