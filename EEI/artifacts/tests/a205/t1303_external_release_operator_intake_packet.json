@@ -53,14 +53,14 @@
       "threshold_result": "FAIL_CLOSED"
     },
     "operator_soak_finalization": {
-      "a209_evidence_ready_for_release_manager": false,
-      "downstream_release_gate_refresh_allowed": false,
-      "progress_status": "FAILED_WINDOW",
+      "a209_evidence_ready_for_release_manager": true,
+      "downstream_release_gate_refresh_allowed": true,
+      "progress_status": "COMPLETE_READY_FOR_EVIDENCE_VALIDATION",
       "release_gate_closed_by_finalizer": false,
-      "status": "A209_FINALIZATION_BLOCKED_MISSING_OR_PARTIAL",
+      "status": "A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN",
       "target_windows": 288,
-      "windows_completed": 31,
-      "windows_failed": 1
+      "windows_completed": 288,
+      "windows_failed": 0
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -80,13 +80,12 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-27T11:38:06Z",
+  "generated_at": "2026-07-15T02:39:37Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
     "A026_entity_resolution_production_gold_set",
-    "A027_relationship_extraction_production_gold_set",
-    "A209_24h_operator_soak_finalization"
+    "A027_relationship_extraction_production_gold_set"
   ],
   "mvp_release_gate_refresh_allowed": false,
   "non_claims": [
@@ -108,7 +107,9 @@
     "make generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight",
     "make verify"
   ],
-  "ready_input_ids": [],
+  "ready_input_ids": [
+    "A209_24h_operator_soak_finalization"
+  ],
   "release_gate_closed_by_operator_packet": false,
   "release_manager_preflight_refresh_allowed": false,
   "required_operator_inputs": [
@@ -206,19 +207,19 @@
     },
     {
       "acceptance_id": "A209",
-      "blocking_reason": "A209 finalization does not allow downstream refresh at 31/288 windows",
+      "blocking_reason": "",
       "completion_criteria": [
         "288/288 five-minute windows pass",
         "0 failed windows",
         "operator soak evidence validation reports release-ready status",
         "downstream release-gate refresh is explicitly allowed by finalization preflight"
       ],
-      "current_status": "MISSING_OR_BLOCKED",
+      "current_status": "READY_FOR_PREFLIGHT",
       "input_id": "A209_24h_operator_soak_finalization",
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "ae14c4f128c7d9a04bece9c1454b107fe998004ec4ec56e19360e9f21def5e97"
+        "sha256": "d8e980eb29ca68d5b3b4383dab92a2d7ac57c74c728e4acb73b1629394a1a410"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -245,7 +246,7 @@
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "ae14c4f128c7d9a04bece9c1454b107fe998004ec4ec56e19360e9f21def5e97"
+      "sha256": "d8e980eb29ca68d5b3b4383dab92a2d7ac57c74c728e4acb73b1629394a1a410"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -253,7 +254,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "3c5cef637f935994b4b6e8461f2f1bbcca50f52bce641a2af838fd0ff87b7e41"
+      "sha256": "2fb25063872ed8769739c42fae2fd85e7d8b354101591e2c823d01a8ccafa1b9"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

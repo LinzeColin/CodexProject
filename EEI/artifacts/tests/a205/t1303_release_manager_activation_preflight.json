@@ -32,24 +32,24 @@
       "threshold_result": "FAIL_CLOSED"
     },
     "operator_soak": {
-      "operator_24h": "MISSING",
+      "operator_24h": "PASS",
       "operator_4h": "PASS",
       "release_gate_closed_by_validator": false,
-      "status": "PARTIAL_OPERATOR_EVIDENCE"
+      "status": "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 10.76,
+      "completion_percent": 100.0,
       "counts_as_release_ready": false,
-      "latest_successful_window_index": 31,
+      "latest_successful_window_index": 288,
       "operator_process_status": "NOT_RUNNING",
-      "progress_status": "FAILED_WINDOW",
+      "progress_status": "COMPLETE_READY_FOR_EVIDENCE_VALIDATION",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
-      "watchdog_process_status": "RUNNING",
-      "windows_completed": 31,
-      "windows_failed": 1,
-      "windows_remaining": 257
+      "watchdog_process_status": "NOT_RUNNING",
+      "windows_completed": 288,
+      "windows_failed": 0,
+      "windows_remaining": 0
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -71,7 +71,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-27T11:38:06Z",
+  "generated_at": "2026-07-15T02:42:56Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -103,7 +103,7 @@
     },
     {
       "gate_id": "A209_24h_operator_soak",
-      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 31/288 windows, 1 failed, FAILED_WINDOW"
+      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 288/288 windows, 0 failed, COMPLETE_READY_FOR_EVIDENCE_VALIDATION"
     }
   ],
   "non_claims": [
@@ -133,9 +133,9 @@
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
-    "operator_soak_evidence_sha256": "22002cee32e692707b3a18e756a6bc9ec81b17d9c41eac53c236fa2f285f36f3",
+    "operator_soak_evidence_sha256": "8e6923b47ede992f1c0b7ed4347d10f83ea17ab2ab24e3dd665f51526e1f8738",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "555f5f0c86df491d144991a539c34c583b1c5778045348960c472e4f118f0be8",
+    "operator_soak_heartbeat_sha256": "996056ea9f595f0ebc97065c3a41d77e569f9f23181fa598b6de328929294f77",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",

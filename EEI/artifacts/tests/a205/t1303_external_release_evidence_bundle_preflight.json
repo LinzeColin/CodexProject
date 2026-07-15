@@ -53,14 +53,14 @@
       "threshold_result": "FAIL_CLOSED"
     },
     "operator_soak_finalization": {
-      "a209_evidence_ready_for_release_manager": false,
-      "downstream_release_gate_refresh_allowed": false,
-      "progress_status": "FAILED_WINDOW",
+      "a209_evidence_ready_for_release_manager": true,
+      "downstream_release_gate_refresh_allowed": true,
+      "progress_status": "COMPLETE_READY_FOR_EVIDENCE_VALIDATION",
       "release_gate_closed_by_finalizer": false,
-      "status": "A209_FINALIZATION_BLOCKED_MISSING_OR_PARTIAL",
+      "status": "A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN",
       "target_windows": 288,
-      "windows_completed": 31,
-      "windows_failed": 1
+      "windows_completed": 288,
+      "windows_failed": 0
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-27T11:38:06Z",
+  "generated_at": "2026-07-15T02:39:37Z",
   "missing_external_inputs": [
     {
       "acceptance_id": "A202",
@@ -101,11 +101,6 @@
       "acceptance_id": "A027",
       "input_id": "A027_relationship_extraction_production_gold_set",
       "reason": "relationship-extraction production gold threshold is not met"
-    },
-    {
-      "acceptance_id": "A209",
-      "input_id": "A209_24h_operator_soak_finalization",
-      "reason": "A209 finalization does not allow downstream refresh at 31/288 windows"
     }
   ],
   "mvp_release_gate_refresh_allowed": false,
@@ -144,7 +139,7 @@
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_finalization": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-    "operator_soak_finalization_sha256": "ae14c4f128c7d9a04bece9c1454b107fe998004ec4ec56e19360e9f21def5e97",
+    "operator_soak_finalization_sha256": "d8e980eb29ca68d5b3b4383dab92a2d7ac57c74c728e4acb73b1629394a1a410",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
