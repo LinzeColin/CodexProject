@@ -1918,6 +1918,18 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Exact iteration boundaries before this governance baseline are UNKNOWN; Git commit count is not used as iteration count.
 - Exact per-task stdout for every legacy DONE task is not fully preserved in the canonical governance files; tasks rely on acceptance traceability and HANDOFF/CI evidence.
 
+## EVENT-20260715-EEI-A209-MAIN-HANDOFF
+
+- Timestamp: `2026-07-15T12:23:54+10:00`
+- Base commit: `76078bc06992b8dc4d63336131a65b64592ec54f`
+- Scope: prepare the validated T700-T706/T800-T801 EEI implementation branch for GitHub `main`, promote the completed T1307/A209 24h operator evidence, and record a fail-closed Claude Code handoff.
+- Acceptance: `ACC-A209` remains `IN_PROGRESS`; canonical 4h evidence is `48/48 PASS`, canonical 24h evidence is `288/288 PASS` with `0 FAIL`, validator status is `EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`, and finalization status is `A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN`.
+- Runtime state: Docker/PostgreSQL/worker are stopped at handoff; no live integration or new soak claim was made in this sync.
+- Model/formula/parameter delta: no model IDs, formula expressions, weights, thresholds or active parameter values changed; PARAM-082 evidence metadata was refreshed while its value remains `false`.
+- Validation: A209 evidence/heartbeat/finalizer validators PASS; focused A209 unit tests `28/28` PASS; full unit tests `196/196` PASS; Ruff lint, Web typecheck, Next production build and Playwright E2E `35/35` PASS; EEI governance and API contract validation PASS; development-status artifacts regenerated and validated; EEI changed-scope governance reports `errors=0`, `warnings=0`; clean-room/release package generation and validation PASS with `514` package paths, `521` manifest paths and `520` checksum paths. Full `make verify` was not run because Docker/PostgreSQL/worker are stopped.
+- Remaining risks: downstream release/governance bundles, root changed-scope validation, GitHub CI, A202, A210, A026/A027 and remaining MVP feature tasks are not closed by this event.
+- Rollback: revert the governance/evidence promotion commit, retain the external runtime-evidence directory and source hashes, remove canonical 24h files if validation fails, and keep T1307/A209 `IN_PROGRESS`.
+
 ## Validation History
 
 | Command | Result | Evidence |

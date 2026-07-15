@@ -6,6 +6,7 @@ source_policy: "Canonical CodexProject governance source generated from EEI data
 # 2026-06-25 audit: T1302/A203 implementation closure and A209 35/288 heartbeat refresh update release evidence only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-25 audit: T1302/A203 E2E CI repair updates status-screen evidence expectations only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-25 audit: T1303/A204-A205 external release operator intake packet organizes external gate inputs only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
+# 2026-07-15 audit: T700-T801 implementation and T1307/A209 evidence promotion add ingestion, amount-semantics, Capital River and validated operational evidence without changing model definitions, scoring formulas, weights, thresholds or active parameter values; A209 closure and MVP readiness remain open governance decisions.
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Scores are research prioritization and explanation aids, not investment return probabilities."

@@ -5,6 +5,7 @@ project_id: "EEI"
 # 2026-06-25 audit: T1302/A203 implementation closure and A209 35/288 heartbeat refresh update release evidence only; formula expressions, weights, thresholds and extraction logic are unchanged.
 # 2026-06-25 audit: T1302/A203 E2E CI repair updates status-screen evidence expectations only; formula expressions, weights, thresholds and extraction logic are unchanged.
 # 2026-06-25 audit: T1303/A204-A205 external release operator intake packet changes no formula expressions, weights, thresholds or extraction logic.
+# 2026-07-15 audit: T700-T801 implement governed ingestion and the existing amount_semantics_aware missing policy, while T1307 promotes validated soak evidence; formula expressions, weights, thresholds and active values are unchanged.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"

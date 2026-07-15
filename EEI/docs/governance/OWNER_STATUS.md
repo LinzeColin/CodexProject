@@ -78,17 +78,17 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ACC-CF-L2-20260710-PASSED`
+- release_gate: `A209_EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `COMMIT_BOUND:ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `94`
-- pending_or_stale_events: `115`
-- freshness_counts: `pending_or_stale_events=115; legacy_unbound_events=19`
+- precommit_pending_events: `95`
+- pending_or_stale_events: `116`
+- freshness_counts: `pending_or_stale_events=116; legacy_unbound_events=19`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
@@ -100,11 +100,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:56124c632cd26ffba6d80a5fe301291a6d4ea499157244616f8ef00bb65346d8`
-- snapshot_event_time: `2026-07-10T19:46:00+10:00`
+- source_snapshot_hash: `sha256:8519d0ca4ace276a4efe56bca185af7915650c064f8ba4974a6aa3072a8eab8e`
+- snapshot_event_time: `2026-07-15T12:23:54+10:00`
 - generator_version: `4.0.1`
 - version: `0.1.0`
-- phase/gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
+- phase/gate: `D / A209_EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`
 
 ## 17. Next Unique Task
 

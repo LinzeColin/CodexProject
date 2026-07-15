@@ -5,7 +5,7 @@
   "acceptance_ids": [
     "A209"
   ],
-  "status": "PARTIAL_OPERATOR_EVIDENCE",
+  "status": "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW",
   "release_gate_closed_by_validator": false,
   "a209_task_status_required": "IN_PROGRESS",
   "failed_operator_evidence_accepted_as_release_ready": false,
@@ -50,15 +50,17 @@
     {
       "label": "operator_24h",
       "mode": "operator_24h",
-      "status": "MISSING",
+      "status": "PASS",
       "target_seconds": 86400.0,
       "output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
       "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
       "errors": [],
-      "missing": [
-        "output_json",
-        "checkpoint_jsonl"
-      ]
+      "completed_duration_seconds": 86400,
+      "windows_completed": 288,
+      "windows_failed": 0,
+      "checkpoint_windows": 288,
+      "failed_checkpoint_windows": 0,
+      "failed_windows": []
     }
   ],
   "commands": {

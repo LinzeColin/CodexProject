@@ -76,6 +76,8 @@ apps/web/public/apple-touch-icon.png
 apps/web/public/eei-app-icon.png
 apps/web/public/eei-app-icon.svg
 apps/web/src/app/analysis-contract.ts
+apps/web/src/app/capital-events-client.ts
+apps/web/src/app/capital/page.tsx
 apps/web/src/app/development-status/page.tsx
 apps/web/src/app/explore-api-client.ts
 apps/web/src/app/globals.css
@@ -129,7 +131,10 @@ artifacts/tests/a105/t705_transactional_failure_rollback_contract.json
 artifacts/tests/a106/t705_change_type_coverage_contract.json
 artifacts/tests/a107/t705_change_provenance_api_contract.json
 artifacts/tests/a108/t800_unreported_amount_semantics_contract.json
+artifacts/tests/a108/t801_unreported_amount_ui_contract.json
 artifacts/tests/a109/t800_incomparable_amount_aggregation_contract.json
+artifacts/tests/a109/t801_incomparable_amount_ui_contract.json
+artifacts/tests/a110/t801_capital_river_e2e_contract.json
 artifacts/tests/a119/t905_migration_rollback_rehearsal.json
 artifacts/tests/a120/t905_clean_start_operator_rehearsal.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
@@ -416,6 +421,7 @@ scripts/supervise_operator_soak.py
 scripts/validate_a202_operator_review_packet.py
 scripts/validate_a202_signed_intake_preflight.py
 scripts/validate_brand_clearance.py
+scripts/validate_capital_river_contract.py
 scripts/validate_catalog_integrity.py
 scripts/validate_contracts.py
 scripts/validate_event_amount_semantics_contract.py
@@ -456,6 +462,7 @@ specs/live_refresh_event_schema.json
 specs/model_config_schema.json
 specs/scoring_profile_schema.json
 tests/e2e/README.md
+tests/e2e/capital-river.spec.ts
 tests/e2e/development-status.spec.ts
 tests/e2e/home.spec.ts
 tests/e2e/industry.spec.ts

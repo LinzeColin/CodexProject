@@ -6654,3 +6654,35 @@ Status: BACKGROUND RERUN STARTED; A209 STILL IN PROGRESS; RELEASE-READY MODE STI
 
 - If this isolated rerun is invalid, stop only operator PID `80478` and watchdog PID `80732` after explicit operator authorization.
 - Leave the canonical failed `7/288` evidence untouched and rerun from a new isolated checkpoint path.
+
+
+## 2026-07-15 - T1307/A209 release-valid 24h evidence promotion
+
+Status: LOCAL EVIDENCE VALIDATED; FINALIZATION READY FOR DOWNSTREAM REGEN; A209 STILL IN PROGRESS; MVP NOT READY
+
+### Scope
+
+- Promoted the completed external A209 run from `/Users/linzezhang/Documents/Codex/runtime_evidence/EEI/a209-rerun-20260713-originmain-d6f379ad-caffeinated` into the canonical repository artifacts.
+- Preserved all `288` checkpoint measurements and the original run timestamps; only `runner.output_path` and `runner.checkpoint_path` were normalized to canonical repository-relative paths.
+- Refreshed the A209 evidence-validation, background-heartbeat and finalization-preflight artifacts. Downstream release bundles were intentionally not refreshed in this bounded handoff run.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for committed 4h/24h operator evidence and fail-closed finalization readiness.
+- A209 remains `IN PROGRESS`: the runner, heartbeat, validator and finalizer all keep their release-gate closure fields false.
+- A202, A210, A026/A027, release-manager activation and MVP release readiness remain separate open gates.
+
+### Validation
+
+- `validate_operator_soak_evidence.py validate --require-release-ready`: PASS, `EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`.
+- Operator 4h evidence: `48/48` PASS windows, `0 FAIL`, `14400` measured seconds.
+- Operator 24h evidence: `288/288` PASS windows, `0 FAIL`, `86400` measured seconds.
+- `record_operator_soak_heartbeat.py validate`: PASS with 100% complete progress and explicit non-closure.
+- `finalize_operator_soak_evidence.py validate`: PASS; status `A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN`, `downstream_release_gate_refresh_allowed=true`, `release_gate_closed_by_finalizer=false`.
+- Relevant A209 runner/harness/worker/parameter files have no diff from evidence source commit `d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05` to the promotion branch.
+
+### Risks And Stop Conditions
+
+- Docker/PostgreSQL/worker are currently stopped, so no new live integration or full `make verify` claim is made until runtime is restored.
+- Stop before any MVP-ready claim until downstream release/governance artifacts are regenerated, all remaining external gates pass, and CI or an explicit local equivalent is green.
+- If canonical evidence validation changes from PASS, remove the promoted 24h files, retain the external source directory and hashes, and leave T1307/A209 `IN PROGRESS`.

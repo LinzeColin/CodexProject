@@ -1,5 +1,20 @@
 # Changelog
 
+## A209 24h evidence promotion and agent handoff - 2026-07-15
+
+- Promoted the release-valid A209 run into canonical 24h summary/checkpoint artifacts:
+  `288/288` PASS windows, `0 FAIL`, full browser/worker measurements and worker binding.
+- Regenerated and validated the A209 evidence, heartbeat and finalization preflight artifacts.
+  The validator reports `EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`; finalization permits
+  downstream release-gate regeneration while keeping all closure flags false and A209
+  `IN PROGRESS`.
+- Recorded the external source paths and SHA-256 values in `HANDOFF.md`. Only canonical
+  `runner.output_path` and `runner.checkpoint_path` fields changed during evidence promotion.
+- Regenerated and validated the clean-room package plus release manifest/checksums after
+  adding canonical 24h evidence; remote release status remains `PENDING`.
+- Prepared the EEI branch for direct GitHub `main` integration and Claude Code continuation.
+  No downstream release-decision bundle was refreshed and MVP readiness is not claimed.
+
 ## T801 Capital River and event evidence - 2026-07-13
 
 - Added the real `/capital` route with entity, date, event type, currency and amount-kind

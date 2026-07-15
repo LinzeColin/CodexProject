@@ -54,6 +54,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── eei-app-icon.svg
 │   │   ├── src
 │   │   │   └── app
+│   │   │       ├── capital
+│   │   │       │   └── page.tsx
 │   │   │       ├── development-status
 │   │   │       │   └── page.tsx
 │   │   │       ├── industries
@@ -61,6 +63,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │       ├── objects-scope
 │   │   │       │   └── page.tsx
 │   │   │       ├── analysis-contract.ts
+│   │   │       ├── capital-events-client.ts
 │   │   │       ├── explore-api-client.ts
 │   │   │       ├── globals.css
 │   │   │       ├── layout.tsx
@@ -128,9 +131,13 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a107
 │   │   │   └── t705_change_provenance_api_contract.json
 │   │   ├── a108
-│   │   │   └── t800_unreported_amount_semantics_contract.json
+│   │   │   ├── t800_unreported_amount_semantics_contract.json
+│   │   │   └── t801_unreported_amount_ui_contract.json
 │   │   ├── a109
-│   │   │   └── t800_incomparable_amount_aggregation_contract.json
+│   │   │   ├── t800_incomparable_amount_aggregation_contract.json
+│   │   │   └── t801_incomparable_amount_ui_contract.json
+│   │   ├── a110
+│   │   │   └── t801_capital_river_e2e_contract.json
 │   │   ├── a119
 │   │   │   └── t905_migration_rollback_rehearsal.json
 │   │   ├── a120
@@ -478,6 +485,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_a202_operator_review_packet.py
 │   ├── validate_a202_signed_intake_preflight.py
 │   ├── validate_brand_clearance.py
+│   ├── validate_capital_river_contract.py
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py
 │   ├── validate_event_amount_semantics_contract.py
@@ -521,6 +529,7 @@ Enterprise_Ecosystem_Intelligence_release
 ├── tests
 │   ├── e2e
 │   │   ├── README.md
+│   │   ├── capital-river.spec.ts
 │   │   ├── development-status.spec.ts
 │   │   ├── home.spec.ts
 │   │   ├── industry.spec.ts

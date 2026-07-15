@@ -30,8 +30,11 @@ def test_release_manager_preflight_is_fail_closed_for_repository_state() -> None
         is False
     )
     assert payload["gate_statuses"]["operator_soak"]["operator_4h"] == "PASS"
-    assert payload["gate_statuses"]["operator_soak"]["status"] == "PARTIAL_OPERATOR_EVIDENCE"
-    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "MISSING"
+    assert (
+        payload["gate_statuses"]["operator_soak"]["status"]
+        == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
+    )
+    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "PASS"
     heartbeat = payload["gate_statuses"]["operator_soak_background_heartbeat"]
     assert heartbeat["status"] == "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED"
     assert heartbeat["counts_as_release_ready"] is False
@@ -43,7 +46,7 @@ def test_release_manager_preflight_is_fail_closed_for_repository_state() -> None
         for gate in payload["missing_gates"]
         if gate["gate_id"] == "A209_24h_operator_soak"
     )
-    assert "1 failed" in next(
+    assert "288/288 windows, 0 failed" in next(
         gate["reason"]
         for gate in payload["missing_gates"]
         if gate["gate_id"] == "A209_24h_operator_soak"

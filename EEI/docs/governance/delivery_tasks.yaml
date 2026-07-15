@@ -3816,6 +3816,7 @@ tasks:
       - "A209 focused finalization regression PASS: tests/unit/test_operator_soak_finalization.py PASS 5/5, py_compile PASS, and ruff PASS; historical FAILED_OPERATOR_EVIDENCE remains visible while a new healthy rerun is not mislabeled as intervention"
       - "A209 browser-slice reuse repair PASS: scripts/run_soak_smoke.mjs now reuses one Chromium process while creating a fresh page per slice; 300s operator probe reports 1/1 PASS, elapsed_wall_seconds=346.5261 <= 375, browser_slices_completed=20, browser_measurement_error=null, and A209 remains IN_PROGRESS."
       - "A209 wall-clock budget repair PASS: origin/main rerun failed at 32/288 because 397.8961s exceeded the old 375s budget; focused regression tests now allow bounded host/browser overhead under measured + max(180s, measured*0.5) while still rejecting 300s measured / 600s elapsed serialized-window evidence; A209 remains IN_PROGRESS until a fresh 288/288 zero-failure 24h run validates."
+      - "A209 release-valid 24h evidence promotion PASS: canonical operator artifacts validate with 4h 48/48 PASS, 24h 288/288 PASS, zero failed windows, EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW and A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN; closure flags remain false, downstream release bundles are not refreshed in this run, and T1307/A209 remains IN_PROGRESS pending governance refresh and CI review."
     evidence_refs:
       - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json"
       - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl"
