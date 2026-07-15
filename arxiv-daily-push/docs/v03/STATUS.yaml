@@ -119,7 +119,7 @@ stages:
       - src/adp/shadow_biorxiv.py
   J5_cloud_native:
     gate: whole_system_runs_on_cloudflare_web_is_primary_not_a_mac_mirror
-    status: stage3_live_at_adp_domain_plus_commercial_features_plus_chatgpt_deepdive_and_local_cleanup
+    status: stage3_live_at_adp_domain_plus_commercial_features_plus_chatgpt_deepdive_and_local_cleanup_plus_theme_selfheal_fix
     completed_at: "2026-07-15"
     owner_visible: >
       Owner 指令（2026-07-15）：网页即主体，整套系统跑云端，不依赖 Mac；全 arXiv；
@@ -141,6 +141,7 @@ stages:
       打磨 meta/og/favicon/theme-color、安全头（CSP/nosniff/referrer-policy）、404/错误页、robots、aria。
       追加（2026-07-15 Owner 指令）：今天/条目/复习/搜索页加「让 ChatGPT 全网深度追问」按钮——带本条的标题/作者/类目/原文/摘要
       跳转 ChatGPT（联网深搜+深度思考+给 surprise+详细专业全面深度讲解）；并清理退役隧道/镜像的本机残留（无仓库文件变更，站点仍全路由 200）。
+      修复（2026-07-15）：六主题切换器读取本机存的主题值时未校验，遇到旧版/无效值或 Object 原型键会让切换框变空、配色卡在默认——Owner 看到就是「6 个主题没了」；改为用 hasOwnProperty 校验、非法即回退 warm 并自愈存储值，已在站上实测（aurora/constructor 都自愈、森林河流跨页保持）。
     evidence:
       - deploy/cloudflare/worker_cloud.js · wrangler_cloud.jsonc · schema_cloud.sql
       - docs/v03/云端原生迁移_Owner指令.md

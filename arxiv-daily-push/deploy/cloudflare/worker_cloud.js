@@ -577,15 +577,16 @@ const navLinks = (cls, page) => `<nav class="${cls}" aria-label="主导航">${NA
 // 主题-导航映射 + 安全读写（storage 被禁时不抛）；HEAD_INIT 在首绘前定主题防闪烁
 const THEME_NAV = { warm: 'sidebar', minimal: 'topbar', fresh: 'topbar', techno: 'dock', cosmos: 'dock', forest: 'sidebar' };
 // 首绘前在 <html> 上定 data-theme + data-nav，颜色与导航结构都无闪烁（storage 被禁时安全回退）
-const HEAD_INIT = `<script>(function(){try{var s=localStorage.getItem('adp-theme')||'warm';var m=${JSON.stringify(THEME_NAV)};
-var r=document.documentElement;r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]||'sidebar');}catch(e){}})();</script>`;
+const HEAD_INIT = `<script>(function(){try{var m=${JSON.stringify(THEME_NAV)};var s=localStorage.getItem('adp-theme');if(!Object.prototype.hasOwnProperty.call(m,s))s='warm';
+var r=document.documentElement;r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]);}catch(e){}})();</script>`;
 const THEME_JS = `
 var THEMES=${JSON.stringify(THEME_NAV)};
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function applyTheme(n){var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]||'sidebar');lsSet('adp-theme',n);
+function isTheme(n){return Object.prototype.hasOwnProperty.call(THEMES,n);}
+function applyTheme(n){if(!isTheme(n))n='warm';var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]);lsSet('adp-theme',n);
 var m=document.querySelector('meta[name=theme-color]');if(m){m.content=getComputedStyle(r).getPropertyValue('--bg').trim();}}
-(function(){var s=lsGet('adp-theme')||'warm';var sel=document.getElementById('theme');if(sel){sel.value=s;sel.onchange=function(){applyTheme(sel.value);};}applyTheme(s);})();
+(function(){var s=lsGet('adp-theme');if(!isTheme(s))s='warm';var sel=document.getElementById('theme');if(sel){sel.value=s;sel.onchange=function(){applyTheme(sel.value);};}applyTheme(s);})();
 `;
 const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

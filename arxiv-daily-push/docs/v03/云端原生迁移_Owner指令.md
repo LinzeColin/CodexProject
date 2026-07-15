@@ -27,6 +27,15 @@ Owner 选定实现路径：**零成本重建到 Cloudflare 免费平台**（Work
 | Stage 3 | 切 adp.linzezhang.com 到 adp-cloud、退役隧道/镜像、复审+治理+合入收尾 | **已完成并实测** |
 | Stage 3+ | 商用级功能拓展（学习数据面板/引导复习会话/板块浏览/搜索/往期/学任意条目）+ 打磨（meta/favicon/安全头/404/aria） | **已完成并实测** |
 | Stage 3++ | ChatGPT 深度追问按钮（今天/条目/复习/搜索）+ 本地无用信息清理（退役隧道/镜像残留） | **已完成并实测** |
+| Stage 3+++ | 主题选择器自愈修复（无效/原型键存储值不再让 6 主题变空） | **已完成并实测** |
+
+## 主题选择器自愈修复（2026-07-15 追加）
+
+Owner 反馈「网页的 6 个主题没了 / 还是没有恢复」。浏览器内复现根因：六主题切换器读取 localStorage 的 `adp-theme` 后**未校验就直接应用**——若存的是旧版本/无效值，或是 `constructor`/`__proto__`/`toString` 这类 Object 原型键，则：
+- `data-theme` 被设成无效值 → 没有匹配的 `[data-theme=...]` CSS → 页面退回默认 warm 配色；
+- 原生 `<select>` 的 `selectedIndex = -1` → **切换框显示空白**。
+
+从 Owner 视角就是「6 个主题全没了、我选的主题也没恢复」。修复（`deploy/cloudflare/worker_cloud.js`）：HEAD_INIT 与 THEME_JS 都改为用 `Object.prototype.hasOwnProperty.call(THEMES, s)`（isTheme() 助手）校验，非六主题一律回退 `warm`，且 applyTheme 会把纠正后的值写回 localStorage——**坏值首次加载即自愈**。站上实测：存 `aurora`、`constructor` 都自愈为 warm（切换框显示「暖纸学习」）、选「森林河流」跨页保持。注：测试时 in-app 预览浏览器缓存了旧页（需加 cache-buster）；线上 HTML 为 no-cache，手机正常刷新即可拿到修复。
 
 ## ChatGPT 深度追问 + 本地清理（2026-07-15 追加）
 

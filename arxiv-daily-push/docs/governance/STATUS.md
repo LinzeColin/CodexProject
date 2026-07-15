@@ -4,8 +4,8 @@
 
 - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:96a0925e0b0190763b46722e7c64e3eb33c2e4756ebb33c0858a491276fde5dc`
-- snapshot_event_time: `2026-07-15T16:45:00+10:00`
+- source_snapshot_hash: `sha256:2765d11775c70fd3099f35e8b71740246619fc377f633ca2f90ca15ea814e331`
+- snapshot_event_time: `2026-07-15T17:30:00+10:00`
 - generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -50,7 +50,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
 - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
-- Pending/stale events: `403`
+- Pending/stale events: `404`
 - Tree-bound events: `17`
 - Commit-bound events: `13`
 - Legacy unbound events: `334`
