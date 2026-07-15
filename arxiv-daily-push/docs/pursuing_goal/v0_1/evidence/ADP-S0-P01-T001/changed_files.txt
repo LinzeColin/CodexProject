@@ -1,0 +1,7 @@
+arxiv-daily-push/docs/pursuing_goal/v0_1/CURRENT_SCOPE.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/OWNER_DIRECTIVES.yaml
+arxiv-daily-push/docs/pursuing_goal/v0_1/PRECEDENCE.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T001/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T001/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T001/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T001/known_gaps.md

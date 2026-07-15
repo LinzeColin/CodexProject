@@ -252,7 +252,7 @@ parameter_profile_versions:
   adp-s2plt02-real-proof-capture-authorization: "adp-s2plt02-real-proof-capture-authorization-v1"
   adp-s2plt02-real-proof-capture-authorization-parameters: "adp-s2plt02-real-proof-capture-authorization-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260714-ADP-V03-REBUILD-MINIMAL-LOOP"
+current_iteration: "ITER-20260716-ADP-V01-FINAL-EXECUTION"
 current_phase: "V03"
 current_gate: "V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION"
 current_v6_task_id: "NOT_APPLICABLE"

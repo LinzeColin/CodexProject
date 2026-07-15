@@ -1,0 +1,12 @@
+{
+  "task": "ADP-S0-P01-T001",
+  "release_mode": "NOT_DEPLOYED",
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "one_time_cost": "docs-only; no deploy, no D1/R2 op, no API call",
+  "value": "single canonical scope + owner directives + precedence; reduces future drift/rework and Owner round-trips",
+  "cost_unknowns_not_zero": [
+    "FACT-011 D1 real schema/rows/size/latency/growth (pending S0-P02-T006)",
+    "FACT-012 R2 enabled/usage/cost (pending)",
+    "FACT-013 Cloudflare plan/billing/Workers-AI/Queues/Workflows usage (pending)"
+  ]
+}

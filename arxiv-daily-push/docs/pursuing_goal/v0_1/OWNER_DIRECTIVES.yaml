@@ -1,0 +1,72 @@
+# ADP V0.1 · OWNER_DIRECTIVES —— 机器可读的 Owner 指令与硬约束
+# 冻结自 ADP_V0.1_FINAL_EXECUTION_TASK_PACKAGE_2026-07-15（任务 ADP-S0-P01-T001 交付物）。
+# 后续每个任务必须先读取本文件与 PURSUING_GOAL；UNVERIFIED_PRIVATE 不得被当作事实。
+schema_version: adp.owner_directives.v0_1
+frozen_at: "2026-07-16T00:00:00+10:00"
+source_package: ADP_V0.1_FINAL_EXECUTION_TASK_PACKAGE_2026-07-15
+baseline_commit: 5ff1f3c5ce49       # main @ freeze time（self-host hero videos）
+
+pursuing_goal_one_line: >-
+  在不破坏已上线 MVP、六主题高级动效与实时稳定运行的前提下，以单一事实源、A0–A2 官方原文、
+  2016+ 可恢复历史、证据化人话内容、可回测预测和量化成本收益为硬约束，逐 Stage/Phase 将 ADP
+  建成多板块、全面、权威、及时、深度且长期稳定的前沿认知系统。
+
+directives:
+  - id: DIR-001
+    kind: SCOPE
+    statement: 本轮只解决内容质量和事实漂移；不处理公开运行入口安全、多租户、TAM/价格。
+    source: FACT-008（本对话 Owner 最新指令；2026-07-15）
+  - id: DIR-002
+    kind: SOURCE
+    statement: 中国来源只保留 A0/A1/A2，覆盖国家中央、省级、重点城市和重要区/功能区。
+    source: FACT-009
+  - id: DIR-003
+    kind: UI_PRESERVE
+    statement: 必须保留现有六主题和高级动效，不接受替代式 UI。
+    source: FACT-010
+  - id: DIR-004
+    kind: EXECUTION
+    statement: 逐 Stage/Phase 推进；一次只执行一个 Task；不得把整包一次性连续开发。
+    source: 01_FINAL_READINESS_DECISION + 09_ANTI_BLACK_HOLE
+  - id: DIR-005
+    kind: COST
+    statement: 收益必须覆盖成本，作为硬 Gate；无真实账单前不得伪造 ROI，UNKNOWN 不等于 0。
+    source: 01_FINAL_READINESS_DECISION + 10_VALUE_COST
+  - id: DIR-006
+    kind: AUTHORIZATION
+    statement: Owner 全权授权继续推进 R2/存储等实现，但不愿手动操作 Cloudflare 后台（计费/条款动作不代按）。
+    source: 本对话 Owner 指令（2026-07-15）
+
+hard_constraints:
+  single_source_of_truth: true
+  china_sources_levels: [A0, A1, A2]
+  history_recoverable_from_year: 2016
+  content_must_be_evidence_backed: true
+  predictions_must_be_backtestable_no_leakage: true
+  cost_benefit_must_be_quantified: true
+  preserve_six_themes: true
+  preserve_advanced_motion: true          # hero 视频/仪表盘/氛围层/自愈/no-store
+  preserve_realtime_stability: true
+
+owner_gates:                               # 仅这些点需要 Owner 参与（16_OWNER_ONLY_DECISIONS）
+  - S0_EXIT:  确认私有事实快照无关键遗漏
+  - S3_EXIT:  A0 官方视图是否从 Canary 晋级
+  - S4_COHORT: 每个 cohort 只判 SCALE/HOLD/STOP
+  - S6_EXIT:  预测是否值得用户可见
+  - S7_BASELINE: 六主题与关键动效视觉基线确认
+  - S8_VALUE_COST: 持续运行预算与最终发布
+
+out_of_scope:                              # 冲突材料一律 SUPERSEDED / 不进入本轮
+  - public_auth_and_login
+  - multitenancy
+  - pricing_TAM_commercial_tiers
+  - full_navigation_redesign
+  - replacement_visual_identity
+  - source_levels_A3_plus
+  - generic_saas_ia
+
+assumptions_not_requirements:
+  - id: FACT-016
+    statement: 10M 文档 / 30M 版本 / 20TB 原始数据是容量压测包络，不是当前需求量或采购指令。
+  - statement: 171 个中国来源是候选 Seed，不是已上线声明；按 cohort 晋级。
+  - statement: Workflows 是候选编排器，不是强制依赖；先与 Cron+Queues 比较。
