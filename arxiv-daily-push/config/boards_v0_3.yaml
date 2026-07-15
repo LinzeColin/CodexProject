@@ -1,0 +1,104 @@
+# 板块注册表（V0.3）——五板块与各自数据源的唯一真相。
+# Owner 指令（2026-07-15）：板块二～五上线；每板块的数据源（名称/平台/网站/订阅方式/
+# 官方性/节奏）在雷达页逐板块透明展示。新来源 = 此处一行配置（02_系统架构/功能清单.md）。
+# 边界：板块二～四为「雷达浏览流」——真实抓取、雷达可见、来源健康纳管（连续 3 次
+# 失败自动停用），但**不进入每日精选候选池**（池整合与多样性上限 10→17 是任务包
+# 明文的另一个独立提案，须走 提案→回放→应用→回执）。板块五为跨板块聚合视图。
+registry_ver: boards-v03-1
+boards:
+  - id: board1
+    name: 板块一 · 研究前沿
+    status: live_selection   # 每日精选闭环所在板块
+    note: arXiv 每日一篇精选闭环；bioRxiv 影子源已积累真实报表，上板按钮在雷达页（Owner 专属）。
+    sources:
+      - id: arxiv-cs
+        name: arXiv（cs.AI / cs.LG / stat.ML）
+        platform: arXiv.org 官方 API
+        website: https://arxiv.org
+        method: api
+        official: true
+        cadence: 每日
+        doc_source_id: SRC-ARXIV   # 精选闭环主库计数/健康从 documents/sources 表读取
+      - id: biorxiv-shadow
+        name: bioRxiv 生物预印本（影子）
+        platform: bioRxiv 官方 API
+        website: https://www.biorxiv.org
+        method: api
+        official: true
+        cadence: 每日（影子零入库，上板后参选）
+  - id: board2
+    name: 板块二 · 顶级期刊
+    status: live_feed
+    note: 官方 RSS 直连（无中间聚合层）。
+    sources:
+      - id: nature-current
+        name: Nature 本刊最新
+        platform: nature.com 官方 RSS
+        website: https://www.nature.com
+        feed_url: https://www.nature.com/nature.rss
+        method: rss
+        official: true
+        cadence: 每日
+      - id: science-news
+        name: Science 新闻与研究动态
+        platform: science.org 官方 RSS
+        website: https://www.science.org
+        feed_url: https://www.science.org/rss/news_current.xml
+        method: rss
+        official: true
+        cadence: 每日
+      - id: cell-current
+        name: Cell 本刊最新
+        platform: cell.com 官方 RSS
+        website: https://www.cell.com
+        feed_url: https://www.cell.com/cell/current.rss
+        method: rss
+        official: true
+        cadence: 每日
+  - id: board3
+    name: 板块三 · 中国政策法规
+    status: live_feed
+    note: gov.cn 无官方 RSS；主源为 Google News 聚合（官方媒体报道），RSSHub 直连路由保留配置（公共实例当前限流，自托管后自动恢复）。
+    sources:
+      - id: gnews-cn-policy
+        name: 政策要闻（国务院/工信部/发改委）
+        platform: Google News RSS（聚合官方媒体报道）
+        website: https://news.google.com
+        feed_url: "https://news.google.com/rss/search?q=%E5%9B%BD%E5%8A%A1%E9%99%A2%20OR%20%E5%B7%A5%E4%BF%A1%E9%83%A8%20OR%20%E5%8F%91%E6%94%B9%E5%A7%94%20%E6%94%BF%E7%AD%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+        method: rss
+        official: false
+        cadence: 每日
+      - id: rsshub-gov-zhengce
+        name: 国务院政策文件库·最新（RSSHub 路由）
+        platform: RSSHub 公共实例（rsshub.app）
+        website: https://www.gov.cn/zhengce/zuixin/
+        feed_url: https://rsshub.app/gov/zhengce/zuixin
+        method: rss
+        official: false
+        cadence: 每日（当前公共实例限流，健康页如实显示；自托管 RSSHub 后自动恢复）
+  - id: board4
+    name: 板块四 · 美国科技金融
+    status: live_feed
+    note: 美联储与 SEC 官方新闻稿 RSS 直连。
+    sources:
+      - id: fed-press
+        name: 美联储新闻稿（全部）
+        platform: federalreserve.gov 官方 RSS
+        website: https://www.federalreserve.gov
+        feed_url: https://www.federalreserve.gov/feeds/press_all.xml
+        method: rss
+        official: true
+        cadence: 每日
+      - id: sec-press
+        name: SEC 新闻稿
+        platform: sec.gov 官方 RSS
+        website: https://www.sec.gov
+        feed_url: https://www.sec.gov/news/pressreleases.rss
+        method: rss
+        official: true
+        cadence: 每日
+  - id: board5
+    name: 板块五 · 跨板块总览
+    status: aggregate
+    note: 无独立来源——自动聚合板块二～四浏览流的最新条目与各板计数（板块一为精选闭环，有独立的今天/队列页）。
+    sources: []

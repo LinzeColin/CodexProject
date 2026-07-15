@@ -249,9 +249,11 @@ def system() -> HTMLResponse:
 def radar_page() -> HTMLResponse:
     conn = _conn()
     try:
+        from .boards import board_overview
         from .shadow_biorxiv import is_promoted, load_report
 
         return _render("radar.html", page="radar", radar=weekly_radar(conn),
+                       boards=board_overview(conn),
                        shadow=load_report(), biorxiv_promoted=is_promoted(conn))
     finally:
         conn.close()

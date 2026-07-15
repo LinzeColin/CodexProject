@@ -121,6 +121,19 @@ def _run_stages(conn: sqlite3.Connection, *, run_id: str, trigger: str, as_of: d
                             json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
         except Exception as exc:
             degraded.append(f"biorxiv_shadow:{type(exc).__name__}")
+        # J4（Owner 指令 2026-07-15）：板块二～四雷达浏览流——真实抓取，
+        # 逐源独立成败（boards 内部已按源记健康），整体异常也只降级。
+        try:
+            from . import boards
+
+            feed_report = boards.fetch_board_feeds(conn)
+            # 真实抓取失败才记降级；已自动停用的源是稳态跳过，不反复把 manifest 拖成降级
+            failed = [k for k, v in feed_report["sources"].items()
+                      if not v.get("ok") and not v.get("skipped")]
+            counts["板块流新增"] = sum(v.get("new", 0) for v in feed_report["sources"].values())
+            degraded.extend(f"board_feed:{k}" for k in failed)
+        except Exception as exc:
+            degraded.append(f"board_feeds:{type(exc).__name__}")
     from .corrections import detect_and_propagate
 
     corrections_report = detect_and_propagate(conn)

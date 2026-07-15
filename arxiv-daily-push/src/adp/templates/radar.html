@@ -9,16 +9,49 @@
 </div>
 
 <div class="card">
-  <h2>板块广度</h2>
+  <h2>板块一～五</h2>
+  <p class="mt">
+    {% for b in boards %}<a href="#{{ b.id }}">{{ b.short }}</a>{% if not loop.last %} · {% endif %}{% endfor %}
+  </p>
+</div>
+
+{% for b in boards %}
+<div class="card" id="{{ b.id }}">
+  <h2>{{ b.name }}
+    {% if b.status == 'live_selection' %}<span class="badge ok">精选闭环</span>
+    {% elif b.status == 'live_feed' %}<span class="badge ok">在线 · 浏览流</span>
+    {% else %}<span class="badge info">跨板块聚合</span>{% endif %}</h2>
+  <p class="mt">{{ b.note }}</p>
+  {% if b.sources %}
+  <h3>数据源（信息源 / 平台 / 网站）</h3>
   <table>
-    <tr><th>板块</th><th>状态</th><th>本周信号</th></tr>
-    {% for b in radar.boards %}
-    <tr><td>{{ b.name }}</td>
-        <td>{% if b.enabled %}<span class="badge ok">在线</span>{% else %}<span class="badge">待启用提案（R5）</span>{% endif %}</td>
-        <td class="mt">{{ b.note }}</td></tr>
+    <tr><th>来源</th><th>平台</th><th>订阅方式</th><th>健康</th><th>近况</th></tr>
+    {% for s in b.sources %}
+    <tr><td>{{ s.name }}<div class="mt"><a href="{{ s.website }}" rel="noopener">{{ s.website }}</a></div></td>
+        <td class="mt">{{ s.platform }}
+          {% if s.official %}<span class="badge ok">官方</span>{% else %}<span class="badge">聚合</span>{% endif %}</td>
+        <td class="mt">{{ s.method|upper }} · {{ s.cadence }}</td>
+        <td>{% if s.health == 'active' %}<span class="badge ok">正常</span>
+            {% elif s.health == '—' %}<span class="badge">未纳管</span>
+            {% else %}<span class="badge info">{{ s.health }}（连败 {{ s.failures }}）</span>{% endif %}</td>
+        <td class="mt">累计 {{ s.items_total }} 条<br>最近抓取 {{ s.last_fetch[:16] }}</td></tr>
     {% endfor %}
   </table>
+  {% endif %}
+  {% if b['items'] %}
+  <h3>最新条目</h3>
+  <ul class="mt">
+    {% for it in b['items'] %}
+    <li><a href="{{ it.url }}" rel="noopener">{{ it.title[:90] }}</a>
+      <span class="mt"> — {{ it.source_id }}{% if it.board_id is defined and it.board_id %} · {{ it.board_id }}{% endif %} · {{ ((it.published_at or it.fetched_at) or '')[:10] }}</span></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if b.get('counts') %}
+  <p class="mt">各板累计：{% for k, v in b.get('counts').items() %}{{ k }}={{ v }}条 {% endfor %}</p>
+  {% endif %}
 </div>
+{% endfor %}
 
 <div class="card">
   <h2>本周入选与理由</h2>
