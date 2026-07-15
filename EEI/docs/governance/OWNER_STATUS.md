@@ -82,13 +82,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:0c666014e86d5694f83508007335f92296cf0bff`
 - tree_bound_events: `0`
-- commit_bound_events: `24`
+- commit_bound_events: `25`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `95`
-- pending_or_stale_events: `116`
-- freshness_counts: `pending_or_stale_events=116; legacy_unbound_events=19`
+- precommit_pending_events: `94`
+- pending_or_stale_events: `115`
+- freshness_counts: `pending_or_stale_events=115; legacy_unbound_events=19`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
@@ -98,9 +98,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `3d873e9a08e8c384dc1a439a7c9599442cc5da7b`
+- source_base_commit: `0c666014e86d5694f83508007335f92296cf0bff`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:e03c537629c62a9360d225662db89e06030dd82ee90838bf7d782a48d4620e80`
+- source_snapshot_hash: `sha256:2fe23aacfa978490c71ea1aabb4bb06839c0fd21db37248108e8f0c85923a382`
 - snapshot_event_time: `2026-07-15T12:59:11+10:00`
 - generator_version: `4.0.1`
 - version: `0.1.0`
