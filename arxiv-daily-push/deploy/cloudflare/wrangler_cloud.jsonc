@@ -7,6 +7,10 @@
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
+  // Stage 3 切换（Owner 2026-07-15：adp.linzezhang.com 就是主站）：纯云端系统接管正式域名
+  "routes": [
+    { "pattern": "adp.linzezhang.com", "custom_domain": true }
+  ],
   "d1_databases": [
     {
       "binding": "DB",

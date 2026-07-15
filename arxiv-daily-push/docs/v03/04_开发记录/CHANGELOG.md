@@ -60,3 +60,5 @@
 | 2026-07-15 | 主页 | 归还 home.linzezhang.com（Owner 指令）：custom_domain 从误建 home Worker 改回 Owner 原有 linze-home-hub，删除误建 Worker 与仓库内 deploy/cloudflare/home/，未动主页内容 | 绿（实测恢复） |
 | 2026-07-15 | 云端原生 | Stage 1（Owner 指令：网页即主体+全 arXiv+bioRxiv 正常入库+全板块进选择）：新 worker_cloud.js+wrangler_cloud.jsonc+schema_cloud.sql，一个 Worker+一个 D1 跑全五环节，每日 cron；实测 adp-cloud.workers.dev（arXiv 220 全领域/bio 30/217+候选/选中 econ 论文/回忆→FSRS 3天间隔）；免费档子请求靠 batch+轮转 feed 解决；板块三 Google News 被数据中心 IP 拦（Stage 2 换源） | 绿（云端实测） |
 | 2026-07-15 | 云端原生 | Stage 2：六主题全 UI 从 base.html 移植（六令牌+三导航+主题下拉，实测 warm↔cosmos 切换）；板块三换中文媒体 RSS（人民网/中新网/新浪，实测 75 条无乱码）；抓取改每板取最久未抓 4 个保证覆盖；字符集感知（gb2312→gb18030）+孤儿源清理；修 nav.nav-side 选择器 bug；四板块 270/121/75/140 | 绿（云端实测） |
+| 2026-07-15 | 云端原生 | Stage 3 切域名：adp.linzezhang.com 从 adp-mirror 解绑绑到 adp-cloud（Owner「我检查的就是这个网站」），全路由实测 200 不依赖 Mac，旧 worker/隧道休眠 | 绿（实测切换） |
+| 2026-07-15 | 商用拓展 | 学习数据面板+引导复习会话 /review+板块浏览 /board+搜索 /search+往期 /history+条目详情 /item+学任意条目 /api/study；打磨 meta/og/favicon/theme-color/安全头CSP/404/aria；实测 study→review 全流程 | 绿（云端实测） |

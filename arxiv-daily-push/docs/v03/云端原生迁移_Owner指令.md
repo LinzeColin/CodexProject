@@ -24,7 +24,22 @@ Owner 选定实现路径：**零成本重建到 Cloudflare 免费平台**（Work
 |---|---|---|
 | Stage 1 | D1 云端 schema（cn_*）+ 每日流水线 + today/queue/radar/system 基础页 | **已完成并实测** |
 | Stage 2 | 六主题全 UI 移植（从 base.html）+ 修复板块三来源 + 每板轮转 + 字符集感知抓取 | **已完成并实测** |
-| Stage 3 | 切 adp.linzezhang.com 到 adp-cloud、退役隧道/镜像、复审+治理+合入收尾 | 待做 |
+| Stage 3 | 切 adp.linzezhang.com 到 adp-cloud、退役隧道/镜像、复审+治理+合入收尾 | **已完成并实测** |
+| Stage 3+ | 商用级功能拓展（学习数据面板/引导复习会话/板块浏览/搜索/往期/学任意条目）+ 打磨（meta/favicon/安全头/404/aria） | **已完成并实测** |
+
+## Stage 3 + 商用级拓展实测（2026-07-15）
+
+- **切域名**：adp.linzezhang.com 的 custom_domain 从旧 adp-mirror 解绑、绑到 adp-cloud；实测该域名全路由 200（today/review/radar/system/history/search/board），页脚证明为纯云端系统。旧 adp-mirror worker 与本机隧道/网页 LaunchAgent 已无域名指向（休眠，Owner 可自行删除/停用）。
+- **学习数据面板（vitals）**：连续天数、待复习、已掌握、学习中、回忆达标率——首页顶部卡片 + 「开始复习」CTA。
+- **引导复习会话 /review**：取最到期一张卡 → 显示答案/讲义 → 四档评分 → 自动进入下一张；下方附完整复习队列。
+- **板块浏览 /board/:id**：每板全部条目分页，每条可「学这个」加入复习。
+- **搜索 /search?q=**：候选库标题/摘要 LIKE 搜索（实测 policy → 命中）。
+- **往期精选 /history**：历次每日精选（含弃权）归档。
+- **条目详情 /item/:id**：标题/作者/类目/摘要/讲义 + 加入复习 + 回忆评分。
+- **学任意条目 POST /api/study/:id**：把任一条目建卡进复习队列（不再只有每日一篇）——实测 study → /review 立刻出现该到期卡。
+- **打磨**：meta description/og、theme-color 随主题、emoji favicon（data URI）、安全头（CSP/nosniff/referrer-policy）、API no-store、404/错误页（主题化）、robots.txt、aria 标签、搜索框。
+- **对抗复审加固**：href 只放行 http/https（`safeHref`，防外部源 javascript:/data: 链接）；内联脚本里的条目 id 用 `jsStr` 转义 `</`（防 `</script>` 提前闭合）；搜索 LIKE 先转义反斜杠本身再转义 %/_（`\` 是 ESCAPE 字符）。保留上限删除保护被复习/精选/讲义引用的条目（否则复习卡变孤儿、待复习计数虚高、详情页 404）；待复习计数只算 item 仍在的卡。streak 与「每日一评」防重改按用户本地日（UTC+8）分桶，不再因 UTC 跨日误清零。评分按钮加去抖（防双击重复提交）；/item /board 不存在返回真 404；favicon 直出 SVG；板块五计数=各板之和。/api/study、/api/run 与全站一致为无登录（Owner 指令），私有化仍可叠 Cloudflare Access。
+- **治理计数漂移修复**（Stage 1 遗留、被本轮 unittest 抓到）：模型参数文件 active_parameter_count 1106→1107；追踪链页补第 443 行（J5）并同步计数（全量 worktree 根校验器 0 错误）。
 
 ## Stage 2 实测（2026-07-15）
 

@@ -72,8 +72,15 @@ function chunk(arr, n) { const o = []; for (let i = 0; i < arr.length; i += n) o
 
 // ───────────────────────── 工具 ─────────────────────────
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// href 安全化：只允许 http/https（外部 feed 的 url 已在入库时过滤，这里是渲染侧纵深防御，防 javascript:/data:）
+const safeHref = (u) => /^https?:\/\//i.test(String(u || '')) ? esc(u) : '#';
+// 在 <script> 内嵌字符串时转义 </，防 </script> 提前闭合
+const jsStr = (s) => JSON.stringify(s).replace(/</g, '\\u003c');
 const nowISO = () => new Date().toISOString();
 const dayISO = (d = new Date()) => d.toISOString().slice(0, 10);
+// 本地日（用户在 UTC+8，中国标准时）：streak 与「每日一评」防重按用户的一天分桶，而非 UTC
+const LOCAL_OFFSET_H = 8;
+const localDay = (iso = nowISO()) => new Date(Date.parse(iso) + LOCAL_OFFSET_H * 3600e3).toISOString().slice(0, 10);
 async function sha1(s) {
   const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(s));
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -292,9 +299,13 @@ async function ingestAll(env, counts) {
   // 批量写入 + 健康 + 保留上限（每个 batch 一个子请求）
   await batchWrite(env, itemStmts);
   await batchWrite(env, healthStmts);
+  // 每板保留上限——但保护被复习/精选/讲义引用的条目，否则复习卡变孤儿（待复习计数虚高、详情页 404）
   await env.DB.prepare(
     `DELETE FROM cn_items WHERE id IN (
-       SELECT id FROM (SELECT id, ROW_NUMBER() OVER (PARTITION BY board_id ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC) rn FROM cn_items) WHERE rn > ?)`
+       SELECT id FROM (SELECT id, ROW_NUMBER() OVER (PARTITION BY board_id ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC) rn FROM cn_items) WHERE rn > ?)
+     AND id NOT IN (SELECT item_id FROM cn_reviews)
+     AND id NOT IN (SELECT item_id FROM cn_selections WHERE item_id IS NOT NULL)
+     AND id NOT IN (SELECT item_id FROM cn_lessons)`
   ).bind(KEEP_PER_BOARD).run();
 }
 
@@ -444,7 +455,7 @@ async function scheduleNewCard(env, itemId) {
   ).bind(itemId, due).run();
 }
 async function gradeRecall(env, itemId, grade) {
-  const today = dayISO();
+  const today = localDay();  // 「每日一评」按用户本地日
   const dedup = `${itemId}:${today}`;
   const dup = await env.DB.prepare('SELECT id FROM cn_events WHERE dedup_key=?').bind(dedup).first();
   if (dup) return { duplicate: true, id: dup.id };
@@ -495,7 +506,9 @@ async function runDaily(env, trigger) {
 }
 
 // ───────────────────────── UI（六主题设计语言，从 base.html 移植） ─────────────────────────
-const NAV = [['/', '今天'], ['/queue', '复习队列'], ['/radar', '前沿雷达'], ['/system', '系统与来源']];
+const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'], ['/system', '系统']];
+const FAVICON = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>');
+const META_DESC = 'ADP 前沿学习——每日跨全领域 arXiv 与顶级期刊、政策、科技金融精选一篇，配讲义、主动回忆与 FSRS 间隔复习，整套系统跑在 Cloudflare。';
 const THEME_OPTIONS = [['warm', '暖纸学习'], ['minimal', '简约专注'], ['fresh', '清新干净'], ['techno', '炫技'], ['cosmos', '宇宙星河'], ['forest', '森林河流']];
 const CSS = `
 /* 六组主题令牌（颜色/圆角/字体/玻璃），由 data-theme 驱动 */
@@ -544,8 +557,20 @@ nav.nav-dock a.active{background:var(--ac);color:var(--bg)}
 :root[data-theme="warm"],:root[data-theme="fresh"],:root[data-theme="forest"],:root[data-theme="techno"]{color-scheme:light}
 @media(max-width:640px){nav.nav-side{display:none!important}:root[data-nav] main,:root[data-nav] header.top{margin-left:0!important}:root[data-nav="sidebar"] nav.nav-top{display:flex;flex:1}}
 footer.receipt{max-width:760px;margin:0 auto;padding:14px 18px 48px;color:var(--mt);font-size:12px}
+.searchbox input{min-height:38px;border-radius:var(--pill);border:1px solid var(--bd);background:var(--glass-bg);color:var(--tx);padding:6px 14px;font-size:13.5px;width:150px;font-family:var(--font-body)}
+.vitals{display:flex;flex-wrap:wrap;gap:10px}
+.vital{flex:1;min-width:88px;text-align:center;padding:8px 6px;border:1px solid var(--hairline);border-radius:var(--radius-lg)}
+.vital .n{font-family:var(--font-display);font-size:22px;color:var(--ink);line-height:1.2}
+.vital .l{font-size:11.5px;color:var(--mt)}
+.itemrow{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--hairline)}
+.itemrow:last-child{border-bottom:none}
+.itemrow .body{flex:1;min-width:0}
+.btn-sm{min-height:34px;padding:5px 12px;font-size:13px;white-space:nowrap}
+.pill-link{display:inline-block;font-size:12.5px;border:1px solid var(--hairline);border-radius:999px;padding:2px 11px;margin:2px 4px 2px 0;color:var(--ac)}
+.reveal{border:1px dashed var(--hairline);border-radius:var(--radius-lg);padding:12px 14px;margin-top:10px;background:var(--bg)}
 `;
-const navLinks = (cls, page) => `<nav class="${cls}">${NAV.map(([h, t]) => `<a href="${h}"${h === page ? ' class="active"' : ''}>${t}</a>`).join('')}</nav>`;
+const navActive = (h, page) => h === '/' ? page === '/' : page.startsWith(h);
+const navLinks = (cls, page) => `<nav class="${cls}" aria-label="主导航">${NAV.map(([h, t]) => `<a href="${h}"${navActive(h, page) ? ' class="active" aria-current="page"' : ''}>${t}</a>`).join('')}</nav>`;
 // 主题-导航映射 + 安全读写（storage 被禁时不抛）；HEAD_INIT 在首绘前定主题防闪烁
 const THEME_NAV = { warm: 'sidebar', minimal: 'topbar', fresh: 'topbar', techno: 'dock', cosmos: 'dock', forest: 'sidebar' };
 // 首绘前在 <html> 上定 data-theme + data-nav，颜色与导航结构都无闪烁（storage 被禁时安全回退）
@@ -555,34 +580,42 @@ const THEME_JS = `
 var THEMES=${JSON.stringify(THEME_NAV)};
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function applyTheme(n){var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]||'sidebar');lsSet('adp-theme',n);}
+function applyTheme(n){var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]||'sidebar');lsSet('adp-theme',n);
+var m=document.querySelector('meta[name=theme-color]');if(m){m.content=getComputedStyle(r).getPropertyValue('--bg').trim();}}
 (function(){var s=lsGet('adp-theme')||'warm';var sel=document.getElementById('theme');if(sel){sel.value=s;sel.onchange=function(){applyTheme(sel.value);};}applyTheme(s);})();
 `;
-const PAGE = (page, body) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>ADP 前沿学习</title>
+const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${opts.title ? esc(opts.title) + ' · ' : ''}ADP 前沿学习</title>
+<meta name="description" content="${esc(META_DESC)}">
+<meta name="theme-color" content="#f3eee1">
+<meta property="og:title" content="ADP 前沿学习"><meta property="og:description" content="${esc(META_DESC)}"><meta property="og:type" content="website">
+<link rel="icon" href="${FAVICON}">
 <style>${CSS}</style>${HEAD_INIT}</head>
 <body>
 ${navLinks('nav-side', page)}
-<header class="top"><b>ADP 前沿学习</b>${navLinks('nav-top', page)}
-<select id="theme">${THEME_OPTIONS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></header>
+<header class="top"><b><a href="/" style="color:inherit">ADP 前沿学习</a></b>${navLinks('nav-top', page)}
+<form action="/search" method="get" class="searchbox" role="search"><input name="q" placeholder="搜索条目…" aria-label="搜索" value="${esc(opts.q || '')}"></form>
+<select id="theme" aria-label="主题">${THEME_OPTIONS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></header>
 <main>${body}</main>
 ${navLinks('nav-dock', page)}
-<footer class="receipt">整套系统运行在 Cloudflare（抓取·选择·讲义·回忆·排程都在云端）；每日 cron 自动更新，不依赖任何本机。</footer>
+<footer class="receipt">整套系统运行在 Cloudflare（抓取·选择·讲义·回忆·排程都在云端）；每日 cron 自动更新，不依赖任何本机。 · <a href="/history">往期精选</a></footer>
 <script>${THEME_JS}</script>
 </body></html>`;
 
 async function todayPage(env) {
+  const v = await computeVitals(env);
   const sel = await env.DB.prepare('SELECT * FROM cn_selections ORDER BY as_of_date DESC LIMIT 1').first();
-  if (!sel) return PAGE('/', `<div class="card"><h1>还没有内容</h1><p class="mt">每日流水线尚未运行。可在 <a href="/system">系统页</a> 手动触发一次。</p></div>`);
-  if (sel.abstain) return PAGE('/', `<div class="card"><h1>今日弃权</h1><p>${esc(sel.abstain_reason)}</p><p class="mt">决策日期 ${esc(sel.as_of_date)}——宁缺毋滥，明天再来。</p></div>`);
+  if (!sel) return PAGE('/', vitalsCard(v) + `<div class="card"><h1>还没有内容</h1><p class="mt">每日流水线尚未运行。可在 <a href="/system">系统页</a> 手动触发一次。</p></div>`);
+  if (sel.abstain) return PAGE('/', vitalsCard(v) + `<div class="card"><h1>今日弃权</h1><p>${esc(sel.abstain_reason)}</p><p class="mt">决策日期 ${esc(sel.as_of_date)}——宁缺毋滥。可去 <a href="/radar">雷达</a> 挑条目「学这个」，或看 <a href="/history">往期</a>。</p></div>`);
   const lesson = await env.DB.prepare('SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1').bind(sel.item_id).first();
   const item = await env.DB.prepare('SELECT * FROM cn_items WHERE id=?').bind(sel.item_id).first();
   const review = await env.DB.prepare('SELECT * FROM cn_reviews WHERE item_id=?').bind(sel.item_id).first();
-  let body = `<div class="card"><h2>为什么今天选它</h2><p>${esc(sel.why)}</p>
+  let body = vitalsCard(v) + `<div class="card"><h2>为什么今天选它</h2><p>${esc(sel.why)}</p>
     <p class="mt">决策日期 ${esc(sel.as_of_date)} · ${esc(BOARD_NAMES[sel.board_id] || sel.board_id || '')}${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p></div>`;
   if (item) {
     body += `<div class="card"><h1>${esc(item.title)}</h1>
-      <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${esc(item.url)}" rel="noopener">原文</a></p>`;
+      <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a></p>`;
     if (lesson) for (const [i, s] of JSON.parse(lesson.sections_json).entries())
       body += `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`;
     body += `</div><div class="card"><h2>主动回忆</h2>
@@ -590,30 +623,21 @@ async function todayPage(env) {
       <div class="gradeRow">${[[1,'忘了'],[2,'困难'],[3,'良好'],[4,'轻松']].map(([g,l]) =>
         `<button onclick="grade(${g},this)">${l}</button>`).join('')}</div>
       <p id="r" class="mt"></p>
-      <script>async function grade(g,btn){
-        const res=await fetch('/api/grade/'+encodeURIComponent(${JSON.stringify(sel.item_id)})+'/'+g,{method:'POST'});
+      <script>var _grading=false;async function grade(g,btn){if(_grading)return;_grading=true;
+        document.querySelectorAll('.gradeRow button').forEach(b=>{b.classList.remove('picked');b.disabled=true});btn.classList.add('picked');
+        const res=await fetch('/api/grade/'+encodeURIComponent(${jsStr(sel.item_id)})+'/'+g,{method:'POST'});
         const j=await res.json();
-        document.querySelectorAll('.gradeRow button').forEach(b=>b.classList.remove('picked'));btn.classList.add('picked');
         document.getElementById('r').textContent=j.duplicate?('今天已评过（事件 #'+j.id+'），未重复计。'):('已记录 → 下次复习 '+j.due_at+'（间隔 '+j.interval+' 天，证据态：'+j.evidence_state+'）');
       }</script></div>`;
   }
   return PAGE('/', body);
 }
 
-async function queuePage(env) {
-  const { results } = await env.DB.prepare(
-    `SELECT r.*, i.title, i.url FROM cn_reviews r LEFT JOIN cn_items i ON i.id = r.item_id ORDER BY r.due_at ASC LIMIT 100`).all();
-  const rows = (results || []).map(r => `<tr><td>${esc((r.title || r.item_id).slice(0, 70))}</td>
-    <td><span class="badge">${esc(r.evidence_state || '—')}</span></td>
-    <td class="mt">${esc((r.due_at || '').slice(0, 10))}</td></tr>`).join('');
-  return PAGE('/queue', `<div class="card"><h1>复习队列</h1>
-    <table><tr><th>条目</th><th>证据态</th><th>下次复习</th></tr>${rows || '<tr><td colspan="3">队列为空——先在今天页学一篇并评分。</td></tr>'}</table></div>`);
-}
-
 async function radarPage(env) {
   const { results: srcs } = await env.DB.prepare('SELECT * FROM cn_sources ORDER BY board_id, id').all();
   const { results: counts } = await env.DB.prepare('SELECT board_id, COUNT(*) n FROM cn_items GROUP BY board_id').all();
   const cmap = Object.fromEntries((counts || []).map(c => [c.board_id, c.n]));
+  cmap.board5 = Object.values(cmap).reduce((a, b) => a + b, 0);  // 板块五=聚合，计数为各板之和
   const boards = [...REGISTRY.map(b => ({ id: b.board, name: b.name })), AGG_BOARD];
   let body = `<div class="card"><h1>前沿雷达</h1><p class="mt">全部板块的数据源都进入每日精选；下面是每个板块的信息源与状态。</p>
     <p class="mt">${boards.map(b => `<a href="#${b.id}">${esc(b.name)}</a>`).join(' · ')}</p></div>`;
@@ -622,21 +646,21 @@ async function radarPage(env) {
     body += `<div class="card" id="${b.id}"><h2>${esc(b.name)}<span class="badge ok">${cmap[b.id] || 0} 条</span></h2>`;
     if (bs.length) {
       body += `<h3>数据源（信息源 / 平台 / 网站）</h3><table><tr><th>来源</th><th>平台</th><th>健康</th></tr>`;
-      body += bs.map(s => `<tr><td>${esc(s.name)}<div class="mt"><a href="${esc(s.website)}" rel="noopener">${esc(s.website)}</a></div></td>
+      body += bs.map(s => `<tr><td>${esc(s.name)}<div class="mt"><a href="${safeHref(s.website)}" rel="noopener">${esc(s.website)}</a></div></td>
         <td class="mt">${esc(s.platform)}${s.official ? '<span class="badge ok">官方</span>' : '<span class="badge">聚合</span>'}</td>
         <td>${s.health === 'active' ? '<span class="badge ok">正常</span>' : '<span class="badge info">' + esc(s.health) + '</span>'}</td></tr>`).join('');
       body += `</table>`;
     } else if (b.id === 'board5') body += `<p class="mt">聚合各板块，无独立来源。</p>`;
     const { results: items } = await env.DB.prepare(
       b.id === 'board5'
-        ? `SELECT title, url, board_id FROM cn_items ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT 8`
-        : `SELECT title, url, board_id FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT 6`
+        ? `SELECT id, title, url, board_id FROM cn_items ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT 8`
+        : `SELECT id, title, url, board_id FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT 6`
     ).bind(...(b.id === 'board5' ? [] : [b.id])).all();
     if ((items || []).length) body += `<h3>最新条目</h3><ul class="mt">${items.map(it =>
-      `<li><a href="${esc(it.url)}" rel="noopener">${esc(it.title.slice(0, 90))}</a></li>`).join('')}</ul>`;
-    body += `</div>`;
+      `<li><a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 90))}</a></li>`).join('')}</ul>`;
+    body += `<p style="margin-top:8px"><a class="pill-link" href="/board/${b.id}">查看全部 ${cmap[b.id] || 0} 条 →</a></p></div>`;
   }
-  return PAGE('/radar', body);
+  return PAGE('/radar', body, { title: '前沿雷达' });
 }
 
 async function systemPage(env) {
@@ -657,28 +681,217 @@ async function systemPage(env) {
       document.getElementById('rr').textContent='结果：'+j.result+'（'+JSON.stringify(j.counts)+'）';setTimeout(()=>location.reload(),1200);}</script></div>`);
 }
 
+// ───────────────────────── 学习数据 / 复用组件 ─────────────────────────
+async function computeVitals(env) {
+  const now = nowISO(), today = localDay();
+  const q = (sql, ...b) => env.DB.prepare(sql).bind(...b).first();
+  // 只算 item 仍存在的到期卡（防孤儿卡把待复习计数撑高，与 /review 的 INNER JOIN 一致）
+  const [due, learned, mastered, reviews, ret] = await Promise.all([
+    q("SELECT COUNT(*) n FROM cn_reviews r WHERE r.due_at IS NOT NULL AND r.due_at<=? AND r.reps>0 AND EXISTS(SELECT 1 FROM cn_items i WHERE i.id=r.item_id)", now),
+    q("SELECT COUNT(*) n FROM cn_reviews WHERE reps>0"),
+    q("SELECT COUNT(*) n FROM cn_reviews WHERE evidence_state='已掌握'"),
+    q("SELECT COUNT(*) n FROM cn_events WHERE kind='grade'"),
+    q("SELECT AVG(CASE WHEN last_grade>=3 THEN 1.0 ELSE 0 END) r FROM cn_reviews WHERE last_grade IS NOT NULL"),
+  ]);
+  // streak 按用户本地日分桶（拉原始时间戳在 JS 里换算，避免 UTC 跨日误清零）
+  const { results: evs } = await env.DB.prepare(
+    "SELECT at FROM cn_events WHERE kind='grade' ORDER BY at DESC LIMIT 400").all();
+  const set = new Set((evs || []).map(x => localDay(x.at)));
+  let streak = 0, cur = new Date(today + 'T00:00:00Z');
+  if (!set.has(today)) cur = new Date(cur.getTime() - 864e5);  // 今天没学则从昨天起算，不清零
+  while (set.has(cur.toISOString().slice(0, 10))) { streak++; cur = new Date(cur.getTime() - 864e5); }
+  return { due: due?.n || 0, learned: learned?.n || 0, mastered: mastered?.n || 0,
+           reviews: reviews?.n || 0, retention: ret?.r != null ? Math.round(ret.r * 100) : null, streak };
+}
+function vitalsCard(v) {
+  const cell = (n, l) => `<div class="vital"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+  return `<div class="card"><h2>学习数据</h2><div class="vitals">
+    ${cell(v.streak, '连续天数')}${cell(v.due, '待复习')}${cell(v.mastered, '已掌握')}${cell(v.learned, '学习中')}${cell(v.retention != null ? v.retention + '%' : '—', '回忆达标率')}</div>
+    ${v.due > 0 ? `<p style="margin-top:10px"><a class="pill-link" href="/review">开始复习（${v.due} 项到期）→</a></p>` : ''}</div>`;
+}
+const STUDY_JS = `<script>async function study(btn){btn.disabled=true;var o=btn.textContent;btn.textContent='加入中…';
+try{var res=await fetch('/api/study/'+encodeURIComponent(btn.dataset.id),{method:'POST'});var j=await res.json();
+btn.textContent=j.already?'已在队列':'已加入复习';}catch(e){btn.textContent='失败';btn.disabled=false;}}</script>`;
+function lessonHTML(lesson) {
+  if (!lesson) return '';
+  return JSON.parse(lesson.sections_json).map((s, i) =>
+    `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`).join('');
+}
+function itemListHTML(items, { study = true } = {}) {
+  if (!items.length) return '<p class="mt">暂无条目。</p>';
+  return items.map(it => `<div class="itemrow"><div class="body">
+    <a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 110))}</a>
+    <div class="mt">${esc(BOARD_NAMES[it.board_id] || it.board_id || '')}${it.published_at ? ' · ' + esc(it.published_at.slice(0, 10)) : ''} · <a href="${safeHref(it.url)}" rel="noopener">原文</a></div>
+    </div>${study ? `<button class="btn-sm" data-id="${esc(it.id)}" onclick="study(this)">学这个</button>` : ''}</div>`).join('');
+}
+// 可复用的主动回忆评分组件（reveal 内容 + 四档评分 + 脚本）
+function graderHTML(itemId, revealInner, nextHref) {
+  return `<div class="card"><h2>主动回忆</h2>
+    <p class="mt">先合上内容自己复述，再点「显示」核对，然后如实自评。评分即时进 FSRS 排程。</p>
+    <button class="btn-sm" id="revealBtn" onclick="document.getElementById('revealBox').hidden=false;this.hidden=true">显示答案/讲义</button>
+    <div class="reveal" id="revealBox" hidden>${revealInner || '<p class="mt">该条目暂无讲义，请点原文精读后自评。</p>'}</div>
+    <div class="gradeRow">${[[1, '忘了'], [2, '困难'], [3, '良好'], [4, '轻松']].map(([g, l]) =>
+      `<button onclick="grade(${g},this)" aria-label="评分：${l}">${l}</button>`).join('')}</div>
+    <p id="r" class="mt" role="status"></p>
+    <script>var _grading=false;async function grade(g,btn){if(_grading)return;_grading=true;
+      document.querySelectorAll('.gradeRow button').forEach(b=>{b.classList.remove('picked');b.disabled=true});btn.classList.add('picked');
+      var res=await fetch('/api/grade/'+encodeURIComponent(${jsStr(itemId)})+'/'+g,{method:'POST'});var j=await res.json();
+      document.getElementById('r').textContent=j.duplicate?('今天已评过（事件 #'+j.id+'），未重复计。'):('已记录 → 下次复习 '+j.due_at+'（间隔 '+j.interval+' 天，证据态：'+j.evidence_state+'）');
+      ${nextHref ? `setTimeout(function(){location.href=${jsStr(nextHref)}},900);` : ''}}</script></div>`;
+}
+
+// ───────────────────────── 复习会话 /review ─────────────────────────
+async function reviewPage(env) {
+  const now = nowISO();
+  const v = await computeVitals(env);
+  const dueRow = await env.DB.prepare(
+    "SELECT r.*, i.title, i.summary, i.url FROM cn_reviews r JOIN cn_items i ON i.id=r.item_id WHERE r.due_at<=? AND r.reps>0 ORDER BY r.due_at ASC LIMIT 1").bind(now).first();
+  let body = vitalsCard(v);
+  if (dueRow) {
+    const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
+    const reveal = lesson ? lessonHTML(lesson) : `<p>${esc((dueRow.summary || '').slice(0, 500))}</p>`;
+    body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(dueRow.title)}</h1>
+      <p class="mt"><a href="${safeHref(dueRow.url)}" rel="noopener">原文</a> · <a href="/item/${encodeURIComponent(dueRow.item_id)}">详情</a></p></div>`;
+    body += graderHTML(dueRow.item_id, reveal, '/review');
+  } else {
+    body += `<div class="card"><h1>复习完成 🎉</h1><p class="mt">当前没有到期的复习项。去 <a href="/">今天</a> 学一篇，或在 <a href="/radar">雷达</a> / 搜索里挑条目「学这个」加入队列。</p></div>`;
+  }
+  const { results: queue } = await env.DB.prepare(
+    "SELECT r.due_at, r.evidence_state, i.title, i.id item_id FROM cn_reviews r LEFT JOIN cn_items i ON i.id=r.item_id WHERE r.reps>0 ORDER BY r.due_at ASC LIMIT 60").all();
+  const rows = (queue || []).map(r => `<tr><td><a href="/item/${encodeURIComponent(r.item_id || '')}">${esc((r.title || r.item_id || '').slice(0, 64))}</a></td>
+    <td><span class="badge">${esc(r.evidence_state || '—')}</span></td><td class="mt">${esc((r.due_at || '').slice(0, 10))}</td></tr>`).join('');
+  body += `<div class="card"><h2>复习队列</h2><table><tr><th>条目</th><th>证据态</th><th>下次复习</th></tr>${rows || '<tr><td colspan=3>队列为空。</td></tr>'}</table></div>`;
+  return PAGE('/review', body, { title: '复习' });
+}
+
+// ───────────────────────── 板块浏览 /board/:id ─────────────────────────
+async function boardPage(env, boardId, offset) {
+  const board = REGISTRY.find(b => b.board === boardId) || (boardId === 'board5' ? AGG_BOARD : null);
+  if (!board) return null;
+  const name = board.name || BOARD_NAMES[boardId];
+  const PAGE_SIZE = 50;
+  const { results: items } = await (boardId === 'board5'
+    ? env.DB.prepare("SELECT * FROM cn_items ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT ? OFFSET ?").bind(PAGE_SIZE + 1, offset)
+    : env.DB.prepare("SELECT * FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT ? OFFSET ?").bind(boardId, PAGE_SIZE + 1, offset)).all();
+  const more = (items || []).length > PAGE_SIZE;
+  const shown = (items || []).slice(0, PAGE_SIZE);
+  let body = `<div class="card"><h1>${esc(name)}</h1><p class="mt"><a href="/radar">← 前沿雷达</a></p>
+    ${itemListHTML(shown)}
+    <p style="margin-top:12px">${offset > 0 ? `<a class="pill-link" href="/board/${boardId}?offset=${Math.max(0, offset - PAGE_SIZE)}">← 上一页</a>` : ''}
+    ${more ? `<a class="pill-link" href="/board/${boardId}?offset=${offset + PAGE_SIZE}">下一页 →</a>` : ''}</p></div>`;
+  return PAGE('/radar', body + STUDY_JS, { title: name });
+}
+
+// ───────────────────────── 搜索 /search ─────────────────────────
+async function searchPage(env, q) {
+  q = (q || '').trim().slice(0, 80);
+  let body = `<div class="card"><h1>搜索</h1><p class="mt">在候选库标题与摘要里搜索。</p>`;
+  if (q) {
+    const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';  // 先转义 \ 本身（ESCAPE 字符），再转义 % _
+    const { results } = await env.DB.prepare(
+      "SELECT * FROM cn_items WHERE title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT 40").bind(like).all();
+    body += `<p class="mt">「${esc(q)}」找到 ${(results || []).length} 条${(results || []).length === 40 ? '（仅显示前 40）' : ''}</p>${itemListHTML(results || [])}`;
+  } else body += '<p class="mt">在右上角搜索框输入关键词。</p>';
+  body += '</div>';
+  return PAGE('/search', body + STUDY_JS, { title: '搜索' + (q ? '：' + q : ''), q });
+}
+
+// ───────────────────────── 往期精选 /history ─────────────────────────
+async function historyPage(env) {
+  const { results } = await env.DB.prepare(
+    "SELECT s.*, i.title FROM cn_selections s LEFT JOIN cn_items i ON i.id=s.item_id ORDER BY s.as_of_date DESC LIMIT 40").all();
+  const rows = (results || []).map(s => s.abstain
+    ? `<tr><td class="mt">${esc(s.as_of_date)}</td><td colspan=2><span class="badge info">弃权</span> ${esc((s.abstain_reason || '').slice(0, 60))}</td></tr>`
+    : `<tr><td class="mt">${esc(s.as_of_date)}</td><td><a href="/item/${encodeURIComponent(s.item_id || '')}">${esc((s.title || s.item_id || '').slice(0, 70))}</a></td>
+       <td class="mt">${esc(BOARD_NAMES[s.board_id] || '')} · ${s.score != null ? Number(s.score).toFixed(0) : '—'}</td></tr>`).join('');
+  return PAGE('/history', `<div class="card"><h1>往期精选</h1>
+    <table><tr><th>日期</th><th>标题</th><th>板块·分</th></tr>${rows || '<tr><td colspan=3>暂无。</td></tr>'}</table></div>`, { title: '往期精选' });
+}
+
+// ───────────────────────── 条目详情 /item/:id ─────────────────────────
+async function itemPage(env, id) {
+  const item = await env.DB.prepare("SELECT * FROM cn_items WHERE id=?").bind(id).first();
+  if (!item) return null;
+  const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(id).first();
+  const review = await env.DB.prepare("SELECT * FROM cn_reviews WHERE item_id=?").bind(id).first();
+  let body = `<div class="card"><p class="mt"><a href="/board/${esc(item.board_id)}">← ${esc(BOARD_NAMES[item.board_id] || item.board_id)}</a></p>
+    <h1>${esc(item.title)}</h1>
+    <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
+    ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
+    ${review ? '' : `<button class="btn-sm" data-id="${esc(item.id)}" onclick="study(this)">加入复习队列</button>`}</div>`;
+  if (lesson) body += `<div class="card"><h2>讲义</h2>${lessonHTML(lesson)}</div>`;
+  if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc((item.summary || '').slice(0, 500))}</p>`, null);
+  return PAGE('/', body + STUDY_JS, { title: item.title.slice(0, 40) });
+}
+
+async function studyItem(env, id) {
+  const item = await env.DB.prepare("SELECT id FROM cn_items WHERE id=?").bind(id).first();
+  if (!item) return { error: 'not found', status: 404 };
+  const existing = await env.DB.prepare("SELECT item_id FROM cn_reviews WHERE item_id=?").bind(id).first();
+  if (existing) return { already: true };
+  await scheduleNewCard(env, id);
+  // 建卡后 reps=0；给它一次即时可复习（今天到期），让「学这个」立刻能进复习流
+  await env.DB.prepare("UPDATE cn_reviews SET reps=1, evidence_state='学习中', last_review=?, due_at=? WHERE item_id=? AND reps=0")
+    .bind(nowISO(), nowISO(), id).run();
+  return { ok: true };
+}
+
+function notFoundPage() {
+  return PAGE('/', `<div class="card"><h1>页面不存在</h1><p class="mt">没找到这个页面。回 <a href="/">今天</a> 看看。</p></div>`, { title: '404' });
+}
+
 // ───────────────────────── 入口 ─────────────────────────
+const SEC_HEADERS = {
+  'x-content-type-options': 'nosniff',
+  'referrer-policy': 'strict-origin-when-cross-origin',
+  'content-security-policy': "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+};
+const htmlResp = (html, status = 200) => new Response(html, {
+  status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache', ...SEC_HEADERS },
+});
+const jsonResp = (obj, status = 200) => new Response(JSON.stringify(obj), {
+  status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...SEC_HEADERS },
+});
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const p = url.pathname;
     try {
-      if (request.method === 'POST' && p.startsWith('/api/grade/')) {
-        const [, , , idEnc, gradeRaw] = p.split('/');
-        const grade = parseInt(gradeRaw, 10);
-        if (!idEnc || !(grade >= 1 && grade <= 4)) return Response.json({ error: 'bad request' }, { status: 422 });
-        return Response.json(await gradeRecall(env, decodeURIComponent(idEnc), grade));
+      if (p === '/favicon.ico') return new Response('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>', { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=86400' } });
+      if (p === '/robots.txt') return new Response('User-agent: *\nDisallow:\n', { headers: { 'content-type': 'text/plain' } });
+
+      if (request.method === 'POST') {
+        if (p.startsWith('/api/grade/')) {
+          const [, , , idEnc, gradeRaw] = p.split('/');
+          const grade = parseInt(gradeRaw, 10);
+          if (!idEnc || !(grade >= 1 && grade <= 4)) return jsonResp({ error: 'bad request' }, 422);
+          return jsonResp(await gradeRecall(env, decodeURIComponent(idEnc), grade));
+        }
+        if (p.startsWith('/api/study/')) {
+          const id = decodeURIComponent(p.slice('/api/study/'.length));
+          if (!id) return jsonResp({ error: 'bad request' }, 422);
+          const r = await studyItem(env, id);
+          return jsonResp(r, r.status || 200);
+        }
+        if (p === '/api/run') return jsonResp(await runDaily(env, 'manual'));
+        return jsonResp({ error: 'not found' }, 404);
       }
-      if (request.method === 'POST' && p === '/api/run') {
-        return Response.json(await runDaily(env, 'manual'));
-      }
-      const html = p === '/queue' ? await queuePage(env)
-        : p === '/radar' ? await radarPage(env)
-        : p === '/system' ? await systemPage(env)
-        : await todayPage(env);
-      return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } });
+
+      let html, status = 200;
+      if (p === '/' || p === '/today') html = await todayPage(env);
+      else if (p === '/review' || p === '/queue') html = await reviewPage(env);
+      else if (p === '/radar') html = await radarPage(env);
+      else if (p === '/system') html = await systemPage(env);
+      else if (p === '/history') html = await historyPage(env);
+      else if (p === '/search') html = await searchPage(env, url.searchParams.get('q') || '');
+      else if (p.startsWith('/board/')) html = await boardPage(env, p.slice('/board/'.length), Math.max(0, parseInt(url.searchParams.get('offset') || '0', 10) || 0));
+      else if (p.startsWith('/item/')) html = await itemPage(env, decodeURIComponent(p.slice('/item/'.length)));
+      else html = null;
+      if (html === null) { html = notFoundPage(); status = 404; }
+      return htmlResp(html, status);
     } catch (e) {
-      return new Response('error: ' + e.message, { status: 500 });
+      return htmlResp(PAGE('/', `<div class="card"><h1>出错了</h1><p class="mt">${esc(e.message || 'error')}——刷新或回 <a href="/">今天</a>。</p></div>`, { title: '错误' }), 500);
     }
   },
   async scheduled(event, env, ctx) {
