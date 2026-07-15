@@ -1,12 +1,37 @@
 /**
- * ADP 云端镜像 Worker（R6）
- * - 只读镜像：今天学什么 / 队列 / 系统（D1，本机单向推送）
- * - 唯一可写：POST /grade → events_inbox（本机 `adp mirror pull` 回传并过 FSRS）
+ * ADP 云端入口 Worker（R6 + Tunnel 直连）
+ * - 首选：反向代理到 Cloudflare Tunnel（adp-origin → 本机 127.0.0.1:8787），
+ *   手机打开 adp.linzezhang.com 即是完整六主题系统本体。
+ * - 兜底：本机睡眠/隧道断开时自动回落只读镜像（D1，本机单向推送）+
+ *   回传队列（POST /grade → events_inbox，本机 `adp mirror pull` 过 FSRS）。
  * - 访问控制：无（Owner 2026-07-15 指令取消钥匙登录）。页面公开可读；
+ *   本机 webapp 对隧道来访只放行「浏览+主动回忆」（remote_guard），
  *   如需私有化，推荐在仪表盘叠加 Cloudflare Access（见 README R6 节）。
  *   /grade 仍有每讲义每 UTC 日 1 条的防重上限。
  * - cron：刷新到期复习计数（失败不重试，本机心跳兜底）。
  */
+
+// Tunnel 入口主机名（无 Worker 路由，经边缘直达本机）。
+// 注意：该 CNAME 记录尚待 Owner 在对话里点名确认后创建——创建前 fetch 必失败，
+// 所有请求走下方镜像兜底（这正是设计的降级路径，不是故障）。
+const ORIGIN = 'https://adp-origin.linzezhang.com';
+
+async function proxyFullSystem(request, url) {
+  const headers = new Headers(request.headers);
+  headers.set('x-adp-edge', 'adp-mirror-worker'); // 溯源用；本机守卫认 cf-connecting-ip
+  const resp = await fetch(ORIGIN + url.pathname + url.search, {
+    method: request.method,
+    headers,
+    body: (request.method === 'GET' || request.method === 'HEAD') ? undefined : request.body,
+    // 5s 权衡：本机离线且 DNS 在时边缘立刻回 530（不吃满超时）；超时只兜
+    // 「connector 在线但源站黑洞」的罕见情形——太短会把慢首字节误降级到镜像。
+    signal: AbortSignal.timeout(5000),
+  });
+  // 502/503/504=connector 在线但本机服务挂；52x/530=隧道断——都回落镜像。
+  // 500/501 属应用自身错误，直透不掩盖。
+  if (resp.status >= 502) throw new Error('origin unavailable: ' + resp.status);
+  return resp;
+}
 
 const PAGE = (title, body, extra = '') => `<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
@@ -29,7 +54,7 @@ footer{padding:10px 16px;color:#8b7a5c;font-size:11.5px}
 </style></head><body>
 <header><b>ADP 镜像</b><nav><a href="/">今天</a><a href="/queue">队列</a><a href="/system">系统</a></nav></header>
 <main>${body}</main>
-<footer>云端为只读镜像+回传队列；主库与闭环在本机（断网时本机照常）。${extra}</footer>
+<footer>镜像兜底页：本机在线时会自动直连完整系统；当前本机离线或隧道未连，仍可浏览与评分（回传队列）。${extra}</footer>
 </body></html>`;
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -103,6 +128,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // 镜像兜底页的评分（只有镜像页会调用 /grade）：永不代理，直接入回传队列
     if (request.method === 'POST' && url.pathname.startsWith('/grade/')) {
       const [, , lessonId, gradeRaw] = url.pathname.split('/');
       const grade = parseInt(gradeRaw, 10);
@@ -120,9 +146,24 @@ export default {
       return Response.json({ queued: true, duplicate: false, id: res.meta.last_row_id });
     }
 
+    // 首选：完整系统直连（Tunnel → 本机 8787）；失败自动回落下方镜像
+    try {
+      return await proxyFullSystem(request, url);
+    } catch (e) {
+      if (url.pathname.startsWith('/api/')) {
+        return Response.json(
+          { error: '完整系统离线（本机睡眠或隧道未连）；稍后重试，或刷新页面用镜像评分' },
+          { status: 503 });
+      }
+    }
+
     if (url.pathname === '/queue') return new Response(await queuePage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
     if (url.pathname === '/system') return new Response(await systemPage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
-    return new Response(await todayPage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
+    if (url.pathname === '/') return new Response(await todayPage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
+    // 完整系统才有的页面（/radar /pilot /corrections /evidence…）：兜底时如实说明，不冒充
+    return new Response(PAGE('离线', `<div class="card"><h1>该页面仅完整系统提供</h1>
+      <p>本机离线或隧道未连，此页暂不可用。可先看 <a href="/">今天（镜像）</a>、<a href="/queue">队列</a> 或 <a href="/system">系统</a>。</p></div>`),
+      { status: 503, headers: { 'content-type': 'text/html; charset=utf-8' } });
   },
 
   async scheduled(event, env) {

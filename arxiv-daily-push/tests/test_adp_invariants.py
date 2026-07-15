@@ -259,5 +259,41 @@ class InvariantTests(unittest.TestCase):
                 self.assertAlmostEqual(contributions[key], round(weight * features[key], 3), places=2)
 
 
+@unittest.skipUnless(_DEPS, "adp venv dependencies not installed")
+class RemoteGuardTests(unittest.TestCase):
+    """防事故：公网入口（Tunnel 直连、无登录）被外人代按 Owner 决策按钮."""
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        os.environ["ADP_DATA_DIR"] = self._tmp.name
+
+    def tearDown(self) -> None:
+        os.environ.pop("ADP_DATA_DIR", None)
+        self._tmp.cleanup()
+
+    def _client(self):
+        from fastapi.testclient import TestClient
+
+        from adp.webapp import app
+
+        return TestClient(app)
+
+    def test_remote_post_blocked_except_recall(self) -> None:
+        """带 CF 头（=经隧道来访）的决策类 POST 一律 403；主动回忆放行."""
+        cf = {"cf-connecting-ip": "203.0.113.9"}
+        with self._client() as client:
+            for path in ("/api/pilot/decision/adopt", "/api/r5/promote",
+                         "/api/item/x/state/掌握", "/api/undo/1",
+                         "/api/corrections/1/resolve", "/api/transfer/x"):
+                self.assertEqual(client.post(path, headers=cf).status_code, 403, path)
+            # 主动回忆两端点放行守卫，但编造的讲义 ID 必须 404——
+            # 防公网来客往主库注入垃圾 review_state/事件行（复审修复）。
+            self.assertEqual(client.post("/api/recall/nope/reveal", headers=cf).status_code, 404)
+            self.assertEqual(client.post("/api/recall/nope/grade/3", headers=cf).status_code, 404)
+            # 远程 GET 全放行；本机（无 CF 头）POST 不受守卫影响
+            self.assertNotEqual(client.get("/system", headers=cf).status_code, 403)
+            self.assertNotEqual(client.post("/api/undo/999999").status_code, 403)
+
+
 if __name__ == "__main__":
     unittest.main()

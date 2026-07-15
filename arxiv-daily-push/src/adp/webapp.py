@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from typing import Any
 from urllib.parse import quote
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from . import config, store
@@ -33,6 +33,25 @@ DEEP_DIVE_INSTRUCTION = (
 
 app = FastAPI(title="ADP 个人前沿学习系统", docs_url=None, redoc_url=None)
 _pilot_cache: dict[str, Any] = {}
+
+# 公网直连守卫（R6·Tunnel）：经 Cloudflare 隧道来的请求必带 cf-connecting-ip
+# （边缘强制覆写，本机浏览器不会有；外部流量无法绕过边缘直连 127.0.0.1）。
+# 入口无登录（Owner 2026-07-15 指令），故远程只放行「浏览 + 主动回忆」，
+# 其余写操作（上板/试点决策/状态编辑/纠错/撤销/迁移）仅限本机亲手执行。
+# 边界（复审确认）：本守卫是前缀判断且只覆盖 http scope——新增 Owner 写路由
+# 严禁放在 /api/recall/ 前缀下；若未来加 WebSocket 路由需另设 ws 守卫。
+REMOTE_POST_ALLOWED = ("/api/recall/",)
+
+
+@app.middleware("http")
+async def remote_guard(request: Request, call_next):
+    if ("cf-connecting-ip" in request.headers
+            and request.method not in ("GET", "HEAD")
+            and not request.url.path.startswith(REMOTE_POST_ALLOWED)):
+        return JSONResponse(
+            {"error": "该操作仅限本机执行；公网入口只开放浏览与主动回忆评分"},
+            status_code=403)
+    return await call_next(request)
 
 
 def _conn() -> sqlite3.Connection:
@@ -291,8 +310,15 @@ def api_reveal(lesson_id: str) -> JSONResponse:
         row = conn.execute("SELECT sections_json FROM lessons WHERE id=?", (lesson_id,)).fetchone()
         if row is None:
             raise HTTPException(404)
-        store.append_event(conn, item_id=lesson_id, kind="recall_reveal", payload={})
-        conn.commit()
+        # 复审修复：reveal 事件同一 UTC 日只记一条——端点远程可达（无登录），
+        # 不设上限会让外人无限制刷大事件表；重复 reveal 仍返回答案但不再记录。
+        dup = conn.execute(
+            "SELECT 1 FROM learning_events WHERE item_id=? AND kind='recall_reveal' "
+            "AND substr(at, 1, 10) = substr(?, 1, 10)",
+            (lesson_id, store.utcnow_iso())).fetchone()
+        if dup is None:
+            store.append_event(conn, item_id=lesson_id, kind="recall_reveal", payload={})
+            conn.commit()
         sections = json.loads(row["sections_json"])
         answer = " / ".join(s.get("body", "")[:160] for s in sections[:1] + sections[3:4])
         return JSONResponse({"answer": answer})
@@ -304,6 +330,10 @@ def api_reveal(lesson_id: str) -> JSONResponse:
 def api_grade(lesson_id: str, grade: int) -> JSONResponse:
     conn = _conn()
     try:
+        # 复审修复：讲义必须真实存在——公网入口下编造 ID 会往主库注入垃圾
+        # review_state/事件行（review 层只校验档位，存在性由入口把关）。
+        if conn.execute("SELECT 1 FROM lessons WHERE id=?", (lesson_id,)).fetchone() is None:
+            raise HTTPException(404)
         thresholds = config.load_thresholds()
         outcome = grade_recall(conn, lesson_id, grade, thresholds)
         state = learning_state(conn, lesson_id)
