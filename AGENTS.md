@@ -21,6 +21,7 @@
 > | `QBVS` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
 > | `MetaDatabase/` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) → 改名为 `LinzeDatabase/` | 已迁出，即将从本仓库移除 |
 > | `Serenity-Alipay` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | `EEI` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) → `EEI/` 子目录 | 已迁出，即将从本仓库移除 |
 > | 治理框架 | [LinzeColin/Governance](https://github.com/LinzeColin/Governance) | 已迁出（本仓库暂保留副本） |
 >
 > 每一项都已通过 **git tree hash 逐字节比对**，与本仓库内容完全一致后才标记为已迁出。

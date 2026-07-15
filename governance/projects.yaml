@@ -67,11 +67,6 @@ project_governance_files:
   - "VERSION"
   - "CHANGELOG.md"
 projects:
-  - project_id: "EEI"
-    path: "EEI"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
   - project_id: "KM_IDSystem"
     path: "KM_IDSystem"
     ci_mode: "required"
@@ -181,3 +176,15 @@ migrated_projects:
     reactivation_requires_owner_authorization: true
     evidence_refs:
       - "governance/run_manifests/GOV-SPLIT-WAVE2-20260715.json"
+  - project_id: "EEI"
+    path: "EEI"
+    status: "migrated"
+    migrated_at: "2026-07-15"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "EEI"
+    source_tree_sha: "fc83cf48982a00908fa658045b958f0a32b65e8c"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE3-20260715.json"

@@ -45,7 +45,7 @@ class RetiredProjectRegistryTests(unittest.TestCase):
         active = {item["project_id"]: item for item in self.config["projects"]}
         retired = {item["project_id"]: item for item in self.config["retired_projects"]}
         self.assertNotIn("WDA", active)
-        self.assertEqual(len(active), 6)
+        self.assertEqual(len(active), 5)
         self.assertEqual(retired["WDA"]["status"], "retired")
         self.assertTrue(retired["WDA"]["preserve_history"])
         self.assertTrue(retired["WDA"]["reactivation_requires_owner_authorization"])
@@ -58,7 +58,7 @@ class RetiredProjectRegistryTests(unittest.TestCase):
         migrated = {item["project_id"]: item for item in self.config["migrated_projects"]}
         self.assertEqual(
             set(migrated),
-            {"whkmSalary", "Alpha", "FIFA", "QBVS", "MetaDatabase", "Serenity-Alipay"},
+            {"whkmSalary", "Alpha", "FIFA", "QBVS", "MetaDatabase", "Serenity-Alipay", "EEI"},
         )
         for project_id, entry in migrated.items():
             self.assertNotIn(project_id, active)
@@ -79,10 +79,10 @@ class RetiredProjectRegistryTests(unittest.TestCase):
             ["governance/projects.yaml"],
         )
         selected = {item["project_id"] for item in selection["projects"]}
-        self.assertEqual(len(selected), 6)
+        self.assertEqual(len(selected), 5)
         self.assertNotIn("WDA", selected)
-        self.assertEqual(selection["required_project_count"], 6)
-        self.assertEqual(selection["selected_required_project_count"], 6)
+        self.assertEqual(selection["required_project_count"], 5)
+        self.assertEqual(selection["selected_required_project_count"], 5)
         self.assertTrue(selection["all_required_projects_covered"])
         self.assertEqual(selection["retired_project_ids"], ["WDA"])
         self.assertEqual(selection["retired_changed_files"], [])

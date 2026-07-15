@@ -1,2 +1,0 @@
-"""EEI application packages."""
-

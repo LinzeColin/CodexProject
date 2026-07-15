@@ -36,7 +36,6 @@ EXPECTED_EVIDENCE_COMMITS = {
     "serenity-alipay": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935",
 }
 PROJECT_TASK_FILES = (
-    ROOT / "EEI/docs/governance/delivery_tasks.yaml",
     ROOT / "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
     ROOT / "PFI/docs/governance/delivery_tasks.yaml",
 )
