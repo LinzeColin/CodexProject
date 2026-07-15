@@ -1,11 +1,12 @@
 import importlib.util
 import json
 import sqlite3
+import subprocess
 import sys
 import tempfile
 import unittest
-from datetime import datetime
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,7 +24,7 @@ def load_module(path: Path, name: str):
 
 
 class CodexHistoryExportTests(unittest.TestCase):
-    def test_exports_token_usage_and_session_snapshot_without_mutating_codex_home(self) -> None:
+    def test_exports_numeric_usage_without_mutating_codex_home(self) -> None:
         module = load_module(EXPORTER, "export_codex_history_archives")
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -64,26 +65,30 @@ class CodexHistoryExportTests(unittest.TestCase):
                 "index": index_path.read_text(encoding="utf-8"),
                 "logs_bytes": logs_path.read_bytes(),
             }
-            token = module.export_token_usage(codex_home, database_dir / "token_usage/current-mac-latest")
-            session = module.export_session_history(
-                codex_home,
-                database_dir / "session_history/current-mac-latest",
-                part_bytes=1024,
-            )
+            token = module.export_token_usage(codex_home, database_dir / "data/run_logs/token_usage")
 
             self.assertEqual(token["deduped_totals"]["total_tokens"], 13)
-            self.assertEqual(session["session_jsonl_count"], 1)
-            self.assertTrue((database_dir / "token_usage/current-mac-latest/data/summary.json").exists())
-            self.assertTrue((database_dir / "session_history/current-mac-latest/manifest.json").exists())
+            self.assertTrue((database_dir / "data/run_logs/token_usage/data/summary.json").exists())
             self.assertEqual(session_path.read_text(encoding="utf-8"), before["session"])
             self.assertEqual(index_path.read_text(encoding="utf-8"), before["index"])
             self.assertEqual(logs_path.read_bytes(), before["logs_bytes"])
 
-    def test_auto_update_exports_session_history_on_mondays_only(self) -> None:
+    def test_auto_update_never_schedules_raw_session_archive(self) -> None:
         module = load_module(AUTO_UPDATE, "run_codex_memory_auto_update")
-        self.assertTrue(module.should_export_session_history(datetime(2026, 7, 6, 3, 0)))
-        self.assertFalse(module.should_export_session_history(datetime(2026, 7, 8, 3, 0)))
-        self.assertFalse(module.should_export_session_history(datetime(2026, 7, 10, 3, 0)))
+        completed = subprocess.CompletedProcess([], 0, stdout='{"status":"PASS"}', stderr="")
+        with mock.patch.object(module, "run_command", return_value=completed) as runner:
+            result = module.run_history_exports(ROOT, Path("/private/.codex"))
+        args = runner.call_args.args[0]
+        self.assertEqual(result["status"], "PASS")
+        self.assertIn("--token-usage", args)
+        self.assertNotIn("--session-history", args)
+
+    def test_session_archive_and_split_bundle_surface_is_absent(self) -> None:
+        module = load_module(EXPORTER, "export_codex_history_archives_no_bundle")
+        self.assertFalse(hasattr(module, "export_session_history"))
+        self.assertFalse(hasattr(module, "split_file"))
+        self.assertFalse(hasattr(module, "DEFAULT_PART_BYTES"))
+        self.assertFalse(hasattr(module.parse_args([]), "session_history"))
 
 
 if __name__ == "__main__":

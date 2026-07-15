@@ -23,6 +23,13 @@ browser-profile/
 # Never commit raw unencrypted OpenAI exports.
 *.zip
 !tests/fixtures/*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.bundle
+*.part-*
+session_history/
+data/raw_archives/
 data/raw/
 data/private_imports/
 private_exports/

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export local Codex history snapshots without mutating live Codex state."""
+"""Export numeric Codex token telemetry without session or bundle payloads."""
 
 from __future__ import annotations
 
@@ -10,8 +10,6 @@ import json
 import re
 import shutil
 import sqlite3
-import tarfile
-import tempfile
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,9 +23,6 @@ NUMERIC_FIELDS = [
     "cached_input_tokens",
     "reasoning_output_tokens",
 ]
-DEFAULT_PART_BYTES = 45 * 1024 * 1024
-
-
 def remove_tree(path: Path) -> None:
     if path.exists():
         shutil.rmtree(path)
@@ -303,77 +298,6 @@ def export_token_usage(codex_home: Path, output_dir: Path) -> dict[str, Any]:
     return {"status": "PASS", "output_dir": str(output_dir), **summary}
 
 
-def add_if_exists(tar: tarfile.TarFile, source: Path, arcname: str) -> None:
-    if source.exists():
-        tar.add(source, arcname=arcname)
-
-
-def split_file(source: Path, output_dir: Path, part_bytes: int) -> list[Path]:
-    parts: list[Path] = []
-    with source.open("rb") as handle:
-        index = 0
-        while True:
-            chunk = handle.read(part_bytes)
-            if not chunk:
-                break
-            part = output_dir / f"{source.name}.part-{index:03d}"
-            part.write_bytes(chunk)
-            parts.append(part)
-            index += 1
-    return parts
-
-
-def export_session_history(codex_home: Path, output_dir: Path, *, part_bytes: int = DEFAULT_PART_BYTES) -> dict[str, Any]:
-    output_dir = output_dir.resolve()
-    remove_tree(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-    sessions_dir = codex_home / "sessions"
-    session_files = sorted(sessions_dir.rglob("*.jsonl")) if sessions_dir.exists() else []
-    archive_name = "current-mac-session-history.tar.gz"
-
-    with tempfile.TemporaryDirectory(prefix="codex-session-history-") as tmp:
-        archive_path = Path(tmp) / archive_name
-        with tarfile.open(archive_path, "w:gz") as tar:
-            add_if_exists(tar, codex_home / "session_index.jsonl", "session_index.jsonl")
-            add_if_exists(tar, sessions_dir, "sessions")
-        archive_sha = sha256_file(archive_path)
-        archive_bytes = archive_path.stat().st_size
-        if archive_bytes <= part_bytes:
-            shutil.copy2(archive_path, output_dir / archive_name)
-            payload = {"mode": "single_archive", "archive": archive_name}
-        else:
-            parts_dir = output_dir / "archive_parts"
-            parts_dir.mkdir()
-            parts = split_file(archive_path, parts_dir, part_bytes)
-            payload = {
-                "mode": "split_archive",
-                "parts": [str(path.relative_to(output_dir)) for path in parts],
-            }
-
-    write_text(
-        output_dir / "README.md",
-        "# Current Mac Session History\n\n"
-        "This directory is regenerated only by the Monday Memory Atlas Codex auto-update.\n"
-        "It is a historical snapshot for RAG, behavior analysis, data analysis, and Memory Atlas.\n\n"
-        "Do not copy this directory over `~/.codex/sessions`; it is not live Codex state.\n\n"
-        f"- session JSONL files: {len(session_files)}\n"
-        f"- full archive SHA-256: `{archive_sha}`\n"
-        f"- full archive bytes: {archive_bytes}\n",
-    )
-    manifest = {
-        "schema_version": "codex_session_history_export.v1",
-        "created_at_utc": datetime.now(timezone.utc).isoformat(),
-        "source": "current_mac_live_codex_sessions_read_only",
-        "session_jsonl_count": len(session_files),
-        "full_archive_sha256": archive_sha,
-        "full_archive_bytes": archive_bytes,
-        **payload,
-    }
-    write_text(output_dir / "manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
-    write_checksums(output_dir)
-    return {"status": "PASS", "output_dir": str(output_dir), **manifest}
-
-
 def write_checksums(root: Path) -> None:
     rows = []
     for path in sorted(p for p in root.rglob("*") if p.is_file() and p.name != "SHA256SUMS"):
@@ -382,12 +306,12 @@ def write_checksums(root: Path) -> None:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Export Codex token usage and session history snapshots.")
+    parser = argparse.ArgumentParser(
+        description="Export numeric Codex token telemetry; raw sessions are never bundled."
+    )
     parser.add_argument("--database-dir", type=Path, default=Path("."))
     parser.add_argument("--codex-home", type=Path, default=Path.home() / ".codex")
     parser.add_argument("--token-usage", action="store_true")
-    parser.add_argument("--session-history", action="store_true")
-    parser.add_argument("--part-mb", type=int, default=45)
     return parser.parse_args(argv)
 
 
@@ -397,12 +321,9 @@ def main(argv: list[str] | None = None) -> int:
     codex_home = args.codex_home.expanduser().resolve()
     result: dict[str, Any] = {"status": "PASS", "exports": {}}
     if args.token_usage:
-        result["exports"]["token_usage"] = export_token_usage(codex_home, database_dir / "token_usage/current-mac-latest")
-    if args.session_history:
-        result["exports"]["session_history"] = export_session_history(
+        result["exports"]["token_usage"] = export_token_usage(
             codex_home,
-            database_dir / "session_history/current-mac-latest",
-            part_bytes=args.part_mb * 1024 * 1024,
+            database_dir / "data/run_logs/token_usage",
         )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0

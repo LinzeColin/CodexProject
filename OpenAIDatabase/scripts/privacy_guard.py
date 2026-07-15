@@ -47,6 +47,20 @@ CREDENTIAL_PATTERNS = (
         re.compile(r"\b(?:password|passwd|pwd)\b\s*[:=]\s*['\"]?[A-Za-z0-9][A-Za-z0-9._~+/=@:-]{7,}", re.I),
     ),
     (
+        "passwords",
+        re.compile(
+            r"[\u4e00-\u9fff]{0,8}密码\s*[：:=]\s*['\"]?[A-Za-z0-9][A-Za-z0-9._~+/=@:-]{7,}",
+            re.I,
+        ),
+    ),
+    (
+        "passwords",
+        re.compile(
+            r"\bsession\b.{0,80}密码\s*(?:是|为|[：:=])\s*['\"]?[0-9]{3}(?![0-9])",
+            re.I,
+        ),
+    ),
+    (
         "private_keys",
         re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----\s*[A-Za-z0-9+/=\r\n]{16,}\s*-----END [A-Z ]*PRIVATE KEY-----", re.S),
     ),
@@ -58,6 +72,13 @@ CREDENTIAL_PATTERNS = (
     (
         "browser_credential_store",
         re.compile(r"\b(?:browser[_-]?credential[_-]?store|login[_-]?data|keychain)\b\s*[:=]\s*['\"]?[A-Za-z0-9][^'\"\n]{7,}", re.I),
+    ),
+    (
+        "recovery_codes",
+        re.compile(
+            r"\b(?:recovery|backup)[_-]?(?:code|codes)\b\s*[:=]\s*['\"]?[A-Za-z0-9][A-Za-z0-9._~+/=@:-]{5,}",
+            re.I,
+        ),
     ),
 )
 REDACTION_PATTERNS = (

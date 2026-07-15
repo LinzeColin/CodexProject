@@ -14,8 +14,8 @@ Keep this workflow local-first, deterministic, and review-gated.
 - Do not commit raw OpenAI export ZIPs, unredacted raw messages, credentials, browser state, `.env`, cookies, private keys, or session tokens.
 - Do not send raw sensitive export content to a model unless the user explicitly authorizes that exact transfer.
 - Treat generated memory candidates as `pending` until the user accepts or edits them.
-- Prefer redacted JSONL/Markdown/SQLite derived artifacts as the durable database surface.
-- Keep raw archives encrypted locally when archiving is requested.
+- Prefer redacted JSONL/Markdown as the durable surface; SQLite is a local, ignored, rebuildable search index.
+- Do not create raw ZIP/tar/bundle copies. Complete private-origin recovery belongs in owner-controlled private Release storage; this skill records only redacted SHA-256-backed references.
 - Do not upload plaintext secrets to GitHub. If finance, trading, or other agents need credentials, store only redacted `secret_ref` metadata, intended use, authorization boundary, and local secret-resolver instructions in the memory database.
 - Default delivery is chat output plus GitHub-backed repository updates. Do not create local delivery ZIPs or copied report packages unless the user explicitly asks.
 - Keep the local machine lean: use temporary run directories for transient files, remove cache/package outputs after use, and keep durable derived memory in the repository for GitHub backup.
@@ -25,7 +25,7 @@ Keep this workflow local-first, deterministic, and review-gated.
 
 1. Inspect inputs with `scripts/openai_memory_analysis.py inspect`.
 2. Run a sample pass before a full pass when inputs are large.
-3. Run the full pass with encrypted archive enabled when possible.
+3. Run the full pass without creating a second raw archive or bundle.
 4. Review generated reports:
    - `incremental_change_report.md`
    - `weekly_memory_pack.md`
@@ -41,7 +41,7 @@ Keep this workflow local-first, deterministic, and review-gated.
 9. Maintain `PROJECT_INDEX.md`, `DECISION_LOG.md`, and `TIMELINE.md` so future agents can use the database directly.
 10. Commit and push durable derived memory, reports, requirements, and index changes to GitHub when the user wants repository backup.
 11. Rebuild/query the read-only retrieval index with `search`, `fetch`, or `serve-mcp`.
-12. Clean local transient outputs such as copied report folders, ZIP delivery packages, `.DS_Store`, and `__pycache__` after the run. Do not delete raw source exports or encrypted archives unless the user explicitly authorizes that cleanup.
+12. Clean local transient outputs such as copied report folders, ZIP delivery packages, `.DS_Store`, and `__pycache__` after the run. Do not delete source exports or private Release recovery assets without explicit authorization plus verified replacement.
 
 ## Commands
 
@@ -55,9 +55,7 @@ python3 scripts/openai_memory_analysis.py inspect \
 python3 scripts/openai_memory_analysis.py run \
   --inputs /path/to/OpenAI-export.zip /path/to/codex-pack.zip \
   --database-dir /path/to/OpenAIDatabase \
-  --out-dir /path/to/run/full \
-  --archive \
-  --archive-key-file /path/to/OpenAIDatabase/.local_keys/openai_memory_analysis.key
+  --out-dir /path/to/run/full
 
 python3 scripts/openai_memory_analysis.py search \
   --database-dir /path/to/OpenAIDatabase \
@@ -132,7 +130,7 @@ The full-flow durable database must include:
 - `data/derived/decision_log/DECISION_LOG.md`: decisions and default implications.
 - `data/derived/timeline/TIMELINE.md`: chronological memory timeline.
 - `data/derived/chat_reports/*.chat_report.md`: backup copy of the chat-facing report.
-- `data/processed/indexes/memory_index.sqlite`: read-only search/fetch index.
+- `data/processed/indexes/memory_index.sqlite`: local read-only search/fetch index, ignored by Git and rebuilt automatically when absent.
 
 Every memory candidate must include:
 
@@ -150,7 +148,7 @@ Do not delete, discard, or refuse to back up historical memory just because it i
 
 1. `核心画像`: identity, resume/background, growth history, tendencies, preferences, Taste, plans, strategy, personal history, and durable standards.
 2. `一般`: projects, decisions, important workflows, medium/long-term constraints, opportunities, and reusable context.
-3. `临时`: short-term events, sensitive specifics, low-confidence context, operational details, and one-off information. Store as redacted summary plus encrypted raw archive reference; do not elevate to high-weight personalization unless explicitly relevant.
+3. `临时`: short-term events, sensitive specifics, low-confidence context, operational details, and one-off information. Store as a redacted summary plus a private Release recovery reference when one is authorized; do not elevate it to high-weight personalization unless explicitly relevant.
 
 The incremental report must include:
 
@@ -162,7 +160,7 @@ The incremental report must include:
 5. 已废弃的信息：说明哪些内容不再可靠或不应继续影响决策。
 6. 需要更新进 Codex 和 ChatGPT 的记忆：只列用户真正希望未来模型记住的 compact context。
 7. 未来回答应遵守的规则：说明未来助手应该怎样协作、怎样避免踩线。
-8. 临时信息和敏感资料备份：说明哪些资料只应低权重检索，不提升为核心画像，但仍已脱敏/加密备份。
+8. 临时信息和敏感资料备份：说明哪些资料只应低权重检索，不提升为核心画像；只记录脱敏结果与经授权的 private Release recovery reference。
 
 The weekly report must include:
 

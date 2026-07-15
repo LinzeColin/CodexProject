@@ -15,10 +15,8 @@ import io
 import json
 import os
 import re
-import secrets
 import shutil
 import sqlite3
-import subprocess
 import sys
 import tempfile
 import textwrap
@@ -670,7 +668,7 @@ def make_candidate(
     )
     if category == "temporary_or_sensitive":
         sensitivity = "sensitive" if sensitivity != "secret" else "secret"
-        statement = f"短期/敏感资料已脱敏备份；redacted_source_hash={sha256_text(redacted)[:16]}。原始内容仅保留在本地加密归档引用中，不提升为核心画像。"
+        statement = f"短期/敏感资料仅保留脱敏摘要；redacted_source_hash={sha256_text(redacted)[:16]}。原始内容不复制进本仓库；如有 owner 授权的 private Release，仅记录恢复引用，不提升为核心画像。"
     elif source_kind == "openai_export" and category in {"decision", "project_context", "workflow", "deprecated_info"} and not meta_context:
         sensitivity = "sensitive"
     if category == "security_boundary" and sensitivity != "secret":
@@ -678,9 +676,9 @@ def make_candidate(
     date = (timestamp or utc_now()).date().isoformat()
     ident = stable_id("mem", f"{category}:{normalize_statement(statement)}")
     memory_tier = assign_memory_tier(category, validity, sensitivity, statement)
-    backup_status = "backed_up_redacted_with_encrypted_raw_reference"
+    backup_status = "backed_up_redacted_without_raw_bundle"
     if secret_ref:
-        backup_status = "backed_up_redacted_secret_ref_only_with_encrypted_raw_reference"
+        backup_status = "backed_up_redacted_secret_ref_only_without_raw_bundle"
     candidate = {
         "id": ident,
         "action": "backup",
@@ -760,7 +758,6 @@ class RunState:
     conversation_manifest: list[dict[str, Any]] = field(default_factory=list)
     candidates: list[dict[str, Any]] = field(default_factory=list)
     security_counts: Counter[str] = field(default_factory=Counter)
-    archive_results: list[dict[str, Any]] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
 
 
@@ -786,75 +783,6 @@ def conversation_record(conversation: dict[str, Any], messages: list[dict[str, A
         "source_path": source_ref,
         "parsed_at": isoformat(utc_now()),
     }
-
-
-def ensure_archive_key(path: Path) -> None:
-    ensure_dir(path.parent)
-    if not path.exists():
-        path.write_text(secrets.token_urlsafe(48) + "\n", encoding="utf-8")
-        os.chmod(path, 0o600)
-
-
-def encrypt_archive(input_path: Path, database_dir: Path, key_file: Path) -> dict[str, Any]:
-    ensure_archive_key(key_file)
-    archive_dir = ensure_dir(database_dir / "data" / "raw_encrypted" / utc_now().date().isoformat())
-    source_sha = sha256_file(input_path)
-    output = archive_dir / f"{input_path.name}.{source_sha[:12]}.zip.enc"
-    cmd = [
-        "openssl",
-        "enc",
-        "-aes-256-cbc",
-        "-salt",
-        "-pbkdf2",
-        "-in",
-        str(input_path),
-        "-out",
-        str(output),
-        "-pass",
-        f"file:{key_file}",
-    ]
-    try:
-        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        status = "encrypted"
-        error = ""
-    except FileNotFoundError:
-        return {
-            "source_path": str(input_path),
-            "source_sha256": source_sha,
-            "status": "failed",
-            "error": "openssl executable not found; archive not created",
-        }
-    except subprocess.CalledProcessError as exc:
-        fallback = [part for part in cmd if part != "-pbkdf2"]
-        try:
-            subprocess.run(fallback, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            status = "encrypted_without_pbkdf2"
-            error = "openssl did not accept -pbkdf2; used compatibility fallback"
-        except FileNotFoundError:
-            return {
-                "source_path": str(input_path),
-                "source_sha256": source_sha,
-                "status": "failed",
-                "error": "openssl executable not found; archive not created",
-            }
-        except subprocess.CalledProcessError as fallback_exc:
-            return {
-                "source_path": str(input_path),
-                "source_sha256": source_sha,
-                "status": "failed",
-                "error": fallback_exc.stderr.decode("utf-8", errors="replace")[:500],
-            }
-    result = {
-        "source_path": str(input_path),
-        "source_sha256": source_sha,
-        "encrypted_path": str(output),
-        "encrypted_sha256": sha256_file(output),
-        "status": status,
-        "error": error,
-        "created_at": isoformat(utc_now()),
-    }
-    write_json(output.with_suffix(output.suffix + ".manifest.json"), result)
-    return result
 
 
 def process_input_zip(path: Path, state: RunState, sample_limit: int) -> None:
@@ -2166,7 +2094,8 @@ def write_run_outputs(state: RunState, week_start: datetime, month: str) -> dict
         "active_memory_count": len(active_rows),
         "previous_candidate_count": len(previous_candidates),
         "security_counts": dict(state.security_counts),
-        "archive_results": state.archive_results,
+        "archive_results": [],
+        "archive_policy": "no_bundle_producer_private_release_external_only",
         "errors": state.errors,
     }
     paths = {
@@ -2284,10 +2213,6 @@ def run_analysis(args: argparse.Namespace) -> int:
     ensure_repo_baseline(database_dir)
 
     inputs = [Path(p).expanduser().resolve() for p in args.inputs]
-    if args.archive:
-        key_file = Path(args.archive_key_file).expanduser().resolve() if args.archive_key_file else database_dir / ".local_keys/openai_memory_analysis.key"
-        for input_path in inputs:
-            state.archive_results.append(encrypt_archive(input_path, database_dir, key_file))
 
     for input_path in inputs:
         try:
@@ -2489,8 +2414,6 @@ def run_self_test(args: argparse.Namespace) -> int:
         database_dir=str(db_dir),
         out_dir=str(out_dir / "runs"),
         sample_limit=0,
-        archive=True,
-        archive_key_file=str(db_dir / ".local_keys/openai_memory_analysis.key"),
         week_start="2026-06-15",
         month="2026-06",
     )
@@ -2523,8 +2446,6 @@ def build_parser() -> argparse.ArgumentParser:
     run_p.add_argument("--database-dir", required=True)
     run_p.add_argument("--out-dir", required=True)
     run_p.add_argument("--sample-limit", type=int, default=0, help="Limit parsed conversations for smoke tests. 0 means full.")
-    run_p.add_argument("--archive", action="store_true", help="Encrypt raw ZIP inputs into data/raw_encrypted.")
-    run_p.add_argument("--archive-key-file", default="")
     run_p.add_argument("--week-start", default="", help="YYYY-MM-DD. Defaults to current UTC week start.")
     run_p.add_argument("--month", default="", help="YYYY-MM. Defaults to current UTC month.")
     run_p.set_defaults(func=run_analysis)

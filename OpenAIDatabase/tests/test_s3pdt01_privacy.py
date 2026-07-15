@@ -117,6 +117,7 @@ class S3PDT01PrivacyTests(unittest.TestCase):
                 "cookie: sessionid=" + "abcdef1234567890abcdef",
                 "session_token = " + "sess_" + "abcdef1234567890",
                 "password = " + "StrongPass1234",
+                "session archive 的" + "密码是" + "000",
                 "api_key = " + "sk-" + "s03p2testsecret1234567890",
                 "refresh_token = " + "rt_" + "abcdef1234567890abcdef",
                 "private_key = "
