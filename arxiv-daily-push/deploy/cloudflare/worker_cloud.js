@@ -571,24 +571,66 @@ footer.receipt{max-width:760px;margin:0 auto;padding:14px 18px 48px;color:var(--
 .deep-btn{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:8px 16px;border-radius:var(--pill);border:1px solid var(--ac);background:var(--ac);color:var(--bg);font-size:14px;font-weight:600;margin:6px 6px 2px 0;text-decoration:none}
 .deep-btn.ghost{background:transparent;color:var(--ac)}
 .deep-btn:hover{opacity:.9}
+/* ── 每主题氛围动效层（从 base.html 六主题设计语言移植；纯 CSS/SVG，无外部依赖，CSP 安全） ── */
+main{position:relative;z-index:1}
+nav.nav-side{z-index:20}
+footer.receipt{position:relative;z-index:1}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:0;display:none;overflow:hidden}
+:root[data-fx="cosmos"] .fx-cosmos{display:block}
+:root[data-fx="techno"] .fx-techno{display:block}
+:root[data-fx="minimal"] .fx-minimal{display:block}
+/* 宇宙星河：银河四层（漂移光带 + 星云 + 双层星点 + 流星） */
+.fx-cosmos .band{position:absolute;left:-20%;top:10%;width:150%;height:34%;background:linear-gradient(100deg,rgba(137,170,204,.16),rgba(78,133,191,.10),rgba(160,140,255,.08));filter:blur(26px);transform:rotate(-14deg);animation:banddrift 90s linear infinite alternate}
+@keyframes banddrift{to{transform:rotate(-14deg) translateX(6%)}}
+.fx-cosmos .neb{position:absolute;width:44vw;height:44vw;border-radius:50%;filter:blur(70px);opacity:.32}
+.fx-cosmos .neb.blue{background:#4E85BF;top:-12vw;right:-10vw}
+.fx-cosmos .neb.violet{background:#7a5cc9;bottom:-16vw;left:-12vw}
+.fx-cosmos .neb.teal{background:#2d7f8e;top:38%;left:52%;width:26vw;height:26vw;opacity:.22}
+.fx-cosmos .stars{position:absolute;inset:0;background-repeat:repeat;background-image:radial-gradient(1px 1px at 12px 44px,rgba(255,255,255,.9) 50%,transparent 51%),radial-gradient(1px 1px at 78px 12px,rgba(200,220,255,.7) 50%,transparent 51%),radial-gradient(1.5px 1.5px at 133px 89px,rgba(255,255,255,.8) 50%,transparent 51%),radial-gradient(1px 1px at 190px 160px,rgba(180,205,255,.6) 50%,transparent 51%);background-size:210px 210px}
+.fx-cosmos .stars.near{background-size:340px 340px;animation:twinkle 4.4s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.45}}
+.fx-cosmos .meteor{position:absolute;top:12%;left:-8%;width:130px;height:1.5px;background:linear-gradient(90deg,rgba(255,255,255,.9),transparent);transform:rotate(16deg);opacity:0;animation:meteor 11s linear infinite}
+@keyframes meteor{0%,92%{opacity:0;left:-8%;top:12%}93%{opacity:1}100%{opacity:0;left:96%;top:52%}}
+/* 简约专注：海面顶光 + 海底暗角 */
+.fx-minimal .toplight{position:absolute;left:50%;top:-30vh;width:120vw;height:70vh;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(163,214,235,.20),transparent 65%)}
+.fx-minimal .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,10,18,.55),transparent 60%)}
+/* 炫技：白色流体云漂移 */
+.fx-techno .cloud{position:absolute;width:56vw;height:24vw;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.65),transparent 72%);filter:blur(28px);animation:clouddrift 22s ease-in-out infinite alternate}
+.fx-techno .cloud.c2{top:44%;left:48%;width:44vw;animation-duration:17s;opacity:.7}
+.fx-techno .cloud.c3{top:70%;left:-8%;width:52vw;animation-duration:26s;opacity:.5}
+@keyframes clouddrift{to{transform:translateX(9vw)}}
+/* 森林河流：水带 + 坡地 */
+:root[data-theme="forest"] .waterband{height:6px;border-radius:999px;margin:2px 0 12px;background:linear-gradient(90deg,#2e7d5b,#3c7ea0);opacity:.85}
+.forest-slopes{display:none;position:fixed;bottom:0;left:0;right:0;height:120px;pointer-events:none;z-index:0}
+:root[data-theme="forest"] .forest-slopes{display:block}
+.forest-slopes svg{width:100%;height:100%;display:block}
+/* 卡片入场：淡入上移 */
+.card{animation:frise .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes frise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 `;
 const navActive = (h, page) => h === '/' ? page === '/' : page.startsWith(h);
 const navLinks = (cls, page) => `<nav class="${cls}" aria-label="主导航">${NAV.map(([h, t]) => `<a href="${h}"${navActive(h, page) ? ' class="active" aria-current="page"' : ''}>${t}</a>`).join('')}</nav>`;
 // 主题-导航映射 + 安全读写（storage 被禁时不抛）；HEAD_INIT 在首绘前定主题防闪烁
 const THEME_NAV = { warm: 'sidebar', minimal: 'topbar', fresh: 'topbar', techno: 'dock', cosmos: 'dock', forest: 'sidebar' };
+// 每主题氛围动效层开关（cosmos 银河 / techno 流云 / minimal 海面光；forest 坡地由 data-theme 驱动）
+const THEME_FX = { warm: 'none', minimal: 'minimal', fresh: 'none', techno: 'techno', cosmos: 'cosmos', forest: 'none' };
 // 首绘前在 <html> 上定 data-theme + data-nav，颜色与导航结构都无闪烁（storage 被禁时安全回退）
-const HEAD_INIT = `<script>(function(){try{var m=${JSON.stringify(THEME_NAV)};var s=localStorage.getItem('adp-theme');if(!Object.prototype.hasOwnProperty.call(m,s))s='warm';
-var r=document.documentElement;r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]);}catch(e){}})();</script>`;
+const HEAD_INIT = `<script>(function(){try{var m=${JSON.stringify(THEME_NAV)},fx=${JSON.stringify(THEME_FX)};var s=localStorage.getItem('adp-theme');if(!Object.prototype.hasOwnProperty.call(m,s))s='warm';
+var r=document.documentElement;r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]);r.setAttribute('data-fx',fx[s]||'none');}catch(e){}})();</script>`;
 const THEME_JS = `
 var THEMES=${JSON.stringify(THEME_NAV)};
+var THEMEFX=${JSON.stringify(THEME_FX)};
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function isTheme(n){return Object.prototype.hasOwnProperty.call(THEMES,n);}
-function applyTheme(n){if(!isTheme(n))n='warm';var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]);lsSet('adp-theme',n);
+function applyTheme(n){if(!isTheme(n))n='warm';var r=document.documentElement;r.setAttribute('data-theme',n);r.setAttribute('data-nav',THEMES[n]);r.setAttribute('data-fx',THEMEFX[n]||'none');lsSet('adp-theme',n);
 var m=document.querySelector('meta[name=theme-color]');if(m){m.content=getComputedStyle(r).getPropertyValue('--bg').trim();}}
 (function(){var s=lsGet('adp-theme');if(!isTheme(s))s='warm';var sel=document.getElementById('theme');if(sel){sel.value=s;sel.onchange=function(){applyTheme(sel.value);};}applyTheme(s);})();
 `;
-const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar"><head><meta charset="utf-8">
+// 氛围动效层（固定背景，aria-hidden，纯 CSS/SVG 驱动；仅当前主题对应层显示）
+const FX_LAYERS = `<div class="fx fx-cosmos" aria-hidden="true"><div class="band"></div><div class="neb blue"></div><div class="neb violet"></div><div class="neb teal"></div><div class="stars"></div><div class="stars near"></div><div class="meteor"></div></div><div class="fx fx-minimal" aria-hidden="true"><div class="toplight"></div><div class="vignette"></div></div><div class="fx fx-techno" aria-hidden="true"><div class="cloud" style="top:6%;left:-10%"></div><div class="cloud c2"></div><div class="cloud c3"></div></div><div class="forest-slopes" aria-hidden="true"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,120 L0,70 Q360,10 720,64 T1440,52 L1440,120 Z" fill="#2e7d5b" opacity="0.16"/><path d="M0,120 L0,96 Q480,44 900,92 T1440,84 L1440,120 Z" fill="#3c7ea0" opacity="0.14"/></svg></div>`;
+const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar" data-fx="none"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${opts.title ? esc(opts.title) + ' · ' : ''}ADP 前沿学习</title>
 <meta name="description" content="${esc(META_DESC)}">
@@ -597,6 +639,7 @@ const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-
 <link rel="icon" href="${FAVICON}">
 <style>${CSS}</style>${HEAD_INIT}</head>
 <body>
+${FX_LAYERS}
 ${navLinks('nav-side', page)}
 <header class="top"><b><a href="/" style="color:inherit">ADP 前沿学习</a></b>${navLinks('nav-top', page)}
 <form action="/search" method="get" class="searchbox" role="search"><input name="q" placeholder="搜索条目…" aria-label="搜索" value="${esc(opts.q || '')}"></form>

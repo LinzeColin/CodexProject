@@ -65,3 +65,4 @@
 | 2026-07-15 | ChatGPT | 今天/条目/复习/搜索页加「让 ChatGPT 全网深度追问」按钮：带标题/作者/类目/原文/摘要跳转 chatgpt.com/?q=，提示词要求联网深搜+深度思考+surprise+详细专业全面讲解；实测四处上线、解码正确 | 绿（云端实测） |
 | 2026-07-15 | 本地清理 | 删除退役隧道/镜像本机残留：卸载 com.linze.adp.web/tunnel 两 LaunchAgent+删 plist/令牌/cloudflared 二进制(38MB)/死日志，仓库模板保留可逆；删后站点仍全路由 200 | 绿（实测） |
 | 2026-07-15 | 主题修复 | 六主题切换器读 localStorage 未校验→旧版/无效值或原型键(constructor/__proto__)让切换框变空、配色卡默认（Owner：6主题没了）；改用 hasOwnProperty 校验+回退 warm+自愈；实测 aurora/constructor 自愈、森林河流跨页保持 | 绿（云端实测） |
+| 2026-07-15 | 动效恢复 | Stage 2 只搬颜色丢了 base.html 每主题动效层（Owner：只换色、动效全没了）；纯 CSS/SVG 忠实补回银河/流云/海面光/坡地+卡片入场+reduced-motion，data-fx 驱动，外部视频不移；逐主题桌面+手机实测 | 绿（云端实测） |

@@ -4,8 +4,8 @@
 
 - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:2765d11775c70fd3099f35e8b71740246619fc377f633ca2f90ca15ea814e331`
-- snapshot_event_time: `2026-07-15T17:30:00+10:00`
+- source_snapshot_hash: `sha256:bddaf0e4206cfae0d91300174ff3df5da221ff8096f71ac8d216d3bb98c5a39f`
+- snapshot_event_time: `2026-07-15T18:20:00+10:00`
 - generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -13,8 +13,8 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.23.1`
-- Phase/Gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+- Product version: `UNKNOWN`
+- Phase/Gate: `UNKNOWN / UNKNOWN`
 - Models/Formulas/Parameters total: `122 / 124 / 1124`
 - Active formulas/parameters: `124 / 1107`
 - Machine checked formulas/parameters: `123 / 1107`
@@ -34,23 +34,10 @@
 
 ## Delivery
 
-- Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`
-- Release gate: `V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
-- V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
-- V7 contract hash: `e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74`
-- V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
-- V7.1 parallel audit: `ADP-V7.2-FINAL-BASELINE-REVIEW`
-- V7.1 audit hash: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
-- Open audit blockers: `P0=8 / P1=37`
-- Current zero-proof open findings: `P0=0 / P1=0`
-- Baseline counts mutated: `false`
-- Production-forbidden until: `DAILY_OPERATION separately authorized after accepted evidence; daily operation safety preflight passes; persistent operation boundary explicitly approved`
-- Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
-- Stage 2 integrated accepted: `true`
-- Next governance task: `S2PMT07`
-- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
-- Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
-- Pending/stale events: `404`
+- Readiness: `VERIFIED`
+- Release gate: `UNKNOWN`
+- Next executable task: `NONE`
+- Pending/stale events: `405`
 - Tree-bound events: `17`
 - Commit-bound events: `13`
 - Legacy unbound events: `334`
