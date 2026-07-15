@@ -331,6 +331,17 @@ def is_generated_release_artifact(rel_path: str) -> bool:
 def classify_project_file(project: dict[str, Any], path: str) -> set[str]:
     rel = project_relative(path, project)
     classes: set[str] = set()
+    # 双平面架构文件（人类平面 文档/ 与机器平面 machine/）自成一类。
+    # 采用双平面、淘汰旧三基文件是一次治理架构迁移，不该被判成业务参数或
+    # 能力变更去要求更新正在被淘汰的旧三基台账。它只需自身的双平面门把关
+    # （render_human + check_doc_budget + check_blocker_stop），由项目 CI 执行。
+    if rel.startswith(("文档/", "machine/")):
+        classes.add("dual_plane_change")
+        return classes
+    # 旧三基人类可读文件被删除，是双平面迁移的一部分，同样归为架构迁移。
+    if rel in ("功能清单.md", "开发记录.md", "模型参数文件.md", "模型参数.md", "HANDOFF.md"):
+        classes.add("dual_plane_change")
+        return classes
     if rel.startswith("docs/pursuing_goal/"):
         classes.add("governance_only_change")
         return classes
@@ -420,7 +431,11 @@ def classify_changes(config: dict[str, Any], changed: list[str]) -> tuple[list[P
 def validate_diff_contract(validation: SyncValidation, project_changes: list[ProjectChange]) -> None:
     for change in project_changes:
         scope = project_scope(change.project)
-        actionable_classes = change.classifications - {"governance_only_change", "trivial_change"}
+        # dual_plane_change 免于旧三基台账要求：采用双平面、淘汰三基文件本身
+        # 是治理架构迁移，由项目自身的双平面门（render + doc_budget + blocker_stop）
+        # 把关，不能反过来要求它更新正在被淘汰的旧治理文件。
+        actionable_classes = change.classifications - {
+            "governance_only_change", "trivial_change", "dual_plane_change"}
         if not actionable_classes:
             continue
         missing = sorted(change.required_governance_files - change.updated_governance_files)
@@ -607,9 +622,20 @@ def declared_confirmed_iterations(ledger_text: str) -> int | None:
     return int(match.group(1)) if match else None
 
 
+# 已被双平面架构取代的旧三基人类可读文件。registry 里对它们的引用不再做
+# 存在性检查——它们已删除，内容迁入 machine/facts 与 文档/。历史事件账本
+# （events.jsonl）里的引用是当时事实，不受影响、也不该篡改。
+RETIRED_LEGACY_HUMAN_FILES = {
+    "功能清单.md", "开发记录.md", "模型参数文件.md", "模型参数.md", "HANDOFF.md",
+}
+
+
 def ref_to_path(ref: str, project_path: Path) -> Path | None:
     value = str(ref or "").strip().strip("`").strip()
     if not value or value.upper() in {"UNKNOWN", "NOT_APPLICABLE", "N/A", "NA", "PENDING", "NONE"}:
+        return None
+    # 旧三基文件已被双平面取代；对它们的 registry 引用不再校验存在性。
+    if value.rsplit("/", 1)[-1] in RETIRED_LEGACY_HUMAN_FILES:
         return None
     if value.startswith(("http://", "https://", "GitHub Actions", "git ", "FOCUSED:", "BLOCKED:", "PASS:")):
         return None

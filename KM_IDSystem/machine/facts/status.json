@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "stage": "IDS-STAGE040",
+  "phase": "IDS-V0_1-BATCH-031-040-MAIN-MERGED",
+  "task": "IDS-V0_1-BATCH-031-040-MAIN-MERGED",
+  "real_progress": "98.14%（这是走完了多少道结构关卡；离真正做完还差多少，要对着真实数据核一遍才知道）",
+  "report_grade": "",
+  "business_verdict": "",
+  "evidence_status": "EXTRACTED",
+  "rendered_at": "2026-07-15",
+  "migrated_from_legacy": "功能清单.md"
+}

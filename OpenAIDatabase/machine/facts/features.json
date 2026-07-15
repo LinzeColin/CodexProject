@@ -1,0 +1,56 @@
+[
+  {
+    "id": "FEAT-OAIDB-001",
+    "name": "记忆候选分类、脱敏与主动记忆",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OAIDB-002",
+    "name": "Memory Atlas 权重、ROI 与活动评分",
+    "status": "blocked",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OAIDB-003",
+    "name": "Codex 本地行为同步与数据源注册",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OAIDB-004",
+    "name": "Writeback proposal 版本链",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OAIDB-005",
+    "name": "Personalization export 与资源路由",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-MACDATA-PROM2-001",
+    "name": "proM2 每日 MacData 归档",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-MACDATA-PROM2-002",
+    "name": "上传后受控开发环境清理",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OAIDB-CF-L2-001",
+    "name": "Cloudflare 安全 L2 MemoryAtlas 派生数据查看器",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OAIDB-RUN0A-001",
+    "name": "OpenAIDatabase canonical human-view 收敛",
+    "status": "active",
+    "evidence": "extracted"
+  }
+]

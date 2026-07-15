@@ -1,0 +1,12 @@
+{
+  "version": "0.23.1",
+  "stage": "S2",
+  "phase": "S2PM",
+  "task": "S2PMT07",
+  "real_progress": "80.95%（这是走完了多少道结构关卡；离真正做完还差多少，要对着真实数据核一遍才知道）",
+  "report_grade": "",
+  "business_verdict": "",
+  "evidence_status": "EXTRACTED",
+  "rendered_at": "2026-07-15",
+  "migrated_from_legacy": "功能清单.md"
+}

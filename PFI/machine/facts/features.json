@@ -1,0 +1,32 @@
+[
+  {
+    "id": "FEAT-PFI-001",
+    "name": "PFI V0.2 产品根",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-CF-L2-001",
+    "name": "Cloudflare 安全 L2 脱敏财务产品壳",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-V024-OVERALL",
+    "name": "v0.2.4 overall project",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-V024-REREVIEW",
+    "name": "v0.2.4 overall re",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-V024-FINAL-DELIVERY",
+    "name": "v0.2.4 final delivery",
+    "status": "active",
+    "evidence": "declared"
+  }
+]

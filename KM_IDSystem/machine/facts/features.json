@@ -1,0 +1,44 @@
+[
+  {
+    "id": "FEAT-OPME-001",
+    "name": "动态窑线风险规则建议",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OPME-002",
+    "name": "故障诊断风险规则建议",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OPME-003",
+    "name": "齿轮修复风险规则建议",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OPME-004",
+    "name": "机加工交付风险规则建议",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OPME-005",
+    "name": "通用咨询、风险等级映射与 LLM 离线回退",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-OPME-006",
+    "name": "隔离重试与死信控制策略",
+    "status": "planned",
+    "evidence": "declared"
+  },
+  {
+    "id": "FEAT-OPME-007",
+    "name": "隔离反压准入与暂停策略",
+    "status": "planned",
+    "evidence": "declared"
+  }
+]

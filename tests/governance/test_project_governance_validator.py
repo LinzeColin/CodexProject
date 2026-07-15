@@ -1944,6 +1944,24 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("data_snapshot_change", changes[0].classifications)
         self.assertNotIn("parameter_or_config_change", changes[0].classifications)
 
+    def test_dual_plane_files_are_migration_not_capability_change(self) -> None:
+        # 采用双平面（文档/ + machine/）是治理架构迁移，不该被判成业务参数或
+        # 能力变更去要求更新旧三基台账。它只归 dual_plane_change 一类。
+        sync = load_sync_module()
+        project = {"project_id": "PFI", "path": "PFI"}
+        for f in ["PFI/文档/00_我在哪.md", "PFI/machine/facts/features.json",
+                  "PFI/machine/tools/render_human.py", "PFI/功能清单.md"]:
+            cls = sync.classify_project_file(project, f)
+            self.assertEqual(cls, {"dual_plane_change"}, f)
+        # dual_plane_change 免于旧治理文件要求
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            ["PFI/machine/facts/features.json", "PFI/功能清单.md"],
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
     def test_config_dir_json_still_classified_as_config_change(self) -> None:
         # Guard the other direction: a real config/ json must still be a config change.
         sync = load_sync_module()
@@ -3449,25 +3467,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("PARAM-ADP-359", model_text)
         for text in (feature_text, dev_text, model_text):
             self.assertNotIn("docs/governance/", text.splitlines()[0])
-
-    def test_adp_markdown_human_files_can_extend_lean_render_with_chinese_summary(self) -> None:
-        cli = load_lean_governance_module()
-        arxiv_root = ROOT / "arxiv-daily-push"
-
-        for filename, title in (
-            ("功能清单.md", "# 功能清单"),
-            ("开发记录.md", "# 开发记录"),
-            ("模型参数文件.md", "# 模型参数文件"),
-        ):
-            text = (arxiv_root / filename).read_text(encoding="utf-8")
-            self.assertTrue(text.startswith(title), filename)
-            self.assertIn("## 中文速读", text, filename)
-            self.assertIn("## 摘要", text, filename)
-
-        result = cli.check_render_project_files(arxiv_root)
-
-        self.assertEqual(result["drift_count"], 0, result["drift"])
-        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
     def test_review9_s5pbt05_files_are_project_governance_only(self) -> None:
         sync = load_sync_module()

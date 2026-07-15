@@ -1,0 +1,62 @@
+[
+  {
+    "id": "FEAT-ADP-001",
+    "name": "全 arXiv 扫描与来源输入",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-002",
+    "name": "候选队列、ROI/学习价值排序与内容账本",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-003",
+    "name": "中文讲解邮件与教学型前台",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-004",
+    "name": "本机 Codex/local runner 运行与迁移准备",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-005",
+    "name": "生产 fail-closed 与副作用边界",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-006",
+    "name": "Stage 1 严格验收与 Gmail SMTP test10",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-007",
+    "name": "Stage 2 bioRxiv/medRxiv shadow source evidence",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-008",
+    "name": "Stage 2 Nature/top-journal shadow source evidence",
+    "status": "completed",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-ADP-009",
+    "name": "Lean v2 owner-readable governance",
+    "status": "proposed",
+    "evidence": "declared"
+  },
+  {
+    "id": "FEAT-ADP-010",
+    "name": "S2PMT07 final bundle、Stage 2 integrated acceptance 与 S3 授权门",
+    "status": "blocked_persistent_daily_operation_authorization_missing",
+    "evidence": "extracted"
+  }
+]

@@ -651,8 +651,18 @@ def validate_arxiv_daily_push_v7_root_lock(
         if needle not in text:
             validation.add(required, scope, f"{label} missing V7 reference: {needle}")
 
+    # 旧三基文件已被双平面架构取代。项目一旦采用双平面（存在 文档/ 与 machine/），
+    # V7 契约锁不再校验这些已删除的旧文件——锁语义随内容迁入机器平面。
+    # 仅当旧文件仍存在（尚未迁移）时才检查。
+    dual_plane_adopted = (project_path / "文档").is_dir() and (project_path / "machine").is_dir()
     for rel_path in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
-        text = (project_path / rel_path).read_text(encoding="utf-8") if (project_path / rel_path).exists() else ""
+        lp = project_path / rel_path
+        if not lp.exists():
+            if dual_plane_adopted:
+                continue
+            text = ""
+        else:
+            text = lp.read_text(encoding="utf-8")
         for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PCT01", "S2P2T01", "S2PBT01"):
             if needle not in text:
                 validation.add(required, scope, f"{rel_path} missing V7 lock reference: {needle}")
@@ -815,13 +825,18 @@ def validate_arxiv_daily_push_v7_root_lock(
         if "ACC-S2PAT06-V7-2-CURRENT" not in acceptance_ids:
             validation.add(required, scope, "S2PAT06 missing ACC-S2PAT06-V7-2-CURRENT")
 
-    current_tokens = (
+    current_tokens = [
         ("docs/pursuing_goal/CURRENT.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
-        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "功能清单.md").read_text(encoding="utf-8"), "功能清单.md"),
-        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "开发记录.md").read_text(encoding="utf-8"), "开发记录.md"),
-        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "模型参数文件.md").read_text(encoding="utf-8"), "模型参数文件.md"),
-    )
+    ]
+    # 旧三基文件（功能清单/开发记录/模型参数文件）已被双平面架构取代。
+    # 项目一旦采用双平面（存在 文档/ 与 machine/），内容锁改由机器平面承载，
+    # 不再在这些已删除的旧文件上校验。仅当旧文件仍存在（尚未迁移）时才检查。
+    for legacy in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
+        lp = project_path / legacy
+        if lp.is_file():
+            current_tokens.append(
+                ("ADP-PRODUCT-CONTRACT-V7.2", lp.read_text(encoding="utf-8"), legacy))
     for needle, text, label in current_tokens:
         if needle not in text:
             validation.add(required, scope, f"{label} missing V7.2 current reference: {needle}")

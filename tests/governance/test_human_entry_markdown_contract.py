@@ -31,6 +31,16 @@ class HumanEntryMarkdownContractTests(unittest.TestCase):
             project_root = ROOT / project_path
             with self.subTest(project=project_path):
                 self.assertTrue(project_root.is_dir(), project_path)
+                # 采用双平面（存在 文档/ 与 machine/）的项目，人类可读入口是
+                # 文档/ 下的七文件；旧三基文件已淘汰、不再要求。
+                if (project_root / "文档").is_dir() and (project_root / "machine").is_dir():
+                    for name in ("00_我在哪.md", "01_产品需求.md", "02_系统架构.md",
+                                 "03_口径字典.md", "04_操作流程.md",
+                                 "05_执行与验收.md", "06_运维手册.md"):
+                        self.assertTrue((project_root / "文档" / name).is_file(),
+                                        f"{project_path}/文档/{name}")
+                    continue
+                # 未迁移的项目仍走旧三基契约。
                 for stem in HUMAN_ENTRY_STEMS:
                     self.assertFalse((project_root / stem).exists(), f"{project_path}/{stem}")
                     self.assertTrue((project_root / f"{stem}.md").is_file(), f"{project_path}/{stem}.md")
