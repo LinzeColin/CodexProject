@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!-- ADP 完整系统常驻网页（127.0.0.1:8787）——Tunnel 直连的本机源站。
+     安装：cp 到 ~/Library/LaunchAgents/ 后 launchctl bootstrap gui/$UID <plist> -->
+<dict>
+  <key>Label</key><string>com.linze.adp.web</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/var/venv/bin/python</string>
+    <string>-m</string>
+    <string>adp</string>
+    <string>web</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PYTHONPATH</key>
+    <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/src</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key>
+  <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/var/log/adp-web.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/var/log/adp-web.log</string>
+</dict>
+</plist>

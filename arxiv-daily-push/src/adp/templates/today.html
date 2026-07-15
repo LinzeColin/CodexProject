@@ -222,8 +222,10 @@ function stopHold() { clearInterval(holdTimer); if (held < 800) { held = 0; bar.
 cover.addEventListener('mousedown', startHold); cover.addEventListener('touchstart', startHold, {passive:false});
 ['mouseup','mouseleave','touchend'].forEach(ev => cover.addEventListener(ev, stopHold));
 async function grade(g) {
-  const r = await post(`/api/recall/${LESSON}/grade/${g}`);
   const el = document.getElementById('gradeReceipt');
+  let r;
+  try { r = await post(`/api/recall/${LESSON}/grade/${g}`); }
+  catch (e) { el.textContent = e.message; return; }
   if (r.duplicate) { el.textContent = `今天已用同一防重号评过分（事件 #${r.event_id}），未重复记录（不变量 6）。`; }
   else { el.textContent = `已记录「${r.grade_label}」→ 下次复习 ${r.due_at}（事件 #${r.event_id}，证据态：${r.evidence_state}）`; }
   document.querySelectorAll('#gradeRow button').forEach(b => b.classList.toggle('picked', b.dataset.grade == g));

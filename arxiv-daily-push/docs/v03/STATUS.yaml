@@ -118,18 +118,21 @@ stages:
       - docs/v03/R5_启用提案_bioRxiv.md
       - src/adp/shadow_biorxiv.py
   R6:
-    gate: phone_access_via_cloudflare_mirror
-    status: completed_live
+    gate: phone_access_full_system_via_tunnel_with_mirror_fallback
+    status: live_pending_owner_dns_confirmation
     completed_at: "2026-07-15"
     owner_visible: >
-      手机直接打开 https://adp.linzezhang.com（Owner 07-15 指令取消钥匙登录——
-      页面公开可读，代价与 Access 私有化方案披露于 deploy/cloudflare/README.md）；
-      云端页=只读镜像+四档回忆评分回传队列（每讲义每日 1 条防重上限）；
-      一次云端评分→回传本机→FSRS 排程全链路已实测（同悉尼日与本机评分互斥防重）；
-      断网/云端故障本机闭环无感（run 内 push/pull 只降级）；Worker cron 每日刷新到期提醒计数。
+      手机直接打开 https://adp.linzezhang.com（无钥匙；公开可读代价与 Access 私有化方案
+      披露于 deploy/cloudflare/README.md）。Owner 07-15 指令「全部迁移到云端、手机打开
+      一模一样的完整系统」已落地：Worker 反代 Cloudflare Tunnel（隧道 adp/3bc9d50e，
+      connector+本机网页由 LaunchAgents 常驻）直达本机 127.0.0.1:8787 完整六主题系统，
+      评分即时过 FSRS；本机睡眠/隧道断开自动回落只读镜像+回传队列（已实测）。
+      无登录入口的写操作分级：隧道来访只放行浏览+主动回忆评分，Owner 决策类 POST
+      （上板/试点决策/状态编辑/纠错/撤销/迁移）远程一律 403 仅限本机（remote_guard+保护测试）。
+      待办一步：DNS 回源记录 adp-origin.linzezhang.com 待你在对话里点名确认后直连生效。
       降级披露：R2 周快照待你在仪表盘启用 R2（30 秒），当前落本地 30 份滚动；
       访问控制历史：钥匙方案已按 Owner 指令移除（git 历史 a0a79743 可恢复）。
     evidence:
-      - deploy/cloudflare/ (worker.js · wrangler.jsonc · schema.sql · README.md)
-      - src/adp/mirror.py
+      - deploy/cloudflare/ (worker.js · wrangler.jsonc · schema.sql · README.md · launchd/)
+      - src/adp/mirror.py · src/adp/webapp.py(remote_guard)
       - config_changes 回执与 D1 events_inbox

@@ -53,3 +53,4 @@
 | 2026-07-15 | R6 | Cloudflare 混合部署真实上线：home.linzezhang.com Worker+D1 镜像+回传队列+cron，401 拦截与云评分回传实测；R2 快照降级待 Owner 开通 | 绿（已上线） |
 | 2026-07-15 | R6 | 按 Owner 指令取消云端钥匙登录：home.linzezhang.com 直开（公开可读代价+Access 选项披露于 R6 README；回执入 config_changes） | 绿（已实测 200） |
 | 2026-07-15 | R6 | 纠正域名占用：home.linzezhang.com 归还主页（解绑实测无解析），ADP 迁至 adp.linzezhang.com（实测 200）；README 说明镜像定位与完整系统直连（Tunnel）升级路径 | 绿 |
+| 2026-07-15 | R6 | 完整系统上云直连（Owner 指令）：Worker 反代 Tunnel(adp/3bc9d50e)→本机8787 六主题系统，失败自动回落镜像（已实测：兜底路 200、隧道注册、常驻守卫 403；直连路待 DNS 确认后实测）；评分端点与镜像回传均拒绝编造讲义 ID；前端如实呈现 403/503；LaunchAgents 常驻 web+connector | 绿（待 DNS 确认） |

@@ -113,9 +113,15 @@ def pull(conn: sqlite3.Connection) -> dict[str, Any]:
     thresholds = config.load_thresholds()
     applied: list[int] = []
     skipped: list[int] = []
+    unknown: list[int] = []
     from datetime import datetime, timezone
 
     for row in rows:
+        # 复审修复：入口公开，inbox 里可能有编造的讲义 ID——不存在的条目
+        # 不进 FSRS（防垃圾 review_state），但仍标记 applied 防止永久重放。
+        if conn.execute("SELECT 1 FROM lessons WHERE id=?", (row["lesson_id"],)).fetchone() is None:
+            unknown.append(int(row["id"]))
+            continue
         at = datetime.fromisoformat(str(row["created_at"]).replace("Z", "+00:00"))
         if at.tzinfo is None:
             at = at.replace(tzinfo=timezone.utc)
@@ -123,10 +129,10 @@ def pull(conn: sqlite3.Connection) -> dict[str, Any]:
         # 天然互斥，重复 pull 也安全（不变量 6）；来源可由 D1 inbox 行追溯。
         outcome = grade_recall(conn, row["lesson_id"], int(row["grade"]), thresholds, at=at)
         (skipped if outcome.get("duplicate") else applied).append(int(row["id"]))
-    for inbox_id in applied + skipped:
+    for inbox_id in applied + skipped + unknown:
         _wrangler(["d1", "execute", "adp-mirror", "--remote", "--yes",
                    "--command", f"UPDATE events_inbox SET applied=1 WHERE id={int(inbox_id)}"])
-    return {"ok": True, "applied": applied, "duplicates": skipped}
+    return {"ok": True, "applied": applied, "duplicates": skipped, "unknown": unknown}
 
 
 def snapshot(conn: sqlite3.Connection) -> dict[str, Any]:

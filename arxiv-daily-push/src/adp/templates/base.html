@@ -481,7 +481,27 @@ themeSel.onchange = () => applyTheme(themeSel.value);
 async function post(url, body) {
   const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'},
     body: body ? JSON.stringify(body) : null});
-  return res.json();
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    // 复审修复：403（远程守卫）/503（隧道兜底）等错误必须如实呈现，
+    // 不能让调用方把错误体当成功回执渲染出 undefined。
+    const msg = j.error || j.detail || `请求失败（HTTP ${res.status}）`;
+    toast(msg);
+    throw new Error(msg);
+  }
+  return j;
+}
+function toast(msg) {
+  let t = document.getElementById('adpToast');
+  if (!t) {
+    t = document.createElement('div'); t.id = 'adpToast';
+    t.style.cssText = 'position:fixed;left:50%;bottom:28px;transform:translateX(-50%);'
+      + 'background:rgba(20,20,24,.92);color:#fff;padding:10px 18px;border-radius:10px;'
+      + 'font-size:14px;max-width:86vw;z-index:9999;transition:opacity .3s;pointer-events:none';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; }, 4000);
 }
 async function resolveCorrection(id) { await post(`/api/corrections/${id}/resolve`); location.reload(); }
 </script>
