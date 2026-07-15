@@ -1,15 +1,17 @@
 # 板块注册表（V0.3）——五板块与各自数据源的唯一真相。
-# Owner 指令（2026-07-15）：板块二～五上线；每板块的数据源（名称/平台/网站/订阅方式/
-# 官方性/节奏）在雷达页逐板块透明展示。新来源 = 此处一行配置（02_系统架构/功能清单.md）。
+# Owner 指令（2026-07-15）：板块二～五上线并**扩展数据源**；每板块的数据源
+# （名称/平台/网站/订阅方式/官方性/节奏）在雷达页逐板块透明展示。
+# 新来源 = 此处一行配置（02_系统架构/功能清单.md）。所有 feed_url 均经真实探测可用
+# （2026-07-15）；不可用的（限流/无 RSS）如实标注并由健康纳管自动停用。
 # 边界：板块二～四为「雷达浏览流」——真实抓取、雷达可见、来源健康纳管（连续 3 次
-# 失败自动停用），但**不进入每日精选候选池**（池整合与多样性上限 10→17 是任务包
-# 明文的另一个独立提案，须走 提案→回放→应用→回执）。板块五为跨板块聚合视图。
-registry_ver: boards-v03-1
+# 失败自动停用并跳过），但**不进入每日精选候选池**（池整合与多样性上限 10→17 是
+# 任务包明文的独立提案，须走 提案→回放→应用→回执）。板块五为跨板块聚合视图。
+registry_ver: boards-v03-2
 boards:
   - id: board1
     name: 板块一 · 研究前沿
     status: live_selection   # 每日精选闭环所在板块
-    note: arXiv 每日一篇精选闭环；bioRxiv 影子源已积累真实报表，上板按钮在雷达页（Owner 专属）。
+    note: arXiv 每日一篇精选闭环（+bioRxiv 影子）；另附多条预印本浏览流（不入精选池，仅雷达浏览）。
     sources:
       - id: arxiv-cs
         name: arXiv（cs.AI / cs.LG / stat.ML）
@@ -26,79 +28,88 @@ boards:
         method: api
         official: true
         cadence: 每日（影子零入库，上板后参选）
+      - id: arxiv-cscl
+        name: arXiv cs.CL（计算语言学 / NLP）
+        platform: arXiv.org 官方 RSS
+        website: https://arxiv.org/list/cs.CL/recent
+        feed_url: http://export.arxiv.org/rss/cs.CL
+        method: rss
+        official: true
+        cadence: 每日
+      - id: arxiv-cscv
+        name: arXiv cs.CV（计算机视觉）
+        platform: arXiv.org 官方 RSS
+        website: https://arxiv.org/list/cs.CV/recent
+        feed_url: http://export.arxiv.org/rss/cs.CV
+        method: rss
+        official: true
+        cadence: 每日
+      - id: medrxiv
+        name: medRxiv 医学预印本
+        platform: medRxiv 官方 API
+        website: https://www.medrxiv.org
+        feed_url: https://connect.medrxiv.org/medrxiv_xml.php?subject=all
+        method: rss
+        official: true
+        cadence: 每日
   - id: board2
     name: 板块二 · 顶级期刊
     status: live_feed
-    note: 官方 RSS 直连（无中间聚合层）。
+    note: Nature / Science / Cell 及其子刊、PNAS、Lancet、NEJM、JAMA、BMJ、PLOS、eLife、IEEE Spectrum——全部官方 RSS 直连。
     sources:
-      - id: nature-current
-        name: Nature 本刊最新
-        platform: nature.com 官方 RSS
-        website: https://www.nature.com
-        feed_url: https://www.nature.com/nature.rss
-        method: rss
-        official: true
-        cadence: 每日
-      - id: science-news
-        name: Science 新闻与研究动态
-        platform: science.org 官方 RSS
-        website: https://www.science.org
-        feed_url: https://www.science.org/rss/news_current.xml
-        method: rss
-        official: true
-        cadence: 每日
-      - id: cell-current
-        name: Cell 本刊最新
-        platform: cell.com 官方 RSS
-        website: https://www.cell.com
-        feed_url: https://www.cell.com/cell/current.rss
-        method: rss
-        official: true
-        cadence: 每日
+      - {id: nature, name: Nature 本刊, platform: nature.com 官方 RSS, website: https://www.nature.com, feed_url: https://www.nature.com/nature.rss, method: rss, official: true, cadence: 每日}
+      - {id: nature-medicine, name: Nature Medicine, platform: nature.com 官方 RSS, website: https://www.nature.com/nm, feed_url: https://www.nature.com/nm.rss, method: rss, official: true, cadence: 每日}
+      - {id: nature-biotech, name: Nature Biotechnology, platform: nature.com 官方 RSS, website: https://www.nature.com/nbt, feed_url: https://www.nature.com/nbt.rss, method: rss, official: true, cadence: 每日}
+      - {id: nature-machine-intel, name: Nature Machine Intelligence, platform: nature.com 官方 RSS, website: https://www.nature.com/natmachintell, feed_url: https://www.nature.com/natmachintell.rss, method: rss, official: true, cadence: 每日}
+      - {id: nature-comms, name: Nature Communications, platform: nature.com 官方 RSS, website: https://www.nature.com/ncomms, feed_url: https://www.nature.com/ncomms.rss, method: rss, official: true, cadence: 每日}
+      - {id: nature-neuro, name: Nature Neuroscience, platform: nature.com 官方 RSS, website: https://www.nature.com/neuro, feed_url: https://www.nature.com/neuro.rss, method: rss, official: true, cadence: 每日}
+      - {id: nature-methods, name: Nature Methods, platform: nature.com 官方 RSS, website: https://www.nature.com/nmeth, feed_url: https://www.nature.com/nmeth.rss, method: rss, official: true, cadence: 每日}
+      - {id: nature-ml, name: Nature · 机器学习主题, platform: nature.com 官方 RSS, website: https://www.nature.com/subjects/machine-learning, feed_url: https://www.nature.com/subjects/machine-learning.rss, method: rss, official: true, cadence: 每日}
+      - {id: science-current, name: Science 本刊, platform: science.org 官方 RSS, website: https://www.science.org, feed_url: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science", method: rss, official: true, cadence: 每周}
+      - {id: science-advances, name: Science Advances, platform: science.org 官方 RSS, website: https://www.science.org, feed_url: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv", method: rss, official: true, cadence: 每日}
+      - {id: science-news, name: Science 新闻与研究动态, platform: science.org 官方 RSS, website: https://www.science.org, feed_url: https://www.science.org/rss/news_current.xml, method: rss, official: true, cadence: 每日}
+      - {id: cell, name: Cell 本刊, platform: cell.com 官方 RSS, website: https://www.cell.com, feed_url: https://www.cell.com/cell/current.rss, method: rss, official: true, cadence: 每两周}
+      - {id: cell-neuron, name: Neuron, platform: cell.com 官方 RSS, website: https://www.cell.com, feed_url: https://www.cell.com/neuron/current.rss, method: rss, official: true, cadence: 每两周}
+      - {id: cell-immunity, name: Immunity, platform: cell.com 官方 RSS, website: https://www.cell.com, feed_url: https://www.cell.com/immunity/current.rss, method: rss, official: true, cadence: 每月}
+      - {id: cell-systems, name: Cell Systems, platform: cell.com 官方 RSS, website: https://www.cell.com, feed_url: https://www.cell.com/cell-systems/current.rss, method: rss, official: true, cadence: 每月}
+      - {id: pnas, name: PNAS 最新, platform: pnas.org 官方 RSS, website: https://www.pnas.org, feed_url: "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=pnas", method: rss, official: true, cadence: 每周}
+      - {id: lancet, name: The Lancet 本刊, platform: thelancet.com 官方 RSS, website: https://www.thelancet.com, feed_url: https://www.thelancet.com/rssfeed/lancet_current.xml, method: rss, official: true, cadence: 每周}
+      - {id: nejm, name: NEJM 本刊, platform: nejm.org 官方 RSS, website: https://www.nejm.org, feed_url: "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss", method: rss, official: true, cadence: 每周}
+      - {id: jama, name: JAMA 最新, platform: jamanetwork.com 官方 RSS, website: https://jamanetwork.com, feed_url: https://jamanetwork.com/rss/site_3/67.xml, method: rss, official: true, cadence: 每周}
+      - {id: bmj, name: The BMJ 最新, platform: bmj.com 官方 RSS, website: https://www.bmj.com, feed_url: https://www.bmj.com/rss/recent.xml, method: rss, official: true, cadence: 每日}
+      - {id: plos-biology, name: PLOS Biology, platform: journals.plos.org 官方 Atom, website: https://journals.plos.org/plosbiology, feed_url: https://journals.plos.org/plosbiology/feed/atom, method: rss, official: true, cadence: 每日}
+      - {id: plos-comp-biol, name: PLOS Computational Biology, platform: journals.plos.org 官方 Atom, website: https://journals.plos.org/ploscompbiol, feed_url: https://journals.plos.org/ploscompbiol/feed/atom, method: rss, official: true, cadence: 每日}
+      - {id: elife, name: eLife 最新, platform: elifesciences.org 官方 RSS, website: https://elifesciences.org, feed_url: https://elifesciences.org/rss/recent.xml, method: rss, official: true, cadence: 每日}
+      - {id: ieee-spectrum, name: IEEE Spectrum, platform: spectrum.ieee.org 官方 RSS, website: https://spectrum.ieee.org, feed_url: https://spectrum.ieee.org/feeds/feed.rss, method: rss, official: true, cadence: 每日}
   - id: board3
     name: 板块三 · 中国政策法规
     status: live_feed
-    note: gov.cn 无官方 RSS；主源为 Google News 聚合（官方媒体报道），RSSHub 直连路由保留配置（公共实例当前限流，自托管后自动恢复）。
+    note: gov.cn 等官方站无稳定公开 RSS；主力为 Google News 按部委/领域聚合官方媒体报道，RSSHub 直连路由保留（公共实例限流则自动停用）。
     sources:
-      - id: gnews-cn-policy
-        name: 政策要闻（国务院/工信部/发改委）
-        platform: Google News RSS（聚合官方媒体报道）
-        website: https://news.google.com
-        feed_url: "https://news.google.com/rss/search?q=%E5%9B%BD%E5%8A%A1%E9%99%A2%20OR%20%E5%B7%A5%E4%BF%A1%E9%83%A8%20OR%20%E5%8F%91%E6%94%B9%E5%A7%94%20%E6%94%BF%E7%AD%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
-        method: rss
-        official: false
-        cadence: 每日
-      - id: rsshub-gov-zhengce
-        name: 国务院政策文件库·最新（RSSHub 路由）
-        platform: RSSHub 公共实例（rsshub.app）
-        website: https://www.gov.cn/zhengce/zuixin/
-        feed_url: https://rsshub.app/gov/zhengce/zuixin
-        method: rss
-        official: false
-        cadence: 每日（当前公共实例限流，健康页如实显示；自托管 RSSHub 后自动恢复）
+      - {id: gnews-cn-policy, name: 政策要闻（国务院/工信部/发改委）, platform: Google News RSS 聚合, website: https://news.google.com, feed_url: "https://news.google.com/rss/search?q=%E5%9B%BD%E5%8A%A1%E9%99%A2%20OR%20%E5%B7%A5%E4%BF%A1%E9%83%A8%20OR%20%E5%8F%91%E6%94%B9%E5%A7%94%20%E6%94%BF%E7%AD%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", method: rss, official: false, cadence: 每日}
+      - {id: gnews-cn-tech-policy, name: 科技政策（科技部/网信办）, platform: Google News RSS 聚合, website: https://news.google.com, feed_url: "https://news.google.com/rss/search?q=%E7%A7%91%E6%8A%80%E9%83%A8%20OR%20%E7%BD%91%E4%BF%A1%E5%8A%9E%20%E6%94%BF%E7%AD%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", method: rss, official: false, cadence: 每日}
+      - {id: gnews-cn-finance-reg, name: 金融监管（央行/证监会/金融监管总局）, platform: Google News RSS 聚合, website: https://news.google.com, feed_url: "https://news.google.com/rss/search?q=%E4%B8%AD%E5%9B%BD%E4%BA%BA%E6%B0%91%E9%93%B6%E8%A1%8C%20OR%20%E8%AF%81%E7%9B%91%E4%BC%9A%20OR%20%E9%87%91%E8%9E%8D%E7%9B%91%E7%AE%A1&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", method: rss, official: false, cadence: 每日}
+      - {id: gnews-cn-ai-reg, name: 人工智能治理与法规, platform: Google News RSS 聚合, website: https://news.google.com, feed_url: "https://news.google.com/rss/search?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%20%E7%9B%91%E7%AE%A1%20OR%20%E6%B3%95%E8%A7%84%20OR%20%E5%8A%9E%E6%B3%95&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", method: rss, official: false, cadence: 每日}
+      - {id: gnews-cn-nmpa, name: 药监与医疗器械（国家药监局）, platform: Google News RSS 聚合, website: https://news.google.com, feed_url: "https://news.google.com/rss/search?q=%E5%9B%BD%E5%AE%B6%E8%8D%AF%E7%9B%91%E5%B1%80%20OR%20NMPA%20%E5%AE%A1%E6%89%B9&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", method: rss, official: false, cadence: 每日}
+      - {id: rsshub-gov-zhengce, name: 国务院政策文件库·最新（RSSHub 路由）, platform: RSSHub 公共实例（rsshub.app）, website: https://www.gov.cn/zhengce/zuixin/, feed_url: https://rsshub.app/gov/zhengce/zuixin, method: rss, official: false, cadence: 每日（公共实例限流时自动停用；自托管 RSSHub 后恢复）}
   - id: board4
     name: 板块四 · 美国科技金融
     status: live_feed
-    note: 美联储与 SEC 官方新闻稿 RSS 直连。
+    note: 美联储、SEC、FTC、NIST、白宫总统令等官方新闻稿 RSS 直连，另附 Google News 聚合补充。
     sources:
-      - id: fed-press
-        name: 美联储新闻稿（全部）
-        platform: federalreserve.gov 官方 RSS
-        website: https://www.federalreserve.gov
-        feed_url: https://www.federalreserve.gov/feeds/press_all.xml
-        method: rss
-        official: true
-        cadence: 每日
-      - id: sec-press
-        name: SEC 新闻稿
-        platform: sec.gov 官方 RSS
-        website: https://www.sec.gov
-        feed_url: https://www.sec.gov/news/pressreleases.rss
-        method: rss
-        official: true
-        cadence: 每日
+      - {id: fed-press, name: 美联储新闻稿（全部）, platform: federalreserve.gov 官方 RSS, website: https://www.federalreserve.gov, feed_url: https://www.federalreserve.gov/feeds/press_all.xml, method: rss, official: true, cadence: 每日}
+      - {id: fed-monetary, name: 美联储货币政策, platform: federalreserve.gov 官方 RSS, website: https://www.federalreserve.gov, feed_url: https://www.federalreserve.gov/feeds/press_monetary.xml, method: rss, official: true, cadence: 不定期}
+      - {id: fed-speeches, name: 美联储讲话, platform: federalreserve.gov 官方 RSS, website: https://www.federalreserve.gov, feed_url: https://www.federalreserve.gov/feeds/speeches.xml, method: rss, official: true, cadence: 不定期}
+      - {id: sec-press, name: SEC 新闻稿, platform: sec.gov 官方 RSS, website: https://www.sec.gov, feed_url: https://www.sec.gov/news/pressreleases.rss, method: rss, official: true, cadence: 每日}
+      - {id: sec-speeches, name: SEC 讲话与声明, platform: sec.gov 官方 RSS, website: https://www.sec.gov, feed_url: https://www.sec.gov/news/statements.rss, method: rss, official: true, cadence: 不定期}
+      - {id: ftc-press, name: FTC 新闻稿, platform: ftc.gov 官方 RSS, website: https://www.ftc.gov, feed_url: https://www.ftc.gov/feeds/press-release.xml, method: rss, official: true, cadence: 每日}
+      - {id: ftc-tech, name: FTC 消费者保护（含科技/隐私）, platform: ftc.gov 官方 RSS, website: https://www.ftc.gov, feed_url: https://www.ftc.gov/feeds/press-release-consumer-protection.xml, method: rss, official: true, cadence: 每日}
+      - {id: nist-news, name: NIST 美国国家标准技术研究院, platform: nist.gov 官方 RSS, website: https://www.nist.gov, feed_url: https://www.nist.gov/news-events/news/rss.xml, method: rss, official: true, cadence: 每日}
+      - {id: whitehouse-actions, name: 白宫总统令（Presidential Actions）, platform: whitehouse.gov 官方 RSS, website: https://www.whitehouse.gov, feed_url: https://www.whitehouse.gov/presidential-actions/feed/, method: rss, official: true, cadence: 不定期}
+      - {id: gnews-us-tech, name: 美国科技巨头与反垄断监管, platform: Google News RSS 聚合, website: https://news.google.com, feed_url: "https://news.google.com/rss/search?q=US%20tech%20regulation%20OR%20antitrust%20FTC%20SEC&hl=en-US&gl=US&ceid=US:en", method: rss, official: false, cadence: 每日}
+      - {id: gnews-us-econ, name: 白宫/财政部经济与科技政策, platform: Google News RSS 聚合, website: https://news.google.com, feed_url: "https://news.google.com/rss/search?q=White%20House%20OR%20Treasury%20technology%20OR%20economy&hl=en-US&gl=US&ceid=US:en", method: rss, official: false, cadence: 每日}
   - id: board5
     name: 板块五 · 跨板块总览
     status: aggregate
-    note: 无独立来源——自动聚合板块二～四浏览流的最新条目与各板计数（板块一为精选闭环，有独立的今天/队列页）。
+    note: 无独立来源——自动聚合各板块浏览流（含板块一的预印本流与板块二～四）的最新条目与各板计数；板块一每日精选一篇在「今天」页。
     sources: []

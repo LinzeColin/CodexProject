@@ -16,7 +16,7 @@ from typing import Any
 
 from . import config, store
 
-FEED_TIMEOUT_SECONDS = 20
+FEED_TIMEOUT_SECONDS = 12  # 单源上限；并发下载后总墙钟 ≈ 批数×12s，不再 44×20s 串行
 USER_AGENT = "ADP/0.3 personal-learning (single-user; contact: owner)"
 MAX_ITEMS_PER_FETCH = 30
 
@@ -32,7 +32,14 @@ CREATE TABLE IF NOT EXISTS board_items (
   fetched_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_board_items_board ON board_items (board_id, fetched_at DESC);
+CREATE INDEX IF NOT EXISTS idx_board_items_source ON board_items (source_id);
 """
+
+# 每板保留最近条数上限：44 源 × 每日 ~千条会无界增长，拖慢雷达页扫描。
+# 保留每板最新 300 条（够雷达浏览与聚合），其余按抓取序滚动删除。
+BOARD_ITEMS_KEEP_PER_BOARD = 300
+# 并发下载上限（网络阶段），写库仍在主线程串行（SQLite 单写者）
+FETCH_CONCURRENCY = 8
 
 
 def ensure_schema(conn: sqlite3.Connection) -> None:
@@ -120,16 +127,35 @@ def _download_feed(feed_url: str) -> Any:
     return parsed
 
 
+def _prune_board_items(conn: sqlite3.Connection) -> None:
+    """每板只留最新 BOARD_ITEMS_KEEP_PER_BOARD 条——否则 44 源日增千条无界增长，
+    拖慢雷达页扫描（复审确认）。按 COALESCE(published_at, fetched_at) 排序滚动删除。"""
+    conn.execute(
+        """DELETE FROM board_items WHERE id IN (
+             SELECT id FROM (
+               SELECT id, ROW_NUMBER() OVER (
+                 PARTITION BY board_id
+                 ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC) AS rn
+               FROM board_items)
+             WHERE rn > ?)""",
+        (BOARD_ITEMS_KEEP_PER_BOARD,))
+
+
 def fetch_board_feeds(conn: sqlite3.Connection) -> dict[str, Any]:
     """抓取所有 rss 来源；逐源独立成败，健康入账，报表落 data/boards_fetch_report.json.
 
-    每源：先注册+提交（短事务）→ 网络下载（无事务）→ 入库+健康+提交（短事务）。
-    已被连续失败自动停用（disabled_auto）的源跳过抓取（kill switch 真正生效），
-    仅在雷达页显示为停用；Owner 修好后手动清零健康即恢复。
+    先注册所有源（短事务）→ **并发**下载（网络阶段，无事务、无 DB）→ 主线程串行
+    入库/健康/提交（SQLite 单写者）→ 每板滚动保留上限。已被连续失败自动停用
+    （disabled_auto）的源跳过抓取（kill switch 真正生效），仅在雷达页显示为停用。
     """
+    import concurrent.futures as _cf
+
     ensure_schema(conn)
     registry = load_registry()
     report: dict[str, Any] = {"at": store.utcnow_iso(), "sources": {}}
+
+    # 1) 注册 + 挑出需要抓取的源（跳过已停用）——全部在主线程写库
+    to_fetch: list[tuple[str, dict[str, Any]]] = []
     for board in registry["boards"]:
         for source in board.get("sources") or []:
             if source.get("method") != "rss":
@@ -140,31 +166,66 @@ def fetch_board_feeds(conn: sqlite3.Connection) -> dict[str, Any]:
                                     "platform": source.get("platform"),
                                     "website": source.get("website"),
                                     "official": bool(source.get("official"))})
-            conn.commit()  # 注册落库后即释放写锁，网络 I/O 不再持有 WAL 写槽
             health_row = conn.execute(
                 "SELECT health FROM sources WHERE id=?", (sid,)).fetchone()
             if health_row and health_row["health"] == "disabled_auto":
                 report["sources"][source["id"]] = {"ok": False, "skipped": "disabled_auto"}
                 continue
+            to_fetch.append((board["id"], source))
+    conn.commit()  # 注册落库后释放写锁；下面网络阶段不持有任何事务
+
+    # 2) 并发下载（纯网络，不碰 DB）——总墙钟 ≈ 批数×超时，而非 44 源串行相加
+    downloaded: dict[str, Any] = {}
+    errors: dict[str, str] = {}
+    with _cf.ThreadPoolExecutor(max_workers=FETCH_CONCURRENCY) as ex:
+        futs = {ex.submit(_download_feed, src["feed_url"]): (bid, src)
+                for bid, src in to_fetch}
+        for fut in _cf.as_completed(futs):
+            bid, src = futs[fut]
             try:
-                parsed = _download_feed(source["feed_url"])          # 网络（无事务）
-                new_count = ingest_feed_entries(conn, board["id"], source, parsed)  # 写
-                store.record_source_health(conn, sid, ok=True)
-                conn.commit()
-                report["sources"][source["id"]] = {"ok": True, "new": new_count,
-                                                   "entries": len(parsed.entries)}
-            except Exception as exc:  # 单源失败只降级：健康记账，不碰其他源
-                health = store.record_source_health(conn, sid, ok=False)
-                conn.commit()
-                report["sources"][source["id"]] = {"ok": False, "health": health,
-                                                   "error": f"{type(exc).__name__}: {exc}"[:200]}
+                downloaded[src["id"]] = fut.result()
+            except Exception as exc:
+                errors[src["id"]] = f"{type(exc).__name__}: {exc}"[:200]
+
+    # 3) 主线程串行入库 + 健康 + 提交（SQLite 单写者，避免跨线程写）
+    for bid, src in to_fetch:
+        sid = f"rss:{src['id']}"
+        if src["id"] in downloaded:
+            parsed = downloaded[src["id"]]
+            new_count = ingest_feed_entries(conn, bid, src, parsed)
+            store.record_source_health(conn, sid, ok=True)
+            report["sources"][src["id"]] = {"ok": True, "new": new_count,
+                                             "entries": len(parsed.entries)}
+        else:
+            health = store.record_source_health(conn, sid, ok=False)
+            report["sources"][src["id"]] = {"ok": False, "health": health,
+                                             "error": errors.get(src["id"], "unknown")}
+    _prune_board_items(conn)
+    conn.commit()
     (config.data_dir() / "boards_fetch_report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     return report
 
 
+def _dedup_by_url(rows: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
+    """按 url 去重（同板两条重叠 arXiv 类目 feed 会带来同一篇的两行）；保序取前 limit 条。"""
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for r in rows:
+        if r["url"] in seen:
+            continue
+        seen.add(r["url"])
+        out.append(r)
+        if len(out) >= limit:
+            break
+    return out
+
+
 def board_overview(conn: sqlite3.Connection) -> list[dict[str, Any]]:
-    """雷达页数据：每板块状态 + 数据源明细（平台/网站/健康/近30天条数）+ 最新条目."""
+    """雷达页数据：每板块状态 + 数据源明细（平台/网站/健康/累计条数）+ 最新条目.
+
+    items_total 是该源在 board_items 中的累计条数（每板滚动保留上限内），非时间窗口。
+    """
     ensure_schema(conn)
     registry = load_registry()
     overview: list[dict[str, Any]] = []
@@ -189,21 +250,21 @@ def board_overview(conn: sqlite3.Connection) -> list[dict[str, Any]]:
                             "failures": (health_row["consecutive_failures"] if health_row else 0),
                             "items_total": stats["n"] if stats else 0,
                             "last_fetch": (stats["last_fetch"] or "尚未抓取") if stats else "尚未抓取"})
-        items = [dict(r) for r in conn.execute(
+        items = _dedup_by_url([dict(r) for r in conn.execute(
             """SELECT b.title, b.url, b.source_id, b.published_at, b.fetched_at
                FROM board_items b WHERE b.board_id=?
-               ORDER BY COALESCE(b.published_at, b.fetched_at) DESC LIMIT 6""",
-            (board["id"],))]
+               ORDER BY COALESCE(b.published_at, b.fetched_at) DESC LIMIT 12""",
+            (board["id"],))], 6)
         # 短标签给雷达页快捷导航用（模板不再 split('·')[1]，防名称无分隔符时 500）
         short = board["name"].replace(" ", "").replace("·", " · ")
         overview.append({**board, "short": short, "sources": sources, "items": items})
-    # 板块五：聚合板块二～四浏览流（board_items 不含 board1——arXiv 是 api 源，
-    # 走精选闭环有自己的今天/队列页）。按 status 定位，不假设它排在末位。
+    # 板块五：聚合所有浏览流（board_items 含板块一的预印本 rss 流 + 板块二～四；
+    # 板块一的 arXiv 精选走 documents 表另有今天/队列页）。按 status 定位，不假设排位。
     for agg in overview:
         if agg.get("status") == "aggregate":
-            agg["items"] = [dict(r) for r in conn.execute(
+            agg["items"] = _dedup_by_url([dict(r) for r in conn.execute(
                 """SELECT b.title, b.url, b.source_id, b.board_id, b.published_at, b.fetched_at
-                   FROM board_items b ORDER BY COALESCE(b.published_at, b.fetched_at) DESC LIMIT 10""")]
+                   FROM board_items b ORDER BY COALESCE(b.published_at, b.fetched_at) DESC LIMIT 20""")], 10)
             agg["counts"] = {row["board_id"]: row["n"] for row in conn.execute(
                 "SELECT board_id, COUNT(*) AS n FROM board_items GROUP BY board_id")}
     return overview

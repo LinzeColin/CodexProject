@@ -6,7 +6,7 @@
 
 1. 直接打开 **https://adp.linzezhang.com**——无需钥匙。（home.linzezhang.com 已归还给你的主页；主页上加一个链接即可跳转，例如 `<a href="https://adp.linzezhang.com">ADP 前沿学习</a>`。）
 2. **Mac 在线时**：打开的就是完整系统本体（六主题界面、今天/队列/雷达/证据/系统/试运行全部页面）——Worker 把请求经 Cloudflare Tunnel 反向代理到本机 127.0.0.1:8787，评分即时过 FSRS。（直连已于 2026-07-15 端到端实测：`adp-origin.linzezhang.com` 回源记录经你确认后由 cloudflared 创建，云端打开完整系统 183ms，远程守卫 403 生效。）
-2a. **你的主页**：https://home.linzezhang.com 已上线（极简静态枢纽 Worker，代码在 `deploy/cloudflare/home/`），含 ADP 与五板块直达链接。
+2a. **你的主页**：https://home.linzezhang.com 由你自己的 `linze-home-hub` Worker 提供（Owner 独立维护，不在本仓库）。曾一度被本项目的 Worker 误占，2026-07-15 已把 custom_domain 归还给 `linze-home-hub` 并删除误建的 Worker；本仓库不再放任何主页代码。想从主页跳到 ADP，在你的主页里加 `<a href="https://adp.linzezhang.com">ADP 前沿学习</a>` 即可。
 3. **Mac 睡眠/断网时**：自动回落只读镜像（页脚会标明"镜像兜底页"）——仍可看讲义、评分进回传队列，本机下次 `adp run`（或 `adp mirror pull`）时过 FSRS 生效。
 4. 断网/云端故障：本机闭环完全无感（run 内 push/pull 只降级并记 manifest）。
 
