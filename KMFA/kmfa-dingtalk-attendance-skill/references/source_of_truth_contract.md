@@ -18,14 +18,14 @@ Collect at least two categories:
 1. Attendance result records: scheduled/result-level records.
 2. Attendance detail records: detail-level records including location evidence.
 
-For user-visible daily totals and classifications, the official DingTalk attendance report is authoritative:
+For morning/evening temporary reminders, the current attendance-group scope and per-member current attendance reads are authoritative for that run-time snapshot:
 
-1. Resolve the current column IDs with `attendance report columns` using exact names.
-2. Query `attendance report query-data` for the target Beijing business date and current attendance-group members.
-3. Require complete user/date coverage before publishing a conclusion.
-4. Keep `record get`, raw punch details, and personal `summary` as supporting evidence only; they must not override official report status or totals. The scheduled production collector does not execute the legacy per-member sweep after official parity; explicit diagnostic/replay workflows may collect it separately under their own bounded run contract.
+1. Resolve the current attendance-group member set.
+2. Query current `attendance record get` and `attendance summary` for every scoped member and the exact Beijing business date.
+3. Treat a successful empty punch result as covered; it is a business result, not a missing-person error.
+4. Require every scoped person query to succeed and parse. Query failure, missed scope, wrong date, or parse failure stops the temporary reminder.
 
-If the official report is unavailable, incomplete, ambiguous, or returns a different date/scope, the run must stop as `OFFICIAL_ATTENDANCE_PARITY_FAILED` and must not send an attendance conclusion.
+For `final`, the independent official XLS/XLSX export is authoritative. Its 48 required fields must reconcile exactly; unavailable or conflicting official evidence keeps final waiting or blocked and never changes the temporary reminder result.
 
 Morning and evening reads are temporary reminders. The final daily truth is a later fresh official-report read for a completed prior work date. Only canonical `final` archives may feed new monthly notification rollups; legacy and temporary-reminder archives are audit-only.
 

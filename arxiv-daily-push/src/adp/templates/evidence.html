@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>证据与纠错 · 声明溯源</h1>
+
+{% if meta_note %}
+<div class="card">
+  <p>这句话是<b>系统元信息</b>（论文题目、日期、类目脉络等），来源是 arXiv 官方元数据本身，不对应摘要内的某条声明。</p>
+  <p class="mt"><a href="javascript:history.back()">← 返回讲义</a></p>
+</div>
+{% else %}
+<div class="card">
+  <h2>三步到原文</h2>
+  <table>
+    <tr><td>① 声明</td><td>「{{ claim.text }}」<br>
+      <span class="badge info">{{ {'paper_fact':'论文事实','author_claim':'作者主张','inference':'推断','hypothesis':'假设','action':'行动'}.get(claim.type, claim.type) }}</span>
+      <span class="mt">置信 {{ '%.0f%%'|format(claim.confidence*100) }} · 状态 {{ claim.status }}</span></td></tr>
+    <tr><td>② 定位</td><td class="mt">{{ claim.locator.source }} 第 {{ claim.locator.sentence_index + 1 }} 句
+      （字符 {{ claim.locator.char_start }}–{{ claim.locator.char_end }}）<br>
+      原句：「{{ claim.source_quote }}」</td></tr>
+    <tr><td>③ 原文</td><td>《{{ claim.doc_title }}》<br>
+      <a href="{{ claim.canonical_url }}" style="color:var(--ac)" target="_blank" rel="noopener">{{ claim.canonical_url }}</a></td></tr>
+  </table>
+  <p class="mt"><a href="javascript:history.back()">← 返回讲义</a></p>
+</div>
+{% endif %}
+{% endblock %}

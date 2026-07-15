@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `VERIFIED` / `VERIFIED`，交付状态为 `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`；Stage 2 integrated acceptance 已记录，但 S3/DAILY_OPERATION 仍未授权，这不是持久生产运行声明。
+arxiv-daily-push 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `VERIFIED` / `VERIFIED`，交付状态为 `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`；Stage 2 integrated acceptance 已记录，但 S3/DAILY_OPERATION 仍未授权，这不是持久生产运行声明。
 
 ## 2. 本次运行改变了什么
 
@@ -39,7 +39,7 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (1091/1091 active parameters, 123/123 active formulas)
+- implementation_congruence: `PARTIAL` (1106/1106 active parameters, 123/124 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,43 +68,43 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 ## 12. 模型、公式和参数变更
 
-- model_count: `121`
-- total_formulas: `123`
-- active_formulas: `123`
-- total_parameters: `1108`
-- active_parameters: `1091`
+- model_count: `122`
+- total_formulas: `124`
+- active_formulas: `124`
+- total_parameters: `1123`
+- active_parameters: `1106`
 - active_values_changed_by_this_view: `0`
 
 ## 13. 测试与验收
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
+- release_gate: `V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
 
 ## 14. 证据新鲜度
 
-- final_commit_binding: `COMMIT_BOUND:996986b0e00b458c376c84ea037dd06f4c548ad0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `17`
-- commit_bound_events: `11`
+- commit_bound_events: `13`
 - legacy_unbound_events: `334`
-- precommit_pending_events: `40`
-- pending_or_stale_events: `390`
-- freshness_counts: `pending_or_stale_events=390; legacy_unbound_events=334`
+- precommit_pending_events: `48`
+- pending_or_stale_events: `398`
+- freshness_counts: `pending_or_stale_events=398; legacy_unbound_events=334`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `0`
+- unresolved_fact_ids: `1`
 
 ## 16. 技术元数据
 
-- source_base_commit: `996986b0e00b458c376c84ea037dd06f4c548ad0`
+- source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:7cb1c552a0137dff306803a77222859a5d36e282ad6b2f4898529cbf7e3727a8`
-- snapshot_event_time: `2026-07-03T13:45:55+10:00`
+- source_snapshot_hash: `sha256:b9c59cace479c34b88a159069408992c9d2a4cd7f857c961d0e0af6aaf406d64`
+- snapshot_event_time: `2026-07-15T11:40:00+10:00`
 - generator_version: `4.0.1`
 - version: `0.23.1`
-- phase/gate: `S2PL / MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
+- phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
 
 ## 17. 下一唯一任务
 

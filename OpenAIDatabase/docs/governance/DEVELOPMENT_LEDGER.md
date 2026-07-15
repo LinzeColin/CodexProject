@@ -325,3 +325,5 @@ RECONSTRUCTED development events only, not confirmed iterations.
 - remaining risks: pattern scans are guardrails rather than complete secret scanners; formal project/roadmap schemas do not fully describe the current Lean canonical IDs; real Codex/Claude/ChatGPT consumption belongs to RUN 2-3.
 - rollback: remove the new Claude projection/manifest/route/test and revert generator, evaluator, derived outputs, and RUN 1 governance evidence to the RUN 0A baseline.
 - next step: owner reviews the uncommitted OpenAIDatabase-only diff and evidence; any commit/push decision or RUN 2 execution is a separate authorized action.
+
+- 2026-07-15 炸弹A归档卸载：5 个大归档（6.08GB / 101 分片）经校验迁至 AgentDatabase，数据零丢失，仓库瘦身。见 GOV-BOMBA-ARCHIVES-20260715.json。

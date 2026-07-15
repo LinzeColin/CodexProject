@@ -1599,6 +1599,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Repository root containing final-bundle artifacts.",
     )
     s2plt02_terminal_delivery_capture_plan.add_argument(
+        "--state-dir",
+        default=None,
+        help=(
+            "Optional ADP state directory containing runs/YYYYMMDD reports. "
+            "When omitted, this capture plan does not read ~/.adp runtime state."
+        ),
+    )
+    s2plt02_terminal_delivery_capture_plan.add_argument(
         "--generated-at",
         required=True,
         help="Capture-plan timestamp.",
@@ -4839,6 +4847,7 @@ def main(argv: list[str] | None = None) -> int:
         report = build_s2plt02_terminal_delivery_proof_capture_plan_state(
             generated_at=args.generated_at,
             repo_root=args.repo_root,
+            state_dir=args.state_dir,
         )
         state_errors = validate_s2plt02_terminal_delivery_proof_capture_plan_state(report)
         if state_errors:

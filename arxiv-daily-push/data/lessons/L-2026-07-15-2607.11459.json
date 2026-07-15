@@ -1,0 +1,120 @@
+{
+ "id": "L-2026-07-15-2607.11459",
+ "candidate_id": "arxiv:2607.11459@2026-07-15",
+ "doc_version_id": "arxiv:2607.11459#v1",
+ "as_of_date": "2026-07-15",
+ "sections_json": [
+  {
+   "title": "人话版",
+   "sentences": [
+    {
+     "text": "这篇论文在做什么：This paper presents the mAIEnergy dataset, an open-access, multimodal corpus developed to support Large Language Model (LLM) applications in the energy sector.",
+     "claim": "arxiv:2607.11459#v1:c0"
+    },
+    {
+     "text": "论文《A Multimodal Dataset for Large Language Model Applications in the Energy Domain》发表于 2026-07-13，作者 2 人，原文见 https://arxiv.org/abs/2607.11459v1。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "这篇论文在做什么：This paper presents the mAIEnergy dataset, an open-access, multimodal corpus developed to support Large Language Model (LLM) applications in the energy sector. 论文《A Multimodal Dataset for Large Language Model Applications in the Energy Domain》发表于 2026-07-13，作者 2 人，原文见 https://arxiv.org/abs/2607.11459v1。"
+  },
+  {
+   "title": "领域脉络",
+   "sentences": [
+    {
+     "text": "本文主类目 eess.SY：系统与控制工程——让复杂系统按预期稳定运行。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "交叉类目 cs.AI：人工智能——让机器完成需要智能的任务的总领域。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "本文主类目 eess.SY：系统与控制工程——让复杂系统按预期稳定运行。 交叉类目 cs.AI：人工智能——让机器完成需要智能的任务的总领域。"
+  },
+  {
+   "title": "机制拆解",
+   "sentences": [
+    {
+     "text": "This paper presents the mAIEnergy dataset, an open-access, multimodal corpus developed to support Large Language Model (LLM) applications in the energy sector.",
+     "claim": "arxiv:2607.11459#v1:c0"
+    }
+   ],
+   "body": "This paper presents the mAIEnergy dataset, an open-access, multimodal corpus developed to support Large Language Model (LLM) applications in the energy sector."
+  },
+  {
+   "title": "证据与数字",
+   "sentences": [
+    {
+     "text": "The dataset integrates approximately 50,000 textual documents, 20,000 images, 25 million numerical time series records, and 2 million geospatial and relational data entries.",
+     "claim": "arxiv:2607.11459#v1:c1"
+    }
+   ],
+   "body": "The dataset integrates approximately 50,000 textual documents, 20,000 images, 25 million numerical time series records, and 2 million geospatial and relational data entries."
+  },
+  {
+   "title": "反例与边界",
+   "sentences": [
+    {
+     "text": "摘要未声明边界与反例——这是一个需要警惕的信号，深挖时先问局限。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "摘要未声明边界与反例——这是一个需要警惕的信号，深挖时先问局限。"
+  },
+  {
+   "title": "跨领域连接与意外收获",
+   "sentences": [
+    {
+     "text": "本文横跨 2 个类目（eess.SY, cs.AI），关注其在你兴趣板块间的迁移面。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "意外收获：本文由 2 位作者合作完成，发表后 48 小时内即进入你的学习队列。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "意外收获：本篇的入选是 8 特征加权的结果——打开系统页可以看到它赢在哪个特征。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "本文横跨 2 个类目（eess.SY, cs.AI），关注其在你兴趣板块间的迁移面。 意外收获：本文由 2 位作者合作完成，发表后 48 小时内即进入你的学习队列。 意外收获：本篇的入选是 8 特征加权的结果——打开系统页可以看到它赢在哪个特征。"
+  },
+  {
+   "title": "可复用方法",
+   "sentences": [
+    {
+     "text": "This paper presents the mAIEnergy dataset, an open-access, multimodal corpus developed to support Large Language Model (LLM) applications in the energy sector.",
+     "claim": "arxiv:2607.11459#v1:c0"
+    }
+   ],
+   "body": "This paper presents the mAIEnergy dataset, an open-access, multimodal corpus developed to support Large Language Model (LLM) applications in the energy sector."
+  },
+  {
+   "title": "术语表",
+   "sentences": [
+    {
+     "text": "术语 LLM——出处见声明：This paper presents the mAIEnergy dataset, an open-access, multimodal corpus…",
+     "claim": "arxiv:2607.11459#v1:c0"
+    },
+    {
+     "text": "术语 FAIR——出处见声明：The mAIEnergy dataset adheres to Findable, Accessible, Interoperable, and…",
+     "claim": "arxiv:2607.11459#v1:c5"
+    }
+   ],
+   "body": "术语 LLM——出处见声明：This paper presents the mAIEnergy dataset, an open-access, multimodal corpus… 术语 FAIR——出处见声明：The mAIEnergy dataset adheres to Findable, Accessible, Interoperable, and…"
+  }
+ ],
+ "claim_bindings_json": {
+  "schema": "structured-v2",
+  "total_sentences": 13,
+  "doc_meta_sentences": 7,
+  "dropped_unbound": 0
+ },
+ "template_ver": "lesson-v03-2",
+ "generator": "deterministic_degraded",
+ "created_at": "2026-07-14T14:03:59+00:00",
+ "status": "open",
+ "reopened_reason": null,
+ "archived_at": null
+}

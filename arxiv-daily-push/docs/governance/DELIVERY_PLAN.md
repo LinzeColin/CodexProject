@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 356
-- acceptance_count: 129
+- task_count: 358
+- acceptance_count: 130
 
 ## Delivery Tasks
+
+## 2026-07-10 21:50:12 Australia/Sydney - Persistent authorization prerequisite fail-closed hardening
+
+- Task: `ADP-MVP-READY-S3-PERSISTENT-AUTH-PREREQUISITE-FAIL-CLOSED`; parent `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`; Acceptance `ACC-S2PMT07-FINAL-REVIEW`; T2.
+- Result: `pass_persistent_authorization_prerequisite_fail_closed_no_runtime_enablement`.
+- Behavior: persistent authorization requires every owner-decision, controlled-run, artifact-presence, and artifact-validity check to pass; valid artifact plus failed prerequisites returns `blocked_persistent_daily_operation_authorization_prerequisites_failed`; missing mappings fail closed; validator rejects PASS plus failed checks.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_ADP_MVP_READY_S3_PERSISTENT_AUTH_PREREQUISITE_FAIL_CLOSED.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_final_command_root_tools.py`.
+- Model/formula/parameter: `MOD-ADP-100` unchanged; `FORM-ADP-102` behavior and implementation fingerprint updated; parameter delta `NOT_APPLICABLE`; runtime `0.23.0` and provisional governance `0.23.1` unchanged.
+- Boundary: the real persistent authorization artifact remains absent; no DAILY_OPERATION, SMTP, scheduler/LaunchAgent, Release, restore, CURRENT/V7, public schema, DB, source, ranking, or queue state changed; delivery remains local and `precommit_tree_bound`.
 
 ## 2026-07-03 13:45:55 Australia/Sydney - MVP page latest handoff gate mainline attestation
 

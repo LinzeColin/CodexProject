@@ -174,6 +174,57 @@ features:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-OPME-006"
+    name: "隔离重试与死信控制策略"
+    description: "对安全错误码执行默认拒绝的有限重试、到期原子入队、资源暂停和耗尽死信决策；仅限非生产内存态控制元数据。"
+    status: "planned"
+    fact_level: "PROPOSED"
+    model_ids:
+      - "MOD-008"
+    parameter_ids:
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+    code_refs:
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+    test_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+    evidence_refs:
+      - "EVID-IDS-STAGE039-P2"
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-OPME-007"
+    name: "隔离反压准入与暂停策略"
+    description: "对有界队列和资源观测执行准入、限流、拒绝或合法暂停候选决策；仅限非生产内存态控制元数据。"
+    status: "planned"
+    fact_level: "PROPOSED"
+    model_ids:
+      - "MOD-009"
+    parameter_ids:
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+    code_refs:
+      - "KM_IDSystem/scripts/check_backpressure_runtime.py"
+    test_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
+    evidence_refs:
+      - "EVID-IDS-STAGE040-P2"
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-PARAMETER-REGISTRY"
 models:
   -
     model_id: "MOD-001"
@@ -455,6 +506,90 @@ models:
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
+  -
+    model_id: "MOD-008"
+    name: "Retry and dead-letter control policy"
+    kind: "deterministic_control_policy"
+    purpose: "Classify bounded safe error codes and produce deterministic retry eligibility or dead-letter metadata without production activation."
+    owner: "KM_IDSystem"
+    status: "planned"
+    fact_level: "PROPOSED"
+    model_version: "ids.retry_policy.v0_1.stage039.p2"
+    assumptions:
+      - "Stage039 values are an isolated engineering safety selection and are not production calibrated."
+    formula_ids:
+      - "FORM-008"
+    parameter_ids:
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+    inputs:
+      - "safe_error_code"
+      - "job_id"
+      - "retry_count"
+      - "max_retries"
+      - "observed_at_epoch_seconds"
+    outputs:
+      - "failure_class"
+      - "decision_action"
+      - "next_eligible_at"
+      - "machine_state"
+      - "owner_status"
+    code_refs:
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+    test_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+    evidence_refs:
+      - "EVID-IDS-STAGE039-P2"
+      - "EVID-OPME-MODEL-REGISTRY"
+  -
+    model_id: "MOD-009"
+    name: "Backpressure admission and pause policy"
+    kind: "deterministic_control_policy"
+    purpose: "Evaluate bounded queue and resource pressure observations to admit, throttle, deny, or request a legal pause candidate without production activation."
+    owner: "KM_IDSystem"
+    status: "planned"
+    fact_level: "PROPOSED"
+    model_version: "ids.backpressure_policy.v0_1.stage040.p2"
+    assumptions:
+      - "Stage040 thresholds are an isolated engineering safety selection and are not production calibrated."
+    formula_ids:
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+    inputs:
+      - "queue_depth"
+      - "active_job_type_count"
+      - "admissions_in_window"
+      - "disk_free_bytes"
+      - "external_drive_available"
+      - "external_api_units_required"
+      - "external_api_budget_remaining_units"
+      - "observed_at_epoch_seconds"
+    outputs:
+      - "pressure_signal"
+      - "decision_action"
+      - "requested_state"
+      - "human_status"
+      - "checkpoint_ref"
+    code_refs:
+      - "KM_IDSystem/scripts/check_backpressure_runtime.py"
+    test_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
+    evidence_refs:
+      - "EVID-IDS-STAGE040-P2"
+      - "EVID-OPME-MODEL-REGISTRY"
 formulas:
   -
     formula_id: "FORM-001"
@@ -658,6 +793,57 @@ formulas:
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-008"
+    status: "planned"
+    fact_level: "PROPOSED"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    expression: "total_attempt_limit=1+max_retries; lower=max(1,ceil(base_delay/2)); delay=lower+(sha256(policy_version|job_id|retry_ordinal) mod (base_delay-lower+1)); retry_count increments only on due RETRY_WAIT->QUEUED admission; retry_count==max_retries routes RETRY_WAIT->DEAD_LETTERED."
+    constraints:
+      - "Only exact retryable-safe-error allowlist matches may auto-retry."
+      - "Unknown or missing policy defaults to no automatic retry."
+      - "Production calibration is required before production activation."
+    missing_policy: "NO_AUTOMATIC_RETRY and manual review."
+    output_range: "At most three total attempts; retry 1 delay 3..5 seconds; retry 2 delay 15..30 seconds; exhausted state DEAD_LETTERED."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::deterministic_delay_seconds"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::evaluate_failure"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::admit_due_retry"
+    code_refs:
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+    test_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+    evidence_refs:
+      - "EVID-IDS-STAGE039-P2"
+      - "EVID-OPME-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-009"
+    status: "planned"
+    fact_level: "PROPOSED"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    expression: "usable_free_bytes=max(0,disk_free_bytes-disk_reserve_bytes); stale or invalid observations fail closed; resource gates precede queue gates; hard capacity denies; rate, concurrency, soft pressure, or retained hysteresis throttles; otherwise admit."
+    constraints:
+      - "Unknown, malformed, or stale observations never admit."
+      - "Resource pause decisions are legal pause candidates only."
+      - "Production calibration is required before production activation."
+    missing_policy: "REQUIRE_MANUAL_REVIEW with no new admission."
+    output_range: "ADMIT, THROTTLE_ADMISSION, DENY_NEW_ADMISSION, PAUSE_RESOURCE_GATE, REQUEST_SAFE_PAUSE, or REQUIRE_MANUAL_REVIEW; no persistent state mutation."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "KM_IDSystem/scripts/check_backpressure_runtime.py::evaluate_backpressure"
+      - "KM_IDSystem/scripts/check_backpressure_runtime.py::build_stage040_phase2_report"
+    code_refs:
+      - "KM_IDSystem/scripts/check_backpressure_runtime.py"
+    test_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
+    evidence_refs:
+      - "EVID-IDS-STAGE040-P2"
+      - "EVID-OPME-FORMULA-REGISTRY"
 parameters:
   -
     parameter_id: "PARAM-001"
@@ -2024,6 +2210,327 @@ parameters:
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-050"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "retry_max_retries"
+    name: "retry max retries"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "retry attempts"
+    value: "2"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.max_retries"
+    extracted_value: "2"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-051"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "retry_backoff_ceiling_1_seconds"
+    name: "retry backoff ceiling 1"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "seconds"
+    value: "5"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.backoff_schedule_seconds[0]"
+    extracted_value: "5"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-052"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "retry_backoff_ceiling_2_seconds"
+    name: "retry backoff ceiling 2"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "seconds"
+    value: "30"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.backoff_schedule_seconds[1]"
+    extracted_value: "30"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-053"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "retry_jitter_policy"
+    name: "retry jitter policy"
+    category: "control_policy_parameter"
+    data_type: "string"
+    unit: "policy id"
+    value: "DETERMINISTIC_BOUNDED_HASH_JITTER_V1"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.jitter_policy"
+    extracted_value: "DETERMINISTIC_BOUNDED_HASH_JITTER_V1"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-054"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "retryable_safe_error_codes"
+    name: "retryable safe error codes"
+    category: "control_policy_parameter"
+    data_type: "string_set"
+    unit: "safe code set"
+    value: "TRANSIENT_DEPENDENCY_UNAVAILABLE|TRANSIENT_OPERATION_TIMEOUT"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.retryable_safe_error_codes"
+    extracted_value: "TRANSIENT_DEPENDENCY_UNAVAILABLE|TRANSIENT_OPERATION_TIMEOUT"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-055"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "retry_unknown_code_behavior"
+    name: "retry unknown code behavior"
+    category: "control_policy_parameter"
+    data_type: "string"
+    unit: "behavior"
+    value: "NO_AUTOMATIC_RETRY"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.unknown_code_behavior"
+    extracted_value: "NO_AUTOMATIC_RETRY"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-056"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "queue_soft_pressure_threshold"
+    name: "queue soft pressure threshold"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "control references"
+    value: "2"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.queue_soft_pressure_threshold"
+    extracted_value: "2"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-057"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "queue_hard_capacity_threshold"
+    name: "queue hard capacity threshold"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "control references"
+    value: "4"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.queue_hard_capacity_threshold"
+    extracted_value: "4"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-058"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "disk_free_bytes_threshold"
+    name: "disk free bytes threshold"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "bytes"
+    value: "1073741824"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.disk_free_bytes_threshold"
+    extracted_value: "1073741824"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-059"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "disk_reserve_bytes"
+    name: "disk reserve bytes"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "bytes"
+    value: "536870912"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.disk_reserve_bytes"
+    extracted_value: "536870912"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-060"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "external_api_budget_window_seconds"
+    name: "external API budget window"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "seconds"
+    value: "60"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.external_api_budget_window_seconds"
+    extracted_value: "60"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-061"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "queue_low_watermark"
+    name: "queue low watermark"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "control references"
+    value: "1"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.queue_low_watermark"
+    extracted_value: "1"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-062"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "observation_ttl_seconds"
+    name: "observation TTL"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "seconds"
+    value: "30"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.observation_ttl_seconds"
+    extracted_value: "30"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-063"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "per_job_type_concurrency_limit"
+    name: "per job type concurrency limit"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "jobs"
+    value: "1"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.per_job_type_concurrency_limit"
+    extracted_value: "1"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-064"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "admission_rate_limit_per_window"
+    name: "admission rate limit per window"
+    category: "control_policy_parameter"
+    data_type: "integer"
+    unit: "admissions per window"
+    value: "4"
+    source: "PROPOSED from Stage040 Phase2 local engineering safety boundary; not production calibrated"
+    calibration_method: "Required before production activation"
+    source_selector: "json_path:stage040_backpressure_runtime_contract.json:policy.parameters.admission_rate_limit_per_window"
+    extracted_value: "4"
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    status: "planned"
+    fact_level: "PROPOSED"
+    unknown_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["EVID-IDS-STAGE040-P2", "EVID-OPME-PARAMETER-REGISTRY"]
 strategies:
   -
     strategy_id: "STRAT-OPME-001"
@@ -2128,6 +2635,16 @@ delivery_readiness:
     - "EVID-OPME-DELIVERY-TASKS"
     - "EVID-OPME-OWNER-STATUS"
 evidence_refs:
+  -
+    evidence_id: "EVID-IDS-STAGE040-P2"
+    kind: "phase_evidence"
+    ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md"
+    fact_level: "VERIFIED"
+  -
+    evidence_id: "EVID-IDS-STAGE039-P2"
+    kind: "phase_evidence"
+    ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+    fact_level: "VERIFIED"
   -
     evidence_id: "EVID-OPME-MODEL-REGISTRY"
     kind: "legacy_registry"

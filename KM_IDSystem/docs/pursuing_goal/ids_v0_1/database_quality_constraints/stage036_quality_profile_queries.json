@@ -1,0 +1,65 @@
+{
+  "schema_version": "ids.stage036.database_quality_constraints.profile_queries.v1",
+  "stage": "STAGE-036",
+  "task_id": "IDS-V0_1-STAGE036-REVIEW",
+  "acceptance_id": "ACC-STAGE-036",
+  "execution_allowed": false,
+  "owner_authorized_real_profile_required": true,
+  "returns_row_values": false,
+  "queries": [
+    {
+      "constraint_id": "uq_ids_chunks_document_ordinal",
+      "query_id": "profile.uq_ids_chunks_document_ordinal.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM (SELECT document_id, chunk_ordinal FROM public.ids_chunks GROUP BY document_id, chunk_ordinal HAVING count(*) > 1) AS violations;",
+      "query_sha256": "b04c3c07c72c2c8cbef6df7c7327a1174a947e545471587dbb652648b9c9bc83"
+    },
+    {
+      "constraint_id": "chk_ids_metadata_sources_quality_v2",
+      "query_id": "profile.chk_ids_metadata_sources_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_metadata_sources WHERE source_id IS NULL OR btrim(source_id) = '' OR source_uri IS NULL OR btrim(source_uri) = '' OR source_boundary IS NULL OR btrim(source_boundary) = '' OR storage_class IS NULL OR btrim(storage_class) = '' OR source_size_bytes IS NULL OR source_size_bytes < 0 OR payload_size_bytes IS NULL OR payload_size_bytes < 0 OR payload_size_bytes > 1048576 OR is_raw_content_stored IS DISTINCT FROM false;",
+      "query_sha256": "8be22adcb663d4aa8ccd1adc8db756391e1f57975526a83efb10d4eedc058be3"
+    },
+    {
+      "constraint_id": "chk_ids_jobs_quality_v2",
+      "query_id": "profile.chk_ids_jobs_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_jobs WHERE job_id IS NULL OR btrim(job_id) = '' OR job_type IS NULL OR btrim(job_type) = '' OR job_state IS NULL OR btrim(job_state) = '' OR retry_count IS NULL OR retry_count < 0 OR max_retries IS NULL OR max_retries < 0 OR retry_count > max_retries OR connection_pool_size IS NULL OR connection_pool_size < 1 OR connection_pool_size > 10 OR payload_size_bytes IS NULL OR payload_size_bytes < 0 OR payload_size_bytes > 1048576;",
+      "query_sha256": "aa3e0da5e3e5f6309c4012a65778c4f98c1a8f80614b0c92a97b4df62440b5b9"
+    },
+    {
+      "constraint_id": "chk_ids_documents_quality_v2",
+      "query_id": "profile.chk_ids_documents_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_documents WHERE document_id IS NULL OR btrim(document_id) = '' OR source_id IS NULL OR btrim(source_id) = '' OR source_uri IS NULL OR btrim(source_uri) = '' OR parser_state IS NULL OR btrim(parser_state) = '' OR payload_size_bytes IS NULL OR payload_size_bytes < 0 OR payload_size_bytes > 1048576;",
+      "query_sha256": "12b9d678da2204b00bd1a497da568ba9b0da0d8f9b26bad55f05eecf023a2e28"
+    },
+    {
+      "constraint_id": "chk_ids_chunks_quality_v2",
+      "query_id": "profile.chk_ids_chunks_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_chunks WHERE chunk_id IS NULL OR btrim(chunk_id) = '' OR document_id IS NULL OR btrim(document_id) = '' OR parser_state IS NULL OR btrim(parser_state) = '' OR chunk_ordinal IS NULL OR chunk_ordinal < 0 OR payload_size_bytes IS NULL OR payload_size_bytes < 0 OR payload_size_bytes > 1048576 OR NOT ((byte_start IS NULL AND byte_end IS NULL) OR (byte_start IS NOT NULL AND byte_end IS NOT NULL AND byte_start >= 0 AND byte_end >= byte_start));",
+      "query_sha256": "866795bdfa33989140f3fada627423e86260ce66d880962fb75c953974790bde"
+    },
+    {
+      "constraint_id": "chk_ids_evidence_records_quality_v2",
+      "query_id": "profile.chk_ids_evidence_records_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_evidence_records WHERE evidence_id IS NULL OR btrim(evidence_id) = '' OR evidence_kind IS NULL OR btrim(evidence_kind) = '' OR fact_level IS NULL OR btrim(fact_level) = '' OR source_ref IS NULL OR btrim(source_ref) = '' OR validation_state IS NULL OR btrim(validation_state) = '';",
+      "query_sha256": "ac3466a0af67d329bc3c6d3fbb6e51c8166860f31af09e259147d37f556ac92b"
+    },
+    {
+      "constraint_id": "chk_ids_audit_events_quality_v2",
+      "query_id": "profile.chk_ids_audit_events_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_audit_events WHERE audit_id IS NULL OR btrim(audit_id) = '' OR actor_role IS NULL OR btrim(actor_role) = '' OR action_type IS NULL OR btrim(action_type) = '' OR object_ref IS NULL OR btrim(object_ref) = '' OR decision_state IS NULL OR btrim(decision_state) = '';",
+      "query_sha256": "1f6e72be87c55716806759f6d40c48d8b01e7744bbbd04057db084a3f0970711"
+    },
+    {
+      "constraint_id": "chk_ids_index_versions_quality_v2",
+      "query_id": "profile.chk_ids_index_versions_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_index_versions WHERE index_id IS NULL OR btrim(index_id) = '' OR index_version IS NULL OR btrim(index_version) = '' OR index_state IS NULL OR btrim(index_state) = '' OR coverage_ref IS NULL OR btrim(coverage_ref) = '' OR hot_index_pointer_ref IS NULL OR btrim(hot_index_pointer_ref) = '' OR payload_size_bytes IS NULL OR payload_size_bytes < 0 OR payload_size_bytes > 1048576;",
+      "query_sha256": "37c7f80f4ebc1336fdb375dbe4d35f0057d35851f9c612c2b4a5729ea9d31393"
+    },
+    {
+      "constraint_id": "chk_ids_schema_migrations_quality_v2",
+      "query_id": "profile.chk_ids_schema_migrations_quality_v2.v1",
+      "query_sql": "SELECT count(*) AS violation_count FROM public.ids_schema_migrations WHERE migration_id IS NULL OR btrim(migration_id) = '' OR checksum_sha256 IS NULL OR btrim(checksum_sha256) = '' OR rollback_sql_ref IS NULL OR btrim(rollback_sql_ref) = '' OR recovery_checkpoint_ref IS NULL OR btrim(recovery_checkpoint_ref) = '' OR dry_run_required IS DISTINCT FROM true OR rollback_required IS DISTINCT FROM true;",
+      "query_sha256": "d4775dbe8beb587b0618c96c1f5882d5602e38b51d7eb601da2e51e06e836d98"
+    }
+  ]
+}

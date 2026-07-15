@@ -9,3 +9,16 @@ __pycache__/
 **/private_exports/
 **/exports/private/
 **/data/private/
+
+# ADP V0.3 本地私有运行数据（仓库公开、运行数据私有）；
+# 证据类工件（run_manifests.jsonl / lessons/ / replay_30d.json / outbox/）保留入库。
+arxiv-daily-push/data/adp.sqlite3*
+arxiv-daily-push/data/raw/
+arxiv-daily-push/data/backups/
+arxiv-daily-push/data/export/
+arxiv-daily-push/data/authorization/
+arxiv-daily-push/data/heartbeat
+
+# wrangler 本地缓存（含各 Worker 子目录 home/ 等）
+arxiv-daily-push/deploy/cloudflare/**/.wrangler/
+arxiv-daily-push/deploy/cloudflare/.wrangler/

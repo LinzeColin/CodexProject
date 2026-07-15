@@ -87,13 +87,18 @@ PROMPT_CONTRACT_NEEDLES = {
     "uses_beijing_time": ("Asia/Shanghai",),
     "preserves_github_sync": ("HEAD == origin/main", "GitHub `main`"),
     "fails_closed_for_dws": ("DWS_AUTH_REQUIRED", "Do not fabricate data"),
-    "uses_official_report_parity": (
-        "attendance report columns/query-data",
-        "official_report_parity_status=PASS",
-        "OFFICIAL_ATTENDANCE_PARITY_FAILED",
-    ),
     "protects_private_runtime": (".env.local", "SQLite", "raw JSON", "report bodies"),
 }
+TEMPORARY_PROMPT_NAMES = {"morning_1035.prompt.md", "evening_2000.prompt.md"}
+FINAL_PROMPT_NAMES = {"morning_1035.prompt.md", "manual_rerun.prompt.md"}
+REALTIME_INTEGRITY_NEEDLES = (
+    "realtime_reminder_integrity_status=PASS",
+    "REALTIME_REMINDER_INTEGRITY_FAILED",
+)
+TEMPORARY_FINAL_GATE_MARKERS = (
+    "Require official-report parity for the temporary reminder",
+    "The reminder still requires exact `attendance report columns/query-data`",
+)
 
 
 def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any], list[str]]:
@@ -103,8 +108,10 @@ def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any],
         "all_prompts_use_beijing_time": True,
         "all_prompts_preserve_github_sync": True,
         "all_prompts_fail_closed_for_dws": True,
-        "all_prompts_use_official_report_parity": True,
         "all_prompts_protect_private_runtime": True,
+        "temporary_prompts_use_realtime_integrity": True,
+        "temporary_prompts_reject_final_parity_gate": True,
+        "final_prompts_keep_official_report_parity": True,
     }
     errors: list[str] = []
     aggregate_key_by_contract = {
@@ -112,7 +119,6 @@ def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any],
         "uses_beijing_time": "all_prompts_use_beijing_time",
         "preserves_github_sync": "all_prompts_preserve_github_sync",
         "fails_closed_for_dws": "all_prompts_fail_closed_for_dws",
-        "uses_official_report_parity": "all_prompts_use_official_report_parity",
         "protects_private_runtime": "all_prompts_protect_private_runtime",
     }
     for path in prompt_files:
@@ -127,6 +133,31 @@ def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any],
             )
             if not passed:
                 errors.append(f"automation prompt contract drift:{rel}:{contract_key}")
+        if rel in TEMPORARY_PROMPT_NAMES:
+            uses_realtime_integrity = all(needle in text for needle in REALTIME_INTEGRITY_NEEDLES)
+            rejects_final_gate = not any(marker in text for marker in TEMPORARY_FINAL_GATE_MARKERS)
+            checks["uses_realtime_reminder_integrity"] = uses_realtime_integrity
+            checks["rejects_final_parity_gate_for_reminder"] = rejects_final_gate
+            aggregate["temporary_prompts_use_realtime_integrity"] = (
+                aggregate["temporary_prompts_use_realtime_integrity"] and uses_realtime_integrity
+            )
+            aggregate["temporary_prompts_reject_final_parity_gate"] = (
+                aggregate["temporary_prompts_reject_final_parity_gate"] and rejects_final_gate
+            )
+            if not uses_realtime_integrity:
+                errors.append(f"automation prompt contract drift:{rel}:uses_realtime_reminder_integrity")
+            if not rejects_final_gate:
+                errors.append(f"automation prompt contract drift:{rel}:rejects_final_parity_gate_for_reminder")
+        if rel in FINAL_PROMPT_NAMES:
+            keeps_final_parity = "OFFICIAL_ATTENDANCE_PARITY_FAILED" in text and (
+                "official_report_parity_status=PASS" in text or "Official XLS/XLSX parity" in text
+            )
+            checks["keeps_official_final_reconciliation"] = keeps_final_parity
+            aggregate["final_prompts_keep_official_report_parity"] = (
+                aggregate["final_prompts_keep_official_report_parity"] and keeps_final_parity
+            )
+            if not keeps_final_parity:
+                errors.append(f"automation prompt contract drift:{rel}:keeps_official_final_reconciliation")
         by_file[rel] = checks
     return {**aggregate, "by_file": by_file}, errors
 

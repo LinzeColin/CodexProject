@@ -16,9 +16,9 @@ parameter_profile_versions:
   offline_rules: "opme-rules-v0"
   llm_router: "opme-router-v0"
 data_snapshot_version: "sample_inputs_only"
-current_iteration: "ITER-20260624-OPME-S3PCT01"
-current_phase: "B"
-current_gate: "GOV-SEMANTIC-OPME-in-progress"
+current_iteration: "ITER-20260711-IDS-STAGE036-REVIEW"
+current_phase: "IDS-STAGE036-REVIEW"
+current_gate: "IDS-STAGE037-P1-GATE"
 legacy_version_labels:
   - source: "KM_IDSystem/frontend/package.json"
     value: "1.0.0"

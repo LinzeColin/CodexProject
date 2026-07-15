@@ -1,3 +1,40 @@
+> # ⚠️ 仓库拆分迁移进行中 —— 给所有 Agent 的最高优先级指令
+>
+> **本仓库正在被拆分为多个独立仓库。目录会陆续消失。这是有意的，不是数据丢失。**
+>
+> ## 绝对禁令（优先级高于本文件其余全部规则）
+>
+> 1. **禁止恢复任何消失的目录或文件。** 不要从 git 历史 `checkout`、不要 `revert`、不要重建、不要从备份还原。
+> 2. **禁止把目录消失报告为事故、损坏或数据丢失。** 它不是。
+> 3. **禁止"修复"下方表格中已标记为已迁出的项目。**
+> 4. 如果你发现某个项目不见了，**先查下表**。表里有 = 已迁走 = 一切正常，继续做你的事。
+>
+> 违反以上任何一条，都会与迁移过程形成**恢复—删除的死循环**，破坏迁移并可能造成真实的数据损坏。
+>
+> ## 已迁出项目
+>
+> | 项目 | 新位置 | 状态 |
+> |---|---|---|
+> | `whkmSalary` | [LinzeColin/KMOS](https://github.com/LinzeColin/KMOS) | 已迁出，即将从本仓库移除 |
+> | `Alpha` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | `FIFA` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | `QBVS` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | `MetaDatabase/` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) → 改名为 `LinzeDatabase/` | 已迁出，即将从本仓库移除 |
+> | `Serenity-Alipay` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | 治理框架 | [LinzeColin/Governance](https://github.com/LinzeColin/Governance) | 已迁出（本仓库暂保留副本） |
+>
+> 每一项都已通过 **git tree hash 逐字节比对**，与本仓库内容完全一致后才标记为已迁出。
+>
+> ## 数据去向
+>
+> - 全部 agent 历史数据、会话记录 → **`LinzeColin/AgentDatabase`（私有）**，以 Release 附件形式保存
+> - 各项目源码 → 见上表
+> - **所有迁移都经过 sha256 逐字节校验后才从本仓库移除。没有任何数据丢失。**
+>
+> ## 若你需要确认
+>
+> 迁移由 owner 主导。**有疑问就停下并询问 owner，不要自行恢复。**
+
 # CodexProject Agent Contract
 
 本仓库是多项目源码与治理中心，默认中文优先；代码、API、库名、模型名和错误可保留英文。

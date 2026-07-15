@@ -1,0 +1,40 @@
+{
+ "at": "2026-07-15T01:23:49+00:00",
+ "sources": {
+  "nature-current": {
+   "ok": true,
+   "new": 0,
+   "entries": 75
+  },
+  "science-news": {
+   "ok": true,
+   "new": 0,
+   "entries": 10
+  },
+  "cell-current": {
+   "ok": true,
+   "new": 0,
+   "entries": 23
+  },
+  "gnews-cn-policy": {
+   "ok": true,
+   "new": 0,
+   "entries": 100
+  },
+  "rsshub-gov-zhengce": {
+   "ok": false,
+   "health": "disabled_auto",
+   "error": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  "fed-press": {
+   "ok": true,
+   "new": 0,
+   "entries": 20
+  },
+  "sec-press": {
+   "ok": true,
+   "new": 0,
+   "entries": 25
+  }
+ }
+}

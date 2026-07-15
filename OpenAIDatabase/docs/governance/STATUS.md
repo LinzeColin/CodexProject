@@ -42,3 +42,5 @@
 - Commit-bound events: `3`
 - Legacy unbound events: `6`
 - Unresolved fact IDs: `10`
+
+- 2026-07-15 炸弹A归档卸载：5 个大归档（6.08GB / 101 分片）经校验迁至 AgentDatabase，数据零丢失，仓库瘦身。见 GOV-BOMBA-ARCHIVES-20260715.json。

@@ -1,5 +1,49 @@
 # Changelog
 
+## 2026-07-15 Australia/Sydney - Boards 2-5 go live with transparent data sources; homepage hub at home.linzezhang.com; tunnel direct path verified end to end
+
+- Owner directives: (1) the remaining four boards go online with per-board data-source visibility; (2) home.linzezhang.com must work. Boards 2 (Nature/Science/Cell official RSS), 3 (Google News policy aggregation + a preserved RSSHub route that honestly reports the public instance's rate-limit degradation) and 4 (Federal Reserve / SEC official RSS) are now live as radar feed streams: `config/boards_v0_3.yaml` is the single source of truth (PARAM-ADP-1123), `adp.boards` fetches via feedparser into the new `board_items` table with per-source health accounting (3 consecutive failures auto-disable), and the radar page shows every board's sources (name / platform / website / subscription method / official-vs-aggregator / health / item counts / last fetch) plus latest items; board 5 auto-aggregates. Real fetch: 6/7 sources OK, 138 items cumulative in board_items (idempotent re-runs give new=0; report in data/boards_fetch_report.json); the RSSHub public-instance route hit repeated 403s and auto-disabled (kill switch now actually skips disabled sources). External links are restricted to http/https (no javascript:/data: injection on the radar page), future-dated items are dropped so they cannot pin to the top, source ids must be globally unique, and network I/O no longer runs inside the SQLite write transaction. Boundary kept honest: boards 2-4 do NOT enter the daily selection pool - pool integration and the diversity 10->17 change remain a separate proposal path, and bioRxiv promotion stays an Owner-only radar button (an unauthorized test-promotion found in the local DB was reverted back to shadow with a receipt). Separately, the Owner authorized the cloudflared login, the adp-origin DNS record was created, and the full-system direct path is now live end to end (183ms, remote guard 403 verified through the real tunnel); a minimal static homepage worker now serves home.linzezhang.com with links to ADP and the five boards.
+
+## 2026-07-15 Australia/Sydney - Serve the full system at adp.linzezhang.com via Cloudflare Tunnel (mirror becomes automatic fallback)
+
+- Owner directive (migrate everything to the cloud; phone must open the identical full system): the worker now reverse-proxies adp.linzezhang.com to a remotely-managed Cloudflare Tunnel (`adp`, connector + local web resident via LaunchAgents `com.linze.adp.web` / `com.linze.adp.tunnel`) reaching the local FastAPI six-theme system on 127.0.0.1:8787; when the Mac is asleep or the tunnel is down the worker automatically falls back to the D1 read-only mirror plus the /grade write-back queue (verified live). Because the entry has no login, the local webapp gains a `remote_guard` middleware: tunneled requests (identified by edge-set CF headers) may browse and submit active-recall grades only, while owner-decision writes (promote/pilot/state/undo/corrections/transfer) return 403 and stay local-only (protection test added). The tunnel connector token lives at `~/.cloudflared/adp-tunnel-token` (0600, not committed). The `adp-origin.linzezhang.com` DNS origin record awaits the Owner naming it in chat before the direct connection goes live end to end. Review-round fixes: grade endpoints and the mirror pull now reject fabricated lesson ids (no junk FSRS rows from the public entry), the frontend `post()` helper surfaces 403/503 bodies instead of rendering them as fake success receipts, the worker falls back on 502/503/504 as well (connector up but local web down) and answers full-system-only paths with an honest 503 note page, and cloudflared runs with `--no-autoupdate`.
+
+## 2026-07-15 Australia/Sydney - Return home.linzezhang.com to the homepage; ADP moves to adp.linzezhang.com
+
+- The task pack named home.linzezhang.com but the Owner clarified it is the homepage domain: the worker custom domain was detached (verified no longer resolving) and ADP now serves at adp.linzezhang.com (verified 200). The R6 README explains the mirror's role (local-first architecture) and documents the optional Cloudflare Tunnel upgrade that serves the full local system at the same URL.
+
+## 2026-07-15 Australia/Sydney - Remove cloud mirror key login per Owner directive
+
+- home.linzezhang.com now opens directly with no key (Owner directive); pages are publicly readable and the tradeoff plus the recommended Cloudflare Access private-mode upgrade are disclosed in deploy/cloudflare/README.md. The /grade endpoint keeps its one-entry-per-lesson-per-day cap and the local pull keeps Sydney-day dedup. Receipt recorded in config_changes; the key scheme remains recoverable from git history (a0a79743).
+
+## 2026-07-15 Australia/Sydney - v1.1 six-theme frontend, R5 bioRxiv shadow source, R6 Cloudflare hybrid mirror
+
+- Rebuilt the six-theme frontend per the v1.1 supplement pack: per-theme design languages with structural switches (three full-bleed video heroes with JS-property-only media control, a zero-radius cosmic vitals dashboard fed by real run data, sidebar/topbar/dock navigation, effects layers, reduced-motion support); verified per theme in a browser with zero console errors.
+- R5: bioRxiv shadow source using the stage-2-accepted preprint adapter — zero-ingestion shadow evaluation through the same gates/features, a real 14-day shadow report (420 candidates, 0 fetch errors), a one-page enable proposal, and an Owner-only promotion click with receipted config change and 3-failure auto-disable.
+- R6: Cloudflare hybrid mirror deployed live at home.linzezhang.com (Worker + D1 one-way mirror + recall write-back queue + daily cron); no-key/incognito access returns 401; a cloud grade round-trips into local FSRS with same-Sydney-day dedup; local loop unaffected when offline. R2 weekly snapshots degrade to local until the Owner enables R2; the owner-key uses a rotatable D1-hash scheme (secret-store write was denied by local policy — disclosed in deploy/cloudflare/README.md).
+- Production boundary unchanged: no SMTP send, no scheduler install, no Release, no restore, DAILY_OPERATION disabled.
+
+## 2026-07-15 Australia/Sydney - Readable HTML email preview beside MIME .eml
+
+- `deliver_lesson` now writes a browser-openable `.html` preview next to the MIME `.eml` outbox artifact (the wire format reads as encoded text when opened directly, which the Owner perceived as garbled); existing previews backfilled and the Friday checklist documents the distinction. No behavior change to authorization, idempotency, or learning-state separation.
+
+## 2026-07-14 Australia/Sydney - V0.3 rebuild R0: decision freeze and drift repair
+
+- Imported the Owner-accepted V0.3 rebuild task pack as the active development contract at `docs/v03/` (PRD, architecture, delivery roadmap R0-R6, <110 KB total); V7.2 remains the frozen fail-closed machine lock for the legacy runtime.
+- Registered the 38-parameter thresholds registry as the single parameter truth at `config/thresholds_v0_3.yaml` (Owner-decided weights: knowledge_gap 20, evidence_quality 5, diversity 17 with single-board cap 10; abstain threshold 55 is a placeholder until the R1-3 replay recalibration).
+- Cleared legacy config residues: `production_auto_enable_after_acceptance` is now false and the five-message email split is demoted to a template capability (`split_mode: single_lesson_mirror`).
+- Aligned three version pointers (CURRENT.yaml `rebuild_v03`, `docs/v03/STATUS.yaml`, HANDOFF/01 top section) and froze the giant governance documents in place with banners plus `archive/README.md` registry (reading surface 8.1 MB -> ~115 KB).
+- No production side effects: DAILY_OPERATION, SMTP, scheduler, Release, and restore all remain disabled.
+
+## 2026-07-10 21:50:12 Australia/Sydney - Persistent DAILY_OPERATION authorization prerequisite fail-closed hardening
+
+- Fixed `build_daily_operation_persistent_enablement_authorization_state` so a valid live authorization artifact cannot override failed owner-decision or controlled-run prerequisites.
+- Added `blocked_persistent_daily_operation_authorization_prerequisites_failed` and made all three authorization/enablement flags true only when every check passes.
+- Normalized missing prerequisite JSON mappings to fail-closed empty mappings instead of raising `AttributeError`, and made the validator independently reject PASS plus failed checks or a missing/extra prerequisite check key.
+- Added direct and temporary-root readiness/preflight regressions; temporary authorization fixtures stay outside the repository and failed prerequisites require exit 2.
+- Updated `MOD-ADP-100` / `FORM-ADP-102` governance without changing model IDs, parameter profiles, runtime version `0.23.0`, provisional governance version `0.23.1`, CURRENT, V7, or any production state.
+- The real `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` remains absent; DAILY_OPERATION, SMTP, scheduler/LaunchAgents, Release, and restore remain disabled.
+
 ## 2026-07-01 20:39:16 Australia/Sydney - S2PMT07 daily operation secret and artifact preflight repair
 
 - Added reviewed local-runner SMTP secret key-presence metadata support for production preflight without logging secret values.

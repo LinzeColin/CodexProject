@@ -1,3 +1,0 @@
-symbol,market,asset_class,tradability,currency,timezone,source,source_symbol,notes
-US.SPY,US,ETF,LIKELY_TRADABLE_NEEDS_ACCOUNT_PERMISSION_CHECK,USD,America/New_York,moomoo_opend,US.SPY,example only; replace with your tradable symbol
-ALIPAY_FUND_CODE,ALIPAY_FUND,FUND,CONFIRMED_SOURCE_NEEDS_ORDER_RULE_CHECK,CNY,Asia/Shanghai,alipay_fund_nav_csv,fund code from Alipay,CSV needs date and nav columns

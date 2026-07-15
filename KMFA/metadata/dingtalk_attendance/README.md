@@ -6,11 +6,11 @@ Current owner usability status is `UNAVAILABLE`. Morning and evening results are
 
 The module is live-only and uses the local `dws` CLI as its current DingTalk attendance backend. It does not create sample employees, sample punches, or fixture attendance records. When DWS is unavailable, scripts return `DWS_UNAVAILABLE`.
 
-The live DWS backend uses DingTalk attendance-group membership as the reporting scope. It resolves the current official report column IDs with `dws attendance report columns`, then reads the target Beijing business date with `dws attendance report query-data` in batches of 5 users. The exact official `考勤结果` and official count columns are the only source for user-visible attendance totals and anomaly classification.
+The live DWS backend uses DingTalk attendance-group membership as the reporting scope. Morning/evening temporary reminders query every scoped member through current `dws attendance record get` and `dws attendance summary` data for the exact Beijing business date. Successful empty punch data remains complete coverage; a query failure, missed member, wrong date, or parse failure stops the reminder.
 
-`dws attendance record get` and `dws attendance summary` remain private diagnostic evidence only. Their record count, two-punch heuristic, and monthly-summary labels must never override the official report result. The scheduled official collector intentionally skips this per-member legacy sweep after exact parity, preventing 42 users × 2 endpoints × retries from blocking production. Explicit legacy/replay diagnostics remain available outside the scheduled production path. DWS subprocesses explicitly receive `TZ=Asia/Shanghai` because those legacy endpoints convert dates through the process-local timezone; this does not add a timezone field to the Codex automation schedule.
+The final daily result remains separate: it requires an independently frozen official XLS/XLSX export and exact reconciliation of the 48 required fields. Final waiting or failure never changes a completed temporary reminder, and temporary data never substitutes for final evidence. DWS subprocesses explicitly receive `TZ=Asia/Shanghai` for business-date conversion; this does not add a timezone field to the Codex automation schedule.
 
-After exact official parity succeeds, an isolated permission or call failure from either diagnostic endpoint is archived as a diagnostic failure only; it cannot block or alter the official attendance notification. The older legacy collector keeps its original PAT fail-fast behavior.
+The private R6 coordinator persists aggregate-only reminder integrity errors and coverage counts to `state.json` and the Chinese `运行状态.md`; it never writes employee detail into public GitHub state.
 
 Official parity gates are fail closed:
 

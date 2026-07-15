@@ -7,12 +7,13 @@ Governance spec version: `1.0.0`
 
 - Product version: `1.0.0`
 - Product version status: `provisional`
-- Current phase: `B`
-- Current gate: `GOV-SEMANTIC-OPME-in-progress`
-- Confirmed iterations: 3
+- Current phase: `IDS-STAGE036-REVIEW`
+- Current gate: `IDS-STAGE037-P1-GATE`
+- Confirmed iterations: 4
 - Reconstructed development events: 1
-- Latest remediation task: `S3PCT01`
-- Current product task: `TASK-OPME-B-001`
+- Latest remediation task: `IDS-V0_1-STAGE036-REVIEW`
+- Current staged-delivery task: `IDS-V0_1-STAGE036-REVIEW` (`completed_reviewed_local`)
+- Parallel legacy assurance task: `TASK-OPME-B-001`
 - Blockers: `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence.
 
 ## Confirmed Iterations
@@ -71,6 +72,22 @@ Governance spec version: `1.0.0`
 - Remaining risks: full API/backend tests still require a dependency-prepared environment with `pydantic` and `fastapi`; production Docker/browser/provider runtime was not started.
 - Rollback: revert S3PCT01 code, scripts, tests, stage-gate evidence, rendered governance files, and run manifest.
 - Next step: continue to `S3PCT02` for PFI lifecycle/cache/SQLite/resume stability.
+
+### `ITER-20260711-IDS-STAGE036-REVIEW`
+
+- Date: 2026-07-11 (Australia/Sydney)
+- Fact level: VERIFIED local engineering-contract evidence
+- Version before/after: `1.0.0` / `1.0.0`
+- Result commit: `PENDING`
+- Task IDs: `IDS-V0_1-STAGE036-REVIEW`, `ACC-STAGE-036`
+- Goal: review and remediate the STAGE-036 database-quality constraint contract without connecting PostgreSQL or using raw/fake IDS data.
+- Model changes: none; diagnostic rules and LLM routing are unchanged.
+- Parameter changes: none; active model/formula parameter values are unchanged.
+- Delivered repairs: permanently blocked v0.1 `up` emission, executable transactional `down` runner, pre-existing-object apply gate, ownership-safe public-schema rollback, exact contract/event shapes, malformed-input failure closure, nine bounded profile-query hashes, five-source Git/path/hash snapshot binding, six single-read dependency hashes, and P1-P4/review event semantics.
+- Verification: two independent review rounds plus final checker-output verification closed all nineteen findings; the second review had no remaining Critical or Important issue, and the final stale owner projection was repaired before commit. Stage036 41 tests OK; Stage031-036 130 tests OK; Stage026-030 75 tests OK; IDS v0.1 discovery 523 tests OK; Stage005 133 tests OK and validator valid=true; checker 17/17 delivery, 10/10 Phase 4, and 9/9 source checks true; live results remain NOT_EXECUTED.
+- Remaining boundary: no live row profile or PostgreSQL readiness evidence exists; `BATCH031_040` remains `push_allowed=false`.
+- Rollback: revert the Stage036 review commit only; do not execute SQL or touch raw metadata, databases, runtime outputs, app entries, GitHub state, batch gates, or STAGE-037.
+- Next step: a later run may enter `IDS-V0_1-STAGE037-P1` from `IDS-STAGE037-P1-GATE`.
 
 ## Reconstructed Development Events
 

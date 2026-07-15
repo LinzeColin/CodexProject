@@ -1,0 +1,157 @@
+# R0-7 阶段状态页 —— 每阶段一行真相（人话），与 CURRENT.yaml rebuild_v03 段、HANDOFF/01 顶部指针三处一致
+schema_version: 1
+project: adp-rebuild-v03
+contract: docs/v03/CONTRACT.md
+thresholds: config/thresholds_v0_3.yaml
+timezone: Australia/Sydney
+production_side_effects: none_enabled
+
+stages:
+  R0:
+    gate: repo_single_truth
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      一页决策清单（DECISIONS.md）；38 参数一页看全（config/thresholds_v0_3.yaml）；
+      旧配置自动启用与五封信残留已清除（owner_controls.yaml diff 即改前/改后对照）；
+      三处版本指针一致（CURRENT.yaml rebuild_v03 / 本页 / 项目 AGENTS.md V0.3 节；原 HANDOFF/01 指针随仓库拆分迁移移除）；
+      巨型文档原地冻结（archive/README.md，阅读面 8.1MB→115KB ≈70:1）；
+      运行记录五态契约采纳（docs/v03/04_开发记录/RUN_MANIFEST契约.md，R1 实现）。
+    tasks: {R0-1: done, R0-2: done, R0-3: done, R0-4: done, R0-5: contract_adopted_impl_in_R1, R0-6: done_frozen_in_place, R0-7: done, R0-8: done}
+    evidence:
+      - docs/v03/DECISIONS.md
+      - config/thresholds_v0_3.yaml
+      - archive/README.md
+      - git diff (owner_controls.yaml R0-3 对照)
+  R1:
+    gate: five_step_loop_48h_real_dates
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      一条命令（adp run）5 分钟内跑完发现→证据→选择→学习→排程并落五态 manifest；
+      真实语料 1026 篇文档/7913 条声明（30 天，arXiv 官方 API）；
+      今日页给出「为什么选它/为什么不是第二名」（8 特征贡献）；
+      八段讲义句句可点跳出处（三步到原文）；四档自评给出不同 FSRS-6 间隔；
+      手动改状态可撤销且单独记账；同日重复 run 幂等跳过（未运行行）；
+      30 天回放对照 31 行（复审修复后一致率口径 29%，P-11），弃权线 55→59.6 已按注册表规则重校（附回执）。
+      48 小时改制口径（诚实披露）：三个连续真实日期（07-12/07-13 为真实数据 backfill_replay、
+      07-14 为 live）manifest 覆盖 48h+ 的真实数据窗口；backfill 行的执行时刻均在 07-14 晚
+      （run_id 即 as-of 时间、trigger 如实标注）。另有同日幂等「未运行」行佐证重复触发安全；
+      07-15 悉尼午夜后已追加真实 live 运行（run_id 2026-07-15T00:03:36+10:00，新讲义 83.2 分、
+      昨日回忆项按 FSRS 到期进入复习队列）——live 运行覆盖两个不同悉尼日历日。
+    tasks: {R1-1: done, R1-2: done, R1-3: done_recalibrated, R1-4: done_degraded_channel,
+            R1-5: done, R1-6: done, R1-7: done, R1-8: done, R1-9: done, R1-10: done,
+            R1-11: done_four_real_dates_two_live_days}
+    degraded_features:
+      - lesson_generation 走确定性模板通道（本机无 codex CLI，属 D-17 合同内降级；manifest 如实记「降级」）
+    evidence:
+      - data/run_manifests.jsonl
+      - data/lessons/
+      - data/replay_30d.json
+      - config/thresholds_v0_3.yaml (abstain 59.6 + config_changes 回执)
+      - tests/test_adp_invariants.py · tests/test_adp_selection.py (912 tests OK)
+  R2:
+    gate: correction_reopens_knowledge
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      声明全部落库可检索（7900+ 条，FTS5；证据与纠错页任意声明三步到原文）；
+      选中篇自动做 OpenAlex/Semantic Scholar 增强（S2 真实成功、证据级升「全文级」，
+      OpenAlex 404 如实降级不阻塞——正是合同行为）；
+      注入一次论文改版演示：自动生成纠错→受影响讲义/声明/复习态影响图→讲义重开为
+      「重开待复习」→今日页/队列页红色强提醒（手动标记不豁免）→重新复习后一键关闭；
+      旧发送记录 M1–M4 已迁移为 delivery 事件（不映射学会），旧评分快照只存档不复算。
+    tasks: {R2-1_enrich: done_degradable, R2-2_claims_searchable: done, R2-3_version_detect_reopen: done,
+            R2-4_strong_reminder: done, R2-5_legacy_sent_migration: done, R2-6_legacy_scores_archive: done}
+    evidence:
+      - tests/test_adp_invariants.py::test_inv4 (注入改版全链路)
+      - src/adp/corrections.py · src/adp/enrich.py
+      - deliveries 表 legacy_email M1-M4 · legacy_archive 表评分快照
+      - /corrections 页（检索+纠错通知+差异对照）
+  R3:
+    gate: idempotent_mirror_and_radar_one_friday
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      新邮件模板与网页同源渲染（单文件 Jinja2、内联样式、<80KB）；
+      交付演示（零副作用改制 D-23）：无授权凭证 → BLOCKED_AUTH 失败关闭 + .eml 预览落
+      data/outbox/（等 Owner 签发凭证后同一管道即真发）；同日重发被拒并给出人话原因；
+      第一份真实周雷达（本周入选 2 篇、弃权 0 天、回忆 1 次、均分 3.0、债务 0）+
+      知识债务账本上线；迁移练习/结果记录入口在今日页（失败也记，反哺排序）；
+      launchd 定时模板生成于 deploy/launchd/（含睡眠补跑说明与心跳契约），未安装——
+      安装动作本身即 Owner 的常驻授权。
+    tasks: {R3-1_email_template: done_preview_mode, R3-2_auth_credential: done_fail_closed,
+            R3-3_weekly_radar_debts: done, R3-4_transfer_practice: done, R3-5_launchd_heartbeat: done_not_installed}
+    evidence:
+      - data/outbox/email_L-2026-07-14-2607.06008_2026-07-14.eml
+      - data/radar_week_2026-07-14.json
+      - deploy/launchd/com.linzezhang.adp.v03.daily.plist
+      - deliveries 表（BLOCKED_AUTH + duplicate 拒绝回执）
+  R4:
+    gate: pilot_report_one_friday
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      可用版本 + 10 分钟亲手验收清单（docs/v03/FRIDAY_DELIVERY.md 与 /pilot 页）；
+      影子记录常开（每日第二名与弃权随 selections 表落库）；影子对照页实证盲点二：
+      近 15 个数据日放开多样性 10→17 改变 0 天头名（单板块期差异小，机制已验证）；
+      首次参数校准已完成（弃权线 55→59.6，提案→回放预览→应用→回执全链路）；
+      试运行报告四指标由真实事件计算（样本量小如实标注）；问题台账 7 条、
+      「第 2 次修复」条目 0；持久运行决策三键（批准/退回/降级）留给 Owner 当场拍板。
+    tasks: {R4-usable_build: done, R4-shadow: done, R4-calibration: done_abstain_line,
+            R4-pilot_report: done, R4-decision: awaiting_owner_click}
+    evidence:
+      - docs/v03/FRIDAY_DELIVERY.md
+      - docs/v03/04_开发记录/问题台账.md
+      - /pilot 页（四指标+影子对照+决策卡）
+  R5:
+    gate: per_source_promotion
+    status: shadow_running_awaiting_owner_promotion
+    completed_at: "2026-07-15"
+    owner_visible: >
+      bioRxiv 影子源三步走完机器面：启用提案一页（docs/v03/R5_启用提案_bioRxiv.md）；
+      真实 14 天影子报表（420 篇候选、14/14 天有数据、全部过弃权线、2 天会换头名、0 抓取失败）；
+      影子期零入库（结构性零干扰）；雷达页上板卡=预览→你点应用→回执，随时可撤回；
+      连续 3 次抓取失败自动停用。上板动作本身属于你（自迭代边界）。
+    evidence:
+      - data/shadow_biorxiv_report.json
+      - docs/v03/R5_启用提案_bioRxiv.md
+      - src/adp/shadow_biorxiv.py
+  J4_boards:
+    gate: boards_2_to_5_live_with_transparent_sources
+    status: live
+    completed_at: "2026-07-15"
+    owner_visible: >
+      Owner 指令（2026-07-15）：板块二～五上线。板块二（Nature/Science/Cell 官方 RSS）、
+      板块三（Google News 政策聚合 + RSSHub 路由保留：公共实例限流如实降级）、
+      板块四（美联储/SEC 官方 RSS）为「雷达浏览流」——真实抓取（6/7 源成功、
+      累计入库 138 条，重复运行幂等；RSSHub 路由连续失败已自动停用并跳过后续抓取）、
+      逐源健康纳管（连续 3 次失败自动停用且不再抓取）；板块五聚合板块二～四。
+      雷达页每板块展示数据源明细：来源名/平台/网站/订阅方式/官方或聚合/健康/累计条数/最近抓取。
+      边界（如实）：板块二～四不进每日精选候选池——池整合与多样性 10→17 是任务包明文的
+      独立提案（提案→回放→应用→回执）；bioRxiv 上板仍是雷达页 Owner 专属按钮。
+    evidence:
+      - config/boards_v0_3.yaml（注册表唯一真相，PARAM-ADP-1123）
+      - src/adp/boards.py · tests/test_adp_boards.py
+      - data/boards_fetch_report.json（首轮真实抓取报表）
+  R6:
+    gate: phone_access_full_system_via_tunnel_with_mirror_fallback
+    status: completed_live_end_to_end
+    completed_at: "2026-07-15"
+    owner_visible: >
+      手机直接打开 https://adp.linzezhang.com（无钥匙；公开可读代价与 Access 私有化方案
+      披露于 deploy/cloudflare/README.md）。Owner 07-15 指令「全部迁移到云端、手机打开
+      一模一样的完整系统」已落地：Worker 反代 Cloudflare Tunnel（隧道 adp/3bc9d50e，
+      connector+本机网页由 LaunchAgents 常驻）直达本机 127.0.0.1:8787 完整六主题系统，
+      评分即时过 FSRS；本机睡眠/隧道断开自动回落只读镜像+回传队列（已实测）。
+      无登录入口的写操作分级：隧道来访只放行浏览+主动回忆评分，Owner 决策类 POST
+      （上板/试点决策/状态编辑/纠错/撤销/迁移）远程一律 403 仅限本机（remote_guard+保护测试）。
+      2026-07-15 收尾：你点授权后 adp-origin 回源记录已建，直连端到端实测
+      （云端打开完整系统 183ms、/radar 200、远程决策 POST 403）；主页
+      home.linzezhang.com 已上线（极简枢纽 Worker，链接 ADP 与五板块）。
+      降级披露：R2 周快照待你在仪表盘启用 R2（30 秒），当前落本地 30 份滚动；
+      访问控制历史：钥匙方案已按 Owner 指令移除（git 历史 a0a79743 可恢复）。
+    evidence:
+      - deploy/cloudflare/ (worker.js · wrangler.jsonc · schema.sql · README.md · launchd/)
+      - src/adp/mirror.py · src/adp/webapp.py(remote_guard)
+      - config_changes 回执与 D1 events_inbox

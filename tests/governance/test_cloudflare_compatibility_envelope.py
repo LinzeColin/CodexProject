@@ -39,7 +39,6 @@ PROJECT_TASK_FILES = (
     ROOT / "EEI/docs/governance/delivery_tasks.yaml",
     ROOT / "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
     ROOT / "PFI/docs/governance/delivery_tasks.yaml",
-    ROOT / "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
 )
 
 

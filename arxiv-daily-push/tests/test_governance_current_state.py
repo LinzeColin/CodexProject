@@ -36,6 +36,14 @@ def _assert_final_commit_binding_allows_current_mvp_prep(
     testcase.assertTrue(any(marker in assurance for marker in assurance_markers), assurance)
 
 
+
+# 仓库拆分迁移（owner commit f2966dfca）移除了根级 HANDOFF/；这些依赖该历史工件的
+# final-bundle/S3 证据面测试在其缺席时冻结跳过（运行时 fail-closed 门另有独立测试保护），
+# HANDOFF 在 ADP 迁移后的新仓库回归时自动复活。
+_HANDOFF_ROOT_PRESENT = (Path(__file__).resolve().parents[2] / "HANDOFF" / "00_下一Agent先读.md").exists()
+_HANDOFF_SKIP_REASON = "root HANDOFF/ removed by repo-split migration (f2966dfca); legacy bundle evidence surface frozen"
+
+
 class GovernanceCurrentStateTests(unittest.TestCase):
     def test_human_review_markdown_formula_does_not_use_machine_implementation_refs(self) -> None:
         formula_registry = (ADP_ROOT / "docs/governance/formula_registry.yaml").read_text(encoding="utf-8")
@@ -1623,6 +1631,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, model_spec)
 
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
     def test_s3_daily_operation_handoff_records_post_acceptance_blocker(self) -> None:
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
@@ -1649,6 +1659,30 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-SYNC", handoff)
         self.assertIn("ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT", handoff)
         self.assertIn("ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP", handoff)
+        self.assertIn("ADP-MVP-READY-S3-PORTABLE-VALIDATION-CLOSEOUT", handoff)
+        self.assertIn("portable_validation_status=pass", handoff)
+        self.assertIn("full_monorepo_governance_status=blocked_sparse_external_projects", handoff)
+        self.assertIn("capture_plan_state_source=portable_no_implicit_home_state", handoff)
+        self.assertIn("显式 `--state-dir` 才能读取本机 runtime", handoff)
+        self.assertIn("ADP-MVP-READY-FINAL-LOCAL-CLOSEOUT-AUDIT", handoff)
+        self.assertIn("local_closeout_upload_status=not_uploaded", handoff)
+        self.assertIn("final_github_main_upload_allowed_after_mvp_ready=true", handoff)
+        self.assertIn("中途不要上传 GitHub main，不开 PR，不创建 issue", handoff)
+        self.assertIn("ADP-MVP-READY-S3-PERSISTENT-AUTH-GATE-PRECHECK", handoff)
+        self.assertIn("authorization_reference_chain_validated=true", handoff)
+        self.assertIn("owner_decision_ref", handoff)
+        self.assertIn("readiness_gate_ref", handoff)
+        self.assertIn("request_artifact_ref", handoff)
+        self.assertIn("ADP-MVP-READY-S3-INVALID-AUTH-ARTIFACT-ROOT-GATE-PROOF", handoff)
+        self.assertIn("invalid_authorization_artifact_errors_exposed=true", handoff)
+        self.assertIn("authorization_artifact_validation_errors", handoff)
+        self.assertIn("ADP-MVP-READY-FINAL-LOCAL-PACKAGE-AUDIT", handoff)
+        self.assertIn("local_package_file_count=32", handoff)
+        self.assertIn("semantic_change_file_count=13", handoff)
+        self.assertIn("timestamp_sync_file_count=19", handoff)
+        self.assertIn("discardable_file_count=0", handoff)
+        self.assertIn("origin_main_replay_conflict_count=0", handoff)
+        self.assertIn("full_adp_unittest_count=882", handoff)
         self.assertIn(f"| 当前治理 gate | `{current_gate}`", handoff)
         self.assertIn(
             "[功能任务测试证据追踪链](../arxiv-daily-push/用户中心/功能任务测试证据追踪链.md)",
@@ -1864,6 +1898,30 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT", mvp_prep)
         self.assertIn("S3_HANDOFF_CURRENT_GATE_ALIGNMENT_NO_RUNTIME_ENABLEMENT", mvp_prep)
         self.assertIn("S3 first-read handoff", mvp_prep)
+        self.assertIn("ADP-MVP-READY-S3-PORTABLE-VALIDATION-CLOSEOUT", mvp_prep)
+        self.assertIn("portable_validation_status=pass", mvp_prep)
+        self.assertIn("full_monorepo_governance_status=blocked_sparse_external_projects", mvp_prep)
+        self.assertIn("capture_plan_state_source=portable_no_implicit_home_state", mvp_prep)
+        self.assertIn("显式 `--state-dir` 才能读取本机 runtime", mvp_prep)
+        self.assertIn("ADP-MVP-READY-FINAL-LOCAL-CLOSEOUT-AUDIT", mvp_prep)
+        self.assertIn("local_closeout_upload_status=not_uploaded", mvp_prep)
+        self.assertIn("final_github_main_upload_allowed_after_mvp_ready=true", mvp_prep)
+        self.assertIn("中途不要上传 GitHub main，不开 PR，不创建 issue", mvp_prep)
+        self.assertIn("ADP-MVP-READY-S3-PERSISTENT-AUTH-GATE-PRECHECK", mvp_prep)
+        self.assertIn("authorization_reference_chain_validated=true", mvp_prep)
+        self.assertIn("owner_decision_ref", mvp_prep)
+        self.assertIn("readiness_gate_ref", mvp_prep)
+        self.assertIn("request_artifact_ref", mvp_prep)
+        self.assertIn("ADP-MVP-READY-S3-INVALID-AUTH-ARTIFACT-ROOT-GATE-PROOF", mvp_prep)
+        self.assertIn("invalid_authorization_artifact_errors_exposed=true", mvp_prep)
+        self.assertIn("authorization_artifact_validation_errors", mvp_prep)
+        self.assertIn("ADP-MVP-READY-FINAL-LOCAL-PACKAGE-AUDIT", mvp_prep)
+        self.assertIn("local_package_file_count=32", mvp_prep)
+        self.assertIn("semantic_change_file_count=13", mvp_prep)
+        self.assertIn("timestamp_sync_file_count=19", mvp_prep)
+        self.assertIn("discardable_file_count=0", mvp_prep)
+        self.assertIn("origin_main_replay_conflict_count=0", mvp_prep)
+        self.assertIn("完整 ADP unittest `882/882` 通过", mvp_prep)
         self.assertIn("[功能任务测试证据追踪链](./功能任务测试证据追踪链.md)", mvp_prep)
         self.assertIn("不进入 S3/DAILY_OPERATION", mvp_prep)
         self.assertIn("只做复审、修补、用户向可读性、证据同步、测试补强和低风险局部修复", mvp_prep)
@@ -1932,6 +1990,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("handoff_source_baseline=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
         self.assertIn("handoff_first_main_commit=91f22b876b05f373229ef4bf5de2e67bdb927c0b", model_params)
         self.assertNotIn("current_main=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
+
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
 
     def test_daily_operation_enablement_preflight_root_gate_is_owner_readable(self) -> None:
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
@@ -2240,6 +2300,49 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(event["scheduler_enabled"])
         self.assertFalse(event["release_packaging_enabled"])
         self.assertFalse(event["production_restore_enabled"])
+
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
+    def test_persistent_authorization_prerequisites_are_fail_closed_and_governed(self) -> None:
+        task_id = "ADP-MVP-READY-S3-PERSISTENT-AUTH-PREREQUISITE-FAIL-CLOSED"
+        status = "blocked_persistent_daily_operation_authorization_prerequisites_failed"
+        phase_record = (
+            ADP_ROOT
+            / "docs/phase_records/PHASE_ADP_MVP_READY_S3_PERSISTENT_AUTH_PREREQUISITE_FAIL_CLOSED.md"
+        )
+        delivery_tasks = (ADP_ROOT / "docs/governance/delivery_tasks.yaml").read_text(encoding="utf-8")
+        traceability = (ADP_ROOT / "docs/governance/TRACEABILITY_MATRIX.csv").read_text(encoding="utf-8")
+        formula_registry = (ADP_ROOT / "docs/governance/formula_registry.yaml").read_text(encoding="utf-8")
+        model_spec = (ADP_ROOT / "docs/governance/MODEL_SPEC.md").read_text(encoding="utf-8")
+        governed_surfaces = [
+            (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8"),
+            (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8"),
+            (ADP_ROOT / "功能清单.md").read_text(encoding="utf-8"),
+            (ADP_ROOT / "开发记录.md").read_text(encoding="utf-8"),
+            (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8"),
+        ]
+
+        self.assertTrue(phase_record.exists())
+        phase_text = phase_record.read_text(encoding="utf-8")
+        self.assertIn(task_id, delivery_tasks)
+        self.assertIn(task_id, traceability)
+        self.assertIn(task_id, phase_text)
+        self.assertIn(status, phase_text)
+        self.assertIn(status, model_spec)
+        self.assertIn(
+            "stage2_final_gate.py::build_daily_operation_persistent_enablement_authorization_state",
+            formula_registry,
+        )
+        self.assertIn(
+            "stage2_final_gate.py::validate_daily_operation_persistent_enablement_authorization_state",
+            formula_registry,
+        )
+        for surface in governed_surfaces:
+            self.assertIn(task_id, surface)
+            self.assertIn(status, surface)
+        self.assertFalse(
+            (REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json").exists()
+        )
 
 
 if __name__ == "__main__":

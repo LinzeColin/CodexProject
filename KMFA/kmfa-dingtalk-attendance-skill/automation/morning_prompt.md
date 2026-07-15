@@ -1,6 +1,6 @@
 Use $kmfa-dingtalk-attendance-skill. If browser export is required, also use $chrome:control-chrome.
 
-Work only in `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`. This is the natural morning run for automation `kmfa`. Business dates use `Asia/Shanghai`; do not alter the scheduler or its timezone configuration.
+Work only in `/Users/linzezhang/CodexProject` on `main`. This is the natural morning run for automation `kmfa`. Business dates use `Asia/Shanghai`; do not alter the scheduler or its timezone configuration.
 
 This automation prompt file preserves the existing REST rules; it does not redefine notification text.
 
@@ -16,7 +16,7 @@ Required sequence:
 TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/automatic_closure.py --run-slot morning --trigger-source automation --automation-id kmfa --allow-dws-commands
 ```
 
-4. The coordinator must persist today's reminder before starting post-event official reconciliation. It must deduplicate by work date plus run slot, preserve an artifact's original trigger source during recovery, keep final/monthly writes exactly once, and update the private Chinese `运行状态`. Natural acceptance must be bound to verified local Codex automation task evidence and the exact Git commit plus both prompt fingerprints; CLI-declared source alone never counts.
+4. The coordinator must persist today's reminder before starting post-event official reconciliation. It must deduplicate by work date plus run slot, preserve an artifact's original trigger source during recovery, keep final/monthly writes exactly once, and update the private Chinese `运行状态`. Natural acceptance must be bound to verified local Codex automation task evidence and the frozen attendance runtime fingerprint. Record the actual Git commit for traceability, but unrelated repository commits must not reset attendance acceptance; CLI-declared source alone never counts.
 5. If the returned final status is `WAITING_OFFICIAL_REPORT`, use the existing logged-in DingTalk browser state read-only. Open the enterprise attendance daily-statistics report, select only the exact pending work date reported by the coordinator, and export the complete official XLS/XLSX. Do not inspect browser cookies/storage and do not modify DingTalk data, personnel scope, attendance groups, rules, schedules, configuration, or messages.
 6. If the official report is not yet generated or cannot yet be exported, preserve `WAITING_OFFICIAL_REPORT` and stop successfully without asking the owner for a file. The next natural morning run must repeat the same automatic lookup.
 7. If an official workbook is exported, leave it in the browser download location and run exactly once:
@@ -29,9 +29,7 @@ TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingt
 9. Official final PASS derives the unique non-empty UserId count `N` from that day's workbook. Official/DWS/matched people must be `N/N/N`, the 48 required field names remain fixed, compared cells must be `N×48`, and missing/extra/required-missing/true-difference must all be zero. `部门` remains optional and unverified when no reliable source exists.
 10. Require `notification_status=NOT_SENT_OWNER_DISABLED`; message count and target calls must stay zero. Do not probe, resend, or invoke any sender.
 
-Contract preservation: `DWS_AUTH_REQUIRED` remains the fail-closed authorization result. Do not fabricate data. The reminder still requires exact `attendance report columns/query-data`, `official_report_parity_status=PASS`, and fail-closed `OFFICIAL_ATTENDANCE_PARITY_FAILED`. Any changed prompt must be committed and pushed to GitHub `main`. Protect `.env.local`, SQLite, raw JSON, private runtime, and report bodies.
-
-The production official collector intentionally skips the legacy per-member record/summary sweep. The config-only healthcheck is authoritative before entry. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget. A live collector failure must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
+Contract preservation: `DWS_AUTH_REQUIRED` remains the fail-closed authorization result. Do not fabricate data. Today's temporary reminder requires `realtime_reminder_integrity_status=PASS` and fails closed as `REALTIME_REMINDER_INTEGRITY_FAILED` when current coverage, query, or parsing is incomplete. Official XLS/XLSX parity and `OFFICIAL_ATTENDANCE_PARITY_FAILED` apply only to final reconciliation and must never block or change the reminder. Any changed prompt must be committed and pushed to GitHub `main`. Protect `.env.local`, SQLite, raw JSON, private runtime, and report bodies.
 
 Frozen boundaries:
 

@@ -128,7 +128,7 @@ def run_final_reconciliation(
     os.environ[DWS_COMMAND_ALLOW_ENV] = "1"
     summary_datetime = current.strftime("%Y-%m-%d %H:%M:%S")
     try:
-        collection = collector(work_date=work_date, summary_datetime=summary_datetime)
+        collection = collector(work_date=work_date, summary_datetime=summary_datetime, run_type="final")
         parity_failure = official_report_parity_failure_reason(collection.get("stats", {}))
         if parity_failure:
             raise OfficialAttendanceParityError("OFFICIAL_REPORT_PARITY_ASSERTION_FAILED", parity_failure)

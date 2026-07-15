@@ -348,9 +348,18 @@ def classify_project_file(project: dict[str, Any], path: str) -> set[str]:
         classes.add("test_or_evidence_change")
     if lower.startswith(("artifacts/", "evidence/", "outputs/")) or "evidence" in lower:
         classes.add("test_or_evidence_change")
-    if lower.startswith(("data/", "datasets/")):
+    is_data_path = lower.startswith(("data/", "datasets/"))
+    if is_data_path:
         classes.add("data_snapshot_change")
-    if lower.startswith(("config/", "configs/")) or lower.endswith((".toml", ".yaml", ".yml", ".json", ".ini")):
+    # A manifest/config-shaped file that lives under a data snapshot directory is
+    # part of that snapshot, not a parameter or configuration change. Without this
+    # guard, removing a data archive's own manifest.json would demand edits to the
+    # parameter registry, forcing dishonest entries for a change that touches no
+    # parameters.
+    if not is_data_path and (
+        lower.startswith(("config/", "configs/"))
+        or lower.endswith((".toml", ".yaml", ".yml", ".json", ".ini"))
+    ):
         classes.add("parameter_or_config_change")
     behavior_keywords = (
         "scoring",
@@ -440,9 +449,30 @@ def base_file_text(base: str | None, path: str) -> str | None:
     return result.stdout if result.returncode == 0 else None
 
 
+def migrated_project_paths() -> tuple[str, ...]:
+    """Paths of projects that have been split out into their own repositories.
+
+    Their governance history lives on in the target repo, so removing it here is
+    a registered migration, not the history destruction the append-only rule
+    exists to prevent.
+    """
+    config = load_projects()
+    paths = []
+    for entry in structural.as_list(config.get("migrated_projects")):
+        if not isinstance(entry, dict):
+            continue
+        path = entry.get("path")
+        if isinstance(path, str) and path:
+            paths.append(path.rstrip("/") + "/")
+    return tuple(paths)
+
+
 def validate_append_only(validation: SyncValidation, changed: list[str], base: str | None) -> None:
+    migrated = migrated_project_paths()
     for path in changed:
         if not path.endswith("docs/governance/development_events.jsonl"):
+            continue
+        if path.startswith(migrated):
             continue
         new_path = ROOT / path
         if not new_path.exists():

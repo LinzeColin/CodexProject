@@ -1,0 +1,68 @@
+# ADP 阈值注册表 V0.3 —— 全系统唯一参数真相源
+# 状态: ACTIVE（R0-2 登记；Owner 2026-07-14 goal 指令接受任务包即为拍板依据；
+#       abstain_threshold 已完成 R1-3 回放重校 55→59.6，回执见 data/config_changes.jsonl）
+# 取代: formula_registry.yaml / model_registry.yaml / 模型参数文件.md → 原地冻结（见 docs/v03/DECISIONS.md E 节）
+# 修改规则: 前端「提案→预览→应用」或每周自迭代提案；任何改动必附 30 天回放对照与回执。
+# 特征抽取器内部塑形常数属「排序策略」版本域（FEATURE_EXTRACTOR_VER，src/adp/config.py），
+# 不在本注册表 38 参数内；改动必须换版本号并在 CHANGELOG 落行。
+
+registry:
+  id: thresholds-v0.3
+  status: active
+  param_count: 38   # 5 门 + 8 权 + 4 选择 + 21 复习（FSRS-6）
+
+# ---- 第一段 · 资格硬门（5，布尔，先淘汰，不参与打分） ----
+eligibility_gates:
+  evidence_traceable: true      # 关键声明有原文定位；不可溯源直接拦截（证据质量因此只需低权重）
+  official_https_source: true
+  dedup_version_unique: true
+  source_health_ok: true
+  license_policy_ok: true
+
+# ---- 第二段 · 价值特征权重（8，合 104，相对权重；2026-07-14 Owner 拍板） ----
+value_weights:
+  user_relevance: 22
+  knowledge_gap: 20        # ↑ 自 18（Owner 决策）
+  novelty_to_user: 14
+  transfer_potential: 12
+  forgetting_pressure: 8
+  urgency: 6
+  evidence_quality: 5      # ↓ 自 12（Owner 决策；硬门已保底可溯源性）
+  diversity: 17            # ↑ 自 4（Owner 决策；承担跨板块广度）
+diversity_effective_cap_single_board: 10  # 盲点二：仅有板块一时多样性生效上限，板块二启用后放开至 17
+attention_cost_penalty: 6  # score -= penalty × attention_cost(0..1)
+
+# ---- 第三段 · 选择参数（4） ----
+selection:
+  abstain_threshold: 59.6      # R1-3 已重校：55 × (104/96) = 59.6；回放对照 data/replay_30d.json（31 天，
+                               # 两线下弃权天数均为 0）；回执见 config_changes 表 2026-07-14 行。占位 55 作废。
+  daily_focus_count: 1
+  source_share_cap: 0.40
+  queue_max_active: 10000
+
+# ---- 复习调度（21：FSRS-6 官方默认，零自研） ----
+review:
+  algorithm: fsrs-6
+  implementation: "fsrs==6.3.1"   # py-fsrs, MIT, Python>=3.10
+  desired_retention: 0.90
+  use_default_weights: true       # 21 个权重随库默认；不在此复制数值
+  personalize_after_reviews: 100  # 官方 optimizer（或 fsrs-rs-python 免 torch）
+  max_daily_reviews: 12
+
+# ---- 自迭代（每周/每月，Owner 永远最终拍板） ----
+self_iteration:
+  weekly_proposal: {day: SUN, inputs: [recall_grades, skips, abstains, manual_overrides], max_step_per_weight: 2, apply: owner_one_click, receipt: required}
+  monthly_profile: {day: 1, updates: [interest_drift, difficulty_fit, forgetting_curve]}
+  data_loss_policy: {events: append_only, backup: daily_local, snapshot: weekly_offsite_or_r2, export: one_click_full}
+
+# ---- 板块扩展区（启用对应板块时激活，维度继承你原设计，未删除） ----
+board_extensions:
+  B3_china_policy: {status: reserved, dims: [authority_legal_effect, policy_delta, tech_industry_relevance, economic_impact, scope, urgency, regional_relevance, actionability]}
+  B4_us_official:  {status: reserved, dims: [innovation_breakthrough, regulatory_market_impact, authority_evidence, novelty_delta, entity_asset_scope, urgency, commercialization, actionability]}
+
+# ---- 验证计划 ----
+validation:
+  v1_replay:  {data: 30_real_days, check: top1_explainable_and_diff_vs_old}
+  v2_shadow:  {weeks: 2, record: [second_candidate, abstain_decisions], deliver: false}
+  v3_pilot:   {fridays: 4, metrics: [recall_7d, recall_30d, review_debt, attention_cost]}
+  change_control: proposal -> impact_preview(replay) -> explicit_apply -> receipt

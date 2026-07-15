@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<body style="margin:0; padding:0; background:#f3eee1;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3eee1; padding:16px 0;">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0"
+       style="background:#fbf7ec; border:1px solid #d8cfba; border-radius:12px; font-family:-apple-system,'PingFang SC',sans-serif;">
+  <tr><td style="padding:24px 28px 8px;">
+    <p style="margin:0; font-size:12px; color:#8b7a5c;">ADP 个人前沿学习系统 · 学习镜像 · {{ as_of_date }}</p>
+    <h1 style="margin:8px 0 4px; font-size:19px; line-height:1.5; color:#2f2618;">{{ doc_title }}</h1>
+    <p style="margin:0 0 8px; font-size:13px;">
+      <a href="{{ canonical_url }}" style="color:#8a5c16;">arXiv 原文</a>
+      <span style="color:#8b7a5c;"> · 生成通道 {{ generator }} · 讲义 {{ lesson_id }}</span></p>
+  </td></tr>
+  {% for section in sections %}
+  <tr><td style="padding:6px 28px;">
+    <h2 style="margin:10px 0 4px; font-size:15px; color:#8a5c16;">{{ loop.index }}. {{ section.title }}</h2>
+    <p style="margin:0; font-size:14.5px; line-height:2.0; color:#4a3d28;">{{ section.body }}</p>
+  </td></tr>
+  {% endfor %}
+  <tr><td style="padding:18px 28px 24px;">
+    <p style="margin:0; padding:12px 14px; background:#f3eee1; border-radius:8px; font-size:12.5px; color:#8b7a5c;">
+      本邮件只是网页讲义的镜像通道。<b>发送状态 ≠ 学习状态</b>：只有你在系统里完成主动回忆并自评，
+      才会产生「已学会」。打开 <a href="http://127.0.0.1:8787/" style="color:#8a5c16;">今天学什么</a> 完成回忆。
+    </p>
+  </td></tr>
+</table>
+<p style="font-size:11px; color:#8b7a5c; margin:10px 0 0;">Thank you to arXiv for use of its open access interoperability.</p>
+</td></tr>
+</table>
+</body>
+</html>

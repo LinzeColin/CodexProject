@@ -33,9 +33,13 @@ from KMFA.tools.dingtalk_attendance.delivery_policy import (
 from KMFA.tools.dingtalk_attendance.dws_attendance import (
     DwsAttendanceError,
     OfficialAttendanceParityError,
+    RealtimeReminderIntegrityError,
     attendance_run_sort_key,
-    collect_official_org_attendance,
+    collect_realtime_reminder_attendance,
     write_private_outputs,
+)
+from KMFA.tools.dingtalk_attendance.collection_integrity import (
+    collection_integrity_failure_reason,
 )
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.identity import (
@@ -578,7 +582,7 @@ def run_attendance(
     work_date: str | None = None,
     notification_target_filter: str = "all",
     env: Mapping[str, str] | None = None,
-    collector: Callable[..., dict[str, Any]] = collect_official_org_attendance,
+    collector: Callable[..., dict[str, Any]] = collect_realtime_reminder_attendance,
     cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
 ) -> dict[str, Any]:
     effective_work_date = work_date or os.environ.get("KMFA_WORK_DATE_OVERRIDE") or os.environ.get("KMFA_TODAY_OVERRIDE")
@@ -613,16 +617,53 @@ def run_attendance(
         collection = collector(
             work_date=effective_work_date,
             summary_datetime=summary_datetime,
+            run_type=run_type,
         )
         collection_stats = collection.get("stats", {})
-        parity_failure = official_report_parity_failure_reason(
-            collection_stats if isinstance(collection_stats, Mapping) else {}
+        integrity_failure = collection_integrity_failure_reason(
+            collection_stats if isinstance(collection_stats, Mapping) else {},
+            run_type=run_type,
         )
-        if parity_failure:
-            raise OfficialAttendanceParityError(
-                "OFFICIAL_REPORT_PARITY_ASSERTION_FAILED",
-                parity_failure,
+        if integrity_failure:
+            expected_count = int(collection_stats.get("realtime_reminder_expected_count") or 0)
+            coverage_count = int(collection_stats.get("realtime_reminder_coverage_count") or 0)
+            raise RealtimeReminderIntegrityError(
+                "REALTIME_REMINDER_INTEGRITY_ASSERTION_FAILED",
+                integrity_failure,
+                coverage_stats={
+                    "expected_people": expected_count,
+                    "queried_people": coverage_count,
+                    "successful_people": coverage_count,
+                    "missing_people": max(expected_count - coverage_count, 0),
+                    "query_failure_count": int(
+                        collection_stats.get("realtime_reminder_query_failure_count") or 0
+                    ),
+                    "parse_failure_count": int(
+                        collection_stats.get("realtime_reminder_parse_failure_count") or 0
+                    ),
+                },
             )
+    except RealtimeReminderIntegrityError as exc:
+        cleanup_status.update(cleanup())
+        return {
+            "status": "REALTIME_REMINDER_INTEGRITY_FAILED",
+            "run_plan": plan,
+            "config_status": {
+                "status": "REALTIME_REMINDER_INTEGRITY_FAILED",
+                "backend": "dws_realtime_reminder",
+                "notification_config_status": notification_config_status,
+            },
+            "integrity_error": str(exc),
+            "error_code": exc.code,
+            "coverage_stats": exc.coverage_stats,
+            "collection_status": "SKIPPED_REALTIME_REMINDER_INTEGRITY_FAILED",
+            "anomaly_count": None,
+            "management_report_status": "NOT_GENERATED",
+            "hr_report_status": "NOT_GENERATED",
+            "notification_status": "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED",
+            "onedrive_archive_status": "NOT_WRITTEN_REALTIME_REMINDER_INTEGRITY_FAILED",
+            "cleanup_status": cleanup_status,
+        }
     except OfficialAttendanceParityError as exc:
         cleanup_status.update(cleanup())
         return {
@@ -709,7 +750,10 @@ def run_attendance(
         "summary_datetime": summary_datetime,
         "collection_status": "DWS_LIVE_COLLECTION_WRITTEN",
         "collection_stats": collection["stats"],
-        "anomaly_count": collection["stats"].get("attendance_anomaly_count", collection["stats"]["unexpected_empty_record_count"]),
+        "anomaly_count": collection["stats"].get(
+            "attendance_anomaly_count",
+            collection["stats"].get("unexpected_empty_record_count", 0),
+        ),
         "management_report_status": "GENERATED",
         "hr_report_status": "GENERATED",
         "notification_status": dispatch_receipt["notification_status"],
@@ -849,7 +893,7 @@ def result_exit_code(result: Mapping[str, Any]) -> int:
         return 2
     if status in {"DWS_UNAVAILABLE", "NO_LATEST_REPORT"}:
         return 3
-    if status == "OFFICIAL_ATTENDANCE_PARITY_FAILED":
+    if status in {"OFFICIAL_ATTENDANCE_PARITY_FAILED", "REALTIME_REMINDER_INTEGRITY_FAILED"}:
         return 6
     if status == "PARTIAL":
         return 4

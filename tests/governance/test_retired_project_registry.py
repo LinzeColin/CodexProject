@@ -45,7 +45,7 @@ class RetiredProjectRegistryTests(unittest.TestCase):
         active = {item["project_id"]: item for item in self.config["projects"]}
         retired = {item["project_id"]: item for item in self.config["retired_projects"]}
         self.assertNotIn("WDA", active)
-        self.assertEqual(len(active), 12)
+        self.assertEqual(len(active), 6)
         self.assertEqual(retired["WDA"]["status"], "retired")
         self.assertTrue(retired["WDA"]["preserve_history"])
         self.assertTrue(retired["WDA"]["reactivation_requires_owner_authorization"])
@@ -53,16 +53,36 @@ class RetiredProjectRegistryTests(unittest.TestCase):
         self.assertNotIn("migration", retired["WDA"])
         self.assertTrue((ROOT / retired["WDA"]["path"]).is_dir())
 
+    def test_wave1_migrated_projects_are_registered_with_evidence_and_removed(self) -> None:
+        active = {item["project_id"] for item in self.config["projects"]}
+        migrated = {item["project_id"]: item for item in self.config["migrated_projects"]}
+        self.assertEqual(
+            set(migrated),
+            {"whkmSalary", "Alpha", "FIFA", "QBVS", "MetaDatabase", "Serenity-Alipay"},
+        )
+        for project_id, entry in migrated.items():
+            self.assertNotIn(project_id, active)
+            self.assertEqual(entry["status"], "migrated")
+            self.assertTrue(entry["history_preserved_in_target"])
+            self.assertTrue(entry["reactivation_requires_owner_authorization"])
+            self.assertTrue(entry["target_repo"].startswith("LinzeColin/"))
+            self.assertEqual(len(entry["source_tree_sha"]), 40)
+            self.assertTrue(entry["evidence_refs"])
+            for ref in entry["evidence_refs"]:
+                self.assertTrue((ROOT / ref).is_file())
+            # 目录必须真的已从本仓库移除 —— 否则迁移只做了一半
+            self.assertFalse((ROOT / entry["path"]).exists())
+
     def test_root_change_fans_out_to_active_required_projects_only(self) -> None:
         selection = self.validator.changed_scope_selection(
             self.config,
             ["governance/projects.yaml"],
         )
         selected = {item["project_id"] for item in selection["projects"]}
-        self.assertEqual(len(selected), 12)
+        self.assertEqual(len(selected), 6)
         self.assertNotIn("WDA", selected)
-        self.assertEqual(selection["required_project_count"], 12)
-        self.assertEqual(selection["selected_required_project_count"], 12)
+        self.assertEqual(selection["required_project_count"], 6)
+        self.assertEqual(selection["selected_required_project_count"], 6)
         self.assertTrue(selection["all_required_projects_covered"])
         self.assertEqual(selection["retired_project_ids"], ["WDA"])
         self.assertEqual(selection["retired_changed_files"], [])

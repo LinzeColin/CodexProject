@@ -1,7 +1,0 @@
-strategy,evidence_scope,pass_rate,avg_total_gap,avg_annualized_gap,drawdown_improvement,interpretation
-原支付宝式 alipay_like_chase_dip_sell_rally,近一年账户 proxy,27.3%,-4.819%,-5.118%,+1.739%,下跌保护有，但上涨跑输严重
-原支付宝式 alipay_like_chase_dip_sell_rally,交易权重 proxy,25.0%,-8.364%,-8.868%,+1.715%,低于用户硬阈值
-bw99_boll_or_rsi_none_ma_trend_full_none,近一年代表 proxy,100%,-0.165%,-0.177%,+0.016%,主候选：保留 RSI/BOLL 补仓解释
-bw99_none_none_ma_trend_full_none,近一年代表 proxy,100%,-0.150%,-0.161%,+0.073%,对照候选：略优但解释性弱
-bw98_boll_or_rsi_none_ma_trend_full_none,近一年代表 proxy,100%,-0.330%,-0.353%,+0.031%,保守候选：现金缓冲更多
-bw99_boll_or_rsi_none_ma_trend_full_none,全历史代表 proxy,81.8%,-4.358%,-0.047%,+0.097%,长期强牛资产仍会跑输满仓持有
