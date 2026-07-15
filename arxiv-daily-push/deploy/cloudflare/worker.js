@@ -12,8 +12,8 @@
  */
 
 // Tunnel 入口主机名（无 Worker 路由，经边缘直达本机）。
-// 注意：该 CNAME 记录尚待 Owner 在对话里点名确认后创建——创建前 fetch 必失败，
-// 所有请求走下方镜像兜底（这正是设计的降级路径，不是故障）。
+// CNAME 已按 Owner 确认创建（2026-07-15，cloudflared route dns）；本机离线时
+// fetch 得 530/502 → 走下方镜像兜底（设计的降级路径，不是故障）。
 const ORIGIN = 'https://adp-origin.linzezhang.com';
 
 async function proxyFullSystem(request, url) {

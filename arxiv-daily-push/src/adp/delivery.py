@@ -195,10 +195,13 @@ def weekly_radar(conn: sqlite3.Connection, *, now: datetime | None = None) -> di
     boards = [
         {"name": "板块一 · 研究前沿 (arXiv)", "enabled": True,
          "note": f"本周入选 {selected_count} 篇、弃权 {abstain_count} 天"},
-        {"name": "板块二 · 顶级期刊", "enabled": False, "note": "走 R5 启用提案（两周影子后上板）"},
-        {"name": "板块三 · 中国政策法规", "enabled": False, "note": "维度已保留在阈值注册表扩展区"},
-        {"name": "板块四 · 美国科技金融", "enabled": False, "note": "维度已保留在阈值注册表扩展区"},
-        {"name": "板块五 · 跨板块总览", "enabled": False, "note": "多板块上线后自动聚合"},
+        {"name": "板块二 · 顶级期刊", "enabled": True,
+         "note": "浏览流在线（Nature/Science/Cell 官方 RSS）；进精选池是独立提案"},
+        {"name": "板块三 · 中国政策法规", "enabled": True,
+         "note": "浏览流在线（Google News 聚合 + RSSHub 路由保留）；评分维度在阈值注册表扩展区"},
+        {"name": "板块四 · 美国科技金融", "enabled": True,
+         "note": "浏览流在线（美联储/SEC 官方 RSS）；评分维度在阈值注册表扩展区"},
+        {"name": "板块五 · 跨板块总览", "enabled": True, "note": "自动聚合板块一～四最新信号"},
     ]
     return {
         "week_start": week_start, "week_end": week_end,

@@ -19,5 +19,6 @@ arxiv-daily-push/data/export/
 arxiv-daily-push/data/authorization/
 arxiv-daily-push/data/heartbeat
 
-# wrangler 本地缓存
+# wrangler 本地缓存（含各 Worker 子目录 home/ 等）
+arxiv-daily-push/deploy/cloudflare/**/.wrangler/
 arxiv-daily-push/deploy/cloudflare/.wrangler/

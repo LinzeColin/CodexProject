@@ -37,7 +37,9 @@ PYTHONPATH=src var/venv/bin/python -m adp run
 ### 新增页面能力（本周五）
 
 - **前沿雷达 · R5 卡**：bioRxiv 影子 14 天报表 + 上板提案（预览→你点应用→回执，可随时撤回）
-- **手机完整系统（R6+Tunnel）**：https://adp.linzezhang.com 直接打开（无钥匙；公开可读的代价与 Access 私有化选项见 deploy/cloudflare/README.md）——Mac 在线时=完整六主题系统本体（评分即时过 FSRS；决策类按钮仅限本机），Mac 睡眠时自动回落只读镜像+评分回传队列；DNS 回源记录待你在对话里点名确认后直连生效
+- **手机完整系统（R6+Tunnel）**：https://adp.linzezhang.com 直接打开（无钥匙；公开可读的代价与 Access 私有化选项见 deploy/cloudflare/README.md）——Mac 在线时=完整六主题系统本体（评分即时过 FSRS；决策类按钮仅限本机），Mac 睡眠时自动回落只读镜像+评分回传队列；直连已端到端实测（2026-07-15）
+- **主页**：https://home.linzezhang.com（极简枢纽，链接 ADP 与五板块）
+- **五板块雷达**：板块二（Nature/Science/Cell）三（政策聚合）四（美联储/SEC）浏览流上线，板块五聚合；每板块数据源明细（来源/平台/网站/官方性/健康/计数）在雷达页；详见 docs/v03/J4_板块二至五上线_Owner指令.md
 
 ### 本周彩蛋
 
