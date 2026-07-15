@@ -1,5 +1,17 @@
 # Changelog
 
+## A205 downstream evidence and CI reproducibility - 2026-07-15
+
+- Refreshed A205 external evidence, release-manager and MVP preflight source hashes after
+  the completed A209 evidence promotion. A209 is ready for downstream preflight, while
+  A202, A210, A026 and A027 remain blocking and all release-closure flags remain false.
+- Added the missing `apps/cloudflare-public` importer to `pnpm-lock.yaml` so pinned
+  `make bootstrap-node` is idempotent and no longer invalidates clean-room checks.
+- GitHub EEI validation run `29385085264` passed both static `make verify` stages,
+  PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+- Kept T1303/A205 `IN_PROGRESS`, release-manager activation blocked and MVP release
+  blocked; this synchronization is validation evidence, not an MVP-ready claim.
+
 ## A209 24h evidence promotion and agent handoff - 2026-07-15
 
 - Promoted the release-valid A209 run into canonical 24h summary/checkpoint artifacts:

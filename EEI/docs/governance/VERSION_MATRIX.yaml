@@ -18,6 +18,7 @@ model_versions:
 parameter_profile_versions:
   a206-scheduler-closure: "1"
   balanced-v2: "2"
+  cloudflare-l2: "1"
   default-v2: "2"
   external-release-evidence-bundle: "2"
   external-release-operator-intake-packet: "2"
@@ -36,9 +37,9 @@ parameter_profile_versions:
   release-decision-intake: "4"
   release-decision-bundle: "3"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260715-EEI-A209-MAIN-HANDOFF"
+current_iteration: "ITER-20260715-EEI-GOVERNANCE-COMPANION-SYNC"
 current_phase: "D"
-current_gate: "A209_EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
+current_gate: "A205_CI_REPRODUCIBILITY_VERIFIED_A209_GATE_OPEN"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"

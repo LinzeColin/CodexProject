@@ -1967,3 +1967,24 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Model and parameter boundary: no EEI business model, formula, score, runtime threshold, release gate, or active production parameter changed; `PARAM-093` only records the L2 adapter compatibility contract.
 - Rollback: remove `apps/cloudflare-public` and this bounded governance slice; retain the EEI core and all existing release blockers.
 - Next gate: optional `eei.linzezhang.com` binding only; all EEI production relationship-publication gates remain separate and unchanged.
+
+## ITER-20260715-EEI-PNPM-LOCK-CI-REMEDIATION
+
+- Date: 2026-07-15
+- Fact level: EXTRACTED for committed evidence and VERIFIED for GitHub EEI validation run `29385085264`.
+- Version before/after: `0.1.0` / `0.1.0`.
+- Task / Acceptance: `TASK-T1303` / `ACC-A205`.
+- Goal: synchronize A209-dependent fail-closed preflights and make the three-project pnpm workspace reproducible in clean GitHub checkout.
+- Result: A205 external evidence, release-manager and MVP preflights validate; `make bootstrap-node` no longer mutates `pnpm-lock.yaml`; GitHub EEI validation passed two static stages, G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+- Release boundary: A202, A210, A026 and A027 remain missing; release-manager activation and MVP release remain blocked; A209/T1307 remains `IN_PROGRESS` until governance closure is explicit.
+- Rollback: revert the A205 downstream preflight refresh, tracked `apps/cloudflare-public` importer and this governance companion slice, then regenerate clean-room/release artifacts and rerun both required workflows.
+- Next gate: Project Governance changed-only rerun, followed by bounded T802/A111 work; no release-ready claim is allowed.
+
+## ITER-20260715-EEI-GOVERNANCE-COMPANION-SYNC
+
+- Date: 2026-07-15
+- Task / Acceptance: `TASK-T1303` / `ACC-A205`.
+- Goal: close the changed-only `required_scope_gap` without rewriting the append-only event history.
+- Result: restored the committed lock-remediation event unchanged, appended a dedicated companion-sync event, and synchronized changelog, ledger, traceability, version, delivery-task and parameter evidence.
+- Validation boundary: local changed-scope EEI validation is required before push; full root validation remains GitHub-only because this worktree is sparse.
+- Release boundary: A202, A210, A026 and A027 remain blocking; A209/T1307 and MVP release status remain open.

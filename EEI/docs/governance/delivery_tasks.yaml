@@ -3649,6 +3649,8 @@ tasks:
       - "A205 dependent preflight freshness sync PASS: after EVENT-20260625-022 A202 packet repair, external release bundle, operator intake packet, release-manager activation and MVP release-gate artifacts regenerate/validate PASS and remain blocked."
       - "A204/A205 dependent release preflights remote CI binding PASS: commit 236d25354db7d8f9774d1f91981ae30d69b0234e passed EEI validation run 28194420774; release-manager activation and MVP gate remain blocked until A202/A210/A026/A027/A209 are release-ready."
       - "A205 release evidence hash sync local PASS: after A210 source-boundary hash drift, A202/A210 release-decision bundle, external release bundle, operator intake packet, release-manager activation, MVP gate, clean-room package and release artifacts regenerated/validated; make verify PASS with 133 unit tests, clean-room package_paths=446, release manifest_paths=453 and checksum_paths=452."
+      - "A205 A209-dependent preflight and workspace-lock sync PASS: external bundle, release-manager activation and MVP gate remain fail-closed; make bootstrap-node is idempotent; GitHub EEI validation run 29385085264 passed both make verify stages, G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E."
+      - "A205 governance companion sync local PASS: changed-scope EEI validation reports errors=0 and warnings=0; full root validation is deferred to GitHub because the project worktree is sparse."
     evidence_refs:
       - "EEI/apps/worker/app/main.py"
       - "EEI/scripts/apply_model_config.py"
@@ -3667,6 +3669,8 @@ tasks:
       - "EEI/artifacts/tests/a200/t1215_clean_room_release.json"
       - "EEI/artifacts/release_evidence_t1211.json"
       - "EEI/CHECKSUMS.sha256"
+      - "EEI/pnpm-lock.yaml"
+      - "EEI/HANDOFF.md"
       - "EEI/scripts/validate_release_manager_activation.py"
       - "EEI/scripts/validate_mvp_release_gate.py"
       - "EEI/tests/unit/test_mvp_release_gate.py"

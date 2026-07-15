@@ -4,17 +4,17 @@
 
 - source_base_commit: `3d873e9a08e8c384dc1a439a7c9599442cc5da7b`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:5219ce0c56e1f66b5e46bf8542ce28062cd62f1ec5e1432e7d736381406708e6`
-- snapshot_event_time: `2026-07-15T12:48:26+10:00`
+- source_snapshot_hash: `sha256:e03c537629c62a9360d225662db89e06030dd82ee90838bf7d782a48d4620e80`
+- snapshot_event_time: `2026-07-15T12:59:11+10:00`
 - generator_version: `4.0.1`
-- final_commit_binding: `COMMIT_BOUND:3d873e9a08e8c384dc1a439a7c9599442cc5da7b`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / A209_EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`
+- Phase/Gate: `D / A205_CI_REPRODUCIBILITY_VERIFIED_A209_GATE_OPEN`
 - Models/Formulas/Parameters total: `12 / 12 / 93`
 - Active formulas/parameters: `11 / 93`
 - Machine checked formulas/parameters: `11 / 93`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `A209_EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`
+- Release gate: `A205_CI_REPRODUCIBILITY_VERIFIED_A209_GATE_OPEN`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `115`
+- Pending/stale events: `116`
 - Tree-bound events: `0`
 - Commit-bound events: `24`
 - Legacy unbound events: `19`
