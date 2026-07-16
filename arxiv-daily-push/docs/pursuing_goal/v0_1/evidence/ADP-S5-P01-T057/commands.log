@@ -1,0 +1,13 @@
+# ADP-S5-P01-T057 commands (Canonical Event aggregation; NOT_DEPLOYED)
+
+# 1. tools/canonical_event.py -- _page_key (shared event key: own 文号 or referenced 文号) /
+#    aggregate (cluster -> event identity + primary selection [authority A0>A1>A2>media] + member links) / expand
+
+# 2. build the event fixture + aggregate (deterministic)
+python3 evidence/ADP-S5-P01-T057/build_events.py   # 28 pages -> 3 events; event-1 = 20 members / 1 alert
+
+# 3. acceptance verifier (20-same-event -> 1 alert + all-expandable + primary-is-original + no-over-merge control)
+python3 evidence/ADP-S5-P01-T057/test-results/t057_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

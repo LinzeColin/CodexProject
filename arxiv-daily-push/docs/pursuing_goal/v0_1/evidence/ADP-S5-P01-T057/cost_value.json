@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S5-P01-T057",
+  "stage": "S5 (Multi-board Depth & Benefit Parity) / P01 事件、实体和跨板块关系",
+  "value": {
+    "user_value": "Canonical Event aggregation: the original + interpretations + reposts + reactions of one policy/event collapse into ONE canonical event, so 20 pages about the same thing yield 1 alert instead of 20, while every member page stays individually expandable as evidence. The primary shown is the authoritative official original, not a media repost.",
+    "why_it_matters": "Depth without noise: users must see one event once (with the authoritative original front-and-center) and still be able to drill into every interpretation/repost/reaction. This is the core dedup that makes a multi-board feed readable rather than a flood."
+  },
+  "cost": {
+    "note": "unknown != 0; a deterministic aggregation over a fixture -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "event-aggregation authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (event identity + primary selection + member links; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

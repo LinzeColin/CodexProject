@@ -1,0 +1,855 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 3389b7cb3..37d1125d1 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P01-T057 (Canonical Event aggregation; NOT_DEPLOYED)
++
++- Fifty-seventh task of the ADP V0.1 FINAL EXECUTION program, opening Stage S5 (Multi-board Depth & Benefit Parity), S5-P01. Aggregates the original text, interpretations, reposts, and reactions of the same policy/event into ONE canonical event, so one event yields one alert rather than 20, while every member page stays individually expandable as evidence. release_mode NOT_DEPLOYED; a deterministic aggregation tool, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/canonical_event.py provides the event identity (the shared event key -- an original's document number, or the document number a repost/interpretation references; no fuzzy title-only merging), primary selection (the most authoritative member whose own id is the event key, ordered A0 > A1 > A2 > media), and member links (every page kept individually retrievable with its role). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/: event_report.json, event_fixture.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P01-T057/test-results/event_tests.txt, ACCEPTANCE = PASS, exit 0): 20 pages about the same event (a real document number 苏政办函〔2026〕39号 from the T050 Jiangsu backfill as the original, plus 19 interpretations/reposts/reactions that cite it) aggregate to exactly 1 canonical event and 1 alert; all 20 members stay individually expandable and match the 20 source pages exactly; the primary is the A1 official original, not a media repost; and a no-over-merge control confirms a different event (a different document number 鲁科字〔2023〕143号) stays a separate event and event 1 absorbs none of its pages. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S4-P05-T056 (Coverage Debt + As-of history query base; NOT_DEPLOYED)
+ 
+ - Fifty-sixth task of the ADP V0.1 FINAL EXECUTION program (S4-P05). A Coverage-Debt + As-of history query base over the 2016+ backfilled corpus (the A0 waves T046/T047 and the A1 provinces T050), providing the ground-truth completeness and point-in-time layer the T048 gap gate deferred to. release_mode NOT_DEPLOYED; a query base, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/coverage_asof.py provides coverage_debt (the full 2016+ window grid per source, every cell classified so every hole is explainable, reusing the T043 gap detector), as_of_query (the version known as of a date, resolved by parsed dates not lexical strings, cross-checked by an independent oracle, reusing the T048-proven resolver), and historical_manifest_resolver (the latest monthly snapshot manifest known as of a date, never a future one). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P05-T056/: coverage_asof_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND; verifier hardened to full live re-derivation). Acceptance verified (evidence/ADP-S4-P05-T056/test-results/base_tests.txt, ACCEPTANCE = PASS, exit 0): 693 revision samples across 21 chains and 33 query dates from 2016 to 2026 resolve with 0 future-version leakage and 0 disagreements against the independent oracle, at or above the 100 target; the coverage grid of 180 cells (5 sources by their 2016+ windows) has 11 covered and 169 debt cells, all explained (139 source-not-yet-active, 30 not-backfilled), with 0 UNEXPLAINED; the as-of guarantee is non-vacuous, since a deliberately broken resolver produces a future resolution at a between-versions query and is caught, a malformed date is rejected, and the ordering spot-check is correct; and the historical manifest resolver never returns a future manifest. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index cb6c21a13..5f58d033d 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S4-P04-T055-A2-PRODUCTION-GATE"
+-source_snapshot_hash: "sha256:59826b7738acddf02d85e468f6b14fb62291c4057df40079dca94eb51308a25c"
++as_of_event_id: "EVENT-20260717-ADP-V01-S4-P05-T056-COVERAGE-DEBT-ASOF-BASE"
++source_snapshot_hash: "sha256:d2ebfa2b8ca5029709d9d9e617d6d593a869248fed347124428d7c5e493a5a4f"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T20:10:00+10:00"
++snapshot_event_time: "2026-07-17T20:40:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 115
++    precommit_pending_events: 116
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index f602aa9d3..352b32c9f 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S5-P01-T057: implemented Canonical Event aggregation (S5-P01, opens S5). release_mode NOT_DEPLOYED; aggregation tool, production untouched. New tool docs/pursuing_goal/v0_1/tools/canonical_event.py: event identity (shared event key = own/referenced 文号; no fuzzy title merge) / primary selection (most authoritative member whose id == key, A0>A1>A2>media) / member links (every page individually retrievable with role). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/: event_report.json, event_fixture.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/event_tests.txt, PASS exit 0): 20 same-event pages (real 文号 苏政办函〔2026〕39号 as original + 19 citing members) -> exactly 1 event / 1 alert; all 20 members expandable and match the source pages; primary = A1 official original (not media); no-over-merge control (event-2 different 文号 鲁科字〔2023〕143号 stays separate, event-1 absorbs none). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P05-T056: shipped the Coverage Debt + As-of history query base (S4-P05). release_mode NOT_DEPLOYED; query base, production untouched. New tool docs/pursuing_goal/v0_1/tools/coverage_asof.py: coverage_debt (full 2016+ window grid, every cell classified via T043, 0 UNEXPLAINED) / as_of_query (parsed-date resolver, no future-version leak) + independent oracle cross-check / historical_manifest_resolver (point-in-time manifest, never future). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P05-T056/: coverage_asof_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/base_tests.txt, PASS exit 0): 693 as-of samples (21 chains x 33 dates 2016-2026), 0 future-version leakage, 0 oracle disagreements (>= 100 target); coverage grid 180 cells (5 sources), 11 covered / 169 debt all explained (source_not_yet_active 139 + not_backfilled 30), 0 UNEXPLAINED; non-vacuity controls (broken resolver leaks and is caught; malformed date rejected; ordering correct); manifest resolver never future. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P04-T055: completed the A2 production gate (S4-P04, closes P04). release_mode NOT_DEPLOYED; gate/decision task, production untouched. New tool docs/pursuing_goal/v0_1/tools/a2_production_gate.py scores 18 A2 zones (T053 pilot + T054 expansion), measures observed health days, decides promote (>=30d health) / low_frequency / disabled. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T055/: a2_promotion_ledger.json (ledger + cost/quality evidence + rollback), known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/gate_tests.txt, PASS exit 0): 0 promoted for a count target (promotion requires health, never value/coverage); every promoted has >=30d health (holds: 0 promoted since no zone has 30d health yet -> 3 low_frequency [1d recon], 15 disabled [0d]); gate non-vacuous (control: decide(health=35)->promote, decide(health=5)->not promote, same path); each held has days_to_promotion; reversible (NOT_DEPLOYED + flag + no prod rewrite). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P04-T054: expanded the A2 registry by marginal value (S4-P04). release_mode SHADOW; selection/expansion task, production untouched. New tool docs/pursuing_goal/v0_1/tools/a2_registry.py builds on T053: baseline_from_t053 / evaluate (first-line signals beyond A0/A1 + official) / useful_signal_rate / expand (admit verified-useful only; new rate >= baseline). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/: a2_expansion.json (cohorts + marginal value report + health), known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/expansion_tests.txt, PASS exit 0): existing A2 baseline (T053) verified-useful rate 1.0; expansion admits 8 high-value zones (nansha/zhoushan/xihaian/hefei-hitech/wuhan-eastlake/binhai/jiangbei/chengdu-hitech), each official with >=1 first-line signal, new cohort rate 1.0 (not below baseline); no low-value added (baseline-only + media rejected); negative control: admitting the rejects would drop the rate to 0.8 < baseline. Each admitted has a 2016 cursor; deliverables include marginal value report + health. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index b8ba179d0..56073d0fb 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `115`
+-- pending_or_stale_events: `465`
+-- freshness_counts: `pending_or_stale_events=465; legacy_unbound_events=334`
++- precommit_pending_events: `116`
++- pending_or_stale_events: `466`
++- freshness_counts: `pending_or_stale_events=466; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:59826b7738acddf02d85e468f6b14fb62291c4057df40079dca94eb51308a25c`
+-- snapshot_event_time: `2026-07-17T20:10:00+10:00`
++- source_snapshot_hash: `sha256:d2ebfa2b8ca5029709d9d9e617d6d593a869248fed347124428d7c5e493a5a4f`
++- snapshot_event_time: `2026-07-17T20:40:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 16aa0e462..dd73285d2 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:59826b7738acddf02d85e468f6b14fb62291c4057df40079dca94eb51308a25c`
+-- snapshot_event_time: `2026-07-17T20:10:00+10:00`
++- source_snapshot_hash: `sha256:d2ebfa2b8ca5029709d9d9e617d6d593a869248fed347124428d7c5e493a5a4f`
++- snapshot_event_time: `2026-07-17T20:40:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `465`
++- Pending/stale events: `466`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/TASK_REPORT.md
+new file mode 100644
+index 000000000..5909d5982
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/TASK_REPORT.md
+@@ -0,0 +1,56 @@
++# TASK_REPORT · ADP-S5-P01-T057｜实现 Canonical Event 聚合
++
++## 唯一目标（达成）
++把同一政策/研究/事件的原文、解读、转载和反应聚成一个事件。交付 event identity、primary selection、member links。**20 个同事件页面只产生 1 个提醒；所有证据仍可展开。** release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：Canonical Event 聚合——同事件多页聚成 1 事件 1 提醒,证据可展开。
++2. **允许修改文件**：`tools/canonical_event.py`（新）+ `evidence/ADP-S5-P01-T057/*` + 治理同步。**不改 worker/生产**。
++3. **绝不能改变**：生产 worker/cron/数据/实时——聚合只读。六主题/MVP 不变。NOT_DEPLOYED。
++4. **基线**：main `e202823e`（T056 已合入，★S5 起★）；用真实文号(T050 回填)作事件键。
++5. **验收**：20 同事件页只产生 1 提醒；所有证据仍可展开。
++6. **回滚**：`git revert <sha>`（只读聚合，生产未变更）。
++
++## 交付物
++- `tools/canonical_event.py` —— _page_key(共享事件键=自身/引用文号) + aggregate(event identity + primary selection[A0>A1>A2>media] + member links) + expand。
++- `evidence/…/{event_fixture.json, event_report.json}` —— 28 页 fixture + 3 事件聚合报告。
++- `evidence/…/build_events.py`、`evidence/…/test-results/{t057_verify.py, event_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/event_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **20 同事件页 → 1 提醒**：事件1（苏政办函〔2026〕39号,真实 T050 江苏回填文号）= **20 成员(1 原文+6 解读+8 转载+5 反应) → 1 事件 1 提醒**（非 20 提醒）。28 页总 → 3 事件（3 提醒）。
++- **所有证据可展开**：expand(事件1) = 全 20 成员逐一可取(page_id 唯一,与源 20 页精确一致),每成员带 role/source/authority。
++- **primary=最权威原文**：事件1 primary = A1 江苏原文(doc_number==事件键),**非 media 转载/反应**。
++- **无过并（负控制）**：事件2（鲁科字〔2023〕143号,不同文号）保持独立事件;事件1 **不吸任何事件2 页**;无关新闻 singleton 自成事件。
++- **确定性**：重跑 aggregate 同结果。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live build 仍 b189d3cc0703（==T040）。
++
++## Data / Performance / Visual
++Data = 28 页 fixture → 3 事件(20/7/1 成员)。Performance = 实时无回归。无 UI 改动；六主题保留。
++
++## Value / Cost（S5 多板块深度）
++- **Value**：**同事件去噪聚合**——同事件多页聚成 1 事件 1 提醒(权威原文为 primary),证据全可展开;多板块 feed 可读而非刷屏。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0；人工维护 = 聚合编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：事件身份=共享文号键(无模糊标题并);成员 join 靠显式 references(真实抓取由 T038 resolver 抽);无 references 无匹配=singleton;跨来源实体解析 T058/跨板块 relation T059。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED）。`data-samples` = event_report.json + event_fixture.json。
++
++## 完成声明
++```text
++Task: ADP-S5-P01-T057
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/canonical_event.py(新) + T057 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: event_tests.txt —— 事件1 20同事件页(真实文号苏政办函〔2026〕39号)→1事件1提醒；全20成员可展开逐一可取;primary=A1原文非media;无过并(事件2独立/事件1不吸事件2页/singleton自成);确定性;实时无回归(build b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: Canonical Event聚合(20页→1提醒,权威原文primary,证据可展开,无过并)
++Data/Performance/Visual: Data=28页→3事件；Perf=实时无回归；Visual=六主题保留
++Value: 同事件去噪聚合,多板块feed可读
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（聚合库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/adversarial_review.md
+new file mode 100644
+index 000000000..35baf3966
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/adversarial_review.md
+@@ -0,0 +1,10 @@
++# 对抗复核记录 · ADP-S5-P01-T057（Canonical Event 聚合）
++
++用独立 skeptic 对事件聚合做对抗复核，判 **CONFIRMED_SOUND**（5 攻击向量全过，无 hole）：
++- **(a) 真聚合非丢弃**：20 事件1 页共键 ("docnum","苏政办函〔2026〕39号")(原文以自身 doc_number join,19 成员以 references==该文号精确匹配);Σmember_counts(28)==pages_in(28),成员 page_id 并集==输入集(零丢零幻)。「1 提醒」来自聚类非删减。
++- **(b) 全证据可展开**：expand(事件1)=20 member_links,page_id 唯一,与 20 源页精确一致,无丢无并。
++- **(c) primary=官方原文**：primary=orig-jiangsu(A1,doc_number==键);originals 过滤要求 not references AND doc_number/canonical_id==键,故 A1 解读(doc_number null)不可选。**证 false-primary 路径**:移除原文→primary 落 A1 interp(doc_number None)→verifier 的 `prim.doc_number!=EVENT1` 会 FAIL——该检查真强制「primary 是原文」非仅「是 A1」。
++- **(d) 无过并**：纯精确键聚类(无模糊标题并);事件2(鲁科字...,7 页)独立 event_id;solo 页自成 cid singleton;无跨事件页重叠,事件1 不吸事件2/solo。
++- **(e) verifier 非空洞 + fixture 诚实对抗**：缺事件1 经 test1 FAIL 不能空过;输入乱序确定性(sha256 id + page_id tiebreaker);fixture=1 真文号原文+19 真引用成员(6 解读/8 转载/5 反应)+不同真文号无过并控制+无关 singleton,非凑;NOT_DEPLOYED 零生产副作用。
++
++本轮无需修复（CONFIRMED_SOUND）。实现者不自签 PASS —— 交独立复核。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/build_events.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/build_events.py
+new file mode 100644
+index 000000000..df4388ffa
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/build_events.py
+@@ -0,0 +1,68 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P01-T057 -- build a same-event page fixture + aggregate into canonical events.
++
++Event 1 uses a REAL backfilled document number (苏政办函〔2026〕39号, from the T050 Jiangsu backfill)
++as its original, with 19 interpretations / reposts / reactions that cite that 文号 -- 20 pages, one
++event. Event 2 uses a different real 文号 (鲁科字〔2023〕143号) -- it must stay a separate event, not
++merge. A singleton news page (no reference) stays its own event. Deterministic.
++"""
++import sys, json, pathlib
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE.parent.parent / "tools"))
++import canonical_event as CE
++
++EVENT1_DOCNUM = "苏政办函〔2026〕39号"
++EVENT2_DOCNUM = "鲁科字〔2023〕143号"
++
++def _members_for(docnum, base_url, n_interp, n_repost, n_reaction):
++    pages = []
++    for i in range(n_interp):
++        pages.append({"page_id": f"interp-{docnum}-{i}", "url": f"{base_url}/interp/{i}", "kind": "interpretation",
++                      "source_id": "gov-cn-policy", "authority_level": "A1", "references": docnum,
++                      "title": f"《{docnum}》政策解读 {i}"})
++    for i in range(n_repost):
++        pages.append({"page_id": f"repost-{docnum}-{i}", "url": f"https://news.example.com/{docnum}/{i}", "kind": "repost",
++                      "source_id": "media-x", "authority_level": "media", "references": docnum,
++                      "title": f"转载：{docnum} {i}"})
++    for i in range(n_reaction):
++        pages.append({"page_id": f"react-{docnum}-{i}", "url": f"https://forum.example.com/{docnum}/{i}", "kind": "reaction",
++                      "source_id": "forum-y", "authority_level": "media", "references": docnum,
++                      "title": f"讨论：{docnum} {i}"})
++    return pages
++
++def main():
++    pages = []
++    # --- Event 1: 1 official original + 19 members = 20 pages ---
++    pages.append({"page_id": "orig-jiangsu", "url": "http://www.jiangsu.gov.cn/art/2026/7/14/art_46144_11803435.html",
++                  "kind": "original", "source_id": "jiangsu-gov", "authority_level": "A1",
++                  "doc_number": EVENT1_DOCNUM, "title": "省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知"})
++    pages += _members_for(EVENT1_DOCNUM, "http://www.jiangsu.gov.cn", n_interp=6, n_repost=8, n_reaction=5)  # 19
++    # --- Event 2: a DIFFERENT event (must not merge) ---
++    pages.append({"page_id": "orig-shandong", "url": "http://www.shandong.gov.cn/art/2026/7/9/art_94237_10361274.html",
++                  "kind": "original", "source_id": "shandong-gov", "authority_level": "A1",
++                  "doc_number": EVENT2_DOCNUM, "title": "山东省科学技术厅关于开展...的通知"})
++    pages += _members_for(EVENT2_DOCNUM, "http://www.shandong.gov.cn", n_interp=2, n_repost=3, n_reaction=1)  # 6
++    # --- a singleton unrelated news page (its own event) ---
++    pages.append({"page_id": "solo-news", "url": "https://news.example.com/solo", "kind": "repost",
++                  "source_id": "media-z", "authority_level": "media", "title": "无关新闻"})
++
++    (HERE / "event_fixture.json").write_text(json.dumps(pages, ensure_ascii=False, indent=2), encoding="utf-8")
++    agg = CE.aggregate(pages)
++    report = {
++        "task": "ADP-S5-P01-T057",
++        "pages_in": agg["pages_in"], "alert_count": agg["alert_count"],
++        "largest_event_members": agg["largest_event_members"],
++        "events": [{"event_id": e["event_id"], "event_key": e["event_key"], "member_count": e["member_count"],
++                    "roles": e["roles"], "primary": e["primary"]} for e in agg["events"]],
++        "cost": {"production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
++                 "r2_ops": 0, "model_calls": 0, "human_maintenance": "event-aggregation authoring"},
++        "deployment": "NOT_DEPLOYED",
++    }
++    (HERE / "event_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
++    print(f"pages_in={agg['pages_in']} alerts={agg['alert_count']} largest_event={agg['largest_event_members']}")
++    for e in agg["events"]:
++        print(f"  {e['event_key']['value'][:28]:30} members={e['member_count']} primary={e['primary']['authority_level']} roles={e['roles']}")
++
++if __name__ == "__main__":
++    main()
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/commands.log
+new file mode 100644
+index 000000000..5d7dd3313
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/commands.log
+@@ -0,0 +1,13 @@
++# ADP-S5-P01-T057 commands (Canonical Event aggregation; NOT_DEPLOYED)
++
++# 1. tools/canonical_event.py -- _page_key (shared event key: own 文号 or referenced 文号) /
++#    aggregate (cluster -> event identity + primary selection [authority A0>A1>A2>media] + member links) / expand
++
++# 2. build the event fixture + aggregate (deterministic)
++python3 evidence/ADP-S5-P01-T057/build_events.py   # 28 pages -> 3 events; event-1 = 20 members / 1 alert
++
++# 3. acceptance verifier (20-same-event -> 1 alert + all-expandable + primary-is-original + no-over-merge control)
++python3 evidence/ADP-S5-P01-T057/test-results/t057_verify.py   # ACCEPTANCE = PASS (exit 0)
++
++# 4. realtime no-regression (NOT_DEPLOYED)
++curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/cost_value.json
+new file mode 100644
+index 000000000..40207703b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/cost_value.json
+@@ -0,0 +1,15 @@
++{
++  "task": "ADP-S5-P01-T057",
++  "stage": "S5 (Multi-board Depth & Benefit Parity) / P01 事件、实体和跨板块关系",
++  "value": {
++    "user_value": "Canonical Event aggregation: the original + interpretations + reposts + reactions of one policy/event collapse into ONE canonical event, so 20 pages about the same thing yield 1 alert instead of 20, while every member page stays individually expandable as evidence. The primary shown is the authoritative official original, not a media repost.",
++    "why_it_matters": "Depth without noise: users must see one event once (with the authoritative original front-and-center) and still be able to drill into every interpretation/repost/reaction. This is the core dedup that makes a multi-board feed readable rather than a flood."
++  },
++  "cost": {
++    "note": "unknown != 0; a deterministic aggregation over a fixture -> 0 cloud cost.",
++    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
++    "r2_ops": 0, "model_calls": 0, "human_maintenance": "event-aggregation authoring",
++    "recurring_cloud_cost_delta_per_month_usd": 0
++  },
++  "deployment": "NOT_DEPLOYED (event identity + primary selection + member links; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/event_fixture.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/event_fixture.json
+new file mode 100644
+index 000000000..dffbc3c38
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/event_fixture.json
+@@ -0,0 +1,253 @@
++[
++  {
++    "page_id": "orig-jiangsu",
++    "url": "http://www.jiangsu.gov.cn/art/2026/7/14/art_46144_11803435.html",
++    "kind": "original",
++    "source_id": "jiangsu-gov",
++    "authority_level": "A1",
++    "doc_number": "苏政办函〔2026〕39号",
++    "title": "省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知"
++  },
++  {
++    "page_id": "interp-苏政办函〔2026〕39号-0",
++    "url": "http://www.jiangsu.gov.cn/interp/0",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "苏政办函〔2026〕39号",
++    "title": "《苏政办函〔2026〕39号》政策解读 0"
++  },
++  {
++    "page_id": "interp-苏政办函〔2026〕39号-1",
++    "url": "http://www.jiangsu.gov.cn/interp/1",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "苏政办函〔2026〕39号",
++    "title": "《苏政办函〔2026〕39号》政策解读 1"
++  },
++  {
++    "page_id": "interp-苏政办函〔2026〕39号-2",
++    "url": "http://www.jiangsu.gov.cn/interp/2",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "苏政办函〔2026〕39号",
++    "title": "《苏政办函〔2026〕39号》政策解读 2"
++  },
++  {
++    "page_id": "interp-苏政办函〔2026〕39号-3",
++    "url": "http://www.jiangsu.gov.cn/interp/3",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "苏政办函〔2026〕39号",
++    "title": "《苏政办函〔2026〕39号》政策解读 3"
++  },
++  {
++    "page_id": "interp-苏政办函〔2026〕39号-4",
++    "url": "http://www.jiangsu.gov.cn/interp/4",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "苏政办函〔2026〕39号",
++    "title": "《苏政办函〔2026〕39号》政策解读 4"
++  },
++  {
++    "page_id": "interp-苏政办函〔2026〕39号-5",
++    "url": "http://www.jiangsu.gov.cn/interp/5",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "苏政办函〔2026〕39号",
++    "title": "《苏政办函〔2026〕39号》政策解读 5"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-0",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/0",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 0"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-1",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/1",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 1"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-2",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/2",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 2"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-3",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/3",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 3"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-4",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/4",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 4"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-5",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/5",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 5"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-6",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/6",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 6"
++  },
++  {
++    "page_id": "repost-苏政办函〔2026〕39号-7",
++    "url": "https://news.example.com/苏政办函〔2026〕39号/7",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "转载：苏政办函〔2026〕39号 7"
++  },
++  {
++    "page_id": "react-苏政办函〔2026〕39号-0",
++    "url": "https://forum.example.com/苏政办函〔2026〕39号/0",
++    "kind": "reaction",
++    "source_id": "forum-y",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "讨论：苏政办函〔2026〕39号 0"
++  },
++  {
++    "page_id": "react-苏政办函〔2026〕39号-1",
++    "url": "https://forum.example.com/苏政办函〔2026〕39号/1",
++    "kind": "reaction",
++    "source_id": "forum-y",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "讨论：苏政办函〔2026〕39号 1"
++  },
++  {
++    "page_id": "react-苏政办函〔2026〕39号-2",
++    "url": "https://forum.example.com/苏政办函〔2026〕39号/2",
++    "kind": "reaction",
++    "source_id": "forum-y",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "讨论：苏政办函〔2026〕39号 2"
++  },
++  {
++    "page_id": "react-苏政办函〔2026〕39号-3",
++    "url": "https://forum.example.com/苏政办函〔2026〕39号/3",
++    "kind": "reaction",
++    "source_id": "forum-y",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "讨论：苏政办函〔2026〕39号 3"
++  },
++  {
++    "page_id": "react-苏政办函〔2026〕39号-4",
++    "url": "https://forum.example.com/苏政办函〔2026〕39号/4",
++    "kind": "reaction",
++    "source_id": "forum-y",
++    "authority_level": "media",
++    "references": "苏政办函〔2026〕39号",
++    "title": "讨论：苏政办函〔2026〕39号 4"
++  },
++  {
++    "page_id": "orig-shandong",
++    "url": "http://www.shandong.gov.cn/art/2026/7/9/art_94237_10361274.html",
++    "kind": "original",
++    "source_id": "shandong-gov",
++    "authority_level": "A1",
++    "doc_number": "鲁科字〔2023〕143号",
++    "title": "山东省科学技术厅关于开展...的通知"
++  },
++  {
++    "page_id": "interp-鲁科字〔2023〕143号-0",
++    "url": "http://www.shandong.gov.cn/interp/0",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "鲁科字〔2023〕143号",
++    "title": "《鲁科字〔2023〕143号》政策解读 0"
++  },
++  {
++    "page_id": "interp-鲁科字〔2023〕143号-1",
++    "url": "http://www.shandong.gov.cn/interp/1",
++    "kind": "interpretation",
++    "source_id": "gov-cn-policy",
++    "authority_level": "A1",
++    "references": "鲁科字〔2023〕143号",
++    "title": "《鲁科字〔2023〕143号》政策解读 1"
++  },
++  {
++    "page_id": "repost-鲁科字〔2023〕143号-0",
++    "url": "https://news.example.com/鲁科字〔2023〕143号/0",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "鲁科字〔2023〕143号",
++    "title": "转载：鲁科字〔2023〕143号 0"
++  },
++  {
++    "page_id": "repost-鲁科字〔2023〕143号-1",
++    "url": "https://news.example.com/鲁科字〔2023〕143号/1",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "鲁科字〔2023〕143号",
++    "title": "转载：鲁科字〔2023〕143号 1"
++  },
++  {
++    "page_id": "repost-鲁科字〔2023〕143号-2",
++    "url": "https://news.example.com/鲁科字〔2023〕143号/2",
++    "kind": "repost",
++    "source_id": "media-x",
++    "authority_level": "media",
++    "references": "鲁科字〔2023〕143号",
++    "title": "转载：鲁科字〔2023〕143号 2"
++  },
++  {
++    "page_id": "react-鲁科字〔2023〕143号-0",
++    "url": "https://forum.example.com/鲁科字〔2023〕143号/0",
++    "kind": "reaction",
++    "source_id": "forum-y",
++    "authority_level": "media",
++    "references": "鲁科字〔2023〕143号",
++    "title": "讨论：鲁科字〔2023〕143号 0"
++  },
++  {
++    "page_id": "solo-news",
++    "url": "https://news.example.com/solo",
++    "kind": "repost",
++    "source_id": "media-z",
++    "authority_level": "media",
++    "title": "无关新闻"
++  }
++]
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/event_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/event_report.json
+new file mode 100644
+index 000000000..02c33bbc7
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/event_report.json
+@@ -0,0 +1,78 @@
++{
++  "task": "ADP-S5-P01-T057",
++  "pages_in": 28,
++  "alert_count": 3,
++  "largest_event_members": 20,
++  "events": [
++    {
++      "event_id": "evt:08f9200ecacb83ea",
++      "event_key": {
++        "kind": "docnum",
++        "value": "苏政办函〔2026〕39号"
++      },
++      "member_count": 20,
++      "roles": {
++        "original": 1,
++        "interpretation": 6,
++        "repost": 8,
++        "reaction": 5
++      },
++      "primary": {
++        "page_id": "orig-jiangsu",
++        "url": "http://www.jiangsu.gov.cn/art/2026/7/14/art_46144_11803435.html",
++        "title": "省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知",
++        "authority_level": "A1",
++        "doc_number": "苏政办函〔2026〕39号"
++      }
++    },
++    {
++      "event_id": "evt:5a5f6bfd8da9138a",
++      "event_key": {
++        "kind": "docnum",
++        "value": "鲁科字〔2023〕143号"
++      },
++      "member_count": 7,
++      "roles": {
++        "original": 1,
++        "interpretation": 2,
++        "repost": 3,
++        "reaction": 1
++      },
++      "primary": {
++        "page_id": "orig-shandong",
++        "url": "http://www.shandong.gov.cn/art/2026/7/9/art_94237_10361274.html",
++        "title": "山东省科学技术厅关于开展...的通知",
++        "authority_level": "A1",
++        "doc_number": "鲁科字〔2023〕143号"
++      }
++    },
++    {
++      "event_id": "evt:08d05ffbee023a02",
++      "event_key": {
++        "kind": "cid",
++        "value": "ttl:b7d5f3f0ae919117"
++      },
++      "member_count": 1,
++      "roles": {
++        "repost": 1
++      },
++      "primary": {
++        "page_id": "solo-news",
++        "url": "https://news.example.com/solo",
++        "title": "无关新闻",
++        "authority_level": "media",
++        "doc_number": null
++      }
++    }
++  ],
++  "cost": {
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_ops": 0,
++    "model_calls": 0,
++    "human_maintenance": "event-aggregation authoring"
++  },
++  "deployment": "NOT_DEPLOYED"
++}
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/known_gaps.md
+new file mode 100644
+index 000000000..aa6a7f5f1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/known_gaps.md
+@@ -0,0 +1,9 @@
++# Known gaps · ADP-S5-P01-T057（Canonical Event 聚合）
++
++目标：把同一政策/研究/事件的原文/解读/转载/反应聚成一个事件。20 同事件页只产生 1 提醒；所有证据仍可展开。诚实边界：
++
++1. **事件身份=共享事件键（文号）**：原文以自身文号为键;解读/转载/反应以其**引用的文号**join。**无模糊纯标题合并**（防误并）。fixture 用真实文号 苏政办函〔2026〕39号(事件1原文,T050江苏回填)+19 引用它的成员=20 页;事件2 用不同真实文号 鲁科字〔2023〕143号(保持独立)。
++2. **primary=最权威原文**：cluster 内 authority 最高且自身 id==事件键的成员(A0>A1>A2>media);事件1 primary=A1 江苏原文非 media 转载。member_links 保留每成员 role(original/interpretation/repost/reaction)可单独取。
++3. **20→1 提醒 + 可展开**：28 页→3 事件(3 提醒);事件1 的 20 页→1 事件1 提醒;expand(事件1)=全 20 成员逐一可取(page_id 唯一,与源 20 页精确一致)。**负控制:事件2(不同文号)保持独立,事件1 不吸事件2 页(无过并)**;无关新闻 singleton 自成事件。
++4. **成员 join 靠显式 references（文号引用）**：当前用 references 字段模拟转载/解读引用原文文号。真实抓取中,转载页确含原文文号/标题引用→抽取 references 填此字段(承 T038 媒体→官方 resolver)。无 references 且无匹配文号的页=singleton 事件(诚实,不强并)。
++5. **NOT_DEPLOYED**：event identity+primary+member links 库,未接 worker/生产。live build 仍 b189d3cc0703(==T040)。跨来源实体解析是 T058,跨板块 Evidence Relation 是 T059。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/event_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/event_tests.txt
+new file mode 100644
+index 000000000..2d049a0f0
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/event_tests.txt
+@@ -0,0 +1,6 @@
++pages_in=28 alerts=3 largest_event=20
++  苏政办函〔2026〕39号                members=20 primary=A1
++  鲁科字〔2023〕143号                members=7 primary=A1
++  ttl:b7d5f3f0ae919117         members=1 primary=media
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..b4680e5d1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/realtime_check.txt
+@@ -0,0 +1 @@
++live build: b189d3cc0703 ==T040: True
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/t057_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/t057_verify.py
+new file mode 100644
+index 000000000..db4e56349
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/test-results/t057_verify.py
+@@ -0,0 +1,82 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P01-T057 acceptance: Canonical Event aggregation.
++
++Acceptance (TASK_INDEX): 20 个同事件页面只产生 1 个提醒；所有证据仍可展开。
++Deterministic. Verifies that 20 pages about the SAME event aggregate to exactly 1 canonical event
++(1 alert), that all 20 members stay individually expandable, that the primary is the authoritative
++official original, and -- as a no-over-merge control -- that pages about a DIFFERENT event stay a
++separate event.
++"""
++import sys, json, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import canonical_event as CE
++
++T057 = V01 / "evidence" / "ADP-S5-P01-T057"
++pages = json.loads((T057 / "event_fixture.json").read_text(encoding="utf-8"))
++fails = []
++agg = CE.aggregate(pages)
++events = agg["events"]
++print(f"pages_in={agg['pages_in']} alerts={agg['alert_count']} largest_event={agg['largest_event_members']}")
++for e in events:
++    print(f"  {str(e['event_key']['value'])[:26]:28} members={e['member_count']} primary={e['primary']['authority_level']}")
++
++EVENT1 = "苏政办函〔2026〕39号"
++EVENT2 = "鲁科字〔2023〕143号"
++e1_pages = [p for p in pages if p.get("doc_number") == EVENT1 or p.get("references") == EVENT1]
++e1_event = next((e for e in events if e["event_key"]["value"] == EVENT1), None)
++
++# --- 1) 20 same-event pages -> exactly 1 alert -----------------------------------------------
++if len(e1_pages) != 20:
++    fails.append(f"fixture event-1 has {len(e1_pages)} pages (expected 20)")
++if e1_event is None:
++    fails.append("event-1 was not formed")
++elif e1_event["member_count"] != 20:
++    fails.append(f"event-1 has {e1_event['member_count']} members (expected 20)")
++# the 20 pages must contribute exactly ONE alert, not 20
++e1_alerts = sum(1 for e in events if e["event_key"]["value"] == EVENT1)
++if e1_alerts != 1:
++    fails.append(f"the 20 same-event pages produced {e1_alerts} alerts (expected 1)")
++
++# --- 2) all evidence still expandable --------------------------------------------------------
++if e1_event:
++    members = CE.expand(e1_event)
++    if len(members) != 20:
++        fails.append(f"expand(event-1) returned {len(members)} members (expected 20)")
++    if len({m["page_id"] for m in members}) != 20:
++        fails.append("event-1 members are not all individually retrievable (duplicate/missing page_id)")
++    fixture_ids = {p["page_id"] for p in e1_pages}
++    if {m["page_id"] for m in members} != fixture_ids:
++        fails.append("expanded members do not match the 20 source pages exactly")
++
++# --- 3) primary selection = the authoritative official ORIGINAL ------------------------------
++if e1_event:
++    prim = e1_event["primary"]
++    if prim["doc_number"] != EVENT1:
++        fails.append(f"event-1 primary is not the original ({prim.get('doc_number')})")
++    if prim["authority_level"] != "A1":
++        fails.append(f"event-1 primary authority {prim['authority_level']} != A1 (a media repost was chosen)")
++
++# --- 4) NO OVER-MERGE control: a different event stays separate -------------------------------
++e2_event = next((e for e in events if e["event_key"]["value"] == EVENT2), None)
++if e2_event is None:
++    fails.append("event-2 (different 文号) was not formed -> merge failure")
++if e1_event and e2_event and e1_event["event_id"] == e2_event["event_id"]:
++    fails.append("event-1 and event-2 collapsed into the same event (over-merge)")
++# event-1 must NOT contain any event-2 page
++if e1_event:
++    e2_ids = {p["page_id"] for p in pages if p.get("doc_number") == EVENT2 or p.get("references") == EVENT2}
++    if {m["page_id"] for m in CE.expand(e1_event)} & e2_ids:
++        fails.append("event-1 absorbed an event-2 page (over-merge)")
++
++# --- 5) re-derivation guard ------------------------------------------------------------------
++live = CE.aggregate(pages)
++if live["alert_count"] != agg["alert_count"] or live["largest_event_members"] != agg["largest_event_members"]:
++    fails.append("aggregation not deterministic across runs")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/canonical_event.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/canonical_event.py
+new file mode 100644
+index 000000000..aabfe84dd
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/canonical_event.py
+@@ -0,0 +1,86 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P01-T057 -- Canonical Event aggregation.
++
++The same policy / research / event shows up as many pages: the official ORIGINAL, official
++INTERPRETATIONS, media REPOSTS, and social REACTIONS. This aggregates them into ONE canonical event
++so a user gets a single alert -- not 20 -- while every member page stays expandable as evidence.
++
++  * event identity  -- the event KEY every member shares: the original's document number (文号) when
++                       present, else the content-addressed id of the authoritative original. A member
++                       joins an event by REFERENCING that key (a repost/interpretation cites the 文号)
++                       or by being the original itself. No fuzzy title-only merging.
++  * primary selection -- the highest-authority member whose own id is the event key (the ORIGINAL):
++                       A0 (central official) > A1 > A2 > media/repost. The primary is what the alert
++                       shows; interpretations/reposts/reactions are members.
++  * member links    -- every page in the cluster, tagged with its role and kept individually
++                       retrievable, so all evidence is expandable from the single event.
++
++Deterministic; no network, no production side effects.
++"""
++import hashlib
++
++# authority ordering: a lower rank is MORE authoritative -> becomes the primary
++_AUTH_RANK = {"A0": 0, "A1": 1, "A2": 2, "official": 1, "media": 8, "repost": 9, "reaction": 9, "unofficial": 9}
++
++
++def _page_key(p):
++    """The event key a page belongs to: the doc_number it IS or REFERENCES; else the original's
++    content id; else its own content id (a singleton event)."""
++    if p.get("references"):
++        return ("docnum", p["references"])            # a repost/interpretation -> the cited 文号
++    if p.get("doc_number"):
++        return ("docnum", p["doc_number"])            # an original with a 文号
++    cid = p.get("canonical_id") or ("ttl:" + hashlib.sha256((p.get("url") or p.get("page_id") or "").encode()).hexdigest()[:16])
++    return ("cid", cid)
++
++
++def aggregate(pages):
++    """Cluster pages into canonical events. Returns {events: [...], alerts, ...}."""
++    clusters = {}
++    for p in pages:
++        clusters.setdefault(_page_key(p), []).append(p)
++
++    events = []
++    for key, members in clusters.items():
++        # primary = the most authoritative member whose OWN doc_number/id equals the event key
++        def is_original(m):
++            k = key[1]
++            return (m.get("doc_number") == k) or (m.get("canonical_id") == k) or (not m.get("references") and _page_key(m) == key)
++        originals = [m for m in members if is_original(m) and not m.get("references")]
++        pool = originals or members
++        primary = min(pool, key=lambda m: (_AUTH_RANK.get(m.get("authority_level") or m.get("kind"), 9),
++                                           m.get("page_id", "")))
++        member_links = [{"page_id": m.get("page_id"), "url": m.get("url"),
++                         "role": m.get("kind", "member"), "source_id": m.get("source_id"),
++                         "authority_level": m.get("authority_level")} for m in members]
++        events.append({
++            "event_id": "evt:" + hashlib.sha256(("|".join(map(str, key))).encode()).hexdigest()[:16],
++            "event_key": {"kind": key[0], "value": key[1]},
++            "primary": {"page_id": primary.get("page_id"), "url": primary.get("url"),
++                        "title": primary.get("title"), "authority_level": primary.get("authority_level"),
++                        "doc_number": primary.get("doc_number")},
++            "member_count": len(members),
++            "roles": _role_counts(members),
++            "members": member_links,
++        })
++    events.sort(key=lambda e: e["member_count"], reverse=True)
++    return {
++        "pages_in": len(pages),
++        "events": events,
++        "alert_count": len(events),         # ONE alert per canonical event, not per page
++        "largest_event_members": events[0]["member_count"] if events else 0,
++    }
++
++
++def _role_counts(members):
++    c = {}
++    for m in members:
++        r = m.get("kind", "member")
++        c[r] = c.get(r, 0) + 1
++    return c
++
++
++def expand(event):
++    """All evidence for an event: the full member list stays individually retrievable."""
++    return event["members"]

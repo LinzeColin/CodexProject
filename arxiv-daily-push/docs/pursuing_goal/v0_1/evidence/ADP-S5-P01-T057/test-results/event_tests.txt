@@ -1,0 +1,6 @@
+pages_in=28 alerts=3 largest_event=20
+  苏政办函〔2026〕39号                members=20 primary=A1
+  鲁科字〔2023〕143号                members=7 primary=A1
+  ttl:b7d5f3f0ae919117         members=1 primary=media
+
+ACCEPTANCE = PASS

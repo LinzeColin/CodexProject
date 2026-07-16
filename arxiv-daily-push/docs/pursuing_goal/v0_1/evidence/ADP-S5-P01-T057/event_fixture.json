@@ -1,0 +1,253 @@
+[
+  {
+    "page_id": "orig-jiangsu",
+    "url": "http://www.jiangsu.gov.cn/art/2026/7/14/art_46144_11803435.html",
+    "kind": "original",
+    "source_id": "jiangsu-gov",
+    "authority_level": "A1",
+    "doc_number": "苏政办函〔2026〕39号",
+    "title": "省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知"
+  },
+  {
+    "page_id": "interp-苏政办函〔2026〕39号-0",
+    "url": "http://www.jiangsu.gov.cn/interp/0",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "苏政办函〔2026〕39号",
+    "title": "《苏政办函〔2026〕39号》政策解读 0"
+  },
+  {
+    "page_id": "interp-苏政办函〔2026〕39号-1",
+    "url": "http://www.jiangsu.gov.cn/interp/1",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "苏政办函〔2026〕39号",
+    "title": "《苏政办函〔2026〕39号》政策解读 1"
+  },
+  {
+    "page_id": "interp-苏政办函〔2026〕39号-2",
+    "url": "http://www.jiangsu.gov.cn/interp/2",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "苏政办函〔2026〕39号",
+    "title": "《苏政办函〔2026〕39号》政策解读 2"
+  },
+  {
+    "page_id": "interp-苏政办函〔2026〕39号-3",
+    "url": "http://www.jiangsu.gov.cn/interp/3",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "苏政办函〔2026〕39号",
+    "title": "《苏政办函〔2026〕39号》政策解读 3"
+  },
+  {
+    "page_id": "interp-苏政办函〔2026〕39号-4",
+    "url": "http://www.jiangsu.gov.cn/interp/4",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "苏政办函〔2026〕39号",
+    "title": "《苏政办函〔2026〕39号》政策解读 4"
+  },
+  {
+    "page_id": "interp-苏政办函〔2026〕39号-5",
+    "url": "http://www.jiangsu.gov.cn/interp/5",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "苏政办函〔2026〕39号",
+    "title": "《苏政办函〔2026〕39号》政策解读 5"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-0",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/0",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 0"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-1",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/1",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 1"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-2",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/2",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 2"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-3",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/3",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 3"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-4",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/4",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 4"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-5",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/5",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 5"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-6",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/6",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 6"
+  },
+  {
+    "page_id": "repost-苏政办函〔2026〕39号-7",
+    "url": "https://news.example.com/苏政办函〔2026〕39号/7",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "转载：苏政办函〔2026〕39号 7"
+  },
+  {
+    "page_id": "react-苏政办函〔2026〕39号-0",
+    "url": "https://forum.example.com/苏政办函〔2026〕39号/0",
+    "kind": "reaction",
+    "source_id": "forum-y",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "讨论：苏政办函〔2026〕39号 0"
+  },
+  {
+    "page_id": "react-苏政办函〔2026〕39号-1",
+    "url": "https://forum.example.com/苏政办函〔2026〕39号/1",
+    "kind": "reaction",
+    "source_id": "forum-y",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "讨论：苏政办函〔2026〕39号 1"
+  },
+  {
+    "page_id": "react-苏政办函〔2026〕39号-2",
+    "url": "https://forum.example.com/苏政办函〔2026〕39号/2",
+    "kind": "reaction",
+    "source_id": "forum-y",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "讨论：苏政办函〔2026〕39号 2"
+  },
+  {
+    "page_id": "react-苏政办函〔2026〕39号-3",
+    "url": "https://forum.example.com/苏政办函〔2026〕39号/3",
+    "kind": "reaction",
+    "source_id": "forum-y",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "讨论：苏政办函〔2026〕39号 3"
+  },
+  {
+    "page_id": "react-苏政办函〔2026〕39号-4",
+    "url": "https://forum.example.com/苏政办函〔2026〕39号/4",
+    "kind": "reaction",
+    "source_id": "forum-y",
+    "authority_level": "media",
+    "references": "苏政办函〔2026〕39号",
+    "title": "讨论：苏政办函〔2026〕39号 4"
+  },
+  {
+    "page_id": "orig-shandong",
+    "url": "http://www.shandong.gov.cn/art/2026/7/9/art_94237_10361274.html",
+    "kind": "original",
+    "source_id": "shandong-gov",
+    "authority_level": "A1",
+    "doc_number": "鲁科字〔2023〕143号",
+    "title": "山东省科学技术厅关于开展...的通知"
+  },
+  {
+    "page_id": "interp-鲁科字〔2023〕143号-0",
+    "url": "http://www.shandong.gov.cn/interp/0",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "鲁科字〔2023〕143号",
+    "title": "《鲁科字〔2023〕143号》政策解读 0"
+  },
+  {
+    "page_id": "interp-鲁科字〔2023〕143号-1",
+    "url": "http://www.shandong.gov.cn/interp/1",
+    "kind": "interpretation",
+    "source_id": "gov-cn-policy",
+    "authority_level": "A1",
+    "references": "鲁科字〔2023〕143号",
+    "title": "《鲁科字〔2023〕143号》政策解读 1"
+  },
+  {
+    "page_id": "repost-鲁科字〔2023〕143号-0",
+    "url": "https://news.example.com/鲁科字〔2023〕143号/0",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "鲁科字〔2023〕143号",
+    "title": "转载：鲁科字〔2023〕143号 0"
+  },
+  {
+    "page_id": "repost-鲁科字〔2023〕143号-1",
+    "url": "https://news.example.com/鲁科字〔2023〕143号/1",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "鲁科字〔2023〕143号",
+    "title": "转载：鲁科字〔2023〕143号 1"
+  },
+  {
+    "page_id": "repost-鲁科字〔2023〕143号-2",
+    "url": "https://news.example.com/鲁科字〔2023〕143号/2",
+    "kind": "repost",
+    "source_id": "media-x",
+    "authority_level": "media",
+    "references": "鲁科字〔2023〕143号",
+    "title": "转载：鲁科字〔2023〕143号 2"
+  },
+  {
+    "page_id": "react-鲁科字〔2023〕143号-0",
+    "url": "https://forum.example.com/鲁科字〔2023〕143号/0",
+    "kind": "reaction",
+    "source_id": "forum-y",
+    "authority_level": "media",
+    "references": "鲁科字〔2023〕143号",
+    "title": "讨论：鲁科字〔2023〕143号 0"
+  },
+  {
+    "page_id": "solo-news",
+    "url": "https://news.example.com/solo",
+    "kind": "repost",
+    "source_id": "media-z",
+    "authority_level": "media",
+    "title": "无关新闻"
+  }
+]

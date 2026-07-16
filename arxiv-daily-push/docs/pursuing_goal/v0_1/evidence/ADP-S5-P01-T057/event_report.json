@@ -1,0 +1,78 @@
+{
+  "task": "ADP-S5-P01-T057",
+  "pages_in": 28,
+  "alert_count": 3,
+  "largest_event_members": 20,
+  "events": [
+    {
+      "event_id": "evt:08f9200ecacb83ea",
+      "event_key": {
+        "kind": "docnum",
+        "value": "苏政办函〔2026〕39号"
+      },
+      "member_count": 20,
+      "roles": {
+        "original": 1,
+        "interpretation": 6,
+        "repost": 8,
+        "reaction": 5
+      },
+      "primary": {
+        "page_id": "orig-jiangsu",
+        "url": "http://www.jiangsu.gov.cn/art/2026/7/14/art_46144_11803435.html",
+        "title": "省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知",
+        "authority_level": "A1",
+        "doc_number": "苏政办函〔2026〕39号"
+      }
+    },
+    {
+      "event_id": "evt:5a5f6bfd8da9138a",
+      "event_key": {
+        "kind": "docnum",
+        "value": "鲁科字〔2023〕143号"
+      },
+      "member_count": 7,
+      "roles": {
+        "original": 1,
+        "interpretation": 2,
+        "repost": 3,
+        "reaction": 1
+      },
+      "primary": {
+        "page_id": "orig-shandong",
+        "url": "http://www.shandong.gov.cn/art/2026/7/9/art_94237_10361274.html",
+        "title": "山东省科学技术厅关于开展...的通知",
+        "authority_level": "A1",
+        "doc_number": "鲁科字〔2023〕143号"
+      }
+    },
+    {
+      "event_id": "evt:08d05ffbee023a02",
+      "event_key": {
+        "kind": "cid",
+        "value": "ttl:b7d5f3f0ae919117"
+      },
+      "member_count": 1,
+      "roles": {
+        "repost": 1
+      },
+      "primary": {
+        "page_id": "solo-news",
+        "url": "https://news.example.com/solo",
+        "title": "无关新闻",
+        "authority_level": "media",
+        "doc_number": null
+      }
+    }
+  ],
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "event-aggregation authoring"
+  },
+  "deployment": "NOT_DEPLOYED"
+}
