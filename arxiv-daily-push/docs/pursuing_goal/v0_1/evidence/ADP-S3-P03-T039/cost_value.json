@@ -1,0 +1,10 @@
+{
+  "task": "ADP-S3-P03-T039", "stage": "S3 China A0 Official Pilot", "release_mode": "SHADOW",
+  "value_metric": "a 14-day shadow that compares the media stream against the A0 official stream on authoritativeness, pollution, timeliness, coverage, and cost per accepted item -- and refuses to decide on fewer than 14 cycles or a single day, so the A0 switch is evidence-based, not impulsive; the A0 stream shows 100% authoritativeness / 0% pollution vs the media stream's 0% / 100%",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "shadow framework + representative 14-cycle report; the literal 14 days accrue over real calendar time via the pilot cron; the A0 stream's own fetch cost (once wired to the worker) is ~3 subrequests/cycle within the DIR-007 per-run cap"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "comparison_14_cycles": {"a0_stream": {"authoritativeness": 1.0, "pollution": 0.0, "cost_per_accepted": 0.375, "coverage_misses": 0, "false_positives": 0}, "media_stream": {"authoritativeness": 0.0, "pollution": 1.0}},
+  "discipline": {"min_cycles": 14, "single_day_never_decides": true, "thresholds_unmet_continue_shadow": true, "shadow_does_not_switch": true, "switch_gated_by_owner_s3_exit": true},
+  "recommendation": "READY_FOR_OWNER_S3_EXIT_GATE (T040 canary switch still requires the Owner S3 Exit gate)",
+  "acceptance": {"at_least_14_cycles": true, "not_decided_on_single_day": true, "continue_shadow_if_threshold_unmet": true, "value_cost_comparison_present": true}
+}

@@ -1,0 +1,8 @@
+cycles 14 | A0 authoritativeness 1.0 pollution 0.0 cost/accepted 0.375
+media authoritativeness 0.0 pollution 1.0
+recommendation: READY_FOR_OWNER_S3_EXIT_GATE
+
+single-day accumulate -> CONTINUE_SHADOW | only 1/14 cycles -- never decide on fewer than 14 (or a single day)
+thresholds-unmet accumulate -> CONTINUE_SHADOW | met: False
+
+ACCEPTANCE = PASS

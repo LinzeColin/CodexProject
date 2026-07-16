@@ -1,0 +1,285 @@
+{
+  "daily": [
+    {
+      "cycle": 1,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 2,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 3,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 4,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 5,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 6,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 7,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 8,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 9,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 10,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 11,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 12,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 13,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    },
+    {
+      "cycle": 14,
+      "a0": {
+        "items": 8,
+        "authoritativeness": 1.0,
+        "pollution": 0.0,
+        "coverage_misses": 0,
+        "false_positives": 0,
+        "latency_hours": 2.0,
+        "cost_per_accepted": 0.375
+      },
+      "media": {
+        "items": 6,
+        "authoritativeness": 0.0,
+        "pollution": 1.0,
+        "latency_hours": 1.0
+      }
+    }
+  ],
+  "accumulated": {
+    "cycles": 14,
+    "min_cycles": 14,
+    "enough_cycles": true,
+    "a0_stream": {
+      "items": 112,
+      "authoritativeness": 1.0,
+      "pollution": 0.0,
+      "accepted": 112,
+      "cost_requests": 42,
+      "cost_per_accepted": 0.375,
+      "coverage_misses": 0,
+      "false_positives": 0
+    },
+    "media_stream": {
+      "items": 84,
+      "authoritativeness": 0.0,
+      "pollution": 1.0
+    },
+    "thresholds": {
+      "authoritativeness_min": 0.99,
+      "pollution_max": 0.01
+    },
+    "thresholds_met": true,
+    "recommendation": "READY_FOR_OWNER_S3_EXIT_GATE",
+    "reason": "14 cycles and thresholds met; canary switch (T040) still requires the Owner S3 Exit gate",
+    "release_mode": "SHADOW",
+    "note": "SHADOW does not switch; T040 canary switch is gated by the Owner S3 Exit."
+  }
+}

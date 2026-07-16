@@ -1,0 +1,17 @@
+# ADP-S3-P03-T039 commands (A0 14-day shadow value-cost comparison; SHADOW, no switch)
+# base: main 6b872ebf (T038)
+
+# 1) shadow framework + spec + 14-cycle representative report
+#    tools/a0_shadow.py   (day_metrics; accumulate[>=14 cycles + thresholds; else CONTINUE_SHADOW]; media-vs-A0 comparison)
+#    A0_SHADOW_SPEC.md
+#    evidence/.../shadow_reports_14.json ; shadow_value_cost_report.json
+
+# 2) acceptance test
+python3 evidence/ADP-S3-P03-T039/test-results/t039_verify.py | tee evidence/ADP-S3-P03-T039/test-results/shadow_tests.txt
+# -> A0 stream authoritativeness 1.0 / pollution 0.0 / cost_per_accepted 0.375 ; media 0.0 / 1.0
+# -> 14 cycles + thresholds -> READY_FOR_OWNER_S3_EXIT_GATE
+# -> single day -> CONTINUE_SHADOW ; 13 cycles -> CONTINUE_SHADOW ; thresholds unmet -> CONTINUE_SHADOW
+# -> release_mode SHADOW; switch gated by Owner S3 Exit ; ACCEPTANCE = PASS (exit 0)
+
+# SHADOW: does NOT switch. The literal 14 days accrue over real calendar time; T040 canary + Owner S3 Exit gate decide.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
