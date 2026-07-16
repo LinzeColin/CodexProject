@@ -1,0 +1,279 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0004-CUTOVER-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0004",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0004"
+  ],
+  "iteration_id": "ST07-PHB-OPENAIDATABASE-PAM1-0004-001",
+  "generated_at": "2026-07-16T03:12:27Z",
+  "gate_status": "PASS_LOCAL_CANONICAL_MEMORY_CUTOVER",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "1315e39ca11cfcb870ab25033861430e0bd62596",
+  "remote_main_sha_at_run_start": "0a717623015dcea4271c445078b43b1bb85a20ba",
+  "remote_main_terminal_observation": "terminal main=1bd6432c63d1ba6c1d621a7a05023db0045b5380; 56 remote files changed since run start; exact local-file overlap=0; open PR/open issue/non-main branch=0/0/0; remote writes=0",
+  "candidate_tree_sha1_excluding_this_manifest": "7e377ca57df72c29aa761be0fafcd411b91ee5f8",
+  "content_tree_hash": "beda9e5bd033355988738b2ca22e3f4414bb06f60799ed15811933a7b4b68ff1",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 40-file staged closure before this manifest is added; final 37/37 publication binds the published business commit.",
+  "summary": "Migrate every profiled durable legacy fact into one deterministic canonical V2 record dataset, switch production readers and the migration writer to that truth, and retain the four legacy trees byte-locked and read-only.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0004 local canonical-memory cutover acceptance",
+  "ci_run_reference": "LOCAL_FULL_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "scope": {
+    "unique_legacy_ids": 278,
+    "canonical_records": 198,
+    "audit_only_legacy_ids": 80,
+    "canonical_shards": 1,
+    "canonical_files_written": 2,
+    "legacy_files_modified": 0,
+    "legacy_writer_count": 0,
+    "dual_write_count": 0,
+    "database_or_service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0003",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0003-PROFILE-20260716.json",
+    "manifest_sha256": "8df0a347369b2ba61e4ef143e6e9d3a991f613d31db98a1b58730163a595985f",
+    "gate_status": "PASS_LOCAL_MEMORY_QUALITY_PROFILE"
+  },
+  "cutover_result": {
+    "canonical_status_counts": {
+      "active": 6,
+      "candidate": 108,
+      "retired": 84,
+      "disputed": 0
+    },
+    "disposition_coverage": "278/278",
+    "schema_valid_coverage": "198/198",
+    "source_ref_coverage": "198/198",
+    "legacy_row_hash_coverage": "198/198",
+    "record_hash_coverage": "198/198",
+    "credential_or_secret_count": 0,
+    "repeat_build_identical": true,
+    "idempotent_existing_output_write_count": 0
+  },
+  "canonical_dataset": {
+    "manifest": "OpenAIDatabase/data/memory/records/manifest.json",
+    "record_shard": "OpenAIDatabase/data/memory/records/records-0001.jsonl",
+    "record_count": 198,
+    "shard_count": 1,
+    "dataset_bytes": 488877,
+    "dataset_sha256": "fa9edb7191c5751331f52f4103aa1a6709a7a1e22044d6d85e38ed7d771ca927",
+    "manifest_sha256": "019931525ab56adb51847f5920f9d84f168da5ad0ce2d70314aada4bb0e5f39e",
+    "max_allowed_shard_bytes": 921600
+  },
+  "legacy_read_only": {
+    "paths": [
+      "OpenAIDatabase/data/memory/active",
+      "OpenAIDatabase/data/memory/candidates",
+      "OpenAIDatabase/data/memory/curation",
+      "OpenAIDatabase/data/memory/secret_refs"
+    ],
+    "collection_sha256": {
+      "active": "048209a23ec63ab4144812ed424c50f2d330dea664abcf0a13b8b4e909cfaa7c",
+      "candidates": "814ddae11c60a49b47ffb20fc3c9f3cc8c8a4cd8ffa66b9c0c28287a03d07e4b",
+      "curation": "9cc6952bd7962832f951c5b79d8ad5bcbad77e2177879d5210c5356a896afc96",
+      "secret_refs": "08e8985fdf7e3570de5dccafc5337e173c343562670849183779e5e8e0807e9d"
+    },
+    "state": "READ_ONLY_PENDING_PAM1.0005_RAW_DISPOSITION"
+  },
+  "consumer_cutover": {
+    "shard_planner_source": "canonical manifest",
+    "search_fetch_source": "canonical manifest via rebuildable SQLite index",
+    "memory_atlas_source": "canonical manifest",
+    "three_layer_context_source": "canonical manifest",
+    "memory_atlas_active_records": 6,
+    "memory_atlas_nodes": 156,
+    "memory_atlas_edges": 720,
+    "legacy_normal_retrieval": false
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-014",
+    "formula_id": "FORM-014",
+    "parameter_ids": [
+      "PARAM-099",
+      "PARAM-100"
+    ],
+    "canonical_cutover_record_count": 198,
+    "audit_only_legacy_record_count": 80
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/config/memory.cutover.json": "d38fe2d56375cc5ca2b146a54f3907a8b7e39f32e3a4bd3a35c8511d316b38b5",
+    "OpenAIDatabase/data/memory/records/manifest.json": "019931525ab56adb51847f5920f9d84f168da5ad0ce2d70314aada4bb0e5f39e",
+    "OpenAIDatabase/data/memory/records/records-0001.jsonl": "fa9edb7191c5751331f52f4103aa1a6709a7a1e22044d6d85e38ed7d771ca927",
+    "OpenAIDatabase/scripts/migrate_memory_records.py": "263aaea615fcddc72b6363524dbba5af8e9435575a002415ea6ff4789d043dbb",
+    "OpenAIDatabase/tests/test_memory_canonical_cutover.py": "f9a798f70feae87d2a0e4c13c417979ac7a8d6cc441c3333279533059e3c4748",
+    "OpenAIDatabase/data/derived/visualization/memory_atlas.json": "5f5d7e04752eda0fe93cbb7ec18e3b815ae90a98e09280acc1a0de9c8773b506",
+    "governance/id_registry.json": "b39dd304cdd1747355f2a343f2b97e0b73d42dc52d80abfcc8f82b875132169f"
+  },
+  "test_commands": [
+    "python3 -B -m unittest OpenAIDatabase.tests.test_memory_canonical_cutover OpenAIDatabase.tests.test_memory_sharding OpenAIDatabase.tests.test_memory_record_schema_v2 OpenAIDatabase.tests.test_command_ownership OpenAIDatabase.tests.test_verification_policy OpenAIDatabase.tests.test_directory_lifecycle -v",
+    "python3 -B -m unittest OpenAIDatabase.tests.test_openai_memory_analysis OpenAIDatabase.tests.test_memory_atlas_data OpenAIDatabase.tests.test_memory_atlas_visual_workflows OpenAIDatabase.tests.test_generated_retention -v",
+    "python3 -B -m unittest OpenAIDatabase.tests.test_s07p2_information_roi OpenAIDatabase.tests.test_s08p3_stage_flight -v",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier full",
+    "python3 -B OpenAIDatabase/scripts/migrate_memory_records.py --database-dir OpenAIDatabase --contract config/memory.cutover.json --dry-run",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_command_ownership.py --database-dir OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "git diff --check; staged credential-shape scan; terminal GitHub audit"
+  ],
+  "test_results": [
+    {
+      "gate": "canonical_cutover",
+      "result": "PASS",
+      "observed": "278/278 dispositions reconcile to 198 canonical and 80 audit-only IDs; statuses 6/108/84/0; all 198 canonical records pass schema, source-ref, legacy-row-hash and record-hash validation; credentials=0."
+    },
+    {
+      "gate": "full_project_verification",
+      "result": "PASS",
+      "observed": "277/277 tests passed: fast 19, unit 33, security 72 and integration 153; elapsed 141.437 seconds. One shared temporary-repository fixture was corrected to create a single canonical V2 record after the first full run exposed eight cascading missing-manifest failures."
+    },
+    {
+      "gate": "legacy_and_consumer_boundary",
+      "result": "PASS",
+      "observed": "Legacy collection hashes are unchanged; legacy writers=0; dual writes=0; sharding, search/fetch, Memory Atlas and context discovery use the canonical manifest."
+    },
+    {
+      "gate": "governance_and_repository",
+      "result": "PASS",
+      "observed": "Lean render/reference drift 0/0, convergence 7/7, ID registry revision 78 PASS, candidate-tree hygiene PASS, diff check PASS and staged high-confidence credential-shape count 0."
+    },
+    {
+      "gate": "terminal_remote",
+      "result": "PASS",
+      "observed": "Remote main advanced across 56 files after run start with exact local overlap 0; open PR/open issue/non-main branch=0/0/0; this Run made no remote write."
+    }
+  ],
+  "evidence_refs": [
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/data/memory/records/manifest.json",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/tests/test_memory_canonical_cutover.py",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/command_ownership.json"
+  ],
+  "changed_files_declared": [
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/context_sources/three_layer_context.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.sharding.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/context/l2_project_memory/README.md",
+    "OpenAIDatabase/data/derived/visualization/memory_atlas.json",
+    "OpenAIDatabase/data/memory/records/manifest.json",
+    "OpenAIDatabase/data/memory/records/records-0001.jsonl",
+    "OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_memory_atlas_data.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/scripts/plan_memory_shards.py",
+    "OpenAIDatabase/skills/openai-memory-analysis/SKILL.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/retrieval.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/schema.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py",
+    "OpenAIDatabase/tests/memory_test_support.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_generated_retention.py",
+    "OpenAIDatabase/tests/test_memory_atlas_data.py",
+    "OpenAIDatabase/tests/test_memory_atlas_visual_workflows.py",
+    "OpenAIDatabase/tests/test_memory_canonical_cutover.py",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_memory_sharding.py",
+    "OpenAIDatabase/tests/test_s07p2_information_roi.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0004-CUTOVER-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/context_sources/three_layer_context.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.sharding.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/context/l2_project_memory/README.md",
+    "OpenAIDatabase/data/derived/visualization/memory_atlas.json",
+    "OpenAIDatabase/data/memory/records/manifest.json",
+    "OpenAIDatabase/data/memory/records/records-0001.jsonl",
+    "OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_memory_atlas_data.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/scripts/plan_memory_shards.py",
+    "OpenAIDatabase/skills/openai-memory-analysis/SKILL.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/retrieval.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/schema.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py",
+    "OpenAIDatabase/tests/memory_test_support.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_generated_retention.py",
+    "OpenAIDatabase/tests/test_memory_atlas_data.py",
+    "OpenAIDatabase/tests/test_memory_atlas_visual_workflows.py",
+    "OpenAIDatabase/tests/test_memory_canonical_cutover.py",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_memory_sharding.py",
+    "OpenAIDatabase/tests/test_s07p2_information_roi.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0004-CUTOVER-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0004-CUTOVER-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0004-CUTOVER-20260716.json"
+  ],
+  "known_boundaries": [
+    "The four legacy memory trees remain read-only until PAM1.0005 decides raw/evidence disposition; this Task does not delete them.",
+    "The one-time cutover writer is not the future governed mutation CLI; PAM1.0006 owns that interface.",
+    "Resource-route compatibility cleanup remains assigned to PAM1.0007 and live Cloudflare consumer work remains assigned to PAM1.0018.",
+    "Business publication remains deferred until all 37 Task Pack tasks pass."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove canonical records, the cutover contract/writer/tests and consumer/config updates, and restore the prior generated views. The byte-locked legacy trees remain unchanged, so no history rewrite, dependency rollback or remote compensation is required."
+}

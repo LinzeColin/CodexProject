@@ -1,0 +1,192 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0004",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.CLEAN1.0004"
+  ],
+  "iteration_id": "ST05-PHB-OPENAIDATABASE-CLEAN1-0004-001",
+  "run_id": "TSK-OPENAIDATABASE-CLEAN1-0004-LEAN-GOVERNANCE-20260716",
+  "generated_at": "2026-07-15T18:01:53Z",
+  "gate_status": "PASS_LOCAL",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "61b97fe92e827918ebace1907a7de840343078fe",
+  "implementation_base_tree": "57c038c99797c1402c1625a943ec6f3fe44c1d7b",
+  "candidate_tree_sha1_excluding_this_manifest": "12682512e0331c681a438687ec28c31f06ce03a5",
+  "content_tree_hash": "sha256-git-ls-tree-excluding-this-manifest:bc1b7b881f04d17ecfc43c1f0d41709b2ced55ba44e2d39d0f52cafde24e9288",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every Task file except this self-referential manifest; the final 37-Task publication run must bind the published commit.",
+  "summary": "Converge OpenAIDatabase on five canonical editable fact sources, deterministic compact Chinese human views, and byte-locked read-only legacy compatibility without runtime, semantic-value, version or remote mutation.",
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.CLEAN1.0003",
+    "status": "PASS_LOCAL",
+    "base_commit_contains_dependency": true,
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0003-ID-V2-MIGRATION-20260716.json"
+  },
+  "convergence_results": {
+    "canonical_editable_truth_count": 5,
+    "duplicate_editable_truth_count": 0,
+    "derived_human_view_count": 3,
+    "human_bytes_before": {
+      "功能清单.md": 5519,
+      "开发记录.md": 20770,
+      "模型参数文件.md": 31659,
+      "total": 57948
+    },
+    "human_bytes_after": {
+      "功能清单.md": 5366,
+      "开发记录.md": 8771,
+      "模型参数文件.md": 25973,
+      "total": 40110
+    },
+    "human_total_reduction_percent": 30.78,
+    "second_render_updated_count": 0,
+    "render_drift_count": 0,
+    "reference_issue_count": 0,
+    "retained_legacy_count": 14,
+    "retained_legacy_bytes": 357812,
+    "retained_legacy_sha256": "db4e580b9f7d0b0c851275b4c0af3611e49d587cd718fe84c266839ac4bde893",
+    "legacy_files_deleted": 0,
+    "legacy_files_moved": 0,
+    "legacy_dashboard_project_outputs": 0,
+    "registry_revision_before": 67,
+    "registry_revision_after": 68,
+    "registry_sha256_before": "3eb954f0a9697b4e027481085424de454a382a839aa914b599cfd7deec7f81b0",
+    "registry_sha256_after": "9f4b54504d4b6228bc13e375339e7edb0154544d0c286227878939407cb3439f",
+    "canonical_event_id": "EVT.OpenAIDatabase.CLEAN1.0002",
+    "product_version_before": "0.2.0",
+    "product_version_after": "0.2.0"
+  },
+  "changed_files_declared": [
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/legacy_disposition.json",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/artifact_policy.json",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0004-LEAN-GOVERNANCE-20260716.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/governance_artifact_policy.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/legacy_disposition.json",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/artifact_policy.json",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0004-LEAN-GOVERNANCE-20260716.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/governance_artifact_policy.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/artifact_policy.json",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0004-LEAN-GOVERNANCE-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/legacy_disposition.json",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/artifact_policy.json",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0004-LEAN-GOVERNANCE-20260716.json"
+  ],
+  "test_commands": [
+    "python3 -B -m py_compile scripts/lean_governance.py scripts/governance_artifact_policy.py scripts/generate_governance_dashboard.py scripts/validate_governance_sync.py scripts/validate_information_quality.py",
+    "python3 -B -m unittest tests.governance.test_openai_database_lean_convergence tests.governance.test_governance_artifact_policy -q",
+    "python3 -B scripts/governance_artifact_policy.py audit --json",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/validate_information_quality.py --project OpenAIDatabase --fast --fail-on-error",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "git diff --check",
+    "GitHub read-only PR/Issue/non-main-branch check"
+  ],
+  "test_results": [
+    {
+      "result": "PASS",
+      "observed": "15 focused convergence/artifact-policy tests passed, including exact task-status, legacy-byte and canonical-event-reader regressions."
+    },
+    {
+      "result": "PASS",
+      "observed": "Human render second run updated_count=0; drift_count=0; reference_issue_count=0; every view shrank and combined size fell 30.78%."
+    },
+    {
+      "result": "PASS",
+      "observed": "Artifact policy audit: duplicate editable truth 0; all 14 OpenAIDatabase legacy files match the 357812-byte aggregate lock."
+    },
+    {
+      "result": "PASS",
+      "observed": "ID audit: 104 allocations, 62 Task IDs, 62 Acceptance IDs, 41 Event IDs, 87 aliases and all 11780 identifier references resolved."
+    },
+    {
+      "result": "PASS",
+      "observed": "Legacy dashboard write-mode selection returned outputs=[] for OpenAIDatabase; no locked legacy byte changed."
+    },
+    {
+      "result": "PASS",
+      "observed": "Information-quality reader selected canonical events.jsonl after the freeze disposition and returned errors=0 warnings=0."
+    },
+    {
+      "result": "PASS",
+      "observed": "Changed-scope governance/semantic, diff and added-line secret checks passed; GitHub read-only state was PR 0, Issue 0, branches main only, remote main 5ff1f3c5ce49d0bb5466125333b873082d2ddd58."
+    }
+  ],
+  "evidence_refs": [
+    "OpenAIDatabase/docs/governance/legacy_disposition.json",
+    "tests/governance/test_openai_database_lean_convergence.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "governance/artifact_policy.json",
+    "governance/id_registry.json",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl"
+  ],
+  "security_boundary": {
+    "credential_material_read": false,
+    "payload_data_read": false,
+    "private_data_changed": false,
+    "runtime_behavior_changed": false,
+    "model_formula_parameter_values_changed": false,
+    "product_version_changed": false,
+    "github_writes": 0,
+    "history_rewrites": 0
+  },
+  "rollback": "Revert the single local Task commit and deterministically re-render the three human views from canonical facts. No legacy-file, history or remote compensation is required.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.CLEAN1.0004 local Lean Governance convergence acceptance",
+  "ci_run_reference": "NOT_RUN_LOCAL_ONLY_MAIN_PUBLICATION_DEFERRED_UNTIL_37_OF_37"
+}

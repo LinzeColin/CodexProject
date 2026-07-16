@@ -18,7 +18,7 @@ The system must help the user:
 
 After each processing run, output a chat-ready human review. The user does not want only IDs, hashes, schemas, or agent-internal metadata.
 
-Default delivery is the chat output itself. The GitHub repository is the durable backup surface. Do not create local delivery ZIPs, copied report folders, or extra packages unless explicitly requested. Clean transient package outputs, `.DS_Store`, and Python cache after use; do not delete source exports or encrypted raw archives without explicit authorization.
+Default delivery is the chat output itself. The GitHub repository is the durable redacted product backup surface. Do not create local delivery ZIPs, copied report folders, or extra packages unless explicitly requested. Complete private-origin archives belong in owner-controlled private Release storage; clean transient package outputs, `.DS_Store`, and Python cache after use, and do not delete source exports or private recovery assets without explicit authorization plus verified replacement.
 
 Every processing run must paste the analysis report, weekly review, and monthly review into the chat. The same chat-facing report should be backed up to `data/derived/chat_reports/`, but files must not replace the chat output.
 

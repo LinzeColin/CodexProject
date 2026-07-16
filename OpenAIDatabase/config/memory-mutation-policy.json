@@ -1,0 +1,76 @@
+{
+  "schema_version": "openai_database.memory_mutation_policy.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0009",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0009",
+  "operations": ["add", "update", "retire", "dispute"],
+  "source_operation_matrix": {
+    "explicit_user": {
+      "add": "admit_active",
+      "update": "admit_active",
+      "retire": "admit",
+      "dispute": "admit"
+    },
+    "repository_evidence": {
+      "add": "admit_active",
+      "update": "admit_active",
+      "retire": "admit",
+      "dispute": "admit"
+    },
+    "raw_import": {
+      "add": "reject_persistence",
+      "update": "reject_persistence",
+      "retire": "reject_persistence",
+      "dispute": "reject_persistence"
+    },
+    "model_inference": {
+      "add": "reject_persistence",
+      "update": "reject_persistence",
+      "retire": "reject_persistence",
+      "dispute": "reject_persistence"
+    }
+  },
+  "source_requirements": {
+    "explicit_user": {
+      "actor_type": "user_via_agent",
+      "authorization_mode": "explicit_user_zero_human",
+      "allowed_scopes": ["global", "project", "task", "conversation"],
+      "evidence_hash_required": false,
+      "recorded_by": "explicit_user",
+      "verification_method": "explicit_confirmation"
+    },
+    "repository_evidence": {
+      "actor_type": "automation_c",
+      "authorization_mode": "repository_evidence_preapproved",
+      "allowed_scopes": ["project", "task"],
+      "evidence_hash_required": true,
+      "recorded_by": "automation_c",
+      "verification_method": "repository_hash"
+    }
+  },
+  "record_enums": {
+    "kind": ["answering_rule", "preference", "decision", "project_context", "workflow", "security_boundary", "fact", "negative_trigger"],
+    "confidence": ["high", "medium", "low"],
+    "importance": ["high", "medium", "low"],
+    "sensitivity": ["public", "private", "sensitive"]
+  },
+  "limits": {
+    "envelope_max_bytes": 65536,
+    "statement_max_bytes": 8192,
+    "list_items_max": 32
+  },
+  "automation_c": {
+    "base_branch": "main",
+    "branch_prefix": "automation-c/memory-",
+    "same_repository_only": true,
+    "non_draft_pr_count": 1,
+    "issue_mutations": 0,
+    "direct_main_write": false,
+    "required_ci": "Project Governance / governance",
+    "settlement": "trusted_default_branch_api_only",
+    "terminal_state": "PR=0/Issue=0/non-main=0"
+  },
+  "publication_boundary": {
+    "candidate_transaction_only_until": "TSK.OpenAIDatabase.PAM1.0017",
+    "production_live_acceptance": "TSK.OpenAIDatabase.PAM1.0019"
+  }
+}

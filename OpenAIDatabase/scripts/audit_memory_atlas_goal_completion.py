@@ -276,7 +276,9 @@ def audit_goal_completion(
         add_check(checks, "local_acceptance", "PASS", f"{len(acceptance['checks'])} acceptance checks passed")
 
     try:
-        preflight = cloudflare_preflight(repo_root, effective_publish_dir, require_live_env=False)
+        # audit_acceptance owns the publish artifact release audit. This call
+        # verifies the Cloudflare contract without scanning the same artifact again.
+        preflight = cloudflare_preflight(repo_root, None, require_live_env=False)
     except PreflightError as exc:
         add_check(checks, "cloudflare_preflight", "FAIL", str(exc))
         preflight = None

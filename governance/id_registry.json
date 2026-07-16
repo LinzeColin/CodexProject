@@ -1,0 +1,2170 @@
+{
+  "schema_version": 2,
+  "registry_revision": 94,
+  "repository": "LinzeColin/CodexProject",
+  "last_updated_at": "2026-07-16T21:25:22Z",
+  "bootstrap": {
+    "imported_at": "2026-07-15T13:32:34Z",
+    "implementation_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+    "source_package_sha256": "64d267bd95757f9f00218125d6e388402f53c92b8e593608ec7ebb3d15a04c2f",
+    "task_registry_sha256": "ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+    "roadmap_sha256": "dcd237176fc83f500258a6f7814e1ed41fca69c4fe532ef8a4f3777cc3941bf4",
+    "task_count": 37
+  },
+  "allocations": [
+    {
+      "kind": "PG",
+      "identifier": "PG.CodexProject.CLEANMEM1",
+      "project": "CodexProject",
+      "program": "CLEANMEM1",
+      "idempotency_key": "taskpack-v3:PG.CodexProject.CLEANMEM1",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e"
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0001",
+      "acceptance_id": "ACC.CodexProject.REPO1.0001",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 1,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0001",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0002",
+      "acceptance_id": "ACC.CodexProject.REPO1.0002",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 2,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0002",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0001"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0003",
+      "acceptance_id": "ACC.CodexProject.REPO1.0003",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 3,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0003",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0002"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0004",
+      "acceptance_id": "ACC.CodexProject.REPO1.0004",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 4,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0004",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0003"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0005",
+      "acceptance_id": "ACC.CodexProject.REPO1.0005",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 5,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0005",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0004"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0006",
+      "acceptance_id": "ACC.CodexProject.REPO1.0006",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 6,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0006",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0001"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0007",
+      "acceptance_id": "ACC.CodexProject.REPO1.0007",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 7,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0007",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0006"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0008",
+      "acceptance_id": "ACC.CodexProject.REPO1.0008",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 8,
+      "idempotency_key": "taskpack-v3:TSK.CodexProject.REPO1.0008",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0007"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0009",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 9,
+      "idempotency_key": "control-handoff:TSK.CodexProject.REPO1.0009",
+      "allocated_from_base_sha": "6b83d8e2b653e609233286338e3a810816d60543",
+      "allocated_at": "2026-07-16T21:25:22Z",
+      "source_ref": "allocator:control-handoff:TSK.CodexProject.REPO1.0009",
+      "acceptance_id": "ACC.CodexProject.REPO1.0009",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0008"
+      ]
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0001",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 1,
+      "idempotency_key": "task:TSK.OpenAIDatabase.CLEAN1.0003:event",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:task:TSK.OpenAIDatabase.CLEAN1.0003:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0002",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 2,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0004:event",
+      "allocated_from_base_sha": "61b97fe92e827918ebace1907a7de840343078fe",
+      "allocated_at": "2026-07-15T17:45:54Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0004:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0003",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 3,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0005:event",
+      "allocated_from_base_sha": "74dc2f7a52f1f1b7694c0433c5be87ce6da4cf73",
+      "allocated_at": "2026-07-15T18:16:23Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0005:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0004",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 4,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0006:event",
+      "allocated_from_base_sha": "46ae7fc0a702285f8dc1cb6349773a84d5d833ec",
+      "allocated_at": "2026-07-15T18:46:54Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0006:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0005",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 5,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0007:event",
+      "allocated_from_base_sha": "0b66ae8192d2285f2972516e4fe080b9d2267bb7",
+      "allocated_at": "2026-07-15T19:12:52Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0007:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0006",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 6,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0008:event",
+      "allocated_from_base_sha": "d05af208c0684a556831bfca04ec0c57b7747345",
+      "allocated_at": "2026-07-15T20:51:13Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0008:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0007",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 7,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0009:event",
+      "allocated_from_base_sha": "51040e08014b63f9bf7256c83bedfccea76e8b22",
+      "allocated_at": "2026-07-15T23:28:11Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0009:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.CLEAN1.0008",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 8,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0010:event",
+      "allocated_from_base_sha": "e1473638e75e1a6845a2956e390a066e4a67507a",
+      "allocated_at": "2026-07-16T00:07:45Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0010:event"
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0001",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0001",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 1,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0001",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0005"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0002",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0002",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 2,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0002",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0008"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0003",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0003",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 3,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0003",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0002"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0004",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0004",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 4,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0004",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0003"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0005",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0005",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 5,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0005",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0004"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0006",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0006",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 6,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0006",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0005"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0007",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0007",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 7,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0007",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0006"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0008",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0008",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 8,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0008",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0007"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0009",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0009",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 9,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0009",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0008"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.CLEAN1.0010",
+      "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0010",
+      "project": "OpenAIDatabase",
+      "program": "CLEAN1",
+      "sequence": 10,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.CLEAN1.0010",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0009"
+      ]
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0001",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 1,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:86f7ea221c6c61e8d313dba7",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:86f7ea221c6c61e8d313dba7"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0002",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 2,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:e439d369cd5dc367de5f4865",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:e439d369cd5dc367de5f4865"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0003",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 3,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:4618959d2397bde7a60b5143",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:4618959d2397bde7a60b5143"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0004",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 4,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:fc70aefd0c7ed52591c14e33",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:fc70aefd0c7ed52591c14e33"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0005",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 5,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:a963f062864767ed363a19ed",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:a963f062864767ed363a19ed"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0006",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 6,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:6282f792f893f1bb3c13d67c",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:6282f792f893f1bb3c13d67c"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0007",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 7,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:505d60752be048fb72a8a3bd",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:505d60752be048fb72a8a3bd"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0008",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 8,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:5ef73f43fc2fde0fcd2611f5",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:5ef73f43fc2fde0fcd2611f5"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0009",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 9,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:35c4159d05b104390372e263",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:35c4159d05b104390372e263"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0010",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 10,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:e8cb9f753ce2fb72f6e3e66c",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:e8cb9f753ce2fb72f6e3e66c"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0011",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 11,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:4d88f7106ce3e593094cf8f6",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:4d88f7106ce3e593094cf8f6"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0012",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 12,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:ebeb10b6e5317e84b44a0092",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:ebeb10b6e5317e84b44a0092"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0013",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 13,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:f541c3c3d026f35201e84daf",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:f541c3c3d026f35201e84daf"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0014",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 14,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:b3dcc25f212cfbdd978606c8",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:b3dcc25f212cfbdd978606c8"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0015",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 15,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:6b667c09a881c088f937539f",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:6b667c09a881c088f937539f"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0016",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 16,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:1404402c67566fee8fec4ec4",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:1404402c67566fee8fec4ec4"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0017",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 17,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:52d5dee348a54dac1eb807a4",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:52d5dee348a54dac1eb807a4"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0018",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 18,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:e658072ada0536410c289a91",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:e658072ada0536410c289a91"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0019",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 19,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:c146bd2e52d7794b66e54d92",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:c146bd2e52d7794b66e54d92"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0020",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 20,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:faa150ba6d5fe4b0014b9f9e",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:faa150ba6d5fe4b0014b9f9e"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0021",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 21,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:83f8cdd78f38961506c4d5b5",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:83f8cdd78f38961506c4d5b5"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0022",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 22,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:f2a6d1809c5420aebbb7ffa9",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:f2a6d1809c5420aebbb7ffa9"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0023",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 23,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:afad617e4f6e0b1c585140d0",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:afad617e4f6e0b1c585140d0"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0024",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 24,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:85734e6e918def63ec94b4b6",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:85734e6e918def63ec94b4b6"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0025",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 25,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:35c2500c78c2000e5abd4f67",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:35c2500c78c2000e5abd4f67"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0026",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 26,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:4759c4ca4a19ec6338cd9750",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:4759c4ca4a19ec6338cd9750"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0027",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 27,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:6bff02703e468ae47ec8be52",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:6bff02703e468ae47ec8be52"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0028",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 28,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:659d6f4210fff43f66f635ad",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:659d6f4210fff43f66f635ad"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0029",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 29,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:ddb8e9dedc703592c9ba5c06",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:ddb8e9dedc703592c9ba5c06"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0030",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 30,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:fdb51f29ccdf332151d27ac1",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:fdb51f29ccdf332151d27ac1"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0031",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 31,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:a66b3127c53643300a0e8590",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:a66b3127c53643300a0e8590"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0032",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 32,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:46fd9904175b4fb2ae501e74",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:46fd9904175b4fb2ae501e74"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0033",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 33,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:3851226944895eac09523823",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:3851226944895eac09523823"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0034",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 34,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:961592fcb1c6af4c4fc8f8ff",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:961592fcb1c6af4c4fc8f8ff"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0035",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 35,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:42ee0fb4b43e37fd2ab6038c",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:42ee0fb4b43e37fd2ab6038c"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0036",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 36,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:537b4aff1286a48ab3b2aa93",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:537b4aff1286a48ab3b2aa93"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0037",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 37,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:56bb145f1cbe490eb4a7b22f",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:56bb145f1cbe490eb4a7b22f"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0038",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 38,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:41c169abb8d202b01eddacdd",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:41c169abb8d202b01eddacdd"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.OPS1.0039",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 39,
+      "idempotency_key": "project-migration:OpenAIDatabase:EVT:3b2c0dcac53bb2c9763997ee",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:EVT:3b2c0dcac53bb2c9763997ee"
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0001",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 1,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:30c34bbd889e0b51be071b32",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:30c34bbd889e0b51be071b32",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0001",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0002",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 2,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:8baa7d1a4e02db10bb6197b0",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:8baa7d1a4e02db10bb6197b0",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0002",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0003",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 3,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:0eab31ccae1468f358cadd50",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:0eab31ccae1468f358cadd50",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0003",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0004",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 4,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:53544e7f270779e3e36cc54b",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:53544e7f270779e3e36cc54b",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0004",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0017"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0005",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 5,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:2943c0ea5dfcd07807c90a38",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:2943c0ea5dfcd07807c90a38",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0005",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0012"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0006",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 6,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:491f538ec651eacdd1e6032d",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:491f538ec651eacdd1e6032d",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0006",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0012"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0007",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 7,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:f2878f57a510c933ecd3d0e8",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:f2878f57a510c933ecd3d0e8",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0007",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0006",
+        "TSK.OpenAIDatabase.OPS1.0020"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0008",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 8,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:8311c937f71eda96f0e9b4a2",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:8311c937f71eda96f0e9b4a2",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0008",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0009",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 9,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:6522b663e23d2bee1e86610c",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:6522b663e23d2bee1e86610c",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0009",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0010",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 10,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:230921e8b283965cf3cbdb3a",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:230921e8b283965cf3cbdb3a",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0010",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0009"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0011",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 11,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:3c5ce0097e0a95e786318066",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:3c5ce0097e0a95e786318066",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0011",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0012",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 12,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:9d6f3e92b1d7ea55ad7afc72",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:9d6f3e92b1d7ea55ad7afc72",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0012",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0011"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0013",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 13,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:a65f1721ac55893c7d19c83d",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:a65f1721ac55893c7d19c83d",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0013",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0014",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 14,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:1fd2d2ae797415885d211f63",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:1fd2d2ae797415885d211f63",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0014",
+      "dependencies": []
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0015",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 15,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:166cc7399cbdace4d88fa534",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:166cc7399cbdace4d88fa534",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0015",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0014"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0016",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 16,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:d07f9fbcf4f5a0f10499288a",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:d07f9fbcf4f5a0f10499288a",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0016",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0015"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0017",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 17,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:87028a625eb3b89f5407bb4e",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:87028a625eb3b89f5407bb4e",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0017",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0016"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0018",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 18,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:c2b98784b0b8f50e5a9f436d",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:c2b98784b0b8f50e5a9f436d",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0018",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0017"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0019",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 19,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:514a50db278c2526b4475aeb",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:514a50db278c2526b4475aeb",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0019",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0018"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0020",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 20,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:2f055a4ef7f2031e94d30c7e",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:2f055a4ef7f2031e94d30c7e",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0020",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0017"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0021",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 21,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:8073f1a390e3853eff613faf",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:8073f1a390e3853eff613faf",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0021",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0017"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0022",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 22,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:68dc1c8e595d686be772ac64",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:68dc1c8e595d686be772ac64",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0022",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0021"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0023",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 23,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:3e6e67c0d646f3791c6b6863",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:3e6e67c0d646f3791c6b6863",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0023",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0021"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0024",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 24,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:e23f9a74cc7b067554ecb4aa",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:e23f9a74cc7b067554ecb4aa",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0024",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0021",
+        "TSK.OpenAIDatabase.OPS1.0022"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.OPS1.0025",
+      "project": "OpenAIDatabase",
+      "program": "OPS1",
+      "sequence": 25,
+      "idempotency_key": "project-migration:OpenAIDatabase:TSK:5d875b60c8d6e6cf3ef4c821",
+      "allocated_from_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+      "allocated_at": "2026-07-15T17:29:29Z",
+      "source_ref": "allocator:project-migration:OpenAIDatabase:TSK:5d875b60c8d6e6cf3ef4c821",
+      "acceptance_id": "ACC.OpenAIDatabase.OPS1.0025",
+      "dependencies": [
+        "TSK.OpenAIDatabase.OPS1.0017"
+      ]
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0001",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 1,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0001:event",
+      "allocated_from_base_sha": "a501d3e660665706da204e0d19a662157588c04f",
+      "allocated_at": "2026-07-16T00:42:55Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0001:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0002",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 2,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0002:event",
+      "allocated_from_base_sha": "8fa003029f61a16c2792f17881af9434ca978778",
+      "allocated_at": "2026-07-16T01:18:23Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0002:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0003",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 3,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0003:event",
+      "allocated_from_base_sha": "01c4f0f3966db2fb67085e16404caf9ca6f84741",
+      "allocated_at": "2026-07-16T02:07:03Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0003:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0004",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 4,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0004:event",
+      "allocated_from_base_sha": "1315e39ca11cfcb870ab25033861430e0bd62596",
+      "allocated_at": "2026-07-16T02:57:06Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0004:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0005",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 5,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0005:event",
+      "allocated_from_base_sha": "618a3af31f6706391049d534f1ea3b58eeed5492",
+      "allocated_at": "2026-07-16T03:36:28Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0005:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0006",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 6,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0006:event",
+      "allocated_from_base_sha": "c2256a091f38031cc237586c71de5226eb3e3e82",
+      "allocated_at": "2026-07-16T04:22:57Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0006:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0007",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 7,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0007:event",
+      "allocated_from_base_sha": "628a624a8eae3e085c992268a3376c427a64fb45",
+      "allocated_at": "2026-07-16T05:08:02Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0007:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0008",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 8,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0008:event",
+      "allocated_from_base_sha": "b136b9334007c098c836ec6eb49bb8ac441356a7",
+      "allocated_at": "2026-07-16T05:52:49Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0008:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0009",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 9,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0009:event",
+      "allocated_from_base_sha": "19926089922534c578a052bceb84c3a1e5a71c5e",
+      "allocated_at": "2026-07-16T06:45:00Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0009:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0010",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 10,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0010:event",
+      "allocated_from_base_sha": "bb7796d582c92564009bff29b0ac82c9ba9e8130",
+      "allocated_at": "2026-07-16T07:32:36Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0010:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0011",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 11,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0011:event",
+      "allocated_from_base_sha": "09b9b51a6547b2cde48c78f7191ddfb75c6e07e7",
+      "allocated_at": "2026-07-16T08:21:53Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0011:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0012",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 12,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0012:event",
+      "allocated_from_base_sha": "4cee90c91bc2dca429efddb5f716587c9ff3703a",
+      "allocated_at": "2026-07-16T09:00:32Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0012:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0013",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 13,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0013:event",
+      "allocated_from_base_sha": "2010a045758edcb4f527ba1a1e1db8c6b80109dc",
+      "allocated_at": "2026-07-16T09:37:38Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0013:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0014",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 14,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0014:event",
+      "allocated_from_base_sha": "acd79300ce6070d49bd97a6653838f521028295c",
+      "allocated_at": "2026-07-16T10:14:09Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0014:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0015",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 15,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0015:event",
+      "allocated_from_base_sha": "0369c387feba3342cc5270a9950e3a71cda0fe8f",
+      "allocated_at": "2026-07-16T11:00:02Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0015:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0016",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 16,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0016:event",
+      "allocated_from_base_sha": "9ef63a219103d509600ea1f17bedfa1e3541b593",
+      "allocated_at": "2026-07-16T12:05:47Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0016:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0017",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 17,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0017:event",
+      "allocated_from_base_sha": "e94c03a499160a60bed4ec0f077f7cf9e5120b04",
+      "allocated_at": "2026-07-16T12:45:56Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0017:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0018",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 18,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0018:event",
+      "allocated_from_base_sha": "1352504671eb277e0a80fa7bfc2f537caefc607f",
+      "allocated_at": "2026-07-16T13:41:00Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0018:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0019",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 19,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0019:event",
+      "allocated_from_base_sha": "585f0ca9861c7f5bdd12e488bb2f26fb2b1218df",
+      "allocated_at": "2026-07-16T14:24:03Z",
+      "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0019:event"
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0001",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0001",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 1,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0001",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.CLEAN1.0010"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0002",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0002",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 2,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0002",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0001"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0003",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0003",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 3,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0003",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0002"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0004",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0004",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 4,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0004",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0003"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0005",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0005",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 5,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0005",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0004"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0006",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0006",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 6,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0006",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0005"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0007",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0007",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 7,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0007",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0006"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0008",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0008",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 8,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0008",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0007"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0009",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0009",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 9,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0009",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0008"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0010",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0010",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 10,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0010",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0009"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0011",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0011",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 11,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0011",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0010"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0012",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0012",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 12,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0012",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0011"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0013",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0013",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 13,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0013",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0012"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0014",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0014",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 14,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0014",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0013"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0015",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0015",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 15,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0015",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0014"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0016",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0016",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 16,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0016",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0015"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0017",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0017",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 17,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0017",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0016"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0018",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0018",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 18,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0018",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0017"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.OpenAIDatabase.PAM1.0019",
+      "acceptance_id": "ACC.OpenAIDatabase.PAM1.0019",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 19,
+      "idempotency_key": "taskpack-v3:TSK.OpenAIDatabase.PAM1.0019",
+      "allocated_from_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+      "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
+      "dependencies": [
+        "TSK.OpenAIDatabase.PAM1.0018"
+      ]
+    }
+  ],
+  "aliases": [
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-CF-L2-20260710",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0001"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-GOV-REVIEW6-FINAL-PORTFOLIO-001",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0003"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-MACDATA-PROM2-SETUP-20260705",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0005"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-A-001",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0014"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-A-002",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0015"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-A-003",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0016"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-A-004",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0017"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-B-001",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0018"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-C-001",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0019"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-C-002",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0020"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-D-001",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0021"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-D-002",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0022"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-D-003",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0023"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-D-004",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0024"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAI-E-001",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0025"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAIDB-RUN0A-20260713",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0006"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OAIDB-SM-P0-R1",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0007"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-OPENAIDATABASE-BOMBA-ARCHIVE-OFFLOAD-20260715",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0008"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-S3PDT01",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0010"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-S5PBT02",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0011"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-S5PBT03",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0012"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-S6PAT02",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0013"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "ACC",
+      "legacy_id": "ACC-SEMANTIC-OAIDB-001",
+      "target_id": "ACC.OpenAIDatabase.OPS1.0004"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260710-OAIDB-CF-L2",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0001"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260710-OAIDB-CF-L2-BINDING",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0002"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260710-OAIDB-CF-L2-REMOTE-LIVE",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0003"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260713-OAIDB-SM-P0-R1",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0004"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260713-OAIDB-SM-P0-R1-ACCEPTANCE",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0005"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260713-OAIDB-SM-P0-R1-GOV-SYNC",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0006"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260713-OAIDB-SM-P0-R1-P1-CORRECTION",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0007"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260713-OAIDB-SM-P0-R1-P1-CORRECTION-ACCEPTANCE",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0008"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVENT-20260715-OAIDB-BOMBA-ARCHIVE-OFFLOAD",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0009"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-MACDATA-PROM2-SETUP-20260705",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0010"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-CLEAN1-0001-LOCAL-20260716",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0011"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-OTHER8-S3PDT01-PRIVACY",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0012"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-OWNER-DECISION-20260622-001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0013"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-REVIEW6-FINAL-20260622-001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0014"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-REVIEW9-S5PBT03-LOCAL",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0015"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-RUN0A-20260713",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0016"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-SEMANTIC-20260621-001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0017"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-SHARED-MEMORY-RUN1-20260713",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0018"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-SHARED-MEMORY-RUN1-ACCEPTANCE-20260713",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0019"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-SHARED-MEMORY-RUN1-P1-CORRECTED-ACCEPTANCE-20260713",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0020"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-OAIDB-SHARED-MEMORY-RUN1-P1-CORRECTION-20260713",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0021"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-REPO1-0005-OAIDB-WORKFLOW",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0022"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-REPO1-0006-OAIDB-HYGIENE",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0023"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "EVT-REVIEW6-FINAL-OpenAIDatabase-001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0024"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "GOV-SEMANTIC-OAIDB-STATUS-001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0025"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260620-OAI-001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0026"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260621-OAI-001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0027"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260621-OAI-002",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0028"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260621-OAI-003",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0029"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260621-OAI-004",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0030"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260624-OAIDB-S3PDT01",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0031"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260626-OAIDB-D001",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0032"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260629-OAIDB-D003",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0033"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260705-MACDATA-PROM2-HYGIENE",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0034"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260705-MACDATA-PROM2-SETUP",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0035"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260705-MACDATA-PROM2-STATUS-FIX",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0036"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260705-MACDATA-PROM2-TXT-REPORT",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0037"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260706-MACDATA-PROM2-MD-REPORT-RESTORE",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0038"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "EVT",
+      "legacy_id": "ITER-20260707-OAIDB-D004",
+      "target_id": "EVT.OpenAIDatabase.OPS1.0039"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "CF-L2-20260710",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0001"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "GOV-BASELINE-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0002"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "GOV-REVIEW6-FINAL-PORTFOLIO-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0003"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "GOV-SEMANTIC-OAIDB-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0004"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "MACDATA-PROM2-SETUP-20260705",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0005"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "OAIDB-RUN0A-20260713",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0006"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "OAIDB-SM-P0-R1",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0007"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "OPENAIDATABASE-BOMBA-ARCHIVE-OFFLOAD-20260715",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0008"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "S2PCT03",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0009"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "S3PDT01",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0010"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "S5PBT02",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0011"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "S5PBT03",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0012"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "S6PAT02",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0013"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-A-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0014"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-A-002",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0015"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-A-003",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0016"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-A-004",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0017"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-B-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0018"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-C-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0019"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-C-002",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0020"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-D-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0021"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-D-002",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0022"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-D-003",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0023"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-D-004",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0024"
+    },
+    {
+      "project": "OpenAIDatabase",
+      "kind": "TSK",
+      "legacy_id": "TASK-OAI-E-001",
+      "target_id": "TSK.OpenAIDatabase.OPS1.0025"
+    }
+  ],
+  "migrated_projects": [
+    "OpenAIDatabase"
+  ]
+}

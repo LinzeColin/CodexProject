@@ -1,0 +1,91 @@
+{
+  "schema_version": "openai_database.memory_snapshot_policy.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0018",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0018",
+  "snapshot_version": "portable-agent-memory-v1",
+  "source_repository": "LinzeColin/CodexProject",
+  "archive": {
+    "format": "zip-stored-v1",
+    "asset_name_template": "portable-agent-memory-v1-{commit}.zip",
+    "max_asset_bytes": 2097152,
+    "max_member_bytes": 921600,
+    "deterministic_timestamp": "1980-01-01T00:00:00Z"
+  },
+  "commit_required_paths": [
+    "config/memory.schema.json",
+    "config/memory.sharding.json",
+    "config/agent-memory.schema.json",
+    "config/agent_transport_profiles.json",
+    "config/memory-lifecycle-policy.json",
+    "config/memory-forgetting-policy.json",
+    "config/memory-security-policy.json",
+    "config/evaluation/memory_retrieval_performance_v1.json",
+    "data/memory/records/manifest.json",
+    "data/memory/AGENT_MEMORY.md",
+    "data/memory/agent-memory.json"
+  ],
+  "runtime_files": [
+    {
+      "source": "scripts/memory_snapshot.py",
+      "snapshot_path": "tools/memory_snapshot.py",
+      "category": "runtime"
+    },
+    {
+      "source": "docs/MEMORY_SNAPSHOT_RECOVERY.md",
+      "snapshot_path": "RUNBOOK.md",
+      "category": "runbook"
+    },
+    {
+      "source": "config/memory-snapshot-policy.json",
+      "snapshot_path": "SNAPSHOT_POLICY.json",
+      "category": "policy"
+    }
+  ],
+  "raw": {
+    "allowed_root": "data/public_raw",
+    "allowed_extensions": [
+      ".json",
+      ".jsonl",
+      ".md",
+      ".txt"
+    ],
+    "include_only_exact_record_source_refs": true,
+    "require_public_repository_allowed": true,
+    "external_or_opaque_origin_included": false
+  },
+  "restore": {
+    "destination_must_not_exist": true,
+    "atomic_directory_publish": true,
+    "partial_restore_allowed": false,
+    "history_rewrite_allowed": false
+  },
+  "recovery": {
+    "rto_target_seconds": 1800,
+    "local_drill_bound_seconds": 30,
+    "canonical_hash_match_percent": 100,
+    "required_negative_cases": [
+      "tampered_member",
+      "missing_member",
+      "wrong_expected_commit"
+    ]
+  },
+  "security": {
+    "credential_or_access_material_allowed": false,
+    "absolute_or_parent_path_allowed": false,
+    "symlink_member_allowed": false,
+    "duplicate_member_allowed": false,
+    "encrypted_member_allowed": false,
+    "release_requires_all_members_from_source_commit": true,
+    "release_requires_public_repository_allowed_records": true,
+    "release_requires_redacted_summary_records": true
+  },
+  "release": {
+    "repository": "LinzeColin/AgentDatabase",
+    "visibility": "public",
+    "disposition": "public_safe_release_asset_only",
+    "publish_task_id": "TSK.OpenAIDatabase.PAM1.0019",
+    "checksum": "sha256",
+    "signature_required_for_integrity": false,
+    "authenticity_claim_allowed_without_signature": false
+  }
+}

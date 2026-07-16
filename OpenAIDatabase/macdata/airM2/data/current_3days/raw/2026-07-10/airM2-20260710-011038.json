@@ -1,0 +1,118 @@
+{
+  "air_remote_readiness": {
+    "codespaces_cli_check": "仅检查 gh 是否存在；不自动访问 Codespaces，避免额外网络/权限动作。",
+    "github_cli_available": false,
+    "github_cli_version": "未发现 gh 命令",
+    "ssh_config_exists": true,
+    "vscode_cli_available": false,
+    "vscode_cli_version": "未发现 code 命令"
+  },
+  "brew": {
+    "brew_available": true,
+    "brew_cask_count": 1,
+    "brew_formula_count": 23,
+    "brew_version": "Homebrew 6.0.8"
+  },
+  "collected_at_local": "2026-07-10T01:10:41+10:00",
+  "collector_notes": [
+    "本记录不采集 Time Machine。",
+    "本记录不使用 iCloud。",
+    "本记录不采集 API key、token、password、cookie、session、Keychain、shell history、完整环境变量。",
+    "脚本不会自动清理 Docker、Homebrew、系统缓存或项目缓存。"
+  ],
+  "device_key": "airM2",
+  "device_label_cn": "M2 MacBook Air",
+  "device_role_cn": "工作前台 / 移动终端 / 云端入口",
+  "docker": {
+    "docker_installed": "未采集"
+  },
+  "git": {
+    "branch": "main",
+    "device_dirty_count": 0,
+    "device_untracked_count": 0,
+    "latest_commit": "62624cdbc3d72602f93f47f264be5b0bc878204c KMFA automation recovery: harden DWS runs",
+    "repo_root": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject",
+    "tracked_dirty_count_repo": 4
+  },
+  "hardware": {
+    "battery_condition": "Good",
+    "battery_cycle_count": 259,
+    "battery_maximum_capacity_percent": "85%",
+    "chip_type": "Apple M2",
+    "model_identifier": "Mac14,2",
+    "model_name": "MacBook Air",
+    "physical_memory_text": "8 GB",
+    "raw_available": true,
+    "serial_number": "XHJ635M9MD",
+    "software_version": "macOS 26.5.1 (25F80)",
+    "system_profiler_error": "",
+    "system_profiler_ok": true
+  },
+  "memory": {
+    "physical_memory_gb": 8.0,
+    "swap_used_gb": 1.89,
+    "swapusage_raw": "vm.swapusage: total = 3072.00M  used = 1932.31M  free = 1139.69M  (encrypted)",
+    "vm_stat_summary": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                                     4781.\nPages active:                                 115905.\nPages inactive:                               110803.\nPages speculative:                              4527.\nPages throttled:                                   0.\nPages wired down:                              84589.\nPages purgeable:                                 616.\n\"Translation faults\":                     3155667832.\nPages copy-on-write:                       155339612.\nPages zero filled:                        1432852693.\nPages reactivated:                         643505530.\nPages purged:                               45610959.\nFile-backed pages:                             93689.\nAnonymous pages:                              137546.\nPages stored in compressor:                   600250.\nPages occupied by compressor:                 166782.\nDecompressions:                            545990712."
+  },
+  "owner_confirmations_summary": {
+    "allow_github_upload": true,
+    "allow_plaintext_device_metrics_to_github": true,
+    "confirmed_at": "2026-07-05T21:36:51+10:00",
+    "confirmed_device_key": "airM2"
+  },
+  "pmset": {
+    "charging_state": "已充满或接近满电",
+    "current_charge_percent": 100,
+    "pmset_batt_raw": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=22216803)\t100%; charged; 0:00 remaining present: true",
+    "power_source": "电源适配器"
+  },
+  "preflight_messages": [
+    "设备预检通过。"
+  ],
+  "repo_root": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject",
+  "risk": {
+    "battery_capacity_level": "绿色",
+    "overall_level": "红色",
+    "storage_level": "红色",
+    "swap_level": "黄色"
+  },
+  "run_id": "airM2-20260710-011038",
+  "schema_version": "macdata-record-v1",
+  "sizes": {
+    "desktop_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Desktop",
+      "size_gb": 0.02
+    },
+    "device_root_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/macdata/airM2",
+      "size_gb": 0.0
+    },
+    "documents_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Documents",
+      "size_gb": 11.07
+    },
+    "downloads_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Downloads",
+      "size_gb": 13.65
+    }
+  },
+  "storage": {
+    "root_free_gb": 23.83,
+    "root_percent_used": 89.6,
+    "root_total_gb": 228.27,
+    "root_used_gb": 204.45
+  },
+  "timezone_expected": "Australia/Sydney",
+  "top_processes": {
+    "top_cpu_raw": "Processes: 507 total, 3 running, 504 sleeping, 3159 threads \n2026/07/10 01:10:39\nLoad Avg: 1.36, 1.55, 1.61 \nCPU usage: 24.77% user, 15.22% sys, 60.0% idle \nSharedLibs: 327M resident, 76M data, 63M linkedit.\nMemRegions: 362467 total, 1952M resident, 138M private, 761M shared.\nPhysMem: 7474M used (1322M wired, 2606M compressor), 141M unused.\nVM: 231T vsize, 6144M framework vsize, 2362134(0) swapins, 3441522(0) swapouts.\nNetworks: packets: 72857778/61G in, 52536622/22G out.\nDisks: 83942523/2369G read, 30855875/1105G written.\n\nPID    COMMAND          %CPU MEM  \n98767  tccd             0.0  6576K\n91713  top              0.0  4224K\n91650  python3.12       0.0  14M  \n91433  findmydevice-use 0.0  2336K",
+    "top_memory_raw": "Processes: 507 total, 2 running, 505 sleeping, 3155 threads \n2026/07/10 01:10:40\nLoad Avg: 1.41, 1.56, 1.61 \nCPU usage: 13.69% user, 15.6% sys, 71.23% idle \nSharedLibs: 327M resident, 76M data, 63M linkedit.\nMemRegions: 362455 total, 1952M resident, 138M private, 761M shared.\nPhysMem: 7474M used (1322M wired, 2606M compressor), 142M unused.\nVM: 231T vsize, 6144M framework vsize, 2362134(0) swapins, 3441522(0) swapouts.\nNetworks: packets: 72857959/61G in, 52536774/22G out.\nDisks: 83942566/2369G read, 30855991/1105G written.\n\nPID    COMMAND          %CPU MEM \n70836  Google Chrome He 0.0  855M\n32205  Codex (Renderer) 0.0  649M\n398    WindowServer     0.0  499M\n42437  Google Chrome He 0.0  483M"
+  }
+}

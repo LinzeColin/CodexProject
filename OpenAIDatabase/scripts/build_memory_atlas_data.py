@@ -19,10 +19,12 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from migrate_memory_records import load_canonical_records
+
 
 DEFAULT_OUTPUT = Path("data/derived/visualization/memory_atlas.json")
 UTC = timezone.utc
-ACTIVE_MEMORY_SOURCE = "data/memory/active/active_memory.jsonl"
+CANONICAL_MEMORY_SOURCE = "data/memory/records/manifest.json"
 DATA_SOURCE_REGISTRY_SOURCE = "config/data_sources/source_registry.json"
 CODEX_SESSION_SOURCE = "data/processed/codex/codex_session_manifest.jsonl"
 CODEX_DAILY_SOURCE = "data/processed/codex/codex_daily_activity.jsonl"
@@ -679,6 +681,49 @@ def normalize_memory_row(row: dict[str, Any]) -> dict[str, Any]:
     return normalized
 
 
+def legacy_tag_value(record: dict[str, Any], prefix: str, default: str = "") -> str:
+    for tag in record.get("tags") or []:
+        if isinstance(tag, str) and tag.startswith(prefix):
+            return tag[len(prefix) :]
+    return default
+
+
+def canonical_memory_row(record: dict[str, Any]) -> dict[str, Any]:
+    """Project one V2 record into the stable read-only visualization shape."""
+
+    importance = {"high": "高", "medium": "中", "low": "低"}.get(
+        str(record.get("importance")),
+        "低",
+    )
+    status = str(record.get("status") or "candidate")
+    valid_from = str((record.get("valid_time") or {}).get("from") or "")
+    source = record.get("source") or {}
+    sensitivity = record.get("sensitivity") or {}
+    scope = record.get("scope") or {}
+    negative = [str(item) for item in record.get("negative_triggers") or [] if item]
+    return {
+        "id": record.get("id"),
+        "statement": record.get("statement"),
+        "title": "",
+        "category": record.get("kind"),
+        "date": valid_from[:10],
+        "importance": importance,
+        "memory_tier": legacy_tag_value(record, "legacy-tier:", "一般"),
+        "validity": legacy_tag_value(record, "legacy-validity:", "长期"),
+        "confidence": record.get("confidence"),
+        "sensitivity": sensitivity.get("classification"),
+        "source": source.get("ref"),
+        "source_kind": legacy_tag_value(record, "legacy-source-kind:", str(source.get("type") or "")),
+        "status": status,
+        "review_status": status,
+        "reason": (record.get("verification") or {}).get("rationale"),
+        "use_when": "",
+        "do_not_use_for": "；".join(negative),
+        "conversation_id": scope.get("key") if scope.get("type") == "conversation" else "",
+        "retrieval_weight": {"active": 1, "candidate": 0, "disputed": 0, "retired": 0}.get(status, 0),
+    }
+
+
 def static_summary(row: dict[str, Any], themes: list[dict[str, Any]] | None = None) -> str:
     """Return a low-sensitive summary for committed visualization data."""
 
@@ -795,8 +840,22 @@ def memory_weight(row: dict[str, Any]) -> float:
     return round((tier_score * 0.5) + (importance_score * 0.3) + (confidence_score * 0.2), 4)
 
 
+def build_timestamp() -> datetime:
+    """Use SOURCE_DATE_EPOCH when supplied so one commit builds byte-identical time fields."""
+    raw_epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    if raw_epoch is None:
+        return datetime.now(UTC)
+    try:
+        epoch = int(raw_epoch)
+    except ValueError as exc:
+        raise ValueError("SOURCE_DATE_EPOCH must be an integer Unix timestamp") from exc
+    if epoch < 0:
+        raise ValueError("SOURCE_DATE_EPOCH must be non-negative")
+    return datetime.fromtimestamp(epoch, UTC)
+
+
 def roi_metrics(row: dict[str, Any], day: date | None) -> dict[str, Any]:
-    today = datetime.now(UTC).date()
+    today = build_timestamp().date()
     recency_days = (today - day).days if day else None
     sensitivity_penalty = 0.35 if row.get("sensitivity") in {"sensitive", "secret"} else 0.1
     staleness_status = "unknown"
@@ -1326,7 +1385,7 @@ def recommendation_to_memory_row(item: dict[str, Any], group: str) -> dict[str, 
     title = str(item.get("title") or item.get("id") or "Codex 建议")
     return {
         "id": f"codex_recommendation_{group}_{item.get('id') or slugify(title)}",
-        "date": datetime.now(UTC).date().isoformat(),
+        "date": build_timestamp().date().isoformat(),
         "title": f"{'Memory' if group == 'memory' else 'Meta Data'} · {title}",
         "statement": str(item.get("statement") or ""),
         "memory_tier": "核心画像" if group == "memory" else "一般",
@@ -1480,21 +1539,8 @@ def add_document_context(
                 )
 
 
-def load_latest_candidates(database_dir: Path) -> list[dict[str, Any]]:
-    candidate_dir = database_dir / "data/memory/candidates"
-    if not candidate_dir.exists():
-        return []
-    candidates = sorted(
-        candidate_dir.glob("*.memory_candidates.jsonl"),
-        key=lambda path: CANDIDATE_RUN_RE.search(path.name).group(1) if CANDIDATE_RUN_RE.search(path.name) else "",
-    )
-    if not candidates:
-        return []
-    return read_jsonl(candidates[-1])
-
-
 def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
-    active_path = database_dir / ACTIVE_MEMORY_SOURCE
+    canonical_manifest_path = database_dir / CANONICAL_MEMORY_SOURCE
     registry_path = database_dir / DATA_SOURCE_REGISTRY_SOURCE
     manifest_path = database_dir / "data/processed/conversations/conversation_manifest.jsonl"
     project_index_path = database_dir / "data/derived/project_index/PROJECT_INDEX.md"
@@ -1507,15 +1553,24 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
     visual_workflows = build_visual_workflow_registry(database_dir)
     formula_what_if = build_formula_what_if_summary(database_dir)
 
-    active_rows = [normalize_memory_row(row) for row in read_jsonl(active_path)]
-    candidate_rows = [normalize_memory_row(row) for row in load_latest_candidates(database_dir)]
+    canonical_records, canonical_manifest = load_canonical_records(database_dir)
+    active_rows = [
+        normalize_memory_row(canonical_memory_row(row))
+        for row in canonical_records
+        if row.get("status") == "active"
+    ]
+    candidate_rows = [
+        normalize_memory_row(canonical_memory_row(row))
+        for row in canonical_records
+        if row.get("status") == "candidate"
+    ]
     conversations = read_jsonl(manifest_path)
     codex_sessions = read_jsonl(codex_session_path)
     codex_daily = read_jsonl(codex_daily_path)
     codex_recommendations = read_json(codex_recommendation_path)
     data_source_registry = load_data_source_registry(database_dir)
     registered_sources = registry_source_map(data_source_registry)
-    active_source_hash = sha256_file(active_path)
+    active_source_hash = str(canonical_manifest["dataset_sha256"]).removeprefix("sha256:")
     nodes, edges, memory_timeline, metric_rows, memory_node_rows = build_nodes_and_edges(active_rows, active_source_hash)
     add_document_context(nodes, edges, memory_timeline, memory_node_rows, database_dir)
     add_codex_context(nodes, edges, memory_timeline, memory_node_rows, codex_sessions, codex_recommendations)
@@ -1603,7 +1658,7 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
         "edge_count": len(edges),
         "memory_node_count": sum(1 for node in nodes if node["kind"] == "memory"),
         "theme_node_count": sum(1 for node in nodes if node["kind"] == "theme"),
-        "generated_at": datetime.now(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z"),
+        "generated_at": build_timestamp().isoformat(timespec="milliseconds").replace("+00:00", "Z"),
     }
 
     return {
@@ -1613,7 +1668,7 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
             "mode": "public_redacted_read_only_visualization",
             "export_profile": "access_preview",
             "source_files": {
-                "active_memory": str(active_path.relative_to(database_dir)),
+                "canonical_records": str(canonical_manifest_path.relative_to(database_dir)),
                 "data_source_registry": str(registry_path.relative_to(database_dir)),
                 "conversation_manifest": str(manifest_path.relative_to(database_dir)),
                 "project_index": str(project_index_path.relative_to(database_dir)),
@@ -1658,11 +1713,12 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
                     "forbidden_payload": ["source paths", "record indexes", "client supplied conflict tokens"],
                 },
                 "conflict_detection": [
-                    "controlled write layer reloads current active memory before applying a proposal",
+                    "controlled write layer reloads current canonical records before applying a proposal",
                     "controlled write layer computes current target fingerprint internally",
-                    "proposal application must create git/history rollback state before active memory changes",
+                    "proposal application must create git/history rollback state before canonical record changes",
                 ],
                 "direct_frontend_mutation_of_active_memory": False,
+                "direct_frontend_mutation_of_canonical_records": False,
             },
         },
         "visual_layers": {

@@ -41,6 +41,7 @@ def write_economic_proxy_fixtures(root: Path) -> None:
         "opportunities",
         "--database-dir",
         str(root),
+        "--apply",
     ])
 
 
@@ -104,6 +105,7 @@ class S07P1EconomicProxyTest(unittest.TestCase):
                 "economic-proxy",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S07P1")
             self.assertTrue((root / "data/derived/economic_proxy/personal_economic_proxy.json").exists())

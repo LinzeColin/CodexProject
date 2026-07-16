@@ -19,6 +19,11 @@ MANIFEST_ROOT = Path("机器治理/证据与日志/raw_archive_manifests")
 HASH_LEDGER_FILE = "raw_hash_ledger.jsonl"
 IGNORED_RAW_NAMES = {".DS_Store", ".gitkeep", "README.md"}
 RUN_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
+SHALLOW_IMPORT_RE = re.compile(
+    r"(?P<source>[a-z0-9][a-z0-9-]{0,63})\.[a-f0-9]{12}\."
+    r"(?:part-[0-9]{4}\.md|sidecar\.json)\Z"
+)
+MONTH_RE = re.compile(r"[0-9]{4}-(?:0[1-9]|1[0-2])\Z")
 
 
 class ManifestConflict(ValueError):
@@ -105,6 +110,10 @@ def source_id_for(relative_path: Path) -> str:
         return parts[0]
     if parts[0] == "agents" and len(parts) >= 2:
         return f"agent:{parts[1]}"
+    if MONTH_RE.fullmatch(parts[0]) and len(parts) == 2:
+        match = SHALLOW_IMPORT_RE.fullmatch(parts[1])
+        if match:
+            return match.group("source")
     return parts[0]
 
 

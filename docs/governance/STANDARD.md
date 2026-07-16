@@ -67,12 +67,28 @@ acceptance, evidence updates, or rollbacks. They are not a transcript of every
 agent action. Event and evidence fact levels are limited to `VERIFIED`,
 `RECONSTRUCTED`, `PROPOSED`, and `UNKNOWN`.
 
-IDs:
+IDs use an immutable V2 registry contract:
 
-- Stage: `S1`, `S2`, ...
-- Phase: `S1PA`, `S1PB`, ...
-- Task: `S1PAT01`, `S1PET01`, ...
-- Task regex: `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`
+- Canonical V2 Task: `TSK.<project>.<program>.<sequence>`.
+- Canonical V2 Acceptance: `ACC.<project>.<program>.<sequence>` with the exact
+  same suffix as its Task.
+- Canonical V2 Event: `EVT.<project>.<program>.<sequence>` in an independent
+  namespace; Pursuing Goal uses `PG.<project>.<goal>`.
+- Stage (`S1`) and Phase (`S1PA`) remain mutable placement metadata and are not
+  encoded in a new permanent Task ID.
+- Existing positional IDs such as `S1PAT01` and their legacy Acceptance IDs stay
+  readable; they are not mass-rewritten.
+- A mixed V1/V2 reference requires an explicit project-scoped alias. New
+  positional IDs fail after bootstrap.
+- New IDs come only from `scripts/governance_id_allocator.py`; allocation needs
+  base SHA, idempotency key, registry SHA compare-and-swap, and the Git-dir
+  single-flight lock.
+- `governance/id_registry.json` is the allocation ledger. JSON Schema provides
+  shape validation; `scripts/governance_id_audit.py` enforces property-level
+  uniqueness, exactly-one resolution, dependency acyclicity, immutability, and
+  positional-ID cutoff because `uniqueItems` cannot prove those properties.
+- The operational and legacy alias contract is
+  `docs/governance/ID_GOVERNANCE_V2.md`.
 
 Each Task records name, objective, status, estimated hours, dependencies,
 Acceptance IDs, test commands, evidence, risks, rollback, and current result.
@@ -161,6 +177,44 @@ Do not convert `PROPOSED`, `UNKNOWN`, `PARTIALLY_VERIFIED`, `CONTRADICTED`, or
 task. Critical model, formula, parameter, release, money, legal, privacy, and
 production claims require evidence refs.
 
+## Canonical, Evidence, And Artifact Retention
+
+`governance/artifact_policy.json` is the machine-readable root contract for
+canonical resources, derived views, compact receipts, retained legacy evidence,
+and transient CI/local artifacts. Its schema is
+`governance/schemas/artifact_policy.schema.json`; its read-only validator and
+deterministic renderer are exposed through `scripts/lean_governance.py` as
+`artifact-audit`, `artifact-render`, and `artifact-check-render`.
+
+The boundary is fail-closed:
+
+- Each editable canonical fact domain has one path and one named writer.
+  Duplicate domains or a resource classified as both canonical and derived fail.
+- Derived human views name their canonical sources and set
+  `editable_fact_source=false`. Root and project human entries remain directly
+  readable and cannot degrade into link-only pages.
+- New Task evidence is an append-only `governance/run_manifests/TSK-*.json`
+  compact receipt. It stores commands, outcomes, hashes, commit/CI pointers, and
+  essential owner decisions; it cannot embed raw stdout/stderr, transcripts, or
+  full logs and cannot exceed the policy byte limit.
+- Full Actions output, generated reports, and large/raw evidence use runner temp
+  or ignored local artifact directories. They are short-lived artifacts, not Git
+  governance truth. New tracked full-log filenames fail the changed-scope audit.
+- Historical non-`TSK-` run manifests, tracked CI attestations, review bundles,
+  and stage-gate files are read-only compatibility collections with an owner,
+  retention reason, count, bytes, and aggregate SHA-256. A normal Task cannot
+  add, edit, or delete them. An owner-authorized migration must update the policy
+  and prove reference safety before changing their disposition.
+- Task Pack schemas/specifications remain owned source contracts. A Task Pack or
+  legacy reader may consume preserved evidence, but it cannot dual-write a second
+  editable governance source.
+
+The Project Governance workflow runs the artifact audit before other governance
+checks. Scheduled/full runs verify the current locked collections; PR/push runs
+also compare the changed paths with the base commit. The renderer writes only to
+stdout, and `artifact-check-render` proves two identical renders plus zero
+repository write delta.
+
 ## Run Modes And Writes
 
 | Mode | Baseline | Deep validation | Repository writes |
@@ -207,6 +261,26 @@ Do not apply T2/T3 governance computation to ordinary T0/T1 work.
 
 Pure rendering, dashboard refresh, review, or CI is not a product iteration and
 must not create a development event or product version.
+
+## Automation C And Zero-Open
+
+At rest, root governance requires open PR / open Issue / non-main branch =
+`0 / 0 / 0`. Agent runtime never uses an Issue as a lock, queue, audit log,
+failure state, or completion record.
+
+One external authenticated publisher may create one same-repository, non-draft
+temporary PR. `Project Governance` is the read-only required CI role and runs on
+every PR without `paths` filters. The trusted default-branch Settlement/Janitor
+uses live APIs only: it does not checkout or execute PR code and does not read
+PR artifacts or caches. Success requires authorized actor, base `main`, exact
+tested head/base, successful required check, and mergeability before squash
+merge and exact-ref deletion. All terminal failures close the PR and delete only
+the exact unchanged transaction ref; unknown refs are never deleted.
+
+The Settlement-installation PR is the one bootstrap manual/native auto-merge
+exception. A local-only implementation may report
+`REMOTE_ACTIVATION_DEFERRED`, but it must not claim required-check enforcement,
+production acceptance, or final `0/0/0` until live evidence exists.
 
 ## Changed-Scope CI And Hook
 
@@ -328,6 +402,48 @@ knowledge:
 Facts that cannot be machine-verified remain `UNKNOWN`,
 `HUMAN_REVIEW_REQUIRED`, `PARTIALLY_VERIFIED`, or another non-active evidence
 state. They must not be presented as verified active facts.
+
+## Workflow Security And Supply Chain
+
+`governance/workflow_policy.json` is the canonical root-workflow inventory. It
+binds every active workflow to one owner, unique role, trigger set, exact
+permissions, job topology, trust boundary, failure behavior, and local
+dependencies. `docs/governance/WORKFLOW_ROLE_MATRIX.md` is its deterministic
+human-readable view; nested project `.github/workflows` directories are invalid.
+
+All third-party Actions must use a policy-allowlisted 40-character commit SHA.
+Workflow permissions default to explicit read-only scope, every job has a finite
+timeout, and every workflow has concurrency behavior. Untrusted dispatch, branch,
+PR title, and PR body values may enter a shell only through environment variables.
+Prompt-bearing jobs must use a read-only sandbox and disable checkout credential
+persistence. The sole Settlement role runs trusted default-branch code against
+live APIs only and must never check out PR code or consume PR artifacts/caches.
+
+Run the fail-closed checks with:
+
+```bash
+python3 scripts/workflow_security_audit.py audit
+python3 scripts/workflow_security_audit.py check-render
+```
+
+The repository acceptance counters are zero unowned workflows, zero duplicate
+roles, exactly one Transaction CI role, exactly one Settlement role, zero nested
+workflows, zero unpinned or unapproved Actions, zero permission drift, and zero
+untrusted-context or high-privilege-boundary violations.
+
+## Repository Hygiene And Large Objects
+
+`governance/repository_hygiene_policy.json` is the canonical large-object,
+archive, runtime-noise, and backup-producer contract. Regular new tracked blobs
+must not exceed 1 MiB. A retained large/archive object must match exactly one
+baseline-OID-only rule with owner, purpose, consumer, retention, recovery, and
+confidentiality metadata. New or modified archives, Git bundles, WAL/SHM,
+caches, build outputs, and whole-repository backup producers fail closed.
+
+Run `python3 -B scripts/repository_hygiene_audit.py --root .`; after staging,
+pass `--tree-ish "$(git write-tree)"` to bind the check to the exact candidate
+tree. See `docs/governance/REPOSITORY_HYGIENE.md` for the function list,
+parameters, LFS/Release decision, rollback, and deferred history-rewrite gates.
 
 ## Token Budget And Scope
 

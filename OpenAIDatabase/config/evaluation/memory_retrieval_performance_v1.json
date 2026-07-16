@@ -1,0 +1,73 @@
+{
+  "schema_version": "openai_database.memory_retrieval_performance_config.v1",
+  "report_schema_version": "openai_database.memory_retrieval_performance_report.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0015",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0015",
+  "algorithm_version": "nfkc_casefold_alias_scope_cjk_latin_ngram.v1",
+  "files": {
+    "self": "config/evaluation/memory_retrieval_performance_v1.json",
+    "agent_memory": "data/memory/agent-memory.json",
+    "canonical_manifest": "data/memory/records/manifest.json",
+    "gold_config": "config/evaluation/memory_gold_evaluation_v1.json",
+    "gold_dataset": "data/derived/evaluation/memory_gold/benchmark_v1.jsonl",
+    "gold_full_report": "data/derived/evaluation/memory_gold/reports/full_v1.json",
+    "report": "data/derived/evaluation/memory_gold/reports/performance_v1.json"
+  },
+  "request_budget": {
+    "default_discovery_object_count_max": 1,
+    "indexed_fact_content_get_count_max": 2,
+    "raw_expansion_content_get_count_max": 3,
+    "recursive_full_tree_scan_count_max": 0
+  },
+  "cache": {
+    "commit_sha_required": true,
+    "etag_required": true,
+    "if_none_match_required_on_warm_read": true,
+    "not_modified_status": 304,
+    "max_attempts": 3,
+    "max_retry_seconds": 120,
+    "serial_requests": true
+  },
+  "hard_gates": {
+    "canonical_dataset_bytes": {"metric": "canonical_dataset_bytes", "operator": "lte", "threshold": 921600},
+    "agent_memory_bytes": {"metric": "agent_memory_bytes", "operator": "lte", "threshold": 262144},
+    "default_discovery": {"metric": "default_discovery_object_count", "operator": "lte", "threshold": 1},
+    "indexed_fact_gets": {"metric": "indexed_fact_content_get_count", "operator": "lte", "threshold": 2},
+    "raw_expansion_gets": {"metric": "raw_expansion_content_get_count_max", "operator": "lte", "threshold": 3},
+    "cold_requests": {"metric": "cold_request_count", "operator": "lte", "threshold": 2},
+    "warm_requests": {"metric": "warm_request_count", "operator": "lte", "threshold": 2},
+    "rate_limit_requests": {"metric": "rate_limit_request_count", "operator": "lte", "threshold": 3},
+    "full_tree_scan": {"metric": "recursive_full_tree_scan_count", "operator": "eq", "threshold": 0},
+    "warm_304_bytes": {"metric": "warm_304_transferred_bytes", "operator": "eq", "threshold": 0},
+    "commit_invalidation": {"metric": "commit_cache_invalidation_success", "operator": "eq", "threshold": 1},
+    "rate_limit_recovery": {"metric": "rate_limit_recovery_success", "operator": "eq", "threshold": 1},
+    "index_coverage": {"metric": "active_public_index_coverage", "operator": "gte", "threshold": 1.0},
+    "handshake_index": {"metric": "handshake_index_match", "operator": "eq", "threshold": 1},
+    "recall_degradation": {"metric": "recall_at_5_degradation", "operator": "lte", "threshold": 0.01},
+    "prediction_parity": {"metric": "prediction_parity_rate", "operator": "gte", "threshold": 0.99}
+  },
+  "runtime_hard_gates": {
+    "local_query_p95_ms": {"metric": "local_query_p95_ms", "operator": "lte", "threshold": 250},
+    "index_rebuild_p95_ms": {"metric": "index_rebuild_p95_ms", "operator": "lte", "threshold": 30000},
+    "suite_elapsed_ms": {"metric": "suite_elapsed_ms", "operator": "lte", "threshold": 360000}
+  },
+  "benchmark": {
+    "rebuild_iterations": 10,
+    "gold_case_count": 160
+  },
+  "official_sources_verified_on": "2026-07-16",
+  "official_sources": [
+    {
+      "topic": "conditional_requests",
+      "url": "https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28"
+    },
+    {
+      "topic": "rate_limits",
+      "url": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28"
+    },
+    {
+      "topic": "contents_api",
+      "url": "https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28"
+    }
+  ]
+}

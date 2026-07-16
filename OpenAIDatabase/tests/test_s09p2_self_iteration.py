@@ -36,6 +36,7 @@ def write_self_iteration_fixtures(root: Path) -> None:
         "latent",
         "--database-dir",
         str(root),
+        "--apply",
     ])
     target = root / "机器治理" / "行为智能模型" / "self_iteration.v1_2_s09_p2.json"
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -113,6 +114,7 @@ class S09P2SelfIterationTest(unittest.TestCase):
                 "self-iteration",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S09P2")
             self.assertTrue(output.exists())

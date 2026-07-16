@@ -1,40 +1,34 @@
 # airM2 macdata HANDOFF
 
-更新时间：2026-07-06T06:22:50+10:00
+更新时间：2026-07-16（Australia/Sydney）
 
-当前目标：维护 `airM2` macdata Codex Automation，确保全中文明文报告以 `.md` 输出并归档。
+## 当前目标
 
-当前状态：
+执行 `TSK.OpenAIDatabase.CLEAN1.0001`：把 airM2/proM2 最新受控快照迁入 `main`，退役长期 `macdata-*` 生产分支，并将后续生产者改为 Automation C 短命 PR 事务。
 
-- 本机硬件已确认为 `MacBook Air / Mac14,2 / Apple M2 / 8GB`。
-- 任务包已安装到 `OpenAIDatabase/macdata/airM2`。
-- 用户确认文件已创建：`config/owner_confirmations.json`。
-- 已修复上一轮错误扩展：恢复原始任务包语义，不自动清理 Docker、Homebrew、系统缓存、项目缓存。
-- GitHub `main` 本轮回退代码提交已推送：`7afdce529206652b7a9aac8ce5d4dbcc18e884ef`。
-- GitHub 归档分支 `macdata-airM2` 已保留并验证：`c6679c425cee44b31e0fc02d7ba0b7481a9e4932`。
-- Codex Automation 已创建并启用：`macdata-airm2-daily-controlled-archive`。
-- 本次完整运行成功：raw commit `0d8037b200fb67e653cf6d2abf44e7456ca2c45f`，report commit `c6679c425cee44b31e0fc02d7ba0b7481a9e4932`。
-- 旧运行曾错误执行 Homebrew/用户态/项目缓存清理；本轮已从代码、配置、文档和 automation prompt 中移除该行为。后续如需电脑大清理，应另建独立 cleanup 任务。
-- 2026-07-06 已按用户要求回退 `.txt` 设置，目标最新报告路径恢复为 `reports/latest/latest_report.md`。
-- 脚本会在写入 `latest_report.md` 前删除 stale `reports/latest/latest_report.txt`，避免 latest 目录同时出现 md/txt 双入口。
+## 当前状态
 
-关键决策：
+- airM2 最新分支快照的 17 个文件已原样迁入本地 `main` 工作树；本地聚合 SHA256 为 `9f0484dccd4a9e1ee684541fe59804425cda3a93a5049c0e552c4f5967bada15`。
+- 生产者已改为：锁定 `main` → 唯一短命 `automation-c/macdata-airM2-*` 分支 → 非 draft PR → trusted Project Governance/Settlement → 精确哈希复核 → 事务分支删除。
+- 禁止 direct-push `main`、重建 `macdata-airM2`、创建 Issue 或删除其他事务对象。
+- 单元测试与本地事务模拟通过；模拟不调用 `git`/`gh`，远端写入为 0。
+- GitHub 正式迁移、旧分支删除和 `PR/Issue/non-main=0/0/0` 验收尚未执行，原因是总任务约束要求 37 个 Task 全部完成后统一发布。
 
-- Time Machine 不采集，iCloud 不使用。
-- API key、token、password 及等价凭证禁止进入 GitHub。
-- `main` 保存任务包和配置；`macdata-airM2` 保存每日归档历史。
-- GitHub 未存在的归档分支由首次上传自动创建。
+## 关键决策
 
-下一步：
+- `main` 是唯一持久分支；`macdata-airM2` 仅作为待退役 legacy 输入，不再是生产目标。
+- 发布前后必须满足 `PR/Issue/non-main branch=0/0/0`；任何门禁失败均 fail closed。
+- 只发布配置声明的四个设备快照目录；提交前扫描高风险凭证模式。
+- Time Machine、iCloud、凭证、Keychain、shell history、完整环境变量和 `.env` 原文仍不采集。
+- 本任务不扩展电脑级缓存清理；仅保留原有 macdata 自身保留策略。
 
-1. 每天 01:10 Australia/Sydney 检查 automation run 是否成功。
-2. 若 preflight 失败，先修设备/repo/owner confirmation 差异，不手动绕过。
-3. 若 GitHub push 或远程验证失败，保留本机旧数据和缓存，先修 remote/auth。
-4. 若 Air 长期低于 70GB free 或 swap 超过 1GB，另开独立 cleanup/降载任务，不混入 macdata 归档任务。
+## 验证
 
-验证结果：
+- `python3 -m unittest OpenAIDatabase.macdata.tests.test_automation_c OpenAIDatabase.macdata.airM2.tests.test_macdata_package OpenAIDatabase.macdata.proM2.tests.test_macdata_package -q`：25 tests OK。
+- `python3 -B -m py_compile ...`：通过。
+- airM2 `--simulate-transaction`：`ok=true`、`mode=LOCAL_SIMULATION_NO_REMOTE_WRITE`、17 files、90,278 bytes。
+- 正式远端验收：PENDING，禁止在全包统一发布前执行。
 
-- `python3 -m unittest discover -s OpenAIDatabase/macdata/airM2/tests -p 'test_*.py'`：4 tests OK。
-- `python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`：ok true。
-- `git ls-remote https://github.com/LinzeColin/CodexProject.git refs/heads/main refs/heads/macdata-airM2`：回退代码 main `7afdce529206652b7a9aac8ce5d4dbcc18e884ef`，归档分支 `c6679c425cee44b31e0fc02d7ba0b7481a9e4932`。
-- 归档分支 `reports/latest/`：仅有 `.gitkeep` 和 `latest_report.md`，没有 stale `latest_report.txt`。
+## 下一步
+
+保持当前本地提交不推送；全 37 Task 完成后统一发布并执行旧分支删除、Settlement 与最终 `0/0/0` 验收。

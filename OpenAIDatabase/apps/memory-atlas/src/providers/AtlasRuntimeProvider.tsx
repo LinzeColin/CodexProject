@@ -288,7 +288,7 @@ export function AtlasRuntimeProvider({ children }: PropsWithChildren) {
       defaultMode: "prefill_only",
       allowedModes: ["prefill_only", "auto_submit"],
       dryRunCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --dry-run",
-      openCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --open",
+      openCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --open --apply",
       userTriggerRequired: true,
       noSilentSend: true,
       autoSubmitRequiresExplicitConfig: true,

@@ -9,7 +9,6 @@ on:
         type: string
 
 permissions:
-  actions: read
   contents: read
 
 concurrency:
@@ -21,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
+      INPUT_GENERATED_AT: ${{ inputs.generated_at }}
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
       ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
       ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
@@ -29,15 +29,15 @@ jobs:
       ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
       ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 1
       - name: Resolve generated_at
         id: generated_at
         shell: bash
         run: |
-          if [ -n "${{ inputs.generated_at }}" ]; then
-            printf 'value=%s\n' "${{ inputs.generated_at }}" >> "$GITHUB_OUTPUT"
+          if [ -n "$INPUT_GENERATED_AT" ]; then
+            printf 'value=%s\n' "$INPUT_GENERATED_AT" >> "$GITHUB_OUTPUT"
           else
             printf 'value=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
           fi
@@ -109,7 +109,7 @@ jobs:
           exit 0
       - name: Upload provisioning audit artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-production-provisioning-audit
           path: ${{ steps.production_refs.outputs.path }}

@@ -1,1 +1,12 @@
 OpMe_System/scripts/*.sh text eol=lf
+
+# Binary objects are never text-normalized. New archives still require an
+# explicit repository-hygiene exception; this is not an LFS declaration.
+*.zip -text
+*.tar -text
+*.tar.gz -text
+*.tgz -text
+*.7z -text
+*.sqlite -text
+*.png -text
+*.mp4 -text

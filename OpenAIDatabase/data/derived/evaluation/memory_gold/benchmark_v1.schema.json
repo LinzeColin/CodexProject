@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.schema.json",
+  "title": "OpenAIDatabase 160-case Gold Benchmark Case V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "category",
+    "language",
+    "fixed_seed",
+    "state",
+    "query",
+    "as_of",
+    "expected_ids",
+    "answer_traits",
+    "forbidden_ids",
+    "abstain_conditions",
+    "should_abstain",
+    "stale_or_retired_trap",
+    "hard_negative_ids",
+    "source_definition_refs",
+    "gold_provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": "openai_database.memory_gold_benchmark_case.v1"},
+    "case_id": {"type": "string", "pattern": "^gold_(extraction|cross_session|temporal|update|abstention|forgetting|conflict|cross_agent)_[0-9]{3}$"},
+    "category": {"type": "string", "enum": ["extraction", "cross_session", "temporal", "update", "abstention", "forgetting", "conflict", "cross_agent"]},
+    "language": {"const": "zh-CN+technical-en"},
+    "fixed_seed": {"type": "string", "minLength": 8},
+    "state": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/state_record"}
+    },
+    "query": {"$ref": "#/$defs/query"},
+    "as_of": {"$ref": "#/$defs/as_of"},
+    "expected_ids": {"$ref": "#/$defs/id_array"},
+    "answer_traits": {"$ref": "#/$defs/non_empty_string_array"},
+    "forbidden_ids": {"$ref": "#/$defs/id_array"},
+    "abstain_conditions": {"$ref": "#/$defs/non_empty_string_array"},
+    "should_abstain": {"type": "boolean"},
+    "stale_or_retired_trap": {"type": "boolean"},
+    "hard_negative_ids": {"$ref": "#/$defs/non_empty_id_array"},
+    "source_definition_refs": {"$ref": "#/$defs/non_empty_string_array"},
+    "gold_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["author_role", "approval_role", "tested_algorithm_role", "approval_mechanism", "algorithm_dependency_count", "human_approval_claimed"],
+      "properties": {
+        "author_role": {"type": "string", "minLength": 1},
+        "approval_role": {"type": "string", "minLength": 1},
+        "tested_algorithm_role": {"type": "string", "minLength": 1},
+        "approval_mechanism": {"type": "string", "minLength": 1},
+        "algorithm_dependency_count": {"type": "integer", "minimum": 0, "maximum": 0},
+        "human_approval_claimed": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "id_array": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^gold_mem_[a-z_]+_[0-9]{3}_[a-z_]+$"}
+    },
+    "non_empty_id_array": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^gold_mem_[a-z_]+_[0-9]{3}_[a-z_]+$"}
+    },
+    "non_empty_string_array": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "state_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "memory_key", "statement", "status", "session_id", "agent_id", "scope", "source_type", "source_ref", "verification_state", "authorization", "valid_time", "recorded_at", "aliases", "tags"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^gold_mem_[a-z_]+_[0-9]{3}_[a-z_]+$"},
+        "memory_key": {"type": "string", "pattern": "^gold\\.[a-z_]+\\.[0-9]{3}\\.[a-z0-9_]+$"},
+        "statement": {"type": "string", "minLength": 8},
+        "status": {"type": "string", "enum": ["candidate", "active", "disputed", "retired"]},
+        "session_id": {"type": "string", "pattern": "^synthetic_session_[a-z0-9_]+$"},
+        "agent_id": {"type": "string", "pattern": "^synthetic_agent_[a-z0-9_]+$"},
+        "scope": {"type": "string", "pattern": "^SyntheticLab-[0-9]{2}(:[a-z]+)?$"},
+        "source_type": {"type": "string", "enum": ["explicit_user", "repository_evidence", "agent_report", "model_inference"]},
+        "source_ref": {"type": "string", "pattern": "^synthetic:[a-z0-9:_-]+$"},
+        "verification_state": {"type": "string", "enum": ["verified", "unverified", "disputed"]},
+        "authorization": {"type": "string", "enum": ["allowed", "denied", "not_applicable"]},
+        "valid_time": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["from", "to"],
+          "properties": {
+            "from": {"type": "string", "format": "date-time"},
+            "to": {"type": ["string", "null"], "format": "date-time"}
+          }
+        },
+        "recorded_at": {"type": "string", "format": "date-time"},
+        "aliases": {"$ref": "#/$defs/non_empty_string_array"},
+        "tags": {"$ref": "#/$defs/non_empty_string_array"}
+      }
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "aliases", "noise"],
+      "properties": {
+        "text": {"type": "string", "minLength": 12},
+        "aliases": {"$ref": "#/$defs/non_empty_string_array"},
+        "noise": {"type": "string", "minLength": 1}
+      }
+    },
+    "as_of": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["valid_time", "recorded_time"],
+      "properties": {
+        "valid_time": {"type": "string", "format": "date-time"},
+        "recorded_time": {"type": "string", "format": "date-time"}
+      }
+    }
+  },
+  "x-benchmark-contract": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0013",
+    "acceptance_id": "ACC.OpenAIDatabase.PAM1.0013",
+    "case_count": 160,
+    "categories": 8,
+    "cases_per_category": 20,
+    "tested_algorithm_may_author_or_approve_gold": false
+  }
+}

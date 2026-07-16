@@ -1,0 +1,50 @@
+{
+  "schema_version": "openai_database.memory_forgetting_policy.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0011",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0011",
+  "current_answer": {
+    "eligible_statuses": ["active"],
+    "inactive_default": "exclude",
+    "include_inactive_mode": "audit_only",
+    "validity": "effective_at_execution_time",
+    "critical_stale_use_max": 0
+  },
+  "historical_query": {
+    "explicit_as_of_required": true,
+    "current_assertion_allowed": false,
+    "preserve_recorded_history": true
+  },
+  "abstention": {
+    "knowledge_state": "UNKNOWN",
+    "action": "abstain",
+    "missing_conditions_required": true,
+    "reason_priority": [
+      "unresolved_conflict",
+      "retired_or_expired",
+      "candidate_or_unverified",
+      "insufficient_evidence"
+    ],
+    "precision_min": 0.9,
+    "recall_min": 0.9
+  },
+  "negative_memory": {
+    "kind": "negative_trigger",
+    "authority_sources": ["explicit_user", "repository_evidence"],
+    "verification_state": "verified",
+    "negative_triggers_min": 1,
+    "valid_time_required": true,
+    "infer_from_absence": false,
+    "positive_assertion_allowed": false
+  },
+  "metrics": {
+    "fama_formula": "max(0,MPA-lambda*(1-FAA))",
+    "lambda_formula": "N_forget/(N_presence+N_forget)",
+    "fama_min": 0.95
+  },
+  "privacy": {
+    "retirement_semantics": "retrieval_exclusion_not_history_deletion",
+    "public_git_history_is_erasure": false,
+    "history_rewrite_in_task": false
+  },
+  "canonical_business_record_rewrite_in_task": false
+}

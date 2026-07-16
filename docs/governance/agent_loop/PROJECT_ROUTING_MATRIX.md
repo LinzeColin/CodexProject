@@ -151,9 +151,9 @@ multi-project work 默认必须 `SPLIT_REQUIRED`；Codex 不得猜 project scope
     {
       "project": "agent-loop",
       "aliases": ["agent-loop", "agent loop", "agent_loop"],
-      "default_allowed_paths": [".github/workflows/agent-loop-*.yml", ".github/ISSUE_TEMPLATE/codex-task.yml", ".github/PULL_REQUEST_TEMPLATE/codex-task.md", ".github/codex/**", "docs/governance/agent_loop/**", "scripts/agent_loop/**"],
+      "default_allowed_paths": [".github/workflows/agent-loop-*.yml", ".github/workflows/project-governance.yml", ".github/PULL_REQUEST_TEMPLATE/codex-task.md", ".github/codex/**", "docs/governance/agent_loop/**", "scripts/agent_loop/**", "scripts/governance_ids.py", "tests/agent_loop/**"],
       "default_forbidden_paths": ["AGENTS.md", "Alpha/**", "EEI/**", "FIFA/**", "KMFA/**", "MetaDatabase/**", "OpenAIDatabase/**", "KM_IDSystem/**", "PFI/**", "QBVS/**", "Serenity-Alipay/**", "arxiv-daily-push/**", "whkmSalary/**"],
-      "validation_commands": ["python3 -m py_compile scripts/agent_loop/*.py", "ruby -e 'require \"yaml\"; ARGV.each { |f| YAML.load_file(f); puts \"YAML_OK #{f}\" }' .github/workflows/agent-loop-run-approved-taskpack.yml .github/workflows/agent-loop-review-existing-pr.yml .github/workflows/agent-loop-retrospective.yml .github/ISSUE_TEMPLATE/codex-task.yml"],
+      "validation_commands": ["python3 -m py_compile scripts/governance_ids.py scripts/agent_loop/*.py", "python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py'", "ruby -e 'require \"yaml\"; ARGV.each { |f| YAML.load_file(f); puts \"YAML_OK #{f}\" }' .github/workflows/agent-loop-run-approved-taskpack.yml .github/workflows/agent-loop-settlement.yml .github/workflows/agent-loop-review-existing-pr.yml .github/workflows/agent-loop-retrospective.yml .github/workflows/project-governance.yml"],
       "validation_na_reason": "",
       "t2_triggers": ["workflow permissions", "auto-merge policy", "entrypoint routing"],
       "split_when": ["Task changes agent-loop and business project code"]
@@ -200,4 +200,4 @@ allowed path。
 | `arxiv-daily-push` | `["arxiv-daily-push/**"]` | Project-specific ADP checks from Task Pack | source/board sync, scheduler, SMTP, production delivery |
 | `whkmSalary` | `["whkmSalary/**"]` | N/A until Task Pack identifies runnable salary checks | payroll, salary formulas, privacy, legal/tax |
 | `governance` | `["docs/governance/**", "governance/**", "scripts/**"]` | `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main` when environment supports it | governance contract, schema, merge policy |
-| `agent-loop` | `[".github/workflows/agent-loop-*.yml", ".github/ISSUE_TEMPLATE/codex-task.yml", ".github/codex/**", "docs/governance/agent_loop/**", "scripts/agent_loop/**"]` | `python3 -m py_compile scripts/agent_loop/*.py` and workflow YAML parse | workflow permissions, auto-merge policy, entrypoint routing |
+| `agent-loop` | `[".github/workflows/agent-loop-*.yml", ".github/workflows/project-governance.yml", ".github/PULL_REQUEST_TEMPLATE/codex-task.md", ".github/codex/**", "docs/governance/agent_loop/**", "scripts/agent_loop/**", "scripts/governance_ids.py", "tests/agent_loop/**"]` | Python compile, target unit tests, and workflow YAML parse | workflow permissions, settlement policy, entrypoint routing |

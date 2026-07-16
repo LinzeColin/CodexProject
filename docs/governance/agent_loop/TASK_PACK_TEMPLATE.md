@@ -1,7 +1,8 @@
 # Dual-Plane Task Pack Template
 
-复制本模板到 ChatGPT 对话中，填完后由 Owner 明确授权，再粘贴到
-`Agent Loop - Run Approved Task Pack`。
+复制本模板到 ChatGPT 对话中，填完后由 Owner 明确授权。先用本地 validator
+或只读 validation workflow 校验；需要发布时由外部认证用户通过
+`submit_taskpack.py --confirm-publish` 创建一个 marker-bound PR。
 
 ```text
 <!-- AGENT_LOOP_METADATA
@@ -14,8 +15,8 @@
   "plan_required": false,
   "production_deploy": false,
   "project": "agent-loop",
-  "roadmap_task_id": "TASK-ID",
-  "acceptance_id": "ACCEPTANCE-ID",
+  "roadmap_task_id": "TSK.Project.Program.0001",
+  "acceptance_id": "ACC.Project.Program.0001",
   "allowed_paths": [
     "docs/governance/agent_loop/**"
   ],

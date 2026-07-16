@@ -1,0 +1,198 @@
+[
+  {
+    "case": "model_inference_active",
+    "expected_layer": "record_schema",
+    "expected_rule": "model_inference_active",
+    "records": [
+      {
+        "schema_version": "openai_database.memory_record.v2",
+        "id": "mem_invalid_inference_0001",
+        "memory_key": "invalid.model-active",
+        "kind": "fact",
+        "statement": "未验证的模型推断不能成为 active。",
+        "status": "active",
+        "scope": {"type": "global", "key": "global"},
+        "source": {"type": "model_inference", "ref": "fixture:invalid:001", "observed_at": "2026-07-16T01:00:00Z", "evidence_hash": null},
+        "valid_time": {"from": "2026-07-16T01:00:00Z", "to": null},
+        "recorded_time": {"recorded_at": "2026-07-16T01:01:00Z", "recorded_by": "importer"},
+        "supersession": {"supersedes": [], "superseded_by": null, "reason": "invalid_fixture"},
+        "conflict": {"state": "none", "with": [], "resolution": null},
+        "confidence": "low",
+        "importance": "low",
+        "verification": {"state": "verified", "method": "explicit_confirmation", "evidence_refs": ["fixture:invalid:001"], "verified_at": "2026-07-16T01:01:00Z", "rationale": "Invalid fixture."},
+        "aliases": [],
+        "tags": [],
+        "negative_triggers": [],
+        "sensitivity": {"classification": "public", "handling": "public_text", "credential_present": false, "public_repository_allowed": true},
+        "hash": {"algorithm": "sha256", "canonicalization": "openai-memory-json-v1", "value": "sha256:3f814fa48a1bf3c036674108044d301fd75d58acb2eed9f3e1e9bee021e558c8"}
+      }
+    ]
+  },
+  {
+    "case": "credential_presence",
+    "expected_layer": "record_schema",
+    "expected_rule": "credential_presence",
+    "records": [
+      {
+        "schema_version": "openai_database.memory_record.v2",
+        "id": "mem_invalid_credential_0002",
+        "memory_key": "invalid.credential",
+        "kind": "security_boundary",
+        "statement": "Fixture contains no credential value; only the prohibited presence flag is true.",
+        "status": "active",
+        "scope": {"type": "global", "key": "global"},
+        "source": {"type": "explicit_user", "ref": "fixture:invalid:002", "observed_at": "2026-07-16T01:02:00Z", "evidence_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444"},
+        "valid_time": {"from": "2026-07-16T01:02:00Z", "to": null},
+        "recorded_time": {"recorded_at": "2026-07-16T01:03:00Z", "recorded_by": "automation_c"},
+        "supersession": {"supersedes": [], "superseded_by": null, "reason": "invalid_fixture"},
+        "conflict": {"state": "none", "with": [], "resolution": null},
+        "confidence": "high",
+        "importance": "high",
+        "verification": {"state": "verified", "method": "explicit_confirmation", "evidence_refs": ["fixture:invalid:002"], "verified_at": "2026-07-16T01:03:00Z", "rationale": "Invalid fixture."},
+        "aliases": [],
+        "tags": [],
+        "negative_triggers": [],
+        "sensitivity": {"classification": "sensitive", "handling": "redacted_summary", "credential_present": true, "public_repository_allowed": true},
+        "hash": {"algorithm": "sha256", "canonicalization": "openai-memory-json-v1", "value": "sha256:d4ec46f2a0f4d85d44cc9f4602825d958e1728c99a8b2415f3c0cd3af1051131"}
+      }
+    ]
+  },
+  {
+    "case": "unresolved_active_conflict",
+    "expected_layer": "record_schema",
+    "expected_rule": "unresolved_active_conflict",
+    "records": [
+      {
+        "schema_version": "openai_database.memory_record.v2",
+        "id": "mem_invalid_conflict_0003",
+        "memory_key": "invalid.conflict",
+        "kind": "fact",
+        "statement": "Unresolved conflict cannot remain active.",
+        "status": "active",
+        "scope": {"type": "project", "key": "ExampleProject"},
+        "source": {"type": "repository_evidence", "ref": "fixture:invalid:003", "observed_at": "2026-07-16T01:04:00Z", "evidence_hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555"},
+        "valid_time": {"from": "2026-07-16T01:04:00Z", "to": null},
+        "recorded_time": {"recorded_at": "2026-07-16T01:05:00Z", "recorded_by": "automation_c"},
+        "supersession": {"supersedes": [], "superseded_by": null, "reason": "invalid_fixture"},
+        "conflict": {"state": "unresolved", "with": ["mem_invalid_conflict_peer"], "resolution": null},
+        "confidence": "medium",
+        "importance": "medium",
+        "verification": {"state": "verified", "method": "repository_hash", "evidence_refs": ["fixture:invalid:003"], "verified_at": "2026-07-16T01:05:00Z", "rationale": "Invalid fixture."},
+        "aliases": [],
+        "tags": [],
+        "negative_triggers": [],
+        "sensitivity": {"classification": "public", "handling": "public_text", "credential_present": false, "public_repository_allowed": true},
+        "hash": {"algorithm": "sha256", "canonicalization": "openai-memory-json-v1", "value": "sha256:782abbd5e5502b60ef5c03bc2370255118aafc6c4ea0cd22ca609984b05d786f"}
+      }
+    ]
+  },
+  {
+    "case": "unverified_active",
+    "expected_layer": "record_schema",
+    "expected_rule": "unverified_active",
+    "records": [
+      {
+        "schema_version": "openai_database.memory_record.v2",
+        "id": "mem_invalid_unverified_0004",
+        "memory_key": "invalid.unverified",
+        "kind": "fact",
+        "statement": "Unverified record cannot remain active.",
+        "status": "active",
+        "scope": {"type": "global", "key": "global"},
+        "source": {"type": "raw_import", "ref": "fixture:invalid:004", "observed_at": "2026-07-16T01:06:00Z", "evidence_hash": "sha256:6666666666666666666666666666666666666666666666666666666666666666"},
+        "valid_time": {"from": "2026-07-16T01:06:00Z", "to": null},
+        "recorded_time": {"recorded_at": "2026-07-16T01:07:00Z", "recorded_by": "importer"},
+        "supersession": {"supersedes": [], "superseded_by": null, "reason": "invalid_fixture"},
+        "conflict": {"state": "none", "with": [], "resolution": null},
+        "confidence": "low",
+        "importance": "low",
+        "verification": {"state": "unverified", "method": "raw_evidence_hash", "evidence_refs": ["fixture:invalid:004"], "verified_at": null, "rationale": "Invalid fixture."},
+        "aliases": [],
+        "tags": [],
+        "negative_triggers": [],
+        "sensitivity": {"classification": "public", "handling": "public_text", "credential_present": false, "public_repository_allowed": true},
+        "hash": {"algorithm": "sha256", "canonicalization": "openai-memory-json-v1", "value": "sha256:3c740ae575917af7d1ccad8ffc77df889b24202319b8f24b4f01ecf208f66e3a"}
+      }
+    ]
+  },
+  {
+    "case": "hash_mismatch",
+    "expected_layer": "record_hash",
+    "expected_rule": "hash_mismatch",
+    "records": [
+      {
+        "schema_version": "openai_database.memory_record.v2",
+        "id": "mem_invalid_hash_0005",
+        "memory_key": "invalid.hash",
+        "kind": "fact",
+        "statement": "Schema-valid fixture with an intentionally incorrect record hash.",
+        "status": "active",
+        "scope": {"type": "global", "key": "global"},
+        "source": {"type": "repository_evidence", "ref": "fixture:invalid:005", "observed_at": "2026-07-16T01:08:00Z", "evidence_hash": "sha256:7777777777777777777777777777777777777777777777777777777777777777"},
+        "valid_time": {"from": "2026-07-16T01:08:00Z", "to": null},
+        "recorded_time": {"recorded_at": "2026-07-16T01:09:00Z", "recorded_by": "automation_c"},
+        "supersession": {"supersedes": [], "superseded_by": null, "reason": "invalid_fixture"},
+        "conflict": {"state": "none", "with": [], "resolution": null},
+        "confidence": "high",
+        "importance": "low",
+        "verification": {"state": "verified", "method": "repository_hash", "evidence_refs": ["fixture:invalid:005"], "verified_at": "2026-07-16T01:09:00Z", "rationale": "Invalid hash fixture."},
+        "aliases": [],
+        "tags": [],
+        "negative_triggers": [],
+        "sensitivity": {"classification": "public", "handling": "public_text", "credential_present": false, "public_repository_allowed": true},
+        "hash": {"algorithm": "sha256", "canonicalization": "openai-memory-json-v1", "value": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}
+      }
+    ]
+  },
+  {
+    "case": "duplicate_active_key_scope",
+    "expected_layer": "dataset",
+    "expected_rule": "duplicate_active_key_scope",
+    "records": [
+      {
+        "schema_version": "openai_database.memory_record.v2",
+        "id": "mem_invalid_duplicate_0006a",
+        "memory_key": "invalid.duplicate",
+        "kind": "fact",
+        "statement": "First individually valid active record.",
+        "status": "active",
+        "scope": {"type": "project", "key": "ExampleProject"},
+        "source": {"type": "repository_evidence", "ref": "fixture:invalid:006a", "observed_at": "2026-07-16T01:10:00Z", "evidence_hash": "sha256:8888888888888888888888888888888888888888888888888888888888888888"},
+        "valid_time": {"from": "2026-07-16T01:10:00Z", "to": null},
+        "recorded_time": {"recorded_at": "2026-07-16T01:11:00Z", "recorded_by": "automation_c"},
+        "supersession": {"supersedes": [], "superseded_by": null, "reason": "invalid_fixture"},
+        "conflict": {"state": "none", "with": [], "resolution": null},
+        "confidence": "high",
+        "importance": "low",
+        "verification": {"state": "verified", "method": "repository_hash", "evidence_refs": ["fixture:invalid:006a"], "verified_at": "2026-07-16T01:11:00Z", "rationale": "Duplicate fixture A."},
+        "aliases": [],
+        "tags": [],
+        "negative_triggers": [],
+        "sensitivity": {"classification": "public", "handling": "public_text", "credential_present": false, "public_repository_allowed": true},
+        "hash": {"algorithm": "sha256", "canonicalization": "openai-memory-json-v1", "value": "sha256:2a7043306b716707d89e2b19eb802b237898207e47c70b67526a82d64761d14b"}
+      },
+      {
+        "schema_version": "openai_database.memory_record.v2",
+        "id": "mem_invalid_duplicate_0006b",
+        "memory_key": "invalid.duplicate",
+        "kind": "fact",
+        "statement": "Second individually valid active record with the same key and scope.",
+        "status": "active",
+        "scope": {"type": "project", "key": "ExampleProject"},
+        "source": {"type": "repository_evidence", "ref": "fixture:invalid:006b", "observed_at": "2026-07-16T01:12:00Z", "evidence_hash": "sha256:9999999999999999999999999999999999999999999999999999999999999999"},
+        "valid_time": {"from": "2026-07-16T01:12:00Z", "to": null},
+        "recorded_time": {"recorded_at": "2026-07-16T01:13:00Z", "recorded_by": "automation_c"},
+        "supersession": {"supersedes": [], "superseded_by": null, "reason": "invalid_fixture"},
+        "conflict": {"state": "none", "with": [], "resolution": null},
+        "confidence": "high",
+        "importance": "low",
+        "verification": {"state": "verified", "method": "repository_hash", "evidence_refs": ["fixture:invalid:006b"], "verified_at": "2026-07-16T01:13:00Z", "rationale": "Duplicate fixture B."},
+        "aliases": [],
+        "tags": [],
+        "negative_triggers": [],
+        "sensitivity": {"classification": "public", "handling": "public_text", "credential_present": false, "public_repository_allowed": true},
+        "hash": {"algorithm": "sha256", "canonicalization": "openai-memory-json-v1", "value": "sha256:bc187cc0a8a2893d2d0637897b87ca26d7ea17cd50fa51886718902259506351"}
+      }
+    ]
+  }
+]

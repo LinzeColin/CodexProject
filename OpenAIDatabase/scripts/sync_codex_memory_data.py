@@ -995,8 +995,6 @@ def git_commit_and_push(repo_root: Path, push: bool) -> dict[str, Any]:
         "data/derived/visualization/memory_atlas.json",
         "data/derived/personalization",
         "data/run_logs",
-        "token_usage/current-mac-latest",
-        "session_history/current-mac-latest",
     ]
     stage_targets = [
         target

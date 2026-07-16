@@ -28,6 +28,11 @@ def read_optional_text(path: Path) -> str:
     return path.read_text(encoding="utf-8") if path.exists() else ""
 
 
+def read_frontend_sources(source_root: Path) -> str:
+    paths = sorted({*source_root.rglob("*.ts"), *source_root.rglob("*.tsx")})
+    return "\n".join(path.read_text(encoding="utf-8") for path in paths)
+
+
 def pass_check(checks: list[dict[str, str]], name: str, evidence: str) -> None:
     checks.append({"name": name, "status": "PASS", "evidence": evidence})
 
@@ -58,7 +63,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     repo_root = repo_root.resolve()
     checks: list[dict[str, str]] = []
 
-    app_source = read_text(repo_root / "apps/memory-atlas/src/App.tsx")
+    source_root = repo_root / "apps/memory-atlas/src"
+    app_source = read_frontend_sources(source_root)
     i18n_source = read_optional_text(repo_root / "apps/memory-atlas/src/i18n/zh-CN.ts")
     ui_source = app_source + "\n" + i18n_source
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
@@ -78,9 +84,9 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     atlas_path = repo_root / "data/derived/visualization/memory_atlas.json"
     atlas_source = atlas_path.read_text(encoding="utf-8") if atlas_path.exists() else ""
 
-    data_guide_node = function_block(app_source, "DataGuideSvgNode", "buildFilteredSlice")
-    timeline_view = function_block(app_source, "TimelineView", "ContributionGrid")
-    contribution_grid = function_block(app_source, "ContributionGrid", "SearchReview")
+    data_guide_node = read_text(source_root / "shared/ui/primitives.tsx")
+    timeline_view = read_text(source_root / "features/assets/TimelineView.tsx")
+    contribution_grid = read_text(source_root / "features/overview/ContributionGrid.tsx")
 
     require(
         checks,
@@ -88,7 +94,13 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
          or ('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }' in app_source
              and ('home: "记忆总览"' in i18n_source or 'home: "发生了什么"' in i18n_source)))
         and ('const [activeView, setActiveView] = useState<ViewKey>("home")' in app_source or "const activeView = sharedState.mode.activeView" in app_source)
-        and 'if (activeView === "home")' in app_source
+        and (
+            'if (activeView === "home")' in app_source
+            or (
+                "const Route = ROUTE_REGISTRY[activeView]" in app_source
+                and "home: (props) => (" in app_source
+            )
+        )
         and "function HomeOverviewView" in app_source
         and "function buildHomeOverviewModel" in app_source
         and ("Memory Weather" in ui_source or "记忆天气" in ui_source)
@@ -175,7 +187,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         "selectedContributionPeriod" in app_source
-        and "handleSelectNode" in app_source
+        and ("handleSelectNode" in app_source or "selectNode" in app_source)
         and "setSelectedContributionPeriod(null)" in app_source
         and "onSelectContributionPeriod" in app_source
         and "onSelectPeriod(selectedDetail)" in contribution_grid
@@ -183,9 +195,13 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "buildContributionPeriodDetail" in app_source
         and "nodeMatchesContributionPeriod" in app_source
         and "selectionStillVisible" in app_source
-        and "<ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={handleSelectNode} />" in app_source
-        and ('<NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} />' in app_source
-             or '<NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} sharedState={sharedState} />' in app_source)
+        and (
+            "<ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={handleSelectNode} />" in app_source
+            or "<ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={selectNode} />" in app_source
+        )
+        and "<NodeInspector" in app_source
+        and "node={selectedNode}" in app_source
+        and "sharedState={sharedState}" in app_source
         and "grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);" in css_source
         and ".content-grid.wide-view" in css_source
         and "grid-template-columns: 1fr;" in css_source
@@ -1104,7 +1120,10 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     )
     require(
         checks,
-        'const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene")' in app_source
+        (
+            'const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene")' in app_source
+            or 'export const ObsidianGraphScene = lazy(() => import("../../components/ObsidianGraphScene")' in app_source
+        )
         and "function ObsidianGraphScene" in obsidian_source
         and "function useObsidianForceGraph" in obsidian_source
         and "function stepObsidianForceSimulation" in obsidian_source

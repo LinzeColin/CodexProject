@@ -1,0 +1,39 @@
+{
+  "schema_version": "openai_database.memory_automation_c_e2e.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0017",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0017",
+  "files": {
+    "report": "data/derived/evaluation/memory_gold/reports/automation_c_e2e_v1.json"
+  },
+  "limits": {
+    "scenario_count": 7,
+    "required_scenarios": [
+      "add",
+      "update",
+      "retire",
+      "dispute",
+      "noop_duplicate",
+      "invalid",
+      "inference_rejected"
+    ],
+    "profile_pass_required": 5,
+    "open_pr_final_max": 0,
+    "open_issue_final_max": 0,
+    "non_main_branch_final_max": 0,
+    "partial_canonical_write_max": 0,
+    "duplicate_record_max": 0,
+    "duplicate_pr_max": 0,
+    "daily_manual_pending_max": 0,
+    "live_network_request_max": 0,
+    "target_github_write_max": 0
+  },
+  "cases": [
+    {"id": "E2E-ADD-001", "scenario": "add", "operation": "add", "source_type": "explicit_user", "expected_terminal": "MERGE_DELETE"},
+    {"id": "E2E-UPD-001", "scenario": "update", "operation": "update", "source_type": "explicit_user", "expected_terminal": "MERGE_DELETE"},
+    {"id": "E2E-RET-001", "scenario": "retire", "operation": "retire", "source_type": "explicit_user", "expected_terminal": "MERGE_DELETE"},
+    {"id": "E2E-DSP-001", "scenario": "dispute", "operation": "dispute", "source_type": "explicit_user", "expected_terminal": "CLOSE_DELETE"},
+    {"id": "E2E-NOP-001", "scenario": "noop_duplicate", "operation": "add", "source_type": "explicit_user", "expected_terminal": "MERGE_DELETE"},
+    {"id": "E2E-INV-001", "scenario": "invalid", "operation": "add", "source_type": "explicit_user", "expected_terminal": "PRECHECK_REJECT"},
+    {"id": "E2E-INF-001", "scenario": "inference_rejected", "operation": "add", "source_type": "model_inference", "expected_terminal": "PRECHECK_REJECT"}
+  ]
+}

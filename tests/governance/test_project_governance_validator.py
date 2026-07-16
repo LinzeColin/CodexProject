@@ -4346,6 +4346,29 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("Stale, conflicting, superseded, or draft PRs", text)
         self.assertIn("re-cut it from current `main` as a clean branch", text)
 
+    def test_repo1_0002_root_contract_installs_zero_open_and_id_dual_read(self) -> None:
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        standard = (ROOT / "docs" / "governance" / "STANDARD.md").read_text(
+            encoding="utf-8"
+        )
+        required_ci = (
+            ROOT / ".github" / "workflows" / "project-governance.yml"
+        ).read_text(encoding="utf-8")
+        settlement = (
+            ROOT / ".github" / "workflows" / "agent-loop-settlement.yml"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("Zero-Open", agents)
+        self.assertIn("TSK/ACC.<project>.<program>.<sequence>", agents)
+        self.assertIn("REMOTE_ACTIVATION_DEFERRED", standard)
+        self.assertIn("permissions:\n  contents: read", required_ci)
+        self.assertIsNone(
+            re.search(r"^\s+paths(?:-ignore)?:", required_ci, re.MULTILINE)
+        )
+        self.assertIn("AUTOMATION_C_TRANSACTION_V1", settlement)
+        self.assertNotIn("actions/checkout@", settlement)
+        self.assertNotIn("gh issue", settlement)
+
     def test_shared_memory_root_adapters_use_one_bundle(self) -> None:
         claude_path = ROOT / "CLAUDE.md"
         claude_text = claude_path.read_text(encoding="utf-8")

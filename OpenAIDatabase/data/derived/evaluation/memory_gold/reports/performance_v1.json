@@ -1,0 +1,269 @@
+{
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0015",
+  "algorithm": {
+    "always_on_service": false,
+    "custom_mcp_added": false,
+    "kind": "deterministic_lexical_alias_routing",
+    "vector_database": false,
+    "version": "nfkc_casefold_alias_scope_cjk_latin_ngram.v1"
+  },
+  "hard_gate_failures": [],
+  "hard_gates": {
+    "agent_memory_bytes": {
+      "metric": "agent_memory_bytes",
+      "observed": 80810,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 262144
+    },
+    "canonical_dataset_bytes": {
+      "metric": "canonical_dataset_bytes",
+      "observed": 488877,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 921600
+    },
+    "cold_requests": {
+      "metric": "cold_request_count",
+      "observed": 2,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 2
+    },
+    "commit_invalidation": {
+      "metric": "commit_cache_invalidation_success",
+      "observed": 1,
+      "operator": "eq",
+      "status": "PASS",
+      "threshold": 1
+    },
+    "default_discovery": {
+      "metric": "default_discovery_object_count",
+      "observed": 1,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 1
+    },
+    "full_tree_scan": {
+      "metric": "recursive_full_tree_scan_count",
+      "observed": 0,
+      "operator": "eq",
+      "status": "PASS",
+      "threshold": 0
+    },
+    "handshake_index": {
+      "metric": "handshake_index_match",
+      "observed": 1,
+      "operator": "eq",
+      "status": "PASS",
+      "threshold": 1
+    },
+    "index_coverage": {
+      "metric": "active_public_index_coverage",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 1.0
+    },
+    "indexed_fact_gets": {
+      "metric": "indexed_fact_content_get_count",
+      "observed": 2,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 2
+    },
+    "prediction_parity": {
+      "metric": "prediction_parity_rate",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.99
+    },
+    "rate_limit_recovery": {
+      "metric": "rate_limit_recovery_success",
+      "observed": 1,
+      "operator": "eq",
+      "status": "PASS",
+      "threshold": 1
+    },
+    "rate_limit_requests": {
+      "metric": "rate_limit_request_count",
+      "observed": 2,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 3
+    },
+    "raw_expansion_gets": {
+      "metric": "raw_expansion_content_get_count_max",
+      "observed": 3,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 3
+    },
+    "recall_degradation": {
+      "metric": "recall_at_5_degradation",
+      "observed": 0.0,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 0.01
+    },
+    "warm_304_bytes": {
+      "metric": "warm_304_transferred_bytes",
+      "observed": 0,
+      "operator": "eq",
+      "status": "PASS",
+      "threshold": 0
+    },
+    "warm_requests": {
+      "metric": "warm_request_count",
+      "observed": 2,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 2
+    }
+  },
+  "index": {
+    "active_public_record_count": 6,
+    "handshake_match": true,
+    "posting_count": 1395,
+    "posting_membership_count": 2486,
+    "record_count": 6
+  },
+  "metrics": {
+    "active_public_index_coverage": 1.0,
+    "agent_memory_bytes": 80810,
+    "canonical_dataset_bytes": 488877,
+    "cold_request_count": 2,
+    "commit_cache_invalidation_success": 1,
+    "default_discovery_object_count": 1,
+    "handshake_index_match": 1,
+    "indexed_fact_content_get_count": 2,
+    "prediction_parity_rate": 1.0,
+    "rate_limit_recovery_success": 1,
+    "rate_limit_request_count": 2,
+    "raw_expansion_content_get_count_max": 3,
+    "recall_at_5_degradation": 0.0,
+    "recursive_full_tree_scan_count": 0,
+    "warm_304_transferred_bytes": 0,
+    "warm_request_count": 2
+  },
+  "official_sources": [
+    {
+      "topic": "conditional_requests",
+      "url": "https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28"
+    },
+    {
+      "topic": "rate_limits",
+      "url": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28"
+    },
+    {
+      "topic": "contents_api",
+      "url": "https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28"
+    }
+  ],
+  "official_sources_verified_on": "2026-07-16",
+  "quality": {
+    "alias_query_count": 160,
+    "baseline_recall_at_5": 1.0,
+    "case_count": 160,
+    "cjk_query_count": 160,
+    "gold_label_dependency_in_index_count": 0,
+    "indexed_recall_at_5": 1.0,
+    "noise_query_count": 160,
+    "prediction_parity_count": 160,
+    "prediction_parity_rate": 1.0,
+    "recall_at_5_degradation": 0.0
+  },
+  "request_profiles": {
+    "authenticated": true,
+    "cold": {
+      "request_count": 2,
+      "statuses": [
+        200,
+        200
+      ],
+      "transferred_bytes": 569687
+    },
+    "commit_invalidation": {
+      "remaining_commits": [
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "success": true
+    },
+    "commit_pinned": true,
+    "network_request_count": 0,
+    "rate_limit": {
+      "final_status": 304,
+      "request_count": 2,
+      "retry_delays_seconds": [
+        1.0
+      ],
+      "success": true
+    },
+    "replay_request_count": 7,
+    "warm_304": {
+      "if_none_match_present": true,
+      "request_count": 2,
+      "statuses": [
+        304,
+        304
+      ],
+      "transferred_bytes": 0
+    }
+  },
+  "runtime_gate_contract": {
+    "index_rebuild_p95_ms_max": 30000,
+    "local_query_p95_ms_max": 250,
+    "observation_excluded_from_deterministic_drift": true,
+    "suite_elapsed_ms_max": 360000
+  },
+  "runtime_observation": {
+    "failures": [],
+    "gates": {
+      "index_rebuild_p95_ms": {
+        "metric": "index_rebuild_p95_ms",
+        "observed": 6.667917,
+        "operator": "lte",
+        "status": "PASS",
+        "threshold": 30000
+      },
+      "local_query_p95_ms": {
+        "metric": "local_query_p95_ms",
+        "observed": 0.28725,
+        "operator": "lte",
+        "status": "PASS",
+        "threshold": 250
+      },
+      "suite_elapsed_ms": {
+        "metric": "suite_elapsed_ms",
+        "observed": 1068.644542,
+        "operator": "lte",
+        "status": "PASS",
+        "threshold": 360000
+      }
+    },
+    "metrics": {
+      "index_rebuild_p50_ms": 4.989625,
+      "index_rebuild_p95_ms": 6.667917,
+      "local_query_p50_ms": 0.202583,
+      "local_query_p95_ms": 0.28725,
+      "suite_elapsed_ms": 1068.644542
+    },
+    "query_iterations": 160,
+    "rebuild_iterations": 10
+  },
+  "schema_version": "openai_database.memory_retrieval_performance_report.v1",
+  "source_hashes": {
+    "agent_memory_sha256": "bc3efc6bce760a3aee19f9da5aa32bd5a422a630e1863a2d4b2e8a9138f65846",
+    "canonical_manifest_sha256": "019931525ab56adb51847f5920f9d84f168da5ad0ce2d70314aada4bb0e5f39e",
+    "config_sha256": "1742e5c69e32f07abc9ae66170e02e684794f1b49b56cc82865a90e32f554761",
+    "evaluator_sha256": "050197aef99f3f78921f0e18d0bca1cde6bcf39e8a14cc72db252be2874acef1",
+    "gold_config_sha256": "1ff751b3f712247c0fffc8ab55935c155fc338778abcdff8cb97f7fcc1c64fda",
+    "gold_dataset_sha256": "3f33bcc56243660b56c83abbe938bdc496f1e5dd53eb0b87afbad9e3f4b395b4",
+    "gold_full_report_sha256": "247e57b492459a948402a4060395660ee3cb87763d95ca258d0f8866945f49f6",
+    "memory_cli_sha256": "a181a2606aab75916718ca26056d8af780db20d7bdd592ddec9f48e9103e6fa9",
+    "retrieval_module_sha256": "b838ea4521d1ef9a6f7f40a6be9b38137bd77d54a9267c3026dda230ea61538f"
+  },
+  "status": "PASS",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0015"
+}

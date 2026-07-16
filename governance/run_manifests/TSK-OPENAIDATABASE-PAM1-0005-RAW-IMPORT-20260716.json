@@ -1,0 +1,223 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0005-RAW-IMPORT-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0005",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0005"
+  ],
+  "iteration_id": "ST07-PHC-OPENAIDATABASE-PAM1-0005-001",
+  "generated_at": "2026-07-16T03:51:29Z",
+  "gate_status": "PASS_LOCAL_GOVERNED_RAW_IMPORT",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "618a3af31f6706391049d534f1ea3b58eeed5492",
+  "remote_main_sha_at_run_start": "66d13ffe919311b34334bf1044686b6c90ce46a0",
+  "remote_main_terminal_observation": "terminal main=1f3902d0b86a0cac6c2dd7cd0b9d05123b7cfa99; 18 remote files changed since run start; exact local-file overlap=0; open PR/open issue/non-main branch=0/0/0; remote writes=0",
+  "candidate_tree_sha1_excluding_this_manifest": "2f9b9541c1b341ed3a2bfd6705538575b96421b9",
+  "content_tree_hash": "a0a99daf5b37dea80d6c230972f5343b3c1243e9811abf90965e31d160d04200",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 25-file staged closure before this manifest is added; final 37/37 publication binds the published business commit.",
+  "summary": "Make data/public_raw/YYYY-MM the only destination for new authorized public text evidence, bind every import to a sidecar and hashes, and prohibit automatic active-memory promotion.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0005 local governed raw import acceptance",
+  "ci_run_reference": "LOCAL_SECURITY_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0005-IMPORT",
+    "EVID-OAIDB-PAM1-0005-TESTS",
+    "EVID-OAIDB-PAM1-0005-MANIFEST"
+  ],
+  "scope": {
+    "canonical_raw_destination_count": 1,
+    "historical_public_raw_file_count": 513,
+    "historical_public_raw_bytes_audited": 452781269,
+    "historical_raw_files_moved_or_rewritten": 0,
+    "old_archive_disposition_count": 6,
+    "new_raw_data_files_committed": 0,
+    "database_or_service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0004",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0004-CUTOVER-20260716.json",
+    "gate_status": "PASS_LOCAL_CANONICAL_MEMORY_CUTOVER",
+    "implementation_commit": "618a3af31f6706391049d534f1ea3b58eeed5492"
+  },
+  "import_contract": {
+    "canonical_layout": "data/public_raw/YYYY-MM",
+    "part_pattern": "{source_id}.{original_sha256_12}.part-NNNN.md",
+    "sidecar_pattern": "{source_id}.{original_sha256_12}.sidecar.json",
+    "max_text_part_bytes": 921600,
+    "max_input_bytes": 14745600,
+    "max_authorization_bytes": 16384,
+    "max_parts": 16,
+    "authorization_binds_exact_source_sha256": true,
+    "instruction_trust": "none",
+    "memory_source_type": "raw_import",
+    "initial_memory_status": "candidate",
+    "automatic_active_promotion": false,
+    "atomic_append_only_and_idempotent": true
+  },
+  "hard_gate_result": {
+    "unique_shallow_destination_count": 1,
+    "instruction_obedience_count": 0,
+    "credential_leak_count": 0,
+    "automatic_active_promotion_count": 0,
+    "tracked_private_path_count": 0,
+    "legacy_or_dual_write_count": 0,
+    "prompt_injection_rejected": true,
+    "path_traversal_rejected": true,
+    "symlink_rejected": true,
+    "archive_input_rejected": true,
+    "unicode_bidi_or_invisible_rejected": true,
+    "oversize_input_rejected": true,
+    "split_reassemble_exact": true,
+    "missing_authorization_rejected": true,
+    "part_hash_drift_rejected": true
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-015",
+    "formula_id": "FORM-015",
+    "parameter_ids": [
+      "PARAM-101"
+    ]
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/config/raw_evidence.sidecar.schema.json": "46d057d486aa4dd55ae95442f1c335ba5a5c34ef45bdd133be296ada8294e4d3",
+    "OpenAIDatabase/config/storage/raw_import.json": "78e943ad15d7288e2fa669afeb9c88774401b7b9ad1ba5dc089ffc8bba4178ec",
+    "OpenAIDatabase/config/storage/raw_material_policy.json": "bc0baca75fb00775e05329a3a0f7af034bcfe0aadb4b02dd04251a8ee69eadfb",
+    "OpenAIDatabase/config/memory.schema.json": "10ce88b421e91300a9c007aea1e620bf7377023800fbcc34f4e2d13a499d4f3a",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py": "86b962fc4d8970620e7aa76fe9686521c3d08ea3a3113e0a8f381323a8098234",
+    "OpenAIDatabase/scripts/raw_archive_manifest.py": "df5d8e44f6bcef5995fd1114593ce98d421a0d90f6ad8f40ad4a283ec7c36418",
+    "OpenAIDatabase/tests/test_public_raw_import.py": "512d1d095bacd1d44c577464beb3472d3540f222a7e3d1ba3593257631a22cb0",
+    "governance/id_registry.json": "59f1024e46986588998038999eba51a4f4cdfd5ff2079d491db9cbb4a9da3974"
+  },
+  "test_commands": [
+    "python3 -B -m unittest OpenAIDatabase.tests.test_public_raw_import OpenAIDatabase.tests.test_raw_material_policy OpenAIDatabase.tests.test_directory_lifecycle -v",
+    "python3 -B -m unittest -q OpenAIDatabase.tests.test_public_raw_import OpenAIDatabase.tests.test_raw_material_policy OpenAIDatabase.tests.test_directory_lifecycle OpenAIDatabase.tests.test_command_ownership OpenAIDatabase.tests.test_memory_record_schema_v2 OpenAIDatabase.tests.test_memory_atlas_r7_raw_integrity",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier security",
+    "python3 -B OpenAIDatabase/scripts/validate_raw_material_policy.py --database-dir OpenAIDatabase --require-remote-verified",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_command_ownership.py --database-dir OpenAIDatabase",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub audit"
+  ],
+  "test_results": [
+    {
+      "gate": "focused_raw_import",
+      "result": "PASS",
+      "observed": "11 import/policy/lifecycle tests passed. Temporary fixtures proved plan/apply/idempotency, exact two-part reconstruction, authorization/hash binding and fail-closed injection, traversal, symlink, archive, Unicode, credential and oversize behavior."
+    },
+    {
+      "gate": "security_tier",
+      "result": "PASS",
+      "observed": "76/76 security tests passed in 35.406 seconds after the explicit memory.schema baseline was reconciled in memory.cutover.json."
+    },
+    {
+      "gate": "existing_public_raw",
+      "result": "PASS",
+      "observed": "513 tracked files and 452781269 audited raw bytes passed; credential/private text, instruction obedience, depth, extension, archive-disposition and private-path hard counts are zero."
+    },
+    {
+      "gate": "governance_and_repository",
+      "result": "PASS",
+      "observed": "Lean rendered total is 45208 bytes with convergence 7/7; ID registry revision 79, candidate-tree hygiene, diff and staged credential-shape gates pass."
+    },
+    {
+      "gate": "terminal_remote",
+      "result": "PASS",
+      "observed": "Remote main advanced across 18 files after run start with exact local overlap 0; open PR/open issue/non-main branch=0/0/0; this Run made no remote write."
+    }
+  ],
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/raw_evidence.sidecar.schema.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/raw_import.json",
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/data/public_raw/README.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py",
+    "OpenAIDatabase/scripts/raw_archive_manifest.py",
+    "OpenAIDatabase/scripts/validate_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_public_raw_import.py",
+    "OpenAIDatabase/tests/test_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0005-RAW-IMPORT-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/raw_evidence.sidecar.schema.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/raw_import.json",
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/data/public_raw/README.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py",
+    "OpenAIDatabase/scripts/raw_archive_manifest.py",
+    "OpenAIDatabase/scripts/validate_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_public_raw_import.py",
+    "OpenAIDatabase/tests/test_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0005-RAW-IMPORT-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0005-RAW-IMPORT-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0005-RAW-IMPORT-20260716.json"
+  ],
+  "known_boundaries": [
+    "No real raw evidence was imported; tests use only bounded temporary synthetic fixtures.",
+    "The 513 existing public raw files remain append-only compatibility evidence and were not moved, deleted or rewritten.",
+    "Private-origin archives remain outside CodexProject and are represented only by the existing disposition mapping.",
+    "Existing PAM1.0004 raw_import records remain unchanged; the candidate-only sidecar contract applies to new imports after PAM1.0005.",
+    "The governed mutation CLI remains PAM1.0006, resource-route compatibility remains PAM1.0007 and live Cloudflare consumers remain PAM1.0018.",
+    "Business publication remains deferred until all 37 Task Pack tasks pass."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the importer, import/sidecar contracts, policy/ownership/verification updates and governance event; restore the prior memory.schema baseline. No raw data, dependency, database, service or remote compensation is required."
+}

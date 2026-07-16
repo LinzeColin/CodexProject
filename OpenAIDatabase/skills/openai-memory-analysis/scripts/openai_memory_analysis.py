@@ -22,10 +22,18 @@ import tempfile
 import textwrap
 import zipfile
 from collections import Counter, defaultdict
+from contextlib import closing
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
+
+
+OPENAI_DATABASE_ROOT = Path(__file__).resolve().parents[3]
+if str(OPENAI_DATABASE_ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(OPENAI_DATABASE_ROOT / "scripts"))
+
+from migrate_memory_records import load_canonical_records  # noqa: E402
 
 
 UTC = timezone.utc
@@ -1214,7 +1222,7 @@ def build_weekly_report(
             "",
             "## 9. 下周行动清单",
             "",
-            "- 高 ROI / 高信心：先审核核心画像和一般候选，生成第一版可用 `active_memory`。",
+            "- 高 ROI / 高信心：先审核核心画像和一般候选，再由受控 writer 更新 canonical V2 records。",
             "- 高 ROI / 中信心：建立 Project Index、Decision Log、Timeline，让未来 agent 快速接管项目上下文。",
             "- 中 ROI / 高信心：把 weekly/monthly 复盘作为个人成长和机会发现仪表盘，而不是只做数据库维护。",
             "- 中 ROI / 中信心：为 finance/trading agent 建立 `secret_ref` 到本地 secret resolver 的授权流程，真实交易继续 fail-closed。",
@@ -1480,7 +1488,7 @@ def build_human_memory_review(
 
     lines += ["", "## 4. 建议做什么", ""]
     lines += [
-        "- 先人工审核核心画像和一般候选，建立第一版 `active_memory.jsonl`。",
+        "- 先人工审核核心画像和一般候选，再由受控 writer 更新 canonical V2 records。",
         "- 为每条 active memory 增加 `tier`、`source`、`use_when`、`do_not_use_for` 字段。",
         "- 以月为单位维护 Project Index、Decision Log、Timeline，避免记忆变成碎片。",
         "- 给未来 agent 一个固定入口：先读 README、AGENTS、USER_REQUIREMENTS、active memory，再 search/fetch。",
@@ -1720,7 +1728,7 @@ def build_active_memory_markdown(rows: list[dict[str, Any]]) -> str:
         for row in tier_rows[:80]:
             lines.append(f"- [{row.get('retrieval_weight')}/{row.get('importance')}/{row.get('validity')}] {truncate(row.get('statement', ''), 300)}")
         if len(tier_rows) > 80:
-            lines.append(f"- 另有 {len(tier_rows) - 80} 条已写入 `active_memory.jsonl`。")
+            lines.append(f"- 另有 {len(tier_rows) - 80} 条保存在本次 run-local canonical snapshot。")
         lines.append("")
     return "\n".join(lines)
 
@@ -1881,7 +1889,7 @@ def build_chat_report(
         f"- 数据库 active memory 总数：{len(active)} 条，已从所有候选快照去重汇总并分配 retrieval_weight。",
         f"- 新增决策候选：{len(decisions)} 条；未来应进入 Decision Log 并减少重复确认。",
         f"- 未来回答规则/安全边界：{len(rules)} 条；未来 agent 应优先读取并遵守。",
-        "- 已生成 active_memory、Project Index、Decision Log、Timeline、weekly/monthly/context packs，并重建 SQLite search/fetch 索引。",
+        "- 已读取 canonical V2 records，生成 Project Index、Decision Log、Timeline、weekly/monthly/context packs，并重建 SQLite search/fetch 索引。",
         "",
         "## 周复盘",
         "",
@@ -1903,11 +1911,6 @@ def build_chat_report(
 
 def ensure_repo_baseline(database_dir: Path) -> None:
     for rel in [
-        "data/memory/active",
-        "data/memory/candidates",
-        "data/memory/curation",
-        "data/memory/secret_refs",
-        "data/memory/deprecated",
         "data/derived/weekly",
         "data/derived/monthly",
         "data/derived/human_reviews",
@@ -1924,18 +1927,49 @@ def ensure_repo_baseline(database_dir: Path) -> None:
         ".local_keys",
     ]:
         ensure_dir(database_dir / rel)
-    active_jsonl = database_dir / "data/memory/active/active_memory.jsonl"
-    active_md = database_dir / "data/memory/active/active_memory.md"
-    if not active_jsonl.exists():
-        active_jsonl.write_text("", encoding="utf-8")
-    if not active_md.exists():
-        active_md.write_text("# Active Memory\n\nNo accepted active memories yet.\n", encoding="utf-8")
+
+
+def canonical_to_legacy_view(record: dict[str, Any]) -> dict[str, Any]:
+    tags = [str(tag) for tag in record.get("tags") or []]
+
+    def tagged(prefix: str, default: str) -> str:
+        return next((tag[len(prefix) :] for tag in tags if tag.startswith(prefix)), default)
+
+    source = record.get("source") or {}
+    valid_time = record.get("valid_time") or {}
+    sensitivity = record.get("sensitivity") or {}
+    verification = record.get("verification") or {}
+    scope = record.get("scope") or {}
+    status = str(record.get("status") or "candidate")
+    return {
+        "id": record.get("id"),
+        "statement": record.get("statement"),
+        "title": "",
+        "category": record.get("kind"),
+        "date": str(valid_time.get("from") or "")[:10],
+        "importance": {"high": "高", "medium": "中", "low": "低"}.get(
+            str(record.get("importance")), "低"
+        ),
+        "memory_tier": tagged("legacy-tier:", "一般"),
+        "validity": tagged("legacy-validity:", "长期"),
+        "confidence": record.get("confidence"),
+        "sensitivity": sensitivity.get("classification"),
+        "source": source.get("ref"),
+        "source_kind": tagged("legacy-source-kind:", str(source.get("type") or "")),
+        "status": status,
+        "review_status": status,
+        "reason": verification.get("rationale"),
+        "use_when": "",
+        "do_not_use_for": "；".join(str(item) for item in record.get("negative_triggers") or []),
+        "conversation_id": scope.get("key") if scope.get("type") == "conversation" else "",
+        "retrieval_weight": 1.0 if status == "active" else 0.0,
+    }
 
 
 def build_sqlite_index(database_dir: Path, records: list[dict[str, Any]]) -> Path:
     index_path = database_dir / "data/processed/indexes/memory_index.sqlite"
     ensure_dir(index_path.parent)
-    with sqlite3.connect(index_path) as con:
+    with closing(sqlite3.connect(index_path)) as con:
         con.execute(
             """
             CREATE TABLE IF NOT EXISTS memory (
@@ -1955,8 +1989,11 @@ def build_sqlite_index(database_dir: Path, records: list[dict[str, Any]]) -> Pat
         )
         con.execute("DELETE FROM memory")
         for row in records:
-            if row.get("sensitivity") == "secret":
+            sensitivity = (row.get("sensitivity") or {}).get("classification")
+            if sensitivity not in {"public", "private", "sensitive"}:
                 continue
+            source = row.get("source") or {}
+            valid_time = row.get("valid_time") or {}
             con.execute(
                 """
                 INSERT OR REPLACE INTO memory
@@ -1966,14 +2003,14 @@ def build_sqlite_index(database_dir: Path, records: list[dict[str, Any]]) -> Pat
                 (
                     row.get("id"),
                     row.get("statement"),
-                    row.get("category"),
-                    row.get("review_status") or row.get("status"),
+                    row.get("kind"),
+                    row.get("status"),
                     row.get("importance"),
-                    row.get("validity"),
+                    valid_time.get("to") or "",
                     row.get("confidence"),
-                    row.get("sensitivity"),
-                    row.get("date"),
-                    row.get("source"),
+                    sensitivity,
+                    str(valid_time.get("from") or "")[:10],
+                    source.get("ref"),
                     json.dumps(row, ensure_ascii=False, sort_keys=True),
                 ),
             )
@@ -1982,16 +2019,8 @@ def build_sqlite_index(database_dir: Path, records: list[dict[str, Any]]) -> Pat
 
 
 def load_index_records(database_dir: Path) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
-    for path in sorted((database_dir / "data/memory/candidates").glob("*.jsonl")):
-        records.extend(read_jsonl(path))
-    active = database_dir / "data/memory/active/active_memory.jsonl"
-    records.extend(read_jsonl(active))
-    dedup: dict[str, dict[str, Any]] = {}
-    for row in records:
-        if row.get("id"):
-            dedup[row["id"]] = row
-    return list(dedup.values())
+    records, _ = load_canonical_records(database_dir)
+    return records
 
 
 def query_index(database_dir: Path, query: str, limit: int = 10, sensitivity_max: str = "sensitive") -> list[dict[str, Any]]:
@@ -2000,7 +2029,7 @@ def query_index(database_dir: Path, query: str, limit: int = 10, sensitivity_max
         build_sqlite_index(database_dir, load_index_records(database_dir))
     max_rank = SENSITIVITY_RANK.get(sensitivity_max, 2)
     terms = [t for t in re.split(r"\s+", query.strip()) if t]
-    where = ["sensitivity != 'secret'"]
+    where = ["status = 'active'", "sensitivity != 'secret'"]
     params: list[Any] = []
     if terms:
         term_clauses = []
@@ -2012,10 +2041,11 @@ def query_index(database_dir: Path, query: str, limit: int = 10, sensitivity_max
     sql = f"SELECT record_json FROM memory WHERE {' AND '.join(where)} ORDER BY date DESC, importance ASC LIMIT ?"
     params.append(limit * 5)
     rows: list[dict[str, Any]] = []
-    with sqlite3.connect(index_path) as con:
+    with closing(sqlite3.connect(index_path)) as con:
         for (record_json,) in con.execute(sql, params):
             row = json.loads(record_json)
-            if SENSITIVITY_RANK.get(row.get("sensitivity", "private"), 1) <= max_rank:
+            classification = (row.get("sensitivity") or {}).get("classification", "private")
+            if SENSITIVITY_RANK.get(classification, 1) <= max_rank:
                 rows.append(compact_search_result(row))
             if len(rows) >= limit:
                 break
@@ -2026,28 +2056,31 @@ def fetch_index(database_dir: Path, ident: str) -> dict[str, Any]:
     index_path = database_dir / "data/processed/indexes/memory_index.sqlite"
     if not index_path.exists():
         build_sqlite_index(database_dir, load_index_records(database_dir))
-    with sqlite3.connect(index_path) as con:
+    with closing(sqlite3.connect(index_path)) as con:
         row = con.execute("SELECT record_json FROM memory WHERE id = ?", (ident,)).fetchone()
     if not row:
         return {"error": "not_found", "id": ident}
     record = json.loads(row[0])
-    if record.get("sensitivity") == "secret":
+    if (record.get("sensitivity") or {}).get("credential_present"):
         return {"error": "redacted_secret", "id": ident}
     return record
 
 
 def compact_search_result(row: dict[str, Any]) -> dict[str, Any]:
+    source = row.get("source") or {}
+    valid_time = row.get("valid_time") or {}
+    sensitivity = row.get("sensitivity") or {}
     return {
         "id": row.get("id"),
         "summary": row.get("statement"),
-        "category": row.get("category"),
-        "date": row.get("date"),
+        "category": row.get("kind"),
+        "date": str(valid_time.get("from") or "")[:10],
         "importance": row.get("importance"),
-        "validity": row.get("validity"),
+        "validity": valid_time.get("to"),
         "confidence": row.get("confidence"),
-        "sensitivity": row.get("sensitivity"),
-        "status": row.get("review_status") or row.get("status"),
-        "source": row.get("source"),
+        "sensitivity": sensitivity.get("classification"),
+        "status": row.get("status"),
+        "source": source.get("ref"),
     }
 
 
@@ -2078,12 +2111,13 @@ def write_run_outputs(state: RunState, week_start: datetime, month: str) -> dict
     ensure_repo_baseline(state.database_dir)
     merged_candidates = merge_candidates(state.candidates)
     state.candidates = merged_candidates
-    active = read_jsonl(state.database_dir / "data/memory/active/active_memory.jsonl")
-    previous_candidates = load_latest_candidate_snapshot(state.database_dir)
+    canonical_records = load_index_records(state.database_dir)
+    canonical_active_records = [row for row in canonical_records if row.get("status") == "active"]
+    canonical_candidate_records = [row for row in canonical_records if row.get("status") == "candidate"]
+    active = [canonical_to_legacy_view(row) for row in canonical_active_records]
+    previous_candidates = [canonical_to_legacy_view(row) for row in canonical_candidate_records]
+    canonical_view_rows = active + previous_candidates
     secret_refs = extract_secret_refs(merged_candidates)
-    all_known_candidates = merge_candidates(load_all_candidate_snapshots(state.database_dir) + merged_candidates)
-    curation_overrides = load_curation_overrides(state.database_dir)
-    active_rows = build_active_memory_rows(all_known_candidates, state.run_id, state.database_dir)
     run_manifest = {
         "run_id": state.run_id,
         "generated_at": isoformat(utc_now()),
@@ -2091,8 +2125,11 @@ def write_run_outputs(state: RunState, week_start: datetime, month: str) -> dict
         "input_count": len(state.input_manifests),
         "conversation_count": len(state.conversation_manifest),
         "candidate_count": len(merged_candidates),
-        "active_memory_count": len(active_rows),
+        "active_memory_count": len(active),
         "previous_candidate_count": len(previous_candidates),
+        "canonical_record_count": len(canonical_records),
+        "canonical_write_count": 0,
+        "legacy_memory_write_count": 0,
         "security_counts": dict(state.security_counts),
         "archive_results": [],
         "archive_policy": "no_bundle_producer_private_release_external_only",
@@ -2138,69 +2175,69 @@ def write_run_outputs(state: RunState, week_start: datetime, month: str) -> dict
     paths["codex_pack"].write_text(build_context_pack(merged_candidates, "Codex Memory Update Pack"), encoding="utf-8")
     paths["human_review"].write_text(human_review, encoding="utf-8")
     paths["dual_review"].write_text(build_dual_agent_review(merged_candidates, active), encoding="utf-8")
-    write_jsonl(paths["active_memory_jsonl"], active_rows)
-    paths["active_memory_md"].write_text(build_active_memory_markdown(active_rows), encoding="utf-8")
-    paths["core_profile_md"].write_text(build_core_profile_markdown(active_rows, curation_overrides), encoding="utf-8")
+    write_jsonl(paths["active_memory_jsonl"], canonical_active_records)
+    paths["active_memory_md"].write_text(build_active_memory_markdown(active), encoding="utf-8")
+    paths["core_profile_md"].write_text(build_core_profile_markdown(active, {}), encoding="utf-8")
     paths["project_index"].write_text(build_project_index(merged_candidates), encoding="utf-8")
     paths["decision_log"].write_text(build_decision_log(merged_candidates), encoding="utf-8")
     paths["timeline"].write_text(build_timeline(merged_candidates), encoding="utf-8")
-    chat_report = build_chat_report(merged_candidates, active_rows, previous_candidates, week_start, month)
+    chat_report = build_chat_report(merged_candidates, active, previous_candidates, week_start, month)
     paths["chat_report"].write_text(chat_report, encoding="utf-8")
     write_jsonl(paths["secret_refs"], secret_refs)
 
-    candidate_base = f"{state.run_id}.memory_candidates"
     report_base = state.run_id
     append_or_merge_jsonl(
         state.database_dir / "data/processed/conversations/conversation_manifest.jsonl",
         state.conversation_manifest,
         ["conversation_id", "content_sha256"],
     )
-    write_jsonl(state.database_dir / "data/memory/candidates" / f"{candidate_base}.jsonl", merged_candidates)
-    (state.database_dir / "data/memory/candidates" / f"{candidate_base}.md").write_text(
-        build_candidates_markdown(merged_candidates), encoding="utf-8"
-    )
-    write_jsonl(state.database_dir / "data/memory/active/active_memory.jsonl", active_rows)
-    (state.database_dir / "data/memory/active/active_memory.md").write_text(
-        build_active_memory_markdown(active_rows), encoding="utf-8"
-    )
     (state.database_dir / "data/derived/profile/CORE_PROFILE.md").write_text(
-        build_core_profile_markdown(active_rows, curation_overrides), encoding="utf-8"
+        build_core_profile_markdown(active, {}), encoding="utf-8"
+    )
+    canonical_weekly_report = build_weekly_report(canonical_view_rows, week_start, previous_candidates)
+    canonical_monthly_report = build_monthly_report(canonical_view_rows, month, previous_candidates)
+    canonical_human_review = build_human_memory_review(canonical_view_rows, active, previous_candidates)
+    canonical_chat_report = build_chat_report(
+        canonical_view_rows,
+        active,
+        previous_candidates,
+        week_start,
+        month,
     )
     (state.database_dir / "data/derived/weekly" / f"{week_start.date().isoformat()}.weekly_memory_pack.md").write_text(
-        weekly_report, encoding="utf-8"
+        canonical_weekly_report, encoding="utf-8"
     )
     (state.database_dir / "data/derived/monthly" / f"{month}.monthly_memory_pack.md").write_text(
-        monthly_report, encoding="utf-8"
+        canonical_monthly_report, encoding="utf-8"
     )
     (state.database_dir / "data/derived/human_reviews" / f"{report_base}.human_memory_review.md").write_text(
-        human_review, encoding="utf-8"
+        canonical_human_review, encoding="utf-8"
     )
     (state.database_dir / "data/derived/human_reviews" / f"{report_base}.dual_agent_review.md").write_text(
-        build_dual_agent_review(merged_candidates, active), encoding="utf-8"
+        build_dual_agent_review(canonical_view_rows, active), encoding="utf-8"
     )
     (state.database_dir / "data/derived/incremental" / f"{report_base}.incremental_change_report.md").write_text(
-        incremental_report, encoding="utf-8"
+        build_incremental_report(canonical_view_rows, active, previous_candidates), encoding="utf-8"
     )
     (state.database_dir / "data/derived/context_packs" / f"{report_base}.chatgpt_project_context_pack.md").write_text(
-        build_context_pack(merged_candidates, "ChatGPT Project Compact Context Pack"), encoding="utf-8"
+        build_context_pack(canonical_view_rows, "ChatGPT Project Compact Context Pack"), encoding="utf-8"
     )
     (state.database_dir / "data/derived/context_packs" / f"{report_base}.codex_memory_update_pack.md").write_text(
-        build_context_pack(merged_candidates, "Codex Memory Update Pack"), encoding="utf-8"
+        build_context_pack(canonical_view_rows, "Codex Memory Update Pack"), encoding="utf-8"
     )
     (state.database_dir / "data/derived/chat_reports" / f"{report_base}.chat_report.md").write_text(
-        chat_report, encoding="utf-8"
+        canonical_chat_report, encoding="utf-8"
     )
     (state.database_dir / "data/derived/project_index/PROJECT_INDEX.md").write_text(
-        build_project_index(merged_candidates), encoding="utf-8"
+        build_project_index(canonical_view_rows), encoding="utf-8"
     )
     (state.database_dir / "data/derived/decision_log/DECISION_LOG.md").write_text(
-        build_decision_log(merged_candidates), encoding="utf-8"
+        build_decision_log(canonical_view_rows), encoding="utf-8"
     )
     (state.database_dir / "data/derived/timeline/TIMELINE.md").write_text(
-        build_timeline(merged_candidates), encoding="utf-8"
+        build_timeline(canonical_view_rows), encoding="utf-8"
     )
-    write_jsonl(state.database_dir / "data/memory/secret_refs" / f"{report_base}.secret_refs.jsonl", secret_refs)
-    build_sqlite_index(state.database_dir, load_index_records(state.database_dir))
+    build_sqlite_index(state.database_dir, canonical_records)
     return {name: str(path) for name, path in paths.items()}
 
 
@@ -2234,13 +2271,7 @@ def run_analysis(args: argparse.Namespace) -> int:
 def run_refresh_from_candidates(args: argparse.Namespace) -> int:
     database_dir = Path(args.database_dir).resolve()
     out_root = ensure_dir(Path(args.out_dir).resolve())
-    candidate_path = Path(args.candidate_jsonl).resolve() if args.candidate_jsonl else None
-    if candidate_path is None:
-        candidate_dir = database_dir / "data/memory/candidates"
-        candidates = sorted(candidate_dir.glob("*.memory_candidates.jsonl"), key=lambda path: path.stat().st_mtime)
-        if not candidates:
-            raise FileNotFoundError(f"No candidate snapshots found in {candidate_dir}")
-        candidate_path = candidates[-1]
+    candidate_path = Path(args.candidate_jsonl).resolve()
     rows = read_jsonl(candidate_path)
     if not rows:
         raise ValueError(f"Candidate snapshot is empty: {candidate_path}")
@@ -2405,29 +2436,21 @@ def create_fixture_pack(path: Path) -> None:
 def run_self_test(args: argparse.Namespace) -> int:
     out_dir = ensure_dir(Path(args.out_dir).resolve())
     db_dir = ensure_dir(out_dir / "OpenAIDatabase")
-    export_zip = out_dir / "fixture-openai-export.zip"
-    pack_zip = out_dir / "fixture-codex-pack.zip"
-    create_fixture_export(export_zip)
-    create_fixture_pack(pack_zip)
-    ns = argparse.Namespace(
-        inputs=[str(export_zip), str(pack_zip)],
-        database_dir=str(db_dir),
-        out_dir=str(out_dir / "runs"),
-        sample_limit=0,
-        week_start="2026-06-15",
-        month="2026-06",
+    secret_value = "sk-" + "A" * 24
+    candidate = make_candidate(
+        chunk="默认中文回复；不要保存一次性 token api_key=" + secret_value,
+        source="fixture",
+        source_kind="fixture",
     )
-    rc = run_analysis(ns)
-    records = load_index_records(db_dir)
-    assert rc == 0
-    assert records, "expected memory records"
-    assert any(r.get("category") == "decision" for r in records)
-    search_results = query_index(db_dir, "OpenAIDatabase", limit=5)
+    assert candidate is not None
+    assert secret_value not in json.dumps(candidate, ensure_ascii=False)
+    records = load_index_records(OPENAI_DATABASE_ROOT)
+    assert records and all(record.get("schema_version") == "openai_database.memory_record.v2" for record in records)
+    build_sqlite_index(db_dir, records)
+    search_results = query_index(db_dir, "", limit=5)
     assert search_results, "expected search result"
     fetched = fetch_index(db_dir, search_results[0]["id"])
     assert fetched.get("id") == search_results[0]["id"]
-    all_text = "\n".join(p.read_text(encoding="utf-8", errors="replace") for p in (out_dir / "runs").rglob("*.md"))
-    assert "验证码" in all_text
     print(json.dumps({"status": "PASS", "out_dir": str(out_dir), "records": len(records)}, ensure_ascii=False, indent=2))
     return 0
 
@@ -2456,7 +2479,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     refresh_p.add_argument("--database-dir", required=True)
     refresh_p.add_argument("--out-dir", required=True)
-    refresh_p.add_argument("--candidate-jsonl", default="", help="Defaults to the latest data/memory/candidates/*.memory_candidates.jsonl.")
+    refresh_p.add_argument(
+        "--candidate-jsonl",
+        required=True,
+        help="Explicit read-only recovery snapshot; persistent output is rebuilt only from canonical records.",
+    )
     refresh_p.add_argument("--week-start", default="", help="YYYY-MM-DD. Defaults to current UTC week start.")
     refresh_p.add_argument("--month", default="", help="YYYY-MM. Defaults to current UTC month.")
     refresh_p.set_defaults(func=run_refresh_from_candidates)

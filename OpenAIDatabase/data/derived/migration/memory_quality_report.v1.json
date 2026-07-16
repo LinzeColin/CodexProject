@@ -1,0 +1,286 @@
+{
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0003",
+  "artifact_kind": "FULL_CI_ARTIFACT_QUALITY_REPORT",
+  "coverage": {
+    "active_evidence": {
+      "basis_points": 10000,
+      "denominator": 278,
+      "numerator": 278
+    },
+    "active_recorded_time": {
+      "basis_points": 10000,
+      "denominator": 278,
+      "numerator": 278
+    },
+    "active_source": {
+      "basis_points": 10000,
+      "denominator": 278,
+      "numerator": 278
+    },
+    "active_valid_time": {
+      "basis_points": 10000,
+      "denominator": 278,
+      "numerator": 278
+    },
+    "old_id_disposition": {
+      "basis_points": 10000,
+      "denominator": 278,
+      "numerator": 278
+    }
+  },
+  "current_task_effects": {
+    "active_memory_rows_modified": 0,
+    "business_remote_writes": 0,
+    "candidate_memory_rows_modified": 0,
+    "canonical_record_files_written": 0,
+    "curation_rows_modified": 0,
+    "database_service_dependency_additions": 0,
+    "legacy_reader_changes": 0,
+    "legacy_writer_changes": 0,
+    "secret_ref_rows_modified": 0
+  },
+  "dispositions": {
+    "counts": {
+      "migrate-active": 6,
+      "migrate-candidate": 108,
+      "owner-decision": 0,
+      "prohibited": 0,
+      "raw-evidence-only": 80,
+      "retire": 84
+    },
+    "reason_code_counts": {
+      "curated_verified_durable_core": 6,
+      "legacy_backup_evidence_not_memory_truth": 80,
+      "legacy_non_durable_or_deprecated": 84,
+      "supported_record_requires_verification": 108
+    },
+    "sample_policy": "one legacy ID per non-empty class; no record value",
+    "samples": {
+      "migrate-active": [
+        "mem_0021f45ff99acd80"
+      ],
+      "migrate-candidate": [
+        "mem_0228285985777913"
+      ],
+      "owner-decision": [],
+      "prohibited": [],
+      "raw-evidence-only": [
+        "mem_01ee3357ec9bdf34"
+      ],
+      "retire": [
+        "mem_030d19929789656b"
+      ]
+    }
+  },
+  "duplicates_and_conflicts": {
+    "candidate_exact_duplicate_row_occurrences": 1283,
+    "candidate_snapshot_duplicate_occurrences": 1424,
+    "curation_demoted_duplicate_count": 1,
+    "curation_explained_change_id_count": 12,
+    "material_conflict_id_count": 0,
+    "semantic_duplicate_group_count": 0
+  },
+  "freshness": {
+    "age_bucket_counts": {
+      "31-90": 177,
+      "91-365": 101
+    },
+    "age_bucket_days": [
+      30,
+      90,
+      365
+    ],
+    "age_only_changes_disposition": false
+  },
+  "hard_gates": {
+    "credential_or_secret_id_count_zero": true,
+    "each_old_id_exactly_one_disposition": true,
+    "material_conflict_id_count_zero": true,
+    "migration_map_lte_max_file_bytes": true,
+    "owner_decision_count_zero": true,
+    "record_values_included_zero": true
+  },
+  "input_inventory": {
+    "active_records": 278,
+    "candidate_record_occurrences": 1702,
+    "collection_sha256": "a103baa5d87f1ceb730ba62deba117eacc0b08b1c75c7ae31c3f9cb8fe5740bf",
+    "curation_overrides": 12,
+    "files": [
+      {
+        "bytes": 1082592,
+        "file_id": "A001",
+        "lines": 278,
+        "path": "data/memory/active/active_memory.jsonl",
+        "role": "active",
+        "sha256": "24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7"
+      },
+      {
+        "bytes": 281342,
+        "file_id": "C001",
+        "lines": 198,
+        "path": "data/memory/candidates/run_20260614T232939Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "9454904f891df1d075cade626c5ec6908c1ed7d343c07d07187b6d5230366eed"
+      },
+      {
+        "bytes": 297863,
+        "file_id": "C002",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T002809Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "8beddded78a24a6d2929eb37c1b02d0e8a426913f3cbe37c82e3944611acfeab"
+      },
+      {
+        "bytes": 297863,
+        "file_id": "C003",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T003047Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "8beddded78a24a6d2929eb37c1b02d0e8a426913f3cbe37c82e3944611acfeab"
+      },
+      {
+        "bytes": 297863,
+        "file_id": "C004",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T003340Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "8beddded78a24a6d2929eb37c1b02d0e8a426913f3cbe37c82e3944611acfeab"
+      },
+      {
+        "bytes": 297863,
+        "file_id": "C005",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T010835Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "8beddded78a24a6d2929eb37c1b02d0e8a426913f3cbe37c82e3944611acfeab"
+      },
+      {
+        "bytes": 297863,
+        "file_id": "C006",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T013320Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "8beddded78a24a6d2929eb37c1b02d0e8a426913f3cbe37c82e3944611acfeab"
+      },
+      {
+        "bytes": 297863,
+        "file_id": "C007",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T025549Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "fdb5a8fd0bffc832f43b610891fec1700dd6643c5ea923f917dc3977e07a7b39"
+      },
+      {
+        "bytes": 298449,
+        "file_id": "C008",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T050203Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "e97e54bdf72b5aa346e4c74ebc06942289394c2c5f89fec498fe773d284192a6"
+      },
+      {
+        "bytes": 298449,
+        "file_id": "C009",
+        "lines": 188,
+        "path": "data/memory/candidates/run_20260615T053237Z.memory_candidates.jsonl",
+        "role": "candidate",
+        "sha256": "1fe404c93c4647daa3529383e9de6f7a6affcf58cbc82cbd98ce2cbb9ad69194"
+      },
+      {
+        "bytes": 8154,
+        "file_id": "U001",
+        "lines": 139,
+        "path": "data/memory/curation/core_profile_review.json",
+        "role": "curation",
+        "sha256": "ac0ef2dfa9c23652cc635d88d3010aab20c0bd0d457aa28b23d9b5ed94fd5446"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S001",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T002809Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S002",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T003047Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S003",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T003340Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S004",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T010835Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S005",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T013320Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S006",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T025549Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S007",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T050203Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "file_id": "S008",
+        "lines": 0,
+        "path": "data/memory/secret_refs/run_20260615T053237Z.secret_refs.jsonl",
+        "role": "secret_ref",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "record_occurrences": 1980,
+    "secret_ref_records": 0,
+    "unique_legacy_ids": 278
+  },
+  "migration_map": {
+    "bytes": 586685,
+    "line_count": 278,
+    "path": "data/derived/migration/memory_migration_map.v1.jsonl",
+    "sha256": "52203348d11e20e4bbb55b0f7337002263fe4db1ef5ee52e741a0dca467268fc"
+  },
+  "profile_as_of_date": "2026-07-16",
+  "record_values_included": false,
+  "schema_version": "openai_database.memory_quality_report.v1",
+  "security_and_privacy": {
+    "absolute_local_source_ref_id_count": 0,
+    "credential_or_secret_id_count": 0,
+    "finding_type_counts": {
+      "phone": 22
+    },
+    "matched_values_included": false,
+    "raw_instruction_trust": "none"
+  },
+  "status": "PASS",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0003"
+}

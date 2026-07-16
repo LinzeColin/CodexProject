@@ -1,0 +1,328 @@
+{
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0017",
+  "cases": [
+    {
+      "expected_terminal": "MERGE_DELETE",
+      "id": "E2E-ADD-001",
+      "observed": {
+        "base_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "daily_manual_pending_count": 0,
+        "duplicate_pr_count": 0,
+        "duplicate_record_count": 0,
+        "duplicate_settlement_action": null,
+        "final_audit": {
+          "current_branch": "main",
+          "dirty_path_count": 0,
+          "non_main_branch_count": 0,
+          "open_issue_count": 0,
+          "open_pr_count": 0
+        },
+        "final_commit_sha": "f348921db15b06db45f2a73c0cb74c6c9a3ad719",
+        "head_sha": "04c9cc8dd670298cc648da7be294eb3a33760dc1",
+        "live_network_request_count": 0,
+        "memory_id": "mem_497524680afad530f91d1564",
+        "mutation_cli": "PASS",
+        "new_fact_profile_tested": true,
+        "old_fact_invisible": null,
+        "partial_canonical_write_count": 0,
+        "pr_create_count": 1,
+        "profile_pass_count": 5,
+        "record_create_count": 1,
+        "replay_write_count": null,
+        "required_ci": "PASS",
+        "sandbox_git_transaction": true,
+        "source": {
+          "ref": "user-message:synthetic:add",
+          "type": "explicit_user"
+        },
+        "target_github_write_count": 0,
+        "terminal": "MERGE_DELETE",
+        "terminal_reason": "all_gates_pass"
+      },
+      "scenario": "add",
+      "status": "PASS"
+    },
+    {
+      "expected_terminal": "MERGE_DELETE",
+      "id": "E2E-UPD-001",
+      "observed": {
+        "base_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "daily_manual_pending_count": 0,
+        "duplicate_pr_count": 0,
+        "duplicate_record_count": 0,
+        "duplicate_settlement_action": null,
+        "final_audit": {
+          "current_branch": "main",
+          "dirty_path_count": 0,
+          "non_main_branch_count": 0,
+          "open_issue_count": 0,
+          "open_pr_count": 0
+        },
+        "final_commit_sha": "5d24f4b507b9000e77180ca9e91f82f905269d39",
+        "head_sha": "ba33580416e8c7144c00b69bfa6d8f4d67d3f032",
+        "live_network_request_count": 0,
+        "memory_id": "mem_7aee3d89b4c004dbb4a85e6a",
+        "mutation_cli": "PASS",
+        "new_fact_profile_tested": true,
+        "old_fact_invisible": true,
+        "partial_canonical_write_count": 0,
+        "pr_create_count": 1,
+        "profile_pass_count": 5,
+        "record_create_count": 1,
+        "replay_write_count": null,
+        "required_ci": "PASS",
+        "sandbox_git_transaction": true,
+        "source": {
+          "ref": "user-message:synthetic:update",
+          "type": "explicit_user"
+        },
+        "target_github_write_count": 0,
+        "terminal": "MERGE_DELETE",
+        "terminal_reason": "all_gates_pass"
+      },
+      "scenario": "update",
+      "status": "PASS"
+    },
+    {
+      "expected_terminal": "MERGE_DELETE",
+      "id": "E2E-RET-001",
+      "observed": {
+        "base_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "daily_manual_pending_count": 0,
+        "duplicate_pr_count": 0,
+        "duplicate_record_count": 0,
+        "duplicate_settlement_action": null,
+        "final_audit": {
+          "current_branch": "main",
+          "dirty_path_count": 0,
+          "non_main_branch_count": 0,
+          "open_issue_count": 0,
+          "open_pr_count": 0
+        },
+        "final_commit_sha": "047eb70d8b7cd8109357958bfdcd6d4aaaa3bd98",
+        "head_sha": "e7be52dbe17cae6949163fa9f8acac5bca640ac7",
+        "live_network_request_count": 0,
+        "memory_id": "mem_fixture_project_0003",
+        "mutation_cli": "PASS",
+        "new_fact_profile_tested": false,
+        "old_fact_invisible": true,
+        "partial_canonical_write_count": 0,
+        "pr_create_count": 1,
+        "profile_pass_count": 5,
+        "record_create_count": 0,
+        "replay_write_count": null,
+        "required_ci": "PASS",
+        "sandbox_git_transaction": true,
+        "source": {
+          "ref": "user-message:synthetic:retire",
+          "type": "explicit_user"
+        },
+        "target_github_write_count": 0,
+        "terminal": "MERGE_DELETE",
+        "terminal_reason": "all_gates_pass"
+      },
+      "scenario": "retire",
+      "status": "PASS"
+    },
+    {
+      "expected_terminal": "CLOSE_DELETE",
+      "id": "E2E-DSP-001",
+      "observed": {
+        "base_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "daily_manual_pending_count": 0,
+        "duplicate_pr_count": 0,
+        "duplicate_record_count": 0,
+        "final_audit": {
+          "current_branch": "main",
+          "dirty_path_count": 0,
+          "non_main_branch_count": 0,
+          "open_issue_count": 0,
+          "open_pr_count": 0
+        },
+        "final_commit_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "head_sha": "23c8afc83bdf7d5503cac81b72b64feb931550a0",
+        "live_network_request_count": 0,
+        "memory_id": "mem_fixture_project_0003",
+        "mutation_cli": "FAIL_CLOSED",
+        "new_fact_profile_tested": false,
+        "old_fact_invisible": null,
+        "partial_canonical_write_count": 0,
+        "pr_create_count": 1,
+        "profile_pass_count": 0,
+        "record_create_count": 0,
+        "required_ci": "FAIL_CLOSED_EXPECTED",
+        "sandbox_git_transaction": true,
+        "source": {
+          "ref": "user-message:synthetic:dispute",
+          "type": "explicit_user"
+        },
+        "target_github_write_count": 0,
+        "terminal": "CLOSE_DELETE",
+        "terminal_reason": "lifecycle_unresolved_conflict_blocks_settlement"
+      },
+      "scenario": "dispute",
+      "status": "PASS"
+    },
+    {
+      "expected_terminal": "MERGE_DELETE",
+      "id": "E2E-NOP-001",
+      "observed": {
+        "base_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "daily_manual_pending_count": 0,
+        "duplicate_pr_count": 0,
+        "duplicate_record_count": 0,
+        "duplicate_settlement_action": "NOOP",
+        "final_audit": {
+          "current_branch": "main",
+          "dirty_path_count": 0,
+          "non_main_branch_count": 0,
+          "open_issue_count": 0,
+          "open_pr_count": 0
+        },
+        "final_commit_sha": "c2491d8e1052b7888906d125fb8518868a340c8e",
+        "head_sha": "dd015295da65126639515dd99e95dececf595b83",
+        "live_network_request_count": 0,
+        "memory_id": "mem_10d047ff7ebb73400c8ddee3",
+        "mutation_cli": "PASS",
+        "new_fact_profile_tested": true,
+        "old_fact_invisible": null,
+        "partial_canonical_write_count": 0,
+        "pr_create_count": 1,
+        "profile_pass_count": 5,
+        "record_create_count": 1,
+        "replay_write_count": 0,
+        "required_ci": "PASS",
+        "sandbox_git_transaction": true,
+        "source": {
+          "ref": "user-message:synthetic:noop_duplicate",
+          "type": "explicit_user"
+        },
+        "target_github_write_count": 0,
+        "terminal": "MERGE_DELETE",
+        "terminal_reason": "all_gates_pass"
+      },
+      "scenario": "noop_duplicate",
+      "status": "PASS"
+    },
+    {
+      "expected_terminal": "PRECHECK_REJECT",
+      "id": "E2E-INV-001",
+      "observed": {
+        "base_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "daily_manual_pending_count": 0,
+        "duplicate_pr_count": 0,
+        "duplicate_record_count": 0,
+        "final_audit": {
+          "current_branch": "main",
+          "dirty_path_count": 0,
+          "non_main_branch_count": 0,
+          "open_issue_count": 0,
+          "open_pr_count": 0
+        },
+        "final_commit_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "head_sha": null,
+        "live_network_request_count": 0,
+        "memory_id": null,
+        "mutation_cli": "FAIL_CLOSED",
+        "new_fact_profile_tested": false,
+        "old_fact_invisible": null,
+        "partial_canonical_write_count": 0,
+        "pr_create_count": 0,
+        "profile_pass_count": 0,
+        "record_create_count": 0,
+        "required_ci": "NOT_STARTED_PRECHECK_REJECT",
+        "sandbox_git_transaction": false,
+        "source": {
+          "ref": "user-message:synthetic:invalid",
+          "type": "explicit_user"
+        },
+        "target_github_write_count": 0,
+        "terminal": "PRECHECK_REJECT",
+        "terminal_reason": "mutation_authorization_missing_or_invalid"
+      },
+      "scenario": "invalid",
+      "status": "PASS"
+    },
+    {
+      "expected_terminal": "PRECHECK_REJECT",
+      "id": "E2E-INF-001",
+      "observed": {
+        "base_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "daily_manual_pending_count": 0,
+        "duplicate_pr_count": 0,
+        "duplicate_record_count": 0,
+        "final_audit": {
+          "current_branch": "main",
+          "dirty_path_count": 0,
+          "non_main_branch_count": 0,
+          "open_issue_count": 0,
+          "open_pr_count": 0
+        },
+        "final_commit_sha": "17b8a03821a7193ee763e449183dc95dc3699c6d",
+        "head_sha": null,
+        "live_network_request_count": 0,
+        "memory_id": null,
+        "mutation_cli": "FAIL_CLOSED",
+        "new_fact_profile_tested": false,
+        "old_fact_invisible": null,
+        "partial_canonical_write_count": 0,
+        "pr_create_count": 0,
+        "profile_pass_count": 0,
+        "record_create_count": 0,
+        "required_ci": "NOT_STARTED_PRECHECK_REJECT",
+        "sandbox_git_transaction": false,
+        "source": {
+          "ref": "user-message:synthetic:inference_rejected",
+          "type": "model_inference"
+        },
+        "target_github_write_count": 0,
+        "terminal": "PRECHECK_REJECT",
+        "terminal_reason": "mutation_source_not_persistable"
+      },
+      "scenario": "inference_rejected",
+      "status": "PASS"
+    }
+  ],
+  "generated_at": "2026-07-17T00:05:00Z",
+  "hard_gates": {
+    "commit_id_source_provenance_complete": true,
+    "final_zero_pr_issue_branch": true,
+    "new_fact_five_profiles": true,
+    "no_daily_manual_pending": true,
+    "no_partial_or_duplicate": true,
+    "offline_target_remote_untouched": true,
+    "old_fact_invisible": true,
+    "replay_is_noop": true,
+    "seven_scenarios_pass": true
+  },
+  "metrics": {
+    "closed_transaction_count": 1,
+    "daily_manual_pending_count": 0,
+    "duplicate_pr_count": 0,
+    "duplicate_record_count": 0,
+    "live_network_request_count": 0,
+    "merged_transaction_count": 4,
+    "new_fact_profile_pass_min": 5,
+    "new_fact_profile_scenario_count": 3,
+    "non_main_branch_final_count": 0,
+    "old_fact_invisible_check_count": 2,
+    "old_fact_invisible_pass_count": 2,
+    "open_issue_final_count": 0,
+    "open_pr_final_count": 0,
+    "partial_canonical_write_count": 0,
+    "passed_scenario_count": 7,
+    "precheck_rejection_count": 2,
+    "sandbox_git_transaction_count": 5,
+    "scenario_count": 7,
+    "target_github_write_count": 0
+  },
+  "mode": "offline_synthetic_local_git_and_modeled_github_api",
+  "production_live_acceptance_task": "TSK.OpenAIDatabase.PAM1.0019",
+  "required_ci": "Project Governance / governance",
+  "schema_version": "openai_database.memory_automation_c_e2e_report.v1",
+  "status": "PASS",
+  "synthetic_fixture_only": true,
+  "target_repository": "LinzeColin/CodexProject",
+  "target_repository_remote_writes": 0,
+  "task_id": "TSK.OpenAIDatabase.PAM1.0017"
+}

@@ -38,6 +38,7 @@ def write_formula_what_if_fixtures(root: Path) -> None:
         "information-roi",
         "--database-dir",
         str(root),
+        "--apply",
     ])
 
 
@@ -96,6 +97,7 @@ class S07P3FormulaWhatIfTest(unittest.TestCase):
                 "formula-what-if",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S07P3")
             self.assertTrue(output.exists())

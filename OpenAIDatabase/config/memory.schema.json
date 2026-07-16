@@ -1,0 +1,541 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/blob/main/OpenAIDatabase/config/memory.schema.json",
+  "title": "OpenAIDatabase Memory Record V2",
+  "description": "Single-record contract for the one logical portable-memory dataset. This schema does not create a database, service, writer, or second editable truth.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "memory_key",
+    "kind",
+    "statement",
+    "status",
+    "scope",
+    "source",
+    "valid_time",
+    "recorded_time",
+    "supersession",
+    "conflict",
+    "confidence",
+    "importance",
+    "verification",
+    "aliases",
+    "tags",
+    "negative_triggers",
+    "sensitivity",
+    "hash"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "openai_database.memory_record.v2"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^mem_[A-Za-z0-9][A-Za-z0-9._-]{7,127}$"
+    },
+    "memory_key": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[a-z0-9][a-z0-9._:/-]{2,255}$"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "answering_rule",
+        "preference",
+        "decision",
+        "project_context",
+        "workflow",
+        "security_boundary",
+        "fact",
+        "negative_trigger"
+      ]
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["candidate", "active", "disputed", "retired"]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "key"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["global", "project", "task", "conversation"]
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ref", "observed_at", "evidence_hash"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "explicit_user",
+            "repository_evidence",
+            "raw_import",
+            "model_inference"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidence_hash": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    },
+    "valid_time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "to": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "recorded_time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recorded_at", "recorded_by"],
+      "properties": {
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recorded_by": {
+          "type": "string",
+          "enum": ["explicit_user", "automation_c", "importer", "migration"]
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/lifecycle_transition"
+          }
+        }
+      }
+    },
+    "supersession": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supersedes", "superseded_by", "reason"],
+      "properties": {
+        "supersedes": {
+          "$ref": "#/$defs/id_array"
+        },
+        "superseded_by": {
+          "type": ["string", "null"],
+          "pattern": "^mem_[A-Za-z0-9][A-Za-z0-9._-]{7,127}$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "with", "resolution"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["none", "unresolved", "resolved"]
+        },
+        "with": {
+          "$ref": "#/$defs/id_array"
+        },
+        "resolution": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "importance": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "method", "evidence_refs", "verified_at", "rationale"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["verified", "unverified", "rejected"]
+        },
+        "method": {
+          "type": "string",
+          "enum": ["explicit_confirmation", "repository_hash", "raw_evidence_hash", "none"]
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "verified_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "aliases": {
+      "$ref": "#/$defs/string_array"
+    },
+    "tags": {
+      "$ref": "#/$defs/string_array"
+    },
+    "negative_triggers": {
+      "$ref": "#/$defs/string_array"
+    },
+    "sensitivity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "handling",
+        "credential_present",
+        "public_repository_allowed"
+      ],
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": ["public", "private", "sensitive"]
+        },
+        "handling": {
+          "type": "string",
+          "enum": ["public_text", "redacted_summary"]
+        },
+        "credential_present": {
+          "const": false
+        },
+        "public_repository_allowed": {
+          "const": true
+        }
+      }
+    },
+    "hash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "canonicalization", "value"],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "canonicalization": {
+          "const": "openai-memory-json-v1"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "properties": {
+              "type": {"const": "model_inference"}
+            },
+            "required": ["type"]
+          }
+        },
+        "required": ["source"]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "not": {"const": "active"}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {"const": "negative_trigger"}
+        },
+        "required": ["kind"]
+      },
+      "then": {
+        "properties": {
+          "source": {
+            "properties": {
+              "type": {"enum": ["explicit_user", "repository_evidence"]}
+            }
+          },
+          "verification": {
+            "properties": {
+              "state": {"const": "verified"}
+            }
+          },
+          "negative_triggers": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "active"}
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "conflict": {
+            "properties": {
+              "state": {"enum": ["none", "resolved"]}
+            }
+          },
+          "verification": {
+            "properties": {
+              "state": {"const": "verified"}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "conflict": {
+            "properties": {
+              "state": {"const": "unresolved"}
+            },
+            "required": ["state"]
+          }
+        },
+        "required": ["conflict"]
+      },
+      "then": {
+        "properties": {
+          "status": {"const": "disputed"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verification": {
+            "properties": {
+              "state": {"const": "verified"}
+            },
+            "required": ["state"]
+          }
+        },
+        "required": ["verification"]
+      },
+      "then": {
+        "properties": {
+          "verification": {
+            "properties": {
+              "verified_at": {"type": "string", "format": "date-time"}
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "verification": {
+            "properties": {
+              "verified_at": {"const": null}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "sensitivity": {
+            "properties": {
+              "classification": {"const": "public"}
+            },
+            "required": ["classification"]
+          }
+        },
+        "required": ["sensitivity"]
+      },
+      "then": {
+        "properties": {
+          "sensitivity": {
+            "properties": {
+              "handling": {"const": "public_text"}
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "sensitivity": {
+            "properties": {
+              "handling": {"const": "redacted_summary"}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "lifecycle_transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transaction_id",
+        "operation",
+        "recorded_at",
+        "recorded_by",
+        "from_status",
+        "to_status",
+        "valid_to_before",
+        "valid_to_after",
+        "reason"
+      ],
+      "properties": {
+        "transaction_id": {
+          "type": "string",
+          "pattern": "^mut_[a-f0-9]{20}$"
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["update", "retire", "dispute"]
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recorded_by": {
+          "type": "string",
+          "enum": ["explicit_user", "automation_c", "importer", "migration"]
+        },
+        "from_status": {
+          "type": "string",
+          "enum": ["candidate", "active", "disputed", "retired"]
+        },
+        "to_status": {
+          "type": "string",
+          "enum": ["candidate", "active", "disputed", "retired"]
+        },
+        "valid_to_before": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "valid_to_after": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "string_array": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "non_empty_string_array": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "id_array": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^mem_[A-Za-z0-9][A-Za-z0-9._-]{7,127}$"
+      }
+    }
+  },
+  "x-query-contract": {
+    "default_status": "active",
+    "non_default_statuses": ["candidate", "disputed", "retired"],
+    "include_inactive_mode": "audit_only_never_answer",
+    "insufficient_evidence": "UNKNOWN_abstain_with_missing_conditions",
+    "current_axis": "execution_time_utc",
+    "valid_as_of_axis": "valid_time",
+    "recorded_as_of_axis": "recorded_time",
+    "valid_interval": "half_open"
+  },
+  "x-raw-import-contract": {
+    "applies_to": "new imports created after TSK.OpenAIDatabase.PAM1.0005",
+    "source_type": "raw_import",
+    "source_ref_pattern": "^data/public_raw/[0-9]{4}-(0[1-9]|1[0-2])/[a-z0-9][a-z0-9-]{0,63}\\.[a-f0-9]{12}\\.sidecar\\.json$",
+    "initial_status": "candidate",
+    "automatic_active_promotion": false,
+    "legacy_cutover_records": "unchanged"
+  },
+  "x-dataset-invariants": {
+    "logical_truth": "data/memory/records/records-NNNN.jsonl",
+    "max_unresolved_active_per_memory_key_and_scope": 1,
+    "active_duplicate_conflict_max": 0,
+    "normalization_policy": "config/memory-lifecycle-policy.json",
+    "unresolved_conflict_settlement": "block",
+    "embedding_as_unique_decision": false,
+    "current_answer_statuses": ["active"],
+    "critical_stale_use_max": 0,
+    "record_hash_excludes": ["hash"],
+    "record_hash_canonicalization": "UTF-8 JSON; recursively NFC-normalize strings; sort object keys by Unicode code point; compact comma/colon separators; preserve array order; reject floating-point values"
+  },
+  "x-lifecycle-contract": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0010",
+    "acceptance_id": "ACC.OpenAIDatabase.PAM1.0010",
+    "transition_log": "recorded_time.transitions",
+    "legacy_missing_transition": "derive_from_successor_recorded_at_or_abstain",
+    "canonical_business_record_rewrite_in_task": false
+  },
+  "x-forgetting-contract": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0011",
+    "acceptance_id": "ACC.OpenAIDatabase.PAM1.0011",
+    "policy": "config/memory-forgetting-policy.json",
+    "negative_memory_kind": "negative_trigger",
+    "negative_memory_authority_sources": ["explicit_user", "repository_evidence"],
+    "absence_inference": false,
+    "public_git_history_is_erasure": false,
+    "canonical_business_record_rewrite_in_task": false
+  }
+}

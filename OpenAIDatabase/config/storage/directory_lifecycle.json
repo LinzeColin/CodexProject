@@ -1,0 +1,178 @@
+{
+  "schema_version": "openai_database.directory_lifecycle.v1",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0005",
+  "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0005",
+  "last_updated_task_id": "TSK.OpenAIDatabase.PAM1.0007",
+  "last_updated_acceptance_id": "ACC.OpenAIDatabase.PAM1.0007",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
+  "max_default_destination_depth": 3,
+  "ownership": [
+    {"top_level": ".", "owner": "project-governance", "purpose": "project entry points and canonical owner views"},
+    {"top_level": ".codex", "owner": "codex-runtime-config", "purpose": "project-local Codex configuration"},
+    {"top_level": "apps", "owner": "application-runtime", "purpose": "Memory Atlas applications"},
+    {"top_level": "config", "owner": "configuration", "purpose": "validated configuration and lifecycle contracts"},
+    {"top_level": "context", "owner": "context-contract", "purpose": "portable context contracts"},
+    {"top_level": "data", "owner": "data-pipeline", "purpose": "canonical raw, processed, derived, release and run-log data"},
+    {"top_level": "docs", "owner": "documentation-governance", "purpose": "product documentation and canonical governance facts"},
+    {"top_level": "macdata", "owner": "device-archive", "purpose": "governed device snapshot archives"},
+    {"top_level": "scripts", "owner": "automation", "purpose": "validated writers, readers and validators"},
+    {"top_level": "skills", "owner": "skill-runtime", "purpose": "project skills"},
+    {"top_level": "tests", "owner": "quality", "purpose": "automated regression and acceptance tests"},
+    {"top_level": "人类可读", "owner": "product-human-docs", "purpose": "active product-facing documentation distinct from root governance views"},
+    {"top_level": "机器治理", "owner": "product-machine-governance", "purpose": "active product configuration and evidence distinct from Lean governance facts"}
+  ],
+  "destinations": [
+    {"domain": "canonical_memory", "path": "data/memory/records"},
+    {"domain": "generated_memory_views", "path": "data/memory"},
+    {"domain": "derived_data", "path": "data/derived"},
+    {"domain": "processed_data", "path": "data/processed"},
+    {"domain": "authorized_public_raw", "path": "data/public_raw"},
+    {"domain": "release_artifacts", "path": "data/releases"},
+    {"domain": "sync_run_log", "path": "data/run_logs/sync_runs"},
+    {"domain": "export_run_log", "path": "data/run_logs/export_runs"},
+    {"domain": "evaluation_run_log", "path": "data/run_logs/evaluation_runs"},
+    {"domain": "agent_run_log", "path": "data/run_logs/agent_runs"},
+    {"domain": "privacy_run_log", "path": "data/run_logs/privacy"},
+    {"domain": "current_numeric_token_telemetry", "path": "data/run_logs/token_usage"},
+    {"domain": "portable_context_contract", "path": "context"},
+    {"domain": "context_source_config", "path": "config/context_sources"},
+    {"domain": "active_product_machine_governance", "path": "机器治理"},
+    {"domain": "active_product_human_docs", "path": "人类可读"}
+  ],
+  "external_destinations": [
+    {
+      "domain": "private_origin_recovery",
+      "requirement": "owner-controlled private LinzeColin/AgentDatabase-Private Release; metadata only in CodexProject",
+      "writer": "none in this repository"
+    }
+  ],
+  "writer_bindings": [
+    {
+      "source": "scripts/export_codex_history_archives.py",
+      "required_literals": ["data/run_logs/token_usage", "numeric Codex token telemetry"],
+      "forbidden_literals": [
+        "token_usage/current-mac-latest",
+        "session_history/current-mac-latest",
+        "--session-history",
+        "--session-history-output",
+        "export_session_history(",
+        "split_file(",
+        "archive_parts"
+      ]
+    },
+    {
+      "source": "scripts/sync_codex_memory_data.py",
+      "required_literals": ["data/run_logs"],
+      "forbidden_literals": ["token_usage/current-mac-latest", "session_history/current-mac-latest"]
+    },
+    {
+      "source": "scripts/memory.py",
+      "required_literals": ["data/memory/records", "data/memory/AGENT_MEMORY.md", "data/memory/agent-memory.json", "data/public_raw", "--apply", "--base-sha", "--idempotency-key", "single_flight", "agent_view_drift"],
+      "forbidden_literals": ["data/memory/active/active_memory.jsonl\"),", "data/memory/candidates\" /", "allowed_status\": \"active"]
+    },
+    {
+      "source": "skills/openai-memory-analysis/scripts/openai_memory_analysis.py",
+      "required_literals": ["load_canonical_records", "legacy_memory_write_count"],
+      "forbidden_literals": [
+        "write_jsonl(state.database_dir / \"data/memory/candidates\"",
+        "write_jsonl(state.database_dir / \"data/memory/active/active_memory.jsonl\"",
+        "write_jsonl(state.database_dir / \"data/memory/secret_refs\""
+      ]
+    }
+  ],
+  "read_only_legacy": [
+    {
+      "path": "data/memory/active",
+      "state": "READ_ONLY_MIGRATION_EVIDENCE",
+      "replacement": "data/memory/records/manifest.json",
+      "collection_sha256": "048209a23ec63ab4144812ed424c50f2d330dea664abcf0a13b8b4e909cfaa7c"
+    },
+    {
+      "path": "data/memory/candidates",
+      "state": "READ_ONLY_MIGRATION_EVIDENCE",
+      "replacement": "data/memory/records/manifest.json",
+      "collection_sha256": "814ddae11c60a49b47ffb20fc3c9f3cc8c8a4cd8ffa66b9c0c28287a03d07e4b"
+    },
+    {
+      "path": "data/memory/curation",
+      "state": "READ_ONLY_MIGRATION_EVIDENCE",
+      "replacement": "data/memory/records/manifest.json",
+      "collection_sha256": "9cc6952bd7962832f951c5b79d8ad5bcbad77e2177879d5210c5356a896afc96"
+    },
+    {
+      "path": "data/memory/secret_refs",
+      "state": "READ_ONLY_EMPTY_SECURITY_EVIDENCE",
+      "replacement": "PAM1.0005 validated raw sidecar contract",
+      "collection_sha256": "08e8985fdf7e3570de5dccafc5337e173c343562670849183779e5e8e0807e9d"
+    }
+  ],
+  "move_records": [
+    {"source": "OpenAIDatabase/token_usage/current-mac-latest/README.md", "destination": "OpenAIDatabase/data/run_logs/token_usage/README.md", "bytes": 209, "sha256": "13d3b17cfedfa426b4dc4f47cef59c9613e45e423187248ce54b0b19776f95bb"},
+    {"source": "OpenAIDatabase/token_usage/current-mac-latest/SHA256SUMS", "destination": "OpenAIDatabase/data/run_logs/token_usage/SHA256SUMS", "bytes": 546, "sha256": "24bb2b4b4ef5e74a9d5b7ffa157f91c4de8b2d261412463831abd5e184606bee"},
+    {"source": "OpenAIDatabase/token_usage/current-mac-latest/data/daily_usage_summary.csv", "destination": "OpenAIDatabase/data/run_logs/token_usage/data/daily_usage_summary.csv", "bytes": 181, "sha256": "fdc5273f7fef2a1eec40679619a5762f749b15ca2ab1f9afe92906a921eb7102"},
+    {"source": "OpenAIDatabase/token_usage/current-mac-latest/data/deduped_usage_rows.csv", "destination": "OpenAIDatabase/data/run_logs/token_usage/data/deduped_usage_rows.csv", "bytes": 913, "sha256": "3f5098a36b9e35bcf205f855bf82675a71fcf4930bcd7568f37d3e8976753bd3"},
+    {"source": "OpenAIDatabase/token_usage/current-mac-latest/data/monthly_usage_summary.csv", "destination": "OpenAIDatabase/data/run_logs/token_usage/data/monthly_usage_summary.csv", "bytes": 176, "sha256": "a7d9287306dba5b5a9c3b7ada513c25a15997a70b9918925ae97e4af233ea729"},
+    {"source": "OpenAIDatabase/token_usage/current-mac-latest/data/raw_extracted_usage_rows.csv", "destination": "OpenAIDatabase/data/run_logs/token_usage/data/raw_extracted_usage_rows.csv", "bytes": 913, "sha256": "3f5098a36b9e35bcf205f855bf82675a71fcf4930bcd7568f37d3e8976753bd3"},
+    {"source": "OpenAIDatabase/token_usage/current-mac-latest/data/summary.json", "destination": "OpenAIDatabase/data/run_logs/token_usage/data/summary.json", "bytes": 1399, "sha256": "dfcc49540c03b5bb469a1905fda92ac291c7ea9b34c4d4d214da160741c9043a"}
+  ],
+  "move_collection": {
+    "count": 7,
+    "bytes": 4337,
+    "sha256": "4efb070b766f17656922446808c362291aa5004514d2e17eead33c190ca73087"
+  },
+  "retired_collections": [
+    {
+      "prefix": "OpenAIDatabase/machine",
+      "count": 10,
+      "bytes": 48340,
+      "sha256": "1883d816a8344275a3600d000e5f54d176a3306fe739a7a8779ecdbc51bdb263",
+      "replacement": "Lean canonical facts plus scripts/lean_governance.py"
+    },
+    {
+      "prefix": "OpenAIDatabase/文档",
+      "count": 7,
+      "bytes": 10503,
+      "sha256": "90b3271239f7c853017a73365032c42c523cb5ff5001edbd24d5cb2c446c92c4",
+      "replacement": "deterministic root 功能清单.md, 开发记录.md and 模型参数文件.md"
+    },
+    {
+      "prefix": "OpenAIDatabase/token_usage",
+      "count": 18,
+      "bytes": 688409,
+      "sha256": "e5af4c928677cfa67c3ae015f03705fad61a52b368d06ad4e0e7ece34f635e13",
+      "replacement": "data/run_logs/token_usage plus base-commit recovery"
+    },
+    {
+      "prefix": "OpenAIDatabase/session_history",
+      "count": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "replacement": "private AgentDatabase releases plus config/storage/raw_material_policy.json"
+    },
+    {
+      "prefix": "OpenAIDatabase/data/raw_archives",
+      "count": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "replacement": "data/public_raw for authorized sanitized evidence; private AgentDatabase releases otherwise"
+    }
+  ],
+  "topology": {
+    "base_file_count": 1621,
+    "base_directory_count_including_root": 224,
+    "base_top_level_count_including_root": 17,
+    "accepted_file_count_at_task_0005": 1644,
+    "accepted_directory_count_including_root_at_task_0005": 235,
+    "accepted_top_level_count_including_root_at_task_0005": 15,
+    "max_current_top_level_count_including_root": 15
+  },
+  "retention": {
+    "current_token_telemetry": "atomic replacement at the canonical destination; numeric/redacted only",
+    "temporary_files": "ignored and removed after a successful atomic write",
+    "legacy_packages": "read-only until their named Task proves consumer and hash reconciliation",
+    "raw_sessions": "no repository bundle producer; new authorized sanitized text uses data/public_raw/YYYY-MM plus a sidecar, legacy flat paths remain append-only read-only, and private-origin recovery uses private AgentDatabase releases",
+    "local_indexes": "ignored and rebuilt from tracked JSONL on first search/fetch",
+    "structured_run_logs": "redacted JSONL audit facts only; full stdout/stderr/transcripts stay local"
+  }
+}

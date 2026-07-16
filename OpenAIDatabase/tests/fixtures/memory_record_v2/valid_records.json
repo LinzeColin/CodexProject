@@ -1,0 +1,238 @@
+[
+  {
+    "schema_version": "openai_database.memory_record.v2",
+    "id": "mem_fixture_user_0001",
+    "memory_key": "preference.output-language",
+    "kind": "preference",
+    "statement": "默认使用中文输出，技术标识可保留英文。",
+    "status": "active",
+    "scope": {
+      "type": "global",
+      "key": "global"
+    },
+    "source": {
+      "type": "explicit_user",
+      "ref": "fixture:explicit-user:001",
+      "observed_at": "2026-07-16T00:00:00Z",
+      "evidence_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "valid_time": {
+      "from": "2026-07-16T00:00:00Z",
+      "to": null
+    },
+    "recorded_time": {
+      "recorded_at": "2026-07-16T00:01:00Z",
+      "recorded_by": "automation_c"
+    },
+    "supersession": {
+      "supersedes": [],
+      "superseded_by": null,
+      "reason": "initial_record"
+    },
+    "conflict": {
+      "state": "none",
+      "with": [],
+      "resolution": null
+    },
+    "confidence": "high",
+    "importance": "high",
+    "verification": {
+      "state": "verified",
+      "method": "explicit_confirmation",
+      "evidence_refs": ["fixture:explicit-user:001"],
+      "verified_at": "2026-07-16T00:01:00Z",
+      "rationale": "Explicit user-authored preference fixture."
+    },
+    "aliases": [],
+    "tags": ["language", "collaboration"],
+    "negative_triggers": [],
+    "sensitivity": {
+      "classification": "public",
+      "handling": "public_text",
+      "credential_present": false,
+      "public_repository_allowed": true
+    },
+    "hash": {
+      "algorithm": "sha256",
+      "canonicalization": "openai-memory-json-v1",
+      "value": "sha256:3a25e2cfb1fe004f5f9a290fb6c14d095334fc223f57f272a1b583b1a949d7b6"
+    }
+  },
+  {
+    "schema_version": "openai_database.memory_record.v2",
+    "id": "mem_fixture_project_0002",
+    "memory_key": "project.example.runtime",
+    "kind": "project_context",
+    "statement": "示例项目使用旧运行入口。",
+    "status": "retired",
+    "scope": {
+      "type": "project",
+      "key": "ExampleProject"
+    },
+    "source": {
+      "type": "repository_evidence",
+      "ref": "fixture:repository:commit-old",
+      "observed_at": "2026-07-15T10:00:00Z",
+      "evidence_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "valid_time": {
+      "from": "2026-07-15T10:00:00Z",
+      "to": "2026-07-16T00:02:00Z"
+    },
+    "recorded_time": {
+      "recorded_at": "2026-07-15T10:01:00Z",
+      "recorded_by": "automation_c"
+    },
+    "supersession": {
+      "supersedes": [],
+      "superseded_by": "mem_fixture_project_0003",
+      "reason": "repository_evidence_updated"
+    },
+    "conflict": {
+      "state": "resolved",
+      "with": ["mem_fixture_project_0003"],
+      "resolution": "The newer repository evidence supersedes this record."
+    },
+    "confidence": "high",
+    "importance": "medium",
+    "verification": {
+      "state": "verified",
+      "method": "repository_hash",
+      "evidence_refs": ["fixture:repository:commit-old"],
+      "verified_at": "2026-07-15T10:01:00Z",
+      "rationale": "Commit-pinned repository evidence fixture."
+    },
+    "aliases": [],
+    "tags": ["runtime", "superseded"],
+    "negative_triggers": ["Do not use for current-state answers."],
+    "sensitivity": {
+      "classification": "public",
+      "handling": "public_text",
+      "credential_present": false,
+      "public_repository_allowed": true
+    },
+    "hash": {
+      "algorithm": "sha256",
+      "canonicalization": "openai-memory-json-v1",
+      "value": "sha256:37051e99c3bfc1ff7662de339303271cbb5796d28caa895e0d5360388ecc3c2f"
+    }
+  },
+  {
+    "schema_version": "openai_database.memory_record.v2",
+    "id": "mem_fixture_project_0003",
+    "memory_key": "project.example.runtime",
+    "kind": "project_context",
+    "statement": "示例项目使用新的统一运行入口。",
+    "status": "active",
+    "scope": {
+      "type": "project",
+      "key": "ExampleProject"
+    },
+    "source": {
+      "type": "repository_evidence",
+      "ref": "fixture:repository:commit-new",
+      "observed_at": "2026-07-16T00:02:00Z",
+      "evidence_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "valid_time": {
+      "from": "2026-07-16T00:02:00Z",
+      "to": null
+    },
+    "recorded_time": {
+      "recorded_at": "2026-07-16T00:03:00Z",
+      "recorded_by": "automation_c"
+    },
+    "supersession": {
+      "supersedes": ["mem_fixture_project_0002"],
+      "superseded_by": null,
+      "reason": "repository_evidence_updated"
+    },
+    "conflict": {
+      "state": "resolved",
+      "with": ["mem_fixture_project_0002"],
+      "resolution": "The newer repository evidence is current."
+    },
+    "confidence": "high",
+    "importance": "medium",
+    "verification": {
+      "state": "verified",
+      "method": "repository_hash",
+      "evidence_refs": ["fixture:repository:commit-new"],
+      "verified_at": "2026-07-16T00:03:00Z",
+      "rationale": "Commit-pinned replacement fixture."
+    },
+    "aliases": [],
+    "tags": ["runtime", "current"],
+    "negative_triggers": [],
+    "sensitivity": {
+      "classification": "public",
+      "handling": "public_text",
+      "credential_present": false,
+      "public_repository_allowed": true
+    },
+    "hash": {
+      "algorithm": "sha256",
+      "canonicalization": "openai-memory-json-v1",
+      "value": "sha256:0bec97a2bade1e0393bb514fb4b5361529b3ac8456bac3ff392944338aa63ca8"
+    }
+  },
+  {
+    "schema_version": "openai_database.memory_record.v2",
+    "id": "mem_fixture_inference_0004",
+    "memory_key": "candidate.example.inference",
+    "kind": "fact",
+    "statement": "这是尚未由用户或仓库证据确认的模型推断候选。",
+    "status": "candidate",
+    "scope": {
+      "type": "project",
+      "key": "ExampleProject"
+    },
+    "source": {
+      "type": "model_inference",
+      "ref": "fixture:model-inference:004",
+      "observed_at": "2026-07-16T00:04:00Z",
+      "evidence_hash": null
+    },
+    "valid_time": {
+      "from": "2026-07-16T00:04:00Z",
+      "to": null
+    },
+    "recorded_time": {
+      "recorded_at": "2026-07-16T00:05:00Z",
+      "recorded_by": "importer"
+    },
+    "supersession": {
+      "supersedes": [],
+      "superseded_by": null,
+      "reason": "unverified_candidate"
+    },
+    "conflict": {
+      "state": "none",
+      "with": [],
+      "resolution": null
+    },
+    "confidence": "low",
+    "importance": "low",
+    "verification": {
+      "state": "unverified",
+      "method": "none",
+      "evidence_refs": ["fixture:model-inference:004"],
+      "verified_at": null,
+      "rationale": "Model inference remains a non-active candidate."
+    },
+    "aliases": [],
+    "tags": ["candidate"],
+    "negative_triggers": ["Do not use as an active fact."],
+    "sensitivity": {
+      "classification": "public",
+      "handling": "public_text",
+      "credential_present": false,
+      "public_repository_allowed": true
+    },
+    "hash": {
+      "algorithm": "sha256",
+      "canonicalization": "openai-memory-json-v1",
+      "value": "sha256:e4f01e18e097081f2d34730cecf3486065cc1482ccae093fdba4be4a86704ac6"
+    }
+  }
+]

@@ -4,6 +4,8 @@ on:
   workflow_run:
     workflows: ["Project Governance"]
     types: [completed]
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -347,3 +349,179 @@ jobs:
           exact_delete(pr, expected_head)
           PY
 
+  janitor:
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'janitor')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      AUTHORIZED_ACTORS: ${{ vars.AUTOMATION_C_AUTHORIZED_ACTORS || github.repository_owner }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+      MAX_AGE_MINUTES: ${{ vars.AUTOMATION_C_MAX_AGE_MINUTES || '15' }}
+    steps:
+      - name: Reconcile only marker-bound transactions using live APIs
+        run: |
+          python3 - <<'PY'
+          import collections
+          import datetime as dt
+          import json
+          import os
+          import re
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          api_root = os.environ["GITHUB_API_URL"]
+          repository = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GH_TOKEN"]
+          dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
+          max_age_minutes = int(os.environ["MAX_AGE_MINUTES"])
+          if not 5 <= max_age_minutes <= 1440:
+              raise RuntimeError("AUTOMATION_C_MAX_AGE_MINUTES must be between 5 and 1440")
+          max_age = dt.timedelta(minutes=max_age_minutes)
+          authorized = {
+              item.strip().casefold()
+              for item in os.environ["AUTHORIZED_ACTORS"].split(",")
+              if item.strip()
+          }
+          if not authorized:
+              raise RuntimeError("publisher allowlist must not be empty")
+
+          marker_re = re.compile(
+              r"<!-- AUTOMATION_C_TRANSACTION_V1\s+task_id=(?P<task>\S+)\s+"
+              r"acceptance_id=(?P<acceptance>\S+)\s+head_sha=(?P<head>[0-9a-f]{40})\s+"
+              r"base_sha=(?P<base>[0-9a-f]{40})\s+END_AUTOMATION_C_TRANSACTION_V1 -->"
+          )
+          v2_task_re = re.compile(
+              r"^TSK\.(?P<project>[A-Z][A-Za-z0-9]*)\."
+              r"(?P<program>[A-Z][A-Za-z0-9]*)\.(?P<sequence>[0-9]{4})$"
+          )
+          v2_acceptance_re = re.compile(
+              r"^ACC\.(?P<project>[A-Z][A-Za-z0-9]*)\."
+              r"(?P<program>[A-Z][A-Za-z0-9]*)\.(?P<sequence>[0-9]{4})$"
+          )
+          legacy_re = re.compile(r"^(?!(?:TSK|ACC|AC|PG)\.)[A-Za-z0-9][A-Za-z0-9_.-]{1,127}$")
+
+          def api(path, method="GET", data=None, missing_ok=False):
+              request = urllib.request.Request(
+                  f"{api_root}/repos/{repository}/{path}",
+                  data=None if data is None else json.dumps(data).encode("utf-8"),
+                  method=method,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = response.read()
+              except urllib.error.HTTPError as exc:
+                  if missing_ok and exc.code == 404:
+                      return None
+                  raise RuntimeError(
+                      f"GitHub API {method} {path} failed with HTTP {exc.code}"
+                  ) from exc
+              return json.loads(payload) if payload else {}
+
+          def marker(payload):
+              matches = list(marker_re.finditer(payload.get("body") or ""))
+              if len(matches) != 1:
+                  return None
+              match = matches[0]
+              task_v2 = v2_task_re.fullmatch(match.group("task"))
+              acceptance_v2 = v2_acceptance_re.fullmatch(match.group("acceptance"))
+              if task_v2 or acceptance_v2:
+                  if not task_v2 or not acceptance_v2:
+                      return None
+                  task_suffix = (
+                      task_v2.group("project"),
+                      task_v2.group("program"),
+                      task_v2.group("sequence"),
+                  )
+                  acceptance_suffix = (
+                      acceptance_v2.group("project"),
+                      acceptance_v2.group("program"),
+                      acceptance_v2.group("sequence"),
+                  )
+                  return match if task_suffix == acceptance_suffix else None
+              if not legacy_re.fullmatch(match.group("task")):
+                  return None
+              if not legacy_re.fullmatch(match.group("acceptance")):
+                  return None
+              return match
+
+          def head_repo(pr):
+              return ((pr.get("head") or {}).get("repo") or {}).get("full_name")
+
+          def head_ref(pr):
+              return str((pr.get("head") or {}).get("ref") or "")
+
+          pulls = api("pulls?state=all&sort=updated&direction=desc&per_page=100")
+          open_ref_counts = collections.Counter(
+              head_ref(pr)
+              for pr in pulls
+              if pr.get("state") == "open" and head_repo(pr) == repository
+          )
+
+          def delete_exact(pr, expected):
+              ref = head_ref(pr)
+              if head_repo(pr) != repository or not ref.startswith("automation-c/"):
+                  print(f"JANITOR=BLOCK reason=unreserved_or_foreign_ref pr={pr['number']}")
+                  return
+              active_count = open_ref_counts[ref]
+              if (pr["state"] == "open" and active_count > 1) or (
+                  pr["state"] == "closed" and active_count > 0
+              ):
+                  print(f"JANITOR=BLOCK reason=ref_used_by_open_pr branch={ref}")
+                  return
+              encoded = urllib.parse.quote(f"heads/{ref}", safe="/")
+              live = api(f"git/ref/{encoded}", missing_ok=True)
+              if live is None:
+                  print(f"JANITOR=NOOP reason=ref_absent branch={ref}")
+                  return
+              if live["object"]["sha"] != expected:
+                  print(f"JANITOR=BLOCK reason=ref_drift branch={ref}")
+                  return
+              print(f"JANITOR=DELETE branch={ref} sha={expected}")
+              if not dry_run:
+                  api(f"git/refs/{encoded}", method="DELETE")
+
+          now = dt.datetime.now(dt.timezone.utc)
+          seen_transactions = set()
+          for pr in pulls:
+              transaction = marker(pr)
+              pr_actor = str((pr.get("user") or {}).get("login") or "").casefold()
+              if transaction is None or head_repo(pr) != repository or pr_actor not in authorized:
+                  continue
+              exact_head = transaction.group("head")
+              if (pr.get("head") or {}).get("sha") != exact_head:
+                  continue
+              key = (transaction.group("task"), transaction.group("acceptance"))
+              created = dt.datetime.fromisoformat(pr["created_at"].replace("Z", "+00:00"))
+              duplicate = pr["state"] == "open" and key in seen_transactions
+              expired = pr["state"] == "open" and now - created > max_age
+              if pr["state"] == "open":
+                  seen_transactions.add(key)
+              if duplicate or expired:
+                  reason = "duplicate" if duplicate else "timeout"
+                  print(f"JANITOR=CLOSE pr={pr['number']} reason={reason}")
+                  if not dry_run:
+                      api(f"pulls/{pr['number']}", method="PATCH", data={"state": "closed"})
+                  delete_exact(pr, exact_head)
+              elif pr["state"] == "closed":
+                  delete_exact(pr, exact_head)
+
+          for issue in api("issues?state=open&per_page=100"):
+              if "pull_request" in issue:
+                  continue
+              issue_marker = marker(issue)
+              issue_actor = str((issue.get("user") or {}).get("login") or "").casefold()
+              if issue_marker is None or issue_actor not in authorized:
+                  continue
+              print(f"JANITOR=CLOSE_ACCIDENTAL_ISSUE issue={issue['number']}")
+              if not dry_run:
+                  api(f"issues/{issue['number']}", method="PATCH", data={"state": "closed"})
+          PY

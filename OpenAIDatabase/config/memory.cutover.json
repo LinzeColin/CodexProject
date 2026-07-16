@@ -1,0 +1,93 @@
+{
+  "schema_version": "openai_database.memory_cutover_contract.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0004",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0004",
+  "mode": "ONE_TIME_CANONICAL_CUTOVER_WITH_IDEMPOTENT_VERIFY",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
+  "inputs": {
+    "legacy_active": {
+      "path": "data/memory/active/active_memory.jsonl",
+      "record_count": 278,
+      "bytes": 1082592,
+      "sha256": "24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7"
+    },
+    "migration_map": {
+      "path": "data/derived/migration/memory_migration_map.v1.jsonl",
+      "record_count": 278,
+      "bytes": 586685,
+      "sha256": "52203348d11e20e4bbb55b0f7337002263fe4db1ef5ee52e741a0dca467268fc"
+    },
+    "quality_report": {
+      "path": "data/derived/migration/memory_quality_report.v1.json",
+      "bytes": 9101,
+      "sha256": "917efa8cd86950d3b2c095687df287916406551a7d855bbd18aa885225cbbf05"
+    },
+    "record_schema": {
+      "path": "config/memory.schema.json",
+      "bytes": 13844,
+      "sha256": "3c6690375e7603c74cc2f922547349c5d317e69861ebbbcbde0667189a7ed5b6"
+    },
+    "sharding_contract": "config/memory.sharding.json"
+  },
+  "audit_reconciliation": {
+    "unique_legacy_ids": 278,
+    "canonical_record_count": 198,
+    "raw_evidence_only_count": 80,
+    "prohibited_count": 0,
+    "owner_decision_count": 0,
+    "canonical_status_counts": {
+      "active": 6,
+      "candidate": 108,
+      "retired": 84,
+      "disputed": 0
+    },
+    "source_ref_coverage_percent": 100,
+    "legacy_row_hash_coverage_percent": 100,
+    "record_hash_coverage_percent": 100
+  },
+  "canonical_output": {
+    "directory": "data/memory/records",
+    "manifest": "data/memory/records/manifest.json",
+    "shard_count": 1,
+    "record_count": 198,
+    "dataset_bytes": 488877,
+    "dataset_sha256": "sha256:fa9edb7191c5751331f52f4103aa1a6709a7a1e22044d6d85e38ed7d771ca927",
+    "manifest_sha256": "sha256:019931525ab56adb51847f5920f9d84f168da5ad0ce2d70314aada4bb0e5f39e",
+    "max_shard_bytes": 921600,
+    "expected_shards": [
+      {
+        "path": "data/memory/records/records-0001.jsonl",
+        "record_count": 198,
+        "bytes": 488877,
+        "sha256": "sha256:fa9edb7191c5751331f52f4103aa1a6709a7a1e22044d6d85e38ed7d771ca927"
+      }
+    ]
+  },
+  "legacy_read_only": {
+    "paths": [
+      "data/memory/active",
+      "data/memory/candidates",
+      "data/memory/curation",
+      "data/memory/secret_refs"
+    ],
+    "collection_sha256": {
+      "active": "048209a23ec63ab4144812ed424c50f2d330dea664abcf0a13b8b4e909cfaa7c",
+      "candidates": "814ddae11c60a49b47ffb20fc3c9f3cc8c8a4cd8ffa66b9c0c28287a03d07e4b",
+      "curation": "9cc6952bd7962832f951c5b79d8ad5bcbad77e2177879d5210c5356a896afc96",
+      "secret_refs": "08e8985fdf7e3570de5dccafc5337e173c343562670849183779e5e8e0807e9d"
+    },
+    "state": "READ_ONLY_MIGRATION_EVIDENCE_PENDING_PAM1.0005_RAW_DISPOSITION",
+    "writer_count": 0,
+    "dual_write_count": 0
+  },
+  "security": {
+    "raw_instruction_trust": "none",
+    "credential_or_access_material_allowed": false,
+    "credential_value_echo_allowed": false,
+    "absolute_or_traversal_paths_allowed": false,
+    "symlink_inputs_or_outputs_allowed": false,
+    "unknown_disposition_action": "FAIL_CLOSED",
+    "partial_canonical_write_allowed": false
+  },
+  "rollback": "Revert the one PAM1.0004 local commit. The byte-locked legacy directories remain read-only and unchanged, so canonical records can be removed without history rewrite or remote compensation."
+}

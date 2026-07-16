@@ -7,6 +7,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / 'scripts' / 'run_controlled_cycle.py'
@@ -16,6 +17,25 @@ spec.loader.exec_module(macdata_cycle)  # type: ignore
 
 
 class MacDataPackageTests(unittest.TestCase):
+    def test_transaction_config_is_main_only(self):
+        config = json.loads((ROOT / 'config' / 'device_config.json').read_text(encoding='utf-8'))
+        self.assertEqual(config['base_branch'], 'main')
+        self.assertEqual(config['legacy_archive_branch'], 'macdata-airM2')
+        self.assertEqual(config['transaction_branch_prefix'], 'automation-c/macdata-airM2')
+        self.assertNotIn('default_archive_branch', config)
+
+    def test_archive_delegates_to_shared_automation_c_publisher(self):
+        config = json.loads((ROOT / 'config' / 'device_config.json').read_text(encoding='utf-8'))
+        expected = {'ok': True, 'base_branch': 'main'}
+        with tempfile.TemporaryDirectory() as td, mock.patch.object(
+            macdata_cycle, 'publish_snapshot', return_value=expected
+        ) as publisher:
+            safe = Path(td) / 'safe.json'
+            safe.write_text('{}', encoding='utf-8')
+            result = macdata_cycle.archive_to_github(Path(td), config, 'raw', 'airM2-test', [safe])
+        self.assertEqual(result, expected)
+        publisher.assert_called_once_with(Path(td), ROOT, config, 'raw', 'airM2-test')
+
     def test_secret_scanner_blocks_common_tokens(self):
         with tempfile.TemporaryDirectory() as td:
             p = Path(td) / 'bad.txt'

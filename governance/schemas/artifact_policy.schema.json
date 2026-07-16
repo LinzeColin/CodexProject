@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodexProject Governance Artifact Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "owner",
+    "canonical_resources",
+    "derived_views",
+    "contract_resources",
+    "compact_receipts",
+    "retained_legacy_collections",
+    "transient_artifacts",
+    "required_gitignore_patterns",
+    "human_entry"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "policy_id": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "canonical_resources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/canonicalResource"}
+    },
+    "derived_views": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/derivedView"}
+    },
+    "contract_resources": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/ownedResource"}
+    },
+    "compact_receipts": {"$ref": "#/$defs/compactReceipts"},
+    "retained_legacy_collections": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/legacyCollection"}
+    },
+    "transient_artifacts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/transientArtifact"}
+    },
+    "required_gitignore_patterns": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "human_entry": {"$ref": "#/$defs/humanEntry"}
+  },
+  "$defs": {
+    "canonicalResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "fact_domain", "writer", "retention"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "fact_domain": {"type": "string", "minLength": 1},
+        "writer": {"type": "string", "minLength": 1},
+        "retention": {"type": "string", "minLength": 1}
+      }
+    },
+    "derivedView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "source_refs", "writer", "editable_fact_source", "retention"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "writer": {"type": "string", "minLength": 1},
+        "editable_fact_source": {"type": "boolean", "const": false},
+        "retention": {"type": "string", "minLength": 1}
+      }
+    },
+    "ownedResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "owner", "writer", "retention"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "owner": {"type": "string", "minLength": 1},
+        "writer": {"type": "string", "minLength": 1},
+        "retention": {"type": "string", "minLength": 1}
+      }
+    },
+    "compactReceipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "directory",
+        "basename_prefix",
+        "extension",
+        "writer",
+        "append_only",
+        "max_bytes",
+        "required_pointer_fields",
+        "forbidden_recursive_keys",
+        "retention"
+      ],
+      "properties": {
+        "directory": {"type": "string", "minLength": 1},
+        "basename_prefix": {"type": "string", "minLength": 1},
+        "extension": {"type": "string", "minLength": 1},
+        "writer": {"type": "string", "minLength": 1},
+        "append_only": {"type": "boolean", "const": true},
+        "max_bytes": {"type": "integer", "minimum": 1},
+        "required_pointer_fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "forbidden_recursive_keys": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "retention": {"type": "string", "minLength": 1}
+      }
+    },
+    "legacyCollection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "selector", "owner", "retention", "reason", "mutable", "baseline"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "selector": {"type": "string", "minLength": 1},
+        "owner": {"type": "string", "minLength": 1},
+        "retention": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1},
+        "mutable": {"type": "boolean", "const": false},
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["count", "bytes", "sha256"],
+          "properties": {
+            "count": {"type": "integer", "minimum": 0},
+            "bytes": {"type": "integer", "minimum": 0},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        }
+      }
+    },
+    "transientArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locator", "writer", "tracked", "retention_days"],
+      "properties": {
+        "locator": {"type": "string", "minLength": 1},
+        "writer": {"type": "string", "minLength": 1},
+        "tracked": {"type": "boolean", "const": false},
+        "retention_days": {"type": "integer", "minimum": 1}
+      }
+    },
+    "humanEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "heading", "required_terms", "min_section_chars"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "heading": {"type": "string", "minLength": 1},
+        "required_terms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "min_section_chars": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

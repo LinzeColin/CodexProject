@@ -1,0 +1,285 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0016-FAULT-RELIABILITY-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0016",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0016"
+  ],
+  "iteration_id": "ST09-PHC-OPENAIDATABASE-PAM1-0016-001",
+  "generated_at": "2026-07-16T12:05:47Z",
+  "gate_status": "PASS_LOCAL_DETERMINISTIC_FAULT_RELIABILITY",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "9ef63a219103d509600ea1f17bedfa1e3541b593",
+  "remote_main_sha_at_run_start": "bb4c5e8a68804f695f54e8b4bdb2ce70e7552d23",
+  "candidate_tree_sha1_excluding_this_manifest": "8efb6b623e0c4662a37435d41cda4da659441821",
+  "content_tree_hash": "3de7517691cb3ea0bf66bf7fde407b184be30b49a9f9058324e2a5905e8ab734",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 22-file staged closure before this manifest is added; content hash is SHA-256 over sorted path, NUL, staged blob SHA-256 and LF tuples. Final 37/37 publication binds the published business commit and remote required-check run.",
+  "summary": "Add one compact deterministic 37-case fault suite plus bounded transient GitHub retries and atomic canonical compensation, proving zero partial, duplicate-record and duplicate-Settlement writes for 2/5/10 writer profiles.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0016 local fault, concurrency, retry, Settlement and Janitor acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_FAST_SECURITY_FAULT_AND_GOVERNANCE_ACCEPTANCE_REMOTE_REQUIRED_CHECK_EXECUTION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0016-MANIFEST"
+  ],
+  "scope": {
+    "fault_config": "OpenAIDatabase/config/evaluation/memory_fault_reliability_v1.json",
+    "fault_runner": "OpenAIDatabase/scripts/evaluate_memory_fault_reliability.py",
+    "fault_report": "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/fault_reliability_v1.json",
+    "focused_tests": "OpenAIDatabase/tests/test_memory_fault_reliability.py",
+    "production_fixes": [
+      "OpenAIDatabase/scripts/memory.py",
+      "OpenAIDatabase/scripts/memory_retrieval.py"
+    ],
+    "settlement_policy_reused": "scripts/agent_loop/settlement_policy.py",
+    "existing_business_sample_files_reused": 1,
+    "new_business_sample_files": 0,
+    "new_fault_fixture_files": 1,
+    "canonical_business_data_files_modified": 0,
+    "raw_business_data_files_modified": 0,
+    "generated_memory_view_files_modified": 1,
+    "workflow_files_modified": 1,
+    "dependency_additions_or_version_changes": 0,
+    "database_or_service_additions": 0,
+    "history_rewrites": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0015",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0015-RETRIEVAL-PERFORMANCE-20260716.json",
+    "gate_status": "PASS_LOCAL_PORTABLE_RETRIEVAL_ETAG_PERFORMANCE",
+    "implementation_commit": "9ef63a219103d509600ea1f17bedfa1e3541b593",
+    "current_performance_report_sha256": "77d6d26fc193266c96cc4676ccb720435189ba36bb9e36116d12039ebf6f128d"
+  },
+  "fault_contract": {
+    "fault_case_count_min": 30,
+    "fault_case_count_observed": 37,
+    "categories": {
+      "input_integrity": 10,
+      "canonical_write": 2,
+      "transport": 11,
+      "concurrency": 3,
+      "settlement": 11
+    },
+    "writer_counts": [2, 5, 10],
+    "legal_write_count_per_profile_max": 1,
+    "partial_canonical_write_count_max": 0,
+    "duplicate_record_count_max": 0,
+    "duplicate_settlement_write_count_max": 0,
+    "max_attempts": 3,
+    "max_retry_seconds": 120,
+    "janitor_convergence_minutes_max": 15,
+    "live_network_request_count": 0,
+    "github_write_count": 0
+  },
+  "hard_gate_result": {
+    "fault_case_count": 37,
+    "passed_case_count": 37,
+    "writer_counts": [2, 5, 10],
+    "legal_write_count_per_profile": 1,
+    "partial_canonical_write_count": 0,
+    "duplicate_record_count": 0,
+    "duplicate_settlement_write_count": 0,
+    "max_request_count": 3,
+    "max_retry_delay_total_seconds": 3.0,
+    "max_convergence_minutes": 15,
+    "janitor_active_action": "WAIT",
+    "janitor_trusted_orphan_action": "DELETE_ORPHAN",
+    "janitor_untrusted_orphan_action": "BLOCK",
+    "live_network_request_count": 0,
+    "github_write_count": 0,
+    "business_data_file_write_count": 0,
+    "hard_gate_failure_count": 0,
+    "fault_report_sha256": "969471b5bff6d2aa0938701c33e9d5021ca7b10ab1bd2e454c9cb7edcc899e64",
+    "generated_handshake_sha256": "56d29a6e42206484233a8ccb2f9e275796d24bec3ad2b04aec0b7b914d25acd6"
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-026",
+    "formula_id": "FORM-026",
+    "parameter_ids": [
+      "PARAM-112"
+    ]
+  },
+  "evidence_sha256": {
+    ".github/workflows/openai-database-ci.yml": "ad40228f478292171a7741c20191df280757b69b95beed8fdf44c0901c738bf5",
+    "OpenAIDatabase/CHANGELOG.md": "d02a670df9936e5542cca3ec6920d2c96990c3ab5c63bba78e744b5519cc242b",
+    "OpenAIDatabase/config/command_ownership.json": "2f66b4935b72b4291a78cf084a131b46cdce1f8d8ddf926319b982fa4855cda4",
+    "OpenAIDatabase/config/evaluation/memory_fault_reliability_v1.json": "36107c610f6b5256a0af05fc1b2f2a23502b17d9e2d9385c2668aeee4c3433bf",
+    "OpenAIDatabase/config/quality/verification_policy.json": "f3e4772d7c59fa5975a4f79d22ef6304a19a5c06e77be52a733415318f5e9feb",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/fault_reliability_v1.json": "969471b5bff6d2aa0938701c33e9d5021ca7b10ab1bd2e454c9cb7edcc899e64",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json": "77d6d26fc193266c96cc4676ccb720435189ba36bb9e36116d12039ebf6f128d",
+    "OpenAIDatabase/data/memory/agent-memory.json": "56d29a6e42206484233a8ccb2f9e275796d24bec3ad2b04aec0b7b914d25acd6",
+    "OpenAIDatabase/docs/governance/events.jsonl": "321ebee36917e6c326113f3679015ca13a5af6323c793fd2acd0cc2a342005b0",
+    "OpenAIDatabase/docs/governance/project.yaml": "b441b946bec1685b71c3097da05c4e7109d6386075536175d88c0289c65018f2",
+    "OpenAIDatabase/docs/governance/roadmap.yaml": "e483c8d096e2795e5efc09dce1aeee1e18fddd1f3c131b19696165afe4882dae",
+    "OpenAIDatabase/scripts/evaluate_memory_fault_reliability.py": "9a2ef548b18f38688c8f4a0e1f63d2d888fcb73b9e79485608329ef33e197da7",
+    "OpenAIDatabase/scripts/memory.py": "e22749f50424190400e9fd076a66e7ed845dfba0cbbb56dff833336ba906ee88",
+    "OpenAIDatabase/scripts/memory_retrieval.py": "b838ea4521d1ef9a6f7f40a6be9b38137bd77d54a9267c3026dda230ea61538f",
+    "OpenAIDatabase/tests/test_command_ownership.py": "1247cfcf4e3d1b221ff7a730f64df345cc5ecf15a43a186f3baaafdab9dc7957",
+    "OpenAIDatabase/tests/test_memory_fault_reliability.py": "77880d4b1ca327c1efb9fbcc31312d84989337f96e31dae0610a46a542d34e56",
+    "OpenAIDatabase/tests/test_verification_policy.py": "67df76528ed4000751cc9cc55fdd0afed9da00b89c9da7c231825997311c53ff",
+    "OpenAIDatabase/功能清单.md": "3c70b182298ba594c4c2d40687896b8c34b1e155ec17a42ced7303b97822485a",
+    "OpenAIDatabase/开发记录.md": "06f8bdcf5db268d6c086a5b9be1ce0f9a782c6f9b41daf0400d2c824673cfc97",
+    "OpenAIDatabase/模型参数文件.md": "42e33fa0149c3458fdcbe327a44413f8644ec77b4f7d72698ee02d3748024267",
+    "governance/id_registry.json": "2af127e6501f868d219768d4f479d28df678be150810122ebd376c6af10831cb",
+    "tests/governance/test_openai_database_lean_convergence.py": "dd3137c2ead1b00fabf04b3d7b86596cf6efbd165eb6359d5879cc5e8f9a2de2"
+  },
+  "test_commands": [
+    "/opt/anaconda3/bin/ruff check <Task34 Python implementation and focused tests>",
+    "python3 -B -m py_compile <Task34 Python implementation and focused tests>",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_fault_reliability.py --check",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_retrieval_performance.py --check",
+    "python3 -B OpenAIDatabase/scripts/memory.py --database-dir OpenAIDatabase build --agent-views --check",
+    "python3 -B -m unittest -q <Task34 focused regression modules>",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier fast",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier security",
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/workflow_security_audit.py check-render",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub overlap audit"
+  ],
+  "test_results": [
+    {
+      "gate": "fault_matrix",
+      "result": "PASS",
+      "observed": "37/37 deterministic offline faults pass across input/canonical/transport/concurrency/Settlement categories 10/2/11/3/11."
+    },
+    {
+      "gate": "concurrency_and_idempotency",
+      "result": "PASS",
+      "observed": "2/5/10 actual single-flight writers admit exactly one legal write per profile; partial canonical writes, duplicate records and duplicate Settlement writes are zero."
+    },
+    {
+      "gate": "bounded_retry_and_atomic_compensation",
+      "result": "PASS",
+      "observed": "403/404 fail immediately; 429 respects Retry-After; 500/timeout recover or exhaust within three attempts. Pre-commit fsync failure restores old canonical bytes and post-commit failure leaves one complete set for idempotent retry."
+    },
+    {
+      "gate": "settlement_and_janitor",
+      "result": "PASS",
+      "observed": "Duplicate workflow and second Settlement no-op; stale PR/base terminal paths close; active transaction waits; trusted exact orphan deletes; untrusted orphan blocks; convergence bound is 15 minutes."
+    },
+    {
+      "gate": "focused_fast_security",
+      "result": "PASS",
+      "observed": "Focused 44 tests, Fast 19/19 and Security 127/127 pass; all 68 Python test files have exactly one owner."
+    },
+    {
+      "gate": "generated_and_governance",
+      "result": "PASS",
+      "observed": "Agent handshake, performance/fault reports and Lean views have drift zero; Lean convergence 7/7, workflow audit/check-render and Governance ID audit pass."
+    },
+    {
+      "gate": "scope_boundary",
+      "result": "PASS",
+      "observed": "New business samples, canonical/raw records, dependencies, services, live network calls and GitHub writes are zero. PAM1.0017 was not started."
+    },
+    {
+      "gate": "terminal_remote_overlap",
+      "result": "PASS",
+      "observed": "Remote main advanced once to f3f1db732a2452ecde9d3a3ebbb1c8d902bc6fea across 19 files; exact Task path overlap is zero and open PRs/issues/non-main branches are 0/0/0."
+    }
+  ],
+  "terminal_remote": {
+    "observed_main_sha": "f3f1db732a2452ecde9d3a3ebbb1c8d902bc6fea",
+    "commits_since_run_start": 1,
+    "changed_files_since_run_start": 19,
+    "exact_path_overlap": 0,
+    "open_pull_requests": 0,
+    "open_issues": 0,
+    "non_main_branches": 0,
+    "result": "PASS_NO_REBASE_REQUIRED"
+  },
+  "changed_files_declared": [
+    ".github/workflows/openai-database-ci.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/evaluation/memory_fault_reliability_v1.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/fault_reliability_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_fault_reliability.py",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_retrieval.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_fault_reliability.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0016-FAULT-RELIABILITY-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/openai-database-ci.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/evaluation/memory_fault_reliability_v1.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/fault_reliability_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_fault_reliability.py",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_retrieval.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_fault_reliability.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0016-FAULT-RELIABILITY-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0016-FAULT-RELIABILITY-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0016-FAULT-RELIABILITY-20260716.json"
+  ],
+  "protected_boundaries": {
+    "real_github_transaction_created": false,
+    "direct_or_force_push": false,
+    "open_pr_issue_or_branch_created": false,
+    "canonical_or_raw_business_data_modified": false,
+    "credential_or_secret_written": false,
+    "gate_threshold_lowered": false,
+    "unrelated_project_modified": false,
+    "next_task_started": false
+  },
+  "rollback": {
+    "method": "Revert the Task34 local commit, then rerun focused, fast, security, workflow, Lean, ID, hygiene and terminal remote gates.",
+    "history_rewrite_allowed": false,
+    "canonical_compensation_count": 0,
+    "raw_compensation_count": 0,
+    "remote_compensation_count": 0
+  }
+}

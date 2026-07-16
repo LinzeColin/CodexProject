@@ -38,6 +38,10 @@ concurrency:
 jobs:
   gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      INPUT_MODE: ${{ inputs.mode }}
+      INPUT_CONFIRM_SCHEDULED_PRODUCTION: ${{ inputs.confirm_scheduled_production }}
     outputs:
       mode: ${{ steps.mode.outputs.value }}
       should_run: ${{ steps.mode.outputs.should_run }}
@@ -46,7 +50,7 @@ jobs:
         id: mode
         shell: bash
         run: |
-          mode="${{ inputs.mode }}"
+          mode="$INPUT_MODE"
           should_run="false"
           if [ "${{ github.event_name }}" = "schedule" ]; then
             case "${{ github.event.schedule }}" in
@@ -56,7 +60,7 @@ jobs:
               *) mode="unknown" ;;
             esac
             if [ "${{ vars.ADP_PRODUCTION_ENABLED }}" = "true" ]; then should_run="true"; fi
-          elif [ "${{ inputs.confirm_scheduled_production }}" = "true" ]; then
+          elif [ "$INPUT_CONFIRM_SCHEDULED_PRODUCTION" = "true" ]; then
             should_run="true"
           fi
           printf 'value=%s\n' "$mode" >> "$GITHUB_OUTPUT"
@@ -68,6 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
+      INPUT_GENERATED_AT: ${{ inputs.generated_at }}
       GH_TOKEN: ${{ github.token }}
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
       ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
@@ -85,14 +90,14 @@ jobs:
       ADP_TEXT_DEGRADATION_VERIFIED: ${{ vars.ADP_TEXT_DEGRADATION_VERIFIED }}
       ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
       - name: Resolve generated_at
         id: generated_at
         shell: bash
         run: |
-          if [ -n "${{ inputs.generated_at }}" ]; then value="${{ inputs.generated_at }}"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
+          if [ -n "$INPUT_GENERATED_AT" ]; then value="$INPUT_GENERATED_AT"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
           service_date="$(python3 - "$value" <<'PY'
           from __future__ import annotations
 
@@ -119,7 +124,7 @@ jobs:
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
       - name: Upload scheduled preflight
         if: always() && steps.preflight.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-scheduled-preflight
           path: ${{ steps.preflight.outputs.path }}
@@ -160,7 +165,7 @@ jobs:
           test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-email-brief.json"
       - name: Upload scheduled Stage 1 text artifacts
         if: always() && needs.gate.outputs.mode == 'daily-run' && steps.daily_input.outputs.artifact_dir != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-phase12-delivery-artifacts
           path: |
@@ -169,14 +174,14 @@ jobs:
           if-no-files-found: error
       - name: Upload candidate queue
         if: always() && needs.gate.outputs.mode == 'daily-run' && steps.daily_input.outputs.queue != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-candidate-queue
           path: ${{ steps.daily_input.outputs.queue }}
           if-no-files-found: error
       - name: Upload scheduled daily input
         if: always() && needs.gate.outputs.mode == 'daily-run' && steps.daily_input.outputs.report != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-scheduled-daily-input
           path: ${{ steps.daily_input.outputs.report }}
@@ -192,7 +197,7 @@ jobs:
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
       - name: Upload scheduled execution
         if: always() && steps.scheduled.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-scheduled-execution
           path: ${{ steps.scheduled.outputs.path }}
@@ -216,14 +221,14 @@ jobs:
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
       - name: Upload trial ledger update
         if: always() && needs.gate.outputs.mode == 'daily-run' && steps.trial_ledger.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-ledger-update
           path: ${{ steps.trial_ledger.outputs.path }}
           if-no-files-found: error
       - name: Upload trial evidence ledger
         if: always() && needs.gate.outputs.mode == 'daily-run' && steps.trial_export.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-evidence-ledger
           path: ${{ steps.trial_export.outputs.path }}

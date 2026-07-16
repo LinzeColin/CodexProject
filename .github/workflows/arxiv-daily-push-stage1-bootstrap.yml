@@ -15,16 +15,21 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: arxiv-daily-push-stage1-bootstrap-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
 jobs:
   runtime-change-scope:
     name: classify-arxiv-runtime-change
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       should_run: ${{ steps.scope.outputs.should_run }}
       reason: ${{ steps.scope.outputs.reason }}
     steps:
       - name: Check out repository for path diff
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
@@ -97,10 +102,10 @@ jobs:
       ADP_ALLOW_RELEASE_UPLOAD: "false"
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
@@ -149,7 +154,7 @@ jobs:
           python3 -m json.tool "$RUNNER_TEMP/adp-stage1-bootstrap/adp-stage1-bootstrap-report.json" >/dev/null
 
       - name: Upload Stage 1 bootstrap evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-stage1-bootstrap-report
           path: ${{ runner.temp }}/adp-stage1-bootstrap/*.json

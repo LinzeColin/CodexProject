@@ -11,7 +11,8 @@
 7. 不读取 API key、token、password、cookie、session、Keychain、shell history、完整环境变量、`.env` 原文。
 8. 除凭证类数据外，用户允许设备明文指标进入 GitHub。
 9. 首次运行和设备差异时必须先问用户。
-10. 每次运行必须 commit + push + 远程验证；验证失败不得清理本机旧数据。
+10. 每次运行必须经 `automation-c/*` 短命 PR、trusted Settlement 合入 `main` 并逐文件远程验证；验证失败不得清理本机旧数据。
+13. 禁止重建 `macdata-proM2` 永久分支；设备脚本只审计 `0/0/0`，不得成为第二个 GitHub janitor。
 11. 本机仅保留最近 3 天 `proM2` 数据、报告、运行记录和 macdata 临时缓存；开发环境清理不得读取或输出凭证。
 12. 报告必须全中文。
 

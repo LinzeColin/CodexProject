@@ -10,6 +10,10 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from governance_ids import GovernanceIdError, validate_task_acceptance_pair
+
 
 META_RE = re.compile(
     r"<!--\s*AGENT_LOOP_METADATA\s*(.*?)\s*END_AGENT_LOOP_METADATA\s*-->",
@@ -255,6 +259,13 @@ def validate(text: str, allow_production: bool = False) -> tuple[dict | None, li
         fail(errors, "T2 must set plan_required true")
     if metadata.get("production_deploy") is not False and not allow_production:
         fail(errors, "production_deploy must remain false for this workflow")
+    try:
+        validate_task_acceptance_pair(
+            metadata.get("roadmap_task_id"),
+            metadata.get("acceptance_id"),
+        )
+    except GovernanceIdError as exc:
+        fail(errors, f"governance identifier validation failed: {exc}")
 
     allowed = list_value(metadata.get("allowed_paths"))
     forbidden = list_value(metadata.get("forbidden_paths"))

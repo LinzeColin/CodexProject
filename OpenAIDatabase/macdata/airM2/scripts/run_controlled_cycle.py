@@ -6,9 +6,8 @@ macdata controlled Codex Automation tool.
 This script is intentionally NOT self-scheduling. It is only a deterministic tool
 that Codex Automation or the user may call after explicit approval. It never
 installs launchd/cron jobs and never cleans system, Docker, Homebrew, or project
-caches. It only writes inside its own macdata device directory and uses a
-short-lived temporary clone to upload daily records to a device-specific GitHub
-archive branch.
+caches. It only writes inside its own macdata device directory and publishes
+daily records through short-lived Automation C PR branches into ``main``.
 """
 from __future__ import annotations
 
@@ -21,7 +20,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -30,6 +28,11 @@ SCRIPT_PATH = Path(__file__).resolve()
 DEVICE_ROOT = SCRIPT_PATH.parents[1]
 CONFIG_PATH = DEVICE_ROOT / 'config' / 'device_config.json'
 OWNER_CONFIRMATIONS_PATH = DEVICE_ROOT / 'config' / 'owner_confirmations.json'
+OPENAI_DATABASE_ROOT = DEVICE_ROOT.parents[1]
+if str(OPENAI_DATABASE_ROOT) not in sys.path:
+    sys.path.insert(0, str(OPENAI_DATABASE_ROOT))
+
+from macdata.automation_c import AutomationCError, publish_snapshot, simulate_snapshot
 
 HIGH_RISK_SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9]{20,}"),
@@ -462,6 +465,7 @@ def require_owner_confirmations(config: Dict[str, Any]) -> Dict[str, Any]:
         'run_full_cycle_confirmed',
         'allow_plaintext_device_metrics_to_github',
         'allow_github_upload',
+        'allow_short_lived_pr_to_main',
         'allow_delete_local_macdata_older_than_3_days_after_verified_upload',
         'understand_no_timemachine_no_icloud',
         'understand_scripts_do_not_auto_schedule',
@@ -471,6 +475,12 @@ def require_owner_confirmations(config: Dict[str, Any]) -> Dict[str, Any]:
         raise SystemExit(f'owner_confirmations.json 未确认必要项：{missing}')
     if owner.get('confirmed_device_key') != config['device_key']:
         raise SystemExit(f'owner_confirmations.json 设备键不匹配：{owner.get("confirmed_device_key")} != {config["device_key"]}')
+    if owner.get('branch_strategy') != 'automation_c_short_lived_pr':
+        raise SystemExit('owner_confirmations.json branch_strategy 必须为 automation_c_short_lived_pr')
+    if owner.get('base_branch') != config['base_branch']:
+        raise SystemExit('owner_confirmations.json base_branch 与设备配置不一致')
+    if owner.get('migration_authority_task_id') != config['transaction_task_id']:
+        raise SystemExit('owner_confirmations.json migration_authority_task_id 与设备配置不一致')
     return owner
 
 
@@ -625,7 +635,8 @@ iCloud：本任务不使用
 | 本机任务目录 | {config['local_relative_dir']} |
 | 运行状态 | {val(upload_status.get('status'))} |
 | 上传说明 | {val(upload_status.get('message'))} |
-| 归档分支 | {val(upload_status.get('archive_branch', config['default_archive_branch']))} |
+| 持久分支 | {val(upload_status.get('base_branch', config['base_branch']))} |
+| 短命事务分支 | {val(upload_status.get('transaction_branch'))} |
 | 数据提交哈希 | {val(upload_status.get('data_commit_hash'))} |
 | 报告提交哈希 | {val(upload_status.get('report_commit_hash'))} |
 | 远程验证 | {val(upload_status.get('remote_verified'))} |
@@ -815,102 +826,7 @@ def archive_to_github(repo_root: Path, config: Dict[str, Any], stage: str, messa
     ok, findings = scan_for_secrets(files_for_secret_scan)
     if not ok:
         return {'ok': False, 'status': '凭证扫描失败', 'message': '检测到疑似 API key/token/password/secret，已停止上传。', 'findings': findings}
-
-    branch = config['default_archive_branch']
-    remote = config['default_remote']
-    device_rel = config['local_relative_dir']
-    origin = cmd(['git', '-C', str(repo_root), 'remote', 'get-url', remote], timeout=10)
-    if not origin['ok'] or not origin['stdout']:
-        return {'ok': False, 'status': '上传失败', 'message': f'无法读取 git remote {remote}: {origin.get("stderr") or origin.get("stdout")}' }
-    origin_url = origin['stdout']
-    tmp_parent = DEVICE_ROOT / 'data' / 'cache' / 'archive_push'
-    tmp_parent.mkdir(parents=True, exist_ok=True)
-    tmp = Path(tempfile.mkdtemp(prefix=f'{config["device_key"]}-{stage}-', dir=str(tmp_parent)))
-    work = tmp / 'repo'
-    try:
-        branch_exists = cmd(['git', 'ls-remote', '--exit-code', '--heads', origin_url, branch], timeout=30)
-        if branch_exists['ok']:
-            clone = cmd(['git', 'clone', '--depth', '1', '--single-branch', '--branch', branch, origin_url, str(work)], timeout=120)
-            if not clone['ok']:
-                return {'ok': False, 'status': '上传失败', 'message': f'临时浅克隆失败：{clone.get("stderr") or clone.get("stdout")}' }
-        else:
-            work.mkdir(parents=True, exist_ok=True)
-            init = cmd(['git', 'init'], cwd=work, timeout=20)
-            checkout = cmd(['git', 'checkout', '-B', branch], cwd=work, timeout=20)
-            remote_add = cmd(['git', 'remote', 'add', 'origin', origin_url], cwd=work, timeout=20)
-            if not (init['ok'] and checkout['ok'] and remote_add['ok']):
-                return {'ok': False, 'status': '上传失败', 'message': '初始化临时归档分支失败'}
-
-        dest_device_root = work / device_rel
-        dest_device_root.mkdir(parents=True, exist_ok=True)
-        # Copy only live data/report/latest directories, not scripts/docs, to keep archive branch lightweight.
-        copy_items = [
-            ('data/current_3days', 'data/current_3days'),
-            ('data/latest', 'data/latest'),
-            ('reports/current_3days', 'reports/current_3days'),
-            ('reports/latest', 'reports/latest'),
-        ]
-        for src_rel, dst_rel in copy_items:
-            src = DEVICE_ROOT / src_rel
-            dst = dest_device_root / dst_rel
-            if dst.exists():
-                shutil.rmtree(dst)
-            if src.exists():
-                shutil.copytree(src, dst)
-        # Apply retention to archive branch current tree. Older data remains available through GitHub history.
-        cleanup_retention([
-            dest_device_root / 'data' / 'current_3days' / 'raw',
-            dest_device_root / 'reports' / 'current_3days',
-        ], int(config['retention_days']), dry_run=False)
-        receipt_dir = dest_device_root / 'reports' / 'current_3days' / date_dir()
-        receipt_dir.mkdir(parents=True, exist_ok=True)
-        receipt_path = receipt_dir / f'{stage}_archive_receipt_{_dt.datetime.now().strftime("%H%M%S")}.json'
-        write_json(receipt_path, {
-            'device_key': config['device_key'],
-            'stage': stage,
-            'created_at_local': now_local_iso(),
-            'message_suffix': message_suffix,
-            'retention_note': '归档分支当前树只保留最近三天；更早数据通过 GitHub 提交历史保留。',
-        })
-        scan_ok, scan_findings = scan_for_secrets([p for p in dest_device_root.rglob('*') if p.is_file()])
-        if not scan_ok:
-            return {'ok': False, 'status': '凭证扫描失败', 'message': '归档工作区命中凭证类高风险模式，停止提交。', 'findings': scan_findings}
-        add = cmd(['git', 'add', device_rel], cwd=work, timeout=60)
-        if not add['ok']:
-            return {'ok': False, 'status': '上传失败', 'message': f'git add 失败：{add.get("stderr")}' }
-        status = cmd(['git', 'status', '--porcelain=v1'], cwd=work, timeout=20)
-        if not status['stdout'].strip():
-            # Force a heartbeat to satisfy every-run commit requirement.
-            heartbeat = dest_device_root / 'reports' / 'latest' / f'{stage}_heartbeat.txt'
-            write_text(heartbeat, f'{now_local_iso()} {stage} heartbeat\n')
-            cmd(['git', 'add', device_rel], cwd=work, timeout=20)
-        commit_message = f'data(macdata-{config["device_key"]}): {date_dir()} {stage} {message_suffix}'
-        commit = cmd(['git', 'commit', '-m', commit_message], cwd=work, timeout=60)
-        if not commit['ok']:
-            return {'ok': False, 'status': '上传失败', 'message': f'git commit 失败：{commit.get("stderr") or commit.get("stdout")}' }
-        local_hash = cmd(['git', 'rev-parse', 'HEAD'], cwd=work, timeout=10)
-        push = cmd(['git', 'push', 'origin', f'HEAD:{branch}'], cwd=work, timeout=120)
-        if not push['ok']:
-            return {'ok': False, 'status': '上传失败', 'message': f'git push 失败：{push.get("stderr") or push.get("stdout")}', 'local_commit_hash': local_hash.get('stdout')}
-        remote_hash_res = cmd(['git', 'ls-remote', origin_url, f'refs/heads/{branch}'], timeout=30)
-        remote_hash = (remote_hash_res.get('stdout') or '').split('\t')[0] if remote_hash_res.get('stdout') else ''
-        verified = bool(local_hash.get('stdout')) and remote_hash == local_hash.get('stdout')
-        return {
-            'ok': verified,
-            'status': '上传成功并已验证' if verified else '上传后验证失败',
-            'message': '远程分支提交哈希与本地提交哈希一致。' if verified else '远程分支提交哈希与本地提交哈希不一致。',
-            'archive_branch': branch,
-            'local_commit_hash': local_hash.get('stdout'),
-            'remote_commit_hash': remote_hash,
-            'remote_verified': verified,
-            'commit_message': commit_message,
-        }
-    finally:
-        # Always remove temporary clone to keep the local machine light.
-        try:
-            shutil.rmtree(tmp, ignore_errors=True)
-        except Exception:
-            pass
+    return publish_snapshot(repo_root, DEVICE_ROOT, config, stage, message_suffix)
 
 
 def controlled_cycle(repo_root: Path, execute: bool) -> int:
@@ -960,7 +876,8 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
         failure_report = render_cn_report(metrics, config, upload_status={
             'status': data_archive.get('status', '上传失败'),
             'message': data_archive.get('message', '未知失败'),
-            'archive_branch': config['default_archive_branch'],
+            'base_branch': config['base_branch'],
+            'transaction_branch': data_archive.get('transaction_branch'),
             'remote_verified': False,
         }, cleanup_status={'status': '未清理', 'message': '由于上传未验证成功，本机旧数据未删除。'})
         write_text(latest_report, failure_report)
@@ -979,8 +896,9 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     final_upload = {
         'status': data_archive.get('status'),
         'message': data_archive.get('message'),
-        'archive_branch': data_archive.get('archive_branch'),
-        'data_commit_hash': data_archive.get('local_commit_hash'),
+        'base_branch': data_archive.get('base_branch', config['base_branch']),
+        'transaction_branch': data_archive.get('transaction_branch'),
+        'data_commit_hash': data_archive.get('main_commit_hash'),
         'remote_verified': data_archive.get('remote_verified'),
     }
     final_report = render_cn_report(metrics, config, upload_status=final_upload, cleanup_status=cleanup_status)
@@ -999,7 +917,7 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     })
     report_archive = archive_to_github(repo_root, config, 'report', rid, [final_report_path, latest_report, final_status_path])
     console_upload = dict(final_upload)
-    console_upload['report_commit_hash'] = report_archive.get('local_commit_hash')
+    console_upload['report_commit_hash'] = report_archive.get('main_commit_hash')
     console_upload['remote_verified'] = bool(data_archive.get('remote_verified')) and bool(report_archive.get('remote_verified'))
     console_upload['status'] = '全部上传成功并已验证' if console_upload['remote_verified'] else '报告上传验证失败'
     console_upload['message'] = report_archive.get('message', '')
@@ -1024,7 +942,10 @@ def write_owner_template_if_requested() -> None:
         'understand_no_timemachine_no_icloud': True,
         'understand_scripts_do_not_auto_schedule': True,
         'repo_remote_name': config['default_remote'],
-        'archive_branch': config['default_archive_branch'],
+        'base_branch': config['base_branch'],
+        'branch_strategy': 'automation_c_short_lived_pr',
+        'allow_short_lived_pr_to_main': True,
+        'migration_authority_task_id': config['transaction_task_id'],
         'notes_cn': '该文件不是凭证。不要在这里填写 API key、token、password。'
     })
     print(f'已生成：{out}')
@@ -1036,11 +957,22 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument('--execute', action='store_true', help='明确执行完整采集、上传、验证、清理流程；不传则只输出说明')
     parser.add_argument('--preflight-only', action='store_true', help='只做设备预检，不写数据、不上传、不清理')
     parser.add_argument('--write-owner-template', action='store_true', help='生成 owner_confirmations 示例，不执行采集')
+    parser.add_argument('--simulate-transaction', action='store_true', help='只生成本地 Automation C 事务计划和源文件哈希，不访问或写入 GitHub')
+    parser.add_argument('--simulation-stage', choices=['raw', 'report'], default='raw')
+    parser.add_argument('--simulation-run-id', default='airM2-simulation')
     args = parser.parse_args(argv)
     config = load_json(CONFIG_PATH)
     repo_root = Path(args.repo_root).expanduser().resolve()
     if args.write_owner_template:
         write_owner_template_if_requested()
+        return 0
+    if args.simulate_transaction:
+        try:
+            plan = simulate_snapshot(DEVICE_ROOT, config, args.simulation_stage, args.simulation_run_id)
+        except AutomationCError as exc:
+            print(json.dumps({'ok': False, 'error': str(exc)}, ensure_ascii=False, indent=2))
+            return 60
+        print(json.dumps({'ok': True, **plan}, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     if args.preflight_only:
         owner = load_json(OWNER_CONFIRMATIONS_PATH) if OWNER_CONFIRMATIONS_PATH.exists() else None

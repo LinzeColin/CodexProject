@@ -26,11 +26,18 @@ from memory_atlas_r8_acceptance import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+COMMAND_OWNERSHIP = ROOT / "config" / "command_ownership.json"
 CHATGPT_SYNC = ROOT / "scripts" / "sync_chatgpt_memory_data.py"
 CODEX_SYNC = ROOT / "scripts" / "sync_codex_memory_data.py"
 FUTURE_AGENT_SYNC = ROOT / "scripts" / "sync_future_agent_data.py"
 BUILD_ATLAS = ROOT / "scripts" / "build_memory_atlas_data.py"
 GITHUB_BACKUP = ROOT / "scripts" / "github_backup.py"
+DELEGATED_AUDITS = {
+    "release": ROOT / "scripts" / "audit_memory_atlas_release.py",
+    "visual-acceptance": ROOT / "scripts" / "audit_memory_atlas_visual_acceptance.py",
+    "acceptance": ROOT / "scripts" / "audit_memory_atlas_acceptance.py",
+    "goal-completion": ROOT / "scripts" / "audit_memory_atlas_goal_completion.py",
+}
 FACET_EXTRACTOR = ROOT / "scripts" / "extract_memory_atlas_facets.py"
 CLUSTER_BUILDER = ROOT / "scripts" / "build_memory_atlas_clusters.py"
 LOW_VALUE_LOOP_BUILDER = ROOT / "scripts" / "build_memory_atlas_low_value_loops.py"
@@ -72,6 +79,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Memory Atlas control CLI.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    subparsers.add_parser("commands", help="Print the canonical command ownership matrix.")
+
     run = subparsers.add_parser("run", help="Run a named low-burden Memory Atlas profile.")
     run.add_argument("--profile", choices=["owner-daily"], required=True)
     run.add_argument("--dry-run", action="store_true")
@@ -79,7 +88,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     sync = subparsers.add_parser("sync", help="Run source sync.")
     sync.add_argument("--source", required=True)
-    sync.add_argument("--dry-run", action="store_true")
+    sync_mode = sync.add_mutually_exclusive_group()
+    sync_mode.add_argument("--dry-run", action="store_true")
+    sync_mode.add_argument("--apply", action="store_true")
     sync.add_argument("--official-export", type=Path)
     sync.add_argument("--redact-for-public-backup", action="store_true")
     sync.add_argument("--codex-home", type=Path)
@@ -91,11 +102,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     sync.add_argument("--event-id")
 
     build_atlas = subparsers.add_parser("build-atlas", help="Build derived Memory Atlas visualization data.")
-    build_atlas.add_argument("--dry-run", action="store_true")
+    build_mode = build_atlas.add_mutually_exclusive_group()
+    build_mode.add_argument("--dry-run", action="store_true")
+    build_mode.add_argument("--apply", action="store_true")
 
     analyze = subparsers.add_parser("analyze", help="Run derived behavior intelligence analysis.")
     analyze.add_argument("--stage", required=True)
-    analyze.add_argument("--dry-run", action="store_true")
+    analyze_mode = analyze.add_mutually_exclusive_group()
+    analyze_mode.add_argument("--dry-run", action="store_true")
+    analyze_mode.add_argument("--apply", action="store_true")
     analyze.add_argument("--database-dir", type=Path, default=ROOT)
     analyze.add_argument("--source")
     analyze.add_argument("--time-from")
@@ -108,6 +123,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     audit.add_argument("--check")
     audit.add_argument("--dry-run", action="store_true")
     audit.add_argument("--database-dir", type=Path, default=ROOT)
+    audit.add_argument("--publish-dir", type=Path, default=Path("apps/memory-atlas/dist"))
+    audit.add_argument("--require-local-apps", action="store_true")
+    audit.add_argument("--live-evidence", type=Path)
+    audit.add_argument("--require-complete", action="store_true")
 
     push = subparsers.add_parser("push", help="Prepare local GitHub backup scope.")
     mode = push.add_mutually_exclusive_group(required=True)
@@ -117,35 +136,80 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     push.add_argument("--message", default="Memory Atlas GitHub backup snapshot")
 
     prompt = subparsers.add_parser("generate-personalization-prompt", help="Generate agent personalization prompt exports.")
-    prompt.add_argument("--dry-run", action="store_true")
+    prompt_mode = prompt.add_mutually_exclusive_group()
+    prompt_mode.add_argument("--dry-run", action="store_true")
+    prompt_mode.add_argument("--apply", action="store_true")
     prompt.add_argument("--database-dir", type=Path, default=ROOT)
     prompt.add_argument("--target", choices=["all", "chatgpt", "codex", "other-agent"], default="all")
 
     deep_explore = subparsers.add_parser("chatgpt-deep-explore", help="Prepare a user-triggered ChatGPT deep exploration prompt.")
-    deep_explore.add_argument("--dry-run", action="store_true")
+    deep_explore_mode = deep_explore.add_mutually_exclusive_group()
+    deep_explore_mode.add_argument("--dry-run", action="store_true")
+    deep_explore_mode.add_argument("--apply", action="store_true")
     deep_explore.add_argument("--database-dir", type=Path, default=ROOT)
     deep_explore.add_argument("--mode", choices=["prefill_only", "auto_submit"], default="prefill_only")
     deep_explore.add_argument("--open", action="store_true")
     deep_explore.add_argument("--confirm-auto-submit", action="store_true")
 
-    deep_explore_alias = subparsers.add_parser("deep-explore", help="Unified alias for the ChatGPT deep exploration dry-run flow.")
-    deep_explore_alias.add_argument("--dry-run", action="store_true")
+    deep_explore_alias = subparsers.add_parser(
+        "deep-explore",
+        help="DEPRECATED thin alias for chatgpt-deep-explore; remove after active caller count reaches zero.",
+    )
+    deep_explore_alias_mode = deep_explore_alias.add_mutually_exclusive_group()
+    deep_explore_alias_mode.add_argument("--dry-run", action="store_true")
+    deep_explore_alias_mode.add_argument("--apply", action="store_true")
     deep_explore_alias.add_argument("--database-dir", type=Path, default=ROOT)
     deep_explore_alias.add_argument("--mode", choices=["prefill_only", "auto_submit"], default="prefill_only")
     deep_explore_alias.add_argument("--open", action="store_true")
     deep_explore_alias.add_argument("--confirm-auto-submit", action="store_true")
 
     proposals = subparsers.add_parser("proposals", help="Inspect proposal authorization and review views.")
-    proposals.add_argument("--dry-run", action="store_true")
+    proposals_mode = proposals.add_mutually_exclusive_group()
+    proposals_mode.add_argument("--dry-run", action="store_true")
+    proposals_mode.add_argument("--apply", action="store_true")
     proposals.add_argument("--database-dir", type=Path, default=ROOT)
     proposals.add_argument("--view", choices=["state-machine", "diff-narrator"], default="state-machine")
 
     apply = subparsers.add_parser("apply", help="Apply an approved proposal or inspect the fail-closed dry-run.")
     apply.add_argument("--proposal", required=True)
-    apply.add_argument("--dry-run", action="store_true")
+    apply_mode = apply.add_mutually_exclusive_group()
+    apply_mode.add_argument("--dry-run", action="store_true")
+    apply_mode.add_argument("--apply", action="store_true")
     apply.add_argument("--database-dir", type=Path, default=ROOT)
     apply.add_argument("--simulate-validation-failure", action="store_true")
     return parser.parse_args(argv)
+
+
+EXPLICIT_MODE_COMMANDS = {
+    "sync",
+    "build-atlas",
+    "analyze",
+    "generate-personalization-prompt",
+    "chatgpt-deep-explore",
+    "deep-explore",
+    "proposals",
+    "apply",
+}
+
+
+def explicit_mode_error(args: argparse.Namespace) -> dict[str, object] | None:
+    if args.command not in EXPLICIT_MODE_COMMANDS:
+        return None
+    if bool(getattr(args, "dry_run", False)) or bool(getattr(args, "apply", False)):
+        return None
+    return {
+        "status": "FAIL_CLOSED",
+        "command": args.command,
+        "writes_files": False,
+        "reason": "write-capable commands require exactly one explicit mode: --dry-run or --apply",
+    }
+
+
+def run_commands(_args: argparse.Namespace) -> int:
+    payload = json.loads(COMMAND_OWNERSHIP.read_text(encoding="utf-8"))
+    payload = {**payload, "status": "PASS", "writes_files": False}
+    print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
 
 
 def owner_daily_profile_contract() -> dict[str, object]:
@@ -2358,6 +2422,33 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
 
 
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check in DELEGATED_AUDITS:
+        command = [sys.executable, str(DELEGATED_AUDITS[args.check])]
+        if args.check in {"release", "acceptance", "goal-completion"}:
+            command.extend(["--publish-dir", str(args.publish_dir)])
+        if args.check == "goal-completion":
+            if args.live_evidence:
+                command.extend(["--live-evidence", str(args.live_evidence)])
+            if args.require_complete:
+                command.append("--require-complete")
+        if args.check in {"acceptance", "goal-completion"} and args.require_local_apps:
+            command.append("--require-local-apps")
+        if args.dry_run:
+            print(json.dumps({
+                "status": "PASS",
+                "command": "audit",
+                "check": args.check,
+                "dry_run": True,
+                "writes_files": False,
+                "planned_command": command,
+            }, ensure_ascii=False, indent=2, sort_keys=True))
+            return 0
+        result = subprocess.run(command, cwd=args.database_dir, text=True, capture_output=True, check=False)
+        if result.stdout:
+            print(result.stdout, end="")
+        if result.stderr:
+            print(result.stderr, file=sys.stderr, end="")
+        return result.returncode
     if not args.check:
         return run_final_audit(args)
     if args.check == "chinese-ux":
@@ -2665,6 +2756,12 @@ def run_apply(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    mode_error = explicit_mode_error(args)
+    if mode_error:
+        print(json.dumps(mode_error, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
+    if args.command == "commands":
+        return run_commands(args)
     if args.command == "run":
         return run_profile(args)
     if args.command == "sync":

@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/OpenAIDatabase/config/agent-memory.schema.json",
+  "title": "OpenAIDatabase Agent Memory Handshake",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "protocol",
+    "protocol_version",
+    "generated",
+    "editable",
+    "marker",
+    "repository",
+    "project_root",
+    "commit_sha",
+    "commit_semantics",
+    "generated_at",
+    "generator",
+    "handshake_schema",
+    "canonical",
+    "entrypoints",
+    "adapter_contract",
+    "mutation_contract",
+    "lifecycle_contract",
+    "forgetting_contract",
+    "retrieval_contract",
+    "active_index",
+    "transports",
+    "transport_acceptance_task",
+    "capabilities",
+    "limits",
+    "write",
+    "raw",
+    "freshness"
+  ],
+  "properties": {
+    "schema_version": {"const": "openai_database.agent_memory_handshake.v1"},
+    "protocol": {"const": "linze-agent-memory"},
+    "protocol_version": {"const": "3.0"},
+    "generated": {"const": true},
+    "editable": {"const": false},
+    "marker": {"const": "LINZE_AGENT_MEMORY_V3"},
+    "repository": {"const": "LinzeColin/CodexProject"},
+    "project_root": {"const": "OpenAIDatabase"},
+    "commit_sha": {"$ref": "#/$defs/gitSha"},
+    "commit_semantics": {"const": "canonical_source_commit"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version", "command"],
+      "properties": {
+        "path": {"const": "scripts/memory.py"},
+        "version": {"type": "string", "minLength": 1},
+        "command": {"const": "python3 scripts/memory.py build --agent-views"}
+      }
+    },
+    "handshake_schema": {"$ref": "#/$defs/pathHash"},
+    "canonical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "manifest", "dataset_sha256", "record_count", "shards"],
+      "properties": {
+        "schema": {"$ref": "#/$defs/pathHash"},
+        "manifest": {"$ref": "#/$defs/pathHash"},
+        "dataset_sha256": {"$ref": "#/$defs/sha256"},
+        "record_count": {"type": "integer", "minimum": 0},
+        "shards": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256", "bytes", "record_count"],
+            "properties": {
+              "path": {"type": "string", "pattern": "^data/memory/records/records-[0-9]{4}\\.jsonl$"},
+              "sha256": {"$ref": "#/$defs/sha256"},
+              "bytes": {"type": "integer", "minimum": 1, "maximum": 921600},
+              "record_count": {"type": "integer", "minimum": 1}
+            }
+          }
+        }
+      }
+    },
+    "entrypoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compact", "machine", "cli"],
+      "properties": {
+        "compact": {
+          "$ref": "#/$defs/pathHashBytes"
+        },
+        "machine": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path"],
+          "properties": {"path": {"const": "data/memory/agent-memory.json"}}
+        },
+        "cli": {"const": "scripts/memory.py"}
+      }
+    },
+    "adapter_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profiles", "instructions", "harness", "acceptance_id", "profile_count", "published_live_acceptance_task"],
+      "properties": {
+        "profiles": {"$ref": "#/$defs/pathHash"},
+        "instructions": {"$ref": "#/$defs/pathHash"},
+        "harness": {"$ref": "#/$defs/pathHash"},
+        "acceptance_id": {"const": "ACC.OpenAIDatabase.PAM1.0008"},
+        "profile_count": {"const": 5},
+        "published_live_acceptance_task": {"const": "TSK.OpenAIDatabase.PAM1.0019"}
+      }
+    },
+    "mutation_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "policy", "instructions", "acceptance_id", "operations", "live_transaction_glue_task"],
+      "properties": {
+        "schema": {"$ref": "#/$defs/pathHash"},
+        "policy": {"$ref": "#/$defs/pathHash"},
+        "instructions": {"$ref": "#/$defs/pathHash"},
+        "acceptance_id": {"const": "ACC.OpenAIDatabase.PAM1.0009"},
+        "operations": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "add"},
+            {"const": "update"},
+            {"const": "retire"},
+            {"const": "dispute"}
+          ],
+          "items": false
+        },
+        "live_transaction_glue_task": {"const": "TSK.OpenAIDatabase.PAM1.0017"}
+      }
+    },
+    "lifecycle_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "acceptance_id", "modes", "unresolved_conflict_settlement"],
+      "properties": {
+        "policy": {"$ref": "#/$defs/pathHash"},
+        "acceptance_id": {"const": "ACC.OpenAIDatabase.PAM1.0010"},
+        "modes": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "current"},
+            {"const": "valid"},
+            {"const": "bitemporal"}
+          ],
+          "items": false
+        },
+        "unresolved_conflict_settlement": {"const": "block"}
+      }
+    },
+    "forgetting_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "instructions",
+        "acceptance_id",
+        "current_answer_statuses",
+        "inactive_mode",
+        "fama_min",
+        "abstention_min",
+        "public_git_history_is_erasure"
+      ],
+      "properties": {
+        "policy": {"$ref": "#/$defs/pathHash"},
+        "instructions": {"$ref": "#/$defs/pathHash"},
+        "acceptance_id": {"const": "ACC.OpenAIDatabase.PAM1.0011"},
+        "current_answer_statuses": {
+          "type": "array",
+          "prefixItems": [{"const": "active"}],
+          "items": false
+        },
+        "inactive_mode": {"const": "audit_only"},
+        "fama_min": {"const": 0.95},
+        "abstention_min": {"const": 0.9},
+        "public_git_history_is_erasure": {"const": false}
+      }
+    },
+    "retrieval_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["config", "implementation", "task_id", "acceptance_id", "index", "request_budget", "cache"],
+      "properties": {
+        "config": {"$ref": "#/$defs/pathHash"},
+        "implementation": {"$ref": "#/$defs/pathHash"},
+        "task_id": {"const": "TSK.OpenAIDatabase.PAM1.0015"},
+        "acceptance_id": {"const": "ACC.OpenAIDatabase.PAM1.0015"},
+        "index": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schema_version", "algorithm_version", "record_count", "posting_count", "posting_membership_count", "records", "postings"],
+          "properties": {
+            "schema_version": {"const": "openai_database.memory_lexical_routing_index.v1"},
+            "algorithm_version": {"const": "nfkc_casefold_alias_scope_cjk_latin_ngram.v1"},
+            "record_count": {"type": "integer", "minimum": 0},
+            "posting_count": {"type": "integer", "minimum": 0},
+            "posting_membership_count": {"type": "integer", "minimum": 0},
+            "records": {
+              "type": "object",
+              "propertyNames": {"pattern": "^mem_"},
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["shard"],
+                "properties": {
+                  "shard": {"type": "string", "pattern": "^data/memory/records/records-[0-9]{4}\\.jsonl$"}
+                }
+              }
+            },
+            "postings": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {"type": "string", "pattern": "^mem_"}
+              }
+            }
+          }
+        },
+        "request_budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["default_discovery_object_count_max", "indexed_fact_content_get_count_max", "raw_expansion_content_get_count_max", "recursive_full_tree_scan_count_max"],
+          "properties": {
+            "default_discovery_object_count_max": {"const": 1},
+            "indexed_fact_content_get_count_max": {"const": 2},
+            "raw_expansion_content_get_count_max": {"const": 3},
+            "recursive_full_tree_scan_count_max": {"const": 0}
+          }
+        },
+        "cache": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commit_sha_required", "etag_required", "if_none_match_required_on_warm_read", "not_modified_status", "max_attempts", "max_retry_seconds", "serial_requests"],
+          "properties": {
+            "commit_sha_required": {"const": true},
+            "etag_required": {"const": true},
+            "if_none_match_required_on_warm_read": {"const": true},
+            "not_modified_status": {"const": 304},
+            "max_attempts": {"const": 3},
+            "max_retry_seconds": {"const": 120},
+            "serial_requests": {"const": true}
+          }
+        }
+      }
+    },
+    "active_index": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "scope", "confidence", "importance", "valid_time", "record_sha256", "shard"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^mem_"},
+          "kind": {"type": "string", "minLength": 1},
+          "scope": {"type": "object"},
+          "confidence": {"enum": ["high", "medium", "low"]},
+          "importance": {"const": "high"},
+          "valid_time": {"type": "object"},
+          "record_sha256": {"$ref": "#/$defs/sha256"},
+          "shard": {"type": "string", "pattern": "^data/memory/records/records-[0-9]{4}\\.jsonl$"}
+        }
+      }
+    },
+    "transports": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {"enum": ["git", "github_rest", "https", "github_mcp", "chatgpt_github"]}
+    },
+    "transport_acceptance_task": {"const": "TSK.OpenAIDatabase.PAM1.0008"},
+    "capabilities": {"type": "object"},
+    "limits": {"type": "object"},
+    "write": {"type": "object"},
+    "raw": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instruction_trust", "security_policy_sha256"],
+      "properties": {
+        "instruction_trust": {"const": "none"},
+        "security_policy_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "freshness": {"type": "object"}
+  },
+  "$defs": {
+    "gitSha": {"type": "string", "pattern": "^[a-f0-9]{40,64}$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "pathHash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "pathHashBytes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1, "maximum": 24576}
+      }
+    }
+  }
+}

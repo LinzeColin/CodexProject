@@ -2,12 +2,12 @@
 
 - schema_version: openai_database.provider_projection.v1
 - provider: provider-neutral
-- bundle_id: sha256:8d2988a20e3c5301072256683083dc583ad7dcabb098a961910dc0638eb5e151
-- canonical_source_hash: sha256:b401739571bcd68832a32c8b7e2585b75434ebb301dc5140dd497b9bceb1ce5b
+- bundle_id: sha256:2ae361e34f27137b48cc74f7d749f73add7598dde98f8cbb966cbe73eb69965f
+- canonical_source_hash: sha256:f14ef93c25472711e9200b5b1be005f4015639e7096cbffe3a280db8e1cc1275
 - task_id: MA-V12-S12P2
 - acceptance_id: ACC-MA-V12-S12P2
 - prompt_version: personalization_prompt.v1_2_s12_p2
-- generated_at: 2026-07-13T00:06:53Z
+- generated_at: 2026-07-16T23:07:55Z
 - source: OpenAIDatabase redacted derived context
 - artifact_contract: Derived / Read-only / Regenerate, do not hand edit
 - raw_private_data_included: false

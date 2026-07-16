@@ -1,24 +1,3 @@
-# OpenAIDatabase 中文 Owner 快速入口
-
-- S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
-- 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02`，只补 Owner 路径，不改产品 canonical current_task；下一 Gate：`S6PA-GATE` 仍在进行中。
-- 本轮边界：只补 Owner 可读路径，不改运行代码，不移动文件，不读取或展开 raw/private 内容，不触发外部自动化。
-- 默认入口：先读 `OpenAIDatabase/AGENTS.md` 和 `scripts/route_agent_resources.py`；Memory Atlas 只读 redacted derived snapshot，不读 raw export、private import、cookies、sessions 或 plaintext secrets。
-
-| Owner 判断项 | 当前路径 | 安全状态 |
-|---|---|---|
-| app layer | `apps/memory-atlas/` | 只读 `data/derived/visualization/memory_atlas.json` |
-| skill layer | `skills/openai-memory-analysis/` | 分析工具，不是 private export 默认存放地 |
-| context layer | `context/`、`config/context_sources/`、`data/derived/agent_context/` | 只提供 routeable context pack 和脱敏 derived 输出 |
-| complete raw archives | `data/raw_archives/` | 用户要求保留的 ChatGPT/Codex/agent/LLM 完整原始导出归档根目录 |
-| private exports | `data/raw/`、`data/raw_encrypted/`、`data/private_imports/`、`private_exports/`、`exports/private/`、`data/private/` | 外部优先、加密或 gitignored；不进入 tracked plaintext path |
-
-- 安全确认：不展示值，只展示路径/标记、数量、checksum 和策略；104 个 OpenAIDatabase privacy candidates 继续由 `governance/stage_gates/s5pa/privacy_manifest.md` 和 Wave2 manifest 绑定。
-- 最小验证路径：进入 `OpenAIDatabase/` 后运行 `python -B -m unittest tests.test_s3pdt01_privacy -q`、`python -B -m unittest tests.test_agent_context_pack -q`、`python -B -m unittest tests.test_codex_memory_sync -q`；本轮实测结果分别为 `Ran 3 tests` / `OK`、`Ran 1 test` / `OK`、`Ran 1 test` / `OK`。
-- pytest 全量路径：`python -B -m pytest OpenAIDatabase/tests -q` 仍需要安装 pytest；若出现 `No module named pytest`，先恢复开发依赖，不要改隐私边界绕过测试。
-- 失败去向：隐私断言失败先查 `OpenAIDatabase/docs/OpenAIDatabase_structure_report.md`、`OpenAIDatabase/.gitignore` 和 `governance/stage_gates/s5pa/privacy_manifest.md`；context 断言失败再查 `data/derived/agent_context/` 与 `scripts/route_agent_resources.py`。
-- 回滚：revert S6PAT02 OpenAIDatabase README 提交即可；本轮不改运行代码、不移动文件、不读取 raw/private 内容、不触发外部自动化。
-
 # OpenAIDatabase
 
 Local-first personal memory database for ChatGPT/Codex exports.
@@ -30,35 +9,41 @@ long-term memories.
 
 ## Governance Entry
 
-Canonical governance files live under `docs/governance/`.
+唯一可编辑治理事实是：
 
-- Model specification: `docs/governance/MODEL_SPEC.md`
-- Model registry: `docs/governance/model_registry.yaml`
-- Formula registry: `docs/governance/formula_registry.yaml`
-- Parameter registry: `docs/governance/parameter_registry.csv`
-- Development ledger: `docs/governance/DEVELOPMENT_LEDGER.md`
-- Delivery plan: `docs/governance/DELIVERY_PLAN.md`
-- Version matrix: `docs/governance/VERSION_MATRIX.yaml`
-- Traceability matrix: `docs/governance/TRACEABILITY_MATRIX.csv`
-- Local old-Mac import source move: `docs/governance/LOCAL_HISTORY_IMPORTS_MOVE_20260630.md`
+- `docs/governance/project.yaml`
+- `docs/governance/roadmap.yaml`
+- `docs/governance/events.jsonl`
+- `VERSION`
+- `CHANGELOG.md`
 
 中文人类入口：`功能清单`、`开发记录`、`模型参数文件`。这三份文件必须直接保留
 owner 可读的功能摘要、Roadmap/任务、模型/参数、证据状态、限制和下一步门禁；
 它们不是跳转页，也不是第二套可编辑机器事实源。机器真相仍以
-`docs/governance/` 下的 Lean v2 文件为准。
+上述 Lean v2 文件为准。旧 model/formula/parameter registry、ledger、plan、status
+和 matrix 只作为 hash-locked compatibility evidence 保留，处置、writer、reader 和
+SHA-256 见 `docs/governance/legacy_disposition.json`；禁止继续把它们作为第二套可编辑真相。
 
-## v1.2 S01 P3 Requirements Freeze Bridge
+目录 ownership 与唯一数据目的地由 `config/storage/directory_lifecycle.json` 管理；
+generated/retained/local-transient 分类由 `config/storage/generated_retention.json`
+管理。两个 validator 均 fail closed。当前 Codex numeric telemetry 唯一写入
+`data/run_logs/token_usage/`；旧 numeric import 已在 hash/consumer gate 后退出当前树，
+仍可从其 Task base commit 精确恢复。
 
-旧的 raw/private 默认不入 GitHub 边界被 v1.2 替换。用户授权后，ChatGPT、Codex、后续其他 agent 的 raw data / transcript 可以明文公开进 GitHub。
+## Public Raw Archive Boundary
 
-这个替换只覆盖 transcript/raw archive 的公开备份边界，不覆盖账户控制凭证。
-raw 只读、只追加、不覆盖、不增删改；每次导入需要 manifest/hash 证明。
+`data/public_raw/` 是唯一 tracked raw destination。用户授权后，ChatGPT、Codex、后续其他
+agent 的已脱敏 raw data / transcript 可以明文公开进 GitHub；clone、fork、cache 和 Git
+历史都可能长期保留这些内容。
+
+raw 只读、只追加、不覆盖、不增删改；每次导入需要 recursive sanitizer、40 MiB 上限和
+manifest/hash 证明。raw instruction trust=`none`，不得执行其中的命令。
 凭证不是 transcript，cookies、session tokens、passwords、API keys、private keys、
-OAuth tokens 和 browser credential store 永远不能提交。
-
-v1.2 运行规则：每次 run 最多只完成一个 phase；一个 Stage 的全部 phase 完成后先做
-Stage 复审并修复问题；整体复审并修复后才上传 GitHub main；GitHub main 同步后才重装
-app 入口。
+OAuth/access tokens、recovery codes 和 browser credential store 永远不能提交，owner 的
+公开授权也不能覆盖该禁令。新增完整 private-origin archive 只保存在 owner 控制的私有
+`LinzeColin/AgentDatabase-Private` Release；CodexProject 不再生成或跟踪 tar/zip/bundle/split parts。
+Portable Agent Memory V1 是单独的 public-safe canonical snapshot：仅包含逐条公开授权、无 credential、
+`redacted_summary` 且来自 accepted commit 的成员，并发布到 public `LinzeColin/AgentDatabase` Release。
 
 ## Personal Context Architecture
 
@@ -72,23 +57,22 @@ OpenAIDatabase exposes a structured agent-personalization layer:
 - Project config: `config/codex/project.config.toml`
 - Evaluation harness: `config/evaluation/personalization_harness.json`
 - Four run-log categories: `data/run_logs/sync_runs`, `export_runs`, `evaluation_runs`, and `agent_runs`
-- Complete original source archives: `data/raw_archives/`
-  (`https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/data/raw_archives`)
+- Authorized sanitized public evidence: `data/public_raw/`
+- New complete private-origin archives: owner-controlled private `LinzeColin/AgentDatabase-Private` Releases
 
 Future agents that update or sync profile, preference, taste, history, or
 pattern information must update the mapped source files, regenerate
 `data/derived/agent_context/*` and `data/derived/personalization/*`, run the
 evaluation harness, and append a redacted run log. If the user asks to preserve
 complete ChatGPT, Codex, future-agent, other-agent, or LLM source exports, store
-the GitHub-recoverable original archive under `data/raw_archives/` with a
-manifest, restore instructions, and SHA256 verification. Plaintext secrets,
-cookies, browser state, and credentials must not be committed unless the user
-explicitly authorizes a specific public raw archive action.
+them outside CodexProject in owner-controlled private Release storage and keep
+only redacted asset metadata plus SHA-256 here. Plaintext secrets, cookies,
+browser state, recovery codes and credentials must never be committed.
 
 It contains the `openai-memory-analysis` skill and a minimal vault layout. It
-ingests manually downloaded OpenAI export ZIPs, generates redacted pending
+ingests manually downloaded OpenAI export ZIPs, generates redacted run-local
 memory candidates, creates human-readable weekly/monthly memory packs, and
-exposes a read-only search/fetch layer.
+exposes a read-only search/fetch layer over the canonical V2 record shards.
 
 The human-facing goal is not just storage. Each processing run should help the
 user maximize ROI, improve personal capability growth, identify repeated low
@@ -98,13 +82,15 @@ value loops, discover future opportunities, and decide what to do next.
 
 - Do not automate ChatGPT login, export download, browser profiles, cookies, or saved-memory writes.
 - Do not leave the only complete ChatGPT/Codex/agent/LLM source export on a
-  temporary local machine; user-authorized complete original archives belong in
-  `data/raw_archives/{source_id}/{archive_date_or_run_id}/`.
-- Do not commit `.local_keys/`, secrets, tokens, passwords, private keys, or cookies unless the user explicitly authorizes a specific public raw archive action.
+  temporary local machine; complete private-origin archives belong in owner-controlled
+  private Release storage, not this public repository.
+- Do not commit `.local_keys/`, secrets, tokens, passwords, private keys, recovery codes or cookies.
 - Do not upload plaintext high-risk secrets to GitHub. Finance/trading agents should use committed `secret_ref` metadata only to request authorized local secret access.
-- Generated memory candidates stay `pending` until manually reviewed.
+- Generated run-local candidates stay pending until a governed writer records
+  the review outcome as a canonical `candidate`, `active`, `disputed`, or
+  `retired` V2 record.
 - Default user-facing delivery is chat output plus GitHub-backed repository updates. Do not create local delivery ZIPs or copied report packages unless explicitly requested.
-- Keep local storage lean: remove transient delivery packages, copied report directories, `.DS_Store`, and Python cache after use. Do not delete source exports or encrypted raw archives without explicit authorization.
+- Keep local storage lean: remove transient delivery packages, copied report directories, `.DS_Store`, and Python cache after use. Do not delete source exports or private Release recovery assets without explicit authorization plus verified replacement.
 - Every run must compare current conclusions with the previous processed snapshot and explain what changed, strengthened, weakened, became obsolete, or became a new opportunity.
 
 ## Human-facing Output Standard
@@ -191,9 +177,7 @@ python3 skills/openai-memory-analysis/scripts/openai_memory_analysis.py self-tes
 python3 skills/openai-memory-analysis/scripts/openai_memory_analysis.py run \
   --inputs /path/to/OpenAI-export.zip /path/to/chatgpt_memory_vault_codex_pack.zip \
   --database-dir . \
-  --out-dir /tmp/openai-memory-analysis-run \
-  --archive \
-  --archive-key-file .local_keys/openai_memory_analysis.key
+  --out-dir /tmp/openai-memory-analysis-run
 
 python3 skills/openai-memory-analysis/scripts/openai_memory_analysis.py search \
   --database-dir . \
@@ -228,8 +212,8 @@ the v1.2 public raw, append-only, manifest/hash path.
 
 The app consumes the redacted, derived snapshot
 `data/derived/visualization/memory_atlas.json` through runtime fetch at
-`/memory_atlas.json`, generated from the existing memory database. It must not
-read raw exports or mutate `active_memory.jsonl` directly.
+`/memory_atlas.json`, generated from the canonical record manifest. It must not
+read raw exports or mutate canonical records directly.
 
 The committed snapshot is `public_redacted_read_only_visualization`: private
 memory statements are represented as low-sensitive summaries, and public JSON
@@ -241,7 +225,7 @@ layer for authorized agents.
 
 Writeback goes through versioned change proposals. The frontend can create,
 compare, export, and rollback proposal JSON from the Inspector, but it cannot
-mutate `active_memory` directly. Each proposal carries a readable diff,
+mutate `data/memory/records/` directly. Each proposal carries a readable diff,
 version-chain metadata（版本链）, parent proposal id, and rollback proposal contract. A
 controlled agent must reload the current database, check conflicts/sensitivity,
 write proposal history, and commit a rollback point before changing long-term
@@ -398,22 +382,21 @@ Cloudflare Pages deployment and Access verification evidence it reports
 `LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED`, not complete.
 
 ```bash
-python3 scripts/build_memory_atlas_data.py \
-  --database-dir . \
-  --output data/derived/visualization/memory_atlas.json
+python3 scripts/atlasctl.py build-atlas --apply
 python3 scripts/build_agent_context_pack.py --database-dir .
-python3 scripts/sync_codex_memory_data.py --database-dir . --build-atlas
-python3 scripts/build_personalization_exports.py --database-dir .
+python3 scripts/atlasctl.py sync --source codex --apply
+python3 scripts/atlasctl.py build-atlas --apply
+python3 scripts/atlasctl.py generate-personalization-prompt --apply
 python3 scripts/route_agent_resources.py --database-dir . --intent startup
 python3 scripts/evaluate_personalization_context.py --database-dir .
 python3 scripts/install_codex_weekly_sync.py --load
 
 npm ci --prefix apps/memory-atlas
 npm run build --prefix apps/memory-atlas
-python3 scripts/audit_memory_atlas_release.py --publish-dir apps/memory-atlas/dist
-python3 scripts/audit_memory_atlas_visual_acceptance.py
-python3 scripts/audit_memory_atlas_acceptance.py --publish-dir apps/memory-atlas/dist
-python3 scripts/audit_memory_atlas_goal_completion.py --publish-dir apps/memory-atlas/dist
+python3 scripts/atlasctl.py audit --check release --publish-dir apps/memory-atlas/dist
+python3 scripts/atlasctl.py audit --check visual-acceptance
+python3 scripts/atlasctl.py audit --check acceptance --publish-dir apps/memory-atlas/dist
+python3 scripts/atlasctl.py audit --check goal-completion --publish-dir apps/memory-atlas/dist
 python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist
 python3 scripts/deploy_memory_atlas_cloudflare.py
 npm run dev --prefix apps/memory-atlas
@@ -423,7 +406,7 @@ After cleaning transient frontend folders or after local launcher install, use
 the source/runtime readiness audit without `--publish-dir`:
 
 ```bash
-python3 scripts/audit_memory_atlas_goal_completion.py
+python3 scripts/atlasctl.py audit --check goal-completion
 ```
 
 Cloudflare Pages build settings:
@@ -438,8 +421,8 @@ Install local macOS launchers:
 
 ```bash
 python3 scripts/install_memory_atlas_app.py
-python3 scripts/audit_memory_atlas_acceptance.py --require-local-apps
-python3 scripts/audit_memory_atlas_goal_completion.py --require-local-apps
+python3 scripts/atlasctl.py audit --check acceptance --require-local-apps
+python3 scripts/atlasctl.py audit --check goal-completion --require-local-apps
 ```
 
 This creates `Memory Atlas.app` in `~/Downloads` and `/Applications`. The app
@@ -490,17 +473,19 @@ The launcher log is
 `~/Library/Logs/OpenAIDatabase/memory-atlas-launcher.log`.
 
 Local generated folders such as `apps/memory-atlas/node_modules`,
-`apps/memory-atlas/dist`, and `*.tsbuildinfo` are ignored and should not be
-committed. `memory_atlas.json` is committed as a redacted visualization
+`apps/memory-atlas/dist`, `*.tsbuildinfo`, and
+`data/processed/indexes/memory_index.sqlite` are ignored and should not be
+committed. Search/fetch rebuilds the local SQLite index from tracked JSONL when
+it is absent. `memory_atlas.json` is committed as a redacted visualization
 snapshot so future agents can run the app without reprocessing raw exports.
 The installer removes transient frontend build folders after updating the
 runtime cache and now fails if cleanup leaves `node_modules`, `dist`, or
 `tsconfig.tsbuildinfo` behind. On macOS the installer also fails if the custom
 `.icns` icon cannot be generated; `--require-local-apps` verifies both the icon
-file and the runtime commit manifest. Use `audit_memory_atlas_goal_completion.py
+file and the runtime commit manifest. Use `atlasctl.py audit --check goal-completion
 --publish-dir ...` before installer cleanup when auditing a deploy artifact, and use
-`audit_memory_atlas_goal_completion.py` or
-`audit_memory_atlas_goal_completion.py --require-local-apps` after installer
+`atlasctl.py audit --check goal-completion` or
+`atlasctl.py audit --check goal-completion --require-local-apps` after installer
 cleanup when auditing cleaned local source/runtime state.
 
 Authorized Cloudflare deployment is intentionally a separate step. Dry-run:
@@ -525,12 +510,10 @@ python3 scripts/deploy_memory_atlas_cloudflare.py --execute
 
 ```text
 skills/openai-memory-analysis/
-config/memory_schema.json
-data/memory/active/active_memory.jsonl
-data/memory/active/active_memory.md
-data/memory/curation/core_profile_review.json
-data/memory/candidates/*.memory_candidates.jsonl
-data/memory/secret_refs/*.secret_refs.jsonl
+config/memory_schema.json  # run-local candidate compatibility schema
+config/memory.schema.json  # canonical V2 record schema
+data/memory/records/manifest.json
+data/memory/records/records-NNNN.jsonl
 data/derived/profile/CORE_PROFILE.md
 data/derived/weekly/*.weekly_memory_pack.md
 data/derived/monthly/*.monthly_memory_pack.md
@@ -545,15 +528,18 @@ data/derived/decision_log/DECISION_LOG.md
 data/derived/timeline/TIMELINE.md
 data/derived/visualization/memory_atlas.json
 data/processed/conversations/conversation_manifest.jsonl
-data/processed/indexes/memory_index.sqlite
+data/processed/indexes/memory_index.sqlite  # local generated; ignored and auto-built
 apps/memory-atlas/
 ```
 
-`active_memory.jsonl` stores all three tiers with retrieval weights. Core
-profile is high weight, important mid/long-term is medium weight, and general
-short-term is low weight. SQLite is a derived read index.
+`data/memory/records/` is the only editable logical truth. Status is represented
+inside the same V2 schema (`candidate`, `active`, `disputed`, or `retired`), and
+the manifest is the discovery entry. SQLite and Markdown outputs are derived
+views. The former `active/`, `candidates/`, `curation/`, and `secret_refs/`
+directories are byte-locked, read-only migration evidence pending the governed
+raw-data disposition task; they are not write targets.
 
-## S5PBT02 Structure Boundary
+## Stable Layer Boundary
 
 OpenAIDatabase now treats app, skill, context, and private export layers as
 separate defaults:
@@ -574,17 +560,13 @@ separate defaults:
   `data/private_imports/`, `private_exports/`, `exports/private/`, and
   `data/private/`.
 
-S5PBT02 does not move tracked personal-memory evidence. It binds the current
-paths to Review9 Wave 2 checksum evidence and keeps private values out of the
-ordinary development loop.
-
 Local absolute paths may appear only as historical examples or test fixtures;
 they are not default entry points for agents, app builds, or CI.
 
 `data/derived/profile/CORE_PROFILE.md` is the quickest personalization entry
-for future agents. It is generated from active memory plus
-`data/memory/curation/core_profile_review.json`, which records manual review
-decisions that keep project-specific workflows out of high-weight core profile.
+for future agents. It is generated from canonical V2 `active` records; review,
+verification, conflict, sensitivity, and retirement state remain in those
+records rather than in a second editable curation file.
 
 `data/derived/agent_context/AGENT_CONTEXT.md` and
 `data/derived/agent_context/agent_context_pack.json` are the fixed latest entry

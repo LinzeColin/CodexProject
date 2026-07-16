@@ -364,7 +364,7 @@ function validatePersonalizationAndChatgptContracts() {
     chatgptDryRun,
   );
 
-  const autoSubmit = runAllowFailure("python3", ["scripts/atlasctl.py", "chatgpt-deep-explore", "--mode", "auto_submit"], {
+  const autoSubmit = runAllowFailure("python3", ["scripts/atlasctl.py", "chatgpt-deep-explore", "--mode", "auto_submit", "--apply"], {
     cwd: repoRoot,
     timeout: 180000,
   });

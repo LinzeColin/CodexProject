@@ -1,0 +1,63 @@
+{
+  "schema_version": "openai_database.memory_gold_benchmark_config.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0013",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0013",
+  "dataset_schema_version": "openai_database.memory_gold_benchmark_case.v1",
+  "fixed_seed": "PAM1-GOLD-20260716-v1",
+  "case_count": 160,
+  "cases_per_category": 20,
+  "categories": [
+    "extraction",
+    "cross_session",
+    "temporal",
+    "update",
+    "abstention",
+    "forgetting",
+    "conflict",
+    "cross_agent"
+  ],
+  "minimums": {
+    "stale_or_retired_ratio": 0.2,
+    "abstention_ratio": 0.15,
+    "hard_negative_ids_per_case": 1,
+    "chinese_primary_ratio": 1.0,
+    "alias_coverage_ratio": 1.0,
+    "noise_coverage_ratio": 1.0
+  },
+  "paths": {
+    "dataset": "data/derived/evaluation/memory_gold/benchmark_v1.jsonl",
+    "schema": "data/derived/evaluation/memory_gold/benchmark_v1.schema.json",
+    "readme": "data/derived/evaluation/memory_gold/README.md"
+  },
+  "roles": {
+    "generator": "pam1_gold_curator_v1",
+    "approver": "pam1_independent_gold_validator_v1",
+    "tested_algorithm": "pam1_memory_evaluator_v1",
+    "approval_mechanism": "independent_schema_semantic_and_leak_validation",
+    "human_approval_claimed": false
+  },
+  "source_definitions": [
+    {
+      "id": "longmemeval",
+      "url": "https://arxiv.org/abs/2410.10813",
+      "use": "extraction, cross-session reasoning, temporal reasoning, updates and abstention"
+    },
+    {
+      "id": "fama",
+      "url": "https://arxiv.org/abs/2604.20006",
+      "use": "penalize obsolete or invalidated memory use"
+    },
+    {
+      "id": "locomo",
+      "url": "https://aclanthology.org/2024.acl-long.747/",
+      "use": "long-range conversational, temporal and causal dependencies"
+    }
+  ],
+  "privacy": {
+    "synthetic_only": true,
+    "real_memory_records_allowed": false,
+    "literal_answer_field_allowed": false,
+    "local_absolute_paths_allowed": false,
+    "credential_shapes_allowed": false
+  }
+}

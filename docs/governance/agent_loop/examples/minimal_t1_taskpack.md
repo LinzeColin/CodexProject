@@ -12,7 +12,7 @@
   "acceptance_id": "AGENT-LOOP-C2C3D1-A01",
   "allowed_paths": [
     ".github/workflows/agent-loop-run-approved-taskpack.yml",
-    ".github/ISSUE_TEMPLATE/codex-task.yml",
+    ".github/workflows/agent-loop-settlement.yml",
     "docs/governance/agent_loop/**",
     "scripts/agent_loop/**"
   ],

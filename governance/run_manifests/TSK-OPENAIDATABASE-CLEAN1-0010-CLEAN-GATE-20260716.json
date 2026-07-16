@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0010",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.CLEAN1.0010"
+  ],
+  "iteration_id": "ST06-PHD-OPENAIDATABASE-CLEAN1-0010-001",
+  "run_id": "TSK-OPENAIDATABASE-CLEAN1-0010-CLEAN-GATE-20260716",
+  "generated_at": "2026-07-16T00:20:21Z",
+  "gate_status": "PASS_LOCAL_PROJECT_CLEAN_GATE",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "e1473638e75e1a6845a2956e390a066e4a67507a",
+  "remote_main_sha_at_gate_start": "5e85e7fedbc15df23fd611c7a25ef08c7d9839a8",
+  "remote_main_terminal_observation": {
+    "observed_sha": "def790d3299b9f490cdc5f0ada149c311db62f1d",
+    "external_commits_since_start": 3,
+    "external_scope": "arxiv-daily-push-only",
+    "overlap_with_this_run_changed_files": 0,
+    "writes_by_this_run": 0
+  },
+  "candidate_tree_sha1_excluding_this_manifest": "b71dc65364d208eb7a0a5a69de2a72b5dc20fff4",
+  "content_tree_hash": "942e39b33a2ee44908c9e35469235b9a9d36f2849ffb6d367d33e562f98b8f90",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every closure file except this self-referential manifest; the final 37-Task publication run binds the published business commit.",
+  "changed_files_declared": [
+    ".github/workflows/openai-database-ci.yml",
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/docs/acceptance/openai_database_clean_gate_acceptance.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/run_verification.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0010-CLEAN-GATE-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/openai-database-ci.yml",
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/docs/acceptance/openai_database_clean_gate_acceptance.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/run_verification.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0010-CLEAN-GATE-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0010-CLEAN-GATE-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0010-CLEAN-GATE-20260716.json"
+  ],
+  "ci_attestation_subject": "TSK.OpenAIDatabase.CLEAN1.0010 independent local Project CLEAN Gate acceptance",
+  "ci_run_reference": "LOCAL_FRESH_CLONE_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "summary": "Independently recalculate every OpenAIDatabase cleanup gate from a no-alternates shallow clone, fix the one fresh-CI order defect and project startup budget overage exposed by that proof, and close CLEAN1 without adding product functionality or publishing business state.",
+  "scope": {
+    "product_feature_changes": 0,
+    "dependency_version_changes": 0,
+    "data_file_changes": 0,
+    "business_remote_writes": 0,
+    "fresh_clone_shared_alternates": 0,
+    "targeted_baseline_commit_fetch_count": 4,
+    "next_task_started": false
+  },
+  "fresh_clone": {
+    "head": "e1473638e75e1a6845a2956e390a066e4a67507a",
+    "shallow": true,
+    "no_local_clone": true,
+    "alternates_absent": true,
+    "git_pack_bytes_after_targeted_baselines": 207783936,
+    "fsck_exit_code": 0,
+    "initial_tracked_status_clean": true,
+    "post_build_test_tracked_status_clean": true
+  },
+  "clean_metrics": {
+    "owned_directory_count": 227,
+    "unowned_directory_count": 0,
+    "dual_write_count": 0,
+    "duplicate_destination_count": 0,
+    "duplicate_owner_count": 0,
+    "canonical_capability_count": 20,
+    "dead_script_remaining_count": 0,
+    "missing_implementation_count": 0,
+    "active_write_invocation_missing_mode_count": 0,
+    "generated_target_file_count": 116,
+    "generated_unclassified_or_multi_count": 0,
+    "generated_drift_count": 0,
+    "tracked_transient_count": 0,
+    "public_raw_tracked_file_count": 513,
+    "public_raw_total_bytes": 452781269,
+    "tracked_raw_destination_count": 1,
+    "credential_or_private_text_file_count": 0,
+    "known_credential_context_match_count": 0,
+    "raw_instruction_obedience_count": 0,
+    "tracked_private_path_count": 0,
+    "repository_hygiene_violation_count": 0,
+    "project_agents_bytes_before": 7441,
+    "project_agents_bytes_after": 5852,
+    "startup_resource_count": 2,
+    "startup_max_chars": 12000,
+    "ci_step_order_drift_count": 0
+  },
+  "reproducibility": {
+    "source_date_epoch": 1784155570,
+    "full_tier_repeat_count": 2,
+    "tests_per_repeat": 253,
+    "total_test_executions": 506,
+    "full_tier_elapsed_seconds": 256.549,
+    "data_repeat_sha256": "4f71ebc731bbcbd7faaebade56a88e15854bdc17a8e1f81796ce0cc64e446e92",
+    "frontend_repeat_tree_sha256": "863f33050aff1b8a8ea1e70a3b2f84c3ee42896ee9ad6018ec7f818057734985",
+    "fresh_npm_package_count": 154,
+    "fresh_typescript_lint": "PASS",
+    "fresh_vite_build_repeat_2": "PASS"
+  },
+  "test_commands": [
+    "git clone --depth 1 --no-tags --single-branch --branch main --no-local file://<canonical-worktree> <fresh_clone>",
+    "git fetch --no-tags --depth=1 origin 74dc2f7a52f1f1b7694c0433c5be87ce6da4cf73 0b66ae8192d2285f2972516e4fe080b9d2267bb7 57cb6bca623d2e01bde1a866140804c283340bd8 d05af208c0684a556831bfca04ec0c57b7747345",
+    "git fsck --full --strict",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_command_ownership.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_generated_retention.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_raw_material_policy.py --database-dir OpenAIDatabase --require-remote-verified",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier full --repeat 2",
+    "SOURCE_DATE_EPOCH=1784155570 python3 -B OpenAIDatabase/scripts/build_memory_atlas_data.py --database-dir OpenAIDatabase --output <isolated-output> (repeat 2)",
+    "fresh app: npm ci --no-audit --no-fund; SOURCE_DATE_EPOCH=1784155570 npm run lint; npm run build (repeat 2)",
+    "/opt/anaconda3/bin/python3 -B -m unittest discover -s tests/governance -p 'test_openai_database_lean_convergence.py' -q",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "git diff --check; git status --short; GitHub PR/Issue/non-main audit"
+  ],
+  "test_results": [
+    {
+      "gate": "fresh_clone_integrity",
+      "result": "PASS",
+      "observed": "Exact HEAD, shallow no-local clone, no alternates, four exact baseline commits only, fsck exit 0 and clean tracked status."
+    },
+    {
+      "gate": "directory_writer_script_generated",
+      "result": "PASS",
+      "observed": "Every directory has one owner; dual writes, duplicate destinations/owners, dead or unowned scripts, implicit write modes, generated drift and tracked transients are all 0."
+    },
+    {
+      "gate": "raw_security",
+      "result": "PASS_WITH_SUPPORT_BOUNDARY",
+      "observed": "The complete 452781269-byte public-raw scan passed all current hard-zero gates; GitHub internal pull-ref/cache purge remains explicitly assigned to Support."
+    },
+    {
+      "gate": "clean_ci_order_diagnostic",
+      "result": "FAIL_FIXED_AND_REGRESSION_GATED",
+      "observed": "The initial build-before-test omission made one integration test fail on missing dist. Integration now follows frontend build and policy reports ci_step_order_drift_count 0."
+    },
+    {
+      "gate": "repeat_build_test",
+      "result": "PASS",
+      "observed": "Two full 253-test rounds, two data builds and two frontend builds passed with matching repeat hashes."
+    },
+    {
+      "gate": "governance_budget_and_terminal",
+      "result": "PASS",
+      "observed": "Focused Lean, render, project structural/semantic, ID and hygiene gates pass; project AGENTS is 5852 bytes; start and terminal GitHub counts are 0/0/0."
+    }
+  ],
+  "evidence_refs": [
+    "OpenAIDatabase/docs/acceptance/openai_database_clean_gate_acceptance.md",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/storage/generated_retention.json",
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md"
+  ],
+  "known_boundaries": [
+    "GitHub internal pull refs and cached views from the .0008 incident require GitHub Support; full platform GC is not claimed.",
+    "Cloudflare live authorization remains a deployment boundary, not a Project CLEAN failure.",
+    "active_memory.jsonl GitHub-compatible sharding is assigned to TSK.OpenAIDatabase.PAM1.0002 and was not pulled forward.",
+    "Sixty-two unrelated whole-repository semantic precheck findings remain outside this single-project Task; OpenAIDatabase structural and semantic results are zero errors and zero warnings."
+  ],
+  "rollback": "Revert this one local Task commit and delete the disposable fresh clone. Do not rewrite history, delete data or publish business state.",
+  "next_task_id": "TSK.OpenAIDatabase.PAM1.0001",
+  "publication_boundary": "No business source or governance file from .0010 is pushed before the final 37/37 publication run."
+}

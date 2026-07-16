@@ -1,0 +1,161 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0003",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.CLEAN1.0003"
+  ],
+  "iteration_id": "ST05-PHA-OPENAIDATABASE-CLEAN1-0003-001",
+  "run_id": "TSK-OPENAIDATABASE-CLEAN1-0003-ID-V2-MIGRATION-20260716",
+  "generated_at": "2026-07-15T17:34:02Z",
+  "gate_status": "PASS_LOCAL",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "c746f8782ee409114875ca246545241b4449b932",
+  "implementation_base_tree": "9f8b6c1e729d141ec59611a6102832e193153a00",
+  "candidate_tree_sha1_excluding_this_manifest": "39d39721e7d29a93dfb85131135c8e5d3b87fd96",
+  "content_tree_hash": "sha256-git-ls-tree-excluding-this-manifest:ab40a08b6d9ba7a6f1e91ae02bc20b695e1ee1a16a8eb5b7c94f50e352eb5840",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every Task file except this self-referential manifest; the final 37-Task publication run must bind the published commit.",
+  "summary": "Migrate OpenAIDatabase mutable governance references to namespaced ID V2, retain historical identifiers through unambiguous project-scoped aliases, and preserve append-only history without runtime or remote mutation.",
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.CLEAN1.0002",
+    "status": "PASS_READ_ONLY_AUDIT",
+    "external_receipt_sha256": "3a82e67174d205999d8adf61a0c6b7d1336b13737b7a7773f5d555332bd13acd",
+    "paths_covered": "1657/1657",
+    "directories_covered": "238/238",
+    "writer_destinations_covered": "87/87",
+    "payload_reads": 0,
+    "repo_writes": 0,
+    "github_writes": 0
+  },
+  "migration_results": {
+    "registry_revision_before": 1,
+    "registry_revision_after": 67,
+    "registry_sha256_before": "73eee6b6066994cfe3b2abaff548e1c7c0df55c912924fe1b465fb193c8c3c50",
+    "registry_sha256_after": "3eb954f0a9697b4e027481085424de454a382a839aa914b599cfd7deec7f81b0",
+    "allocations_before": 38,
+    "allocations_after": 103,
+    "legacy_task_aliases": 25,
+    "legacy_acceptance_aliases": 23,
+    "legacy_event_aliases": 39,
+    "aliases_total": 87,
+    "canonical_migration_event_id": "EVT.OpenAIDatabase.CLEAN1.0001",
+    "legacy_program": "OPS1",
+    "migrated_project_marker": "OpenAIDatabase",
+    "dry_run_mutated": false,
+    "apply_mutated": true,
+    "idempotent_replay_mutated": false,
+    "append_only_records_rewritten": 0
+  },
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0003-ID-V2-MIGRATION-20260716.json",
+    "governance/schemas/id_registry.schema.json",
+    "scripts/governance_id_allocator.py",
+    "scripts/governance_id_audit.py",
+    "scripts/governance_ids.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_governance_id_v2.py",
+    "tests/governance/test_openai_database_id_migration.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0003-ID-V2-MIGRATION-20260716.json",
+    "governance/schemas/id_registry.schema.json",
+    "scripts/governance_id_allocator.py",
+    "scripts/governance_id_audit.py",
+    "scripts/governance_ids.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_governance_id_v2.py",
+    "tests/governance/test_openai_database_id_migration.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0003-ID-V2-MIGRATION-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0003-ID-V2-MIGRATION-20260716.json"
+  ],
+  "test_commands": [
+    "python3 -B -m py_compile scripts/governance_ids.py scripts/governance_id_allocator.py scripts/governance_id_audit.py scripts/lean_governance.py",
+    "python3 -B -m unittest tests.governance.test_governance_id_v2 tests.governance.test_openai_database_id_migration tests.agent_loop.test_governance_ids -q",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "git diff --check",
+    "GitHub read-only PR/Issue/non-main-branch check"
+  ],
+  "test_results": [
+    {
+      "result": "PASS",
+      "observed": "Python compile and 28 focused governance/ID tests passed."
+    },
+    {
+      "result": "PASS",
+      "observed": "ID audit: 103 allocations, 62 Task IDs, 62 Acceptance IDs, 40 Event IDs, 87 aliases, 11772/11772 identifier references resolved, strict legacy 155/155, ambiguity/orphan/new positional IDs zero."
+    },
+    {
+      "result": "PASS",
+      "observed": "Human render drift_count=0 and reference_issue_count=0."
+    },
+    {
+      "result": "PASS",
+      "observed": "OpenAIDatabase semantic validation reported project errors=0 and warnings=0; repository-wide legacy baseline findings remain out of scope."
+    },
+    {
+      "result": "PASS",
+      "observed": "Changed-scope governance errors=0 warnings=0; git diff check and high-confidence added-line secret scan passed."
+    },
+    {
+      "result": "PASS",
+      "observed": "GitHub read-only terminal state: open PRs 0, open Issues 0, branches exactly main, remote main 5ff1f3c5ce49d0bb5466125333b873082d2ddd58; remote writes 0."
+    }
+  ],
+  "evidence_refs": [
+    "governance/id_registry.json",
+    "tests/governance/test_governance_id_v2.py",
+    "tests/governance/test_openai_database_id_migration.py",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl"
+  ],
+  "security_boundary": {
+    "credential_material_read": false,
+    "payload_data_read": false,
+    "private_data_changed": false,
+    "runtime_behavior_changed": false,
+    "model_formula_parameter_values_changed": false,
+    "github_writes": 0,
+    "history_rewrites": 0
+  },
+  "rollback": "Revert the single local Task commit. Historical append-only files were not mass rewritten, and no remote compensation is required because GitHub writes are zero.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.CLEAN1.0003 local ID V2 migration acceptance",
+  "ci_run_reference": "NOT_RUN_LOCAL_ONLY_MAIN_PUBLICATION_DEFERRED_UNTIL_37_OF_37"
+}

@@ -136,7 +136,7 @@ class PersonalizationArchitectureTests(unittest.TestCase):
         self.assertEqual(route_result["status"], "PASS")
         self.assertEqual(
             route_result["read_order"],
-            ["AGENTS.md", "data/derived/personalization/codex_personalization.md"],
+            ["data/memory/agent-memory.json"],
         )
         self.assertNotIn("docs/PERSONAL_CONTEXT_ARCHITECTURE.md", route_result["read_order"])
         self.assertNotIn("data/derived/agent_context/AGENT_CONTEXT.md", route_result["read_order"])

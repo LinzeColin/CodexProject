@@ -1,0 +1,50 @@
+{
+  "schema_version": "openai_database.raw_import.v1",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0005",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0005",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
+  "canonical_root": "data/public_raw",
+  "partition_pattern": "YYYY-MM",
+  "part_name_pattern": "{source_id}.{original_sha256_12}.part-{part_index_4}.md",
+  "sidecar_name_pattern": "{source_id}.{original_sha256_12}.sidecar.json",
+  "sidecar_schema": "config/raw_evidence.sidecar.schema.json",
+  "allowed_source_extensions": [
+    ".json",
+    ".jsonl",
+    ".md",
+    ".txt"
+  ],
+  "archive_extensions_denied": [
+    ".7z",
+    ".bz2",
+    ".gz",
+    ".rar",
+    ".tar",
+    ".tgz",
+    ".xz",
+    ".zip"
+  ],
+  "max_text_part_bytes": 921600,
+  "max_input_bytes": 14745600,
+  "max_authorization_bytes": 16384,
+  "max_parts": 16,
+  "authorization_schema_version": "openai_database.raw_import_authorization.v1",
+  "authorization_decision": "approved_publication",
+  "instruction_trust": "none",
+  "memory_source_type": "raw_import",
+  "memory_status": "candidate",
+  "automatic_active_promotion": false,
+  "security_policy": "config/memory-security-policy.json",
+  "legacy_path_policy": {
+    "state": "append_only_read_only_compatibility",
+    "new_writes_allowed": false,
+    "paths": [
+      "data/public_raw/agents",
+      "data/public_raw/chatgpt",
+      "data/public_raw/codex"
+    ],
+    "mapping_source": "config/storage/raw_material_policy.json#old_archive_dispositions",
+    "replacement": "data/public_raw/YYYY-MM plus adjacent sidecar"
+  }
+}

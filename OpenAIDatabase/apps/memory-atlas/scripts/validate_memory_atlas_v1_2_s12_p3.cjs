@@ -289,7 +289,7 @@ function validateConfigOutputsAndAtlasctl() {
   );
 
   const generate = parseJsonFromStdout(
-    run("python3", ["scripts/atlasctl.py", "chatgpt-deep-explore", "--mode", "prefill_only"], { cwd: repoRoot, timeout: 180000 }),
+    run("python3", ["scripts/atlasctl.py", "chatgpt-deep-explore", "--mode", "prefill_only", "--apply"], { cwd: repoRoot, timeout: 180000 }),
   );
   assertCondition(
     generate.status === "PASS" &&

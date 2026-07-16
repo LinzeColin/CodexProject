@@ -174,6 +174,7 @@ class S06P1ClusterBuilderTest(unittest.TestCase):
                 "clusters",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             clusters_path = root / "data/derived/behavior_intelligence/clusters.json"
             self.assertEqual(applied["task_id"], "MA-V12-S06P1")

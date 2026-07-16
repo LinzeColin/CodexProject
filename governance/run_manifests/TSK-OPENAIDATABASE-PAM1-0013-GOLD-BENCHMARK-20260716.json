@@ -1,0 +1,282 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0013-GOLD-BENCHMARK-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0013",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0013"
+  ],
+  "iteration_id": "ST09-PHA-OPENAIDATABASE-PAM1-0013-001",
+  "generated_at": "2026-07-16T09:50:27Z",
+  "gate_status": "PASS_LOCAL_160_CASE_GOLD_BENCHMARK",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "2010a045758edcb4f527ba1a1e1db8c6b80109dc",
+  "remote_main_sha_at_run_start": "06d55e96267b496ed8d83a7992709e6cd3de1f9b",
+  "candidate_tree_sha1_excluding_this_manifest": "547cf2b9b93d5195e39c6bb1049eb40042abaf29",
+  "content_tree_hash": "1ebab0f889e28bfc4062da55dd835095e10ffa683413096b3a04e9dc075d9e16",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 21-file staged closure before this manifest is added; content hash is SHA-256 over sorted path, NUL, staged blob SHA-256 and LF tuples. Final 37/37 publication binds the published business commit.",
+  "summary": "Curate exactly 160 deterministic synthetic Gold cases across eight balanced memory capabilities, with independent schema, stale/abstention, hard-negative, duplicate and no-leak approval gates.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0013 local independent 160-case Gold benchmark acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_FAST_SECURITY_AND_GOVERNANCE_ACCEPTANCE_REMOTE_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0013-MANIFEST"
+  ],
+  "scope": {
+    "benchmark_config": "OpenAIDatabase/config/evaluation/memory_gold_benchmark_v1.json",
+    "benchmark_dataset": "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.jsonl",
+    "benchmark_schema": "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.schema.json",
+    "benchmark_readme": "OpenAIDatabase/data/derived/evaluation/memory_gold/README.md",
+    "curator": "OpenAIDatabase/scripts/build_memory_gold_benchmark.py",
+    "independent_validator": "OpenAIDatabase/scripts/validate_memory_gold_benchmark.py",
+    "case_count": 160,
+    "category_count": 8,
+    "cases_per_category": 20,
+    "synthetic_state_record_count": 400,
+    "new_fixture_or_sample_file_count": 1,
+    "canonical_business_data_files_modified": 0,
+    "raw_business_data_files_modified": 0,
+    "workflow_files_modified": 0,
+    "dependency_additions_or_version_changes": 0,
+    "database_or_service_additions": 0,
+    "governance_test_files_modified": 1,
+    "history_rewrites": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0012",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0012-MEMORY-SECURITY-20260716.json",
+    "gate_status": "PASS_LOCAL_MEMORY_INPUT_AND_WORKFLOW_SUPPLY_CHAIN_SECURITY",
+    "implementation_commit": "2010a045758edcb4f527ba1a1e1db8c6b80109dc"
+  },
+  "definition_contract": {
+    "longmemeval": "https://arxiv.org/abs/2410.10813",
+    "fama": "https://arxiv.org/abs/2604.20006",
+    "locomo": "https://aclanthology.org/2024.acl-long.747/",
+    "copied_external_dataset_case_count": 0,
+    "synthetic_only": true
+  },
+  "gold_contract": {
+    "fixed_seed": "PAM1-GOLD-20260716-v1",
+    "categories": [
+      "extraction",
+      "cross_session",
+      "temporal",
+      "update",
+      "abstention",
+      "forgetting",
+      "conflict",
+      "cross_agent"
+    ],
+    "curator_role": "pam1_gold_curator_v1",
+    "approver_role": "pam1_independent_gold_validator_v1",
+    "tested_algorithm_role": "pam1_memory_evaluator_v1",
+    "tested_algorithm_dependency_count": 0,
+    "human_approval_claimed": false,
+    "literal_answer_field_allowed": false,
+    "real_memory_records_allowed": false
+  },
+  "hard_gate_result": {
+    "case_count": 160,
+    "category_count": 8,
+    "cases_per_category": 20,
+    "stale_or_retired_trap_count": 62,
+    "stale_or_retired_ratio": 0.3875,
+    "stale_or_retired_ratio_min": 0.2,
+    "abstention_count": 28,
+    "abstention_ratio": 0.175,
+    "abstention_ratio_min": 0.15,
+    "hard_negative_complete_case_count": 160,
+    "chinese_primary_case_count": 160,
+    "technical_english_case_count": 160,
+    "alias_covered_case_count": 160,
+    "noise_covered_case_count": 160,
+    "duplicate_case_id_count": 0,
+    "duplicate_query_count": 0,
+    "duplicate_case_payload_count": 0,
+    "schema_validation_error_count": 0,
+    "leak_error_count": 0,
+    "gold_role_separation_error_count": 0,
+    "tracked_repository_high_risk_secret_hit_count": 0,
+    "dataset_bytes": 475733,
+    "dataset_sha256": "3f33bcc56243660b56c83abbe938bdc496f1e5dd53eb0b87afbad9e3f4b395b4"
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-023",
+    "formula_id": "FORM-023",
+    "parameter_ids": [
+      "PARAM-109"
+    ]
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/config/evaluation/memory_gold_benchmark_v1.json": "1bb9979e6057640babcae2fbbeae9264aec254f1fbf623cc1154a4b19f933c70",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/README.md": "6bb4ccc3672d5e00c8be6fc8ffaa15c3f9eccf47b73bbf89356b473dee8079b4",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.jsonl": "3f33bcc56243660b56c83abbe938bdc496f1e5dd53eb0b87afbad9e3f4b395b4",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.schema.json": "dc6b68c36f045df489ecf360114aefb2a04f900867971dae608c1f14fa2e16bc",
+    "OpenAIDatabase/scripts/build_memory_gold_benchmark.py": "73b7c1d517e243ac587228f7c7a98097a20b85db28b170d86a13d127b945cd1c",
+    "OpenAIDatabase/scripts/validate_memory_gold_benchmark.py": "363865c7225dc0d32ef14e67b6f99addc8808dbce0405fd1d206e9e74dfe7615",
+    "OpenAIDatabase/tests/test_memory_gold_benchmark.py": "7b271cebcde0d6a3ed0842898e1b7276dc8f8ea3e8db40275052b648f44f091f",
+    "OpenAIDatabase/tests/fixtures/memory_security/adversarial_cases.json": "e0e309c01235eb8a9dd05abd1522cb1f64cca4435cf44cd218c7ae847dd1ec0e",
+    "OpenAIDatabase/config/command_ownership.json": "51e5c3699e1ccd5bb5a39dde9d353945056a1b80ddf48323b91cc7f5e58debc0",
+    "OpenAIDatabase/config/quality/verification_policy.json": "f11d9195b358a4a943da94fb85444e4f5517e8eed0b02065ab25c92223decba3",
+    "OpenAIDatabase/docs/governance/project.yaml": "9824fdc4d161fe83ba5ebcb8dee9ebc39b54c32f9b8fc4eaa83f04875e9b5971",
+    "OpenAIDatabase/docs/governance/roadmap.yaml": "8ffa2bd9613a1f0158d5644c45ce1a9a2f72fb1b36e2078c6e7b922793b9d005",
+    "OpenAIDatabase/docs/governance/events.jsonl": "d2665b05f898fa486dea047530f201b4a59ff40472ca94219b95abadd63cb8d1",
+    "OpenAIDatabase/功能清单.md": "1e90b7b3c60840405731bcf4d403984fcd24667426c48d3412ccbb87d1b1bafd",
+    "OpenAIDatabase/开发记录.md": "b1463994a61870002bd8c762ce812a643dbef3208a2fa2d155f880a759e755b7",
+    "OpenAIDatabase/模型参数文件.md": "17a756dddb4e8283a02972790ca53ec153bdee71a7182994448d0181ad8956b4",
+    "governance/id_registry.json": "151c53ad9f7db2d8a59ff4428bf62a41dade894b60a4a81ec1b4d190b4d389c4",
+    "tests/governance/test_openai_database_lean_convergence.py": "998bae28d1693a00349c790617f56f6e5015ce5a9df091d430589f03928ce02a"
+  },
+  "test_commands": [
+    "python3 -B scripts/build_memory_gold_benchmark.py --check",
+    "python3 -B scripts/validate_memory_gold_benchmark.py",
+    "python3 -B -m unittest -q tests.test_memory_gold_benchmark",
+    "python3 -B -m unittest -q tests.test_memory_security tests.test_s3pdt01_privacy",
+    "ruff check changed Python files",
+    "python3 -B scripts/run_verification.py --tier fast",
+    "python3 -B scripts/run_verification.py --tier security",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub overlap audit"
+  ],
+  "test_results": [
+    {
+      "gate": "balanced_gold_dataset",
+      "result": "PASS",
+      "observed": "Exactly 160 synthetic cases across eight categories x 20; 400 state records, 172 expected IDs and 228 forbidden/hard-negative IDs."
+    },
+    {
+      "gate": "deterministic_build",
+      "result": "PASS",
+      "observed": "Two in-process builds and the tracked --check output are byte-identical; dataset SHA-256 is 3f33bcc56243660b56c83abbe938bdc496f1e5dd53eb0b87afbad9e3f4b395b4."
+    },
+    {
+      "gate": "independent_schema_distribution_and_leak_validation",
+      "result": "PASS",
+      "observed": "Schema, category, seed, ID, eligibility, stale labels, abstention, hard negatives, language, alias/noise, duplicate, answer/sensitive leak and three-way Gold role gates all pass; error_counts is empty."
+    },
+    {
+      "gate": "focused_regression",
+      "result": "PASS",
+      "observed": "Task-specific mutation, deterministic drift, query-leak no-echo and self-approval regressions passed 5/5."
+    },
+    {
+      "gate": "committed_state_security_regression",
+      "result": "PASS",
+      "observed": "The first Security run found the prior Task's three tracked synthetic credential shapes. Repository-safe fragment storage plus runtime joining preserved 4/4 credential blocks and restored tracked high-risk secret hits to zero without an allowlist."
+    },
+    {
+      "gate": "fast_and_security",
+      "result": "PASS",
+      "observed": "Fast 19/19 and Security 111/111 passed; all 65 Python test files have exactly one owner."
+    },
+    {
+      "gate": "generated_and_governance",
+      "result": "PASS",
+      "observed": "Lean convergence passed 7/7 within the unchanged byte budget; render drift/reference issues are 0/0, changed-scope semantic validation has errors/warnings 0/0, all governance IDs resolve exactly once and repository hygiene has zero violations."
+    },
+    {
+      "gate": "business_data_and_scope_boundary",
+      "result": "PASS",
+      "observed": "Canonical record, public-raw, workflow and dependency changed-path counts are zero. PAM1.0014 retains all retrieval/evaluation metrics and required CI work."
+    },
+    {
+      "gate": "terminal_remote_overlap",
+      "result": "PASS",
+      "observed": "Remote main advanced by two arxiv-daily-push commits with 41 changed files from the Run-start SHA; exact overlap with this Task is zero. Open PRs/issues/non-main branches remain 0/0/0."
+    }
+  ],
+  "terminal_remote": {
+    "observed_main_sha": "a0afcc63f75e92dc65ba11a76206eabf1c76f34a",
+    "commits_since_run_start": 2,
+    "changed_files_since_run_start": 41,
+    "exact_path_overlap": 0,
+    "open_pull_requests": 0,
+    "open_issues": 0,
+    "non_main_branches": 0,
+    "result": "PASS_NO_REBASE_REQUIRED"
+  },
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/evaluation/memory_gold_benchmark_v1.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/README.md",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.jsonl",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.schema.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_memory_gold_benchmark.py",
+    "OpenAIDatabase/scripts/validate_memory_gold_benchmark.py",
+    "OpenAIDatabase/tests/fixtures/memory_security/adversarial_cases.json",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_gold_benchmark.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "tests/governance/test_openai_database_lean_convergence.py",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0013-GOLD-BENCHMARK-20260716.json"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/evaluation/memory_gold_benchmark_v1.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/README.md",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.jsonl",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/benchmark_v1.schema.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_memory_gold_benchmark.py",
+    "OpenAIDatabase/scripts/validate_memory_gold_benchmark.py",
+    "OpenAIDatabase/tests/fixtures/memory_security/adversarial_cases.json",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_gold_benchmark.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "tests/governance/test_openai_database_lean_convergence.py",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0013-GOLD-BENCHMARK-20260716.json"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0013-GOLD-BENCHMARK-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0013-GOLD-BENCHMARK-20260716.json"
+  ],
+  "known_boundaries": [
+    "The benchmark contains synthetic representative records only; it copies no real memory, raw evidence or external benchmark case.",
+    "Independent machine validation is not a human approval claim; human_approval_claimed remains false.",
+    "No Recall@5, MRR, current-state accuracy, provenance, FAMA evaluation harness or required CI metric was implemented; PAM1.0014 owns all of them.",
+    "The PAM1.0012 credential fixture representation changed only to make committed-state privacy scanning effective; runtime payloads and 4/4 blocking semantics remain unchanged.",
+    "No canonical memory record, public-raw artifact, workflow, dependency, service, issue, branch, PR, deployment, release or remote business object was created or changed."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the synthetic Gold config, dataset, schema, README, curator, independent validator and focused tests; restore the prior credential fixture representation, command/quality ownership and governance views. Canonical/raw business bytes, dependencies, services and remote state require no compensation."
+}

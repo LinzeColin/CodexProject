@@ -32,6 +32,7 @@ def write_opportunity_fixtures(root: Path) -> None:
         "low-value-loops",
         "--database-dir",
         str(root),
+        "--apply",
     ])
 
 
@@ -93,6 +94,7 @@ class S06P3OpportunityDiscoveryTest(unittest.TestCase):
                 "opportunities",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             opportunities_path = root / "data/derived/behavior_intelligence/opportunities.json"
             self.assertEqual(applied["task_id"], "MA-V12-S06P3")

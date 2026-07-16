@@ -1,0 +1,189 @@
+{
+  "schema_version": "openai_database.generated_retention.v1",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0007",
+  "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0007",
+  "last_updated_task_id": "TSK.OpenAIDatabase.PAM1.0008",
+  "last_updated_acceptance_id": "ACC.OpenAIDatabase.PAM1.0008",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
+  "target_scopes": [
+    "data/derived",
+    "data/run_logs",
+    "data/processed/indexes",
+    "data/memory/AGENT_MEMORY.md and data/memory/agent-memory.json",
+    "session_history",
+    "token_usage",
+    "apps/memory-atlas/dist",
+    "cache and local database sidecars"
+  ],
+  "retained_rules": [
+    {
+      "rule_id": "agent-memory-generated-views",
+      "include": ["data/memory/AGENT_MEMORY.md", "data/memory/agent-memory.json"],
+      "classification": "retained_generated",
+      "tracked": true,
+      "generated": true,
+      "generator_globs": ["scripts/memory.py"],
+      "consumer_bindings": [
+        {"path": "AGENTS.md", "marker": "data/memory/agent-memory.json"},
+        {"path": "config/context_sources/resource_routes.json", "marker": "data/memory/agent-memory.json"},
+        {"path": "scripts/validate_agent_transport_compatibility.py", "marker": "agent-memory.json"}
+      ],
+      "retention": "bounded generated-only discovery and compact context; exact drift check before use"
+    },
+    {
+      "rule_id": "derived-human-review-facts",
+      "include": ["data/derived/human_reviews/**"],
+      "classification": "retained_human_review_fact",
+      "tracked": true,
+      "generated": false,
+      "consumer_bindings": [
+        {"path": "skills/openai-memory-analysis/scripts/openai_memory_analysis.py", "marker": "data/derived/human_reviews"},
+        {"path": "README.md", "marker": "data/derived"}
+      ],
+      "retention": "owner-readable review facts remain portable and are not reclassified as rebuildable output"
+    },
+    {
+      "rule_id": "derived-portable-snapshots",
+      "include": ["data/derived/**"],
+      "exclude": ["data/derived/human_reviews/**"],
+      "classification": "retained_generated",
+      "tracked": true,
+      "generated": true,
+      "generator_globs": [
+        "scripts/build_*.py",
+        "scripts/extract_*.py",
+        "scripts/sync_*.py",
+        "skills/openai-memory-analysis/scripts/openai_memory_analysis.py"
+      ],
+      "consumer_bindings": [
+        {"path": "scripts/build_personalization_exports.py", "marker": "data/derived"},
+        {"path": "scripts/build_memory_atlas_data.py", "marker": "data/derived"},
+        {"path": "config/context_sources/resource_routes.json", "marker": "data/derived"}
+      ],
+      "retention": "redacted portable snapshots with active agent, application and recovery consumers"
+    },
+    {
+      "rule_id": "structured-run-ledger",
+      "include": ["data/run_logs/*/*.jsonl"],
+      "classification": "retained_audit_fact",
+      "tracked": true,
+      "generated": false,
+      "generator_globs": [
+        "scripts/sync_*.py",
+        "scripts/build_personalization_exports.py",
+        "scripts/evaluate_personalization_context.py"
+      ],
+      "consumer_bindings": [
+        {"path": "scripts/evaluate_personalization_context.py", "marker": "glob"},
+        {"path": "config/evaluation/personalization_harness.json", "marker": "required_log_categories"}
+      ],
+      "retention": "redacted structured audit rows required for task-run evidence validation"
+    },
+    {
+      "rule_id": "run-log-documentation",
+      "include": ["data/run_logs/README.md", "data/run_logs/*/README.md"],
+      "exclude": ["data/run_logs/token_usage/**"],
+      "classification": "retained_documentation",
+      "tracked": true,
+      "generated": false,
+      "consumer_bindings": [
+        {"path": "AGENTS.md", "marker": "data/run_logs"},
+        {"path": "README.md", "marker": "run-log"}
+      ],
+      "retention": "compact schemas and owner instructions"
+    },
+    {
+      "rule_id": "compact-run-evidence",
+      "include": [
+        "data/run_logs/evidence/OAIDB-SM-P0-R1-final-gates.txt",
+        "data/run_logs/evidence/TASK-OAI-D-001-build-exports.txt",
+        "data/run_logs/evidence/TASK-OAI-D-001-current-validation.txt",
+        "data/run_logs/evidence/TASK-OAI-D-001-route-startup.txt"
+      ],
+      "classification": "retained_audit_fact",
+      "tracked": true,
+      "generated": false,
+      "consumer_bindings": [
+        {"path": "scripts/evaluate_personalization_context.py", "marker": "tests_run_missing_evidence_file"},
+        {"path": "scripts/build_personalization_exports.py", "marker": "TASK-OAI-D-001-build-exports.txt"},
+        {"path": "scripts/sync_codex_memory_data.py", "marker": "TASK-OAI-D-001-current-validation.txt"}
+      ],
+      "retention": "small evidence summaries referenced by structured PASS rows"
+    },
+    {
+      "rule_id": "current-numeric-telemetry",
+      "include": ["data/run_logs/token_usage/**"],
+      "classification": "retained_numeric_telemetry",
+      "tracked": true,
+      "generated": false,
+      "consumer_bindings": [
+        {"path": "scripts/export_codex_history_archives.py", "marker": "data/run_logs/token_usage"},
+        {"path": "scripts/audit_memory_atlas_acceptance.py", "marker": "data/run_logs/token_usage"},
+        {"path": "tests/test_codex_history_exports.py", "marker": "data/run_logs/token_usage"}
+      ],
+      "retention": "atomic latest numeric telemetry; no prompt, response or session body"
+    },
+    {
+      "rule_id": "retired-private-session-archive",
+      "include": ["session_history/**"],
+      "classification": "retired_private_archive",
+      "tracked": false,
+      "generated": false,
+      "content_inspection_allowed": false,
+      "retired_by_task": "TSK.OpenAIDatabase.CLEAN1.0008",
+      "retention": "public tip removed after private Release SHA-256 reconciliation; disposition metadata lives in config/storage/raw_material_policy.json"
+    }
+  ],
+  "local_transient_rules": [
+    {"include": ["data/processed/indexes/*.sqlite*"], "classification": "local_rebuildable_index", "tracked": false, "gitignore_marker": "data/processed/indexes/*.sqlite*", "rebuild": "search/fetch auto-build from tracked active and candidate JSONL"},
+    {"include": ["data/processed/indexes/*.db*"], "classification": "local_rebuildable_index", "tracked": false, "gitignore_marker": "data/processed/indexes/*.db*", "rebuild": "local only"},
+    {"include": ["apps/memory-atlas/dist/**"], "classification": "build_output", "tracked": false, "gitignore_marker": "dist/", "rebuild": "npm run build --prefix apps/memory-atlas"},
+    {"include": ["apps/memory-atlas/node_modules/**"], "classification": "dependency_cache", "tracked": false, "gitignore_marker": "node_modules/", "rebuild": "npm ci --prefix apps/memory-atlas"},
+    {"include": ["**/__pycache__/**"], "classification": "interpreter_cache", "tracked": false, "gitignore_marker": "__pycache__/", "rebuild": "automatic"},
+    {"include": ["**/*.tsbuildinfo"], "classification": "compiler_cache", "tracked": false, "gitignore_marker": "*.tsbuildinfo", "rebuild": "TypeScript build"},
+    {"include": ["data/run_logs/**/*.log", "data/run_logs/**/*stdout*", "data/run_logs/**/*stderr*", "data/run_logs/**/*transcript*", "data/run_logs/**/*.tmp"], "classification": "unbounded_run_output", "tracked": false, "gitignore_markers": ["data/run_logs/**/*.log", "data/run_logs/**/*stdout*", "data/run_logs/**/*stderr*", "data/run_logs/**/*transcript*", "data/run_logs/**/*.tmp"], "rebuild": "not retained; use local artifact storage"}
+  ],
+  "safe_deletions": [
+    {
+      "scope": "token_usage",
+      "base_file_count": 18,
+      "base_bytes": 688409,
+      "base_collection_sha256": "cf468984a70bb9ff3d15c156f77ad2c7e613604c9469612d7fa97f6f6d444037",
+      "active_consumer_count_before": 0,
+      "active_reference_markers": ["token_usage/old-mac-20260630"],
+      "reason": "legacy numeric package has no active consumer; current telemetry has a single canonical destination",
+      "replacement": "data/run_logs/token_usage",
+      "recovery": "git restore --source=ac871bd40082f4cb8a607d7e37c8750f50522018 -- OpenAIDatabase/token_usage"
+    },
+    {
+      "scope": "data/processed/indexes/memory_index.sqlite",
+      "base_file_count": 1,
+      "base_bytes": 1531904,
+      "base_collection_sha256": "132d1d919f6b066fcd8252652a07773a70412740530732789cd4e8be9e0f2007",
+      "active_consumer_count_before": 5,
+      "reason": "local database is rebuildable from tracked source JSONL and must not be a product fact source",
+      "replacement": "search/fetch auto-builds the ignored local index when absent",
+      "recovery": "run a read-only search or fetch command to rebuild locally"
+    }
+  ],
+  "accepted_inventory": {
+    "target_tracked_files_before": 132,
+    "target_tracked_files_after": 121,
+    "target_tracked_bytes_before": 46307127,
+    "target_tracked_bytes_after": 44241294,
+    "safe_deletion_file_count": 11,
+    "safe_deletion_bytes": 2065833,
+    "tracked_transient_after": 0,
+    "no_consumer_generated_after": 0,
+    "unclassified_target_after": 0
+  },
+  "collection_hash_algorithm": "sha256 of sorted path NUL bytes NUL file_sha256 newline records",
+  "privacy_boundary": {
+    "session_archive_payload_read": false,
+    "session_archive_public_tip_retired": true,
+    "numeric_payload_semantic_read": false,
+    "file_bytes_used_for_sha256_only": true,
+    "credentials_read": false
+  }
+}

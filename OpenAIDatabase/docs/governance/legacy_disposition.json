@@ -1,0 +1,197 @@
+{
+  "schema_version": "openai_database.legacy_governance_disposition.v1",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0004",
+  "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0004",
+  "legacy_dashboard_mode": "frozen_read_only",
+  "canonical_editable_truth": [
+    {
+      "path": "OpenAIDatabase/docs/governance/project.yaml",
+      "domain": "project_features_models_formulas_parameters_evidence",
+      "writer": "one selected OpenAIDatabase Task Run"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/roadmap.yaml",
+      "domain": "stage_phase_task_gate_acceptance_progress",
+      "writer": "one selected OpenAIDatabase Task Run"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/events.jsonl",
+      "domain": "append_only_material_project_events",
+      "writer": "one selected OpenAIDatabase Task Run"
+    },
+    {
+      "path": "OpenAIDatabase/VERSION",
+      "domain": "product_version",
+      "writer": "owner-authorized release Task"
+    },
+    {
+      "path": "OpenAIDatabase/CHANGELOG.md",
+      "domain": "owner_facing_release_change_summary",
+      "writer": "one selected OpenAIDatabase Task Run"
+    }
+  ],
+  "derived_human_views": [
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md"
+  ],
+  "derived_human_writer": "scripts/lean_governance.py render --project OpenAIDatabase to an untracked review destination",
+  "derived_human_tracking": "retired_from_current_tree_by_repository_split; deterministic_on_demand_only",
+  "reader_groups": {
+    "legacy_status_compatibility": [
+      ".github/workflows/project-governance.yml",
+      "scripts/generate_governance_dashboard.py",
+      "scripts/validate_ci_attestation.py",
+      "scripts/validate_governance_sync.py",
+      "scripts/validate_information_quality.py",
+      "scripts/validate_project_governance.py"
+    ],
+    "legacy_planning_compatibility": [
+      "scripts/generate_governance_dashboard.py",
+      "scripts/validate_governance_sync.py",
+      "scripts/validate_information_quality.py",
+      "scripts/validate_project_governance.py"
+    ],
+    "legacy_semantic_compatibility": [
+      "OpenAIDatabase/README.md",
+      "scripts/generate_governance_dashboard.py",
+      "scripts/validate_governance_sync.py",
+      "scripts/validate_information_quality.py",
+      "scripts/validate_project_governance.py",
+      "scripts/validate_semantic_extractors.py"
+    ],
+    "historical_event_compatibility": [
+      "scripts/generate_governance_dashboard.py",
+      "scripts/governance_id_audit.py",
+      "scripts/validate_governance_sync.py",
+      "scripts/validate_project_governance.py"
+    ]
+  },
+  "retained_legacy_files": [
+    {
+      "path": "OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml",
+      "role": "legacy_generated_status",
+      "reader_group": "legacy_status_compatibility",
+      "former_writer": "scripts/generate_governance_dashboard.py",
+      "bytes": 5543,
+      "sha256": "6a926cf6afeab7d644c1bb08b3de7b50a1d5574e136266038081a422759cec2d"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+      "role": "legacy_planning_evidence",
+      "reader_group": "legacy_planning_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 15742,
+      "sha256": "99ff1169d6dfa6df5813419870994ae6a958c8ee4e183c008d1d2200b66b10fd"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+      "role": "legacy_development_evidence",
+      "reader_group": "legacy_planning_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 37294,
+      "sha256": "1858950a74e2922e01108b15c817170b4b817ff7441f310dc97549662623bae2"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/LOCAL_HISTORY_IMPORTS_MOVE_20260630.md",
+      "role": "historical_migration_evidence",
+      "reader_group": "legacy_planning_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 2195,
+      "sha256": "d03f77e05fa651fa229e318c4e810fdd3126033f4caaaef131860737d45242fb"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+      "role": "legacy_semantic_evidence",
+      "reader_group": "legacy_semantic_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 10814,
+      "sha256": "64b02cf6e67517ec7b4b8318abac57b991a560d6a6c2a71faf34973964f3b7f4"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+      "role": "legacy_generated_status",
+      "reader_group": "legacy_status_compatibility",
+      "former_writer": "scripts/generate_governance_dashboard.py",
+      "bytes": 4790,
+      "sha256": "4e9b16d6c5c05c2ae3670006b22415f921b55692a24d38e008214aeb9d3c949e"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/STATUS.md",
+      "role": "legacy_generated_status",
+      "reader_group": "legacy_status_compatibility",
+      "former_writer": "scripts/generate_governance_dashboard.py",
+      "bytes": 2040,
+      "sha256": "fcb96fe65dfaa4b7ae8c497bd3b14ac0c797d56eaed510786e696542b9e0ef29"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+      "role": "legacy_semantic_evidence",
+      "reader_group": "legacy_semantic_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 10250,
+      "sha256": "dc06f31d6defb8d99162a3627a9b1f57a12ada2fdde0601a9c2dd6940de4555e"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+      "role": "legacy_version_evidence",
+      "reader_group": "legacy_planning_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 4609,
+      "sha256": "d9a68115c2077b54d05c61b559c4590742a80b5d9d476ca90a3d510bf6d1ebe9"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+      "role": "legacy_task_evidence",
+      "reader_group": "legacy_planning_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 33438,
+      "sha256": "92c453a5ef7813c57ea74845fd77a42cf9d36074808cf5b7e8484271af96a202"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/development_events.jsonl",
+      "role": "legacy_append_only_event_evidence",
+      "reader_group": "historical_event_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 76191,
+      "sha256": "b9efd198e19b191ff23de15361c18dfc291b8cc2788dd9e856c8cf06e3acf222"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/formula_registry.yaml",
+      "role": "legacy_semantic_evidence",
+      "reader_group": "legacy_semantic_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 34299,
+      "sha256": "b7b2f6303d09b8333e46174384035b91383ca53dcbd7a1d1e1913144120ef549"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/model_registry.yaml",
+      "role": "legacy_semantic_evidence",
+      "reader_group": "legacy_semantic_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 17294,
+      "sha256": "14ee5d489edbcbf682f398e561bff11a316c2f6f083be6163be0035aca3a42ae"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/parameter_registry.csv",
+      "role": "legacy_semantic_evidence",
+      "reader_group": "legacy_semantic_compatibility",
+      "former_writer": "historical_governance_tasks",
+      "bytes": 80306,
+      "sha256": "310cd30d5f3374ef01c293f9912fe74e539fc39ac9146a82089f249f95efdce1"
+    }
+  ],
+  "freeze_collection": {
+    "count": 14,
+    "bytes": 334805,
+    "sha256": "c455178e70d2dec8b94ed7cc25fd7a0a73da0b44977aae162bf1f7e6dbf86d01"
+  },
+  "disposition": {
+    "editable_legacy_truth_count": 0,
+    "files_deleted": 3,
+    "files_moved": 0,
+    "compatibility_strategy": "retain exact legacy bytes and active readers; render retired root human views only to an untracked review destination",
+    "replacement": "Lean v2 canonical editable truth plus deterministic on-demand Chinese human views"
+  }
+}

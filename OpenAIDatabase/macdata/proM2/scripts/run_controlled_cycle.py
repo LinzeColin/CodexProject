@@ -9,8 +9,8 @@ installs launchd/cron jobs. After a verified GitHub upload it may run the
 owner-confirmed cleanup policy for Docker, Homebrew, system cache best-effort
 purge, project cache whitelist paths, GitHub/Codex collaboration hygiene, and
 its own macdata cache. It writes records inside its own macdata device directory
-and uses a short-lived temporary clone to upload daily records to a
-device-specific GitHub archive branch.
+and publishes daily records through short-lived Automation C PR branches into
+``main``.
 """
 from __future__ import annotations
 
@@ -23,7 +23,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -32,6 +31,11 @@ SCRIPT_PATH = Path(__file__).resolve()
 DEVICE_ROOT = SCRIPT_PATH.parents[1]
 CONFIG_PATH = DEVICE_ROOT / 'config' / 'device_config.json'
 OWNER_CONFIRMATIONS_PATH = DEVICE_ROOT / 'config' / 'owner_confirmations.json'
+OPENAI_DATABASE_ROOT = DEVICE_ROOT.parents[1]
+if str(OPENAI_DATABASE_ROOT) not in sys.path:
+    sys.path.insert(0, str(OPENAI_DATABASE_ROOT))
+
+from macdata.automation_c import AutomationCError, publish_snapshot, simulate_snapshot
 
 HIGH_RISK_SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9]{20,}"),
@@ -464,6 +468,7 @@ def require_owner_confirmations(config: Dict[str, Any]) -> Dict[str, Any]:
         'run_full_cycle_confirmed',
         'allow_plaintext_device_metrics_to_github',
         'allow_github_upload',
+        'allow_short_lived_pr_to_main',
         'allow_delete_local_macdata_older_than_3_days_after_verified_upload',
         'allow_development_cache_cleanup_after_verified_upload',
         'allow_post_run_github_hygiene_after_verified_upload',
@@ -475,6 +480,12 @@ def require_owner_confirmations(config: Dict[str, Any]) -> Dict[str, Any]:
         raise SystemExit(f'owner_confirmations.json 未确认必要项：{missing}')
     if owner.get('confirmed_device_key') != config['device_key']:
         raise SystemExit(f'owner_confirmations.json 设备键不匹配：{owner.get("confirmed_device_key")} != {config["device_key"]}')
+    if owner.get('branch_strategy') != 'automation_c_short_lived_pr':
+        raise SystemExit('owner_confirmations.json branch_strategy 必须为 automation_c_short_lived_pr')
+    if owner.get('base_branch') != config['base_branch']:
+        raise SystemExit('owner_confirmations.json base_branch 与设备配置不一致')
+    if owner.get('migration_authority_task_id') != config['transaction_task_id']:
+        raise SystemExit('owner_confirmations.json migration_authority_task_id 与设备配置不一致')
     return owner
 
 
@@ -700,31 +711,6 @@ def cleanup_development_environment(repo_root: Path, config: Dict[str, Any], dry
     }
 
 
-def normalized_branch_name(branch: str, remote: str = 'origin') -> str:
-    branch = (branch or '').strip()
-    prefix = f'{remote}/'
-    if branch.startswith(prefix):
-        branch = branch[len(prefix):]
-    return branch
-
-
-def is_managed_temporary_branch(branch: str, config: Dict[str, Any]) -> bool:
-    policy = config.get('post_run_hygiene_policy', {})
-    branch = normalized_branch_name(branch, config.get('default_remote', 'origin'))
-    if not branch:
-        return False
-    protected = set(policy.get('protected_branches', []))
-    protected.add(policy.get('default_main_branch', 'main'))
-    protected.add(config.get('default_archive_branch', ''))
-    if branch in protected:
-        return False
-    prefixes = policy.get('temporary_branch_prefixes', [])
-    if prefixes and not any(branch.startswith(prefix) for prefix in prefixes):
-        return False
-    required = policy.get('temporary_branch_required_substrings', [])
-    return all(token in branch for token in required)
-
-
 def gh_json(args: List[str], timeout: int = 30, cwd: Optional[Path] = None) -> List[Dict[str, Any]]:
     res = cmd(['gh'] + args, cwd=cwd, timeout=timeout)
     if not res.get('ok') or not res.get('stdout'):
@@ -737,82 +723,52 @@ def gh_json(args: List[str], timeout: int = 30, cwd: Optional[Path] = None) -> L
 
 
 def cleanup_github_hygiene(repo_root: Path, config: Dict[str, Any], dry_run: bool = False) -> Dict[str, Any]:
+    """Audit Automation C at-rest state without mutating GitHub objects.
+
+    Branch/PR cleanup belongs exclusively to trusted Settlement. The device
+    producer may verify that the repository returned to 0/0/0, but it must not
+    become a second janitor or recreate the old issue/branch state machine.
+    """
     policy = config.get('post_run_hygiene_policy', {})
     if not policy.get('enabled'):
         return {'status': '未启用', 'target': 'github_hygiene', 'dry_run': dry_run}
     remote = config.get('default_remote', 'origin')
-    main_branch = policy.get('default_main_branch', 'main')
-    main_ref = f'{remote}/{main_branch}'
-    result: Dict[str, Any] = {
-        'status': '已执行' if not dry_run else 'dry_run',
+    origin = cmd(['git', '-C', str(repo_root), 'remote', 'get-url', remote], timeout=10)
+    if not origin.get('ok') or not origin.get('stdout'):
+        return {
+            'status': '审计失败',
+            'target': 'github_hygiene',
+            'dry_run': dry_run,
+            'error': f'无法读取 git remote {remote}',
+        }
+    heads = cmd(['git', 'ls-remote', '--heads', origin['stdout']], timeout=60)
+    prs = gh_json(['pr', 'list', '--state', 'open', '--json', 'number'], timeout=30, cwd=repo_root)
+    issues = gh_json(['issue', 'list', '--state', 'open', '--json', 'number'], timeout=30, cwd=repo_root)
+    if not heads.get('ok'):
+        return {
+            'status': '审计失败',
+            'target': 'github_hygiene',
+            'dry_run': dry_run,
+            'error': heads.get('stderr') or heads.get('stdout'),
+        }
+    branches = []
+    for line in heads.get('stdout', '').splitlines():
+        fields = line.split()
+        if len(fields) == 2 and fields[1].startswith('refs/heads/'):
+            branches.append(fields[1].removeprefix('refs/heads/'))
+    non_main = sorted(branch for branch in branches if branch != 'main')
+    ok = len(prs) == 0 and len(issues) == 0 and len(non_main) == 0 and 'main' in branches
+    return {
+        'status': '0/0/0 已验证' if ok else '0/0/0 未成立',
         'target': 'github_hygiene',
         'dry_run': dry_run,
-        'protected_branches': sorted(set(policy.get('protected_branches', []) + [main_branch, config.get('default_archive_branch', '')])),
-        'candidate_branches': [],
-        'deleted_remote_branches': [],
-        'closed_prs': [],
-        'closed_issues': [],
-        'skipped': [],
+        'delegated_to': policy.get('delegated_to'),
+        'ok': ok,
+        'open_pr': len(prs),
+        'open_issue': len(issues),
+        'non_main_branches': non_main,
+        'github_mutations': 0,
     }
-    if policy.get('git_fetch_prune', True):
-        fetch = cmd(['git', '-C', str(repo_root), 'fetch', remote, '--prune'], timeout=60)
-        result['fetch_prune'] = {'ok': fetch.get('ok'), 'stderr': fetch.get('stderr'), 'stdout': fetch.get('stdout')}
-    gh_available = cmd(['gh', '--version'], timeout=10)
-    result['github_cli_available'] = bool(gh_available.get('ok'))
-    branches = cmd(['git', '-C', str(repo_root), 'for-each-ref', '--format=%(refname:short)', f'refs/remotes/{remote}'], timeout=30)
-    if not branches.get('ok'):
-        result['status'] = '执行失败'
-        result['error'] = branches.get('stderr') or branches.get('stdout') or '无法列出远程分支'
-        return result
-    for ref in branches.get('stdout', '').splitlines():
-        ref = ref.strip()
-        if not ref or ref == f'{remote}/HEAD':
-            continue
-        branch = normalized_branch_name(ref, remote)
-        if not is_managed_temporary_branch(branch, config):
-            continue
-        merged = cmd(['git', '-C', str(repo_root), 'merge-base', '--is-ancestor', ref, main_ref], timeout=20)
-        item = {'branch': branch, 'remote_ref': ref, 'merged_to_main': bool(merged.get('ok'))}
-        result['candidate_branches'].append(item)
-        if not merged.get('ok'):
-            result['skipped'].append({'object': branch, 'reason': '未证明已合入 main'})
-            continue
-        prs = []
-        if result['github_cli_available'] and policy.get('close_open_prs_for_merged_temporary_branches', True):
-            prs = gh_json(['pr', 'list', '--state', 'open', '--head', branch, '--json', 'number,title,headRefName,url'], timeout=30, cwd=repo_root)
-            for pr in prs:
-                number = str(pr.get('number'))
-                if not number:
-                    continue
-                if dry_run:
-                    result['closed_prs'].append({'number': number, 'branch': branch, 'dry_run': True})
-                    continue
-                close = cmd(['gh', 'pr', 'close', number, '--delete-branch'], timeout=60)
-                result['closed_prs'].append({'number': number, 'branch': branch, 'ok': close.get('ok'), 'stderr': close.get('stderr'), 'stdout': close.get('stdout')})
-        if policy.get('delete_remote_temporary_branches_after_merged', True):
-            if dry_run:
-                result['deleted_remote_branches'].append({'branch': branch, 'dry_run': True})
-                continue
-            remote_ref_exists = cmd(['git', 'ls-remote', '--exit-code', '--heads', remote, branch], cwd=repo_root, timeout=30)
-            if not remote_ref_exists.get('ok'):
-                result['skipped'].append({'object': branch, 'reason': '远程分支已不存在或已由 PR close 删除'})
-                continue
-            delete = cmd(['git', '-C', str(repo_root), 'push', remote, '--delete', branch], timeout=60)
-            result['deleted_remote_branches'].append({'branch': branch, 'ok': delete.get('ok'), 'stderr': delete.get('stderr'), 'stdout': delete.get('stdout')})
-    if result['github_cli_available'] and policy.get('close_managed_issues', True):
-        for marker in policy.get('managed_issue_title_markers', []):
-            issues = gh_json(['issue', 'list', '--state', 'open', '--search', marker, '--json', 'number,title,url'], timeout=30, cwd=repo_root)
-            for issue in issues:
-                title = str(issue.get('title') or '')
-                number = str(issue.get('number') or '')
-                if not number or marker not in title:
-                    continue
-                if dry_run:
-                    result['closed_issues'].append({'number': number, 'title': title, 'dry_run': True})
-                    continue
-                close = cmd(['gh', 'issue', 'close', number, '--comment', 'Closed by macdata proM2 post-run hygiene after verified run completion.'], timeout=60)
-                result['closed_issues'].append({'number': number, 'title': title, 'ok': close.get('ok'), 'stderr': close.get('stderr'), 'stdout': close.get('stdout')})
-    return result
 
 
 def render_cn_report(metrics: Dict[str, Any], config: Dict[str, Any], upload_status: Optional[Dict[str, Any]] = None, cleanup_status: Optional[Dict[str, Any]] = None) -> str:
@@ -902,7 +858,8 @@ iCloud：本任务不使用
 | 本机任务目录 | {config['local_relative_dir']} |
 | 运行状态 | {val(upload_status.get('status'))} |
 | 上传说明 | {val(upload_status.get('message'))} |
-| 归档分支 | {val(upload_status.get('archive_branch', config['default_archive_branch']))} |
+| 持久分支 | {val(upload_status.get('base_branch', config['base_branch']))} |
+| 短命事务分支 | {val(upload_status.get('transaction_branch'))} |
 | 数据提交哈希 | {val(upload_status.get('data_commit_hash'))} |
 | 报告提交哈希 | {val(upload_status.get('report_commit_hash'))} |
 | 远程验证 | {val(upload_status.get('remote_verified'))} |
@@ -1104,102 +1061,7 @@ def archive_to_github(repo_root: Path, config: Dict[str, Any], stage: str, messa
     ok, findings = scan_for_secrets(files_for_secret_scan)
     if not ok:
         return {'ok': False, 'status': '凭证扫描失败', 'message': '检测到疑似 API key/token/password/secret，已停止上传。', 'findings': findings}
-
-    branch = config['default_archive_branch']
-    remote = config['default_remote']
-    device_rel = config['local_relative_dir']
-    origin = cmd(['git', '-C', str(repo_root), 'remote', 'get-url', remote], timeout=10)
-    if not origin['ok'] or not origin['stdout']:
-        return {'ok': False, 'status': '上传失败', 'message': f'无法读取 git remote {remote}: {origin.get("stderr") or origin.get("stdout")}' }
-    origin_url = origin['stdout']
-    tmp_parent = DEVICE_ROOT / 'data' / 'cache' / 'archive_push'
-    tmp_parent.mkdir(parents=True, exist_ok=True)
-    tmp = Path(tempfile.mkdtemp(prefix=f'{config["device_key"]}-{stage}-', dir=str(tmp_parent)))
-    work = tmp / 'repo'
-    try:
-        branch_exists = cmd(['git', 'ls-remote', '--exit-code', '--heads', origin_url, branch], timeout=30)
-        if branch_exists['ok']:
-            clone = cmd(['git', 'clone', '--depth', '1', '--single-branch', '--branch', branch, origin_url, str(work)], timeout=120)
-            if not clone['ok']:
-                return {'ok': False, 'status': '上传失败', 'message': f'临时浅克隆失败：{clone.get("stderr") or clone.get("stdout")}' }
-        else:
-            work.mkdir(parents=True, exist_ok=True)
-            init = cmd(['git', 'init'], cwd=work, timeout=20)
-            checkout = cmd(['git', 'checkout', '-B', branch], cwd=work, timeout=20)
-            remote_add = cmd(['git', 'remote', 'add', 'origin', origin_url], cwd=work, timeout=20)
-            if not (init['ok'] and checkout['ok'] and remote_add['ok']):
-                return {'ok': False, 'status': '上传失败', 'message': '初始化临时归档分支失败'}
-
-        dest_device_root = work / device_rel
-        dest_device_root.mkdir(parents=True, exist_ok=True)
-        # Copy only live data/report/latest directories, not scripts/docs, to keep archive branch lightweight.
-        copy_items = [
-            ('data/current_3days', 'data/current_3days'),
-            ('data/latest', 'data/latest'),
-            ('reports/current_3days', 'reports/current_3days'),
-            ('reports/latest', 'reports/latest'),
-        ]
-        for src_rel, dst_rel in copy_items:
-            src = DEVICE_ROOT / src_rel
-            dst = dest_device_root / dst_rel
-            if dst.exists():
-                shutil.rmtree(dst)
-            if src.exists():
-                shutil.copytree(src, dst)
-        # Apply retention to archive branch current tree. Older data remains available through GitHub history.
-        cleanup_retention([
-            dest_device_root / 'data' / 'current_3days' / 'raw',
-            dest_device_root / 'reports' / 'current_3days',
-        ], int(config['retention_days']), dry_run=False)
-        receipt_dir = dest_device_root / 'reports' / 'current_3days' / date_dir()
-        receipt_dir.mkdir(parents=True, exist_ok=True)
-        receipt_path = receipt_dir / f'{stage}_archive_receipt_{_dt.datetime.now().strftime("%H%M%S")}.json'
-        write_json(receipt_path, {
-            'device_key': config['device_key'],
-            'stage': stage,
-            'created_at_local': now_local_iso(),
-            'message_suffix': message_suffix,
-            'retention_note': '归档分支当前树只保留最近三天；更早数据通过 GitHub 提交历史保留。',
-        })
-        scan_ok, scan_findings = scan_for_secrets([p for p in dest_device_root.rglob('*') if p.is_file()])
-        if not scan_ok:
-            return {'ok': False, 'status': '凭证扫描失败', 'message': '归档工作区命中凭证类高风险模式，停止提交。', 'findings': scan_findings}
-        add = cmd(['git', 'add', device_rel], cwd=work, timeout=60)
-        if not add['ok']:
-            return {'ok': False, 'status': '上传失败', 'message': f'git add 失败：{add.get("stderr")}' }
-        status = cmd(['git', 'status', '--porcelain=v1'], cwd=work, timeout=20)
-        if not status['stdout'].strip():
-            # Force a heartbeat to satisfy every-run commit requirement.
-            heartbeat = dest_device_root / 'reports' / 'latest' / f'{stage}_heartbeat.txt'
-            write_text(heartbeat, f'{now_local_iso()} {stage} heartbeat\n')
-            cmd(['git', 'add', device_rel], cwd=work, timeout=20)
-        commit_message = f'data(macdata-{config["device_key"]}): {date_dir()} {stage} {message_suffix}'
-        commit = cmd(['git', 'commit', '-m', commit_message], cwd=work, timeout=60)
-        if not commit['ok']:
-            return {'ok': False, 'status': '上传失败', 'message': f'git commit 失败：{commit.get("stderr") or commit.get("stdout")}' }
-        local_hash = cmd(['git', 'rev-parse', 'HEAD'], cwd=work, timeout=10)
-        push = cmd(['git', 'push', 'origin', f'HEAD:{branch}'], cwd=work, timeout=120)
-        if not push['ok']:
-            return {'ok': False, 'status': '上传失败', 'message': f'git push 失败：{push.get("stderr") or push.get("stdout")}', 'local_commit_hash': local_hash.get('stdout')}
-        remote_hash_res = cmd(['git', 'ls-remote', origin_url, f'refs/heads/{branch}'], timeout=30)
-        remote_hash = (remote_hash_res.get('stdout') or '').split('\t')[0] if remote_hash_res.get('stdout') else ''
-        verified = bool(local_hash.get('stdout')) and remote_hash == local_hash.get('stdout')
-        return {
-            'ok': verified,
-            'status': '上传成功并已验证' if verified else '上传后验证失败',
-            'message': '远程分支提交哈希与本地提交哈希一致。' if verified else '远程分支提交哈希与本地提交哈希不一致。',
-            'archive_branch': branch,
-            'local_commit_hash': local_hash.get('stdout'),
-            'remote_commit_hash': remote_hash,
-            'remote_verified': verified,
-            'commit_message': commit_message,
-        }
-    finally:
-        # Always remove temporary clone to keep the local machine light.
-        try:
-            shutil.rmtree(tmp, ignore_errors=True)
-        except Exception:
-            pass
+    return publish_snapshot(repo_root, DEVICE_ROOT, config, stage, message_suffix)
 
 
 def build_run_status(
@@ -1218,7 +1080,8 @@ def build_run_status(
         'ok': ok,
         'device_key': config['device_key'],
         'run_id': rid,
-        'archive_branch': data_archive.get('archive_branch') or config['default_archive_branch'],
+        'base_branch': data_archive.get('base_branch') or config['base_branch'],
+        'transaction_branch': data_archive.get('transaction_branch'),
         'remote_verified': ok,
         'raw_data_path': raw_data_path,
         'final_report_path': final_report_path,
@@ -1278,7 +1141,8 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
         failure_report = render_cn_report(metrics, config, upload_status={
             'status': data_archive.get('status', '上传失败'),
             'message': data_archive.get('message', '未知失败'),
-            'archive_branch': config['default_archive_branch'],
+            'base_branch': config['base_branch'],
+            'transaction_branch': data_archive.get('transaction_branch'),
             'remote_verified': False,
         }, cleanup_status={'status': '未清理', 'message': '由于上传未验证成功，本机旧数据未删除。'})
         write_text(latest_report, failure_report)
@@ -1299,8 +1163,9 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     final_upload = {
         'status': data_archive.get('status'),
         'message': data_archive.get('message'),
-        'archive_branch': data_archive.get('archive_branch'),
-        'data_commit_hash': data_archive.get('local_commit_hash'),
+        'base_branch': data_archive.get('base_branch', config['base_branch']),
+        'transaction_branch': data_archive.get('transaction_branch'),
+        'data_commit_hash': data_archive.get('main_commit_hash'),
         'remote_verified': data_archive.get('remote_verified'),
     }
     final_report = render_cn_report(metrics, config, upload_status=final_upload, cleanup_status=cleanup_status)
@@ -1314,7 +1179,7 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     report_archive = archive_to_github(repo_root, config, 'report', rid, [final_report_path, latest_report, final_status_path])
     write_json(final_status_path, build_run_status(config, rid, raw_rel, final_report_rel, data_archive, cleanup_status, report_archive))
     console_upload = dict(final_upload)
-    console_upload['report_commit_hash'] = report_archive.get('local_commit_hash')
+    console_upload['report_commit_hash'] = report_archive.get('main_commit_hash')
     console_upload['remote_verified'] = bool(data_archive.get('remote_verified')) and bool(report_archive.get('remote_verified'))
     console_upload['status'] = '全部上传成功并已验证' if console_upload['remote_verified'] else '报告上传验证失败'
     console_upload['message'] = report_archive.get('message', '')
@@ -1341,7 +1206,10 @@ def write_owner_template_if_requested() -> None:
         'understand_no_timemachine_no_icloud': True,
         'understand_scripts_do_not_auto_schedule': True,
         'repo_remote_name': config['default_remote'],
-        'archive_branch': config['default_archive_branch'],
+        'base_branch': config['base_branch'],
+        'branch_strategy': 'automation_c_short_lived_pr',
+        'allow_short_lived_pr_to_main': True,
+        'migration_authority_task_id': config['transaction_task_id'],
         'notes_cn': '该文件不是凭证。不要在这里填写 API key、token、password。'
     })
     print(f'已生成：{out}')
@@ -1353,11 +1221,22 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument('--execute', action='store_true', help='明确执行完整采集、上传、验证、清理流程；不传则只输出说明')
     parser.add_argument('--preflight-only', action='store_true', help='只做设备预检，不写数据、不上传、不清理')
     parser.add_argument('--write-owner-template', action='store_true', help='生成 owner_confirmations 示例，不执行采集')
+    parser.add_argument('--simulate-transaction', action='store_true', help='只生成本地 Automation C 事务计划和源文件哈希，不访问或写入 GitHub')
+    parser.add_argument('--simulation-stage', choices=['raw', 'report'], default='raw')
+    parser.add_argument('--simulation-run-id', default='proM2-simulation')
     args = parser.parse_args(argv)
     config = load_json(CONFIG_PATH)
     repo_root = Path(args.repo_root).expanduser().resolve()
     if args.write_owner_template:
         write_owner_template_if_requested()
+        return 0
+    if args.simulate_transaction:
+        try:
+            plan = simulate_snapshot(DEVICE_ROOT, config, args.simulation_stage, args.simulation_run_id)
+        except AutomationCError as exc:
+            print(json.dumps({'ok': False, 'error': str(exc)}, ensure_ascii=False, indent=2))
+            return 60
+        print(json.dumps({'ok': True, **plan}, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     if args.preflight_only:
         owner = load_json(OWNER_CONFIRMATIONS_PATH) if OWNER_CONFIRMATIONS_PATH.exists() else None

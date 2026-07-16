@@ -43,3 +43,17 @@ work/
 
 # Large encrypted raw archives are local by default. Commit only if explicitly intended.
 data/raw_encrypted/
+
+# Retired writer destination. Current numeric telemetry lives under data/run_logs/token_usage/.
+token_usage/current-mac-latest/
+data/run_logs/token_usage/*.tmp
+data/run_logs/token_usage/**/*.tmp
+
+# Rebuildable indexes and unbounded command output stay local.
+data/processed/indexes/*.sqlite*
+data/processed/indexes/*.db*
+data/run_logs/**/*.log
+data/run_logs/**/*stdout*
+data/run_logs/**/*stderr*
+data/run_logs/**/*transcript*
+data/run_logs/**/*.tmp

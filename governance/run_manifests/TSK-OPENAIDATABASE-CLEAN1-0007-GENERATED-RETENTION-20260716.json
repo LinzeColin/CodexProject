@@ -1,0 +1,286 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0007",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.CLEAN1.0007"
+  ],
+  "iteration_id": "ST06-PHA-OPENAIDATABASE-CLEAN1-0007-001",
+  "run_id": "TSK-OPENAIDATABASE-CLEAN1-0007-GENERATED-RETENTION-20260716",
+  "generated_at": "2026-07-15T19:12:52Z",
+  "gate_status": "PASS_LOCAL",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "0b66ae8192d2285f2972516e4fe080b9d2267bb7",
+  "implementation_base_tree": "dd80f14a45d3210e726ffa7ae0ab80932f227d4d",
+  "candidate_tree_sha1_excluding_this_manifest": "f45a8816f6238c9ef6ccd61a8de4f7f72a552248",
+  "content_tree_hash": "sha256-git-ls-tree-excluding-this-manifest:598c95ccb4c63951cf597d22c2ef4bf5d076ec6d2ce199bc87a1400851a99055",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every Task file except this self-referential manifest; the final 37-Task publication run must bind the published commit.",
+  "summary": "Classify portable generated snapshots, durable audit facts, current numeric telemetry, deferred private archives and ignored local state under one fail-closed retention registry; delete only the base-fingerprinted zero-consumer legacy numeric package and the locally rebuildable SQLite index while preserving every live evidence consumer.",
+  "changed_files_declared": [
+    "OpenAIDatabase/.gitignore",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/generated_retention.json",
+    "OpenAIDatabase/data/processed/indexes/memory_index.sqlite",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/validate_generated_retention.py",
+    "OpenAIDatabase/skills/openai-memory-analysis/SKILL.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/retrieval.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/schema.md",
+    "OpenAIDatabase/tests/test_generated_retention.py",
+    "OpenAIDatabase/token_usage/README.md",
+    "OpenAIDatabase/token_usage/old-mac-20260630/README.md",
+    "OpenAIDatabase/token_usage/old-mac-20260630/SHA256SUMS",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/README.md",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/daily_usage_summary.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/deduped_usage_rows.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/monthly_usage_summary.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/raw_extracted_usage_rows.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/summary.json",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/scripts/export_numeric_token_usage.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0007-GENERATED-RETENTION-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.CLEAN1.0006",
+    "status": "PASS_LOCAL",
+    "base_commit_contains_dependency": true,
+    "base_commit": "0b66ae8192d2285f2972516e4fe080b9d2267bb7",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0006-COMMAND-CONVERGENCE-20260716.json"
+  },
+  "retention_results": {
+    "target_tracked_file_count_before": 132,
+    "target_tracked_file_count_after": 121,
+    "target_tracked_bytes_before": 46307127,
+    "target_tracked_bytes_after": 44241294,
+    "safe_deletion_file_count": 11,
+    "safe_deletion_bytes": 2065833,
+    "tracked_transient_count": 0,
+    "unclassified_target_count": 0,
+    "multiply_classified_target_count": 0,
+    "no_consumer_generated_count": 0,
+    "missing_generator_binding_count": 0,
+    "missing_consumer_binding_count": 0,
+    "missing_gitignore_marker_count": 0,
+    "safe_deletion_fingerprint_mismatch_count": 0,
+    "safe_deletion_remaining_count": 0,
+    "active_deleted_reference_count": 0,
+    "retained_drift_count": 0,
+    "retained_classification_counts": {
+      "deferred_private_archive": 5,
+      "retained_audit_fact": 21,
+      "retained_documentation": 5,
+      "retained_generated": 67,
+      "retained_human_review_fact": 16,
+      "retained_numeric_telemetry": 7
+    },
+    "canonical_event_id": "EVT.OpenAIDatabase.CLEAN1.0005",
+    "registry_revision_before": 70,
+    "registry_revision_after": 71,
+    "registry_sha256_before": "a85972b83c92b1ad0660b1b4bdef552af6544207550201f400c9bff0acb8ed86",
+    "registry_sha256_after": "36128e7bca034209daf94910b340c0e0cba9c51d7298f956ba09983f7ce537ba",
+    "product_version_before": "0.2.0",
+    "product_version_after": "0.2.0"
+  },
+  "deleted_collections": [
+    {
+      "path": "OpenAIDatabase/token_usage",
+      "file_count": 10,
+      "bytes": 533929,
+      "collection_sha256": "d3affee9e7c60e0081227618c0bcab9f8e98d7136732322e76b754f26e55d0ab",
+      "active_consumer_count_before": 0,
+      "replacement": "OpenAIDatabase/data/run_logs/token_usage",
+      "recovery": "restore from implementation base 0b66ae8192d2285f2972516e4fe080b9d2267bb7"
+    },
+    {
+      "path": "OpenAIDatabase/data/processed/indexes/memory_index.sqlite",
+      "file_count": 1,
+      "bytes": 1531904,
+      "collection_sha256": "132d1d919f6b066fcd8252652a07773a70412740530732789cd4e8be9e0f2007",
+      "active_consumer_count_before": 5,
+      "replacement": "ignored local index automatically rebuilt from tracked active/candidate JSONL by search/fetch",
+      "recovery": "run a read-only search or fetch command"
+    }
+  ],
+  "corrected_retention_decision": {
+    "initial_candidates": [
+      "OpenAIDatabase/data/run_logs/evidence/OAIDB-SM-P0-R1-final-gates.txt",
+      "OpenAIDatabase/data/run_logs/evidence/TASK-OAI-D-001-route-startup.txt"
+    ],
+    "consumer_regression_result": "FAIL because structured PASS rows still reference the evidence files",
+    "correction": "both files restored byte-for-byte from HEAD and classified as retained audit facts",
+    "restored_sha256": [
+      "cac4b005e8bfa605855c1883b9d36b24a30ecf2e13eeadd2538e08d0459de19c",
+      "ddeffbc7a35f1ef7b873979ef16c4d7fffb9e3fcc9237d01f3718ba2c140d6c0"
+    ],
+    "consumer_changes_used_to_hide_dependency": false
+  },
+  "normal_build_reproducibility": {
+    "command": "npm run build --prefix OpenAIDatabase/apps/memory-atlas",
+    "exit_code": 0,
+    "task_diff_sha256_before": "5e2888647caa233e5ee52d73b4d9be25a82ef1089b90bd8ea0206d876a03bdfd86",
+    "task_diff_sha256_after": "5e2888647caa233e5ee52d73b4d9be25a82ef1089b90bd8ea0206d876a03bdfd86",
+    "status_sha256_before": "fca9904bb4c6de559f27ed8a6ca01edef34388e436054e05c8508dc2e43a6c65",
+    "status_sha256_after": "fca9904bb4c6de559f27ed8a6ca01edef34388e436054e05c8508dc2e43a6c65",
+    "tracked_tree_changed": false,
+    "ignored_dist_generated": true
+  },
+  "changed_files_actual": [
+    "OpenAIDatabase/.gitignore",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/generated_retention.json",
+    "OpenAIDatabase/data/processed/indexes/memory_index.sqlite",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/validate_generated_retention.py",
+    "OpenAIDatabase/skills/openai-memory-analysis/SKILL.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/retrieval.md",
+    "OpenAIDatabase/skills/openai-memory-analysis/references/schema.md",
+    "OpenAIDatabase/tests/test_generated_retention.py",
+    "OpenAIDatabase/token_usage/README.md",
+    "OpenAIDatabase/token_usage/old-mac-20260630/README.md",
+    "OpenAIDatabase/token_usage/old-mac-20260630/SHA256SUMS",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/README.md",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/daily_usage_summary.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/deduped_usage_rows.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/monthly_usage_summary.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/raw_extracted_usage_rows.csv",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/data/summary.json",
+    "OpenAIDatabase/token_usage/old-mac-20260630/codex-numeric-token-usage-export-20260630/scripts/export_numeric_token_usage.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0007-GENERATED-RETENTION-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0007-GENERATED-RETENTION-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0007-GENERATED-RETENTION-20260716.json"
+  ],
+  "test_commands": [
+    "python3 -m json.tool OpenAIDatabase/config/storage/generated_retention.json",
+    "python3 -m py_compile OpenAIDatabase/scripts/validate_generated_retention.py OpenAIDatabase/tests/test_generated_retention.py",
+    "python3 -B OpenAIDatabase/scripts/validate_generated_retention.py",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py",
+    "python3 -m unittest -q OpenAIDatabase.tests.test_generated_retention OpenAIDatabase.tests.test_directory_lifecycle OpenAIDatabase.tests.test_openai_memory_analysis OpenAIDatabase.tests.test_personalization_architecture OpenAIDatabase.tests.test_codex_history_exports OpenAIDatabase.tests.test_codex_memory_sync",
+    "npm run build --prefix OpenAIDatabase/apps/memory-atlas",
+    "python3 -B -m unittest tests.governance.test_openai_database_lean_convergence tests.governance.test_governance_artifact_policy -q",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/validate_information_quality.py --project OpenAIDatabase --fast --fail-on-error",
+    "targeted sensitive-token scan over added/modified files only",
+    "git diff --cached --check",
+    "GitHub read-only PR/Issue/non-main-branch check"
+  ],
+  "test_results": [
+    {
+      "result": "PASS",
+      "observed": "Generated retention and directory lifecycle validators returned errors=[] with every acceptance hard-zero metric at 0."
+    },
+    {
+      "result": "PASS",
+      "observed": "Twenty-four focused retention, lifecycle, search, personalization, export and sync consumer tests passed."
+    },
+    {
+      "result": "PASS",
+      "observed": "JSON parsing, targeted Python compile and the Memory Atlas TypeScript/Vite production build passed; the normal build left Task diff and status hashes unchanged."
+    },
+    {
+      "result": "PASS",
+      "observed": "Sixteen combined Lean convergence and artifact-policy tests passed after updating the canonical 69/61-hour roadmap assertions."
+    },
+    {
+      "result": "PASS",
+      "observed": "Deterministic human render drift/reference issues were 0/0; rendered files total 42849 bytes."
+    },
+    {
+      "result": "PASS",
+      "observed": "ID audit revision 71 resolved 11804/11804 identifier references exactly once; information-quality validation returned errors=0 warnings=0."
+    },
+    {
+      "result": "PASS",
+      "observed": "Changed-only governance sync/semantic validation, targeted sensitive scan and Git diff checks passed."
+    },
+    {
+      "result": "PASS",
+      "observed": "GitHub read-only terminal state remained PR 0, Issue 0, branches main only, remote main 5ff1f3c5ce49d0bb5466125333b873082d2ddd58."
+    }
+  ],
+  "known_validation_scope_note": {
+    "command": "python3 -B scripts/lean_governance.py validate --project OpenAIDatabase --semantic",
+    "project_result": "OpenAIDatabase errors=0 warnings=0",
+    "process_exit": 1,
+    "reason": "the command also emitted 62 unrelated pre-existing KMFA/root governance debts despite project-scoped selection",
+    "task_response": "did not modify unrelated projects; used changed-only enforced semantic validation as the scoped hard gate"
+  },
+  "evidence_refs": [
+    "OpenAIDatabase/config/storage/generated_retention.json",
+    "OpenAIDatabase/scripts/validate_generated_retention.py",
+    "OpenAIDatabase/tests/test_generated_retention.py",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "governance/id_registry.json"
+  ],
+  "security_boundary": {
+    "credential_material_read": false,
+    "historical_numeric_csv_json_payload_semantic_read": false,
+    "historical_numeric_readme_and_sha_manifest_read": true,
+    "historical_numeric_file_bytes_used_for_sha256_only": true,
+    "session_archive_payload_read": false,
+    "session_archive_changed": false,
+    "cross_project_log_metadata_overread_once": true,
+    "cross_project_content_read": false,
+    "cross_project_write": false,
+    "classifier_scope_corrected_to_openaidatabase": true,
+    "temporary_public_evidence_restore_copy_misdirected_to_thread_scratch_and_removed": true,
+    "temporary_restore_copy_residual_file_count": 0,
+    "diagnostic_build_atlas_apply_output_reverted": true,
+    "private_data_changed": false,
+    "runtime_local_index_contract_changed": true,
+    "model_formula_parameter_values_changed": false,
+    "product_version_changed": false,
+    "github_writes": 0,
+    "history_rewrites": 0
+  },
+  "github_baseline": {
+    "owner_repo": "LinzeColin/CodexProject",
+    "pull_requests": 0,
+    "issues": 0,
+    "non_main_branches": 0,
+    "remote_main_sha": "5ff1f3c5ce49d0bb5466125333b873082d2ddd58"
+  },
+  "rollback": "Revert the single local Task commit to restore the base-fingerprinted legacy token package and tracked SQLite index and remove the generated-retention contract/ignore rules. Do not rewrite history or mutate GitHub; session_history and all live evidence consumers remain preserved.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.CLEAN1.0007 local generated-retention acceptance",
+  "ci_run_reference": "NOT_RUN_LOCAL_ONLY_MAIN_PUBLICATION_DEFERRED_UNTIL_37_OF_37"
+}

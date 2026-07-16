@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from .memory_test_support import write_canonical_memory
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/build_memory_atlas_data.py"
@@ -246,7 +248,7 @@ class MemoryAtlasVisualWorkflowDataTests(unittest.TestCase):
                 database_dir / "data/memory/active/active_memory.jsonl",
                 [
                     {
-                        "id": "memory_fixture",
+                        "id": "mem_memory_fixture",
                         "date": "2026-07-01",
                         "statement": "Memory Atlas R6 derived fixture",
                         "memory_tier": "核心画像",
@@ -255,6 +257,15 @@ class MemoryAtlasVisualWorkflowDataTests(unittest.TestCase):
                         "validity": "长期",
                         "confidence": "high",
                     }
+                ],
+            )
+            write_canonical_memory(
+                database_dir,
+                [
+                    json.loads(line)
+                    for line in (database_dir / "data/memory/active/active_memory.jsonl")
+                    .read_text(encoding="utf-8")
+                    .splitlines()
                 ],
             )
             visual_map_path = database_dir / "机器治理/可视化配置/human_question_map.v1_2_s11_p4.json"

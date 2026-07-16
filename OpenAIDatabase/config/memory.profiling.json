@@ -1,0 +1,180 @@
+{
+  "schema_version": "openai_database.memory_profiling_contract.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0003",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0003",
+  "mode": "DETERMINISTIC_PROFILE_DERIVED_OUTPUT_ONLY",
+  "profile_as_of_date": "2026-07-16",
+  "dependency": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0002",
+    "contract": "config/memory.sharding.json",
+    "gate_status": "PASS_LOCAL_DETERMINISTIC_SHARDING"
+  },
+  "inputs": {
+    "active": {
+      "path": "data/memory/active/active_memory.jsonl",
+      "file_count": 1,
+      "record_count": 278,
+      "bytes": 1082592,
+      "collection_sha256": "048209a23ec63ab4144812ed424c50f2d330dea664abcf0a13b8b4e909cfaa7c"
+    },
+    "candidates": {
+      "glob": "data/memory/candidates/*.memory_candidates.jsonl",
+      "file_count": 9,
+      "record_count": 1702,
+      "bytes": 2665418,
+      "collection_sha256": "814ddae11c60a49b47ffb20fc3c9f3cc8c8a4cd8ffa66b9c0c28287a03d07e4b"
+    },
+    "curation": {
+      "path": "data/memory/curation/core_profile_review.json",
+      "file_count": 1,
+      "override_count": 12,
+      "bytes": 8154,
+      "collection_sha256": "9cc6952bd7962832f951c5b79d8ad5bcbad77e2177879d5210c5356a896afc96"
+    },
+    "secret_refs": {
+      "glob": "data/memory/secret_refs/*.secret_refs.jsonl",
+      "file_count": 8,
+      "record_count": 0,
+      "bytes": 0,
+      "collection_sha256": "08e8985fdf7e3570de5dccafc5337e173c343562670849183779e5e8e0807e9d"
+    }
+  },
+  "outputs": {
+    "migration_map": "data/derived/migration/memory_migration_map.v1.jsonl",
+    "quality_report": "data/derived/migration/memory_quality_report.v1.json",
+    "max_file_bytes": 921600,
+    "canonical_memory_write_count": 0,
+    "canonical_memory_write_owner_task": "TSK.OpenAIDatabase.PAM1.0004"
+  },
+  "identity": {
+    "legacy_id_pattern": "^mem_[0-9a-f]{16}$",
+    "domain": "union(active.id, candidates.id, secret_refs.memory_id, curation.overrides keys)",
+    "expected_unique_id_count": 278,
+    "exactly_one_disposition": true,
+    "memory_key_algorithm": "sha256(kind + NUL + scope.type + NUL + scope.key + NUL + normalized_statement)",
+    "memory_key_prefix": "memory:"
+  },
+  "material_consistency_fields": [
+    "statement",
+    "category",
+    "sensitivity",
+    "source_kind",
+    "source",
+    "date",
+    "validity"
+  ],
+  "source_contract": {
+    "allowed_source_kinds": [
+      "openai_export",
+      "codex_pack"
+    ],
+    "active_curated_scope": {
+      "type": "global",
+      "key": "owner"
+    },
+    "fallback_scope_type": "conversation",
+    "fallback_scope_key": "sha256 of the opaque conversation_id or source reference",
+    "raw_instruction_trust": "none"
+  },
+  "disposition_contract": {
+    "allowed": [
+      "migrate-active",
+      "migrate-candidate",
+      "retire",
+      "raw-evidence-only",
+      "prohibited",
+      "owner-decision"
+    ],
+    "precedence": [
+      "prohibited",
+      "owner-decision",
+      "raw-evidence-only",
+      "retire",
+      "migrate-active",
+      "migrate-candidate"
+    ],
+    "raw_evidence_actions": [
+      "backup"
+    ],
+    "retire_actions": [
+      "deprecate",
+      "ignore"
+    ],
+    "retire_categories": [
+      "deprecated_info",
+      "temporary_or_sensitive"
+    ],
+    "retire_validities": [
+      "临时"
+    ],
+    "active_gate": {
+      "action": "add",
+      "curation_status": "accepted_core_distilled",
+      "memory_tier": "核心画像",
+      "source_required": true,
+      "evidence_required": true,
+      "security_finding_count": 0,
+      "material_conflict_count": 0,
+      "semantic_duplicate_group_size": 1,
+      "verification_state": "verified"
+    },
+    "default_supported_record_disposition": "migrate-candidate",
+    "unknown_or_ambiguous_disposition": "owner-decision"
+  },
+  "quality_contract": {
+    "age_bucket_days": [
+      30,
+      90,
+      365
+    ],
+    "age_alone_changes_disposition": false,
+    "required_active_coverage_basis_points": {
+      "source": 10000,
+      "valid_time": 10000,
+      "recorded_time": 10000,
+      "evidence": 10000
+    },
+    "per_nonempty_class_sample_count": 1,
+    "expected_disposition_counts": {
+      "migrate-active": 6,
+      "migrate-candidate": 108,
+      "retire": 84,
+      "raw-evidence-only": 80,
+      "prohibited": 0,
+      "owner-decision": 0
+    }
+  },
+  "security": {
+    "credential_finding_types": [
+      "aws_access_key",
+      "bearer_token",
+      "credential_assignment",
+      "github_token",
+      "openai_api_key",
+      "private_key"
+    ],
+    "suspected_credential_action": "FAIL_CLOSED_WITHOUT_VALUE_ECHO",
+    "report_value_fields_forbidden": [
+      "statement",
+      "source",
+      "evidence",
+      "reason",
+      "review_reason",
+      "title",
+      "security_finding_value"
+    ],
+    "absolute_local_source_ref_action": "OWNER_DECISION_WITHOUT_VALUE_ECHO",
+    "symlink_or_path_traversal_action": "FAIL_CLOSED"
+  },
+  "current_task_effects": {
+    "active_memory_rows_modified": 0,
+    "candidate_memory_rows_modified": 0,
+    "curation_rows_modified": 0,
+    "secret_ref_rows_modified": 0,
+    "canonical_record_files_written": 0,
+    "legacy_writer_changes": 0,
+    "legacy_reader_changes": 0,
+    "database_service_dependency_additions": 0,
+    "business_remote_writes": 0
+  }
+}

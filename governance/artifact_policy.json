@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "policy_id": "CodexProject-root-governance-artifact-policy-v1",
+  "owner": "repository-owner",
+  "canonical_resources": [
+    {
+      "path": "governance/projects.yaml",
+      "fact_domain": "registered_project_inventory",
+      "writer": "owner-authorized root governance task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "governance/id_registry.json",
+      "fact_domain": "governance_identifier_allocation",
+      "writer": "scripts/governance_id_allocator.py",
+      "retention": "repository_lifetime_append_only"
+    },
+    {
+      "path": "docs/governance/STANDARD.md",
+      "fact_domain": "root_governance_standard",
+      "writer": "owner-authorized root governance task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "governance/artifact_policy.json",
+      "fact_domain": "evidence_and_artifact_retention",
+      "writer": "owner-authorized artifact migration task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "governance/workflow_policy.json",
+      "fact_domain": "workflow_topology_permissions_and_action_pins",
+      "writer": "owner-authorized workflow security task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "governance/repository_hygiene_policy.json",
+      "fact_domain": "tracked_object_retention_and_repository_hygiene",
+      "writer": "owner-authorized repository hygiene task",
+      "retention": "repository_lifetime"
+    }
+  ],
+  "derived_views": [
+    {
+      "path": "README.md",
+      "source_refs": [
+        "governance/projects.yaml",
+        "docs/governance/STANDARD.md",
+        "governance/artifact_policy.json"
+      ],
+      "writer": "human-maintained derived view",
+      "editable_fact_source": false,
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+      "source_refs": [
+        "governance/workflow_policy.json"
+      ],
+      "writer": "scripts/workflow_security_audit.py render",
+      "editable_fact_source": false,
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "docs/governance/REPOSITORY_HYGIENE.md",
+      "source_refs": [
+        "governance/repository_hygiene_policy.json"
+      ],
+      "writer": "human-maintained derived view",
+      "editable_fact_source": false,
+      "retention": "repository_lifetime"
+    }
+  ],
+  "contract_resources": [
+    {
+      "path": "governance/schemas/run_manifest.schema.json",
+      "owner": "repository-owner",
+      "writer": "owner-authorized schema task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "docs/governance/agent_loop/TASK_PACK_DUAL_PLANE_SPEC.md",
+      "owner": "repository-owner",
+      "writer": "owner-authorized task-pack contract task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "docs/governance/agent_loop/TASK_PACK_TEMPLATE.md",
+      "owner": "repository-owner",
+      "writer": "owner-authorized task-pack contract task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "governance/schemas/workflow_policy.schema.json",
+      "owner": "repository-owner",
+      "writer": "owner-authorized workflow security task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "governance/schemas/repository_hygiene_policy.schema.json",
+      "owner": "repository-owner",
+      "writer": "owner-authorized repository hygiene task",
+      "retention": "repository_lifetime"
+    },
+    {
+      "path": "OpenAIDatabase/docs/governance/legacy_disposition.json",
+      "owner": "OpenAIDatabase privacy_owner + product_owner",
+      "writer": "TSK.OpenAIDatabase.CLEAN1.0004",
+      "retention": "until_explicit_owner_authorized_legacy_retirement"
+    }
+  ],
+  "compact_receipts": {
+    "directory": "governance/run_manifests",
+    "basename_prefix": "TSK-",
+    "extension": ".json",
+    "writer": "one selected Task Run",
+    "append_only": true,
+    "max_bytes": 65536,
+    "required_pointer_fields": [
+      "task_id",
+      "acceptance_ids",
+      "content_tree_hash",
+      "changed_files_actual",
+      "test_commands",
+      "test_results",
+      "evidence_refs",
+      "binding_status"
+    ],
+    "forbidden_recursive_keys": [
+      "command_output",
+      "full_log",
+      "full_output",
+      "raw_evidence",
+      "raw_log",
+      "stderr",
+      "stdout",
+      "transcript"
+    ],
+    "retention": "repository_lifetime_compact_pointer"
+  },
+  "retained_legacy_collections": [
+    {
+      "path": "OpenAIDatabase/docs/governance",
+      "selector": "basename_allowlist:ASSURANCE_STATUS.yaml,DELIVERY_PLAN.md,DEVELOPMENT_LEDGER.md,LOCAL_HISTORY_IMPORTS_MOVE_20260630.md,MODEL_SPEC.md,OWNER_STATUS.md,STATUS.md,TRACEABILITY_MATRIX.csv,VERSION_MATRIX.yaml,delivery_tasks.yaml,development_events.jsonl,formula_registry.yaml,model_registry.yaml,parameter_registry.csv",
+      "owner": "OpenAIDatabase privacy_owner + product_owner",
+      "retention": "read_only_until_owner_authorized_migration",
+      "reason": "Lean v2 canonical facts and deterministic Chinese human views replace these legacy editable surfaces; validators and historical references still require exact compatibility files.",
+      "mutable": false,
+      "baseline": {
+        "count": 14,
+        "bytes": 334805,
+        "sha256": "c455178e70d2dec8b94ed7cc25fd7a0a73da0b44977aae162bf1f7e6dbf86d01"
+      }
+    },
+    {
+      "path": "governance/run_manifests",
+      "selector": "basename_not_prefix:TSK-",
+      "owner": "repository-owner",
+      "retention": "read_only_until_owner_authorized_migration",
+      "reason": "Historical run evidence remains reference-compatible; new Task Runs use compact TSK receipts.",
+      "mutable": false,
+      "baseline": {
+        "count": 574,
+        "bytes": 4577432,
+        "sha256": "75cc535d1c57a90f0266ef8d26b22af49492cb3b7295322d72ac2239ae529d34"
+      }
+    },
+    {
+      "path": "governance/ci_attestations",
+      "selector": "all_files",
+      "owner": "repository-owner",
+      "retention": "read_only_until_owner_authorized_migration",
+      "reason": "The tracked attestation is legacy compatibility evidence; new attestations are CI artifacts.",
+      "mutable": false,
+      "baseline": {
+        "count": 1,
+        "bytes": 743,
+        "sha256": "eb3d26e3954ec736402fc516de0ab77ec4bf6d54ebd44c48d76b00295d8a78a9"
+      }
+    },
+    {
+      "path": "governance/review_bundles",
+      "selector": "all_files",
+      "owner": "repository-owner",
+      "retention": "read_only_until_owner_authorized_migration",
+      "reason": "Historical review bundles remain addressable but are no longer an editable governance source.",
+      "mutable": false,
+      "baseline": {
+        "count": 15,
+        "bytes": 193180,
+        "sha256": "671b9e6c88064ec194ae03c304e7b0013a0b47bc6dbcba8975201fe33e7d8faf"
+      }
+    },
+    {
+      "path": "governance/stage_gates",
+      "selector": "all_files",
+      "owner": "repository-owner",
+      "retention": "read_only_until_owner_authorized_migration",
+      "reason": "Historical stage-gate fixtures remain readable; future full reports and logs belong in CI artifacts.",
+      "mutable": false,
+      "baseline": {
+        "count": 64,
+        "bytes": 3666070,
+        "sha256": "19c08320c9f61b4e2f21f427db0a03a4672c7c25d74a73ce0abd94e14c39f684"
+      }
+    }
+  ],
+  "transient_artifacts": [
+    {
+      "locator": "$RUNNER_TEMP/governance-ci-evidence/**",
+      "writer": "Project Governance workflow",
+      "tracked": false,
+      "retention_days": 30
+    },
+    {
+      "locator": "$RUNNER_TEMP/governance-generated-views/**",
+      "writer": "Project Governance workflow",
+      "tracked": false,
+      "retention_days": 30
+    },
+    {
+      "locator": ".governance-artifacts/**",
+      "writer": "local governance commands",
+      "tracked": false,
+      "retention_days": 30
+    },
+    {
+      "locator": "governance/.artifacts/**",
+      "writer": "local governance commands",
+      "tracked": false,
+      "retention_days": 30
+    }
+  ],
+  "required_gitignore_patterns": [
+    "/.governance-artifacts/",
+    "/governance/.artifacts/",
+    "/governance/**/*.log",
+    "/governance/**/*stdout*",
+    "/governance/**/*stderr*",
+    "/governance/**/*transcript*"
+  ],
+  "human_entry": {
+    "path": "README.md",
+    "heading": "## 治理事实与证据边界",
+    "required_terms": [
+      "唯一写入者",
+      "canonical",
+      "derived",
+      "紧凑收据",
+      "CI artifact",
+      "只读兼容"
+    ],
+    "min_section_chars": 500
+  }
+}

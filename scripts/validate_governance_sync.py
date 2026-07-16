@@ -91,6 +91,7 @@ PROJECT_GOVERNANCE_FILES = {
     "STATUS.md",
     "OWNER_STATUS.md",
     "events.jsonl",
+    "legacy_disposition.json",
     "evidence_index.yaml",
     "model_extraction.yaml",
     "owner_roa_review.yaml",
@@ -104,6 +105,13 @@ PROJECT_GOVERNANCE_TOOL_FILES = {
     "scripts/manage_clean_room_release.py",
     "scripts/manage_release_artifacts.py",
     "tests/unit/test_clean_room_release_paths.py",
+}
+LEAN_FROZEN_REQUIRED_FILES = {
+    "docs/governance/project.yaml",
+    "docs/governance/roadmap.yaml",
+    "docs/governance/events.jsonl",
+    "CHANGELOG.md",
+    "VERSION",
 }
 COMMON_REQUIRED_BY_CLASS = {
     "model_behavior_change": {
@@ -428,6 +436,25 @@ def classify_changes(config: dict[str, Any], changed: list[str]) -> tuple[list[P
     return by_project, sorted(set(root_changes))
 
 
+def uses_frozen_lean_governance(project: dict[str, Any]) -> bool:
+    """Return true only for projects with an explicit frozen legacy disposition."""
+    disposition_path = (
+        ROOT
+        / str(project.get("path") or "")
+        / "docs"
+        / "governance"
+        / "legacy_disposition.json"
+    )
+    try:
+        disposition = json.loads(disposition_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return (
+        disposition.get("legacy_dashboard_mode") == "frozen_read_only"
+        and int((disposition.get("disposition") or {}).get("editable_legacy_truth_count", -1)) == 0
+    )
+
+
 def validate_diff_contract(validation: SyncValidation, project_changes: list[ProjectChange]) -> None:
     for change in project_changes:
         scope = project_scope(change.project)
@@ -438,7 +465,16 @@ def validate_diff_contract(validation: SyncValidation, project_changes: list[Pro
             "governance_only_change", "trivial_change", "dual_plane_change"}
         if not actionable_classes:
             continue
-        missing = sorted(change.required_governance_files - change.updated_governance_files)
+        required = set(change.required_governance_files)
+        updated = set(change.updated_governance_files)
+        if uses_frozen_lean_governance(change.project):
+            # A project that explicitly froze its old registries/ledgers must not
+            # mutate those hash-locked files just to satisfy a later code or data
+            # change. Its canonical Lean facts and deterministic human views are
+            # the complete auditable replacement bundle.
+            required = set(LEAN_FROZEN_REQUIRED_FILES)
+            updated.update(project_relative(path, change.project) for path in change.files)
+        missing = sorted(required - updated)
         if missing:
             validation.error(
                 scope,
@@ -544,6 +580,11 @@ def validate_event_files_changed(
     changed_only: bool = False,
 ) -> None:
     for change in project_changes:
+        if uses_frozen_lean_governance(change.project):
+            # Frozen legacy development_events.jsonl is compatibility evidence,
+            # not a current writer. Compact changed run manifests cover the
+            # exact diff while canonical events carry the owner-facing facts.
+            continue
         event_path = "docs/governance/development_events.jsonl"
         if event_path not in change.updated_governance_files:
             continue

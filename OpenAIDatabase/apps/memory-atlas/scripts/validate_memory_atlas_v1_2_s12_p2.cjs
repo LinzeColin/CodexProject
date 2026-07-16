@@ -314,7 +314,7 @@ function validatePromptOutputs() {
 }
 
 function validateAtlasctlGenerate() {
-  const result = parseJsonFromStdout(run("python3", ["scripts/atlasctl.py", "generate-personalization-prompt"], { cwd: repoRoot, timeout: 180000 }));
+  const result = parseJsonFromStdout(run("python3", ["scripts/atlasctl.py", "generate-personalization-prompt", "--apply"], { cwd: repoRoot, timeout: 180000 }));
   assertCondition(
     result.status === "PASS" &&
       result.task_id === taskId &&

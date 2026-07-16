@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/governance/schemas/id_registry.schema.json",
+  "title": "CodexProject Governance ID V2 Registry",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "registry_revision",
+    "repository",
+    "last_updated_at",
+    "bootstrap",
+    "allocations",
+    "aliases",
+    "migrated_projects"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "registry_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "repository": {
+      "const": "LinzeColin/CodexProject"
+    },
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bootstrap": {
+      "type": "object",
+      "required": [
+        "imported_at",
+        "implementation_base_sha",
+        "source_package_sha256",
+        "task_registry_sha256",
+        "roadmap_sha256",
+        "task_count"
+      ],
+      "properties": {
+        "imported_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "implementation_base_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "source_package_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "task_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "roadmap_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "task_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "allocations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/task_allocation"
+          },
+          {
+            "$ref": "#/$defs/event_allocation"
+          },
+          {
+            "$ref": "#/$defs/goal_allocation"
+          }
+        ]
+      }
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/alias"
+      }
+    },
+    "migrated_projects": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/segment"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "segment": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Za-z0-9]*$"
+    },
+    "git_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]{2,127}$"
+    },
+    "allocation_common": {
+      "type": "object",
+      "required": [
+        "kind",
+        "identifier",
+        "project",
+        "program",
+        "idempotency_key",
+        "allocated_from_base_sha",
+        "source_ref"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "project": {
+          "$ref": "#/$defs/segment"
+        },
+        "program": {
+          "$ref": "#/$defs/segment"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/idempotency_key"
+        },
+        "allocated_from_base_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "allocated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "task_allocation": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/allocation_common"
+        },
+        {
+          "type": "object",
+          "required": [
+            "acceptance_id",
+            "sequence",
+            "dependencies"
+          ],
+          "properties": {
+            "kind": {
+              "const": "TSK"
+            },
+            "identifier": {
+              "pattern": "^TSK\\.[A-Z][A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*\\.[0-9]{4}$"
+            },
+            "acceptance_id": {
+              "type": "string",
+              "pattern": "^ACC\\.[A-Z][A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*\\.[0-9]{4}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999
+            },
+            "dependencies": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^TSK\\.[A-Z][A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*\\.[0-9]{4}$"
+              }
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "event_allocation": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/allocation_common"
+        },
+        {
+          "type": "object",
+          "required": [
+            "sequence"
+          ],
+          "properties": {
+            "kind": {
+              "const": "EVT"
+            },
+            "identifier": {
+              "pattern": "^EVT\\.[A-Z][A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*\\.[0-9]{4}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "goal_allocation": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/allocation_common"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "PG"
+            },
+            "identifier": {
+              "pattern": "^PG\\.[A-Z][A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*$"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "alias": {
+      "type": "object",
+      "required": [
+        "project",
+        "kind",
+        "legacy_id",
+        "target_id"
+      ],
+      "properties": {
+        "project": {
+          "$ref": "#/$defs/segment"
+        },
+        "kind": {
+          "enum": [
+            "TSK",
+            "ACC",
+            "PG",
+            "EVT"
+          ]
+        },
+        "legacy_id": {
+          "type": "string",
+          "minLength": 2
+        },
+        "target_id": {
+          "type": "string",
+          "pattern": "^(TSK|ACC|PG|EVT)\\."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

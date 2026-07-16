@@ -211,6 +211,8 @@ class CrossAgentMemoryAdapterTests(unittest.TestCase):
             self.assertEqual(set(first_manifest["projections"]), {"chatgpt", "codex", "claude"})
             self.assertEqual(first_manifest["schema_version"], generator.BUNDLE_SCHEMA_VERSION)
             self.assertEqual(first_manifest["generator_version"], generator.BUNDLE_GENERATOR_VERSION)
+            self.assertNotIn("repo_head", first_manifest)
+            self.assertNotIn("working_tree_dirty", first_manifest)
             self.assertEqual(
                 first_manifest["projection_input_files"],
                 [record["path"] for record in first_manifest["projection_input_records"]],

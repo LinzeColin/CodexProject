@@ -19,8 +19,8 @@ review 读取。
   "plan_required": false,
   "production_deploy": false,
   "project": "agent-loop",
-  "roadmap_task_id": "AGENT-LOOP-T01",
-  "acceptance_id": "AGENT-LOOP-A01",
+  "roadmap_task_id": "TSK.CodexProject.AGENTLOOP.0001",
+  "acceptance_id": "ACC.CodexProject.AGENTLOOP.0001",
   "allowed_paths": ["docs/governance/agent_loop/**"],
   "forbidden_paths": ["AGENTS.md", "Alpha/**"],
   "validation_commands": ["python3 scripts/agent_loop/validate_taskpack.py --taskpack taskpack.md"],
@@ -78,31 +78,16 @@ sections。
 Validator 只匹配 Markdown 二级标题：以 `##` 开头的 heading。正文里的随机文本
 不会被当作 section。
 
-## Ingestion Modes
+## Validation and publication
 
-同一个 Task Pack 可以通过三种方式进入 workflow：
+Task Pack 可以用本地 validator 或只读 `workflow_dispatch` 校验。只读 workflow
+只把输入写到 runner 临时目录并运行 validator；它不创建 Issue、branch、PR、
+artifact 或 merge。
 
-- `workflow_dispatch`: 粘贴到 `taskpack` 输入。
-- `issues` opened/edited/labeled: issue body 就是 Task Pack。可信作者创建或编辑
-  包含 metadata 的 issue 时不需要手动加标签；workflow 会读取 live issue labels，
-  自动加 `agent:run`、`source:chatgpt-approved`、`agent:running`，并让重复
-  opened/labeled 触发安全跳过。
-- `repository_dispatch`: event type 为 `agent_loop_taskpack`，payload 中
-  `taskpack` 字段就是 Task Pack。
-
-三种入口都会先写入：
-
-```text
-/tmp/agent_loop/taskpack.raw.md
-```
-
-然后 routing/autofill 层生成：
-
-```text
-/tmp/agent_loop/taskpack.md
-```
-
-后续所有自动化只读取这个文件。
+发布是独立的外部身份边界。授权用户先推送一个临时的 same-repository branch，
+再显式运行 `scripts/agent_loop/submit_taskpack.py --confirm-publish`。脚本创建一个
+绑定 Task ID、Acceptance ID、head SHA 和 base SHA 的 PR。GitHub Actions 不持有
+publisher credential。
 
 ## Project Routing
 
@@ -123,21 +108,21 @@ Workflow 可以补全缺失的 routing metadata，但只在
 `TASKPACK_ROUTING_POLICY.md` 允许且项目唯一时补全。多项目必须拆分；模糊项目
 必须 blocked。
 
-## C2/C3/D1 Entry Points
+## Entry points
 
-- C2: Issue body 作为已批准 Task Pack，标签触发自动运行。
-- C3: Issue Form 或 prefilled issue URL 降低非代码 Owner 的操作成本。
-- D1: `scripts/agent_loop/submit_taskpack.py` 用本机 `gh` 创建 issue、发送
-  dispatch 或触发 workflow fallback。
+- C2 Issue trigger：已退役。
+- C3 Issue Form / prefilled Issue：已退役。
+- D1 external publisher：当前唯一写入口，只能创建一个 marker-bound PR。
+- Read-only validation workflow：可选校验入口，不具备写权限。
 
-所有入口都不能加入 Planner Agent，不能在 GitHub Actions 内重新生成 Task
-Pack，不能从模糊 issue 推断需求。
+任何入口都不能在 GitHub Actions 内重新生成 Task Pack，也不能从模糊文本推断
+需求或项目范围。
 
 ## T1 示例
 
 ```text
 <!-- AGENT_LOOP_METADATA
-{"agent_loop_version":"1.0","source":"chatgpt-approved","repository":"LinzeColin/CodexProject","risk_tier":"T1","auto_merge":true,"plan_required":false,"production_deploy":false,"project":"docs","roadmap_task_id":"DOC-T01","acceptance_id":"DOC-A01","allowed_paths":["docs/governance/agent_loop/**"],"forbidden_paths":["AGENTS.md","Alpha/**","EEI/**"],"validation_commands":["python3 scripts/agent_loop/validate_taskpack.py --taskpack taskpack.md"],"max_autofix_loops":1}
+{"agent_loop_version":"1.0","source":"chatgpt-approved","repository":"LinzeColin/CodexProject","risk_tier":"T1","auto_merge":true,"plan_required":false,"production_deploy":false,"project":"docs","roadmap_task_id":"TSK.CodexProject.DOCS.0001","acceptance_id":"ACC.CodexProject.DOCS.0001","allowed_paths":["docs/governance/agent_loop/**"],"forbidden_paths":["AGENTS.md","Alpha/**","EEI/**"],"validation_commands":["python3 scripts/agent_loop/validate_taskpack.py --taskpack taskpack.md"],"max_autofix_loops":1}
 END_AGENT_LOOP_METADATA -->
 ```
 
@@ -145,6 +130,6 @@ END_AGENT_LOOP_METADATA -->
 
 ```text
 <!-- AGENT_LOOP_METADATA
-{"agent_loop_version":"1.0","source":"chatgpt-approved","repository":"LinzeColin/CodexProject","risk_tier":"T2","auto_merge":true,"plan_required":true,"production_deploy":false,"project":"governance","roadmap_task_id":"GOV-T02","acceptance_id":"GOV-A02","allowed_paths":["docs/governance/**","scripts/agent_loop/**"],"forbidden_paths":["AGENTS.md","Alpha/**","EEI/**","PFI/**"],"validation_commands":["python3 scripts/agent_loop/validate_plan.py --plan codex-plan.md --taskpack taskpack.md"],"max_autofix_loops":2}
+{"agent_loop_version":"1.0","source":"chatgpt-approved","repository":"LinzeColin/CodexProject","risk_tier":"T2","auto_merge":true,"plan_required":true,"production_deploy":false,"project":"governance","roadmap_task_id":"TSK.CodexProject.GOVERNANCE.0002","acceptance_id":"ACC.CodexProject.GOVERNANCE.0002","allowed_paths":["docs/governance/**","scripts/agent_loop/**"],"forbidden_paths":["AGENTS.md","Alpha/**","EEI/**","PFI/**"],"validation_commands":["python3 scripts/agent_loop/validate_plan.py --plan codex-plan.md --taskpack taskpack.md"],"max_autofix_loops":2}
 END_AGENT_LOOP_METADATA -->
 ```

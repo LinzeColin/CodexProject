@@ -369,9 +369,12 @@ def check_owner_decision(gate: Gate, assurance: dict[str, Any], path: Path, proj
 
 def check_events(gate: Gate, project: dict[str, Any]) -> None:
     project_id = str(project.get("project_id"))
-    path = ROOT / str(project.get("path")) / "docs/governance/development_events.jsonl"
+    project_root = ROOT / str(project.get("path"))
+    canonical_mode = dashboard.legacy_project_views_frozen(project_root)
+    event_name = "events.jsonl" if canonical_mode else "development_events.jsonl"
+    path = project_root / "docs/governance" / event_name
     if not path.exists():
-        gate.add("ERROR", "EVENT_FILE", "development_events.jsonl missing", path, project_id)
+        gate.add("ERROR", "EVENT_FILE", f"{event_name} missing", path, project_id)
         return
     now = datetime.now(timezone.utc)
     for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -382,9 +385,64 @@ def check_events(gate: Gate, project: dict[str, Any]) -> None:
         except json.JSONDecodeError as exc:
             gate.add("ERROR", "EVENT_JSON", f"Line {lineno}: {exc}", path, project_id)
             continue
-        dt = parse_time(str(event.get("timestamp") or event.get("date") or ""))
+        dt = parse_time(
+            str(event.get("occurred_at") or event.get("timestamp") or event.get("date") or "")
+        )
         if dt and dt > now + timedelta(minutes=5):
             gate.add("ERROR", "FUTURE_EVENT", f"Line {lineno} timestamp is in the future", path, project_id)
+        if canonical_mode:
+            required = (
+                "event_id",
+                "event_type",
+                "occurred_at",
+                "summary",
+                "task_id",
+                "fact_level",
+                "evidence_refs",
+                "runtime_behavior_changed",
+            )
+            missing = [field for field in required if event.get(field) in (None, "")]
+            if missing:
+                gate.add(
+                    "ERROR",
+                    "EVENT_FIELDS",
+                    f"Line {lineno} canonical event missing {missing}",
+                    path,
+                    project_id,
+                )
+            if event.get("schema_version") != "codexproject.event.v1":
+                gate.add(
+                    "ERROR",
+                    "EVENT_SCHEMA",
+                    f"Line {lineno} canonical event schema is not codexproject.event.v1",
+                    path,
+                    project_id,
+                )
+            if not dt:
+                gate.add(
+                    "ERROR",
+                    "EVENT_TIME",
+                    f"Line {lineno} canonical occurred_at is invalid",
+                    path,
+                    project_id,
+                )
+            if not isinstance(event.get("evidence_refs"), list):
+                gate.add(
+                    "ERROR",
+                    "EVENT_EVIDENCE",
+                    f"Line {lineno} canonical evidence_refs must be a list",
+                    path,
+                    project_id,
+                )
+            if not isinstance(event.get("runtime_behavior_changed"), bool):
+                gate.add(
+                    "ERROR",
+                    "EVENT_RUNTIME",
+                    f"Line {lineno} canonical runtime_behavior_changed must be boolean",
+                    path,
+                    project_id,
+                )
+            continue
         commit = str(event.get("result_commit") or event.get("git_commit") or "").upper()
         if commit in {"", "PENDING", "PENDING_CI"}:
             binding = str(event.get("binding_status") or "")

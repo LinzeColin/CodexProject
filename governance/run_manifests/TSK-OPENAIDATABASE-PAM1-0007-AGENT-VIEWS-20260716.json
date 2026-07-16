@@ -1,0 +1,232 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0007-AGENT-VIEWS-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0007",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0007"
+  ],
+  "iteration_id": "ST08-PHA-OPENAIDATABASE-PAM1-0007-001",
+  "generated_at": "2026-07-16T05:19:07Z",
+  "gate_status": "PASS_LOCAL_GENERATED_AGENT_MEMORY_VIEWS",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "628a624a8eae3e085c992268a3376c427a64fb45",
+  "remote_main_sha_at_run_start": "deac8a486c0973505c241f772a13af3716b5c4c8",
+  "candidate_tree_sha1_excluding_this_manifest": "6d0cc2f8552f104a0d4dff4c16f3eab9c7456182",
+  "content_tree_hash": "8fb5ffcbd71c070ef34e9a21abfcb801c665d20b42900449ad41f7cc9f5db61f",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 25-file staged closure before this manifest is added; content hash is SHA-256 over sorted path, NUL, staged blob SHA-256 and LF tuples. Final 37/37 publication binds the published business commit.",
+  "summary": "Generate one-object Agent memory discovery and bounded deterministic hot context from canonical records without a second editable truth.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0007 local generated Agent memory view acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_AND_GOVERNANCE_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0007-MANIFEST"
+  ],
+  "scope": {
+    "compact_path": "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "compact_bytes": 3635,
+    "machine_path": "OpenAIDatabase/data/memory/agent-memory.json",
+    "machine_bytes": 5812,
+    "startup_discovery_object_count": 1,
+    "marker_occurrence_count_in_generated_views": 1,
+    "hot_record_count": 6,
+    "canonical_record_count": 198,
+    "canonical_dataset_sha256": "fa9edb7191c5751331f52f4103aa1a6709a7a1e22044d6d85e38ed7d771ca927",
+    "canonical_source_commit_sha": "c2256a091f38031cc237586c71de5226eb3e3e82",
+    "canonical_business_data_files_modified": 0,
+    "raw_business_data_files_modified": 0,
+    "database_or_service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0006",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0006-MEMORY-CLI-20260716.json",
+    "gate_status": "PASS_LOCAL_UNIFIED_MEMORY_CLI",
+    "implementation_commit": "628a624a8eae3e085c992268a3376c427a64fb45"
+  },
+  "view_contract": {
+    "protocol": "linze-agent-memory",
+    "protocol_version": "3.0",
+    "schema": "OpenAIDatabase/config/agent-memory.schema.json",
+    "marker": "LINZE_AGENT_MEMORY_V3",
+    "generator": "OpenAIDatabase/scripts/memory.py",
+    "plan_command": "python3 scripts/memory.py build --agent-views",
+    "check_command": "python3 scripts/memory.py build --agent-views --check",
+    "write_guards": [
+      "deterministic_plan_first",
+      "--apply",
+      "exact_head_base_sha",
+      "content_bound_idempotency_key",
+      "single_flight_lock"
+    ],
+    "selection": "status=active AND importance=high AND public_repository_allowed=true",
+    "compact_max_bytes": 24576,
+    "machine_max_bytes": 262144,
+    "generated_only": true,
+    "editable_truth_count": 0,
+    "raw_source_refs_in_views": false,
+    "transport_acceptance_deferred_to": "TSK.OpenAIDatabase.PAM1.0008"
+  },
+  "hard_gate_result": {
+    "discovery_exactly_one_object": true,
+    "views_rebuild_byte_identically": true,
+    "manual_edit_drift_fails": true,
+    "guarded_repair_passes": true,
+    "idempotent_replay_passes": true,
+    "marker_unique_in_generated_views": true,
+    "compact_size_passes": true,
+    "machine_size_passes": true,
+    "schema_manifest_shard_compact_hashes_bound": true,
+    "canonical_source_commit_bound": true,
+    "generated_views_are_not_editable_truth": true,
+    "raw_instruction_trust_none": true,
+    "raw_source_ref_exposure_count": 0,
+    "credential_shape_count": 0,
+    "canonical_or_raw_business_write_count": 0
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-017",
+    "formula_id": "FORM-017",
+    "parameter_ids": [
+      "PARAM-103"
+    ]
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/scripts/memory.py": "8f942ed1c1cf80811821d34bcfb7116a9afcc8823b9e9d7e1515cfe91b09a47b",
+    "OpenAIDatabase/config/agent-memory.schema.json": "d02ec961a0f409842d220ca430429540e5990fc46889d3f717c7263739c0d895",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md": "6c4a8a9265a0ea96d6c9f9ce84ef7d3b2ce10566e77fcd281cf33f16bae6c9e6",
+    "OpenAIDatabase/data/memory/agent-memory.json": "7476fee02a7e8ae8d80a0d5f46dfb7506ee99e26676f670e8f81feda43b32551",
+    "OpenAIDatabase/tests/test_agent_memory_views.py": "3820ffbce874187287145d041d550cf67b64e98a987ba1030a35dcd27a364448",
+    "OpenAIDatabase/config/context_sources/resource_routes.json": "ceae386a7dc8b2149d7ea4d6b2a0da5ebcdaf8415eb9cfb2920222e6acdf255b",
+    "OpenAIDatabase/config/storage/generated_retention.json": "bb7eb8c4a32885f228de9fcbc5acfa3a7a194c6f161e6992517580592f04074b",
+    "OpenAIDatabase/config/command_ownership.json": "903dc2971b3fb84c3c48b85f3abba05cd5368a3d2443c690cca7d989e6d52131",
+    "governance/id_registry.json": "716e4f748f2f96818f3558252d401b38e24ef1dea8ba0f123d7f7b06c69afac7"
+  },
+  "test_commands": [
+    "python3 -B -m unittest -q tests.test_agent_memory_views",
+    "python3 -B -m unittest -q tests.test_agent_memory_views tests.test_memory_cli tests.test_personalization_architecture tests.test_command_ownership tests.test_directory_lifecycle tests.test_generated_retention tests.test_verification_policy",
+    "python3 -B scripts/run_verification.py --tier fast",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub audit"
+  ],
+  "test_results": [
+    {
+      "gate": "focused_agent_memory_views",
+      "result": "PASS",
+      "observed": "3/3 tests passed using the existing four-record canonical fixture once; actual repository build has six hot records and no new business sample."
+    },
+    {
+      "gate": "related_regression",
+      "result": "PASS",
+        "observed": "29/29 CLI, route, ownership, lifecycle, generated-retention and verification-policy tests passed after final governance closure."
+    },
+    {
+      "gate": "fast_tier",
+      "result": "PASS",
+      "observed": "19/19 fast tests passed; 59 test files have one owner each with zero flaky, skip, duplicate or CI drift."
+    },
+    {
+      "gate": "generated_artifacts",
+      "result": "PASS",
+      "observed": "AGENT_MEMORY.md/agent-memory.json are 3635/5812 bytes. Repeated build is identical; startup read_order has one object; manual drift is detected and guarded apply repairs both files."
+    },
+    {
+      "gate": "terminal_remote",
+      "result": "PASS",
+      "observed": "Remote main advanced by three commits and 45 files after run start; exact overlap with the 26-file local Task closure is zero. Open PR/open issue/non-main branch=0/0/0 and this Run made no remote write."
+    }
+  ],
+  "changed_files_declared": [
+    "AGENTS.md",
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/context_sources/resource_routes.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/generated_retention.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/validate_generated_retention.py",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_personalization_architecture.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0007-AGENT-VIEWS-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "AGENTS.md",
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/context_sources/resource_routes.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/generated_retention.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/validate_generated_retention.py",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_personalization_architecture.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0007-AGENT-VIEWS-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0007-AGENT-VIEWS-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0007-AGENT-VIEWS-20260716.json"
+  ],
+  "known_boundaries": [
+    "No canonical or raw business record was created, changed, retired, disputed or deleted in this Task.",
+    "The two tracked views are generated derivatives; their only writer is memory.py and any manual edit fails the exact drift check.",
+    "The five transport identifiers are declared handshake targets; five-profile compatibility proof remains exclusively PAM1.0008.",
+    "Mutation admission and PR transaction semantics remain PAM1.0009; full conflict lifecycle remains PAM1.0010 and forgetting remains PAM1.0011.",
+    "No resident service, vector database, custom MCP, dependency, deployment or remote business object was added.",
+    "Business publication remains deferred until all 37 Task Pack tasks pass."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the two generated views, handshake schema and route/ownership bindings; restore the prior startup route. Canonical/raw business bytes, dependencies, services and remote state require no compensation."
+}

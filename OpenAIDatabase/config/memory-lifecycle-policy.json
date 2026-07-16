@@ -1,0 +1,39 @@
+{
+  "schema_version": "openai_database.memory_lifecycle_policy.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0010",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0010",
+  "normalization": {
+    "unicode": "NFKC",
+    "case": "casefold",
+    "whitespace": "collapse_unicode_whitespace",
+    "punctuation": "preserve",
+    "embedding_as_unique_decision": false
+  },
+  "classification_order": [
+    "exact_duplicate",
+    "normalized_duplicate",
+    "overlapping_validity_conflict",
+    "same_key_conflict"
+  ],
+  "identity_fields": ["memory_key", "scope.type", "scope.key"],
+  "valid_time": {
+    "interval": "half_open",
+    "current_axis": "execution_time_utc",
+    "as_of_axis": "valid_time"
+  },
+  "recorded_time": {
+    "audit_axis": "recorded_time",
+    "transition_log": "recorded_time.transitions",
+    "recorded_as_of_requires_valid_as_of": true
+  },
+  "settlement": {
+    "active_duplicate_conflict_max": 0,
+    "unresolved_conflict": "block",
+    "embedding_only_resolution": "forbidden",
+    "uncertain_resolution": "abstain"
+  },
+  "legacy": {
+    "missing_transition_log": "derive_supersession_time_from_successor_recorded_at_or_abstain",
+    "canonical_business_record_rewrite_in_task": false
+  }
+}

@@ -1,6 +1,31 @@
 __pycache__/
 *.py[cod]
 
+# Repository hygiene: local/generated/cache/archive outputs are not Git source.
+.DS_Store
+**/.DS_Store
+**/.cache/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/node_modules/
+**/dist/
+**/build/
+**/coverage/
+*.sqlite-wal
+*.sqlite-shm
+*.db-wal
+*.db-shm
+*.bundle
+*.bak
+*.tmp
+*.swp
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+
 # Other8 S5PAT02 future local/private runtime outputs.
 **/var/
 **/.env
@@ -22,3 +47,12 @@ arxiv-daily-push/data/heartbeat
 # wrangler 本地缓存（含各 Worker 子目录 home/ 等）
 arxiv-daily-push/deploy/cloudflare/**/.wrangler/
 arxiv-daily-push/deploy/cloudflare/.wrangler/
+
+# Full governance logs and generated evidence stay local or in short-lived CI
+# artifacts. Historical tracked files remain readable but are policy-locked.
+/.governance-artifacts/
+/governance/.artifacts/
+/governance/**/*.log
+/governance/**/*stdout*
+/governance/**/*stderr*
+/governance/**/*transcript*

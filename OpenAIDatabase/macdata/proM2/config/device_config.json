@@ -4,7 +4,7 @@
   "collect_brew": true,
   "collect_development_load": true,
   "collect_docker": true,
-  "default_archive_branch": "macdata-proM2",
+  "base_branch": "main",
   "default_remote": "origin",
   "device_key": "proM2",
   "device_label_cn": "M2 Max MacBook Pro",
@@ -35,6 +35,7 @@
     ".env raw content"
   ],
   "local_relative_dir": "OpenAIDatabase/macdata/proM2",
+  "legacy_archive_branch": "macdata-proM2",
   "no_automatic_local_scheduler": true,
   "post_upload_cleanup_policy": {
     "enabled": true,
@@ -78,29 +79,30 @@
     }
   },
   "post_run_hygiene_policy": {
+    "delegated_to": "Automation C Settlement",
     "enabled": true,
-    "git_fetch_prune": true,
     "default_main_branch": "main",
     "protected_branches": [
-      "main",
-      "macdata-proM2"
+      "main"
     ],
     "temporary_branch_prefixes": [
-      "codex/"
+      "automation-c/"
     ],
     "temporary_branch_required_substrings": [
       "macdata",
       "proM2"
     ],
-    "delete_remote_temporary_branches_after_merged": true,
-    "close_open_prs_for_merged_temporary_branches": true,
-    "close_managed_issues": true,
-    "managed_issue_title_markers": [
-      "[macdata-proM2 automation]"
-    ],
-    "github_cli_best_effort": true
+    "require_zero_open": true,
+    "require_main_only_at_rest": true
   },
+  "published_paths": [
+    "data/current_3days",
+    "data/latest",
+    "reports/current_3days",
+    "reports/latest"
+  ],
   "reasoning_effort": "xhigh",
+  "repository": "LinzeColin/CodexProject",
   "retention_days": 3,
   "schedule_cron": "10 1 * * *",
   "schema_version": "macdata-device-config-v1",
@@ -108,5 +110,10 @@
   "storage_yellow_free_gb": 200,
   "swap_red_gb": 8,
   "swap_yellow_gb": 2,
-  "timezone": "Australia/Sydney"
+  "timezone": "Australia/Sydney",
+  "transaction_acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0001",
+  "transaction_branch_prefix": "automation-c/macdata-proM2",
+  "transaction_task_id": "TSK.OpenAIDatabase.CLEAN1.0001",
+  "settlement_poll_seconds": 10,
+  "settlement_timeout_seconds": 900
 }

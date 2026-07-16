@@ -19,7 +19,6 @@ on:
         options: ["1", "2", "3"]
 
 permissions:
-  actions: read
   contents: read
 
 concurrency:
@@ -29,6 +28,9 @@ concurrency:
 jobs:
   guard:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CONFIRM_MANUAL_DELIVERY_TEST: ${{ inputs.confirm_manual_delivery_test }}
     outputs:
       should_run: ${{ steps.guard.outputs.should_run }}
     steps:
@@ -37,7 +39,7 @@ jobs:
         shell: bash
         run: |
           should_run="false"
-          if [ "${{ inputs.confirm_manual_delivery_test }}" = "SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM" ]; then
+          if [ "$CONFIRM_MANUAL_DELIVERY_TEST" = "SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM" ]; then
             should_run="true"
           fi
           printf 'should_run=%s\n' "$should_run" >> "$GITHUB_OUTPUT"
@@ -56,6 +58,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
+      INPUT_GENERATED_AT: ${{ inputs.generated_at }}
+      INPUT_MAX_RESULTS_PER_CATEGORY: ${{ inputs.max_results_per_category }}
+      CURRENT_REF_NAME: ${{ github.ref_name }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
       ADP_PRODUCTION_ENABLED: "false"
       ADP_SCHEDULED_RUN_ENABLED: "true"
       ADP_ALLOW_SMTP_SEND: "true"
@@ -67,13 +73,13 @@ jobs:
       ADP_ARXIV_TRANSIENT_RETRY_COUNT: "2"
       ADP_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS: "20"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
       - name: Stop unless default branch
         shell: bash
         run: |
-          if [ "${{ github.ref_name }}" != "${{ github.event.repository.default_branch }}" ]; then
+          if [ "$CURRENT_REF_NAME" != "$DEFAULT_BRANCH" ]; then
             echo "manual delivery test must run from the default branch after PR CI and merge"
             exit 2
           fi
@@ -81,7 +87,7 @@ jobs:
         id: generated_at
         shell: bash
         run: |
-          if [ -n "${{ inputs.generated_at }}" ]; then value="${{ inputs.generated_at }}"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
+          if [ -n "$INPUT_GENERATED_AT" ]; then value="$INPUT_GENERATED_AT"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
           service_date="$(python3 - "$value" <<'PY'
           from __future__ import annotations
 
@@ -108,7 +114,7 @@ jobs:
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
       - name: Upload manual preflight evidence
         if: always() && steps.preflight.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-manual-delivery-preflight
           path: ${{ steps.preflight.outputs.path }}
@@ -122,7 +128,7 @@ jobs:
           queue="$RUNNER_TEMP/adp-candidate-queue.json"
           mkdir -p "$artifact_dir"
           set +e
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_input" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "${{ inputs.max_results_per_category }}" --polite-delay-seconds "${ADP_ARXIV_POLITE_DELAY_SECONDS}" --transient-retry-count "${ADP_ARXIV_TRANSIENT_RETRY_COUNT}" --transient-retry-delay-seconds "${ADP_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS}" --artifact-dir "$artifact_dir" --queue-output "$queue" --json > "$report"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_input" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "$INPUT_MAX_RESULTS_PER_CATEGORY" --polite-delay-seconds "${ADP_ARXIV_POLITE_DELAY_SECONDS}" --transient-retry-count "${ADP_ARXIV_TRANSIENT_RETRY_COUNT}" --transient-retry-delay-seconds "${ADP_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS}" --artifact-dir "$artifact_dir" --queue-output "$queue" --json > "$report"
           code="$?"
           set -e
           python3 - "$report" "$code" <<'PY'
@@ -164,7 +170,7 @@ jobs:
           printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
       - name: Upload Stage 1 build report
         if: always() && steps.daily_input.outputs.report != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-manual-delivery-daily-input-build-report
           path: ${{ steps.daily_input.outputs.report }}
@@ -183,7 +189,7 @@ jobs:
           test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-email-brief.json"
       - name: Upload Stage 1 text artifacts
         if: steps.daily_input.outputs.exit_code == '0'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-phase12-delivery-artifacts
           path: |
@@ -201,7 +207,7 @@ jobs:
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
       - name: Upload manual scheduled execution evidence
         if: always() && steps.scheduled.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-manual-delivery-scheduled-execution
           path: ${{ steps.scheduled.outputs.path }}

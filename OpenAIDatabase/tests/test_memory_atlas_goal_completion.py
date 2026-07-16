@@ -75,6 +75,24 @@ def write_live_evidence(path: Path, git_commit: str) -> None:
 
 
 class MemoryAtlasGoalCompletionTests(unittest.TestCase):
+    def test_goal_completion_does_not_repeat_publish_release_in_preflight(self) -> None:
+        module = load_module()
+        publish_dir = Path("apps/memory-atlas/dist")
+        with (
+            mock.patch.object(module, "audit_acceptance", return_value={"checks": []}) as acceptance,
+            mock.patch.object(module, "cloudflare_preflight", return_value={"checks": []}) as preflight,
+            mock.patch.object(
+                module,
+                "audit_final_records",
+                return_value={"status": "PASS", "verified_requirement_count": 58, "stage_count": 14},
+            ),
+        ):
+            result = module.audit_goal_completion(ROOT, publish_dir=publish_dir)
+
+        self.assertEqual(result["status"], "LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED")
+        acceptance.assert_called_once_with(ROOT.resolve(), publish_dir, False)
+        preflight.assert_called_once_with(ROOT.resolve(), None, require_live_env=False)
+
     def test_goal_completion_reports_external_blocker_without_live_evidence(self) -> None:
         module = load_module()
 

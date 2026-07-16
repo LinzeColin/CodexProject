@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "OpenAIDatabase"
-current_stage_id: "SM-P0"
-current_phase_id: "SM-P0-RUN1"
-current_task_id: "OAIDB-SM-P0-R1"
-next_gate_id: "ACC-OAIDB-SM-P0-R1"
-total_estimated_hours: 9
-completed_estimated_hours: 8
+current_stage_id: "S5"
+current_phase_id: "S5PB"
+current_task_id: "TSK.OpenAIDatabase.PAM1.0019"
+next_gate_id: "ACC.OpenAIDatabase.PAM1.0019"
+total_estimated_hours: 255
+completed_estimated_hours: 241
 stages:
   -
     stage_id: "S5"
@@ -49,16 +49,16 @@ stages:
             - "owner_signoffs"
         tasks:
           -
-            task_id: "S5PBT03"
+            task_id: "TSK.OpenAIDatabase.OPS1.0012"
             name: "迁移 OpenAIDatabase"
             objective: "建立记忆分析能力、规则和 Roadmap 事实源。"
             status: "completed"
             estimated_hours: 4
             total_hours_percent: "2.04%"
             dependencies:
-              - "S5PBT02"
+              - "TSK.OpenAIDatabase.OPS1.0011"
             acceptance_ids:
-              - "ACC-S5PBT03"
+              - "ACC.OpenAIDatabase.OPS1.0012"
             test_commands:
               - "python -B -m unittest ...test_review9_s5pbt03_* -q"
               - "python -B scripts/lean_governance.py check-render --project OpenAIDatabase"
@@ -71,16 +71,16 @@ stages:
             risk: "范围扩张、事实失真或治理回归"
             rollback: "Revert only this task commit; retain the read-only audit evidence."
           -
-            task_id: "MACDATA-PROM2-SETUP-20260705"
+            task_id: "TSK.OpenAIDatabase.OPS1.0005"
             name: "proM2 MacData 归档与清理自动化设置"
             objective: "安装 OpenAIDatabase/macdata/proM2 任务包，按本机 M2 Max 覆盖设备预期，生成 owner confirmations，配置 GitHub 归档分支，并固定远程验证后受控清理策略。"
-            status: "in_progress"
+            status: "completed"
             estimated_hours: 1
             total_hours_percent: "0.51%"
             dependencies:
-              - "S5PBT03"
+              - "TSK.OpenAIDatabase.OPS1.0012"
             acceptance_ids:
-              - "ACC-MACDATA-PROM2-SETUP-20260705"
+              - "ACC.OpenAIDatabase.OPS1.0005"
             test_commands:
               - "python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q"
               - "python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only"
@@ -91,6 +91,704 @@ stages:
               - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
             risks: "Docker/Homebrew/系统缓存/项目缓存清理必须受远程验证和白名单约束；不得读取凭证、Time Machine、iCloud、Keychain、shell history、完整环境变量或 .env 原文。"
             rollback: "Revert setup commit；删除远程 macdata-proM2 分支前必须确认不再需要其历史。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0001"
+            name: "MacData 主分支单一化与 Automation C 短命事务"
+            objective: "保全 airM2/proM2 最新快照到 main，退役长期 macdata 分支，并将生产者切换为唯一短命 PR + trusted Settlement + 精确哈希复核。"
+            status: "in_progress"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.CodexProject.REPO1.0005"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0001"
+            test_commands:
+              - "python3 -m unittest OpenAIDatabase.macdata.tests.test_automation_c OpenAIDatabase.macdata.airM2.tests.test_macdata_package OpenAIDatabase.macdata.proM2.tests.test_macdata_package -q"
+              - "python3 -B -m py_compile OpenAIDatabase/macdata/automation_c.py OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+              - "双设备 --simulate-transaction"
+            test_results:
+              - "PASS: 25 focused tests including exact trusted Settlement provenance"
+              - "PASS: Python compile"
+              - "PASS: airM2 17 files / 90278 bytes / remote writes 0"
+              - "PASS: proM2 17 files / 101713 bytes / remote writes 0"
+              - "PENDING: 统一发布、旧分支删除、main 精确复核和最终 0/0/0"
+            evidence_refs:
+              - "OpenAIDatabase/macdata/automation_c.py"
+              - "OpenAIDatabase/macdata/tests/test_automation_c.py"
+              - "OpenAIDatabase/macdata/airM2/data"
+              - "OpenAIDatabase/macdata/proM2/data"
+            risks: "全包发布前禁止 GitHub 写入；快照不一致、凭证命中、非 trusted Settlement 或远端残留均 fail closed。"
+            rollback: "仅回退本地任务提交；本 Run 远端写入为 0。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0002"
+            name: "OpenAIDatabase 只读现状盘点与写入者覆盖审计"
+            objective: "以零 payload 读取和零仓库写入完成路径、owner、writer destination 与外部状态盘点，为 ID V2 迁移冻结可信依赖基线。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.CodexProject.REPO1.0008"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0002"
+            test_commands:
+              - "只读审计 receipt 顶层 SHA-256 复核"
+              - "1657 paths / 238 directories / 87 writer destinations 覆盖核对"
+            test_results:
+              - "PASS: 1657/1657 paths、238/238 directories、87/87 writer destinations"
+              - "PASS: payload reads 0、repo writes 0、GitHub writes 0"
+            evidence_refs:
+              - "external receipt: outputs/cleanmem_safe_takeover/ST05_PHA_validation_receipt.json"
+            risks: "该任务只证明盘点覆盖，不提升 payload、运行时或业务正确性结论。"
+            rollback: "只读任务无项目状态回滚；删除外部 receipt 不会改变仓库。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0003"
+            name: "OpenAIDatabase ID V2 迁移与 Legacy Alias"
+            objective: "将 mutable canonical references 迁移到 namespaced IDs，并以 project-scoped aliases 保留历史事件、manifest 与证据的可解析性。"
+            status: "completed"
+            estimated_hours: 6
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0002"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0003"
+            test_commands:
+              - "python3 -B -m unittest tests.governance.test_governance_id_v2 tests.governance.test_openai_database_id_migration -q"
+              - "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json"
+              - "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase"
+              - "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD"
+            test_results:
+              - "PASS: 19 focused ID V2 and OpenAIDatabase migration tests"
+              - "PASS: 103 allocations、62 Task/ACC、40 EVT、87 aliases，all references exactly-one"
+              - "PASS: strict legacy 171/171 resolved，alias ambiguity/orphan/new positional ID 0"
+              - "PASS: three human views deterministic，drift_count 0，reference_issue_count 0"
+            evidence_refs:
+              - "governance/id_registry.json"
+              - "tests/governance/test_openai_database_id_migration.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0003-ID-V2-MIGRATION-20260716.json"
+            risks: "alias 歧义、orphan dependency 或错误重写 append-only 历史均会破坏可追溯性。"
+            rollback: "回退本任务本地提交；不重写历史，不执行远端写入。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0004"
+            name: "Lean Governance 收敛与中文 Human Entries 压缩重建"
+            objective: "以 canonical facts 确定性重建完整但紧凑的三份中文入口，并冻结仍有读取者的 legacy governance views。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0003"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0004"
+            test_commands:
+              - "python3 -B -m unittest tests.governance.test_openai_database_lean_convergence tests.governance.test_governance_artifact_policy -q"
+              - "python3 -B scripts/governance_artifact_policy.py audit --json"
+              - "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase"
+              - "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD"
+            test_results:
+              - "PASS: 15 focused Lean convergence and artifact-policy tests"
+              - "PASS: duplicate editable truth 0；legacy byte lock 14/14；legacy dashboard project outputs 0"
+              - "PASS: deterministic render drift 0；three human views total <= 40,563 bytes；ID/governance/reference gates 0 errors"
+            evidence_refs:
+              - "OpenAIDatabase/docs/governance/legacy_disposition.json"
+              - "tests/governance/test_openai_database_lean_convergence.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0004-LEAN-GOVERNANCE-20260716.json"
+            risks: "删改仍有读取者的 legacy 文件或遗漏 canonical 字段会造成事实漂移与兼容性回归。"
+            rollback: "回退本任务本地提交并从 canonical facts 重渲染三份中文入口；不改写历史或远端。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0005"
+            name: "目录拓扑、数据生命周期与唯一目的地简化"
+            objective: "为每个目录和数据类别指定唯一 owner/目的地，将 current token telemetry 原样迁入 data/run_logs，并以 fail-closed validator 禁止旧 writer 与 dual-write。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0004"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0005"
+            test_commands:
+              - "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py --database-dir OpenAIDatabase --base-ref HEAD"
+              - "python3 -B -m unittest OpenAIDatabase.tests.test_directory_lifecycle OpenAIDatabase.tests.test_codex_history_exports OpenAIDatabase.tests.test_codex_memory_sync -q"
+              - "python3 -B -m unittest tests.governance.test_openai_database_lean_convergence -q"
+              - "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD"
+            test_results:
+              - "PASS: 11 focused lifecycle/export/sync tests"
+              - "PASS: 235/235 current directories owned；17 unique destinations；duplicate destination/domain 0"
+              - "PASS: 7 files / 4337 bytes source-destination exact；hash mismatch/source remaining/dual-write 0"
+              - "PASS: retired machine 10/48340 and 文档 7/10503 match base fingerprints and current remaining 0"
+              - "PASS: tracked topology 17→15 top levels and 238→235 directories including project root"
+            evidence_refs:
+              - "OpenAIDatabase/config/storage/directory_lifecycle.json"
+              - "OpenAIDatabase/scripts/validate_directory_lifecycle.py"
+              - "OpenAIDatabase/tests/test_directory_lifecycle.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0005-DIRECTORY-LIFECYCLE-20260716.json"
+            risks: "token_usage/old-mac-20260630 与 session_history/current-mac-20260630 仍含历史包；仅冻结为 read-only，分别留待 .0007/.0008 独立核验，不在本任务读取 payload 或删除。"
+            rollback: "回退本任务单一 local commit；恢复 machine/、文档/ 与旧 current token 路径及两个 writer 常量，不改写历史或远端。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0006"
+            name: "Scripts、Builders、Sync 与 CLI 入口收敛"
+            objective: "以 atlasctl 作为 canonical 命令入口，明确 implementation ownership 与写命令模式，删除已证明无引用的入口，并让 CI、App、README 与 tests 使用同一调用契约。"
+            status: "completed"
+            estimated_hours: 12
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0005"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0006"
+            test_commands:
+              - "python3 -B OpenAIDatabase/scripts/validate_command_ownership.py"
+              - "python3 -m unittest -q $(rg -l 'atlasctl|memory_atlas_command_bridge' OpenAIDatabase/tests/test_*.py)"
+              - "python3 -m unittest -q OpenAIDatabase.tests.test_command_ownership OpenAIDatabase.tests.test_directory_lifecycle"
+              - "npm run build --prefix OpenAIDatabase/apps/memory-atlas"
+              - "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD"
+            test_results:
+              - "PASS: 115 focused atlasctl/bridge regressions"
+              - "PASS: command ownership validator errors 0；20 canonical capabilities；duplicate owner/missing implementation/dead script/active missing mode 0"
+              - "PASS: top-level scripts 54→53；two unreferenced CJS entrypoints removed；referenced implementations preserved 52/52"
+              - "PASS: CI direct legacy runtime invocations 5→0；README direct legacy runtime invocations 10→0；active write invocations missing explicit mode 32→0"
+              - "PASS: nine write-capable subcommands expose and require mutually exclusive --dry-run/--apply；one deprecated thin alias has zero business logic"
+              - "PASS: Memory Atlas TypeScript/Vite production build"
+            evidence_refs:
+              - "OpenAIDatabase/config/command_ownership.json"
+              - "OpenAIDatabase/scripts/validate_command_ownership.py"
+              - "OpenAIDatabase/tests/test_command_ownership.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0006-COMMAND-CONVERGENCE-20260716.json"
+            risks: "仍被引用的 52 个 implementation scripts 保留，避免扩大为语义重构；deprecated deep-explore alias 仅作 forwarding compatibility，active caller 为零后再删除。"
+            rollback: "回退本任务单一 local commit，恢复两个删除的 CJS 入口和原调用命令；不重写历史、不执行 GitHub 写入。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0007"
+            name: "Generated、Logs、Session 与本地状态保留策略"
+            objective: "用单一 generated retention registry 区分可移植派生快照、审计事实、当前 numeric telemetry、私密 deferred archive 与本地可重建状态；仅删除经基线指纹、消费者回归和恢复路径证明安全的旧 token package 与 tracked SQLite。"
+            status: "completed"
+            estimated_hours: 6
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0006"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0007"
+            test_commands:
+              - "python3 -B OpenAIDatabase/scripts/validate_generated_retention.py"
+              - "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py"
+              - "python3 -m unittest -q OpenAIDatabase.tests.test_generated_retention OpenAIDatabase.tests.test_directory_lifecycle OpenAIDatabase.tests.test_openai_memory_analysis OpenAIDatabase.tests.test_personalization_architecture OpenAIDatabase.tests.test_codex_history_exports OpenAIDatabase.tests.test_codex_memory_sync"
+              - "npm run build --prefix OpenAIDatabase/apps/memory-atlas"
+              - "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD"
+            test_results:
+              - "PASS: 24 focused retention/lifecycle/search/personalization/export/sync consumer tests"
+              - "PASS: target tracked 121 files / 44241294 bytes；tracked transient/unclassified/multiple/no-consumer generated 0"
+              - "PASS: generator/consumer/ignore binding missing 0；safe deletion fingerprint mismatch/remaining/active deleted reference 0；retained drift 0"
+              - "PASS: 11 safe deletions / 2065833 bytes；legacy token package 10 / 533929 and local rebuildable SQLite 1 / 1531904"
+              - "PASS: normal TypeScript/Vite build；pre/post Task diff and status hashes identical"
+            evidence_refs:
+              - "OpenAIDatabase/config/storage/generated_retention.json"
+              - "OpenAIDatabase/scripts/validate_generated_retention.py"
+              - "OpenAIDatabase/tests/test_generated_retention.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0007-GENERATED-RETENTION-20260716.json"
+            risks: "session_history 五个 tracked archive/metadata 文件保持 read-only 并留待 .0008；首次 target classifier 曾越界枚举其他 project 的 .log 路径/大小/blob ID metadata，未读取内容且已立即收窄。消费者测试证明两份短 evidence 仍被 JSONL ledger 引用后已原样恢复并纳入 retained registry。"
+            rollback: "回退本任务单一 local commit，恢复旧 token package 与 tracked SQLite，并移除 generated retention registry/ignore 规则；不重写历史、不执行 GitHub 写入。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0008"
+            name: "Raw/Public/Private-Origin Archive 与大型材料治理"
+            objective: "把 tracked raw 收敛为唯一浅层 data/public_raw，永久阻断 credential 且不回显命中值，退役 session/raw tar、zip、bundle、split producer；以已验证的私有 AgentDatabase Release 保存 complete private-origin recovery，并按 owner 紧急授权净化公开历史。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0007"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0008"
+            test_commands:
+              - "python3 -B OpenAIDatabase/scripts/validate_raw_material_policy.py"
+              - "python3 -m unittest -q OpenAIDatabase.tests.test_raw_material_policy OpenAIDatabase.tests.test_codex_history_exports OpenAIDatabase.tests.test_directory_lifecycle OpenAIDatabase.tests.test_generated_retention OpenAIDatabase.tests.test_s3pdt01_privacy OpenAIDatabase.tests.test_openai_memory_analysis tests.governance.test_repository_hygiene"
+              - "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py"
+              - "python3 -B OpenAIDatabase/scripts/validate_generated_retention.py"
+              - "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD"
+            test_results:
+              - "PASS_LOCAL: private Release asset id/size/SHA-256 metadata reconciled for six legacy archive dispositions"
+              - "PASS_LOCAL: public raw pre-remediation audit 512 files / 452781632 bytes；credential/private text, unmarked binary, invalid marker/JSON and oversize all 0"
+              - "PASS_LOCAL: context-aware no-echo incident scan repaired 3 sensitive-line occurrences across 3 public-raw files；current credential-context match 0"
+              - "PASS: focused policy/export/lifecycle/privacy/consumer/hygiene regressions；owner-managed remote main/tags rewritten and verified at 5e85e7f"
+              - "RESIDUAL_EXPLICIT: GitHub internal refs/pull 272 and cached views require GitHub Support purge；no all-platform GC claim"
+            evidence_refs:
+              - "OpenAIDatabase/config/storage/raw_material_policy.json"
+              - "OpenAIDatabase/scripts/validate_raw_material_policy.py"
+              - "OpenAIDatabase/tests/test_raw_material_policy.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0008-RAW-MATERIAL-20260716.json"
+            risks: "公开 main 与两个受影响 tag 已完成 owner 授权的历史重写；GitHub 内部 refs/pull 与 cached views 不受普通 Git push 控制，必须由 GitHub Support purge。local pre-rewrite checkpoint 暂留至 Support 收口，不作为恢复明文历史的常规路径。"
+            rollback: "若 owner-managed ref 验证失败，仅在事故响应边界内从安全 checkpoint 重新生成并 force-with-lease；不得恢复含 credential 的旧公开历史。私有 Release recovery assets 不删除。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0009"
+            name: "Tests、CI、Config、依赖与可复现构建清理"
+            objective: "让所有测试和 frontend validator 只有一个 owner，以 fast/unit/security/integration/full 分层入口取代重复调用；根 CI 只执行一次仍覆盖全部本地安全/接受门的 aggregate audit，并让同一 SOURCE_DATE_EPOCH 的数据构建字节级可复现。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0008"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0009"
+            test_commands:
+              - "python3 OpenAIDatabase/scripts/run_verification.py --list"
+              - "python3 OpenAIDatabase/scripts/run_verification.py --tier full"
+              - "SOURCE_DATE_EPOCH=1784155570 python3 OpenAIDatabase/scripts/build_memory_atlas_data.py --database-dir OpenAIDatabase --output <isolated-output> (repeat twice and compare SHA-256)"
+              - "fresh temporary app copy: npm ci; npm run lint; npm run build"
+              - "python3 OpenAIDatabase/scripts/atlasctl.py audit --check goal-completion --publish-dir apps/memory-atlas/dist"
+              - "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD"
+            test_results:
+              - "PASS: full tier 253 tests in 122.889s；fast 19, unit 33, security 48, integration 153"
+              - "PASS: 52/52 test files uniquely owned；duplicate/missing/multi-owner test 0；conditional skip/known flaky/unit live side effect 0"
+              - "PASS: npm commands 182 with duplicate command body 0；177/177 frontend validator files owned；missing target 0；package-lock v3 dependency drift 0"
+              - "PASS: nested workflow/config duplicate/unpinned action/CI weakened gate 0；fast/unit/security/integration/full canonical tiers available"
+              - "PASS: SOURCE_DATE_EPOCH repeat 2 produced identical SHA-256 4f71ebc731bbcbd7faaebade56a88e15854bdc17a8e1f81796ce0cc64e446e92"
+              - "PASS: fresh npm ci installed 154 locked packages；TypeScript lint and Vite production build passed"
+              - "PASS: CI public-raw full-scan topology 7→1；single aggregate local gate passed in 263.65s and retained release/visual/acceptance/preflight/R8 checks"
+            evidence_refs:
+              - "OpenAIDatabase/config/quality/verification_policy.json"
+              - "OpenAIDatabase/scripts/run_verification.py"
+              - "OpenAIDatabase/tests/test_verification_policy.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0009-VERIFICATION-20260716.json"
+            risks: "一次完整 public_raw 内容门仍需读取 512 files / 452781269 bytes，实测约 263.65s；该门不缓存、不抽样、不跳过。Vite 仍报告两个大于 500 kB 的既有 chunk，仅为 performance warning，不在本任务做前端重构。Cloudflare live authorization 仍是独立外部边界。"
+            rollback: "回退本任务单一 local commit，恢复原 CI audit calls、动态 build clock 与测试入口；不改写历史、不执行 GitHub 写入。"
+          -
+            task_id: "TSK.OpenAIDatabase.CLEAN1.0010"
+            name: "OpenAIDatabase CLEAN Gate 独立验收"
+            objective: "从 execution base 的独立 shallow clone 重算 directory/writer/script/generated/raw/security/test/governance/large-object/budget 状态，两轮 clean build/test/render，并仅修复阻断 fresh CI 的 step 顺序与 project AGENTS 启动预算。"
+            status: "completed"
+            estimated_hours: 4
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0009"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.CLEAN1.0010"
+            test_commands:
+              - "fresh shallow/no-local clone；fetch four exact baseline SHAs；git fsck --full --strict"
+              - "directory/command/generated/raw validators"
+              - "SOURCE_DATE_EPOCH data and frontend builds twice；full verification --repeat 2"
+              - "Lean render/semantic, ID, repository hygiene and terminal GitHub audit"
+            test_results:
+              - "PASS: exact shallow/no-alternates clone and four exact baselines；fsck 0"
+              - "PASS: directory 227/227；writer/script/generated/raw/security hard-zero；public raw 513 files / 452781269 bytes"
+              - "PASS: full 253/253 ×2=506；data/frontend repeat hashes exact；AGENTS 5852 bytes；CI build-before-integration order gated"
+              - "PASS: Lean 7/7, render/reference 0/0, project semantic 0/0, hygiene PASS；terminal 0/0/0 and remote writes 0"
+            evidence_refs:
+              - "OpenAIDatabase/docs/acceptance/openai_database_clean_gate_acceptance.md"
+              - "OpenAIDatabase/config/quality/verification_policy.json"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0010-CLEAN-GATE-20260716.json"
+            risks: "GitHub Support internal-ref/cache purge and Cloudflare live authorization remain explicit external boundaries. active_memory GitHub-compatible sharding is intentionally bound to PAM1.0002, not pulled forward. Whole-repo semantic precheck retains 62 unrelated KMFA/legacy receipt findings; OpenAIDatabase project result is 0/0."
+            rollback: "Revert this Task's one local commit；restore prior CI step order and 7441-byte AGENTS；delete the disposable fresh clone；do not rewrite history or push business state."
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0001"
+            name: "Memory Record Schema V2 与单一逻辑事实源合同"
+            objective: "冻结 Schema V2 与 one-logical-truth migration contract；不迁移 data。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.CLEAN1.0010"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0001"
+            test_commands:
+              - "focused Draft202012/schema + security/Lean/ID/terminal gates"
+            test_results:
+              - "PASS: 19/19 fields；4 valid/6 invalid；legacy fields 32/32；unsafe active accepted 0"
+              - "PASS: data/runtime/db/service/dependency/remote writes 0"
+            evidence_refs:
+              - "OpenAIDatabase/config/memory.schema.json"
+              - "OpenAIDatabase/config/memory.migration.v1-to-v2.json"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0001-SCHEMA-V2-20260716.json"
+            risks: "V2 是目标合同；profiling/cutover 属 .0003/.0004。"
+            rollback: "Revert the PAM1.0001 local commit；不改 data/history/remote。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0002"
+            name: "GitHub API 兼容的确定性 Canonical Sharding"
+            objective: "冻结 <=900KiB deterministic sharding 并只读验证 278-record input。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0001"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0002"
+            test_commands:
+              - "focused/security/Lean gates；actual dry-run twice"
+            test_results:
+              - "MODEL: MOD-012/FORM-012/PARAM-093..095；899/900KiB pass，oversize/corruption reject"
+              - "PASS: 278 records -> 918848+135054 bytes；unique rebuild；discovery 1；GETs 3"
+              - "PASS: canonical/writer/reader/DB/service/dependency/remote writes 0"
+            evidence_refs:
+              - "OpenAIDatabase/config/memory.sharding.json"
+              - "OpenAIDatabase/scripts/plan_memory_shards.py"
+              - "OpenAIDatabase/tests/test_memory_sharding.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0002-SHARDING-20260716.json"
+            risks: "Verified plan only；profiling/cutover 属 .0003/.0004。"
+            rollback: "Revert this Task's one local commit；remove sharding contract/planner/test/ownership entries；legacy SHA remains unchanged；no data or remote compensation."
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0003"
+            name: "现有记忆质量剖析与迁移处置图"
+            objective: "对 active/candidates/curation/secret_refs 的每个 legacy ID 确定唯一 migration disposition；只写 redacted derived evidence，不改 canonical。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0002"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0003"
+            test_commands:
+              - "python3 -B -m unittest OpenAIDatabase.tests.test_memory_migration_profile OpenAIDatabase.tests.test_command_ownership OpenAIDatabase.tests.test_verification_policy -v"
+              - "build_memory_migration_profile.py --write；--dry-run ×2"
+              - "security/directory/Lean/ID/hygiene/diff/credential/terminal gates"
+            test_results:
+              - "MODEL: MOD-013/FORM-013/PARAM-096..098；fixed as-of, age bands report-only, one redacted sample/non-empty class"
+              - "PASS: 278/278 IDs；1980 occurrences；source/date/recorded/evidence coverage each 100%"
+              - "PASS: active/candidate/raw-only/retire/prohibited/owner=6/108/80/84/0/0；material conflict=0"
+              - "PASS: map 586685 bytes SHA 52203348…268fc；report 9101 bytes SHA 917efa8c…bf05；rerun exact"
+              - "PASS: credential=0；phone finding types only=22 IDs；record values/canonical/writer/reader/remote writes 0"
+            evidence_refs:
+              - "OpenAIDatabase/config/memory.profiling.json"
+              - "OpenAIDatabase/data/derived/migration/memory_migration_map.v1.jsonl"
+              - "OpenAIDatabase/data/derived/migration/memory_quality_report.v1.json"
+              - "OpenAIDatabase/tests/test_memory_migration_profile.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0003-PROFILE-20260716.json"
+            risks: "Only six explicitly curated core records qualify active；108 remain candidate；.0004 owns actual records/cutover。"
+            rollback: "Revert this one local commit；remove regenerated profile outputs；legacy/canonical/remote data need no compensation。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0004"
+            name: "Canonical records 迁移与单一 writer cutover"
+            objective: "按 .0003 disposition 生成唯一 V2 records dataset，切换 reader/writer/config，并将旧四目录锁为只读 evidence。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0003"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0004"
+            test_commands:
+              - "migrate_memory_records.py --dry-run ×2；idempotent --write"
+              - "run_verification.py --tier full；Lean/ID/hygiene/security/terminal gates"
+            test_results:
+              - "MODEL: MOD-014/FORM-014/PARAM-099..100；one truth，atomic replace，fail closed"
+              - "PASS: 278/278 disposition；canonical/audit-only=198/80；active/candidate/retired/disputed=6/108/84/0"
+              - "PASS: 1 shard/488877 bytes；schema/source/legacy-hash/record-hash=198/198；credential=0"
+              - "PASS: legacy writer=0；dual-write=0；old directory collection hashes unchanged"
+            evidence_refs:
+              - "OpenAIDatabase/config/memory.cutover.json"
+              - "OpenAIDatabase/data/memory/records/manifest.json"
+              - "OpenAIDatabase/scripts/migrate_memory_records.py"
+              - "OpenAIDatabase/tests/test_memory_canonical_cutover.py"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0004-CUTOVER-20260716.json"
+            risks: "Legacy evidence remains read-only until .0005 raw disposition；future mutation CLI belongs to .0006。"
+            rollback: "Revert this one local commit；remove canonical records and restore prior consumers/config；legacy bytes remain available and unchanged。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0005"
+            name: "Raw Evidence 浅层存储、Sidecar 与安全导入"
+            objective: "唯一新写入 data/public_raw/YYYY-MM；授权/sidecar/hash 绑定，raw_import 仅 candidate。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0004"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0005"
+            test_commands:
+              - "test_public_raw_import + raw policy/directory/security gates"
+              - "Lean/ID/hygiene/diff/credential/terminal gates"
+            test_results:
+              - "PASS: 11 focused import/policy/lifecycle tests；security fixtures fail closed"
+              - "PASS: security tier 76/76；raw audit 513 files/452781269 bytes，credential/instruction=0"
+              - "PASS: destination=1；part<=921600；auto-active=0；legacy moves=0；remote writes=0"
+            evidence_refs:
+              - "OpenAIDatabase/config/storage/raw_import.json"
+              - "OpenAIDatabase/config/raw_evidence.sidecar.schema.json"
+              - "OpenAIDatabase/scripts/import_public_raw_evidence.py"
+              - "OpenAIDatabase/tests/test_public_raw_import.py"
+            risks: "Public clone/fork/cache exposure；legacy flat raw remains append-only；private archives stay external。"
+            rollback: "Revert this one local Task commit；no raw data movement or remote compensation。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0006"
+            name: "统一 memory.py CLI 与确定性操作面"
+            objective: "统一 8 个离线子命令；写前 plan+base+idempotency+lock。"
+            status: "completed"
+            estimated_hours: 12
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0005"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0006"
+            test_commands:
+              - "memory CLI + related regressions；fast/security tiers"
+              - "Lean/ID/hygiene/diff/terminal gates"
+            test_results:
+              - "PASS: unified subcommands=8；new regressions 7/7；related regressions 35/35"
+              - "PASS: fast 19/19；security 83/83；owned tests=58；legacy independent writer=0"
+              - "PASS: 198-record build/export SHA=fa9edb7191c5…ca927；benchmark build/query p95=81.897/0.048ms"
+              - "PASS: guards 3/3；plan-first/lock；duplicate no-op；business/remote writes=0"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0006-MEMORY-CLI-20260716.json"
+            risks: ".0009 owns mutation admission/PR；changed canonical fails closed。"
+            rollback: "Revert Task commit；data/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0007"
+            name: "生成 AGENT_MEMORY.md 与 agent-memory.json"
+            objective: "从 canonical records 确定性生成 one-object discovery handshake 与 bounded hot context；generated-only。"
+            status: "completed"
+            estimated_hours: 6
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0006"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0007"
+            test_commands:
+              - "agent-memory view drift/determinism/size/hash/route tests"
+              - "related route/CLI/ownership/lifecycle；fast tier；Lean/ID/hygiene/diff/terminal gates"
+            test_results:
+              - "PASS: new view tests 3/3；final related regressions 29/29；fast 19/19"
+              - "PASS: AGENT_MEMORY.md=3635 bytes；agent-memory.json=5812 bytes；marker=1；startup discovery=1 object"
+              - "PASS: repeat build identical；manual-edit drift detected/repaired；idempotent replay；editable truth=0"
+              - "PASS: canonical/raw business bytes changed=0；services/dependencies/remote writes=0"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0007-AGENT-VIEWS-20260716.json"
+            risks: ".0008 owns five transport compatibility proof；generated views are not an adapter acceptance claim。"
+            rollback: "Revert this Task commit；remove two generated views/schema/route wiring；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0008"
+            name: "五类 Agent Transport Adapter 与兼容 Harness"
+            objective: "让 ChatGPT GitHub App、Codex Git、GitHub MCP、REST/HTTPS 与 local/offline snapshot 通过同一 generated handshake 读取并引用同一 hash-bound memory identity。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0007"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0008"
+            test_commands:
+              - "five-profile candidate-snapshot harness；stale/cache/ETag/tamper/fallback tests"
+              - "related regressions；fast/security tiers；Lean/ID/hygiene/diff/credential/terminal gates"
+            test_results:
+              - "PASS: 5/5 profiles complete six operations；seven identity fields identical；discovery=1；writes/full-scan=0"
+              - "PASS: new tests 3/3；related regressions 17/17；fast 19/19；security 89/89；owned tests=60"
+              - "PASS: generated views 3741/5069 bytes；adapter profile/docs/harness hashes bound；machine view remains below 6000-char startup budget"
+              - "PASS: connected GitHub App/MCP exact-ref read；authenticated REST/ETag/raw HTTPS=200/304/200 with byte parity；published memory target intentionally not claimed"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0008-TRANSPORT-COMPAT-20260716.json"
+            risks: "Remote memory object remains unpublished by owner policy；production live five-profile acceptance stays .0019；mutation admission stays .0009。"
+            rollback: "Revert this Task commit；remove profile registry/harness/docs and adapter binding；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0009"
+            name: "Mutation Envelope、Admission、幂等与 PR 事务"
+            objective: "以完整 provenance/base/idempotency 约束四类 mutation，仅在 exact Automation C candidate branch 应用。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0008"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0009"
+            test_commands:
+              - "source×operation、replay/base race、PR-plan determinism、inference=0"
+              - "related/Fast/Security；generated/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: matrix 16/16（8 admit/8 reject）；model inference persisted=0"
+              - "PASS: new tests 4/4；related regressions 25/25；Fast 19/19；Security 93/93；owned tests=61"
+              - "PASS: replay duplicate=0；main/stale/key/auth/scope/credential failures write=0"
+              - "PASS: business records changed=0；views=3845/5688 bytes；remote writes=0"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0009-MUTATION-ADMISSION-20260716.json"
+            risks: "Conflict/as-of=.0010；live E2E=.0017；production=.0019。"
+            rollback: "Revert Task commit；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0010"
+            name: "去重、冲突、Supersession 与双时间查询"
+            objective: "用确定性分类、半开 valid interval 与 recorded transition 保证 current/as-of truth 唯一。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0009"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0010"
+            test_commands:
+              - "duplicate/conflict classes；update/reversal/validity/scope/concurrent；current/as-of/recorded-as-of"
+              - "focused/CLI/views；Fast/Security；generated/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: canonical=198；four classification counts=0；active duplicate/conflict=0；unresolved=0；embedding decision=0"
+              - "PASS: Task cases 5/5；focused 15/15；CLI/views 10/10；Fast 19/19；Security 98/98；owned tests=62"
+              - "PASS: critical update new fact=100%；reversal/current/history correct；retired current=0；stale concurrent write=0；unresolved settlement write=0"
+              - "PASS: generated views=3963/5979 bytes；canonical/raw business records changed=0；remote writes=0"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0010-LIFECYCLE-BITEMPORAL-20260716.json"
+            risks: "Forgetting/negative memory/conflict resolution=.0011；remote E2E=.0017；production=.0019。"
+            rollback: "Revert Task commit；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0011"
+            name: "遗忘、退役、争议、Negative Memory 与拒答"
+            objective: "当前答案只消费 active+effective 记忆；inactive 为 audit-only；不足证据返回 UNKNOWN/abstain；负记忆只表达已证实边界。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0010"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0011"
+            test_commands:
+              - "retire/update/dispute/candidate/stale/history/negative-boundary/refusal/FAMA deterministic cases"
+              - "related/Fast/Security；generated/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: current answer statuses=[active]；inactive answer eligible=0；absence inference=0；Git erasure claim=false"
+              - "PASS: Task cases 4/4 with six deterministic evaluation cases；critical stale use=0；FAMA=1.0；abstention precision/recall=1.0/1.0"
+              - "PASS: focused regression 26/26；views/policy/cutover 17/17；generated views=4076/5863 bytes"
+              - "PASS: Fast 19/19；Security 102/102；63 test files each have exactly one owner"
+              - "PASS: canonical/raw business records changed=0；remote writes=0；full 160-case benchmark remains .0013/.0014"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0011-FORGETTING-REFUSAL-20260716.json"
+            risks: "Injection/credential/supply-chain=.0012；full Gold benchmark=.0013；required CI metrics=.0014；remote E2E=.0017。"
+            rollback: "Revert Task commit；no history rewrite；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0012"
+            name: "Raw Prompt Injection、Credential 与供应链安全"
+            objective: "raw/PR/external text 仅作 data；注入零服从、credential 全阻断零回显；Settlement 不执行不可信输入。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0011"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0012"
+            test_commands:
+              - "bounded injection/credential/no-echo corpus；raw path/symlink/archive regression"
+              - "canonical workflow security audit；focused/Fast/Security；generated/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: bounded corpus 10/10；instruction obedience=0；credential block=4/4 (100%)；suspected-value echo=0"
+              - "PASS: workflow 15/15 owned；58 external Action refs；8 traceable full-SHA pins；all required violation metrics=0"
+              - "PASS: Settlement role=1；checkout/PR artifact/cache/untrusted PR context forbidden hits=0"
+              - "PASS: focused regression 21/21；Fast 19/19；Security 106/106；64 test files each have exactly one owner"
+              - "PASS: views=4076/5962 bytes；business/remote writes=0；160-case benchmark remains .0013"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0012-MEMORY-SECURITY-20260716.json"
+            risks: "Full 160-case Gold benchmark=.0013；required CI metrics=.0014；live transaction E2E=.0017；production=.0019。"
+            rollback: "Revert Task commit；real credential incident revoke/rotate first；Git history remediation only in a separate authorized task；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0013"
+            name: "160-Case Gold Benchmark"
+            objective: "固定 seed 生成八类各 20 条 Gold，并独立验证质量、重复与泄漏。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0012"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0013"
+            test_commands:
+              - "deterministic build --check；independent benchmark validator；focused mutation/leak/role-separation regression"
+              - "related/Fast/Security；Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: 160 cases；8x20；seed=PAM1-GOLD-20260716-v1；language/alias/noise=160/160"
+              - "PASS: stale/retired=62/160 (38.75%)；abstention=28/160 (17.5%)；hard negatives=160/160"
+              - "PASS: schema/duplicate/leak/gold-role errors=0；SHA-256=3f33bcc56243660b56c83abbe938bdc496f1e5dd53eb0b87afbad9e3f4b395b4；human approval=false；metrics/CI=.0014"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0013-GOLD-BENCHMARK-20260716.json"
+            risks: "Metrics/CI=.0014；performance=.0015；faults=.0016；live=.0017；production=.0019。"
+            rollback: "Revert Task commit and Gold artifacts/tests；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0014"
+            name: "Evaluation Harness、指标与 Required CI Gate"
+            objective: "用 label-isolated evaluator 将 retrieval/current/provenance/abstention/forgetting 指标与报告漂移变成 required CI 硬门禁。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0013"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0014"
+            test_commands:
+              - "fast/full evaluator --check；metric/threshold/report-hash/CI-routing focused regressions"
+              - "related/Fast/Security；workflow/ownership/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: fast=16，full=160；八类全覆盖；Gold label dependency=0；LLM judge=none；profile=5/5"
+              - "PASS: Recall@5/MRR/current/temporal/update/provenance/abstention P-R/FAMA 均 1.0；critical stale=0"
+              - "PASS: dataset=475733 bytes；full input/output=315035/6708 bytes；network=0；full report hash=247e57b492459a948402a4060395660ee3cb87763d95ca258d0f8866945f49f6"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0014-EVALUATION-CI-20260716.json"
+            risks: "Remote required-check execution waits for final whole-package publication；performance optimization=.0015；faults=.0016；live=.0017；production=.0019。"
+            rollback: "Revert the Task32 local commit and evaluator/config/reports/tests/CI routing；no history rewrite；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0015"
+            name: "检索、上下文、ETag、请求与速率优化"
+            objective: "用 portable lexical/alias index 和 commit-pinned conditional GitHub reads 在无 vector DB/常驻服务下满足跨 Agent 请求、字节、延迟与质量预算。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0014"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0015"
+            test_commands:
+              - "performance evaluator --check；cold/warm/304/commit invalidation/rate-limit focused regressions"
+              - "160-case bilingual alias/noise quality parity；related/Fast/Security；workflow/ownership/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: active public index=6/6；postings=1395；agent-memory=80810 bytes；discovery/indexed/raw/scan=1/2/3/0"
+              - "PASS: Gold 160/160 prediction parity；Recall@5 degradation=0；label dependency=0；no new samples"
+              - "PASS: cold/warm requests=2/2；warm 304 bytes=0；rate-limit retry=2 attempts with Retry-After；commit invalidation correct"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0015-RETRIEVAL-PERFORMANCE-20260716.json"
+            risks: "Runtime observations are machine-specific and re-gated on every check；fault injection=.0016；live transaction=.0017；production=.0019。"
+            rollback: "Revert the Task33 local commit and retrieval module/config/report/tests/CI/handshake changes；no history rewrite；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0016"
+            name: "Fault Injection、并发、限流与 Settlement 可靠性"
+            objective: "离线证明 corrupt/API/concurrency/duplicate Settlement 均 fail closed、幂等且有界收敛。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0015"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0016"
+            test_commands:
+              - "fault evaluator --check；37-case corruption/transport/concurrency/Settlement/Janitor regression"
+              - "related/Fast/Security；workflow/ownership/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: 37/37 faults；input/canonical/transport/concurrency/Settlement=10/2/11/3/11"
+              - "PASS: writers=2/5/10；one legal write/profile；partial write=duplicate record=double Settlement=0"
+              - "PASS: attempts<=3；max retry delay=3s；active waits；trusted orphan convergence<=15m；network/GitHub write=0"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0016-FAULT-RELIABILITY-20260716.json"
+            risks: "Offline proof only；live=.0017；clean-room=.0018；production=.0019。"
+            rollback: "Revert Task34 commit；no history rewrite；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0017"
+            name: "用户记忆命令到 Automation C 完整 E2E"
+            objective: "用 synthetic sandbox 证明 add/update/retire/dispute/no-op/invalid/inference-rejected 从 admission/CLI 到 trusted Settlement 与终态清理的完整自动链。"
+            status: "completed"
+            estimated_hours: 10
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0016"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0017"
+            test_commands:
+              - "Automation C evaluator --check；seven scenarios；exact marker/settlement regression"
+              - "5-profile new fact；old fact invisibility；replay；related/Fast/Security；workflow/ownership/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: seven scenarios=7/7；sandbox transactions=5；MERGE_DELETE/CLOSE_DELETE/precheck reject=4/1/2"
+              - "PASS: new fact profile min=5；update/retire old fact invisible=2/2；replay write=0；duplicate record/PR/Settlement=0"
+              - "PASS: partial canonical write=0；daily manual pending=0；every sandbox ends PR/Issue/non-main=0/0/0；live network/target GitHub write=0"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0017-AUTOMATION-C-E2E-20260716.json"
+            risks: "Task Pack permitted sandbox/test-repository proof only；clean-room recovery=.0018；production live publication/5-profile acceptance=.0019。"
+            rollback: "Revert Task35 commit and E2E glue/config/report/tests/CI/governance changes；no history rewrite；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0018"
+            name: "Memory-only Snapshot 与 Clean-Room 恢复"
+            objective: "从 commit-pinned memory-only ZIP 在 GitHub 不可用或 worktree 损坏时完成逐文件校验、离线查询与原子 clean-room 恢复。"
+            status: "completed"
+            estimated_hours: 8
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0017"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0018"
+            test_commands:
+              - "snapshot recovery evaluator --check；deterministic double export；atomic restore；10 offline queries"
+              - "tampered/missing/wrong-commit fail-closed；focused/Fast/Security；workflow/ownership/Lean/ID/hygiene/terminal gates"
+            test_results:
+              - "PASS: 12/12 commit-origin files byte-identical；canonical dataset hash match=100%；partial restore=0"
+              - "PASS: snapshot/restored queries=5/5+5/5；tampered/missing/wrong commit=3/3 fail closed；network/target GitHub writes=0"
+              - "PASS: local recovery <30s；RTO target=1800s；raw included=0；archive branch/repository bundle/Release publication=0"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0018-SNAPSHOT-RECOVERY-20260716.json"
+            risks: "Unsigned SHA-256 proves integrity only, not authenticity；public-safe AgentDatabase Release publication and production five-profile acceptance remain .0019。"
+            rollback: "Revert Task36 local commit and snapshot tooling/policy/report/tests/CI/governance changes；no history rewrite；canonical/raw/remote compensation=0。"
+          -
+            task_id: "TSK.OpenAIDatabase.PAM1.0019"
+            name: "五 Profile 生产验收、发布与 Roadmap 关闭"
+            objective: "从 accepted main fresh-fetch，独立证明 Discovery/Read/Retrieval/Mutation/Forgetting/Recovery、5 profiles、完整 hard gates、public-safe snapshot Release 与最终 0/0/0。"
+            status: "in_progress"
+            estimated_hours: 6
+            dependencies:
+              - "TSK.OpenAIDatabase.PAM1.0018"
+            acceptance_ids:
+              - "ACC.OpenAIDatabase.PAM1.0019"
+            test_commands:
+              - "production acceptance candidate --check；5 profiles；160-case/security/perf/fault/E2E/recovery；one writer/shim scan"
+              - "published acceptance fresh-fetch accepted main；repository hygiene=0；governance/openai-database-verify/memory-atlas-verify latest checks=success；source tag；public Release asset size/SHA/commit-only/public-safe validation；final 0/0/0"
+            test_results:
+              - "PASS_CANDIDATE: six Proof=6/6；profiles=5/5；benchmark=160；fault=37；E2E=7；recovery hash=100%"
+              - "PASS_CANDIDATE: Recall@5/MRR/current/provenance/abstention/FAMA=1.0；critical stale use=0；writer=1；legacy writer=0"
+              - "PASS_BOUNDARY: intended AgentDatabase target remains PUBLIC/private=false；new release requires commit-only members and 198/198 public-safe canonical records"
+              - "PASS_LOCAL_READY: P45 clears integrated repository hygiene to zero violations; fresh remote main ac871bd4 has zero candidate-path overlap and the Task37 candidate may proceed to the single governed publication transaction"
+            evidence_refs:
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PRODUCTION-ACCEPTANCE-20260717.json"
+            risks: "Production PASS is prohibited until integrated main hygiene is clean, the public-safe asset validates against accepted main, required checks pass, and terminal GitHub state is 0/0/0。"
+            rollback: "Delete any incomplete public-safe Release; revert the single Task37 settlement through a governed transaction；no visibility change, direct/force push or history rewrite。"
   - stage_id: "CF-L2"
     name: "MemoryAtlas Cloudflare 安全 L2 派生数据查看器"
     person_goal: "Owner 能通过公开安全的产品表面理解项目能力与边界，同时私密核心保持离线。"
@@ -102,7 +800,7 @@ stages:
       - "public dist 出现 secret、private/raw/export 数据或本机绝对路径"
       - "只有 dry-run、Access 登录页或旧 live 页面却宣称当前 commit 已部署"
     stop_gate:
-      gate_id: "ACC-CF-L2-20260710"
+      gate_id: "ACC.OpenAIDatabase.OPS1.0001"
       pass_criteria:
         - "安全 L2 adapter build 通过"
         - "private distribution scan 通过"
@@ -124,7 +822,7 @@ stages:
           - "安全边界或真实性 gate 失败"
           - "Cloudflare Workers 永久授权不可用"
         stop_gate:
-          gate_id: "ACC-CF-L2-20260710"
+          gate_id: "ACC.OpenAIDatabase.OPS1.0001"
           pass_criteria:
             - "repo 配置、build、scan、dry-run 和真实 URL 证据完整"
           evidence:
@@ -132,7 +830,7 @@ stages:
             - "docs/governance/project.yaml"
           failure_action: "remain_blocked"
         tasks:
-          - task_id: "CF-L2-20260710"
+          - task_id: "TSK.OpenAIDatabase.OPS1.0001"
             name: "Cloudflare Compatibility Envelope L2"
             objective: "交付只读取 redacted derived snapshot 的 MemoryAtlas L2 viewer，私密 core 保持 L1。"
             status: "completed"
@@ -140,9 +838,9 @@ stages:
             estimated_pct: 100
             dependencies: []
             acceptance_ids:
-              - "ACC-CF-L2-20260710"
+              - "ACC.OpenAIDatabase.OPS1.0001"
             acceptance:
-              - acceptance_id: "ACC-CF-L2-20260710"
+              - acceptance_id: "ACC.OpenAIDatabase.OPS1.0001"
                 description: "安全 L2 surface 必须永久部署并经 HTTP 验证；不得暴露私密核心或伪造 deploy。"
                 evidence_refs:
                   - "docs/governance/development_events.jsonl"
@@ -172,7 +870,7 @@ stages:
       - "修复需要读取 raw/private、修改其他项目或改变产品运行行为"
       - "check-render、changed-scope governance 或 diff check 失败"
     stop_gate:
-      gate_id: "ACC-OAIDB-SM-P0-R1"
+      gate_id: "ACC.OpenAIDatabase.OPS1.0007"
       pass_criteria:
         - "ChatGPT、Codex、Claude projections 使用同一 bundle_id 与 canonical_source_hash"
         - "bundle_id 同时绑定 canonical_source_hash 与所有真实 projection 输入的 projection_input_hash"
@@ -198,7 +896,7 @@ stages:
           - "任何历史只能通过新建第二事实源才能保留"
           - "renderer 输出无法通过当前治理 schema"
         stop_gate:
-          gate_id: "ACC-OAIDB-RUN0A-20260713"
+          gate_id: "ACC.OpenAIDatabase.OPS1.0006"
           pass_criteria:
             - "check-render drift_count=0"
             - "reference_issue_count=0"
@@ -206,18 +904,18 @@ stages:
             - "EVID-OAIDB-RUN0A-CHECK-RENDER"
           failure_action: "remain_blocked_before_run1"
         tasks:
-          - task_id: "OAIDB-RUN0A-20260713"
+          - task_id: "TSK.OpenAIDatabase.OPS1.0006"
             name: "收敛 OpenAIDatabase 三份 human views"
             objective: "以 project.yaml、roadmap.yaml、events.jsonl 为唯一机器事实源，确定性重建三份中文 human views。"
             status: "completed"
             estimated_hours: 0.5
             estimated_pct: 100
             dependencies:
-              - "S5PBT03"
+              - "TSK.OpenAIDatabase.OPS1.0012"
             acceptance_ids:
-              - "ACC-OAIDB-RUN0A-20260713"
+              - "ACC.OpenAIDatabase.OPS1.0006"
             acceptance:
-              - acceptance_id: "ACC-OAIDB-RUN0A-20260713"
+              - acceptance_id: "ACC.OpenAIDatabase.OPS1.0006"
                 description: "三份 human views 必须与 canonical render 完全一致，且不修改其他项目或产品运行行为。"
                 evidence_refs:
                   - "EVID-OAIDB-RUN0A-CHECK-RENDER"
@@ -248,7 +946,7 @@ stages:
           - "生成顺序、时间戳、repo head 或 dirty state 改变共享身份"
           - "Claude projection 超过 4096 bytes 或默认 route 扩大"
         stop_gate:
-          gate_id: "ACC-OAIDB-SM-P0-R1"
+          gate_id: "ACC.OpenAIDatabase.OPS1.0007"
           pass_criteria:
             - "三个 provider metadata identity 完全一致"
             - "canonical source 与所有辅助 projection 输入均有可重算 provenance"
@@ -261,18 +959,18 @@ stages:
             - "EVID-OAIDB-SHARED-MEMORY-R1-TEST"
           failure_action: "remain_blocked_before_run2"
         tasks:
-          - task_id: "OAIDB-SM-P0-R1"
+          - task_id: "TSK.OpenAIDatabase.OPS1.0007"
             name: "建立三 provider 共享记忆 identity 与 projection"
             objective: "新增 Claude projection、provider-neutral manifest、稳定 source hash、最小 route 和独立验收测试，不读取 raw/private。"
             status: "completed"
             estimated_hours: 1.5
             estimated_pct: 100
             dependencies:
-              - "OAIDB-RUN0A-20260713"
+              - "TSK.OpenAIDatabase.OPS1.0006"
             acceptance_ids:
-              - "ACC-OAIDB-SM-P0-R1"
+              - "ACC.OpenAIDatabase.OPS1.0007"
             acceptance:
-              - acceptance_id: "ACC-OAIDB-SM-P0-R1"
+              - acceptance_id: "ACC.OpenAIDatabase.OPS1.0007"
                 description: "Codex、Claude 与 ChatGPT 必须能从同一 OpenAIDatabase canonical source set 验证同一长期记忆身份，且派生输出确定性、最小化、无敏感泄漏。"
                 evidence_refs:
                   - "EVID-OAIDB-SHARED-MEMORY-R1"

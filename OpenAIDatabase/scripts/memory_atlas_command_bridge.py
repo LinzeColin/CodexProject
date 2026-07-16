@@ -436,7 +436,7 @@ class CommandBridge:
         if export_path.parent != inbox.resolve():
             raise CommandExecutionError("ChatGPT 导出文件不在固定本地导入箱中，已拒绝执行。")
         sync_payload = self._run(
-            self._atlasctl("sync", "--source", "chatgpt", "--official-export", str(export_path)),
+            self._atlasctl("sync", "--source", "chatgpt", "--official-export", str(export_path), "--apply"),
             "ChatGPT 同步失败：请确认 ZIP 来自官方导出且不含明文凭据，再重试。",
         )
         snapshot = self._rebuild_and_publish()
@@ -462,7 +462,7 @@ class CommandBridge:
                 message_zh="请确认本机 Codex 数据目录可读后重试；不会读取 auth、cookie 或明文凭据文件。",
             )
         sync_payload = self._run(
-            self._atlasctl("sync", "--source", "codex", "--codex-home", str(codex_home)),
+            self._atlasctl("sync", "--source", "codex", "--codex-home", str(codex_home), "--apply"),
             "Codex 同步失败：请确认本机 Codex sessions 可读，并查看本机日志中的脱敏校验结果。",
         )
         snapshot = self._rebuild_and_publish()
@@ -480,7 +480,7 @@ class CommandBridge:
 
     def _rebuild_and_publish(self) -> dict[str, Any]:
         self._run(
-            self._atlasctl("build-atlas"),
+            self._atlasctl("build-atlas", "--apply"),
             "Memory Atlas 派生快照构建失败；旧的本地页面快照保持不变。",
         )
         source_snapshot = self.context.source_root / "data" / "derived" / "visualization" / "memory_atlas.json"

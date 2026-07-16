@@ -1,0 +1,81 @@
+{
+  "schema_version": "openai_database.memory_security.v1",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0012",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0012",
+  "trust_boundaries": {
+    "raw_evidence": "data_only",
+    "pull_request_title": "data_only",
+    "pull_request_body": "data_only",
+    "external_document": "data_only"
+  },
+  "instruction_trust": "none",
+  "prompt_injection": {
+    "normalization": "NFKC",
+    "block_on_hit": true,
+    "patterns": [
+      "\\bignore\\s+(?:all\\s+)?(?:previous|prior)\\s+instructions\\b",
+      "\\bdisregard\\s+(?:all\\s+)?(?:previous|prior)\\s+instructions\\b",
+      "\\b(?:system|developer)\\s+(?:prompt|message)\\s*:",
+      "\\b(?:override|replace)\\s+(?:the\\s+)?(?:system|developer|security)\\s+(?:prompt|policy|instructions)\\b",
+      "<script\\b",
+      "javascript\\s*:",
+      "\\b(?:curl|wget)\\b[^\\n]{0,160}\\|\\s*(?:sh|bash)\\b"
+    ]
+  },
+  "credential_scan": {
+    "pattern_scan": true,
+    "entropy_scan": {
+      "enabled": true,
+      "min_length": 24,
+      "max_length": 128,
+      "min_character_classes": 3,
+      "min_shannon_bits_per_character": 4.0
+    },
+    "block_on_hit": true,
+    "suspected_value_echo_allowed": false,
+    "required_block_rate": 1.0,
+    "maximum_echo_count": 0
+  },
+  "supply_chain": {
+    "workflow_audit": "scripts/workflow_security_audit.py",
+    "workflow_policy": "governance/workflow_policy.json",
+    "required_zero_metrics": [
+      "unowned_workflow_count",
+      "invalid_nested_workflow_count",
+      "unpinned_actions",
+      "unapproved_actions",
+      "forbidden_triggers",
+      "direct_context_violations",
+      "high_privilege_violations",
+      "missing_timeouts",
+      "missing_concurrency",
+      "overbroad_permissions"
+    ],
+    "action_pin": {
+      "full_sha_length": 40,
+      "resolution_source_prefix": "https://api.github.com/repos/"
+    },
+    "settlement": {
+      "path": ".github/workflows/agent-loop-settlement.yml",
+      "role": "transaction_settlement",
+      "trust_boundary": "trusted_default_branch_live_api_only",
+      "forbidden_fragments": [
+        "actions/checkout@",
+        "download-artifact",
+        "restore-cache",
+        "actions/cache@",
+        "github.event.pull_request."
+      ]
+    }
+  },
+  "incident_response": {
+    "on_real_credential": "STOP",
+    "first_actions": [
+      "revoke",
+      "rotate"
+    ],
+    "git_history_remediation": "separate_authorized_task",
+    "automatic_history_rewrite": false
+  }
+}

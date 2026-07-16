@@ -8,17 +8,21 @@ Supported surfaces:
 - CLI `fetch`
 - local JSON-RPC/MCP-like `serve-mcp`
 
-Allowed data sources:
+Source and cache:
 
-- `data/memory/active/active_memory.jsonl`
-- `data/memory/candidates/*.memory_candidates.jsonl`
-- `data/processed/indexes/memory_index.sqlite`
+- Canonical source: `data/memory/records/manifest.json` plus its declared
+  `records-NNNN.jsonl` shards.
+- Local cache: `data/processed/indexes/memory_index.sqlite`; it is ignored and
+  automatically rebuilt from the canonical dataset when absent.
+- Default query status: `active`. Candidate, disputed, and retired records are
+  not returned by default.
 
 Disallowed behavior:
 
-- write/update/delete tools
+- write/update/delete tools or canonical mutations
 - shell execution
-- reading raw export ZIPs
-- returning `secret` sensitivity records
+- reading raw export ZIPs or retired legacy memory directories
+- returning credential material or an unredacted sensitive source
 
-`search` should return compact records. `fetch` may return one full redacted memory record by ID with evidence summaries only.
+`search` returns compact redacted records. `fetch` may return one canonical
+record by ID, subject to the same sensitivity boundary.

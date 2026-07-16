@@ -1,0 +1,270 @@
+{
+  "schema_version": "openai_database.raw_material_policy.v1",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0008",
+  "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0008",
+  "last_updated_task_id": "TSK.OpenAIDatabase.PAM1.0006",
+  "last_updated_acceptance_id": "ACC.OpenAIDatabase.PAM1.0006",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
+  "owner_authorization": {
+    "decision": "emergency_public_history_remediation",
+    "authorized_at": "2026-07-15T20:51:13Z",
+    "source": "Codex task owner selected numbered option 1",
+    "scope": [
+      "remove public session archives and plaintext access material",
+      "retire tracked large-archive and split-bundle producers",
+      "rewrite only the named public Git history paths",
+      "replace the exact known credential in all reachable public Git blobs without value echo",
+      "publish this security remediation before the 37-task final publication"
+    ]
+  },
+  "tracked_raw_policy": {
+    "canonical_destination": "data/public_raw",
+    "destination_count": 1,
+    "max_relative_directory_depth": 2,
+    "visibility": "public_plaintext_clone_fork_cache_recoverable",
+    "append_only": true,
+    "instruction_trust": "none",
+    "allowed_extensions": [".json", ".jsonl", ".md"],
+    "required_controls": [
+      "explicit_owner_publication_authorization",
+      "recursive_credential_and_private_text_sanitization",
+      "append_only_hash_ledger",
+      "maximum_file_size_41943040_bytes"
+    ]
+  },
+  "governed_import_policy": {
+    "contract": "config/storage/raw_import.json",
+    "sidecar_schema": "config/raw_evidence.sidecar.schema.json",
+    "writer": "scripts/memory.py",
+    "canonical_layout": "data/public_raw/YYYY-MM",
+    "canonical_destination_count": 1,
+    "max_text_part_bytes": 921600,
+    "sidecar_required": true,
+    "explicit_authorization_required": true,
+    "instruction_trust": "none",
+    "memory_source_type": "raw_import",
+    "memory_status": "candidate",
+    "automatic_active_promotion": false,
+    "legacy_flat_paths": "append_only_read_only_compatibility"
+  },
+  "private_origin_policy": {
+    "destination": "external private release storage",
+    "repository": "LinzeColin/AgentDatabase-Private",
+    "tracked_private_roots_forbidden": [
+      "data/private_imports",
+      "data/private",
+      "data/raw",
+      "data/raw_encrypted",
+      "private_exports",
+      "exports/private"
+    ],
+    "public_repository_is_private_storage": false
+  },
+  "credential_policy": {
+    "action": "block_without_value_echo",
+    "prohibited_categories": [
+      "password",
+      "api_key",
+      "access_token",
+      "oauth_token",
+      "session_token",
+      "cookie",
+      "private_key",
+      "recovery_code",
+      "browser_credential_store"
+    ],
+    "audit_command": "python3 -B scripts/audit_memory_atlas_public_raw.py --database-dir .",
+    "audit_scope": "all public raw structured values independent of Git tracking"
+  },
+  "bundle_producer_policy": {
+    "canonical_numeric_exporter": "scripts/export_codex_history_archives.py",
+    "allowed_capability": "numeric token telemetry only",
+    "active_scan_roots": [
+      "AGENTS.md",
+      "README.md",
+      "scripts/export_codex_history_archives.py",
+      "scripts/run_codex_memory_auto_update.py",
+      "skills/openai-memory-analysis/SKILL.md",
+      "skills/openai-memory-analysis/scripts/openai_memory_analysis.py"
+    ],
+    "excluded_historical_roots": [
+      "data/public_raw",
+      "docs/governance/events.jsonl",
+      "docs/governance/development_events.jsonl"
+    ],
+    "forbidden_literals": [
+      "export_session_history(",
+      "split_file(",
+      "--session-history",
+      "--session-history-output",
+      "--archive-key-file",
+      "encrypt_archive(",
+      "archive_parts",
+      "data/raw_archives/"
+    ],
+    "required_gitignore_markers": [
+      "*.tar",
+      "*.tar.gz",
+      "*.tgz",
+      "*.bundle",
+      "*.part-*",
+      "session_history/",
+      "data/raw_archives/"
+    ],
+    "new_bundle_count_target": 0
+  },
+  "retired_tip_collections": [
+    {
+      "path": "OpenAIDatabase/session_history",
+      "historical_pre_remediation_fingerprint": {
+        "count": 5,
+        "bytes": 38297530,
+        "collection_sha256": "233b8fc4764b4c73f0fcb636d0569bc3fdee7add2d2ce34c6cca5a7e4a74c814"
+      },
+      "implementation_base_fingerprint": {
+        "count": 0,
+        "bytes": 0,
+        "collection_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "replacement": "private AgentDatabase releases plus this redacted disposition registry"
+    },
+    {
+      "path": "OpenAIDatabase/data/raw_archives",
+      "historical_pre_remediation_fingerprint": {
+        "count": 1,
+        "bytes": 1869,
+        "collection_sha256": "b9d5f45891c1d1b331382d7582a4591ffb6230639ad32c1ed9e5da61b1e2deb4"
+      },
+      "implementation_base_fingerprint": {
+        "count": 0,
+        "bytes": 0,
+        "collection_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "replacement": "data/public_raw for authorized sanitized public evidence; private AgentDatabase releases otherwise"
+    }
+  ],
+  "old_archive_dispositions": [
+    {
+      "legacy_collection": "session_history/current-mac-20260630",
+      "disposition": "retire_public_copy_keep_private_release",
+      "release_tag": "old-mac-20260630",
+      "asset_id": 476590543,
+      "asset_name": "current-mac-session-history-20260630.tar.gz",
+      "asset_size": 38293927,
+      "asset_sha256": "1c5b34148fc1f9a23925f910c251bd1455550756a84451fbe2665806adf6ceab",
+      "private_release_state": "uploaded"
+    },
+    {
+      "legacy_collection": "session_history/old-mac-20260630",
+      "disposition": "private_release_only",
+      "release_tag": "old-mac-20260630",
+      "asset_id": 476590547,
+      "asset_name": "old-mac-session-history-20260630.tar.gz",
+      "asset_size": 839096318,
+      "asset_sha256": "bb8489bc3705f9f23d735608b14baf4844ceb6c7d9c4a85d6774c74680ea31f9",
+      "private_release_state": "uploaded"
+    },
+    {
+      "legacy_collection": "session_history/codex-session-history-encrypted-20260703T063940Z",
+      "disposition": "retire_public_parts_keep_private_decrypted_release",
+      "release_tag": "codex-sessions-20260703",
+      "asset_id": 476700926,
+      "asset_name": "codex-session-history-20260703T063940Z.tar.gz",
+      "asset_size": 925338589,
+      "asset_sha256": "c0f7517b977111324df44066f83fa6b514d715f590f67376b9103fa83a8a739e",
+      "private_release_state": "uploaded"
+    },
+    {
+      "legacy_collection": "data/raw_archives/chatgpt/2026-07-07",
+      "disposition": "retire_public_parts_keep_private_release",
+      "release_tag": "raw-archives-20260708",
+      "asset_id": 477327709,
+      "asset_name": "chatgpt_raw_export_2026-07-07.zip",
+      "asset_size": 1473421021,
+      "asset_sha256": "52f204dd8d78b76a79c6fc37e3e09987d3ab682c87098da017b894dd88c3a868",
+      "private_release_state": "uploaded"
+    },
+    {
+      "legacy_collection": "data/raw_archives/git-remote-branches/2026-07-08",
+      "disposition": "retire_public_parts_keep_private_release",
+      "release_tag": "raw-archives-20260708",
+      "asset_id": 477327711,
+      "asset_name": "codexproject_remote_non_main_branches_20260708.bundle",
+      "asset_size": 1161813692,
+      "asset_sha256": "ec03e395898169ff1a625732bb1cb1582c5576e0f611c1be91d7ffad78f928e6",
+      "private_release_state": "uploaded"
+    },
+    {
+      "legacy_collection": "session_history/codex-session-history-auto-20260708T160935Z",
+      "disposition": "retire_duplicate_subsumed_by_private_release",
+      "release_tag": "codex-sessions-20260703",
+      "replacement_asset_id": 476700926,
+      "private_release_state": "uploaded"
+    }
+  ],
+  "pre_remediation_public_audit": {
+    "status": "PASS",
+    "file_count": 512,
+    "total_bytes": 452781632,
+    "credential_or_private_text_file_count": 0,
+    "unmarked_binary_file_count": 0,
+    "invalid_binary_marker_file_count": 0,
+    "invalid_json_file_count": 0,
+    "oversize_file_count": 0,
+    "binary_marker_count": 23893,
+    "known_exact_incident_match_file_count": 3,
+    "generic_audit_limitation": "a non-standard credential label was not matched by generic patterns; exact no-echo history matching found and repaired it"
+  },
+  "known_credential_incident": {
+    "validation_mode": "hash_only_public_scan_no_secret_recovery",
+    "source_path_at_pre_remediation_base": "OpenAIDatabase/session_history/README.md",
+    "source_line_sha256": "4f6888f73a5429d64341dde4a726c0492b83124447dba8586d2e51c075c525ee",
+    "credential_extraction_regex": "密码(?:是|为|[：:=])([0-9]{3,})",
+    "credential_length": 3,
+    "credential_sha256": "284b7e6d788f363f910f7beb1910473e23ce9d6c871f1ce0f31f22a982d48ad4",
+    "public_raw_match_file_count_before": 3,
+    "credential_context_occurrence_count_before": 3,
+    "incident_line_occurrence_count_before": 3,
+    "credential_replacement_count": 3,
+    "current_public_raw_context_match_target": 0,
+    "secret_value_echoed": false
+  },
+  "public_raw_security_repair": {
+    "target_file_count": 3,
+    "replacement_count": 3,
+    "incident_line_replacement_count": 3,
+    "additional_credential_replacement_count": 0,
+    "replacement_marker": "[REDACTED_CREDENTIAL]",
+    "manifest_rows_updated": 3,
+    "hash_ledger_rows_updated": 3,
+    "target_paths": [
+      "data/public_raw/codex/sessions/019f427b-530e-7ab0-8265-25a3fcc4d991.f6caf0c2c0ce.part-0001.jsonl",
+      "data/public_raw/codex/sessions/019f47a0-73c4-7de1-96b8-fdfc7fffc645.a845c8071723.part-0001.jsonl",
+      "data/public_raw/codex/sessions/019f4cc7-b5e7-7e43-b141-55fdd2e68f44.ff047ad5f838.part-0001.jsonl"
+    ],
+    "secret_value_echoed": false
+  },
+  "history_remediation": {
+    "status": "verified",
+    "target_paths": [
+      "OpenAIDatabase/session_history",
+      "OpenAIDatabase/data/raw_archives"
+    ],
+    "exact_secret_replacement_scope": "all reachable text blobs including three repaired public raw files",
+    "public_remote_before": "74d431df63f09769c2b8b898ee49762273e93e5f",
+    "public_remote_after": "5e85e7fedbc15df23fd611c7a25ef08c7d9839a8",
+    "public_remote_after_tree": "4df5e75e0e018d4a73203ce3d4547d8fa1d692f3",
+    "owner_managed_ref_count_verified": 5,
+    "owner_managed_refs_target_path_count_after": 0,
+    "owner_managed_refs_incident_line_match_count_after": 0,
+    "owner_managed_refs_credential_context_match_count_after": 0,
+    "remote_tip_redacted_file_count": 3,
+    "github_internal_pull_ref_count_observed": 272,
+    "github_internal_pull_refs_listing_sha256": "766afd01d4771992272a06874b0475f6a457b9da3ba41b317fce3adefe469ec5",
+    "github_internal_pull_refs_status": "support_required_for_internal_ref_and_cache_purge",
+    "history_rewrite_first_changed_commit": "8c7da7107255fead55156883c4ccc93962e9e6e0",
+    "all_remote_refs_target_path_count_after": null,
+    "force_push_authorized": true
+  }
+}

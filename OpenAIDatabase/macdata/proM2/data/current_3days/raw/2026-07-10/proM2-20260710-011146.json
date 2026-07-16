@@ -1,0 +1,128 @@
+{
+  "air_remote_readiness": {
+    "status": "Pro 设备不采集 Air 远程入口状态"
+  },
+  "brew": {
+    "brew_available": false,
+    "brew_cask_count": null,
+    "brew_formula_count": null,
+    "brew_version": "未安装或不可用"
+  },
+  "collected_at_local": "2026-07-10T01:11:53+10:00",
+  "collector_notes": [
+    "本记录不采集 Time Machine。",
+    "本记录不使用 iCloud。",
+    "本记录不采集 API key、token、password、cookie、session、Keychain、shell history、完整环境变量。",
+    "远程上传验证成功后，脚本会按 owner 确认的白名单策略清理 Docker、Homebrew、系统缓存和项目缓存。"
+  ],
+  "device_key": "proM2",
+  "device_label_cn": "M2 Max MacBook Pro",
+  "device_role_cn": "主开发电脑",
+  "docker": {
+    "docker_installed": true,
+    "docker_system_df": "failed to connect to the docker API at unix:///Users/linzezhang/.docker/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /Users/linzezhang/.docker/run/docker.sock: connect: no such file or directory",
+    "docker_version": "Docker version 29.6.1, build 8900f1d"
+  },
+  "git": {
+    "branch": "HEAD",
+    "device_dirty_count": 0,
+    "device_untracked_count": 0,
+    "latest_commit": "48c73f88a499db06c937cee07bad406f888241eb fix(openai-database): restore macdata reports to md",
+    "repo_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2",
+    "tracked_dirty_count_repo": 0
+  },
+  "hardware": {
+    "battery_condition": "Good",
+    "battery_cycle_count": 16,
+    "battery_maximum_capacity_percent": "97%",
+    "chip_type": "Apple M2 Max",
+    "model_identifier": "Mac14,5",
+    "model_name": "MacBook Pro",
+    "physical_memory_text": "32 GB",
+    "raw_available": true,
+    "serial_number": "V16V992L5C",
+    "software_version": "macOS 15.1 (24B83)",
+    "system_profiler_error": "",
+    "system_profiler_ok": true
+  },
+  "memory": {
+    "physical_memory_gb": 32.0,
+    "swap_used_gb": 1.87,
+    "swapusage_raw": "vm.swapusage: total = 3072.00M  used = 1910.12M  free = 1161.88M  (encrypted)",
+    "vm_stat_summary": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                              100184.\nPages active:                            798337.\nPages inactive:                          723934.\nPages speculative:                       115057.\nPages throttled:                              0.\nPages wired down:                        141881.\nPages purgeable:                          23883.\n\"Translation faults\":                7097969291.\nPages copy-on-write:                  691022812.\nPages zero filled:                   2789893016.\nPages reactivated:                     81408712.\nPages purged:                          14388310.\nFile-backed pages:                       605439.\nAnonymous pages:                        1031889.\nPages stored in compressor:              533235.\nPages occupied by compressor:            162653.\nDecompressions:                        33473921."
+  },
+  "owner_confirmations_summary": {
+    "allow_github_upload": true,
+    "allow_plaintext_device_metrics_to_github": true,
+    "allow_post_run_github_hygiene_after_verified_upload": true,
+    "confirmed_at": "2026-07-05T21:32:29+10:00",
+    "confirmed_device_key": "proM2"
+  },
+  "pmset": {
+    "charging_state": "已充满或接近满电",
+    "current_charge_percent": 100,
+    "pmset_batt_raw": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=21102691)\t100%; charged; 0:00 remaining present: true",
+    "power_source": "电源适配器"
+  },
+  "preflight_messages": [
+    "设备预检通过。"
+  ],
+  "repo_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2",
+  "risk": {
+    "battery_capacity_level": "绿色",
+    "overall_level": "绿色",
+    "storage_level": "绿色",
+    "swap_level": "绿色"
+  },
+  "run_id": "proM2-20260710-011146",
+  "schema_version": "macdata-record-v1",
+  "sizes": {
+    "desktop_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Desktop",
+      "size_gb": 0.0
+    },
+    "device_root_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2/OpenAIDatabase/macdata/proM2",
+      "size_gb": 0.0
+    },
+    "documents_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Documents",
+      "size_gb": 30.31
+    },
+    "downloads_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Downloads",
+      "size_gb": 196.72
+    },
+    "repo_openai_database_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2/OpenAIDatabase",
+      "size_gb": 3.54
+    },
+    "repo_root_size": {
+      "error": "",
+      "exists": true,
+      "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2",
+      "size_gb": 3.76
+    }
+  },
+  "storage": {
+    "root_free_gb": 547.0,
+    "root_percent_used": 41.0,
+    "root_total_gb": 926.35,
+    "root_used_gb": 379.35
+  },
+  "timezone_expected": "Australia/Sydney",
+  "top_processes": {
+    "top_cpu_raw": "Processes: 706 total, 3 running, 703 sleeping, 3666 threads \n2026/07/10 01:11:46\nLoad Avg: 2.51, 2.20, 2.38 \nCPU usage: 10.52% user, 9.64% sys, 79.82% idle \nSharedLibs: 843M resident, 159M data, 135M linkedit.\nMemRegions: 417911 total, 9907M resident, 691M private, 4044M shared.\nPhysMem: 28G used (2217M wired, 2541M compressor), 3360M unused.\nVM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.\nNetworks: packets: 156894169/162G in, 62299133/31G out.\nDisks: 67467171/2209G read, 65861523/2471G written.\n\nPID    COMMAND          %CPU MEM  \n99849  com.apple.ColorS 0.0  1793K\n99848  colorsync.userag 0.0  2961K\n99661  amfid            0.0  5313K\n99469  helpd            0.0  5777K",
+    "top_memory_raw": "Processes: 706 total, 3 running, 703 sleeping, 3664 threads \n2026/07/10 01:11:47\nLoad Avg: 2.51, 2.20, 2.38 \nCPU usage: 10.19% user, 8.35% sys, 81.44% idle \nSharedLibs: 843M resident, 159M data, 135M linkedit.\nMemRegions: 417899 total, 9908M resident, 691M private, 4044M shared.\nPhysMem: 28G used (2217M wired, 2541M compressor), 3358M unused.\nVM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.\nNetworks: packets: 156894169/162G in, 62299133/31G out.\nDisks: 67467171/2209G read, 65861523/2471G written.\n\nPID    COMMAND          %CPU MEM  \n633    replayd          0.0  3046M\n26987  Codex (Renderer) 0.0  763M \n377    WindowServer     0.0  574M \n26986  Codex (Renderer) 0.0  482M "
+  }
+}
