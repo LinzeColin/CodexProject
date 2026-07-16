@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '0cb3acee6bf3', source_sha256: '0cb3acee6bf31c4351071d9447523ec2f8d4a0a5531d6470212d6f09895edec8', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '8c19387c846b', source_sha256: '8c19387c846b3e5183cbf0cfb8233544bc0f8e248cfa2a1bf97a157ec579a58b', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -706,7 +706,7 @@ footer.receipt{position:relative;z-index:1}
 .fx-cosmos .stars.near{background-size:300px 300px;animation:twinkle 3.4s ease-in-out infinite alternate}
 @keyframes twinkle{from{opacity:1}to{opacity:.35}}
 .fx-cosmos .meteor{position:absolute;top:8%;left:-12%;width:200px;height:2px;background:linear-gradient(90deg,#fff,rgba(255,255,255,.5),transparent);box-shadow:0 0 7px #fff;transform:rotate(18deg);opacity:0;animation:meteor 6s linear infinite}
-@keyframes meteor{0%,82%{opacity:0;transform:translate(0,0) rotate(18deg)}84%{opacity:1}100%{opacity:0;transform:translate(112vw,56vh) rotate(18deg)}}
+@keyframes meteor{0%,82%{opacity:0;left:-12%;top:8%}84%{opacity:1}100%{opacity:0;left:100%;top:64%}}
 /* 简约专注：海面顶光 + 移动光柱 + 海底暗角 */
 .fx-minimal{background:radial-gradient(120vw 62vh at 50% -12vh,rgba(163,214,235,.30),transparent 62%)}
 .fx-minimal .toplight{position:absolute;left:50%;top:-28vh;width:78vw;height:92vh;transform:translateX(-50%) rotate(6deg);background:linear-gradient(180deg,rgba(185,228,247,.32),transparent 72%);filter:blur(22px);animation:shaft 11s ease-in-out infinite alternate}
@@ -1182,23 +1182,7 @@ function rumIngest(payload, roll) {
   return { ok: true, row: { metric: payload.metric, value: v, theme, device, route, network } };
 }
 
-// ───────────────────────── T082 环境动效性能（不改可见时视觉语义）─────────────────────────
-// router 层注入（不碰任何主题/动效合同哈希）：①页面隐藏/后台→暂停环境动效（省 CPU/电，离屏零渲染）；
-// ②低端设备（内存/核数低或省流量）→ 降级最重的环境层（meteor/band 隐藏、星云简化），但前景（按钮反馈）不消失。
-// 唯一改动合同的是 @keyframes meteor（left/top→transform，屏幕路径等价、GPU 合成），走 T078 approved-change。
-// selectors use the cosmos-unique leaf classes (meteor/band/neb, not theme-prefixed ambience selectors) so
-// this script's text can never be mis-parsed as a CSS rule by the T077 contract extractor.
-const FX_PERF_JS = `(function(){try{var q=function(s){return document.querySelectorAll(s);};
-function run(on){q('.fx *').forEach(function(e){e.style.animationPlayState=on?'':'paused';});}
-document.addEventListener('visibilitychange',function(){run(document.visibilityState==='visible');});
-if(document.visibilityState!=='visible')run(false);
-var dm=navigator.deviceMemory,hc=navigator.hardwareConcurrency,sd=navigator.connection&&navigator.connection.saveData;
-if((dm&&dm<=4)||(hc&&hc<=4)||sd){document.documentElement.setAttribute('data-fx-lite','1');
-q('.meteor,.band').forEach(function(e){e.style.display='none';});
-q('.neb').forEach(function(e){e.style.filter='blur(28px)';e.style.opacity='.4';});}
-}catch(e){}})();`;
-
-const htmlResp = (html, status = 200) => new Response(html.replace('</body>', '<script>' + FX_PERF_JS + (RUM_ENABLED ? RUM_JS : '') + '</script></body>'), {
+const htmlResp = (html, status = 200) => new Response(RUM_ENABLED ? html.replace('</body>', '<script>' + RUM_JS + '</script></body>') : html, {
   // no-store（不是 no-cache）：这些浏览器对 no-cache 仍会缓存并不重新校验，导致用户一直看到旧页面、拿不到新部署。
   // no-store 强制每次都重新拉取，保证改动即时生效。
   status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store, must-revalidate', ...SEC_HEADERS },

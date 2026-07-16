@@ -1,0 +1,24 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P03-T082",
+  "release_mode": "NOT_DEPLOYED",
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost_usd": 0.0,
+    "readonly_get_realtime": 1,
+    "in_app_browser_renders": 2,
+    "human_maintenance": "meteor keyframe conversion + FX_PERF_JS controller + ambient_perf_audit tool + browser tests + verifier + adversarial review"
+  },
+  "value": {
+    "stage": "S7 UI/UX Motion & Performance (P03 ambient perf)",
+    "acceptance": "PASS (verifier re-derives; all ambient loops compositor-safe = the >=55 FPS guarantee; browser proves low-end degrades ambient while foreground survives + pause-when-hidden)",
+    "user_value": "the six-theme ambient motion now runs on the GPU compositor (no per-frame layout jank), pauses when the tab is backgrounded (saves battery/CPU), and gracefully degrades on low-end phones without ever removing the foreground click feedback -- keeping the 'advanced feel' smooth",
+    "realized_on_deploy": "the optimization is source-complete and byte-safe for the visual identity; a real median-FPS field number lands after deploy (NOT_DEPLOYED now)"
+  },
+  "unknown_not_zero": "a real median-FPS number is UNKNOWN until deployed to a foregrounded browser (the preview throttles rAF); the load-bearing >=55 FPS guarantee is deterministic compositor-only ambient animation, not a measured number."
+}

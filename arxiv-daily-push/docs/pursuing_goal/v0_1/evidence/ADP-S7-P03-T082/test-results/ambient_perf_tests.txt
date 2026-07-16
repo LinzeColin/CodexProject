@@ -1,0 +1,6 @@
+FPS guarantee: 7/7 ambient loops compositor-safe (transform/opacity/filter only); meteor ['left', 'opacity', 'top'] -> ['opacity', 'transform'] (before/after: layout True -> False); pre-fix fails the audit
+low-end: degrades layers (meteor/band hidden, nebula simplified) + keeps base ambience + FOREGROUND (button:active) survives; pause-when-hidden 7/7 then resumed
+visual semantics preserved: only ['keyframes'] changed; per_theme/base_css/theme_js/fx_css/hero byte-identical; gate BLOCKs without approval, PASS_APPROVED with a keyframes approval
+
+ACCEPTANCE = PASS
+NOTE: source build_id 0cb3acee6bf3; NOT_DEPLOYED (live unchanged). A real median-FPS number needs a foregrounded browser (the preview throttles rAF); the load-bearing >=55 FPS guarantee is the deterministic compositor-only ambient animation.

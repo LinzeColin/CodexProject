@@ -1,0 +1,31 @@
+{
+  "task": "ADP-S7-P03-T082",
+  "baseline": "T081 origin/main worker",
+  "asset_hashes": {
+    "per_theme": {
+      "warm": "sha256:5bf33a38d9b48645ad7e43bc707612e0cd3e633a092d752878bcb27c23993166",
+      "minimal": "sha256:9f9dbb0c7ad1fffc07a9154aa2024ec51fcf0327a76557c1b9abb35a575798e5",
+      "fresh": "sha256:f3509889b76940606cf34ccc01a0e33ec1bf84d2365afa3c9a378fe9e1194538",
+      "techno": "sha256:2baea805f1cc5b653ce68ebcce04afd921029b496e1dde2e04682f3100864e57",
+      "cosmos": "sha256:4de56de407c595fbfeed7f8c62c9f5a2993ed712d49542da9b05fc4d0605b5eb",
+      "forest": "sha256:67fd28c35736963effc5067d14136e034dd5d7fdbf24780934d1f63cf318b13d"
+    },
+    "master_visual": "sha256:ff1faf09892248c222bf060f63f59cb6dc2031db971a02adaca9e4f402295d2e",
+    "reduced_motion": "sha256:955ba7cf8282fcef2686ea8c4f1b4d495e41e7f6246492268f8e5f4dbb080201",
+    "keyframes": "sha256:064eb8a9053869300b2cf5f04e592c0b581902927ec89e7ce5b3c72fe06e09d7",
+    "fx_layers": "sha256:b7a69fb87a4911d4b4eb2c2cf946559cc2de0e46470364f5dfd6ee6e9a53f1bb",
+    "hero_css": "sha256:cd3650b4c851f460e7356b8483a8e7446e059b28df4f1cea4442fd81d8d61898",
+    "hero_markup": "sha256:39b64a81533c3174ed98f374653dc691a9f58deab452095ebbc1ab7bc0150677",
+    "dom_producers": "sha256:849724ac5f18686c26250948468536b6640a44df8a53478b17129c9e2b7cef31",
+    "hero_section_fn": "sha256:7c0d5a729b33622ca3db19255f3a47eb24a866d2f63e221b2199fab9db732b84",
+    "hero_video_assets": "sha256:fb2df237f7278b151dd97ed7d9605f5fdb367236fe67dff7cf566976eb3f58d3",
+    "page_shell": "sha256:d5c96556fef92ada3e2aa4ae6f36ff49e50ce40f10f98d0f858cb465a728032c",
+    "theme_options": "sha256:fdc4f6bb44992adf4b3339c35b3f47771cc8af3763fe0e300f42d042bdab2b4e",
+    "hero_wiring": "sha256:7a192a5bd4d7198fafd2919fd29d6cd71e55ef7ea87d2d20c1565ab497f1819b",
+    "theme_js": "sha256:01fc54f5b047811a01eae91ec3bb46c7838d8929856729b554fd78d02a21c812",
+    "head_init": "sha256:cdfe7679545c4013b2fed23b31b67c5780d1eb9766b0bbeb72d02e37cbe56caa",
+    "base_css": "sha256:9ef62feb1a10b637dc06700cf8552fe0bb4699d54fabc5e4bf71a4a600eb30fc",
+    "fx_css": "sha256:94681353e1c7ce9f9416e684966d047a3680fc5a358bf3be763ea13d34177d26",
+    "contract_root": "sha256:4a4d3279c607574319fb8f82c0a978672c9df30c17a43b26178aa3fc75efd929"
+  }
+}

@@ -1,0 +1,14 @@
+# ADP-S7-P03-T082 key commands (NOT_DEPLOYED; ambient-motion perf, no visual-semantics change)
+# 1) worker: @keyframes meteor left/top -> transform:translate(112vw,56vh) rotate(18deg) (GPU-composited,
+#    screen-path-equivalent); router-injected FX_PERF_JS (pause-on-hidden + low-end degrade, never touches foreground).
+#    BUILD self-hash 8c19387c846b -> 0cb3acee6bf3.
+node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js        # SYNTAX OK
+# 2) tool: tools/ambient_perf_audit.py (ambient keyframes compositor-safety + meteor conversion + pause/lite/foreground)
+# 3) in-app browser: normal harness -> meteor transform + pause 7/7; lowend harness -> data-fx-lite, meteor/band hidden,
+#    nebula simplified, stars + button:active survive (browser_measurements.json)
+# 4) acceptance verifier (re-derives; negative control: pre-fix meteor left/top FAILS compositor-safety):
+python3 evidence/ADP-S7-P03-T082/test-results/t082_verify.py           # ACCEPTANCE = PASS, exit 0
+# 5) realtime: live /build.json still b189d3cc0703 (NOT deployed); source 0cb3acee6bf3
+curl -s https://adp.linzezhang.com/build.json
+# 6) contract: detect_regression specific = ['keyframes'] only (per_theme/base_css/theme_js/fx_css/hero byte-identical)
+# 7) independent adversarial skeptic -> verdict in adversarial_review.md

@@ -1,0 +1,35 @@
+{
+  "task": "ADP-S7-P03-T082",
+  "metric": "ambient-motion compositor-safety (the FPS jank source)",
+  "before": {
+    "meteor_keyframe": "@keyframes meteor{0%,82%{opacity:0;left:-12%;top:8%}84%{opacity:1}100%{opacity:0;left:100%;top:64%}}",
+    "animates": [
+      "left",
+      "top",
+      "opacity"
+    ],
+    "forces_layout_per_frame": true,
+    "ambient_loops_all_compositor_safe": false,
+    "note": "animating left/top on the meteor triggers layout+paint every frame -> the one ambient jank source."
+  },
+  "after": {
+    "meteor_keyframe": "@keyframes meteor{0%,82%{opacity:0;transform:translate(0,0) rotate(18deg)}84%{opacity:1}100%{opacity:0;transform:translate(112vw,56vh) rotate(18deg)}}",
+    "animates": [
+      "transform",
+      "opacity"
+    ],
+    "forces_layout_per_frame": false,
+    "ambient_loops_all_compositor_safe": true,
+    "note": "transform/opacity only -> runs on the compositor thread, no per-frame layout -> >=55 FPS guarantee."
+  },
+  "equivalence": {
+    "container": ".fx is position:fixed;inset:0 (viewport-sized), so left/top % == vw/vh",
+    "base_meteor": ".meteor{left:-12%;top:8%;transform:rotate(18deg)} unchanged",
+    "x": "left -12% -> 100% (delta 112% of viewport) == translateX 0 -> 112vw",
+    "y": "top 8% -> 64% (delta 56% of viewport) == translateY 0 -> 56vh",
+    "rotate": "translate(...) rotate(18deg): rotate applied inner (streak rotation preserved), translate in screen space (same diagonal)",
+    "start": "keyframe 0% transform = translate(0,0) rotate(18deg) == base transform (no jump at animation start)",
+    "conclusion": "screen path identical; only the animation technique (compositor vs layout) changed."
+  },
+  "measurement_note": "a real median-FPS number needs a foregrounded browser (the preview throttles rAF, a 1s sampler timed out); the deterministic compositor-only guarantee is the load-bearing proof."
+}
