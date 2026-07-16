@@ -1,0 +1,18 @@
+{
+  "task": "ADP-S1-P01-T009",
+  "stage": "S1 Truth & Content Stabilization",
+  "release_mode": "NOT_DEPLOYED",
+  "value_metric_s1": "single production truth: one deployment manifest binds 8 components / 9 files into a deterministic content_hash (sha256:810a0a1b...), enabling one-command rebuild + drift comparison of exactly which commit/worker/schema/source/parser/prompt/model/cron is live",
+  "cost_itemized_unknown_not_zero": {
+    "new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "re-run tools/generate_manifest.py once per deploy (~seconds; CI-automatable)",
+    "generator_runtime": "local/CI compute only"
+  },
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "determinism_proof": "two clean builds on same commit -> identical content_hash except generated_at/generator_note (manifest_selftest.txt)"
+}

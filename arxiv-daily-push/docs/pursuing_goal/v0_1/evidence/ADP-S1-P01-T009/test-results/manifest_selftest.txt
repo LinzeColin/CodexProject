@@ -1,0 +1,6 @@
+schema parses OK: adp.deployment_manifest.v0_1
+jsonschema.validate: PASS
+build1 hash: sha256:810a0a1bf416af0f75b17212960a7f21588cc499cc963d8d8f8ec58bb56ba610
+build2 hash: sha256:810a0a1bf416af0f75b17212960a7f21588cc499cc963d8d8f8ec58bb56ba610
+DETERMINISTIC (same commit, hash-identical except allowed fields): True
+content_hash matches recompute over binding: True

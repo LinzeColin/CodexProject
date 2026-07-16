@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "adp.deployment_manifest.v0_1",
+  "title": "ADP V0.1 Deployment Manifest",
+  "description": "Rebuildable binding of commit + worker + schema + sources + parser + prompt + model + cron. content_hash is computed over `binding` only, so two clean builds of the same commit are hash-identical except the allowed-to-vary fields (generated_at, generator_note).",
+  "type": "object",
+  "required": ["manifest_version", "generated_at", "binding", "content_hash", "redaction"],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_version": {"const": "adp.deployment_manifest.v0_1"},
+    "generated_at": {"type": "string", "description": "ALLOWED to vary; excluded from content_hash"},
+    "generator_note": {"type": ["string", "null"], "description": "ALLOWED to vary; excluded from content_hash"},
+    "content_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "redaction": {
+      "type": "object",
+      "required": ["secrets_redacted", "policy"],
+      "properties": {
+        "secrets_redacted": {"const": true},
+        "policy": {"type": "string"},
+        "patterns": {"type": "integer", "minimum": 1}
+      }
+    },
+    "binding": {
+      "type": "object",
+      "required": ["commit", "cron", "worker", "schema", "sources", "parser", "prompt", "model"],
+      "additionalProperties": false,
+      "properties": {
+        "commit": {"type": "string", "minLength": 7},
+        "cron": {"type": "string"},
+        "worker": {
+          "type": "object",
+          "required": ["name", "entry", "wrangler"],
+          "properties": {
+            "name": {"type": "string"},
+            "entry": {"$ref": "#/definitions/fileBinding"},
+            "wrangler": {"$ref": "#/definitions/fileBinding"}
+          }
+        },
+        "schema": {
+          "allOf": [{"$ref": "#/definitions/fileBinding"}],
+          "type": "object",
+          "required": ["file", "sha256", "tables"],
+          "properties": {"tables": {"type": "array", "items": {"type": "string"}}}
+        },
+        "sources": {
+          "type": "object",
+          "required": ["file", "sha256", "registry_ver"],
+          "properties": {
+            "file": {"type": "string"},
+            "sha256": {"type": ["string", "null"]},
+            "present": {"type": "boolean"},
+            "registry_ver": {"type": ["string", "null"]}
+          }
+        },
+        "parser": {"$ref": "#/definitions/fileBinding"},
+        "prompt": {"type": "object", "required": ["sources"], "properties": {"sources": {"type": "array", "items": {"$ref": "#/definitions/fileBinding"}}}},
+        "model": {"type": "object", "required": ["sources"], "properties": {"sources": {"type": "array", "items": {"$ref": "#/definitions/fileBinding"}}}}
+      }
+    }
+  },
+  "definitions": {
+    "fileBinding": {
+      "type": "object",
+      "required": ["file", "sha256", "present"],
+      "properties": {
+        "file": {"type": "string"},
+        "sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "present": {"type": "boolean"},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

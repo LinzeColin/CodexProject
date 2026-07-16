@@ -1,0 +1,17 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/deployment_manifest.sample.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/deployment_manifest.preview.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/known_gaps.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009/test-results/manifest_selftest.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/schemas/deployment_manifest.schema.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/tools/generate_manifest.py

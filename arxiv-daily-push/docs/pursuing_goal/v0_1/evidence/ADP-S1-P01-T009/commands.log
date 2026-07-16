@@ -1,0 +1,28 @@
+# ADP-S1-P01-T009 commands.log · Deployment Manifest Schema
+# baseline commit 83a845be (S0 Exit merged) ; generator read-only
+
+## determinism (acceptance: same commit, hash-identical except allowed fields)
+$ python3 tools/generate_manifest.py --generated-at 2026-07-16T00:00:00Z  -> content_hash sha256:810a0a1b...ba610
+$ python3 tools/generate_manifest.py --generated-at 2026-07-16T11:11:11Z  -> content_hash sha256:810a0a1b...ba610
+# DETERMINISTIC: True (binding+hash identical after removing generated_at/generator_note)
+
+## schema validation
+$ python3 -c "import json,jsonschema; jsonschema.validate(json.load(open('deployment_manifest.sample.json')), json.load(open('schemas/deployment_manifest.schema.json')))"
+# jsonschema.validate: PASS
+
+## content_hash covers binding only (independent recompute)
+$ sha256(canonical(sample.binding)) == sample.content_hash  -> True
+
+## secret redaction
+$ redact("Authorization: Bearer sk1a2b3c4d5e6f7g8h9i0jklmno") -> "Authorization: <redacted>"
+$ redact("oauth_token=zzzz...")                              -> "<redacted>"
+$ redact("worker adp-cloud cron 30 20 * * *")               -> unchanged (no false positive)
+
+## sample manifest bindings
+# commit 83a845be ; cron 30 20 * * * ; schema 8 cn_* tables ; sources registry boards-v03-2 ; 8 components / 9 files bound
+
+# full raw: test-results/manifest_selftest.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
