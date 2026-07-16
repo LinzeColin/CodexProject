@@ -358,7 +358,7 @@ formulas:
     model_id: "MOD-MACDATA-PROM2-001"
     assumption_ids: ["ASM-001"]
     status: "active"
-    expression: "Device preflight and owner confirmation must pass. Publication requires stable main, no legacy branch, and PR/Issue/non-main=0/0/0; copies only four declared snapshot paths; rejects high-risk credential patterns; pushes one unique automation-c branch; opens one exact-marker non-draft PR; accepts only exact-head/base github-actions trusted Settlement; requires the Settlement merge SHA to equal current main; reconciles every file SHA256; and requires final 0/0/0. Any failure blocks cleanup and compensates only the exact transaction PR/branch."
+    expression: "Preflight passes only on macOS when model contains MacBook Pro, chip contains the owner-confirmed M2 Max keyword, memory is at least 32GB, and owner_confirmations.confirmed_device_key is proM2. The full cycle writes metrics and report files, scans staged files for credential patterns, commits and pushes to macdata-proM2, verifies the remote hash, and only then runs retention cleanup plus owner-confirmed Docker Homebrew system cache and project-cache cleanup. If upload or remote verification fails, cleanup is not executed."
     variables:
       - name: "chip_keyword"
         data_type: "string"
@@ -368,24 +368,24 @@ formulas:
         data_type: "integer"
         unit: "GB"
         input_domain: "physical_memory_gb >= expected_memory_gb_min"
-      - name: "main_snapshot_verified"
+      - name: "remote_hash_verified"
         data_type: "boolean"
         unit: "gate"
-        input_domain: "true only when trusted Settlement merge SHA equals main and every declared source file hash matches"
+        input_domain: "true only after git show on the remote archive branch matches local record hash"
       - name: "cleanup_policy"
         data_type: "object"
         unit: "owner-confirmed cleanup switches"
         input_domain: "post_upload_cleanup_policy from device_config.json"
-    constraints: ["main is the only persistent branch.", "Issue mutation is zero.", "Time Machine and iCloud are not collected.", "Plaintext API keys, tokens, passwords, cookies, sessions, Keychain data, shell history, full environment dumps, and .env raw content are out of scope.", "Cleanup is gated behind exact main snapshot and zero-residue verification."]
-    missing_policy: "Missing confirmation, wrong device, non-zero remote state, legacy branch, credential finding, main drift, untrusted merge, hash mismatch, or residue stops before cleanup."
-    output_range: "PASS only after trusted Settlement, exact main reconciliation and terminal 0/0/0; otherwise fail-closed with bounded compensation."
-    code_refs: ["OpenAIDatabase/macdata/automation_c.py:1", "OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py:1", "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py:1"]
-    test_refs: ["OpenAIDatabase/macdata/tests/test_automation_c.py:1", "OpenAIDatabase/macdata/airM2/tests/test_macdata_package.py:1", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py:1"]
-    evidence_refs: ["OpenAIDatabase/macdata/airM2/config/device_config.json:1", "OpenAIDatabase/macdata/proM2/config/device_config.json:1", "OpenAIDatabase/macdata/tests/test_automation_c.py:1"]
+    constraints: ["Time Machine and iCloud are not collected.", "Plaintext API keys, tokens, passwords, cookies, sessions, Keychain data, shell history, full environment dumps, and .env raw content are out of scope.", "Development cleanup is gated behind successful remote hash verification."]
+    missing_policy: "Missing owner confirmations, wrong device, failed credential scan, failed push, or failed remote verification stops before cleanup."
+    output_range: "PASS or fail-closed run status; cleanup report is present only after verified upload."
+    code_refs: ["OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py:1"]
+    test_refs: ["OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py:1"]
+    evidence_refs: ["OpenAIDatabase/macdata/proM2/config/device_config.json:1", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json:1"]
     implementation_refs: []
     implementation_fingerprint: "HUMAN_REVIEW_REQUIRED"
     last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
     verified_at: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
     evidence_hash: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
     semantic_status: "HUMAN_REVIEW_REQUIRED"
-    semantic_review_task_ids: "TSK.OpenAIDatabase.CLEAN1.0001"
+    semantic_review_task_ids: "MACDATA-PROM2-SETUP-20260705"

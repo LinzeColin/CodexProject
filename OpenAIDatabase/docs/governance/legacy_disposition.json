@@ -82,16 +82,16 @@
       "role": "legacy_planning_evidence",
       "reader_group": "legacy_planning_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 17071,
-      "sha256": "ced8a7a79ad5eb61a0fabc2e6b316ebfcdad703b98c30e3ee6c03f1360575d3f"
+      "bytes": 15742,
+      "sha256": "99ff1169d6dfa6df5813419870994ae6a958c8ee4e183c008d1d2200b66b10fd"
     },
     {
       "path": "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
       "role": "legacy_development_evidence",
       "reader_group": "legacy_planning_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 46095,
-      "sha256": "39f832f2db79b8dc3c427eec718d4dfd4cf364f4791533002826a948770625e7"
+      "bytes": 37294,
+      "sha256": "1858950a74e2922e01108b15c817170b4b817ff7441f310dc97549662623bae2"
     },
     {
       "path": "OpenAIDatabase/docs/governance/LOCAL_HISTORY_IMPORTS_MOVE_20260630.md",
@@ -107,85 +107,85 @@
       "reader_group": "legacy_semantic_compatibility",
       "former_writer": "historical_governance_tasks",
       "bytes": 10814,
-      "sha256": "ab72b2a11281b87a3d55c3c3ede3c9eb41e8281588b0ccee7572b09bd541fbbd"
+      "sha256": "64b02cf6e67517ec7b4b8318abac57b991a560d6a6c2a71faf34973964f3b7f4"
     },
     {
       "path": "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
       "role": "legacy_generated_status",
       "reader_group": "legacy_status_compatibility",
       "former_writer": "scripts/generate_governance_dashboard.py",
-      "bytes": 6441,
-      "sha256": "9eecfee3585f255475f19c2f9702b0b6b40600896844ab67c1b0ee4d5f17a7f1"
+      "bytes": 4790,
+      "sha256": "4e9b16d6c5c05c2ae3670006b22415f921b55692a24d38e008214aeb9d3c949e"
     },
     {
       "path": "OpenAIDatabase/docs/governance/STATUS.md",
       "role": "legacy_generated_status",
       "reader_group": "legacy_status_compatibility",
       "former_writer": "scripts/generate_governance_dashboard.py",
-      "bytes": 3367,
-      "sha256": "1e864f6198e6ef6eb8663b204ef01c5a53a30fa37442d3b57e5f4e614aeebc8c"
+      "bytes": 2040,
+      "sha256": "fcb96fe65dfaa4b7ae8c497bd3b14ac0c797d56eaed510786e696542b9e0ef29"
     },
     {
       "path": "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
       "role": "legacy_semantic_evidence",
       "reader_group": "legacy_semantic_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 11316,
-      "sha256": "6547c1ffae1aba0903546940976255b9c3e98a467ae3d0308545dc3985dcca17"
+      "bytes": 10250,
+      "sha256": "dc06f31d6defb8d99162a3627a9b1f57a12ada2fdde0601a9c2dd6940de4555e"
     },
     {
       "path": "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
       "role": "legacy_version_evidence",
       "reader_group": "legacy_planning_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 6384,
-      "sha256": "b3c4517ac9124e6874c37ee9dd701813d8510e302aacab57e79eae4033a4a11a"
+      "bytes": 4609,
+      "sha256": "d9a68115c2077b54d05c61b559c4590742a80b5d9d476ca90a3d510bf6d1ebe9"
     },
     {
       "path": "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
       "role": "legacy_task_evidence",
       "reader_group": "legacy_planning_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 37066,
-      "sha256": "9f5290d9598c59bc521c65ac7c8584b3dac01671b1ee91842ee25beb30aef6c0"
+      "bytes": 33438,
+      "sha256": "92c453a5ef7813c57ea74845fd77a42cf9d36074808cf5b7e8484271af96a202"
     },
     {
       "path": "OpenAIDatabase/docs/governance/development_events.jsonl",
       "role": "legacy_append_only_event_evidence",
       "reader_group": "historical_event_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 83962,
-      "sha256": "00a3da690e3610e02fcf185eb0d1203e7c46dd1c02f4ccab27aceb4cf0c4f425"
+      "bytes": 76191,
+      "sha256": "b9efd198e19b191ff23de15361c18dfc291b8cc2788dd9e856c8cf06e3acf222"
     },
     {
       "path": "OpenAIDatabase/docs/governance/formula_registry.yaml",
       "role": "legacy_semantic_evidence",
       "reader_group": "legacy_semantic_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 34772,
-      "sha256": "d15e906409a0a480e7f9be1eb5faf779e1f7eddfb340b31f337f78defb86015a"
+      "bytes": 34299,
+      "sha256": "b7b2f6303d09b8333e46174384035b91383ca53dcbd7a1d1e1913144120ef549"
     },
     {
       "path": "OpenAIDatabase/docs/governance/model_registry.yaml",
       "role": "legacy_semantic_evidence",
       "reader_group": "legacy_semantic_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 17655,
-      "sha256": "6d778df25bd399a233ecf433c2a1c6582e7127239f4a03b03593f93413802eab"
+      "bytes": 17294,
+      "sha256": "14ee5d489edbcbf682f398e561bff11a316c2f6f083be6163be0035aca3a42ae"
     },
     {
       "path": "OpenAIDatabase/docs/governance/parameter_registry.csv",
       "role": "legacy_semantic_evidence",
       "reader_group": "legacy_semantic_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 80501,
-      "sha256": "cdaeeefa347f17552ef3aecfbdb702b8bc05af7800c19b45d113defa4421f67e"
+      "bytes": 80306,
+      "sha256": "310cd30d5f3374ef01c293f9912fe74e539fc39ac9146a82089f249f95efdce1"
     }
   ],
   "freeze_collection": {
     "count": 14,
-    "bytes": 363182,
-    "sha256": "9c4ee675839e78e26de51a4f1fd157e1d70a67ffbdba443343f682b86a278a96"
+    "bytes": 334805,
+    "sha256": "c455178e70d2dec8b94ed7cc25fd7a0a73da0b44977aae162bf1f7e6dbf86d01"
   },
   "disposition": {
     "editable_legacy_truth_count": 0,

@@ -54,12 +54,29 @@ class OpenAIDatabaseLeanConvergenceTests(unittest.TestCase):
         self.assertEqual(self.disposition["disposition"]["files_moved"], 0)
         legacy = self.disposition["retained_legacy_files"]
         self.assertEqual(len(legacy), 14)
-        self.assertEqual(sum(item["bytes"] for item in legacy), 363182)
+        self.assertEqual(sum(item["bytes"] for item in legacy), 334805)
         for item in legacy:
             path = ROOT / item["path"]
             payload = path.read_bytes()
             self.assertEqual(len(payload), item["bytes"], item["path"])
             self.assertEqual(hashlib.sha256(payload).hexdigest(), item["sha256"], item["path"])
+
+    def test_frozen_legacy_version_matrix_does_not_override_canonical_version(self) -> None:
+        validation = governance.Validation()
+        parsed = governance.parse_project_governance(
+            PROJECT_ROOT,
+            validation,
+            required=True,
+            scope="OpenAIDatabase",
+        )
+        governance.check_versions(
+            validation,
+            PROJECT_ROOT,
+            parsed,
+            required=True,
+            scope="OpenAIDatabase",
+        )
+        self.assertEqual(validation.errors, [])
 
     def test_human_views_are_deterministic_complete_and_compressed(self) -> None:
         tasks = {

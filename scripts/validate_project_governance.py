@@ -1208,6 +1208,35 @@ def check_versions(validation: Validation, project_path: Path, parsed: dict[str,
     version_file = project_path / "VERSION"
     changelog = project_path / "CHANGELOG.md"
     ledger = project_path / "docs" / "governance" / "DEVELOPMENT_LEDGER.md"
+    disposition_path = project_path / "docs" / "governance" / "legacy_disposition.json"
+    if disposition_path.exists():
+        try:
+            disposition = json.loads(disposition_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            validation.add(required, scope, f"legacy_disposition.json parse failure: {exc}")
+            return
+        if disposition.get("legacy_dashboard_mode") == "frozen_read_only":
+            canonical_path = project_path / "docs" / "governance" / "project.yaml"
+            try:
+                canonical = load_yaml(canonical_path) if canonical_path.exists() else {}
+            except Exception as exc:
+                validation.add(required, scope, f"project.yaml parse failure: {exc}")
+                return
+            canonical_version = canonical.get("version") if isinstance(canonical, dict) else None
+            if not value_present(canonical_version):
+                validation.add(required, scope, "project.yaml missing canonical version")
+                return
+            if version_file.exists():
+                version_text = version_file.read_text(encoding="utf-8").strip()
+                if version_text != str(canonical_version):
+                    validation.add(
+                        required,
+                        scope,
+                        f"VERSION {version_text} does not match canonical project.yaml version {canonical_version}",
+                    )
+            if changelog.exists() and str(canonical_version) not in changelog.read_text(encoding="utf-8"):
+                validation.add(required, scope, f"CHANGELOG.md does not mention canonical version {canonical_version}")
+            return
     matrix = parsed.get("version_matrix") or {}
     if not isinstance(matrix, dict) or not matrix:
         return

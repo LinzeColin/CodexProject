@@ -1,0 +1,7 @@
+DR drill: 6/6 components recover to a consistent known point, 0 release blockers; worker self-hash 452f7c5de919, registry sha256:d63cf6bd4d72c, D1 counts_consistent (329 versions restored), R2 content-addressed, content+prediction deterministic; worker/registry byte-immutable across the drill
+NC1 (flip one source's enabled): recompiled hash sha256:c5db032a68b08 != committed -> recoverable=False, release_blocker=True (correctly)
+NC2 (content bundle drift): recovered_hash 129f0ab24140ec15 != committed b70fe73e088f782d -> recoverable=False, blocker=True
+NC3 (R2 different content): recovered key != committed anchor -> recoverable=False, blocker=True (both content & R2 recovery are now falsifiable, not same-run tautologies)
+
+ACCEPTANCE = PASS
+NOTE: isolated rollback/disaster-recovery drill across Worker/D1/R2/Registry/content/prediction; all recover to a consistent known point (0 release blockers); the drill issues no live rollback and no production D1/R2/network write; NOT_DEPLOYED (live b189d3cc0703 confirmed in realtime_check.txt).

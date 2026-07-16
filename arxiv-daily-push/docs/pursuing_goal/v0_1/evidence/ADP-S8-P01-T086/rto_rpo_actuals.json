@@ -1,0 +1,45 @@
+{
+  "task": "ADP-S8-P01-T086",
+  "rto_rpo_actuals": [
+    {
+      "component": "worker",
+      "rto_seconds": 0.0003,
+      "rpo": "0 (stateless code; every version in git)"
+    },
+    {
+      "component": "d1",
+      "rto_seconds": 0.0323,
+      "rpo": "0 for the permanent append-only record; open-format monthly snapshot is the portable recovery point"
+    },
+    {
+      "component": "r2",
+      "rto_seconds": 0.0001,
+      "rpo": "0 (immutable content-addressed; addressable by content)"
+    },
+    {
+      "component": "source_registry",
+      "rto_seconds": 0.1495,
+      "rpo": "0 (registry versioned in git)"
+    },
+    {
+      "component": "content_bundle",
+      "rto_seconds": 0.1392,
+      "rpo": "0 (regenerable from permanent raw evidence)"
+    },
+    {
+      "component": "prediction",
+      "rto_seconds": 0.0001,
+      "rpo": "0 (regenerable baselines; append-only ledger)"
+    }
+  ],
+  "evidence_hashes": {
+    "worker": "452f7c5de919",
+    "d1": "19c3cdc042d62cfa",
+    "r2": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
+    "source_registry": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+    "content_bundle": "b70fe73e088f782d",
+    "prediction": "b51e710cc68721e3"
+  },
+  "all_recoverable": true,
+  "release_blockers": []
+}

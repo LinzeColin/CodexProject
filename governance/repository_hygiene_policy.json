@@ -101,9 +101,9 @@
       "confidentiality": "repository_governance",
       "change_policy": "baseline_oid_only",
       "reviewed_oids": [
-        "105a702b5a7514d951fb00a50920dade0db0fbb0",
+        "a8f611fc0382350b69fb4f3ec0c959e56b9df980",
         "acbf968d5ae1f1e5ca682c3d7f6e26bfa1bd92d3",
-        "fd16725970ce1c8c879a9f7ef818e251fad8f568"
+        "def49e44cb2cd0d476a67c389a1bec9ae307884e"
       ],
       "max_bytes": 4194304
     },

@@ -13,8 +13,8 @@ the baseline tree and compare exact blob OIDs.
 
 The policy-bound candidate audit reports:
 
-- tracked objects: 14,326
-- objects over 1 MiB: 65 / 465,759,983 bytes
+- tracked objects: 14,341
+- objects over 1 MiB: 65 / 465,767,634 bytes
 - archive-shaped objects: 36
 - tracked runtime noise: 0
 - executable backup producers: 0
@@ -39,8 +39,8 @@ historical objects.
 - Reviewed existing PFI reports/traces, the v0.2.5 source TaskPack, and arxiv
   pursuing-goal evidence into baseline-OID-only rules. Their byte ceilings match
   the largest accepted baseline object; any new path or byte change still fails.
-- Reconciled GitHub `main` at `a56143103ba2e8fc8291826c43831a63e6f6db7a`
-  with zero candidate-path overlap. Three updated arxiv canonical ledgers over
+- Reconciled GitHub `main` through `ac871bd40082f4cb8a607d7e37c8750f50522018`
+  with zero candidate-path overlap. Three current arxiv canonical ledgers over
   1 MiB are admitted only by their exact reviewed blob OIDs; the path and byte
   ceilings remain unchanged.
 - Kept the global regular-file ceiling at 1,048,576 bytes.

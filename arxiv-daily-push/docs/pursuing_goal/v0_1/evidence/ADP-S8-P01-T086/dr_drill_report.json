@@ -1,0 +1,131 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S8-P01-T086",
+  "components": [
+    {
+      "component": "worker",
+      "retention_class": "REGENERABLE (stateless code in git)",
+      "known_point": "source build_id 452f7c5de919; live deployed b189d3cc0703 (T040, rollback target)",
+      "recovery_mechanism": "wrangler versions deploy <build_id> to a prior committed version; self-hash verifies integrity",
+      "rpo": "0 (stateless code; every version in git)",
+      "rto_seconds": 0.0003,
+      "known_hash": "452f7c5de919",
+      "recovered_hash": "452f7c5de919",
+      "recoverable": true,
+      "note": "actual live rollback NOT executed (would touch production); drill proves the target is identifiable + integrity-verifiable",
+      "is_release_blocker": false
+    },
+    {
+      "component": "d1",
+      "retention_class": "PERMANENT (published DocumentVersion, append-only) + REGENERABLE (mirror views)",
+      "known_point": "T027 open monthly snapshot (498 docs / 500 versions); published versions append-only",
+      "recovery_mechanism": "restore a month from the open snapshot into an isolated in-memory SQLite (T029)",
+      "rpo": "0 for the permanent append-only record; open-format monthly snapshot is the portable recovery point",
+      "rto_seconds": 0.031,
+      "known_hash": "counts_consistent + committed T029 per-month",
+      "recovered_hash": "19c3cdc042d62cfa",
+      "recoverable": true,
+      "detail": {
+        "counts_consistent": true,
+        "orphans": 0,
+        "permanent_deletes": 0,
+        "per_month_matches_committed_t029": true,
+        "restored_versions": 329
+      },
+      "note": "restored into a throwaway :memory: SQLite; per-month counts compared to the committed T029 restore report; production D1 untouched",
+      "is_release_blocker": false
+    },
+    {
+      "component": "r2",
+      "retention_class": "PERMANENT (raw content-addressed artifact, never deleted)",
+      "known_point": "committed content-addressed object key raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
+      "recovery_mechanism": "content-addressed immutable key; identical bytes re-derive the committed key",
+      "rpo": "0 (immutable content-addressed; addressable by content)",
+      "rto_seconds": 0.0001,
+      "known_hash": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
+      "recovered_hash": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
+      "recoverable": true,
+      "note": "no production R2 read/write; key derived locally and compared to the committed known point",
+      "is_release_blocker": false
+    },
+    {
+      "component": "source_registry",
+      "retention_class": "REGENERABLE (compiled from the committed registry in git)",
+      "known_point": "registry_hash sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+      "recovery_mechanism": "recompile source_registry.json (git revert to a prior registry is the known point)",
+      "rpo": "0 (registry versioned in git)",
+      "rto_seconds": 0.1521,
+      "known_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+      "recovered_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+      "recoverable": true,
+      "is_release_blocker": false
+    },
+    {
+      "component": "content_bundle",
+      "retention_class": "REGENERABLE (L0-L3 render, deterministically rebuilt from raw + code)",
+      "known_point": "committed render bundle hash b70fe73e088f782d",
+      "recovery_mechanism": "re-derive the L0-L3 render payloads from the permanent raw items + code (T018); must reproduce the committed bundle",
+      "rpo": "0 (regenerable from permanent raw evidence)",
+      "rto_seconds": 0.1309,
+      "known_hash": "b70fe73e088f782d",
+      "recovered_hash": "b70fe73e088f782d",
+      "recoverable": true,
+      "is_release_blocker": false
+    },
+    {
+      "component": "prediction",
+      "retention_class": "REGENERABLE (baselines) + PERMANENT (append-only forecast ledger T073)",
+      "known_point": "committed baselines report (G1/G2 reproducible); append-only forecast ledger",
+      "recovery_mechanism": "re-benchmark baselines from the committed history/eval; the forecast ledger is append-only",
+      "rpo": "0 (regenerable baselines; append-only ledger)",
+      "rto_seconds": 0.0001,
+      "known_hash": "b51e710cc68721e3",
+      "recovered_hash": "b51e710cc68721e3",
+      "recoverable": true,
+      "is_release_blocker": false
+    }
+  ],
+  "all_recoverable": true,
+  "release_blockers": [],
+  "rto_rpo_actuals": [
+    {
+      "component": "worker",
+      "rto_seconds": 0.0003,
+      "rpo": "0 (stateless code; every version in git)"
+    },
+    {
+      "component": "d1",
+      "rto_seconds": 0.031,
+      "rpo": "0 for the permanent append-only record; open-format monthly snapshot is the portable recovery point"
+    },
+    {
+      "component": "r2",
+      "rto_seconds": 0.0001,
+      "rpo": "0 (immutable content-addressed; addressable by content)"
+    },
+    {
+      "component": "source_registry",
+      "rto_seconds": 0.1521,
+      "rpo": "0 (registry versioned in git)"
+    },
+    {
+      "component": "content_bundle",
+      "rto_seconds": 0.1309,
+      "rpo": "0 (regenerable from permanent raw evidence)"
+    },
+    {
+      "component": "prediction",
+      "rto_seconds": 0.0001,
+      "rpo": "0 (regenerable baselines; append-only ledger)"
+    }
+  ],
+  "evidence_hashes": {
+    "worker": "452f7c5de919",
+    "d1": "19c3cdc042d62cfa",
+    "r2": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
+    "source_registry": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+    "content_bundle": "b70fe73e088f782d",
+    "prediction": "b51e710cc68721e3"
+  },
+  "isolation": "every recovery runs in an isolated tmp dir / in-memory SQLite; no live rollback; no production D1/R2/network write; live worker unchanged"
+}
