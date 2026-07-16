@@ -1,0 +1,174 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S6-P03-T075",
+  "release_mode": "SHADOW",
+  "predefined_targets": {
+    "ACCEL-PILOT": {
+      "horizon_days": 90,
+      "kind": "topic_acceleration"
+    },
+    "DIFFUSION-A0-A1": {
+      "horizon_days": 180,
+      "kind": "central_local_diffusion"
+    }
+  },
+  "pilots": {
+    "ACCEL-PILOT": {
+      "horizon_days": 90,
+      "predefined": true,
+      "n_windows": 3,
+      "beats_all": true,
+      "windows": [
+        {
+          "origin": "2018-12-31",
+          "train_n": 10,
+          "val_n": 5,
+          "model_brier": 0.1625,
+          "baseline_brier": 0.25,
+          "model_beats": true
+        },
+        {
+          "origin": "2019-03-31",
+          "train_n": 15,
+          "val_n": 5,
+          "model_brier": 0.178526,
+          "baseline_brier": 0.257778,
+          "model_beats": true
+        },
+        {
+          "origin": "2019-06-30",
+          "train_n": 20,
+          "val_n": 5,
+          "model_brier": 0.160744,
+          "baseline_brier": 0.25,
+          "model_beats": true
+        }
+      ],
+      "surfaced_predictions": [
+        {
+          "observed_at": "2019-07-10",
+          "support": 4,
+          "counter": 1,
+          "prob": 0.7727,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 77%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2019-07-25",
+          "support": 5,
+          "counter": 0,
+          "prob": 0.7727,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 77%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2019-08-10",
+          "support": 0,
+          "counter": 4,
+          "prob": 0.2273,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 23%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2019-08-25",
+          "support": 1,
+          "counter": 3,
+          "prob": 0.2273,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 23%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2019-09-10",
+          "support": 5,
+          "counter": 3,
+          "prob": 0.7727,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 77%（基于历史信号，非确定预测）"
+        }
+      ]
+    },
+    "DIFFUSION-A0-A1": {
+      "horizon_days": 180,
+      "predefined": true,
+      "n_windows": 3,
+      "beats_all": true,
+      "windows": [
+        {
+          "origin": "2018-12-31",
+          "train_n": 12,
+          "val_n": 6,
+          "model_brier": 0.168953,
+          "baseline_brier": 0.277778,
+          "model_beats": true
+        },
+        {
+          "origin": "2019-06-30",
+          "train_n": 18,
+          "val_n": 6,
+          "model_brier": 0.145583,
+          "baseline_brier": 0.262346,
+          "model_beats": true
+        },
+        {
+          "origin": "2019-12-31",
+          "train_n": 24,
+          "val_n": 6,
+          "model_brier": 0.136919,
+          "baseline_brier": 0.256944,
+          "model_beats": true
+        }
+      ],
+      "surfaced_predictions": [
+        {
+          "observed_at": "2020-01-15",
+          "support": 5,
+          "counter": 1,
+          "prob": 0.799,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 80%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2020-02-15",
+          "support": 4,
+          "counter": 0,
+          "prob": 0.799,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 80%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2020-03-15",
+          "support": 0,
+          "counter": 4,
+          "prob": 0.1759,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 18%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2020-04-15",
+          "support": 3,
+          "counter": 0,
+          "prob": 0.799,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 80%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2020-05-15",
+          "support": 1,
+          "counter": 3,
+          "prob": 0.1759,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 18%（基于历史信号，非确定预测）"
+        },
+        {
+          "observed_at": "2020-06-15",
+          "support": 4,
+          "counter": 2,
+          "prob": 0.799,
+          "statement": "该目标在预定 horizon 内发生的估计概率约为 80%（基于历史信号，非确定预测）"
+        }
+      ]
+    }
+  },
+  "lead_time_report": {
+    "ACCEL-PILOT": {
+      "origin": "2019-06-30",
+      "outcome_settles": "2019-09-28",
+      "lead_time_days": 90
+    },
+    "DIFFUSION-A0-A1": {
+      "origin": "2019-12-31",
+      "outcome_settles": "2020-06-28",
+      "lead_time_days": 180
+    }
+  }
+}

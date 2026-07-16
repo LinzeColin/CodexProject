@@ -1,0 +1,7 @@
+predefined: {'ACCEL-PILOT': 90, 'DIFFUSION-A0-A1': 180}
+ACCEL-PILOT: 3/3 windows beat baseline (h90d) profile=[(0.1625, 0.25), (0.1785, 0.2578), (0.1607, 0.25)]
+DIFFUSION-A0-A1: 3/3 windows beat baseline (h180d) profile=[(0.169, 0.2778), (0.1456, 0.2623), (0.1369, 0.2569)]
+no-deterministic-tone: hedged statements pass; certainty markers and 0/1 probs rejected
+lead time: {'ACCEL-PILOT': {'origin': '2019-06-30', 'outcome_settles': '2019-09-28', 'lead_time_days': 90}, 'DIFFUSION-A0-A1': {'origin': '2019-12-31', 'outcome_settles': '2020-06-28', 'lead_time_days': 180}}
+
+ACCEPTANCE = PASS

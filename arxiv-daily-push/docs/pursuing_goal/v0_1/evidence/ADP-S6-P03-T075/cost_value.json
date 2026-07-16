@@ -1,0 +1,25 @@
+{
+  "task": "ADP-S6-P03-T075",
+  "release_mode": "SHADOW",
+  "stage_user_value_metric": {
+    "stage": "S6 Prediction & Backtest",
+    "metric": "两个预定义窄目标（研究主题加速 / 中央A0→省A1扩散）在三个时间安全滚动窗口上，条件模型 Brier 均优于无条件基率基线，且预测以对冲概率（无确定语气）呈现，附 lead-time",
+    "before": "S6-P02 已有滚动回测框架(T072)+校准/技能分(T073)，但尚无具体窄目标预测器；无主题加速/中央-地方扩散的可回测预测",
+    "after": "两个 pilot 预测器落地（不同 fixture 非 clone）：ACCEL-PILOT(h90d,基率~0.5)/DIFFUSION-A0-A1(h180d,基率~0.6)，各 3 窗口含噪验证(每窗恰1 impurity) model Brier<baseline（ACCEL 0.163/0.179/0.161 vs 0.250/0.258/0.250；DIFFUSION 0.169/0.146/0.137 vs 0.278/0.262/0.257）；真·特征消融(信号置0塌回基线)+腐化信号探针(反转val信号→0.46-0.56远差基线)证优势来自 support/counter 信号；无确定语气 gate 强制对冲",
+    "quantified": true
+  },
+  "cost_metric": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost": 0,
+    "human_maintenance": "模型/基线(diffusion_predictor.py)+构造事件链生成器+独立验证器+对抗复核的撰写与运行",
+    "unknown_not_zero_note": "以上生产侧数值为 0 是因为本任务是 SHADOW 库层：不部署、不触 worker/D1/R2/cron；非未知填 0。真实语料回测的成本待生产阶段量化。"
+  },
+  "rollback": "删除 tools/diffusion_predictor.py 与 evidence/ADP-S6-P03-T075/；无 feature flag、无生产数据改写，回滚为纯删除。",
+  "realtime_build_id": "b189d3cc0703",
+  "realtime_regressed": false
+}

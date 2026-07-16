@@ -1,0 +1,11 @@
+# ADP-S6-P03-T075 commands (Shadow topic-acceleration & central->local diffusion prediction)
+# 1. build the generator/fixture (two pilot targets over the 2016+ event chain) and write the report
+python3 evidence/ADP-S6-P03-T075/build_diffusion_predictor.py
+#   -> ACCEL-PILOT: 3/3 windows beat baseline (h90d); DIFFUSION-A0-A1: 3/3 windows beat baseline (h180d)
+# 2. independent acceptance verifier (re-derives per-window Brier with its own formula; feature-ablation,
+#    deterministic-tone, post-hoc-target, and time-crossing negative controls)
+python3 evidence/ADP-S6-P03-T075/test-results/t075_verify.py | tee evidence/ADP-S6-P03-T075/test-results/diffusion_predictor_tests.txt
+#   -> ACCEPTANCE = PASS (exit 0)
+# 3. realtime non-regression (SHADOW: no deploy)
+curl -s https://adp.linzezhang.com/build.json
+#   -> build_id b189d3cc0703 == T040 (unchanged)
