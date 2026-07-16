@@ -1,0 +1,24 @@
+# ADP-S6-P01-T069 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity
+python3 -c "import sys; sys.path.insert(0,'tools'); import prediction_targets"
+
+# 2. build target catalog + settlement fixtures + report (deterministic)
+python3 evidence/ADP-S6-P01-T069/build_prediction_targets.py
+#   -> admitted: ['G1', 'G2', 'G3']  rejected: ['B1', 'B2', 'B3']
+#   -> settlements: G1_official=1, G1_media_and_future_only=0, G1_future_only=0, G2_two_stats=1, G3_revoked=1
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S6-P01-T069/test-results/t069_verify.py | tee evidence/ADP-S6-P01-T069/test-results/prediction_targets_tests.txt
+#   settleable: G1 official=1 / media-only=0; G2 two=1/one=0; G3 revoked=1; unelapsed=pending
+#   ambiguous rejected: ['B1','B2','B3'] (subjective / empty-field / no-horizon) — settle() refuses each
+#   controls: media does not settle; future-observed official does not leak (in-window=1, after-window=0)
+#   boundary: exactly-on-end counts (1); one-day-after does not leak; malformed/None observed_at safe
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t069.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main

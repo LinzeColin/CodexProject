@@ -1,0 +1,33 @@
+{
+  "task_id": "ADP-S6-P01-T069",
+  "title": "定义预测目标、Outcome Rule 与事件标签",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S6",
+  "phase": "S6-P01",
+  "value": {
+    "user_value": "可回测预测的诚实地基：先把『什么算发生』定义成可由未来官方原文(A0/A1)客观 0/1 结算的 Outcome Rule；模糊/主观目标一律挡在回测门外；official-only + observed_at 窗口从源头防未来泄漏。",
+    "value_metric_stage": "S6 预测、校准与失败历史：为 T070 快照/泄漏防线、T071 基线、T072 Rolling-origin Backtest 提供确定性目标与事件标签。",
+    "measured": {
+      "settleable": "G1/G2/G3 admitted+settleable; 官方结算definite(官方1/媒体0/两次1/一次0/revoked1/未过pending)",
+      "ambiguous_rejected": "B1主观谓词/B2空topic/B3零horizon全rejected不入回测; settle对三者raise",
+      "official_only_no_leak": "媒体look-alike不结算; 未来观测官方文档不泄漏(in-window1/after0); 边界末日1末日后0; malformed/None observed_at安全"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、结算规则确定性非训练模型、日期传入不读时钟，生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "target catalog + 结算规则 + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更）"
+}

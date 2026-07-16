@@ -1,0 +1,700 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 439e88eeb..515a8f5d5 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S6-P01-T069 (prediction target catalog + Outcome Rule + event labels; NOT_DEPLOYED)
++
++- Sixty-ninth task of the ADP V0.1 FINAL EXECUTION program -- opens Stage S6 (Prediction & Backtest). Defines what counts as 'happened' BEFORE training any model: a prediction target is admissible only if it can be settled objectively (0/1) by FUTURE OFFICIAL evidence (A0/A1 original text) via an unambiguous rule; a vague/subjective target is rejected and may not enter the backtest. release_mode NOT_DEPLOYED; a read-only library of deterministic settlement rules (NOT a trained model, so MODEL_SPEC/formula unchanged), the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/prediction_targets.py: make_target, SETTLEMENT_TYPES (official_doc_exists / status_transition / count_at_least), is_settleable (known objective predicate + all required non-empty fields + a finite positive horizon), admit_targets (admitted vs rejected-with-reason), settle (settles against OFFICIAL evidence within [origin, origin+horizon]; a definite 0/1 or 'pending' if the window has not elapsed; ignores media and out-of-window observations so the future cannot leak; raises on a non-settleable target). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/: prediction_targets_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S6-P01-T069/test-results/prediction_targets_tests.txt, ACCEPTANCE = PASS, exit 0): every admitted target (G1 official_doc_exists, G2 count_at_least, G3 status_transition) is settleable and settles to a definite label (official match 1 / media-or-future-only 0 / two releases 1 / one 0 / revoked 1 / unelapsed window pending); three ambiguous targets (a subjective predicate, an empty required field, a zero horizon) are rejected and settle() refuses each so they cannot be backtested; and settlement is official-only with a leak-proof observed_at window -- a media look-alike does not settle, a future-observed official match does not leak (in-window 1 / after-window 0 / exactly-on-end 1 / one-day-after not leaked / malformed observed_at safe). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P04-T068 (Knowledge Validity + 131-item benefit-parity regression; NOT_DEPLOYED)
+ 
+ - Sixty-eighth task of the ADP V0.1 FINAL EXECUTION program -- closes S5-P04 and Stage S5. When a source's substantive content changes, old knowledge is automatically re-opened (marked needs_review / invalid) and can be re-learned; and every one of 131 competitor user-benefit items has a definite status and a named owner, so no benefit is left in an unknown / nobody-owns-it limbo. release_mode NOT_DEPLOYED; a read-only library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/knowledge_validity.py: make_knowledge (binds knowledge to its source's T026 content_hash), check_validity (a substantive source change -> needs_review, a removed source -> invalid, a noise-only re-render -> stays valid, never in-place mutation), revalidate (re-learn: re-bind to the new version), and parity_report (every item's status is in a closed vocabulary with no 'unknown', every owner is real with no 'no-owner', delivered/partial cite evidence and planned/not_applicable give a reason). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T068/: parity_registry_131.json, knowledge_validity_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P04-T068/test-results/knowledge_validity_tests.txt, ACCEPTANCE = PASS, exit 0): the validity clock is hash-driven (a noise-only re-render shares the bound content_hash and stays valid = no churn; a substantive change auto-flips to needs_review; a removed source -> invalid; revalidate re-binds to the new version's hash); the parity registry has exactly 131 items with zero unknown-status, zero no-owner, and zero delivered/partial items missing evidence (by_status delivered 92 / partial 21 / planned 15 / not_applicable 3); statuses are honest (delivered cites a real ADP task; benefits whose substrate exists but is not fully built are conservatively marked partial; NOT_DEPLOYED library-layer disclaimer stated); and a gate control injecting an 'unknown' status, a 'no-owner', a blank owner, a bad status token, and a note-less planned item catches all of them. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 9626f120a..106ee6408 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P04-T067-LIBRARY-PROVENANCE-EXPORT"
+-source_snapshot_hash: "sha256:b920171bd02d6c407ee51f0fca0603026d6de75bf4d66976b14e8e48cb6fc468"
++as_of_event_id: "EVENT-20260717-ADP-V01-S5-P04-T068-KNOWLEDGE-VALIDITY-PARITY-131"
++source_snapshot_hash: "sha256:393cfb38db91951817816e846ff488fbae6404c601a423ad3de1a0dbba662dc7"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T02:50:00+10:00"
++snapshot_event_time: "2026-07-18T03:25:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 127
++    precommit_pending_events: 128
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index dcf4e2215..1a30a5daf 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S6-P01-T069: defined the prediction target catalog + Outcome Rules + event labels (opens Stage S6). release_mode NOT_DEPLOYED; read-only library of deterministic settlement rules (NOT a trained model, MODEL_SPEC/formula unchanged), production untouched. New tool docs/pursuing_goal/v0_1/tools/prediction_targets.py: make_target / SETTLEMENT_TYPES (official_doc_exists / status_transition / count_at_least) / is_settleable (objective predicate + required non-empty fields + finite positive horizon) / admit_targets (admitted vs rejected-with-reason) / settle (OFFICIAL evidence within [origin, origin+horizon]; definite 0/1 or 'pending'; ignores media and out-of-window; raises on non-settleable). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/: prediction_targets_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/prediction_targets_tests.txt, PASS exit 0): admitted targets settle definitely (official 1 / media-or-future 0 / two 1 / one 0 / revoked 1 / unelapsed pending); ambiguous targets (subjective / empty field / zero horizon) rejected and settle() refuses each; settlement official-only + leak-proof observed_at window (media does not settle; future-observed official does not leak; on-end 1 / after 0 / malformed safe). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P04-T068: implemented Knowledge Validity + the 131-item benefit-parity regression (closes S5-P04 and Stage S5). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/knowledge_validity.py: make_knowledge (binds knowledge to source T026 content_hash) / check_validity (substantive source change -> needs_review; removed -> invalid; noise-only -> stays valid; no in-place mutation) / revalidate (re-learn, re-bind to new version) / parity_report (status in closed vocab no 'unknown'; owner real no 'no-owner'; delivered/partial cite evidence, planned/na give a reason). Reuses T026 content_hash. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T068/: parity_registry_131.json, knowledge_validity_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/knowledge_validity_tests.txt, PASS exit 0): validity clock hash-driven (noise-only re-render stays valid = no churn; substantive change -> needs_review; removed -> invalid; revalidate re-binds new-version hash); parity registry exactly 131 items, 0 unknown-status / 0 no-owner / 0 delivered-partial-missing-evidence (by_status delivered 92 / partial 21 / planned 15 / not_applicable 3); statuses honest (delivered cites a real task, substrate-not-fully-built downgraded to partial); gate catches injected unknown-status / no-owner / blank-owner / bad-token / note-less-planned. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P04-T067: implemented the Library + notes + Provenance export (S5-P04). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/library_export.py: add_to_library (refuses save without complete provenance) / provenance_complete (5 fields non-empty; blank counts as missing) / export_markdown/csv/json (each carries all provenance per entry; refuses incomplete on export). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/: library_export_report.json, export_sample.{md,csv,json}, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/library_export_tests.txt, PASS exit 0): all 3 export formats carry the 5 provenance fields (source_url/version/fetched_at/claim_evidence/license) for every entry -- per-entry JSON, per-row CSV, per-entry-block Markdown; license notice in all 3; comma/quote/newline round-trip losslessly in CSV; JSON round-trips provenance; incomplete provenance refused on save AND on export (all 3 formats). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P04-T066: implemented the Watchlist + Change-only Digest (opens S5-P04). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/watchlist_digest.py: make_watch/matches (facets topic/agency/region/entity/doc_number) / run_digest (substantive change via T026 content_hash over body/attachments/status; notification key (watch_id,canonical_id,content_hash) deduped against state.seen; caller state never mutated) / source silence signal / daily-weekly digest (period passed in, no clock) / notification_is_locatable. Reuses T026 version_engine. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/: watchlist_digest_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/watchlist_digest_tests.txt, PASS exit 0): re-run no duplicates (day-2 emits 4, state-carrying re-run 0, stateless re-emits 6 -> dedup non-trivial); no-change no-disturb (noise-only doc-1 shares day-1 hash -> suppressed, genuine doc-2 differs -> notifies, unchanged corpus -> 0); every notification locatable to the changed item; quiet source raises silence signal. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 34468a20b..a63e8bf53 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `127`
+-- pending_or_stale_events: `477`
+-- freshness_counts: `pending_or_stale_events=477; legacy_unbound_events=334`
++- precommit_pending_events: `128`
++- pending_or_stale_events: `478`
++- freshness_counts: `pending_or_stale_events=478; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:b920171bd02d6c407ee51f0fca0603026d6de75bf4d66976b14e8e48cb6fc468`
+-- snapshot_event_time: `2026-07-18T02:50:00+10:00`
++- source_snapshot_hash: `sha256:393cfb38db91951817816e846ff488fbae6404c601a423ad3de1a0dbba662dc7`
++- snapshot_event_time: `2026-07-18T03:25:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 7307abc7e..320bc7667 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:b920171bd02d6c407ee51f0fca0603026d6de75bf4d66976b14e8e48cb6fc468`
+-- snapshot_event_time: `2026-07-18T02:50:00+10:00`
++- source_snapshot_hash: `sha256:393cfb38db91951817816e846ff488fbae6404c601a423ad3de1a0dbba662dc7`
++- snapshot_event_time: `2026-07-18T03:25:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `477`
++- Pending/stale events: `478`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/TASK_REPORT.md
+new file mode 100644
+index 000000000..efc94ba61
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/TASK_REPORT.md
+@@ -0,0 +1,54 @@
++# TASK_REPORT · ADP-S6-P01-T069｜定义预测目标、Outcome Rule 与事件标签
++
++## 唯一目标（达成）
++**先定义什么算发生，再训练任何模型**：建立预测**目标 catalog + horizon + settlement rules + 事件标签**。每个目标只有能**由未来官方证据（A0/A1 原文）客观 0/1 结算**才可入回测；**模糊/主观目标一律拒绝、不得进入回测**。开启 Stage S6（预测、校准与失败历史）。release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：target catalog + Outcome Rule（结算规则）+ 事件标签；可官方结算才入回测，模糊拒绝。
++2. **允许修改文件**：`tools/prediction_targets.py`（新）+ `evidence/ADP-S6-P01-T069/*` + 治理同步。**不改 worker/生产/registry/VERSION**。
++3. **绝不能改变**：生产 worker/cron/数据/实时；六主题/MVP；NOT_DEPLOYED。库层只读、**无时钟**（日期由调用方传入，datetime 仅做传入日期的算术）。
++4. **基线**：main `7cc13ba7`（T068 已合入，Stage S5 收尾）；catalog 含 settleable + ambiguous 混合、官方/媒体/未来证据。
++5. **验收**：每目标可由未来官方证据结算（definite 0/1；官方-only + observed_at 窗口防泄漏）；模糊目标不得进入回测（拒绝 + settle 拒算）。
++6. **回滚**：`git revert <sha>`（只读库，生产未变更）。
++7. **模型路由**：S6 为模型领域（T2/T3）。**本任务为预测目标/结算规则的定义（确定性 Outcome Rule，非训练模型/公式）**，故不动 MODEL_SPEC/formula_registry；真正统计/ML 模型自 T071（基线）起再登记。
++
++## 交付物
++- `tools/prediction_targets.py` —— `make_target`（target_id/description/horizon_days/subject/settlement）+ SETTLEMENT_TYPES（`official_doc_exists`/`status_transition`/`count_at_least` 三种**客观谓词**，各声明必填字段）+ `is_settleable`（已知客观谓词 + 全部必填非空非主观 + 有限正 horizon）+ `admit_targets`（拆 admitted/rejected 带原因）+ `settle`（对**官方**证据在 [origin, origin+horizon] 窗口内结算 → definite 0/1，或窗口未过 `pending`；忽略媒体与窗口外，防泄漏；对不可结算目标 **raise**）。
++- `evidence/…/build_prediction_targets.py`（6 目标：3 settleable[official_doc_exists/count_at_least/status_transition] + 3 ambiguous[主观谓词/空字段/无 horizon]；官方匹配/媒体 look-alike/未来官方证据）+ `prediction_targets_report.json` + `test-results/{t069_verify.py, prediction_targets_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/prediction_targets_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **① 每目标可由未来官方证据结算**：G1/G2/G3 全 admitted 且 settleable；官方结算给 **definite** label——G1 官方匹配=1 / 媒体或未来-only=0；G2 两次官方=1 / 一次(窗口过)=0；G3 状态转 revoked=1；**窗口未过且无匹配→pending**（不臆断）。
++- **② 模糊目标不得进入回测**：B1（主观谓词 is_important）/B2（topic 空）/B3（horizon 0）**全 rejected、不在 admitted**；`settle` 对三者**全 raise**（永不可回测）。
++- **③ official-only + 无泄漏（负控制/判别力）**：**媒体 look-alike**（authority≠A0/A1）在窗口内**不结算 1**；**未来观测的官方匹配文档不泄漏**（in-window=1，after-window=0）。**边界**：恰在窗口末日观测→1；末日后一天→不泄漏；**malformed/None observed_at 不崩溃不误 1**。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live `build_id=b189d3cc0703`（==T040）。
++
++## Data / Performance / Visual
++Data = 6 目标 catalog（3 settleable + 3 ambiguous）+ 官方/媒体/未来证据。Performance = 实时无回归。无 UI 改动；六主题保留。
++
++## Value / Cost（S6 预测校准）
++- **Value**：**可回测预测的诚实地基**——先把「什么算发生」定义成**可由官方原文客观结算**的 Outcome Rule，模糊目标一律挡在回测门外；official-only + observed_at 窗口从源头防未来泄漏。为 T070（快照/泄漏防线）、T071（基线）、T072（Rolling-origin Backtest）提供确定性目标与标签。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0（确定性结算规则，非训练模型）；人工维护 = catalog + 结算规则 + 验证编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：settlement 谓词为 3 类客观类型（可扩展但每新增须保持可官方结算）；label SQL 由部署阶段将谓词编译为 D1 查询（本任务出确定性 Python 结算与契约）；真正统计/ML 模型自 T071 起，届时登记 MODEL_SPEC/formula_registry。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED，库层）。`data-samples` = prediction_targets_report.json。`benchmarks` = N/A。
++
++## 完成声明
++```text
++Task: ADP-S6-P01-T069
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/prediction_targets.py(新) + T069 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: prediction_targets_tests.txt —— G1/G2/G3 settleable官方结算definite(官方1/媒体0/未来不泄漏/未过pending);B1/B2/B3模糊全rejected且settle raise;official-only(媒体不结算)+observed_at窗口防泄漏(in-window1/after0/边界末日1末日后不泄漏/malformed安全);实时无回归(build_id b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 预测目标catalog + Outcome Rule结算规则 + 事件标签(可官方结算才入回测,模糊拒绝)
++Data/Performance/Visual: Data=6目标+官方/媒体/未来证据；Perf=实时无回归；Visual=六主题保留
++Value: 可回测预测的诚实地基,先定义什么算发生,official-only+observed_at防泄漏
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0(确定性结算规则)；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（只读库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/adversarial_review.md
+new file mode 100644
+index 000000000..4d7b9e0d3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/adversarial_review.md
+@@ -0,0 +1,28 @@
++# Adversarial review · ADP-S6-P01-T069｜预测目标 / Outcome Rule / 事件标签
++
++独立对抗复核（general-purpose skeptic，两轮），职责是**证伪**验收（找空洞/作弊/误导），非确认。
++
++## 攻击向量
++(a) settleability 门（模糊/主观/空字段/未知类型/非法 horizon/n 能否混入回测）；(b) official-only（媒体/A2/None/大小写/带空格是否误结算）；(c) 泄漏/observed_at 窗口（边界、跨月跨年闰年、malformed/None、未来文档是否泄漏为 1）；(d) label definiteness（是否恒 0/1/pending、count>=n、status_transition、topic 匹配）；(e) 非空跑（每条款判别控制、verifier 从工具现推、fixture 是否充分）；NOT_DEPLOYED（无网络/写/时钟/随机）。
++
++## 第一轮：CONFIRMED_SOUND（hole=null, severity=none）
++- **(a)**：拒空白字段/未知类型/负零 horizon/count n≤0-float-string/缺 settlement。**门真实**。
++- **(b)**：仅精确 A0/A1 结算；media/A2/None/'a0'/'A0 '（带空格）**全不结算 1**（保守朝安全方向）。
++- **(c)**：obs==origin→1、obs==end→1、end+1→0、origin 前→排除→pending、future-only 匹配→0（不泄漏为 1）、in-window 匹配但 obs 在 end 后→排除→0；`_add_days_bound` 用 `datetime.date` 故跨月/年/闰年**日历精确**；malformed/None/缺 observed_at→排除→pending。**未来文档只能 pending→0（as-of 时钟），永不→1**。
++- **(d)**：count 用 `>=n`（media 不计入 count）；status_transition 精确 canonical_id+status。恒 0/1/pending。
++- **(e)**：verifier 直接调 `admit_targets/settle/is_settleable`（**不读 report JSON**）；判别负控制（媒体不结算/未来不泄漏/模糊拒绝且 settle raise/genuine pending）；fixture 覆盖三种结算类型 + 官方/媒体/未来。
++- **NOT_DEPLOYED**：仅 import datetime（传入日期算术）+ re；无 today()/now()/网络/写。
++- **判定**：两验收条款（每目标可官方结算 / 模糊不入回测）**真成立、非空跑/作弊/错**。列 4 项**非致命防御性类型** latent。
++
++## latent 的主动闭合（3 项防御性类型硬化 + 1 项披露）
++1. **topics 为字符串会子串误配**（`s[topic] in (d.topics or [])` 对 string 做子串）→ 新增 `_topic_match` 要求 **topics 为 list 且精确成员**；`_match` 改用之。string 超集「数据共享政策」、tuple、空 list、缺键、None **全不匹配**（无 spurious 1）。
++2. **bool horizon/n 通过 isinstance(_,int)**→ 新增 `_pos_int`（`isinstance(int) and not isinstance(bool) and >0`）用于 horizon_days 与 count n；bool/float/str/0/负 **全拒**。
++3. **非-dict settlement 抛 AttributeError**→ `is_settleable` 加 `isinstance(s, dict)` 守卫，string/None/list/int/tuple/空 dict/bool **返回 False 不崩溃**，admit_targets 干净拒绝。
++- **(#4 披露，未改)**：pending-vs-0「窗口已过」时钟用 max(observed_at) over 全部证据（含 media）——复核确认为 as-of 代理、**永不产生错误 1，仅 pending→0 时序**，defensible，known_gaps 已述精神。
++- verifier 加 TYPE-SAFETY 控制（string-topics 不误配 / bool horizon-n 不 settleable / 非 dict settlement 拒不崩）。
++
++## 第二轮（复核 DELTA）：CONFIRMED_SOUND（hole=null, severity=none）
++复核者重跑 verifier（PASS，golden G1/G2/G3 值**逐一不变**），逐项攻击三部分 delta：`_topic_match` 保留全部先前结果（list present 单/多元=1、absent=0；string 超集/精确/tuple/空/缺键/None **全 0** 无子串泄漏；status_transition 路径未受影响）；`_pos_int` 接受 180/1/2 拒 0/负/True/False/180.0/'180'；非 dict 守卫对 string/None/list/int/tuple/空 dict/bool **全 False 无崩溃**。**纯加性硬化、零回归、无新空洞**。唯一有意收窄：tuple-topics 不再匹配，与声明的 list schema 一致。
++
++## 结论
++两轮复核均 **CONFIRMED_SOUND**；两验收条款有 load-bearing 判别负控制（媒体不结算/未来不泄漏/模糊 raise/边界精确）、非空跑，verifier 从工具现推。3 项防御性类型 latent 主动闭合（string-topics 精确成员/bool horizon-n 拒/非 dict settlement 拒不崩），复核证明零回归。确定性、零副作用、不读时钟；结算规则为确定性 Outcome Rule（非训练模型，MODEL_SPEC 未动）。实时无回归（live build_id b189d3cc0703 == T040）。**开启 Stage S6**。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/build_prediction_targets.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/build_prediction_targets.py
+new file mode 100644
+index 000000000..0175e7913
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/build_prediction_targets.py
+@@ -0,0 +1,76 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Deterministic fixtures for ADP-S6-P01-T069 (prediction target catalog + settlement).
++
++The catalog mixes SETTLEABLE targets (objective official-evidence predicates) with AMBIGUOUS ones
++(subjective / missing-field / no-horizon) that must be rejected. The evidence set includes an official
++match, a MEDIA look-alike (must not settle), and a FUTURE official match (must not leak).
++"""
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent.parent
++sys.path.insert(0, str(V01 / "tools"))
++import prediction_targets as PT
++
++CATALOG = [
++    # settleable: an official 数据共享 policy from 国务院办公厅 within 180 days
++    PT.make_target("G1", "国务院办公厅将在半年内发布数据共享政策", 180, "policy",
++                   {"type": "official_doc_exists", "agency": "国务院办公厅", "topic": "数据共享"}),
++    # settleable: at least 2 official 统计 releases from 国家统计局 within a year
++    PT.make_target("G2", "国家统计局一年内至少发布2次统计公报", 365, "statistics",
++                   {"type": "count_at_least", "agency": "国家统计局", "topic": "统计", "n": 2}),
++    # settleable: a specific document transitions to 'revoked' within 90 days
++    PT.make_target("G3", "某规定90天内被废止", 90, "status",
++                   {"type": "status_transition", "canonical_id": "doc-X", "to_status": "revoked"}),
++    # AMBIGUOUS: subjective predicate (not a recognized objective type) -> reject
++    PT.make_target("B1", "该政策将会很重要", 180, "vibes",
++                   {"type": "is_important", "note": "significant"}),
++    # AMBIGUOUS: official_doc_exists but the topic field is empty -> reject
++    PT.make_target("B2", "某机构会发文", 180, "policy",
++                   {"type": "official_doc_exists", "agency": "国务院办公厅", "topic": ""}),
++    # AMBIGUOUS: no finite horizon -> reject
++    PT.make_target("B3", "迟早会发布", 0, "policy",
++                   {"type": "official_doc_exists", "agency": "国务院办公厅", "topic": "数据共享"}),
++]
++
++# evidence (canonical_id, authority_level, agency, topics, status, observed_at)
++E_OFFICIAL_MATCH = {"canonical_id": "d1", "authority_level": "A0", "agency": "国务院办公厅",
++                    "topics": ["数据共享"], "status": "published", "observed_at": "2026-03-01"}
++E_MEDIA_MATCH = {"canonical_id": "d2", "authority_level": "media", "agency": "国务院办公厅",
++                 "topics": ["数据共享"], "status": "published", "observed_at": "2026-03-05"}
++E_FUTURE_MATCH = {"canonical_id": "d3", "authority_level": "A0", "agency": "国务院办公厅",
++                  "topics": ["数据共享"], "status": "published", "observed_at": "2026-09-01"}
++E_STATS_1 = {"canonical_id": "s1", "authority_level": "A0", "agency": "国家统计局",
++             "topics": ["统计"], "status": "published", "observed_at": "2026-02-10"}
++E_STATS_2 = {"canonical_id": "s2", "authority_level": "A0", "agency": "国家统计局",
++             "topics": ["统计"], "status": "published", "observed_at": "2026-05-10"}
++E_STATUS = {"canonical_id": "doc-X", "authority_level": "A0", "agency": "某部",
++            "topics": ["规定"], "status": "revoked", "observed_at": "2026-02-15"}
++ORIGIN = "2026-01-01"
++
++
++def main():
++    adm = PT.admit_targets(CATALOG)
++    report = {
++        "admitted": [t["target_id"] for t in adm["admitted"]],
++        "rejected": [r["target_id"] for r in adm["rejected"]],
++        "settlements": {
++            "G1_official": PT.settle(CATALOG[0], [E_OFFICIAL_MATCH, E_FUTURE_MATCH], ORIGIN)["label"],
++            "G1_media_and_future_only": PT.settle(CATALOG[0], [E_MEDIA_MATCH, E_FUTURE_MATCH], ORIGIN)["label"],
++            "G1_future_only": PT.settle(CATALOG[0], [E_FUTURE_MATCH], ORIGIN)["label"],
++            "G2_two_stats": PT.settle(CATALOG[1], [E_STATS_1, E_STATS_2, E_FUTURE_MATCH], ORIGIN)["label"],
++            "G3_revoked": PT.settle(CATALOG[2], [E_STATUS, E_FUTURE_MATCH], ORIGIN)["label"],
++        },
++    }
++    (HERE / "prediction_targets_report.json").write_text(
++        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print("admitted:", report["admitted"], "rejected:", report["rejected"])
++    print("settlements:", report["settlements"])
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/commands.log
+new file mode 100644
+index 000000000..689516060
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/commands.log
+@@ -0,0 +1,24 @@
++# ADP-S6-P01-T069 commands (deterministic, no network except the read-only realtime build check)
++
++# 1. import sanity
++python3 -c "import sys; sys.path.insert(0,'tools'); import prediction_targets"
++
++# 2. build target catalog + settlement fixtures + report (deterministic)
++python3 evidence/ADP-S6-P01-T069/build_prediction_targets.py
++#   -> admitted: ['G1', 'G2', 'G3']  rejected: ['B1', 'B2', 'B3']
++#   -> settlements: G1_official=1, G1_media_and_future_only=0, G1_future_only=0, G2_two_stats=1, G3_revoked=1
++
++# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
++python3 evidence/ADP-S6-P01-T069/test-results/t069_verify.py | tee evidence/ADP-S6-P01-T069/test-results/prediction_targets_tests.txt
++#   settleable: G1 official=1 / media-only=0; G2 two=1/one=0; G3 revoked=1; unelapsed=pending
++#   ambiguous rejected: ['B1','B2','B3'] (subjective / empty-field / no-horizon) — settle() refuses each
++#   controls: media does not settle; future-observed official does not leak (in-window=1, after-window=0)
++#   boundary: exactly-on-end counts (1); one-day-after does not leak; malformed/None observed_at safe
++#   ACCEPTANCE = PASS (exit 0)
++
++# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
++curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
++#   -> b189d3cc0703  (== T040; realtime not regressed)
++
++# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t069.py),
++#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/cost_value.json
+new file mode 100644
+index 000000000..8efe4e459
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/cost_value.json
+@@ -0,0 +1,33 @@
++{
++  "task_id": "ADP-S6-P01-T069",
++  "title": "定义预测目标、Outcome Rule 与事件标签",
++  "release_mode": "NOT_DEPLOYED",
++  "stage": "S6",
++  "phase": "S6-P01",
++  "value": {
++    "user_value": "可回测预测的诚实地基：先把『什么算发生』定义成可由未来官方原文(A0/A1)客观 0/1 结算的 Outcome Rule；模糊/主观目标一律挡在回测门外；official-only + observed_at 窗口从源头防未来泄漏。",
++    "value_metric_stage": "S6 预测、校准与失败历史：为 T070 快照/泄漏防线、T071 基线、T072 Rolling-origin Backtest 提供确定性目标与事件标签。",
++    "measured": {
++      "settleable": "G1/G2/G3 admitted+settleable; 官方结算definite(官方1/媒体0/两次1/一次0/revoked1/未过pending)",
++      "ambiguous_rejected": "B1主观谓词/B2空topic/B3零horizon全rejected不入回测; settle对三者raise",
++      "official_only_no_leak": "媒体look-alike不结算; 未来观测官方文档不泄漏(in-window1/after0); 边界末日1末日后0; malformed/None observed_at安全"
++    }
++  },
++  "cost": {
++    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、结算规则确定性非训练模型、日期传入不读时钟，生产零副作用。",
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "human_maintenance": "target catalog + 结算规则 + 验证编写（一次性）",
++    "recurring_cloud_cost_usd_per_month": 0
++  },
++  "realtime_regression": {
++    "live_build_id": "b189d3cc0703",
++    "equals_T040": true,
++    "regressed": false
++  },
++  "rollback": "git revert <sha>（只读库；生产数据未变更）"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/known_gaps.md
+new file mode 100644
+index 000000000..01a9dc635
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S6-P01-T069
++
++- **settlement 谓词为 3 类客观类型**：`SETTLEMENT_TYPES` = `official_doc_exists` / `status_transition` / `count_at_least`——每类都是**官方证据的确定性谓词**，可扩展但**每新增一类须保持「可由未来官方原文客观 0/1 结算」**（否则该目标不 settleable、不入回测）。主观/自由文本谓词（如 is_important）**永不 settleable**。
++- **label SQL 由部署阶段编译**：TASK_INDEX 交付含「label SQL」。本任务出**确定性 Python 结算**（`settle`）与谓词契约；将谓词编译为 D1 label SQL（在真实版本链上打标）由部署阶段负责，须保持相同 official-only + observed_at 窗口语义。本层为其确定性规范与可复核实现。
++- **official-only = A0/A1**：结算只计 `authority_level ∈ {A0, A1}`（官方原文）；媒体/A2/None **不结算**。若未来把 A2（地方官方）纳入某目标结算，属谓词扩展、须显式登记。
++- **observed_at 窗口防泄漏**：结算只计窗口 `[origin, origin+horizon]` **内观测**的证据（含端点）；窗口外（尤其**未来观测**）不计——回测不泄漏未来。窗口未过且无匹配→`pending`（不臆断 0）。`horizon_days` 用日历日期算术（传入日期，不读 wall-clock）。malformed/None `observed_at` 的文档被安全排除。
++- **模型路由（T2/T3）**：S6 为模型领域。**本任务是预测目标/Outcome Rule 的定义（确定性结算规则，非训练模型/统计公式）**，故未动 MODEL_SPEC/formula_registry。真正统计/ML 模型自 **T071（历史频率/季节性基线）** 起，届时登记 MODEL_SPEC 与 formula_registry。
++- **NOT_DEPLOYED**：不接 worker/cron/D1/R2，不改生产数据。实时无回归（live build_id b189d3cc0703 == T040）。**开启 Stage S6（预测、校准与失败历史）**；后接 T070（Dataset Snapshot + observed_at 泄漏防线）、T071（基线）、T072（Rolling-origin Backtest）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/prediction_targets_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/prediction_targets_report.json
+new file mode 100644
+index 000000000..ddb4120cb
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/prediction_targets_report.json
+@@ -0,0 +1,19 @@
++{
++  "admitted": [
++    "G1",
++    "G2",
++    "G3"
++  ],
++  "rejected": [
++    "B1",
++    "B2",
++    "B3"
++  ],
++  "settlements": {
++    "G1_official": 1,
++    "G1_media_and_future_only": 0,
++    "G1_future_only": 0,
++    "G2_two_stats": 1,
++    "G3_revoked": 1
++  }
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/prediction_targets_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/prediction_targets_tests.txt
+new file mode 100644
+index 000000000..5e2947b12
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/prediction_targets_tests.txt
+@@ -0,0 +1,8 @@
++admitted: ['G1', 'G2', 'G3'] rejected: ['B1', 'B2', 'B3']
++settleable: G1 official=1 / media-only=0; G2 two=1/one=0; G3 revoked=1; unelapsed=pending
++ambiguous rejected: ['B1', 'B2', 'B3'] (subjective / empty-field / no-horizon) — settle() refuses each
++controls: media does not settle; future-observed official does not leak (in-window=1, after-window=0)
++boundary: exactly-on-end counts (1); one-day-after does not leak; malformed/None observed_at safe
++type-safety: string-topics no spurious match; bool horizon/n not settleable; non-dict settlement rejected (no crash)
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..60e505976
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/realtime_check.txt
+@@ -0,0 +1,2 @@
++build_id: b189d3cc0703
++MATCH (b189d3cc0703 == T040, realtime NOT regressed)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/t069_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/t069_verify.py
+new file mode 100644
+index 000000000..6c89c0885
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/test-results/t069_verify.py
+@@ -0,0 +1,139 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P01-T069 acceptance: prediction target catalog + Outcome Rule + event labels.
++
++Acceptance (TASK_INDEX row 69): 每个目标可由未来官方证据结算；模糊目标不得进入回测。
++  (every target is settleable by future OFFICIAL evidence; ambiguous targets may NOT enter the backtest.)
++
++Deterministic. Re-derives from the TOOL (prediction_targets) + fixtures -- never trusts the report.
++Negative controls prove discrimination: an ambiguous target is rejected AND settle() refuses it; a media
++look-alike does NOT settle (official-only); a future-observed official doc does NOT leak into the label.
++"""
++import importlib.util
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import prediction_targets as PT
++
++T069 = V01 / "evidence" / "ADP-S6-P01-T069"
++spec = importlib.util.spec_from_file_location("bpt", str(T069 / "build_prediction_targets.py"))
++bpt = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(bpt)
++
++fails = []
++adm = PT.admit_targets(bpt.CATALOG)
++admitted_ids = [t["target_id"] for t in adm["admitted"]]
++rejected_ids = [r["target_id"] for r in adm["rejected"]]
++print("admitted:", admitted_ids, "rejected:", rejected_ids)
++
++# =============================================================== 1) 每个目标可由未来官方证据结算
++if admitted_ids != ["G1", "G2", "G3"]:
++    fails.append(f"admitted set wrong: {admitted_ids}")
++# every admitted target must be settleable, and settling it against official evidence gives a DEFINITE label
++for t in adm["admitted"]:
++    if not PT.is_settleable(t):
++        fails.append(f"{t['target_id']} admitted but not settleable")
++
++g1_yes = PT.settle(bpt.CATALOG[0], [bpt.E_OFFICIAL_MATCH, bpt.E_FUTURE_MATCH], bpt.ORIGIN)
++g1_no = PT.settle(bpt.CATALOG[0], [bpt.E_MEDIA_MATCH, bpt.E_FUTURE_MATCH], bpt.ORIGIN)
++if g1_yes["label"] != 1:
++    fails.append(f"G1 with an official match should settle 1, got {g1_yes['label']}")
++if g1_no["label"] != 0:
++    fails.append(f"G1 with only a media/future match should settle 0, got {g1_no['label']}")
++# G2 count threshold and G3 status transition settle definitely
++if PT.settle(bpt.CATALOG[1], [bpt.E_STATS_1, bpt.E_STATS_2, bpt.E_FUTURE_MATCH], bpt.ORIGIN)["label"] != 1:
++    fails.append("G2 with two official statistics releases should settle 1")
++# G2's 365-day window ends 2027-01-01; elapse it with a later unrelated official observation so that
++# a single matching release settles a definite 0 (not pending).
++G2_ELAPSE = {"canonical_id": "e0", "authority_level": "A0", "agency": "某部", "topics": ["其他"],
++             "status": "published", "observed_at": "2027-02-01"}
++if PT.settle(bpt.CATALOG[1], [bpt.E_STATS_1, G2_ELAPSE], bpt.ORIGIN)["label"] != 0:
++    fails.append("G2 with only one release (window elapsed) should settle 0")
++if PT.settle(bpt.CATALOG[2], [bpt.E_STATUS, bpt.E_FUTURE_MATCH], bpt.ORIGIN)["label"] != 1:
++    fails.append("G3 with a revoked transition should settle 1")
++# 'pending' when the settlement window has not elapsed and no match yet
++pend = PT.settle(bpt.CATALOG[0], [bpt.E_STATS_1], bpt.ORIGIN)   # newest obs 2026-02-10 < window end, no match
++if pend["label"] != "pending":
++    fails.append(f"an unelapsed window with no match should be pending, got {pend['label']}")
++print(f"settleable: G1 official=1 / media-only=0; G2 two=1/one=0; G3 revoked=1; unelapsed=pending")
++
++# =============================================================== 2) 模糊目标不得进入回测
++for bid in ("B1", "B2", "B3"):
++    t = next(x for x in bpt.CATALOG if x["target_id"] == bid)
++    if PT.is_settleable(t):
++        fails.append(f"{bid} (ambiguous) was judged settleable")
++    if bid not in rejected_ids or bid in admitted_ids:
++        fails.append(f"{bid} was not rejected from the backtest")
++    # settling a non-settleable target must RAISE (it can never be backtested)
++    try:
++        PT.settle(t, [bpt.E_OFFICIAL_MATCH], bpt.ORIGIN)
++        fails.append(f"settle() did not refuse the ambiguous target {bid}")
++    except ValueError:
++        pass
++print(f"ambiguous rejected: {rejected_ids} (subjective / empty-field / no-horizon) — settle() refuses each")
++
++# =============================================================== 3) official-only + no leakage (controls)
++# NEGATIVE CONTROL (official-only): a MEDIA doc matching the predicate in-window does NOT settle 1
++media_only = PT.settle(bpt.CATALOG[0], [bpt.E_MEDIA_MATCH,
++                       {**bpt.E_FUTURE_MATCH}], bpt.ORIGIN)   # media in-window + a future official (elapses window)
++if media_only["label"] == 1:
++    fails.append("a media look-alike settled the target -> official-only rule broken")
++# NEGATIVE CONTROL (no leakage): the SAME official matching doc observed IN-window settles 1, but
++# observed AFTER the window settles 0 -> the observed_at window is load-bearing.
++in_win = {**bpt.E_OFFICIAL_MATCH, "observed_at": "2026-03-01"}
++after_win = {**bpt.E_OFFICIAL_MATCH, "observed_at": "2026-09-01"}
++if PT.settle(bpt.CATALOG[0], [in_win], bpt.ORIGIN)["label"] != 1:
++    fails.append("an in-window official match did not settle 1")
++lk = PT.settle(bpt.CATALOG[0], [after_win, {**bpt.E_FUTURE_MATCH, "canonical_id": "z", "topics": []}], bpt.ORIGIN)
++if lk["label"] == 1:
++    fails.append("a future-observed official doc leaked into the label (settled 1)")
++# reproducible
++if PT.settle(bpt.CATALOG[0], [in_win], bpt.ORIGIN) != PT.settle(bpt.CATALOG[0], [in_win], bpt.ORIGIN):
++    fails.append("settle() is not reproducible")
++print("controls: media does not settle; future-observed official does not leak (in-window=1, after-window=0)")
++
++# BOUNDARY CONTROL: G1 horizon 180d from 2026-01-01 -> window end 2026-06-30. A match observed exactly
++# on the end date counts (settles 1); one day later does NOT (leaks -> stays 0/pending).
++on_end = {**bpt.E_OFFICIAL_MATCH, "observed_at": "2026-06-30"}
++day_after = {**bpt.E_OFFICIAL_MATCH, "observed_at": "2026-07-01"}
++if PT.settle(bpt.CATALOG[0], [on_end], bpt.ORIGIN)["label"] != 1:
++    fails.append("a match observed exactly on the window end did not settle 1")
++after = PT.settle(bpt.CATALOG[0], [day_after], bpt.ORIGIN)
++if after["label"] == 1:
++    fails.append("a match observed one day after the window end leaked into a 1")
++# malformed / missing observed_at must not crash and must not settle 1
++if PT.settle(bpt.CATALOG[0], [{**bpt.E_OFFICIAL_MATCH, "observed_at": "not-a-date"}], bpt.ORIGIN)["label"] == 1:
++    fails.append("a malformed observed_at wrongly settled 1")
++if PT.settle(bpt.CATALOG[0], [{**bpt.E_OFFICIAL_MATCH, "observed_at": None}], bpt.ORIGIN)["label"] == 1:
++    fails.append("a None observed_at wrongly settled 1")
++print("boundary: exactly-on-end counts (1); one-day-after does not leak; malformed/None observed_at safe")
++
++# TYPE-SAFETY CONTROLS: wrong-typed evidence/targets must not spuriously settle or admit.
++# (1) a doc whose `topics` is a STRING must NOT substring-match (no spurious 1)
++str_topics = {**bpt.E_OFFICIAL_MATCH, "topics": "数据共享政策"}   # substring-superset of "数据共享"
++if PT.settle(bpt.CATALOG[0], [str_topics], bpt.ORIGIN)["label"] == 1:
++    fails.append("a string topics field substring-matched and spuriously settled 1")
++# (2) a bool horizon / bool n must NOT be settleable
++if PT.is_settleable(PT.make_target("x", "d", True, "p",
++        {"type": "official_doc_exists", "agency": "国务院办公厅", "topic": "数据共享"})):
++    fails.append("a bool horizon_days was judged settleable")
++if PT.is_settleable(PT.make_target("x", "d", 180, "p",
++        {"type": "count_at_least", "agency": "国家统计局", "topic": "统计", "n": True})):
++    fails.append("a bool count threshold n was judged settleable")
++# (3) a non-dict settlement must return False (not crash) and be rejected
++if PT.is_settleable(PT.make_target("x", "d", 180, "p", "is_important")):
++    fails.append("a non-dict settlement was judged settleable")
++if PT.is_settleable(PT.make_target("x", "d", 180, "p", None)):
++    fails.append("a None settlement was judged settleable")
++bad = PT.admit_targets([PT.make_target("NB", "d", 180, "p", "is_important")])
++if [r["target_id"] for r in bad["rejected"]] != ["NB"] or bad["admitted"]:
++    fails.append("a non-dict settlement target was not cleanly rejected")
++print("type-safety: string-topics no spurious match; bool horizon/n not settleable; non-dict settlement rejected (no crash)")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/prediction_targets.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/prediction_targets.py
+new file mode 100644
+index 000000000..ad51260a6
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/prediction_targets.py
+@@ -0,0 +1,139 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P01-T069 -- prediction target catalog, Outcome Rules, and event labels.
++
++Stage S6 opens with a discipline: DEFINE WHAT COUNTS AS "HAPPENED" BEFORE TRAINING ANY MODEL. A
++prediction target is admissible only if it can be settled -- objectively, 0/1 -- by FUTURE OFFICIAL
++evidence (A0/A1 original text), by an unambiguous settlement rule. A vague or subjective target (one
++whose outcome cannot be read off official evidence) is REJECTED and may NOT enter the backtest.
++
++  * make_target(...)        -- a target: {target_id, description, horizon_days, subject, settlement}.
++  * is_settleable(target)   -- True iff the settlement is a recognized OBJECTIVE predicate with all its
++                               required fields (not free text, not a subjective judgement).
++  * admit_targets(catalog)  -- split a catalog into admitted (settleable) and rejected (ambiguous, with
++                               a reason). Only admitted targets may enter a backtest.
++  * settle(target, evidence, origin_date) -- apply the settlement rule to OFFICIAL evidence observed
++                               within [origin_date, origin_date + horizon]; returns a definite 0/1 label,
++                               or 'pending' if the horizon has not elapsed by the newest observation.
++
++Deterministic; no network, no clock (dates are passed in), no randomness, no production side effects.
++"""
++import datetime
++import re
++
++# Recognized objective settlement predicates. Each names the fields it requires; anything else (free
++# text, a subjective 'important'/'significant' judgement) is NOT settleable.
++SETTLEMENT_TYPES = {
++    "official_doc_exists": ("agency", "topic"),          # an official doc by agency on topic within H
++    "status_transition": ("canonical_id", "to_status"),  # a doc reaches to_status within H
++    "count_at_least": ("agency", "topic", "n"),          # >= n official docs by agency on topic within H
++}
++OFFICIAL_LEVELS = ("A0", "A1")                            # settlement counts only official original text
++_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
++
++
++def _parse(d):
++    if not (isinstance(d, str) and _DATE.match(d)):
++        return None
++    y, m, dd = d.split("-")
++    return (int(y), int(m), int(dd))
++
++
++def _add_days_bound(origin_date, horizon_days):
++    """A coarse, deterministic upper date bound = origin year-month-day + horizon as a comparable key.
++    Backtests use month/day granularity; we compare parsed (y,m,d) after adding horizon via a proleptic
++    day count. No wall-clock is read."""
++    y, m, d = _parse(origin_date)
++    # calendar-correct end date via date arithmetic on the PASSED-IN origin (no wall-clock read)
++    base = datetime.date(y, m, d) + datetime.timedelta(days=horizon_days)
++    return (base.year, base.month, base.day)
++
++
++def make_target(target_id, description, horizon_days, subject, settlement):
++    return {"target_id": target_id, "description": description, "horizon_days": horizon_days,
++            "subject": subject, "settlement": settlement}
++
++
++def _pos_int(v):
++    """A genuine positive integer (bool is excluded: a settlement window is not True/False)."""
++    return isinstance(v, int) and not isinstance(v, bool) and v > 0
++
++
++def is_settleable(target):
++    """A target is settleable iff its settlement names a known objective predicate AND supplies every
++    required field with a non-empty, non-subjective value."""
++    s = target.get("settlement")
++    if not isinstance(s, dict):                      # a non-dict settlement is not an objective rule
++        return False
++    stype = s.get("type")
++    if stype not in SETTLEMENT_TYPES:
++        return False
++    for field in SETTLEMENT_TYPES[stype]:
++        v = s.get(field)
++        if v is None or (isinstance(v, str) and not v.strip()):
++            return False
++    # horizon must be a positive integer number of days (a finite settlement window)
++    if not _pos_int(target.get("horizon_days")):
++        return False
++    # count_at_least needs a positive integer threshold
++    if stype == "count_at_least" and not _pos_int(s.get("n")):
++        return False
++    return True
++
++
++def admit_targets(catalog):
++    admitted, rejected = [], []
++    for t in catalog:
++        if is_settleable(t):
++            admitted.append(t)
++        else:
++            rejected.append({"target_id": t.get("target_id"),
++                             "reason": "ambiguous_or_unsettleable_settlement_rule"})
++    return {"admitted": admitted, "rejected": rejected}
++
++
++def _official(doc):
++    return doc.get("authority_level") in OFFICIAL_LEVELS
++
++
++def settle(target, evidence, origin_date):
++    """Settle a target against OFFICIAL evidence observed within [origin_date, origin_date+horizon].
++    Returns {label: 0|1, ...} or {label: 'pending'} if the settlement window has not fully elapsed
++    (the newest observed evidence date is before the window end). Ignores media / non-official and any
++    evidence observed after the window (no leakage)."""
++    if not is_settleable(target):
++        raise ValueError(f"target {target.get('target_id')} is not settleable -> must not be backtested")
++    o = _parse(origin_date)
++    end = _add_days_bound(origin_date, target["horizon_days"])
++    s = target["settlement"]
++    # only official evidence, observed within the window [origin, end]
++    in_window = [d for d in evidence
++                 if _official(d) and _parse(d.get("observed_at")) is not None
++                 and o <= _parse(d["observed_at"]) <= end]
++    newest = max((_parse(d["observed_at"]) for d in evidence if _parse(d.get("observed_at"))), default=None)
++    matched = _match(s, in_window)
++    if matched >= _needed(s):
++        return {"label": 1, "matched": matched, "window_end": "%04d-%02d-%02d" % end}
++    # not satisfied yet: if the window has not elapsed (no observation reaches the end), it is pending
++    if newest is None or newest < end:
++        return {"label": "pending", "matched": matched, "window_end": "%04d-%02d-%02d" % end}
++    return {"label": 0, "matched": matched, "window_end": "%04d-%02d-%02d" % end}
++
++
++def _needed(s):
++    return s["n"] if s["type"] == "count_at_least" else 1
++
++
++def _topic_match(doc, topic):
++    """Exact membership in the doc's topics LIST. A string topics field is NOT substring-matched (that
++    would spuriously settle a target); a non-list topics field never matches."""
++    topics = doc.get("topics")
++    return isinstance(topics, list) and topic in topics
++
++
++def _match(s, docs):
++    if s["type"] in ("official_doc_exists", "count_at_least"):
++        return sum(1 for d in docs if d.get("agency") == s["agency"] and _topic_match(d, s["topic"]))
++    if s["type"] == "status_transition":
++        return sum(1 for d in docs if d.get("canonical_id") == s["canonical_id"] and d.get("status") == s["to_status"])
++    return 0

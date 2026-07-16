@@ -1,0 +1,8 @@
+admitted: ['G1', 'G2', 'G3'] rejected: ['B1', 'B2', 'B3']
+settleable: G1 official=1 / media-only=0; G2 two=1/one=0; G3 revoked=1; unelapsed=pending
+ambiguous rejected: ['B1', 'B2', 'B3'] (subjective / empty-field / no-horizon) — settle() refuses each
+controls: media does not settle; future-observed official does not leak (in-window=1, after-window=0)
+boundary: exactly-on-end counts (1); one-day-after does not leak; malformed/None observed_at safe
+type-safety: string-topics no spurious match; bool horizon/n not settleable; non-dict settlement rejected (no crash)
+
+ACCEPTANCE = PASS
