@@ -1,0 +1,24 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P04-T084",
+  "release_mode": "NOT_DEPLOYED",
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost_usd": 0.0,
+    "readonly_get_realtime": 1,
+    "in_app_browser_renders": 1,
+    "human_maintenance": "provenance marker + reveal disclosure a11y + a11y_content_audit tool + browser test + verifier + adversarial review"
+  },
+  "value": {
+    "stage": "S7 UI/UX Motion & Performance (P04 evidence/hierarchy/a11y polish)",
+    "acceptance": "PASS (verifier re-derives; every interactive handler is a native named button/link + 44px + focus-visible + reveal moves focus into revealed content; the generated lesson carries a 推断 provenance marker distinct from the 原文 evidence link; reduced-motion disables animation but restores the .fr/.bw content -- no function lost)",
+    "user_value": "a reader no longer mistakes the auto-generated lesson for the original source (讲义·推断 marker), keyboard/screen-reader users can complete the recall flow (focus moves into revealed answers), and motion-sensitive users keep all content -- making the professional info clearer + more operable without changing the design",
+    "realized_on_deploy": "the polish is source-complete; the six-theme identity is byte-identical, so deploy is low-risk"
+  },
+  "unknown_not_zero": "real screen-reader + real prefers-reduced-motion device testing is UNKNOWN until deployed/tested on real AT; the in-app-browser proof covers focus behavior + CSSOM rules but not a live screen reader."
+}

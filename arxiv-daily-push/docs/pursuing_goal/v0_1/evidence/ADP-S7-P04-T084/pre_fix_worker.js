@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '452f7c5de919', source_sha256: '452f7c5de919e77c4adabc2d4b90f5f90fca3d6fd0847c80c440eee8d85f24d9', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'd1dfcb3b7447', source_sha256: 'd1dfcb3b744711d4716ca1a8c6b2b856f9fa83f134eb1e05fd5d7e9fb181ee3a', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -867,7 +867,8 @@ async function todayPage(env) {
     body += `<div class="card"><h1>${esc(item.title)}</h1>
       <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a></p>
       <p style="margin:4px 0 2px">${deepDiveBtn(item)}</p>`;
-    if (lesson) body += lessonHTML(lesson);   // T084 用中心化 lessonHTML（带证据/推断 provenance 标注）
+    if (lesson) for (const [i, s] of JSON.parse(lesson.sections_json).entries())
+      body += `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`;
     body += `</div><div class="card"><h2>主动回忆</h2>
       <p class="mt">先合上讲义复述，再自评。评分即时进 FSRS 排程（云端即真相）。</p>
       <div class="gradeRow">${[[1,'忘了'],[2,'困难'],[3,'良好'],[4,'轻松']].map(([g,l]) =>
@@ -996,11 +997,9 @@ const chatgptHref = (prompt) => CHATGPT_URL + '?hints=search&q=' + encodeURIComp
 function deepDiveBtn(item, label) {
   return `<a class="deep-btn" href="${esc(chatgptHref(deepDivePrompt(item)))}" target="_blank" rel="noopener noreferrer" title="把这条的信息带到 ChatGPT，让它联网深搜 + 深度讲解并给你一些 surprise">🔮 ${esc(label || '让 ChatGPT 全网深度追问')}</a>`;
 }
-// T084 证据/推断区分：讲义是「依据原文自动生成的结构化推断」，与「原文（证据）」明确区分，避免读者误把推断当原文。
-const PROVENANCE_NOTE = '<p class="mt"><span class="badge">讲义·推断</span> 依据「原文」自动生成的结构化摘要（推断），非原文表述；以原文为准。</p>';
 function lessonHTML(lesson) {
   if (!lesson) return '';
-  return PROVENANCE_NOTE + JSON.parse(lesson.sections_json).map((s, i) =>
+  return JSON.parse(lesson.sections_json).map((s, i) =>
     `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`).join('');
 }
 function itemListHTML(items, { study = true } = {}) {
@@ -1014,8 +1013,8 @@ function itemListHTML(items, { study = true } = {}) {
 function graderHTML(itemId, revealInner, nextHref) {
   return `<div class="card"><h2>主动回忆</h2>
     <p class="mt">先合上内容自己复述，再点「显示」核对，然后如实自评。评分即时进 FSRS 排程。</p>
-    <button class="btn-sm" id="revealBtn" aria-controls="revealBox" onclick="var b=document.getElementById('revealBox');b.hidden=false;this.hidden=true;b.focus();">显示答案/讲义</button>
-    <div class="reveal" id="revealBox" tabindex="-1" hidden>${revealInner || '<p class="mt">该条目暂无讲义，请点原文精读后自评。</p>'}</div>
+    <button class="btn-sm" id="revealBtn" onclick="document.getElementById('revealBox').hidden=false;this.hidden=true">显示答案/讲义</button>
+    <div class="reveal" id="revealBox" hidden>${revealInner || '<p class="mt">该条目暂无讲义，请点原文精读后自评。</p>'}</div>
     <div class="gradeRow">${[[1, '忘了'], [2, '困难'], [3, '良好'], [4, '轻松']].map(([g, l]) =>
       `<button onclick="grade(${g},this)" aria-label="评分：${l}">${l}</button>`).join('')}</div>
     <p id="r" class="mt" role="status"></p>

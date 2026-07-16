@@ -1,0 +1,13 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P04-T084",
+  "method": "in-app browser (Chromium) rendered a11y_harness.html (real worker CSS incl. HERO_CSS + reduced-motion, representative lesson/reveal/grade markup).",
+  "checks": {
+    "provenance_marker_renders": true,
+    "reveal_moves_focus": true,
+    "grade_buttons_focusable": true,
+    "reduced_motion_rule_in_cssom_restores_content": true,
+    "source_evidence_link_present": true
+  },
+  "conclusion": "Acceptance: key tasks are keyboard/touch operable (native labelled buttons, focus moves into revealed content); evidence (原文 link) vs inference (讲义·推断 marker) is clearly distinguished; reduced-motion disables animation but restores the .fr/.bw content to opacity:1 (no function lost)."
+}

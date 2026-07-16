@@ -1,0 +1,8 @@
+keyboard/touch: 8 handlers all on native button/a; every button named; primary/grade/run 44px (>=44 AAA), compact reveal/study/undo 34px (>=24 WCAG AA floor, tappable+keyboard, <44 AAA -- disclosed); :focus-visible present; reveal moves focus into the revealed box
+evidence/inference: the generated lesson carries a 推断 provenance marker (central lessonHTML) distinct from the 原文 (evidence) link; pre-fix had none
+reduced-motion: disables animation but RESTORES content ['.bw', '.fr'] to opacity:1 (decoration ['.fx-cosmos .meteor'] may stay hidden); removing the restore fails the check
+advanced visual preserved: the six-theme visual/motion contract is byte-identical (polish is page-body)
+browser proof: 推断 marker renders; reveal moves focus into the box; grade buttons keyboard-focusable; reduced-motion rule restores .fr/.bw in the CSSOM
+
+ACCEPTANCE = PASS
+NOTE: page-body a11y/content polish (provenance marker + reveal disclosure focus); worker build 452f7c5de919; six-theme contract byte-identical; NOT_DEPLOYED (live unchanged).
