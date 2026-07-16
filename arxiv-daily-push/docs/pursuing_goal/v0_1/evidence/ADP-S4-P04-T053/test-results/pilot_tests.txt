@@ -1,0 +1,3 @@
+candidates=12 admitted=10 rejected=2 confirmed_signal_zones=3
+
+ACCEPTANCE = PASS

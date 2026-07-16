@@ -1,0 +1,18 @@
+# ADP-S4-P04-T053 commands (first-batch high-value A2 pilot; SHADOW, selection task)
+
+# 1. recon functional-zone portals -> Xiongan/SIP/Hengqin reachable NOW with real local-action signal terms (9/17/6)
+#    others TLS-blocked. Honest reachability metadata.
+
+# 2. incremental-value model: tools/a2_pilot.py
+#    incremental_signals (zone signals - {policy,regulation,statistics} A0/A1 baseline) /
+#    verify_official (T033 -> official non-central .gov.cn; media never official) /
+#    select_pilot (admit only incremental>0 AND official; reject no-incremental + non-official) / 2016 cursor
+
+# 3. build the pilot manifest (deterministic)
+python3 evidence/ADP-S4-P04-T053/build_pilot.py    # 10 admitted, 2 rejected, 3 confirmed-signal zones
+
+# 4. acceptance verifier (deterministic; incremental>0 + official + profile/cursor/signals + negative controls)
+python3 evidence/ADP-S4-P04-T053/test-results/t053_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 5. realtime no-regression (SHADOW)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

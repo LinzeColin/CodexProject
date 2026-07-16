@@ -1,0 +1,318 @@
+{
+  "task": "ADP-S4-P04-T053",
+  "cohort_id": "A2-PILOT-BATCH-1",
+  "selection_principle": "admit only zones with incremental local-action value beyond the A0/A1 baseline AND a verified official identity; no-incremental or non-official zones are not promoted",
+  "baseline_signals_A0_A1": [
+    "policy",
+    "regulation",
+    "statistics"
+  ],
+  "local_signal_taxonomy": {
+    "project_approval": "项目立项/开工",
+    "procurement": "招投标/采购",
+    "pilot": "试点/先行先试",
+    "industry_landing": "产业落地/签约",
+    "investment": "招商引资",
+    "planning": "规划公示"
+  },
+  "candidates": 12,
+  "admitted_count": 10,
+  "rejected_count": 2,
+  "admitted": [
+    {
+      "source_id": "sip-suzhou",
+      "name": "苏州工业园区",
+      "zone_type": "national_dev_zone",
+      "authority_level": "A2",
+      "official_host": "www.sipac.gov.cn",
+      "local_action_signals": [
+        "招投标/采购",
+        "项目立项/开工",
+        "产业落地/签约",
+        "招商引资"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "procurement",
+        "project_approval"
+      ],
+      "incremental_value": 4,
+      "reachable_server_side": "confirmed_signals",
+      "cursor_2016": {
+        "source_id": "sip-suzhou",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "national_dev_zone publishes 4 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "pudong-newarea",
+      "name": "浦东新区",
+      "zone_type": "national_new_area",
+      "authority_level": "A2",
+      "official_host": "www.pudong.gov.cn",
+      "local_action_signals": [
+        "试点/先行先试",
+        "项目立项/开工",
+        "产业落地/签约",
+        "招商引资"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "incremental_value": 4,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "pudong-newarea",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "national_new_area publishes 4 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "lingang-ftz",
+      "name": "上海临港新片区",
+      "zone_type": "free_trade_zone",
+      "authority_level": "A2",
+      "official_host": "www.lgxc.gov.cn",
+      "local_action_signals": [
+        "试点/先行先试",
+        "产业落地/签约",
+        "招商引资",
+        "项目立项/开工"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "incremental_value": 4,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "lingang-ftz",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "free_trade_zone publishes 4 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "xiongan-newarea",
+      "name": "雄安新区",
+      "zone_type": "national_new_area",
+      "authority_level": "A2",
+      "official_host": "www.xiongan.gov.cn",
+      "local_action_signals": [
+        "项目立项/开工",
+        "规划公示",
+        "产业落地/签约"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "planning",
+        "project_approval"
+      ],
+      "incremental_value": 3,
+      "reachable_server_side": "confirmed_signals",
+      "cursor_2016": {
+        "source_id": "xiongan-newarea",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "national_new_area publishes 3 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "hengqin-zone",
+      "name": "横琴粤澳深合区",
+      "zone_type": "free_trade_cooperation",
+      "authority_level": "A2",
+      "official_host": "www.hengqin.gov.cn",
+      "local_action_signals": [
+        "试点/先行先试",
+        "招商引资",
+        "产业落地/签约"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot"
+      ],
+      "incremental_value": 3,
+      "reachable_server_side": "confirmed_signals",
+      "cursor_2016": {
+        "source_id": "hengqin-zone",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "free_trade_cooperation publishes 3 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "zgc-park",
+      "name": "中关村示范区",
+      "zone_type": "hi_tech_innovation",
+      "authority_level": "A2",
+      "official_host": "zgcgw.beijing.gov.cn",
+      "local_action_signals": [
+        "试点/先行先试",
+        "项目立项/开工",
+        "产业落地/签约"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "incremental_value": 3,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "zgc-park",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "hi_tech_innovation publishes 3 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "tianfu-newarea",
+      "name": "天府新区",
+      "zone_type": "national_new_area",
+      "authority_level": "A2",
+      "official_host": "www.cdtf.gov.cn",
+      "local_action_signals": [
+        "项目立项/开工",
+        "规划公示",
+        "产业落地/签约"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "planning",
+        "project_approval"
+      ],
+      "incremental_value": 3,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "tianfu-newarea",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "national_new_area publishes 3 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "xian-hitech",
+      "name": "西安高新区",
+      "zone_type": "hi_tech_innovation",
+      "authority_level": "A2",
+      "official_host": "gxq.xa.gov.cn",
+      "local_action_signals": [
+        "项目立项/开工",
+        "产业落地/签约",
+        "试点/先行先试"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "incremental_value": 3,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "xian-hitech",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "hi_tech_innovation publishes 3 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "liangjiang-newarea",
+      "name": "重庆两江新区",
+      "zone_type": "national_new_area",
+      "authority_level": "A2",
+      "official_host": "www.liangjiang.gov.cn",
+      "local_action_signals": [
+        "项目立项/开工",
+        "产业落地/签约",
+        "招商引资"
+      ],
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "project_approval"
+      ],
+      "incremental_value": 3,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "liangjiang-newarea",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "national_new_area publishes 3 local-action signal type(s) absent from A0/A1"
+    },
+    {
+      "source_id": "qianhai-ftz",
+      "name": "前海深港合作区",
+      "zone_type": "free_trade_zone",
+      "authority_level": "A2",
+      "official_host": "www.szqh.gov.cn",
+      "local_action_signals": [
+        "试点/先行先试",
+        "招商引资"
+      ],
+      "incremental_signal_types": [
+        "investment",
+        "pilot"
+      ],
+      "incremental_value": 2,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "qianhai-ftz",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      },
+      "value_rationale": "free_trade_zone publishes 2 local-action signal type(s) absent from A0/A1"
+    }
+  ],
+  "rejected": [
+    {
+      "source_id": "policy-repost-zone",
+      "reason": "no incremental value beyond A0/A1 baseline"
+    },
+    {
+      "source_id": "zone-media",
+      "reason": "not a verified official publisher (media)"
+    }
+  ],
+  "note_reachability": "Zone portals are largely JS/TLS-hardened server-side; onboarding/fetch is a later batch. Three zones (Xiongan, SIP, Hengqin) are server-reachable NOW with confirmed live local-action signal terms (recon: 9/17/6 signal terms).",
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "incremental-value model + curated zones + recon"
+  },
+  "deployment": "SHADOW (A2 pilot profiles + 2016 cursors + local action signals; production untouched)"
+}

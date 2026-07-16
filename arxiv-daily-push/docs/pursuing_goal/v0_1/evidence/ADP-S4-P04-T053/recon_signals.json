@@ -1,0 +1,38 @@
+{
+  "note": "dev-env recon of the 3 server-reachable A2 zones; counts local-action signal terms on the portal homepage (0 cloud cost)",
+  "zones": [
+    {
+      "source_id": "xiongan-newarea",
+      "url": "https://www.xiongan.gov.cn/",
+      "http_status": 200,
+      "signal_term_total": 9,
+      "by_term": {
+        "项目": 8,
+        "招标": 1
+      }
+    },
+    {
+      "source_id": "sip-suzhou",
+      "url": "http://www.sipac.gov.cn/",
+      "http_status": 200,
+      "signal_term_total": 17,
+      "by_term": {
+        "项目": 10,
+        "招标": 4,
+        "产业": 3
+      }
+    },
+    {
+      "source_id": "hengqin-zone",
+      "url": "https://www.hengqin.gov.cn/",
+      "http_status": 200,
+      "signal_term_total": 6,
+      "by_term": {
+        "签约": 1,
+        "产业": 3,
+        "采购": 1,
+        "招标": 1
+      }
+    }
+  ]
+}
