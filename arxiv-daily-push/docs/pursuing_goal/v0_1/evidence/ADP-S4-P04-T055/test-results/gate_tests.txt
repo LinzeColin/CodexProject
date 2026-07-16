@@ -1,0 +1,4 @@
+scored=18 decisions={'promote': 0, 'low_frequency': 3, 'disabled': 15} promoted_for_volume=0 required_days=30
+control: health=35 -> promote | health=5 -> low_frequency
+
+ACCEPTANCE = PASS

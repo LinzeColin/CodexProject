@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S4-P04-T055",
+  "stage": "S4 (2016+ A0/A1/A2 Expansion) / P04 A2 重要区与功能区 cohort",
+  "value": {
+    "user_value": "An A2 production gate that promotes a zone to continuous production ONLY on real 30-day health evidence, and keeps the rest disabled/low-frequency. Over the 18 A2 zones (T053+T054): 0 promoted (none has 30-day health yet), 3 held low-frequency (1-day recon), 15 disabled -- 0 promoted for a count target. A control proves the gate would promote a 30-day-health source and would not promote a high-value source lacking it.",
+    "why_it_matters": "Production promotion must be earned by demonstrated stability, not coverage optics. A gate that refuses to promote without 30-day health is exactly what keeps the system authoritative and stable rather than padded."
+  },
+  "cost": {
+    "note": "unknown != 0; a gate/decision task over the T053/T054 cohorts -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "production-gate authoring over T053/T054 cohorts",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (promotion ledger + cost/quality evidence + rollback; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

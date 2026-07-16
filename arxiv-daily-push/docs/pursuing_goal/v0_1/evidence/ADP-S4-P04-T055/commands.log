@@ -1,0 +1,14 @@
+# ADP-S4-P04-T055 commands (A2 production gate; NOT_DEPLOYED)
+
+# 1. tools/a2_production_gate.py -- over the T053 pilot + T054 expansion A2 cohorts
+#    _health_days (observed health days) / decide (promote iff health_days>=30; else low_frequency/disabled) / build_ledger
+
+# 2. build the promotion ledger (deterministic)
+python3 evidence/ADP-S4-P04-T055/build_ledger.py   # 18 scored, promote 0 / low_freq 3 / disabled 15, promoted_for_volume 0
+
+# 3. acceptance verifier (deterministic; 0-for-volume + every-promoted-has-30d + NON-VACUITY control + deliverables)
+python3 evidence/ADP-S4-P04-T055/test-results/t055_verify.py   # ACCEPTANCE = PASS (exit 0)
+#    control: decide(health=35)->promote, decide(health=5)->low_frequency (gate enforces the 30-day bar)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)
