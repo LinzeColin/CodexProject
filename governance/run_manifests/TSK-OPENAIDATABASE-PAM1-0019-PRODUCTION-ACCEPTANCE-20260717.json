@@ -12,8 +12,8 @@
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
   "remote_main_sha_at_run_start": "ac871bd40082f4cb8a607d7e37c8750f50522018",
-  "candidate_tree_sha1_excluding_this_manifest": "0b8e12c4706cf2dcd5bc7df0c00af3782b284559",
-  "content_tree_hash": "sha256:985e8a9bd76cd8e4968a1d467efd8eb54b8b835084e1ecf97d446be942fe5637",
+  "candidate_tree_sha1_excluding_this_manifest": "2639c6ffeb3d05b7dc80374f74b8f708b93a7c86",
+  "content_tree_hash": "sha256:12e44f3d27c92615ed824b53a6fa2af9b725609257e8f829e6f7096256ca0757",
   "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the staged Task37 closure before this manifest is added. Production acceptance additionally requires the accepted remote main SHA, exact source tag, commit-only public-safe Release asset SHA-256 and final GitHub 0/0/0 evidence.",
   "summary": "Verify the Portable Agent Memory V1 release candidate across six Proof obligations, five isolated profiles and every quantitative hard gate; enforce the owner-required public external-memory boundary; integrate P45 repository-hygiene clearance and fresh remote main; then stop immediately before the single governed publication transaction.",
   "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0019 Portable Agent Memory V1 candidate and production publication acceptance",
@@ -139,7 +139,7 @@
     "performance": "b032cad5ef7107ed0fa8d536bbba511a7690fe48ede769027ef8e6e57477d653",
     "fault": "969471b5bff6d2aa0938701c33e9d5021ca7b10ab1bd2e454c9cb7edcc899e64",
     "e2e": "0db01606f4286ef26c24cef538aa1020ed7d76c290524e1cc5a242f228175e92",
-    "recovery": "a57e3adf06a44d94175607268627b457c6537711fb164db4c2dc0d80fbeb4d7d"
+    "recovery": "531c1d84f0d5f577d41fa4b7f7adc5e18f588c01788043763167241ee8cf976c"
   },
   "test_commands": [
     "ruff check <Task37 Python implementation and focused tests>",
@@ -214,6 +214,7 @@
     "OpenAIDatabase/VERSION",
     "OpenAIDatabase/config/command_ownership.json",
     "OpenAIDatabase/config/evaluation/memory_production_acceptance_v1.json",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
     "OpenAIDatabase/config/memory-snapshot-policy.json",
     "OpenAIDatabase/config/quality/verification_policy.json",
     "OpenAIDatabase/config/storage/directory_lifecycle.json",
@@ -253,6 +254,7 @@
     "OpenAIDatabase/VERSION",
     "OpenAIDatabase/config/command_ownership.json",
     "OpenAIDatabase/config/evaluation/memory_production_acceptance_v1.json",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
     "OpenAIDatabase/config/memory-snapshot-policy.json",
     "OpenAIDatabase/config/quality/verification_policy.json",
     "OpenAIDatabase/config/storage/directory_lifecycle.json",
@@ -301,7 +303,7 @@
     "repository_hygiene_status": "PASS",
     "repository_hygiene_violation_count": 0,
     "local_candidate_hygiene_violation_count": 0,
-    "merge_preflight_tree": "0b8e12c4706cf2dcd5bc7df0c00af3782b284559",
+    "merge_preflight_tree": "2639c6ffeb3d05b7dc80374f74b8f708b93a7c86",
     "merge_preflight_hygiene_violation_count": 0,
     "remote_openai_duplicate_archive_removed_by_local_package": true,
     "result": "PASS_PUBLIC_SAFE_CANDIDATE_READY_NO_SOURCE_TRANSACTION_CREATED"
