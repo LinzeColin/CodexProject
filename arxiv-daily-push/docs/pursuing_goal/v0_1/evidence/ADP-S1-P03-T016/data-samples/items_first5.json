@@ -1,0 +1,62 @@
+[
+  {
+    "id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+    "board_id": "board2",
+    "source_id": "nejm",
+    "kind": "feed",
+    "title": "Setmelanotide for the Treatment of Acquired Hypothalamic Obesity",
+    "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2512275?af=R&rss=currentIssue",
+    "summary": "New England Journal of Medicine, Volume 395, Issue 2, Page 138-150, July 9, 2026.",
+    "categories": "",
+    "authors": "",
+    "published_at": "2026-07-08T09:00:02.000Z"
+  },
+  {
+    "id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+    "board_id": "board2",
+    "source_id": "nejm",
+    "kind": "feed",
+    "title": "Ensartinib in Resected ALK-Positive Non–Small-Cell Lung Cancer",
+    "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2518990?af=R&rss=currentIssue",
+    "summary": "New England Journal of Medicine, Volume 395, Issue 2, Page 151-161, July 9, 2026.",
+    "categories": "",
+    "authors": "",
+    "published_at": "2026-07-08T09:00:02.000Z"
+  },
+  {
+    "id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+    "board_id": "board2",
+    "source_id": "nejm",
+    "kind": "feed",
+    "title": "Phase 3 Trials of Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+    "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2501488?af=R&rss=currentIssue",
+    "summary": "New England Journal of Medicine, Volume 395, Issue 2, Page 115-126, July 9, 2026.",
+    "categories": "",
+    "authors": "",
+    "published_at": "2026-05-18T04:27:00.000Z"
+  },
+  {
+    "id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+    "board_id": "board2",
+    "source_id": "nejm",
+    "kind": "feed",
+    "title": "Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+    "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2512911?af=R&rss=currentIssue",
+    "summary": "New England Journal of Medicine, Volume 395, Issue 2, Page 127-137, July 9, 2026.",
+    "categories": "",
+    "authors": "",
+    "published_at": "2026-03-11T09:00:00.000Z"
+  },
+  {
+    "id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+    "board_id": "board2",
+    "source_id": "nejm",
+    "kind": "feed",
+    "title": "Nutrition Therapy in Critically Ill Adults",
+    "url": "https://www.nejm.org/doi/full/10.1056/NEJMra2506111?af=R&rss=currentIssue",
+    "summary": "New England Journal of Medicine, Volume 395, Issue 2, Page 162-174, July 9, 2026.",
+    "categories": "",
+    "authors": "",
+    "published_at": "2026-07-08T09:00:02.000Z"
+  }
+]

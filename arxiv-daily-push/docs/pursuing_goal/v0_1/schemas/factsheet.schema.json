@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "adp.factsheet.v0_1",
+  "title": "ADP V0.1 Factsheet",
+  "description": "Deterministically-extracted stable facts for one item, produced BEFORE any generated text (人话版). Missing fields MUST be null, never fabricated. Common fields for all five boards plus per-board extensions.",
+  "type": "object",
+  "required": ["item_id", "board_id", "source_id", "common", "board_ext"],
+  "additionalProperties": false,
+  "properties": {
+    "item_id": {"type": "string"},
+    "board_id": {"type": "string", "enum": ["board1", "board2", "board3", "board4", "board5"]},
+    "source_id": {"type": "string"},
+    "extractor_version": {"type": "string"},
+    "baseline_status": {"type": "string", "enum": ["provisional_machine", "human_verified"], "description": "provisional_machine = deterministic extraction pending Owner spot-check"},
+    "common": {
+      "type": "object",
+      "required": ["title", "url", "date", "authors", "doi", "categories"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": ["string", "null"]},
+        "url": {"type": ["string", "null"]},
+        "date": {"type": ["string", "null"], "description": "YYYY-MM-DD or null"},
+        "authors": {"type": ["array", "null"], "items": {"type": "string"}},
+        "doi": {"type": ["string", "null"]},
+        "categories": {"type": ["string", "null"]}
+      }
+    },
+    "board_ext": {
+      "type": "object",
+      "description": "per-board extension fields; every declared field present as value-or-null",
+      "additionalProperties": false,
+      "properties": {
+        "doc_number": {"type": ["string", "null"], "description": "board3 中国政策 文号 (e.g. 国发〔2026〕12号) or null"},
+        "agency": {"type": ["string", "null"], "description": "board3/board4 发文/发布机关 or null"},
+        "venue": {"type": ["string", "null"], "description": "board2 journal venue or null"},
+        "units": {"type": ["array", "null"], "items": {"type": "string"}, "description": "extracted number+unit tokens or null"}
+      }
+    },
+    "p0_present": {"type": "object", "description": "which P0 fields are non-null", "additionalProperties": {"type": "boolean"}}
+  }
+}

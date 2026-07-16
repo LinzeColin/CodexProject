@@ -1,0 +1,17 @@
+### samples: 200
+schema validate (200): PASS
+every common field present (value-or-null): True
+P0 present counts by board (provisional machine baseline):
+  board2 (n=86): {'title': 86, 'url': 86, 'date': 86, 'doi': 60}
+  board3 (n=85): {'title': 85, 'url': 85, 'date': 85, 'doc_number': 2}
+  board4 (n=29): {'title': 29, 'url': 29, 'date': 29}
+Traceback (most recent call last):
+  File "<stdin>", line 33, in <module>
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1249, in read_bytes
+    with self.open(mode='rb') as f:
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1242, in open
+    return io.open(self, mode, buffering, encoding, errors, newline,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1110, in _opener
+    return self._accessor.open(self, flags, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/fs2.json'
+deterministic re-extract byte-identical: True

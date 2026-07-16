@@ -1,0 +1,18 @@
+# ADP-S1-P03-T016 commands.log · Factsheet schema + deterministic extraction
+# base commit e89ba10d (T015 merged) ; read-only D1 sample, NOT_DEPLOYED
+
+## sample 200 real items (read-only)
+$ npx wrangler@4 d1 execute adp-mirror --remote --json --command "SELECT ... FROM cn_items ORDER BY first_seen_at DESC LIMIT 200"
+# 200 rows ; by board board2=86 board3=85 board4=29 ; changed_db False
+
+## extract + acceptance
+$ python3 tools/extract_factsheet.py --items items_200.json --out factsheet_baseline_200.json
+# schema validate(200) PASS ; every common field value-or-null True ; deterministic re-extract byte-identical True
+# P0 coverage: title/url/date 100% (all boards) ; board2 doi 60/86 ; board3 doc_number 2/85 (media, not policy docs)
+# negative: missing published_at -> date null ; absent 文号 -> doc_number null (not fabricated)
+# baseline_status = provisional_machine (Owner directive)
+# full: test-results/factsheet_tests.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

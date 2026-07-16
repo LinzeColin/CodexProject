@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S1-P03-T016", "stage": "S1 Truth & Content Stabilization", "release_mode": "NOT_DEPLOYED",
+  "owner_decision": "S1-P03 human baseline uses a machine baseline marked provisional_machine, pending Owner spot-check (Owner directive 2026-07-16)",
+  "value_metric_s1": "deterministic fact layer before generated text: factsheet common+board schema + date/DOI/文号/单位 extractors; missing fields are null (not fabricated); 200-sample provisional baseline with P0 fields (title/url/date 100% coverage); fact anchor for T017 defect baseline and T018 L0-L3 人话版 + evidence locator; governance precondition for FACT-002",
+  "cost_itemized_unknown_not_zero": {"new_requests": "1 read-only D1 SELECT (200 rows)", "d1_rows_read": 200, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "Owner spot-check of provisional baseline (later)"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "acceptance": "schema validate 200 PASS; every field value-or-null; deterministic re-extract byte-identical; P0 coverage title/url/date 100% (doi 60/86 board2, doc_number 2/85 board3 = media not policy per DRIFT-FACT-006)"
+}
