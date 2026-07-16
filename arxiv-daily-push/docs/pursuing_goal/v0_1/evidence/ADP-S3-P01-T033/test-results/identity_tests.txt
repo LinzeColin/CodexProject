@@ -1,0 +1,13 @@
+OK central official + markers: level=A0 enable=True discovery_only=False manual_review=False
+OK central official id_code only: level=A0 enable=True discovery_only=False manual_review=False
+OK non-central official + marker: level=A1 enable=True discovery_only=False manual_review=False
+OK media on gov domain -> discovery only, NO A0: level=media enable=False discovery_only=True manual_review=False
+OK search -> discovery only, NO A0: level=search enable=False discovery_only=True manual_review=False
+OK aggregator -> discovery only, NO A0: level=aggregator enable=False discovery_only=True manual_review=False
+OK official domain, no markers -> manual_review, not enabled: level=pending enable=False discovery_only=False manual_review=True
+OK claims official but not gov domain -> unofficial, not enabled: level=unofficial enable=False discovery_only=False manual_review=False
+
+RULE 1 (unverified not enabled): OK
+RULE 2 (search/media never A0): OK
+
+ACCEPTANCE = PASS

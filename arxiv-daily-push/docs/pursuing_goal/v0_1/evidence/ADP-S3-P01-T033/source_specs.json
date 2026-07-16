@@ -1,0 +1,8 @@
+[
+  {"source_id": "gov-cn-zhengce", "url": "https://www.gov.cn/zhengce/", "category": "china_official", "host_org": "国务院办公厅", "id_code": "bm01000001"},
+  {"source_id": "stats-gov-cn", "url": "https://www.stats.gov.cn/", "category": "china_official", "id_code": "bm36000002"},
+  {"source_id": "board3-media-renmin", "url": "https://www.gov.cn/", "category": "media"},
+  {"source_id": "search-lead", "url": "https://news.baidu.com/", "category": "search"},
+  {"source_id": "unverified-gov", "url": "https://x.gov.cn/", "category": "china_official"},
+  {"source_id": "fake-official", "url": "https://gov-cn.example.com/", "category": "china_official"}
+]

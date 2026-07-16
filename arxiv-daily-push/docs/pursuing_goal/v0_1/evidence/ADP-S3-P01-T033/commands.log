@@ -1,0 +1,24 @@
+# ADP-S3-P01-T033 commands (official identity verifier; deterministic on fixtures; live gov.cn smoke separate)
+# base: main 07cc3a29 (T032)
+
+# 1) verifier authored (stdlib; four evidence signals + two hard rules)
+#    tools/official_identity.py   (is_official_domain / is_central_domain / extract_evidence / verify_identity)
+#    OFFICIAL_IDENTITY_SPEC.md
+
+# 2) acceptance test (fixtures, no network): 8 cases + the two hard rules
+python3 evidence/ADP-S3-P01-T033/test-results/t033_verify.py | tee evidence/ADP-S3-P01-T033/test-results/identity_tests.txt
+# -> A0 (central+markers / id_code only) ; A1 (non-central+marker) ; media/search/aggregator -> discovery_only, NO A0, not enabled
+# -> official domain no markers -> manual_review, not enabled ; non-gov claiming official -> unofficial, not enabled
+# -> RULE 1 (unverified not enabled) OK ; RULE 2 (search/media never A0) OK
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) LIVE footer-evidence extraction (Owner: real fetch) from the real sites, via the verifier
+python3 <inline> -> evidence/ADP-S3-P01-T033/real_identity_smoke.json
+#   gov.cn/zhengce -> A0 | 主办单位 国务院办公厅 / 网站标识码 bm01000001 / 京ICP备05070218号
+#   stats.gov.cn   -> A0 | 网站标识码 bm36000002 / 京ICP备05034670号-2   (LIVE, not byte-reproducible)
+
+# 4) committed report from a source-spec fixture
+python3 tools/official_identity.py --sources evidence/ADP-S3-P01-T033/source_specs.json --out evidence/ADP-S3-P01-T033/identity_report.json
+
+# NOT_DEPLOYED: verifier only; not wired to the production enable flow. live smoke ran from dev env (0 cloud cost).
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

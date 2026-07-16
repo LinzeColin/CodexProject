@@ -1,0 +1,32 @@
+{
+  "note": "LIVE point-in-time footer-evidence extraction from real gov.cn; not byte-reproducible.",
+  "fetched_at": "2026-07-16T15:39:33+10:00",
+  "sources": [
+    {
+      "source_id": "gov-cn-zhengce",
+      "url": "https://www.gov.cn/zhengce/",
+      "authority_level": "A0",
+      "can_enable": true,
+      "evidence": {
+        "official_domain": true,
+        "central_domain": true,
+        "host_org": "国务院办公厅",
+        "id_code": "bm01000001",
+        "icp": "京ICP备05070218号"
+      }
+    },
+    {
+      "source_id": "stats-gov-cn",
+      "url": "https://www.stats.gov.cn/",
+      "authority_level": "A0",
+      "can_enable": true,
+      "evidence": {
+        "official_domain": true,
+        "central_domain": true,
+        "host_org": null,
+        "id_code": "bm36000002",
+        "icp": "京ICP备05034670号-2"
+      }
+    }
+  ]
+}

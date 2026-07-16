@@ -1,0 +1,116 @@
+[
+  {
+    "source_id": "gov-cn-zhengce",
+    "authority_level": "A0",
+    "verified": true,
+    "can_enable": true,
+    "discovery_only": false,
+    "manual_review": false,
+    "evidence": {
+      "official_domain": true,
+      "central_domain": true,
+      "host_org": "国务院办公厅",
+      "id_code": "bm01000001",
+      "gov_directory_listed": false,
+      "icp": null
+    },
+    "reasons": [
+      "official .gov.cn domain + 2 official marker(s) (central) -> A0"
+    ]
+  },
+  {
+    "source_id": "stats-gov-cn",
+    "authority_level": "A0",
+    "verified": true,
+    "can_enable": true,
+    "discovery_only": false,
+    "manual_review": false,
+    "evidence": {
+      "official_domain": true,
+      "central_domain": true,
+      "host_org": null,
+      "id_code": "bm36000002",
+      "gov_directory_listed": false,
+      "icp": null
+    },
+    "reasons": [
+      "official .gov.cn domain + 1 official marker(s) (central) -> A0"
+    ]
+  },
+  {
+    "source_id": "board3-media-renmin",
+    "authority_level": "media",
+    "verified": false,
+    "can_enable": false,
+    "discovery_only": true,
+    "manual_review": false,
+    "evidence": {
+      "official_domain": true,
+      "central_domain": true,
+      "host_org": null,
+      "id_code": null,
+      "gov_directory_listed": false,
+      "icp": null
+    },
+    "reasons": [
+      "category 'media' is discovery-only; never A0 even on a gov domain"
+    ]
+  },
+  {
+    "source_id": "search-lead",
+    "authority_level": "search",
+    "verified": false,
+    "can_enable": false,
+    "discovery_only": true,
+    "manual_review": false,
+    "evidence": {
+      "official_domain": false,
+      "central_domain": false,
+      "host_org": null,
+      "id_code": null,
+      "gov_directory_listed": false,
+      "icp": null
+    },
+    "reasons": [
+      "category 'search' is discovery-only; never A0 even on a gov domain"
+    ]
+  },
+  {
+    "source_id": "unverified-gov",
+    "authority_level": "pending",
+    "verified": false,
+    "can_enable": false,
+    "discovery_only": false,
+    "manual_review": true,
+    "evidence": {
+      "official_domain": true,
+      "central_domain": false,
+      "host_org": null,
+      "id_code": null,
+      "gov_directory_listed": false,
+      "icp": null
+    },
+    "reasons": [
+      "official domain but no host_org / id_code / directory evidence -> manual_review, not enabled"
+    ]
+  },
+  {
+    "source_id": "fake-official",
+    "authority_level": "unofficial",
+    "verified": false,
+    "can_enable": false,
+    "discovery_only": false,
+    "manual_review": false,
+    "evidence": {
+      "official_domain": false,
+      "central_domain": false,
+      "host_org": null,
+      "id_code": null,
+      "gov_directory_listed": false,
+      "icp": null
+    },
+    "reasons": [
+      "claims official but not on a .gov.cn domain -> unofficial, not enabled"
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S3-P01-T033", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "an official-identity verifier that assigns A0 only to central-government sources proven by official domain + host org / website ID code, refuses to enable unverified sources, and hard-blocks search/media from ever receiving A0 -- the guardrail that keeps the A0 pilot authoritative and prevents news noise from masquerading as official",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "verifier + rules only, not wired to the production enable flow; manual_review sources need a human decision; the live gov.cn/stats footer extraction ran from the dev env (0 cloud cost)"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "real_footer_evidence": {"gov.cn": {"host_org": "国务院办公厅", "id_code": "bm01000001", "icp": "京ICP备05070218号", "level": "A0"}, "stats.gov.cn": {"id_code": "bm36000002", "level": "A0"}},
+  "acceptance": {"unverified_cannot_be_enabled": true, "search_media_discovery_only_never_a0": true, "central_official_with_markers_is_a0": true, "official_domain_no_markers_is_manual_review": true, "non_gov_claiming_official_is_unofficial": true}
+}
