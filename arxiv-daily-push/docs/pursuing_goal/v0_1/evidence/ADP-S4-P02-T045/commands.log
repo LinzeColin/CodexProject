@@ -1,0 +1,16 @@
+# ADP-S4-P02-T045 commands (A0 backfill cohort selection by user value)
+# base: main 49c470ec (T044, closes S4-P01)
+
+# 1) selector + spec + cohort manifest
+#    tools/cohort_selector.py   (value_score[0.4 domain + 0.3 coverage_gap + 0.3 stability]; stop_rule; select_cohort)
+#    COHORT_SELECTOR_SPEC.md ; evidence/.../cohort_manifest.json
+
+# 2) acceptance test
+python3 evidence/ADP-S4-P02-T045/test-results/t045_verify.py | tee evidence/ADP-S4-P02-T045/test-results/cohort_tests.txt
+# -> Wave-1 cohort 5 members by value: gov-cn-policy 1.0 > gov-cn-fagui 0.965 > stats-gov 0.9 > cac-gov 0.88 > ndrc-gov 0.865
+# -> every member has authority_role + history_start + expected_doc_types + stop_rule + expected_benefit
+# -> ordered by value (not registry order); nda-gov deferred (live blocked); priority model + manifest + expected benefit
+# -> ACCEPTANCE = PASS (exit 0)
+
+# NOT_DEPLOYED: cohort proposal only. Owner S4 cohort gate (SCALE/HOLD/STOP) decides before T046 (Wave 1, SHADOW).
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S4-P02-T045", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "the A0 backfill Wave-1 cohort is chosen by user value (central/national high-value first) instead of Registry order, and every selected source carries an authority role, a history start, expected document types, and a stop rule -- so the decade backfill starts where it matters most, with an explicit stop, and a live-blocked source is deferred rather than blindly opened",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "cohort selection proposal; the actual backfill execution is T046 and is gated by the Owner S4 cohort decision (SCALE/HOLD/STOP)"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "cohort": {"cohort_id": "A0-WAVE-1", "members": ["gov-cn-policy", "gov-cn-fagui", "stats-gov", "cac-gov", "ndrc-gov"], "deferred": ["nda-gov"], "value_ordered": true},
+  "acceptance": {"authority_role_history_start_doc_types_stop_rule_per_source": true, "selected_by_value_not_registry_order": true, "priority_model_and_manifest_and_expected_benefit": true, "blocked_source_deferred": true},
+  "owner_gate_pending": "Wave-1 cohort proposed for the Owner S4 cohort gate (SCALE/HOLD/STOP) before T046 execution"
+}

@@ -1,0 +1,5 @@
+cohort: A0-WAVE-1 | members: [('gov-cn-policy', 1.0), ('gov-cn-fagui', 0.965), ('stats-gov', 0.9), ('cac-gov', 0.88), ('ndrc-gov', 0.865)]
+deferred: [('nda-gov', 'live fetch blocked (needs brow')]
+every member has authority_role + history_start + expected_doc_types + stop_rule + expected_benefit: True
+
+ACCEPTANCE = PASS

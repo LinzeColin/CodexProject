@@ -1,0 +1,563 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 7ecc92680..41f288ba3 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S4-P02-T045 (A0 backfill cohort selection by user value; NOT_DEPLOYED)
++
++- Forty-fifth task of the ADP V0.1 FINAL EXECUTION program and the first of S4-P02 (A0 2016+ history cohort). Goal: cover the high-value central and national-level domains first instead of blindly opening every source in Registry order. NOT_DEPLOYED, 0 recurring cloud cost; a cohort selection proposal, not an execution -- the actual backfill is T046 and is gated by the Owner S4 cohort decision (SCALE / HOLD / STOP). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/cohort_selector.py (a value_score of 0.4 times domain value plus 0.3 times coverage gap plus 0.3 times stability, a stop_rule, and select_cohort that orders by descending value and gives every member an authority role, a history start, expected document types, a stop rule, and the expected benefit while deferring a live-blocked source), COHORT_SELECTOR_SPEC.md, and evidence/ADP-S4-P02-T045/cohort_manifest.json. Acceptance verified (evidence/ADP-S4-P02-T045/test-results/cohort_tests.txt, ACCEPTANCE = PASS, exit 0): the Wave-1 cohort has 5 members ordered by user value rather than Registry order -- gov-cn-policy at 1.0, gov-cn-fagui at 0.965, stats-gov at 0.9, cac-gov at 0.88, and ndrc-gov at 0.865 -- every member carries an authority role, a history start, expected document types, a stop rule, and an expected benefit; and the live-blocked nda-gov is deferred with a reason rather than blindly opened. The Wave-1 cohort is proposed for the Owner S4 cohort gate before T046 executes it. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S4-P01-T044 (Source-Year cost + maintenance dashboard; closes S4-P01; NOT_DEPLOYED)
+ 
+ - Forty-fourth task of the ADP V0.1 FINAL EXECUTION program and the last of S4-P01 (pausable/resumable backfill engine). Goal: before scaling each cohort, know the fetch, storage, AI, failure, and manual-maintenance cost per source-year. NOT_DEPLOYED, 0 recurring cloud cost; dashboard logic, not wired to production. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/cost_dashboard.py (build_facts counting throughput per source-year and taking costs from a measured map where any unmeasured field is UNKNOWN and never 0, unit_costs giving per-resource cost per 1000 artifacts and per accepted event with UNKNOWN propagation, and dashboard), COST_DASHBOARD_SPEC.md, and evidence/ADP-S4-P01-T044/{cost_items.json, cost_dashboard_report.json}. Acceptance verified (evidence/ADP-S4-P01-T044/test-results/cost_tests.txt, ACCEPTANCE = PASS, exit 0): over the real 500-item throughput with two source-years measured, there are 30 source-years of which 2 are cost-computable and 28 have unknown cost, and an unknown cost is never shown as 0 -- every unmeasured cost is UNKNOWN and its derived unit cost is UNKNOWN, while a measured genuine 0 like model_calls is preserved as 0 and distinguished from UNKNOWN; and the cost per 1000 artifacts and per accepted event are computable for the measured source-years, with arxiv-all in 2025 at 5454.5 fetch subrequests per 1000 artifacts and 15.0 per accepted event and nejm in 2026 at 1500 and 4.29. This lets each cohort be scaled on real cost, never on a fake 0. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 1ef01e409..e972c42f8 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S4-P01-T043-GAP-DETECTOR"
+-source_snapshot_hash: "sha256:9c291ee76ebb25a9a46e9c4e03e5dff28919f4fbd6723bad11b05513980f84a3"
++as_of_event_id: "EVENT-20260717-ADP-V01-S4-P01-T044-COST-DASHBOARD"
++source_snapshot_hash: "sha256:fa08ec98409bb9eb7961d613f552dfe660ca2e4090ebdaca4bf1a264035dadb3"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T12:30:00+10:00"
++snapshot_event_time: "2026-07-17T13:05:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 103
++    precommit_pending_events: 104
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index d164aaa39..b18db3927 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S4-P02-T045: selected the A0 backfill cohort by user value (first S4-P02 task). NOT_DEPLOYED, 0 recurring cloud cost; a cohort proposal, not execution -- T046 executes it and is gated by the Owner S4 cohort decision (SCALE/HOLD/STOP). Deliverables under docs/pursuing_goal/v0_1/: tools/cohort_selector.py (value_score[0.4 domain + 0.3 coverage_gap + 0.3 stability]; stop_rule; select_cohort ordered by value, each member with authority_role + history_start + expected_doc_types + stop_rule + expected_benefit; live-blocked source deferred), COHORT_SELECTOR_SPEC.md, evidence/ADP-S4-P02-T045/cohort_manifest.json. Acceptance (test-results/cohort_tests.txt, PASS exit 0): Wave-1 cohort = 5 members by value (gov-cn-policy 1.0 > gov-cn-fagui 0.965 > stats-gov 0.9 > cac-gov 0.88 > ndrc-gov 0.865), NOT registry order; every member has authority_role/history_start/expected_doc_types/stop_rule/expected_benefit; nda-gov deferred (live blocked); priority model + manifest + expected benefit present. Proposed for the Owner S4 cohort gate before T046. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P01-T044: built the Source-Year cost + maintenance dashboard (last S4-P01 task; closes S4-P01). NOT_DEPLOYED, 0 recurring cloud cost; dashboard logic, not wired to production. Deliverables under docs/pursuing_goal/v0_1/: tools/cost_dashboard.py (build_facts[throughput + costs, unmeasured=UNKNOWN never 0]; unit_costs[per-resource per-1000 + per-accepted, UNKNOWN propagation]; dashboard), COST_DASHBOARD_SPEC.md, evidence/ADP-S4-P01-T044/{cost_items.json, cost_dashboard_report.json}. Acceptance (test-results/cost_tests.txt, PASS exit 0): real 500 throughput + 2 measured source-years -> 30 source-years (2 computable / 28 unknown-cost); unknown cost never 0 (unmeasured -> UNKNOWN, derived UNKNOWN; measured genuine 0 model_calls preserved and distinguished); cost per 1000 artifacts + per accepted event computable for measured rows (arxiv-all|2025 fetch 5454.5/1000 + 15.0/accepted; nejm|2026 1500 + 4.29); throughput + failure/manual metrics present. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P01-T043: implemented the Source-Year-Month gap detector (S4-P01). NOT_DEPLOYED, 0 recurring cloud cost; detector logic, not wired to production. Deliverables under docs/pursuing_goal/v0_1/: tools/gap_detector.py (build_coverage; exhaustive classify[covered/source_not_yet_active/no_publications/not_backfilled/fetch_failed/UNEXPLAINED]; detect[grid + reason counts + alerts]; infer_source_windows; month_range), GAP_DETECTOR_SPEC.md, evidence/ADP-S4-P01-T043/{coverage_items.json, coverage_report.json}. Acceptance (test-results/gap_tests.txt, PASS exit 0): real 500 coverage = 20 sources x 127 months = 2540 cells, every cell count-or-reason (covered 75 / not_backfilled 203 / source_not_yet_active 2262 = 2540), 0 unexplained; injected ghost-source (no window) -> 127 unexplained -> 127 alerts (detector catches silent holes). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P01-T042: built the Realtime/Catchup/Backfill three-lane scheduler + auto-pause (last S4-P01 task; closes S4-P01). NOT_DEPLOYED, 0 recurring cloud cost; scheduler logic, not wired to the production cron. Deliverables under docs/pursuing_goal/v0_1/: tools/three_lane_scheduler.py (schedule[realtime first + quota + backpressure pause backfill then throttle catchup when projected realtime P95 > baseline+20% + kill switch]; project_p95; stress_test), THREE_LANE_SPEC.md, evidence/ADP-S4-P01-T042/stress_test_report.json. Acceptance (test-results/scheduler_tests.txt, PASS exit 0): every scenario keeps realtime freshness P95 within baseline+20% (healthy 11.9 / pressure 11.8 / burst 11.6 / kill 10.8 <= 12) with realtime always fully served; backfill runs healthy (3/3), throttles under pressure (2/8), auto-pauses on a realtime burst (0/6) -> monotonic grant [3,2,0]; kill switch pauses backfill (0/5). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 9d4c588f2..d12d8538a 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `103`
+-- pending_or_stale_events: `453`
+-- freshness_counts: `pending_or_stale_events=453; legacy_unbound_events=334`
++- precommit_pending_events: `104`
++- pending_or_stale_events: `454`
++- freshness_counts: `pending_or_stale_events=454; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:9c291ee76ebb25a9a46e9c4e03e5dff28919f4fbd6723bad11b05513980f84a3`
+-- snapshot_event_time: `2026-07-17T12:30:00+10:00`
++- source_snapshot_hash: `sha256:fa08ec98409bb9eb7961d613f552dfe660ca2e4090ebdaca4bf1a264035dadb3`
++- snapshot_event_time: `2026-07-17T13:05:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 670c88770..dab275f50 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:9c291ee76ebb25a9a46e9c4e03e5dff28919f4fbd6723bad11b05513980f84a3`
+-- snapshot_event_time: `2026-07-17T12:30:00+10:00`
++- source_snapshot_hash: `sha256:fa08ec98409bb9eb7961d613f552dfe660ca2e4090ebdaca4bf1a264035dadb3`
++- snapshot_event_time: `2026-07-17T13:05:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `453`
++- Pending/stale events: `454`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/COHORT_SELECTOR_SPEC.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/COHORT_SELECTOR_SPEC.md
+new file mode 100644
+index 000000000..8a626ed23
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/COHORT_SELECTOR_SPEC.md
+@@ -0,0 +1,30 @@
++# A0 Backfill Cohort Selector Spec · ADP-S4-P02-T045
++
++**按用户价值**选高价值**中央/国家级** A0 源做回填 cohort——**不按 Registry 顺序盲目全开**。
++工具：`tools/cohort_selector.py`。**NOT_DEPLOYED**。Wave-1 cohort 是 **Owner S4 cohort 门（SCALE/HOLD/STOP）** 的提案；执行是 T046。
++
++## Priority model（用户价值打分）
++
++`value_score(c) = 0.4·domain_value + 0.3·coverage_gap + 0.3·stability`。候选 = S3-P02 已证明的 A0 源
++（gov-cn-policy/gov-cn-fagui/stats-gov/ndrc-gov/cac-gov/nda-gov）。**排序高价值优先，非 registry 顺序**。
++
++## Cohort manifest（每源必含 4 项）
++
++`select_cohort` → 每 member：
++- **authority_role**（A0/A1/A2）；
++- **history_start**（历史起点，如 2016-01；nda-gov 2023-10 该局成立后）；
++- **expected_doc_types**（预期文档类型，如 通知/规定/办法）；
++- **stop_rule**（`until_month` 回填至历史起点 + `stop_when` 每月 shard done + guardrail：realtime P95>基线+20% 自动暂停[T042]）；
++- **expected_benefit**（coverage_gain + authoritativeness）。
++
++## 验收（`test-results/cohort_tests.txt`，PASS）
++
++- **每 source 有权威角色/历史起点/预期文档类型/停止规则**（+expected_benefit）：5 个 member 全齐。
++- **按价值非 registry 顺序**：members 按 value 降序 [gov-cn-policy 1.0 > gov-cn-fagui 0.965 > stats-gov 0.9 > cac-gov 0.88 > ndrc-gov 0.865]；top = 最高价值中央源。
++- **不盲开**：live 受阻的 `nda-gov` **deferred**（needs browser/RSS），不入 Wave 1。
++- priority model + cohort manifest + expected benefit 齐备。
++
++## Owner cohort 门（下一步）
++
++Wave-1 cohort（5 源）须交 **Owner S4 cohort 门决策 SCALE/HOLD/STOP** 后才进 **T046 执行 A0 2016+ Wave 1（SHADOW）**。
++本任务只给提案 + 价值/停止规则，不自签晋级、不执行回填。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/TASK_REPORT.md
+new file mode 100644
+index 000000000..556bdac33
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/TASK_REPORT.md
+@@ -0,0 +1,53 @@
++# TASK_REPORT · ADP-S4-P02-T045｜按用户价值选择 A0 回填 Cohort
++
++## 唯一目标（达成）
++**先覆盖高价值中央/国家级领域，不按 Registry 顺序盲目全开**。交付 priority model、cohort manifest、expected benefit。**每个 source 有权威角色、历史起点、预期文档类型和停止规则。**
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：按用户价值选 A0 回填 cohort；每源有权威角色/历史起点/预期文档类型/停止规则；不盲开。
++2. **允许修改文件**：`docs/pursuing_goal/v0_1/{tools/cohort_selector.py, COHORT_SELECTOR_SPEC.md}` + 本证据包（cohort_manifest/test-results/报告）+ 治理同步。
++3. **绝不能改变**：抓取行为（生产）、六主题、worker、生产 D1/R2、cron；**不执行回填、不自签晋级**（Owner cohort 门）。NOT_DEPLOYED。
++4. **基线**：main `49c470ec`（T044 收尾 S4-P01）；候选 = S3-P02 已证明的 A0 源。
++5. **验收**：每个 source 有权威角色、历史起点、预期文档类型和停止规则。
++6. **回滚**：`git revert <sha>`（纯提案，生产未变更）。
++
++## 交付物
++- `tools/cohort_selector.py` —— `value_score`（0.4 domain_value + 0.3 coverage_gap + 0.3 stability）+ `stop_rule` + `select_cohort`（**按价值降序、非 registry 顺序**；每 member 含 authority_role/history_start/expected_doc_types/stop_rule/expected_benefit；live 受阻源 deferred）。
++- `COHORT_SELECTOR_SPEC.md` + `evidence/.../cohort_manifest.json`。
++
++## 验收结果（实测，见 test-results/cohort_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **每 source 有权威角色/历史起点/预期文档类型/停止规则**（+expected_benefit）：**5 个 member 全齐**。
++- **按价值非 registry 顺序**：value 降序 **[gov-cn-policy 1.0 > gov-cn-fagui 0.965 > stats-gov 0.9 > cac-gov 0.88 > ndrc-gov 0.865]**；top = 最高价值中央源（国务院政策）。
++- **不盲开**：live 受阻的 `nda-gov`（T036 TLS/JS-shell）**deferred**（记 deferred_reason），不入 Wave 1。
++- **priority model + cohort manifest + expected benefit** 齐备。
++
++## Data / Performance / Visual
++Data = Wave-1 cohort manifest（5 源 + 1 deferred）。无 UI 改动、无性能路径；六主题动效与线上 MVP 未触碰（NOT_DEPLOYED）。
++
++## Value / Cost（S4 2016+ Expansion）
++- **Value**：十年回填**从最有价值处开始**——按用户价值选中央/国家级 A0 源，每源明确权威角色/历史起点/预期文档类型/**停止规则**（回填至起点即停 + realtime 背压守护），受阻源 deferred 而非盲开；扩张有序、可停、有预期收益。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 读 0 / 写 0；R2 字节 0 / 操作 0；模型 0；人工维护 = cohort 提案。经常性云成本 delta = $0/月。**执行（T046）+ 云成本待 Owner cohort 门 SCALE 后。**
++
++## Known gaps
++见 `known_gaps.md`：NOT_DEPLOYED + Owner 门待决（不执行回填/不自签）；value 输入为结构性评分（接 T043/T044 校准）；history_start 源级默认；nda-gov deferred；expected_doc_types 代表性。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json`、`real_*_smoke` —— N/A。`data-samples` = cohort_manifest.json。
++
++## 完成声明
++```text
++Task: ADP-S4-P02-T045
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/cohort_selector.py + COHORT_SELECTOR_SPEC.md + T045 证据包（cohort_manifest/test-results/报告）+ 治理同步（见 changed_files.txt）
++Tests: cohort_tests.txt —— Wave-1 cohort 5源按价值[gov-cn-policy1.0>...>ndrc-gov0.865]非registry序；每源authority_role/history_start/expected_doc_types/stop_rule/expected_benefit全齐；nda-gov deferred(live blocked)；priority model+manifest+expected benefit，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 按用户价值选A0回填Cohort(高价值中央源优先，每源权威角色/起点/类型/停止规则)
++Data/Performance/Visual: Data=Wave-1 cohort manifest；无性能/UI
++Value: 十年回填从最有价值处开始，有序可停，受阻源deferred不盲开
++Cost: 请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0
++Known gaps: 见 known_gaps.md（Owner cohort门待决，执行T046）
++Deployment: NOT_DEPLOYED（cohort提案；Owner cohort门SCALE/HOLD/STOP后进T046）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/cohort_manifest.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/cohort_manifest.json
+new file mode 100644
+index 000000000..db19b5ddf
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/cohort_manifest.json
+@@ -0,0 +1,141 @@
++{
++  "cohort_id": "A0-WAVE-1",
++  "selection": "by user value (central/national high-value first), not registry order",
++  "members": [
++    {
++      "source_id": "gov-cn-policy",
++      "name": "国务院政策文件",
++      "authority_role": "A0",
++      "value_score": 1.0,
++      "history_start": "2016-01",
++      "expected_doc_types": [
++        "通知",
++        "规定",
++        "办法",
++        "意见"
++      ],
++      "stop_rule": {
++        "until_month": "2016-01",
++        "stop_when": "shard status=done for every month in range",
++        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
++      },
++      "expected_benefit": {
++        "coverage_gain": 1.0,
++        "authoritativeness": 1.0
++      }
++    },
++    {
++      "source_id": "gov-cn-fagui",
++      "name": "国家法律法规",
++      "authority_role": "A0",
++      "value_score": 0.965,
++      "history_start": "2016-01",
++      "expected_doc_types": [
++        "法律",
++        "行政法规",
++        "国务院令"
++      ],
++      "stop_rule": {
++        "until_month": "2016-01",
++        "stop_when": "shard status=done for every month in range",
++        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
++      },
++      "expected_benefit": {
++        "coverage_gain": 1.0,
++        "authoritativeness": 1.0
++      }
++    },
++    {
++      "source_id": "stats-gov",
++      "name": "国家统计局",
++      "authority_role": "A0",
++      "value_score": 0.9,
++      "history_start": "2016-01",
++      "expected_doc_types": [
++        "统计公报",
++        "经济运行",
++        "指标数据"
++      ],
++      "stop_rule": {
++        "until_month": "2016-01",
++        "stop_when": "shard status=done for every month in range",
++        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
++      },
++      "expected_benefit": {
++        "coverage_gain": 0.9,
++        "authoritativeness": 1.0
++      }
++    },
++    {
++      "source_id": "cac-gov",
++      "name": "网信办",
++      "authority_role": "A0",
++      "value_score": 0.88,
++      "history_start": "2016-01",
++      "expected_doc_types": [
++        "规定",
++        "征求意见稿",
++        "公告"
++      ],
++      "stop_rule": {
++        "until_month": "2016-01",
++        "stop_when": "shard status=done for every month in range",
++        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
++      },
++      "expected_benefit": {
++        "coverage_gain": 1.0,
++        "authoritativeness": 1.0
++      }
++    },
++    {
++      "source_id": "ndrc-gov",
++      "name": "国家发改委",
++      "authority_role": "A0",
++      "value_score": 0.865,
++      "history_start": "2016-01",
++      "expected_doc_types": [
++        "政策文件",
++        "公告",
++        "规划"
++      ],
++      "stop_rule": {
++        "until_month": "2016-01",
++        "stop_when": "shard status=done for every month in range",
++        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
++      },
++      "expected_benefit": {
++        "coverage_gain": 0.9,
++        "authoritativeness": 1.0
++      }
++    }
++  ],
++  "deferred": [
++    {
++      "source_id": "nda-gov",
++      "name": "国家数据局",
++      "authority_role": "A0",
++      "value_score": 0.74,
++      "history_start": "2023-10",
++      "expected_doc_types": [
++        "数据政策",
++        "公告"
++      ],
++      "stop_rule": {
++        "until_month": "2023-10",
++        "stop_when": "shard status=done for every month in range",
++        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
++      },
++      "expected_benefit": {
++        "coverage_gain": 1.0,
++        "authoritativeness": 1.0
++      },
++      "deferred_reason": "live fetch blocked (needs browser / RSS-API); excluded from Wave 1"
++    }
++  ],
++  "member_count": 5,
++  "priority_weights": {
++    "domain_value": 0.4,
++    "coverage_gap": 0.3,
++    "stability": 0.3
++  }
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/commands.log
+new file mode 100644
+index 000000000..07efbb30c
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/commands.log
+@@ -0,0 +1,16 @@
++# ADP-S4-P02-T045 commands (A0 backfill cohort selection by user value)
++# base: main 49c470ec (T044, closes S4-P01)
++
++# 1) selector + spec + cohort manifest
++#    tools/cohort_selector.py   (value_score[0.4 domain + 0.3 coverage_gap + 0.3 stability]; stop_rule; select_cohort)
++#    COHORT_SELECTOR_SPEC.md ; evidence/.../cohort_manifest.json
++
++# 2) acceptance test
++python3 evidence/ADP-S4-P02-T045/test-results/t045_verify.py | tee evidence/ADP-S4-P02-T045/test-results/cohort_tests.txt
++# -> Wave-1 cohort 5 members by value: gov-cn-policy 1.0 > gov-cn-fagui 0.965 > stats-gov 0.9 > cac-gov 0.88 > ndrc-gov 0.865
++# -> every member has authority_role + history_start + expected_doc_types + stop_rule + expected_benefit
++# -> ordered by value (not registry order); nda-gov deferred (live blocked); priority model + manifest + expected benefit
++# -> ACCEPTANCE = PASS (exit 0)
++
++# NOT_DEPLOYED: cohort proposal only. Owner S4 cohort gate (SCALE/HOLD/STOP) decides before T046 (Wave 1, SHADOW).
++# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/cost_value.json
+new file mode 100644
+index 000000000..d19ac7948
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/cost_value.json
+@@ -0,0 +1,9 @@
++{
++  "task": "ADP-S4-P02-T045", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "NOT_DEPLOYED",
++  "value_metric": "the A0 backfill Wave-1 cohort is chosen by user value (central/national high-value first) instead of Registry order, and every selected source carries an authority role, a history start, expected document types, and a stop rule -- so the decade backfill starts where it matters most, with an explicit stop, and a live-blocked source is deferred rather than blindly opened",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "cohort selection proposal; the actual backfill execution is T046 and is gated by the Owner S4 cohort decision (SCALE/HOLD/STOP)"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "cohort": {"cohort_id": "A0-WAVE-1", "members": ["gov-cn-policy", "gov-cn-fagui", "stats-gov", "cac-gov", "ndrc-gov"], "deferred": ["nda-gov"], "value_ordered": true},
++  "acceptance": {"authority_role_history_start_doc_types_stop_rule_per_source": true, "selected_by_value_not_registry_order": true, "priority_model_and_manifest_and_expected_benefit": true, "blocked_source_deferred": true},
++  "owner_gate_pending": "Wave-1 cohort proposed for the Owner S4 cohort gate (SCALE/HOLD/STOP) before T046 execution"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/known_gaps.md
+new file mode 100644
+index 000000000..7bfb7825c
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S4-P02-T045
++
++- **NOT_DEPLOYED + Owner 门待决（任务边界，非缺陷）**：本任务只给 cohort **提案**（priority model + manifest + expected benefit + stop rule），**不执行回填、不自签晋级**。Wave-1 cohort 须交 **Owner S4 cohort 门（SCALE/HOLD/STOP）**，通过后才进 **T046 执行 A0 2016+ Wave 1（SHADOW）**。
++- **value 输入为结构性评分**：domain_value/coverage_gap/stability 为结构性用户价值输入（中央政策=1.0 等）；真实可用 T043 gap detector 的覆盖缺口 + T044 成本看板校准 coverage_gap/stability。本任务给可解释的初始评分。
++- **history_start 为源级默认**：多数 A0 源 2016-01（对齐目标 2016+）；nda-gov 2023-10（国家数据局 2023 成立，之前无该局文档）。真实起点接源实际最早可得文档校准。
++- **nda-gov deferred**：live 受阻（T036 TLS/JS-shell）→ 排除 Wave 1、记 deferred_reason；接入需浏览器/RSS，属后续 wave。
++- **expected_doc_types 为代表性**：按各源已知栏目给代表类型；真实全类型随适配器 fixtures 扩充。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/test-results/cohort_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/test-results/cohort_tests.txt
+new file mode 100644
+index 000000000..655bec1f5
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/test-results/cohort_tests.txt
+@@ -0,0 +1,5 @@
++cohort: A0-WAVE-1 | members: [('gov-cn-policy', 1.0), ('gov-cn-fagui', 0.965), ('stats-gov', 0.9), ('cac-gov', 0.88), ('ndrc-gov', 0.865)]
++deferred: [('nda-gov', 'live fetch blocked (needs brow')]
++every member has authority_role + history_start + expected_doc_types + stop_rule + expected_benefit: True
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/test-results/t045_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/test-results/t045_verify.py
+new file mode 100644
+index 000000000..7253d6e15
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P02-T045/test-results/t045_verify.py
+@@ -0,0 +1,59 @@
++#!/usr/bin/env python3
++"""ADP-S4-P02-T045 acceptance: A0 backfill cohort selection by user value.
++
++Acceptance (TASK_INDEX): 每个 source 有权威角色、历史起点、预期文档类型和停止规则。
++Deterministic. Also checks: selection is by user value (not Registry order), a priority model +
++cohort manifest + expected benefit exist, and a live-blocked source is deferred (not in Wave 1).
++"""
++import sys, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import cohort_selector as C  # noqa: E402
++
++fails = []
++cohort = C.select_cohort()
++print("cohort:", cohort["cohort_id"], "| members:", [(m["source_id"], m["value_score"]) for m in cohort["members"]])
++print("deferred:", [(d["source_id"], d.get("deferred_reason", "")[:30]) for d in cohort["deferred"]])
++
++# --- 1) every source has authority role + history start + expected doc types + stop rule ----
++for m in cohort["members"]:
++    if not m.get("authority_role"):
++        fails.append(f"{m['source_id']}: missing authority_role")
++    if not m.get("history_start"):
++        fails.append(f"{m['source_id']}: missing history_start")
++    if not m.get("expected_doc_types"):
++        fails.append(f"{m['source_id']}: missing expected_doc_types")
++    sr = m.get("stop_rule") or {}
++    if not (sr.get("until_month") and sr.get("stop_when")):
++        fails.append(f"{m['source_id']}: missing/incomplete stop_rule")
++    if "expected_benefit" not in m:
++        fails.append(f"{m['source_id']}: missing expected_benefit")
++print("every member has authority_role + history_start + expected_doc_types + stop_rule + expected_benefit:",
++      all(m.get("authority_role") and m.get("history_start") and m.get("expected_doc_types")
++          and (m.get("stop_rule") or {}).get("until_month") and "expected_benefit" in m for m in cohort["members"]))
++
++# --- 2) selection is by user value (highest first), NOT registry order ----------------------
++scores = [m["value_score"] for m in cohort["members"]]
++if scores != sorted(scores, reverse=True):
++    fails.append(f"members not ordered by descending value: {scores}")
++# the top pick is the highest-value central source, not the first in the registry dict
++if cohort["members"][0]["source_id"] != "gov-cn-policy":
++    fails.append("top cohort member is not the highest-value central source")
++
++# --- 3) priority model + cohort manifest + expected benefit present --------------------------
++if not cohort.get("priority_weights") or "by user value" not in cohort["selection"]:
++    fails.append("priority model / value-based selection missing")
++if cohort["member_count"] != len(cohort["members"]):
++    fails.append("cohort manifest member_count mismatch")
++
++# --- 4) a live-blocked source is deferred (not blindly opened) -------------------------------
++member_ids = {m["source_id"] for m in cohort["members"]}
++if "nda-gov" in member_ids:
++    fails.append("live-blocked nda-gov was put in Wave 1 (should be deferred)")
++if not any(d["source_id"] == "nda-gov" for d in cohort["deferred"]):
++    fails.append("nda-gov not recorded as deferred with a reason")
++
++print("\n" + ("ACCEPTANCE = PASS" if not fails else "ACCEPTANCE = FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/cohort_selector.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/cohort_selector.py
+new file mode 100644
+index 000000000..5e245b277
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/cohort_selector.py
+@@ -0,0 +1,85 @@
++#!/usr/bin/env python3
++"""ADP V0.1 A0 backfill cohort selection by user value (ADP-S4-P02-T045).
++
++Covers the high-value central / national-level domains FIRST instead of blindly opening every source
++in Registry order. A priority model scores each candidate A0 source by user value, and the selected
++cohort is a manifest where every source carries an AUTHORITY ROLE, a HISTORY START point, the EXPECTED
++DOCUMENT TYPES, and a STOP RULE, plus the expected benefit. Deterministic; no network. NOT_DEPLOYED.
++
++The Wave-1 cohort is a proposal for the Owner S4 cohort gate (SCALE / HOLD / STOP) -- execution is T046.
++"""
++from __future__ import annotations
++import json, pathlib
++
++# candidate A0 sources (from S3-P02 adapters), with user-value inputs. `live_ok` reflects real access.
++CANDIDATES = {
++    "gov-cn-policy": {"name": "国务院政策文件", "authority_role": "A0", "domain_value": 1.0,
++                      "coverage_gap": 1.0, "stability": 1.0, "live_ok": True,
++                      "history_start": "2016-01", "expected_doc_types": ["通知", "规定", "办法", "意见"]},
++    "gov-cn-fagui": {"name": "国家法律法规", "authority_role": "A0", "domain_value": 0.95,
++                     "coverage_gap": 1.0, "stability": 0.95, "live_ok": True,
++                     "history_start": "2016-01", "expected_doc_types": ["法律", "行政法规", "国务院令"]},
++    "stats-gov": {"name": "国家统计局", "authority_role": "A0", "domain_value": 0.9,
++                  "coverage_gap": 0.9, "stability": 0.9, "live_ok": True,
++                  "history_start": "2016-01", "expected_doc_types": ["统计公报", "经济运行", "指标数据"]},
++    "ndrc-gov": {"name": "国家发改委", "authority_role": "A0", "domain_value": 0.85,
++                 "coverage_gap": 0.9, "stability": 0.85, "live_ok": True,
++                 "history_start": "2016-01", "expected_doc_types": ["政策文件", "公告", "规划"]},
++    "cac-gov": {"name": "网信办", "authority_role": "A0", "domain_value": 0.85,
++                "coverage_gap": 1.0, "stability": 0.8, "live_ok": True,
++                "history_start": "2016-01", "expected_doc_types": ["规定", "征求意见稿", "公告"]},
++    "nda-gov": {"name": "国家数据局", "authority_role": "A0", "domain_value": 0.8,
++                "coverage_gap": 1.0, "stability": 0.4, "live_ok": False,   # TLS/JS-shell blocked (T036)
++                "history_start": "2023-10", "expected_doc_types": ["数据政策", "公告"]},
++}
++WEIGHTS = {"domain_value": 0.4, "coverage_gap": 0.3, "stability": 0.3}
++
++
++def value_score(c):
++    return round(sum(WEIGHTS[k] * c[k] for k in WEIGHTS), 4)
++
++
++def stop_rule(c):
++    # backfill to the history start, then stop; cap per-cohort to protect realtime (T042 lanes)
++    return {"until_month": c["history_start"], "stop_when": "shard status=done for every month in range",
++            "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"}
++
++
++def select_cohort(cohort_id="A0-WAVE-1", require_live=True, top_n=None):
++    scored = []
++    for sid, c in CANDIDATES.items():
++        scored.append((value_score(c), sid, c))
++    scored.sort(key=lambda x: (-x[0], x[1]))          # highest value first, NOT registry order
++    members, deferred = [], []
++    for score, sid, c in scored:
++        entry = {"source_id": sid, "name": c["name"], "authority_role": c["authority_role"],
++                 "value_score": score, "history_start": c["history_start"],
++                 "expected_doc_types": c["expected_doc_types"], "stop_rule": stop_rule(c),
++                 "expected_benefit": {"coverage_gain": c["coverage_gap"], "authoritativeness": 1.0 if c["authority_role"] == "A0" else 0.7}}
++        if require_live and not c["live_ok"]:
++            entry["deferred_reason"] = "live fetch blocked (needs browser / RSS-API); excluded from Wave 1"
++            deferred.append(entry)
++        else:
++            members.append(entry)
++    if top_n:
++        members = members[:top_n]
++    return {"cohort_id": cohort_id, "selection": "by user value (central/national high-value first), not registry order",
++            "members": members, "deferred": deferred,
++            "member_count": len(members), "priority_weights": WEIGHTS}
++
++
++def main():
++    import argparse
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--out")
++    args = ap.parse_args()
++    cohort = select_cohort()
++    if args.out:
++        pathlib.Path(args.out).write_text(json.dumps(cohort, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print(json.dumps({"cohort_id": cohort["cohort_id"], "member_count": cohort["member_count"],
++                      "members": [(m["source_id"], m["value_score"]) for m in cohort["members"]],
++                      "deferred": [d["source_id"] for d in cohort["deferred"]]}, ensure_ascii=False, indent=2))
++
++
++if __name__ == "__main__":
++    main()

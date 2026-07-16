@@ -1,0 +1,141 @@
+{
+  "cohort_id": "A0-WAVE-1",
+  "selection": "by user value (central/national high-value first), not registry order",
+  "members": [
+    {
+      "source_id": "gov-cn-policy",
+      "name": "国务院政策文件",
+      "authority_role": "A0",
+      "value_score": 1.0,
+      "history_start": "2016-01",
+      "expected_doc_types": [
+        "通知",
+        "规定",
+        "办法",
+        "意见"
+      ],
+      "stop_rule": {
+        "until_month": "2016-01",
+        "stop_when": "shard status=done for every month in range",
+        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
+      },
+      "expected_benefit": {
+        "coverage_gain": 1.0,
+        "authoritativeness": 1.0
+      }
+    },
+    {
+      "source_id": "gov-cn-fagui",
+      "name": "国家法律法规",
+      "authority_role": "A0",
+      "value_score": 0.965,
+      "history_start": "2016-01",
+      "expected_doc_types": [
+        "法律",
+        "行政法规",
+        "国务院令"
+      ],
+      "stop_rule": {
+        "until_month": "2016-01",
+        "stop_when": "shard status=done for every month in range",
+        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
+      },
+      "expected_benefit": {
+        "coverage_gain": 1.0,
+        "authoritativeness": 1.0
+      }
+    },
+    {
+      "source_id": "stats-gov",
+      "name": "国家统计局",
+      "authority_role": "A0",
+      "value_score": 0.9,
+      "history_start": "2016-01",
+      "expected_doc_types": [
+        "统计公报",
+        "经济运行",
+        "指标数据"
+      ],
+      "stop_rule": {
+        "until_month": "2016-01",
+        "stop_when": "shard status=done for every month in range",
+        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
+      },
+      "expected_benefit": {
+        "coverage_gain": 0.9,
+        "authoritativeness": 1.0
+      }
+    },
+    {
+      "source_id": "cac-gov",
+      "name": "网信办",
+      "authority_role": "A0",
+      "value_score": 0.88,
+      "history_start": "2016-01",
+      "expected_doc_types": [
+        "规定",
+        "征求意见稿",
+        "公告"
+      ],
+      "stop_rule": {
+        "until_month": "2016-01",
+        "stop_when": "shard status=done for every month in range",
+        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
+      },
+      "expected_benefit": {
+        "coverage_gain": 1.0,
+        "authoritativeness": 1.0
+      }
+    },
+    {
+      "source_id": "ndrc-gov",
+      "name": "国家发改委",
+      "authority_role": "A0",
+      "value_score": 0.865,
+      "history_start": "2016-01",
+      "expected_doc_types": [
+        "政策文件",
+        "公告",
+        "规划"
+      ],
+      "stop_rule": {
+        "until_month": "2016-01",
+        "stop_when": "shard status=done for every month in range",
+        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
+      },
+      "expected_benefit": {
+        "coverage_gain": 0.9,
+        "authoritativeness": 1.0
+      }
+    }
+  ],
+  "deferred": [
+    {
+      "source_id": "nda-gov",
+      "name": "国家数据局",
+      "authority_role": "A0",
+      "value_score": 0.74,
+      "history_start": "2023-10",
+      "expected_doc_types": [
+        "数据政策",
+        "公告"
+      ],
+      "stop_rule": {
+        "until_month": "2023-10",
+        "stop_when": "shard status=done for every month in range",
+        "guardrail": "auto-pause if realtime freshness P95 > baseline+20% (T042)"
+      },
+      "expected_benefit": {
+        "coverage_gain": 1.0,
+        "authoritativeness": 1.0
+      },
+      "deferred_reason": "live fetch blocked (needs browser / RSS-API); excluded from Wave 1"
+    }
+  ],
+  "member_count": 5,
+  "priority_weights": {
+    "domain_value": 0.4,
+    "coverage_gap": 0.3,
+    "stability": 0.3
+  }
+}
