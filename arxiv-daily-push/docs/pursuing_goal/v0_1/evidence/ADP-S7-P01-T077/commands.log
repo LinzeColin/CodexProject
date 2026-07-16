@@ -1,0 +1,10 @@
+# ADP-S7-P01-T077 commands (freeze six-theme visual + key-motion baseline)
+# 1. build the frozen baseline manifest (6x6x5 matrix + asset hashes + schema) from the worker source
+python3 evidence/ADP-S7-P01-T077/build_visual_baseline.py
+#   -> 180 cells; 6 distinct per-theme hashes + separate reduced-motion hash
+# 2. independent acceptance verifier (re-derives hashes; un-deletable-contract negative controls)
+python3 evidence/ADP-S7-P01-T077/test-results/t077_verify.py | tee evidence/ADP-S7-P01-T077/test-results/visual_baseline_tests.txt
+#   -> ACCEPTANCE (machine-verifiable backbone) = PASS (exit 0); Owner sign-off pending (not self-signed)
+# 3. live-contract check: the live production site serves the full six-theme contract (in place of flaky binary screenshots)
+python3 evidence/ADP-S7-P01-T077/test-results/live_contract_check.py | tee evidence/ADP-S7-P01-T077/test-results/live_contract_check.txt
+#   -> LIVE CONTRACT COMPLETE: True (live build b189d3cc0703 == T040)

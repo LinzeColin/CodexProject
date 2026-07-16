@@ -1,0 +1,9 @@
+matrix: 6 themes x 6 routes x 5 viewports = 180 cells
+render-wiring + asset bytes: heroSection return hashed; 3 hero videos byte-hashed distinctly (minimal=dc31d5d7, techno=783aceb3, forest=511d0231)
+hero wiring: todayPage `{ hero }` pass hashed structurally (content-edit does not trip it)
+un-deletable contract: delete-theme / token / fx-map / video / ambience-CSS / component-rule / HERO_CSS / keyframe / hero-<video> / cosmos-gauge / gut-blurChars / recolour-sparkSVG / PAGE-unwire-FX_LAYERS / PAGE-unwire-THEME_JS / THEME_OPTIONS-remove / THEME_OPTIONS-corrupt / heroSection-return-wiring / hero-video-bytes / todayPage-hero-pass all flagged (+ theme-set consistency cross-check); benign non-visual/content edit not flagged
+reduced-motion: recorded separately (own hash + recording variant); removal is flagged
+schema: 180 screenshots + recordings for motion themes ['minimal', 'techno', 'cosmos', 'forest']
+
+ACCEPTANCE (machine-verifiable backbone) = PASS
+NOTE: final 'Owner 确认基线' is a human sign-off; this package is READY for Owner confirmation, not self-signed.

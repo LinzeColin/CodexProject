@@ -1,0 +1,27 @@
+{
+  "task": "ADP-S7-P01-T077",
+  "release_mode": "NOT_DEPLOYED",
+  "stage_user_value_metric": {
+    "stage": "S7 UI/UX, Motion & Performance (P01 六主题与高级动效不可破坏基线)",
+    "metric": "把最新恢复的六主题视觉+氛围/动效层冻结为不可删除合同：确定性 asset hash（每主题+reduced-motion单独+fx-layers+keyframes）+ 6主题×6路由×5视口=180 cell 覆盖矩阵 + 截图/交互录屏 schema；任一主题/动效映射/hero视频/reduced-motion被删改都被 detect_regression 标记",
+    "before": "六主题+动效层已恢复上线(见开发记录)，但无冻结基线/无回归检测；主题或动效可能被静默删改而无告警",
+    "after": "visual_baseline 落地：contract_root + 6个互异 per-theme hash + 独立 reduced-motion hash 冻结；detect_regression 对删主题/改token/改fx映射/改hero视频/删reduced-motion全部告警，benign编辑不误报；live today页实测serve完整六主题合同(build b189d3cc0703==T040)。Owner视觉确认为独立人工签署(未自签)。",
+    "quantified": true
+  },
+  "cost_metric": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost": 0,
+    "http_get_readonly": 2,
+    "human_maintenance": "基线工具(visual_baseline.py)+生成器+独立验证器+live检查+对抗复核撰写；Owner视觉确认(独立人工)",
+    "unknown_not_zero_note": "生产写侧 0 是因为 NOT_DEPLOYED：只读 worker 源 + 2 次只读 GET(today/build.json)验证 live 合同；不部署、不改 worker/D1/R2/cron。非未知填 0。"
+  },
+  "rollback": "删除 tools/visual_baseline.py 与 evidence/ADP-S7-P01-T077/；无 feature flag、无生产改动，回滚为纯删除。基线仅冻结现状，不改任何主题。",
+  "realtime_build_id": "b189d3cc0703",
+  "realtime_regressed": false,
+  "owner_gate": "S7 visual: 'Owner 确认基线' 为人工签署，实现者不自签；本包 READY_FOR_OWNER_CONFIRMATION。"
+}

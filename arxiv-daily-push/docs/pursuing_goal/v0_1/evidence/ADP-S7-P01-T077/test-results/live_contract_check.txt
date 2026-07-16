@@ -1,0 +1,21 @@
+served bytes: 34053
+  OK  theme-token[warm]
+  OK  theme-token[minimal]
+  OK  theme-token[fresh]
+  OK  theme-token[techno]
+  OK  theme-token[cosmos]
+  OK  theme-token[forest]
+  OK  fx-cosmos layer
+  OK  fx-minimal layer
+  OK  fx-techno layer
+  OK  forest-slopes layer
+  OK  reduced-motion rule
+  OK  THEME_NAV mapping
+  OK  THEME_FX mapping
+  OK  THEME_HERO mapping
+  OK  hero-video section rendered
+  OK  cosmos dashboard rendered
+  OK  hero video paths served
+  OK  live build == T040
+
+LIVE CONTRACT COMPLETE: True
