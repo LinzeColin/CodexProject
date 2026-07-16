@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260718-ADP-V01-S8-P01-T086-DR-DRILL"
-source_snapshot_hash: "sha256:c6fbf23b1e8670e79bf2f7815f4ee3021f5f3972ca5784789685d9f3cddf0f04"
+as_of_event_id: "EVENT-20260718-ADP-V01-S8-P01-T087-VALUE-COST-GATE"
+source_snapshot_hash: "sha256:9296f5a9fa6693007c38dd3a3c7c44ae2468539425009eaf6fc4204fa33708c6"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-18T19:30:00+10:00"
+snapshot_event_time: "2026-07-18T21:00:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 146
+    precommit_pending_events: 147
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
