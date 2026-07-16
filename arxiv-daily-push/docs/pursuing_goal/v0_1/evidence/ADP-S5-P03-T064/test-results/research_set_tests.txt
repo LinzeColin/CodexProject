@@ -1,0 +1,6 @@
+traceability: 10 present fields all byte-exact to source; all papers trace_to_source=OK
+缺失不猜: 5 missing fields all report status=missing; hallucination + guess-default both rejected
+precision: decimal '92.5%' kept whole; 'function = 5' not matched; real 'n = 64' captured
+filtering: has_result=['P001', 'P002', 'P005'] (3 runs identical); method~网络=['P001', 'P003']; non-trivial + deterministic
+
+ACCEPTANCE = PASS

@@ -1,0 +1,162 @@
+{
+  "set_id": "set::golden",
+  "n_papers": 5,
+  "comparison_table": {
+    "columns": [
+      "method",
+      "sample",
+      "result"
+    ],
+    "rows": [
+      {
+        "paper_id": "P001",
+        "title": "Protein folding via deep nets",
+        "method": {
+          "value": "我们采用图神经网络对蛋白质结构建模",
+          "missing": false,
+          "evidence": {
+            "offset": 3,
+            "length": 17,
+            "quote": "我们采用图神经网络对蛋白质结构建模"
+          }
+        },
+        "sample": {
+          "value": "训练集包含 5000 条序列",
+          "missing": false,
+          "evidence": {
+            "offset": 24,
+            "length": 14,
+            "quote": "训练集包含 5000 条序列"
+          }
+        },
+        "result": {
+          "value": "在测试集上准确率达到 92%",
+          "missing": false,
+          "evidence": {
+            "offset": 42,
+            "length": 14,
+            "quote": "在测试集上准确率达到 92%"
+          }
+        }
+      },
+      {
+        "paper_id": "P002",
+        "title": "Sparse attention study",
+        "method": {
+          "value": "we introduce a sparse attention kernel",
+          "missing": false,
+          "evidence": {
+            "offset": 8,
+            "length": 38,
+            "quote": "we introduce a sparse attention kernel"
+          }
+        },
+        "sample": {
+          "value": null,
+          "missing": true,
+          "evidence": null
+        },
+        "result": {
+          "value": "3x speedup at equal accuracy",
+          "missing": false,
+          "evidence": {
+            "offset": 57,
+            "length": 28,
+            "quote": "3x speedup at equal accuracy"
+          }
+        }
+      },
+      {
+        "paper_id": "P003",
+        "title": "GNN chemistry",
+        "method": {
+          "value": "使用消息传递网络",
+          "missing": false,
+          "evidence": {
+            "offset": 3,
+            "length": 8,
+            "quote": "使用消息传递网络"
+          }
+        },
+        "sample": {
+          "value": "n = 128",
+          "missing": false,
+          "evidence": {
+            "offset": 17,
+            "length": 7,
+            "quote": "n = 128"
+          }
+        },
+        "result": {
+          "value": null,
+          "missing": true,
+          "evidence": null
+        }
+      },
+      {
+        "paper_id": "P004",
+        "title": "Bare abstract, no structure",
+        "method": {
+          "value": null,
+          "missing": true,
+          "evidence": null
+        },
+        "sample": {
+          "value": null,
+          "missing": true,
+          "evidence": null
+        },
+        "result": {
+          "value": null,
+          "missing": true,
+          "evidence": null
+        }
+      },
+      {
+        "paper_id": "P005",
+        "title": "Quantum codes",
+        "method": {
+          "value": "surface-code decoding",
+          "missing": false,
+          "evidence": {
+            "offset": 10,
+            "length": 21,
+            "quote": "surface-code decoding"
+          }
+        },
+        "sample": {
+          "value": "200 syndrome rounds",
+          "missing": false,
+          "evidence": {
+            "offset": 41,
+            "length": 19,
+            "quote": "200 syndrome rounds"
+          }
+        },
+        "result": {
+          "value": "lower error floor",
+          "missing": false,
+          "evidence": {
+            "offset": 74,
+            "length": 17,
+            "quote": "lower error floor"
+          }
+        }
+      }
+    ]
+  },
+  "filter_has_result": [
+    "P001",
+    "P002",
+    "P005"
+  ],
+  "filter_method_contains_网络": [
+    "P001",
+    "P003"
+  ],
+  "missing_counts": {
+    "method": 1,
+    "sample": 2,
+    "result": 2
+  }
+}

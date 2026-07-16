@@ -1,0 +1,34 @@
+{
+  "task_id": "ADP-S5-P03-T064",
+  "title": "实现 Research Set、筛选与结构化比较",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S5",
+  "phase": "S5-P03",
+  "value": {
+    "user_value": "证据化研究集合与结构化比较：把论文收集为 Research Set，抽取结构化 method/sample/result 字段并并排比较；每个字段值都是原文逐字节 span 带证据定位，必回原文；原文未述的字段报 missing 绝不编造；筛选确定性可重复。对齐 Elicit/Consensus 收益而不牺牲证据性。",
+    "value_metric_stage": "S5 多板块深度：研究集合可查、可比、可信；为 T065（引用支持/反驳/关系证据）提供集合底座。",
+    "measured": {
+      "traceable_fields": "Golden Set 10 存在字段全部逐字节回原文(值==text[offset:offset+length], quote==值)",
+      "no_guessing": "5 缺失字段全报 status=missing/value=None; 幻觉值+guess-default 抽取器均被 traces_to_source 拒(判别力)",
+      "reproducible_filter": "filter has_field=result 3 次相同=[P001,P002,P005] 确定性升序非平凡; method~网络=[P001,P003] 结果不同",
+      "comparison_table": "present cell 带证据定位, missing cell 带 missing 标记"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库，生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "抽取器 + Golden Set + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更）"
+}

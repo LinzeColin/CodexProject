@@ -1,0 +1,850 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index e2c751953..dbe98667b 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P03-T064 (Research Set / filtering / structured comparison; NOT_DEPLOYED)
++
++- Sixty-fourth task of the ADP V0.1 FINAL EXECUTION program (S5-P03). Aligns the research-set benefit of Elicit/Consensus: collect papers into a Research Set, extract structured method/sample/result fields, and compare them side by side -- WITHOUT guessing. release_mode NOT_DEPLOYED; a read-only library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/research_set.py: extract_fields (label/statistic-driven method/sample/result extraction where every value is a BYTE-EXACT span of the source with an evidence locator offset+length+quote, and a field with no marker is reported {value:None, status:'missing'} -- 缺失不猜, never fabricated), make_set (a Research Set collection, deterministic order), comparison_table (per-paper rows x method/sample/result columns, each cell value+evidence or a missing flag), filter_set (reproducible has-field / keyword filtering, deterministic order), and traces_to_source (every non-missing value is byte-exact at its recorded source offset). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/: research_set_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P03-T064/test-results/research_set_tests.txt, ACCEPTANCE = PASS, exit 0): every one of the 10 present Golden-Set fields traces byte-for-byte back to its source span (value == text[offset:offset+length], quote == value) and matches the hand label; all 5 intentionally-absent fields are reported missing with no fabricated value; a hallucinated value and a guess-a-default extractor are BOTH rejected by the traceability check (so the 回原文 guarantee is non-vacuous); and has-field filtering is identical across 3 runs, deterministically ordered and a non-trivial subset (P001/P002/P005), while a keyword filter yields a different set (P001/P003). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P03-T063 (research metadata enhancement: DOI/Crossref/OpenAlex; NOT_DEPLOYED)
+ 
+ - Sixty-third task of the ADP V0.1 FINAL EXECUTION program (opens S5-P03). Enriches an arXiv paper's identity, authors, institutions, version, and citation graph with DOI/Crossref/OpenAlex metadata while ALWAYS keeping the original arXiv paper as the evidence anchor -- enhancement is additive and source-tagged, never a replacement or a block. release_mode NOT_DEPLOYED; a read-only enhancement library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/research_metadata.py: make_crossref_adapter / make_openalex_adapter (fixture-backed; return an enhancement, None when not found, or raise AdapterError on a transient failure), enhance (attaches additive source-tagged enhancements; the original paper is deepcopied as an immutable evidence anchor; each adapter receives a throwaway copy so it cannot corrupt the anchor; ANY adapter exception -- not just AdapterError -- is recorded as failed and never blocks), run_pipeline (degraded fallback: a failure never drops a paper), link_works (a preprint links to a journal version ONLY when Crossref's has_preprint_arxiv_id confirms THIS arXiv id; the two versions stay distinct in type and evidence -- the preprint is never relabeled, an unconfirmed DOI never links), and resolve_authors (reuses T058 entity_resolver to unify authors across Crossref+OpenAlex with provenance). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T063/: research_metadata_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P03-T063/test-results/research_metadata_tests.txt, ACCEPTANCE = PASS, exit 0): preprint vs journal not confused -- a confirmed publication yields a preprint version (arXiv evidence) and a journal version (Crossref DOI evidence) linked under one work but distinct, the preprint never relabeled; an unconfirmed DOI adds no journal version (and confirming it WOULD, proving the gate is load-bearing); two same-title papers are not merged. Enhancement failure does not block the original paper -- 5 papers in, 5 out, blocked 0 even with Crossref/OpenAlex failures, original evidence byte-identical and never mutated, failures recorded as failed not silently not_found, a KeyError-raising (non-AdapterError) adapter still keeps all papers, and a mutating adapter cannot corrupt the anchor, while a drop-on-failure pipeline would keep only 2/5. Authors unified across both sources without confusing distinct people. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index dafd48332..c8c866e7e 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P02-T062-VERSION-ASOF-DIFF-API"
+-source_snapshot_hash: "sha256:d35696364aa4a6078732c5198b69c72438f9adf9a8b0ff176591a4a7cd146478"
++as_of_event_id: "EVENT-20260717-ADP-V01-S5-P03-T063-RESEARCH-METADATA-ENHANCEMENT"
++source_snapshot_hash: "sha256:d7a41ef29c4ee750e97b0c9ac441891b94fdd4b0cc87805fab4490ec093b2865"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T23:55:00+10:00"
++snapshot_event_time: "2026-07-18T00:30:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 122
++    precommit_pending_events: 123
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 03207e85e..91f750992 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S5-P03-T064: implemented the Research Set + structured comparison + filtering (S5-P03). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/research_set.py: extract_fields (label/statistic-driven method/sample/result; every value a byte-exact source span with an evidence locator; no marker -> {value:None, status:'missing'} 缺失不猜) / make_set (Research Set, deterministic order) / comparison_table (rows x method/sample/result, cell value+evidence or missing) / filter_set (reproducible has-field/keyword, deterministic order) / traces_to_source. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/: research_set_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/research_set_tests.txt, PASS exit 0): 10 present Golden-Set fields all trace byte-for-byte to source (value == text[offset:offset+length], quote == value) and match the hand label; 5 absent fields reported missing, none fabricated; a hallucinated value and a guess-a-default extractor both rejected by traceability (non-vacuous); has-field filter identical across 3 runs, deterministic + non-trivial subset (P001/P002/P005), keyword filter differs (P001/P003). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T063: integrated DOI/Crossref/OpenAlex research metadata enhancement (opens S5-P03). release_mode NOT_DEPLOYED; read-only enhancement library, production untouched. New tool docs/pursuing_goal/v0_1/tools/research_metadata.py: make_crossref_adapter / make_openalex_adapter (fixture-backed; enhancement | None | raise AdapterError) / enhance (additive source-tagged enhancements; original paper deepcopied as immutable evidence anchor; adapter gets a throwaway copy; ANY adapter exception -> failed, never blocks) / run_pipeline (degraded fallback) / link_works (preprint->journal linked ONLY on Crossref has_preprint_arxiv_id == this arxiv_id; versions stay distinct in type+evidence, preprint never relabeled, unconfirmed DOI never links) / resolve_authors (reuses T058 entity_resolver). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T063/: research_metadata_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/research_metadata_tests.txt, PASS exit 0): preprint/journal not confused (confirmed publication -> preprint[arXiv] + journal[Crossref DOI] distinct+linked, preprint never relabeled; unconfirmed DOI adds no journal, confirming it WOULD -> gate load-bearing; same-title not merged); enhancement failure does not block (5 in/5 out blocked 0, original byte-identical + never mutated, failures recorded failed, KeyError adapter keeps all, mutating adapter cannot corrupt, drop-on-failure would keep 2/5); authors unified across sources without confusing distinct people. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P02-T062: implemented the version timeline / as-of / old-vs-new diff API (S5-P02). release_mode NOT_DEPLOYED; read-only API library, production untouched. New tool docs/pursuing_goal/v0_1/tools/version_asof_api.py: version_timeline (folds renders into substantive versions; noise-only re-render never becomes a version; carries noise-stripped body snapshot) / diff_payload (line-level locatable add/delete/modify with line numbers + exact text, over the noise-stripped body so template noise is never shown) / as_of (version in force as of a date, parsed-date, never future; reuses T056) / replay_version + replay_is_idempotent (deterministic old-version reconstruction, idempotent). Reuses T026 version_engine + T056 coverage_asof. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P02-T062/: version_asof_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/version_asof_tests.txt, PASS exit 0): substantive v2-vs-v1 diff exactly {add:1,delete:1,modify:1} each located to its line with correct old/new text; noise-only re-render -> empty diff + no new version, while a raw un-stripped diff of the same pair surfaces 6 noise lines (stripping is load-bearing); real text never stripped; old version replays byte-for-byte + idempotent 3x; as_of never future -- 288-sample battery 0 future-leakage / 0 oracle-disagreement, deliberately-future resolver caught on 70 samples. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P02-T061: benchmarked full-text + semantic rerank and recorded the adopt/reject ADR (S5-P02). release_mode NOT_DEPLOYED; benchmark/ADR, production untouched. New tool docs/pursuing_goal/v0_1/tools/fts_benchmark.py: build_fts / fts_search (IDF-weighted overlap) / mrr / recall_at_k / decide_adopt (adopt iff improves AND respects filters). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P02-T061/: benchmark_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/benchmark_tests.txt, PASS exit 0): 24-doc corpus, 6-query fixed set; FTS recall@5 0.875 (genuine miss on a synonym-only doc); synonym semantic reranker -> recall@5 0.917 + respects filters -> ADOPTED; non-improving and filter-bypassing rerankers REJECTED; true AND (improving-but-bypassing rejected, non-improving-respecting rejected). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index c8524d580..2a7caec56 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `122`
+-- pending_or_stale_events: `472`
+-- freshness_counts: `pending_or_stale_events=472; legacy_unbound_events=334`
++- precommit_pending_events: `123`
++- pending_or_stale_events: `473`
++- freshness_counts: `pending_or_stale_events=473; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:d35696364aa4a6078732c5198b69c72438f9adf9a8b0ff176591a4a7cd146478`
+-- snapshot_event_time: `2026-07-17T23:55:00+10:00`
++- source_snapshot_hash: `sha256:d7a41ef29c4ee750e97b0c9ac441891b94fdd4b0cc87805fab4490ec093b2865`
++- snapshot_event_time: `2026-07-18T00:30:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index a88119158..8b8de6151 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:d35696364aa4a6078732c5198b69c72438f9adf9a8b0ff176591a4a7cd146478`
+-- snapshot_event_time: `2026-07-17T23:55:00+10:00`
++- source_snapshot_hash: `sha256:d7a41ef29c4ee750e97b0c9ac441891b94fdd4b0cc87805fab4490ec093b2865`
++- snapshot_event_time: `2026-07-18T00:30:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `472`
++- Pending/stale events: `473`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/TASK_REPORT.md
+new file mode 100644
+index 000000000..d7e880f1b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/TASK_REPORT.md
+@@ -0,0 +1,54 @@
++# TASK_REPORT · ADP-S5-P03-T064｜实现 Research Set、筛选与结构化比较
++
++## 唯一目标（达成）
++对齐 Elicit/Consensus 的研究集合收益：把论文收集为 **Research Set**，抽取结构化 **method/sample/result** 字段并**结构化并排比较**——**不猜**。每个抽取字段值都是**原文的逐字节 span**、带证据定位（offset+length+quote），**必回原文**；原文未述的字段**报 missing、绝不编造**；**筛选确定性可重复**。release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：collection model + method/sample/result 抽取（回原文、缺失不猜）+ comparison table + 可重复 filter。
++2. **允许修改文件**：`tools/research_set.py`（新）+ `evidence/ADP-S5-P03-T064/*` + 治理同步。**不改 worker/生产/registry/VERSION**。
++3. **绝不能改变**：生产 worker/cron/数据/实时；六主题/MVP；NOT_DEPLOYED。库层只读。
++4. **基线**：main `eae0a4cc`（T063 已合入）；Golden Set 手工标注（含故意缺失字段）。
++5. **验收**：Golden Set 字段可回原文（值==原文 offset 处 span，逐字节）；缺失不猜（无 marker→missing，绝不编造；含 hallucination/guess-default 负控制）；筛选可重复（3 次相同、确定性排序、非平凡）。
++6. **回滚**：`git revert <sha>`（只读库，生产未变更）。
++
++## 交付物
++- `tools/research_set.py` —— `extract_fields`（method/sample/result 标签驱动抽取；值=marker 后到句界的**原文 span**，带 {offset,length,quote}；无 marker→`{value:None,status:"missing"}` **缺失不猜**；sample 另支持裸 `n=..` 统计 span）+ `make_set`（Research Set 集合，确定性排序）+ `comparison_table`（逐篇行 × method/sample/result 列，cell 带 value+evidence 或 missing）+ `filter_set`（has-field / keyword 可重复筛选，确定性序）+ `traces_to_source`（每非缺失值在其 offset 处逐字节等于原文）。
++- `evidence/…/build_research_set.py`（5 篇 Golden Set，中英混、含标签/裸统计/全无结构诸形态，method 1+sample 2+result 2 处故意缺失）+ `research_set_report.json` + `test-results/{t064_verify.py, research_set_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/research_set_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **① 字段可回到原文**：Golden Set **10 个存在字段全部逐字节回原文**（值==原文 `text[offset:offset+length]`，evidence.quote==值），且与 golden 标注值一致；`traces_to_source` 对全部 5 篇为 True。
++- **② 缺失不猜**：**5 处故意缺失字段全部报 `status="missing"`、value=None**（无编造）。**负控制（判别力）**：注入一个**幻觉值**（原文不含）→ `traces_to_source` **拒**（值不在其 offset 处）；一个 **guess-default 抽取器**（缺失填 "N/A"）→同样被 `traces_to_source` **拒**。证明「回原文」非空跑。
++- **③ 筛选可重复**：`filter_set(has_field=result)` **3 次结果完全相同**、确定性升序、**非平凡子集**（P001/P002/P005，非全非空）；另一 filter（method 含「网络」→P001/P003）**结果不同**（证明筛选真被施加）。
++- **comparison table**：present cell 带证据定位、missing cell 带 missing 标记，无「有值却标 missing」或「present 却无证据」。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live `build_id=b189d3cc0703`（==T040）。
++
++## Data / Performance / Visual
++Data = 5 篇 Golden Set（中英混，标签/裸统计/无结构；10 存在 + 5 缺失字段）。Performance = 实时无回归。无 UI 改动；六主题保留（比较表为库层，供研究集合视图消费）。
++
++## Value / Cost（S5 多板块深度）
++- **Value**：**证据化研究集合与结构化比较**——method/sample/result 逐字段回原文、缺失不猜、并排可比、筛选可重复；对齐 Elicit/Consensus 收益而不牺牲证据性，为 T065（引用支持/反驳/关系证据）提供集合底座。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0；人工维护 = 抽取器 + Golden Set + 验证编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：确定性标签抽取（非 LLM 语义抽取，故绝不幻觉但覆盖率受标签形态限制）；首个 marker 命中优先（空值标签后接真值属边界，保守报 missing 不猜）；跨语言标签集可扩展；语义级方法/结果归一化留待后续。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED，库层）。`data-samples` = research_set_report.json + Golden Set。`benchmarks` = N/A（非性能任务）。
++
++## 完成声明
++```text
++Task: ADP-S5-P03-T064
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/research_set.py(新) + T064 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: research_set_tests.txt —— 10存在字段逐字节回原文+evidence quote一致;5缺失字段全报missing不编造(幻觉+guess-default负控制均被traces_to_source拒);筛选3次相同+确定性序+非平凡+两filter结果不同;comparison table present带证据/missing带标记;实时无回归(build_id b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: Research Set + method/sample/result结构化抽取(回原文/缺失不猜) + comparison table + 可重复筛选
++Data/Performance/Visual: Data=5篇Golden Set(10存在+5缺失字段)；Perf=实时无回归；Visual=六主题保留
++Value: 证据化研究集合与结构化比较,逐字段回原文,缺失不猜,筛选可重复
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（只读库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/adversarial_review.md
+new file mode 100644
+index 000000000..04e4d115a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/adversarial_review.md
+@@ -0,0 +1,31 @@
++# Adversarial review · ADP-S5-P03-T064｜Research Set / 结构化比较 / 筛选
++
++独立对抗复核（general-purpose skeptic，两轮），职责是**证伪**验收（找空洞/作弊/误导），非确认。
++
++## 攻击向量
++(a) 可回原文（offset/length/quote 与 value 漂移、strip/CJK 多字节/句界/首末 marker/重复 marker）；(b) 缺失不猜（空值 marker、词内子串假配如 methodology、裸统计假阳、missing 是否真判别）；(c) 筛选可重复（跨输入序确定性、平凡全/空、大小写）；(d) comparison table（present 带证据/missing 带标记）；(e) 非空跑（每条款有判别负控制、verifier 从工具而非 report 现推、Golden Set 是否充分）；NOT_DEPLOYED（无网络/写/时钟/随机）。
++
++## 第一轮：CONFIRMED_SOUND（三条款均稳固，列 2 项精度残留）
++- **(a) 可回原文**：复核者自造 leading/trailing/全角/tab 空白、空值 marker、marker 在末尾、无句界结尾、句界字符在值内、重复/重叠 marker、CJK 多字节——**逐例 `text[off:off+len]==value==quote`**；offset 经 lstrip 计数收紧、length=len(strip)，构造上保证一致。幻觉负控制（值不在 offset 处）令 `traces_to_source` 返回 False → **判别有效**。
++- **(b) 缺失不猜**：标签需 `[:：]` 冒号 → `methodology`（无冒号）不误配；空值 marker、marker 在末尾均正确报 missing；抽取器只吐原文逐字子串；guess-default（"N/A"@0）负控制被 traceability 拒。
++- **(c) 筛选可重复**：全 3! 输入排列产出同一 sorted 结果；非平凡 + 精确期望 + 两 filter 不同控制齐备。
++- **(d)**：present cell 恒带证据、missing cell value=None，无"present 无证据"。
++- **(e)**：verifier `RS.make_set(brs.PAPERS)` 从**工具现推**（不读 report JSON）；Golden Set 充分（10 存在 + 5 缺失，中英混，标签 + 裸统计双路径）；三条款各有判别负控制；工具无网络/写/时钟/随机。
++- **判定**：**三条款真成立、非空跑/作弊/错**。列 2 项**精度（非验收）残留**：裸 `n=..` 对 "function = 5" 假阳（"n" 为词尾）；ASCII `.` 边界截断小数（"92.5"→"92"）。二者仍为原文逐字节 span、满足验收，但语义欠精。
++
++## 精度残留的主动闭合
++1. **小数截断** → `_capture_after` 边界改为 `_is_boundary`：CJK 终止符（。；）+ 换行恒为边界；**ASCII `.` 仅句末（其后空白/文末）才作边界**——小数（92.5%、3.14）不再截断；英文句末 `.` 仍正确成界。
++2. **裸统计假阳** → `_SAMPLE_STAT` 加负向前瞻 `(?<![A-Za-z])`——`functio[n]=5` 不再命中，真正独立 `n = 64`/`N = 5`/句首 `n = 5` 仍命中。
++3. 文档措辞明确"标签需带冒号"。
++- verifier 加 4 条 PRECISION 控制（92.5% 保全 / 88.7 percent 句末正确成界 / function=5 不配 / n=64 命中）。
++
++## 第二轮（复核 DELTA）：CONFIRMED_SOUND（hole=null, severity=none）
++- **边界改动安全**：`_is_boundary` 只改**在哪停**、不动 offset/length/strip/quote 数学，故 `text[off:off+len]==value` 证明仍成立；复核者攻 `.` 在文末/换行前/tab/全角空格前、连续 `..`、纯小数值、marker 紧跟 `.`、混排缩写（e.g./Fig. 3/3.14 vs. baseline）——逐例 `slice==value==quote`、`traces_to_source=True`、`.`-在文末短路不 IndexError；**8+ Golden 存在字段逐字节复现、filter 精确**。
++- **前瞻安全**：挡词尾字母同时保住句首 `n = 5`、`re.I` 的 `N = 5`、空格前置 `n = 64`、Golden `n = 128`；无合法命中被破坏。
++- **4 条精度控制均判别**（回退任一即失败）。纯正则/逻辑改动、仍仅 `import re`、NOT_DEPLOYED 完好。**无新空洞、无 traceability 漂移**。
++
++## 残留（诚实披露，非空洞、非回归、恒可回原文）
++- 英文缩写（e.g./Fig. 3/vs.）在 `. ` 处过切；裸 `n=` 守卫仅挡前置 ASCII 字母（`var_n=5`、`中n=5` 仍配）。**二者恒产出原文逐字节 span、绝不编造**，落在三验收条款之外、且 ≥ 修复前行为。语义级缩写/统计消歧留待后续（known_gaps 已披露）。
++
++## 结论
++两轮复核均 **CONFIRMED_SOUND**；三验收条款（字段可回原文 / 缺失不猜 / 筛选可重复）有 load-bearing 判别负控制、非空跑。2 项精度残留主动闭合（小数不截断、裸统计假阳消除）并加判别控制，边界改动经穷尽复核证明保持 byte-exact traceability、Golden Set 不变。确定性、零副作用。实时无回归（live build_id b189d3cc0703 == T040）。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/build_research_set.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/build_research_set.py
+new file mode 100644
+index 000000000..8f731677e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/build_research_set.py
+@@ -0,0 +1,72 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Deterministic fixtures + Golden Set + report for ADP-S5-P03-T064 (Research Set / compare / filter).
++
++The Golden Set hand-labels the method/sample/result each paper's SOURCE text actually states -- with
++some fields intentionally ABSENT so the extractor must report them MISSING (not guess). Fixtures are
++literals so the verifier can re-derive and check traceability byte-for-byte.
++"""
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent.parent
++sys.path.insert(0, str(V01 / "tools"))
++import research_set as RS
++
++MISSING = "__MISSING__"
++
++# Each paper: source text + the GOLDEN expected field values (MISSING where the source omits it).
++PAPERS = [
++    {"paper_id": "P001", "title": "Protein folding via deep nets",
++     "text": "方法：我们采用图神经网络对蛋白质结构建模。样本：训练集包含 5000 条序列。结果：在测试集上准确率达到 92%。",
++     "golden": {"method": "我们采用图神经网络对蛋白质结构建模",
++                "sample": "训练集包含 5000 条序列",
++                "result": "在测试集上准确率达到 92%"}},
++    {"paper_id": "P002", "title": "Sparse attention study",
++     "text": "Method: we introduce a sparse attention kernel. Results: 3x speedup at equal accuracy.",
++     "golden": {"method": "we introduce a sparse attention kernel",
++                "sample": MISSING,                         # no sample marker in the source
++                "result": "3x speedup at equal accuracy"}},
++    {"paper_id": "P003", "title": "GNN chemistry",
++     "text": "方法：使用消息传递网络。实验涉及 n = 128 个分子。",   # no 样本 label -> bare stat path
++     "golden": {"method": "使用消息传递网络",
++                "sample": "n = 128",                       # captured by the bare n=.. statistic path
++                "result": MISSING}},                       # no result marker
++    {"paper_id": "P004", "title": "Bare abstract, no structure",
++     "text": "This paper discusses several ideas without any labeled sections at all.",
++     "golden": {"method": MISSING, "sample": MISSING, "result": MISSING}},   # nothing extractable
++    {"paper_id": "P005", "title": "Quantum codes",
++     "text": "Approach: surface-code decoding. Sample: 200 syndrome rounds. Conclusion: lower error floor.",
++     "golden": {"method": "surface-code decoding",
++                "sample": "200 syndrome rounds",
++                "result": "lower error floor"}},
++]
++
++
++def main():
++    rset = RS.make_set("golden", PAPERS)
++    table = RS.comparison_table(rset)
++    has_result = RS.filter_set(rset, has_field="result")
++    kw = RS.filter_set(rset, keyword="网络", field="method")
++    report = {
++        "set_id": rset["set_id"], "n_papers": len(rset["papers"]),
++        "comparison_table": table,
++        "filter_has_result": [p["paper_id"] for p in has_result["papers"]],
++        "filter_method_contains_网络": [p["paper_id"] for p in kw["papers"]],
++        "missing_counts": {
++            c: sum(1 for r in table["rows"] if r[c]["missing"]) for c in table["columns"]
++        },
++    }
++    (HERE / "research_set_report.json").write_text(
++        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print("n_papers:", len(rset["papers"]))
++    print("missing_counts:", report["missing_counts"])
++    print("filter has_result:", report["filter_has_result"])
++    print("filter method~网络:", report["filter_method_contains_网络"])
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/commands.log
+new file mode 100644
+index 000000000..71344d0af
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/commands.log
+@@ -0,0 +1,25 @@
++# ADP-S5-P03-T064 commands (deterministic, no network except the read-only realtime build check)
++
++# 1. import sanity
++python3 -c "import sys; sys.path.insert(0,'tools'); import research_set"
++
++# 2. build Golden Set fixtures + report (deterministic)
++python3 evidence/ADP-S5-P03-T064/build_research_set.py
++#   -> n_papers: 5
++#   -> missing_counts: {'method': 1, 'sample': 2, 'result': 2}
++#   -> filter has_result: ['P001', 'P002', 'P005']
++#   -> filter method~网络: ['P001', 'P003']
++
++# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
++python3 evidence/ADP-S5-P03-T064/test-results/t064_verify.py | tee evidence/ADP-S5-P03-T064/test-results/research_set_tests.txt
++#   traceability: 10 present fields all byte-exact to source; all papers trace_to_source=OK
++#   缺失不猜: 5 missing fields all report status=missing; hallucination + guess-default both rejected
++#   filtering: has_result=['P001', 'P002', 'P005'] (3 runs identical); method~网络=['P001', 'P003']; non-trivial + deterministic
++#   ACCEPTANCE = PASS (exit 0)
++
++# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
++curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
++#   -> b189d3cc0703  (== T040; realtime not regressed)
++
++# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t064.py),
++#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/cost_value.json
+new file mode 100644
+index 000000000..dbac22703
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/cost_value.json
+@@ -0,0 +1,34 @@
++{
++  "task_id": "ADP-S5-P03-T064",
++  "title": "实现 Research Set、筛选与结构化比较",
++  "release_mode": "NOT_DEPLOYED",
++  "stage": "S5",
++  "phase": "S5-P03",
++  "value": {
++    "user_value": "证据化研究集合与结构化比较：把论文收集为 Research Set，抽取结构化 method/sample/result 字段并并排比较；每个字段值都是原文逐字节 span 带证据定位，必回原文；原文未述的字段报 missing 绝不编造；筛选确定性可重复。对齐 Elicit/Consensus 收益而不牺牲证据性。",
++    "value_metric_stage": "S5 多板块深度：研究集合可查、可比、可信；为 T065（引用支持/反驳/关系证据）提供集合底座。",
++    "measured": {
++      "traceable_fields": "Golden Set 10 存在字段全部逐字节回原文(值==text[offset:offset+length], quote==值)",
++      "no_guessing": "5 缺失字段全报 status=missing/value=None; 幻觉值+guess-default 抽取器均被 traces_to_source 拒(判别力)",
++      "reproducible_filter": "filter has_field=result 3 次相同=[P001,P002,P005] 确定性升序非平凡; method~网络=[P001,P003] 结果不同",
++      "comparison_table": "present cell 带证据定位, missing cell 带 missing 标记"
++    }
++  },
++  "cost": {
++    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库，生产零副作用。",
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "human_maintenance": "抽取器 + Golden Set + 验证编写（一次性）",
++    "recurring_cloud_cost_usd_per_month": 0
++  },
++  "realtime_regression": {
++    "live_build_id": "b189d3cc0703",
++    "equals_T040": true,
++    "regressed": false
++  },
++  "rollback": "git revert <sha>（只读库；生产数据未变更）"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/known_gaps.md
+new file mode 100644
+index 000000000..eeb4c8e7b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/known_gaps.md
+@@ -0,0 +1,9 @@
++# Known gaps · ADP-S5-P03-T064
++
++- **确定性标签抽取（非 LLM 语义抽取）**：method/sample/result 由**确定性标签/统计模式**抽取（`方法/method/approach:`、`样本/sample/dataset/被试/n=..`、`结果/结论/finding/conclusion:`）。**优点**：值恒为原文逐字节 span、**绝不幻觉**、可回原文、可重复。**代价**：覆盖率受标签形态限制——无标签、纯叙述式的方法/结果**报 missing（不猜）**而非语义抽取。语义级抽取由部署阶段/后续任务门控（并须保留本证据锚不变）。**这是有意的证据性取舍：宁可 missing 也不猜。**
++- **首个 marker 命中优先**：`extract_fields` 取每字段**首个**匹配标签后到句界的 span。若同字段有「空值标签」后接「真值标签」（如 `方法：。方法：真实内容。`），取首个（空）→ 返回 missing 而非第二处真值——**保守报 missing、不猜**，不违反「缺失不猜」，但会**欠抽取**。真实论文罕见此形态；多标签合并留待后续。
++- **标签需带冒号 + 精确边界（防误配/误截）**：标签规则要求 `\s*[:：]`，故 `methodology:` 不会误配 `method`（其后为 `ology` 非冒号）、`方法论：` 不会误配 `方法：`（其后为 `论` 非冒号）。**句界精确化**：CJK 终止符（。；）与换行恒为边界；**ASCII `.` 仅在句末（其后为空白或文末）才作边界**，故小数（如「准确率 92.5%」）**不被截断**（复核者指出的精度问题已修，见 verifier precision 控制）。**裸 `n=..` 统计**加负向前瞻 `(?<![A-Za-z])`，故 `functio[n] = 5` **不误配**（复核者指出的假阳已修），仅真正独立的 `n = 64` 兜底命中，值仍为原文 span。
++- **句界/统计的残留启发式（诚实披露，非回归、恒可回原文）**：ASCII 句号即便精确化后，仍会在**英文缩写**（`e.g.`、`Fig. 3`、`vs.`）的 `. ` 处截断；裸 `n=` 守卫仅挡**前置 ASCII 字母**，故 `var_n=5`、`中n=5` 等仍会命中。二者**始终产出原文逐字节 span、绝不编造**（满足「回原文/缺失不猜」三条验收），且不弱于修复前行为；语义级缩写/统计消歧留待后续，本任务不需要。
++- **筛选语义**：`filter_set` 支持 has-field（字段是否存在）与 keyword 子串（大小写不敏感）；确定性升序（按 paper_id）；无参调用返回全集（等价"不过滤"）。更丰富的布尔/范围/多字段筛选可扩展，但**可重复性**（确定性序）是硬约束。
++- **comparison table 为库层数据**：逐篇 × method/sample/result，present cell 带证据定位、missing cell 带标记；渲染/交互视图由消费层（研究集合 UI）负责，本任务只出确定性数据。
++- **NOT_DEPLOYED**：不接 worker/cron/D1/R2，不改生产数据。实时无回归（live build_id b189d3cc0703 == T040）。后继 T065（引用支持/反驳/关系证据）在本研究集合底座上扩展。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/research_set_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/research_set_report.json
+new file mode 100644
+index 000000000..2d72a15e3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/research_set_report.json
+@@ -0,0 +1,162 @@
++{
++  "set_id": "set::golden",
++  "n_papers": 5,
++  "comparison_table": {
++    "columns": [
++      "method",
++      "sample",
++      "result"
++    ],
++    "rows": [
++      {
++        "paper_id": "P001",
++        "title": "Protein folding via deep nets",
++        "method": {
++          "value": "我们采用图神经网络对蛋白质结构建模",
++          "missing": false,
++          "evidence": {
++            "offset": 3,
++            "length": 17,
++            "quote": "我们采用图神经网络对蛋白质结构建模"
++          }
++        },
++        "sample": {
++          "value": "训练集包含 5000 条序列",
++          "missing": false,
++          "evidence": {
++            "offset": 24,
++            "length": 14,
++            "quote": "训练集包含 5000 条序列"
++          }
++        },
++        "result": {
++          "value": "在测试集上准确率达到 92%",
++          "missing": false,
++          "evidence": {
++            "offset": 42,
++            "length": 14,
++            "quote": "在测试集上准确率达到 92%"
++          }
++        }
++      },
++      {
++        "paper_id": "P002",
++        "title": "Sparse attention study",
++        "method": {
++          "value": "we introduce a sparse attention kernel",
++          "missing": false,
++          "evidence": {
++            "offset": 8,
++            "length": 38,
++            "quote": "we introduce a sparse attention kernel"
++          }
++        },
++        "sample": {
++          "value": null,
++          "missing": true,
++          "evidence": null
++        },
++        "result": {
++          "value": "3x speedup at equal accuracy",
++          "missing": false,
++          "evidence": {
++            "offset": 57,
++            "length": 28,
++            "quote": "3x speedup at equal accuracy"
++          }
++        }
++      },
++      {
++        "paper_id": "P003",
++        "title": "GNN chemistry",
++        "method": {
++          "value": "使用消息传递网络",
++          "missing": false,
++          "evidence": {
++            "offset": 3,
++            "length": 8,
++            "quote": "使用消息传递网络"
++          }
++        },
++        "sample": {
++          "value": "n = 128",
++          "missing": false,
++          "evidence": {
++            "offset": 17,
++            "length": 7,
++            "quote": "n = 128"
++          }
++        },
++        "result": {
++          "value": null,
++          "missing": true,
++          "evidence": null
++        }
++      },
++      {
++        "paper_id": "P004",
++        "title": "Bare abstract, no structure",
++        "method": {
++          "value": null,
++          "missing": true,
++          "evidence": null
++        },
++        "sample": {
++          "value": null,
++          "missing": true,
++          "evidence": null
++        },
++        "result": {
++          "value": null,
++          "missing": true,
++          "evidence": null
++        }
++      },
++      {
++        "paper_id": "P005",
++        "title": "Quantum codes",
++        "method": {
++          "value": "surface-code decoding",
++          "missing": false,
++          "evidence": {
++            "offset": 10,
++            "length": 21,
++            "quote": "surface-code decoding"
++          }
++        },
++        "sample": {
++          "value": "200 syndrome rounds",
++          "missing": false,
++          "evidence": {
++            "offset": 41,
++            "length": 19,
++            "quote": "200 syndrome rounds"
++          }
++        },
++        "result": {
++          "value": "lower error floor",
++          "missing": false,
++          "evidence": {
++            "offset": 74,
++            "length": 17,
++            "quote": "lower error floor"
++          }
++        }
++      }
++    ]
++  },
++  "filter_has_result": [
++    "P001",
++    "P002",
++    "P005"
++  ],
++  "filter_method_contains_网络": [
++    "P001",
++    "P003"
++  ],
++  "missing_counts": {
++    "method": 1,
++    "sample": 2,
++    "result": 2
++  }
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..60e505976
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/realtime_check.txt
+@@ -0,0 +1,2 @@
++build_id: b189d3cc0703
++MATCH (b189d3cc0703 == T040, realtime NOT regressed)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/research_set_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/research_set_tests.txt
+new file mode 100644
+index 000000000..ba94c5a74
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/research_set_tests.txt
+@@ -0,0 +1,6 @@
++traceability: 10 present fields all byte-exact to source; all papers trace_to_source=OK
++缺失不猜: 5 missing fields all report status=missing; hallucination + guess-default both rejected
++precision: decimal '92.5%' kept whole; 'function = 5' not matched; real 'n = 64' captured
++filtering: has_result=['P001', 'P002', 'P005'] (3 runs identical); method~网络=['P001', 'P003']; non-trivial + deterministic
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/t064_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/t064_verify.py
+new file mode 100644
+index 000000000..8a1074b46
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/test-results/t064_verify.py
+@@ -0,0 +1,140 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P03-T064 acceptance: Research Set / filtering / structured comparison.
++
++Acceptance (TASK_INDEX row 64): Golden Set 中字段可回到原文；缺失不猜；筛选可重复。
++  (Golden-Set fields trace back to the source; missing fields are not guessed; filtering reproducible.)
++
++Deterministic. Re-derives from the TOOL (research_set) + the Golden Set fixtures -- never trusts the
++report. Negative controls prove discrimination: a HALLUCINATED field value (not present in the source)
++must FAIL the traceability check; a guess-a-default extractor would be caught; and a filter must be a
++non-trivial, deterministic subset.
++"""
++import copy
++import importlib.util
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import research_set as RS
++
++T064 = V01 / "evidence" / "ADP-S5-P03-T064"
++spec = importlib.util.spec_from_file_location("brs", str(T064 / "build_research_set.py"))
++brs = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(brs)
++
++fails = []
++MISSING = brs.MISSING
++rset = RS.make_set("golden", brs.PAPERS)
++by_id = {p["paper_id"]: p for p in rset["papers"]}
++golden = {p["paper_id"]: p["golden"] for p in brs.PAPERS}
++
++# =============================================================== 1) 字段可回到原文 (traceable) + correctness
++present_fields = 0
++for pid, p in by_id.items():
++    # every non-missing extracted value must be byte-exact at its recorded source offset
++    if not RS.traces_to_source(p):
++        fails.append(f"{pid}: an extracted field does not trace byte-exact to the source")
++    for field, exp in golden[pid].items():
++        got = p["fields"][field]
++        if exp == MISSING:
++            continue
++        present_fields += 1
++        if got.get("value") != exp:
++            fails.append(f"{pid}.{field}: extracted {got.get('value')!r} != golden {exp!r}")
++        # the evidence quote must equal the value and sit at the recorded offset in the source
++        ev = got.get("evidence") or {}
++        if ev.get("quote") != got.get("value"):
++            fails.append(f"{pid}.{field}: evidence quote != value")
++        if p["text"][ev.get("offset", -1):ev.get("offset", -1) + ev.get("length", 0)] != got.get("value"):
++            fails.append(f"{pid}.{field}: value not located at its source offset (not traceable)")
++if present_fields < 8:
++    fails.append(f"too few present fields exercised ({present_fields})")
++print(f"traceability: {present_fields} present fields all byte-exact to source; all papers trace_to_source=OK")
++
++# =============================================================== 2) 缺失不猜 (missing not guessed)
++missing_checked = 0
++for pid, g in golden.items():
++    for field, exp in g.items():
++        if exp != MISSING:
++            continue
++        missing_checked += 1
++        got = by_id[pid]["fields"][field]
++        if got.get("value") is not None or got.get("status") != "missing":
++            fails.append(f"{pid}.{field}: source omits this field but extractor produced {got!r} (guessed!)")
++if missing_checked < 4:
++    fails.append(f"too few missing fields exercised ({missing_checked})")
++
++# NEGATIVE CONTROL: the traceability check genuinely rejects a HALLUCINATED value. Inject a fabricated
++# field value into a paper (a guess not present at the claimed offset) -> traces_to_source must be False.
++halluc = copy.deepcopy(by_id["P004"])   # P004 has no extractable fields
++halluc["fields"]["method"] = {"value": "使用了某种未在原文出现的方法",
++                              "evidence": {"offset": 0, "length": 10, "quote": "..."}}
++if RS.traces_to_source(halluc):
++    fails.append("traceability check accepted a hallucinated value -> the 回到原文 guarantee is vacuous")
++
++# NEGATIVE CONTROL: a guess-a-default extractor (fills missing with a canned value) would be caught by
++# BOTH the missing-check (value != None) and traceability (value not at any source offset).
++def _guessing_extract(text):
++    out = RS.extract_fields(text)
++    for f, v in out.items():
++        if v.get("value") is None:
++            v.clear(); v.update({"value": "N/A", "evidence": {"offset": 0, "length": 3, "quote": "N/A"}})
++    return out
++p4_guessed = {"paper_id": "P004", "text": brs.PAPERS[3]["text"], "fields": _guessing_extract(brs.PAPERS[3]["text"])}
++if RS.traces_to_source(p4_guessed):
++    fails.append("a guess-a-default extractor passed traceability -> control is vacuous")
++print(f"缺失不猜: {missing_checked} missing fields all report status=missing; hallucination + guess-default both rejected")
++
++# PRECISION CONTROLS: an ASCII '.' inside a decimal must NOT split the value; a trailing-'n' word must
++# NOT false-match the bare n=.. statistic. Both must stay byte-exact and correct.
++dec = RS.extract_fields("结果：准确率达到 92.5%。")
++if dec["result"]["value"] != "准确率达到 92.5%":
++    fails.append(f"decimal split by '.' boundary: {dec['result']['value']!r}")
++eng = RS.extract_fields("Result: accuracy is 88.7 percent.")
++if eng["result"]["value"] != "accuracy is 88.7 percent":
++    fails.append(f"english decimal/sentence boundary wrong: {eng['result']['value']!r}")
++falsep = RS.extract_fields("The activation function = 5 layers were used.")
++if falsep["sample"].get("value") is not None:
++    fails.append(f"bare n=.. false-matched a trailing-n word: {falsep['sample']!r}")
++realstat = RS.extract_fields("We evaluate on n = 64 items.")
++if realstat["sample"].get("value") != "n = 64":
++    fails.append(f"genuine bare n=.. stat not captured: {realstat['sample']!r}")
++print(f"precision: decimal '92.5%' kept whole; 'function = 5' not matched; real 'n = 64' captured")
++
++# =============================================================== 3) 筛选可重复 (reproducible filtering)
++runs = [ [q["paper_id"] for q in RS.filter_set(rset, has_field="result")["papers"]] for _ in range(3) ]
++if len({tuple(r) for r in runs}) != 1:
++    fails.append(f"filtering is not reproducible across runs: {runs}")
++has_result = runs[0]
++if has_result != sorted(has_result):
++    fails.append("filter result is not in deterministic (sorted) order")
++if not (0 < len(has_result) < len(rset["papers"])):
++    fails.append(f"has_result filter is trivial (all or none): {has_result}")
++# a different filter yields a different result (discrimination)
++kw = [q["paper_id"] for q in RS.filter_set(rset, keyword="网络", field="method")["papers"]]
++if kw == has_result:
++    fails.append("two different filters returned identical results -> filter not actually applied")
++# expected exact filter outcomes from the Golden Set
++if has_result != ["P001", "P002", "P005"]:
++    fails.append(f"has_result filter wrong: {has_result}")
++if kw != ["P001", "P003"]:
++    fails.append(f"method~网络 filter wrong: {kw}")
++print(f"filtering: has_result={has_result} (3 runs identical); method~网络={kw}; non-trivial + deterministic")
++
++# comparison table sanity: cell carries value+evidence when present, missing flag when absent
++table = RS.comparison_table(rset)
++for row in table["rows"]:
++    for c in table["columns"]:
++        cell = row[c]
++        if cell["missing"] and cell["value"] is not None:
++            fails.append(f"{row['paper_id']}.{c}: missing flag but has a value")
++        if not cell["missing"] and not cell.get("evidence"):
++            fails.append(f"{row['paper_id']}.{c}: present value without evidence locator")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/research_set.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/research_set.py
+new file mode 100644
+index 000000000..370aed312
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/research_set.py
+@@ -0,0 +1,145 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P03-T064 -- Research Set, filtering, and structured comparison.
++
++Aligns the research-set benefit of Elicit/Consensus: collect papers, extract structured
++method / sample / result fields, and compare them side by side -- WITHOUT guessing. Every extracted
++field value is a byte-exact span of the source text carrying an evidence locator (offset + length +
++quote), so it always traces back to the original; a field with no source marker is reported MISSING,
++never fabricated. Filtering is deterministic and reproducible.
++
++  * make_set(name, papers) -- a Research Set (collection) of papers with extracted structured fields.
++  * extract_fields(text)   -- source-grounded method/sample/result extraction. Each field is either
++    {"value": <exact source span>, "evidence": {offset, length, quote}} or {"value": None,
++    "status": "missing"}. By construction value == text[offset:offset+length] -- never a guess.
++  * comparison_table(rset) -- rows = papers, columns = method/sample/result, each cell the field
++    (value + evidence) or missing.
++  * filter_set(rset, ...)  -- reproducible filtering (has-field / keyword), deterministic order.
++
++Deterministic; no network, no clock, no randomness, no production side effects.
++"""
++import re
++
++# Field markers. A marker is a label FOLLOWED BY A COLON (：/:); the FIRST match wins and the captured
++# value runs from just after the marker to the next sentence boundary -- an exact source span, so it
++# traces back verbatim. A CJK terminator (。；) or newline is always a boundary; an ASCII "." is a
++# boundary only when it ends a sentence (followed by whitespace or end of text) so decimals like
++# "92.5%" are NOT truncated.
++_HARD_BOUNDARY = "。；;\n"
++FIELD_MARKERS = {
++    "method": [r"方法", r"方法学", r"methods?", r"approach"],
++    "sample": [r"样本", r"被试", r"数据集", r"样本量", r"dataset", r"samples?", r"cohort"],
++    "result": [r"结果", r"结论", r"发现", r"results?", r"conclusions?", r"findings?"],
++}
++# a label followed by a colon, e.g. "方法：..." or "Method: ..."
++_LABEL_RES = {
++    field: [re.compile(r"(?:" + "|".join(alts) + r")\s*[:：]\s*", re.I)]
++    for field, alts in FIELD_MARKERS.items()
++}
++# sample also matches a bare "n = 42" statistic (still an exact source span). The negative lookbehind
++# keeps a trailing "n" of another word (e.g. "functio[n] = 5") from false-matching.
++_SAMPLE_STAT = re.compile(r"(?<![A-Za-z])n\s*=\s*\d+", re.I)
++
++
++def _is_boundary(text, i):
++    """A sentence boundary at position i. CJK terminators / newline always; an ASCII '.' only when it
++    ends a sentence (next char is whitespace or end-of-text) so decimals are not split."""
++    c = text[i]
++    if c in _HARD_BOUNDARY:
++        return True
++    if c == ".":
++        return i + 1 >= len(text) or text[i + 1].isspace()
++    return False
++
++
++def _capture_after(text, m):
++    """Given a marker match, capture the value span from marker end to the next sentence boundary."""
++    start = m.end()
++    end = start
++    while end < len(text) and not _is_boundary(text, end):
++        end += 1
++    value = text[start:end].strip()
++    if not value:
++        return None
++    # tighten the recorded offset to the stripped value so evidence is byte-exact
++    off = start + (len(text[start:end]) - len(text[start:end].lstrip()))
++    return {"value": value, "evidence": {"offset": off, "length": len(value),
++                                         "quote": text[off:off + len(value)]}}
++
++
++def _extract_one(text, field):
++    text = text or ""
++    for rgx in _LABEL_RES[field]:
++        m = rgx.search(text)
++        if m:
++            cap = _capture_after(text, m)
++            if cap:
++                return cap
++    if field == "sample":
++        m = _SAMPLE_STAT.search(text)
++        if m:
++            v = m.group(0)
++            return {"value": v, "evidence": {"offset": m.start(), "length": len(v), "quote": v}}
++    return {"value": None, "status": "missing"}   # 缺失不猜 -- no marker, no guess
++
++
++def extract_fields(text):
++    """Extract method/sample/result from source text; each value is a byte-exact source span."""
++    return {field: _extract_one(text, field) for field in ("method", "sample", "result")}
++
++
++def make_set(name, papers):
++    """A Research Set: each paper gets its structured fields extracted from its source text.
++    papers: [{paper_id, title?, text}]. `text` is the source the fields must trace back to."""
++    items = []
++    for p in papers:
++        items.append({
++            "paper_id": p["paper_id"], "title": p.get("title"),
++            "text": p.get("text", ""),
++            "fields": extract_fields(p.get("text", "")),
++        })
++    items.sort(key=lambda it: it["paper_id"])         # deterministic order
++    return {"set_id": "set::" + name, "name": name, "papers": items}
++
++
++def comparison_table(rset):
++    """Side-by-side comparison: one row per paper, columns method/sample/result."""
++    cols = ["method", "sample", "result"]
++    rows = []
++    for it in rset["papers"]:
++        row = {"paper_id": it["paper_id"], "title": it.get("title")}
++        for c in cols:
++            f = it["fields"][c]
++            row[c] = {"value": f.get("value"), "missing": f.get("value") is None,
++                      "evidence": f.get("evidence")}
++        rows.append(row)
++    return {"columns": cols, "rows": rows}
++
++
++def filter_set(rset, has_field=None, keyword=None, field=None):
++    """Reproducible filtering. has_field: keep papers where that field is present. keyword+field: keep
++    papers whose `field` value contains keyword. Deterministic order (already sorted by paper_id)."""
++    out = []
++    for it in rset["papers"]:
++        keep = True
++        if has_field is not None:
++            keep = keep and it["fields"][has_field].get("value") is not None
++        if keyword is not None and field is not None:
++            v = it["fields"][field].get("value") or ""
++            keep = keep and (keyword.lower() in v.lower())
++        if keep:
++            out.append(it)
++    out.sort(key=lambda it: it["paper_id"])
++    return {"set_id": rset["set_id"], "name": rset["name"], "papers": out}
++
++
++def traces_to_source(paper):
++    """True iff every extracted (non-missing) field value is byte-exact at its recorded source offset."""
++    text = paper.get("text", "")
++    for f in paper["fields"].values():
++        if f.get("value") is None:
++            continue
++        ev = f["evidence"]
++        if text[ev["offset"]:ev["offset"] + ev["length"]] != f["value"]:
++            return False
++    return True
