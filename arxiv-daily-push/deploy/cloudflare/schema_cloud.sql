@@ -68,3 +68,10 @@ CREATE TABLE IF NOT EXISTS cn_run_log (
 );
 
 CREATE TABLE IF NOT EXISTS cn_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+
+-- S2-P01-T022 不可变原始证据 R2 双写台账（object_key 作主键 => 幂等，重试不产生重复行）
+CREATE TABLE IF NOT EXISTS cn_artifacts (
+  object_key TEXT PRIMARY KEY, sha256 TEXT NOT NULL, source_id TEXT NOT NULL,
+  url TEXT, mime TEXT, content_length INTEGER, compression TEXT,
+  content_version TEXT DEFAULT 'v1', created_at TEXT
+);

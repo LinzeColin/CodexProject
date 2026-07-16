@@ -1,0 +1,12 @@
+{
+  "task": "ADP-S2-P01-T022", "stage": "S2 Immutable Raw Evidence", "release_mode": "PRODUCTION",
+  "feature": "RawArtifact R2 dual-write behind RAW_DUALWRITE flag (default OFF = baseline); SHADOW activation is T023",
+  "deploy": {"worker": "adp-cloud", "pre_deploy_rollback_target": "3816d21c-5ca8-4fdd-89f5-e13b8b56efb0", "post_deploy_version": "657fe32a-e22d-4146-a094-83eae6592e18", "new_build_id": "e377c9bd1e20", "r2_bucket": "adp-raw-artifacts", "d1_table": "cn_artifacts"},
+  "value": "immutable raw-byte side-write after a successful fetch, content-addressed + idempotent, with zero change to the publish main chain; groundwork for T023 shadow and the version chain",
+  "dir007_compliance": {"in_built_budget_stop": true, "guard_frac": 0.9, "over_budget_action": "quarantine, do not write"},
+  "free_tier_usage": {"month": "202607", "r2_class_a_writes": 1, "r2_class_b_ops": 2, "r2_storage_bytes": 76, "limits": {"class_a_per_month": 1000000, "class_b_per_month": 10000000, "storage_bytes": 10737418240}, "headroom_pct": ">99.99"},
+  "cost_itemized_unknown_not_zero": {"new_requests": "1 HEAD (Class B) + on-demand 1 PUT (Class A) per object when flag on", "d1_rows_written": "<=1 per object (ON CONFLICT DO NOTHING)", "r2_bytes": "raw content bytes", "model_calls": 0, "human_maintenance": "flip flag for T023 shadow; monitor budget"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "protected_baseline_intact": "six themes 6/6 + hero videos + dashboard + fx + ChatGPT verified on both domains post-deploy; flag off = baseline",
+  "rollback_verified_command": "wrangler versions deploy 3816d21c + rollback.sql (DROP cn_artifacts); SHADOW feature, no publish-chain dependency"
+}

@@ -1,0 +1,19 @@
+### ADP-S2-P01-T022 verification (2026-07-16)
+pre-deploy version (ROLLBACK TARGET): 3816d21c-5ca8-4fdd-89f5-e13b8b56efb0
+post-deploy version:                  657fe32a-e22d-4146-a094-83eae6592e18
+new build_id: e377c9bd1e20 (self-excluding hash verified)
+R2 bucket: adp-raw-artifacts (binding env.RAW) ; D1 table cn_artifacts created
+
+FLAG OFF = BASELINE (RAW_DUALWRITE=false): pipeline dual-write inactive; verified:
+  six themes 6/6 (both domains) ; 3 hero videos ; cosmic dashboard ; fx layers ; ChatGPT deep-dive
+  /build.json identical across domains (build_id e377c9bd1e20) ; 7 routes 200 (both domains)
+
+IDEMPOTENCY (POST /api/raw-selftest, writes same bytes twice):
+  first  -> {wrote:true,  deduped:false, key raw/selftest/v1/cb/29/cb29d442...}
+  second -> {wrote:false, deduped:true,  same key}   => idempotent: true (no duplicate object)
+  D1 cn_artifacts: 1 row for source_id=selftest (ON CONFLICT DO NOTHING; retry no dup row)
+
+BUDGET (DIR-007 free-tier, in-built stop):
+  month usage: Class A (writes) 1 ; Class B (heads) 2 ; bytes 76
+  limits: Class A 1,000,000/mo ; Class B 10,000,000/mo ; Storage 10 GB/mo
+  headroom: ~100% (usage 0.0001% of Class A) ; write path checks budget before put (guard 0.9), quarantines over_budget

@@ -1,0 +1,26 @@
+# ADP-S2-P01-T022 commands.log · feature-flagged R2 dual-write (SHADOW; flag default OFF)
+# base commit 4475a8c3 (DIR-007 merged) ; R2 enabled by Owner 2026-07-16
+
+## setup
+$ npx wrangler@4 r2 bucket create adp-raw-artifacts   # binding RAW in wrangler_cloud.jsonc
+$ npx wrangler@4 d1 execute adp-mirror --remote --command "CREATE TABLE IF NOT EXISTS cn_artifacts (...)"  # object_key PK
+
+## worker: dualWriteArtifact + RAW_DUALWRITE flag (default false) + fetchFeedText hook + /api/raw-selftest
+$ node --check deploy/cloudflare/worker_cloud.js -> OK ; recompute self-excluding BUILD hash -> build_id e377c9bd1e20
+
+## deploy (flag off)
+$ cd deploy/cloudflare && npx wrangler@4 deploy --config wrangler_cloud.jsonc
+# pre 3816d21c (rollback) -> post 657fe32a ; binding env.RAW (adp-raw-artifacts)
+
+## verify flag off = baseline
+# six themes 6/6 both domains ; 3 hero videos ; dashboard ; fx ; ChatGPT ; /build.json e377c9bd1e20 ; 7 routes 200
+
+## verify idempotency + budget
+$ curl -X POST https://adp.linzezhang.com/api/raw-selftest
+# first {wrote:true} ; second {deduped:true,wrote:false} ; idempotent:true ; budget ca 1 / cb 2 / bytes 76
+$ wrangler d1 execute ... "SELECT COUNT(*) FROM cn_artifacts GROUP BY source_id" -> selftest: 1 row (no dup)
+# full: test-results/dualwrite_verify.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

@@ -9,7 +9,30 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'bd67a78020a3', source_sha256: 'bd67a78020a3bc77bb1c8629960eb6407f8f2b997cc271517b036ad96eead084', schema_version: 'cn_v0_3', built_at: '2026-07-16' };
+const BUILD = { build_id: 'e377c9bd1e20', source_sha256: 'e377c9bd1e20755969a6b9b26667a01e059ae13eb13299d1fd234fa5d5faa0f0', schema_version: 'cn_v0_3', built_at: '2026-07-16' };
+
+// ── S2-P01-T022 不可变原始证据 R2 双写（SHADOW；feature flag 默认关=部署即基线；DIR-007 免费档硬预算内）──
+const RAW_DUALWRITE = false; // 默认关；开=抓取成功后旁路把原始字节写 R2（不改发布主链）
+// DIR-007 R2 免费档硬顶：Storage 10GB/月、Class A(写/list)1e6/月、Class B(读/head)1e7/月；写前预算硬停（guard 0.9）。
+const R2_BUDGET = { storageBytes: 10 * 1024 * 1024 * 1024, classAPerMonth: 1000000, classBPerMonth: 10000000, guardFrac: 0.9 };
+async function sha256Hex(bytes) { const d = await crypto.subtle.digest('SHA-256', bytes); return Array.from(new Uint8Array(d)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+function rawExt(mime) { return ({ 'text/html': '.html', 'application/pdf': '.pdf', 'application/xml': '.xml', 'text/xml': '.xml', 'application/json': '.json', 'text/plain': '.txt' })[mime] || ''; }
+function sniffMime(bytes) { const h = new TextDecoder('ascii').decode(bytes.slice(0, 16)).replace(/^\s+/, ''); if (h.slice(0, 5).toLowerCase() === '%pdf-') return 'application/pdf'; if (h[0] === '<') return 'text/html'; if (h[0] === '{' || h[0] === '[') return 'application/json'; return 'application/octet-stream'; }
+function rawKey(sourceId, sha, mime) { if (!/^[a-z0-9][a-z0-9_-]*$/.test(sourceId || '')) throw new Error('bad source_id'); const k = `raw/${sourceId}/v1/${sha.slice(0, 2)}/${sha.slice(2, 4)}/${sha}${rawExt(mime)}`; if (/token|apikey|password|secret|[?&](q|key|token)=|@|%40/i.test(k)) throw new Error('key pii'); return k; }
+function r2Month() { const d = new Date(); return `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}`; }
+async function r2Usage(env, mo) { const r = await env.DB.prepare('SELECT key,value FROM cn_meta WHERE key IN (?,?,?)').bind(`r2_${mo}_ca`, `r2_${mo}_cb`, `r2_${mo}_bytes`).all(); const u = { ca: 0, cb: 0, bytes: 0 }; for (const row of (r.results || [])) { if (row.key.endsWith('_ca')) u.ca = +row.value; else if (row.key.endsWith('_cb')) u.cb = +row.value; else if (row.key.endsWith('_bytes')) u.bytes = +row.value; } return u; }
+async function r2Bump(env, mo, dCa, dCb, dBytes) { const set = async (suf, dv) => { if (!dv) return; await env.DB.prepare('INSERT INTO cn_meta(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=CAST(value AS INTEGER)+?').bind(`r2_${mo}_${suf}`, String(dv), dv).run(); }; await set('ca', dCa); await set('cb', dCb); await set('bytes', dBytes); }
+// content-addressed 幂等写：HEAD 存在则跳过；预算硬停；idempotent D1 行。返回 {key,wrote,deduped,over_budget}。
+async function dualWriteArtifact(env, sourceId, url, buf) {
+  const bytes = new Uint8Array(buf); const mime = sniffMime(bytes); const sha = await sha256Hex(bytes); const key = rawKey(sourceId, sha, mime);
+  const mo = r2Month(); const u = await r2Usage(env, mo);
+  const head = await env.RAW.head(key); await r2Bump(env, mo, 0, 1, 0); // Class B
+  if (head) return { key, deduped: true, wrote: false };
+  if (u.ca + 1 > R2_BUDGET.classAPerMonth * R2_BUDGET.guardFrac || u.bytes + bytes.length > R2_BUDGET.storageBytes * R2_BUDGET.guardFrac) return { key, wrote: false, over_budget: true };
+  await env.RAW.put(key, buf, { httpMetadata: { contentType: mime } }); await r2Bump(env, mo, 1, 0, bytes.length); // Class A + bytes
+  await env.DB.prepare('INSERT INTO cn_artifacts(object_key,sha256,source_id,url,mime,content_length,compression,content_version,created_at) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(object_key) DO NOTHING').bind(key, sha, sourceId, url, mime, bytes.length, 'none', 'v1', new Date().toISOString()).run();
+  return { key, wrote: true, deduped: false };
+}
 
 // ───────────────────────── 数据源注册表（对应 boards_v0_3.yaml；全部进每日精选） ─────────────────────────
 const REGISTRY = [
@@ -198,10 +221,12 @@ async function batchWrite(env, stmts) {
 }
 
 // 字符集感知抓取：按 XML 声明选 TextDecoder（gb2312/gbk→gb18030），防中文源乱码
-async function fetchFeedText(url) {
+async function fetchFeedText(url, env, sourceId) {
   const r = await fetch(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(15000) });
   if (!r.ok) throw new Error('http ' + r.status);
   const buf = await r.arrayBuffer();
+  // S2-P01-T022 SHADOW 双写：抓取成功后旁路存原始字节（flag 默认关；从不影响解析/发布，出错吞掉）
+  if (RAW_DUALWRITE && env && env.RAW && sourceId) { try { await dualWriteArtifact(env, sourceId, url, buf); } catch (e) { } }
   const head = new TextDecoder('ascii').decode(buf.slice(0, 200));
   const m = head.match(/encoding="([^"]+)"/i);
   let enc = (m ? m[1] : 'utf-8').toLowerCase();
@@ -281,7 +306,7 @@ async function ingestAll(env, counts) {
     rotated.push(...byBoard[bid].slice(0, FEED_PER_BOARD));
   }
   const settled = await Promise.allSettled(rotated.map(f =>
-    fetchFeedText(f.s.feed).then(xml => ({ f, items: parseFeed(xml) }))));
+    fetchFeedText(f.s.feed, env, f.s.id).then(xml => ({ f, items: parseFeed(xml) }))));
   let feedNew = 0;
   for (let i = 0; i < rotated.length; i++) {
     const res = settled[i], f = rotated[i];
@@ -1100,6 +1125,16 @@ export default {
           if (!id) return jsonResp({ error: 'bad request' }, 422);
           const r = await studyItem(env, id);
           return jsonResp(r, r.status || 200);
+        }
+        if (p === '/api/raw-selftest') {
+          // S2-P01-T022 验收：写同一测试字节两次 -> 第二次 deduped（幂等）；返回预算用量。不受 RAW_DUALWRITE 全局 flag 限制（显式管理端验证）。
+          if (!env.RAW) return jsonResp({ error: 'R2 binding RAW missing' }, 503);
+          const bytes = new TextEncoder().encode('ADP-RAW-SELFTEST ' + '<html>immutable evidence dualwrite idempotency check</html>');
+          const buf = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+          const a = await dualWriteArtifact(env, 'selftest', 'https://adp.linzezhang.com/api/raw-selftest', buf);
+          const b = await dualWriteArtifact(env, 'selftest', 'https://adp.linzezhang.com/api/raw-selftest', buf);
+          const u = await r2Usage(env, r2Month());
+          return jsonResp({ first: a, second: b, idempotent: (b.deduped === true && a.key === b.key), budget_usage_month: u, budget_limits: { classA: R2_BUDGET.classAPerMonth, classB: R2_BUDGET.classBPerMonth, storageBytes: R2_BUDGET.storageBytes } });
         }
         if (p === '/api/run') return jsonResp(await runDaily(env, 'manual'));
         return jsonResp({ error: 'not found' }, 404);
