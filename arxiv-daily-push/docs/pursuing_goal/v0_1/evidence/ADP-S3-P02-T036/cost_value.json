@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S3-P02-T036", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "two A0 adapters (网信办 + 国家数据局) with a document-type classifier that distinguishes public consultation, formal official document, interpretation, and news, keeping the official original text as primary -- so AI/cyber/data-governance policy enters as authoritative originals, not as interpretations or news",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "adapters + fixtures; the live cac.gov.cn classification ran from the dev env (0 cloud cost); nda.gov.cn live fetch is blocked (TLS/JS-shell) and needs a browser or RSS/API entry -- recorded as manual/pending, not faked"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "adapters": {"sources": ["cac-gov", "nda-gov"], "doc_types": ["consultation", "formal", "interpretation", "news"], "nda_live": "blocked (TLS/JS-shell; needs browser/RSS)"},
+  "live_cac_smoke": {"classified_real_links": true, "consultation_primary": true, "news_not_primary": true},
+  "acceptance": {"four_types_distinguishable": true, "official_original_is_primary": true, "consultation_status_parsed": true, "nda_access_limit_recorded_not_faked": true}
+}

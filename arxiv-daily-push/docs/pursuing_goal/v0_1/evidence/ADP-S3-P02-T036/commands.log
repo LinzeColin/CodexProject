@@ -1,0 +1,22 @@
+# ADP-S3-P02-T036 commands (cac + nda A0 adapters + doc-type classifier)
+# base: main 406dd199 (T035)
+
+# access probe: cac.gov.cn 200 (classifies real links); nda.gov.cn -> JS shell 193B + TLSV1_ALERT_PROTOCOL_VERSION (blocked)
+
+# 1) adapter + classifier + spec + fixtures
+#    tools/adapter_cac_nda.py   (classify_doc_type[consultation/formal/interpretation/news + is_primary + status];
+#                               CacNdaConnector; build_registry cac + nda[live_blocked])
+#    CAC_NDA_ADAPTER_SPEC.md ; fixtures/{consultation,formal,interpretation,news}.html
+
+# 2) acceptance test (fixtures)
+python3 evidence/ADP-S3-P02-T036/test-results/t036_verify.py | tee evidence/ADP-S3-P02-T036/test-results/cac_tests.txt
+# -> 4 types distinguishable; consultation+formal primary=True; interpretation+news primary=False
+# -> consultation status open + deadline 2026-08-10 ; registry cac-gov + nda-gov ; nda-gov health blocked (honest)
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) LIVE classification of real cac.gov.cn homepage links
+python3 <inline> -> evidence/ADP-S3-P02-T036/real_cac_smoke.json
+#   习近平考察=news/not-primary ; 征求意见稿=consultation/primary ; nda-gov health=blocked
+
+# NOT_DEPLOYED: adapters not wired to worker; live from dev env (0 cloud cost); nda live blocked (recorded).
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

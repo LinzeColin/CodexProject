@@ -1,0 +1,10 @@
+OK consultation.html: type=consultation primary=True status=open deadline=2026-08-10
+OK formal.html: type=formal primary=True status=None deadline=None
+OK interpretation.html: type=interpretation primary=False status=None deadline=None
+OK news.html: type=news primary=False status=None deadline=None
+
+consultation status/deadline: open 2026-08-10
+registry: ['cac-gov', 'nda-gov'] | nda-gov live health ok: False | blocked: TLS/JS-shell; needs browser or RSS/API entry
+normalize formal -> doc_type=formal primary=True
+
+ACCEPTANCE = PASS

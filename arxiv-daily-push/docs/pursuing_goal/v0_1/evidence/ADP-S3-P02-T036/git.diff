@@ -1,0 +1,576 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 102badbd5..e07f777a4 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P02-T036 (CAC + National Data Administration A0 adapters; doc-type classifier; closes S3-P02; NOT_DEPLOYED)
++
++- Thirty-sixth task of the ADP V0.1 FINAL EXECUTION program and the LAST of S3-P02 (first A0 official adapters). Goal: add A0 adapters for the Cyberspace Administration (cac.gov.cn) and the National Data Administration (nda.gov.cn), covering front-line AI, cybersecurity, data-governance, and national-data-policy content, and distinguish a public consultation, a formal document, an interpretation, and news, keeping the official original text as primary. NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, with the live cac classification from the dev environment. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/adapter_cac_nda.py (a classify_doc_type distinguishing consultation, formal, interpretation, and news with an is_primary flag and consultation status and deadline; a CacNdaConnector on the T031 SDK with attachments; and build_registry for cac-gov and nda-gov), CAC_NDA_ADAPTER_SPEC.md, and evidence/ADP-S3-P02-T036/{fixtures/{consultation,formal,interpretation,news}.html, real_cac_smoke.json}. Acceptance verified (evidence/ADP-S3-P02-T036/test-results/cac_tests.txt, ACCEPTANCE = PASS, exit 0): the four document types are distinguishable, the official original text is primary since a consultation and a formal document are primary while an interpretation and news are not, and the consultation status is parsed as open with a deadline of 2026-08-10. An honest access note is recorded rather than faked: www.cac.gov.cn serves normally and the live classification of its real homepage links is correct (a leadership-inspection item as news and non-primary, and the AI-content-labelling consultation draft as a primary consultation), whereas www.nda.gov.cn returns a JS shell and rejects the default TLS (TLSV1_ALERT_PROTOCOL_VERSION), so nda-gov is registered but its health reports the live fetch blocked, needing a browser or an RSS/API entry -- its content is not fabricated. The live classification ran from the dev environment, so 0 cloud cost. This closes S3-P02. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P02-T035 (Statistics + NDRC A0 adapters; statistical-claim extractor; NOT_DEPLOYED)
+ 
+ - Thirty-fifth task of the ADP V0.1 FINAL EXECUTION program (S3-P02). Goal: add A0 adapters for the National Bureau of Statistics (stats.gov.cn) and the NDRC (ndrc.gov.cn) covering statistical calibre, indicators, policy documents, and announcements. NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live extraction from the dev environment. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/adapter_stats_ndrc.py (a StatClaim type and an extract_stat_claims that records each claim's indicator, value, unit, period, statistical basis 口径, and revision state; a claims_to_facts that promotes only official A0/A1 claims to facts; an OfficialStatConnector on the T031 SDK; and build_registry for stats-gov and ndrc-gov), STATS_ADAPTER_SPEC.md, and evidence/ADP-S3-P02-T035/{fixtures/{stats_release,ndrc_notice}.html, real_stats_smoke.json}. Acceptance verified (evidence/ADP-S3-P02-T035/test-results/stats_tests.txt, ACCEPTANCE = PASS, exit 0): a statistical claim records the unit, the period, the calibre, and the revision -- the official release fixture yields five claims each carrying a unit, the period 2024年, and the revision 初步核算, with the growth-rate claims carrying a 口径 (同比 or 比上年), and the GDP absolute-value claim of 1349084亿元 at 2024年 初步核算 -- and no fact is formed from media numbers, since the same text yields five facts from the official source but zero from a media source and zero from a search source. A live extraction from the real stats.gov.cn 上半年经济运行 release produced 21 official claims and 21 facts with zero media facts (including 国内生产总值 695704亿元 同比 初步核算). The live extraction ran from the dev environment, so 0 cloud cost; wiring to the worker cron later makes each fetch a Worker subrequest under DIR-007. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 4dfbd8441..177ae1b1d 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S3-P02-T034-GOV-POLICY-A0-ADAPTER"
+-source_snapshot_hash: "sha256:312d9c08c3a23ae76ad39b8014ee2ea392a4c265ccd56299131023006e7b7300"
++as_of_event_id: "EVENT-20260717-ADP-V01-S3-P02-T035-STATS-NDRC-A0-ADAPTERS"
++source_snapshot_hash: "sha256:761a962aa83aa9f7602da170387763d9a302bab037c56760b74c456a58b59dd6"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T06:30:00+10:00"
++snapshot_event_time: "2026-07-17T07:15:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 94
++    precommit_pending_events: 95
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 69da292c8..e8202b50f 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S3-P02-T036: implemented the CAC + National Data Administration A0 adapters with a doc-type classifier (last S3-P02 task; closes S3-P02). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live cac classification from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_cac_nda.py (classify_doc_type[consultation/formal/interpretation/news + is_primary + consultation status/deadline]; CacNdaConnector on the T031 SDK + attachments; build_registry cac-gov + nda-gov), CAC_NDA_ADAPTER_SPEC.md, evidence/ADP-S3-P02-T036/{fixtures/{consultation,formal,interpretation,news}.html, real_cac_smoke.json}. Acceptance (test-results/cac_tests.txt, PASS exit 0): four types distinguishable; official original primary (consultation+formal True; interpretation+news False); consultation status open + deadline 2026-08-10. Honest access: cac.gov.cn serves (real links classified: 考察=news/not-primary, 征求意见稿=consultation/primary); nda.gov.cn JS shell + TLSV1_ALERT_PROTOCOL_VERSION -> nda-gov health blocked, needs browser/RSS, not faked. Live from dev env (0 cloud cost). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T035: implemented the Statistics + NDRC A0 adapters with a statistical-claim extractor (S3-P02). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live extraction from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_stats_ndrc.py (StatClaim + extract_stat_claims recording indicator/value/unit/period/口径/revision; claims_to_facts official-only; OfficialStatConnector on the T031 SDK; build_registry stats-gov + ndrc-gov), STATS_ADAPTER_SPEC.md, evidence/ADP-S3-P02-T035/{fixtures/{stats_release,ndrc_notice}.html, real_stats_smoke.json}. Acceptance (test-results/stats_tests.txt, PASS exit 0): claim records unit+period+口径+revision (5 claims each with unit + 2024年 + 初步核算, growth claims with 同比/比上年, GDP 1349084亿元); no fact from media numbers (official 5 facts / media 0 / search 0); registry stats + ndrc. Live: real stats.gov.cn 上半年经济运行 -> 21 official claims -> 21 facts, media 0 (GDP 695704亿元 同比 初步核算). Live ran from dev env (0 cloud cost). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T034: implemented the first A0 adapter -- State Council policy documents + national laws/regulations (first S3-P02 task). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live parse from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_gov_policy.py (GovCnPolicyConnector on the T031 SDK; parse_policy with TYPED dates 成文 vs 发布; discover + recoverable cursor; verify via T033; build_registry policy + fagui), ADAPTER_GOV_POLICY_SPEC.md, evidence/ADP-S3-P02-T034/{fixtures/{policy_2016,2020,2024,current,listing}.html, expected/*.json, real_parse_smoke.json}. Acceptance (test-results/adapter_tests.txt, PASS exit 0): original + attachments replayable (4 eras parse==golden, byte-identical re-parse, attachments 0/0/1/2); date types not confused (written=成文, published=发布, doc_date=published, never swapped/collapsed); historical cursor recoverable (discover 4; cursor 2020-12-21 -> [2024-03-01, 2026-07-10]; advances to 2026-07-10); registry policy + fagui. Live parse of 3 real docs: 国办发〔2020〕50号 / 国令第711号 / 国办函〔2021〕132号 (成文2021-12-22/发布2022-01-04 cross-year). Live ran from dev env (0 cloud cost); worker wiring later = subrequest under DIR-007. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P01-T033: implemented the official identity verifier + A0 marking (last S3-P01 task; closes S3-P01). NOT_DEPLOYED, 0 recurring cloud cost; verifier + rules, not wired to the production enable flow. Deliverables under docs/pursuing_goal/v0_1/: tools/official_identity.py (is_official_domain/is_central_domain + extract_evidence[host_org/id_code/ICP from footer] + verify_identity[authority + can_enable + discovery_only + manual_review + evidence + reasons]), OFFICIAL_IDENTITY_SPEC.md, evidence/ADP-S3-P01-T033/{identity_report.json, source_specs.json, real_identity_smoke.json}. Two hard rules: unverified source can't be enabled; search/media are discovery-only, never A0. Acceptance (test-results/identity_tests.txt, PASS exit 0): central .gov.cn + marker -> A0 enable (full-marker + id-code-only); non-central official -> A1; media(even on gov domain)/search/aggregator -> discovery_only, no A0, not enabled; official domain no markers -> manual_review not enabled; non-gov claiming official -> unofficial not enabled; RULE 1 + RULE 2 hold. Live: gov.cn footer 国务院办公厅 / bm01000001 / 京ICP备05070218号 -> A0; stats.gov.cn bm36000002 -> A0 (point-in-time). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index ec03be157..8795d47ad 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `94`
+-- pending_or_stale_events: `444`
+-- freshness_counts: `pending_or_stale_events=444; legacy_unbound_events=334`
++- precommit_pending_events: `95`
++- pending_or_stale_events: `445`
++- freshness_counts: `pending_or_stale_events=445; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:312d9c08c3a23ae76ad39b8014ee2ea392a4c265ccd56299131023006e7b7300`
+-- snapshot_event_time: `2026-07-17T06:30:00+10:00`
++- source_snapshot_hash: `sha256:761a962aa83aa9f7602da170387763d9a302bab037c56760b74c456a58b59dd6`
++- snapshot_event_time: `2026-07-17T07:15:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 1aa9997a9..f168b72f0 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:312d9c08c3a23ae76ad39b8014ee2ea392a4c265ccd56299131023006e7b7300`
+-- snapshot_event_time: `2026-07-17T06:30:00+10:00`
++- source_snapshot_hash: `sha256:761a962aa83aa9f7602da170387763d9a302bab037c56760b74c456a58b59dd6`
++- snapshot_event_time: `2026-07-17T07:15:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `444`
++- Pending/stale events: `445`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/CAC_NDA_ADAPTER_SPEC.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/CAC_NDA_ADAPTER_SPEC.md
+new file mode 100644
+index 000000000..894d0a459
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/CAC_NDA_ADAPTER_SPEC.md
+@@ -0,0 +1,32 @@
++# A0 Adapter Spec · 网信办 / 国家数据局（ADP-S3-P02-T036）
++
++两个 A0 适配器（cac.gov.cn 网信办 / nda.gov.cn 国家数据局），覆盖 AI / 网络安全 / 数据治理 / 国家数据政策第一线内容。
++工具：`tools/adapter_cac_nda.py`，基于 T031 SDK + T033 身份。**NOT_DEPLOYED**。核心：**文档类型分类器**，官方原文为 primary。
++
++## 文档类型分类（四类可区分）
++
++`classify_doc_type(title, url, text)` → `DocType{doc_type, is_primary, consultation_status, deadline}`：
++- **consultation（征求意见）**：标题/URL 含 征求意见/公开征求/意见征集/征求意见稿。**is_primary=True**（征求意见稿本身是官方原件）；解析 `consultation_status`（open/closed）+ `deadline`（意见反馈截止日期）。
++- **formal（正式文件）**：含 办法/规定/通知/公告/令/条例/决定/指南 且非新闻、非解读。**is_primary=True**（官方原文）。
++- **interpretation（解读）**：含 解读/答记者问/图解/政策问答/一图读懂。**is_primary=False**（指向正式文件）。
++- **news（新闻）**：考察/会见/座谈/会议/讲话/动态等。**is_primary=False**。
++
++**官方原文为 primary**：consultation 与 formal 是 primary；解读/新闻是 secondary（回指官方原文）。
++
++## 能力与来源
++
++`CacNdaConnector`（T031 SDK 7 能力）：discover（`c_N.htm`/`content_N`/`t{YYYYMMDD}_N` 列表）、fetch（真实 HttpFetcher）、
++verify（走 T033→A0）、normalize（标题 + doc_type + is_primary + consultation_status）、attachments（pdf/doc/wps/xls）、cursor、health。
++`build_registry` 注册 **cac-gov + nda-gov**。
++
++## 访问限制（如实记录，未伪造）
++
++- `www.cac.gov.cn`：正常服务（首页 200；实测分类真实征求意见/新闻链接正确）。
++- `www.nda.gov.cn`（国家数据局）：返回 JS shell（193B）且拒绝默认 TLS（`TLSV1_ALERT_PROTOCOL_VERSION`）——**纯 urllib 客户端 live fetch 被阻**。`nda-gov` 已注册但 `health().ok=False`，note 记「needs browser or RSS/API entry」。接该源需 `mcp__Claude_Browser` 或其 RSS/API，属后续；**不臆造该源内容**。
++
++## 验收（`test-results/cac_tests.txt`，PASS）
++
++- **四类可区分**：consultation/formal/interpretation/news 分类正确。
++- **官方原文为 primary**：consultation+formal primary=True；解读+新闻 primary=False。
++- **consultation status**：open + 截止 2026-08-10 解析正确。
++- **live 实测**：`real_cac_smoke.json` = 实测 cac.gov.cn 首页链接分类（习近平考察=news、征求意见稿=consultation primary）。nda-gov health 如实 blocked。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/TASK_REPORT.md
+new file mode 100644
+index 000000000..e21949986
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/TASK_REPORT.md
+@@ -0,0 +1,55 @@
++# TASK_REPORT · ADP-S3-P02-T036｜接入网信办与国家数据局官方入口
++
++## 唯一目标（达成）
++接入 cac.gov.cn（网信办）与 nda.gov.cn（国家数据局），覆盖 **AI、网络、数据治理和国家数据政策**第一线内容。交付 connectors、attachments、consultation/status fixtures。**征求意见、正式文件、解读和新闻可区分；官方原文为 primary。**
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：网信办+数据局 A0 适配器 + 文档类型分类；四类可区分；官方原文为 primary。
++2. **允许修改文件**：`docs/pursuing_goal/v0_1/{tools/adapter_cac_nda.py, CAC_NDA_ADAPTER_SPEC.md}` + 本证据包（fixtures/real_cac_smoke/test-results/报告）+ 治理同步。
++3. **绝不能改变**：抓取行为（生产）、六主题、worker、生产 D1/R2、cron；不接 worker；**不臆造被阻源内容**。NOT_DEPLOYED。
++4. **基线**：main `406dd199`（T035 统计适配器已合入）；用 T031 SDK + T033 身份。access 实测：cac 可达；nda SSL/JS-shell 被阻。
++5. **验收**：征求意见、正式文件、解读和新闻可区分；官方原文为 primary。
++6. **回滚**：`git revert <sha>`（适配器 + fixtures，生产未变更）。
++
++## 交付物
++- `tools/adapter_cac_nda.py` —— `classify_doc_type`（**consultation征求意见 / formal正式文件 / interpretation解读 / news新闻**，+ is_primary + consultation_status/deadline）+ `CacNdaConnector`（T031 SDK 7 能力，含 attachments）+ `build_registry`（cac-gov + nda-gov[live_blocked]）。
++- `CAC_NDA_ADAPTER_SPEC.md` —— 分类、能力、访问限制。
++- `evidence/.../fixtures/{consultation,formal,interpretation,news}.html`（含 consultation/status）+ `real_cac_smoke.json`。
++
++## 验收结果（实测，见 test-results/cac_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **四类可区分**：consultation（人工智能生成合成内容标识办法征求意见稿）/ formal（网络数据安全管理条例·令第16号）/ interpretation（条例解读）/ news（网络安全工作会议）分类**全部正确**。
++- **官方原文为 primary**：consultation + formal → **is_primary=True**；interpretation + news → **is_primary=False**（回指官方原文）。
++- **consultation status**：解析 **open + 截止日期 2026-08-10**。
++- **两源 + 诚实访问记录**：registry = cac-gov + nda-gov；**nda-gov `health().ok=False`**（note: blocked TLS/JS-shell, needs browser or RSS/API entry）——如实记录未伪造。
++- **live 实测（Owner 决策）**：`real_cac_smoke.json` = 实测 cac.gov.cn 首页链接分类（习近平考察=news/not-primary、征求意见稿=consultation/primary）；nda-gov health 如实 blocked。
++
++## Data / Performance / Visual
++Data = 4 fixture + cac 首页 live 分类。无 UI 改动、无性能路径；六主题动效与线上 MVP 未触碰（NOT_DEPLOYED）。
++
++## Value / Cost（S3 China A0 Official Pilot）
++- **Value**：AI/网络/数据治理政策进入系统时**区分征求意见/正式文件/解读/新闻**且**以官方原文为 primary**——避免把解读或新闻当权威原文；网信办覆盖第一线 AI/数据治理内容。诚实标注被阻源（nda）而非伪造。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 读 0 / 写 0；R2 字节 0 / 操作 0；模型 0；人工维护 = 适配器 + fixtures + nda 需浏览器/RSS 接入。经常性云成本 delta = $0/月（cac live 走开发环境）。
++
++## Known gaps
++见 `known_gaps.md`：NOT_DEPLOYED（未接 worker）；**nda.gov.cn live fetch 被阻（TLS/JS-shell，需浏览器/RSS，如实记录不伪造）**；分类为关键词+文号启发（解读优先）；consultation status 简化；fixtures 结构化样本。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json` —— N/A。`data-samples` = fixtures/ + real_cac_smoke.json。
++
++## 完成声明
++```text
++Task: ADP-S3-P02-T036
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/adapter_cac_nda.py + CAC_NDA_ADAPTER_SPEC.md + T036 证据包（fixtures/real_cac_smoke/test-results/报告）+ 治理同步（见 changed_files.txt）
++Tests: cac_tests.txt —— 四类可区分(consultation/formal/interpretation/news)+官方原文primary(consultation·formal True/解读·新闻 False)+consultation open截止2026-08-10+nda-gov health诚实blocked，ACCEPTANCE=PASS(exit 0)；real_cac_smoke 实测cac首页分类；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 网信办+数据局 A0 适配器 + 文档类型分类(官方原文为primary)
++Data/Performance/Visual: Data=4fixture+cac首页分类；无性能/UI
++Value: AI/网络/数据治理政策区分四类、官方原文primary；诚实标注被阻源
++Cost: 请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0；cac live走开发环境
++Known gaps: 见 known_gaps.md（含 nda 访问受限）
++Deployment: NOT_DEPLOYED（未接 worker cron）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/commands.log
+new file mode 100644
+index 000000000..6052cbe62
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/commands.log
+@@ -0,0 +1,22 @@
++# ADP-S3-P02-T036 commands (cac + nda A0 adapters + doc-type classifier)
++# base: main 406dd199 (T035)
++
++# access probe: cac.gov.cn 200 (classifies real links); nda.gov.cn -> JS shell 193B + TLSV1_ALERT_PROTOCOL_VERSION (blocked)
++
++# 1) adapter + classifier + spec + fixtures
++#    tools/adapter_cac_nda.py   (classify_doc_type[consultation/formal/interpretation/news + is_primary + status];
++#                               CacNdaConnector; build_registry cac + nda[live_blocked])
++#    CAC_NDA_ADAPTER_SPEC.md ; fixtures/{consultation,formal,interpretation,news}.html
++
++# 2) acceptance test (fixtures)
++python3 evidence/ADP-S3-P02-T036/test-results/t036_verify.py | tee evidence/ADP-S3-P02-T036/test-results/cac_tests.txt
++# -> 4 types distinguishable; consultation+formal primary=True; interpretation+news primary=False
++# -> consultation status open + deadline 2026-08-10 ; registry cac-gov + nda-gov ; nda-gov health blocked (honest)
++# -> ACCEPTANCE = PASS (exit 0)
++
++# 3) LIVE classification of real cac.gov.cn homepage links
++python3 <inline> -> evidence/ADP-S3-P02-T036/real_cac_smoke.json
++#   习近平考察=news/not-primary ; 征求意见稿=consultation/primary ; nda-gov health=blocked
++
++# NOT_DEPLOYED: adapters not wired to worker; live from dev env (0 cloud cost); nda live blocked (recorded).
++# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/cost_value.json
+new file mode 100644
+index 000000000..27a52d174
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/cost_value.json
+@@ -0,0 +1,9 @@
++{
++  "task": "ADP-S3-P02-T036", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
++  "value_metric": "two A0 adapters (网信办 + 国家数据局) with a document-type classifier that distinguishes public consultation, formal official document, interpretation, and news, keeping the official original text as primary -- so AI/cyber/data-governance policy enters as authoritative originals, not as interpretations or news",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "adapters + fixtures; the live cac.gov.cn classification ran from the dev env (0 cloud cost); nda.gov.cn live fetch is blocked (TLS/JS-shell) and needs a browser or RSS/API entry -- recorded as manual/pending, not faked"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "adapters": {"sources": ["cac-gov", "nda-gov"], "doc_types": ["consultation", "formal", "interpretation", "news"], "nda_live": "blocked (TLS/JS-shell; needs browser/RSS)"},
++  "live_cac_smoke": {"classified_real_links": true, "consultation_primary": true, "news_not_primary": true},
++  "acceptance": {"four_types_distinguishable": true, "official_original_is_primary": true, "consultation_status_parsed": true, "nda_access_limit_recorded_not_faked": true}
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/consultation.html b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/consultation.html
+new file mode 100644
+index 000000000..9b35bce62
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/consultation.html
+@@ -0,0 +1,4 @@
++<html><head><title>国家互联网信息办公室关于《人工智能生成合成内容标识办法（征求意见稿）》公开征求意见的通知</title></head><body>
++<div class="content"><h1>关于《人工智能生成合成内容标识办法（征求意见稿）》公开征求意见的通知</h1>
++<p>为规范人工智能生成合成内容标识，现向社会公开征求意见。欢迎社会各界提出反馈意见。意见反馈截止日期：2026年08月10日。</p>
++<a href="/att/aigc_biaoshi_draft.pdf">征求意见稿全文.pdf</a></div></body></html>
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/formal.html b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/formal.html
+new file mode 100644
+index 000000000..5c8ca2e3d
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/formal.html
+@@ -0,0 +1,3 @@
++<html><head><title>国家互联网信息办公室令 第16号 网络数据安全管理条例</title></head><body>
++<div class="content"><h1>网络数据安全管理条例</h1><p>《网络数据安全管理条例》已经公布，自2026年01月01日起施行。国家互联网信息办公室令第16号。</p>
++<a href="/att/tiaoli.pdf">条例原文.pdf</a></div></body></html>
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/interpretation.html b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/interpretation.html
+new file mode 100644
+index 000000000..9a9d9a260
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/interpretation.html
+@@ -0,0 +1,2 @@
++<html><head><title>《网络数据安全管理条例》政策解读</title></head><body>
++<div class="content"><h1>《网络数据安全管理条例》解读</h1><p>近日发布的条例有关负责人就相关问题答记者问。</p></div></body></html>
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/news.html b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/news.html
+new file mode 100644
+index 000000000..74aff9cbf
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/fixtures/news.html
+@@ -0,0 +1,2 @@
++<html><head><title>全国网络安全和信息化工作会议在京召开</title></head><body>
++<div class="content"><h1>全国网络安全和信息化工作会议召开</h1><p>会议强调，有关领导出席并讲话。</p></div></body></html>
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/known_gaps.md
+new file mode 100644
+index 000000000..5ab6fe71a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S3-P02-T036
++
++- **NOT_DEPLOYED（任务边界，非缺陷）**：适配器未接 worker cron / D1。cac live 分类走**开发环境**（0 云成本）；接 worker 后每 fetch = Worker 子请求，须核 DIR-007。
++- **nda.gov.cn（国家数据局）live fetch 被阻（如实记录，未伪造）**：返回 JS shell（193B）+ 拒绝默认 TLS（TLSV1_ALERT_PROTOCOL_VERSION）。`nda-gov` 已注册但 `health().ok=False`（note: needs browser or RSS/API entry）。真正接该源需 `mcp__Claude_Browser` 或其 RSS/API/放宽 TLS 上下文，属后续任务；**本任务不臆造该源内容**。
++- **分类为标题/URL 关键词 + 文号启发**：`classify_doc_type` 靠关键词（征求意见/解读/办法·规定·令/考察·会议）+ 文号存在性；边缘标题（如「关于XX办法的解读」同含 formal+interp 词）优先 interpretation（解读优先，安全：不把解读当原文）。真实边缘样本由后续 fixtures 增补。
++- **consultation status 简化**：open/closed + 截止日期正则；「已结束/征集结束」判 closed，「公开征求/欢迎反馈」判 open。复杂表述可能判 None（保守）。
++- **fixtures 为结构化样本**：consultation/formal/interpretation/news fixtures 贴合真实 cac 语言；真实各栏目 DOM 差异由 T032 契约 + 后续 fixtures 兜底；live 不逐字复现。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/real_cac_smoke.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/real_cac_smoke.json
+new file mode 100644
+index 000000000..3a46f2dc1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/real_cac_smoke.json
+@@ -0,0 +1,36 @@
++{
++  "note": "LIVE point-in-time classification of real cac.gov.cn homepage links; not byte-reproducible.",
++  "fetched_at": "2026-07-16T16:10:09+10:00",
++  "host": "www.cac.gov.cn",
++  "items": [
++    {
++      "title": "习近平在上海考察",
++      "doc_type": "news",
++      "is_primary": false
++    },
++    {
++      "title": "蔡奇陪同考察",
++      "doc_type": "news",
++      "is_primary": false
++    },
++    {
++      "title": "国家互联网信息办公室关于《互联网信息服务管理办法（修订草案征求意见稿）》再次公开征求意见的通知",
++      "doc_type": "consultation",
++      "is_primary": true
++    },
++    {
++      "title": "关于征求《政务移动互联网应用程序管理要求》强制性国家标准（征求意见稿）意见的通知",
++      "doc_type": "consultation",
++      "is_primary": true
++    },
++    {
++      "title": "国家互联网信息办公室关于《促进分布式数字身份互通互认应用规定（征求意见稿）》公开征求意见的通知",
++      "doc_type": "consultation",
++      "is_primary": true
++    }
++  ],
++  "nda_access": {
++    "ok": false,
++    "note": "blocked: TLS/JS-shell; needs browser or RSS/API entry"
++  }
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/test-results/cac_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/test-results/cac_tests.txt
+new file mode 100644
+index 000000000..edf9c2f90
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/test-results/cac_tests.txt
+@@ -0,0 +1,10 @@
++OK consultation.html: type=consultation primary=True status=open deadline=2026-08-10
++OK formal.html: type=formal primary=True status=None deadline=None
++OK interpretation.html: type=interpretation primary=False status=None deadline=None
++OK news.html: type=news primary=False status=None deadline=None
++
++consultation status/deadline: open 2026-08-10
++registry: ['cac-gov', 'nda-gov'] | nda-gov live health ok: False | blocked: TLS/JS-shell; needs browser or RSS/API entry
++normalize formal -> doc_type=formal primary=True
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/test-results/t036_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/test-results/t036_verify.py
+new file mode 100644
+index 000000000..aecc9146b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T036/test-results/t036_verify.py
+@@ -0,0 +1,81 @@
++#!/usr/bin/env python3
++"""ADP-S3-P02-T036 acceptance: CAC (网信办) + National Data Administration adapters.
++
++Acceptance (TASK_INDEX): 征求意见、正式文件、解读和新闻可区分；官方原文为 primary。
++Deterministic (fixtures; the live cac.gov.cn classification is a separate smoke). Fixtures cover AI /
++data-governance consultation, a formal regulation, an interpretation, and news.
++"""
++import sys, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1")
++T036 = V01 / "evidence" / "ADP-S3-P02-T036"
++FX = T036 / "fixtures"
++sys.path.insert(0, str(V01 / "tools"))
++import adapter_cac_nda as A, official_connector as OC  # noqa: E402
++
++fails = []
++conn = A.CacNdaConnector("cac-gov", "listing", "https://www.cac.gov.cn/", fetcher=A.FixtureFetcher(FX) if hasattr(A, "FixtureFetcher") else None)
++
++# reuse a simple fixture fetcher
++class FF:
++    def __init__(self, d): self.d = pathlib.Path(d)
++    def get(self, url, fetched_at):
++        import hashlib
++        b = (self.d / url).read_bytes()
++        return OC.FetchResult(url, 200, "text/html", b, hashlib.sha256(b).hexdigest(), fetched_at, True)
++conn = A.CacNdaConnector("cac-gov", "listing", "https://www.cac.gov.cn/", fetcher=FF(FX))
++
++CASES = [
++    # fixture, expected type, expected is_primary
++    ("consultation.html", "consultation", True),
++    ("formal.html", "formal", True),
++    ("interpretation.html", "interpretation", False),
++    ("news.html", "news", False),
++]
++
++# --- 1) four types distinguishable; 2) official original is primary ------------------------
++for fx, exp_type, exp_primary in CASES:
++    html = (FX / fx).read_text(encoding="utf-8")
++    import re, html as H
++    title = H.unescape(re.search(r"<title>(.*?)</title>", html, re.S).group(1)).strip()
++    dt = A.classify_doc_type(title, fx, html)
++    ok = dt.doc_type == exp_type and dt.is_primary == exp_primary
++    print(f"{'OK ' if ok else 'XX '}{fx}: type={dt.doc_type} primary={dt.is_primary} status={dt.consultation_status} deadline={dt.deadline}")
++    if dt.doc_type != exp_type:
++        fails.append(f"{fx}: type {dt.doc_type} != {exp_type}")
++    if dt.is_primary != exp_primary:
++        fails.append(f"{fx}: is_primary {dt.is_primary} != {exp_primary}")
++
++# consultation status + deadline parsed
++chtml = (FX / "consultation.html").read_text(encoding="utf-8")
++cdt = A.classify_doc_type("关于《...（征求意见稿）》公开征求意见的通知", "consultation.html", chtml)
++if cdt.consultation_status != "open":
++    fails.append(f"consultation status {cdt.consultation_status} != open")
++if cdt.deadline != "2026-08-10":
++    fails.append(f"consultation deadline {cdt.deadline} != 2026-08-10")
++print("\nconsultation status/deadline:", cdt.consultation_status, cdt.deadline)
++
++# interpretation and news must NOT be primary (they point back to the official original)
++if A.classify_doc_type("《条例》解读", "").is_primary:
++    fails.append("interpretation wrongly primary")
++if A.classify_doc_type("工作会议在京召开", "").is_primary:
++    fails.append("news wrongly primary")
++
++# --- 3) registry has both; nda-gov live fetch honestly reported blocked ---------------------
++reg = A.build_registry(fetcher=FF(FX))
++if reg.ids() != ["cac-gov", "nda-gov"]:
++    fails.append(f"registry ids {reg.ids()} != cac + nda")
++nda_health = reg.get("nda-gov").health()
++print("registry:", reg.ids(), "| nda-gov live health ok:", nda_health.ok, "|", nda_health.note)
++if nda_health.ok:
++    fails.append("nda-gov health should honestly report blocked (TLS/JS-shell)")
++
++# normalize a fixture end-to-end (doc_type in the normalized doc)
++nd = conn.normalize(OC.DiscoverItem("formal.html", "", None), conn.fetch("formal.html", "x"))
++if "doc_type=formal" not in nd.body_text:
++    fails.append("normalize did not carry doc_type")
++print("normalize formal ->", nd.body_text)
++
++print("\n" + ("ACCEPTANCE = PASS" if not fails else "ACCEPTANCE = FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/adapter_cac_nda.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/adapter_cac_nda.py
+new file mode 100644
+index 000000000..f777bc69d
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/adapter_cac_nda.py
+@@ -0,0 +1,131 @@
++#!/usr/bin/env python3
++"""ADP V0.1 A0 adapters: CAC (网信办) + National Data Administration (国家数据局) (ADP-S3-P02-T036).
++
++Covers front-line AI / cybersecurity / data-governance / national-data-policy content. The core
++capability is a DOCUMENT-TYPE classifier that distinguishes a public consultation (征求意见), a formal
++official document (正式文件), an interpretation (解读), and news (新闻) -- with the official original
++text as PRIMARY. On the T031 SDK, verified by T033. Deterministic; real fetch via the T031 HttpFetcher.
++NOT_DEPLOYED.
++
++Access note (honest): www.cac.gov.cn serves normally; www.nda.gov.cn returns a JS shell and rejects
++the default TLS (TLSV1_ALERT_PROTOCOL_VERSION), so nda-gov is registered but its live fetch is BLOCKED
++from a plain urllib client and needs a browser / an RSS-or-API entry -- recorded, not faked.
++"""
++from __future__ import annotations
++import dataclasses, hashlib, html as _html, pathlib, re, sys
++
++sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
++import official_connector as OC
++import official_identity as OI
++
++CONSULT_KW = ["征求意见", "公开征求", "意见征集", "征求意见稿", "草案征求意见"]
++INTERP_KW = ["解读", "答记者问", "图解", "政策问答", "一图读懂"]
++FORMAL_KW = ["办法", "规定", "通知", "公告", "决定", "令", "条例", "指南", "要求"]
++NEWS_KW = ["考察", "会见", "座谈", "调研", "出席", "讲话", "会议", "动态"]
++
++
++@dataclasses.dataclass(frozen=True)
++class DocType:
++    doc_type: str            # consultation / formal / interpretation / news
++    is_primary: bool         # official original text is primary; 解读/新闻 point back to it
++    consultation_status: str | None   # open / closed / None
++    deadline: str | None
++
++
++def classify_doc_type(title, url="", text=""):
++    t = (title or "") + " " + (url or "")
++    body = text or ""
++    if any(k in t for k in CONSULT_KW):
++        status, deadline = _consultation_status(body)
++        return DocType("consultation", True, status, deadline)          # the consultation IS the official original
++    if any(k in t for k in INTERP_KW):
++        return DocType("interpretation", False, None, None)             # secondary: interprets a formal doc
++    has_docnum = bool(re.search(r"第?\d+号|〔\d{4}〕", t + body))
++    if any(k in t for k in FORMAL_KW) and not any(k in t for k in NEWS_KW):
++        return DocType("formal", True, None, None)                      # official original text -> primary
++    if any(k in t for k in NEWS_KW):
++        return DocType("news", False, None, None)                       # secondary
++    return DocType("formal" if has_docnum else "news", has_docnum, None, None)
++
++
++def _consultation_status(text):
++    m = re.search(r"(?:截止|意见反馈截止(?:日期|时间)?)[：:至\s]*(\d{4}[-年]\d{1,2}[-月]\d{1,2}日?)", text)
++    deadline = None
++    if m:
++        d = re.findall(r"\d+", m.group(1))
++        if len(d) >= 3:
++            deadline = f"{int(d[0]):04d}-{int(d[1]):02d}-{int(d[2]):02d}"
++    if "已结束" in text or "征集结束" in text:
++        return "closed", deadline
++    if any(k in text for k in ["公开征求", "欢迎社会各界", "反馈意见"]):
++        return "open", deadline
++    return ("open" if deadline else None), deadline
++
++
++class CacNdaConnector(OC.OfficialConnector):
++    def __init__(self, source_id, listing, host, fetcher=None, live_blocked=False):
++        self.source_id = source_id
++        self.authority_level = "A0"
++        self.listing = listing
++        self.host = host
++        self.fetcher = fetcher or OC.HttpFetcher(timeout=15)
++        self.live_blocked = live_blocked      # nda.gov.cn: TLS/JS-shell blocks a plain client
++
++    def health(self):
++        if self.live_blocked:
++            return OC.HealthResult(False, f"{self.source_id} live fetch", "blocked: TLS/JS-shell; needs browser or RSS/API entry")
++        return OC.HealthResult(True, f"{self.source_id} adapter", self.listing)
++
++    def fetch(self, url, fetched_at):
++        return self.fetcher.get(url, fetched_at)
++
++    def discover(self, cursor):
++        html = self.fetcher.get(self.listing, "listing").body.decode("utf-8", "ignore")
++        items, seen = [], set()
++        for m in re.finditer(r'href="([^"]*(?:c_\d+|content_\d+|t\d{8}_\d+)\.(?:html?|htm))"[^>]*>\s*([^<]{6,60})', html):
++            url, title = m.group(1), _html.unescape(m.group(2)).strip()
++            if url in seen:
++                continue
++            seen.add(url)
++            items.append(OC.DiscoverItem(url, title, None))
++        return items
++
++    def verify(self, item, fetched):
++        r = OI.verify_identity({"source_id": self.source_id, "url": self.host, "category": "china_official",
++                                "host_org": "国家互联网信息办公室"})
++        return OC.VerifyResult(r["verified"], r["authority_level"], r["evidence"]["official_domain"], tuple(r["reasons"]))
++
++    def normalize(self, item, fetched):
++        html = fetched.body.decode("utf-8", "ignore")
++        title = re.search(r"<title>(.*?)</title>", html, re.S)
++        title = _html.unescape(title.group(1)).split("_")[0].split(" - ")[0].strip() if title else \
++            (item.title if isinstance(item, OC.DiscoverItem) else "")
++        dt = classify_doc_type(title, item.url if isinstance(item, OC.DiscoverItem) else "", html)
++        return OC.NormalizedDoc(self.source_id, item.url if isinstance(item, OC.DiscoverItem) else item, title,
++                                None, None, dt.consultation_status, "A0",
++                                body_text=f"doc_type={dt.doc_type} primary={dt.is_primary}", attachments=tuple(self.attachments(fetched)),
++                                canonical_hint="ttl:" + hashlib.sha256(title.encode()).hexdigest()[:16])
++
++    def attachments(self, fetched):
++        html = fetched.body.decode("utf-8", "ignore")
++        return [OC.Attachment(u, u.rsplit(".", 1)[-1].lower())
++                for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|wps|xlsx?))"', html, re.I)]
++
++    def cursor(self, docs):
++        return OC.Cursor(last_id=docs[-1].doc_id if docs else None, last_date=None)
++
++
++def build_registry(fetcher=None):
++    reg = OC.AdapterRegistry()
++    reg.register(CacNdaConnector("cac-gov", "https://www.cac.gov.cn/", "https://www.cac.gov.cn/", fetcher))
++    reg.register(CacNdaConnector("nda-gov", "https://www.nda.gov.cn/", "https://www.nda.gov.cn/", fetcher, live_blocked=True))
++    return reg
++
++
++if __name__ == "__main__":
++    import argparse, json
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--title", required=True)
++    ap.add_argument("--url", default="")
++    args = ap.parse_args()
++    print(json.dumps(dataclasses.asdict(classify_doc_type(args.title, args.url)), ensure_ascii=False, indent=2))

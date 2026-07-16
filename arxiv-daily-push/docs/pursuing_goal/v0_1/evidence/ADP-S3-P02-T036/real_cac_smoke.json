@@ -1,0 +1,36 @@
+{
+  "note": "LIVE point-in-time classification of real cac.gov.cn homepage links; not byte-reproducible.",
+  "fetched_at": "2026-07-16T16:10:09+10:00",
+  "host": "www.cac.gov.cn",
+  "items": [
+    {
+      "title": "习近平在上海考察",
+      "doc_type": "news",
+      "is_primary": false
+    },
+    {
+      "title": "蔡奇陪同考察",
+      "doc_type": "news",
+      "is_primary": false
+    },
+    {
+      "title": "国家互联网信息办公室关于《互联网信息服务管理办法（修订草案征求意见稿）》再次公开征求意见的通知",
+      "doc_type": "consultation",
+      "is_primary": true
+    },
+    {
+      "title": "关于征求《政务移动互联网应用程序管理要求》强制性国家标准（征求意见稿）意见的通知",
+      "doc_type": "consultation",
+      "is_primary": true
+    },
+    {
+      "title": "国家互联网信息办公室关于《促进分布式数字身份互通互认应用规定（征求意见稿）》公开征求意见的通知",
+      "doc_type": "consultation",
+      "is_primary": true
+    }
+  ],
+  "nda_access": {
+    "ok": false,
+    "note": "blocked: TLS/JS-shell; needs browser or RSS/API entry"
+  }
+}
