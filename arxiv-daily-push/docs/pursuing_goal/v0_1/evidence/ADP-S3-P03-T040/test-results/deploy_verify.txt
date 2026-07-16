@@ -1,0 +1,14 @@
+=== T040 deploy verification (version 5bcd9f21, build b189d3cc0703, flag OFF) ===
+adp.linzezhang.com: themes 6/6 ['cosmos', 'forest', 'fresh', 'minimal', 'techno', 'warm'] | hero_video=True | build_footer=True
+adp-cloud.linzezhang35.workers.dev: themes 6/6 ['cosmos', 'forest', 'fresh', 'minimal', 'techno', 'warm'] | hero_video=True | build_footer=True
+  route /today: 200
+  route /queue: 200
+  route /radar: 200
+  route /system: 200
+  route /history: 200
+  route /search: 200
+  route /build.json: 200
+  route /api/a0-canary: 200
+build.json: b189d3cc0703 cn_v0_3
+canary: official=8 evidence_rate=1 media_under_gate=0 flag=OFF (production unchanged)
+ACCEPTANCE: official_evidence_rate==1.0: True | rollback one-deploy: BOARD3_A0_ONLY=false

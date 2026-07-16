@@ -1,0 +1,23 @@
+# ADP-S3-P03-T040 commands (Board 3 A0 canary switch; CANARY; Owner S3 Exit approved A0 promotion)
+# base: main 2027e012 (T039); live worker 64c8b842 (T023) -> rollback target
+
+# 1) worker: feature flag + A0 gate + non-destructive canary endpoint (flag OFF = production unchanged)
+#    worker_cloud.js: const BOARD3_A0_ONLY=false; a0Board3Eligible(it); selectDaily gate; GET /api/a0-canary
+#    build hash recomputed (self-excluding): 9cd3d8a2fe68 -> b189d3cc0703
+node --check worker_cloud.js   # OK
+
+# 2) deploy
+npx wrangler@4 deploy --config wrangler_cloud.jsonc   # -> version 5bcd9f21 (build b189d3cc0703)
+
+# 3) verify (both domains): six themes 6/6, hero video, routes 200, canary
+python3 <verify> | tee evidence/ADP-S3-P03-T040/test-results/deploy_verify.txt
+# -> adp.linzezhang.com + adp-cloud: themes 6/6 (cosmos/forest/fresh/minimal/techno/warm), hero_video True, build b189d3cc0703
+# -> routes /today /queue /radar /system /history /search /build.json /api/a0-canary all 200
+# -> /api/a0-canary: 8 real gov.cn official originals, official_evidence_rate 1.0, media_under_gate 0, flag OFF, non-destructive
+# -> ACCEPTANCE: official_evidence_rate==1.0 True; rollback one-deploy (BOARD3_A0_ONLY=false)
+
+# ACCEPTANCE MET: 官方证据率 100% (canary, 8 real gov.cn originals); P0 regression rollback in one deploy (flag off).
+# flag OFF -> production Board 3 (media) + six themes unchanged. Full flip pending adapters wired to cron + real 14-day shadow.
+
+# worker change = product_capability_change -> parameter_registry bump + TRACEABILITY/VERSION/delivery + manifest update.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

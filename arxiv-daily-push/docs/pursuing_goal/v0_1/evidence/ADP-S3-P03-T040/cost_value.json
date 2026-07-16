@@ -1,0 +1,10 @@
+{
+  "task": "ADP-S3-P03-T040", "stage": "S3 China A0 Official Pilot", "release_mode": "CANARY",
+  "value_metric": "the reversible Board-3 A0 switch is live: a feature flag + eligibility gate demote media to discovery and make A0 official original text the default evidence; a non-destructive canary endpoint proves official evidence rate 100% against 8 real gov.cn originals; the flag ships OFF so production Board 3 and the six themes are unchanged, and rollback is one deploy",
+  "cost_itemized_unknown_not_zero": {"new_requests": 1, "d1_rows_read": 105, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "feature flag + gate + canary endpoint; the /api/a0-canary endpoint makes 1 live gov.cn subrequest per call (manual, not cron), well within the DIR-007 free-tier Worker subrequest budget; flag OFF means the cron path is unchanged (0 new subrequests)"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "deploy": {"version": "5bcd9f21-1b90-4c63-84a6-194816804bd6", "build_id": "b189d3cc0703", "rollback_version": "64c8b842-d33a-4754-9c6c-6ef7fe0e0a47", "flag": "BOARD3_A0_ONLY=false", "flag_rollback": "set BOARD3_A0_ONLY=false + redeploy (one deploy)"},
+  "canary_live": {"official_original_items_found": 8, "official_eligible": 8, "official_evidence_rate": 1.0, "media_evidence_rate_under_gate": 0, "board3_media_in_db": 105, "flag_state": "OFF (production unchanged)", "non_destructive": true},
+  "six_themes": {"adp.linzezhang.com": "6/6", "adp-cloud.linzezhang35.workers.dev": "6/6", "hero_video": true},
+  "acceptance": {"official_evidence_rate_100pct": true, "p0_regression_rollback_in_one_deploy": true, "production_mvp_unchanged_flag_off": true}
+}

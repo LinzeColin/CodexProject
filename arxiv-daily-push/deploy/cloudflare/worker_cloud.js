@@ -9,7 +9,20 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '9cd3d8a2fe68', source_sha256: '9cd3d8a2fe68c336fdd83cdc70c24ee81a7f7359fc271cf78fbb213aea8b28d0', schema_version: 'cn_v0_3', built_at: '2026-07-16' };
+const BUILD = { build_id: 'b189d3cc0703', source_sha256: 'b189d3cc0703cb00883eab13439f3fc2ecaef2f5bd1d2572fe71c70e4c0fdb7f', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+
+// ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+// 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+// 回滚 = 置 false 一次部署。非破坏性 canary 端点 /api/a0-canary 实抓 gov.cn 政策验证官方证据率，不写生产。
+const BOARD3_A0_ONLY = false;
+const A0_OFFICIAL_SOURCE_IDS = new Set(['gov-cn-policy', 'gov-cn-fagui', 'stats-gov', 'ndrc-gov', 'cac-gov', 'nda-gov']);
+// Board 3 A0 准入：源为央级 .gov.cn 官方 或 A0 白名单 source_id 才作官方证据；否则（媒体）降为 discovery（不作证据）。
+function a0Board3Eligible(it) {
+  if (it.board_id !== 'board3') return true;                 // 只门控 Board 3
+  if (A0_OFFICIAL_SOURCE_IDS.has(it.source_id)) return true;
+  const w = (it.website || it.url || '');
+  try { return new URL(/^https?:/.test(w) ? w : 'https://' + w).hostname.endsWith('.gov.cn'); } catch (e) { return false; }
+}
 
 // ── S2-P01-T022 不可变原始证据 R2 双写（SHADOW；feature flag 默认关=部署即基线；DIR-007 免费档硬预算内）──
 const RAW_DUALWRITE = true;  // S2-P01-T023 SHADOW 开启：cron/run 抓取后旁路双写 R2（预算硬停内） // 默认关；开=抓取成功后旁路把原始字节写 R2（不改发布主链）
@@ -384,6 +397,7 @@ async function selectDaily(env, asOfDate, counts) {
 
   let best = null;
   for (const it of (items || [])) {
+    if (BOARD3_A0_ONLY && !a0Board3Eligible(it)) continue;   // T040: Board 3 A0 门 —— 媒体不作证据（降 discovery）
     const sc = scoreItem(it, ctx);
     if (!best || sc.score > best.sc.score) best = { it, sc };
   }
@@ -1117,6 +1131,39 @@ export default {
       if (p === '/favicon.ico') return new Response('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>', { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=86400' } });
       if (p === '/robots.txt') return new Response('User-agent: *\nDisallow:\n', { headers: { 'content-type': 'text/plain' } });
       if (p === '/build.json') return jsonResp(BUILD);
+      if (p === '/api/a0-canary') {
+        // S3-P03-T040 非破坏性 canary：实抓 gov.cn 政策原文（1 子请求）→ 应用 Board 3 A0 门 → 报告官方证据率。
+        // 不写生产（只读预览）。回滚 = BOARD3_A0_ONLY=false 一次部署。
+        let official = [];
+        try {
+          const r = await fetch('https://www.gov.cn/zhengce/xxgk/', { headers: { 'user-agent': UA }, cf: { cacheTtl: 300 } });
+          const h = await r.text();
+          const re = /href="(https?:\/\/[^"]*\/zhengce\/content\/[^"]+\.htm)"[^>]*>([^<]{6,80})/g; let m;
+          const seen = new Set();
+          while ((m = re.exec(h)) && official.length < 8) {
+            if (seen.has(m[1])) continue; seen.add(m[1]);
+            const d = /\/(\d{4})-(\d{1,2})\/(\d{1,2})\//.exec(m[1]);
+            official.push({ source_id: 'gov-cn-policy', board_id: 'board3', title: m[2].trim(), url: m[1],
+                            date: d ? `${d[1]}-${String(+d[2]).padStart(2, '0')}-${String(+d[3]).padStart(2, '0')}` : null,
+                            a0_eligible: a0Board3Eligible({ board_id: 'board3', source_id: 'gov-cn-policy', url: m[1] }) });
+          }
+        } catch (e) { official = []; }
+        const { results: b3media } = await env.DB.prepare(
+          "SELECT id,source_id,title,url FROM cn_items WHERE board_id='board3' ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT 200").all();
+        const mediaDemoted = (b3media || []).filter(it => !a0Board3Eligible(it)).length;
+        const officialEligible = official.filter(o => o.a0_eligible).length;
+        return jsonResp({
+          canary: 'board3_a0_view', flag_state: BOARD3_A0_ONLY ? 'ON' : 'OFF (production unchanged)',
+          non_destructive: true, note: 'reads live gov.cn policy + current DB; writes nothing to production',
+          official_original_items_found: official.length, official_eligible: officialEligible,
+          board3_media_in_db: (b3media || []).length, board3_media_demoted_to_discovery: mediaDemoted,
+          official_evidence_rate: official.length ? (officialEligible / official.length) : null,
+          media_evidence_rate_under_gate: 0,
+          sample_official: official.slice(0, 3),
+          rollback: 'set BOARD3_A0_ONLY=false and redeploy (one deploy); flag currently ' + (BOARD3_A0_ONLY ? 'ON' : 'OFF'),
+          owner_gate: 'S3 Exit approved A0 promotion; full flip pending A0 adapters wired to worker + real 14-day shadow (DIR-007 budgeted)',
+        });
+      }
 
       if (request.method === 'POST') {
         if (p.startsWith('/api/grade/')) {
