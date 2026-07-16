@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "registry_revision": 93,
+  "registry_revision": 94,
   "repository": "LinzeColin/CodexProject",
-  "last_updated_at": "2026-07-16T14:24:03Z",
+  "last_updated_at": "2026-07-16T21:25:22Z",
   "bootstrap": {
     "imported_at": "2026-07-15T13:32:34Z",
     "implementation_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
@@ -129,6 +129,21 @@
       "source_ref": "taskpack-v3:sha256:ae0d74247cca3b8c6f4fcb3fb348f9a4425436e2d723d4e46286c302f7ff305e",
       "dependencies": [
         "TSK.CodexProject.REPO1.0007"
+      ]
+    },
+    {
+      "kind": "TSK",
+      "identifier": "TSK.CodexProject.REPO1.0009",
+      "project": "CodexProject",
+      "program": "REPO1",
+      "sequence": 9,
+      "idempotency_key": "control-handoff:TSK.CodexProject.REPO1.0009",
+      "allocated_from_base_sha": "6b83d8e2b653e609233286338e3a810816d60543",
+      "allocated_at": "2026-07-16T21:25:22Z",
+      "source_ref": "allocator:control-handoff:TSK.CodexProject.REPO1.0009",
+      "acceptance_id": "ACC.CodexProject.REPO1.0009",
+      "dependencies": [
+        "TSK.CodexProject.REPO1.0008"
       ]
     },
     {

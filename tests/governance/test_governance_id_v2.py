@@ -103,10 +103,10 @@ class GovernanceIdV2ContractTests(unittest.TestCase):
             37,
         )
         self.assertEqual(
-            sum(item["kind"] == "TSK" for item in payload["allocations"]), 62
+            sum(item["kind"] == "TSK" for item in payload["allocations"]), 63
         )
         self.assertEqual(
-            sum(item["kind"] == "EVT" for item in payload["allocations"]), 40
+            sum(item["kind"] == "EVT" for item in payload["allocations"]), 66
         )
         self.assertEqual(
             sum(item["kind"] == "PG" for item in payload["allocations"]), 1
@@ -255,7 +255,7 @@ class GovernanceIdV2ContractTests(unittest.TestCase):
             base_ref="HEAD",
         )
         self.assertEqual(summary["status"], "PASS", summary["errors"])
-        self.assertEqual(summary["task_ids"], 62)
+        self.assertEqual(summary["task_ids"], 63)
         self.assertTrue(summary["all_references_exactly_one"])
         self.assertTrue(summary["all_v2_references_exactly_one"])
         self.assertEqual(summary["migrated_projects"], ["OpenAIDatabase"])

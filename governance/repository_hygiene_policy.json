@@ -2,7 +2,7 @@
   "schema_version": 1,
   "policy_id": "CodexProject-root-repository-hygiene-v1",
   "owner": "repository-owner",
-  "baseline_tree": "6a585a21d947c76537bac7c1d62f142482b08787",
+  "baseline_tree": "84c1c17f84722bef9b00bd720d48126b417850c6",
   "regular_blob_max_bytes": 1048576,
   "hard_fail": {
     "forbidden_names": [

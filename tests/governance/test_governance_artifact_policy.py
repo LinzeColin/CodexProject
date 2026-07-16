@@ -32,8 +32,8 @@ class GovernanceArtifactPolicyTests(unittest.TestCase):
             openai_database["current"],
             {
                 "count": 14,
-                "bytes": 357812,
-                "sha256": "db4e580b9f7d0b0c851275b4c0af3611e49d587cd718fe84c266839ac4bde893",
+                "bytes": 363182,
+                "sha256": "9c4ee675839e78e26de51a4f1fd157e1d70a67ffbdba443343f682b86a278a96",
             },
         )
 

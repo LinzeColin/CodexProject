@@ -1,101 +1,85 @@
 # Repository Hygiene
 
-This is the owner-readable view of
-`governance/repository_hygiene_policy.json`. The JSON policy is the unique
-machine-readable truth; this document explains operating intent and does not
-create a second exception list.
+`governance/repository_hygiene_policy.json` is the only machine-readable
+retention truth. This file explains the reviewed P45 migration without creating
+a second exception list.
 
-## Scope and current truth
+## Current accepted baseline
 
-`TSK.CodexProject.REPO1.0006` governs current-tree large objects, archives,
-runtime/cache/generated noise, and the source code that could recreate whole-
-repository backups. Its baseline is Git tree
-`6a585a21d947c76537bac7c1d62f142482b08787`.
+`TSK.CodexProject.REPO1.0009` P45 binds the fail-closed policy to reachable
+parent commit `6b83d8e2b653e609233286338e3a810816d60543`, tree
+`84c1c17f84722bef9b00bd720d48126b417850c6`. A fresh clone can therefore load
+the baseline tree and compare exact blob OIDs.
 
-At the implementation base, 53 tracked objects exceeded 1 MiB (465,327,591
-bytes total) and five archive-shaped files were tracked. The Git object pack was
-about 3.54 GiB because old objects remain in history. Current-tree deletion does
-not shrink that pack, and this Task does not rewrite history.
+The policy-bound candidate audit reports:
 
-## 功能清单
+- tracked objects: 14,293
+- objects over 1 MiB: 65 / 465,742,985 bytes
+- archive-shaped objects: 36
+- tracked runtime noise: 0
+- executable backup producers: 0
+- policy violations: 0
+- history rewrite: `false` / `DEFERRED`
 
-1. Fail closed when a regular tracked blob exceeds 1 MiB.
-2. Permit an existing large object only when it matches exactly one rule with
-   owner, purpose, consumer, retention, recovery, confidentiality, maximum
-   bytes, and the unchanged baseline Git blob OID.
-3. Reject new or modified tar/zip/7z artifacts unless a reviewed migration
-   changes the canonical policy.
-4. Reject tracked bundle, WAL/SHM, cache, build, coverage, `node_modules`,
-   temporary, swap, and backup outputs.
-5. Scan executable source and workflows for `git bundle`, bundle creation, and
-   mirror-clone producers while excluding inert historical evidence/data.
-6. Keep raw session archive generation opt-in and outside the Git repository;
-   scheduled Memory Atlas updates export numeric usage and sanitized data only.
-7. Report current pack bytes without claiming historical cleanup.
+Git pack size is observational only; removing current-tree files does not purge
+historical objects.
 
-Run the gate from the repository root:
+## P45 reviewed migration
+
+- Preserved the complete validated Clean Memory V3 TaskPack on current
+  `main`, while retaining the newer repository-split state.
+- Kept `LinzeColin/AgentDatabase` public and required credential/public-safety
+  gates; no repository visibility change or private Governance write occurred.
+- Removed five duplicate/oversized KM_IDSystem backup containers from the
+  current tree. Exact recovery remains available from reachable commit
+  `f37ae7af823173aef8a34d9eb491c5606ac4d929`; blob and SHA-256 identities are
+  documented in the KM_IDSystem restore guide.
+- Preserved three intentionally absent OpenAIDatabase root human views instead
+  of restoring files deleted by the newer split lineage.
+- Reviewed existing PFI reports/traces, the v0.2.5 source TaskPack, and arxiv
+  pursuing-goal evidence into baseline-OID-only rules. Their byte ceilings match
+  the largest accepted baseline object; any new path or byte change still fails.
+- Kept the global regular-file ceiling at 1,048,576 bytes.
+
+## Fail-closed behavior
+
+1. A regular tracked blob over 1 MiB needs exactly one reviewed `large` rule.
+2. Every archive needs exactly one reviewed `archive` rule.
+3. Retained paths must match their baseline Git blob OID and per-rule size cap.
+4. Bundle/WAL/SHM/cache/build/coverage/temp/backup outputs fail.
+5. Executable source that creates whole-repository bundles or mirror clones fails.
+6. No history rewrite or force update is authorized by this task.
+
+Run the exact staged-tree gate:
 
 ```bash
-python3 -B scripts/repository_hygiene_audit.py --root .
+tree=$(git write-tree)
+python3 -B scripts/repository_hygiene_audit.py --root . --tree-ish "$tree"
 ```
 
-After staging, audit the exact staged tree with:
+## Parameters
 
-```bash
-python3 -B scripts/repository_hygiene_audit.py --root . --tree-ish "$(git write-tree)"
-```
+| Parameter | Value |
+|---|---:|
+| `regular_blob_max_bytes` | 1,048,576 |
+| PFI visual/archive maximum | 12,680,824 |
+| PFI v0.2.5 source TaskPack maximum | 86,942 |
+| arxiv pursuing-goal evidence maximum | 1,556,045 |
+| runtime-noise tolerance | 0 |
+| executable backup-producer tolerance | 0 |
+| new/modified retained-object tolerance | 0 |
 
-## 开发记录
-
-| Item | Decision / implementation |
-|---|---|
-| Task / Acceptance | `TSK.CodexProject.REPO1.0006` / `ACC.CodexProject.REPO1.0006` |
-| Base | commit `57cb6bca623d2e01bde1a866140804c283340bd8`, tree `6a585a21d947c76537bac7c1d62f142482b08787` |
-| Future bundle producers | Source audit found zero and now blocks introduction in executable source/workflows. |
-| Scheduled raw archive producer | Removed `session_history/current-mac-latest` from automatic export and commit targets. Direct raw export requires an explicit destination outside the repository. |
-| Safe current deletion | Removed the 150,501-byte numeric-token transfer tar after all extracted data files matched recorded SHA-256 values. The extracted payload remains canonical and reproducible. |
-| Retained sensitive archive | The 38,293,927-byte June 2026 session tar is the only verified copy located in this Run. It is baseline-locked, not a runtime input, and must be SHA-256-offloaded privately before any later removal/history rewrite. |
-| Existing project large files | Baseline-only exceptions preserve other projects without widening this root Task into their business logic. Any byte change fails until that project performs a reviewed compaction/migration. |
-| History rewrite | `DEFERRED`; explicitly prohibited in this Task. |
-
-## 模型参数文件
-
-| Parameter | Value | Rationale |
-|---|---:|---|
-| `regular_blob_max_bytes` | 1,048,576 | Task acceptance limit for new regular tracked files. |
-| Baseline identity | Git tree + blob OID | Detects both new paths and byte changes without hashing sensitive contents into reports. |
-| Public raw shard temporary maximum | 47,185,920 | Covers unchanged legacy shards only; new/modified shards still fail. A later data task must re-shard below its stricter limit. |
-| Runtime noise tolerance | 0 tracked files | WAL/SHM/cache/build/generated state must remain machine-local. |
-| Bundle producer tolerance | 0 source matches | Whole-repository backup producers are prohibited. |
-| Archive change tolerance | 0 new/modified archives | Transfer packages belong in private storage or an authorized Release, not the main tree. |
-| History rewrite | `false` / `DEFERRED` | Shared-ref rewriting needs a separate owner-authorized incident-grade migration. |
-
-These are deterministic repository-policy parameters, not probabilistic model
-settings. Lowering the size cap is allowed; raising it above 1 MiB is rejected
-by both the schema and validator.
-
-## LFS, Release, and recovery decision
-
-Git LFS is not enabled by this Task. Adding LFS would introduce a second storage
-dependency, would not remove already-published history, and would weaken a clean
-clone when LFS objects are unavailable. Future public, rights-owned binary
-release artifacts may use an authorized GitHub Release with SHA-256 and owner /
-consumer / retention metadata. Sensitive archives use private external storage.
-Neither route is performed automatically by this gate.
-
-The retained raw session tar must never be copied over `~/.codex/sessions`.
-Before a later history rewrite, first create and verify an independent private
-copy, freeze writers, record all affected refs/releases/signatures, rehearse
-rollback, and prove a fresh clone.
+These are deterministic repository controls, not probabilistic model settings.
+LFS, Release upload, remote publication, force-push, and history rewriting are
+outside P45.
 
 ## Acceptance and rollback
 
-Acceptance requires: policy/schema validation; focused negative tests for new
-large objects, changed baseline objects, archives, runtime noise, and backup
-producer source; zero live policy violations; OpenAIDatabase exporter regression
-tests; clean build/checkout; governance validation; `git diff --check`; and a
-clean final worktree.
+Acceptance requires policy/schema validation, focused negative tests, exact-tree
+hygiene PASS, checksum verification, root/public-route regression, Task37
+focused tests, workflow security, changed-scope governance, credential scan, and
+`git diff --check`.
 
-Rollback before whole-package publication is one normal revert of this Task's
-local commit. Do not force-push, delete remote refs, or restore the removed
-duplicate tar when rolling back unrelated future work.
+Before publication, rollback is a normal revert of the two local P45 commits.
+Do not restore the removed backup containers or split-deleted files as part of
+an unrelated rollback.

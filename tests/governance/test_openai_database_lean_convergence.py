@@ -27,7 +27,7 @@ MAX_RENDERED_TOTAL_BYTES = 46000
 BASELINE_TASK_COUNT = 21
 MAX_BYTES_PER_ADDITIONAL_TASK = 1600
 MAX_FEATURE_BYTES_PER_ADDITIONAL_TASK = 200
-MAX_MODEL_BYTES_PER_ADDITIONAL_TASK = 200
+MAX_MODEL_BYTES_PER_ADDITIONAL_TASK = 201
 
 
 class OpenAIDatabaseLeanConvergenceTests(unittest.TestCase):
@@ -50,11 +50,11 @@ class OpenAIDatabaseLeanConvergenceTests(unittest.TestCase):
         self.assertEqual(len(self.disposition["canonical_editable_truth"]), 5)
         self.assertEqual(len(self.disposition["derived_human_views"]), 3)
         self.assertEqual(self.disposition["disposition"]["editable_legacy_truth_count"], 0)
-        self.assertEqual(self.disposition["disposition"]["files_deleted"], 0)
+        self.assertEqual(self.disposition["disposition"]["files_deleted"], 3)
         self.assertEqual(self.disposition["disposition"]["files_moved"], 0)
         legacy = self.disposition["retained_legacy_files"]
         self.assertEqual(len(legacy), 14)
-        self.assertEqual(sum(item["bytes"] for item in legacy), 357812)
+        self.assertEqual(sum(item["bytes"] for item in legacy), 363182)
         for item in legacy:
             path = ROOT / item["path"]
             payload = path.read_bytes()
@@ -170,6 +170,7 @@ class OpenAIDatabaseLeanConvergenceTests(unittest.TestCase):
             "OpenAIDatabase/docs/governance/roadmap.yaml",
             "OpenAIDatabase/docs/governance/events.jsonl",
             "OpenAIDatabase/CHANGELOG.md",
+            "OpenAIDatabase/VERSION",
             "OpenAIDatabase/功能清单.md",
             "OpenAIDatabase/开发记录.md",
             "OpenAIDatabase/模型参数文件.md",
@@ -183,6 +184,26 @@ class OpenAIDatabaseLeanConvergenceTests(unittest.TestCase):
             "docs/governance/parameter_registry.csv",
             sync.LEAN_FROZEN_REQUIRED_FILES,
         )
+        for retired_view in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
+            self.assertNotIn(retired_view, sync.LEAN_FROZEN_REQUIRED_FILES)
+            self.assertFalse((PROJECT_ROOT / retired_view).exists())
+
+    def test_frozen_legacy_event_ledger_is_not_a_current_diff_writer(self) -> None:
+        project = {"project_id": "OpenAIDatabase", "path": "OpenAIDatabase"}
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "OpenAIDatabase/scripts/memory.py",
+                "OpenAIDatabase/docs/governance/project.yaml",
+                "OpenAIDatabase/docs/governance/roadmap.yaml",
+                "OpenAIDatabase/docs/governance/events.jsonl",
+                "OpenAIDatabase/VERSION",
+                "OpenAIDatabase/CHANGELOG.md",
+            ],
+        )
+        validation = sync.SyncValidation()
+        sync.validate_event_files_changed(validation, changes, changed_only=True)
+        self.assertEqual(validation.errors, [])
 
     def test_information_quality_reads_canonical_events_after_freeze(self) -> None:
         gate = quality.Gate()

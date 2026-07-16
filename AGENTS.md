@@ -14,8 +14,8 @@
 
 ## 永久执行契约
 
-- Active project 必须注册于 `governance/projects.yaml`，根目录直接维护完整中文
-  `功能清单.md`、`开发记录.md`、`模型参数文件.md`，禁止 alias/link-only 页面。
+- Active project 必须注册于 `governance/projects.yaml`，并有完整中文
+  `功能清单.md`、`开发记录.md`、`模型参数文件.md`；已拆分视图按 canonical facts 按需渲染。
 - `开发记录.md` 直接含完整 Roadmap：Stage -> Phase -> Task、ID、hours/percentages、
   gates/stop conditions、Acceptance、evidence、rollback、current result。
 - ID 格式：`TSK/ACC.<project>.<program>.<sequence>`。每个 run 默认仅处理一个

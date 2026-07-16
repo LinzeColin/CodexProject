@@ -69,45 +69,6 @@
       "writer": "human-maintained derived view",
       "editable_fact_source": false,
       "retention": "repository_lifetime"
-    },
-    {
-      "path": "OpenAIDatabase/功能清单.md",
-      "source_refs": [
-        "OpenAIDatabase/docs/governance/project.yaml",
-        "OpenAIDatabase/docs/governance/roadmap.yaml",
-        "OpenAIDatabase/docs/governance/events.jsonl",
-        "OpenAIDatabase/VERSION",
-        "OpenAIDatabase/CHANGELOG.md"
-      ],
-      "writer": "scripts/lean_governance.py render --project OpenAIDatabase --write",
-      "editable_fact_source": false,
-      "retention": "repository_lifetime"
-    },
-    {
-      "path": "OpenAIDatabase/开发记录.md",
-      "source_refs": [
-        "OpenAIDatabase/docs/governance/project.yaml",
-        "OpenAIDatabase/docs/governance/roadmap.yaml",
-        "OpenAIDatabase/docs/governance/events.jsonl",
-        "OpenAIDatabase/VERSION",
-        "OpenAIDatabase/CHANGELOG.md"
-      ],
-      "writer": "scripts/lean_governance.py render --project OpenAIDatabase --write",
-      "editable_fact_source": false,
-      "retention": "repository_lifetime"
-    },
-    {
-      "path": "OpenAIDatabase/模型参数文件.md",
-      "source_refs": [
-        "OpenAIDatabase/docs/governance/project.yaml",
-        "OpenAIDatabase/docs/governance/roadmap.yaml",
-        "OpenAIDatabase/docs/governance/events.jsonl",
-        "OpenAIDatabase/VERSION",
-        "OpenAIDatabase/CHANGELOG.md"
-      ],
-      "writer": "scripts/lean_governance.py render --project OpenAIDatabase --write",
-      "editable_fact_source": false,
-      "retention": "repository_lifetime"
     }
   ],
   "contract_resources": [
@@ -187,8 +148,8 @@
       "mutable": false,
       "baseline": {
         "count": 14,
-        "bytes": 357812,
-        "sha256": "db4e580b9f7d0b0c851275b4c0af3611e49d587cd718fe84c266839ac4bde893"
+        "bytes": 363182,
+        "sha256": "9c4ee675839e78e26de51a4f1fd157e1d70a67ffbdba443343f682b86a278a96"
       }
     },
     {

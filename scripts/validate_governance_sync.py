@@ -111,9 +111,7 @@ LEAN_FROZEN_REQUIRED_FILES = {
     "docs/governance/roadmap.yaml",
     "docs/governance/events.jsonl",
     "CHANGELOG.md",
-    "功能清单.md",
-    "开发记录.md",
-    "模型参数文件.md",
+    "VERSION",
 }
 COMMON_REQUIRED_BY_CLASS = {
     "model_behavior_change": {
@@ -582,6 +580,11 @@ def validate_event_files_changed(
     changed_only: bool = False,
 ) -> None:
     for change in project_changes:
+        if uses_frozen_lean_governance(change.project):
+            # Frozen legacy development_events.jsonl is compatibility evidence,
+            # not a current writer. Compact changed run manifests cover the
+            # exact diff while canonical events carry the owner-facing facts.
+            continue
         event_path = "docs/governance/development_events.jsonl"
         if event_path not in change.updated_governance_files:
             continue

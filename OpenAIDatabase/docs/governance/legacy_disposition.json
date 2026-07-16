@@ -36,7 +36,8 @@
     "OpenAIDatabase/开发记录.md",
     "OpenAIDatabase/模型参数文件.md"
   ],
-  "derived_human_writer": "scripts/lean_governance.py render --project OpenAIDatabase --write",
+  "derived_human_writer": "scripts/lean_governance.py render --project OpenAIDatabase to an untracked review destination",
+  "derived_human_tracking": "retired_from_current_tree_by_repository_split; deterministic_on_demand_only",
   "reader_groups": {
     "legacy_status_compatibility": [
       ".github/workflows/project-governance.yml",
@@ -89,8 +90,8 @@
       "role": "legacy_development_evidence",
       "reader_group": "legacy_planning_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 41566,
-      "sha256": "0a356bd61c046b527b83b0db8049c23faa8cbd92d91db856dacf5e972f5df979"
+      "bytes": 46095,
+      "sha256": "39f832f2db79b8dc3c427eec718d4dfd4cf364f4791533002826a948770625e7"
     },
     {
       "path": "OpenAIDatabase/docs/governance/LOCAL_HISTORY_IMPORTS_MOVE_20260630.md",
@@ -137,8 +138,8 @@
       "role": "legacy_version_evidence",
       "reader_group": "legacy_planning_compatibility",
       "former_writer": "historical_governance_tasks",
-      "bytes": 5543,
-      "sha256": "699cd7b4eb650d0ce5771f87d2e95c30802d3a4865fb2790532ebb61f91806db"
+      "bytes": 6384,
+      "sha256": "b3c4517ac9124e6874c37ee9dd701813d8510e302aacab57e79eae4033a4a11a"
     },
     {
       "path": "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
@@ -183,14 +184,14 @@
   ],
   "freeze_collection": {
     "count": 14,
-    "bytes": 357812,
-    "sha256": "db4e580b9f7d0b0c851275b4c0af3611e49d587cd718fe84c266839ac4bde893"
+    "bytes": 363182,
+    "sha256": "9c4ee675839e78e26de51a4f1fd157e1d70a67ffbdba443343f682b86a278a96"
   },
   "disposition": {
     "editable_legacy_truth_count": 0,
-    "files_deleted": 0,
+    "files_deleted": 3,
     "files_moved": 0,
-    "compatibility_strategy": "retain exact bytes and active readers; future retirement requires an owner-authorized migration with reference-zero and hash reconciliation evidence",
-    "replacement": "Lean v2 canonical editable truth plus deterministic Chinese human views"
+    "compatibility_strategy": "retain exact legacy bytes and active readers; render retired root human views only to an untracked review destination",
+    "replacement": "Lean v2 canonical editable truth plus deterministic on-demand Chinese human views"
   }
 }
