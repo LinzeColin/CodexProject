@@ -1,0 +1,74 @@
+{
+  "health": {
+    "ok": true,
+    "checked": "reference fixtures",
+    "note": "evidence/ADP-S3-P01-T032/fixtures"
+  },
+  "results": [
+    {
+      "fixture": "normal.html",
+      "passed": true,
+      "diffs": [],
+      "got": {
+        "title": "国务院关于推进X工作的通知",
+        "doc_number": "国发〔2026〕5号",
+        "doc_date": "2026-03-15",
+        "status": "现行有效",
+        "authority_level": "A0",
+        "body_text": "各省、自治区、直辖市人民政府，国务院各部委：现就推进X工作通知如下。",
+        "attachments": [
+          {
+            "url": "/att/tongzhi.pdf",
+            "kind": "pdf"
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "attachment.html",
+      "passed": true,
+      "diffs": [],
+      "got": {
+        "title": "国家发展改革委关于Y的公告",
+        "doc_number": "发改〔2026〕88号",
+        "doc_date": "2026-04-02",
+        "status": "现行有效",
+        "authority_level": "A0",
+        "body_text": "现将Y公告如下，附件为原文与解读。",
+        "attachments": [
+          {
+            "url": "/att/gonggao.pdf",
+            "kind": "pdf"
+          },
+          {
+            "url": "/att/jiedu.docx",
+            "kind": "docx"
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "pagination.html",
+      "passed": true,
+      "diffs": [],
+      "got": [
+        {
+          "url": "normal.html",
+          "title": "国务院关于推进X工作的通知",
+          "hint_date": "2026-03-15"
+        },
+        {
+          "url": "attachment.html",
+          "title": "国家发展改革委关于Y的公告",
+          "hint_date": "2026-04-02"
+        },
+        {
+          "url": "doc3.html",
+          "title": "网信办关于Z的规定",
+          "hint_date": "2026-05-20"
+        }
+      ]
+    }
+  ],
+  "all_passed": true
+}

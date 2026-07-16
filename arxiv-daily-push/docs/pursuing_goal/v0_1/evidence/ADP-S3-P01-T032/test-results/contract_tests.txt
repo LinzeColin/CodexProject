@@ -1,0 +1,10 @@
+positive contract: all_passed = True
+  normal.html: passed=True diffs=[]
+  attachment.html: passed=True diffs=[]
+  pagination.html: passed=True diffs=[]
+
+field drift (changed.html vs normal expected): passed = False | diffs = ["doc_number: expected '国发〔2026〕5号' got None"]
+attachment loss (dropped 政策解读.docx): passed = False | diffs = ["attachments: expected [{'url': '/att/gonggao.pdf', 'kind': 'pdf'}, {'url': '/att/jiedu.docx', 'kind': 'docx'}] got [{'url': '/att/gonggao.pdf', 'kind': 'pdf'}]"]
+pagination break (removed next link): passed = False | diffs = ['discovered 2 items != expected 3'] | got 2 of expected 3
+
+ACCEPTANCE = PASS

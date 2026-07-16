@@ -1,0 +1,23 @@
+# ADP-S3-P01-T032 commands (offline fixture + contract-test harness; no network)
+# base: main 2c885fb7 (T031)
+
+# 1) harness + reference connector + fixtures + golden authored
+#    tools/connector_contract.py   (ReferenceOfficialConnector parsing a defined official-doc template;
+#                                   run_contract diffs parse vs golden; check_doc / check_pagination)
+#    CONTRACT_TEST_SPEC.md
+#    evidence/.../fixtures/{normal,attachment,pagination,pagination_p2,changed}.html
+#    evidence/.../expected/{normal,attachment,pagination}.json   (golden, frozen from the reference parse)
+
+# 2) acceptance test: positives pass; each drift type FAILS the matching contract
+python3 evidence/ADP-S3-P01-T032/test-results/t032_verify.py | tee evidence/ADP-S3-P01-T032/test-results/contract_tests.txt
+# -> positive contract all_passed True (normal/attachment/pagination)
+# -> field drift (changed.html renames 文号 class) -> doc_number None -> FAIL caught
+# -> attachment loss (dropped 政策解读.docx) -> attachments differ -> FAIL caught
+# -> pagination break (removed next link) -> 2 of 3 discovered -> FAIL caught
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) committed contract report
+python3 tools/connector_contract.py --fixtures evidence/ADP-S3-P01-T032/fixtures --expected evidence/ADP-S3-P01-T032/expected --out evidence/ADP-S3-P01-T032/contract_report.json
+
+# NOT_DEPLOYED: offline harness; no worker/D1/network.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

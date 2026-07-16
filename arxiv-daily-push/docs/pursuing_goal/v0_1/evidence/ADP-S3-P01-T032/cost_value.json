@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S3-P01-T032", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "a fixture + contract-test harness that catches a government-site template change in CI (field drift, lost attachment, or broken pagination) instead of silently mis-fetching after go-live -- the safety net that lets the A0 official adapters (T034+) be trusted",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "offline fixtures + contract tests; when a real official site legitimately changes its template, re-capture the fixture and update the golden JSON, then the contract passes again"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "contract": {"fixtures": ["normal", "attachment", "pagination(+p2)", "changed"], "positives_pass": true, "field_drift_caught": true, "attachment_loss_caught": true, "pagination_break_caught": true},
+  "acceptance": {"any_field_drift_fails_test": true, "attachment_loss_fails_test": true, "pagination_break_fails_test": true, "golden_positives_pass": true}
+}

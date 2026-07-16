@@ -1,0 +1,17 @@
+[
+  {
+    "url": "normal.html",
+    "title": "国务院关于推进X工作的通知",
+    "hint_date": "2026-03-15"
+  },
+  {
+    "url": "attachment.html",
+    "title": "国家发展改革委关于Y的公告",
+    "hint_date": "2026-04-02"
+  },
+  {
+    "url": "doc3.html",
+    "title": "网信办关于Z的规定",
+    "hint_date": "2026-05-20"
+  }
+]
