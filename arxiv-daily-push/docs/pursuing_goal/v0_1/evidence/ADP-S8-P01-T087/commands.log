@@ -1,0 +1,5 @@
+# ADP-S8-P01-T087 final Value-Cost Gate -- key commands
+python3 tools/value_cost_scorecard.py --out evidence/ADP-S8-P01-T087/value_cost_scorecard.json
+#   -> keep 6 / hold 4, $0/mo recurring, 92/131 parity delivered, GATE_MACHINE_PASS=True, Owner sign-off PENDING
+python3 evidence/ADP-S8-P01-T087/test-results/t087_verify.py   # ACCEPTANCE=PASS (machine rules) exit 0; 3 negative controls
+curl -s https://adp.linzezhang.com/build.json                  # build_id b189d3cc0703 (NOT_DEPLOYED)

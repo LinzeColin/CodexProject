@@ -1,0 +1,203 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S8-P01-T087",
+  "parity": {
+    "total": 131,
+    "delivered": 92,
+    "partial": 21,
+    "planned": 15,
+    "not_applicable": 3
+  },
+  "release_modes": {
+    "NOT_DEPLOYED": 73,
+    "CANARY": 3,
+    "SHADOW": 12,
+    "PRODUCTION": 2
+  },
+  "scorecard": [
+    {
+      "component": "cloudflare_worker (adp-cloud)",
+      "category": "infra",
+      "deployed": true,
+      "recurring": {
+        "resource": "Workers",
+        "free_tier": true,
+        "usd": 0
+      },
+      "has_value_evidence": true,
+      "value_metric": "serves the entire live cognitive system; 92/131 competitor-parity benefits delivered (partial 21, planned 15); live build b189d3cc0703",
+      "evidence_ref": "ADP-S1-P01-T010 / ADP-S3-P03-T040",
+      "decision": "keep"
+    },
+    {
+      "component": "d1 (adp-mirror)",
+      "category": "infra",
+      "deployed": true,
+      "recurring": {
+        "resource": "D1",
+        "free_tier": true,
+        "usd": 0
+      },
+      "has_value_evidence": true,
+      "value_metric": "canonical documents + 2016+ recoverable history + review store; query indexes (T083)",
+      "evidence_ref": "ADP-S2-P03-T027 / ADP-S2-P03-T029 / ADP-S7-P03-T083",
+      "decision": "keep"
+    },
+    {
+      "component": "cron (daily 30 20)",
+      "category": "infra",
+      "deployed": true,
+      "recurring": {
+        "resource": "Cron Triggers",
+        "free_tier": true,
+        "usd": 0
+      },
+      "has_value_evidence": true,
+      "value_metric": "daily fresh fetch -> select -> lesson pipeline (freshness)",
+      "evidence_ref": "ADP-S1-P01-T010",
+      "decision": "keep"
+    },
+    {
+      "component": "domains/DNS (adp + home.linzezhang.com)",
+      "category": "infra",
+      "deployed": true,
+      "recurring": {
+        "resource": "DNS",
+        "free_tier": true,
+        "usd": 0
+      },
+      "has_value_evidence": true,
+      "value_metric": "public access to the product + entry hub",
+      "evidence_ref": "ADP-S0-P02-T004",
+      "decision": "keep"
+    },
+    {
+      "component": "deployed sources (5 boards + A0 official Board3)",
+      "category": "content",
+      "deployed": true,
+      "recurring": {
+        "resource": "outbound fetch",
+        "free_tier": true,
+        "usd": 0
+      },
+      "has_value_evidence": true,
+      "value_metric": "board coverage + A0 official-original authority for Board3",
+      "evidence_ref": "ADP-S1-P02-T013 / ADP-S3-P03-T040",
+      "decision": "keep"
+    },
+    {
+      "component": "six-theme UI + motion + a11y",
+      "category": "experience",
+      "deployed": true,
+      "recurring": {
+        "resource": "Workers (static)",
+        "free_tier": true,
+        "usd": 0
+      },
+      "has_value_evidence": true,
+      "value_metric": "six-theme advanced motion, mobile-safe, component states, a11y, provenance marking",
+      "evidence_ref": "ADP-S7-P01-T077 .. ADP-S7-P04-T084",
+      "decision": "keep"
+    },
+    {
+      "component": "r2 raw-artifact dual-write",
+      "category": "infra",
+      "deployed": true,
+      "recurring": {
+        "resource": "R2",
+        "free_tier": true,
+        "usd": 0,
+        "flag": "RAW_DUALWRITE=true (SHADOW-active, per-run cap 3)",
+        "free_tier_usage": "~90 Class A writes/mo, ~4.7MB/mo storage growing -- within free tier (1M ops / 10GB)"
+      },
+      "has_value_evidence": true,
+      "value_metric": "immutable content-addressed A0-A2 raw evidence (permanent), ACTIVELY captured in shadow in the live b189d3cc0703 build, within the DIR-007 free-tier budget",
+      "evidence_ref": "ADP-S2-P01-T022 / ADP-S2-P01-T023 / ADP-S8-P01-T086",
+      "decision": "keep",
+      "note": "SHADOW-deployed (RAW_DUALWRITE=true since T023, never reverted); monitor R2 usage vs the DIR-007 free-tier limits"
+    },
+    {
+      "component": "A1/A2 subnational sources (province/city)",
+      "category": "content",
+      "deployed": false,
+      "recurring": {
+        "resource": "outbound fetch",
+        "free_tier": true,
+        "usd": 0,
+        "flag": "SHADOW"
+      },
+      "has_value_evidence": true,
+      "value_metric": "geographic depth (identity/coverage proven in shadow)",
+      "evidence_ref": "ADP-S4-P03-T050 / T051 / ADP-S4-P04-T053 / T054",
+      "decision": "hold",
+      "hold_reason": "SHADOW; per-cohort Owner promotion gate not yet signed -> stays off"
+    },
+    {
+      "component": "S5 multi-board depth (events/entities/search/research/watchlist/library)",
+      "category": "capability",
+      "deployed": false,
+      "recurring": {
+        "resource": "D1/Workers",
+        "free_tier": true,
+        "usd": 0,
+        "flag": "NOT_DEPLOYED"
+      },
+      "has_value_evidence": true,
+      "value_metric": "the 131-parity depth layer (proven deterministically in evidence)",
+      "evidence_ref": "ADP-S5-P01-T057 .. ADP-S5-P04-T068",
+      "decision": "hold",
+      "hold_reason": "proven in evidence; promotion-gated -> stays off until promoted"
+    },
+    {
+      "component": "S6 prediction models (baselines/backtest/forecast ledger)",
+      "category": "model",
+      "deployed": false,
+      "recurring": {
+        "resource": "compute",
+        "free_tier": true,
+        "usd": 0,
+        "flag": "NOT_DEPLOYED"
+      },
+      "has_value_evidence": true,
+      "value_metric": "settlement rules + leak-guard + rolling-origin backtest + forecast ledger (in-evidence MODEL cards)",
+      "evidence_ref": "ADP-S6-P01-T069 .. ADP-S6-P03-T076",
+      "decision": "hold",
+      "hold_reason": "cognitive models NOT injected into the operational MODEL_SPEC; gated at promotion (S6 model decision)"
+    }
+  ],
+  "decisions_summary": {
+    "keep": 7,
+    "hold": 3
+  },
+  "total_recurring_usd_per_month": 0,
+  "budget_guardrails": {
+    "directive": "DIR-007 (COST_HARD_LIMIT): the whole ADP + all repos must never exceed the Cloudflare free tier",
+    "plan": "Cloudflare Free (FACT-013 VERIFIED); no paid upgrade without explicit Owner triple-confirmation",
+    "limits": {
+      "r2_storage_gb": 10,
+      "r2_class_a_ops_month": 1000000,
+      "r2_class_b_ops_month": 10000000,
+      "d1": "free tier",
+      "workers": "free tier",
+      "cron": "free tier"
+    },
+    "enforcement": "fail-closed: any write/store/request that would exceed a limit MUST stop; R2 write path has a built-in budget check; >=80% => alarm + throttle/stop; violation = stop-the-line",
+    "recurring_usd_per_month": 0
+  },
+  "owner_signoff": {
+    "required": true,
+    "status": "PENDING",
+    "statement": "Owner to sign: (a) every recurring cost has a value metric; (b) no-evidence components stay off; (c) DIR-007 free-tier budget guardrails hold; (d) keep/scale/hold/stop decisions approved.",
+    "note": "implementer does NOT self-sign; this is the prepared decision package"
+  },
+  "acceptance": {
+    "all_recurring_have_value_metric": true,
+    "missing_value": [],
+    "no_unproven_recurring_spend": true,
+    "deployed_without_evidence": [],
+    "off_but_not_held": [],
+    "within_free_tier_budget": true,
+    "budget_guardrails_present": true,
+    "gate_machine_pass": true
+  }
+}
