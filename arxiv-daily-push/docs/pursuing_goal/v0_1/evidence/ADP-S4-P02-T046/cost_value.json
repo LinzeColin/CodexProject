@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S4-P02-T046", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "SHADOW",
+  "value_metric": "the first real A0 2016+ history backfill Wave is executed: 7 real gov.cn policy originals across 6 distinct months (2019-2022) run through the T024 identity + T026 version + T021/T022 raw-key pipeline, idempotent (re-running adds no duplicates), attachments and versions preserved, month coverage recorded -- and it runs from the dev environment so the production worker/cron and realtime are untouched (no regression)",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "Wave-1 backfill executed from the dev environment (real gov.cn fetches, ~8 dev-env subrequests); the production worker/cron were NOT touched, so 0 cloud cost and DIR-007 is unaffected; the literal full 2016+ coverage accrues over real time once the adapters are wired to the worker cron under the T042 backfill lane + DIR-007 cap"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "wave1": {"cohort": "A0-WAVE-1", "source": "gov-cn-policy", "docs_backfilled": 7, "months_covered": ["2019-04", "2019-12", "2020-12", "2021-09", "2021-10", "2022-01"], "raw_objects": 7, "versions": 7, "attachments": 1, "idempotent_no_dup": true},
+  "realtime_no_regression": {"live_build_unchanged": "b189d3cc0703 (== T040)", "six_themes": "6/6", "today_status": 200, "worker_deployed": false},
+  "acceptance": {"realtime_no_regression": true, "idempotent": true, "attachments_pass": true, "versions_pass": true, "month_coverage_pass": true}
+}

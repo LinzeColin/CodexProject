@@ -1,0 +1,7 @@
+backfilled 7 real A0 docs across 6 months: ['2019-04', '2019-12', '2020-12', '2021-09', '2021-10', '2022-01']
+idempotent: first apply raw=7, re-apply raw=0 (0 new), objects=7==7
+versions: 7 canonical docs / 7 versions
+attachments preserved: 1
+month coverage: 6 distinct months, all >= 2016-01: True
+
+ACCEPTANCE = PASS

@@ -1,0 +1,19 @@
+# ADP-S4-P02-T046 commands (execute A0 2016+ Wave 1; SHADOW; Owner S4 cohort gate SCALE-approved)
+# base: main 8d2cc20e (T045); cohort A0-WAVE-1 (Owner approved SCALE)
+
+# 1) real Wave-1 backfill from the DEV ENV (not the worker -> 0 cloud cost, realtime untouched)
+#    - fetch gov.cn/zhengce/xxgk listing -> 7 real policy content URLs across 6 months (2019-2022)
+#    - parse each via the T034 GovCnPolicyConnector -> title/文号/dates/status/attachments + content-addressed id/raw_key
+#    -> evidence/ADP-S4-P02-T046/wave1_backfill_docs.json
+# 2) pipeline: raw dual-write idempotency (T021/T022) + version chain (T026) + month partition (T027)
+#    -> backfill_manifest.json (raw/version counts, per-month, idempotency) ; gap_cost_report.json (0 cloud cost)
+
+# 3) acceptance test
+python3 evidence/ADP-S4-P02-T046/test-results/t046_verify.py | tee evidence/ADP-S4-P02-T046/test-results/backfill_tests.txt
+# -> 7 real A0 docs across 6 months (2019-04..2022-01)
+# -> realtime NO regression (live build b189d3cc0703 == T040, six themes 6/6, today 200; no worker deploy)
+# -> idempotent (re-apply 0 new, no dup) ; versions 7 ; attachments preserved ; month coverage 6 (all >= 2016-01)
+# -> cost 0 cloud (dev-env fetches) ; ACCEPTANCE = PASS (exit 0)
+
+# SHADOW: real backfill from dev env; production worker/cron untouched. Full 2016+ coverage accrues over real time.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

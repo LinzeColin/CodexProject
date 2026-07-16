@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260717-ADP-V01-S4-P01-T044-COST-DASHBOARD"
-source_snapshot_hash: "sha256:fa08ec98409bb9eb7961d613f552dfe660ca2e4090ebdaca4bf1a264035dadb3"
+as_of_event_id: "EVENT-20260717-ADP-V01-S4-P02-T045-A0-COHORT-SELECTION"
+source_snapshot_hash: "sha256:a0a44cd944c4b34cb0638b48e33003af1660f3625bfe645710b96471807f56f1"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-17T13:05:00+10:00"
+snapshot_event_time: "2026-07-17T13:40:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 104
+    precommit_pending_events: 105
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

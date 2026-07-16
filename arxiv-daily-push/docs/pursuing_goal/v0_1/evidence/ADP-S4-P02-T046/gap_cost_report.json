@@ -1,0 +1,22 @@
+{
+  "cohort": "A0-WAVE-1",
+  "source": "gov-cn-policy",
+  "months_covered": [
+    "2019-04",
+    "2019-12",
+    "2020-12",
+    "2021-09",
+    "2021-10",
+    "2022-01"
+  ],
+  "gap_note": "Wave-1 representative batch (7 docs / 6 months 2019-2022); full 2016+ coverage accrues over real time via cron (SHADOW)",
+  "cost": {
+    "fetch_subrequests_dev_env": 8,
+    "worker_subrequests": 0,
+    "d1_writes": 0,
+    "r2_bytes": 0,
+    "model_calls": 0,
+    "recurring_usd_month": 0,
+    "note": "executed from dev env, not the worker -> 0 cloud cost, DIR-007 unaffected"
+  }
+}

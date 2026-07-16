@@ -1,0 +1,37 @@
+{
+  "cohort": "A0-WAVE-1",
+  "source": "gov-cn-policy",
+  "release_mode": "SHADOW",
+  "executed_from": "dev environment (not the worker) -> 0 cloud cost, realtime untouched",
+  "docs_backfilled": 7,
+  "months_covered": [
+    "2019-04",
+    "2019-12",
+    "2020-12",
+    "2021-09",
+    "2021-10",
+    "2022-01"
+  ],
+  "raw_counts": {
+    "raw_objects": 7,
+    "raw_written_run1": 7
+  },
+  "version_counts": {
+    "canonical_docs": 7,
+    "versions": 7
+  },
+  "attachments_total": 1,
+  "per_month": {
+    "2019-04": 1,
+    "2019-12": 1,
+    "2020-12": 2,
+    "2021-09": 1,
+    "2021-10": 1,
+    "2022-01": 1
+  },
+  "idempotent": {
+    "run1_raw": 7,
+    "run2_raw_feeding_twice": 7,
+    "no_dup": true
+  }
+}

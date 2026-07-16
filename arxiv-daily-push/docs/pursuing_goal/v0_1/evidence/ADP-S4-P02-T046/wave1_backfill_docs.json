@@ -1,0 +1,100 @@
+[
+  {
+    "url": "https://www.gov.cn/zhengce/content/2019-04/15/content_5382991.htm",
+    "month": "2019-04",
+    "canonical_id": "ttl:cc498decfffd318b",
+    "raw_key": "raw/gov-cn-policy/v1/b494951aa829f316",
+    "doc_number": "国令第711号",
+    "title": "中华人民共和国政府信息公开条例",
+    "dates": {
+      "written": "2019-04-03",
+      "published": "2019-04-15"
+    },
+    "status": null,
+    "attachments": 0
+  },
+  {
+    "url": "https://www.gov.cn/zhengce/content/2020-12/21/content_5571847.htm",
+    "month": "2020-12",
+    "canonical_id": "ttl:f956c5f77a1ab09a",
+    "raw_key": "raw/gov-cn-policy/v1/25c16f92faba8f16",
+    "doc_number": "国办发〔2020〕50号",
+    "title": "国务院办公厅关于印发《公共企事业单位信息公开规定制定办法》的通知",
+    "dates": {
+      "written": "2020-12-07",
+      "published": "2020-12-21"
+    },
+    "status": null,
+    "attachments": 0
+  },
+  {
+    "url": "https://www.gov.cn/zhengce/content/2020-12/01/content_5566168.htm",
+    "month": "2020-12",
+    "canonical_id": "ttl:5460f8cc9467b636",
+    "raw_key": "raw/gov-cn-policy/v1/402ac643101f1bc3",
+    "doc_number": "国办函〔2020〕109号",
+    "title": "国务院办公厅关于印发《政府信息公开信息处理费管理办法》的通知",
+    "dates": {
+      "written": "2020-11-17",
+      "published": "2020-12-01"
+    },
+    "status": null,
+    "attachments": 0
+  },
+  {
+    "url": "https://www.gov.cn/zhengce/content/2022-01/04/content_5666340.htm",
+    "month": "2022-01",
+    "canonical_id": "ttl:9f3299b3e8d5312f",
+    "raw_key": "raw/gov-cn-policy/v1/4fd58d1813a0cac9",
+    "doc_number": "国办函〔2021〕132号",
+    "title": "国务院办公厅转发司法部关于审理政府信息公开行政复议案件若干问题指导意见的通知",
+    "dates": {
+      "written": "2021-12-22",
+      "published": "2022-01-04"
+    },
+    "status": null,
+    "attachments": 0
+  },
+  {
+    "url": "https://www.gov.cn/zhengce/content/2021-10/29/content_5647246.htm",
+    "month": "2021-10",
+    "canonical_id": "ttl:e5163e82c9713ca0",
+    "raw_key": "raw/gov-cn-policy/v1/583683d249947a5d",
+    "doc_number": "国办公开办函〔2021〕33号",
+    "title": "国务院办公厅政府信息与政务公开办公室关于做好规章集中公开并动态更新工作的通知",
+    "dates": {
+      "written": "2021-10-25",
+      "published": "2021-10-29"
+    },
+    "status": "现行有效",
+    "attachments": 0
+  },
+  {
+    "url": "https://www.gov.cn/zhengce/content/2021-09/29/content_5639620.htm",
+    "month": "2021-09",
+    "canonical_id": "ttl:9683432bf99072b6",
+    "raw_key": "raw/gov-cn-policy/v1/5cfbd3534bae51e9",
+    "doc_number": "国办公开办函〔2021〕30号",
+    "title": "国务院办公厅政府信息与政务公开办公室关于印发《中华人民共和国政府信息公开工作年度",
+    "dates": {
+      "written": "2021-09-26",
+      "published": "2021-09-29"
+    },
+    "status": "失效",
+    "attachments": 0
+  },
+  {
+    "url": "https://www.gov.cn/zhengce/content/2019-12/03/content_5457588.htm",
+    "month": "2019-12",
+    "canonical_id": "ttl:8edd478e07685154",
+    "raw_key": "raw/gov-cn-policy/v1/de54d8a1c28be981",
+    "doc_number": "国办公开办函〔2019〕61号",
+    "title": "国务院办公厅政府信息与政务公开办公室关于规范政府信息公开平台有关事项的通知",
+    "dates": {
+      "written": "2019-11-29",
+      "published": "2019-12-03"
+    },
+    "status": null,
+    "attachments": 1
+  }
+]

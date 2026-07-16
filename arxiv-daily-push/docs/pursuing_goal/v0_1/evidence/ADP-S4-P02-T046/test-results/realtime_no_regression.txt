@@ -1,0 +1,4 @@
+# T046 realtime-no-regression (SHADOW backfill ran from dev env; NO worker deploy)
+live build.json (cache-bust): b189d3cc0703  == T040 build b189d3cc0703 (unchanged)
+today: status 200 | six themes 6/6 (cosmos/forest/fresh/minimal/techno/warm) | hero video present
+=> production worker/cron/realtime untouched by the Wave-1 backfill; realtime freshness NOT regressed.
