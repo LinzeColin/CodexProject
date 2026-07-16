@@ -1,0 +1,6 @@
+main replay: 8 stages all reproduce committed anchors; canonical 500->498; snapshot_id sha256:61de7073ca96f==committed; committed evidence byte-immutable (5 anchor files unchanged); no unexplained data loss
+NC1 (drop 1 item -> 499): canonical match=False snapshot match=False prod_untouched(bad build)=False -- all correctly False
+NC2 (row-ledger): clean ledger ok=True; poisoned ledger caught (2 unexplained) -> ok=False
+
+ACCEPTANCE = PASS
+NOTE: full chain (registry->factsheet->render->canonical->version->snapshot->restore->prediction) replayed in an isolated tmp dir from the committed items_500 fixture; every stage reproduces its committed anchor; committed evidence byte-immutable; no unexplained data loss; NOT_DEPLOYED (live b189d3cc0703 confirmed separately in realtime_check.txt).
