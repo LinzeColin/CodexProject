@@ -1,0 +1,4 @@
+sources_scored=22 identity_rate=1.0 decisions={'promote': 3, 'hold': 18, 'disable': 1}
+promote=3 hold=18 disable=1
+
+ACCEPTANCE = PASS

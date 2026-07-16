@@ -1,0 +1,14 @@
+# ADP-S4-P03-T052 commands (A1 coverage/quality/cost gate; NOT_DEPLOYED)
+
+# 1. scorecard tool: tools/a1_scorecard.py -- scores A1 sources from T050 (province backfill) + T051 (city cohort)
+#    each source: official_identity / quality (docs, content-addressed, docnum, date) / timeliness (months) /
+#    cost (0 cloud, dev-env) -> promote | hold | disable (reversible)
+
+# 2. build the scorecard (deterministic)
+python3 evidence/ADP-S4-P03-T052/build_scorecard.py   # 22 sources, identity 100%, promote 3 / hold 18 / disable 1
+
+# 3. acceptance verifier (deterministic; identity 100% + evidence-backed decisions + reversible + negative controls)
+python3 evidence/ADP-S4-P03-T052/test-results/t052_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

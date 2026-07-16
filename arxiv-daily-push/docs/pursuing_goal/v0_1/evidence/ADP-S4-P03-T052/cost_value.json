@@ -1,0 +1,16 @@
+{
+  "task": "ADP-S4-P03-T052",
+  "stage": "S4 (2016+ A0/A1/A2 Expansion) / P03 A1 省级与重点城市 cohort",
+  "value": {
+    "user_value": "An A1 coverage/quality/cost scorecard with reversible promote/hold/disable decisions over all 22 A1 sources touched by T050 (provinces) and T051 (cities): 3 promoted (real backfilled docs), 18 held (verified A1 but original fetch pending), 1 disabled (blocked). 100% official identity; promotion is earned on real document evidence, not value.",
+    "why_it_matters": "Deciding which A1 sources enter continuous production must be evidence-based and reversible -- promote only on demonstrated quality/timeliness, hold what is unverified, disable what is broken; never promote for coverage optics."
+  },
+  "cost": {
+    "note": "unknown != 0; a scorecard/decision task over cached evidence -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0,
+    "r2_bytes": 0, "r2_ops": 0, "model_calls": 0,
+    "human_maintenance": "scorecard authoring over T050/T051 evidence",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (scorecard + reversible decisions; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}
