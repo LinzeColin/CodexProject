@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260716-ADP-V01-S2-P01-T023-CAPPED-SHADOW-COST-REPORT"
-source_snapshot_hash: "sha256:72677ed3198f606399666988adc987cd6266d631cfde2fd877c81c50540d2e21"
+as_of_event_id: "EVENT-20260716-ADP-V01-S2-P02-T024-CANONICAL-DOCUMENT"
+source_snapshot_hash: "sha256:0e4c9395e251ad018a8900429902fa0c2dd60a4a4dca50f1538471c9261b6b9f"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-16T19:30:00+10:00"
+snapshot_event_time: "2026-07-16T19:55:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 83
+    precommit_pending_events: 84
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

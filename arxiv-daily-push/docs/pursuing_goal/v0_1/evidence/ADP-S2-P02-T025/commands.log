@@ -1,0 +1,23 @@
+# ADP-S2-P02-T025 commands (isolated verification; NO production D1 touched)
+# base: main 1f3902d0 (T024)
+
+# 1) author schema DDL
+#    schemas/document_version.migration.sql   (cn_documents + cn_document_versions + 3 idx + cn_meta schema_version; all IF NOT EXISTS / INSERT OR IGNORE)
+#    schemas/document_version.rollback.sql    (reverse DROP + scoped DELETE of the one cn_meta key)
+
+# 2) verify migration + rollback on an ISOLATED in-memory SQLite copy
+python3 test-results/t025_verify.py | tee test-results/migration_test.txt
+# -> PRE-migration tables: ['cn_meta']
+# -> POST-migration tables: ['cn_document_versions', 'cn_documents', 'cn_meta']
+# -> POST-migration indexes: ['idx_docver_canonical', 'idx_docver_contenthash', 'idx_docver_status']
+# -> rows: docs=1 versions=2 | orphan versions (FK relationship)=0 | history preserved=True
+# -> UNIQUE(canonical_id,version_no) enforced: YES
+# -> schema_version registered in cn_meta: adp.document_version.v0_1
+# -> POST-rollback tables: ['cn_meta'] | indexes: []
+# -> rollback: migration objects removed: True | pre-existing cn_meta kept: True | schema_version key removed: True
+# -> ACCEPTANCE = PASS  (exit 0)
+
+# 3) production D1 was NOT modified (NOT_DEPLOYED). No `wrangler d1 execute` was run.
+
+# governance sync (fullwt @ origin/main), generate dashboard, lean_governance ci --changed-only == SHIP,
+# commit + push to LinzeColin/CodexProject main, poll CI double-green.  (see changed_files.txt / git.diff)

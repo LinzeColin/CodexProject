@@ -1,0 +1,11 @@
+PRE-migration tables: ['cn_meta']
+PRE-migration cn_meta rows: 1
+POST-migration tables: ['cn_document_versions', 'cn_documents', 'cn_meta']
+POST-migration indexes: ['idx_docver_canonical', 'idx_docver_contenthash', 'idx_docver_status']
+rows: docs=1 versions=2 | orphan versions (FK relationship)=0 | history preserved (v1 not overwritten by v2)=True
+UNIQUE(canonical_id,version_no) enforced: YES
+schema_version registered in cn_meta: adp.document_version.v0_1
+POST-rollback tables: ['cn_meta'] | indexes: []
+rollback: migration objects removed: True | pre-existing cn_meta kept: True | schema_version key removed: True
+
+ACCEPTANCE (migration row/relationship checks + isolated rollback) = PASS
