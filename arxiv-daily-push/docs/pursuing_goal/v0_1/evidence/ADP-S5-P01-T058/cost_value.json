@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S5-P01-T058",
+  "stage": "S5 (Multi-board Depth & Benefit Parity) / P01 事件、实体和跨板块关系",
+  "value": {
+    "user_value": "Cross-source entity resolution: agencies/institutions/authors/companies/regions/topics/standards referred to differently across boards (full name, abbreviation, English, variant) resolve to ONE entity, each alias kept with the source that used it. Wrong merges are exactly reversible (merge -> split restores the pre-merge entities byte-for-byte), and a low-confidence merge is held for review rather than auto-applied.",
+    "why_it_matters": "Depth needs entity identity -- the same agency across policy/news/stats must be one node -- but never at the cost of silent over-merging or lost provenance. Reversible, sourced, confidence-bounded resolution is what makes the entity layer trustworthy."
+  },
+  "cost": {
+    "note": "unknown != 0; a deterministic resolver over curated mentions -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "entity-resolver authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (entity schema + aliases + provenance + merge/split audit; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

@@ -1,0 +1,13 @@
+# ADP-S5-P01-T058 commands (cross-source entity resolution; NOT_DEPLOYED)
+
+# 1. tools/entity_resolver.py -- entity schema / resolve (cluster by shared alias, per-source provenance) /
+#    merge (deepcopy `before` snapshot + audit; < AUTO_MERGE_MIN -> pending_review) / split (exact reverse) / provenance_of
+
+# 2. build the entity report (deterministic)
+python3 evidence/ADP-S5-P01-T058/build_entities.py   # 7 mentions -> 4 entities; wrong_merge_reversible=True; low_conf=pending_review
+
+# 3. acceptance verifier (reversible-merge + per-alias provenance + confidence boundary + cross-source unify)
+python3 evidence/ADP-S5-P01-T058/test-results/t058_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

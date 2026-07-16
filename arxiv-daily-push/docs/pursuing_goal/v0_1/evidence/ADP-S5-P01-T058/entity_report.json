@@ -1,0 +1,109 @@
+{
+  "task": "ADP-S5-P01-T058",
+  "mentions_in": 7,
+  "entities_out": 4,
+  "entities": [
+    {
+      "entity_id": "ent:aed30d4b475e4613",
+      "type": "agency",
+      "canonical_name": "国家统计局",
+      "aliases": [
+        "国家统计局",
+        "统计局",
+        "NBS"
+      ],
+      "provenance": {
+        "国家统计局": [
+          "stats-gov"
+        ],
+        "统计局": [
+          "stats-gov"
+        ],
+        "NBS": [
+          "media-x",
+          "stats-gov"
+        ]
+      },
+      "confidence": 1.0
+    },
+    {
+      "entity_id": "ent:f6e6f0dd1c329ba5",
+      "type": "agency",
+      "canonical_name": "国务院办公厅",
+      "aliases": [
+        "国务院办公厅",
+        "国办"
+      ],
+      "provenance": {
+        "国务院办公厅": [
+          "gov-cn-policy"
+        ],
+        "国办": [
+          "gov-cn-policy",
+          "media-y"
+        ]
+      },
+      "confidence": 1.0
+    },
+    {
+      "entity_id": "ent:227c98548c61572d",
+      "type": "agency",
+      "canonical_name": "江苏省人民政府",
+      "aliases": [
+        "江苏省人民政府",
+        "苏政府"
+      ],
+      "provenance": {
+        "江苏省人民政府": [
+          "jiangsu-gov"
+        ],
+        "苏政府": [
+          "jiangsu-gov"
+        ]
+      },
+      "confidence": 1.0
+    },
+    {
+      "entity_id": "ent:8de0a9df5a0d5f74",
+      "type": "agency",
+      "canonical_name": "国家发展和改革委员会",
+      "aliases": [
+        "国家发展和改革委员会",
+        "发改委",
+        "NDRC"
+      ],
+      "provenance": {
+        "国家发展和改革委员会": [
+          "ndrc-gov"
+        ],
+        "发改委": [
+          "media-z",
+          "ndrc-gov"
+        ],
+        "NDRC": [
+          "ndrc-gov"
+        ]
+      },
+      "confidence": 1.0
+    }
+  ],
+  "merge_split_audit": {
+    "wrong_merge_applied": "applied",
+    "wrong_merge_reversible": true,
+    "audit_id": "mrg:735f04179b7b84c2",
+    "kept": "ent:aed30d4b475e4613",
+    "absorbed": "ent:227c98548c61572d",
+    "low_confidence_merge_status": "pending_review",
+    "auto_merge_min": 0.8
+  },
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "entity-resolver authoring"
+  },
+  "deployment": "NOT_DEPLOYED"
+}
