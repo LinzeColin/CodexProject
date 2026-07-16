@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -152,25 +151,6 @@ def git_head(database_dir: Path) -> str:
         ).strip()
     except Exception:
         return "UNKNOWN_NO_GIT_HEAD"
-
-
-def git_head_or_none(database_dir: Path) -> str | None:
-    head = git_head(database_dir)
-    return None if head == "UNKNOWN_NO_GIT_HEAD" else head
-
-
-def git_working_tree_dirty(database_dir: Path) -> bool:
-    try:
-        result = subprocess.run(
-            ["git", "status", "--porcelain", "--untracked-files=no", "--", "."],
-            cwd=database_dir,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-    except Exception:
-        return False
-    return result.returncode == 0 and bool(result.stdout.strip())
 
 
 def sha256_value(payload: bytes | str) -> str:
@@ -724,8 +704,6 @@ def build_memory_bundle_manifest(
         "canonical_source_hash": payload["canonical_source_hash"],
         "generator_version": BUNDLE_GENERATOR_VERSION,
         "generated_at": payload["generated_at"],
-        "repo_head": git_head_or_none(database_dir),
-        "working_tree_dirty": git_working_tree_dirty(database_dir),
         "source_files": payload["canonical_source_files"],
         "source_records": payload["canonical_source_records"],
         "projection_input_hash": payload["projection_input_hash"],

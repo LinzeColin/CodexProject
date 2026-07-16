@@ -1,0 +1,6 @@
+{
+  "task": "ADP-S8-P01-T087", "release_mode": "NOT_DEPLOYED",
+  "production_cost": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "recurring_cloud_usd": 0, "note": "scorecard prep only; no production side effects"},
+  "activity": {"readonly_get": 1, "human_maintenance": "value-cost scorecard tool + verifier + 3 negative controls + evidence + adversarial review; Owner sign-off pending"},
+  "value_metric": {"stage": "S8 Release/Soak/Handoff", "delivered": "a final Value-Cost Gate scorecard: 10 recurring-cost/capability components scored, 6 keep (deployed, proven) + 4 hold (off, evidence/promotion-gated), $0/mo recurring on Cloudflare free tier (DIR-007), 92/131 competitor-parity benefits delivered; machine rules pass (every recurring cost has a value metric; no unproven recurring spend). Gate CLOSES on Owner sign-off (PENDING)."}
+}

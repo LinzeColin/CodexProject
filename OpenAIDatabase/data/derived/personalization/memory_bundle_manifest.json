@@ -1,8 +1,8 @@
 {
   "artifact_contract": "Derived / Read-only / Regenerate, do not hand edit",
-  "bundle_id": "sha256:8d2988a20e3c5301072256683083dc583ad7dcabb098a961910dc0638eb5e151",
-  "canonical_source_hash": "sha256:b401739571bcd68832a32c8b7e2585b75434ebb301dc5140dd497b9bceb1ce5b",
-  "generated_at": "2026-07-13T00:06:53Z",
+  "bundle_id": "sha256:2ae361e34f27137b48cc74f7d749f73add7598dde98f8cbb966cbe73eb69965f",
+  "canonical_source_hash": "sha256:f14ef93c25472711e9200b5b1be005f4015639e7096cbffe3a280db8e1cc1275",
+  "generated_at": "2026-07-16T23:07:55Z",
   "generator_version": "openai_database.shared_memory_bundle.v2",
   "local_absolute_paths_included": false,
   "plaintext_secrets_included": false,
@@ -24,22 +24,20 @@
     "data/derived/timeline/TIMELINE.md",
     "data/derived/visualization/memory_atlas.json",
     "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
-    "data/memory/active/active_memory.jsonl",
-    "data/memory/active/active_memory.md",
-    "data/memory/curation/core_profile_review.json",
+    "data/memory/records/manifest.json",
     "data/processed/codex/codex_activity_snapshot.json",
     "data/processed/codex/codex_daily_activity.jsonl",
     "data/processed/codex/codex_session_manifest.jsonl"
   ],
-  "projection_input_hash": "sha256:101744d06257e126de6f6f7231767f65b016bb81ee352106740a2a7e9e083d6b",
+  "projection_input_hash": "sha256:dc099d3ede89d121191a6c3192651f638ecfccef2146310bc0ed76b2b0caa6ea",
   "projection_input_records": [
     {
-      "content_hash": "sha256:5940767d58bf30958e5284b549c2346a97873f0673defb8ecf22f7d3ed62df07",
+      "content_hash": "sha256:ceae386a7dc8b2149d7ea4d6b2a0da5ebcdaf8415eb9cfb2920222e6acdf255b",
       "exists": true,
       "path": "config/context_sources/resource_routes.json"
     },
     {
-      "content_hash": "sha256:d2d20a9cd4699c84e4655bc6d238a9ee009374320216ece91310d483de669327",
+      "content_hash": "sha256:bb9477bfd981772e58c385a74f5a21b42a2543070813d457b1c738502430dc20",
       "exists": true,
       "path": "config/context_sources/three_layer_context.json"
     },
@@ -109,7 +107,7 @@
       "path": "data/derived/timeline/TIMELINE.md"
     },
     {
-      "content_hash": "sha256:b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "content_hash": "sha256:5f5d7e04752eda0fe93cbb7ec18e3b815ae90a98e09280acc1a0de9c8773b506",
       "exists": true,
       "path": "data/derived/visualization/memory_atlas.json"
     },
@@ -119,19 +117,9 @@
       "path": "data/derived/weekly/2026-06-15.weekly_memory_pack.md"
     },
     {
-      "content_hash": "sha256:24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+      "content_hash": "sha256:019931525ab56adb51847f5920f9d84f168da5ad0ce2d70314aada4bb0e5f39e",
       "exists": true,
-      "path": "data/memory/active/active_memory.jsonl"
-    },
-    {
-      "content_hash": "sha256:fcf9e4bd19233ddb62f3d9d26c2a9a204ab6fc7c1aa079e94081e69499833b93",
-      "exists": true,
-      "path": "data/memory/active/active_memory.md"
-    },
-    {
-      "content_hash": "sha256:ac0ef2dfa9c23652cc635d88d3010aab20c0bd0d457aa28b23d9b5ed94fd5446",
-      "exists": true,
-      "path": "data/memory/curation/core_profile_review.json"
+      "path": "data/memory/records/manifest.json"
     },
     {
       "content_hash": "sha256:22cbf2ae5859b779da070ecaf4949864f7500cbc665880f19a41dc1237b464cb",
@@ -152,19 +140,18 @@
   "projections": {
     "chatgpt": {
       "path": "data/derived/personalization/chatgpt_personalization.md",
-      "projection_hash": "sha256:0ebb29e64338f472bbef007ebf506b78f863bb053731bdccae8896d438784083"
+      "projection_hash": "sha256:b72e9f6346d0d7925d594ea62a6983c7d7483251fe83a737d052bfbb3738fee4"
     },
     "claude": {
       "path": "data/derived/personalization/claude_personalization.md",
-      "projection_hash": "sha256:3a42026f45735596e6c5d525ccaf72ac089f88035471bc751d5463188bf79ea3"
+      "projection_hash": "sha256:16cc6fe6ee25407fd9f760e50523f7c363c969a6e8edbb09123f1d87918274c8"
     },
     "codex": {
       "path": "data/derived/personalization/codex_personalization.md",
-      "projection_hash": "sha256:6526d836f3a853d9776582779b245f8cdd588798979faadad805e9b2c185a7ab"
+      "projection_hash": "sha256:5ffe431537e5722ba4cda188648941b95e4c5c8a0ef9b3bdb308621bd5272bd0"
     }
   },
   "raw_private_data_included": false,
-  "repo_head": "7ddd1853f808095bb937e14417c630f1bf94dc10",
   "schema_version": "openai_database.memory_bundle_manifest.v2",
   "source_files": [
     "config/context_sources/three_layer_context.json",
@@ -175,16 +162,14 @@
     "data/derived/project_index/PROJECT_INDEX.md",
     "data/derived/timeline/TIMELINE.md",
     "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
-    "data/memory/active/active_memory.jsonl",
-    "data/memory/active/active_memory.md",
-    "data/memory/curation/core_profile_review.json",
+    "data/memory/records/manifest.json",
     "data/processed/codex/codex_activity_snapshot.json",
     "data/processed/codex/codex_daily_activity.jsonl",
     "data/processed/codex/codex_session_manifest.jsonl"
   ],
   "source_records": [
     {
-      "content_hash": "sha256:d2d20a9cd4699c84e4655bc6d238a9ee009374320216ece91310d483de669327",
+      "content_hash": "sha256:bb9477bfd981772e58c385a74f5a21b42a2543070813d457b1c738502430dc20",
       "exists": true,
       "path": "config/context_sources/three_layer_context.json"
     },
@@ -224,19 +209,9 @@
       "path": "data/derived/weekly/2026-06-15.weekly_memory_pack.md"
     },
     {
-      "content_hash": "sha256:24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+      "content_hash": "sha256:019931525ab56adb51847f5920f9d84f168da5ad0ce2d70314aada4bb0e5f39e",
       "exists": true,
-      "path": "data/memory/active/active_memory.jsonl"
-    },
-    {
-      "content_hash": "sha256:fcf9e4bd19233ddb62f3d9d26c2a9a204ab6fc7c1aa079e94081e69499833b93",
-      "exists": true,
-      "path": "data/memory/active/active_memory.md"
-    },
-    {
-      "content_hash": "sha256:ac0ef2dfa9c23652cc635d88d3010aab20c0bd0d457aa28b23d9b5ed94fd5446",
-      "exists": true,
-      "path": "data/memory/curation/core_profile_review.json"
+      "path": "data/memory/records/manifest.json"
     },
     {
       "content_hash": "sha256:22cbf2ae5859b779da070ecaf4949864f7500cbc665880f19a41dc1237b464cb",
@@ -253,6 +228,5 @@
       "exists": true,
       "path": "data/processed/codex/codex_session_manifest.jsonl"
     }
-  ],
-  "working_tree_dirty": true
+  ]
 }

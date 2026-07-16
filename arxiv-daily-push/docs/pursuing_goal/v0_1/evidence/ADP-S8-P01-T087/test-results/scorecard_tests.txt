@@ -1,0 +1,5 @@
+scorecard: {'keep': 7, 'hold': 3} decisions, $0/mo recurring (free tier), 92/131 parity delivered; every recurring cost has a value metric; every off component held/gated; DIR-007 guardrails present; Owner sign-off PENDING
+NC1 (recurring w/o value metric) -> rule(1) fails; NC2a (deployed w/o evidence) & NC2b (off but kept) -> rule(2) fails: all controls load-bearing
+
+ACCEPTANCE = PASS (machine rules)  |  OWNER SIGN-OFF: PENDING (required to close the gate)
+NOTE: the two machine-checkable gate rules hold (every recurring cost has a value metric; no unproven recurring spend -- all off components held/gated); DIR-007 free-tier guardrails present; recurring $0/mo. The gate CLOSES only on Owner sign-off (owner_signoff.status PENDING). NOT_DEPLOYED (live b189d3cc0703).
