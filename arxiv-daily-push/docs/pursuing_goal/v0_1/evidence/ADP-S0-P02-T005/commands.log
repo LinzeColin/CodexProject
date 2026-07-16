@@ -1,0 +1,32 @@
+# ADP-S0-P02-T005 commands.log · read-only git/config/doc facts
+# captured_at_utc = 2026-07-16T00:20Z ; baseline commit 662a26df (T004 merged)
+
+## git sha
+$ git rev-parse HEAD
+662a26dfa9f10577c10d75c3efb515d6823a32ee
+
+## key file git blobs (re-queryable via git hash-object)
+$ for f in deploy/cloudflare/worker_cloud.js deploy/cloudflare/wrangler_cloud.jsonc deploy/cloudflare/schema_cloud.sql config/boards_v0_3.yaml docs/v03/STATUS.yaml; do git hash-object "$f"; wc -l < "$f"; done
+worker_cloud.js       c0878f28dcd0dc236e126313cae3df5c35bf70ba  1121
+wrangler_cloud.jsonc  bb889e6b0f590d9e6f4f30c38dfc269e8351dc2b  26
+schema_cloud.sql      1ad27d27c9343a89cb7740af02cb24371f30d4e7  70
+boards_v0_3.yaml      fff7d37db17097a066b50f3da7aa73146be9701d  115
+STATUS.yaml           c7948faa6b58a3acdbdeaa0233fecfcfd943051a  189
+
+## worker entry (wrangler_cloud.jsonc)
+name adp-cloud | main worker_cloud.js | compat 2026-07-01 | D1 DB->adp-mirror | crons ["30 20 * * *"]
+
+## D1 schema tables (schema_cloud.sql)
+cn_sources cn_items cn_selections cn_lessons cn_reviews cn_events cn_run_log cn_meta
+
+## boards (boards_v0_3.yaml registry_ver boards-v03-2, 41 source entries)
+board1 板块一·研究前沿 live_selection | board2 板块二·顶级期刊 live_feed | board3 板块三·中国政策法规 live_feed (Google News 按部委 + RSSHub) | board4 板块四·美国科技金融 live_feed | board5 板块五·跨板块总览 aggregate
+
+## drift candidates
+DRIFT-FACT-006: worker_cloud.js lines 36-51 hardcode Google News + 人民网(x2) + 中国新闻网 + 新浪; board3 config = Google News by-ministry + RSSHub -> source-truth drift
+DRIFT-FACT-007: STATUS.yaml line ~120 J5_cloud_native coexists with line ~168 R6 tunnel/mac-mirror (R6 not marked superseded) -> status-doc contradiction
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
+# 期望 decision: SHIP

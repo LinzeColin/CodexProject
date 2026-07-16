@@ -1,0 +1,13 @@
+{
+  "task": "ADP-S0-P02-T005",
+  "release_mode": "NOT_DEPLOYED",
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "one_time_cost": "read-only local git/file inspection; no network deploy, no D1/R2 op, no API call",
+  "value": "pin git_sha + 5 key-file git blobs (re-queryable) + Worker entry (adp-cloud/worker_cloud.js/cron 30 20 * * *) + D1 schema tables + boards registry + 2 listed drift candidates (FACT-006 source-truth, FACT-007 status-doc); prevents building against stale config/README and feeds T007 drift report",
+  "captured_at_utc": "2026-07-16T00:20Z",
+  "cost_unknowns_not_zero": [
+    "FACT-011 live D1 real schema/rows/size vs schema_cloud.sql (pending T006)",
+    "FACT-012/013 R2 + plan/billing (pending T006)",
+    "FACT-014 build<->domain equality (pending T006)"
+  ]
+}

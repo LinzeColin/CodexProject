@@ -1,0 +1,64 @@
+{
+  "task": "ADP-S0-P02-T005",
+  "captured_at_utc": "2026-07-16T00:20Z",
+  "git": {
+    "repo": "LinzeColin/CodexProject",
+    "main_sha": "662a26dfa9f10577c10d75c3efb515d6823a32ee",
+    "adp_path": "arxiv-daily-push"
+  },
+  "worker_entry": {
+    "wrangler_config": "deploy/cloudflare/wrangler_cloud.jsonc",
+    "name": "adp-cloud",
+    "main": "worker_cloud.js",
+    "compatibility_date": "2026-07-01",
+    "d1_binding": "DB",
+    "d1_database_name": "adp-mirror",
+    "cron": "30 20 * * *"
+  },
+  "d1_schema": {
+    "file": "deploy/cloudflare/schema_cloud.sql",
+    "tables": ["cn_sources", "cn_items", "cn_selections", "cn_lessons", "cn_reviews", "cn_events", "cn_run_log", "cn_meta"]
+  },
+  "boards_config": {
+    "file": "config/boards_v0_3.yaml",
+    "registry_ver": "boards-v03-2",
+    "boards": [
+      {"id": "board1", "name": "板块一 · 研究前沿", "status": "live_selection"},
+      {"id": "board2", "name": "板块二 · 顶级期刊", "status": "live_feed"},
+      {"id": "board3", "name": "板块三 · 中国政策法规", "status": "live_feed", "sources": "Google News 按部委聚合 (gnews-cn-policy/tech-policy/finance-reg/ai-reg/nmpa) + RSSHub gov/zhengce/zuixin; all official:false"},
+      {"id": "board4", "name": "板块四 · 美国科技金融", "status": "live_feed"},
+      {"id": "board5", "name": "板块五 · 跨板块总览", "status": "aggregate"}
+    ],
+    "total_source_entries": 41
+  },
+  "key_file_git_blobs": {
+    "deploy/cloudflare/worker_cloud.js": {"blob": "c0878f28dcd0dc236e126313cae3df5c35bf70ba", "lines": 1121},
+    "deploy/cloudflare/wrangler_cloud.jsonc": {"blob": "bb889e6b0f590d9e6f4f30c38dfc269e8351dc2b", "lines": 26},
+    "deploy/cloudflare/schema_cloud.sql": {"blob": "1ad27d27c9343a89cb7740af02cb24371f30d4e7", "lines": 70},
+    "config/boards_v0_3.yaml": {"blob": "fff7d37db17097a066b50f3da7aa73146be9701d", "lines": 115},
+    "docs/v03/STATUS.yaml": {"blob": "c7948faa6b58a3acdbdeaa0233fecfcfd943051a", "lines": 189}
+  },
+  "drift_candidates": [
+    {
+      "id": "DRIFT-FACT-006",
+      "kind": "source_truth_drift",
+      "config_says": "boards_v0_3.yaml board3 (板块三·中国政策法规) sources = Google News by-ministry aggregation + RSSHub gov route (all official:false)",
+      "worker_does": "worker_cloud.js hardcodes radar/China sources including Google News + 人民网(x2) + 中国新闻网 + 新浪 (lines 36-51)",
+      "delta": "worker adds 人民网/中国新闻网/新浪 which are NOT in board3 config; config's per-ministry Google News queries + RSSHub route are not the live worker set -> single-source-of-truth violation",
+      "authority": "worker_cloud.js is the deployed live source; boards_v0_3.yaml is the registry that should match it",
+      "resolution_owner": "later S1/S2 source-truth task (out of scope for T005 which only records the drift)"
+    },
+    {
+      "id": "DRIFT-FACT-007",
+      "kind": "status_doc_contradiction",
+      "doc": "docs/v03/STATUS.yaml",
+      "coexisting": [
+        "J5_cloud_native (line ~120): 网页即主体，整套系统跑云端，不依赖 Mac；全路由实测 200",
+        "R6 (line ~168): phone_access_full_system_via_tunnel_with_mirror_fallback — 旧 Cloudflare Tunnel + 本机镜像回落设计"
+      ],
+      "delta": "STATUS.yaml simultaneously records the current cloud-native state (J5) and the retired tunnel/Mac-mirror state (R6) without marking R6 superseded -> contradictory status record",
+      "resolution_owner": "later governance-consistency task (T005 only records; not fixed here)"
+    }
+  ],
+  "public_evidence_base": "https://github.com/LinzeColin/CodexProject/blob/662a26dfa9f10577c10d75c3efb515d6823a32ee/arxiv-daily-push/"
+}

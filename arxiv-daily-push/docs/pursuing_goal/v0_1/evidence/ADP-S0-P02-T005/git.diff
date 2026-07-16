@@ -1,0 +1,391 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 463340b41..20291955b 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S0-P02-T005 (git/config/doc facts + drift candidates)
++
++- Fifth task of the ADP V0.1 FINAL EXECUTION program (second of S0-P02), one task per run. Goal: pin the current ADP commit, Worker entry, source arrays, schema, cron, and contradictory docs. Read-only inspection, release_mode NOT_DEPLOYED, 0 recurring cloud cost; nothing changed and no drift was fixed (only recorded). Captured 2026-07-16T00:20Z. Deliverable arxiv-daily-push/docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md + machine-readable evidence/ADP-S0-P02-T005/facts.json. Facts: main 662a26df; Worker adp-cloud, entry worker_cloud.js, compat 2026-07-01, D1 DB->adp-mirror, cron 30 20 * * *; D1 schema_cloud.sql = 8 cn_* tables; boards_v0_3.yaml (registry boards-v03-2, 5 boards, 41 sources); five key-file git blobs recorded (worker_cloud.js c0878f28, wrangler_cloud.jsonc bb889e6b, schema_cloud.sql 1ad27d27, boards_v0_3.yaml fff7d37d, STATUS.yaml c7948faa; re-queryable via git hash-object). Drift candidates listed (not fixed): DRIFT-FACT-006 source-truth (board3 config = Google News by-ministry + RSSHub while worker_cloud.js hardcodes Google News + 人民网/中国新闻网/新浪) and DRIFT-FACT-007 status-doc contradiction (STATUS.yaml keeps J5 cloud-native and R6 tunnel/Mac-mirror side by side without marking R6 superseded). Live D1/R2/plan facts stay UNVERIFIED_PRIVATE (FACT-011..015, T006). Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S0-P02-T004 (public-surface baseline: 2 domains x 6 routes)
+ 
+ - Fourth task of the ADP V0.1 FINAL EXECUTION program, first of S0-P02 (production facts + unknowns snapshot), one task per run. Goal: record the actual responses and visual state of Today/Radar/Review/System/Search/History. Read-only capture, release_mode NOT_DEPLOYED, 0 recurring cloud cost; nothing on the live site changed. Captured 2026-07-16T00:14Z. Deliverable arxiv-daily-push/docs/pursuing_goal/v0_1/baselines/T004_PUBLIC_SURFACE_BASELINE.md + raw evidence (route_status.json 12 rows, headers.txt, fingerprints.json). Findings: both domains (adp.linzezhang.com and adp-cloud.linzezhang35.workers.dev) return HTTP 200 on all six routes (12/12); root headers are byte-identical (cache-control: no-store, must-revalidate; CSP media-src 'self' with self-hosted videos; server: cloudflare); the Today HTML contains all six theme keys (warm/minimal/fresh/techno/cosmos/forest), the three self-hosted hero videos (/media/velorah|voyage|aethera.mp4), the cosmic dashboard, the fx ambient layers, and the ChatGPT deep-dive link; a live screenshot confirmed the hero video first-screen + vitals dashboard render (minimal theme). Cross-domain Today normalized similarity is 0.9973 with one dynamic block differing -> same build at the public surface (strict per-deploy build<->domain equality is FACT-014, a T006 job). Inaccessible/private items are marked UNVERIFIED, not written as site failures. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 0da3d0806..ac4fedd61 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260716-ADP-V01-S0-P01-T003-PURSUING-GOAL-MACHINE-CONTRACT"
+-source_snapshot_hash: "sha256:5114a19129daab8223e3dfcf039bd13b2632fbd60d7b56a54e33c26001208a0f"
++as_of_event_id: "EVENT-20260716-ADP-V01-S0-P02-T004-PUBLIC-SURFACE-BASELINE"
++source_snapshot_hash: "sha256:6cd85f6b98462eef43d08f27dbb535752c2e07dc3638af8a0eb51af3d4f4defa"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-16T11:00:00+10:00"
++snapshot_event_time: "2026-07-16T11:30:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 61
++    precommit_pending_events: 62
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 25a3eb347..17499cf9a 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-16 V0.1 S0-P02-T005: pinned the git/config/doc facts and listed the drift candidates (second S0-P02 task, one task per run). Read-only, release_mode NOT_DEPLOYED, 0 recurring cloud cost; nothing changed, no drift fixed (only recorded); captured 2026-07-16T00:20Z. Deliverable docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md + evidence/ADP-S0-P02-T005/facts.json. main 662a26df; Worker adp-cloud/worker_cloud.js/compat 2026-07-01/D1 DB->adp-mirror/cron 30 20 * * *; schema_cloud.sql 8 cn_* tables; boards_v0_3.yaml registry boards-v03-2 (5 boards, 41 sources); five key-file git blobs recorded and re-queryable. Drift candidates (recorded not fixed): DRIFT-FACT-006 source-truth (board3 config Google News/RSSHub vs worker hardcoded 人民网/中新网/新浪) and DRIFT-FACT-007 STATUS.yaml J5-cloud-native vs R6-tunnel/Mac coexistence. Live D1/R2/plan facts stay UNVERIFIED_PRIVATE (FACT-011..015, T006). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S0-P02-T004: captured the public-surface baseline of both live domains x six core routes (first S0-P02 task, one task per run). Read-only, release_mode NOT_DEPLOYED, 0 recurring cloud cost; nothing on the live site changed; captured 2026-07-16T00:14Z. Deliverable docs/pursuing_goal/v0_1/baselines/T004_PUBLIC_SURFACE_BASELINE.md + raw evidence route_status.json/headers.txt/fingerprints.json. Both adp.linzezhang.com and adp-cloud.linzezhang35.workers.dev return HTTP 200 on Today/Radar/Review/System/Search/History (12/12); root headers byte-identical (no-store + self-only CSP media-src 'self'); Today HTML carries all six theme keys, the three self-hosted hero videos, the cosmic dashboard, the fx layers, and the ChatGPT deep-dive link; a live screenshot confirmed the hero-video first-screen + vitals dashboard (minimal theme). Cross-domain Today normalized similarity 0.9973 (one dynamic block) -> same build at the public surface; strict per-deploy build<->domain equality is FACT-014 for T006. Private facts FACT-011..015 stay UNVERIFIED_PRIVATE (T006). Inaccessible items marked UNVERIFIED not site-failure. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S0-P01-T003: froze the one-line pursuing goal + machine contract (third task of the ADP V0.1 FINAL EXECUTION program, one task per run). Doc-only, release_mode NOT_DEPLOYED, 0 recurring cloud cost; no worker/D1/R2/schema/CSP touched, six themes + advanced motion untouched. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: PURSUING_GOAL.txt (strictly single line, 0 embedded newlines), MACHINE_CONTRACT.yaml (pursuing_goal+sha256, authority_order, hard_constraints, out_of_scope, owner_gates, execution_protocol, baseline_refs, canonical_governance, how_to_use; yaml.safe_load parses, 17 keys) and MACHINE_CONTRACT.sha256 (contract hash d7451cb7bf8dd83d95f830aeb5279bdc58a1a479a8dbd153ad2acb3fa3b234e6, shasum -c OK). Embedded pursuing_goal_sha256 == sha256(PURSUING_GOAL.txt). Every subsequent task must read goal+contract first and verify both hashes before adjudicating by authority_order + CONFLICT_LEDGER.csv. Acceptance: single-line PASS, YAML parse PASS, shasum -c OK, goal-hash cross-check PASS. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION; private Cloudflare facts FACT-011..015 remain the S0-P02 job.
+ - 2026-07-16 V0.1 S0-P01-T002: archived old directions and built the conflict ledger (second task of the ADP V0.1 FINAL EXECUTION program, one task per run). Doc-only, release_mode NOT_DEPLOYED, 0 recurring cloud cost; no worker/D1/R2/schema/CSP touched, six themes + advanced motion untouched. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: CONFLICT_LEDGER.csv (14 machine-readable rulings CL-001..CL-014, each with source/old_conclusion/new_ruling/ruling_status/reason/authority_ref; csv.DictReader parses to 14 rows and every row has all four required fields) and ARCHIVED_NOT_CANONICAL.md (per-direction adjudication table + historical-input locations with sha256 + boundary statement). Rulings supersede/reclassify auth+multitenancy+enterprise-backend, TAM/pricing, replacement UI, A0-A4/B/C/D -> A0-A2 only, 171 sources -> seed cohorts, D1-all-raw -> D1 hot metadata + R2 raw, 20TB/10M/30M -> capacity envelope, Workflows -> candidate vs Cron+Queues, vector-DB-first -> deferred, competitor-parity -> equal-or-better benefit, final-package -> execution baseline (done only after S8), out-of-scope security side-quests, motion-vs-perf not in conflict, A3+ out of scope. History downgraded not deleted; historical zips not bulk-committed, referenced by sha256. Acceptance: both files exist, CSV parses with all four required fields per row, consistent with PRECEDENCE.md and OWNER_DIRECTIVES.yaml. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION; private Cloudflare facts FACT-011..015 remain the S0-P02 job.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index a0ef950ec..919993615 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `61`
+-- pending_or_stale_events: `411`
+-- freshness_counts: `pending_or_stale_events=411; legacy_unbound_events=334`
++- precommit_pending_events: `62`
++- pending_or_stale_events: `412`
++- freshness_counts: `pending_or_stale_events=412; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:5114a19129daab8223e3dfcf039bd13b2632fbd60d7b56a54e33c26001208a0f`
+-- snapshot_event_time: `2026-07-16T11:00:00+10:00`
++- source_snapshot_hash: `sha256:6cd85f6b98462eef43d08f27dbb535752c2e07dc3638af8a0eb51af3d4f4defa`
++- snapshot_event_time: `2026-07-16T11:30:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index e69f9a8c7..ff32287dd 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:5114a19129daab8223e3dfcf039bd13b2632fbd60d7b56a54e33c26001208a0f`
+-- snapshot_event_time: `2026-07-16T11:00:00+10:00`
++- source_snapshot_hash: `sha256:6cd85f6b98462eef43d08f27dbb535752c2e07dc3638af8a0eb51af3d4f4defa`
++- snapshot_event_time: `2026-07-16T11:30:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `411`
++- Pending/stale events: `412`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md
+new file mode 100644
+index 000000000..41edd7b9b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md
+@@ -0,0 +1,68 @@
++# T005 · Git / 配置 / 文档 事实基线
++
++> 任务 `ADP-S0-P02-T005` 交付物。**采集时间（UTC）：2026-07-16T00:20Z**。固定当前 ADP commit、Worker 入口、source arrays、schema、cron 和互相矛盾文档。
++> 机器可读全量见同任务 evidence 目录 `facts.json`；命令见 `commands.log`。所有 hash 为 `git hash-object` blob，可重查。
++
++## 1. Git 事实
++
++- 仓库：`LinzeColin/CodexProject`；ADP 路径 `arxiv-daily-push`。
++- main commit（基线）：`662a26dfa9f10577c10d75c3efb515d6823a32ee`。
++
++## 2. Worker 入口与运行事实（`deploy/cloudflare/wrangler_cloud.jsonc`）
++
++| 项 | 值 |
++|---|---|
++| Worker name | `adp-cloud` |
++| 入口 main | `worker_cloud.js` |
++| compatibility_date | `2026-07-01` |
++| D1 binding | `DB` → database_name `adp-mirror` |
++| Cron | `30 20 * * *`（每日 UTC 20:30） |
++
++## 3. D1 schema（`deploy/cloudflare/schema_cloud.sql`）
++
++表：`cn_sources`、`cn_items`、`cn_selections`、`cn_lessons`、`cn_reviews`、`cn_events`、`cn_run_log`、`cn_meta`（8 张，`cn_` 前缀）。
++⚠️ schema 为**文件定义**；线上 D1 实际 schema/行数/大小属 `UNVERIFIED_PRIVATE`（FACT-011，T006）。
++
++## 4. Source arrays（`config/boards_v0_3.yaml`，registry_ver `boards-v03-2`，共 41 条源）
++
++| board | 名称 | status |
++|---|---|---|
++| board1 | 板块一 · 研究前沿 | live_selection（每日精选闭环） |
++| board2 | 板块二 · 顶级期刊 | live_feed（Nature/Science/Cell 官方 RSS） |
++| board3 | 板块三 · 中国政策法规 | live_feed（Google News 按部委聚合 + RSSHub gov 路由，均 official:false） |
++| board4 | 板块四 · 美国科技金融 | live_feed |
++| board5 | 板块五 · 跨板块总览 | aggregate |
++
++## 5. 关键文件 hash（git blob，可重查）
++
++| 文件 | blob | 行数 |
++|---|---|---|
++| `deploy/cloudflare/worker_cloud.js` | `c0878f28dcd0dc236e126313cae3df5c35bf70ba` | 1121 |
++| `deploy/cloudflare/wrangler_cloud.jsonc` | `bb889e6b0f590d9e6f4f30c38dfc269e8351dc2b` | 26 |
++| `deploy/cloudflare/schema_cloud.sql` | `1ad27d27c9343a89cb7740af02cb24371f30d4e7` | 70 |
++| `config/boards_v0_3.yaml` | `fff7d37db17097a066b50f3da7aa73146be9701d` | 115 |
++| `docs/v03/STATUS.yaml` | `c7948faa6b58a3acdbdeaa0233fecfcfd943051a` | 189 |
++
++重查命令：`git -C <repo> hash-object arxiv-daily-push/<path>`（应等于上表）。
++
++## 6. 漂移候选（互相矛盾，只记录不修复）
++
++### DRIFT-FACT-006 · 来源真相漂移（board3 config ↔ worker 硬编码）
++- **config 说**：`boards_v0_3.yaml` board3「板块三·中国政策法规」= Google News 按部委聚合（国务院/工信部/发改委、科技部/网信办、央行/证监会、AI 治理、药监）+ RSSHub `gov/zhengce/zuixin`，全部 `official:false`。
++- **worker 实际**：`worker_cloud.js`（lines 36–51）雷达/中国源硬编码含 Google News + **人民网(×2) + 中国新闻网 + 新浪**。
++- **差异**：worker 多出 人民网/中国新闻网/新浪（config 未定义），config 的按部委 Google News 查询 + RSSHub 路由并非线上真身 → **违反单一事实源**。
++- 处置：worker 是已部署真身、boards 应与之对齐；本任务只登记，修复留后续 S1/S2 来源真相任务。
++
++### DRIFT-FACT-007 · 状态文档自相矛盾（STATUS.yaml）
++- `docs/v03/STATUS.yaml` 同时保留 **J5_cloud_native**（line ~120「网页即主体，整套系统跑云端，不依赖 Mac；全路由实测 200」）与 **R6**（line ~168「phone_access_full_system_via_tunnel_with_mirror_fallback」旧 Cloudflare Tunnel + 本机镜像回落设计）。
++- **差异**：现状（J5 云原生）与已退役设计（R6 隧道/Mac 镜像）并存，R6 未标 superseded → **状态记录矛盾**。
++- 处置：只登记；修复留后续治理一致性任务。
++
++## 7. 公开证据链接（GitHub blob @ 662a26df）
++
++`https://github.com/LinzeColin/CodexProject/blob/662a26dfa9f10577c10d75c3efb515d6823a32ee/arxiv-daily-push/{deploy/cloudflare/worker_cloud.js | deploy/cloudflare/wrangler_cloud.jsonc | deploy/cloudflare/schema_cloud.sql | config/boards_v0_3.yaml | docs/v03/STATUS.yaml}`
++
++## 8. 边界
++
++- 只固定**仓库内**可验证事实（commit/hash/config/schema-文件/cron/文档矛盾）；**线上运行时**事实（D1 实际行数、R2、套餐、私有分支 = FACT-011..015）属 T006。
++- 漂移只**登记**，不在本任务修复（避免顺带重构，违反任务禁止事项）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/TASK_REPORT.md
+new file mode 100644
+index 000000000..f650ab681
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/TASK_REPORT.md
+@@ -0,0 +1,67 @@
++# TASK_REPORT · ADP-S0-P02-T005｜采集 Git、配置和文档事实
++
++## 唯一目标（达成）
++
++固定当前 ADP commit、Worker 入口、source arrays、schema、cron 和互相矛盾文档 —— 交付 git_sha、file hashes、drift candidates、公开证据链接。
++
++## 六个开始前问题（已回答，方允许编码）
++
++1. 唯一目标：把仓库内可验证的 Git/配置/文档事实固化为可重查基线 + 列出文档冲突。
++2. 允许修改文件：仅 `docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md` + 本证据包 + 治理同步文件；**只读**采集，不改任何代码/配置/schema。
++3. 绝不能改变：已上线 MVP、六主题、高级动效、实时稳定与生产行为；不修复漂移（只登记）。NOT_DEPLOYED。
++4. 基线：main `662a26df`（= origin/main，T004 已合入）；线上 worker = 自托管视频版；采集时间 2026-07-16T00:20Z。
++5. 验收：最新 commit 与关键文件 hash 可重查（`git hash-object`）；文档冲突均列出。
++6. 回滚：`git revert <sha>`；纯文档采集，NOT_DEPLOYED，无生产影响；未改写数据。
++
++## 交付物
++
++- `docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md` —— Git 事实、Worker 入口、D1 schema、source arrays、关键文件 blob hash、漂移候选、公开证据链接、边界。
++- `evidence/ADP-S0-P02-T005/facts.json` —— 机器可读全量事实与漂移候选。
++
++## 验收结果（实测）
++
++- **git_sha**：main `662a26dfa9f10577c10d75c3efb515d6823a32ee`（可重查）。
++- **file hashes**：5 个关键文件 git blob 已记录（worker_cloud.js `c0878f28`、wrangler_cloud.jsonc `bb889e6b`、schema_cloud.sql `1ad27d27`、boards_v0_3.yaml `fff7d37d`、STATUS.yaml `c7948faa`）；`git hash-object` 可重查。
++- **Worker 入口**：name `adp-cloud`、main `worker_cloud.js`、compat `2026-07-01`、D1 `DB`→`adp-mirror`、cron `30 20 * * *`。
++- **source arrays**：boards_v0_3.yaml（registry_ver `boards-v03-2`，5 板块，41 条源）已固定；board3 config = Google News 按部委 + RSSHub。
++- **schema**：schema_cloud.sql 8 张 `cn_*` 表已列出（文件定义；线上实际属 T006）。
++- **drift candidates（文档冲突均列出）**：
++  - DRIFT-FACT-006 来源真相漂移（board3 config Google News/RSSHub ↔ worker 硬编码含 人民网/中新网/新浪）。
++  - DRIFT-FACT-007 状态文档矛盾（STATUS.yaml J5 云原生 与 R6 隧道/Mac 镜像并存，R6 未标 superseded）。
++- **公开证据链接**：GitHub blob permalink base @ 662a26df 已给出。
++
++## Data / Performance / Visual
++
++N/A —— 只读仓库内静态事实采集，无数据写入、无性能、无 UI/视觉变更。
++
++## Value / Cost
++
++- Value：避免按过期 README/配置开发；单一事实源漂移显性化，供 T007 漂移报告与后续来源真相/治理一致性任务。
++- Cost：**0 经常性云成本**；只读本地 git/文件操作，无网络部署、无 D1/R2 操作。UNKNOWN 私有事实见 known_gaps.md（不记为 0）。
++
++## Known gaps
++
++见 `known_gaps.md`（漂移只登记不修复；线上运行时事实属 T006）。
++
++## 不适用证据项
++
++`migration.sql/rollback.sql`（无 schema 变更）、`screenshots-or-videos`（无 UI）、`benchmarks/before|after`（无性能）、`data-samples`（无数据）、`test-results`（无代码测试；治理门见提交步骤）、`deployment_manifest.preview.json`（NOT_DEPLOYED）—— 均标记 N/A。
++
++## 完成声明
++
++```text
++Task: ADP-S0-P02-T005
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: 1 交付基线 + facts.json + 证据文本 + 治理同步（见 changed_files.txt）
++Tests: git hash-object 5 文件可重查 + boards/schema/cron 提取 + 2 漂移候选列出（facts.json/commands.log）；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: T005_GIT_CONFIG_DOC_FACTS.md + facts.json（git_sha/hashes/drift/公开链接）
++Data/Performance/Visual: N/A（只读静态事实）
++Value: 避免按过期配置开发；单一事实源漂移显性化
++Cost: 0 经常性云成本（UNKNOWN 私有事实待 T006，不记为 0）
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED
++Rollback: git revert <sha>（未改写生产数据，纯文档采集）
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/commands.log
+new file mode 100644
+index 000000000..a93382800
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/commands.log
+@@ -0,0 +1,32 @@
++# ADP-S0-P02-T005 commands.log · read-only git/config/doc facts
++# captured_at_utc = 2026-07-16T00:20Z ; baseline commit 662a26df (T004 merged)
++
++## git sha
++$ git rev-parse HEAD
++662a26dfa9f10577c10d75c3efb515d6823a32ee
++
++## key file git blobs (re-queryable via git hash-object)
++$ for f in deploy/cloudflare/worker_cloud.js deploy/cloudflare/wrangler_cloud.jsonc deploy/cloudflare/schema_cloud.sql config/boards_v0_3.yaml docs/v03/STATUS.yaml; do git hash-object "$f"; wc -l < "$f"; done
++worker_cloud.js       c0878f28dcd0dc236e126313cae3df5c35bf70ba  1121
++wrangler_cloud.jsonc  bb889e6b0f590d9e6f4f30c38dfc269e8351dc2b  26
++schema_cloud.sql      1ad27d27c9343a89cb7740af02cb24371f30d4e7  70
++boards_v0_3.yaml      fff7d37db17097a066b50f3da7aa73146be9701d  115
++STATUS.yaml           c7948faa6b58a3acdbdeaa0233fecfcfd943051a  189
++
++## worker entry (wrangler_cloud.jsonc)
++name adp-cloud | main worker_cloud.js | compat 2026-07-01 | D1 DB->adp-mirror | crons ["30 20 * * *"]
++
++## D1 schema tables (schema_cloud.sql)
++cn_sources cn_items cn_selections cn_lessons cn_reviews cn_events cn_run_log cn_meta
++
++## boards (boards_v0_3.yaml registry_ver boards-v03-2, 41 source entries)
++board1 板块一·研究前沿 live_selection | board2 板块二·顶级期刊 live_feed | board3 板块三·中国政策法规 live_feed (Google News 按部委 + RSSHub) | board4 板块四·美国科技金融 live_feed | board5 板块五·跨板块总览 aggregate
++
++## drift candidates
++DRIFT-FACT-006: worker_cloud.js lines 36-51 hardcode Google News + 人民网(x2) + 中国新闻网 + 新浪; board3 config = Google News by-ministry + RSSHub -> source-truth drift
++DRIFT-FACT-007: STATUS.yaml line ~120 J5_cloud_native coexists with line ~168 R6 tunnel/mac-mirror (R6 not marked superseded) -> status-doc contradiction
++
++## 治理门（提交步骤记录）
++$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
++$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
++# 期望 decision: SHIP
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/cost_value.json
+new file mode 100644
+index 000000000..b2ef86d14
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/cost_value.json
+@@ -0,0 +1,13 @@
++{
++  "task": "ADP-S0-P02-T005",
++  "release_mode": "NOT_DEPLOYED",
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "one_time_cost": "read-only local git/file inspection; no network deploy, no D1/R2 op, no API call",
++  "value": "pin git_sha + 5 key-file git blobs (re-queryable) + Worker entry (adp-cloud/worker_cloud.js/cron 30 20 * * *) + D1 schema tables + boards registry + 2 listed drift candidates (FACT-006 source-truth, FACT-007 status-doc); prevents building against stale config/README and feeds T007 drift report",
++  "captured_at_utc": "2026-07-16T00:20Z",
++  "cost_unknowns_not_zero": [
++    "FACT-011 live D1 real schema/rows/size vs schema_cloud.sql (pending T006)",
++    "FACT-012/013 R2 + plan/billing (pending T006)",
++    "FACT-014 build<->domain equality (pending T006)"
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/facts.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/facts.json
+new file mode 100644
+index 000000000..609d25bfd
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/facts.json
+@@ -0,0 +1,64 @@
++{
++  "task": "ADP-S0-P02-T005",
++  "captured_at_utc": "2026-07-16T00:20Z",
++  "git": {
++    "repo": "LinzeColin/CodexProject",
++    "main_sha": "662a26dfa9f10577c10d75c3efb515d6823a32ee",
++    "adp_path": "arxiv-daily-push"
++  },
++  "worker_entry": {
++    "wrangler_config": "deploy/cloudflare/wrangler_cloud.jsonc",
++    "name": "adp-cloud",
++    "main": "worker_cloud.js",
++    "compatibility_date": "2026-07-01",
++    "d1_binding": "DB",
++    "d1_database_name": "adp-mirror",
++    "cron": "30 20 * * *"
++  },
++  "d1_schema": {
++    "file": "deploy/cloudflare/schema_cloud.sql",
++    "tables": ["cn_sources", "cn_items", "cn_selections", "cn_lessons", "cn_reviews", "cn_events", "cn_run_log", "cn_meta"]
++  },
++  "boards_config": {
++    "file": "config/boards_v0_3.yaml",
++    "registry_ver": "boards-v03-2",
++    "boards": [
++      {"id": "board1", "name": "板块一 · 研究前沿", "status": "live_selection"},
++      {"id": "board2", "name": "板块二 · 顶级期刊", "status": "live_feed"},
++      {"id": "board3", "name": "板块三 · 中国政策法规", "status": "live_feed", "sources": "Google News 按部委聚合 (gnews-cn-policy/tech-policy/finance-reg/ai-reg/nmpa) + RSSHub gov/zhengce/zuixin; all official:false"},
++      {"id": "board4", "name": "板块四 · 美国科技金融", "status": "live_feed"},
++      {"id": "board5", "name": "板块五 · 跨板块总览", "status": "aggregate"}
++    ],
++    "total_source_entries": 41
++  },
++  "key_file_git_blobs": {
++    "deploy/cloudflare/worker_cloud.js": {"blob": "c0878f28dcd0dc236e126313cae3df5c35bf70ba", "lines": 1121},
++    "deploy/cloudflare/wrangler_cloud.jsonc": {"blob": "bb889e6b0f590d9e6f4f30c38dfc269e8351dc2b", "lines": 26},
++    "deploy/cloudflare/schema_cloud.sql": {"blob": "1ad27d27c9343a89cb7740af02cb24371f30d4e7", "lines": 70},
++    "config/boards_v0_3.yaml": {"blob": "fff7d37db17097a066b50f3da7aa73146be9701d", "lines": 115},
++    "docs/v03/STATUS.yaml": {"blob": "c7948faa6b58a3acdbdeaa0233fecfcfd943051a", "lines": 189}
++  },
++  "drift_candidates": [
++    {
++      "id": "DRIFT-FACT-006",
++      "kind": "source_truth_drift",
++      "config_says": "boards_v0_3.yaml board3 (板块三·中国政策法规) sources = Google News by-ministry aggregation + RSSHub gov route (all official:false)",
++      "worker_does": "worker_cloud.js hardcodes radar/China sources including Google News + 人民网(x2) + 中国新闻网 + 新浪 (lines 36-51)",
++      "delta": "worker adds 人民网/中国新闻网/新浪 which are NOT in board3 config; config's per-ministry Google News queries + RSSHub route are not the live worker set -> single-source-of-truth violation",
++      "authority": "worker_cloud.js is the deployed live source; boards_v0_3.yaml is the registry that should match it",
++      "resolution_owner": "later S1/S2 source-truth task (out of scope for T005 which only records the drift)"
++    },
++    {
++      "id": "DRIFT-FACT-007",
++      "kind": "status_doc_contradiction",
++      "doc": "docs/v03/STATUS.yaml",
++      "coexisting": [
++        "J5_cloud_native (line ~120): 网页即主体，整套系统跑云端，不依赖 Mac；全路由实测 200",
++        "R6 (line ~168): phone_access_full_system_via_tunnel_with_mirror_fallback — 旧 Cloudflare Tunnel + 本机镜像回落设计"
++      ],
++      "delta": "STATUS.yaml simultaneously records the current cloud-native state (J5) and the retired tunnel/Mac-mirror state (R6) without marking R6 superseded -> contradictory status record",
++      "resolution_owner": "later governance-consistency task (T005 only records; not fixed here)"
++    }
++  ],
++  "public_evidence_base": "https://github.com/LinzeColin/CodexProject/blob/662a26dfa9f10577c10d75c3efb515d6823a32ee/arxiv-daily-push/"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/known_gaps.md
+new file mode 100644
+index 000000000..dc5d9d672
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T005/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S0-P02-T005
++
++- **漂移只登记不修复**：DRIFT-FACT-006（board3 config ↔ worker 硬编码源）与 DRIFT-FACT-007（STATUS.yaml J5 vs R6）本任务只固定为漂移候选；修复属后续 S1/S2 来源真相任务与治理一致性任务（本任务禁止顺带重构）。
++- **schema 为文件定义**：`schema_cloud.sql` 8 张 `cn_*` 表是仓库定义；线上 D1 实际 schema/行数/大小/延迟 = `UNVERIFIED_PRIVATE`（FACT-011），属 T006。
++- **build↔线上一致性**：worker_cloud.js blob 是仓库真身；「线上部署的确为此 blob」需 T006 的 Cloudflare 只读导出证实（FACT-014）。
++- **D1 database_id**：记录于 wrangler_cloud.jsonc（已在公开仓库），非本任务新增暴露；账户级密钥/令牌未采集、未记录。
++- 独立验证：本报告以 `IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION` 结束，PASS/FAIL 由独立上下文判定，实现者不自签。
