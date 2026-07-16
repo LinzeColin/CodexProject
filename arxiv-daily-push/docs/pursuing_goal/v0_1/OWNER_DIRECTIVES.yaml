@@ -36,8 +36,17 @@ directives:
     kind: AUTHORIZATION
     statement: Owner 全权授权继续推进 R2/存储等实现，但不愿手动操作 Cloudflare 后台（计费/条款动作不代按）。
     source: 本对话 Owner 指令（2026-07-15）
+  - id: DIR-007
+    kind: COST_HARD_LIMIT
+    statement: >-
+      整个 ADP 与所有 repo 仓库绝不允许超过 Cloudflare 免费档额度；任何 agent 不得让用量超额，
+      也不得更改/提升额度限制，除非 Owner 再三确认并明确授权。必须持续监控并更新用量，用超即停。
+      R2 免费档：Storage 10 GB/月、Class A operations 1,000,000/月、Class B operations 10,000,000/月。
+    source: 本对话 Owner 指令（2026-07-16，开启 R2 时）
+    enforcement: 详见 FREE_TIER_BUDGET.md；R2 写入路径必须内置预算硬停。
 
 hard_constraints:
+  never_exceed_free_tier: true              # DIR-007：ADP + 所有 repo 不得超免费档，不得代改额度
   single_source_of_truth: true
   china_sources_levels: [A0, A1, A2]
   history_recoverable_from_year: 2016
