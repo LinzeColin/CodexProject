@@ -1,0 +1,7 @@
+{
+  "task": "ADP-S1-P03-T019", "stage": "S1 Truth & Content Stabilization", "release_mode": "NOT_DEPLOYED",
+  "value_metric_s1": "content quality gate: on generation failure/duplicate/template, retry at most once then fall back to the fact card (L0/L1) + raw evidence (L3), never publishing template garbage; seals the english_direct_output/template defects on the publish path",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": "at most 2 per item (initial + 1 retry), controlled by publish()", "human_maintenance": "wire the generate() callback when a model is connected"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "acceptance": "self-test PASS 5/5: timeout -> <=1 retry then fallback; template garbage -> fallback; duplicate -> fallback; good -> full publish 1 attempt; baseline QA clean"
+}

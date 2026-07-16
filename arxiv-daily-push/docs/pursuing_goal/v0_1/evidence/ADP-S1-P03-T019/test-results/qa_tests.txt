@@ -1,0 +1,6 @@
+  timeout: PASS
+  template_garbage: PASS
+  duplicate: PASS
+  good_generation: PASS
+  baseline_qa_no_unsupported: PASS
+RESULT: PASS

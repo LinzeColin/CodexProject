@@ -1,0 +1,14 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/known_gaps.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/test-results/qa_tests.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/tools/content_qa.py

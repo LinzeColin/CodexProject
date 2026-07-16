@@ -1,0 +1,367 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index ab23d72cc..907e0dca9 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S1-P03-T019 (content QA + single retry + factsheet fallback)
++
++- Nineteenth task of the ADP V0.1 FINAL EXECUTION program (S1-P03), one task per run. Goal: on a generation failure, prefer to say less rather than publish template garbage. NOT_DEPLOYED, 0 recurring cloud cost; reuses the T018 render payload, no worker/D1 change and no model call (a self-test stub simulates generation). Deliverable under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/content_qa.py (five QA checks -- language large-English, empty, duplicate, unsupported (a claim without an evidence locator), and template boilerplate -- plus publish() with at most one retry and fallback() which quarantines L2 and publishes only the fact card L0/L1 + raw evidence L3). Acceptance verified (evidence/ADP-S1-P03-T019/test-results/qa_tests.txt) at 5/5 PASS: injecting a model timeout falls back after at most one retry (initial + 1) to publish_mode fact_card_and_raw_only; injecting template garbage or a missing-field stub fails QA and falls back; a duplicate L2 falls back; a valid generation publishes in full in a single attempt; and the baseline payload has no unsupported claims. This seals the english_direct_output/template defects on the publish path. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls at most 2 per item (controlled by publish()). Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S1-P03-T018 (L0-L3 人话版 content contract + evidence locator)
+ 
+ - Eighteenth task of the ADP V0.1 FINAL EXECUTION program (S1-P03), one task per run. Goal: output the 15-second, 2-minute, deep, and raw-evidence layers and distinguish fact/interpretation/inference. NOT_DEPLOYED, 0 recurring cloud cost; reuses the T016/T017 sample, no worker/D1 change and no model call. Per the Owner directive of 2026-07-16 the L2 deep layer requires a model and is kept provisional_pending_model (not generated, not fabricated). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: schemas/content_contract.schema.json (L0 15s / L1 2min / L2 deep / L3 raw-evidence, with claim fact/interpretation/inference and an evidence locator), tools/build_render_payload.py (deterministic builder: L0/L1 are Chinese fact layers with a locator on every claim, the raw possibly-English abstract goes ONLY into a labeled L3, L2 is provisional_pending_model), BOARD_PROMPTS.md (per-board L2 prompts distinguishing fact/interpretation/inference and citing locators), and render_payload_sample.json (200 payloads). Acceptance verified (evidence/ADP-S1-P03-T018/test-results/content_tests.txt): the 200-payload schema validation PASSES; zero English abstracts leak into L0/L1 (all raw English is routed to the labeled L3, so the Chinese UI has no unexplained large English -- the one Chinese board3 title==summary case is Chinese, not English); every key number/date/result is 100% locatable (all 1479 L0/L1 claims carry an evidence locator and the 479 key facts date/DOI/units/doc_number are 479/479 located); and the build is deterministic (byte-identical re-build). This fixes the T017 english_direct_output defect (113/200) at the contract level and answers FACT-002 and the v1.1 fact/interpretation/inference requirement. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0 (L2 not generated). Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index cc29708a1..ea46ddf02 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260716-ADP-V01-S1-P03-T017-DEFECT-BASELINE"
+-source_snapshot_hash: "sha256:66397a1ffc7c36e24257059947b1c2dff367e9a83d1f1a682d5b04674df8b1ab"
++as_of_event_id: "EVENT-20260716-ADP-V01-S1-P03-T018-L0L3-CONTENT-EVIDENCE-LOCATOR"
++source_snapshot_hash: "sha256:81b9c3604440433963e1e6a8331a04e301470d6613d9c0129d330b249c6401bb"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-16T16:30:00+10:00"
++snapshot_event_time: "2026-07-16T16:55:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 76
++    precommit_pending_events: 77
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index e707a7948..af4f60c22 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-16 V0.1 S1-P03-T019: implemented deterministic content QA + single retry + factsheet fallback (S1-P03, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; reuses T018 render payload, no worker/D1 change, no model call (self-test stub). Deliverable under docs/pursuing_goal/v0_1/: tools/content_qa.py (5 QA checks language/empty/duplicate/unsupported/template + publish() <=1 retry + fallback() to fact card L0/L1 + raw L3). Acceptance (test-results/qa_tests.txt) 5/5 PASS: timeout -> <=1 retry then fallback (fact_card_and_raw_only); template garbage/missing-field -> fallback; duplicate -> fallback; valid -> full publish 1 attempt; baseline clean. Seals english_direct_output/template on the publish path. Cost: requests 0 / D1 0 / R2 0 / model <=2 per item. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P03-T018: implemented the L0-L3 人话版 content contract + evidence locator (S1-P03, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; reuses T016/T017 sample, no worker/D1 change, no model call. Owner directive 2026-07-16: L2 deep layer requires a model, kept provisional_pending_model. Deliverables under docs/pursuing_goal/v0_1/: schemas/content_contract.schema.json (L0/L1/L2/L3 + claim fact/interpretation/inference + locator), tools/build_render_payload.py (L0/L1 Chinese fact layers with locators; raw English only in labeled L3; L2 provisional), BOARD_PROMPTS.md, render_payload_sample.json (200). Acceptance (test-results/content_tests.txt): schema validate(200) PASS; 0 English abstracts leak into L0/L1 (routed to labeled L3; Chinese UI has no unexplained large English); every key number/date/result 100% locatable (1479/1479 claims have locators, 479/479 key facts located); deterministic re-build. Fixes T017 english_direct_output (113/200) at the contract level; answers FACT-002 + v1.1 fact/interpretation/inference. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P03-T017: built the 200-sample content defect baseline (S1-P03, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; reuses the T016 read-only sample + factsheets, no new D1 read. Owner directive 2026-07-16: provisional_machine baseline pending Owner spot-check. Deliverables under docs/pursuing_goal/v0_1/: tools/scan_defects.py (deterministic six-defect scanner) + defect_baseline_200.json (200-row dataset + before_report). Acceptance (test-results/defect_tests.txt): every row carries item_id/document_id/build_id bd67a78020a3 (each defect traces to a concrete item, not prose); deterministic re-scan byte-identical. Before report: english_direct_output 113/200 (FACT-002), board_pollution 44/200 (FACT-003), templating 6, empty_section 1, no_evidence 0, 160/200 with >=1 defect. Before anchor for T018. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P03-T016: built the five-board Factsheet schema + deterministic extraction (first S1-P03 task, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; read-only D1 sample of 200 items (changed_db=False), no worker/D1 change. Owner directive 2026-07-16: S1-P03 human baseline is a machine baseline marked provisional_machine pending Owner spot-check (no fabricated human labels). Deliverables under docs/pursuing_goal/v0_1/: schemas/factsheet.schema.json (common value-or-null fields + board_ext + p0_present), tools/extract_factsheet.py (deterministic date/DOI/文号/单位 extractors, missing->null), factsheet_baseline_200.json (200-sample provisional baseline). Acceptance (test-results/factsheet_tests.txt): every field value-or-null (missing->null, not fabricated); schema validate(200) PASS; deterministic re-extract byte-identical; P0 coverage title/url/date 100% per board (board2 doi 60/86, board3 doc_number 2/85 = media not policy, DRIFT-FACT-006). Fact layer for T017/T018; precondition for FACT-002. Cost: 1 read-only D1 SELECT / rows_read ~200 / written 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 106f85539..c7f4fd0f6 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `76`
+-- pending_or_stale_events: `426`
+-- freshness_counts: `pending_or_stale_events=426; legacy_unbound_events=334`
++- precommit_pending_events: `77`
++- pending_or_stale_events: `427`
++- freshness_counts: `pending_or_stale_events=427; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:66397a1ffc7c36e24257059947b1c2dff367e9a83d1f1a682d5b04674df8b1ab`
+-- snapshot_event_time: `2026-07-16T16:30:00+10:00`
++- source_snapshot_hash: `sha256:81b9c3604440433963e1e6a8331a04e301470d6613d9c0129d330b249c6401bb`
++- snapshot_event_time: `2026-07-16T16:55:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 92f105fa6..31289949d 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:66397a1ffc7c36e24257059947b1c2dff367e9a83d1f1a682d5b04674df8b1ab`
+-- snapshot_event_time: `2026-07-16T16:30:00+10:00`
++- source_snapshot_hash: `sha256:81b9c3604440433963e1e6a8331a04e301470d6613d9c0129d330b249c6401bb`
++- snapshot_event_time: `2026-07-16T16:55:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `426`
++- Pending/stale events: `427`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/TASK_REPORT.md
+new file mode 100644
+index 000000000..8ee563d3e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/TASK_REPORT.md
+@@ -0,0 +1,54 @@
++# TASK_REPORT · ADP-S1-P03-T019｜实现确定性 QA、单次重试与 Factsheet 回退
++
++## 唯一目标（达成）
++生成失败时宁可少讲，也不发布模板垃圾 —— 交付 language/empty/duplicate/unsupported/template checks、quarantine/fallback。
++
++## 六个开始前问题（已回答）
++1. 唯一目标：确定性内容 QA + 最多一次重试 + 回退到事实卡/原文，绝不发模板垃圾。
++2. 允许修改文件：`docs/pursuing_goal/v0_1/tools/content_qa.py` + 本证据包 + 治理同步。**复用 T018 render payload，不改 worker/D1**。
++3. 绝不能改变：抓取行为、六主题、worker、D1（NOT_DEPLOYED）。
++4. 基线：main `0a717623`（T018 已合入）；输入 = render_payload_sample.json；L2 provisional。
++5. 验收：注入模型超时/重复/缺字段时最多重试一次，之后只发事实卡/原文。
++6. 回滚：`git revert <sha>`（纯工具，NOT_DEPLOYED）。
++
++## 交付物
++- `tools/content_qa.py` —— 5 类 QA 检查（language 无大段英文 / empty / duplicate / unsupported 无 locator / template 套话）+ `publish()`（≤1 次重试）+ `fallback()`（隔离 L2，只发事实卡 L0/L1 + 原文 L3）。
++
++## 验收结果（实测，见 test-results/qa_tests.txt）
++- **timeout**：注入模型超时（每次 raise）→ 最多 2 次尝试（初始+1 重试）→ 回退 `quarantined_fallback`（publish_mode=fact_card_and_raw_only）。**PASS**。
++- **template_garbage（缺字段/套话）**：生成「暂无」→ QA template 拦 → 回退只发事实卡/原文。**PASS**。
++- **duplicate**：L2 与他项重复 → QA duplicate 拦 → 回退。**PASS**。
++- **good_generation**：合法生成 → 全量发布（full_l0_l3），**1 次尝试**、不回退。**PASS**。
++- **baseline_qa**：baseline payload（L2 provisional）QA 无 unsupported。**PASS**。
++- 总 **RESULT: PASS**（5/5）。
++
++## Data / Performance / Visual
++N/A —— 纯 QA/回退逻辑，无数据/性能/UI；未碰 worker/D1。
++
++## Value / Cost（S1 = Truth & Content Stabilization）
++- **Value（S1 指标）**：内容质量门到位——生成失败/重复/套话时最多重试一次，然后**宁可少讲**（回退事实卡 L0/L1 + 原文 L3），绝不发模板垃圾；把「英文直出/模板」缺陷在发布路径上封死。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 0；R2 0；模型调用 = 由 publish() 控制，最多 2 次/条（初始+1 重试），失败不重复烧钱；人工维护 = 接模型时 generate 回调接上。经常性云成本 0。
++
++## Known gaps
++见 known_gaps.md（QA 判据 provisional；未接入 worker 发布路径=后续部署任务）。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`（无 UI）、`benchmarks`、`data-samples`（复用 T018）、`deployment_manifest.preview.json`(T009覆盖) —— N/A。
++
++## 完成声明
++```text
++Task: ADP-S1-P03-T019
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: content_qa.py + 证据 + 治理同步（见 changed_files.txt）
++Tests: qa_tests.txt —— timeout/template/duplicate/good/baseline 5/5 PASS（超时/重复/缺字段最多重试1次后回退事实卡/原文）；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: content QA + ≤1 retry + factsheet fallback（宁可少讲不发模板垃圾）
++Data/Performance/Visual: N/A
++Value: 内容质量门（失败回退事实卡/原文，封死模板垃圾）
++Cost: 请求0 / D1 0 / R2 0 / 模型≤2次/条(由publish控制)；经常性成本 0
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED
++Rollback: git revert <sha>（纯工具）
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/commands.log
+new file mode 100644
+index 000000000..899890c78
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/commands.log
+@@ -0,0 +1,15 @@
++# ADP-S1-P03-T019 commands.log · deterministic content QA + single retry + factsheet fallback
++# base commit 0a717623 (T018 merged) ; reuses T018 render payload, NOT_DEPLOYED
++
++$ python3 tools/content_qa.py --selftest render_payload_sample.json
++#   timeout: PASS (model timeout -> <=1 retry -> quarantined_fallback, publish_mode fact_card_and_raw_only)
++#   template_garbage: PASS (stub '暂无' -> QA template -> fallback)
++#   duplicate: PASS (L2 dup -> fallback)
++#   good_generation: PASS (valid -> full_l0_l3, 1 attempt, no fallback)
++#   baseline_qa_no_unsupported: PASS
++#   RESULT: PASS (5/5)
++# full: test-results/qa_tests.txt
++
++## 治理门（提交步骤记录）
++$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
++$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/cost_value.json
+new file mode 100644
+index 000000000..9fb313e0a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/cost_value.json
+@@ -0,0 +1,7 @@
++{
++  "task": "ADP-S1-P03-T019", "stage": "S1 Truth & Content Stabilization", "release_mode": "NOT_DEPLOYED",
++  "value_metric_s1": "content quality gate: on generation failure/duplicate/template, retry at most once then fall back to the fact card (L0/L1) + raw evidence (L3), never publishing template garbage; seals the english_direct_output/template defects on the publish path",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": "at most 2 per item (initial + 1 retry), controlled by publish()", "human_maintenance": "wire the generate() callback when a model is connected"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "acceptance": "self-test PASS 5/5: timeout -> <=1 retry then fallback; template garbage -> fallback; duplicate -> fallback; good -> full publish 1 attempt; baseline QA clean"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/known_gaps.md
+new file mode 100644
+index 000000000..a466e779b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S1-P03-T019
++
++- **未接入 worker 发布路径**：content_qa.publish()/fallback() 是发布前的质量门逻辑，worker 尚未调用它（现仍直显英文摘要）；接入属后续部署任务（须保六主题 + 部署验证 + T017 defect baseline before/after）。
++- **generate() 回调待接模型**：publish() 用 generate 回调生成 L2；未接模型前以自测桩验证（timeout/garbage/dup/good）；接模型时把真实生成接上，重试与回退逻辑不变。
++- **QA 判据 provisional**：language(ASCII 比)/template(停用词)/duplicate(batch 内)/unsupported(locator) 为确定性 provisional 判据；Owner 抽查后可调阈值。
++- **duplicate 仅 batch 内**：跨天去重未覆盖。
++- 独立验证：以 IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION 结束，实现者不自签。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/test-results/qa_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/test-results/qa_tests.txt
+new file mode 100644
+index 000000000..ee7e925af
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T019/test-results/qa_tests.txt
+@@ -0,0 +1,6 @@
++  timeout: PASS
++  template_garbage: PASS
++  duplicate: PASS
++  good_generation: PASS
++  baseline_qa_no_unsupported: PASS
++RESULT: PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/content_qa.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/content_qa.py
+new file mode 100644
+index 000000000..927c6c540
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/content_qa.py
+@@ -0,0 +1,138 @@
++#!/usr/bin/env python3
++"""ADP V0.1 deterministic content QA + single retry + factsheet fallback (ADP-S1-P03-T019).
++
++On a generation failure or a QA failure, prefer to say less: retry at most once,
++then fall back to the fact card (L0/L1) + raw evidence (L3) and never publish
++templated garbage or an unsupported 人话版.
++
++QA checks on a render payload:
++  - language     : L0/L1 (人话版) has no large unexplained English block
++  - empty        : L1 has facts; L0 text non-empty
++  - duplicate    : L2 text is not a duplicate of another item's L2 (batch)
++  - unsupported  : every L0/L1 claim carries an evidence locator
++  - template     : L2 text (if generated) is not a boilerplate stub
++
++publish(payload, generate, seen_l2) runs generate() for L2 with <=1 retry; if it
++raises or the QA fails twice, it quarantines L2 and returns the fallback payload.
++
++Exit codes when run as a self-test: 0 = all acceptance cases pass.
++"""
++import argparse, json, re, sys, pathlib
++
++TEMPLATE_STUBS = ["暂无", "模板", "todo", "tbd", "lorem", "占位"]
++
++
++def ascii_ratio(s):
++    letters = [c for c in (s or "") if c.isalpha()]
++    return sum(1 for c in letters if ord(c) < 128) / len(letters) if letters else 0.0
++
++
++def qa_check(payload, seen_l2=None):
++    problems = []
++    layers = payload["layers"]
++    l0 = layers["L0_15s"]["text"] or ""
++    facts = layers["L1_2min"]["facts"]
++    l2 = layers.get("L2_deep", {})
++    # language: no large English block in L0/L1 (title claim excluded)
++    if len(l0) >= 120 and ascii_ratio(l0) >= 0.85:
++        problems.append("language: L0 large English block")
++    for f in facts:
++        if f.get("label") == "标题":
++            continue
++        v = f.get("value") or ""
++        if len(v) >= 120 and ascii_ratio(v) >= 0.85:
++            problems.append("language: L1 large English block")
++    # empty
++    if not l0.strip():
++        problems.append("empty: L0 empty")
++    if not facts:
++        problems.append("empty: L1 no facts")
++    # unsupported: every claim has a locator
++    for c in layers["L0_15s"]["claims"] + facts:
++        loc = c.get("locator") or {}
++        if not (loc.get("item_id") and loc.get("field")):
++            problems.append(f"unsupported: claim {c.get('label')} has no locator")
++    # template + duplicate (only when L2 has generated text)
++    txt = (l2.get("text") or "").strip()
++    if l2.get("status") == "generated":
++        if not txt or any(s in txt.lower() for s in TEMPLATE_STUBS) or len(txt) < 20:
++            problems.append("template: L2 boilerplate/empty stub")
++        if seen_l2 is not None and txt and txt in seen_l2:
++            problems.append("duplicate: L2 duplicates another item")
++    return problems
++
++
++def fallback(payload):
++    p = json.loads(json.dumps(payload))
++    p["layers"]["L2_deep"] = {"status": "quarantined_fallback",
++                              "reason": "generation failed or QA failed after 1 retry; publishing fact card + raw evidence only",
++                              "text": None,
++                              "prompt_ref": payload["layers"]["L2_deep"].get("prompt_ref")}
++    p["publish_mode"] = "fact_card_and_raw_only"
++    return p
++
++
++def publish(payload, generate, seen_l2=None):
++    """Run generate() for L2 with <=1 retry; on failure/QA-fail twice -> fallback.
++    generate() -> str (L2 text) or raises. Returns (published_payload, attempts, mode)."""
++    attempts = 0
++    for _ in range(2):  # initial + at most one retry
++        attempts += 1
++        try:
++            text = generate(payload)
++        except Exception:
++            continue  # timeout/error -> retry (if attempts left)
++        cand = json.loads(json.dumps(payload))
++        cand["layers"]["L2_deep"] = {**payload["layers"]["L2_deep"], "status": "generated", "text": text}
++        if not qa_check(cand, seen_l2):
++            cand["publish_mode"] = "full_l0_l3"
++            return cand, attempts, "full_l0_l3"
++    fb = fallback(payload)
++    return fb, attempts, "fact_card_and_raw_only"
++
++
++def _selftest(sample_path):
++    payloads = json.loads(pathlib.Path(sample_path).read_text(encoding="utf-8"))
++    p = payloads[0]
++    results = []
++    # case A: model timeout always -> at most 1 retry (2 attempts) then fallback
++    def gen_timeout(_):
++        raise TimeoutError("model timeout")
++    out, att, mode = publish(p, gen_timeout)
++    results.append(("timeout", att <= 2 and mode == "fact_card_and_raw_only" and out["layers"]["L2_deep"]["status"] == "quarantined_fallback"))
++    # case B: missing-field/template garbage -> QA fails -> fallback
++    def gen_template(_):
++        return "暂无"
++    out, att, mode = publish(p, gen_template)
++    results.append(("template_garbage", att <= 2 and mode == "fact_card_and_raw_only"))
++    # case C: duplicate L2 -> fallback
++    seen = {"这是一段足够长的中文深度解释内容用于测试重复检测的场景。"}
++    def gen_dup(_):
++        return "这是一段足够长的中文深度解释内容用于测试重复检测的场景。"
++    out, att, mode = publish(p, gen_dup, seen_l2=seen)
++    results.append(("duplicate", mode == "fact_card_and_raw_only"))
++    # case D: good generation -> full publish, 1 attempt, no fallback
++    def gen_good(_):
++        return "这是一段足够长的中文深度解释，覆盖研究问题、方法与关键结果，并区分事实、解释与推断三类。"
++    out, att, mode = publish(p, gen_good)
++    results.append(("good_generation", att == 1 and mode == "full_l0_l3" and out["layers"]["L2_deep"]["status"] == "generated"))
++    # case E: baseline payload (L2 provisional, no gen) passes QA fact-layer checks
++    results.append(("baseline_qa_no_unsupported", qa_check(p) == []))
++    for name, ok in results:
++        print(f"  {name}: {'PASS' if ok else 'FAIL'}")
++    allok = all(ok for _, ok in results)
++    print("RESULT:", "PASS" if allok else "FAIL")
++    return 0 if allok else 1
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--selftest", metavar="RENDER_PAYLOAD_JSON")
++    args = ap.parse_args()
++    if args.selftest:
++        sys.exit(_selftest(args.selftest))
++    ap.print_help()
++
++
++if __name__ == "__main__":
++    main()

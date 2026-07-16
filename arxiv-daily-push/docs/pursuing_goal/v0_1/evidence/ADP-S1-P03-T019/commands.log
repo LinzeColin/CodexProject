@@ -1,0 +1,15 @@
+# ADP-S1-P03-T019 commands.log · deterministic content QA + single retry + factsheet fallback
+# base commit 0a717623 (T018 merged) ; reuses T018 render payload, NOT_DEPLOYED
+
+$ python3 tools/content_qa.py --selftest render_payload_sample.json
+#   timeout: PASS (model timeout -> <=1 retry -> quarantined_fallback, publish_mode fact_card_and_raw_only)
+#   template_garbage: PASS (stub '暂无' -> QA template -> fallback)
+#   duplicate: PASS (L2 dup -> fallback)
+#   good_generation: PASS (valid -> full_l0_l3, 1 attempt, no fallback)
+#   baseline_qa_no_unsupported: PASS
+#   RESULT: PASS (5/5)
+# full: test-results/qa_tests.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
