@@ -1,0 +1,74 @@
+{
+  "schema": "PFIV025LocalRetirementRecoveryAuditV1",
+  "status": "remote_recovery_ready_local_retirement_authorized",
+  "observed_at": "2026-07-16T01:21:54Z",
+  "task_id": "PFI-V025-LOCAL-RETIREMENT-20260716",
+  "acceptance_id": "ACC-PFI-V025-RECOVERABLE-LOCAL-RETIREMENT",
+  "codexproject": {
+    "repository": "LinzeColin/CodexProject",
+    "visibility": "PUBLIC",
+    "remote_main_preflight": "0aa4c1d726a6bdc483af7b840055a7d2808dbe51",
+    "final_delivery_commit": "d488b1f47d5ef8dd5f95fc7d6f9a5382d1486a8a",
+    "final_delivery_is_remote_main_ancestor": true,
+    "accepted_pfi_product_tree": "a6aae2ae9e89f601b9a1833a45947ed625aa100c",
+    "tracked_file_count": 3172,
+    "tracked_blob_bytes": 169541903,
+    "source_package_commit_semantics": "commit_containing_this_audit",
+    "private_runtime_uploaded": false
+  },
+  "source_package": {
+    "roadmap_path": "PFI/docs/source_packages/pfi_v025/PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md",
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "taskpack_path": "PFI/docs/source_packages/pfi_v025/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+    "taskpack_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2",
+    "taskpack_archive_test": "pass",
+    "credential_pattern_findings": 0
+  },
+  "migrated_raw_sources": {
+    "repository": "LinzeColin/MetaDatabase",
+    "remote_main": "8fad21d7e578c8ec56a1997d3a0e2f4a34a2fd6f",
+    "tree_root": "LinzeDatabase/PFI/alipay_daily/raw",
+    "expected_blob_count": 4,
+    "exact_blob_count": 4,
+    "objects": [
+      {"oid": "03ee2d6ca632242ad9ffca18ed683973c11020df", "bytes": 264554, "sha256": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342"},
+      {"oid": "662f15f4db29448734a46be83ccbfc55e04d5726", "bytes": 259891, "sha256": "c16e278e987c3c626fc2495254e5d0b5eeb71bd8ec4dcacc8d3a7cec2e6d1e13"},
+      {"oid": "4446f0a303e5c0ebf5856f16fd7e640aeeab0c57", "bytes": 263668, "sha256": "c592e6a224da1e31995760b59f3597c351a87d545f535e219c27f4bec6792ba1"},
+      {"oid": "76789c0764d76fc3439fca831c30899becdb0ba8", "bytes": 689203, "sha256": "eaff20de65cc44de54b9b39ab7b90f097c375662b5bb1f8870ad15c16409bc54"}
+    ],
+    "legacy_tree_restored": false
+  },
+  "local_runtime_pre_delete": {
+    "sqlite_quick_check": "ok",
+    "sqlite_integrity_check": "ok",
+    "business_table_row_count": 0,
+    "schema_migration_row_count": 3,
+    "backup_business_table_row_count": 0,
+    "durable_user_state_loss_expected": false,
+    "rebuild_sources": [
+      "CodexProject main PFI schemas and migrations",
+      "MetaDatabase main exact raw source blobs"
+    ]
+  },
+  "canonical_app_pre_delete": {
+    "version": "0.2.5",
+    "build": "20260712.1",
+    "codesign_verify": "pass",
+    "executable_sha256": "a5d87915df40b55e1333d939b6cf1f28c9a9f333867fd70eb864c27744ca922b",
+    "rebuildable_from_codexproject_main": true
+  },
+  "planned_local_retirement": {
+    "worktree": true,
+    "applications_bundle": true,
+    "desktop_symlink": true,
+    "downloads_source_files": true,
+    "private_runtime": true,
+    "shared_git_object_gc": false,
+    "other_projects_touched": false
+  },
+  "finder_used": false,
+  "open_command_used": false,
+  "launchservices_used": false,
+  "gui_file_operations_used": false,
+  "contains_private_values": false
+}

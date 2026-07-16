@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "PFI"
 project_name: "Personal Financial Intelligence"
-summary: "PFI 是本地优先个人金融中枢；v0.2.5 Stage 0–12 已由 owner 精确最终接受并完成 S12-P3-T4 release freeze。验收绑定 build pfi-v025-s1p1-20260712.1、App 0.2.5/20260712.1、产品候选 A c8ce63aac7、整改闭合 B 559cf190cc、复审证据 C 123f5a6f7e、evidence-index ebd03b8a 及五项非阻断 P2。当前 156/156 tasks、Stage 12 12/12；唯一 CLI-only canonical App 最终重装已通过，仅余唯一 GitHub main 上传与 post-push parity；Finder/LaunchServices/open/GUI 操作保持 0。"
+summary: "PFI 是本地优先个人金融中枢；v0.2.5 Stage 0–12 已由 owner 精确最终接受并完成 release freeze、CLI-only App 最终重装、GitHub main 上传与 post-push parity。Final delivery commit d488b1f47d、已验收 product tree a6aae2ae9e、A/B/C 与 evidence-index 均保留；原始 Roadmap/TaskPack 已归档到 main，四个 raw source objects 已在迁移后的 MetaDatabase main 精确复验。本机 PFI 副本已获可恢复退休授权，Finder/LaunchServices/open/GUI 操作保持 0。"
 version: "v0.2.5"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "final_app_reinstalled_waiting_single_main_upload"
+current_status: "delivered_remote_recovery_ready_local_retirement_authorized"
 completion_predicate:
   stage_1_tracked_status: "candidate_pass_pending_postcommit_attestation"
   stage_1_external_attestation_required: true
@@ -97,7 +97,7 @@ completion_predicate:
   stage_11_whole_stage_review_status: "pass"
   stage_11_user_acceptance_status: "accepted_via_standing_transition_authorization"
   stage_12_entry_authorized: true
-  stage_12_status: "final_app_reinstalled_waiting_single_main_upload"
+  stage_12_status: "accepted_release_frozen_final_delivery_complete"
   stage_12_phase_12_1_status: "candidate_pass"
   stage_12_phase_12_2_status: "candidate_pass"
   stage_12_phase_12_3_status: "completed_release_frozen"
@@ -108,8 +108,8 @@ completion_predicate:
   stage_10_next_acceptance_id: "ACC-PFI-V025-STAGE11-WHOLE-REVIEW"
   stage_11_next_task: "S12-P1-T1"
   stage_11_next_acceptance_id: "ACC-PFI-V025-STAGE12-WHOLE-REVIEW"
-  stage_12_next_task: "PFI-V025-SINGLE-MAIN-UPLOAD-AND-POST-PUSH-PARITY"
-  stage_12_next_acceptance_id: "ACC-PFI-V025-STAGE12-WHOLE-REVIEW"
+  stage_12_next_task: "NONE"
+  stage_12_next_acceptance_id: "NONE"
   canonical_install_gate: "S12-P2-T1"
   canonical_install_status: "passed_cli_atomic_install_no_finder_per_explicit_user_instruction"
   stage_12_initial_review_base: "9a7245acf984a4eb98f93c4aab7bb4d02095294f"
@@ -134,11 +134,17 @@ completion_predicate:
   stage_12_final_acceptance_accepted_at: "2026-07-15T23:50:30Z"
   stage_12_residual_p2_count: 5
   release_freeze_performed: true
-  push_gate: "open_exact_acceptance_received_single_transaction_only"
-  push_performed: false
+  push_gate: "closed_main_upload_and_post_push_parity_passed"
+  push_performed: true
   app_reinstall_performed: true
-  production_accepted: false
+  production_accepted: true
   final_human_acceptance: true
+  final_delivery_commit: "d488b1f47d5ef8dd5f95fc7d6f9a5382d1486a8a"
+  accepted_pfi_product_tree: "a6aae2ae9e89f601b9a1833a45947ed625aa100c"
+  source_package_archived_on_main: true
+  migrated_raw_source_repository: "LinzeColin/MetaDatabase"
+  migrated_raw_source_main_commit: "8fad21d7e578c8ec56a1997d3a0e2f4a34a2fd6f"
+  local_retirement_authorized: true
 features:
   - feature_id: "FEAT-PFI-001"
     name: "PFI V0.2 产品根"

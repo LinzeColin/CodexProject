@@ -2,7 +2,7 @@ governance_spec_version: "1.0.0"
 project_id: "PFI"
 product_version: "v0.2.5"
 target_product_version: "v0.2.5"
-product_version_status: "final_app_reinstalled_waiting_single_main_upload"
+product_version_status: "delivered_remote_recovery_ready_local_retirement_authorized"
 version_file_value: "v0.2.5"
 schema_version: "1.0.0"
 model_versions:
@@ -29,10 +29,42 @@ parameter_profile_versions:
   pfi_financial_models: "pfi-v0.2.5-financial-models-v1"
 data_snapshot_version: "v025-stage5-phase53-immutable-real-snapshot-4038bbe1-20260715"
 operational_schema_version: "PFIV025Stage7MetricLineageV1"
-current_iteration: "ITER-20260716-PFI-V025-FINAL-DELIVERY"
-current_phase: "PFI-V025-FINAL-DELIVERY"
-current_gate: "ACC-PFI-V025-FINAL-DELIVERY-PARITY"
+current_iteration: "ITER-20260716-PFI-V025-LOCAL-RETIREMENT-HANDOFF"
+current_phase: "POST-RELEASE-LOCAL-RETIREMENT"
+current_gate: "ACC-PFI-V025-RECOVERABLE-LOCAL-RETIREMENT"
 phase_overlays:
+  - iteration_id: "ITER-20260716-PFI-V025-LOCAL-RETIREMENT-HANDOFF"
+    contract_id: "PFI-V025-REMOTE-RECOVERY-AND-LOCAL-RETIREMENT"
+    acceptance_id: "ACC-PFI-V025-RECOVERABLE-LOCAL-RETIREMENT"
+    lifecycle: "remote_recovery_ready_local_retirement_authorized"
+    final_delivery_commit: "d488b1f47d5ef8dd5f95fc7d6f9a5382d1486a8a"
+    accepted_pfi_product_tree: "a6aae2ae9e89f601b9a1833a45947ed625aa100c"
+    source_roadmap_sha256: "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b"
+    source_taskpack_sha256: "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+    migrated_raw_source_repository: "LinzeColin/MetaDatabase"
+    migrated_raw_source_main_commit: "8fad21d7e578c8ec56a1997d3a0e2f4a34a2fd6f"
+    exact_raw_blob_count: 4
+    canonical_sqlite_business_row_count: 0
+    backup_business_row_count: 0
+    model_formula_parameter_runtime_changed: false
+    contains_private_values: false
+    private_runtime_uploaded: false
+    canonical_private_database_mutated: false
+    finder_used: false
+    open_command_used: false
+    launchservices_used: false
+    gui_file_operations_used: false
+    push_performed: true
+    app_reinstall_performed: true
+    release_freeze_performed: true
+    production_accepted: true
+    final_human_acceptance: true
+    local_retirement_authorized: true
+    next_task_id: "NONE"
+    next_acceptance_id: "NONE"
+    overall_completed_task_count: 156
+    overall_total_task_count: 156
+    overall_progress_percent: 100.0
   - iteration_id: "ITER-20260716-PFI-V025-FINAL-DELIVERY"
     contract_id: "PFI-V025-FINAL-DELIVERY-TRANSACTION"
     acceptance_id: "ACC-PFI-V025-FINAL-DELIVERY-PARITY"

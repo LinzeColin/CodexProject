@@ -4,13 +4,14 @@
 
 ## 当前已验收冻结版本
 
-状态标识：`PFI-V025-FINAL-APP-REINSTALLED-WAITING-SINGLE-MAIN-UPLOAD`
+状态标识：`PFI-V025-DELIVERED-REMOTE-RECOVERY-READY-LOCAL-RETIREMENT`
 
 - Roadmap：Stage 0–12 已完成；`S12-P3-T4` 已由 owner 精确最终验收并执行 release freeze。
 - 验收 Gate：A/B/C、evidence-index、请求时间、Stage 0–12 与五项非阻断 P2 已精确绑定；初审 `3` 项 P1 均 `closed_verified`，复审新增 `0 P0 / 0 P1 / 0 minor`。
 - 任务进度：`156/156 (100%)`；Stage 12 为 `12/12 (100%)`。
-- 唯一 CLI-only canonical App 最终重装已实际执行并通过；下一唯一工作单元是一次 GitHub main 上传及 post-push 只读 parity。
-- `final_human_acceptance=true`、`release_freeze_performed=true`、`final_reinstall_performed=true`；`production_accepted=false`、`push_performed=false`。
+- 唯一 CLI-only canonical App 最终重装已实际执行并通过；final delivery commit `d488b1f47d5ef8dd5f95fc7d6f9a5382d1486a8a` 已进入 GitHub `main`，当前远端仍保持已验收 product tree `a6aae2ae9e89f601b9a1833a45947ed625aa100c`。
+- 原始 Roadmap 与 TaskPack 已归档到 `docs/source_packages/pfi_v025/`；本机 PFI worktree、App、入口、Downloads 原包与可重建 runtime 已获授权退休，缺失属于迁移后的预期状态。
+- `final_human_acceptance=true`、`release_freeze_performed=true`、`final_reinstall_performed=true`、`production_accepted=true`、`push_performed=true`；v0.2.5 下一产品任务为 `NONE`。
 
 ## 当前 release identity
 
@@ -22,12 +23,12 @@
 - Reviewed remediation closure：`559cf190ccfd97aabcf37a5edf2bf1e9abe300fc`
 - Rereview evidence：`123f5a6f7e7af22c283e49e55c2ba581310238d5`
 - Evidence index：`sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344`
-- Canonical App：`/Applications/PFI.app`，最终 CLI 原子重装于 `2026-07-16T00:27:09Z` 实际执行；version/build/codesign/project-binding 与 deterministic bundle hash 全部通过。
+- Canonical App：最终 CLI 原子重装于 `2026-07-16T00:27:09Z` 实际执行并通过 version/build/codesign/project-binding/hash；本地迁移后该 App 可不存在，按本页 source package 与 GitHub `main` 重建。
 - 当前用户边界：禁止 Finder、`open`、LaunchServices、AppleScript 与 GUI 文件操作；上述操作计数保持 0。
 
 ## 生产真值边界
 
-- 四个已复核支付宝来源现在由 [`config/sources/v025_immutable_real_source_lock.json`](config/sources/v025_immutable_real_source_lock.json) 锁定到当前分支可达的 immutable Git commit；上游迁移后的顶层 `MetaDatabase` 不会被恢复。
+- 四个已复核支付宝来源由 [`config/sources/v025_immutable_real_source_lock.json`](config/sources/v025_immutable_real_source_lock.json) 固定 OID/bytes/SHA-256，并已在迁移后的 `LinzeColin/MetaDatabase@main` commit `8fad21d7e578c8ec56a1997d3a0e2f4a34a2fd6f` 逐项复验；不得恢复旧顶层 `MetaDatabase`。
 - 真实交易规模为 8,815 raw / 8,808 ledger；Phase 12.2 的一次人工工作流复核使待复核计数从 803 变为 802，并在重启后持久。
 - `SRC-HOLDINGS` 仍为 `not_loaded/not_run`；五份报告保持 `3 blocked / 2 partial`。缺失来源不得显示为零或财务通过。
 - Canonical private SQLite 在目标 Mac 演练中只读；restore/rollback 只作用于隔离副本。初审 `3` 项 P1 已独立复审关闭，`5` 项 P2 residual 继续明确披露。
@@ -56,7 +57,7 @@
 - Final acceptance evidence：`reports/pfi_v025/stage_12/final_acceptance/evidence.json`
 - Final CLI reinstall：`reports/pfi_v025/stage_12/final_delivery/cli_app_reinstall.json`
 
-真正的 `human_acceptance.json` 已在整阶段审查、整改、独立复审及 owner 精确声明全部满足后创建并通过 TaskPack schema；App 最终重装也已闭合，当前仅不替代尚未执行的唯一 main 上传与 post-push parity。
+真正的 `human_acceptance.json` 已在整阶段审查、整改、独立复审及 owner 精确声明全部满足后创建并通过 TaskPack schema；App 最终重装、GitHub main 上传与 post-push parity 均已闭合。本地退休后的恢复入口见 `docs/source_packages/pfi_v025/SOURCE_PROVENANCE.md`。
 
 ## 运行与验证
 

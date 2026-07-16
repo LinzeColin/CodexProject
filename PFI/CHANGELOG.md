@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.5 Remote Recovery and Local Retirement Handoff - 2026-07-16
+
+- 记录 final delivery commit `d488b1f47d5ef8dd5f95fc7d6f9a5382d1486a8a` 已进入 GitHub `main`，当前远端仍保持已验收 PFI product tree `a6aae2ae9e89f601b9a1833a45947ed625aa100c`；最终 App 重装与 post-push parity 已闭合。
+- 将原始 Roadmap `fc2f406e...` 与 TaskPack ZIP `591c8399...` exact bytes 归档到 `PFI/docs/source_packages/pfi_v025/`，补齐仅存在于本机 Downloads 的开发输入。
+- 逐项证明四个 immutable raw source blobs 已在迁移后的 `LinzeColin/MetaDatabase@main` commit `8fad21d...` 保持相同 OID、bytes 与 SHA-256；未恢复已迁出目录，未把 `$HOME/.pfi` 或私有值写入公开 PFI。
+- 本地 canonical SQLite 与三份备份在退休前均 `quick_check=ok` 且业务表 0 行；App/worktree/入口/Downloads 原包/runtime 均可从远端产品、schema/migrations 与迁移后 raw sources 重建。全程 Finder/`open`/LaunchServices/AppleScript/GUI 为 0，共享 Git object DB 不执行 GC。
+
 ## v0.2.5 Stage 12 Exact Final Acceptance and Release Freeze - 2026-07-16
 
 - 唯一 CLI-only canonical App 最终重装已于 `2026-07-16T00:27:09Z` 实际执行：`install_performed_this_invocation=true`，version/build/codesign/project-binding 与 deterministic bundle/executable hashes 全部通过；Finder/LaunchServices/`open`/GUI 为 0。仅余唯一 main 上传与 post-push parity。

@@ -18,11 +18,11 @@ current_scope_metrics:
   hours_status: "UNKNOWN"
   progress_basis: "task_count"
 current_stage_id: "V025-S12"
-current_phase_id: "V025-S12-P12.3"
-current_task_id: "S12-P3-T4"
-next_gate_id: "ACC-PFI-V025-STAGE12-WHOLE-REVIEW"
+current_phase_id: "POST_RELEASE_LOCAL_RETIREMENT_HANDOFF"
+current_task_id: "PFI-V025-LOCAL-RETIREMENT-20260716"
+next_gate_id: "NONE"
 completion_predicate:
-  tracked_status: "final_app_reinstalled_waiting_single_main_upload"
+  tracked_status: "delivered_remote_recovery_ready_local_retirement_authorized"
   external_postcommit_attestation_required: true
   post_attestation_status: "accepted_for_transition"
   stage_1_status: "accepted_for_transition"
@@ -113,7 +113,7 @@ completion_predicate:
   stage_11_whole_stage_review_status: "pass"
   stage_11_user_acceptance_status: "accepted_via_standing_transition_authorization"
   stage_12_entry_authorized: true
-  stage_12_status: "final_app_reinstalled_waiting_single_main_upload"
+  stage_12_status: "accepted_release_frozen_final_delivery_complete"
   stage_12_phase_12_1_status: "candidate_pass"
   stage_12_phase_12_2_status: "candidate_pass"
   stage_12_phase_12_3_status: "completed_release_frozen"
@@ -124,8 +124,8 @@ completion_predicate:
   stage_10_next_acceptance_id: "ACC-PFI-V025-STAGE11-WHOLE-REVIEW"
   stage_11_next_task: "S12-P1-T1"
   stage_11_next_acceptance_id: "ACC-PFI-V025-STAGE12-WHOLE-REVIEW"
-  stage_12_next_task: "PFI-V025-SINGLE-MAIN-UPLOAD-AND-POST-PUSH-PARITY"
-  stage_12_next_acceptance_id: "ACC-PFI-V025-STAGE12-WHOLE-REVIEW"
+  stage_12_next_task: "NONE"
+  stage_12_next_acceptance_id: "NONE"
   canonical_install_gate: "S12-P2-T1"
   canonical_install_status: "passed_cli_atomic_install_no_finder_per_explicit_user_instruction"
   stage_12_initial_review_base: "9a7245acf984a4eb98f93c4aab7bb4d02095294f"
@@ -150,11 +150,17 @@ completion_predicate:
   stage_12_final_acceptance_accepted_at: "2026-07-15T23:50:30Z"
   stage_12_residual_p2_count: 5
   release_freeze_performed: true
-  push_gate: "open_exact_acceptance_received_single_transaction_only"
-  push_performed: false
+  push_gate: "closed_main_upload_and_post_push_parity_passed"
+  push_performed: true
   app_reinstall_performed: true
-  production_accepted: false
+  production_accepted: true
   final_human_acceptance: true
+  final_delivery_commit: "d488b1f47d5ef8dd5f95fc7d6f9a5382d1486a8a"
+  accepted_pfi_product_tree: "a6aae2ae9e89f601b9a1833a45947ed625aa100c"
+  source_package_archived_on_main: true
+  migrated_raw_source_repository: "LinzeColin/MetaDatabase"
+  migrated_raw_source_main_commit: "8fad21d7e578c8ec56a1997d3a0e2f4a34a2fd6f"
+  local_retirement_authorized: true
 stages:
   - stage_id: "S2"
     name: "数据源与低操作自动同步 MVP"
