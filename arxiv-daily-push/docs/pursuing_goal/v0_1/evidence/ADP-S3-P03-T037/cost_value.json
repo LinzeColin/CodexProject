@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S3-P03-T037", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "a Board-3 eligibility gate that, before ranking, admits only official primary documents and excludes news noise (0% pollution in the admitted policy view), and extracts the four policy dates 成文/发布/施行/失效 plus status at 100% accuracy -- so the policy board shows authoritative originals with correct effective dates instead of media chatter",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "gate + extractors; not wired into the worker ranker; the 200-sample uses real board3 media items + synthetic official docs with known dates"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "sample_200": {"media_news": 85, "official": 115, "admitted": 115, "rejected": 85, "pollution_rate_pct": 0.0, "date_accuracy_pct": 100.0},
+  "acceptance": {"pollution_rate_lt_1pct": true, "key_date_accuracy_ge_99pct": true, "news_noise_excluded_before_ranking": true}
+}

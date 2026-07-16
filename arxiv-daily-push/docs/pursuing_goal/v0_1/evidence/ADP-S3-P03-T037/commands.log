@@ -1,0 +1,20 @@
+# ADP-S3-P03-T037 commands (Board 3 eligibility gate + date/status extractors)
+# base: main 6bce0e49 (T036, closes S3-P02)
+
+# real board3 = 85 items, 100% media (chinanews-scroll 30 / people-politics 20 / people-finance 20 / sina 15) -- news noise
+
+# 1) gate + extractors + spec + 200-sample
+#    tools/board3_gate.py   (is_eligible[official A0/A1 + primary type]; extract_dates_status[成文/发布/施行/失效/status];
+#                            gate_board3; uses T033 identity + T034 dates + T036 classifier)
+#    BOARD3_GATE_SPEC.md
+#    evidence/.../board3_policy_sample_200.json  (85 real media + 115 synthetic official w/ known dates)
+
+# 2) acceptance test
+python3 evidence/ADP-S3-P03-T037/test-results/t037_verify.py | tee evidence/ADP-S3-P03-T037/test-results/gate_tests.txt
+# -> gate: in 200 | admitted 115 | rejected 85
+# -> pollution in admitted 0/115 = 0.000% (< 1% required)
+# -> key date accuracy (成文/发布/施行/失效/状态) 115/115 = 100.000% (>= 99% required)
+# -> ACCEPTANCE = PASS (exit 0)
+
+# NOT_DEPLOYED: gate not wired to the worker ranker.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

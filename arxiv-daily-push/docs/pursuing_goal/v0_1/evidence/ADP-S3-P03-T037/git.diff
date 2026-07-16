@@ -1,0 +1,3288 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index e07f777a4..642709ff1 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P03-T037 (Board 3 eligibility gate + policy date/status extractors; NOT_DEPLOYED)
++
++- Thirty-seventh task of the ADP V0.1 FINAL EXECUTION program and the first of S3-P03 (Board 3 admission, shadow, and switch). Goal: before ranking, admit only official primary documents to Board 3 (the policy view) and exclude news noise, and identify the four policy dates 成文 (written), 发布 (published), 施行 (effective), and 失效 (expired) plus the effectiveness status. NOT_DEPLOYED, 0 recurring cloud cost; a gate and extractors, not wired into the worker ranker. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/board3_gate.py (is_eligible admitting only an official A0/A1 source with a primary document type and excluding media, search, news, and interpretation; extract_dates_status producing the four dates plus status; and gate_board3; built on the T033 identity, the T034 policy dates, and the T036 classifier), BOARD3_GATE_SPEC.md, and evidence/ADP-S3-P03-T037/board3_policy_sample_200.json. Acceptance verified (evidence/ADP-S3-P03-T037/test-results/gate_tests.txt, ACCEPTANCE = PASS, exit 0): on a 200-item policy-view sample of 85 real board3 media items (news noise such as a Taiwan-Affairs-Office news item and a lifestyle piece) plus 115 synthetic official policy documents with known dates, the gate admits 115 and rejects 85, the news pollution in the admitted view is 0 of 115 which is 0.000% (required under 1%), and the key-date accuracy for 成文/发布/施行/失效 plus status on the admitted official documents is 115 of 115 which is 100% (required at least 99%). This excludes news noise from the policy view before ranking and roots out the DRIFT-FACT-006 board3 pollution. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P02-T036 (CAC + National Data Administration A0 adapters; doc-type classifier; closes S3-P02; NOT_DEPLOYED)
+ 
+ - Thirty-sixth task of the ADP V0.1 FINAL EXECUTION program and the LAST of S3-P02 (first A0 official adapters). Goal: add A0 adapters for the Cyberspace Administration (cac.gov.cn) and the National Data Administration (nda.gov.cn), covering front-line AI, cybersecurity, data-governance, and national-data-policy content, and distinguish a public consultation, a formal document, an interpretation, and news, keeping the official original text as primary. NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, with the live cac classification from the dev environment. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/adapter_cac_nda.py (a classify_doc_type distinguishing consultation, formal, interpretation, and news with an is_primary flag and consultation status and deadline; a CacNdaConnector on the T031 SDK with attachments; and build_registry for cac-gov and nda-gov), CAC_NDA_ADAPTER_SPEC.md, and evidence/ADP-S3-P02-T036/{fixtures/{consultation,formal,interpretation,news}.html, real_cac_smoke.json}. Acceptance verified (evidence/ADP-S3-P02-T036/test-results/cac_tests.txt, ACCEPTANCE = PASS, exit 0): the four document types are distinguishable, the official original text is primary since a consultation and a formal document are primary while an interpretation and news are not, and the consultation status is parsed as open with a deadline of 2026-08-10. An honest access note is recorded rather than faked: www.cac.gov.cn serves normally and the live classification of its real homepage links is correct (a leadership-inspection item as news and non-primary, and the AI-content-labelling consultation draft as a primary consultation), whereas www.nda.gov.cn returns a JS shell and rejects the default TLS (TLSV1_ALERT_PROTOCOL_VERSION), so nda-gov is registered but its health reports the live fetch blocked, needing a browser or an RSS/API entry -- its content is not fabricated. The live classification ran from the dev environment, so 0 cloud cost. This closes S3-P02. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 177ae1b1d..d43021437 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S3-P02-T035-STATS-NDRC-A0-ADAPTERS"
+-source_snapshot_hash: "sha256:761a962aa83aa9f7602da170387763d9a302bab037c56760b74c456a58b59dd6"
++as_of_event_id: "EVENT-20260717-ADP-V01-S3-P02-T036-CAC-NDA-A0-ADAPTERS"
++source_snapshot_hash: "sha256:6792cb6750c08be3657428a4280a7e2182a9f409107af081447b12a90138931c"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T07:15:00+10:00"
++snapshot_event_time: "2026-07-17T08:00:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 95
++    precommit_pending_events: 96
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index e8202b50f..aa07671f4 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S3-P03-T037: implemented the Board 3 eligibility gate + policy date/status extractors (first S3-P03 task). NOT_DEPLOYED, 0 recurring cloud cost; gate + extractors, not wired to the worker ranker. Deliverables under docs/pursuing_goal/v0_1/: tools/board3_gate.py (is_eligible[official A0/A1 + primary type; excludes media/search/news/interpretation]; extract_dates_status[成文/发布/施行/失效 + status]; gate_board3; on T033 identity + T034 dates + T036 classifier), BOARD3_GATE_SPEC.md, evidence/ADP-S3-P03-T037/board3_policy_sample_200.json. Acceptance (test-results/gate_tests.txt, PASS exit 0): 200-sample = 85 real board3 media (news noise) + 115 synthetic official docs w/ known dates -> gate admits 115 / rejects 85; pollution in admitted 0/115 = 0.000% (<1%); key date accuracy 成文/发布/施行/失效/状态 115/115 = 100% (>=99%). Excludes news noise before ranking; roots out DRIFT-FACT-006. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T036: implemented the CAC + National Data Administration A0 adapters with a doc-type classifier (last S3-P02 task; closes S3-P02). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live cac classification from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_cac_nda.py (classify_doc_type[consultation/formal/interpretation/news + is_primary + consultation status/deadline]; CacNdaConnector on the T031 SDK + attachments; build_registry cac-gov + nda-gov), CAC_NDA_ADAPTER_SPEC.md, evidence/ADP-S3-P02-T036/{fixtures/{consultation,formal,interpretation,news}.html, real_cac_smoke.json}. Acceptance (test-results/cac_tests.txt, PASS exit 0): four types distinguishable; official original primary (consultation+formal True; interpretation+news False); consultation status open + deadline 2026-08-10. Honest access: cac.gov.cn serves (real links classified: 考察=news/not-primary, 征求意见稿=consultation/primary); nda.gov.cn JS shell + TLSV1_ALERT_PROTOCOL_VERSION -> nda-gov health blocked, needs browser/RSS, not faked. Live from dev env (0 cloud cost). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T035: implemented the Statistics + NDRC A0 adapters with a statistical-claim extractor (S3-P02). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live extraction from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_stats_ndrc.py (StatClaim + extract_stat_claims recording indicator/value/unit/period/口径/revision; claims_to_facts official-only; OfficialStatConnector on the T031 SDK; build_registry stats-gov + ndrc-gov), STATS_ADAPTER_SPEC.md, evidence/ADP-S3-P02-T035/{fixtures/{stats_release,ndrc_notice}.html, real_stats_smoke.json}. Acceptance (test-results/stats_tests.txt, PASS exit 0): claim records unit+period+口径+revision (5 claims each with unit + 2024年 + 初步核算, growth claims with 同比/比上年, GDP 1349084亿元); no fact from media numbers (official 5 facts / media 0 / search 0); registry stats + ndrc. Live: real stats.gov.cn 上半年经济运行 -> 21 official claims -> 21 facts, media 0 (GDP 695704亿元 同比 初步核算). Live ran from dev env (0 cloud cost). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T034: implemented the first A0 adapter -- State Council policy documents + national laws/regulations (first S3-P02 task). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live parse from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_gov_policy.py (GovCnPolicyConnector on the T031 SDK; parse_policy with TYPED dates 成文 vs 发布; discover + recoverable cursor; verify via T033; build_registry policy + fagui), ADAPTER_GOV_POLICY_SPEC.md, evidence/ADP-S3-P02-T034/{fixtures/{policy_2016,2020,2024,current,listing}.html, expected/*.json, real_parse_smoke.json}. Acceptance (test-results/adapter_tests.txt, PASS exit 0): original + attachments replayable (4 eras parse==golden, byte-identical re-parse, attachments 0/0/1/2); date types not confused (written=成文, published=发布, doc_date=published, never swapped/collapsed); historical cursor recoverable (discover 4; cursor 2020-12-21 -> [2024-03-01, 2026-07-10]; advances to 2026-07-10); registry policy + fagui. Live parse of 3 real docs: 国办发〔2020〕50号 / 国令第711号 / 国办函〔2021〕132号 (成文2021-12-22/发布2022-01-04 cross-year). Live ran from dev env (0 cloud cost); worker wiring later = subrequest under DIR-007. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 8795d47ad..699e87a75 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `95`
+-- pending_or_stale_events: `445`
+-- freshness_counts: `pending_or_stale_events=445; legacy_unbound_events=334`
++- precommit_pending_events: `96`
++- pending_or_stale_events: `446`
++- freshness_counts: `pending_or_stale_events=446; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:761a962aa83aa9f7602da170387763d9a302bab037c56760b74c456a58b59dd6`
+-- snapshot_event_time: `2026-07-17T07:15:00+10:00`
++- source_snapshot_hash: `sha256:6792cb6750c08be3657428a4280a7e2182a9f409107af081447b12a90138931c`
++- snapshot_event_time: `2026-07-17T08:00:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index f168b72f0..9beee748c 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:761a962aa83aa9f7602da170387763d9a302bab037c56760b74c456a58b59dd6`
+-- snapshot_event_time: `2026-07-17T07:15:00+10:00`
++- source_snapshot_hash: `sha256:6792cb6750c08be3657428a4280a7e2182a9f409107af081447b12a90138931c`
++- snapshot_event_time: `2026-07-17T08:00:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `445`
++- Pending/stale events: `446`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/BOARD3_GATE_SPEC.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/BOARD3_GATE_SPEC.md
+new file mode 100644
+index 000000000..a52ea4e52
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/BOARD3_GATE_SPEC.md
+@@ -0,0 +1,32 @@
++# Board 3 Eligibility Gate Spec · ADP-S3-P03-T037
++
++**排序前**把只有官方原文的政策文档准入 Board 3（政策视图），**排除新闻噪声**，并识别四类效力日期
++（成文/发布/施行/失效）与状态。工具：`tools/board3_gate.py`，基于 T033 身份 + T034 政策日期 + T036 分类。**NOT_DEPLOYED**。
++
++## 准入门（eligibility gate）
++
++`is_eligible(source_authority, doc_type)`：准入当且仅当
++- **source 官方**（T033 → authority ∈ {A0, A1}）**且**
++- **doc_type 为官方原文 primary**（∈ {formal 正式文件, consultation 征求意见}）。
++
++**媒体/搜索/聚合源**（chinanews/people/sina 等）→ 非官方 → **拒**；**新闻/解读**类型 → 非 primary → **拒**（可作 discovery 线索，T038 回溯官方原文）。→ 政策视图**排序前**即无新闻噪声。
++
++## 效力日期与状态抽取
++
++`extract_dates_status(html, title)` → `PolicyDates{written 成文, published 发布, effective 施行, expired 失效, status}`：
++- **成文/发布**：元信息表 成文日期/发布日期（复用 T034）。
++- **施行**：`自YYYY年MM月DD日起施行` / 施行日期 / 自公布之日起施行（=发布日）。
++- **失效**：`自YYYY年MM月DD日起废止` / 失效日期 / 废止日期。
++- **status**：现行有效/已废止/失效/尚未施行；有失效日→已废止，有施行无失效→现行有效。
++
++日期归一化 `norm_date`（中文→YYYY-MM-DD，不臆造，缺失=None）。
++
++## 验收（`test-results/gate_tests.txt`，PASS）
++
++200 条政策视图抽样 = **85 条真实 board3 媒体新闻**（chinanews/people/sina，如「国台办：…」「胡萝卜素是黄桃的22倍…」）+ **115 条合成官方政策文档**（已知成文/发布/施行/失效日期）：
++- **污染率 <1%**：门准入 115（全官方）、拒 85（全媒体）→ 准入视图新闻污染 **0/115 = 0.000%**。
++- **关键日期准确率 ≥99%**：准入官方文档的成文/发布/施行/失效/状态抽取 **115/115 = 100%**。
++
++## 边界
++
++真实 board3 当前 100% 媒体（DRIFT-FACT-006）→ 门全拒，政策视图靠官方适配器（T034-T036）填充；本任务的官方样本为合成已知日期（真实各站日期在适配器 fixtures）。门未接 worker ranker（NOT_DEPLOYED）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/TASK_REPORT.md
+new file mode 100644
+index 000000000..d62a92031
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/TASK_REPORT.md
+@@ -0,0 +1,53 @@
++# TASK_REPORT · ADP-S3-P03-T037｜实现 Board 3 官方文档准入、类型和效力日期
++
++## 唯一目标（达成）
++在**排序前排除新闻噪声**并识别**成文/发布/施行/失效**。交付 eligibility gate、document classifier、date/status extractors。**政策视图抽样 200 条污染率 <1%；关键日期准确率 >=99%。**
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：Board3 官方文档准入门 + 效力日期抽取；排序前排新闻噪声；污染 <1%、日期准确率 ≥99%。
++2. **允许修改文件**：`docs/pursuing_goal/v0_1/{tools/board3_gate.py, BOARD3_GATE_SPEC.md}` + 本证据包（board3_policy_sample_200/test-results/报告）+ 治理同步。
++3. **绝不能改变**：抓取行为（生产）、六主题、worker ranker、生产 D1/R2、cron；不接生产。NOT_DEPLOYED。
++4. **基线**：main `6bce0e49`（T036 收尾 S3-P02）；用 T033 身份 + T034 政策日期 + T036 分类。真实 board3 = 85 items 100% 媒体。
++5. **验收**：政策视图抽样 200 条污染率 <1%；关键日期准确率 >=99%。
++6. **回滚**：`git revert <sha>`（纯门 + 抽取器，生产未变更）。
++
++## 交付物
++- `tools/board3_gate.py` —— `is_eligible`（官方 A0/A1 + primary 类型才准入；媒体/搜索/新闻/解读拒）+ `extract_dates_status`（**成文/发布/施行/失效 + status**）+ `gate_board3`。
++- `BOARD3_GATE_SPEC.md` —— 准入门、日期抽取、验收。
++- `evidence/.../board3_policy_sample_200.json` —— 200 样本（85 真实媒体 + 115 合成官方，含已知日期）。
++
++## 验收结果（实测，见 test-results/gate_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **200 样本**：85 条真实 board3 媒体新闻（chinanews/people/sina，如「国台办：…」「胡萝卜素是黄桃的22倍…」）+ 115 条合成官方政策文档（已知成文/发布/施行/失效）。
++- **污染率 <1%**：门准入 **115（全官方）**、拒 **85（全媒体）** → 准入政策视图新闻污染 **0/115 = 0.000%**（排序前即排除新闻噪声）。
++- **关键日期准确率 ≥99%**：准入官方文档的**成文/发布/施行/失效/状态**抽取 **115/115 = 100%**；抽样 doc 成文 2021-06-06 / 发布 2021-06-16 / 施行 2021-07-01 / 状态 现行有效。
++
++## Data / Performance / Visual
++Data = 200 政策视图样本 + 门结果 + 日期抽取。无 UI 改动、无性能路径；六主题动效与线上 MVP 未触碰（NOT_DEPLOYED）。
++
++## Value / Cost（S3 China A0 Official Pilot）
++- **Value**：政策板块（Board 3）**排序前**只留官方原文、**零新闻污染**，且效力日期（成文/发布/施行/失效）准确——政策视图展示权威原文与正确生效状态，而非媒体转述；根治 DRIFT-FACT-006 board3 新闻污染。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 读 0 / 写 0；R2 字节 0 / 操作 0；模型 0；人工维护 = 门 + 抽取器 + 样本。经常性云成本 delta = $0/月。
++
++## Known gaps
++见 `known_gaps.md`：NOT_DEPLOYED（未接 worker ranker）；官方样本为合成已知日期（真实 board3 全媒体，无官方文档可抽）；污染 0% 因媒体源清晰；施行/失效抽取覆盖常见表述；状态时点性未做 today 动态计算。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json`、`real_*_smoke`（纯门/抽取器，无新增 live 抓取）—— N/A。`data-samples` = board3_policy_sample_200.json。
++
++## 完成声明
++```text
++Task: ADP-S3-P03-T037
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/board3_gate.py + BOARD3_GATE_SPEC.md + T037 证据包（board3_policy_sample_200/test-results/报告）+ 治理同步（见 changed_files.txt）
++Tests: gate_tests.txt —— 200样本(85真实媒体+115合成官方)门准入115/拒85；污染0/115=0.000%(<1%)；成文/发布/施行/失效/状态准确率115/115=100%(>=99%)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: Board3 准入门(排序前排新闻噪声)+成文/发布/施行/失效抽取
++Data/Performance/Visual: Data=200政策视图样本+门结果；无性能/UI
++Value: 政策板块零新闻污染+效力日期准确；根治 board3 新闻污染
++Cost: 请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（未接 worker ranker）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/board3_policy_sample_200.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/board3_policy_sample_200.json
+new file mode 100644
+index 000000000..5527622a5
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/board3_policy_sample_200.json
+@@ -0,0 +1,2837 @@
++[
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "国台办：民进党当局制造恐慌升高两岸对立对抗 其行可恶，其心可诛",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "（同心·大调研）聚焦未来产业发展 全国工商联开展2026年度重点考察调研",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "胡萝卜素是黄桃的22倍，钾含量媲美香蕉，这种低热量水果现在吃正好！",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "硬核驰援广西抗洪！这才是科技发展的意义",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "国台办驳斥美日韩外长涉台言论：台湾问题不容外人置喙",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "今年上半年中国GDP同比增长4.7%",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "聚力向“未来” 多地政协助力未来产业发展",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "国台办：民进党当局恶意炒作 阻挠破坏两岸交流和人员往来",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "6月份规模以上工业原油生产保持稳定，电力生产稳定增长",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "上半年经济运行在合理区间 新动能快速成长",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "学习卡丨“人不负青山，青山定不负人”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "镜观·足迹｜呵护千山万水 擘画永续发展",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "学习手记 | “环境就是民生”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "刘国中在安徽调研时强调 全力以赴夺取夏粮丰收 全面打牢秋粮生产基础",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "韩正会见中美高级别二轨对话美方代表团",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "国务院印发《关于开展第四次全国农业普查的通知》",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "中央军委主席习近平签署命令 发布《军事设施建设条例》",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "丁薛祥在山西调研时强调 守好公平公正“生命线” 确保实现“平安高考”目标",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "中共中央办公厅印发《党组讨论和决定党员处分事项工作程序规定》",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "全国人大常委会启动节约能源法执法检查",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "【文脉华章】非遗焕新 生生不息丨用太极招式来炒茶！西湖龙井如何“撩”动全世界的心？",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "天天学习丨中南海月刊（2025.05）",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "习语丨“人不负青山，青山定不负人”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "韩正将赴法国出席联合国海洋大会并访问西班牙",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "美丽中国我先行｜“植”此青绿",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "微视频｜共建清洁美丽世界",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "学习新语·中华文明丨泱泱中华的文明曙光",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "多地升级信用修复服务 助力经营主体重塑良好信用",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "河南卢氏：“小议事”撬动“大治理”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-politics",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "聚力为民解难题办实事",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "首批全国38个零售业创新提升试点城市名单公布",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "中国人民银行将开展1万亿元买断式逆回购操作",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "层高不低于3米！新规范如何让住宅更“宜居”？",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "体育精神赋能 乳制品行业推动品质提升",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "商务部回应汽车行业“内卷”：配合相关部门加强综合整治与合规引导",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "我国认证认可检验检测行业发展质量实现整体提升",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "滴滴程维：将持续发挥稳就业、促消费作用",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "数说生态美 共赏美丽中国新画卷",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "商务部：中方反对美301关税的立场是明确的、一贯的",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "商务部回应美方提高钢铝关税：将严重扰乱全球产业链供应链稳定",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "防范自动驾驶技术风险 筑牢公共安全防护屏障",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "处置非法集资部际联席会议发布《关于加强防范非法集资宣传教育工作的意见》",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "最高人民法院关于审理非法集资刑事案件具体应用法律若干问题的解释",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "防范和打击非法金融活动部际联席会议召开2025年全体（扩大）会议暨打击非法集资专项行动推进会议",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "宣讲防非打非 增强防范意识",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "山东广饶县开展防范非法集资宣传进养老机构活动",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "防范非法金融活动的指南请您查收",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "2025年防范非法金融活动宣传月正式启动",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "完善大语言模型治理体系 守护数智时代网络安全",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "people-finance",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "把稳智能驾驶安全“方向盘” 筑牢物流配送无人车“生命线”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "广西救灾一线最新直击：灯光渐次亮起，家园加快清理",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "1.2万亿、2.6万亿、705亿！一组数据看科技金融“加速度”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "广东拦洪8.75亿立方米 成功防御西江第2号洪水",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "国台办批欧洲议会粗暴干涉中国内政",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "进口纺织服装潜在化学危害物质或潜在未知化学危害物质筛查项目比选公告",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "首次登陆亚大区 坐式排球世锦赛在浙江杭州举行",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "一场给全年龄段的“生命预演” 《前浪2》带人们重新理解“老年”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "国台办回应美国硅谷关注两岸局势",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "重庆江北机场海关食堂餐饮综合服务项目中标公告",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "扩内需六大任务，促进服务消费排首位",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "输球后，法国总统马克龙发声",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "各地各部门多措施应对台风“巴威”影响",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "圳好物：世界杯激战正酣，这些“深圳技术”活跃在赛场内外",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "中国科协发布2026重大科技问题难题 太空计算中心构建等30个入选",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "东兴海关综合技术服务中心试剂耗材定点供应商补充采购项目（GXGL2026M-G273-Z）公开招标公告",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "《静生生物调查所二十二年》出版 揭示一段被遗忘的学术传奇",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "凭祥海关综合技术服务中心2026年实验室仪器设备采购项目（重）竞争性协商公告",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "郑丽文呼吁全面重启“小三通” 国台办回应",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "把工作重心放在练好内功、做强自身上",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "chinanews-scroll",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "2026年上半年我国外贸增势强劲、走势稳健",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "“光纤之父”高锟离世 曾获诺贝尔物理学奖",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "辱华节目主持人：在瑞典说侮辱中国人不会被查",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "00后香港铁路迷搭高铁到深圳北站:19分钟不够过瘾",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "这位市委书记香港请大师写“符文” 放枕下求保佑",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "让美国失望了 制裁难阻中国进口军备会引中俄反抗",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "董事长称蔡英文当局非推翻不可 这个绿媒要反？",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "广深港高铁开通 铁总：内地香港高铁实现互联互通",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "美得州入室行凶案致中国公民1死1伤 中领馆促破案",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "俄工贸部长:俄方希望与中方寻找双边贸易新增长点",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "山东烟台市副市长聂作坤落马后 继任从东营调入",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "曹俊明任广东海洋大学党委书记 曾任农科院副书记",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "澎湃体验广深港高铁首发车:19分钟抵港十分钟通关",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "蔡英文问了一个问题 结果被骂“假台湾人”",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "我驻多米尼加大使馆揭牌 列为我公民旅游目的地国",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "sina-china-focus",
++    "category": "media",
++    "url": "https://www.chinanews.com/x.htm",
++    "title": "蔡英文宜兰上香问民众：有没有感觉我做很多事？",
++    "html": "",
++    "label": "news",
++    "expect_admit": false
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第1号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第1号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年2月2日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕1号</td><td><b>发布日期：</b></td><td>2017年2月12日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-02-02",
++      "published": "2017-02-12",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第2号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第2号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年3月3日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕2号</td><td><b>发布日期：</b></td><td>2018年3月13日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-03-03",
++      "published": "2018-03-13",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第3号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第3号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年4月4日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕3号</td><td><b>发布日期：</b></td><td>2019年4月14日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-04-04",
++      "published": "2019-04-14",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第4号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第4号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年5月5日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕4号</td><td><b>发布日期：</b></td><td>2020年5月15日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-05-05",
++      "published": "2020-05-15",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第5号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第5号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年6月6日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕5号</td><td><b>发布日期：</b></td><td>2021年6月16日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本规定自2021年7月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-06-06",
++      "published": "2021-06-16",
++      "effective": "2021-07-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第6号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第6号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年7月7日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕6号</td><td><b>发布日期：</b></td><td>2022年7月17日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-07-07",
++      "published": "2022-07-17",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第7号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第7号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年8月8日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕7号</td><td><b>发布日期：</b></td><td>2023年8月18日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-08-08",
++      "published": "2023-08-18",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第8号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第8号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年9月9日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕8号</td><td><b>发布日期：</b></td><td>2024年9月19日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-09-09",
++      "published": "2024-09-19",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第9号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第9号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年10月10日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕9号</td><td><b>发布日期：</b></td><td>2025年10月20日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-10-10",
++      "published": "2025-10-20",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第10号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第10号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年11月11日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕10号</td><td><b>发布日期：</b></td><td>2016年11月21日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本办法自2016年12月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-11-11",
++      "published": "2016-11-21",
++      "effective": "2016-12-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第11号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第11号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年12月12日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕11号</td><td><b>发布日期：</b></td><td>2017年12月22日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-12-12",
++      "published": "2017-12-22",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第12号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第12号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年1月13日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕12号</td><td><b>发布日期：</b></td><td>2018年1月23日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-01-13",
++      "published": "2018-01-23",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第13号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第13号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年2月14日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕13号</td><td><b>发布日期：</b></td><td>2019年2月24日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>自2021年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-02-14",
++      "published": "2019-02-24",
++      "effective": null,
++      "expired": "2021-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第14号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第14号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年3月15日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕14号</td><td><b>发布日期：</b></td><td>2020年3月25日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-03-15",
++      "published": "2020-03-25",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第15号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第15号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年4月16日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕15号</td><td><b>发布日期：</b></td><td>2021年4月26日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本公告自2021年5月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-04-16",
++      "published": "2021-04-26",
++      "effective": "2021-05-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第16号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第16号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年5月17日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕16号</td><td><b>发布日期：</b></td><td>2022年5月27日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-05-17",
++      "published": "2022-05-27",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第17号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第17号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年6月18日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕17号</td><td><b>发布日期：</b></td><td>2023年6月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-06-18",
++      "published": "2023-06-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第18号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第18号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年7月19日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕18号</td><td><b>发布日期：</b></td><td>2024年7月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-07-19",
++      "published": "2024-07-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第19号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第19号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年8月20日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕19号</td><td><b>发布日期：</b></td><td>2025年8月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-08-20",
++      "published": "2025-08-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第20号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第20号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年9月21日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕20号</td><td><b>发布日期：</b></td><td>2016年9月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本通知自2016年10月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-09-21",
++      "published": "2016-09-28",
++      "effective": "2016-10-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第21号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第21号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年10月22日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕21号</td><td><b>发布日期：</b></td><td>2017年10月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-10-22",
++      "published": "2017-10-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第22号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第22号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年11月23日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕22号</td><td><b>发布日期：</b></td><td>2018年11月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-11-23",
++      "published": "2018-11-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第23号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第23号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年12月24日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕23号</td><td><b>发布日期：</b></td><td>2019年12月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-12-24",
++      "published": "2019-12-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第24号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第24号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年1月25日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕24号</td><td><b>发布日期：</b></td><td>2020年1月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-01-25",
++      "published": "2020-01-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第25号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第25号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年2月26日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕25号</td><td><b>发布日期：</b></td><td>2021年2月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本规定自2021年3月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-02-26",
++      "published": "2021-02-28",
++      "effective": "2021-03-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第26号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第26号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年3月27日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕26号</td><td><b>发布日期：</b></td><td>2022年3月28日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>自2024年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-03-27",
++      "published": "2022-03-28",
++      "effective": null,
++      "expired": "2024-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第27号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第27号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年4月1日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕27号</td><td><b>发布日期：</b></td><td>2023年4月11日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-04-01",
++      "published": "2023-04-11",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第28号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第28号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年5月2日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕28号</td><td><b>发布日期：</b></td><td>2024年5月12日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-05-02",
++      "published": "2024-05-12",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第29号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第29号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年6月3日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕29号</td><td><b>发布日期：</b></td><td>2025年6月13日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-06-03",
++      "published": "2025-06-13",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第30号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第30号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年7月4日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕30号</td><td><b>发布日期：</b></td><td>2016年7月14日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本办法自2016年8月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-07-04",
++      "published": "2016-07-14",
++      "effective": "2016-08-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第31号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第31号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年8月5日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕31号</td><td><b>发布日期：</b></td><td>2017年8月15日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-08-05",
++      "published": "2017-08-15",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第32号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第32号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年9月6日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕32号</td><td><b>发布日期：</b></td><td>2018年9月16日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-09-06",
++      "published": "2018-09-16",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第33号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第33号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年10月7日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕33号</td><td><b>发布日期：</b></td><td>2019年10月17日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-10-07",
++      "published": "2019-10-17",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第34号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第34号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年11月8日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕34号</td><td><b>发布日期：</b></td><td>2020年11月18日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-11-08",
++      "published": "2020-11-18",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第35号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第35号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年12月9日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕35号</td><td><b>发布日期：</b></td><td>2021年12月19日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本公告自2021年12月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-12-09",
++      "published": "2021-12-19",
++      "effective": "2021-12-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第36号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第36号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年1月10日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕36号</td><td><b>发布日期：</b></td><td>2022年1月20日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-01-10",
++      "published": "2022-01-20",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第37号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第37号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年2月11日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕37号</td><td><b>发布日期：</b></td><td>2023年2月21日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-02-11",
++      "published": "2023-02-21",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第38号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第38号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年3月12日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕38号</td><td><b>发布日期：</b></td><td>2024年3月22日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-03-12",
++      "published": "2024-03-22",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第39号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第39号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年4月13日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕39号</td><td><b>发布日期：</b></td><td>2025年4月23日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>自2027年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-04-13",
++      "published": "2025-04-23",
++      "effective": null,
++      "expired": "2027-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第40号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第40号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年5月14日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕40号</td><td><b>发布日期：</b></td><td>2016年5月24日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本通知自2016年6月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-05-14",
++      "published": "2016-05-24",
++      "effective": "2016-06-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第41号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第41号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年6月15日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕41号</td><td><b>发布日期：</b></td><td>2017年6月25日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-06-15",
++      "published": "2017-06-25",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第42号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第42号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年7月16日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕42号</td><td><b>发布日期：</b></td><td>2018年7月26日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-07-16",
++      "published": "2018-07-26",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第43号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第43号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年8月17日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕43号</td><td><b>发布日期：</b></td><td>2019年8月27日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-08-17",
++      "published": "2019-08-27",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第44号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第44号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年9月18日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕44号</td><td><b>发布日期：</b></td><td>2020年9月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-09-18",
++      "published": "2020-09-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第45号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第45号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年10月19日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕45号</td><td><b>发布日期：</b></td><td>2021年10月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本规定自2021年11月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-10-19",
++      "published": "2021-10-28",
++      "effective": "2021-11-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第46号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第46号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年11月20日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕46号</td><td><b>发布日期：</b></td><td>2022年11月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-11-20",
++      "published": "2022-11-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第47号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第47号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年12月21日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕47号</td><td><b>发布日期：</b></td><td>2023年12月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-12-21",
++      "published": "2023-12-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第48号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第48号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年1月22日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕48号</td><td><b>发布日期：</b></td><td>2024年1月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-01-22",
++      "published": "2024-01-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第49号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第49号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年2月23日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕49号</td><td><b>发布日期：</b></td><td>2025年2月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-02-23",
++      "published": "2025-02-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第50号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第50号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年3月24日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕50号</td><td><b>发布日期：</b></td><td>2016年3月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本办法自2016年4月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-03-24",
++      "published": "2016-03-28",
++      "effective": "2016-04-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第51号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第51号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年4月25日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕51号</td><td><b>发布日期：</b></td><td>2017年4月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-04-25",
++      "published": "2017-04-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第52号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第52号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年5月26日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕52号</td><td><b>发布日期：</b></td><td>2018年5月28日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>自2020年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-05-26",
++      "published": "2018-05-28",
++      "effective": null,
++      "expired": "2020-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第53号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第53号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年6月27日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕53号</td><td><b>发布日期：</b></td><td>2019年6月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-06-27",
++      "published": "2019-06-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第54号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第54号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年7月1日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕54号</td><td><b>发布日期：</b></td><td>2020年7月11日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-07-01",
++      "published": "2020-07-11",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第55号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第55号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年8月2日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕55号</td><td><b>发布日期：</b></td><td>2021年8月12日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本公告自2021年9月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-08-02",
++      "published": "2021-08-12",
++      "effective": "2021-09-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第56号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第56号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年9月3日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕56号</td><td><b>发布日期：</b></td><td>2022年9月13日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-09-03",
++      "published": "2022-09-13",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第57号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第57号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年10月4日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕57号</td><td><b>发布日期：</b></td><td>2023年10月14日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-10-04",
++      "published": "2023-10-14",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第58号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第58号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年11月5日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕58号</td><td><b>发布日期：</b></td><td>2024年11月15日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-11-05",
++      "published": "2024-11-15",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第59号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第59号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年12月6日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕59号</td><td><b>发布日期：</b></td><td>2025年12月16日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-12-06",
++      "published": "2025-12-16",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第60号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第60号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年1月7日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕60号</td><td><b>发布日期：</b></td><td>2016年1月17日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本通知自2016年2月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-01-07",
++      "published": "2016-01-17",
++      "effective": "2016-02-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第61号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第61号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年2月8日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕61号</td><td><b>发布日期：</b></td><td>2017年2月18日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-02-08",
++      "published": "2017-02-18",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第62号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第62号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年3月9日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕62号</td><td><b>发布日期：</b></td><td>2018年3月19日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-03-09",
++      "published": "2018-03-19",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第63号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第63号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年4月10日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕63号</td><td><b>发布日期：</b></td><td>2019年4月20日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-04-10",
++      "published": "2019-04-20",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第64号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第64号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年5月11日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕64号</td><td><b>发布日期：</b></td><td>2020年5月21日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-05-11",
++      "published": "2020-05-21",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第65号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第65号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年6月12日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕65号</td><td><b>发布日期：</b></td><td>2021年6月22日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>本规定自2021年7月1日起施行。自2023年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-06-12",
++      "published": "2021-06-22",
++      "effective": "2021-07-01",
++      "expired": "2023-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第66号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第66号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年7月13日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕66号</td><td><b>发布日期：</b></td><td>2022年7月23日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-07-13",
++      "published": "2022-07-23",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第67号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第67号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年8月14日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕67号</td><td><b>发布日期：</b></td><td>2023年8月24日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-08-14",
++      "published": "2023-08-24",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第68号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第68号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年9月15日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕68号</td><td><b>发布日期：</b></td><td>2024年9月25日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-09-15",
++      "published": "2024-09-25",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第69号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第69号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年10月16日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕69号</td><td><b>发布日期：</b></td><td>2025年10月26日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-10-16",
++      "published": "2025-10-26",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第70号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第70号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年11月17日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕70号</td><td><b>发布日期：</b></td><td>2016年11月27日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本办法自2016年12月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-11-17",
++      "published": "2016-11-27",
++      "effective": "2016-12-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第71号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第71号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年12月18日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕71号</td><td><b>发布日期：</b></td><td>2017年12月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-12-18",
++      "published": "2017-12-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第72号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第72号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年1月19日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕72号</td><td><b>发布日期：</b></td><td>2018年1月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-01-19",
++      "published": "2018-01-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第73号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第73号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年2月20日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕73号</td><td><b>发布日期：</b></td><td>2019年2月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-02-20",
++      "published": "2019-02-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第74号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第74号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年3月21日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕74号</td><td><b>发布日期：</b></td><td>2020年3月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-03-21",
++      "published": "2020-03-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第75号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第75号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年4月22日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕75号</td><td><b>发布日期：</b></td><td>2021年4月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本公告自2021年5月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-04-22",
++      "published": "2021-04-28",
++      "effective": "2021-05-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第76号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第76号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年5月23日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕76号</td><td><b>发布日期：</b></td><td>2022年5月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-05-23",
++      "published": "2022-05-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第77号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第77号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年6月24日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕77号</td><td><b>发布日期：</b></td><td>2023年6月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-06-24",
++      "published": "2023-06-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第78号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第78号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年7月25日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕78号</td><td><b>发布日期：</b></td><td>2024年7月28日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>自2026年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-07-25",
++      "published": "2024-07-28",
++      "effective": null,
++      "expired": "2026-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第79号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第79号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年8月26日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕79号</td><td><b>发布日期：</b></td><td>2025年8月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-08-26",
++      "published": "2025-08-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第80号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第80号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年9月27日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕80号</td><td><b>发布日期：</b></td><td>2016年9月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本通知自2016年10月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-09-27",
++      "published": "2016-09-28",
++      "effective": "2016-10-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第81号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第81号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年10月1日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕81号</td><td><b>发布日期：</b></td><td>2017年10月11日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-10-01",
++      "published": "2017-10-11",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第82号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第82号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年11月2日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕82号</td><td><b>发布日期：</b></td><td>2018年11月12日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-11-02",
++      "published": "2018-11-12",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第83号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第83号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年12月3日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕83号</td><td><b>发布日期：</b></td><td>2019年12月13日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-12-03",
++      "published": "2019-12-13",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第84号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第84号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年1月4日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕84号</td><td><b>发布日期：</b></td><td>2020年1月14日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-01-04",
++      "published": "2020-01-14",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第85号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第85号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年2月5日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕85号</td><td><b>发布日期：</b></td><td>2021年2月15日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本规定自2021年3月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-02-05",
++      "published": "2021-02-15",
++      "effective": "2021-03-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第86号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第86号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年3月6日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕86号</td><td><b>发布日期：</b></td><td>2022年3月16日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-03-06",
++      "published": "2022-03-16",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第87号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第87号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年4月7日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕87号</td><td><b>发布日期：</b></td><td>2023年4月17日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-04-07",
++      "published": "2023-04-17",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第88号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第88号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年5月8日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕88号</td><td><b>发布日期：</b></td><td>2024年5月18日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-05-08",
++      "published": "2024-05-18",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第89号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第89号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年6月9日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕89号</td><td><b>发布日期：</b></td><td>2025年6月19日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-06-09",
++      "published": "2025-06-19",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第90号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第90号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年7月10日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕90号</td><td><b>发布日期：</b></td><td>2016年7月20日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本办法自2016年8月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-07-10",
++      "published": "2016-07-20",
++      "effective": "2016-08-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第91号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第91号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年8月11日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕91号</td><td><b>发布日期：</b></td><td>2017年8月21日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>自2019年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-08-11",
++      "published": "2017-08-21",
++      "effective": null,
++      "expired": "2019-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第92号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第92号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年9月12日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕92号</td><td><b>发布日期：</b></td><td>2018年9月22日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-09-12",
++      "published": "2018-09-22",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第93号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第93号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年10月13日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕93号</td><td><b>发布日期：</b></td><td>2019年10月23日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-10-13",
++      "published": "2019-10-23",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第94号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第94号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年11月14日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕94号</td><td><b>发布日期：</b></td><td>2020年11月24日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-11-14",
++      "published": "2020-11-24",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第95号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第95号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年12月15日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕95号</td><td><b>发布日期：</b></td><td>2021年12月25日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本公告自2021年12月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-12-15",
++      "published": "2021-12-25",
++      "effective": "2021-12-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第96号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第96号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年1月16日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕96号</td><td><b>发布日期：</b></td><td>2022年1月26日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-01-16",
++      "published": "2022-01-26",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第97号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第97号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年2月17日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕97号</td><td><b>发布日期：</b></td><td>2023年2月27日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-02-17",
++      "published": "2023-02-27",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第98号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第98号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年3月18日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕98号</td><td><b>发布日期：</b></td><td>2024年3月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-03-18",
++      "published": "2024-03-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第99号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第99号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年4月19日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕99号</td><td><b>发布日期：</b></td><td>2025年4月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-04-19",
++      "published": "2025-04-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第100号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第100号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年5月20日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕100号</td><td><b>发布日期：</b></td><td>2016年5月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本通知自2016年6月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-05-20",
++      "published": "2016-05-28",
++      "effective": "2016-06-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第101号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第101号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年6月21日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕101号</td><td><b>发布日期：</b></td><td>2017年6月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-06-21",
++      "published": "2017-06-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第102号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第102号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年7月22日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕102号</td><td><b>发布日期：</b></td><td>2018年7月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-07-22",
++      "published": "2018-07-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第103号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第103号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年8月23日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕103号</td><td><b>发布日期：</b></td><td>2019年8月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-08-23",
++      "published": "2019-08-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第104号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第104号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年9月24日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕104号</td><td><b>发布日期：</b></td><td>2020年9月28日</td></tr><tr><td><b>有效性：</b></td><td>已废止</td></tr></table><div>自2022年1月1日起废止。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-09-24",
++      "published": "2020-09-28",
++      "effective": null,
++      "expired": "2022-01-01",
++      "status": "已废止"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第105号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第105号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年10月25日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕105号</td><td><b>发布日期：</b></td><td>2021年10月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本规定自2021年11月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-10-25",
++      "published": "2021-10-28",
++      "effective": "2021-11-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第106号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第106号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2022年11月26日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2022〕106号</td><td><b>发布日期：</b></td><td>2022年11月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2022-11-26",
++      "published": "2022-11-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第107号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第107号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2023年12月27日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2023〕107号</td><td><b>发布日期：</b></td><td>2023年12月28日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2023-12-27",
++      "published": "2023-12-28",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第108号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第108号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2024年1月1日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2024〕108号</td><td><b>发布日期：</b></td><td>2024年1月11日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2024-01-01",
++      "published": "2024-01-11",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第109号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第109号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2025年2月2日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2025〕109号</td><td><b>发布日期：</b></td><td>2025年2月12日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2025-02-02",
++      "published": "2025-02-12",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第110号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第110号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2016年3月3日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2016〕110号</td><td><b>发布日期：</b></td><td>2016年3月13日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本办法自2016年4月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2016-03-03",
++      "published": "2016-03-13",
++      "effective": "2016-04-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第111号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第111号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2017年4月4日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2017〕111号</td><td><b>发布日期：</b></td><td>2017年4月14日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2017-04-04",
++      "published": "2017-04-14",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第112号事项的通知",
++    "html": "<html><head><title>国务院办公厅关于第112号事项的通知_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2018年5月5日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2018〕112号</td><td><b>发布日期：</b></td><td>2018年5月15日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2018-05-05",
++      "published": "2018-05-15",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第113号事项的规定",
++    "html": "<html><head><title>国务院办公厅关于第113号事项的规定_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2019年6月6日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2019〕113号</td><td><b>发布日期：</b></td><td>2019年6月16日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2019-06-06",
++      "published": "2019-06-16",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第114号事项的办法",
++    "html": "<html><head><title>国务院办公厅关于第114号事项的办法_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2020年7月7日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2020〕114号</td><td><b>发布日期：</b></td><td>2020年7月17日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2020-07-07",
++      "published": "2020-07-17",
++      "effective": null,
++      "expired": null,
++      "status": "现行有效"
++    }
++  },
++  {
++    "source_id": "gov-cn-policy",
++    "category": "china_official",
++    "url": "https://www.gov.cn/zhengce/content/x.htm",
++    "host_org": "国务院办公厅",
++    "id_code": "bm01000001",
++    "title": "国务院办公厅关于第115号事项的公告",
++    "html": "<html><head><title>国务院办公厅关于第115号事项的公告_政策_中国政府网</title></head><body><table><tr><td><b>发文机关：</b></td><td>国务院办公厅</td><td><b>成文日期：</b></td><td>2021年8月8日</td></tr><tr><td><b>发文字号：</b></td><td>国办发〔2021〕115号</td><td><b>发布日期：</b></td><td>2021年8月18日</td></tr><tr><td><b>有效性：</b></td><td>现行有效</td></tr></table><div>本公告自2021年9月1日起施行。正文从略。</div></body></html>",
++    "label": "official",
++    "expect_admit": true,
++    "expected_dates": {
++      "written": "2021-08-08",
++      "published": "2021-08-18",
++      "effective": "2021-09-01",
++      "expired": null,
++      "status": "现行有效"
++    }
++  }
++]
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/commands.log
+new file mode 100644
+index 000000000..a3ac92dec
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/commands.log
+@@ -0,0 +1,20 @@
++# ADP-S3-P03-T037 commands (Board 3 eligibility gate + date/status extractors)
++# base: main 6bce0e49 (T036, closes S3-P02)
++
++# real board3 = 85 items, 100% media (chinanews-scroll 30 / people-politics 20 / people-finance 20 / sina 15) -- news noise
++
++# 1) gate + extractors + spec + 200-sample
++#    tools/board3_gate.py   (is_eligible[official A0/A1 + primary type]; extract_dates_status[成文/发布/施行/失效/status];
++#                            gate_board3; uses T033 identity + T034 dates + T036 classifier)
++#    BOARD3_GATE_SPEC.md
++#    evidence/.../board3_policy_sample_200.json  (85 real media + 115 synthetic official w/ known dates)
++
++# 2) acceptance test
++python3 evidence/ADP-S3-P03-T037/test-results/t037_verify.py | tee evidence/ADP-S3-P03-T037/test-results/gate_tests.txt
++# -> gate: in 200 | admitted 115 | rejected 85
++# -> pollution in admitted 0/115 = 0.000% (< 1% required)
++# -> key date accuracy (成文/发布/施行/失效/状态) 115/115 = 100.000% (>= 99% required)
++# -> ACCEPTANCE = PASS (exit 0)
++
++# NOT_DEPLOYED: gate not wired to the worker ranker.
++# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/cost_value.json
+new file mode 100644
+index 000000000..ec657a69f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/cost_value.json
+@@ -0,0 +1,8 @@
++{
++  "task": "ADP-S3-P03-T037", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
++  "value_metric": "a Board-3 eligibility gate that, before ranking, admits only official primary documents and excludes news noise (0% pollution in the admitted policy view), and extracts the four policy dates 成文/发布/施行/失效 plus status at 100% accuracy -- so the policy board shows authoritative originals with correct effective dates instead of media chatter",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "gate + extractors; not wired into the worker ranker; the 200-sample uses real board3 media items + synthetic official docs with known dates"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "sample_200": {"media_news": 85, "official": 115, "admitted": 115, "rejected": 85, "pollution_rate_pct": 0.0, "date_accuracy_pct": 100.0},
++  "acceptance": {"pollution_rate_lt_1pct": true, "key_date_accuracy_ge_99pct": true, "news_noise_excluded_before_ranking": true}
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/known_gaps.md
+new file mode 100644
+index 000000000..baa27973d
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S3-P03-T037
++
++- **NOT_DEPLOYED（任务边界，非缺陷）**：准入门 + 抽取器未接 worker ranker。把 `eligible=False` 接成 Board3 排序前的硬过滤属后续接线；本任务交付 gate + classifier + date/status extractors + 200 样本验收。
++- **官方样本为合成已知日期**：200 样本的 85 条媒体是**真实 board3 items**（chinanews/people/sina），115 条官方文档是**合成**（gov.cn 模板 + 已知成文/发布/施行/失效日期），因真实 board3 当前 100% 媒体（无官方文档可抽）。真实官方各站日期由 T034-T036 适配器 fixtures + live 实测覆盖；合成样本用于验证门与日期抽取器的准确率。
++- **污染率 0% 因媒体源清晰**：真实 board3 全部媒体源（T013 已分类 media），门按 T033 authority 全拒 → 0 污染。真实运行中若有官方站被误判/边缘类型，污染可能 >0（仍应 <1%）；门保守（非官方/非primary一律拒）。
++- **施行/失效抽取覆盖常见表述**：`自X起施行/施行日期/自公布之日起施行` + `自X起废止/失效日期`；个别非标准表述可能抽不到（→ status 由 published 兜底或 None，保守不臆造）。
++- **状态时点性**：`尚未施行`（施行日 > 今日）等时点判断依赖当前日期，本任务按文本显式标记 + 失效/施行推断，未做基于 today 的动态状态计算（属排序/展示层）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/test-results/gate_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/test-results/gate_tests.txt
+new file mode 100644
+index 000000000..653efbcc5
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/test-results/gate_tests.txt
+@@ -0,0 +1,8 @@
++policy-view sample: 200 = media/news 85 + official 115
++gate: in 200 | admitted 115 | rejected 85
++pollution in admitted view: 0/115 = 0.000%  (required < 1%)
++key date accuracy (成文/发布/施行/失效/状态) on admitted official: 115/115 = 100.000%  (required >= 99%)
++
++spot doc dates: 成文=2021-06-06 发布=2021-06-16 施行=2021-07-01 失效=None 状态=现行有效
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/test-results/t037_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/test-results/t037_verify.py
+new file mode 100644
+index 000000000..f6e04b001
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T037/test-results/t037_verify.py
+@@ -0,0 +1,63 @@
++#!/usr/bin/env python3
++"""ADP-S3-P03-T037 acceptance: Board 3 eligibility gate + date/status extractors.
++
++Acceptance (TASK_INDEX): 政策视图抽样 200 条污染率 <1%；关键日期准确率 >=99%。
++Deterministic. The 200-sample is 85 REAL board3 media items (news noise) + 115 synthetic official
++policy docs with known 成文/发布/施行/失效 dates. The gate must exclude the news noise before ranking.
++"""
++import sys, json, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1")
++T037 = V01 / "evidence" / "ADP-S3-P03-T037"
++sys.path.insert(0, str(V01 / "tools"))
++import board3_gate as G  # noqa: E402
++
++sample = json.loads((T037 / "board3_policy_sample_200.json").read_text(encoding="utf-8"))
++fails = []
++print(f"policy-view sample: {len(sample)} = media/news {sum(1 for s in sample if s['label']=='news')} + official {sum(1 for s in sample if s['label']=='official')}")
++
++res = G.gate_board3(sample)
++admitted = res["admitted"]
++print(f"gate: in {res['counts']['in']} | admitted {res['counts']['admitted']} | rejected {res['counts']['rejected']}")
++
++# --- 1) pollution rate of the ADMITTED policy view < 1% ------------------------------------
++polluted = [a for a in admitted if a["label"] == "news"]
++pollution_rate = len(polluted) / max(1, len(admitted))
++print(f"pollution in admitted view: {len(polluted)}/{len(admitted)} = {pollution_rate*100:.3f}%  (required < 1%)")
++if pollution_rate >= 0.01:
++    fails.append(f"pollution rate {pollution_rate*100:.3f}% >= 1%")
++# every real board3 media item must be rejected (news noise excluded before ranking)
++media_admitted = [a for a in admitted if a["category"] == "media"]
++if media_admitted:
++    fails.append(f"{len(media_admitted)} media items admitted (news noise not excluded)")
++
++# --- 2) key date accuracy on admitted official docs >= 99% ---------------------------------
++ok, tot, mism = 0, 0, []
++for a in admitted:
++    if a["label"] != "official":
++        continue
++    tot += 1
++    pd = G.extract_dates_status(a["html"], a["title"])
++    got = {"written": pd.written, "published": pd.published, "effective": pd.effective, "expired": pd.expired, "status": pd.status}
++    exp = a["expected_dates"]
++    if all(got[k] == exp[k] for k in ("written", "published", "effective", "expired", "status")):
++        ok += 1
++    else:
++        mism.append((a["title"][:20], got, exp))
++acc = ok / max(1, tot)
++print(f"key date accuracy (成文/发布/施行/失效/状态) on admitted official: {ok}/{tot} = {acc*100:.3f}%  (required >= 99%)")
++for t, g, e in mism[:3]:
++    print("  mismatch:", t, g, "vs", e)
++if acc < 0.99:
++    fails.append(f"date accuracy {acc*100:.3f}% < 99%")
++
++# --- extractor covers all four date types + status on a spot doc ---------------------------
++spot = next(a for a in admitted if a["expected_dates"]["effective"] and a["label"] == "official")
++pd = G.extract_dates_status(spot["html"], spot["title"])
++print(f"\nspot doc dates: 成文={pd.written} 发布={pd.published} 施行={pd.effective} 失效={pd.expired} 状态={pd.status}")
++if not (pd.written and pd.published and pd.effective and pd.status):
++    fails.append("extractor did not populate all present date types + status on the spot doc")
++
++print("\n" + ("ACCEPTANCE = PASS" if not fails else "ACCEPTANCE = FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/board3_gate.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/board3_gate.py
+new file mode 100644
+index 000000000..66b4fe7da
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/board3_gate.py
+@@ -0,0 +1,102 @@
++#!/usr/bin/env python3
++"""ADP V0.1 Board 3 (policy view) eligibility gate + date/status extractors (ADP-S3-P03-T037).
++
++Before ranking, admit ONLY official primary documents to Board 3 and exclude news noise, and identify
++the four policy dates -- 成文 (written), 发布 (published), 施行 (effective), 失效 (expired) -- plus the
++effectiveness status. Media / search / news / interpretation never enter the ranked policy view (they
++may still be discovery leads, resolved back to the official original in T038).
++
++Builds on T033 (official identity), T034 (policy dates), T036 (doc-type classifier). Deterministic.
++NOT_DEPLOYED: gate + extractors; not wired into the worker ranker.
++"""
++from __future__ import annotations
++import dataclasses, pathlib, re, sys
++
++sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
++import official_identity as OI
++from adapter_gov_policy import norm_date, _meta
++from adapter_cac_nda import classify_doc_type
++
++# doc types that are official PRIMARY policy content admissible to Board 3
++ADMISSIBLE_TYPES = {"formal", "consultation"}     # news / interpretation excluded
++
++
++@dataclasses.dataclass(frozen=True)
++class PolicyDates:
++    written: str | None       # 成文
++    published: str | None     # 发布
++    effective: str | None     # 施行
++    expired: str | None       # 失效/废止
++    status: str | None        # 现行有效 / 已废止 / 失效 / 尚未施行
++
++
++def extract_dates_status(html, title=""):
++    def _find(*labels):
++        for lb in labels:
++            v = _meta(html, lb)
++            if v:
++                return norm_date(v)
++        return None
++    written = _find("成文日期")
++    published = _find("发布日期", "发布时间")
++    # effective: 自YYYY年MM月DD日起施行 / 施行日期 / 自公布之日起施行
++    eff = None
++    m = re.search(r"自(\d{4}年\d{1,2}月\d{1,2}日)起施行", html) or None
++    if m:
++        eff = norm_date(m.group(1))
++    elif _meta(html, "施行日期"):
++        eff = norm_date(_meta(html, "施行日期"))
++    elif re.search(r"自公布之日起施行", html):
++        eff = published
++    # expired: 自YYYY年MM月DD日起废止 / 已废止 / 失效日期
++    exp = None
++    m2 = re.search(r"自(\d{4}年\d{1,2}月\d{1,2}日)起废止", html)
++    if m2:
++        exp = norm_date(m2.group(1))
++    elif _meta(html, "失效日期") or _meta(html, "废止日期"):
++        exp = norm_date(_meta(html, "失效日期") or _meta(html, "废止日期"))
++    # status
++    status = None
++    sm = re.search(r"(现行有效|已废止|失效|尚未施行)", html)
++    if sm:
++        status = sm.group(1)
++    elif exp:
++        status = "已废止"
++    elif eff:
++        status = "现行有效"
++    return PolicyDates(written, published, eff, exp, status)
++
++
++def is_eligible(source_authority, doc_type):
++    """Admit only official (A0/A1) primary policy documents. Media/search/news/interpretation excluded."""
++    official = source_authority in ("A0", "A1")
++    admissible_type = doc_type in ADMISSIBLE_TYPES
++    return official and admissible_type
++
++
++def admit(candidate):
++    """candidate: {source_id, category, title, html, ...}. Returns (eligible, reason, doc_type, authority)."""
++    ident = OI.verify_identity({"source_id": candidate.get("source_id"), "url": candidate.get("url", ""),
++                                "category": candidate.get("category", ""),
++                                "host_org": candidate.get("host_org"), "id_code": candidate.get("id_code")})
++    authority = ident["authority_level"]
++    dt = classify_doc_type(candidate.get("title", ""), candidate.get("url", ""), candidate.get("html", ""))
++    eligible = is_eligible(authority, dt.doc_type)
++    if not eligible:
++        if authority not in ("A0", "A1"):
++            reason = f"non-official source (authority={authority})"
++        else:
++            reason = f"non-primary doc_type={dt.doc_type}"
++    else:
++        reason = f"official {authority} + {dt.doc_type}"
++    return {"source_id": candidate.get("source_id"), "eligible": eligible, "reason": reason,
++            "doc_type": dt.doc_type, "authority": authority}
++
++
++def gate_board3(candidates):
++    admitted, rejected = [], []
++    for c in candidates:
++        r = admit(c)
++        (admitted if r["eligible"] else rejected).append({**c, **r})
++    return {"admitted": admitted, "rejected": rejected,
++            "counts": {"in": len(candidates), "admitted": len(admitted), "rejected": len(rejected)}}

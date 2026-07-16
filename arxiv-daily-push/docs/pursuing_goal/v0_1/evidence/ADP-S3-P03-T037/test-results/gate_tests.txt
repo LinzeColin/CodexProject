@@ -1,0 +1,8 @@
+policy-view sample: 200 = media/news 85 + official 115
+gate: in 200 | admitted 115 | rejected 85
+pollution in admitted view: 0/115 = 0.000%  (required < 1%)
+key date accuracy (成文/发布/施行/失效/状态) on admitted official: 115/115 = 100.000%  (required >= 99%)
+
+spot doc dates: 成文=2021-06-06 发布=2021-06-16 施行=2021-07-01 失效=None 状态=现行有效
+
+ACCEPTANCE = PASS
