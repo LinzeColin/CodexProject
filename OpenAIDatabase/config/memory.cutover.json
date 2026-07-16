@@ -3,7 +3,7 @@
   "task_id": "TSK.OpenAIDatabase.PAM1.0004",
   "acceptance_id": "ACC.OpenAIDatabase.PAM1.0004",
   "mode": "ONE_TIME_CANONICAL_CUTOVER_WITH_IDEMPOTENT_VERIFY",
-  "implementation_base_sha": "1315e39ca11cfcb870ab25033861430e0bd62596",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
   "inputs": {
     "legacy_active": {
       "path": "data/memory/active/active_memory.jsonl",

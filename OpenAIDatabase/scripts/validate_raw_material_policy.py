@@ -53,10 +53,11 @@ def collection_fingerprint(repo_root: Path, base_ref: str, prefix: str) -> dict[
 def audit_known_credential(
     contract: dict[str, Any], database_dir: Path, repo_root: Path
 ) -> tuple[dict[str, int], list[str]]:
-    """Derive the known incident value without printing it, then scan all public raw."""
+    """Scan for the exact incident credential without printing or storing its value."""
     incident = contract.get("known_credential_incident") or {}
-    base_ref = str(contract.get("implementation_base_sha") or "")
-    source_path = str(incident.get("source_path_at_implementation_base") or "")
+    validation_mode = str(
+        incident.get("validation_mode") or "source_commit_derivation"
+    )
     expected_line_sha = str(incident.get("source_line_sha256") or "")
     expected_credential_sha = str(incident.get("credential_sha256") or "")
     expected_length = int(incident.get("credential_length") or -1)
@@ -64,30 +65,49 @@ def audit_known_credential(
     errors: list[str] = []
     credential = ""
     context_regex: re.Pattern[str] | None = None
+
     try:
-        source = git_output(repo_root, "show", f"{base_ref}:{source_path}", text=False)
-        assert isinstance(source, bytes)
-        matching_lines = [
-            line
-            for line in source.splitlines()
-            if hashlib.sha256(line).hexdigest() == expected_line_sha
-        ]
-        if len(matching_lines) != 1:
-            errors.append(
-                f"known credential source line count mismatch: {len(matching_lines)}"
-            )
-        else:
-            source_line = matching_lines[0].decode("utf-8")
-            context_regex = re.compile(pattern)
-            matches = context_regex.findall(source_line)
-            if len(matches) != 1:
+        context_regex = re.compile(pattern)
+        if context_regex.groups != 1:
+            errors.append("known credential extraction regex must have one capture group")
+    except re.error:
+        errors.append("known credential extraction regex is invalid")
+
+    if validation_mode == "source_commit_derivation" and context_regex is not None:
+        base_ref = str(contract.get("implementation_base_sha") or "")
+        source_path = str(
+            incident.get("source_path_at_implementation_base")
+            or incident.get("source_path_at_pre_remediation_base")
+            or ""
+        )
+        try:
+            source = git_output(repo_root, "show", f"{base_ref}:{source_path}", text=False)
+            assert isinstance(source, bytes)
+            matching_lines = [
+                line
+                for line in source.splitlines()
+                if hashlib.sha256(line).hexdigest() == expected_line_sha
+            ]
+            if len(matching_lines) != 1:
                 errors.append(
-                    f"known credential extraction count mismatch: {len(matches)}"
+                    f"known credential source line count mismatch: {len(matching_lines)}"
                 )
             else:
-                credential = matches[0]
-    except (OSError, subprocess.CalledProcessError, UnicodeDecodeError, re.error):
-        errors.append("known credential source derivation failed")
+                source_line = matching_lines[0].decode("utf-8")
+                matches = context_regex.findall(source_line)
+                if len(matches) != 1:
+                    errors.append(
+                        f"known credential extraction count mismatch: {len(matches)}"
+                    )
+                else:
+                    credential = matches[0]
+        except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
+            errors.append("known credential source derivation failed")
+    elif validation_mode != "hash_only_public_scan_no_secret_recovery":
+        errors.append("known credential validation mode is unsupported")
+
+    if expected_length <= 0 or len(expected_credential_sha) != 64:
+        errors.append("known credential hash metadata is invalid")
 
     if credential:
         if len(credential) != expected_length:
@@ -97,15 +117,22 @@ def audit_known_credential(
 
     match_file_count = 0
     match_count = 0
-    if credential and context_regex is not None:
+    if context_regex is not None:
         raw_root = database_dir / "data/public_raw"
         for path in sorted(item for item in raw_root.rglob("*") if item.is_file()):
             text = path.read_text(encoding="utf-8", errors="strict")
-            count = sum(
-                1
-                for match in context_regex.finditer(text)
-                if match.lastindex == 1 and match.group(1) == credential
-            )
+            count = 0
+            for match in context_regex.finditer(text):
+                candidate = match.group(1)
+                if validation_mode == "hash_only_public_scan_no_secret_recovery":
+                    is_incident_value = (
+                        len(candidate) == expected_length
+                        and hashlib.sha256(candidate.encode("utf-8")).hexdigest()
+                        == expected_credential_sha
+                    )
+                else:
+                    is_incident_value = bool(credential) and candidate == credential
+                count += int(is_incident_value)
             if count:
                 match_file_count += 1
                 match_count += count
@@ -229,11 +256,23 @@ def validate_policy(
     for collection in contract.get("retired_tip_collections") or []:
         path = str(collection.get("path") or "")
         observed = collection_fingerprint(repo_root, base_ref, path)
-        expected = {
-            "count": int(collection.get("base_file_count") or -1),
-            "bytes": int(collection.get("base_bytes") or -1),
-            "collection_sha256": str(collection.get("base_collection_sha256") or ""),
-        }
+        implementation_fingerprint = collection.get("implementation_base_fingerprint")
+        if isinstance(implementation_fingerprint, dict):
+            expected = {
+                "count": int(implementation_fingerprint.get("count", -1)),
+                "bytes": int(implementation_fingerprint.get("bytes", -1)),
+                "collection_sha256": str(
+                    implementation_fingerprint.get("collection_sha256") or ""
+                ),
+            }
+        else:
+            expected = {
+                "count": int(collection.get("base_file_count", -1)),
+                "bytes": int(collection.get("base_bytes", -1)),
+                "collection_sha256": str(
+                    collection.get("base_collection_sha256") or ""
+                ),
+            }
         if observed != expected:
             retired_fingerprint_mismatches.append(path)
         if tracked_paths(repo_root, path):

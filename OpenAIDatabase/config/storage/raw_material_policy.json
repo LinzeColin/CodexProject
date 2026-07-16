@@ -5,7 +5,7 @@
   "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0008",
   "last_updated_task_id": "TSK.OpenAIDatabase.PAM1.0006",
   "last_updated_acceptance_id": "ACC.OpenAIDatabase.PAM1.0006",
-  "implementation_base_sha": "d05af208c0684a556831bfca04ec0c57b7747345",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
   "owner_authorization": {
     "decision": "emergency_public_history_remediation",
     "authorized_at": "2026-07-15T20:51:13Z",
@@ -117,16 +117,30 @@
   "retired_tip_collections": [
     {
       "path": "OpenAIDatabase/session_history",
-      "base_file_count": 5,
-      "base_bytes": 38297530,
-      "base_collection_sha256": "233b8fc4764b4c73f0fcb636d0569bc3fdee7add2d2ce34c6cca5a7e4a74c814",
+      "historical_pre_remediation_fingerprint": {
+        "count": 5,
+        "bytes": 38297530,
+        "collection_sha256": "233b8fc4764b4c73f0fcb636d0569bc3fdee7add2d2ce34c6cca5a7e4a74c814"
+      },
+      "implementation_base_fingerprint": {
+        "count": 0,
+        "bytes": 0,
+        "collection_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
       "replacement": "private AgentDatabase releases plus this redacted disposition registry"
     },
     {
       "path": "OpenAIDatabase/data/raw_archives",
-      "base_file_count": 1,
-      "base_bytes": 1869,
-      "base_collection_sha256": "b9d5f45891c1d1b331382d7582a4591ffb6230639ad32c1ed9e5da61b1e2deb4",
+      "historical_pre_remediation_fingerprint": {
+        "count": 1,
+        "bytes": 1869,
+        "collection_sha256": "b9d5f45891c1d1b331382d7582a4591ffb6230639ad32c1ed9e5da61b1e2deb4"
+      },
+      "implementation_base_fingerprint": {
+        "count": 0,
+        "bytes": 0,
+        "collection_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
       "replacement": "data/public_raw for authorized sanitized public evidence; private AgentDatabase releases otherwise"
     }
   ],
@@ -203,7 +217,8 @@
     "generic_audit_limitation": "a non-standard credential label was not matched by generic patterns; exact no-echo history matching found and repaired it"
   },
   "known_credential_incident": {
-    "source_path_at_implementation_base": "OpenAIDatabase/session_history/README.md",
+    "validation_mode": "hash_only_public_scan_no_secret_recovery",
+    "source_path_at_pre_remediation_base": "OpenAIDatabase/session_history/README.md",
     "source_line_sha256": "4f6888f73a5429d64341dde4a726c0492b83124447dba8586d2e51c075c525ee",
     "credential_extraction_regex": "密码(?:是|为|[：:=])([0-9]{3,})",
     "credential_length": 3,

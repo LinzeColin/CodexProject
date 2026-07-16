@@ -5,7 +5,7 @@
   "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0005",
   "last_updated_task_id": "TSK.OpenAIDatabase.PAM1.0007",
   "last_updated_acceptance_id": "ACC.OpenAIDatabase.PAM1.0007",
-  "implementation_base_sha": "74dc2f7a52f1f1b7694c0433c5be87ce6da4cf73",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
   "max_default_destination_depth": 3,
   "ownership": [
     {"top_level": ".", "owner": "project-governance", "purpose": "project entry points and canonical owner views"},
@@ -138,29 +138,29 @@
     },
     {
       "prefix": "OpenAIDatabase/token_usage",
-      "count": 17,
-      "bytes": 537954,
-      "sha256": "fc1e715f9874683ae6d9cb6c695cc39eebeb414e9f01e7c44449dded6b812628",
+      "count": 18,
+      "bytes": 688409,
+      "sha256": "e5af4c928677cfa67c3ae015f03705fad61a52b368d06ad4e0e7ece34f635e13",
       "replacement": "data/run_logs/token_usage plus base-commit recovery"
     },
     {
       "prefix": "OpenAIDatabase/session_history",
-      "count": 5,
-      "bytes": 38297530,
-      "sha256": "233b8fc4764b4c73f0fcb636d0569bc3fdee7add2d2ce34c6cca5a7e4a74c814",
+      "count": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "replacement": "private AgentDatabase releases plus config/storage/raw_material_policy.json"
     },
     {
       "prefix": "OpenAIDatabase/data/raw_archives",
-      "count": 1,
-      "bytes": 1869,
-      "sha256": "b9d5f45891c1d1b331382d7582a4591ffb6230639ad32c1ed9e5da61b1e2deb4",
+      "count": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "replacement": "data/public_raw for authorized sanitized evidence; private AgentDatabase releases otherwise"
     }
   ],
   "topology": {
-    "base_file_count": 1658,
-    "base_directory_count_including_root": 238,
+    "base_file_count": 1621,
+    "base_directory_count_including_root": 224,
     "base_top_level_count_including_root": 17,
     "accepted_file_count_at_task_0005": 1644,
     "accepted_directory_count_including_root_at_task_0005": 235,

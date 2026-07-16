@@ -3,7 +3,7 @@
   "project_id": "OpenAIDatabase",
   "task_id": "TSK.OpenAIDatabase.PAM1.0005",
   "acceptance_id": "ACC.OpenAIDatabase.PAM1.0005",
-  "implementation_base_sha": "618a3af31f6706391049d534f1ea3b58eeed5492",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
   "canonical_root": "data/public_raw",
   "partition_pattern": "YYYY-MM",
   "part_name_pattern": "{source_id}.{original_sha256_12}.part-{part_index_4}.md",

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import sys
 import tempfile
@@ -80,6 +81,38 @@ class RawMaterialPolicyTests(unittest.TestCase):
         self.assertEqual(self.policy["governed_import_policy"]["max_text_part_bytes"], 921600)
         self.assertTrue(self.policy["governed_import_policy"]["sidecar_required"])
         self.assertEqual(self.policy["known_credential_incident"]["credential_replacement_count"], 3)
+
+    def test_public_base_fingerprints_preserve_historical_evidence(self) -> None:
+        for collection in self.policy["retired_tip_collections"]:
+            historical = collection["historical_pre_remediation_fingerprint"]
+            implementation = collection["implementation_base_fingerprint"]
+            self.assertGreater(historical["count"], 0)
+            self.assertEqual(implementation["count"], 0)
+            self.assertEqual(implementation["bytes"], 0)
+
+    def test_hash_only_incident_scan_detects_exact_value_without_echo(self) -> None:
+        synthetic = "example-credential-123456"
+        contract = {
+            "known_credential_incident": {
+                "validation_mode": "hash_only_public_scan_no_secret_recovery",
+                "credential_extraction_regex": r"credential=([a-z0-9-]+)",
+                "credential_length": len(synthetic),
+                "credential_sha256": hashlib.sha256(synthetic.encode()).hexdigest(),
+                "secret_value_echoed": False,
+            }
+        }
+        with tempfile.TemporaryDirectory() as temp_dir:
+            database = Path(temp_dir)
+            raw_file = database / "data/public_raw/codex/fixture.json"
+            raw_file.parent.mkdir(parents=True)
+            raw_file.write_text(f"credential={synthetic}", encoding="utf-8")
+            metrics, errors = self.validator.audit_known_credential(
+                contract, database, ROOT
+            )
+        rendered = json.dumps({"metrics": metrics, "errors": errors})
+        self.assertEqual(metrics["known_credential_current_context_match_count"], 1)
+        self.assertEqual(metrics["known_credential_current_context_match_file_count"], 1)
+        self.assertNotIn(synthetic, rendered)
 
     def test_zero_owner_managed_remote_residuals_pass_verified_gate(self) -> None:
         result = self.validator.validate_policy(

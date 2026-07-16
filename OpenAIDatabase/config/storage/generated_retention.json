@@ -5,7 +5,7 @@
   "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0007",
   "last_updated_task_id": "TSK.OpenAIDatabase.PAM1.0008",
   "last_updated_acceptance_id": "ACC.OpenAIDatabase.PAM1.0008",
-  "implementation_base_sha": "0b66ae8192d2285f2972516e4fe080b9d2267bb7",
+  "implementation_base_sha": "ac871bd40082f4cb8a607d7e37c8750f50522018",
   "target_scopes": [
     "data/derived",
     "data/run_logs",
@@ -147,14 +147,14 @@
   "safe_deletions": [
     {
       "scope": "token_usage",
-      "base_file_count": 10,
-      "base_bytes": 533929,
-      "base_collection_sha256": "d3affee9e7c60e0081227618c0bcab9f8e98d7136732322e76b754f26e55d0ab",
+      "base_file_count": 18,
+      "base_bytes": 688409,
+      "base_collection_sha256": "cf468984a70bb9ff3d15c156f77ad2c7e613604c9469612d7fa97f6f6d444037",
       "active_consumer_count_before": 0,
       "active_reference_markers": ["token_usage/old-mac-20260630"],
       "reason": "legacy numeric package has no active consumer; current telemetry has a single canonical destination",
       "replacement": "data/run_logs/token_usage",
-      "recovery": "git restore --source=0b66ae8192d2285f2972516e4fe080b9d2267bb7 -- OpenAIDatabase/token_usage"
+      "recovery": "git restore --source=ac871bd40082f4cb8a607d7e37c8750f50522018 -- OpenAIDatabase/token_usage"
     },
     {
       "scope": "data/processed/indexes/memory_index.sqlite",
