@@ -1,0 +1,19 @@
+# ADP-S4-P03-T050 commands (batched province A1 backfill; dev-env, SHADOW)
+
+# 1. orchestrator: tools/province_backfill.py
+#    plan_batches / run_province (discover->fetch->normalize, content-addressed idempotency) /
+#    batch_gate (>=1 province with >=1 A1 doc) / orchestrate (halt at first failed batch; isolate failures) /
+#    coverage_report
+
+# 2. live run (dev-env; not the worker -> 0 cloud cost). 2 cohort batches:
+#    batch 0 = art-cms (jiangsu, shandong, + blocked guangdong for isolation demo)
+#    batch 1 = beijing-zhengce (beijing)
+python3 evidence/ADP-S4-P03-T050/backfill_run.py
+#    -> completed_batches=2 halted_at=None total_docs=9 idempotent=True
+#    -> isolated_failures=[guangdong-gov]; batch 0 still gate=True (isolation != blocking)
+
+# 3. acceptance verifier (checks cached run + a DETERMINISTIC negative control: failed batch halts run)
+python3 evidence/ADP-S4-P03-T050/test-results/t050_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (SHADOW: production worker/cron/data untouched)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

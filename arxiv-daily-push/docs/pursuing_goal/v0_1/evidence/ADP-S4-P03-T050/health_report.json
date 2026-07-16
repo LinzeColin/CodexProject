@@ -1,0 +1,35 @@
+{
+  "provinces": [
+    {
+      "source_id": "jiangsu-gov",
+      "reachable_parsed": true,
+      "docs": 3,
+      "error": null
+    },
+    {
+      "source_id": "shandong-gov",
+      "reachable_parsed": true,
+      "docs": 3,
+      "error": null
+    },
+    {
+      "source_id": "guangdong-gov",
+      "reachable_parsed": false,
+      "docs": 0,
+      "error": null
+    },
+    {
+      "source_id": "beijing-gov",
+      "reachable_parsed": true,
+      "docs": 3,
+      "error": null
+    }
+  ],
+  "isolated": [
+    {
+      "batch": 0,
+      "source_id": "guangdong-gov",
+      "reason": "no docs discovered"
+    }
+  ]
+}

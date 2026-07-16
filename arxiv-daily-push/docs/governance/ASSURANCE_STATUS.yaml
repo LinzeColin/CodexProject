@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260717-ADP-V01-S4-P02-T048-A0-HISTORY-QA-GATE"
-source_snapshot_hash: "sha256:cf50fd201dcd36ccca5234822846a7434c74e2f14906fc532c55c13279254382"
+as_of_event_id: "EVENT-20260717-ADP-V01-S4-P03-T049-A1-PROVINCE-ADAPTER-FAMILY"
+source_snapshot_hash: "sha256:b1e001b2aa8bfd0b6af641c6e302d20192d6b0e15f1a6124255a6c4afd7d273e"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-17T16:00:00+10:00"
+snapshot_event_time: "2026-07-17T17:00:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 108
+    precommit_pending_events: 109
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

@@ -1,0 +1,10 @@
+{
+  "note": "dev-env fetch (not the worker) -> 0 cloud cost; unknown != 0",
+  "production_new_requests": 0,
+  "d1_rows_read": 0,
+  "d1_rows_written": 0,
+  "r2_bytes": 0,
+  "r2_ops": 0,
+  "model_calls": 0,
+  "human_maintenance": "dev-env batched province backfill"
+}

@@ -1,0 +1,48 @@
+{
+  "run_summary": {
+    "completed_batches": 2,
+    "halted_at": null,
+    "total_docs": 9,
+    "distinct_canonical_ids": 9,
+    "idempotent_rerun_no_new": true
+  },
+  "gates": [
+    {
+      "batch": 0,
+      "source_ids": [
+        "jiangsu-gov",
+        "shandong-gov",
+        "guangdong-gov"
+      ],
+      "provinces_ok": 2,
+      "gate_passed": true
+    },
+    {
+      "batch": 1,
+      "source_ids": [
+        "beijing-gov"
+      ],
+      "provinces_ok": 1,
+      "gate_passed": true
+    }
+  ],
+  "coverage": {
+    "jiangsu-gov": {
+      "2026-07": 3
+    },
+    "shandong-gov": {
+      "2026-07": 2,
+      "2026-06": 1
+    },
+    "beijing-gov": {
+      "2026-07": 3
+    }
+  },
+  "isolated_failures": [
+    {
+      "batch": 0,
+      "source_id": "guangdong-gov",
+      "reason": "no docs discovered"
+    }
+  ]
+}

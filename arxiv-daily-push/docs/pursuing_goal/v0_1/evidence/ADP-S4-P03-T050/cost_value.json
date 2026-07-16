@@ -1,0 +1,20 @@
+{
+  "task": "ADP-S4-P03-T050",
+  "stage": "S4 (2016+ A0/A1/A2 Expansion) / P03 A1 省级与重点城市 cohort",
+  "value": {
+    "user_value": "Batched provincial (A1) backfill via the T049 family: provinces are expanded by cohort batches with a per-batch gate (no big-bang) and failed-province isolation. 9 real A1 province documents backfilled across 3 provinces (Jiangsu, Shandong, Beijing) in 2 gated batches; a genuinely blocked province (Guangdong) was isolated without stopping its batch or the run.",
+    "why_it_matters": "A1 is 31 provincial regions plus key cities; a safe rollout must add them incrementally, gate each batch, and never let one failing province stall the whole expansion. This is the execution vehicle for province coverage."
+  },
+  "cost": {
+    "note": "unknown != 0; the backfill ran from the DEV environment (not the worker) -> 0 cloud cost, DIR-007 unaffected.",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "dev-env batched province backfill (3 provinces x 3 docs) + orchestrator authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "SHADOW (dev-env batched backfill; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

@@ -1,0 +1,7 @@
+completed_batches=2 halted_at=None total_docs=9 idempotent=True
+  batch 0 ['jiangsu-gov', 'shandong-gov', 'guangdong-gov'] provinces_ok=2 gate=True
+  batch 1 ['beijing-gov'] provinces_ok=1 gate=True
+isolated_failures=[{'batch': 0, 'source_id': 'guangdong-gov', 'reason': 'no docs discovered'}]
+negative control (failed batch 0): halted_at=0 batches_run=1 -> gate genuinely blocks progression = True
+
+ACCEPTANCE = PASS
