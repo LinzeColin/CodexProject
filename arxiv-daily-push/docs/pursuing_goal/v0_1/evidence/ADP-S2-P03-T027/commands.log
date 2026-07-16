@@ -1,0 +1,31 @@
+# ADP-S2-P03-T027 commands (offline snapshot from D1 sample; no production D1/R2/worker touched)
+# base: main 63629f16 (T026)
+
+# 0) dev dependency for REAL Apache Parquet (offline evidence only; writer falls back to NDJSON if absent)
+python3 -m pip install "pyarrow==17.0.0"    # installed into user Python 3.9 user-site; runtime/worker do NOT use it
+
+# 1) tool + docs authored
+#    tools/snapshot_writer.py                 (build_logical_tables via T024 canonicalize + T026 version_engine;
+#                                              month partitions; logical_hash; real Parquet w/ NDJSON fallback;
+#                                              versioned SCHEMA_REGISTRY + evolve_schema; snapshot_manifest)
+#    SNAPSHOT_SPEC.md                          (partition scheme, logical-hash reproducibility, schema evolution, manifest)
+#    schemas/snapshot_manifest.schema.json     (draft-07 manifest contract)
+
+# 2) acceptance test over the REAL 500-item D1 sample (scratchpad/t020/{items_500,fs_500}.json)
+python3 evidence/ADP-S2-P03-T027/test-results/t027_verify.py | tee evidence/ADP-S2-P03-T027/test-results/snapshot_tests.txt
+# -> format parquet / engine pyarrow 17.0.0 ; 498 docs / 500 versions / 46 months / 92 partitions
+# -> reproducible: snapshot_id equal True | logical_hash equal True | physical bytes equal True
+# -> D1<->Parquet: doc 498==498 | versions 500==500 | orphan 0 | month partitioning ok True
+# -> schema evolution v1->v2: old partition reads under v2 (authority null-filled) True | v1 logical_hash stable True
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) committed evidence (self-verifiable without pyarrow / raw sample)
+#    evidence/.../snapshot_manifest.json                 (92 partitions, logical + physical hashes)
+#    evidence/.../logical_snapshot/{cn_documents,cn_document_versions}.jsonl  (498+500 rows; recompute ALL 92 logical_hash)
+#    evidence/.../sample_partitions/{cn_documents__2016-01,cn_document_versions__2025-06}.parquet  (tiny real Parquet, PAR1)
+# manifest validated against snapshot_manifest.schema.json (jsonschema) ; negative (month '2016/01') INVALID.
+python3 -c "import pyarrow.parquet as pq; print(pq.read_table('evidence/ADP-S2-P03-T027/sample_partitions/cn_document_versions__2025-06.parquet').num_rows)"  # -> 43
+
+# NOT_DEPLOYED: no wrangler / no D1 write / no R2 / no worker deploy.
+# governance sync (fullwt @ origin/main), generate dashboard, lean_governance ci --changed-only == SHIP,
+# commit + push to LinzeColin/CodexProject main, poll CI double-green.

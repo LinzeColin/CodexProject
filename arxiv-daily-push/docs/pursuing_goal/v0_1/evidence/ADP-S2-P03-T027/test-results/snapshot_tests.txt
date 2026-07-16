@@ -1,0 +1,11 @@
+format: parquet | engine: pyarrow 17.0.0
+snapshot_id run A: sha256:61de7073ca96fd7d733
+snapshot_id run B: sha256:61de7073ca96fd7d733
+totals: 498 docs / 500 versions / 46 months / 92 partitions
+reproducible: snapshot_id equal = True | logical_hash equal = True | physical bytes equal = True
+
+D1<->Parquet: doc rows 498 == gt 498 | version rows 500 == gt 500 | orphan versions 0 | month partitioning ok True
+
+schema evolution: v1 -> v2 | old partition reads under v2 (authority null-filled) = True | v1 logical_hash stable = True
+
+ACCEPTANCE = PASS
