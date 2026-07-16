@@ -1,0 +1,14 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/ARCHIVED_NOT_CANONICAL.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/CONFLICT_LEDGER.csv
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T002/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T002/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T002/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T002/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T002/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P01-T002/known_gaps.md

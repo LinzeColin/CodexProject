@@ -1,0 +1,17 @@
+# ADP-S0-P01-T002 commands.log
+
+## 基线
+$ git rev-parse HEAD
+02c6442063abd90f1378c7d7957491d3c936a39b   # = origin/main (T001 ADP-S0-P01-T001 merged)
+
+## CSV 解析验收（每行含 source/old/new/reason 四要素）
+$ python3 -c "import csv; rows=list(csv.DictReader(open('CONFLICT_LEDGER.csv',newline='',encoding='utf-8'))); ..."
+rows: 14
+cols: ['conflict_id', 'topic', 'source_material', 'old_conclusion', 'new_ruling', 'ruling_status', 'reason', 'authority_ref', 'as_of']
+rows missing any of source/old/new/reason: []
+ids: CL-001,CL-002,CL-003,CL-004,CL-005,CL-006,CL-007,CL-008,CL-009,CL-010,CL-011,CL-012,CL-013,CL-014
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
+# 期望 decision: SHIP —— 实际结果记于提交步骤
