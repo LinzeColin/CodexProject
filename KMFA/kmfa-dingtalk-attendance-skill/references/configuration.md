@@ -49,6 +49,7 @@ DINGTALK_AGENT_ID
 DWS_BIN
 KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS
 KMFA_DINGTALK_ATTENDANCE_DWS_BROWSER_POLICY_PATH
+KMFA_DINGTALK_ATTENDANCE_REMINDER_COLLECTION_DEADLINE_SECONDS
 KMFA_WORK_DATE_OVERRIDE
 KMFA_TODAY_OVERRIDE
 ```
@@ -60,6 +61,8 @@ KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS=0
 ```
 
 Only set it to `1` for a user-authorized live run after healthcheck and process checks.
+
+The full morning/evening reminder collection has one wall-clock deadline. Its default is 330 seconds: the slowest successful 2026-07-15 natural collection took 285 seconds, so the default preserves 45 seconds of headroom while stopping before the outer automation ceiling. An authorized machine-local override may use `KMFA_DINGTALK_ATTENDANCE_REMINDER_COLLECTION_DEADLINE_SECONDS`; it must be positive. Deadline expiry is terminal for that work date and slot, kills the active DWS process group, records `ABORTED_TIMEOUT / NOT_SENT`, and forbids recovery or late sending.
 
 ## Notification Targets
 

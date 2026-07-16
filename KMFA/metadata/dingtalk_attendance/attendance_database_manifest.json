@@ -80,6 +80,15 @@
     "scheduled_delivery_target_filter": "group",
     "duplicate_guard": "work_date_plus_run_slot"
   },
+  "runtime_safety": {
+    "reminder_collection_deadline_seconds": 330,
+    "deadline_basis": "2026-07-15_slowest_success_285_seconds_plus_45_seconds_headroom",
+    "dws_process_group_termination": true,
+    "timeout_status": "ABORTED_TIMEOUT",
+    "timeout_notification_status": "NOT_SENT",
+    "timeout_recovery_allowed": false,
+    "read_only_probe_mode": "collection_probe_only"
+  },
   "private_runtime_sqlite": true,
   "project_id": "KMFA",
   "public_repo_safety": {

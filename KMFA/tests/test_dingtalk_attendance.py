@@ -950,6 +950,48 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual(calls, ["evening", "morning"])
             self.assertTrue((root / "运行状态.md").is_file())
 
+    def test_r6_aborted_timeout_is_terminal_and_cannot_recover_or_late_send(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            coordinator = R6Coordinator(root)
+            first = coordinator.ensure_slot(
+                work_date="2026-07-16",
+                run_slot="morning",
+                trigger_source="automation",
+                runner=lambda: {
+                    "status": "ABORTED_TIMEOUT",
+                    "notification_status": "NOT_SENT",
+                    "failed_operation": "reminder_collection",
+                    "error_code": "REMINDER_COLLECTION_TIMEOUT",
+                    "elapsed_seconds": 330.001,
+                    "message_count": 0,
+                    "target_call_count": 0,
+                    "sender_call_count": 0,
+                    "send_started": False,
+                    "recovery_allowed": False,
+                    "late_send_forbidden": True,
+                },
+                completed_probe=lambda: None,
+            )
+            second = coordinator.ensure_slot(
+                work_date="2026-07-16",
+                run_slot="morning",
+                trigger_source="automation",
+                runner=lambda: (_ for _ in ()).throw(AssertionError("terminal slot must not rerun")),
+                completed_probe=lambda: (_ for _ in ()).throw(AssertionError("terminal slot must not recover")),
+            )
+            state = json.loads((root / "state.json").read_text(encoding="utf-8"))
+            slot = state["work_dates"]["2026-07-16"]["slots"]["morning"]
+
+        self.assertEqual(first["status"], "ABORTED_TIMEOUT")
+        self.assertEqual(second["status"], "ABORTED_TIMEOUT")
+        self.assertEqual(slot["notification_status"], "NOT_SENT")
+        self.assertFalse(slot["recovery_allowed"])
+        self.assertTrue(slot["late_send_forbidden"])
+        self.assertEqual(slot["sender_call_count"], 0)
+
     def test_r6_final_waits_then_commits_certificate_bound_result_once(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
 
@@ -2798,18 +2840,28 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
     def test_run_dws_json_maps_subprocess_timeout_to_retryable_result(self) -> None:
         timeout_error = __import__("subprocess").TimeoutExpired(cmd="dws", timeout=65)
+
+        class Proc:
+            pid = 12345
+            returncode = None
+
+            def communicate(self, *, timeout: int) -> tuple[str, str]:
+                raise timeout_error
+
         with (
             patch(
                 "KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status",
                 return_value={"status": "READY"},
             ),
-            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=timeout_error),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.Popen", return_value=Proc()),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance._terminate_process_group") as terminate,
         ):
             result = run_dws_json(["attendance", "report", "columns"], timeout=60)
 
         self.assertEqual(result["returncode"], 124)
         self.assertEqual(result["payload"]["code"], "request_timeout")
         self.assertTrue(result["payload"]["error"]["retryable"])
+        terminate.assert_called_once()
 
     def test_notification_uses_only_official_report_anomaly_names_when_parity_is_present(self) -> None:
         context = notification_context_from_output_status(
@@ -3157,18 +3209,20 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         class Proc:
             returncode = 0
-            stdout = '{"success": true}'
-            stderr = ""
 
-        def fake_run(command: list[str], **kwargs: object) -> Proc:
+            def communicate(self, *, timeout: int) -> tuple[str, str]:
+                captured["timeout"] = timeout
+                return '{"success": true}', ""
+
+        def fake_popen(command: list[str], **kwargs: object) -> Proc:
             captured["command"] = command
-            captured["timeout"] = kwargs["timeout"]
             captured["env"] = kwargs["env"]
+            captured["start_new_session"] = kwargs["start_new_session"]
             return Proc()
 
         with (
             patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
-            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.Popen", side_effect=fake_popen),
             patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_DINGTALK_ATTENDANCE_DWS_TIMEOUT_SECONDS": "120"}),
         ):
             result = run_dws_json(["contact", "dept", "list-members"], timeout=45)
@@ -3180,23 +3234,25 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         self.assertEqual(captured["timeout"], 125)
         self.assertEqual(captured["env"]["TZ"], "Asia/Shanghai")
+        self.assertTrue(captured["start_new_session"])
 
     def test_run_dws_json_env_timeout_cannot_shrink_call_timeout(self) -> None:
         captured: dict[str, object] = {}
 
         class Proc:
             returncode = 0
-            stdout = '{"success": true}'
-            stderr = ""
 
-        def fake_run(command: list[str], **kwargs: object) -> Proc:
+            def communicate(self, *, timeout: int) -> tuple[str, str]:
+                captured["timeout"] = timeout
+                return '{"success": true}', ""
+
+        def fake_popen(command: list[str], **kwargs: object) -> Proc:
             captured["command"] = command
-            captured["timeout"] = kwargs["timeout"]
             return Proc()
 
         with (
             patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
-            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.Popen", side_effect=fake_popen),
             patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_DINGTALK_ATTENDANCE_DWS_TIMEOUT_SECONDS": "20"}),
         ):
             run_dws_json(["attendance", "record", "get"], timeout=60)
@@ -3204,6 +3260,56 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("--timeout", captured["command"])
         self.assertEqual(captured["command"][captured["command"].index("--timeout") + 1], "60")
         self.assertEqual(captured["timeout"], 65)
+
+    def test_run_attendance_total_collection_deadline_fails_closed_before_archive_or_send(self) -> None:
+        def slow_collector(**_: object) -> dict[str, object]:
+            __import__("time").sleep(1)
+            return {"stats": _realtime_pass_stats(run_type="morning"), "results": []}
+
+        with (
+            patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}),
+            patch.object(ATTENDANCE_RUNNER, "write_private_outputs", side_effect=AssertionError("must not archive")),
+            patch.object(ATTENDANCE_RUNNER, "dispatch_reports_to_targets", side_effect=AssertionError("must not send")),
+        ):
+            result = run_attendance(
+                run_type="morning",
+                timezone="Asia/Shanghai",
+                work_date="2026-07-16",
+                collector=slow_collector,
+                cleanup=lambda: {"status": "OK"},
+                collection_deadline_seconds=0.05,
+            )
+
+        self.assertEqual(result["status"], "ABORTED_TIMEOUT")
+        self.assertEqual(result["failed_operation"], "reminder_collection")
+        self.assertEqual(result["error_code"], "REMINDER_COLLECTION_TIMEOUT")
+        self.assertEqual(result["notification_status"], "NOT_SENT")
+        self.assertEqual(result["sender_call_count"], 0)
+        self.assertFalse(result["send_started"])
+
+    def test_run_attendance_read_only_collection_probe_never_archives_or_sends(self) -> None:
+        def collector(**kwargs: object) -> dict[str, object]:
+            return {"stats": _realtime_pass_stats(run_type=str(kwargs["run_type"])), "results": []}
+
+        with (
+            patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}),
+            patch.object(ATTENDANCE_RUNNER, "write_private_outputs", side_effect=AssertionError("probe must not archive")),
+            patch.object(ATTENDANCE_RUNNER, "dispatch_reports_to_targets", side_effect=AssertionError("probe must not send")),
+        ):
+            result = run_attendance(
+                run_type="evening",
+                timezone="Asia/Shanghai",
+                work_date="2026-07-16",
+                collector=collector,
+                cleanup=lambda: {"status": "OK"},
+                collection_probe_only=True,
+            )
+
+        self.assertEqual(result["status"], "COMPLETED")
+        self.assertEqual(result["mode"], "READ_ONLY_COLLECTION_PROBE")
+        self.assertEqual(result["notification_status"], "NOT_SENT_READ_ONLY_PROBE")
+        self.assertEqual(result["message_count"], 0)
+        self.assertEqual(result["target_call_count"], 0)
 
     def test_department_discovery_retries_timeout_error_once(self) -> None:
         calls: list[tuple[tuple[str, ...], int, bool]] = []
@@ -5050,8 +5156,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_dispatch_duplicate_guard_blocks_same_work_date_and_slot_without_sender_call(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            prior_receipt = root / "prior.dispatch.json"
-            current_receipt = root / "current.dispatch.json"
+            prior_receipt = root / "dingtalk_attendance_evening_20260716_200500.dispatch.json"
+            current_receipt = root / "dingtalk_attendance_evening_20260716_200501.dispatch.json"
             targets_resolved = root / "notification_targets_resolved.json"
             prior_receipt.write_text(
                 json.dumps(
@@ -5103,6 +5209,43 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual(result["notification_status"], "NOT_SENT_DUPLICATE_GUARD")
             self.assertEqual(sent, [])
             self.assertTrue(current_receipt.exists())
+
+    def test_duplicate_guard_reads_only_same_date_and_slot_receipts(self) -> None:
+        notification_targets = importlib.import_module(
+            "KMFA.tools.dingtalk_attendance.notification_targets"
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            unrelated = root / "dingtalk_attendance_morning_20260701_103500.dispatch.json"
+            matching = root / "dingtalk_attendance_evening_20260716_200500.dispatch.json"
+            unrelated.write_text("must-not-read", encoding="utf-8")
+            matching.write_text(
+                json.dumps(
+                    {
+                        "notification_status": "SENT",
+                        "run_id": "dingtalk_attendance_evening_20260716_200500",
+                        "run_type": "evening",
+                        "work_date": "2026-07-16",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            original_read_text = Path.read_text
+
+            def guarded_read_text(path: Path, *args: object, **kwargs: object) -> str:
+                if path == unrelated:
+                    raise AssertionError("unrelated monthly receipt must not be read")
+                return original_read_text(path, *args, **kwargs)
+
+            with patch.object(Path, "read_text", guarded_read_text):
+                result = notification_targets._existing_delivery_attempt(
+                    receipt_path=root / "dingtalk_attendance_evening_20260716_200501.dispatch.json",
+                    run_type="evening",
+                    work_date="2026-07-16",
+                )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["notification_status"], "SENT")
 
     def test_dispatch_persists_send_started_before_external_group_call(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

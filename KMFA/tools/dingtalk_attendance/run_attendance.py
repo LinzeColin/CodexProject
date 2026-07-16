@@ -7,7 +7,10 @@ import argparse
 import gzip
 import json
 import os
+import signal
 import sys
+import time
+from contextlib import contextmanager
 from collections.abc import Callable, Mapping
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -73,6 +76,49 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 RUN_TYPES = ("morning", "evening")
 PLAN_RUN_TYPES = (*RUN_TYPES, "final")
 SCHEDULE = {"morning": "10:35", "evening": "20:05"}
+# 2026-07-15's slowest successful natural reminder collection completed in 285 seconds.
+# Keep 45 seconds of headroom while still failing before the automation task's outer ceiling.
+DEFAULT_REMINDER_COLLECTION_DEADLINE_SECONDS = 330
+REMINDER_COLLECTION_DEADLINE_ENV = "KMFA_DINGTALK_ATTENDANCE_REMINDER_COLLECTION_DEADLINE_SECONDS"
+PROBE_NOTIFICATION_STATUS = "NOT_SENT_READ_ONLY_PROBE"
+
+
+class ReminderCollectionDeadlineExceeded(TimeoutError):
+    """Raised when the full realtime reminder collection exceeds its wall deadline."""
+
+
+def _resolve_reminder_collection_deadline(
+    values: Mapping[str, str] | None,
+    override: float | None,
+) -> float:
+    if override is not None:
+        deadline = float(override)
+    else:
+        raw = (values or os.environ).get(REMINDER_COLLECTION_DEADLINE_ENV)
+        deadline = float(raw) if raw else float(DEFAULT_REMINDER_COLLECTION_DEADLINE_SECONDS)
+    if deadline <= 0:
+        raise ValueError("reminder collection deadline must be positive")
+    return deadline
+
+
+@contextmanager
+def _reminder_collection_deadline(seconds: float):
+    """Apply one wall-clock deadline to the complete reminder collection."""
+
+    previous_handler = signal.getsignal(signal.SIGALRM)
+
+    def _deadline_handler(_signum: int, _frame: Any) -> None:
+        raise ReminderCollectionDeadlineExceeded(
+            f"reminder collection exceeded {seconds:g} seconds"
+        )
+
+    signal.signal(signal.SIGALRM, _deadline_handler)
+    previous_timer = signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, *previous_timer)
+        signal.signal(signal.SIGALRM, previous_handler)
 
 
 def build_run_plan(
@@ -585,6 +631,8 @@ def run_attendance(
     env: Mapping[str, str] | None = None,
     collector: Callable[..., dict[str, Any]] = collect_realtime_reminder_attendance,
     cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
+    collection_deadline_seconds: float | None = None,
+    collection_probe_only: bool = False,
 ) -> dict[str, Any]:
     effective_work_date = work_date or os.environ.get("KMFA_WORK_DATE_OVERRIDE") or os.environ.get("KMFA_TODAY_OVERRIDE")
     run_datetime = _scheduled_run_datetime(run_type=run_type, timezone=timezone, work_date=effective_work_date)
@@ -614,36 +662,64 @@ def run_attendance(
             "cleanup_status": cleanup_status,
         }
     os.environ[DWS_COMMAND_ALLOW_ENV] = "1"
+    collection_started = time.monotonic()
+    collection_deadline = _resolve_reminder_collection_deadline(env, collection_deadline_seconds)
     try:
-        collection = collector(
-            work_date=effective_work_date,
-            summary_datetime=summary_datetime,
-            run_type=run_type,
-        )
-        collection_stats = collection.get("stats", {})
-        integrity_failure = collection_integrity_failure_reason(
-            collection_stats if isinstance(collection_stats, Mapping) else {},
-            run_type=run_type,
-        )
-        if integrity_failure:
-            expected_count = int(collection_stats.get("realtime_reminder_expected_count") or 0)
-            coverage_count = int(collection_stats.get("realtime_reminder_coverage_count") or 0)
-            raise RealtimeReminderIntegrityError(
-                "REALTIME_REMINDER_INTEGRITY_ASSERTION_FAILED",
-                integrity_failure,
-                coverage_stats={
-                    "expected_people": expected_count,
-                    "queried_people": coverage_count,
-                    "successful_people": coverage_count,
-                    "missing_people": max(expected_count - coverage_count, 0),
-                    "query_failure_count": int(
-                        collection_stats.get("realtime_reminder_query_failure_count") or 0
-                    ),
-                    "parse_failure_count": int(
-                        collection_stats.get("realtime_reminder_parse_failure_count") or 0
-                    ),
-                },
+        with _reminder_collection_deadline(collection_deadline):
+            collection = collector(
+                work_date=effective_work_date,
+                summary_datetime=summary_datetime,
+                run_type=run_type,
             )
+            collection_stats = collection.get("stats", {})
+            integrity_failure = collection_integrity_failure_reason(
+                collection_stats if isinstance(collection_stats, Mapping) else {},
+                run_type=run_type,
+            )
+            if integrity_failure:
+                expected_count = int(collection_stats.get("realtime_reminder_expected_count") or 0)
+                coverage_count = int(collection_stats.get("realtime_reminder_coverage_count") or 0)
+                raise RealtimeReminderIntegrityError(
+                    "REALTIME_REMINDER_INTEGRITY_ASSERTION_FAILED",
+                    integrity_failure,
+                    coverage_stats={
+                        "expected_people": expected_count,
+                        "queried_people": coverage_count,
+                        "successful_people": coverage_count,
+                        "missing_people": max(expected_count - coverage_count, 0),
+                        "query_failure_count": int(
+                            collection_stats.get("realtime_reminder_query_failure_count") or 0
+                        ),
+                        "parse_failure_count": int(
+                            collection_stats.get("realtime_reminder_parse_failure_count") or 0
+                        ),
+                    },
+                )
+    except ReminderCollectionDeadlineExceeded as exc:
+        elapsed_seconds = round(time.monotonic() - collection_started, 3)
+        cleanup_status.update(cleanup())
+        return {
+            "status": "ABORTED_TIMEOUT",
+            "run_plan": plan,
+            "config_status": {
+                "status": "REMINDER_COLLECTION_TIMEOUT",
+                "backend": "dws_realtime_reminder",
+                "notification_config_status": notification_config_status,
+            },
+            "failed_operation": "reminder_collection",
+            "error_code": "REMINDER_COLLECTION_TIMEOUT",
+            "dws_error": str(exc),
+            "elapsed_seconds": elapsed_seconds,
+            "collection_deadline_seconds": collection_deadline,
+            "collection_status": "ABORTED_TIMEOUT",
+            "notification_status": "NOT_SENT",
+            "message_count": 0,
+            "target_call_count": 0,
+            "sender_call_count": 0,
+            "send_started": False,
+            "onedrive_archive_status": "NOT_WRITTEN_REMINDER_COLLECTION_TIMEOUT",
+            "cleanup_status": cleanup_status,
+        }
     except RealtimeReminderIntegrityError as exc:
         cleanup_status.update(cleanup())
         return {
@@ -704,6 +780,27 @@ def run_attendance(
             "cleanup_status": cleanup_status,
         }
 
+    collection_elapsed_seconds = round(time.monotonic() - collection_started, 3)
+    if collection_probe_only:
+        cleanup_status.update(cleanup())
+        stats = collection.get("stats", {})
+        return {
+            "status": "COMPLETED",
+            "mode": "READ_ONLY_COLLECTION_PROBE",
+            "run_plan": plan,
+            "collection_status": "DWS_LIVE_COLLECTION_PROBE_PASS",
+            "collection_stats": stats,
+            "notification_status": PROBE_NOTIFICATION_STATUS,
+            "message_count": 0,
+            "target_call_count": 0,
+            "sender_call_count": 0,
+            "send_started": False,
+            "elapsed_seconds": collection_elapsed_seconds,
+            "collection_deadline_seconds": collection_deadline,
+            "onedrive_archive_status": "NOT_WRITTEN_READ_ONLY_PROBE",
+            "cleanup_status": cleanup_status,
+        }
+
     output_status: dict[str, Any] = {}
     dispatch_receipt: dict[str, Any] = {"notification_status": "FAILED"}
     output_status = write_private_outputs(
@@ -739,6 +836,10 @@ def run_attendance(
         _write_cleanup_audit(output_status, cleanup_status)
 
     run_status = "COMPLETED"
+    target_results = dispatch_receipt.get("target_results", [])
+    messages = dispatch_receipt.get("messages", [])
+    target_call_count = len(target_results) if isinstance(target_results, list) else 0
+    message_count = len(messages) if isinstance(messages, list) else 0
     return {
         "status": run_status,
         "run_plan": plan,
@@ -765,6 +866,12 @@ def run_attendance(
         "management_report_status": "GENERATED",
         "hr_report_status": "GENERATED",
         "notification_status": dispatch_receipt["notification_status"],
+        "message_count": message_count,
+        "target_call_count": target_call_count,
+        "sender_call_count": target_call_count,
+        "target_result": "success" if dispatch_receipt["notification_status"] == "SENT" else "failed",
+        "send_started": bool(target_call_count),
+        "elapsed_seconds": round(time.monotonic() - collection_started, 3),
         "notification_template_text": dispatch_receipt.get("notification_template_text", ""),
         "notification_delivery_table": dispatch_receipt.get("notification_delivery_table", ""),
         "dispatch_receipt": dispatch_receipt,
@@ -896,7 +1003,9 @@ def result_exit_code(result: Mapping[str, Any]) -> int:
     if status == "SENT":
         return 0 if notification_status == "SENT" else 5
     if status == "COMPLETED":
-        return 0 if notification_status in {"SENT", DELIVERY_DISABLED_STATUS} else 5
+        return 0 if notification_status in {"SENT", DELIVERY_DISABLED_STATUS, PROBE_NOTIFICATION_STATUS} else 5
+    if status == "ABORTED_TIMEOUT":
+        return 7
     if status in {"DWS_AUTH_REQUIRED", "DWS_BROWSER_POLICY_REQUIRED"}:
         return 2
     if status in {"DWS_UNAVAILABLE", "NO_LATEST_REPORT"}:
@@ -920,6 +1029,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help=f"Explicitly allow DWS subprocess calls for this run. Without this or {DWS_COMMAND_ALLOW_ENV}=1, live collection fails closed.",
     )
+    parser.add_argument(
+        "--collection-probe-only",
+        action="store_true",
+        help="Run the bounded live reminder collection and integrity gate without archive or notification delivery.",
+    )
     args = parser.parse_args(argv)
     if args.allow_dws_commands:
         os.environ[DWS_COMMAND_ALLOW_ENV] = "1"
@@ -933,6 +1047,7 @@ def main(argv: list[str] | None = None) -> int:
             allow_dws_commands=args.allow_dws_commands,
             work_date=args.work_date,
             notification_target_filter=args.notification_targets,
+            collection_probe_only=args.collection_probe_only,
         )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return result_exit_code(result)

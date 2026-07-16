@@ -47,6 +47,7 @@ from KMFA.tools.dingtalk_attendance.run_attendance import run_attendance
 
 DELIVERY_DISABLED_STATUS = "NOT_SENT_OWNER_DISABLED"
 COMPLETE_STATUSES = {"COMPLETED", "RECOVERED_COMPLETE"}
+TERMINAL_NO_RECOVERY_STATUSES = {"ABORTED_TIMEOUT"}
 PRIVATE_R6_ROOT = Path("KMFA/metadata/dingtalk_attendance/private_runtime/r6")
 REPO_ROOT = Path(__file__).resolve().parents[3]
 PROMPT_PATHS = {
@@ -336,6 +337,13 @@ class R6Coordinator:
             raise ValueError("run_slot must be morning or evening")
         day = self._day(work_date)
         existing = day["slots"].get(run_slot)
+        if isinstance(existing, Mapping) and existing.get("status") in TERMINAL_NO_RECOVERY_STATUSES:
+            return {
+                "status": str(existing.get("status")),
+                "work_date": work_date,
+                "run_slot": run_slot,
+                **self._aggregate(existing),
+            }
         if isinstance(existing, Mapping) and existing.get("status") in COMPLETE_STATUSES:
             recovered = completed_probe()
             if isinstance(recovered, Mapping):
@@ -390,7 +398,13 @@ class R6Coordinator:
             return {"status": "INTERRUPTED", "work_date": work_date, "run_slot": run_slot}
 
         valid = result.get("status") == "COMPLETED" and result.get("notification_status") == "SENT"
-        status = "COMPLETED" if valid else "FAILED"
+        status = (
+            "COMPLETED"
+            if valid
+            else "ABORTED_TIMEOUT"
+            if result.get("status") == "ABORTED_TIMEOUT"
+            else "FAILED"
+        )
         day["slots"][run_slot] = {
             "status": status,
             "trigger_source": current_evidence["thread_source"],
@@ -731,6 +745,16 @@ class R6Coordinator:
             "parse_failure_count",
             "command_failure_count",
             "archive_generated",
+            "failed_operation",
+            "elapsed_seconds",
+            "collection_deadline_seconds",
+            "message_count",
+            "target_call_count",
+            "sender_call_count",
+            "target_result",
+            "send_started",
+            "late_send_forbidden",
+            "recovery_allowed",
         )
         aggregate = {key: result[key] for key in allowed if key in result}
         coverage = result.get("coverage_stats")
@@ -765,7 +789,7 @@ class R6Coordinator:
             "",
             f"- 当前 Git commit：{self.runtime_identity.get('git_commit') or 'UNKNOWN'}",
             f"- Attendance runtime fingerprint：{self.runtime_identity.get('attendance_runtime_fingerprint') or 'UNKNOWN'}",
-            "- 本机计划：晨间 10:45；晚间 20:00（仅记录实际计划，未修改 scheduler）",
+            "- 本机计划：晨间 10:35；晚间 20:05（仅记录实际计划，未修改 scheduler）",
             "- 晨间自然成功：{count}（{dates}）".format(
                 count=summary["morning"]["natural_success_count"],
                 dates=", ".join(summary["morning"]["natural_success_dates"]) or "无",
@@ -1213,6 +1237,16 @@ def _slot_runner(*, run_slot: str) -> dict[str, Any]:
             and archive_status.get("status") == "WRITTEN"
             and archive_status.get("archive_manifest")
         ),
+        "failed_operation": result.get("failed_operation"),
+        "elapsed_seconds": result.get("elapsed_seconds"),
+        "collection_deadline_seconds": result.get("collection_deadline_seconds"),
+        "message_count": int(result.get("message_count") or 0),
+        "target_call_count": int(result.get("target_call_count") or 0),
+        "sender_call_count": int(result.get("sender_call_count") or 0),
+        "target_result": result.get("target_result"),
+        "send_started": bool(result.get("send_started")),
+        "recovery_allowed": False if result.get("status") == "ABORTED_TIMEOUT" else None,
+        "late_send_forbidden": result.get("status") == "ABORTED_TIMEOUT",
         **{
             key: result[key]
             for key in ("integrity_error", "error_code", "coverage_stats")
@@ -1353,7 +1387,7 @@ def _cycle_status(results: Mapping[str, Any]) -> str:
     final = results.get("final") if isinstance(results.get("final"), Mapping) else None
     reminder_status = reminder.get("status") if reminder else None
     final_status = final.get("status") if final else None
-    if reminder_status in {"FAILED", "INTERRUPTED"}:
+    if reminder_status in {"FAILED", "INTERRUPTED", "ABORTED_TIMEOUT"}:
         return "FAILED"
     reminder_completed = reminder_status in COMPLETE_STATUSES or reminder_status == "IDEMPOTENT_SKIP"
     if reminder_completed and final_status in {"FAILED", "INTERRUPTED"}:
@@ -1377,7 +1411,7 @@ def _cycle_result_message(results: Mapping[str, Any]) -> str:
         return "提醒成功，事后核验等待"
     if reminder_completed and final_status in {"FAILED", "INTERRUPTED"}:
         return "提醒成功，事后核验失败"
-    if reminder_status in {"FAILED", "INTERRUPTED"}:
+    if reminder_status in {"FAILED", "INTERRUPTED", "ABORTED_TIMEOUT"}:
         return "提醒失败"
     if reminder_completed:
         return "提醒成功"

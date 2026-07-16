@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import re
+import signal
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -188,16 +189,18 @@ def run_dws_json(args: list[str], *, timeout: int = 30, verbose: bool = False) -
     command.extend(["--timeout", str(effective_timeout), "--format", "json"])
     subprocess_env = dws_subprocess_env()
     subprocess_env["TZ"] = "Asia/Shanghai"
+    proc = subprocess.Popen(
+        command,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=subprocess_env,
+        start_new_session=True,
+    )
     try:
-        proc = subprocess.run(
-            command,
-            text=True,
-            capture_output=True,
-            timeout=effective_timeout + 5,
-            check=False,
-            env=subprocess_env,
-        )
+        stdout, stderr = proc.communicate(timeout=effective_timeout + 5)
     except subprocess.TimeoutExpired:
+        _terminate_process_group(proc)
         return {
             "returncode": 124,
             "payload": {
@@ -207,9 +210,28 @@ def run_dws_json(args: list[str], *, timeout: int = 30, verbose: bool = False) -
                 "error": {"retryable": True},
             },
         }
-    payload_text = proc.stdout.strip() or proc.stderr.strip() or "{}"
+    except BaseException:
+        _terminate_process_group(proc)
+        raise
+    payload_text = stdout.strip() or stderr.strip() or "{}"
     payload = _parse_json_payload(payload_text)
     return {"returncode": proc.returncode, "payload": payload}
+
+
+def _terminate_process_group(proc: subprocess.Popen[str]) -> None:
+    """Terminate the DWS process and every child in its dedicated process group."""
+
+    if proc.poll() is not None:
+        return
+    try:
+        os.killpg(proc.pid, signal.SIGTERM)
+        proc.wait(timeout=2)
+    except (ProcessLookupError, subprocess.TimeoutExpired):
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        proc.wait()
 
 
 def _parse_json_payload(payload_text: str) -> dict[str, Any]:

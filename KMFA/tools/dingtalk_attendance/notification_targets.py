@@ -52,7 +52,9 @@ def _existing_delivery_attempt(
 ) -> dict[str, Any] | None:
     if not receipt_path.parent.is_dir():
         return None
-    for candidate in sorted(receipt_path.parent.glob("*.dispatch.json")):
+    date_compact = work_date.replace("-", "")
+    pattern = f"dingtalk_attendance_{run_type}_{date_compact}_*.dispatch.json"
+    for candidate in sorted(receipt_path.parent.glob(pattern)):
         try:
             payload = json.loads(candidate.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):

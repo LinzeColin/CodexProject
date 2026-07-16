@@ -170,3 +170,11 @@ Do not claim completion without:
 - git commit hash
 - push result
 - post-push `HEAD == origin/main`
+
+## 10. Reminder Collection Timeout
+
+- The total realtime reminder collection deadline is 330 seconds by default, based on the 285-second slowest successful 2026-07-15 natural collection plus 45 seconds of headroom.
+- Each DWS command starts in a dedicated process group. A per-command timeout, total collection timeout, interrupt, or cancellation terminates the entire group.
+- Total timeout must persist `failed_operation=reminder_collection`, `error_code=REMINDER_COLLECTION_TIMEOUT`, elapsed seconds, `notification_status=NOT_SENT`, and zero message/target/sender calls.
+- `ABORTED_TIMEOUT` is terminal for that date and slot: do not probe artifacts, recover, resend, or send late.
+- `--collection-probe-only` is the authorized read-only validation entry. It runs the same bounded live collection and integrity gate but writes no archive and invokes no notification target.

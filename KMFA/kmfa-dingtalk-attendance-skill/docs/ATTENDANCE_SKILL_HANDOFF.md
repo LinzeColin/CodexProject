@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R6 / independent runtime status tracking
+roadmap_progress: R7 / natural evening group delivery verification
 
-status: SCHEDULED_GROUP_DELIVERY_ENABLED_AWAITING_NATURAL_EVIDENCE
+status: R7_FIX_VALIDATION_IN_PROGRESS
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -16,7 +16,17 @@ production_acceptance: NOT_EVALUATED
 
 owner_usability_status: NOT_ACCEPTED
 
-current_availability: GROUP_DELIVERY_ENABLED_NOT_YET_NATURALLY_VERIFIED
+current_availability: GROUP_DELIVERY_ENABLED_AWAITING_2026_07_16_EVENING_EVIDENCE
+
+## R7 2026-07-16
+
+- 2026-07-16 morning 的原始 automation session 两次阻塞后已被人工中断；私有状态固定为 `ABORTED_TIMEOUT / NOT_SENT`，未发现 `SEND_STARTED` 或 dispatch receipt，sender/message/target call 均为 0。
+- 该 morning slot 是不可恢复终态：禁止 artifact probe、恢复、补发或迟发。
+- attendance scope 在修复前与当前 `origin/main` 完全一致；私下诊断 diff 已冻结为空差异，未接触资金周报的三个 tracked 文件。
+- reminder collection 现在有 330 秒总截止时间，依据 2026-07-15 最慢成功自然采集 285 秒加 45 秒余量；活动 DWS 命令在独立进程组中运行，timeout/interrupt 会终止整个组。
+- timeout 结果明确保留 `failed_operation=reminder_collection`、`REMINDER_COLLECTION_TIMEOUT`、实际耗时和零发送统计；协调器不得再把它降级成笼统 `DWS_UNAVAILABLE` 或遗留 `RUNNING`。
+- duplicate guard 仅扫描同工作日期+slot 回执，避免读取整月云盘回执导致发送前挂起。
+- 代码、离线回归、唯一一次无发送只读 DWS probe、自然 20:05 evening 与群内可见证据尚待依次完成。
 
 ## R6 自动闭环
 
