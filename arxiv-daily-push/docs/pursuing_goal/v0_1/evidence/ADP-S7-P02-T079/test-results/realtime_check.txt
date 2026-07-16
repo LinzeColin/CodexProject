@@ -1,0 +1,6 @@
+ADP-S7-P02-T079 realtime non-regression check (NOT_DEPLOYED; source-level responsive fix, not deployed).
+$ curl -s https://adp.linzezhang.com/build.json
+{"build_id":"b189d3cc0703",...,"schema_version":"cn_v0_3","built_at":"2026-07-17"}
+=> LIVE build_id b189d3cc0703 == T040 canary build; the fix is committed to the worker SOURCE (source
+   build_id recomputed to d62009f8c708 via the self-hash) but NOT deployed to Cloudflare, so the live site
+   and its six themes / advanced motion are unchanged. Deploy is a separate gated step (S7 exit / a deploy task).

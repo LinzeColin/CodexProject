@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '9690390a9fc8', source_sha256: '9690390a9fc8c3ff3236971ea0be56eb3b38ff96786e193b989140edaabdfde5', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'b189d3cc0703', source_sha256: 'b189d3cc0703cb00883eab13439f3fc2ecaef2f5bd1d2572fe71c70e4c0fdb7f', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -626,7 +626,7 @@ h1,h2,h3{color:var(--ink);line-height:1.5;font-family:var(--font-display);font-w
 h1{font-size:22px;margin:.2em 0}h2{font-size:17px}h3{font-size:15px;margin:14px 0 4px;color:var(--ac)}
 .mt{color:var(--mt);font-size:13px}
 main{max-width:760px;margin:0 auto;padding:18px 18px 60px}
-.card{background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));border:1px solid var(--hairline);border-radius:var(--radius-lg);padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);overflow-wrap:break-word}
+.card{background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));border:1px solid var(--hairline);border-radius:var(--radius-lg);padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
 .badge{display:inline-block;border:1px solid var(--hairline);border-radius:999px;padding:1px 10px;font-size:12px;margin-left:6px;color:var(--mt)}
 .badge.ok{color:var(--ok);border-color:var(--ok)}
 button{min-height:44px;padding:9px 17px;border-radius:var(--pill);border:1px solid var(--bd);background:var(--glass-bg);font-size:15px;color:var(--tx);cursor:pointer;font-family:var(--font-body)}
@@ -634,9 +634,6 @@ button.picked{background:var(--ac);color:var(--bg);border-color:var(--ac)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 td,th{padding:7px 8px;border-bottom:1px solid var(--hairline);text-align:left;vertical-align:top}
 .gradeRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-/* T079 移动端溢出防线（360/390/430 宽）：媒体不溢出 + 数据密集表格局部横滚（不产生全页横向滚动；不动主题/动效层） */
-main img,main svg,main video{max-width:100%}
-@media(max-width:520px){table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}}
 select#theme{min-height:38px;border-radius:var(--pill);border:1px solid var(--bd);background:var(--glass-bg);color:var(--tx);padding:6px 12px;font-size:13.5px;margin-left:auto}
 /* 页头 */
 header.top{position:relative;z-index:30;display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--hairline);background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));flex-wrap:wrap}

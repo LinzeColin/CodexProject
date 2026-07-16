@@ -1,0 +1,56 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P02-T079",
+  "method": "in-app browser (Chromium) rendered evidence/ADP-S7-P02-T079/render_harness.html (built from the REAL worker base+HERO CSS, post-L1-cleanup build 9690390a9fc8) with worst-case data-dense content (104-char unbreakable URL as card text, long 文号/DOI, 8-col wide table, 1600px image), data-nav=topbar + data-theme=minimal (the nav.nav-top case). Metric: documentElement.scrollWidth <= innerWidth => no full-page horizontal scroll.",
+  "fixed_css_renders": [
+    {
+      "width": 360,
+      "docScrollWidth": 360,
+      "hasPageHScroll": false,
+      "navOverflowsPage": false,
+      "navScrollWidth": 320,
+      "navClientWidth": 320,
+      "table": {
+        "display": "block",
+        "clientWidth": 286,
+        "scrollWidth": 741,
+        "scrollsLocally": true
+      },
+      "nonTableOffenders": 0
+    },
+    {
+      "width": 390,
+      "docScrollWidth": 390,
+      "hasPageHScroll": false,
+      "navOverflowsPage": false,
+      "table": {
+        "display": "block",
+        "clientWidth": 316,
+        "scrollWidth": 741,
+        "scrollsLocally": true
+      },
+      "nonTableOffenders": 0
+    },
+    {
+      "width": 430,
+      "docScrollWidth": 430,
+      "hasPageHScroll": false,
+      "navOverflowsPage": false,
+      "table": {
+        "display": "block",
+        "clientWidth": 356,
+        "scrollWidth": 741,
+        "scrollsLocally": true
+      },
+      "nonTableOffenders": 0
+    }
+  ],
+  "counterfactual_pre_fix_css": {
+    "source": "independent adversarial reviewer rendered the SAME worst-case content with the origin/main (pre-fix) CSS",
+    "width": 360,
+    "hasPageHScroll": true,
+    "docScrollWidth": 1210,
+    "note": "proves the fix is load-bearing: without it the page scrolls 850px sideways; with it, 0px."
+  },
+  "conclusion": "Acceptance (1) no full-page horizontal scroll: PROVEN by real render at 360/390/430 (scrollWidth == innerWidth, 0 non-table offenders). (2) local table scroll: PROVEN (table display:block, clientWidth fits viewport, scrollWidth larger => scrolls inside its card). nav.nav-top does NOT overflow (candidate refuted empirically; navScrollWidth == navClientWidth == 320 at 360px)."
+}

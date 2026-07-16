@@ -1,0 +1,10 @@
+T079 guards: 3/3 present (long-text / media / table-local-scroll)
+pre-existing structural guards relied on: 2/2 present
+negative control: pre-fix CSS scores 0/3; stripped CSS scores 0/3 (both must be 0)
+table scroll: local (display:block + overflow-x:auto), no page-level overflow-hidden band-aid
+advanced visual preserved: specific change = ['base_css']; all 6 themes + every motion element byte-identical
+gate: fix BLOCKs without approval, PASS_APPROVED with a documented base_css approval
+render proof: no full-page scroll at [360, 390, 430]; counterfactual pre-fix CSS DID scroll (1210px) -> fix is load-bearing
+
+ACCEPTANCE = PASS
+NOTE: source build_id after the fix is 9690390a9fc8; the LIVE site still serves b189d3cc0703 (NOT_DEPLOYED). Empirical render proof at 360/390/430 is in render_measurements.json.

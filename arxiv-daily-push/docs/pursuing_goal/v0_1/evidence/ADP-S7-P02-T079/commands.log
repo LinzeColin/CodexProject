@@ -1,0 +1,17 @@
+# ADP-S7-P02-T079 key commands (NOT_DEPLOYED; base-CSS mobile-overflow fix)
+# 1) source fix (worker_cloud.js): .card overflow-wrap:break-word; main img/svg/video max-width:100%;
+#    @media(<=520px) table display:block+overflow-x:auto  -> BUILD self-hash recomputed
+#    b189d3cc0703 -> d62009f8c708 -> (L1 cleanup, removed inert .card min-width:0) -> 9690390a9fc8
+# 2) tool: tools/mobile_overflow_audit.py (3 discriminating T079 guards + PREEXISTING_STRUCTURAL + strip_t079_guards negative control)
+python3 evidence/ADP-S7-P02-T079/build_mobile_overflow.py       # -> mobile_overflow_report.json
+python3 evidence/ADP-S7-P02-T079/build_render_harness.py        # -> render_harness.html (from real worker CSS)
+# 3) real browser render proof (in-app Chromium) at 360/390/430 -> render_measurements.json
+#    all: documentElement.scrollWidth == innerWidth (no full-page hscroll), 0 non-table offenders,
+#    nav 320/320 no overflow, table display:block scrolls locally; counterfactual pre-fix CSS @360 -> 1210px scroll
+# 4) acceptance verifier (re-derives from tool + worker + frozen pre-fix baseline; load-bearing negative controls)
+python3 evidence/ADP-S7-P02-T079/test-results/t079_verify.py    # ACCEPTANCE = PASS, exit 0
+# 5) realtime: live /build.json still b189d3cc0703 (NOT deployed); source 9690390a9fc8
+curl -s https://adp.linzezhang.com/build.json
+# 6) independent adversarial skeptic -> VERDICT: CONFIRMED_SOUND (own renders + counterfactual + hash re-derivation + self-hash)
+#    latent L1 (inert .card min-width:0) FIXED; L2 (audit over-count) FIXED; L5 (render proof) turned into positive evidence.
+#    T077 baseline NOT re-frozen: T078 defers baseline-rebase flow to CI wiring; fix is NOT_DEPLOYED.

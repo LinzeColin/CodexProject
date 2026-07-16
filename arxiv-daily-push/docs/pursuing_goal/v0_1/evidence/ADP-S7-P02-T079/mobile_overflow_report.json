@@ -1,0 +1,157 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P02-T079",
+  "release_mode": "NOT_DEPLOYED",
+  "live_build_id_unchanged": "b189d3cc0703",
+  "source_build_id_after_fix": "9690390a9fc8",
+  "t079_guards": {
+    "long-text wraps (.card overflow-wrap:break-word)": true,
+    "media fits (main img,svg,video max-width:100%)": true,
+    "table local scroll (@media<=520px display:block+overflow-x:auto)": true
+  },
+  "preexisting_structural_guards": {
+    "flex child shrink (.itemrow .body min-width:0)": true,
+    "border-box sizing (*{box-sizing:border-box})": true
+  },
+  "negative_controls": {
+    "prefix_css_audit": {
+      "long-text wraps (.card overflow-wrap:break-word)": false,
+      "media fits (main img,svg,video max-width:100%)": false,
+      "table local scroll (@media<=520px display:block+overflow-x:auto)": false
+    },
+    "stripped_css_audit": {
+      "long-text wraps (.card overflow-wrap:break-word)": false,
+      "media fits (main img,svg,video max-width:100%)": false,
+      "table local scroll (@media<=520px display:block+overflow-x:auto)": false
+    },
+    "prefix_all_false": true,
+    "stripped_all_false": true
+  },
+  "table_scroll_local": {
+    "has_media_rule": true,
+    "display_block": true,
+    "overflow_x_auto": true,
+    "no_page_overflow_hidden_bandaid": true
+  },
+  "advanced_visual_preserved": {
+    "specific_changed": [
+      "base_css"
+    ],
+    "only_base_css": true,
+    "per_theme_identical": true,
+    "motion_identical": true
+  },
+  "gate_with_approval": {
+    "decision": "PASS_APPROVED",
+    "approved": [
+      "base_css"
+    ]
+  },
+  "gate_without_approval": {
+    "decision": "BLOCK",
+    "blocked_on": [
+      "base_css"
+    ]
+  },
+  "empirical_render": {
+    "widths": [
+      360,
+      390,
+      430
+    ],
+    "any_page_hscroll": false,
+    "counterfactual_prefix_scrolls": true
+  },
+  "test_matrix": [
+    {
+      "width": 360,
+      "element": "long URL / 原文链接",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 360,
+      "element": "文号 / DOI / 机构号",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 360,
+      "element": "数据源 / 运行历史 / 复习队列 / 往期 表格",
+      "guard": "table{display:block;overflow-x:auto}",
+      "behaviour": "local scroll"
+    },
+    {
+      "width": 360,
+      "element": "跨源关系 / diff 文本",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 360,
+      "element": "内容图片 / SVG / 视频",
+      "guard": "max-width:100%",
+      "behaviour": "fits"
+    },
+    {
+      "width": 390,
+      "element": "long URL / 原文链接",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 390,
+      "element": "文号 / DOI / 机构号",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 390,
+      "element": "数据源 / 运行历史 / 复习队列 / 往期 表格",
+      "guard": "table{display:block;overflow-x:auto}",
+      "behaviour": "local scroll"
+    },
+    {
+      "width": 390,
+      "element": "跨源关系 / diff 文本",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 390,
+      "element": "内容图片 / SVG / 视频",
+      "guard": "max-width:100%",
+      "behaviour": "fits"
+    },
+    {
+      "width": 430,
+      "element": "long URL / 原文链接",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 430,
+      "element": "文号 / DOI / 机构号",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 430,
+      "element": "数据源 / 运行历史 / 复习队列 / 往期 表格",
+      "guard": "table{display:block;overflow-x:auto}",
+      "behaviour": "local scroll"
+    },
+    {
+      "width": 430,
+      "element": "跨源关系 / diff 文本",
+      "guard": "overflow-wrap:break-word",
+      "behaviour": "wraps"
+    },
+    {
+      "width": 430,
+      "element": "内容图片 / SVG / 视频",
+      "guard": "max-width:100%",
+      "behaviour": "fits"
+    }
+  ]
+}
