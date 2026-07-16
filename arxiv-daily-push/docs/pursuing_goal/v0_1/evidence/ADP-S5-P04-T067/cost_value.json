@@ -1,0 +1,34 @@
+{
+  "task_id": "ADP-S5-P04-T067",
+  "title": "实现 Library、笔记和 Provenance 导出",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S5",
+  "phase": "S5-P04",
+  "value": {
+    "user_value": "证据化长期资产：把阅读/证据存入 Library（笔记/collection），导出 Markdown/CSV/JSON，每条自带原始 URL/版本/抓取时间/claim evidence/许可提示；不脱证据、可长期引用、可迁出，缺 provenance 直接拒绝。",
+    "value_metric_stage": "S5 多板块深度：让阅读与证据成为长期资产而非只存在 Today；S5-P04 资料与知识有效性。",
+    "measured": {
+      "provenance_per_entry": "JSON逐条+CSV逐行+MD逐条block全含5项(source_url/version/fetched_at/claim_evidence/license)",
+      "license_notice": "markdown/csv/json 每格式每条均含 license 文本",
+      "csv_integrity": "逗号/引号/换行值经 DictReader 无损 round-trip",
+      "refusal_control": "缺 provenance add 拒存 + 三格式导出拒导; provenance_complete 对空 license False"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、抓取时间来自条目不读时钟，生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "导出器 + Golden Library + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更）"
+}

@@ -1,0 +1,24 @@
+# ADP-S5-P04-T067 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity
+python3 -c "import sys; sys.path.insert(0,'tools'); import library_export"
+
+# 2. build Golden Library + 3 export samples + report (deterministic)
+python3 evidence/ADP-S5-P04-T067/build_library_export.py
+#   -> n_entries: 3  (arxiv / china-policy / format-hostile)
+#   -> formats: ['markdown', 'csv', 'json']  (export_sample.{md,csv,json} written)
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S5-P04-T067/test-results/t067_verify.py | tee evidence/ADP-S5-P04-T067/test-results/library_export_tests.txt
+#   provenance present: JSON per-entry + CSV per-row + MD per-entry-block all carry [5 fields] for 3 entries
+#   csv integrity: comma/quote/newline values round-trip losslessly via DictReader
+#   license notice present in markdown, csv, and json
+#   refusal control: incomplete provenance is refused on save AND on export (all 3 formats)
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t067.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main

@@ -1,0 +1,6 @@
+provenance present: JSON per-entry + CSV per-row + MD per-entry-block all carry ['source_url', 'version', 'fetched_at', 'claim_evidence', 'license'] for 3 entries
+csv integrity: comma/quote/newline values round-trip losslessly via DictReader
+license notice present in markdown, csv, and json
+refusal control: incomplete provenance is refused on save AND on export (all 3 formats)
+
+ACCEPTANCE = PASS

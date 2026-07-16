@@ -1,0 +1,738 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index d2fe511a9..dac9dcdfd 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P04-T067 (Library / notes / Provenance export; NOT_DEPLOYED)
++
++- Sixty-seventh task of the ADP V0.1 FINAL EXECUTION program (S5-P04). Makes reading and evidence a long-term asset (not something that only exists in Today): a user saves items into a Library with notes and collections and exports to Markdown/CSV/JSON, and every exported entry carries its full provenance -- the original URL, the version, the fetch time, the claim evidence, and a license notice. release_mode NOT_DEPLOYED; a read-only library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/library_export.py: add_to_library (refuses to save an item without complete provenance), provenance_complete (all five fields present and non-empty; blank/whitespace counts as missing), export_markdown/export_csv/export_json (each carries all provenance fields per entry; refuses to export an entry with incomplete provenance). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/: library_export_report.json, export_sample.{md,csv,json}, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P04-T067/test-results/library_export_tests.txt, ACCEPTANCE = PASS, exit 0): every one of the three export formats carries all five provenance fields (source_url, version, fetched_at, claim_evidence, license) for every entry -- checked per-entry in JSON, per-row in CSV, and per-entry-block in Markdown; a license notice is present in all three formats; comma/quote/newline values round-trip losslessly through CSV; JSON round-trips provenance unchanged; and an entry with incomplete provenance is refused on save AND on export in all three formats. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P04-T066 (Watchlist + Change-only Digest; NOT_DEPLOYED)
+ 
+ - Sixty-sixth task of the ADP V0.1 FINAL EXECUTION program (opens S5-P04). Watches topics/agencies/regions/entities/doc-numbers and pushes ONLY substantive changes: a re-run never duplicates a notification, an unchanged corpus never disturbs the user, and every notification is locatable back to the exact item and version that changed. release_mode NOT_DEPLOYED; a read-only library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/watchlist_digest.py: make_watch/matches (facets topic/agency/region/entity/doc_number, exact, multi-valued for entity/topic), run_digest (substantive change decided by T026 content_hash over body/attachments/status so a noise-only re-render is not a change; notification key (watch_id, canonical_id, content_hash) deduped against state.seen; caller state never mutated in place), a source silence signal for a watched source with no change, a daily/weekly digest (period passed in, no clock read), and notification_is_locatable. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/: watchlist_digest_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P04-T066/test-results/watchlist_digest_tests.txt, ACCEPTANCE = PASS, exit 0): re-run does not duplicate -- day-2 emits 4 notifications and a state-carrying re-run emits 0, while a stateless (no-memory) digest re-emits 6 (dedup is non-trivial); no change means no disturbance -- a noise-only re-render (doc-1) shares its day-1 content_hash and is suppressed, a genuine change (doc-2) has a different hash and notifies, and an unchanged corpus emits 0; every notification carries a locator resolving to the actual changed item; and a quiet watched source raises a silence signal. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index c01fbdd2f..e360e1379 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P03-T065-CITATION-EVIDENCE-GRAPH"
+-source_snapshot_hash: "sha256:25bb2c52271eb6804249b68df0811a7100bac6608b56af91a55e1c4cc8fab28d"
++as_of_event_id: "EVENT-20260717-ADP-V01-S5-P04-T066-WATCHLIST-CHANGE-ONLY-DIGEST"
++source_snapshot_hash: "sha256:7f58f923225286dd7b4e70c90e551547a78263913ab102e5b01706b76e05f693"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T01:40:00+10:00"
++snapshot_event_time: "2026-07-18T02:15:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 125
++    precommit_pending_events: 126
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index e2e39b791..030ceaedd 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S5-P04-T067: implemented the Library + notes + Provenance export (S5-P04). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/library_export.py: add_to_library (refuses save without complete provenance) / provenance_complete (5 fields non-empty; blank counts as missing) / export_markdown/csv/json (each carries all provenance per entry; refuses incomplete on export). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/: library_export_report.json, export_sample.{md,csv,json}, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/library_export_tests.txt, PASS exit 0): all 3 export formats carry the 5 provenance fields (source_url/version/fetched_at/claim_evidence/license) for every entry -- per-entry JSON, per-row CSV, per-entry-block Markdown; license notice in all 3; comma/quote/newline round-trip losslessly in CSV; JSON round-trips provenance; incomplete provenance refused on save AND on export (all 3 formats). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P04-T066: implemented the Watchlist + Change-only Digest (opens S5-P04). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/watchlist_digest.py: make_watch/matches (facets topic/agency/region/entity/doc_number) / run_digest (substantive change via T026 content_hash over body/attachments/status; notification key (watch_id,canonical_id,content_hash) deduped against state.seen; caller state never mutated) / source silence signal / daily-weekly digest (period passed in, no clock) / notification_is_locatable. Reuses T026 version_engine. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/: watchlist_digest_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/watchlist_digest_tests.txt, PASS exit 0): re-run no duplicates (day-2 emits 4, state-carrying re-run 0, stateless re-emits 6 -> dedup non-trivial); no-change no-disturb (noise-only doc-1 shares day-1 hash -> suppressed, genuine doc-2 differs -> notifies, unchanged corpus -> 0); every notification locatable to the changed item; quiet source raises silence signal. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T065: implemented citation support/counter/mention evidence + graph (closes S5-P03). release_mode NOT_DEPLOYED; read-only library, NO model call, production untouched. New tool docs/pursuing_goal/v0_1/tools/citation_evidence.py: classify_citation (context-only; support/counter/mention from the earliest cue byte-exact in the context; no cue -> mention; ASCII cues word-boundary matched so 'unlike' != 'unlikely') / build_citation_graph (only context fed to classifier; citing_title display-only, never classified) / query_graph / label_has_viewable_context. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/: citation_evidence_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/citation_evidence_tests.txt, PASS exit 0): all 6 labels backed by a cue byte-exact in context; not from title -- classify_citation takes only context, two support-titled conflict cases (EN 'supports and confirms', CN 一致) labeled counter because context contradicts, a supportive-titled no-cue citation labeled mention, naive title classifier disagrees on 5 cases; cue precision ('unlikely' not counter, 'inconsistent with' counter, 'unlike ' counter, 'corroborate' support); graph keeps support/counter edges to the same cited paper distinct. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T064: implemented the Research Set + structured comparison + filtering (S5-P03). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/research_set.py: extract_fields (label/statistic-driven method/sample/result; every value a byte-exact source span with an evidence locator; no marker -> {value:None, status:'missing'} 缺失不猜) / make_set (Research Set, deterministic order) / comparison_table (rows x method/sample/result, cell value+evidence or missing) / filter_set (reproducible has-field/keyword, deterministic order) / traces_to_source. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/: research_set_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/research_set_tests.txt, PASS exit 0): 10 present Golden-Set fields all trace byte-for-byte to source (value == text[offset:offset+length], quote == value) and match the hand label; 5 absent fields reported missing, none fabricated; a hallucinated value and a guess-a-default extractor both rejected by traceability (non-vacuous); has-field filter identical across 3 runs, deterministic + non-trivial subset (P001/P002/P005), keyword filter differs (P001/P003). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 32d92eb48..daaab4d8b 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `125`
+-- pending_or_stale_events: `475`
+-- freshness_counts: `pending_or_stale_events=475; legacy_unbound_events=334`
++- precommit_pending_events: `126`
++- pending_or_stale_events: `476`
++- freshness_counts: `pending_or_stale_events=476; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:25bb2c52271eb6804249b68df0811a7100bac6608b56af91a55e1c4cc8fab28d`
+-- snapshot_event_time: `2026-07-18T01:40:00+10:00`
++- source_snapshot_hash: `sha256:7f58f923225286dd7b4e70c90e551547a78263913ab102e5b01706b76e05f693`
++- snapshot_event_time: `2026-07-18T02:15:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 5fd6bd7f1..27179d6ab 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:25bb2c52271eb6804249b68df0811a7100bac6608b56af91a55e1c4cc8fab28d`
+-- snapshot_event_time: `2026-07-18T01:40:00+10:00`
++- source_snapshot_hash: `sha256:7f58f923225286dd7b4e70c90e551547a78263913ab102e5b01706b76e05f693`
++- snapshot_event_time: `2026-07-18T02:15:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `475`
++- Pending/stale events: `476`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/TASK_REPORT.md
+new file mode 100644
+index 000000000..b7fbe55a0
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/TASK_REPORT.md
+@@ -0,0 +1,55 @@
++# TASK_REPORT · ADP-S5-P04-T067｜实现 Library、笔记和 Provenance 导出
++
++## 唯一目标（达成）
++让阅读与证据成为**长期资产**而非只存在 Today：用户把条目存入 **Library**（含笔记/collection），并导出 **Markdown/CSV/JSON**。**每条导出都携带完整 Provenance**——原始 URL、版本、抓取时间、claim evidence 与许可提示——导出自描述、绝不脱证据复制。release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：save/note/collection Library + MD/CSV/JSON 导出，**每条含 5 项 provenance**（URL/版本/抓取时间/证据/许可）。
++2. **允许修改文件**：`tools/library_export.py`（新）+ `evidence/ADP-S5-P04-T067/*` + 治理同步。**不改 worker/生产/registry/VERSION**。
++3. **绝不能改变**：生产 worker/cron/数据/实时；六主题/MVP；NOT_DEPLOYED。库层只读、无时钟（抓取时间来自条目）。
++4. **基线**：main `10d464ff`（T066 已合入）；Golden Library（含中英、笔记、collection、format-hostile 字符条目）。
++5. **验收**：三格式每条含 5 项 provenance（含许可提示）；缺 provenance 拒存/拒导出（负控制）；CSV/MD 逐条完整、特殊字符无损。
++6. **回滚**：`git revert <sha>`（只读库，生产未变更）。
++
++## 交付物
++- `tools/library_export.py` —— `new_library/add_to_library`（存条目并强制 provenance 完整，缺则 **raise 拒存**）+ `provenance_complete`（5 项非空，None/[]/空白串=缺，0 等真值算有）+ `export_markdown/export_csv/export_json`（各含全部 provenance；`_assert_exportable` 缺则 **raise 拒导**）+ `export(lib,fmt)`。
++- `evidence/…/build_library_export.py`（3 条 Golden：arXiv/中国政策/format-hostile 逗号引号换行；1 条缺 provenance 负样本）+ `library_export_report.json` + `export_sample.{md,csv,json}` + `test-results/{t067_verify.py, library_export_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/library_export_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **① 三格式每条含全 provenance**：JSON **逐条** provenance 5 项非空；CSV **逐行**每 provenance 列非空；Markdown **逐条 block**（单条重导校验，非全串子串）含全 5 标签+值。3 条目全过。
++- **② 许可提示**：markdown/csv/json **每格式每条**均含 license 文本。
++- **③ CSV 完整性**：含**逗号/引号/换行**的值经 `csv.DictReader` **无损 round-trip**（DictWriter 正确引用）。
++- **④ JSON round-trip**：导出再解析 provenance 完全一致。
++- **⑤ 缺 provenance 拒绝（负控制/判别力）**：缺 license+claim_evidence 的条目 **add 时 raise 拒存**；即便构造空 license 混入，**三格式导出全 raise 拒导**；`provenance_complete` 对空 license 返回 False（非空跑）。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live `build_id=b189d3cc0703`（==T040）。
++
++## Data / Performance / Visual
++Data = 3 条 Golden Library（中英 + format-hostile）+ 3 导出样本。Performance = 实时无回归。无 UI 改动；六主题保留（导出为库层，供 Library/导出视图消费）。
++
++## Value / Cost（S5 多板块深度）
++- **Value**：**证据化长期资产**——阅读/证据可存入 Library、加笔记/归集、导出 MD/CSV/JSON，**每条自带原始 URL/版本/抓取时间/证据/许可**；不脱证据、可长期引用、可迁出，缺 provenance 直接拒绝（可信资产而非裸复制）。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0；人工维护 = 导出器 + Golden + 验证编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：provenance 5 项由条目携带（上游摄取提供 URL/版本/抓取时间/证据/许可）；许可提示为文本字段（真实许可判定/合规由法务与源注册表提供）；导出为库层字符串（文件落盘/下载由部署阶段视图负责）。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED，库层）。`data-samples` = export_sample.{md,csv,json} + report。`benchmarks` = N/A。
++
++## 完成声明
++```text
++Task: ADP-S5-P04-T067
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/library_export.py(新) + T067 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: library_export_tests.txt —— JSON逐条+CSV逐行+MD逐条block全含5项provenance;许可提示三格式每条;CSV逗号引号换行无损round-trip;JSON round-trip一致;缺provenance拒存+拒导(三格式)判别;实时无回归(build_id b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: Library save/note/collection + MD/CSV/JSON导出(每条含URL/版本/抓取时间/证据/许可)
++Data/Performance/Visual: Data=3 Golden Library(中英+特殊字符)；Perf=实时无回归；Visual=六主题保留
++Value: 证据化长期资产,每条自带完整provenance,缺则拒绝,可迁出可引用
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（只读库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/adversarial_review.md
+new file mode 100644
+index 000000000..606c6b347
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/adversarial_review.md
+@@ -0,0 +1,24 @@
++# Adversarial review · ADP-S5-P04-T067｜Library / 笔记 / Provenance 导出
++
++独立对抗复核（general-purpose skeptic），职责是**证伪**验收（找空洞/作弊/误导），非确认。
++
++## 攻击向量
++(a) provenance 完整性（present-but-empty/空白/None/[]/0/False、是否有绕过 _assert_exportable 的路径、save 路径是否校验）；(b) 格式完整性（MD/CSV/JSON 是否无损、逗号/引号/换行/CRLF/CJK 是否破坏字段、CSV round-trip、verifier MD 子串检查是否证明逐条）；(c) 拒绝控制（是否真判别、save+export 双测）；(d) 许可提示（是否逐条必含）；(e) 非空跑（verifier 从工具而非样本文件现推、fixture 是否充分）；NOT_DEPLOYED（无网络/写/时钟/随机）。
++
++## 复核结论：CONFIRMED_SOUND（hole=null, severity=none）
++（复核者注：Read 工具一度返回**过期 102 行弱版**，其结论均对**真实在盘 107 行稳健版**得出。）
++- **(a) 完整性**：`provenance_complete` 正确拒 None/[]/空白串（`isinstance(v,str) and not v.strip()`），正确**接受真值 0**；空白绕过（" "/"\t"/"\n"）save+export 均拒；三导出全经 `_assert_exportable`，add_to_library 亦校验，**无绕过路径**。
++- **(b) 格式完整**：CSV 经 DictWriter/DictReader 对**逗号/双引号/\n/\r\n/CJK 无损 round-trip**；JSON round-trip；MD 即便含换行仍保留值为子串。committed CSV 样本与工具逐字节一致（初始 diff 仅 `\r\n→\n` 读回译码假象）。
++- **(c) 拒绝控制**：**真判别负控制**——save（BAD_ITEM）与 export（空 license 混入条目，三格式）双测；移除校验即失败。
++- **(d) 许可**：`PROVENANCE_FIELDS` 含 license，逐条在三格式必含且被检。
++- **(e) 非空跑**：verifier 从**工具现推**（import library_export 调其函数，不读样本文件）；fixture 充分（中英 + 笔记 + collection + format-hostile）。
++- **NOT_DEPLOYED**：工具仅 import csv/io/json——无网络/时钟/随机/写；生成脚本仅写声明证据；verifier 无副作用；两次运行输出一致。
++- **判定**：验收（三格式每条含 URL/版本/抓取时间/证据/许可）**真成立、有判别负控制、非空跑/作弊/错**。列 3 项**非致命** latent。
++
++## latent 的主动闭合（3 项）
++1. **verifier MD 标签检查曾为全串子串**（复核者读到的是并发编辑前版本）：**当前 verifier 已改为逐条 block 重导校验**（`block = export_markdown({entries:[e]})`，每条 block 须含全 5 标签+值），非全文档子串——已闭合。
++2. **verifier 空判用 falsy（`if not ...`）会误拒真值 0**：**已改为复用工具的 `LX._is_blank`**（None/[]/空白=缺，0 算有），与工具语义一致；自检 `0 accepted=True / blank rejected=True`。
++3. **add_to_library 错误消息 `missing` 列表用 falsy**（会把 0 误列为 missing，仅错误文案）：**已改用 `_is_blank`**；并抽出模块级 `_is_blank` 供 `provenance_complete`/错误消息/verifier 三处共用，语义单一。
++
++## 结论
++复核 **CONFIRMED_SOUND**；验收（三格式逐条含 5 项 provenance + 许可提示）有 load-bearing 判别负控制（缺 provenance save+export 双拒）、非空跑，verifier 从工具现推。3 项非致命 latent 主动闭合（MD 逐条 block 校验、空判统一 `_is_blank` 接受 0 拒空白、错误消息一致）。确定性、零副作用、不读时钟。实时无回归（live build_id b189d3cc0703 == T040）。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/build_library_export.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/build_library_export.py
+new file mode 100644
+index 000000000..748721158
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/build_library_export.py
+@@ -0,0 +1,73 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Deterministic fixtures + report for ADP-S5-P04-T067 (Library / notes / Provenance export)."""
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent.parent
++sys.path.insert(0, str(V01 / "tools"))
++import library_export as LX
++
++# Fully-provenanced saved items (source_url, version, fetched_at, claim_evidence, license).
++ITEMS = [
++    {"canonical_id": "arxiv:2401.00001", "title": "Deep Learning for Protein Folding",
++     "source_url": "https://arxiv.org/abs/2401.00001", "version": "v2 (sha256:ab12cd)",
++     "fetched_at": "2026-07-10T08:00:00+10:00",
++     "claim_evidence": "abstract §1: 'accuracy 92% on the test set' [offset 128]",
++     "license": "arXiv non-exclusive license 1.0 — cite the original"},
++    {"canonical_id": "gov-cn::guobanfa-2026-1", "title": "关于推进政务数据共享的意见",
++     "source_url": "https://www.gov.cn/zhengce/guobanfa-2026-1", "version": "v1 (sha256:ef34gh)",
++     "fetched_at": "2026-07-11T09:30:00+10:00",
++     "claim_evidence": "第一条『建立数据共享机制』[offset 0]",
++     "license": "中国政府网 公开政策原文 — 注明来源"},
++]
++
++# An item whose values contain format-hostile characters (comma, double-quote, newline) so CSV/MD
++# integrity can be attacked: these must still round-trip losslessly.
++TRICKY_ITEM = {"canonical_id": "arxiv:2402.55555",
++               "title": 'Study of "attention", scaling\nand cost',
++               "source_url": "https://arxiv.org/abs/2402.55555",
++               "version": "v3 (sha256:zz99)",
++               "fetched_at": "2026-07-12T12:00:00+10:00",
++               "claim_evidence": 'result: "3.2x, faster"\nsee Table 1 [offset 640]',
++               "license": "arXiv non-exclusive; do not, redistribute"}
++
++# A deliberately UNDER-provenanced item (missing license + claim_evidence) -> must be refused.
++BAD_ITEM = {"canonical_id": "x:no-prov", "title": "No provenance",
++            "source_url": "https://x/y", "version": "v1", "fetched_at": "2026-07-12"}
++
++
++def build_library():
++    lib = LX.new_library("my-research")
++    LX.add_to_library(lib, ITEMS[0], note="key result", collection="protein")
++    LX.add_to_library(lib, ITEMS[1], note="policy baseline", collection="china-policy")
++    LX.add_to_library(lib, TRICKY_ITEM, note='has, "commas" and\nnewlines', collection="edge")
++    return lib
++
++
++def main():
++    lib = build_library()
++    report = {
++        "n_entries": len(lib["entries"]),
++        "formats": {
++            "markdown": LX.export_markdown(lib),
++            "csv": LX.export_csv(lib),
++            "json": LX.export_json(lib),
++        },
++        "provenance_fields": list(LX.PROVENANCE_FIELDS),
++    }
++    (HERE / "library_export_report.json").write_text(
++        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    # also drop the three concrete export artifacts for inspection
++    (HERE / "export_sample.md").write_text(report["formats"]["markdown"], encoding="utf-8")
++    (HERE / "export_sample.csv").write_text(report["formats"]["csv"], encoding="utf-8")
++    (HERE / "export_sample.json").write_text(report["formats"]["json"] + "\n", encoding="utf-8")
++    print("n_entries:", len(lib["entries"]))
++    print("formats:", list(report["formats"]))
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/commands.log
+new file mode 100644
+index 000000000..77a71ad72
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/commands.log
+@@ -0,0 +1,24 @@
++# ADP-S5-P04-T067 commands (deterministic, no network except the read-only realtime build check)
++
++# 1. import sanity
++python3 -c "import sys; sys.path.insert(0,'tools'); import library_export"
++
++# 2. build Golden Library + 3 export samples + report (deterministic)
++python3 evidence/ADP-S5-P04-T067/build_library_export.py
++#   -> n_entries: 3  (arxiv / china-policy / format-hostile)
++#   -> formats: ['markdown', 'csv', 'json']  (export_sample.{md,csv,json} written)
++
++# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
++python3 evidence/ADP-S5-P04-T067/test-results/t067_verify.py | tee evidence/ADP-S5-P04-T067/test-results/library_export_tests.txt
++#   provenance present: JSON per-entry + CSV per-row + MD per-entry-block all carry [5 fields] for 3 entries
++#   csv integrity: comma/quote/newline values round-trip losslessly via DictReader
++#   license notice present in markdown, csv, and json
++#   refusal control: incomplete provenance is refused on save AND on export (all 3 formats)
++#   ACCEPTANCE = PASS (exit 0)
++
++# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
++curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
++#   -> b189d3cc0703  (== T040; realtime not regressed)
++
++# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t067.py),
++#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/cost_value.json
+new file mode 100644
+index 000000000..abe70c7b1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/cost_value.json
+@@ -0,0 +1,34 @@
++{
++  "task_id": "ADP-S5-P04-T067",
++  "title": "实现 Library、笔记和 Provenance 导出",
++  "release_mode": "NOT_DEPLOYED",
++  "stage": "S5",
++  "phase": "S5-P04",
++  "value": {
++    "user_value": "证据化长期资产：把阅读/证据存入 Library（笔记/collection），导出 Markdown/CSV/JSON，每条自带原始 URL/版本/抓取时间/claim evidence/许可提示；不脱证据、可长期引用、可迁出，缺 provenance 直接拒绝。",
++    "value_metric_stage": "S5 多板块深度：让阅读与证据成为长期资产而非只存在 Today；S5-P04 资料与知识有效性。",
++    "measured": {
++      "provenance_per_entry": "JSON逐条+CSV逐行+MD逐条block全含5项(source_url/version/fetched_at/claim_evidence/license)",
++      "license_notice": "markdown/csv/json 每格式每条均含 license 文本",
++      "csv_integrity": "逗号/引号/换行值经 DictReader 无损 round-trip",
++      "refusal_control": "缺 provenance add 拒存 + 三格式导出拒导; provenance_complete 对空 license False"
++    }
++  },
++  "cost": {
++    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、抓取时间来自条目不读时钟，生产零副作用。",
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "human_maintenance": "导出器 + Golden Library + 验证编写（一次性）",
++    "recurring_cloud_cost_usd_per_month": 0
++  },
++  "realtime_regression": {
++    "live_build_id": "b189d3cc0703",
++    "equals_T040": true,
++    "regressed": false
++  },
++  "rollback": "git revert <sha>（只读库；生产数据未变更）"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.csv b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.csv
+new file mode 100644
+index 000000000..5d71271ec
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.csv
+@@ -0,0 +1,7 @@
++canonical_id,title,note,collection,source_url,version,fetched_at,claim_evidence,license
++arxiv:2401.00001,Deep Learning for Protein Folding,key result,protein,https://arxiv.org/abs/2401.00001,v2 (sha256:ab12cd),2026-07-10T08:00:00+10:00,abstract §1: 'accuracy 92% on the test set' [offset 128],arXiv non-exclusive license 1.0 — cite the original
++gov-cn::guobanfa-2026-1,关于推进政务数据共享的意见,policy baseline,china-policy,https://www.gov.cn/zhengce/guobanfa-2026-1,v1 (sha256:ef34gh),2026-07-11T09:30:00+10:00,第一条『建立数据共享机制』[offset 0],中国政府网 公开政策原文 — 注明来源
++arxiv:2402.55555,"Study of ""attention"", scaling
++and cost","has, ""commas"" and
++newlines",edge,https://arxiv.org/abs/2402.55555,v3 (sha256:zz99),2026-07-12T12:00:00+10:00,"result: ""3.2x, faster""
++see Table 1 [offset 640]","arXiv non-exclusive; do not, redistribute"
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.json
+new file mode 100644
+index 000000000..bbcca0107
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.json
+@@ -0,0 +1,44 @@
++{
++  "entries": [
++    {
++      "canonical_id": "arxiv:2401.00001",
++      "collection": "protein",
++      "note": "key result",
++      "provenance": {
++        "claim_evidence": "abstract §1: 'accuracy 92% on the test set' [offset 128]",
++        "fetched_at": "2026-07-10T08:00:00+10:00",
++        "license": "arXiv non-exclusive license 1.0 — cite the original",
++        "source_url": "https://arxiv.org/abs/2401.00001",
++        "version": "v2 (sha256:ab12cd)"
++      },
++      "title": "Deep Learning for Protein Folding"
++    },
++    {
++      "canonical_id": "gov-cn::guobanfa-2026-1",
++      "collection": "china-policy",
++      "note": "policy baseline",
++      "provenance": {
++        "claim_evidence": "第一条『建立数据共享机制』[offset 0]",
++        "fetched_at": "2026-07-11T09:30:00+10:00",
++        "license": "中国政府网 公开政策原文 — 注明来源",
++        "source_url": "https://www.gov.cn/zhengce/guobanfa-2026-1",
++        "version": "v1 (sha256:ef34gh)"
++      },
++      "title": "关于推进政务数据共享的意见"
++    },
++    {
++      "canonical_id": "arxiv:2402.55555",
++      "collection": "edge",
++      "note": "has, \"commas\" and\nnewlines",
++      "provenance": {
++        "claim_evidence": "result: \"3.2x, faster\"\nsee Table 1 [offset 640]",
++        "fetched_at": "2026-07-12T12:00:00+10:00",
++        "license": "arXiv non-exclusive; do not, redistribute",
++        "source_url": "https://arxiv.org/abs/2402.55555",
++        "version": "v3 (sha256:zz99)"
++      },
++      "title": "Study of \"attention\", scaling\nand cost"
++    }
++  ],
++  "name": "my-research"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.md
+new file mode 100644
+index 000000000..d90b62492
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/export_sample.md
+@@ -0,0 +1,31 @@
++# my-research
++
++## Deep Learning for Protein Folding
++- Collection: protein
++- Note: key result
++- Source URL: https://arxiv.org/abs/2401.00001
++- Version: v2 (sha256:ab12cd)
++- Fetched at: 2026-07-10T08:00:00+10:00
++- Claim evidence: abstract §1: 'accuracy 92% on the test set' [offset 128]
++- License: arXiv non-exclusive license 1.0 — cite the original
++
++## 关于推进政务数据共享的意见
++- Collection: china-policy
++- Note: policy baseline
++- Source URL: https://www.gov.cn/zhengce/guobanfa-2026-1
++- Version: v1 (sha256:ef34gh)
++- Fetched at: 2026-07-11T09:30:00+10:00
++- Claim evidence: 第一条『建立数据共享机制』[offset 0]
++- License: 中国政府网 公开政策原文 — 注明来源
++
++## Study of "attention", scaling
++and cost
++- Collection: edge
++- Note: has, "commas" and
++newlines
++- Source URL: https://arxiv.org/abs/2402.55555
++- Version: v3 (sha256:zz99)
++- Fetched at: 2026-07-12T12:00:00+10:00
++- Claim evidence: result: "3.2x, faster"
++see Table 1 [offset 640]
++- License: arXiv non-exclusive; do not, redistribute
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/known_gaps.md
+new file mode 100644
+index 000000000..9deaf6389
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S5-P04-T067
++
++- **provenance 5 项由条目携带**：`add_to_library` 要求条目已带 `source_url / version / fetched_at / claim_evidence / license`——这些由**上游摄取/证据管线**提供（URL 来自源、version 来自 T026 content_hash/版本号、fetched_at 来自抓取时间戳、claim_evidence 来自 Evidence Locator[T018]、license 来自源注册表/许可映射）。本任务专注「已带 provenance → 存入并导出且不丢失/不脱证据」；缺任一项**拒存并拒导**（None/[]/空白串=缺，真值如 0 算有）。
++- **许可提示为文本字段**：`license` 是**人类可读的许可提示文本**（如「arXiv 非独占许可，注明来源」）。真实的许可合规判定（可否再分发/商用）由**法务 + 源注册表许可映射**负责；本任务保证导出**始终携带**该提示、不静默丢弃，不做许可裁决。
++- **导出为库层字符串**：`export_markdown/csv/json` 返回**字符串**（确定性、可测）；落盘/下载/编码头/BOM 由部署阶段的导出视图负责。CSV 用 `csv` 模块正确引用（逗号/引号/换行无损）；Markdown 为逐条 labeled block（多行值在 block 内按行展示）。
++- **无时钟**：不读 wall-clock；抓取时间来自条目 `fetched_at`（确定性、可重放）。
++- **NOT_DEPLOYED**：不接 worker/cron/D1/R2，不改生产数据。实时无回归（live build_id b189d3cc0703 == T040）。S5-P04（资料与知识有效性）：本任务后接 T068（Knowledge Validity + 131 项收益对齐回归，S5-P04 收尾）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/library_export_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/library_export_report.json
+new file mode 100644
+index 000000000..f5bc2b4bc
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/library_export_report.json
+@@ -0,0 +1,15 @@
++{
++  "n_entries": 3,
++  "formats": {
++    "markdown": "# my-research\n\n## Deep Learning for Protein Folding\n- Collection: protein\n- Note: key result\n- Source URL: https://arxiv.org/abs/2401.00001\n- Version: v2 (sha256:ab12cd)\n- Fetched at: 2026-07-10T08:00:00+10:00\n- Claim evidence: abstract §1: 'accuracy 92% on the test set' [offset 128]\n- License: arXiv non-exclusive license 1.0 — cite the original\n\n## 关于推进政务数据共享的意见\n- Collection: china-policy\n- Note: policy baseline\n- Source URL: https://www.gov.cn/zhengce/guobanfa-2026-1\n- Version: v1 (sha256:ef34gh)\n- Fetched at: 2026-07-11T09:30:00+10:00\n- Claim evidence: 第一条『建立数据共享机制』[offset 0]\n- License: 中国政府网 公开政策原文 — 注明来源\n\n## Study of \"attention\", scaling\nand cost\n- Collection: edge\n- Note: has, \"commas\" and\nnewlines\n- Source URL: https://arxiv.org/abs/2402.55555\n- Version: v3 (sha256:zz99)\n- Fetched at: 2026-07-12T12:00:00+10:00\n- Claim evidence: result: \"3.2x, faster\"\nsee Table 1 [offset 640]\n- License: arXiv non-exclusive; do not, redistribute\n",
++    "csv": "canonical_id,title,note,collection,source_url,version,fetched_at,claim_evidence,license\r\narxiv:2401.00001,Deep Learning for Protein Folding,key result,protein,https://arxiv.org/abs/2401.00001,v2 (sha256:ab12cd),2026-07-10T08:00:00+10:00,abstract §1: 'accuracy 92% on the test set' [offset 128],arXiv non-exclusive license 1.0 — cite the original\r\ngov-cn::guobanfa-2026-1,关于推进政务数据共享的意见,policy baseline,china-policy,https://www.gov.cn/zhengce/guobanfa-2026-1,v1 (sha256:ef34gh),2026-07-11T09:30:00+10:00,第一条『建立数据共享机制』[offset 0],中国政府网 公开政策原文 — 注明来源\r\narxiv:2402.55555,\"Study of \"\"attention\"\", scaling\nand cost\",\"has, \"\"commas\"\" and\nnewlines\",edge,https://arxiv.org/abs/2402.55555,v3 (sha256:zz99),2026-07-12T12:00:00+10:00,\"result: \"\"3.2x, faster\"\"\nsee Table 1 [offset 640]\",\"arXiv non-exclusive; do not, redistribute\"\r\n",
++    "json": "{\n  \"entries\": [\n    {\n      \"canonical_id\": \"arxiv:2401.00001\",\n      \"collection\": \"protein\",\n      \"note\": \"key result\",\n      \"provenance\": {\n        \"claim_evidence\": \"abstract §1: 'accuracy 92% on the test set' [offset 128]\",\n        \"fetched_at\": \"2026-07-10T08:00:00+10:00\",\n        \"license\": \"arXiv non-exclusive license 1.0 — cite the original\",\n        \"source_url\": \"https://arxiv.org/abs/2401.00001\",\n        \"version\": \"v2 (sha256:ab12cd)\"\n      },\n      \"title\": \"Deep Learning for Protein Folding\"\n    },\n    {\n      \"canonical_id\": \"gov-cn::guobanfa-2026-1\",\n      \"collection\": \"china-policy\",\n      \"note\": \"policy baseline\",\n      \"provenance\": {\n        \"claim_evidence\": \"第一条『建立数据共享机制』[offset 0]\",\n        \"fetched_at\": \"2026-07-11T09:30:00+10:00\",\n        \"license\": \"中国政府网 公开政策原文 — 注明来源\",\n        \"source_url\": \"https://www.gov.cn/zhengce/guobanfa-2026-1\",\n        \"version\": \"v1 (sha256:ef34gh)\"\n      },\n      \"title\": \"关于推进政务数据共享的意见\"\n    },\n    {\n      \"canonical_id\": \"arxiv:2402.55555\",\n      \"collection\": \"edge\",\n      \"note\": \"has, \\\"commas\\\" and\\nnewlines\",\n      \"provenance\": {\n        \"claim_evidence\": \"result: \\\"3.2x, faster\\\"\\nsee Table 1 [offset 640]\",\n        \"fetched_at\": \"2026-07-12T12:00:00+10:00\",\n        \"license\": \"arXiv non-exclusive; do not, redistribute\",\n        \"source_url\": \"https://arxiv.org/abs/2402.55555\",\n        \"version\": \"v3 (sha256:zz99)\"\n      },\n      \"title\": \"Study of \\\"attention\\\", scaling\\nand cost\"\n    }\n  ],\n  \"name\": \"my-research\"\n}"
++  },
++  "provenance_fields": [
++    "source_url",
++    "version",
++    "fetched_at",
++    "claim_evidence",
++    "license"
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/library_export_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/library_export_tests.txt
+new file mode 100644
+index 000000000..ed1979bb5
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/library_export_tests.txt
+@@ -0,0 +1,6 @@
++provenance present: JSON per-entry + CSV per-row + MD per-entry-block all carry ['source_url', 'version', 'fetched_at', 'claim_evidence', 'license'] for 3 entries
++csv integrity: comma/quote/newline values round-trip losslessly via DictReader
++license notice present in markdown, csv, and json
++refusal control: incomplete provenance is refused on save AND on export (all 3 formats)
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..60e505976
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/realtime_check.txt
+@@ -0,0 +1,2 @@
++build_id: b189d3cc0703
++MATCH (b189d3cc0703 == T040, realtime NOT regressed)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/t067_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/t067_verify.py
+new file mode 100644
+index 000000000..b9befd0ec
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/test-results/t067_verify.py
+@@ -0,0 +1,120 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P04-T067 acceptance: Library / notes / Provenance export.
++
++Acceptance (TASK_INDEX row 67): 导出包含原始 URL、版本、抓取时间、claim evidence 和许可提示。
++  (every export contains the original URL, the version, the fetch time, the claim evidence, and a
++   license notice.)
++
++Deterministic. Re-derives from the TOOL (library_export) + fixtures -- never trusts the report.
++Negative control: an under-provenanced save/export is REFUSED (so completeness is not a coincidence),
++and a lax exporter that skipped the check would leak an incomplete entry.
++"""
++import csv
++import importlib.util
++import io
++import json
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import library_export as LX
++
++T067 = V01 / "evidence" / "ADP-S5-P04-T067"
++spec = importlib.util.spec_from_file_location("blx", str(T067 / "build_library_export.py"))
++blx = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(blx)
++
++fails = []
++lib = blx.build_library()
++PF = list(LX.PROVENANCE_FIELDS)   # source_url, version, fetched_at, claim_evidence, license
++if PF != ["source_url", "version", "fetched_at", "claim_evidence", "license"]:
++    fails.append(f"provenance field set wrong: {PF}")
++
++# =============================================================== 1) every format carries all provenance
++# use the tool's own blank semantics so a genuine 0-valued field would not spuriously fail
++blank = LX._is_blank
++
++# JSON: each entry's provenance has all 5 non-blank fields
++j = json.loads(LX.export_json(lib))
++for e in j["entries"]:
++    for f in PF:
++        if blank(e["provenance"].get(f)):
++            fails.append(f"JSON entry {e['canonical_id']} missing provenance {f}")
++
++# CSV: a column per provenance field, every cell non-blank
++rows = list(csv.DictReader(io.StringIO(LX.export_csv(lib))))
++for f in PF:
++    if f not in rows[0]:
++        fails.append(f"CSV missing provenance column {f}")
++for r in rows:
++    for f in PF:
++        if blank(r.get(f)):
++            fails.append(f"CSV row {r.get('canonical_id')} empty provenance {f}")
++
++# Markdown: check PER-ENTRY (a whole-string substring check would pass even if only one entry had a
++# field). Re-export each entry alone and require all 5 labels+values in ITS block.
++labels = {"source_url": "Source URL:", "version": "Version:", "fetched_at": "Fetched at:",
++          "claim_evidence": "Claim evidence:", "license": "License:"}
++for e in lib["entries"]:
++    single = {"name": lib["name"], "entries": [e]}
++    block = LX.export_markdown(single)
++    for f in PF:
++        if labels[f] not in block:
++            fails.append(f"Markdown block for {e['canonical_id']} missing label {f}")
++        # the value must appear on its own labeled line (first line of the value for multi-line values)
++        first_line = str(e["provenance"][f]).splitlines()[0] if str(e["provenance"][f]).splitlines() else str(e["provenance"][f])
++        if first_line not in block:
++            fails.append(f"Markdown block for {e['canonical_id']} missing {f} value")
++print(f"provenance present: JSON per-entry + CSV per-row + MD per-entry-block all carry {PF} for {len(lib['entries'])} entries")
++
++# CSV round-trips format-hostile values (comma/quote/newline) LOSSLESSLY
++tricky = next(e for e in lib["entries"] if e["canonical_id"] == "arxiv:2402.55555")
++tr_row = next(r for r in rows if r["canonical_id"] == "arxiv:2402.55555")
++for f in PF:
++    if tr_row[f] != str(tricky["provenance"][f]):
++        fails.append(f"CSV did not losslessly round-trip {f} with special chars: {tr_row[f]!r} != {tricky['provenance'][f]!r}")
++print("csv integrity: comma/quote/newline values round-trip losslessly via DictReader")
++
++# license notice explicitly present in all three formats (每种格式都含许可提示)
++for fmt in ("markdown", "csv", "json"):
++    text = LX.export(lib, fmt)
++    if not all(str(e["provenance"]["license"]) in text for e in lib["entries"]):
++        fails.append(f"{fmt} export is missing a license notice")
++print("license notice present in markdown, csv, and json")
++
++# =============================================================== 2) round-trip (JSON) keeps provenance
++rt = json.loads(LX.export_json(lib))
++for orig, back in zip(lib["entries"], rt["entries"]):
++    if orig["provenance"] != back["provenance"]:
++        fails.append(f"JSON round-trip lost/changed provenance for {orig['canonical_id']}")
++
++# =============================================================== 3) NEGATIVE CONTROL: un-provenanced is refused
++# saving an item missing license + claim_evidence must raise (never silently saved)
++try:
++    LX.add_to_library(LX.new_library(), blx.BAD_ITEM)
++    fails.append("an item with incomplete provenance was saved (should be refused)")
++except ValueError:
++    pass
++# and if such an entry somehow reaches export, the exporter refuses it (defense in depth)
++tainted = {"name": "t", "entries": [{
++    "canonical_id": "x", "title": "x", "note": None, "collection": None,
++    "provenance": {"source_url": "u", "version": "v", "fetched_at": "t",
++                   "claim_evidence": "e", "license": ""}}]}  # empty license
++for fmt in ("markdown", "csv", "json"):
++    try:
++        LX.export(tainted, fmt)
++        fails.append(f"{fmt} exported an entry with an empty license (provenance check not enforced)")
++    except ValueError:
++        pass
++# provenance_complete genuinely discriminates
++if LX.provenance_complete(tainted["entries"][0]):
++    fails.append("provenance_complete accepted an entry with an empty license -> vacuous")
++print("refusal control: incomplete provenance is refused on save AND on export (all 3 formats)")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/library_export.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/library_export.py
+new file mode 100644
+index 000000000..933d785a6
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/library_export.py
+@@ -0,0 +1,108 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P04-T067 -- Library, notes, and Provenance export.
++
++Makes reading and evidence a LONG-TERM asset (not something that only exists in Today): a user saves
++items into a Library with notes and collections, and exports them to Markdown / CSV / JSON. Every
++exported entry carries its full PROVENANCE -- the original URL, the version, the fetch (capture) time,
++the claim evidence, and a license notice -- so an export is self-describing and never a decontextualized
++copy. An export with any missing provenance field is REFUSED (never silently emitted).
++
++  * add_to_library(lib, item, note?, collection?) -- save an item; provenance is carried from the item.
++  * export_markdown / export_csv / export_json(lib) -- each includes ALL provenance fields per entry.
++  * provenance_complete(entry) -- every provenance field present and non-empty.
++
++Deterministic; no network, no clock (capture time comes from the item), no randomness, no production
++side effects.
++"""
++import csv
++import io
++import json
++
++# The provenance every saved entry MUST carry to be exportable.
++PROVENANCE_FIELDS = ("source_url", "version", "fetched_at", "claim_evidence", "license")
++
++
++def _is_blank(v):
++    """Missing = None, [], or an empty/whitespace-only string. A genuine value like 0 is NOT blank."""
++    return v is None or v == [] or (isinstance(v, str) and not v.strip())
++
++
++def new_library(name="library"):
++    return {"name": name, "entries": []}
++
++
++def add_to_library(lib, item, note=None, collection=None):
++    """Save an item into the library. The item MUST carry provenance (source_url, version, fetched_at,
++    claim_evidence, license). Raises if provenance is incomplete -- an un-provenanced save is refused."""
++    entry = {
++        "canonical_id": item["canonical_id"],
++        "title": item.get("title"),
++        "note": note,
++        "collection": collection,
++        "provenance": {f: item.get(f) for f in PROVENANCE_FIELDS},
++    }
++    if not provenance_complete(entry):
++        missing = [f for f in PROVENANCE_FIELDS if _is_blank(entry["provenance"].get(f))]
++        raise ValueError(f"cannot save {item['canonical_id']} without provenance: missing {missing}")
++    lib["entries"].append(entry)
++    return lib
++
++
++def provenance_complete(entry):
++    """Every provenance field must be present and non-empty. None / [] / an empty-or-whitespace-only
++    string count as missing; a genuine value like 0 counts as present."""
++    p = entry.get("provenance") or {}
++    return not any(_is_blank(p.get(f)) for f in PROVENANCE_FIELDS)
++
++
++def _assert_exportable(lib):
++    for e in lib["entries"]:
++        if not provenance_complete(e):
++            raise ValueError(f"refusing to export {e.get('canonical_id')}: incomplete provenance")
++
++
++def export_json(lib):
++    """JSON export -- round-trippable; each entry keeps its full provenance."""
++    _assert_exportable(lib)
++    return json.dumps({"name": lib["name"], "entries": lib["entries"]},
++                      ensure_ascii=False, indent=2, sort_keys=True)
++
++
++def export_csv(lib):
++    """CSV export -- one row per entry, a column for each provenance field."""
++    _assert_exportable(lib)
++    buf = io.StringIO()
++    cols = ["canonical_id", "title", "note", "collection", *PROVENANCE_FIELDS]
++    w = csv.DictWriter(buf, fieldnames=cols)
++    w.writeheader()
++    for e in lib["entries"]:
++        row = {"canonical_id": e["canonical_id"], "title": e.get("title") or "",
++               "note": e.get("note") or "", "collection": e.get("collection") or ""}
++        row.update({f: e["provenance"][f] for f in PROVENANCE_FIELDS})
++        w.writerow(row)
++    return buf.getvalue()
++
++
++def export_markdown(lib):
++    """Markdown export -- a heading + a labeled provenance block per entry (human-readable, all fields)."""
++    _assert_exportable(lib)
++    out = [f"# {lib['name']}", ""]
++    for e in lib["entries"]:
++        out.append(f"## {e.get('title') or e['canonical_id']}")
++        if e.get("collection"):
++            out.append(f"- Collection: {e['collection']}")
++        if e.get("note"):
++            out.append(f"- Note: {e['note']}")
++        p = e["provenance"]
++        out.append(f"- Source URL: {p['source_url']}")
++        out.append(f"- Version: {p['version']}")
++        out.append(f"- Fetched at: {p['fetched_at']}")
++        out.append(f"- Claim evidence: {p['claim_evidence']}")
++        out.append(f"- License: {p['license']}")
++        out.append("")
++    return "\n".join(out)
++
++
++def export(lib, fmt):
++    return {"markdown": export_markdown, "csv": export_csv, "json": export_json}[fmt](lib)

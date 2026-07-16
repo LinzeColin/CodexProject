@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "canonical_id": "arxiv:2401.00001",
+      "collection": "protein",
+      "note": "key result",
+      "provenance": {
+        "claim_evidence": "abstract §1: 'accuracy 92% on the test set' [offset 128]",
+        "fetched_at": "2026-07-10T08:00:00+10:00",
+        "license": "arXiv non-exclusive license 1.0 — cite the original",
+        "source_url": "https://arxiv.org/abs/2401.00001",
+        "version": "v2 (sha256:ab12cd)"
+      },
+      "title": "Deep Learning for Protein Folding"
+    },
+    {
+      "canonical_id": "gov-cn::guobanfa-2026-1",
+      "collection": "china-policy",
+      "note": "policy baseline",
+      "provenance": {
+        "claim_evidence": "第一条『建立数据共享机制』[offset 0]",
+        "fetched_at": "2026-07-11T09:30:00+10:00",
+        "license": "中国政府网 公开政策原文 — 注明来源",
+        "source_url": "https://www.gov.cn/zhengce/guobanfa-2026-1",
+        "version": "v1 (sha256:ef34gh)"
+      },
+      "title": "关于推进政务数据共享的意见"
+    },
+    {
+      "canonical_id": "arxiv:2402.55555",
+      "collection": "edge",
+      "note": "has, \"commas\" and\nnewlines",
+      "provenance": {
+        "claim_evidence": "result: \"3.2x, faster\"\nsee Table 1 [offset 640]",
+        "fetched_at": "2026-07-12T12:00:00+10:00",
+        "license": "arXiv non-exclusive; do not, redistribute",
+        "source_url": "https://arxiv.org/abs/2402.55555",
+        "version": "v3 (sha256:zz99)"
+      },
+      "title": "Study of \"attention\", scaling\nand cost"
+    }
+  ],
+  "name": "my-research"
+}
