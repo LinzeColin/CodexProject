@@ -1,0 +1,28 @@
+# ADP-S0-P02-T004 commands.log · read-only public-surface baseline
+# capture_time_utc = 2026-07-16T00:14Z ; baseline commit def790d3 (T003 merged)
+
+## 路由状态（两域名 × 六路由）
+$ for DOM in adp.linzezhang.com adp-cloud.linzezhang35.workers.dev; do
+    for R in / /radar /review /system /search /history; do
+      curl -sS -m20 -o /dev/null -w "%{http_code}" "https://$DOM$R"; done; done
+# -> 12/12 = 200  (route_status.json)
+
+## 根路由 headers
+$ curl -sS -m20 -D - -o /dev/null "https://adp.linzezhang.com/"
+$ curl -sS -m20 -D - -o /dev/null "https://adp-cloud.linzezhang35.workers.dev/"
+# -> identical: cache-control: no-store, must-revalidate ; CSP media-src 'self' ; server: cloudflare  (headers.txt)
+
+## HTML 指纹（title / 六主题键 / hero 视频 / cosmic 仪表盘 / fx 层 / ChatGPT / nav）
+$ python3  (urllib GET each route, regex markers, sha256 fingerprint)  -> fingerprints.json
+themes present: ['cosmos','forest','fresh','minimal','techno','warm'] count 6
+hero video srcs: /media/aethera.mp4 /media/velorah.mp4 /media/voyage.mp4
+normalized similarity (adp vs wdev Today): 0.9973 ; differing segment groups: 1
+
+## 视觉核对（实测截图）
+# mcp Claude_Browser: preview_start https://adp.linzezhang.com/ -> screenshot 800x450
+# minimal 主题 hero 视频首屏 + 'Costly Attention and Retirement' + 候选评分副标 + '开始学习↓' + '学习数据' 仪表盘
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
+# 期望 decision: SHIP

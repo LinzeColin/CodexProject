@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260716-ADP-V01-S0-P01-T002-ARCHIVE-CONFLICT-LEDGER"
-source_snapshot_hash: "sha256:fa2233eff095849aa84ffefb67d6b3de5b3ea743ddf10f3cfd94627d9d8b558f"
+as_of_event_id: "EVENT-20260716-ADP-V01-S0-P01-T003-PURSUING-GOAL-MACHINE-CONTRACT"
+source_snapshot_hash: "sha256:5114a19129daab8223e3dfcf039bd13b2632fbd60d7b56a54e33c26001208a0f"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-16T10:30:00+10:00"
+snapshot_event_time: "2026-07-16T11:00:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 60
+    precommit_pending_events: 61
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

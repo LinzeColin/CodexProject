@@ -1,0 +1,16 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/baselines/T004_PUBLIC_SURFACE_BASELINE.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/fingerprints.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/headers.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/known_gaps.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P02-T004/route_status.json

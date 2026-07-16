@@ -1,0 +1,12 @@
+{
+  "task": "ADP-S0-P02-T004",
+  "release_mode": "NOT_DEPLOYED",
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "one_time_cost": "read-only baseline capture: ~24 GET (12 status probes + 12 fetches) + 2 root header pulls + a few fingerprint fetches; 1 live browser screenshot",
+  "value": "real user-facing baseline across 2 domains x 6 routes: all 12 = HTTP 200, identical hardened headers (no-store + self-only CSP), six themes + hero videos + cosmic dashboard + fx layers + ChatGPT deep-dive all present, cross-domain Today normalized similarity 0.9973 (one dynamic block) -> same build (public-surface preliminary)",
+  "capture_time_utc": "2026-07-16T00:14Z",
+  "cost_unknowns_not_zero": [
+    "FACT-014 strict per-deploy build<->domain equality (needs build endpoint/Cloudflare export; T006)",
+    "FACT-011..013 D1/R2/plan/billing private facts (pending T006)"
+  ]
+}

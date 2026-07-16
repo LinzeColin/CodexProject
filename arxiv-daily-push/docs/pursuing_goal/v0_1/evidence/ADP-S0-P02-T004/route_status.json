@@ -1,0 +1,113 @@
+{
+  "capture_time_utc": "2026-07-16T00:14:17Z",
+  "rows": [
+    {
+      "domain": "adp.linzezhang.com",
+      "route": "Today",
+      "path": "/",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp.linzezhang.com",
+      "route": "Radar",
+      "path": "/radar",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp.linzezhang.com",
+      "route": "Review",
+      "path": "/review",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp.linzezhang.com",
+      "route": "System",
+      "path": "/system",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp.linzezhang.com",
+      "route": "Search",
+      "path": "/search",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp.linzezhang.com",
+      "route": "History",
+      "path": "/history",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp-cloud.linzezhang35.workers.dev",
+      "route": "Today",
+      "path": "/",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp-cloud.linzezhang35.workers.dev",
+      "route": "Radar",
+      "path": "/radar",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp-cloud.linzezhang35.workers.dev",
+      "route": "Review",
+      "path": "/review",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp-cloud.linzezhang35.workers.dev",
+      "route": "System",
+      "path": "/system",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp-cloud.linzezhang35.workers.dev",
+      "route": "Search",
+      "path": "/search",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    },
+    {
+      "domain": "adp-cloud.linzezhang35.workers.dev",
+      "route": "History",
+      "path": "/history",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, must-revalidate",
+      "has_csp": true
+    }
+  ]
+}
