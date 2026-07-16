@@ -2419,6 +2419,10 @@
     "page_shell": "sha256:d5c96556fef92ada3e2aa4ae6f36ff49e50ce40f10f98d0f858cb465a728032c",
     "theme_options": "sha256:fdc4f6bb44992adf4b3339c35b3f47771cc8af3763fe0e300f42d042bdab2b4e",
     "hero_wiring": "sha256:7a192a5bd4d7198fafd2919fd29d6cd71e55ef7ea87d2d20c1565ab497f1819b",
+    "theme_js": "sha256:01fc54f5b047811a01eae91ec3bb46c7838d8929856729b554fd78d02a21c812",
+    "head_init": "sha256:cdfe7679545c4013b2fed23b31b67c5780d1eb9766b0bbeb72d02e37cbe56caa",
+    "base_css": "sha256:51f213a9f3ecdc71bbfdc879013a44814e2b598d446056d23063aca78bd16662",
+    "fx_css": "sha256:94681353e1c7ce9f9416e684966d047a3680fc5a358bf3be763ea13d34177d26",
     "contract_root": "sha256:4a4d3279c607574319fb8f82c0a978672c9df30c17a43b26178aa3fc75efd929"
   },
   "reduced_motion_separate": true,
@@ -2450,6 +2454,24 @@
     ],
     "missing_from_options": [],
     "extra_in_options": []
+  },
+  "partition_consistency": {
+    "consistent": true,
+    "registered_themes": [
+      "cosmos",
+      "forest",
+      "fresh",
+      "minimal",
+      "techno",
+      "warm"
+    ],
+    "registered_fx": [
+      "cosmos",
+      "minimal",
+      "techno"
+    ],
+    "unregistered_themes": [],
+    "unregistered_fx": []
   },
   "coverage": {
     "per_theme_rule_counts": {

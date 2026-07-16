@@ -1,0 +1,20 @@
+{
+  "task": "ADP-S7-P01-T078",
+  "release_mode": "NOT_DEPLOYED",
+  "stage_user_value_metric": {
+    "stage": "S7 UI/UX, Motion & Performance (P01 六主题与高级动效不可破坏基线)",
+    "metric": "把 T077 冻结基线接成 CI 门：每个 UI PR 对候选 worker 源跑 detect_regression，任一主题/氛围层/关键动效被删改即 BLOCK，除非带 per-element 有说明的 approved-change 记录；变化分类 visual vs motion/recording",
+    "before": "T077 有确定性合同+detect_regression，但无 CI 门把它接到 PR 流程；主题/动效可被 PR 静默删改而不阻断",
+    "after": "visual_regression_ci 落地：6 主题 token 块删除全 BLOCK、fx 层/keyframe/hero 视频/DOM 生产者/reduced-motion 删改全 BLOCK；benign 非视觉编辑 PASS(不过度阻断)；approved-change 需 element+非空 reason+approver 才放行(PASS_APPROVED 记录 reason)，空 reason/空 approver/错 element/aggregate(master_visual/contract_root)均不能绕过；motion 回归进 recording_checks；阈值(源精确 0 + 像素 0.1% 容差有说明)。NOT_DEPLOYED 纯门逻辑不触生产。",
+    "quantified": true
+  },
+  "cost_metric": {
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0,
+    "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "recurring_cloud_cost": 0,
+    "http_get_readonly": 1,
+    "human_maintenance": "CI 门工具(visual_regression_ci.py)+生成器+独立验证器+对抗复核撰写；未来每 UI PR 自动跑(0 人工)",
+    "unknown_not_zero_note": "生产写侧 0 因 NOT_DEPLOYED：纯门逻辑读 T077 源哈希 + 1 次只读 GET 验 build;不部署/不改 worker/主题。非未知填 0。"
+  },
+  "rollback": "删除 tools/visual_regression_ci.py 与 evidence/ADP-S7-P01-T078/；无 feature flag、无生产改动，回滚为纯删除。",
+  "realtime_build_id": "b189d3cc0703", "realtime_regressed": false
+}

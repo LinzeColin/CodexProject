@@ -1,0 +1,9 @@
+# ADP-S7-P01-T078 commands (Visual/Motion Regression CI gate over the T077 baseline)
+# 1. run the gate on simulated UI PRs (benign, delete-theme, delete-fx-layer, approved change, ...)
+python3 evidence/ADP-S7-P01-T078/build_visual_regression_ci.py
+#   -> benign PASS; delete-theme/delete-fx-layer BLOCK; documented change PASS_APPROVED; unexplained/wrong-element BLOCK
+# 2. independent acceptance verifier (blocks any theme/ambience deletion; approvals need a documented reason+approver)
+python3 evidence/ADP-S7-P01-T078/test-results/t078_verify.py | tee evidence/ADP-S7-P01-T078/test-results/visual_regression_ci_tests.txt
+#   -> ACCEPTANCE = PASS (exit 0)
+# 3. realtime non-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json   # build_id b189d3cc0703 == T040 (unchanged)

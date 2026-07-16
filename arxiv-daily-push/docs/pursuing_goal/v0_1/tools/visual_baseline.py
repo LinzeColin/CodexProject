@@ -160,6 +160,21 @@ def _keyframes(src):
     return sorted(re.findall(r"@keyframes\s+[A-Za-z0-9_]+\s*\{.*?\}\s*\}", src, re.S))
 
 
+def _base_css(src):
+    """The CSS constant with the rules already covered by other specific hashes stripped out (theme +
+    component rules -> per_theme, ambience -> fx_css, keyframes, reduced-motion) so this hash attributes a
+    change to the BASE styling (body, cards, layout) WITHOUT overlapping per_theme. The `${HERO_CSS}`
+    injection token is DELIBERATELY retained: it is the sole point where the hero styling reaches any page,
+    so removing it (hero renders unstyled) must move this hash. It does not overlap hero_css, which hashes
+    the HERO_CSS constant's CONTENT, not the injection token."""
+    css = _tmpl(src, "CSS") or ""
+    css = re.sub(r'\[data-theme="[a-z]+"\][^{]*\{[^}]*\}', "", css)
+    css = re.sub(r'\.fx-[a-z]+\b[^{]*\{[^}]*\}', "", css)
+    css = re.sub(r'\[data-fx="[a-z]+"\][^{]*\{[^}]*\}', "", css)
+    css = re.sub(r'@keyframes\s+[A-Za-z0-9_]+\s*\{.*?\}\s*\}', "", css, flags=re.S)
+    return re.sub(r'@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{.*?\}\s*\}', "", css, flags=re.S)
+
+
 def extract_contract(src=None):
     """Extract the full six-theme visual + motion contract from the worker source."""
     if src is None:
@@ -196,7 +211,14 @@ def extract_contract(src=None):
             # the theme enumeration the switcher offers -- removing an entry deletes a theme from the UI
             "theme_options": theme_options, "theme_option_keys": _theme_option_keys(theme_options),
             # the final render link: todayPage passing the hero into PAGE (`{ hero }`)
-            "hero_wiring": _hero_wiring(src)}
+            "hero_wiring": _hero_wiring(src),
+            # the ambience-animation CSS (the .fx-* / [data-fx] rules that drive the moving layers). The
+            # fx names are DERIVED from the THEME_FX mapping (not hardcoded) so fx_css stays in step with
+            # _base_css's strip set even if a theme adds a new ambience layer.
+            "fx_css": "\n".join(sorted(set(r for fxn in (set(fx.values()) - {"none", None})
+                                           for r in _fx_rules(src, fxn)))),
+            # the base styling (body/cards/layout) not attributed to any theme/fx/keyframe hash
+            "base_css": _base_css(src)}
 
 
 def _part(v, tag):
@@ -252,6 +274,14 @@ def asset_hashes(contract):
             "page_shell": _sha(_part(contract["page_shell"], "page_shell")),   # the theme/motion wiring
             "theme_options": _sha(_part(contract["theme_options"], "theme_options")),  # the theme enumeration
             "hero_wiring": _sha(_part(contract["hero_wiring"], "hero_wiring")),  # todayPage -> PAGE hero pass
+            # SPECIFIC hashes for surfaces that otherwise only fed master_visual (so a change is ATTRIBUTED,
+            # not just rolled into the aggregate): the client-side theme/motion behaviour (THEME_JS, which
+            # runs blurTextIn/animateGauge/syncHeroVideo/reduced-motion), the anti-flash bootstrap
+            # (HEAD_INIT), the whole CSS constant (base rules), and the ambience-animation CSS (.fx-* rules).
+            "theme_js": _sha(_part(contract["theme_js"], "theme_js")),
+            "head_init": _sha(_part(contract["head_init"], "head_init")),
+            "base_css": _sha(_part(contract.get("base_css"), "base_css")),
+            "fx_css": _sha(_part(contract.get("fx_css"), "fx_css")),
             "contract_root": _sha("|".join(per_theme[t] for t in THEMES))}
 
 
@@ -268,6 +298,25 @@ def theme_set_consistency(contract=None):
             "themes": sorted(themes), "option_keys": sorted(option_keys), "nav_keys": sorted(nav_keys),
             "missing_from_options": sorted(themes - option_keys),
             "extra_in_options": sorted(option_keys - themes)}
+
+
+def partition_consistency(src=None):
+    """The base_css hash strips `[data-theme="X"]` and `.fx-X` / `[data-fx="X"]` rules assuming X is a
+    REGISTERED theme / ambience name (covered by per_theme / fx_css). If a future theme or ambience layer
+    appears in the CSS whose name is NOT registered, base_css would strip it while nothing else covers it
+    -> a silent aggregate-only escape. This asserts every such name in the source IS registered, so the
+    partition cannot diverge undetected."""
+    if src is None:
+        src = WORKER.read_text(encoding="utf-8")
+    fx = _map(_obj(src, "THEME_FX"))
+    registered_fx = set(fx.values()) - {"none", None}
+    css_theme_names = set(re.findall(r'\[data-theme="([a-z]+)"\]', src))
+    css_fx_names = set(re.findall(r'\.fx-([a-z]+)\b', src)) | set(re.findall(r'\[data-fx="([a-z]+)"\]', src))
+    unregistered_themes = sorted(css_theme_names - set(THEMES))
+    unregistered_fx = sorted(css_fx_names - registered_fx)
+    return {"consistent": not unregistered_themes and not unregistered_fx,
+            "registered_themes": sorted(THEMES), "registered_fx": sorted(registered_fx),
+            "unregistered_themes": unregistered_themes, "unregistered_fx": unregistered_fx}
 
 
 def baseline_matrix():
@@ -297,6 +346,7 @@ def build_baseline():
         "matrix_cells": len(cells), "cells": cells, "asset_hashes": hashes,
         "reduced_motion_separate": True,
         "theme_set_consistency": theme_set_consistency(contract),
+        "partition_consistency": partition_consistency(),
         "coverage": {"per_theme_rule_counts": {t: len(contract["themes"][t]["rules"]) for t in THEMES},
                      "fx_rule_counts": {t: len(contract["themes"][t]["fx_rules"]) for t in THEMES},
                      "keyframes": len(contract["keyframes"])},
@@ -323,7 +373,7 @@ def detect_regression(baseline_hashes, new_src):
             changes.append({"element": f"theme:{t}", "kind": "changed_or_deleted"})
     for key in ("master_visual", "reduced_motion", "keyframes", "fx_layers", "hero_css", "hero_markup",
                 "dom_producers", "hero_section_fn", "hero_video_assets", "page_shell", "theme_options",
-                "hero_wiring", "contract_root"):
+                "hero_wiring", "theme_js", "head_init", "base_css", "fx_css", "contract_root"):
         if now[key] != baseline_hashes[key]:
             changes.append({"element": key, "kind": "changed_or_deleted"})
     return {"regressed": bool(changes), "changes": changes}

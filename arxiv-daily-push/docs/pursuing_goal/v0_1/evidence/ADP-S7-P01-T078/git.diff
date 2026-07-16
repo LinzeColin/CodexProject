@@ -1,0 +1,867 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 17525d62d..1bdac862d 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S7-P01-T078 (Visual/Motion Regression CI gate; NOT_DEPLOYED)
++
++- Seventy-eighth task of the ADP V0.1 FINAL EXECUTION program. Turns the T077 frozen un-deletable-contract into a CI GATE: every UI PR runs the T077 detect_regression over the candidate worker source, and any change to the six-theme/motion identity BLOCKS the PR unless it carries an explicit approved-change record (element + a non-empty reason + an approver) -- so an accidental deletion of a theme or ambience layer is blocked while an intentional edit passes only when documented. release_mode NOT_DEPLOYED; pure gate logic over source hashes + one read-only GET, no worker/production/theme change; operational MODEL_SPEC untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py: run_ci(baseline, candidate_src, approvals) -> decision (BLOCK / PASS / PASS_APPROVED), blocked_on, approved_changes + reasons, changed_by_category (visual vs motion), recording_checks (motion regressions), and documented thresholds (source hashes exact; a documented <=0.1% pixel tolerance for the screenshot layer). Aggregate roll-up hashes (master_visual, contract_root) are excluded from approvals so they cannot be used to blanket-allow a specific change. An independent skeptic found a FATAL false-negative -- THEME_JS (the client-side behaviour that runs the key motions blurTextIn/animateGauge/syncHeroVideo/reduced-motion), HEAD_INIT (the anti-flash theme bootstrap), and the base CSS fed only the aggregate master_visual with no specific hash, so gutting a key motion in THEME_JS PASSED the gate -- which is fixed by ADDITIVELY extending the shared T077 tool visual_baseline.py with specific theme_js/head_init/base_css/fx_css hashes (categorised motion for theme_js/head_init/fx_css); the extension leaves T077's master_visual and per-theme hashes unchanged (T077's verifier still passes) and the T077 manifest is regenerated to stay consistent (14->18 asset-hash keys, master_visual identical). A second same-class instance was then fixed (the ${HERO_CSS} injection token, which _base_css was stripping before hashing) and a partition self-check added (fx_css derived from the THEME_FX mapping + a partition_consistency assertion that every [data-theme=X]/.fx-X name in the CSS is registered), after which the skeptic enumerated all 136 ${...} interpolation tokens and a whole-file line-deletion fuzz and found ZERO remaining aggregate-only escapes -> CONFIRMED_SOUND. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/: visual_regression_ci_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S7-P01-T078/test-results/visual_regression_ci_tests.txt, ACCEPTANCE = PASS, exit 0), the verifier re-deriving the T077 baseline independently and running the real gate: a theme deletion (forest) and an ambience-layer deletion (cosmos) each BLOCK (and all six themes + every fx layer / keyframe / hero video / DOM producer / reduced-motion rule block, with no false-negative), a benign non-visual edit PASSES (no over-blocking); a documented approved change passes with its reason recorded, while an approval with no reason, no approver, for the wrong element, or for an aggregate hash all still BLOCK; the thresholds are documented and motion regressions are surfaced in recording_checks. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0, recurring cloud 0; 1 read-only GET. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S7-P01-T077 (freeze six-theme visual + key-motion baseline as an un-deletable contract; NOT_DEPLOYED)
+ 
+ - Seventy-seventh task of the ADP V0.1 FINAL EXECUTION program; opens Stage S7 (UI/UX, Motion & Performance). Freezes the recently-restored six themes (warm/minimal/fresh/techno/cosmos/forest) and their ambience/motion layer as an UN-DELETABLE contract: a deterministic asset-hash baseline over the deployed worker's complete visual/motion surface. release_mode NOT_DEPLOYED; the task reads deploy/cloudflare/worker_cloud.js (the live build b189d3cc0703) plus two read-only GETs to verify the live contract, and changes no worker/production/theme code -- it only FREEZES the current state. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_baseline.py: extract_contract (theme rules, THEME_NAV/FX/HERO/HERO_VIDEO mappings, CSS/HERO_CSS/THEME_JS/HEAD_INIT/FX_LAYERS surfaces, reduced-motion rule, keyframes), asset_hashes (a MASTER visual hash over the whole surface (CSS+HERO_CSS+THEME_JS+HEAD_INIT+FX_LAYERS+the hero/dashboard DOM+blurChars/sparkSVG DOM producers+the PAGE shell that injects them+the heroSection() assembly wiring+the todayPage { hero } render pass+the THEME_OPTIONS enumeration+the hero-video asset bytes+mappings) so nothing in the theme/motion identity can change without detection, plus per-theme attribution hashes over every `[data-theme]` rule + its ambience `.fx-*` motion CSS, a SEPARATE reduced-motion hash, and keyframes/fx-layers/hero-css hashes), baseline_matrix (6 themes x 6 routes x 5 viewports = 180 cells), build_baseline, detect_regression. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T077/: visual_baseline_manifest.json (matrix + asset hashes + screenshot/interaction-recording schema), known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND after seven HOLEs were fixed to cover the full theme/motion surface (the hero/dashboard DOM, the blurChars/sparkSVG DOM producers, the PAGE shell, the THEME_OPTIONS enumeration, the heroSection() assembly wiring, the hero-video asset bytes, the todayPage { hero } pass) and a vacuous live-check control was de-vacuoused). Acceptance verified for the machine-verifiable backbone (evidence/ADP-S7-P01-T077/test-results/visual_baseline_tests.txt, ACCEPTANCE = PASS, exit 0): the 6x6x5 matrix is complete; the six per-theme fingerprints are distinct and the coverage is not shallow (per-theme rule counts warm2/minimal7/techno7/cosmos3/forest12, ambience fx-rule counts cosmos11/minimal5/techno5); nineteen un-deletable-contract controls all flag a regression (delete a theme, mutate a token, change an fx mapping, change a hero video, change ambience-motion CSS, change a per-theme component rule, change HERO_CSS, change a keyframe, delete the hero <video>, rename the cosmos gauge arc, gut the blurChars DOM producer, recolour the sparkSVG DOM producer, remove the PAGE ${FX_LAYERS} injection, remove the PAGE ${THEME_JS} injection, delete a theme from THEME_OPTIONS, corrupt a THEME_OPTIONS key, change heroSection's return-wiring, swap a hero video's bytes, drop todayPage's { hero } pass), plus a theme-set consistency cross-check (THEMES == THEME_OPTIONS == THEME_NAV), while a benign non-visual edit does not; reduced-motion is recorded separately (own hash + recording variant, removal flagged). A live-contract check (test-results/live_contract_check.txt) confirms the live production site serves the full six-theme contract (all 6 token blocks, 4 fx layers, reduced-motion, mappings, hero videos). The final 'Owner 确认基线' is a HUMAN sign-off the implementer does NOT self-sign; this package is READY_FOR_OWNER_CONFIRMATION. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0, recurring cloud 0; 2 read-only GETs. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index e56fde5d9..3c43fafbb 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S6-P03-T076-HORIZON-SHADOW-CLOSEOUT"
+-source_snapshot_hash: "sha256:2a41aba537214acf6c4477f6dbe647ec173ab5408a09b3508794a0d7abab992a"
++as_of_event_id: "EVENT-20260717-ADP-V01-S7-P01-T077-VISUAL-BASELINE-FREEZE"
++source_snapshot_hash: "sha256:6929a5e7b8ca2c5f1114f02fee8616993bd03f22ca3d1b4228877a4af54f687d"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T08:15:00+10:00"
++snapshot_event_time: "2026-07-18T09:00:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 136
++    precommit_pending_events: 137
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 7ac98f33d..a5484be0d 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S7-P01-T078: built the Visual/Motion Regression CI gate over the T077 baseline. release_mode NOT_DEPLOYED; pure gate logic over source hashes + 1 read-only GET, no worker/production/theme change; operational MODEL_SPEC untouched. New tool docs/pursuing_goal/v0_1/tools/visual_regression_ci.py: run_ci(baseline, candidate_src, approvals) blocks any theme/ambience/motion change to the T077 contract unless an approved-change record (element + non-empty reason + approver) documents it; categorises changes visual vs motion (recording_checks); documents thresholds (source exact + <=0.1% pixel tolerance); AGGREGATE hashes (master_visual/contract_root) excluded from approvals so they cannot blanket-allow. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/: visual_regression_ci_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/visual_regression_ci_tests.txt, PASS exit 0, verifier re-derives baseline + runs the real gate): a theme deletion and an ambience-layer deletion each BLOCK (all 6 themes + every fx/keyframe/hero-video/producer/reduced-motion block, no false-negative); a benign edit PASSES (no over-block); a documented approved change passes with its reason, while no-reason / no-approver / wrong-element / aggregate approvals all still BLOCK; thresholds documented + motion regressions surfaced. Realtime not regressed (live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0 / cloud 0, 1 read-only GET. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S7-P01-T077: froze the six-theme visual + key-motion baseline as an un-deletable contract (opens Stage S7). release_mode NOT_DEPLOYED; reads worker source + 2 read-only GETs, no worker/production/theme change (freezes current state); operational MODEL_SPEC untouched. New tool docs/pursuing_goal/v0_1/tools/visual_baseline.py: extract_contract / asset_hashes (MASTER visual hash over the whole CSS+HERO_CSS+THEME_JS+HEAD_INIT+FX_LAYERS+hero/dashboard-DOM+DOM-producer+PAGE-shell+heroSection-wiring+todayPage-hero-pass+THEME_OPTIONS+hero-video-bytes surface -> nothing in the theme/motion identity escapes; per-theme attribution over all [data-theme] rules + ambience .fx-* motion CSS; SEPARATE reduced-motion hash; keyframes/fx-layers/hero-css hashes) / baseline_matrix (6 themes x 6 routes x 5 viewports = 180) / detect_regression. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T077/: visual_baseline_manifest.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND after seven HOLEs -- token-block-only hashing that missed ambience/component/HERO_CSS, the hero/dashboard DOM in heroSection local consts, the blurChars/sparkSVG DOM-producer functions, the PAGE arrow-function shell, the THEME_OPTIONS switcher enumeration, the heroSection() assembly return-wiring, the hero-video asset bytes, and the todayPage { hero } pass (plus a de-vacuoused live-check control) -- were fixed). Acceptance (test-results/visual_baseline_tests.txt, PASS exit 0, verifier re-derives hashes): 6x6x5 matrix complete; 6 distinct per-theme hashes, coverage not shallow; 19 un-deletable-contract controls all flag a regression (delete theme / token / fx-map / video / ambience-CSS / component-rule / HERO_CSS / keyframe / hero-<video> / cosmos-gauge / gut-blurChars / recolour-sparkSVG / PAGE-unwire-FX_LAYERS / PAGE-unwire-THEME_JS / THEME_OPTIONS-remove / THEME_OPTIONS-corrupt / heroSection-return-wiring / hero-video-bytes / todayPage-hero-pass) + a theme-set consistency cross-check, benign non-visual edit not flagged; reduced-motion recorded separately (removal flagged). Live-contract check confirms the live site serves the full six-theme contract (build b189d3cc0703 == T040). S7 visual Owner gate: 'Owner 确认基线' NOT self-signed -> READY_FOR_OWNER_CONFIRMATION. Realtime not regressed. Cost: prod requests 0 / D1 0 / R2 0 / model 0 / cloud 0, 2 read-only GETs. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P03-T076: implemented the full-horizon Shadow closeout + go/stop release decision (closes S6-P03). release_mode SHADOW; dev/shadow-env decision, production untouched, 0 cloud cost, DIR-007 unaffected, realtime unchanged; GO is a recommendation (actual rollout gated on the S6 Exit Owner gate), no production action; operational MODEL_SPEC untouched (reuses T073 skill/calibration, no new registered model). Aggregates the real S6-P03 shadow (T074 source-silence + T075 ACCEL/DIFFUSION pilots) over the full horizon. New tool docs/pursuing_goal/v0_1/tools/horizon_shadow_closeout.py: skill_assessment (sustained = every window BSS > 0) / calibration_assessment (ECE gate + worst-bin diagnostic) / lead_value_assessment (positive lead + positive net value) / release_decision (GO iff all three else STOP + disable_flag) / closeout. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/: horizon_shadow_closeout_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/horizon_shadow_closeout_tests.txt, PASS exit 0, verifier re-derives BSS + ECE): the real shadow yields GO (six windows all positive Brier skill, per-window 0.35/0.307/0.357/0.392/0.445/0.467 aggregate 0.387; ECE 0.093 <= 0.15, worst bin 0.333 disclosed as diagnostic; 90d lead, net value 14); the gate is not a rubber stamp -- four degenerate shadows each STOP on exactly one criterion (regressing skill / miscalibration / no net value / zero lead) with the disable flag. Realtime not regressed (no prod deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0 / cloud 0 (SHADOW). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P03-T075: implemented Shadow topic-acceleration & central->local (A0->A1->A2) diffusion prediction. release_mode SHADOW; dev/shadow-env prediction, production untouched, 0 cloud cost, DIR-007 unaffected, realtime unchanged; operational MODEL_SPEC untouched (reuses the T072 backtest harness, no new registered model). Two predefined pilot targets over the 2016+ event chain, distinct fixtures (not clones) -- ACCEL-PILOT (topic accelerates within 90d, base rate ~0.5) and DIFFUSION-A0-A1 (central policy diffuses to a province within 180d, base rate ~0.6) -- each conditioning on a leading net support signal (support - counter), with deliberately NOISY validation (impurities; the model is imperfect, wins on aggregate). New tool docs/pursuing_goal/v0_1/tools/diffusion_predictor.py: PREDEFINED_TARGETS / is_predefined / fit_model (P(outcome|net-signal bucket), Laplace shrinkage) / predict (clamped strictly inside (0,1)) / baseline_predict (unconditional base rate) / rolling_backtest (reuses T072 split + no-crossing, refuses a non-predefined target, per-window model-vs-baseline Brier + beats_all) / phrase + assert_no_deterministic_tone / lead_time. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T075/: diffusion_predictor_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND after a HOLE_FOUND on a vacuous ablation control was fixed). Acceptance (test-results/diffusion_predictor_tests.txt, PASS exit 0, verifier re-derives Brier): three windows beat the baseline for both pilots (ACCEL 0.163/0.179/0.161 vs 0.250/0.258/0.250; DIFFUSION 0.169/0.146/0.137 vs 0.278/0.262/0.257, distinct profiles); a REAL feature-ablation control (signal-blinded model collapses exactly onto the baseline) and a corrupted-signal probe (inverted validation signal degrades the model to 0.46-0.56) prove the signal (not the harness) drives the win; targets + horizon predefined (post-hoc target refused by is_predefined and rolling_backtest); no deterministic tone (surfaced probs strictly in (0,1), gate rejects certainty phrasing + 0/1). Realtime not regressed (no prod deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0 / cloud 0 (SHADOW). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 3b1586068..8dea21318 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `136`
+-- pending_or_stale_events: `486`
+-- freshness_counts: `pending_or_stale_events=486; legacy_unbound_events=334`
++- precommit_pending_events: `137`
++- pending_or_stale_events: `487`
++- freshness_counts: `pending_or_stale_events=487; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:2a41aba537214acf6c4477f6dbe647ec173ab5408a09b3508794a0d7abab992a`
+-- snapshot_event_time: `2026-07-18T08:15:00+10:00`
++- source_snapshot_hash: `sha256:6929a5e7b8ca2c5f1114f02fee8616993bd03f22ca3d1b4228877a4af54f687d`
++- snapshot_event_time: `2026-07-18T09:00:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index a276b213b..a86fbbfdd 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:2a41aba537214acf6c4477f6dbe647ec173ab5408a09b3508794a0d7abab992a`
+-- snapshot_event_time: `2026-07-18T08:15:00+10:00`
++- source_snapshot_hash: `sha256:6929a5e7b8ca2c5f1114f02fee8616993bd03f22ca3d1b4228877a4af54f687d`
++- snapshot_event_time: `2026-07-18T09:00:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `486`
++- Pending/stale events: `487`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T077/visual_baseline_manifest.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T077/visual_baseline_manifest.json
+index 401254573..93ef644a7 100644
+--- a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T077/visual_baseline_manifest.json
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T077/visual_baseline_manifest.json
+@@ -2419,6 +2419,10 @@
+     "page_shell": "sha256:d5c96556fef92ada3e2aa4ae6f36ff49e50ce40f10f98d0f858cb465a728032c",
+     "theme_options": "sha256:fdc4f6bb44992adf4b3339c35b3f47771cc8af3763fe0e300f42d042bdab2b4e",
+     "hero_wiring": "sha256:7a192a5bd4d7198fafd2919fd29d6cd71e55ef7ea87d2d20c1565ab497f1819b",
++    "theme_js": "sha256:01fc54f5b047811a01eae91ec3bb46c7838d8929856729b554fd78d02a21c812",
++    "head_init": "sha256:cdfe7679545c4013b2fed23b31b67c5780d1eb9766b0bbeb72d02e37cbe56caa",
++    "base_css": "sha256:51f213a9f3ecdc71bbfdc879013a44814e2b598d446056d23063aca78bd16662",
++    "fx_css": "sha256:94681353e1c7ce9f9416e684966d047a3680fc5a358bf3be763ea13d34177d26",
+     "contract_root": "sha256:4a4d3279c607574319fb8f82c0a978672c9df30c17a43b26178aa3fc75efd929"
+   },
+   "reduced_motion_separate": true,
+@@ -2451,6 +2455,24 @@
+     "missing_from_options": [],
+     "extra_in_options": []
+   },
++  "partition_consistency": {
++    "consistent": true,
++    "registered_themes": [
++      "cosmos",
++      "forest",
++      "fresh",
++      "minimal",
++      "techno",
++      "warm"
++    ],
++    "registered_fx": [
++      "cosmos",
++      "minimal",
++      "techno"
++    ],
++    "unregistered_themes": [],
++    "unregistered_fx": []
++  },
+   "coverage": {
+     "per_theme_rule_counts": {
+       "warm": 2,
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/TASK_REPORT.md
+new file mode 100644
+index 000000000..8d7004698
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/TASK_REPORT.md
+@@ -0,0 +1,39 @@
++# TASK_REPORT · ADP-S7-P01-T078｜建立 Visual/Motion Regression CI
++
++- **Iteration**: ITER-20260716-ADP-V01-FINAL-EXECUTION
++- **Task**: ADP-S7-P01-T078（Stage S7 UI/UX, Motion & Performance / S7-P01 六主题与高级动效不可破坏基线，size S）
++- **release_mode**: NOT_DEPLOYED（纯门逻辑读 T077 源哈希 + 1 次只读 GET；生产未触；实时 build `b189d3cc0703` == T040 不变）
++- **Depends**: ADP-S7-P01-T077（冻结六主题视觉+动效 un-deletable 合同）
++
++## 6 个前置问题
++1. **门建在什么之上？** — T077 `visual_baseline.detect_regression`(七轮复核 CONFIRMED_SOUND，19 负控制)。门对候选源重算合同、diff 出变化元素。
++2. **什么 BLOCK？** — 任一 specific 主题/动效元素(theme:X/fx_layers/keyframes/hero_*/dom_producers/reduced_motion/theme_options/page_shell/…)变化且**无有效 approved-change** → BLOCK。
++3. **approved-change 怎样才有效？** — `{element, 非空 reason, 非空 approver}`；空任一/错 element/aggregate 均无效。**per-element、需说明**。
++4. **视觉 diff 阈值？** — 源哈希**精确**(容差 0)；截图层像素容差 0.1%(字体/GPU 噪声)有 note。
++5. **recording checks 是什么？** — 变化分类 visual vs **motion**(keyframes/fx/hero/producers/reduced-motion)；motion 回归进 `recording_checks.motion_regressions`。
++6. **怎样不是橡皮图章？** — 6 主题+所有动效删改全 BLOCK(无 false-negative)；benign 非视觉编辑 PASS(不过度阻断)；approval 绕过尝试(aggregate/空 reason/错 element)全 BLOCK。
++
++## 交付物
++- **工具** `tools/visual_regression_ci.py`：`run_ci(baseline, candidate_src, approvals)` → decision(BLOCK/PASS/PASS_APPROVED)+blocked_on+approved_changes+approval_reasons+changed_by_category(visual/motion)+recording_checks+thresholds。AGGREGATE 集(master_visual/contract_root)过滤、不可用于绕过。
++- **报告** `visual_regression_ci_report.json`：6 个模拟 PR 的门判定。
++- **known_gaps.md**：源级 vs 像素级、per-element 说明、未接 CI runner/持久化/真实截图 diff 的边界。
++- **独立对抗复核** `adversarial_review.md`。
++
++## 验收（PASS，verifier 独立重算基线 + 跑真门）
++证据：`test-results/visual_regression_ci_tests.txt`（ACCEPTANCE = PASS，exit 0），verifier `t078_verify.py`。
++
++1. **删除任一主题/氛围层的模拟 PR 会被阻断** — delete-theme(forest token 块)→ **BLOCK**(blocked_on=[theme:forest])；delete-fx-layer(cosmos 氛围)→ **BLOCK**(fx_layers)；**判别负控制**：benign 非视觉编辑 → **PASS**(不过度阻断)。**扩展核**：6 主题全 BLOCK + fx/keyframe/hero 视频/生产者/reduced-motion 全 BLOCK。
++2. **允许的像素差有说明 + approved-change process** — 有说明的 approved 变化(reason+approver)→ **PASS_APPROVED**(记录 reason)；**负控制**：空 reason → BLOCK；空 approver → BLOCK；错 element(approve cosmos 却删 forest)→ BLOCK；approve aggregate(master_visual/contract_root)→ BLOCK(不能绕过)。
++3. **visual diff thresholds** — 源精确(0，唯一执行层)；像素 0.1% 容差**诚实标注为文档化 policy、本任务不执行**(pixel_layer_enforced=False)。**recording checks** — keyframe/fx-layer/**THEME_JS/HEAD_INIT/氛围动画 CSS(fx_css)** → motion regression；colour token/base-CSS → visual(分类正确非 tautological)。
++- **★对抗复核 fatal 已修★**：THEME_JS(客户端动效行为)/HEAD_INIT/base-CSS 此前只喂 aggregate master_visual、无 specific hash → 掏空关键动效**竟 PASS**。已扩展 T077 共享工具加 `theme_js`/`head_init`/`base_css`/`fx_css` specific hash(additive、master/per_theme 不变、T077 verifier 仍 PASS)；现 THEME_JS 动效掏空/HEAD_INIT 引导删/氛围动画改 **全 BLOCK 且进 motion 通道**。附带闭合氛围 CSS motion 分类、像素阈值诚实标注、malformed approvals fail-safe(不崩)。
++- **可复现**：run_ci 两次一致。malformed(no-changes PASS/空 approvals BLOCK/approvals=None/非 list/非 dict entry 均 fail-safe BLOCK 不崩)。
++
++## 实时未回归
++纯门逻辑：读 T077 源哈希 + 1 次只读 GET(build.json)。无 worker/D1/R2/cron 改动。
++
++## 成本（unknown 不填 0）
++生产 new_requests 0；D1 0；R2 0；model_calls 0；recurring cloud 0；只读 GET 1；人工=门/生成器/验证器/复核撰写(未来每 PR 自动跑 0 人工)。
++
++## 独立验证
++实现者**不自签 PASS**。交独立 Agent 复核(见 adversarial_review.md)。
++IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/adversarial_review.md
+new file mode 100644
+index 000000000..47dd38790
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/adversarial_review.md
+@@ -0,0 +1,26 @@
++# Adversarial review · ADP-S7-P01-T078｜建立 Visual/Motion Regression CI
++
++独立对抗复核（general-purpose skeptic），职责是**证伪**验收（找 false-negative/橡皮图章门/approval 绕过/vacuous 控制/误导），非确认。**两轮 HOLE_FOUND（均为 false-negative，dangerous direction）→ 修复 → CONFIRMED_SOUND**。
++
++## 攻击向量
++(a) 门是否橡皮图章/有无 false-negative(删主题/动效却 PASS)；(b) approved-change 是否可绕过；(c) 控制是否 vacuous、verifier 是否独立重算；(d) 交付物(阈值/recording checks/approval)是否诚实；(e) edge/malformed;(f) NOT_DEPLOYED/纯度。
++
++## 第一轮 HOLE（FATAL false-negative）
++- **THEME_JS/HEAD_INIT/base-CSS 只喂 aggregate master_visual、无 specific hash**——门过滤 aggregate、只按 specific BLOCK，故掏空 THEME_JS 里的**关键动效**(blurTextIn/animateGauge/syncHeroVideo/reduced-motion 尊重/主题切换 onchange)与 HEAD_INIT 引导、base-CSS 改**全 PASS**，defeat「Motion Regression CI」。复核实证 6 例 PASS。approval process 本身 sound(无绕过)。
++- **已修(additive 扩展共享工具 visual_baseline)**：加 specific hash `theme_js`/`head_init`/`base_css`(剥离已覆盖规则、不重叠)/`fx_css`(氛围动画 CSS);theme_js/head_init/fx_css 归 motion。6 例现全 BLOCK 且进 recording_checks.motion_regressions。附带闭合 3 latent(氛围 CSS 进 motion 通道、像素阈值诚实标注 pixel_layer_enforced=False、malformed approvals 类型守卫 fail-safe)。**master_visual/per_theme 哈希不变、T077 verifier 仍 PASS**;T077 manifest 重生保持一致(14→18 键、master 不变)。
++
++## 第二轮 HOLE（同类更窄：${HERO_CSS} 注入）
++- 复核指出 `_base_css` **剥掉 `${HERO_CSS}` 注入 token**——它是 hero 样式到达任何页面的唯一路径(`<style>${CSS}</style>` 里 CSS 含 `${HERO_CSS}`),删它 hero 无样式、但 base_css 被剥后逐字节不变、只 master_visual 动 → **PASS**。同 aggregate-only 逃逸机制、迁移到 HERO_CSS 布线。
++- **已修**：`_base_css` **保留 `${HERO_CSS}`**(布线文本非内容、不与 hero_css 重叠);现删 → BLOCK on base_css。加负控制(删注入 BLOCK / HERO_CSS 内容变仍 flag hero_css 证不重叠)。
++
++## 第二轮后：CONFIRMED_SOUND（复核明确无剩余 aggregate-only 逃逸）
++- **决定性问题**：还有无 theme/motion 改动只动 master_visual 而 PASS?复核**枚举全部 136 个 `${...}` token 逐个删**+**整文件逐行删 fuzz** → **0 个 aggregate-only 逃逸**(唯一例外=一条纯 CSS 注释 line683,零渲染效果,PASS 正确)。实现者独立复现:`detect_regression` 对 136 token 无一"仅动 aggregate 无 specific"。
++- 关键布线 token 全 BLOCK on specific:`${CSS}`/`${HEAD_INIT}`/`${FX_LAYERS}`/`${THEME_JS}`/`${opts.hero}`/`${THEME_OPTIONS.map}` → page_shell;`{ hero }` → hero_wiring;heroSection return '' → hero_section_fn。CSS 常量**完全分区**:每字节动某 specific extractor hash 或 base_css。
++- **无新重叠**:approved 主题变(warm --bg)→ theme:warm 无 base_css;keyframe → keyframes+hero_css;.fx-cosmos → fx_css+theme:cosmos;HERO_CSS 内容 → hero_css(非 base_css,证 token 与内容独立)。theme:forest approval 仍 PASS_APPROVED。
++- 无 vacuous 控制;确定性;T077+T078 verifier PASS;生产/media 未触。
++
++## 复核指出的 latent(未来维护风险,已主动闭合)
++- `fx_css` 曾硬编码 fx 列表 `("cosmos","minimal","techno")`,而 `_base_css` 剥 `.fx-[a-z]+` 任意名——未来加第 4 氛围层(如 `.fx-aurora`)未登记则 base_css 剥它、fx_css 不覆盖 → 新 aggregate-only 逃逸;`[data-theme=[a-z]+]` vs 固定 THEMES 同理。**已闭合**：①`fx_css` 改为**从 THEME_FX 映射派生** fx 名(自动同步 strip 集);②加 `partition_consistency` 断言源中每个 `[data-theme=X]`/`.fx-X`/`[data-fx=X]` 名**已登记**(X∈THEMES / THEME_FX 值),否则 inconsistent;verifier 负控制:注入 `.fx-aurora` → 被标 unregistered。现分区不能静默发散。
++
++## 结论
++两轮 HOLE_FOUND(FATAL THEME_JS/HEAD_INIT/base-CSS aggregate-only → 修;${HERO_CSS} 注入同类 → 修)→ **CONFIRMED_SOUND**：门阻断每个可构造的主题/氛围/动效删除与布线/注入移除(含 THEME_JS 关键动效、HEAD_INIT、氛围动画 CSS、hero 布线、${HERO_CSS} 注入),benign 不过度阻断,approved-change per-element 需说明且 malformed fail-safe,确定性;复核枚举 136 token + 逐行 fuzz 证**无剩余 aggregate-only 逃逸**;partition 自校验防未来发散。共享工具 visual_baseline additive 扩展(T077 master/per_theme 不变、verifier 仍 PASS、manifest 重生一致)。NOT_DEPLOYED(纯门逻辑读源哈希+1 只读 GET,生产未触,实时 build b189d3cc0703==T040)。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/build_visual_regression_ci.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/build_visual_regression_ci.py
+new file mode 100644
+index 000000000..9d58653cb
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/build_visual_regression_ci.py
+@@ -0,0 +1,73 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S7-P01-T078 generator -- run the Visual/Motion Regression CI gate on simulated UI PRs against the
++frozen T077 baseline, and write the report."""
++import json
++import pathlib
++import re
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import visual_baseline as VB
++import visual_regression_ci as CI
++
++BASELINE = VB.asset_hashes(VB.extract_contract())          # the frozen T077 baseline hashes
++SRC = VB.WORKER.read_text(encoding="utf-8")
++
++
++def _pr_delete_theme(src):
++    return re.sub(r'\[data-theme="forest"\]\{--bg[^}]*\}', "", src, count=1)   # delete forest's colour identity
++
++
++def _pr_delete_fx_layer(src):
++    return src.replace('fx fx-cosmos', 'fx fx-GONE', 1)                # remove the cosmos ambience layer
++
++
++def _pr_intentional_token(src):
++    return src.replace("[data-theme=\"warm\"]{--bg:#f3eee1", "[data-theme=\"warm\"]{--bg:#f5f0e4", 1)  # tweak warm bg
++
++
++def _pr_gut_motion(src):   # remove the client-side key-motion dispatch (techno blur / cosmos gauge) in THEME_JS
++    return src.replace("if(n==='techno')blurTextIn();if(n==='cosmos')animateGauge();", "", 1)
++
++
++def _pr_benign(src):
++    return src.replace("if (p === '/api/run')", "if (p === '/api/run' )", 1)   # non-visual server edit
++
++
++def build():
++    prs = [
++        {"name": "benign-server-edit", "src": _pr_benign(SRC), "approvals": []},
++        {"name": "delete-theme (forest)", "src": _pr_delete_theme(SRC), "approvals": []},
++        {"name": "delete-fx-layer (cosmos ambience)", "src": _pr_delete_fx_layer(SRC), "approvals": []},
++        {"name": "gut-key-motion (THEME_JS blur/gauge dispatch)", "src": _pr_gut_motion(SRC), "approvals": []},
++        {"name": "intentional-warm-bg (approved)", "src": _pr_intentional_token(SRC),
++         "approvals": [{"element": "theme:warm", "reason": "brand refresh: warmer paper background per Owner",
++                        "approver": "owner"}]},
++        {"name": "intentional-warm-bg (unexplained approval)", "src": _pr_intentional_token(SRC),
++         "approvals": [{"element": "theme:warm", "reason": "", "approver": "owner"}]},
++        {"name": "delete-theme with wrong-element approval", "src": _pr_delete_theme(SRC),
++         "approvals": [{"element": "theme:cosmos", "reason": "unrelated", "approver": "owner"}]},
++    ]
++    results = []
++    for pr in prs:
++        r = CI.run_ci(BASELINE, pr["src"], pr["approvals"])
++        results.append({"pr": pr["name"], "decision": r["decision"], "blocked": r["blocked"],
++                        "blocked_on": r["blocked_on"], "approved_changes": r["approved_changes"],
++                        "changed_by_category": r["changed_by_category"]})
++    return {"iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION", "task": "ADP-S7-P01-T078",
++            "release_mode": "NOT_DEPLOYED", "baseline_from": "T077 visual_baseline contract",
++            "thresholds": CI.run_ci(BASELINE, SRC)["thresholds"], "simulated_prs": results}
++
++
++if __name__ == "__main__":
++    rep = build()
++    for r in rep["simulated_prs"]:
++        print(f"  {r['decision']:14} {r['pr']}"
++              + (f"  blocked_on={r['blocked_on']}" if r["blocked_on"] else "")
++              + (f"  approved={r['approved_changes']}" if r["approved_changes"] else ""))
++    out = V01 / "evidence" / "ADP-S7-P01-T078" / "visual_regression_ci_report.json"
++    out.write_text(json.dumps(rep, ensure_ascii=False, indent=2), encoding="utf-8")
++    print("wrote", out)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/commands.log
+new file mode 100644
+index 000000000..6d2edc1cc
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/commands.log
+@@ -0,0 +1,9 @@
++# ADP-S7-P01-T078 commands (Visual/Motion Regression CI gate over the T077 baseline)
++# 1. run the gate on simulated UI PRs (benign, delete-theme, delete-fx-layer, approved change, ...)
++python3 evidence/ADP-S7-P01-T078/build_visual_regression_ci.py
++#   -> benign PASS; delete-theme/delete-fx-layer BLOCK; documented change PASS_APPROVED; unexplained/wrong-element BLOCK
++# 2. independent acceptance verifier (blocks any theme/ambience deletion; approvals need a documented reason+approver)
++python3 evidence/ADP-S7-P01-T078/test-results/t078_verify.py | tee evidence/ADP-S7-P01-T078/test-results/visual_regression_ci_tests.txt
++#   -> ACCEPTANCE = PASS (exit 0)
++# 3. realtime non-regression (NOT_DEPLOYED)
++curl -s https://adp.linzezhang.com/build.json   # build_id b189d3cc0703 == T040 (unchanged)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/cost_value.json
+new file mode 100644
+index 000000000..4dff08c90
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/cost_value.json
+@@ -0,0 +1,20 @@
++{
++  "task": "ADP-S7-P01-T078",
++  "release_mode": "NOT_DEPLOYED",
++  "stage_user_value_metric": {
++    "stage": "S7 UI/UX, Motion & Performance (P01 六主题与高级动效不可破坏基线)",
++    "metric": "把 T077 冻结基线接成 CI 门：每个 UI PR 对候选 worker 源跑 detect_regression，任一主题/氛围层/关键动效被删改即 BLOCK，除非带 per-element 有说明的 approved-change 记录；变化分类 visual vs motion/recording",
++    "before": "T077 有确定性合同+detect_regression，但无 CI 门把它接到 PR 流程；主题/动效可被 PR 静默删改而不阻断",
++    "after": "visual_regression_ci 落地：6 主题 token 块删除全 BLOCK、fx 层/keyframe/hero 视频/DOM 生产者/reduced-motion 删改全 BLOCK；benign 非视觉编辑 PASS(不过度阻断)；approved-change 需 element+非空 reason+approver 才放行(PASS_APPROVED 记录 reason)，空 reason/空 approver/错 element/aggregate(master_visual/contract_root)均不能绕过；motion 回归进 recording_checks；阈值(源精确 0 + 像素 0.1% 容差有说明)。NOT_DEPLOYED 纯门逻辑不触生产。",
++    "quantified": true
++  },
++  "cost_metric": {
++    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0,
++    "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "recurring_cloud_cost": 0,
++    "http_get_readonly": 1,
++    "human_maintenance": "CI 门工具(visual_regression_ci.py)+生成器+独立验证器+对抗复核撰写；未来每 UI PR 自动跑(0 人工)",
++    "unknown_not_zero_note": "生产写侧 0 因 NOT_DEPLOYED：纯门逻辑读 T077 源哈希 + 1 次只读 GET 验 build;不部署/不改 worker/主题。非未知填 0。"
++  },
++  "rollback": "删除 tools/visual_regression_ci.py 与 evidence/ADP-S7-P01-T078/；无 feature flag、无生产改动，回滚为纯删除。",
++  "realtime_build_id": "b189d3cc0703", "realtime_regressed": false
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/known_gaps.md
+new file mode 100644
+index 000000000..be3a1df6e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/known_gaps.md
+@@ -0,0 +1,24 @@
++# Known gaps · ADP-S7-P01-T078｜建立 Visual/Motion Regression CI
++
++诚实披露本任务的**范围**、**门粒度**与**未接线部分**。
++
++## 对抗复核 fatal 已修：THEME_JS/HEAD_INIT/base-CSS 动效层此前 PASS（现 BLOCK）
++- **复核发现 FATAL false-negative**：T077 合同里 `THEME_JS`(跑 blurTextIn/animateGauge/syncHeroVideo/reduced-motion 的**客户端动效行为**)、`HEAD_INIT`(防闪烁主题引导)、**base-CSS**(body/卡片)此前**只喂 master_visual(aggregate)、无 specific hash**——而门过滤 aggregate、只按 specific BLOCK，故掏空 THEME_JS 关键动效**竟 PASS**，defeat「Motion Regression CI」目标。**已修(扩展 T077 共享工具 visual_baseline，additive)**：加 specific hash `theme_js`/`head_init`/`base_css`(剥离已被 per_theme/fx_css/keyframes 覆盖的规则、不重叠)/`fx_css`(氛围动画 CSS);`theme_js`/`head_init`/`fx_css` 归为 **motion**。现掏空 THEME_JS 动效/HEAD_INIT 引导/氛围动画 CSS **全 BLOCK 且进 recording_checks.motion_regressions**。**additive 修复:master_visual/per_theme 哈希不变,T077 verifier 仍 PASS**。
++- **复核第二轮再指出同类更窄一处**：`_base_css` 曾**剥掉 `${HERO_CSS}` 注入 token**——而它是 hero 样式到达任何页面的唯一路径，删它 → hero 无样式渲染，但 base_css 被剥后逐字节不变、只 master_visual 动 → **PASS**。**已修**：`_base_css` **保留 `${HERO_CSS}`**(它是布线文本非 HERO_CSS 内容、不与 hero_css 重叠)；现删 `${HERO_CSS}` 注入 → BLOCK on base_css。加负控制。**核:改 HERO_CSS 内容仍 flag hero_css、删注入 flag base_css、二者不重叠**。
++- **复核 CONFIRMED_SOUND 后闭合 1 维护 latent**：`fx_css` 曾硬编码 fx 列表而 `_base_css` 剥任意 `.fx-*` 名——未来加未登记氛围层会成新逃逸。已改 `fx_css` **从 THEME_FX 派生** + 加 `partition_consistency` 断言源中每个 `[data-theme=X]`/`.fx-X` 名已登记(负控制:注入 `.fx-aurora` 被标 unregistered)。分区不能静默发散。
++- 附带闭合复核 3 个 latent：①氛围动画 CSS(`.fx-cosmos .stars{animation}`)现进 motion 通道(fx_css)非仅 visual；②**像素阈值诚实标注**为「文档化 policy、本任务不执行(无 PNG 采集)」`pixel_layer_enforced=False`,唯一执行的是源级精确 diff;③`_valid_approvals` 加类型守卫,malformed approvals(非 list/非 dict entry/缺键)**fail-safe BLOCK 不崩**。
++
++## 门的语义与边界
++- **NOT_DEPLOYED / 纯门逻辑**：`visual_regression_ci.run_ci` 只在候选 worker 源与 T077 冻结基线之间跑 `detect_regression`，**不部署、不改 worker/主题**，实时 build `b189d3cc0703`(==T040)不变。
++- **源级精确门 + 像素层容差**：对**源哈希**层门是**二值精确**(任一主题/动效源改动 diff=1 即 regression，无容差)；对**截图/像素**层(T077 180-cell schema)有**文档化容差** `PIXEL_DIFF_TOLERANCE=0.1%`(字体抗锯齿/GPU 渲染噪声)。**「允许的像素差有说明」=每个 approved-change 带非空 reason+approver，且像素容差在 thresholds.note 明述**。
++- **approved-change 是 per-element 且需说明**：放行一个变化必须有 `{element, 非空 reason, 非空 approver}`；空 reason/空 approver/错 element 均不放行；**aggregate 元素(master_visual/contract_root)在 AGGREGATE 集、被过滤，不能用来 blanket-允许**任何 specific 变化(已核：approve master_visual/contract_root 仍 BLOCK)。
++
++## 门覆盖(继承 T077 合同的完整性)
++- 门的检测面**完全继承 T077** `detect_regression`(19 负控制、七轮复核 CONFIRMED_SOUND)：6 主题 token/组件/氛围 CSS+DOM、hero 标记、blurChars/sparkSVG 生产者、keyframes、THEME_JS、PAGE/heroSection/todayPage 三层布线、5 主题键数据、hero 视频字节、reduced-motion。**已核 6 主题 token 块删除 + 所有 fx 层/keyframe/hero 视频/生产者/reduced-motion 删改全 BLOCK,无 false-negative**。
++- **over-detection 是安全方向**：删一个主题的**全部**规则(经组合选择器)可能连带 flag 邻近主题/hero_css——对**回归门**这是安全的过度敏感(仍 BLOCK),非漏报。演示用**干净的 token 块删除**只 flag 目标主题。
++
++## 未做 / 后续
++- **无真实 CI runner 接线**：本任务交付**门逻辑 + 模拟 PR 验证**，未把它挂进 GitHub Actions workflow(那是产品 CI 集成、需 workflow 文件 + 基线 checkpoint 存储,属后续/生产阶段)。当前 approved-change 记录是**内存对象**,未定义持久化格式(如 `approvals.yaml`)——留待接线时定。
++- **无真实像素截图 diff**：像素容差是**声明的阈值**,未跑真实截图 SSIM/像素比对(那需 T077 未采集的 180 张 PNG + headless 浏览器,属后续)。当前源级门是确定性、可离线、可提交的骨干。
++- **基线更新流程**：approved-change 放行一个 PR 后,如何**更新冻结基线哈希**(rebase 基线)未在本任务定义——留待 CI 接线时定(通常=approved 后重算 baseline 并记录 approval 到审计日志)。
++- **motion 分类是元素级非语义级**：`recording_checks` 按元素(keyframes/fx/hero/producers=motion)分类,非逐条动画的语义 diff;足够 surface「动效损失」,但不区分「动画时长改了 vs 删了」。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..3963f1e9e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/realtime_check.txt
+@@ -0,0 +1,5 @@
++ADP-S7-P01-T078 realtime non-regression check (NOT_DEPLOYED; pure gate logic over T077 source hashes).
++$ curl -s https://adp.linzezhang.com/build.json
++{"build_id":"b189d3cc0703",...,"schema_version":"cn_v0_3","built_at":"2026-07-17"}
++=> build_id b189d3cc0703 == T040 canary build; live MVP + six-theme FX unchanged. The CI gate reads the
++   T077 baseline + a candidate source; it does not deploy or modify the worker/themes.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/t078_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/t078_verify.py
+new file mode 100644
+index 000000000..3a09b1545
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/t078_verify.py
+@@ -0,0 +1,151 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S7-P01-T078 acceptance: Visual/Motion Regression CI gate.
++
++Acceptance (TASK_INDEX row 78): 删除任一主题/氛围层的模拟 PR 会被阻断；允许的像素差有说明.
++  (a simulated PR that deletes any theme/ambience layer is BLOCKED; allowed pixel diffs are explained.)
++Deliverables: visual diff thresholds, recording checks, approved-change process.
++
++Deterministic. Re-derives from the TOOL (visual_regression_ci over the T077 baseline). Load-bearing:
++  * a theme deletion and an ambience-layer deletion each BLOCK (the objective);
++  * the gate does NOT over-block a benign non-visual edit (discrimination);
++  * an approved change passes ONLY with a documented reason + approver, and only for its own element
++    (the approved-change process; "allowed diffs are explained");
++  * a motion/recording regression is surfaced in recording_checks.
++"""
++import importlib.util
++import pathlib
++import re
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import visual_baseline as VB
++import visual_regression_ci as CI
++
++fails = []
++BASELINE = VB.asset_hashes(VB.extract_contract())   # independently derived T077 baseline
++src = VB.WORKER.read_text(encoding="utf-8")
++
++delete_theme = re.sub(r'\[data-theme="forest"\]\{--bg[^}]*\}', "", src, count=1)   # delete forest's colour identity
++delete_fx = src.replace('fx fx-cosmos', 'fx fx-GONE', 1)
++delete_keyframe = src.replace("@keyframes frise", "@keyframes ZZ_frise", 1)
++tweak_warm = src.replace('[data-theme="warm"]{--bg:#f3eee1', '[data-theme="warm"]{--bg:#f5f0e4', 1)
++benign = src.replace("if (p === '/api/run')", "if (p === '/api/run' )", 1)
++
++# ================================================ 1) 删除任一主题/氛围层的模拟 PR 会被阻断
++r_theme = CI.run_ci(BASELINE, delete_theme)
++if not (r_theme["decision"] == "BLOCK" and "theme:forest" in r_theme["blocked_on"]):
++    fails.append(f"a theme-deletion PR was not blocked: {r_theme['decision']} {r_theme['blocked_on']}")
++r_fx = CI.run_ci(BASELINE, delete_fx)
++if not (r_fx["decision"] == "BLOCK" and "fx_layers" in r_fx["blocked_on"]):
++    fails.append(f"an ambience-layer deletion PR was not blocked: {r_fx['decision']} {r_fx['blocked_on']}")
++# discrimination: a benign non-visual edit must PASS (the gate does not block everything)
++r_benign = CI.run_ci(BASELINE, benign)
++if r_benign["decision"] != "PASS":
++    fails.append(f"the gate over-blocked a benign non-visual edit: {r_benign['decision']} {r_benign['blocked_on']}")
++print(f"blocking: delete-theme -> {r_theme['decision']} (on {r_theme['blocked_on'][:2]}...); "
++      f"delete-fx-layer -> {r_fx['decision']} (on {r_fx['blocked_on']}); benign -> {r_benign['decision']}")
++
++# ================================================ 2) approved-change process + 允许的像素差有说明
++ok_appr = [{"element": "theme:warm", "reason": "brand refresh per Owner", "approver": "owner"}]
++r_ok = CI.run_ci(BASELINE, tweak_warm, ok_appr)
++if not (r_ok["decision"] == "PASS_APPROVED" and r_ok["approved_changes"] == ["theme:warm"]
++        and r_ok["approval_reasons"].get("theme:warm")):
++    fails.append(f"a documented approved change did not pass with its reason recorded: {r_ok}")
++# an approval WITHOUT a reason must NOT unblock (allowed diffs must be explained)
++r_noreason = CI.run_ci(BASELINE, tweak_warm, [{"element": "theme:warm", "reason": "", "approver": "owner"}])
++if r_noreason["decision"] != "BLOCK":
++    fails.append("control broken: an approval with no reason must still BLOCK (diffs must be explained)")
++# an approval WITHOUT an approver must NOT unblock
++r_noapprover = CI.run_ci(BASELINE, tweak_warm, [{"element": "theme:warm", "reason": "x", "approver": ""}])
++if r_noapprover["decision"] != "BLOCK":
++    fails.append("control broken: an approval with no approver must still BLOCK")
++# an approval for the WRONG element must NOT unblock a different change
++r_wrong = CI.run_ci(BASELINE, delete_theme, [{"element": "theme:cosmos", "reason": "x", "approver": "o"}])
++if r_wrong["decision"] != "BLOCK":
++    fails.append("control broken: an approval for element X must not unblock a change to element Y")
++print(f"approved-change: documented -> {r_ok['decision']} (reason recorded); no-reason -> {r_noreason['decision']}; "
++      f"no-approver -> {r_noapprover['decision']}; wrong-element -> {r_wrong['decision']}")
++
++# ================================================ deliverable: visual diff thresholds documented
++th = CI.run_ci(BASELINE, src)["thresholds"]
++if not (th["source_diff_tolerance"] == 0 and 0 < th["pixel_diff_tolerance"] < 1 and th["note"]):
++    fails.append("visual diff thresholds not documented (source exact + explained pixel tolerance)")
++print(f"thresholds: source exact ({th['source_diff_tolerance']}), pixel tolerance {th['pixel_diff_tolerance']} explained")
++
++# ================================================ deliverable: recording checks (motion regressions)
++r_kf = CI.run_ci(BASELINE, delete_keyframe)
++if not (r_kf["decision"] == "BLOCK" and "keyframes" in r_kf["recording_checks"]["motion_regressions"]):
++    fails.append("a keyframe (motion) regression was not surfaced as a recording check")
++if "fx_layers" not in r_fx["recording_checks"]["motion_regressions"]:
++    fails.append("an ambience-layer loss was not categorised as a motion/recording regression")
++# a pure VISUAL change (a colour token) is NOT mis-categorised as motion
++if r_ok := CI.run_ci(BASELINE, tweak_warm):
++    if "theme:warm" not in r_ok["changed_by_category"]["visual"]:
++        fails.append("a colour-token change was not categorised as a visual change")
++print(f"recording checks: keyframe -> motion regression {r_kf['recording_checks']['motion_regressions']}; "
++      f"fx-layer -> motion; colour token -> visual")
++
++# ================================================ MOTION LAYER: THEME_JS / HEAD_INIT / ambience CSS
++# The client-side behaviour that RUNS the key motions lives in THEME_JS; the anti-flash bootstrap in
++# HEAD_INIT. These previously fed only the aggregate master_visual (no specific hash) -> a motion deletion
++# PASSED. They must now BLOCK and land in the motion/recording channel.
++r_js = CI.run_ci(BASELINE, src.replace("if(n==='techno')blurTextIn();if(n==='cosmos')animateGauge();", "", 1))
++if not (r_js["decision"] == "BLOCK" and "theme_js" in r_js["recording_checks"]["motion_regressions"]):
++    fails.append("control broken: gutting THEME_JS motion dispatch did not BLOCK as a motion regression")
++r_hi = CI.run_ci(BASELINE, src.replace("r.setAttribute('data-theme',s);r.setAttribute('data-nav',m[s]);", "", 1))
++if not (r_hi["decision"] == "BLOCK" and "head_init" in r_hi["recording_checks"]["motion_regressions"]):
++    fails.append("control broken: gutting the HEAD_INIT theme bootstrap did not BLOCK as a motion regression")
++# the ambience-animation CSS (.fx-cosmos .stars{animation}) is a MOTION regression, not just visual
++r_fxcss = CI.run_ci(BASELINE, src.replace(".fx-cosmos .stars{", ".fx-cosmos .stars{opacity:0;", 1))
++if not (r_fxcss["decision"] == "BLOCK" and "fx_css" in r_fxcss["recording_checks"]["motion_regressions"]):
++    fails.append("control broken: an ambience-animation CSS change was not surfaced as a motion regression")
++# a BASE-CSS change (body/cards) blocks and is categorised visual (not motion, not overlapping per_theme)
++r_base = CI.run_ci(BASELINE, src.replace("body{margin:0;background:var(--bg)", "body{margin:8px;background:var(--bg)", 1))
++if not (r_base["decision"] == "BLOCK" and r_base["blocked_on"] == ["base_css"]):
++    fails.append(f"control broken: a base-CSS change did not block cleanly on base_css: {r_base['blocked_on']}")
++# deleting the ${HERO_CSS} injection token (the sole path hero styling reaches any page) must BLOCK -- it
++# is the wiring, retained in base_css. A clean deletion previously moved only master_visual -> PASS.
++r_herocss = CI.run_ci(BASELINE, src.replace("${HERO_CSS}", "", 1))
++if not (r_herocss["decision"] == "BLOCK" and "base_css" in r_herocss["blocked_on"]):
++    fails.append(f"control broken: removing the ${{HERO_CSS}} injection escaped the gate: {r_herocss}")
++# a HERO_CSS CONTENT change still flags hero_css (not base_css) -- the two do not overlap
++r_hccontent = CI.run_ci(BASELINE, src.replace("const HERO_CSS = `", "const HERO_CSS = `/*x*/", 1))
++if "hero_css" not in r_hccontent["blocked_on"]:
++    fails.append("control broken: a HERO_CSS content change did not flag hero_css")
++print(f"motion layer: THEME_JS -> {r_js['decision']}(motion); HEAD_INIT -> {r_hi['decision']}(motion); "
++      f"ambience CSS -> motion {r_fxcss['recording_checks']['motion_regressions']}; base-CSS -> {r_base['blocked_on']}")
++
++# ================================================ malformed approvals fail SAFE (BLOCK, not crash)
++for bad in (["stringentry"], [None], {"element": "x"}, "notalist", None):
++    try:
++        if CI.run_ci(BASELINE, delete_theme, bad)["decision"] != "BLOCK":
++            fails.append(f"control broken: malformed approvals {bad!r} did not fail-safe to BLOCK")
++    except Exception as e:
++        fails.append(f"run_ci crashed on malformed approvals {bad!r}: {type(e).__name__}")
++print("malformed approvals fail-safe to BLOCK (no crash)")
++
++# ================================================ partition consistency (no silent future divergence)
++# base_css strips [data-theme=X]/.fx-X assuming X is registered. If a NEW theme/ambience name appears in
++# the CSS but is not registered, base_css would strip it while nothing covers it -> an aggregate-only
++# escape. partition_consistency asserts every such name is registered, so the partition cannot diverge.
++pc = VB.partition_consistency()
++if not pc["consistent"]:
++    fails.append(f"partition inconsistent -- an unregistered theme/fx name is in the CSS: {pc}")
++# non-vacuous: an injected unregistered ambience name (.fx-aurora) must be flagged inconsistent
++pc_bad = VB.partition_consistency(src.replace(".fx-cosmos .stars{", ".fx-aurora .stars{ } .fx-cosmos .stars{", 1))
++if pc_bad["consistent"] or "aurora" not in pc_bad["unregistered_fx"]:
++    fails.append("control broken: an unregistered .fx-aurora ambience name was not flagged")
++print(f"partition consistency: registered themes {len(pc['registered_themes'])}, fx {pc['registered_fx']}; "
++      f"unregistered .fx-aurora flagged")
++
++# ================================================ reproducible
++if CI.run_ci(BASELINE, delete_theme) != CI.run_ci(BASELINE, delete_theme):
++    fails.append("the CI gate is not reproducible")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/visual_regression_ci_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/visual_regression_ci_tests.txt
+new file mode 100644
+index 000000000..3a54bb5dc
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/test-results/visual_regression_ci_tests.txt
+@@ -0,0 +1,9 @@
++blocking: delete-theme -> BLOCK (on ['theme:forest']...); delete-fx-layer -> BLOCK (on ['fx_layers']); benign -> PASS
++approved-change: documented -> PASS_APPROVED (reason recorded); no-reason -> BLOCK; no-approver -> BLOCK; wrong-element -> BLOCK
++thresholds: source exact (0), pixel tolerance 0.001 explained
++recording checks: keyframe -> motion regression ['keyframes']; fx-layer -> motion; colour token -> visual
++motion layer: THEME_JS -> BLOCK(motion); HEAD_INIT -> BLOCK(motion); ambience CSS -> motion ['fx_css']; base-CSS -> ['base_css']
++malformed approvals fail-safe to BLOCK (no crash)
++partition consistency: registered themes 6, fx ['cosmos', 'minimal', 'techno']; unregistered .fx-aurora flagged
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/visual_regression_ci_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/visual_regression_ci_report.json
+new file mode 100644
+index 000000000..08dee3cd1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S7-P01-T078/visual_regression_ci_report.json
+@@ -0,0 +1,115 @@
++{
++  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
++  "task": "ADP-S7-P01-T078",
++  "release_mode": "NOT_DEPLOYED",
++  "baseline_from": "T077 visual_baseline contract",
++  "thresholds": {
++    "source_diff_tolerance": 0,
++    "pixel_diff_tolerance": 0.001,
++    "pixel_layer_enforced": false,
++    "note": "The ENFORCED gate is the exact source-hash diff (any change blocks unless approved). The <=0.1% pixel tolerance is the DOCUMENTED policy for the future screenshot layer over the T077 matrix; no pixel comparison is performed in this source-level gate (no PNGs are captured here)."
++  },
++  "simulated_prs": [
++    {
++      "pr": "benign-server-edit",
++      "decision": "PASS",
++      "blocked": false,
++      "blocked_on": [],
++      "approved_changes": [],
++      "changed_by_category": {
++        "visual": [],
++        "motion": []
++      }
++    },
++    {
++      "pr": "delete-theme (forest)",
++      "decision": "BLOCK",
++      "blocked": true,
++      "blocked_on": [
++        "theme:forest"
++      ],
++      "approved_changes": [],
++      "changed_by_category": {
++        "visual": [
++          "theme:forest"
++        ],
++        "motion": []
++      }
++    },
++    {
++      "pr": "delete-fx-layer (cosmos ambience)",
++      "decision": "BLOCK",
++      "blocked": true,
++      "blocked_on": [
++        "fx_layers"
++      ],
++      "approved_changes": [],
++      "changed_by_category": {
++        "visual": [],
++        "motion": [
++          "fx_layers"
++        ]
++      }
++    },
++    {
++      "pr": "gut-key-motion (THEME_JS blur/gauge dispatch)",
++      "decision": "BLOCK",
++      "blocked": true,
++      "blocked_on": [
++        "theme_js"
++      ],
++      "approved_changes": [],
++      "changed_by_category": {
++        "visual": [],
++        "motion": [
++          "theme_js"
++        ]
++      }
++    },
++    {
++      "pr": "intentional-warm-bg (approved)",
++      "decision": "PASS_APPROVED",
++      "blocked": false,
++      "blocked_on": [],
++      "approved_changes": [
++        "theme:warm"
++      ],
++      "changed_by_category": {
++        "visual": [
++          "theme:warm"
++        ],
++        "motion": []
++      }
++    },
++    {
++      "pr": "intentional-warm-bg (unexplained approval)",
++      "decision": "BLOCK",
++      "blocked": true,
++      "blocked_on": [
++        "theme:warm"
++      ],
++      "approved_changes": [],
++      "changed_by_category": {
++        "visual": [
++          "theme:warm"
++        ],
++        "motion": []
++      }
++    },
++    {
++      "pr": "delete-theme with wrong-element approval",
++      "decision": "BLOCK",
++      "blocked": true,
++      "blocked_on": [
++        "theme:forest"
++      ],
++      "approved_changes": [],
++      "changed_by_category": {
++        "visual": [
++          "theme:forest"
++        ],
++        "motion": []
++      }
++    }
++  ]
++}
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_baseline.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_baseline.py
+index 1645e720d..7eca1d158 100644
+--- a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_baseline.py
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_baseline.py
+@@ -160,6 +160,21 @@ def _keyframes(src):
+     return sorted(re.findall(r"@keyframes\s+[A-Za-z0-9_]+\s*\{.*?\}\s*\}", src, re.S))
+ 
+ 
++def _base_css(src):
++    """The CSS constant with the rules already covered by other specific hashes stripped out (theme +
++    component rules -> per_theme, ambience -> fx_css, keyframes, reduced-motion) so this hash attributes a
++    change to the BASE styling (body, cards, layout) WITHOUT overlapping per_theme. The `${HERO_CSS}`
++    injection token is DELIBERATELY retained: it is the sole point where the hero styling reaches any page,
++    so removing it (hero renders unstyled) must move this hash. It does not overlap hero_css, which hashes
++    the HERO_CSS constant's CONTENT, not the injection token."""
++    css = _tmpl(src, "CSS") or ""
++    css = re.sub(r'\[data-theme="[a-z]+"\][^{]*\{[^}]*\}', "", css)
++    css = re.sub(r'\.fx-[a-z]+\b[^{]*\{[^}]*\}', "", css)
++    css = re.sub(r'\[data-fx="[a-z]+"\][^{]*\{[^}]*\}', "", css)
++    css = re.sub(r'@keyframes\s+[A-Za-z0-9_]+\s*\{.*?\}\s*\}', "", css, flags=re.S)
++    return re.sub(r'@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{.*?\}\s*\}', "", css, flags=re.S)
++
++
+ def extract_contract(src=None):
+     """Extract the full six-theme visual + motion contract from the worker source."""
+     if src is None:
+@@ -196,7 +211,14 @@ def extract_contract(src=None):
+             # the theme enumeration the switcher offers -- removing an entry deletes a theme from the UI
+             "theme_options": theme_options, "theme_option_keys": _theme_option_keys(theme_options),
+             # the final render link: todayPage passing the hero into PAGE (`{ hero }`)
+-            "hero_wiring": _hero_wiring(src)}
++            "hero_wiring": _hero_wiring(src),
++            # the ambience-animation CSS (the .fx-* / [data-fx] rules that drive the moving layers). The
++            # fx names are DERIVED from the THEME_FX mapping (not hardcoded) so fx_css stays in step with
++            # _base_css's strip set even if a theme adds a new ambience layer.
++            "fx_css": "\n".join(sorted(set(r for fxn in (set(fx.values()) - {"none", None})
++                                           for r in _fx_rules(src, fxn)))),
++            # the base styling (body/cards/layout) not attributed to any theme/fx/keyframe hash
++            "base_css": _base_css(src)}
+ 
+ 
+ def _part(v, tag):
+@@ -252,6 +274,14 @@ def asset_hashes(contract):
+             "page_shell": _sha(_part(contract["page_shell"], "page_shell")),   # the theme/motion wiring
+             "theme_options": _sha(_part(contract["theme_options"], "theme_options")),  # the theme enumeration
+             "hero_wiring": _sha(_part(contract["hero_wiring"], "hero_wiring")),  # todayPage -> PAGE hero pass
++            # SPECIFIC hashes for surfaces that otherwise only fed master_visual (so a change is ATTRIBUTED,
++            # not just rolled into the aggregate): the client-side theme/motion behaviour (THEME_JS, which
++            # runs blurTextIn/animateGauge/syncHeroVideo/reduced-motion), the anti-flash bootstrap
++            # (HEAD_INIT), the whole CSS constant (base rules), and the ambience-animation CSS (.fx-* rules).
++            "theme_js": _sha(_part(contract["theme_js"], "theme_js")),
++            "head_init": _sha(_part(contract["head_init"], "head_init")),
++            "base_css": _sha(_part(contract.get("base_css"), "base_css")),
++            "fx_css": _sha(_part(contract.get("fx_css"), "fx_css")),
+             "contract_root": _sha("|".join(per_theme[t] for t in THEMES))}
+ 
+ 
+@@ -270,6 +300,25 @@ def theme_set_consistency(contract=None):
+             "extra_in_options": sorted(option_keys - themes)}
+ 
+ 
++def partition_consistency(src=None):
++    """The base_css hash strips `[data-theme="X"]` and `.fx-X` / `[data-fx="X"]` rules assuming X is a
++    REGISTERED theme / ambience name (covered by per_theme / fx_css). If a future theme or ambience layer
++    appears in the CSS whose name is NOT registered, base_css would strip it while nothing else covers it
++    -> a silent aggregate-only escape. This asserts every such name in the source IS registered, so the
++    partition cannot diverge undetected."""
++    if src is None:
++        src = WORKER.read_text(encoding="utf-8")
++    fx = _map(_obj(src, "THEME_FX"))
++    registered_fx = set(fx.values()) - {"none", None}
++    css_theme_names = set(re.findall(r'\[data-theme="([a-z]+)"\]', src))
++    css_fx_names = set(re.findall(r'\.fx-([a-z]+)\b', src)) | set(re.findall(r'\[data-fx="([a-z]+)"\]', src))
++    unregistered_themes = sorted(css_theme_names - set(THEMES))
++    unregistered_fx = sorted(css_fx_names - registered_fx)
++    return {"consistent": not unregistered_themes and not unregistered_fx,
++            "registered_themes": sorted(THEMES), "registered_fx": sorted(registered_fx),
++            "unregistered_themes": unregistered_themes, "unregistered_fx": unregistered_fx}
++
++
+ def baseline_matrix():
+     contract = extract_contract()
+     cells = []
+@@ -297,6 +346,7 @@ def build_baseline():
+         "matrix_cells": len(cells), "cells": cells, "asset_hashes": hashes,
+         "reduced_motion_separate": True,
+         "theme_set_consistency": theme_set_consistency(contract),
++        "partition_consistency": partition_consistency(),
+         "coverage": {"per_theme_rule_counts": {t: len(contract["themes"][t]["rules"]) for t in THEMES},
+                      "fx_rule_counts": {t: len(contract["themes"][t]["fx_rules"]) for t in THEMES},
+                      "keyframes": len(contract["keyframes"])},
+@@ -323,7 +373,7 @@ def detect_regression(baseline_hashes, new_src):
+             changes.append({"element": f"theme:{t}", "kind": "changed_or_deleted"})
+     for key in ("master_visual", "reduced_motion", "keyframes", "fx_layers", "hero_css", "hero_markup",
+                 "dom_producers", "hero_section_fn", "hero_video_assets", "page_shell", "theme_options",
+-                "hero_wiring", "contract_root"):
++                "hero_wiring", "theme_js", "head_init", "base_css", "fx_css", "contract_root"):
+         if now[key] != baseline_hashes[key]:
+             changes.append({"element": key, "kind": "changed_or_deleted"})
+     return {"regressed": bool(changes), "changes": changes}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py
+new file mode 100644
+index 000000000..53dcdd697
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py
+@@ -0,0 +1,85 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S7-P01-T078 -- Visual / Motion Regression CI gate over the T077 un-deletable-contract baseline.
++
++Every UI PR is checked against the frozen T077 baseline (visual_baseline.detect_regression): a candidate
++worker source is diffed element-by-element. Any change to the theme/motion identity BLOCKS the PR unless it
++carries an explicit approved-change record (element + a non-empty reason + an approver) -- so an accidental
++deletion of a theme or ambience layer is blocked, while an intentional edit passes only when documented.
++Changes are categorised VISUAL vs MOTION/RECORDING so a motion/brand loss is surfaced specifically.
++
++Deterministic; no network / clock / randomness. NOT_DEPLOYED: pure gate logic over source hashes.
++"""
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++import visual_baseline as VB   # T077: detect_regression, asset_hashes, THEMES
++
++# aggregate roll-up hashes move whenever ANY element moves; approvals are granted per SPECIFIC element.
++AGGREGATE = {"master_visual", "contract_root"}
++# elements whose change is a MOTION / RECORDING regression: keyframes, ambience layers + their animation
++# CSS (fx_layers/fx_css), hero video/markup/assembly/wiring/asset-bytes, the DOM producers, reduced-motion,
++# and the client-side behaviour that RUNS the motions (theme_js: blurTextIn/animateGauge/syncHeroVideo) +
++# the anti-flash theme bootstrap (head_init).
++MOTION_ELEMENTS = {"reduced_motion", "keyframes", "fx_layers", "fx_css", "hero_markup", "dom_producers",
++                   "hero_section_fn", "hero_video_assets", "hero_wiring", "theme_js", "head_init"}
++
++# the frozen source-hash contract is EXACT: a theme/motion source change is a diff of 1 (no tolerance).
++SOURCE_DIFF_TOLERANCE = 0          # source hashes: exact; any diff is a regression (this is the enforced gate)
++# The screenshot/pixel layer is NOT compared in this task (no PNGs are captured here -- see known_gaps);
++# this constant is the DOCUMENTED policy tolerance for the future screenshot layer over the T077 matrix.
++PIXEL_DIFF_TOLERANCE = 0.001       # screenshot layer policy: <=0.1% pixels may differ (font AA / GPU)
++PIXEL_LAYER_ENFORCED = False       # honest: no pixel comparison is performed in this source-level gate
++
++
++def _category(element):
++    if element in AGGREGATE:
++        return "aggregate"
++    return "motion" if element in MOTION_ELEMENTS else "visual"
++
++
++def _valid_approvals(approvals):
++    """An approval is valid only when it is a dict with an element and a non-empty reason AND approver
++    (allowed diffs must be explained). Malformed entries are ignored (fail-safe: they do not unblock)."""
++    out = {}
++    if not isinstance(approvals, (list, tuple)):
++        return out
++    for a in approvals:
++        if not isinstance(a, dict):
++            continue                                     # a non-dict entry cannot approve anything
++        el = a.get("element")
++        if el and str(a.get("reason", "")).strip() and str(a.get("approver", "")).strip():
++            out[el] = a
++    return out
++
++
++def run_ci(baseline_hashes, candidate_src, approvals=None):
++    """Gate a candidate worker source against the frozen baseline. BLOCK if any specific theme/motion
++    element changed without a valid approved-change record; PASS clean; PASS_APPROVED if every change is
++    documented. Returns the decision, the changed elements (categorised), and what it blocked on."""
++    reg = VB.detect_regression(baseline_hashes, candidate_src)
++    changed = {c["element"] for c in reg["changes"]}
++    specific = changed - AGGREGATE                       # aggregates roll up; approvals target specifics
++    approved = _valid_approvals(approvals)
++    unapproved = sorted(e for e in specific if e not in approved)
++    decision = "BLOCK" if unapproved else ("PASS_APPROVED" if specific else "PASS")
++    return {
++        "decision": decision,
++        "blocked": bool(unapproved),
++        "changed": sorted(changed),
++        "changed_by_category": {"visual": sorted(e for e in specific if _category(e) == "visual"),
++                                "motion": sorted(e for e in specific if _category(e) == "motion")},
++        "blocked_on": unapproved,
++        "approved_changes": sorted(e for e in specific if e in approved),
++        "approval_reasons": {e: approved[e].get("reason") for e in specific if e in approved},
++        "recording_checks": {"motion_regressions": sorted(e for e in specific if _category(e) == "motion")},
++        "thresholds": {"source_diff_tolerance": SOURCE_DIFF_TOLERANCE,
++                       "pixel_diff_tolerance": PIXEL_DIFF_TOLERANCE,
++                       "pixel_layer_enforced": PIXEL_LAYER_ENFORCED,
++                       "note": "The ENFORCED gate is the exact source-hash diff (any change blocks unless "
++                               "approved). The <=0.1% pixel tolerance is the DOCUMENTED policy for the "
++                               "future screenshot layer over the T077 matrix; no pixel comparison is "
++                               "performed in this source-level gate (no PNGs are captured here)."},
++    }

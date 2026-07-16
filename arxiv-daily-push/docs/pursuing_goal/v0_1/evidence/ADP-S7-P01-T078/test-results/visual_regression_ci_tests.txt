@@ -1,0 +1,9 @@
+blocking: delete-theme -> BLOCK (on ['theme:forest']...); delete-fx-layer -> BLOCK (on ['fx_layers']); benign -> PASS
+approved-change: documented -> PASS_APPROVED (reason recorded); no-reason -> BLOCK; no-approver -> BLOCK; wrong-element -> BLOCK
+thresholds: source exact (0), pixel tolerance 0.001 explained
+recording checks: keyframe -> motion regression ['keyframes']; fx-layer -> motion; colour token -> visual
+motion layer: THEME_JS -> BLOCK(motion); HEAD_INIT -> BLOCK(motion); ambience CSS -> motion ['fx_css']; base-CSS -> ['base_css']
+malformed approvals fail-safe to BLOCK (no crash)
+partition consistency: registered themes 6, fx ['cosmos', 'minimal', 'techno']; unregistered .fx-aurora flagged
+
+ACCEPTANCE = PASS

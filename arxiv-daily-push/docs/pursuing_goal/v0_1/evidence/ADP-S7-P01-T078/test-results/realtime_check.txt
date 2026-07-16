@@ -1,0 +1,5 @@
+ADP-S7-P01-T078 realtime non-regression check (NOT_DEPLOYED; pure gate logic over T077 source hashes).
+$ curl -s https://adp.linzezhang.com/build.json
+{"build_id":"b189d3cc0703",...,"schema_version":"cn_v0_3","built_at":"2026-07-17"}
+=> build_id b189d3cc0703 == T040 canary build; live MVP + six-theme FX unchanged. The CI gate reads the
+   T077 baseline + a candidate source; it does not deploy or modify the worker/themes.

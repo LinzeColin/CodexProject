@@ -1,0 +1,115 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P01-T078",
+  "release_mode": "NOT_DEPLOYED",
+  "baseline_from": "T077 visual_baseline contract",
+  "thresholds": {
+    "source_diff_tolerance": 0,
+    "pixel_diff_tolerance": 0.001,
+    "pixel_layer_enforced": false,
+    "note": "The ENFORCED gate is the exact source-hash diff (any change blocks unless approved). The <=0.1% pixel tolerance is the DOCUMENTED policy for the future screenshot layer over the T077 matrix; no pixel comparison is performed in this source-level gate (no PNGs are captured here)."
+  },
+  "simulated_prs": [
+    {
+      "pr": "benign-server-edit",
+      "decision": "PASS",
+      "blocked": false,
+      "blocked_on": [],
+      "approved_changes": [],
+      "changed_by_category": {
+        "visual": [],
+        "motion": []
+      }
+    },
+    {
+      "pr": "delete-theme (forest)",
+      "decision": "BLOCK",
+      "blocked": true,
+      "blocked_on": [
+        "theme:forest"
+      ],
+      "approved_changes": [],
+      "changed_by_category": {
+        "visual": [
+          "theme:forest"
+        ],
+        "motion": []
+      }
+    },
+    {
+      "pr": "delete-fx-layer (cosmos ambience)",
+      "decision": "BLOCK",
+      "blocked": true,
+      "blocked_on": [
+        "fx_layers"
+      ],
+      "approved_changes": [],
+      "changed_by_category": {
+        "visual": [],
+        "motion": [
+          "fx_layers"
+        ]
+      }
+    },
+    {
+      "pr": "gut-key-motion (THEME_JS blur/gauge dispatch)",
+      "decision": "BLOCK",
+      "blocked": true,
+      "blocked_on": [
+        "theme_js"
+      ],
+      "approved_changes": [],
+      "changed_by_category": {
+        "visual": [],
+        "motion": [
+          "theme_js"
+        ]
+      }
+    },
+    {
+      "pr": "intentional-warm-bg (approved)",
+      "decision": "PASS_APPROVED",
+      "blocked": false,
+      "blocked_on": [],
+      "approved_changes": [
+        "theme:warm"
+      ],
+      "changed_by_category": {
+        "visual": [
+          "theme:warm"
+        ],
+        "motion": []
+      }
+    },
+    {
+      "pr": "intentional-warm-bg (unexplained approval)",
+      "decision": "BLOCK",
+      "blocked": true,
+      "blocked_on": [
+        "theme:warm"
+      ],
+      "approved_changes": [],
+      "changed_by_category": {
+        "visual": [
+          "theme:warm"
+        ],
+        "motion": []
+      }
+    },
+    {
+      "pr": "delete-theme with wrong-element approval",
+      "decision": "BLOCK",
+      "blocked": true,
+      "blocked_on": [
+        "theme:forest"
+      ],
+      "approved_changes": [],
+      "changed_by_category": {
+        "visual": [
+          "theme:forest"
+        ],
+        "motion": []
+      }
+    }
+  ]
+}
