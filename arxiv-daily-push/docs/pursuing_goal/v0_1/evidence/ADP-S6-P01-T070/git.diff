@@ -1,0 +1,575 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 515a8f5d5..2cbba745e 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S6-P01-T070 (Dataset Snapshot + observed_at leakage guard; NOT_DEPLOYED)
++
++- Seventieth task of the ADP V0.1 FINAL EXECUTION program (S6-P01). Ensures 2026-backfilled old files cannot pretend to have been known at a historical point in time: a dataset snapshot is keyed on observed_at (when ADP actually fetched a document), never on doc_date (when the policy issued), so a 2016 policy observed only in 2026 is not in a 2018 snapshot. release_mode NOT_DEPLOYED; a read-only library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/dataset_snapshot.py: snapshot(corpus, as_of) (docs with observed_at <= as_of, malformed/missing observed_at excluded, deterministic order + reproducible snapshot_id), assert_no_leakage(dataset, as_of) (raises LeakageError if any doc was observed after as_of or has an unverifiable observed_at -- the tripwire), and rebuild_for_prediction (reproduce the exact as-of dataset for a prediction's origin_date). Reuses T056 coverage_asof._parse_date. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/: dataset_snapshot_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S6-P01-T070/test-results/dataset_snapshot_tests.txt, ACCEPTANCE = PASS, exit 0): a clean as-of snapshot passes the leakage guard, while EXTERNALLY injecting a future-observed doc, a 2026-backfilled doc, or a doc with no observed_at each RAISES (so injecting a future document makes the test fail); the snapshot is observed_at-keyed, not doc_date-keyed (a backfilled doc whose doc_date 2016-05-01 is before the 2018 as_of but whose observed_at is 2026-07-01 is excluded, so the 2018 snapshot is exactly [a, b]); and any prediction can rebuild its dataset (rebuild_for_prediction reproduces the snapshot_id, is order-independent and reproducible, and a later as_of expands the dataset). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S6-P01-T069 (prediction target catalog + Outcome Rule + event labels; NOT_DEPLOYED)
+ 
+ - Sixty-ninth task of the ADP V0.1 FINAL EXECUTION program -- opens Stage S6 (Prediction & Backtest). Defines what counts as 'happened' BEFORE training any model: a prediction target is admissible only if it can be settled objectively (0/1) by FUTURE OFFICIAL evidence (A0/A1 original text) via an unambiguous rule; a vague/subjective target is rejected and may not enter the backtest. release_mode NOT_DEPLOYED; a read-only library of deterministic settlement rules (NOT a trained model, so MODEL_SPEC/formula unchanged), the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/prediction_targets.py: make_target, SETTLEMENT_TYPES (official_doc_exists / status_transition / count_at_least), is_settleable (known objective predicate + all required non-empty fields + a finite positive horizon), admit_targets (admitted vs rejected-with-reason), settle (settles against OFFICIAL evidence within [origin, origin+horizon]; a definite 0/1 or 'pending' if the window has not elapsed; ignores media and out-of-window observations so the future cannot leak; raises on a non-settleable target). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/: prediction_targets_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S6-P01-T069/test-results/prediction_targets_tests.txt, ACCEPTANCE = PASS, exit 0): every admitted target (G1 official_doc_exists, G2 count_at_least, G3 status_transition) is settleable and settles to a definite label (official match 1 / media-or-future-only 0 / two releases 1 / one 0 / revoked 1 / unelapsed window pending); three ambiguous targets (a subjective predicate, an empty required field, a zero horizon) are rejected and settle() refuses each so they cannot be backtested; and settlement is official-only with a leak-proof observed_at window -- a media look-alike does not settle, a future-observed official match does not leak (in-window 1 / after-window 0 / exactly-on-end 1 / one-day-after not leaked / malformed observed_at safe). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 106ee6408..70550011b 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P04-T068-KNOWLEDGE-VALIDITY-PARITY-131"
+-source_snapshot_hash: "sha256:393cfb38db91951817816e846ff488fbae6404c601a423ad3de1a0dbba662dc7"
++as_of_event_id: "EVENT-20260717-ADP-V01-S6-P01-T069-PREDICTION-TARGETS-OUTCOME-RULES"
++source_snapshot_hash: "sha256:9526a333f6603d4ed89e359e36844ee97d2b49cd451fc7c6728874457613e953"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T03:25:00+10:00"
++snapshot_event_time: "2026-07-18T04:00:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 128
++    precommit_pending_events: 129
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 1a30a5daf..892c22dcd 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S6-P01-T070: built the Dataset Snapshot + observed_at leakage guard (S6-P01). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/dataset_snapshot.py: snapshot(corpus, as_of) (observed_at <= as_of, malformed/missing excluded, deterministic order + reproducible snapshot_id) / assert_no_leakage(dataset, as_of) (raises LeakageError on any future-observed or unverifiable doc -- the tripwire) / rebuild_for_prediction (reproduce the as-of dataset for a prediction's origin_date). Reuses T056 coverage_asof._parse_date. Keyed on observed_at (when ADP fetched a doc), never doc_date, so a 2026-backfilled 2016 file is not in a 2018 snapshot. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/: dataset_snapshot_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/dataset_snapshot_tests.txt, PASS exit 0): clean snapshot passes the guard, externally injecting a future/backfilled/no-observed_at doc each RAISES; observed_at-keyed (backfill doc_date 2016-05-01 < 2018 as_of but observed 2026 -> excluded, snapshot = [a,b]); any prediction rebuilds its dataset (rebuild == snapshot, reproducible, order-independent; later as_of expands). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P01-T069: defined the prediction target catalog + Outcome Rules + event labels (opens Stage S6). release_mode NOT_DEPLOYED; read-only library of deterministic settlement rules (NOT a trained model, MODEL_SPEC/formula unchanged), production untouched. New tool docs/pursuing_goal/v0_1/tools/prediction_targets.py: make_target / SETTLEMENT_TYPES (official_doc_exists / status_transition / count_at_least) / is_settleable (objective predicate + required non-empty fields + finite positive horizon) / admit_targets (admitted vs rejected-with-reason) / settle (OFFICIAL evidence within [origin, origin+horizon]; definite 0/1 or 'pending'; ignores media and out-of-window; raises on non-settleable). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T069/: prediction_targets_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/prediction_targets_tests.txt, PASS exit 0): admitted targets settle definitely (official 1 / media-or-future 0 / two 1 / one 0 / revoked 1 / unelapsed pending); ambiguous targets (subjective / empty field / zero horizon) rejected and settle() refuses each; settlement official-only + leak-proof observed_at window (media does not settle; future-observed official does not leak; on-end 1 / after 0 / malformed safe). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P04-T068: implemented Knowledge Validity + the 131-item benefit-parity regression (closes S5-P04 and Stage S5). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/knowledge_validity.py: make_knowledge (binds knowledge to source T026 content_hash) / check_validity (substantive source change -> needs_review; removed -> invalid; noise-only -> stays valid; no in-place mutation) / revalidate (re-learn, re-bind to new version) / parity_report (status in closed vocab no 'unknown'; owner real no 'no-owner'; delivered/partial cite evidence, planned/na give a reason). Reuses T026 content_hash. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T068/: parity_registry_131.json, knowledge_validity_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/knowledge_validity_tests.txt, PASS exit 0): validity clock hash-driven (noise-only re-render stays valid = no churn; substantive change -> needs_review; removed -> invalid; revalidate re-binds new-version hash); parity registry exactly 131 items, 0 unknown-status / 0 no-owner / 0 delivered-partial-missing-evidence (by_status delivered 92 / partial 21 / planned 15 / not_applicable 3); statuses honest (delivered cites a real task, substrate-not-fully-built downgraded to partial); gate catches injected unknown-status / no-owner / blank-owner / bad-token / note-less-planned. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P04-T067: implemented the Library + notes + Provenance export (S5-P04). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/library_export.py: add_to_library (refuses save without complete provenance) / provenance_complete (5 fields non-empty; blank counts as missing) / export_markdown/csv/json (each carries all provenance per entry; refuses incomplete on export). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T067/: library_export_report.json, export_sample.{md,csv,json}, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/library_export_tests.txt, PASS exit 0): all 3 export formats carry the 5 provenance fields (source_url/version/fetched_at/claim_evidence/license) for every entry -- per-entry JSON, per-row CSV, per-entry-block Markdown; license notice in all 3; comma/quote/newline round-trip losslessly in CSV; JSON round-trips provenance; incomplete provenance refused on save AND on export (all 3 formats). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index a63e8bf53..99fc0f4e3 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `128`
+-- pending_or_stale_events: `478`
+-- freshness_counts: `pending_or_stale_events=478; legacy_unbound_events=334`
++- precommit_pending_events: `129`
++- pending_or_stale_events: `479`
++- freshness_counts: `pending_or_stale_events=479; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:393cfb38db91951817816e846ff488fbae6404c601a423ad3de1a0dbba662dc7`
+-- snapshot_event_time: `2026-07-18T03:25:00+10:00`
++- source_snapshot_hash: `sha256:9526a333f6603d4ed89e359e36844ee97d2b49cd451fc7c6728874457613e953`
++- snapshot_event_time: `2026-07-18T04:00:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 320bc7667..427da3fac 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:393cfb38db91951817816e846ff488fbae6404c601a423ad3de1a0dbba662dc7`
+-- snapshot_event_time: `2026-07-18T03:25:00+10:00`
++- source_snapshot_hash: `sha256:9526a333f6603d4ed89e359e36844ee97d2b49cd451fc7c6728874457613e953`
++- snapshot_event_time: `2026-07-18T04:00:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `478`
++- Pending/stale events: `479`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/TASK_REPORT.md
+new file mode 100644
+index 000000000..0059693c3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/TASK_REPORT.md
+@@ -0,0 +1,53 @@
++# TASK_REPORT · ADP-S6-P01-T070｜建立 Dataset Snapshot 与 observed_at 泄漏防线
++
++## 唯一目标（达成）
++**确保 2026 回填的旧文件不会假装在历史时点已知**：数据集快照**按 observed_at（非 doc_date）** 键控——文档的 doc_date（政策发布时点，可能 2016）与 observed_at（ADP 实际抓取/知道的时点，回填时可能 2026）分离。快照只含 `observed_at <= as_of` 的文档；**注入未来文档会使泄漏测试失败**；**任何预测可确定性重建其当时数据集**。release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：as-of Dataset Snapshot（observed_at 键控）+ observed_at 泄漏防线（注入未来文档必失败）+ 预测可重建当时数据集。
++2. **允许修改文件**：`tools/dataset_snapshot.py`（新）+ `evidence/ADP-S6-P01-T070/*` + 治理同步。**不改 worker/生产/registry/VERSION**。复用 T056 `coverage_asof._parse_date`。
++3. **绝不能改变**：生产 worker/cron/数据/实时；六主题/MVP；NOT_DEPLOYED。库层只读、**无时钟**（as_of 传入）。
++4. **基线**：main `5e6a3b1e`（T069 已合入）；corpus 含 2016 回填(观测 2026)、2017/2019 文档、2018 预测。
++5. **验收**：注入未来文档使测试失败（含 backfill/无 observed_at）；任何预测可重建其当时数据集（可复现、序无关）；observed_at 键控（backfill doc_date<as_of 仍被排除，非 doc_date）。
++6. **回滚**：`git revert <sha>`（只读库，生产未变更）。
++
++## 交付物
++- `tools/dataset_snapshot.py` —— `snapshot(corpus, as_of)`（含 `observed_at<=as_of` 的文档[解析日期]，malformed/缺 observed_at 排除，确定性序 + 可复现 snapshot_id）+ `snapshot_id`（对含入文档的 canonical_id/observed_at/content_hash 哈希，序无关）+ `assert_no_leakage(dataset, as_of)`（任一文档 observed_at>as_of 或缺失 → **raise LeakageError**，泄漏 tripwire）+ `rebuild_for_prediction(corpus, prediction)`（按 origin_date 重建当时数据集，可复现）。
++- `evidence/…/build_dataset_snapshot.py`（corpus：2017a/b + **2016 回填(观测 2026)** + 2019c；2018 预测）+ `dataset_snapshot_report.json` + `test-results/{t070_verify.py, dataset_snapshot_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/dataset_snapshot_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **① 注入未来文档会使测试失败**：干净 as-of 快照**通过** `assert_no_leakage`；**外部注入**未来观测文档（c 观测 2019 > 2018）→ **RAISE**；注入 **2016 回填文档**（观测 2026）→ **RAISE**；注入**无 observed_at** 文档 → **RAISE**（知晓时点不可验即泄漏）。**判别力**：干净通过、注入失败——guard 在**外部注入数据集**上测（非仅工具自过滤输出），非空跑。
++- **observed_at 键控（非 doc_date）**：2016 回填文档 doc_date=2016-05-01（**< as_of 2018**）但 observed_at=2026-07-01 → **被 2018 快照排除**；2018 快照 = 恰 [a, b]（2017 观测）。若按 doc_date 则会误含——证明按 observed_at。
++- **② 任何预测可重建其当时数据集**：`rebuild_for_prediction` snapshot_id == snapshot(2018) snapshot_id；**可复现**（两次重建同 id）；重建集自身通过其 origin 的泄漏 guard；**序无关**（打乱 corpus 同 id）；不同 as_of（2019-06）扩展为 [a,b,c] 且 id 不同。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live `build_id=b189d3cc0703`（==T040）。
++
++## Data / Performance / Visual
++Data = 4 文档 corpus（含 2016 回填/observed 2026）+ 2018/2019 as-of。Performance = 实时无回归。无 UI 改动；六主题保留。
++
++## Value / Cost（S6 预测校准）
++- **Value**：**回测无未来泄漏的地基**——快照按 observed_at 键控，2026 回填的历史文件绝不假装在历史时点已知；注入未来文档立即触发 tripwire；任何预测可确定性重建其当时数据集（可审计、可复现）。为 T071（基线）、T072（Rolling-origin Backtest）提供防泄漏数据集。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0；人工维护 = 快照/防线 + 验证编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：observed_at 由摄取管线提供（真实 observed_at = 抓取时间戳，回填文档观测时点为回填运行时点）；snapshot_id 为 canonical_id/observed_at/content 的确定性哈希（碰撞概率忽略）；真实 D1 快照物化由部署阶段负责。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED，库层）。`data-samples` = dataset_snapshot_report.json。`benchmarks` = N/A。
++
++## 完成声明
++```text
++Task: ADP-S6-P01-T070
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/dataset_snapshot.py(新) + T070 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: dataset_snapshot_tests.txt —— 干净快照过泄漏guard;外部注入未来/2016回填/无observed_at文档全RAISE;observed_at键控(backfill doc_date<as_of仍排除);rebuild==snapshot可复现序无关;不同as_of扩展;实时无回归(build_id b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: Dataset Snapshot(observed_at键控) + observed_at泄漏防线 + 预测可重建当时数据集
++Data/Performance/Visual: Data=4文档含2016回填observed2026；Perf=实时无回归；Visual=六主题保留
++Value: 回测无未来泄漏地基,2026回填不假装历史已知,注入未来文档立即触发tripwire
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（只读库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/adversarial_review.md
+new file mode 100644
+index 000000000..6c631e0cc
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/adversarial_review.md
+@@ -0,0 +1,22 @@
++# Adversarial review · ADP-S6-P01-T070｜Dataset Snapshot + observed_at 泄漏防线
++
++独立对抗复核（general-purpose skeptic），职责是**证伪**验收（找空洞/作弊/误导），非确认。
++
++## 攻击向量
++(a) 泄漏 guard（是否真 observed_at 驱动、对未来/边界/malformed/缺失是否 FAIL、是否被 snapshot 静默过滤而空跑）；(b) 可重建（rebuild 确定性、snapshot_id 序无关、是否区分不同数据集、碰撞）；(c) 快照正确（<= 含当日、malformed 排除、malformed as_of raise）；(d) 验收控制非空跑（是否**外部注入**未来文档验 guard RAISE、verifier 从工具现推）；(e) observed_at-vs-doc_date 判别（backfill doc_date 是否真 < as_of）；NOT_DEPLOYED。
++
++## 复核结论：CONFIRMED_SOUND（hole=null, severity=none）
++- **(a) 泄漏 guard**：obs 恰 == as_of 保留且过；as_of+1、远未来 2030、malformed、**缺失 observed_at** 全被快照排除 **且外部注入时 raise LeakageError**。
++- **(b) backfill**：doc_date 2016-05-01（< as_of）但 observed 2026-07-01 → 2018 快照排除、注入触发 guard——**证明按 observed_at 非 doc_date**；fixture backfill doc_date 确 < as_of。
++- **(c)**：malformed as_of 在 snapshot 与 guard **均 raise ValueError**（非静默空）。
++- **(d)**：verifier **外部注入**未来文档进 `snap['docs']` 并断言 `assert_no_leakage` RAISE，且从工具现推（非 report JSON）——guard 非空跑，即便 snapshot 忘过滤仍会抓。
++- **(e)**：rebuild 复现 snapshot_id；**200 次打乱序无关**（单一 id）；不同 as_of、变更 content_hash 均改 id。
++- **NOT_DEPLOYED**：无 today()/now()/网络/随机/写（used paths）。
++- **判定**：两验收条款（注入未来文档使测试失败 / 任何预测可重建其当时数据集）**真成立、非空跑/作弊/错**。列 2 项**非致命** latent。
++
++## latent 的主动闭合（1 项硬化 + 1 项披露）
++1. **snapshot_id 碰撞**（复核指出）：原 id 键 = [canonical_id, observed_at, content_hash|version]——若两文档仅在键外字段不同、或 content_hash+version 均缺则同 id+observed_at 不同正文碰撞。**已硬化**：新增 `_doc_fingerprint`（优先 content_hash/version，否则**全文档稳定哈希**），故不同正文**永不碰撞**；fixture 均带 content_hash 故 id 不变（snap:a2b9b696de61d77f）。verifier 加控制（同 id+observed_at 不同 body / 不同 content_hash → 不同 snapshot_id）。
++2. **`_parse_date` 接受非法日（如 2017-02-31）**（cosmetic，**继承 T056** coverage_asof，不分叉）：因 snapshot 与 snapshot_id 用**同一** lexical observed_at 排序键，确定性/序无关仍成立；well-formed YYYY-MM-DD 字典序==时序。known_gaps 述其精神。
++
++## 结论
++复核 **CONFIRMED_SOUND**；两验收条款有 load-bearing 判别负控制（外部注入未来文档 RAISE、backfill 排除证 observed_at 键控、rebuild 复现 + 序无关）、非空跑，verifier 从工具现推。snapshot_id 碰撞 latent 主动硬化为内容指纹（不同正文不碰撞）；_parse_date cosmetic 属 T056 继承不分叉。复用 T056 as-of 解析。确定性、零副作用、不读时钟。实时无回归（live build_id b189d3cc0703 == T040）。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/build_dataset_snapshot.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/build_dataset_snapshot.py
+new file mode 100644
+index 000000000..8a8a44de2
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/build_dataset_snapshot.py
+@@ -0,0 +1,53 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Deterministic fixtures for ADP-S6-P01-T070 (Dataset Snapshot + observed_at leakage guard).
++
++The corpus deliberately includes a 2016 policy that was only BACKFILLED (observed) in 2026, plus a
++document observed in the future relative to a 2018 prediction -- so a snapshot keyed on observed_at
++must exclude both from the 2018 dataset, and the leakage tripwire must fire if either is injected.
++"""
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent.parent
++sys.path.insert(0, str(V01 / "tools"))
++import dataset_snapshot as DS
++
++# doc_date = when it issued; observed_at = when ADP actually fetched/knew it.
++CORPUS = [
++    {"canonical_id": "a", "doc_date": "2017-03-01", "observed_at": "2017-03-02",
++     "content_hash": "h-a", "agency": "国务院办公厅"},
++    {"canonical_id": "b", "doc_date": "2017-11-01", "observed_at": "2017-11-05",
++     "content_hash": "h-b", "agency": "国家统计局"},
++    # BACKFILLED: a 2016 policy, but ADP only observed it in 2026 -> NOT known in 2018
++    {"canonical_id": "backfill16", "doc_date": "2016-05-01", "observed_at": "2026-07-01",
++     "content_hash": "h-bf", "agency": "国务院办公厅"},
++    # observed in 2019 -> known by 2019 but not by 2018
++    {"canonical_id": "c", "doc_date": "2019-02-01", "observed_at": "2019-02-03",
++     "content_hash": "h-c", "agency": "国家发改委"},
++]
++PREDICTION = {"target_id": "G1", "origin_date": "2018-01-01"}
++
++
++def main():
++    snap = DS.snapshot(CORPUS, "2018-01-01")
++    rebuilt = DS.rebuild_for_prediction(CORPUS, PREDICTION)
++    report = {
++        "as_of": "2018-01-01",
++        "snapshot_ids": [d["canonical_id"] for d in snap["docs"]],
++        "snapshot_id": snap["snapshot_id"],
++        "rebuilt_matches": rebuilt["snapshot_id"] == snap["snapshot_id"],
++        "excluded_backfill16": "backfill16" not in [d["canonical_id"] for d in snap["docs"]],
++    }
++    (HERE / "dataset_snapshot_report.json").write_text(
++        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print("as-of 2018-01-01 snapshot ids:", report["snapshot_ids"])
++    print("backfilled-2016 excluded:", report["excluded_backfill16"])
++    print("rebuild matches:", report["rebuilt_matches"], "snapshot_id:", snap["snapshot_id"])
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/commands.log
+new file mode 100644
+index 000000000..bdba533b3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/commands.log
+@@ -0,0 +1,24 @@
++# ADP-S6-P01-T070 commands (deterministic, no network except the read-only realtime build check)
++
++# 1. import sanity (reuses T056 coverage_asof._parse_date)
++python3 -c "import sys; sys.path.insert(0,'tools'); import dataset_snapshot, coverage_asof"
++
++# 2. build corpus (incl. a 2016 backfill observed 2026) + snapshot report (deterministic)
++python3 evidence/ADP-S6-P01-T070/build_dataset_snapshot.py
++#   -> as-of 2018-01-01 snapshot ids: ['a', 'b']
++#   -> backfilled-2016 excluded: True
++#   -> rebuild matches: True  snapshot_id: snap:a2b9b696de61d77f
++
++# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
++python3 evidence/ADP-S6-P01-T070/test-results/t070_verify.py | tee evidence/ADP-S6-P01-T070/test-results/dataset_snapshot_tests.txt
++#   leakage guard: clean passes; injecting future / backfilled / no-observed_at all RAISE
++#   observed_at-based: backfilled 2016 doc (doc_date 2016-05-01 but observed 2026-07-01) excluded
++#   rebuildable: rebuild==snapshot, reproducible, order-independent; later as_of adds 'c'
++#   ACCEPTANCE = PASS (exit 0)
++
++# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
++curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
++#   -> b189d3cc0703  (== T040; realtime not regressed)
++
++# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t070.py),
++#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/cost_value.json
+new file mode 100644
+index 000000000..87da6cc1d
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/cost_value.json
+@@ -0,0 +1,33 @@
++{
++  "task_id": "ADP-S6-P01-T070",
++  "title": "建立 Dataset Snapshot 与 observed_at 泄漏防线",
++  "release_mode": "NOT_DEPLOYED",
++  "stage": "S6",
++  "phase": "S6-P01",
++  "value": {
++    "user_value": "回测无未来泄漏的地基：数据集快照按 observed_at(非 doc_date)键控，2026 回填的历史文件绝不假装在历史时点已知；注入未来文档立即触发泄漏 tripwire；任何预测可确定性重建其当时数据集。",
++    "value_metric_stage": "S6 预测、校准与失败历史：为 T071 基线、T072 Rolling-origin Backtest 提供防未来泄漏的 as-of 数据集。",
++    "measured": {
++      "leakage_guard": "干净快照过guard;外部注入未来/2016回填/无observed_at文档全RAISE(在外部注入数据集上测非空跑)",
++      "observed_at_keyed": "2016回填文档doc_date2016-05-01<as_of2018但observed2026-07-01被2018快照排除;2018快照恰[a,b]",
++      "rebuildable": "rebuild_for_prediction==snapshot可复现;序无关;不同as_of扩展id不同"
++    }
++  },
++  "cost": {
++    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、as_of 传入不读时钟，生产零副作用。",
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "human_maintenance": "快照/泄漏防线 + 验证编写（一次性）",
++    "recurring_cloud_cost_usd_per_month": 0
++  },
++  "realtime_regression": {
++    "live_build_id": "b189d3cc0703",
++    "equals_T040": true,
++    "regressed": false
++  },
++  "rollback": "git revert <sha>（只读库；生产数据未变更）"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/dataset_snapshot_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/dataset_snapshot_report.json
+new file mode 100644
+index 000000000..3f5681b24
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/dataset_snapshot_report.json
+@@ -0,0 +1,10 @@
++{
++  "as_of": "2018-01-01",
++  "snapshot_ids": [
++    "a",
++    "b"
++  ],
++  "snapshot_id": "snap:a2b9b696de61d77f",
++  "rebuilt_matches": true,
++  "excluded_backfill16": true
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/known_gaps.md
+new file mode 100644
+index 000000000..47c70225f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S6-P01-T070
++
++- **observed_at 由摄取管线提供**：泄漏防线的关键是 **observed_at = ADP 实际抓取/知道该文档的时间戳**（与 doc_date 政策发布时点分离）。回填文档的 observed_at = **回填运行的时点**（如 2026），故其历史 doc_date（如 2016）不会让它在历史快照中"假装已知"。真实 observed_at 由摄取/回填管线在写入时打戳；本任务消费之并强制其语义。缺失/malformed observed_at 的文档被**排除**（快照）且**视为泄漏**（guard）——知晓时点不可验证不得纳入回测。
++- **snapshot_id 为确定性哈希**：`snapshot_id` = 对含入文档的 `(canonical_id, observed_at, content_hash|version)` 排序后 sha256 前 16 位。序无关、可复现；碰撞概率忽略。用于"任何预测可重建其当时数据集"的可验证性（重建 → 同 id）。真实 D1 快照物化/ID 表由部署阶段负责。
++- **泄漏 guard 在外部注入数据集上测**：`assert_no_leakage` 对**传入的 dataset**（可能被外部注入未来文档）逐一校验 observed_at，而非仅信任 `snapshot()` 的过滤输出——故"注入未来文档使测试失败"是**真 tripwire**（即便一个有 bug 的快照忘了过滤，guard 仍会抓）。
++- **边界语义**：`observed_at <= as_of` 含 as_of 当日（inclusive）；malformed as_of → raise（不静默返回空）。
++- **无时钟**：as_of 由调用方传入（确定性、可重放），不读 wall-clock。
++- **NOT_DEPLOYED**：不接 worker/cron/D1/R2，不改生产数据。实时无回归（live build_id b189d3cc0703 == T040）。S6-P01 后接 **T071（历史频率/季节性/统计基线）**——届时进入真正统计模型，须登记 MODEL_SPEC/formula_registry。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/dataset_snapshot_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/dataset_snapshot_tests.txt
+new file mode 100644
+index 000000000..ae788144b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/dataset_snapshot_tests.txt
+@@ -0,0 +1,7 @@
++as-of 2018 snapshot: ['a', 'b']
++leakage guard: clean passes; injecting future / backfilled / no-observed_at all RAISE
++observed_at-based: backfilled 2016 doc (doc_date 2016-05-01 but observed 2026-07-01) excluded
++rebuildable: rebuild==snapshot (snap:a2b9b696de61d77f), reproducible, order-independent; later as_of adds 'c'
++snapshot_id: content-sensitive (different body / content_hash -> different id; no collision)
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..60e505976
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/realtime_check.txt
+@@ -0,0 +1,2 @@
++build_id: b189d3cc0703
++MATCH (b189d3cc0703 == T040, realtime NOT regressed)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/t070_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/t070_verify.py
+new file mode 100644
+index 000000000..8bbed760f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/test-results/t070_verify.py
+@@ -0,0 +1,106 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P01-T070 acceptance: Dataset Snapshot + observed_at leakage guard.
++
++Acceptance (TASK_INDEX row 70): 注入未来文档会使测试失败；任何预测可重建其当时数据集。
++  (injecting a future document makes the test fail; any prediction can rebuild its as-of dataset.)
++
++Deterministic. Re-derives from the TOOL (dataset_snapshot) + fixtures -- never trusts the report.
++Negative controls prove discrimination: a clean snapshot passes the leakage guard while any injected
++future doc trips it; and the guard is keyed on observed_at (a backfilled 2016 doc with doc_date < as_of
++but observed in 2026 is excluded), not doc_date.
++"""
++import importlib.util
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import dataset_snapshot as DS
++
++T070 = V01 / "evidence" / "ADP-S6-P01-T070"
++spec = importlib.util.spec_from_file_location("bds", str(T070 / "build_dataset_snapshot.py"))
++bds = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(bds)
++
++fails = []
++AS_OF = "2018-01-01"
++snap = DS.snapshot(bds.CORPUS, AS_OF)
++ids = [d["canonical_id"] for d in snap["docs"]]
++print("as-of 2018 snapshot:", ids)
++
++# =============================================================== 1) 注入未来文档会使测试失败
++# a clean as-of snapshot must PASS the leakage guard
++if not DS.assert_no_leakage(snap, AS_OF):
++    fails.append("a clean as-of snapshot failed the leakage guard")
++# INJECT a future-observed doc (c, observed 2019-02-03 > 2018) -> guard must RAISE
++leaked = {"as_of": AS_OF, "docs": snap["docs"] + [next(d for d in bds.CORPUS if d["canonical_id"] == "c")]}
++try:
++    DS.assert_no_leakage(leaked, AS_OF)
++    fails.append("injecting a future document did NOT trip the leakage guard")
++except DS.LeakageError:
++    pass
++# INJECT the backfilled-2016 doc (observed 2026) -> also a leak despite its 2016 doc_date
++leaked2 = {"as_of": AS_OF, "docs": snap["docs"] + [next(d for d in bds.CORPUS if d["canonical_id"] == "backfill16")]}
++try:
++    DS.assert_no_leakage(leaked2, AS_OF)
++    fails.append("injecting a 2026-backfilled doc did NOT trip the leakage guard")
++except DS.LeakageError:
++    pass
++# a doc with a MISSING observed_at is also a leak (unverifiable knowledge time)
++try:
++    DS.assert_no_leakage({"docs": [{"canonical_id": "x", "doc_date": "2017-01-01"}]}, AS_OF)
++    fails.append("a doc with no observed_at was not treated as a leak")
++except DS.LeakageError:
++    pass
++print("leakage guard: clean passes; injecting future / backfilled / no-observed_at all RAISE")
++
++# =============================================================== observed_at-based, NOT doc_date
++# the backfilled 2016 doc has doc_date 2016-05-01 (< as_of) but observed_at 2026 -> excluded.
++bf = next(d for d in bds.CORPUS if d["canonical_id"] == "backfill16")
++if not (bf["doc_date"] < AS_OF):
++    fails.append("control setup broken: backfill doc_date should be before as_of")
++if "backfill16" in ids:
++    fails.append("a 2026-backfilled 2016 doc leaked into the 2018 snapshot (keyed on doc_date not observed_at)")
++if ids != ["a", "b"]:
++    fails.append(f"snapshot should be exactly the docs observed by 2018 (a,b), got {ids}")
++print(f"observed_at-based: backfilled 2016 doc (doc_date {bf['doc_date']} but observed {bf['observed_at']}) excluded")
++
++# =============================================================== 2) 任何预测可重建其当时数据集
++rebuilt = DS.rebuild_for_prediction(bds.CORPUS, bds.PREDICTION)
++if rebuilt["snapshot_id"] != snap["snapshot_id"]:
++    fails.append("rebuild_for_prediction does not reproduce the as-of snapshot")
++# reproducible: two rebuilds are byte-identical
++if DS.rebuild_for_prediction(bds.CORPUS, bds.PREDICTION)["snapshot_id"] != rebuilt["snapshot_id"]:
++    fails.append("snapshot rebuild is not reproducible")
++# the rebuilt dataset itself passes the leakage guard for its own origin
++if not DS.assert_no_leakage(rebuilt, bds.PREDICTION["origin_date"]):
++    fails.append("rebuilt dataset does not pass its own leakage guard")
++# determinism: same as_of -> same snapshot_id regardless of input order
++shuffled = list(reversed(bds.CORPUS))
++if DS.snapshot(shuffled, AS_OF)["snapshot_id"] != snap["snapshot_id"]:
++    fails.append("snapshot_id is not order-independent (non-deterministic)")
++# a different as_of yields a different dataset (adds doc c observed 2019)
++later = DS.snapshot(bds.CORPUS, "2019-06-01")
++if [d["canonical_id"] for d in later["docs"]] != ["a", "b", "c"] or later["snapshot_id"] == snap["snapshot_id"]:
++    fails.append("a later as_of did not expand the dataset as expected")
++print(f"rebuildable: rebuild==snapshot ({snap['snapshot_id']}), reproducible, order-independent; later as_of adds 'c'")
++
++# snapshot_id is a CONTENT fingerprint: two docs with the same canonical_id + observed_at but different
++# content (and no content_hash/version) must NOT collide to the same id.
++d_a = [{"canonical_id": "z", "observed_at": "2017-01-01", "body": "text A"}]
++d_b = [{"canonical_id": "z", "observed_at": "2017-01-01", "body": "text B"}]
++if DS.snapshot_id(d_a) == DS.snapshot_id(d_b):
++    fails.append("two docs with different content collided to the same snapshot_id (id not content-sensitive)")
++# a changed content_hash also changes the id
++ch1 = [{"canonical_id": "z", "observed_at": "2017-01-01", "content_hash": "h1"}]
++ch2 = [{"canonical_id": "z", "observed_at": "2017-01-01", "content_hash": "h2"}]
++if DS.snapshot_id(ch1) == DS.snapshot_id(ch2):
++    fails.append("a changed content_hash did not change the snapshot_id")
++print("snapshot_id: content-sensitive (different body / content_hash -> different id; no collision)")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/dataset_snapshot.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/dataset_snapshot.py
+new file mode 100644
+index 000000000..68e6c64ab
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/dataset_snapshot.py
+@@ -0,0 +1,87 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P01-T070 -- Dataset Snapshot + observed_at leakage guard.
++
++A backtest must only see what was KNOWN at the prediction time. A document has two dates: its doc_date
++(when the policy/paper issued -- possibly 2016) and its observed_at (when ADP actually fetched it --
++possibly 2026 during backfill). A 2026-backfilled 2016 document was NOT known in 2018, even though its
++doc_date is 2016. Snapshots therefore key on observed_at, never doc_date, so backfilled history cannot
++pretend to have been known at a historical point in time.
++
++  * snapshot(corpus, as_of) -- the dataset KNOWN as of `as_of`: exactly the docs with observed_at <=
++    as_of (parsed dates), deterministically ordered, with a reproducible snapshot_id.
++  * assert_no_leakage(dataset, as_of) -- RAISE if any doc in the dataset was observed AFTER as_of (a
++    future document leaked in). This is the leakage tripwire that a backtest test must exercise.
++  * rebuild_for_prediction(corpus, prediction) -- rebuild the exact as-of dataset for a prediction's
++    origin_date; reproducible (same origin -> same snapshot_id), so any prediction can reconstruct the
++    dataset it was made on.
++
++Deterministic; no network, no clock (as_of is passed in), no randomness, no production side effects.
++"""
++import hashlib
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++import coverage_asof as CA   # T056: _parse_date (YYYY-MM-DD as-of parser)
++
++
++class LeakageError(AssertionError):
++    """Raised when a dataset contains a document observed AFTER its as-of time (future leakage)."""
++
++
++def _obs(doc):
++    return CA._parse_date(doc.get("observed_at"))
++
++
++def snapshot(corpus, as_of):
++    """The dataset known as of `as_of`: docs with a parsed observed_at <= as_of. Docs with a missing or
++    malformed observed_at are EXCLUDED (we cannot claim they were known). Deterministic order."""
++    q = CA._parse_date(as_of)
++    if q is None:
++        raise ValueError(f"malformed as_of date {as_of!r}")
++    kept = [d for d in corpus if _obs(d) is not None and _obs(d) <= q]
++    kept.sort(key=lambda d: (d["observed_at"], d.get("canonical_id", "")))
++    return {"as_of": as_of, "docs": kept,
++            "snapshot_id": snapshot_id(kept), "n": len(kept)}
++
++
++def _doc_fingerprint(d):
++    """A per-doc content fingerprint: prefer an explicit content_hash/version, else a stable digest of
++    the whole doc -- so two docs with the same id + observed_at but different content never collide."""
++    cv = d.get("content_hash") or d.get("version")
++    if cv:
++        return cv
++    return "doc:" + hashlib.sha256(json.dumps(d, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:16]
++
++
++def snapshot_id(docs):
++    """A reproducible, content-sensitive id over the included docs (canonical_id + observed_at + a
++    per-doc content fingerprint). Order-independent; distinct datasets get distinct ids."""
++    key = [[d.get("canonical_id"), d.get("observed_at"), _doc_fingerprint(d)]
++           for d in sorted(docs, key=lambda d: (d.get("observed_at", ""), d.get("canonical_id", "")))]
++    return "snap:" + hashlib.sha256(json.dumps(key, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:16]
++
++
++def assert_no_leakage(dataset, as_of):
++    """Tripwire: every doc must have been observed at or before as_of. A future-observed doc -> raise.
++    A doc with a missing/malformed observed_at is also a leak (its knowledge time is unverifiable)."""
++    q = CA._parse_date(as_of)
++    if q is None:
++        raise ValueError(f"malformed as_of date {as_of!r}")
++    docs = dataset["docs"] if isinstance(dataset, dict) and "docs" in dataset else dataset
++    offenders = []
++    for d in docs:
++        ob = _obs(d)
++        if ob is None or ob > q:
++            offenders.append({"canonical_id": d.get("canonical_id"), "observed_at": d.get("observed_at")})
++    if offenders:
++        raise LeakageError(f"future/unknown documents leaked into the as-of {as_of} dataset: {offenders}")
++    return True
++
++
++def rebuild_for_prediction(corpus, prediction):
++    """Rebuild the exact dataset a prediction was made on (as of its origin_date). Reproducible."""
++    return snapshot(corpus, prediction["origin_date"])

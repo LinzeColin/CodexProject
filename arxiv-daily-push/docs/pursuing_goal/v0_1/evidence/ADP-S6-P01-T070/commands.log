@@ -1,0 +1,24 @@
+# ADP-S6-P01-T070 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity (reuses T056 coverage_asof._parse_date)
+python3 -c "import sys; sys.path.insert(0,'tools'); import dataset_snapshot, coverage_asof"
+
+# 2. build corpus (incl. a 2016 backfill observed 2026) + snapshot report (deterministic)
+python3 evidence/ADP-S6-P01-T070/build_dataset_snapshot.py
+#   -> as-of 2018-01-01 snapshot ids: ['a', 'b']
+#   -> backfilled-2016 excluded: True
+#   -> rebuild matches: True  snapshot_id: snap:a2b9b696de61d77f
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S6-P01-T070/test-results/t070_verify.py | tee evidence/ADP-S6-P01-T070/test-results/dataset_snapshot_tests.txt
+#   leakage guard: clean passes; injecting future / backfilled / no-observed_at all RAISE
+#   observed_at-based: backfilled 2016 doc (doc_date 2016-05-01 but observed 2026-07-01) excluded
+#   rebuildable: rebuild==snapshot, reproducible, order-independent; later as_of adds 'c'
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t070.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main

@@ -1,0 +1,7 @@
+as-of 2018 snapshot: ['a', 'b']
+leakage guard: clean passes; injecting future / backfilled / no-observed_at all RAISE
+observed_at-based: backfilled 2016 doc (doc_date 2016-05-01 but observed 2026-07-01) excluded
+rebuildable: rebuild==snapshot (snap:a2b9b696de61d77f), reproducible, order-independent; later as_of adds 'c'
+snapshot_id: content-sensitive (different body / content_hash -> different id; no collision)
+
+ACCEPTANCE = PASS

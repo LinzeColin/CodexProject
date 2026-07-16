@@ -1,0 +1,33 @@
+{
+  "task_id": "ADP-S6-P01-T070",
+  "title": "建立 Dataset Snapshot 与 observed_at 泄漏防线",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S6",
+  "phase": "S6-P01",
+  "value": {
+    "user_value": "回测无未来泄漏的地基：数据集快照按 observed_at(非 doc_date)键控，2026 回填的历史文件绝不假装在历史时点已知；注入未来文档立即触发泄漏 tripwire；任何预测可确定性重建其当时数据集。",
+    "value_metric_stage": "S6 预测、校准与失败历史：为 T071 基线、T072 Rolling-origin Backtest 提供防未来泄漏的 as-of 数据集。",
+    "measured": {
+      "leakage_guard": "干净快照过guard;外部注入未来/2016回填/无observed_at文档全RAISE(在外部注入数据集上测非空跑)",
+      "observed_at_keyed": "2016回填文档doc_date2016-05-01<as_of2018但observed2026-07-01被2018快照排除;2018快照恰[a,b]",
+      "rebuildable": "rebuild_for_prediction==snapshot可复现;序无关;不同as_of扩展id不同"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、as_of 传入不读时钟，生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "快照/泄漏防线 + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更）"
+}

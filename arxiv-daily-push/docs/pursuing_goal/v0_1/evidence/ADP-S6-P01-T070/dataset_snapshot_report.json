@@ -1,0 +1,10 @@
+{
+  "as_of": "2018-01-01",
+  "snapshot_ids": [
+    "a",
+    "b"
+  ],
+  "snapshot_id": "snap:a2b9b696de61d77f",
+  "rebuilt_matches": true,
+  "excluded_backfill16": true
+}
