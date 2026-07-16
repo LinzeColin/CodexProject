@@ -1,0 +1,36 @@
+{
+  "task": "ADP-S6-P03-T076",
+  "release_mode": "SHADOW",
+  "stage_user_value_metric": {
+    "stage": "S6 Prediction & Backtest (P03 closeout)",
+    "metric": "对 S6-P03 shadow 预测器（T074 来源静默 + T075 主题加速/中央-地方扩散）做完整期限收尾，只有跨完整期限持续有技能(每窗Brier skill>0)+校准可接受(ECE<=0.15)+用户领先价值明确 才 GO(建议展示);否则 STOP+disable flag",
+    "before": "S6-P03 有两个 shadow 预测器(T074/T075)但无统一 go/stop 门；无跨完整期限的持续技能判定，也无展示/停止的决策产物",
+    "after": "horizon_shadow_closeout 落地：真实 shadow 判为 GO(建议) —— 6窗口 Brier skill 全正(sustained,BSS 0.31-0.47,aggregate 0.387)、ECE 0.093<=0.15、领先价值净14(90d lead);门在技能回退/失校准/无领先价值任一失败时 STOP+disable。GO 仅为建议，实际展示仍受 S6 Exit Owner gate 门控，本任务不触生产。",
+    "quantified": true
+  },
+  "release_decision": {
+    "decision": "GO",
+    "meaning": "recommendation only; not a production action",
+    "show_to_users_gated_on": "S6 Exit Owner gate",
+    "disable_flag": false,
+    "brier_skill_aggregate": 0.386933,
+    "brier_skill_per_window": [0.35, 0.307, 0.357, 0.392, 0.445, 0.467],
+    "calibration_ece": 0.092526,
+    "calibration_max_bin_error_diagnostic": 0.333333,
+    "lead_net_human_value": 14
+  },
+  "cost_metric": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost": 0,
+    "human_maintenance": "closeout 决策工具(horizon_shadow_closeout.py)+生成器+独立验证器+对抗复核的撰写与运行",
+    "unknown_not_zero_note": "生产侧 0 是因为 SHADOW 库层决策任务：不部署、不触 worker/D1/R2/cron；GO 是建议非动作。非未知填 0。"
+  },
+  "rollback": "删除 tools/horizon_shadow_closeout.py 与 evidence/ADP-S6-P03-T076/；无 feature flag、无生产数据改写，回滚为纯删除。disable_flag 字段本身即 rollback 开关（STOP 时 True 保持隐藏）。",
+  "realtime_build_id": "b189d3cc0703",
+  "realtime_regressed": false
+}

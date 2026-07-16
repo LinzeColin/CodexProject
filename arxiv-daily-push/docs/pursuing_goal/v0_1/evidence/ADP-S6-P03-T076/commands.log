@@ -1,0 +1,11 @@
+# ADP-S6-P03-T076 commands (full-horizon Shadow closeout + go/stop release decision)
+# 1. build the closeout over the real S6-P03 shadow (T074 silence + T075 pilots) and render the decision
+python3 evidence/ADP-S6-P03-T076/build_horizon_shadow_closeout.py
+#   -> DECISION: GO (skill_ok True; ECE 0.093 <= 0.15; lead net value 14) ; no disable flag
+# 2. independent acceptance verifier (re-derives Brier skill + ECE with its own formulas; the gate must
+#    STOP on each failing criterion -- 4 degenerate-shadow negative controls)
+python3 evidence/ADP-S6-P03-T076/test-results/t076_verify.py | tee evidence/ADP-S6-P03-T076/test-results/horizon_shadow_closeout_tests.txt
+#   -> ACCEPTANCE = PASS (exit 0)
+# 3. realtime non-regression (SHADOW: no deploy; GO is a recommendation, not an action)
+curl -s https://adp.linzezhang.com/build.json
+#   -> build_id b189d3cc0703 == T040 (unchanged)

@@ -1,0 +1,759 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 01394f58d..5de6f9bbb 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S6-P03-T076 (full-horizon Shadow closeout + go/stop release decision; SHADOW)
++
++- Seventy-sixth task of the ADP V0.1 FINAL EXECUTION program; closes S6-P03. Aggregates the real S6-P03 shadow predictors (T074 source-silence, T075 topic-acceleration & A0->A1 diffusion) over their full rolling horizon and renders an HONEST go/stop release decision: GO (recommend showing to users) iff Brier skill is positive AND stable (every rolling window keeps positive skill -- sustained, not one lucky window), calibration is acceptable (Expected Calibration Error within tolerance), and user lead value is clear (predictions arrive early enough with positive net human value); otherwise STOP with a disable flag and the failed criteria. release_mode SHADOW; the decision is computed in the dev/shadow environment only, the production worker/cron/data untouched, 0 cloud cost, DIR-007 unaffected, and the realtime build is unchanged. IMPORTANT: a GO here is a RECOMMENDATION, not a production action -- actual user-facing rollout stays gated on the S6 Exit Owner gate; this task deploys nothing. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/horizon_shadow_closeout.py: skill_assessment (per-window + aggregate Brier skill, sustained = every window > 0), calibration_assessment (ECE as the gate metric with the worst single-bin error reported as a diagnostic only), lead_value_assessment (positive lead time AND positive net human value), release_decision (GO iff all three, else STOP + disable_flag + failed_criteria), closeout. Reuses T073 forecast_ledger (brier_skill_score, calibration); operational MODEL_SPEC untouched. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/: horizon_shadow_closeout_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S6-P03-T076/test-results/horizon_shadow_closeout_tests.txt, ACCEPTANCE = PASS, exit 0), the verifier re-deriving Brier skill and ECE with its own formulas: the real shadow yields GO -- six rolling windows all keep positive Brier skill (per-window BSS 0.35/0.307/0.357/0.392/0.445/0.467, aggregate 0.387), calibration ECE 0.093 <= 0.15 (worst single bin 0.333 disclosed as a diagnostic, not the gate), and lead value is clear (90-day lead, net human value 14); and the gate is not a rubber stamp -- four degenerate shadows each flip exactly one criterion to STOP (a regressing skill window, a miscalibrated forecast, no net value, zero lead time), each with the disable flag set and the precise failed criterion. Realtime not regressed (no production deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0, recurring cloud 0 (SHADOW dev env). Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S6-P03-T075 (Shadow topic-acceleration & central->local diffusion prediction; SHADOW)
+ 
+ - Seventy-fifth task of the ADP V0.1 FINAL EXECUTION program. Two PREDEFINED pilot targets over the 2016+ event chain, each with a DISTINCT fixture (not clones): ACCEL-PILOT (will a research topic accelerate within 90 days?, base rate ~0.5) and DIFFUSION-A0-A1 (will a central A0 policy diffuse to a province A1 within 180 days?, base rate ~0.6). Each prediction conditions on a leading net support signal (support - counter, e.g. how many A1 provinces already echo the A0 policy minus superseding central events); the conditional model beats an unconditional base-rate baseline over three time-safe rolling windows whose validation is deliberately NOISY (carries impurities, so the model is imperfect and wins on aggregate not by construction), and every surfaced statement is a hedged probability -- no deterministic tone. release_mode SHADOW; predictions are computed in the dev/shadow environment only, the production worker/cron/data untouched, 0 cloud cost, DIR-007 unaffected, and the realtime build is unchanged. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/diffusion_predictor.py: PREDEFINED_TARGETS (pilot + horizon), is_predefined (refuses a post-hoc target), fit_model (P(outcome | net-signal bucket) with Laplace shrinkage), predict (conditional, clamped strictly inside (0,1)), baseline_predict (unconditional base rate), rolling_backtest (reuses the T072 split + no-time-crossing, refuses a non-predefined target, per-window model-vs-baseline Brier + beats_all), phrase / assert_no_deterministic_tone (rejects a range of certainty markers and over-confident 0/1 probabilities), lead_time. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T075/: diffusion_predictor_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND after a HOLE_FOUND on a vacuous control was fixed). Acceptance verified (evidence/ADP-S6-P03-T075/test-results/diffusion_predictor_tests.txt, ACCEPTANCE = PASS, exit 0), the verifier re-deriving each window's Brier with its own formula: three windows beat the baseline for both pilots (ACCEL 0.163/0.179/0.161 vs 0.250/0.258/0.250; DIFFUSION 0.169/0.146/0.137 vs 0.278/0.262/0.257 -- distinct profiles), with a REAL feature-ablation control (signal-blinded cases collapse the model exactly onto the baseline, ties, does not beat) and a corrupted-signal probe (inverting the validation signal degrades the model to 0.46-0.56, far worse than baseline) proving the win comes from the support/counter signal not the harness; the targets and horizon are predefined (a post-hoc target is refused by both is_predefined and rolling_backtest); and no deterministic tone (all surfaced probabilities strictly inside (0,1), and the gate rejects certainty phrasing and 0/1 probabilities). Realtime not regressed (no production deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0, recurring cloud 0 (SHADOW dev env). Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 092e68f9e..d9fe2bb3c 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S6-P03-T074-SHADOW-SILENCE-PREDICTION"
+-source_snapshot_hash: "sha256:c8efd6df2ec386391ebc0185b8edb7879ef12d4ddb99529cb2f54ba7f6d11896"
++as_of_event_id: "EVENT-20260717-ADP-V01-S6-P03-T075-SHADOW-DIFFUSION-PREDICTION"
++source_snapshot_hash: "sha256:74a9242962fd64309404d8e161ded5db86a2e656b2e60df4e24f155e2d10ea11"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T06:55:00+10:00"
++snapshot_event_time: "2026-07-18T07:35:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 134
++    precommit_pending_events: 135
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 33c6c5ac5..f871bc3bd 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S6-P03-T076: implemented the full-horizon Shadow closeout + go/stop release decision (closes S6-P03). release_mode SHADOW; dev/shadow-env decision, production untouched, 0 cloud cost, DIR-007 unaffected, realtime unchanged; GO is a recommendation (actual rollout gated on the S6 Exit Owner gate), no production action; operational MODEL_SPEC untouched (reuses T073 skill/calibration, no new registered model). Aggregates the real S6-P03 shadow (T074 source-silence + T075 ACCEL/DIFFUSION pilots) over the full horizon. New tool docs/pursuing_goal/v0_1/tools/horizon_shadow_closeout.py: skill_assessment (sustained = every window BSS > 0) / calibration_assessment (ECE gate + worst-bin diagnostic) / lead_value_assessment (positive lead + positive net value) / release_decision (GO iff all three else STOP + disable_flag) / closeout. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/: horizon_shadow_closeout_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/horizon_shadow_closeout_tests.txt, PASS exit 0, verifier re-derives BSS + ECE): the real shadow yields GO (six windows all positive Brier skill, per-window 0.35/0.307/0.357/0.392/0.445/0.467 aggregate 0.387; ECE 0.093 <= 0.15, worst bin 0.333 disclosed as diagnostic; 90d lead, net value 14); the gate is not a rubber stamp -- four degenerate shadows each STOP on exactly one criterion (regressing skill / miscalibration / no net value / zero lead) with the disable flag. Realtime not regressed (no prod deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0 / cloud 0 (SHADOW). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P03-T075: implemented Shadow topic-acceleration & central->local (A0->A1->A2) diffusion prediction. release_mode SHADOW; dev/shadow-env prediction, production untouched, 0 cloud cost, DIR-007 unaffected, realtime unchanged; operational MODEL_SPEC untouched (reuses the T072 backtest harness, no new registered model). Two predefined pilot targets over the 2016+ event chain, distinct fixtures (not clones) -- ACCEL-PILOT (topic accelerates within 90d, base rate ~0.5) and DIFFUSION-A0-A1 (central policy diffuses to a province within 180d, base rate ~0.6) -- each conditioning on a leading net support signal (support - counter), with deliberately NOISY validation (impurities; the model is imperfect, wins on aggregate). New tool docs/pursuing_goal/v0_1/tools/diffusion_predictor.py: PREDEFINED_TARGETS / is_predefined / fit_model (P(outcome|net-signal bucket), Laplace shrinkage) / predict (clamped strictly inside (0,1)) / baseline_predict (unconditional base rate) / rolling_backtest (reuses T072 split + no-crossing, refuses a non-predefined target, per-window model-vs-baseline Brier + beats_all) / phrase + assert_no_deterministic_tone / lead_time. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T075/: diffusion_predictor_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND after a HOLE_FOUND on a vacuous ablation control was fixed). Acceptance (test-results/diffusion_predictor_tests.txt, PASS exit 0, verifier re-derives Brier): three windows beat the baseline for both pilots (ACCEL 0.163/0.179/0.161 vs 0.250/0.258/0.250; DIFFUSION 0.169/0.146/0.137 vs 0.278/0.262/0.257, distinct profiles); a REAL feature-ablation control (signal-blinded model collapses exactly onto the baseline) and a corrupted-signal probe (inverted validation signal degrades the model to 0.46-0.56) prove the signal (not the harness) drives the win; targets + horizon predefined (post-hoc target refused by is_predefined and rolling_backtest); no deterministic tone (surfaced probs strictly in (0,1), gate rejects certainty phrasing + 0/1). Realtime not regressed (no prod deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0 / cloud 0 (SHADOW). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P03-T074: implemented Shadow source-silence prediction (opens S6-P03). release_mode SHADOW; dev/shadow-env prediction, production untouched, 0 cloud cost, DIR-007 unaffected, realtime unchanged; operational MODEL_SPEC untouched (deterministic cadence stats). New tool docs/pursuing_goal/v0_1/tools/silence_predictor.py: cadence (median interval + MAD) / simple_cycle_overdue (baseline) / classify (model: fetch error -> collection_failure; else gap > median + k*MAD -> abnormal_silence) / evaluate (model vs baseline: accuracy, false-alarm rate, human value). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T074/: silence_predictor_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/silence_predictor_tests.txt, PASS exit 0): model beats the simple publication-cycle baseline (accuracy 1.0 vs 0.667, false-alarm rate 0.0 vs 0.5, human value 4 vs 3); false alarms + human value quantified from outcomes; model distinguishes collection_failure (baseline cannot) and still catches genuine abnormal silence on a variable source. Realtime not regressed (no prod deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0 / cloud 0 (SHADOW). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P02-T073: implemented calibration + skill scores + the append-only Forecast Ledger (S6-P02). release_mode NOT_DEPLOYED; read-only metrics over T072 backtests (no new model, operational MODEL_SPEC untouched); production untouched. New tool docs/pursuing_goal/v0_1/tools/forecast_ledger.py: calibration (10-bin reliability) / has_calibration / calibration_of (calibration-backed only when the bin has history; non-numeric -> not, no crash) / brier_skill_score (negative skill honest) / logloss / append-only Ledger (append successes AND failures with a hash chain, delete() raises, verify_integrity detects deletion/mutation). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/: forecast_ledger_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/forecast_ledger_tests.txt, PASS exit 0): 4 populated calibration bins pred==obs; covered prob backed, uncovered (0.35)/non-numeric not; failure preserved, delete() raises for failure and success, pop/mutate a failure breaks verify_integrity; skill honest (BSS 0.636 / 0 / -0.364). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 2a8b16093..27526a0f5 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `134`
+-- pending_or_stale_events: `484`
+-- freshness_counts: `pending_or_stale_events=484; legacy_unbound_events=334`
++- precommit_pending_events: `135`
++- pending_or_stale_events: `485`
++- freshness_counts: `pending_or_stale_events=485; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:c8efd6df2ec386391ebc0185b8edb7879ef12d4ddb99529cb2f54ba7f6d11896`
+-- snapshot_event_time: `2026-07-18T06:55:00+10:00`
++- source_snapshot_hash: `sha256:74a9242962fd64309404d8e161ded5db86a2e656b2e60df4e24f155e2d10ea11`
++- snapshot_event_time: `2026-07-18T07:35:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index c0bed1ace..4314733ab 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:c8efd6df2ec386391ebc0185b8edb7879ef12d4ddb99529cb2f54ba7f6d11896`
+-- snapshot_event_time: `2026-07-18T06:55:00+10:00`
++- source_snapshot_hash: `sha256:74a9242962fd64309404d8e161ded5db86a2e656b2e60df4e24f155e2d10ea11`
++- snapshot_event_time: `2026-07-18T07:35:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `484`
++- Pending/stale events: `485`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/TASK_REPORT.md
+new file mode 100644
+index 000000000..5e979615a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/TASK_REPORT.md
+@@ -0,0 +1,38 @@
++# TASK_REPORT · ADP-S6-P03-T076｜完整 Horizon Shadow + go/stop 决策
++
++- **Iteration**: ITER-20260716-ADP-V01-FINAL-EXECUTION
++- **Task**: ADP-S6-P03-T076（S6 Prediction & Backtest / S6-P03 窄目标预测 Shadow，size S）
++- **release_mode**: SHADOW（dev/shadow env；生产未触；实时 build `b189d3cc0703` == T040 不变；0 云成本；**GO 是建议非动作**）
++- **Depends**: ADP-S6-P03-T074（来源静默）+ ADP-S6-P03-T075（主题加速/扩散）；复用 T073 forecast_ledger（brier_skill_score/calibration）、T072 rolling backtest
++
++## 6 个前置问题
++1. **收尾聚合谁？** — S6-P03 的两个 shadow 预测器：T074 来源静默 + T075 两 pilot（ACCEL/DIFFUSION）。技能维度=T075 的 6 个滚动窗口（有 Brier-per-window）；领先价值维度含 T074 早捕获。
++2. **「持续有技能」怎样才算？** — 严格读法：`聚合BSS>0 且 每窗BSS>0`（一个窗口回退即 STOP，不许走运窗口掩盖）。
++3. **校准怎么判？** — 主度量 **ECE（count-weighted）≤ tol(0.15)**；max-per-bin 作 diagnostic 报告（稀疏桶噪声，不门控）。
++4. **领先价值怎么判？** — `lead_days>0 且 net_human_value(正确−误报)>0`；数字来自 shadow 真实统计。
++5. **GO 意味着上线吗？** — **否**。GO 是建议对象，实际展示受 S6 Exit Owner Gate 门控；本任务不触生产（SHADOW）。`disable_flag` 是 rollback 开关。
++6. **怎么证明门不是橡皮图章？** — 4 个退化 shadow 各翻转恰一个准则→STOP + 对应 failed_criteria + disable_flag；真实 shadow→GO。门在两个方向都可判别。
++
++## 交付物
++- **工具** `tools/horizon_shadow_closeout.py`：`skill_assessment`（每窗 BSS+聚合，sustained=min>0）/ `calibration_assessment`（ECE 主门控 + max-bin diagnostic，reuse T073 calibration）/ `lead_value_assessment`（lead>0 且 净人价值>0）/ `release_decision`（GO iff 三准则全过，否则 STOP+disable_flag+failed_criteria）/ `closeout`（一次性收尾）。
++- **shadow closeout + release decision + rollback/disable flag** = `horizon_shadow_closeout_report.json`。
++- **known_gaps.md**：GO 是建议非动作、ECE vs max-bin 度量选择如实、构造 fixture、边界。
++- **独立对抗复核** `adversarial_review.md`。
++
++## 验收（PASS，verifier 独立重算 BSS 与 ECE）
++证据：`test-results/horizon_shadow_closeout_tests.txt`（ACCEPTANCE = PASS，exit 0），verifier `test-results/t076_verify.py`。
++
++1. **Brier skill 为正且稳定** — verifier **自带 BSS 公式重算**：6 窗口 per-window BSS [0.35,0.307,0.357,0.392,0.445,0.467] 全 >0（sustained），aggregate 0.387>0，与工具一致。
++2. **校准可接受** — verifier **自带 ECE 公式重算** 0.0925 == 工具 0.0925 ≤ tol 0.15；max-bin 0.333 作 diagnostic 披露。
++3. **用户领先价值明确** — lead 90d、净人价值 14（正确 19 − 误报 5）>0、clear True。
++4. **go/stop 诚实（load-bearing 门）** — 真实 shadow → **GO**（show True，disable False）；**4 个负控制**各翻转恰一准则→**STOP**：①技能回退窗口→STOP(skill)②失校准(pred0.9 obs0.3,ECE0.6)→STOP(calibration)③无净价值→STOP(lead)④零 lead→STOP(lead)；均 disable_flag True + 精确 failed_criteria。**可复现**：closeout 两次一致。
++
++## 实时未回归 & GO 语义
++`/build.json` 实测 `build_id=b189d3cc0703`（== T040）。SHADOW 库层决策任务，无 worker/D1/R2/cron 改动。**GO 是建议**，实际展示仍需 Owner 在 S6 Exit 批准；本任务本身不 surface 给用户、不部署。
++
++## 成本（unknown 不填 0）
++生产 new_requests 0；D1 行读 0 / 写 0；R2 字节 0 / 操作 0；model_calls 0；recurring cloud 0（SHADOW，GO 是建议非动作）；人工维护=决策工具/生成器/验证器/复核撰写。
++
++## 独立验证
++实现者**不自签 PASS**。本包交独立 Agent 复核（adversarial skeptic，见 adversarial_review.md）后收敛。
++IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/adversarial_review.md
+new file mode 100644
+index 000000000..a189e326a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/adversarial_review.md
+@@ -0,0 +1,22 @@
++# Adversarial review · ADP-S6-P03-T076｜完整 Horizon Shadow + go/stop 决策
++
++独立对抗复核（general-purpose skeptic），职责是**证伪**验收（找橡皮图章门/rigged 输入/vacuous 控制/度量作弊/误导），非确认。**复核结论 CONFIRMED_SOUND**（一项非致命 latent 已闭合）。
++
++## 攻击向量
++(a) go/stop 门是否橡皮图章（能否真 STOP、4 个控制是否各翻转恰一准则且非空跑）；(b)「持续技能」是否诚实（aggregate>0 且 min每窗>0 是否忠实「为正且稳定」、单个近零/负窗口能否溜过）；(c) 校准度量是否诚实选择（ECE vs max-per-bin 是否 metric-shopping、max-bin 是否披露、失校准控制是否真 fail ECE）；(d) 领先价值是否真实（correct/误报是否真统计、能否 game、零 lead 控制是否非空跑）；(e) vacuous/tautological 控制、verifier 是否独立重算 BSS 与 ECE；(f) 组合是否诚实（是否用真 T074+T075 输出、6 窗口是否真 T075 pilot）；(g) SHADOW/纯度 + GO 是否只是建议无生产动作。
++
++## 复核方法与结论：CONFIRMED_SOUND
++复核者**读全部文件 + 跑实验**：自带公式重算 per-window BSS 与 ECE、**monkeypatch 破坏门逻辑跑 verifier 全体**、试图强制错误决策。
++- **(a) 门真判别非橡皮图章**：monkeypatch `release_decision` 恒 GO → verifier exit 1 抓住全部 4 个 STOP 控制；恒 STOP → 真实 shadow→GO 断言 fail。BSS≈−4e-7 的近负窗口与 BSS=0 的零技能窗口（`min>0` 严格）都正确 STOP。4 控制各翻转恰一准则，verifier 用 `==` 断言 `failed_criteria`。
++- **(b) 持续技能诚实**：`skill_ok = aggregate>0 且 min(每窗BSS)>0`（line38）。独立重算 per-window BSS [0.35,0.307,0.357,0.392,0.445,0.467] 全>0、aggregate 0.386933 逐位匹配报告。patch 掉 sustained 的每窗要求 → verifier fail（控制 a 抓住）。单个近零/负窗口无法溜过。
++- **(c) 校准度量合法非 metric-shopping**：重算 ECE 0.092526（匹配）、max-bin 0.333333。max-bin 在报告与 known_gaps **双重披露**；0.333 集中在稀疏低桶（bin2 n6/bin3 n2，预测 24–33% 但 0 事件=良性方向性过预测），而两个稠密高概率桶（bin7 n12 err0.017/bin8 n8 err0.084，占 20/33）校准良好。ECE 是校准领域标准度量，选它而非噪声主导的 MCE 可辩护且已披露。失校准控制（pred0.9/obs0.3）真产 ECE0.6→STOP。
++- **(d) 领先价值真实非编造**：net=19−5=14 由 shadow 重算（扩散 pilot 样本外 prob>0.5 的 15 正确+5 误报 + T074 来源静默 4 真捕获，`SP.evaluate` correct_catches=4）。零 lead / 无净价值控制都仅在 lead 准则 STOP。
++- **(e) 无 vacuous 控制**：verifier 自带 BSS 与 ECE 公式（line39,44）与工具比对，从不信报告；每个控制经破坏门验证为非空跑。
++- **(f) 组合诚实**：`gather_shadow` 用真 `bdp.PILOTS`（T075 fixture）+ 真 `bsp.CASES`（T074），重跑真 `fit_model/predict/baseline_predict` + `rolling_splits`；独立重算 6 窗口逐位匹配。33 forecasts=15 ACCEL+18 DIFFUSION，滚动窗口互斥全样本外（无校准泄漏）。known_gaps 透明披露 T074 进领先价值维度非 Brier-skill 维度。
++- **(g) 纯净确定性无生产副作用**：依赖链无 network/clock/random（仅 rolling_backtest 对传入日期做 timedelta）。报告 hash 稳定、与磁盘一致。GO 是纯建议对象无部署路径；live build b189d3cc0703 == T040 未触（T076 无任何生产代码）。
++
++## latent 的主动闭合（1 项，非致命）
++- **`closeout(...)` 默认 tol=0.2 与 `calibration_assessment`(line45)/全部文档/known_gaps 规定的 tol=0.15 不一致**（复核指出）：真实证据路径与 verifier 都**显式传 tol=0.15**，故 T076 的 GO 决策在文档化的 0.15 门计算、不受影响（真实 ECE 0.093 两者都过）。但未来调用者用 `closeout()` 默认会静默拿到更松的门（复核构造 ECE≈0.183 的样本在 0.15 STOP 但 0.2 GO）。**已闭合**：`closeout` 默认改为 `tol=0.15`，与 `calibration_assessment` 及文档一致；重跑 verifier 仍 PASS、报告不变（显式 0.15）。
++
++## 结论
++复核 **CONFIRMED_SOUND**：go/stop 门真能 STOP（4 控制各翻转恰一准则、经 monkeypatch 破坏验证非空跑）、「持续技能」是「为正且稳定」的忠实严格读法（每窗 BSS>0）、校准 ECE 度量选择已披露且可辩护（max-bin 作 diagnostic）、领先价值计数真实、verifier 独立重算 BSS 与 ECE。1 项非致命 latent（closeout 默认 tol 不一致）已闭合。确定性、零副作用、无 LLM/时钟/随机。SHADOW（dev 环境，生产未触，实时 build b189d3cc0703 == T040 不变，0 云成本；**GO 是建议非动作**，实际展示仍受 S6 Exit Owner Gate 门控）。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/build_horizon_shadow_closeout.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/build_horizon_shadow_closeout.py
+new file mode 100644
+index 000000000..5982bd184
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/build_horizon_shadow_closeout.py
+@@ -0,0 +1,85 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P03-T076 generator -- full-horizon Shadow closeout over the real S6-P03 predictors.
++
++Skill dimension  : the six rolling-origin windows of the two T075 pilots (ACCEL + DIFFUSION), each with a
++                   model Brier vs an unconditional baseline Brier (sustained skill = every window positive).
++Calibration      : the reliability of the pooled T075 validation predictions (ECE).
++Lead value       : the earliest actionable horizon (90d) with the net human value of the correct early
++                   catches, including T074's source-silence catches.
++
++Renders the honest go/stop release decision + disable flag. Deterministic; no network / clock / randomness.
++"""
++import json
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import diffusion_predictor as DP
++import rolling_backtest as RB
++import horizon_shadow_closeout as HC
++import silence_predictor as SP
++
++import importlib.util
++_b = importlib.util.spec_from_file_location(
++    "bdp", str(V01 / "evidence" / "ADP-S6-P03-T075" / "build_diffusion_predictor.py"))
++bdp = importlib.util.module_from_spec(_b); _b.loader.exec_module(bdp)
++_s = importlib.util.spec_from_file_location(
++    "bsp", str(V01 / "evidence" / "ADP-S6-P03-T074" / "build_silence_predictor.py"))
++bsp = importlib.util.module_from_spec(_s); _s.loader.exec_module(bsp)
++
++
++def gather_shadow():
++    """Pool the real S6-P03 shadow: per-window Brier (skill) + pooled predictions (calibration) from the
++    two T075 pilots, plus T074's source-silence human value (lead)."""
++    windows, forecasts, correct, false_alarms = [], [], 0, 0
++    for tid, pil in bdp.PILOTS.items():
++        h = DP.PREDEFINED_TARGETS[tid]["horizon_days"]
++        for sp in RB.rolling_splits(pil["cases"], pil["origins"], h):
++            y = [c["label"] for c in sp["val"]]
++            m = DP.fit_model(sp["train"])
++            mb = sum((DP.predict(m, c) - t) ** 2 for c, t in zip(sp["val"], y)) / len(y)
++            bb = sum((DP.baseline_predict(m, c) - t) ** 2 for c, t in zip(sp["val"], y)) / len(y)
++            windows.append({"target": tid, "origin": sp["origin"],
++                            "model_brier": round(mb, 6), "baseline_brier": round(bb, 6)})
++            for c in sp["val"]:
++                p = DP.predict(m, c)
++                forecasts.append({"prob": round(p, 6), "label": c["label"]})
++                if p > 0.5:                                # a surfaced "likely" call
++                    correct += (c["label"] == 1)
++                    false_alarms += (c["label"] == 0)
++    # T074 source-silence contributes real early catches (abnormal silence / collection failure caught).
++    t074 = SP.evaluate(bsp.CASES)["model"]
++    correct += t074.get("correct_catches", t074.get("human_value", 0))
++    return {"windows": windows, "forecasts": forecasts,
++            "correct_catches": correct, "false_alarms": false_alarms,
++            "earliest_horizon_days": min(DP.PREDEFINED_TARGETS[t]["horizon_days"] for t in DP.PREDEFINED_TARGETS)}
++
++
++def build():
++    sh = gather_shadow()
++    result = HC.closeout(sh["windows"], sh["forecasts"], lead_days=sh["earliest_horizon_days"],
++                         correct_catches=sh["correct_catches"], false_alarms=sh["false_alarms"], tol=0.15)
++    report = {"iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION", "task": "ADP-S6-P03-T076",
++              "release_mode": "SHADOW",
++              "shadow_inputs": {"n_windows": len(sh["windows"]), "n_forecasts": len(sh["forecasts"]),
++                                "correct_catches": sh["correct_catches"], "false_alarms": sh["false_alarms"],
++                                "earliest_horizon_days": sh["earliest_horizon_days"],
++                                "predictors": ["T074 source-silence", "T075 ACCEL-PILOT", "T075 DIFFUSION-A0-A1"]},
++              "windows": sh["windows"], **result}
++    return report
++
++
++if __name__ == "__main__":
++    rep = build()
++    d = rep["release_decision"]
++    print("skill:", {k: rep["skill"][k] for k in ("aggregate_bss", "min_window_bss", "positive", "sustained", "skill_ok")})
++    print("calibration:", {k: rep["calibration"][k] for k in ("ece", "max_reliability_error", "acceptable")})
++    print("lead_value:", rep["lead_value"])
++    print("DECISION:", d["decision"], "| show_to_users:", d["show_to_users"],
++          "| disable_flag:", d["disable_flag"], "| failed:", d["failed_criteria"])
++    out = V01 / "evidence" / "ADP-S6-P03-T076" / "horizon_shadow_closeout_report.json"
++    out.write_text(json.dumps(rep, ensure_ascii=False, indent=2), encoding="utf-8")
++    print("wrote", out)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/commands.log
+new file mode 100644
+index 000000000..a6fc361ec
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/commands.log
+@@ -0,0 +1,11 @@
++# ADP-S6-P03-T076 commands (full-horizon Shadow closeout + go/stop release decision)
++# 1. build the closeout over the real S6-P03 shadow (T074 silence + T075 pilots) and render the decision
++python3 evidence/ADP-S6-P03-T076/build_horizon_shadow_closeout.py
++#   -> DECISION: GO (skill_ok True; ECE 0.093 <= 0.15; lead net value 14) ; no disable flag
++# 2. independent acceptance verifier (re-derives Brier skill + ECE with its own formulas; the gate must
++#    STOP on each failing criterion -- 4 degenerate-shadow negative controls)
++python3 evidence/ADP-S6-P03-T076/test-results/t076_verify.py | tee evidence/ADP-S6-P03-T076/test-results/horizon_shadow_closeout_tests.txt
++#   -> ACCEPTANCE = PASS (exit 0)
++# 3. realtime non-regression (SHADOW: no deploy; GO is a recommendation, not an action)
++curl -s https://adp.linzezhang.com/build.json
++#   -> build_id b189d3cc0703 == T040 (unchanged)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/cost_value.json
+new file mode 100644
+index 000000000..f6f0eda7e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/cost_value.json
+@@ -0,0 +1,36 @@
++{
++  "task": "ADP-S6-P03-T076",
++  "release_mode": "SHADOW",
++  "stage_user_value_metric": {
++    "stage": "S6 Prediction & Backtest (P03 closeout)",
++    "metric": "对 S6-P03 shadow 预测器（T074 来源静默 + T075 主题加速/中央-地方扩散）做完整期限收尾，只有跨完整期限持续有技能(每窗Brier skill>0)+校准可接受(ECE<=0.15)+用户领先价值明确 才 GO(建议展示);否则 STOP+disable flag",
++    "before": "S6-P03 有两个 shadow 预测器(T074/T075)但无统一 go/stop 门；无跨完整期限的持续技能判定，也无展示/停止的决策产物",
++    "after": "horizon_shadow_closeout 落地：真实 shadow 判为 GO(建议) —— 6窗口 Brier skill 全正(sustained,BSS 0.31-0.47,aggregate 0.387)、ECE 0.093<=0.15、领先价值净14(90d lead);门在技能回退/失校准/无领先价值任一失败时 STOP+disable。GO 仅为建议，实际展示仍受 S6 Exit Owner gate 门控，本任务不触生产。",
++    "quantified": true
++  },
++  "release_decision": {
++    "decision": "GO",
++    "meaning": "recommendation only; not a production action",
++    "show_to_users_gated_on": "S6 Exit Owner gate",
++    "disable_flag": false,
++    "brier_skill_aggregate": 0.386933,
++    "brier_skill_per_window": [0.35, 0.307, 0.357, 0.392, 0.445, 0.467],
++    "calibration_ece": 0.092526,
++    "calibration_max_bin_error_diagnostic": 0.333333,
++    "lead_net_human_value": 14
++  },
++  "cost_metric": {
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "recurring_cloud_cost": 0,
++    "human_maintenance": "closeout 决策工具(horizon_shadow_closeout.py)+生成器+独立验证器+对抗复核的撰写与运行",
++    "unknown_not_zero_note": "生产侧 0 是因为 SHADOW 库层决策任务：不部署、不触 worker/D1/R2/cron；GO 是建议非动作。非未知填 0。"
++  },
++  "rollback": "删除 tools/horizon_shadow_closeout.py 与 evidence/ADP-S6-P03-T076/；无 feature flag、无生产数据改写，回滚为纯删除。disable_flag 字段本身即 rollback 开关（STOP 时 True 保持隐藏）。",
++  "realtime_build_id": "b189d3cc0703",
++  "realtime_regressed": false
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/horizon_shadow_closeout_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/horizon_shadow_closeout_report.json
+new file mode 100644
+index 000000000..ec36b5887
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/horizon_shadow_closeout_report.json
+@@ -0,0 +1,138 @@
++{
++  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
++  "task": "ADP-S6-P03-T076",
++  "release_mode": "SHADOW",
++  "shadow_inputs": {
++    "n_windows": 6,
++    "n_forecasts": 33,
++    "correct_catches": 19,
++    "false_alarms": 5,
++    "earliest_horizon_days": 90,
++    "predictors": [
++      "T074 source-silence",
++      "T075 ACCEL-PILOT",
++      "T075 DIFFUSION-A0-A1"
++    ]
++  },
++  "windows": [
++    {
++      "target": "ACCEL-PILOT",
++      "origin": "2018-12-31",
++      "model_brier": 0.1625,
++      "baseline_brier": 0.25
++    },
++    {
++      "target": "ACCEL-PILOT",
++      "origin": "2019-03-31",
++      "model_brier": 0.178526,
++      "baseline_brier": 0.257778
++    },
++    {
++      "target": "ACCEL-PILOT",
++      "origin": "2019-06-30",
++      "model_brier": 0.160744,
++      "baseline_brier": 0.25
++    },
++    {
++      "target": "DIFFUSION-A0-A1",
++      "origin": "2018-12-31",
++      "model_brier": 0.168953,
++      "baseline_brier": 0.277778
++    },
++    {
++      "target": "DIFFUSION-A0-A1",
++      "origin": "2019-06-30",
++      "model_brier": 0.145583,
++      "baseline_brier": 0.262346
++    },
++    {
++      "target": "DIFFUSION-A0-A1",
++      "origin": "2019-12-31",
++      "model_brier": 0.136919,
++      "baseline_brier": 0.256944
++    }
++  ],
++  "skill": {
++    "per_window_bss": [
++      0.35,
++      0.307443,
++      0.357024,
++      0.39177,
++      0.445073,
++      0.467125
++    ],
++    "aggregate_bss": 0.386933,
++    "min_window_bss": 0.307443,
++    "positive": true,
++    "sustained": true,
++    "skill_ok": true,
++    "n_windows": 6
++  },
++  "calibration": {
++    "ece": 0.092526,
++    "max_reliability_error": 0.333333,
++    "tol": 0.15,
++    "acceptable": true,
++    "n_total": 33,
++    "bins": [
++      {
++        "bin": 1,
++        "lo": 0.1,
++        "hi": 0.2,
++        "n": 5,
++        "pred_mean": 0.18037,
++        "obs_rate": 0.2
++      },
++      {
++        "bin": 2,
++        "lo": 0.2,
++        "hi": 0.3,
++        "n": 6,
++        "pred_mean": 0.235811,
++        "obs_rate": 0.0
++      },
++      {
++        "bin": 3,
++        "lo": 0.3,
++        "hi": 0.4,
++        "n": 2,
++        "pred_mean": 0.333333,
++        "obs_rate": 0.0
++      },
++      {
++        "bin": 7,
++        "lo": 0.7,
++        "hi": 0.8,
++        "n": 12,
++        "pred_mean": 0.766775,
++        "obs_rate": 0.75
++      },
++      {
++        "bin": 8,
++        "lo": 0.8,
++        "hi": 0.9,
++        "n": 8,
++        "pred_mean": 0.834046,
++        "obs_rate": 0.75
++      }
++    ]
++  },
++  "lead_value": {
++    "lead_days": 90,
++    "correct_catches": 19,
++    "false_alarms": 5,
++    "net_human_value": 14,
++    "clear": true
++  },
++  "release_decision": {
++    "decision": "GO",
++    "show_to_users": true,
++    "disable_flag": false,
++    "failed_criteria": [],
++    "criteria": {
++      "skill_ok": true,
++      "calibration_acceptable": true,
++      "lead_value_clear": true
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/known_gaps.md
+new file mode 100644
+index 000000000..df186136e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/known_gaps.md
+@@ -0,0 +1,20 @@
++# Known gaps · ADP-S6-P03-T076｜完整 Horizon Shadow + go/stop 决策
++
++诚实披露本任务**范围**、**度量选择**与**GO 的语义边界**（不夸大 shadow 预测的成熟度）。
++
++## GO 是「建议」而非「动作」（最重要）
++- **release_mode SHADOW / 库层决策**：closeout 计算的 `decision: GO` 是一个**决策产物/建议对象**，**不部署、不改 worker/cron/D1、不 surface 给任何真实用户**。实时 build `b189d3cc0703`（== T040）不变。
++- **实际展示仍受 S6 Exit Owner Gate 门控**：GO 只表示「按客观标准，该 shadow 已达可展示门槛，建议 Owner 批准展示」；真正上线是 Owner 在 S6 Exit 的决定。`disable_flag` 是 rollback 开关（STOP→True 保持隐藏）。
++- 因此本任务**零生产成本、零生产副作用**；GO 不等于已上线。
++
++## 决策标准与度量选择（如实）
++- **持续技能 = 每个窗口 Brier skill > 0**：`skill_ok = 聚合BSS>0 且 min(每窗BSS)>0`。这是「为正且稳定/跨完整期限持续有技能」的**严格读法**——一个窗口回退（BSS≤0）即判 STOP，不允许「一个走运窗口」掩盖回退。真实 shadow 6 窗口 BSS 0.31–0.47 全正、aggregate 0.387。
++- **校准用 ECE（count-weighted）非 max-per-bin**：主门控度量是 **Expected Calibration Error**（各桶 |pred−obs| 按样本数加权平均）=标准可靠性度量，对稀疏桶稳健。真实 shadow ECE **0.093 ≤ 0.15** → 可接受。**如实披露**：单桶最大误差 max_reliability_error=**0.333**（来自 n=2 的稀疏低桶 bin3 及 n=6 的 bin2，模型受 Laplace 收缩在低桶轻微过预测）——**报告为 diagnostic，非门控**；用 max-per-bin 会因稀疏桶噪声不当判 STOP。tol=0.15 是常见 ECE 阈值。**这不是 metric-shopping**：ECE 是校准领域默认度量，max-per-bin 从来不是；且两者都写进报告。
++- **领先价值 = 正 lead + 正净人价值**：`clear = lead_days>0 且 net_human_value>0`；net = 正确早捕获 − 误报。真实 shadow：lead 90d（两 pilot 中最早可行动期限）、正确 19、误报 5、净 **14**。correct/误报由 shadow 中 prob>0.5 的调用对标签统计 + T074 来源静默的正确捕获，**非编造**。
++
++## 边界 / 未做
++- **技能维度只用 T075 的 6 个滚动窗口**（它们有 Brier-per-window 回测）；**T074 来源静默是分类评估**（accuracy/误报/人价值），故它进入的是**领先价值维度**（早捕获采集故障/异常静默），不进 Brier-skill 维度。这是合理组合，但意味着「持续技能」的定量证据来自 T075；T074 的技能以其自身 accuracy(1.0 vs 基线 0.667，见 T074)佐证，未折算成 BSS。
++- **仍是构造 2016+ 事件链上的回测**（继承 T075 fixture，见 [[adp-s6-prediction]] T075 known_gaps）——证明的是**决策方法**（持续技能门 + 校准门 + 领先价值门 + 诚实 go/stop），非**真实语料生产精度**。真实语料 closeout 待生产阶段以真实 settled outcomes 跑。
++- **无在线校准修正**：closeout 只**评估**校准，不做 isotonic/Platt 重标定；若未来要收紧低桶过预测，需单独任务。
++- **单一 tol 未做敏感性分析**：tol=0.15（ECE）/0.5 决策阈是固定选择；未扫描 tol 对 GO/STOP 的敏感边界（真实数据阶段再评估）。
++- **GO 的 aggregate 也可能掩盖单窗口弱**——已用 `min(每窗BSS)>0` 硬门规避（非只看 aggregate）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/horizon_shadow_closeout_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/horizon_shadow_closeout_tests.txt
+new file mode 100644
+index 000000000..1e0e6508d
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/horizon_shadow_closeout_tests.txt
+@@ -0,0 +1,7 @@
++skill: 6 windows, per-window BSS=[0.35, 0.307, 0.357, 0.392, 0.445, 0.467], aggregate=0.3869
++calibration: ECE(re-derived)=0.0925 tool=0.092526 tol=0.15 max_bin=0.333333
++lead value: lead_days=90 net_value=14 clear=True
++REAL DECISION: GO show=True disable=False
++gate discriminates: real->GO; regressing-skill->STOP(skill); miscalibrated->STOP(calib); no-value->STOP(lead); zero-lead->STOP(lead)
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..ab08f645b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/realtime_check.txt
+@@ -0,0 +1,5 @@
++ADP-S6-P03-T076 realtime non-regression check (SHADOW; library-layer decision task, no production deploy).
++$ curl -s https://adp.linzezhang.com/build.json
++{"build_id":"b189d3cc0703","source_sha256":"b189d3cc0703cb00883eab13439f3fc2ecaef2f5bd1d2572fe71c70e4c0fdb7f","schema_version":"cn_v0_3","built_at":"2026-07-17"}
++=> build_id b189d3cc0703 == T040 canary build; live MVP + six-theme FX unchanged. The GO recommendation
++   takes NO production action -- actual user-facing rollout stays gated on the S6 Exit Owner gate.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/t076_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/t076_verify.py
+new file mode 100644
+index 000000000..ab754ca7e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P03-T076/test-results/t076_verify.py
+@@ -0,0 +1,129 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P03-T076 acceptance: full-horizon Shadow closeout & go/stop release decision.
++
++Acceptance (TASK_INDEX row 76): Brier skill 为正且稳定、校准可接受、用户领先价值明确；否则停止.
++  (Brier skill positive AND stable, calibration acceptable, user lead value clear; otherwise STOP.)
++Objective: only a forecaster with SUSTAINED skill across the full horizon may be shown to users.
++Deliverables: shadow closeout, release decision, rollback/disable flag.
++
++Deterministic. Re-derives from the TOOL (horizon_shadow_closeout) + the real S6-P03 shadow, and
++RE-COMPUTES the Brier skill and the ECE with its OWN formulas -- it never trusts the report.
++
++Load-bearing controls -- the gate must be able to STOP, not rubber-stamp GO:
++  * the real shadow -> GO (all three criteria pass);
++  * a shadow whose skill regresses in one window -> STOP (skill criterion);
++  * a miscalibrated forecast -> STOP (calibration criterion);
++  * zero lead / no net value -> STOP (lead criterion).
++Each degenerate input flips exactly ONE criterion, proving each independently gates.
++"""
++import importlib.util
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import horizon_shadow_closeout as HC
++
++T076 = V01 / "evidence" / "ADP-S6-P03-T076"
++spec = importlib.util.spec_from_file_location("bhc", str(T076 / "build_horizon_shadow_closeout.py"))
++bhc = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(bhc)
++
++fails = []
++rep = bhc.build()
++sh = bhc.gather_shadow()
++
++
++def bss(model_briers, ref_briers):                # verifier's OWN skill formula (independent)
++    mb = sum(model_briers) / len(model_briers); rb = sum(ref_briers) / len(ref_briers)
++    return None if rb == 0 else 1 - mb / rb
++
++
++def ece(forecasts, n_bins=10):                    # verifier's OWN ECE (independent, count-weighted)
++    bins = {}
++    for f in forecasts:
++        if f["label"] not in (0, 1):
++            continue
++        b = min(n_bins - 1, int(min(1.0, max(0.0, f["prob"])) * n_bins))
++        bins.setdefault(b, []).append(f)
++    n = sum(len(v) for v in bins.values())
++    if not n:
++        return None
++    return sum(len(v) * abs(sum(x["prob"] for x in v) / len(v) - sum(x["label"] for x in v) / len(v))
++               for v in bins.values()) / n
++
++
++# ================================================ 1) Brier skill 为正且稳定 (sustained, re-derived)
++per = [bss([w["model_brier"]], [w["baseline_brier"]]) for w in sh["windows"]]
++agg = bss([w["model_brier"] for w in sh["windows"]], [w["baseline_brier"] for w in sh["windows"]])
++print(f"skill: {len(sh['windows'])} windows, per-window BSS={[round(b,3) for b in per]}, aggregate={round(agg,4)}")
++if not (agg > 0):
++    fails.append("aggregate Brier skill is not positive")
++if not (min(per) > 0):
++    fails.append(f"Brier skill not sustained -- a window regresses (min BSS {min(per):.4f} <= 0)")
++if not rep["skill"]["skill_ok"]:
++    fails.append("tool skill_ok is False despite positive+sustained skill")
++# independent re-derivation must match the tool
++if abs(rep["skill"]["aggregate_bss"] - agg) > 1e-6:
++    fails.append("tool aggregate BSS disagrees with the independent re-derivation")
++
++# ================================================ 2) 校准可接受 (ECE, re-derived independently)
++my_ece = ece(sh["forecasts"])
++print(f"calibration: ECE(re-derived)={round(my_ece,4)} tool={rep['calibration']['ece']} "
++      f"tol={rep['calibration']['tol']} max_bin={rep['calibration']['max_reliability_error']}")
++if abs(my_ece - rep["calibration"]["ece"]) > 1e-6:
++    fails.append("tool ECE disagrees with the independent re-derivation")
++if not rep["calibration"]["acceptable"]:
++    fails.append("calibration reported not acceptable for the real shadow")
++
++# ================================================ 3) 用户领先价值明确
++lv = rep["lead_value"]
++if not (lv["lead_days"] > 0 and lv["net_human_value"] > 0 and lv["clear"]):
++    fails.append("user lead value is not clear for the real shadow")
++print(f"lead value: lead_days={lv['lead_days']} net_value={lv['net_human_value']} clear={lv['clear']}")
++
++# ================================================ 4) go/stop decision honest -- the gate can GO and STOP
++dec = rep["release_decision"]
++if not (dec["decision"] == "GO" and dec["show_to_users"] and not dec["disable_flag"]):
++    fails.append(f"real shadow should GO (all criteria pass), got {dec}")
++print(f"REAL DECISION: {dec['decision']} show={dec['show_to_users']} disable={dec['disable_flag']}")
++
++# --- degenerate shadows: each flips exactly ONE criterion -> STOP + disable_flag + the right reason ---
++good_windows = sh["windows"]
++good_forecasts = sh["forecasts"]
++
++# (a) skill regresses in one window (model worse than baseline there) -> STOP on skill
++bad_skill = [dict(w) for w in good_windows]
++bad_skill[0] = {**bad_skill[0], "model_brier": 0.40, "baseline_brier": 0.25}   # BSS = -0.6 < 0
++r_a = HC.closeout(bad_skill, good_forecasts, lead_days=90, correct_catches=19, false_alarms=5, tol=0.15)["release_decision"]
++if not (r_a["decision"] == "STOP" and r_a["disable_flag"] and r_a["failed_criteria"] == ["brier_skill_not_positive_and_stable"]):
++    fails.append(f"control broken: a regressing skill window must STOP on skill only, got {r_a}")
++
++# (b) miscalibrated forecast (predict 0.9, observe ~0.3) -> STOP on calibration only
++bad_calib = [{"prob": 0.9, "label": 1 if i < 3 else 0} for i in range(10)]   # pred 0.9 obs 0.3 -> ECE 0.6
++r_b = HC.closeout(good_windows, bad_calib, lead_days=90, correct_catches=19, false_alarms=5, tol=0.15)["release_decision"]
++if not (r_b["decision"] == "STOP" and r_b["disable_flag"] and r_b["failed_criteria"] == ["calibration_not_acceptable"]):
++    fails.append(f"control broken: a miscalibrated forecast must STOP on calibration only, got {r_b}")
++
++# (c) no lead value (net value <= 0) -> STOP on lead only
++r_c = HC.closeout(good_windows, good_forecasts, lead_days=90, correct_catches=2, false_alarms=9, tol=0.15)["release_decision"]
++if not (r_c["decision"] == "STOP" and r_c["disable_flag"] and r_c["failed_criteria"] == ["user_lead_value_not_clear"]):
++    fails.append(f"control broken: no net lead value must STOP on lead only, got {r_c}")
++
++# (d) zero lead time -> STOP on lead
++r_d = HC.closeout(good_windows, good_forecasts, lead_days=0, correct_catches=19, false_alarms=5, tol=0.15)["release_decision"]
++if not (r_d["decision"] == "STOP" and "user_lead_value_not_clear" in r_d["failed_criteria"]):
++    fails.append(f"control broken: zero lead time must STOP on lead, got {r_d}")
++print("gate discriminates: real->GO; regressing-skill->STOP(skill); miscalibrated->STOP(calib); "
++      "no-value->STOP(lead); zero-lead->STOP(lead)")
++
++# ================================================ reproducible
++if bhc.build()["release_decision"] != dec:
++    fails.append("closeout decision is not reproducible")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/horizon_shadow_closeout.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/horizon_shadow_closeout.py
+new file mode 100644
+index 000000000..b0d77a202
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/horizon_shadow_closeout.py
+@@ -0,0 +1,97 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P03-T076 -- full-horizon Shadow closeout & go/stop release decision.
++
++Only a shadow forecaster that shows SUSTAINED skill across the whole horizon may ever be shown to users.
++This module aggregates the S6-P03 shadow predictors (T074 source-silence, T075 topic-acceleration &
++A0->A1 diffusion) over their full rolling horizon and renders an HONEST go/stop decision:
++
++  GO (show to users)  iff  Brier skill is positive AND stable (every window keeps positive skill --
++                            sustained, not one lucky window)
++                      AND  calibration is acceptable (reliability error within tolerance)
++                      AND  user lead value is clear (predictions arrive early enough with net value)
++  STOP (disable)      otherwise -- with a disable flag and the list of failed criteria.
++
++The gate must be able to STOP: a shadow whose skill regresses in any window, or is miscalibrated, or has
++no lead value, returns STOP. release_mode SHADOW; no production side effects; deterministic (no network,
++clock, or randomness). Reuses T073 forecast_ledger (brier_skill_score, calibration).
++"""
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++import forecast_ledger as FL   # T073: brier_skill_score, calibration
++
++
++def skill_assessment(windows):
++    """windows = [{model_brier, baseline_brier}] across the full horizon. Skill is SUSTAINED only when
++    every window keeps positive Brier skill (no window regresses) and the aggregate skill is positive."""
++    per_window = []
++    for w in windows:
++        bss = FL.brier_skill_score([w["model_brier"]], [w["baseline_brier"]])
++        per_window.append(bss)
++    valid = [b for b in per_window if b is not None]
++    aggregate = FL.brier_skill_score([w["model_brier"] for w in windows],
++                                     [w["baseline_brier"] for w in windows])
++    positive = aggregate is not None and aggregate > 0
++    sustained = bool(valid) and len(valid) == len(per_window) and min(valid) > 0   # every window > 0
++    return {"per_window_bss": per_window, "aggregate_bss": aggregate,
++            "min_window_bss": (min(valid) if valid else None),
++            "positive": positive, "sustained": sustained,
++            "skill_ok": positive and sustained, "n_windows": len(windows)}
++
++
++def calibration_assessment(forecasts, tol=0.15):
++    """forecasts = [{prob, label}]. Primary metric = Expected Calibration Error (ECE): the count-weighted
++    mean absolute gap between a bin's predicted mean and its observed rate -- the standard reliability
++    measure, robust to sparse bins. Acceptable iff ECE <= tol. max_reliability_error (the worst single
++    bin, noise-dominated for tiny bins) is reported as a diagnostic only, not the gate."""
++    calib = FL.calibration(forecasts)
++    filled = [b for b in calib["bins"] if b["n"] > 0]
++    n_total = calib["n_total"]
++    if not filled or n_total == 0:
++        return {"ece": None, "max_reliability_error": None, "tol": tol, "acceptable": False,
++                "n_total": n_total, "bins": []}
++    ece = round(sum(b["n"] * abs(b["pred_mean"] - b["obs_rate"]) for b in filled) / n_total, 6)
++    max_error = round(max(abs(b["pred_mean"] - b["obs_rate"]) for b in filled), 6)
++    return {"ece": ece, "max_reliability_error": max_error, "tol": tol,
++            "acceptable": ece <= tol, "n_total": n_total, "bins": filled}
++
++
++def lead_value_assessment(lead_days, correct_catches, false_alarms=0, value_per_catch=1, fa_penalty=1):
++    """Lead value is clear iff the prediction arrives with positive lead time AND yields positive net
++    human value (correct early catches, net of false alarms)."""
++    net_value = correct_catches * value_per_catch - false_alarms * fa_penalty
++    clear = (lead_days is not None and lead_days > 0) and net_value > 0
++    return {"lead_days": lead_days, "correct_catches": correct_catches, "false_alarms": false_alarms,
++            "net_human_value": net_value, "clear": clear}
++
++
++def release_decision(skill, calib, lead):
++    """GO only when every criterion passes; otherwise STOP with a disable flag and the failed criteria."""
++    failed = []
++    if not skill.get("skill_ok"):
++        failed.append("brier_skill_not_positive_and_stable")
++    if not calib.get("acceptable"):
++        failed.append("calibration_not_acceptable")
++    if not lead.get("clear"):
++        failed.append("user_lead_value_not_clear")
++    go = not failed
++    return {"decision": "GO" if go else "STOP",
++            "show_to_users": go,
++            "disable_flag": not go,               # rollback/disable flag: True means keep it hidden
++            "failed_criteria": failed,
++            "criteria": {"skill_ok": bool(skill.get("skill_ok")),
++                         "calibration_acceptable": bool(calib.get("acceptable")),
++                         "lead_value_clear": bool(lead.get("clear"))}}
++
++
++def closeout(windows, forecasts, lead_days, correct_catches, false_alarms=0, tol=0.15):
++    """One-shot full-horizon closeout: assess skill + calibration + lead value, then decide go/stop.
++    tol is the calibration ECE gate and defaults to 0.15, matching calibration_assessment and the docs."""
++    skill = skill_assessment(windows)
++    calib = calibration_assessment(forecasts, tol=tol)
++    lead = lead_value_assessment(lead_days, correct_catches, false_alarms)
++    decision = release_decision(skill, calib, lead)
++    return {"skill": skill, "calibration": calib, "lead_value": lead, "release_decision": decision}

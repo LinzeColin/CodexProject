@@ -1,0 +1,5 @@
+ADP-S6-P03-T076 realtime non-regression check (SHADOW; library-layer decision task, no production deploy).
+$ curl -s https://adp.linzezhang.com/build.json
+{"build_id":"b189d3cc0703","source_sha256":"b189d3cc0703cb00883eab13439f3fc2ecaef2f5bd1d2572fe71c70e4c0fdb7f","schema_version":"cn_v0_3","built_at":"2026-07-17"}
+=> build_id b189d3cc0703 == T040 canary build; live MVP + six-theme FX unchanged. The GO recommendation
+   takes NO production action -- actual user-facing rollout stays gated on the S6 Exit Owner gate.
