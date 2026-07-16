@@ -1,0 +1,80 @@
+{
+  "source_ids": [
+    "arxiv-all",
+    "biorxiv",
+    "bmj",
+    "cell",
+    "cell-neuron",
+    "chinanews-scroll",
+    "elife",
+    "fed-monetary",
+    "fed-press",
+    "fed-speeches",
+    "ftc-press",
+    "gnews-us-tech",
+    "ieee-spectrum",
+    "jama",
+    "lancet",
+    "medrxiv",
+    "nature",
+    "nature-biotech",
+    "nature-comms",
+    "nature-machine-intel",
+    "nature-medicine",
+    "nejm",
+    "nist-news",
+    "people-finance",
+    "people-politics",
+    "plos-biology",
+    "pnas",
+    "science-advances",
+    "science-news",
+    "sec-press",
+    "sec-speeches",
+    "sina-china-focus",
+    "whitehouse-actions"
+  ],
+  "by_board": {
+    "board1": [
+      "arxiv-all",
+      "biorxiv",
+      "medrxiv"
+    ],
+    "board2": [
+      "bmj",
+      "cell",
+      "cell-neuron",
+      "elife",
+      "ieee-spectrum",
+      "jama",
+      "lancet",
+      "nature",
+      "nature-biotech",
+      "nature-comms",
+      "nature-machine-intel",
+      "nature-medicine",
+      "nejm",
+      "plos-biology",
+      "pnas",
+      "science-advances",
+      "science-news"
+    ],
+    "board3": [
+      "chinanews-scroll",
+      "people-finance",
+      "people-politics",
+      "sina-china-focus"
+    ],
+    "board4": [
+      "fed-monetary",
+      "fed-press",
+      "fed-speeches",
+      "ftc-press",
+      "gnews-us-tech",
+      "nist-news",
+      "sec-press",
+      "sec-speeches",
+      "whitehouse-actions"
+    ]
+  }
+}

@@ -1,0 +1,978 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index c6f11acd9..8308e9f10 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S1-P02-T013 (migrate live sources into the Registry)
++
++- Thirteenth task of the ADP V0.1 FINAL EXECUTION program (S1-P02), one task per run. Goal: eliminate the multiple source truths (YAML, Worker, D1, UI) WITHOUT changing existing crawl behaviour. NOT_DEPLOYED, 0 recurring cloud cost; docs/data migration only -- no worker/config/D1 change. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: source_registry.json (33 registry rows migrated from the live truth, worker_cloud.js REGISTRY, conforming to the T012 schema), SOURCE_MIGRATION_MAPPING.csv (33 rows, worker id -> registry source_id, 1:1 id-preserving, worker REGISTRY = source of truth), SOURCE_LEGACY_EXCEPTIONS.md (EXC-1 board3 media mislabeled '官方' -> media/official_evidence=false per DRIFT-FACT-006/FACT-003; EXC-2 config vs worker board3 divergence; EXC-3 aggregator/discovery non-official). Acceptance verified: benchmarks/before.json (worker source set) == benchmarks/after.json (registry source set) -- identical source_id set and per-board membership, so crawl behaviour is unchanged; each live source_id is unique (33 unique); and the migrated registry validates VALID against the T012 schema (media are official_evidence=false; no illegal china_official level). Classification: preprint 3, journal 17, media 4, intl_official 8, aggregator 1; official_evidence true 28 / false 5. The worker/D1/UI still hold their own copies -- unifying them via a compiler is T014, and the source drift CI is T015. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S1-P02-T012 (unified Source Registry schema)
+ 
+ - Twelfth task of the ADP V0.1 FINAL EXECUTION program and the first of S1-P02 (Source Registry single source truth), one task per run. Goal: cover the existing five boards and China A0-A2 and distinguish official evidence from discovery. NOT_DEPLOYED, 0 recurring cloud cost; no crawl behaviour, worker, or D1 changed (schema-only). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: schemas/source_registry.schema.json (draft-07: source identity with a unique source_id, the authority enum china_official/intl_official/journal/preprint/media/search/aggregator, an authority_level restricted to A0/A1/A2 for china_official, official_evidence, and enable/health/cursor fields enabled/health_status/cursor/cadence, with conditional rules), tools/validate_source_registry.py, and source_registry.sample.json (7 sources across the five boards + China A0/A1/A2 + a discovery aggregator/media). Acceptance verified (evidence/ADP-S1-P02-T012/test-results/registry_schema_tests.txt): the valid sample is VALID; a china_official source with authority_level A3 is INVALID and one missing the level is INVALID (China official levels outside A0/A1/A2 fail); a media source marked official_evidence=true is INVALID (media can never be official evidence); and a duplicate source_id is INVALID. This is the schema base for DRIFT-FACT-006 (source-truth drift); the actual migration of live sources is T013 and the compiler is T014. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 25d3b28cf..3fe836181 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260716-ADP-V01-S1-P01-T011-GENERATED-STATUS-DRIFT-CHECK"
+-source_snapshot_hash: "sha256:08154fdff9f69707a4760e5708dd6a2dc53eee9fbef13892aad910d2ffd0e3d1"
++as_of_event_id: "EVENT-20260716-ADP-V01-S1-P02-T012-SOURCE-REGISTRY-SCHEMA"
++source_snapshot_hash: "sha256:b1459ba1d92b5441ee36bbcdaece4c34ebd9feed7b560423203e5ed0c46b386a"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-16T14:20:00+10:00"
++snapshot_event_time: "2026-07-16T14:45:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 70
++    precommit_pending_events: 71
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 776bb99be..fe1fe9f19 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-16 V0.1 S1-P02-T013: migrated all live sources into the Registry (S1-P02, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; docs/data only, no worker/config/D1 change, crawl behaviour unchanged. Deliverables under docs/pursuing_goal/v0_1/: source_registry.json (33 rows migrated from the live worker_cloud.js REGISTRY, VALID against the T012 schema), SOURCE_MIGRATION_MAPPING.csv (33 rows, 1:1 id-preserving, worker REGISTRY = source of truth), SOURCE_LEGACY_EXCEPTIONS.md (EXC-1 board3 media mislabeled '官方' -> media/official_evidence=false per DRIFT-FACT-006; EXC-2 config vs worker divergence; EXC-3 aggregator non-official). Acceptance: benchmarks before.json == after.json (source_id set + per-board membership identical -> crawl unchanged); 33 unique source_ids; registry VALID. Classification preprint 3/journal 17/media 4/intl_official 8/aggregator 1; official_evidence true 28/false 5. Compiler is T014, drift CI T015. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P02-T012: defined the unified Source Registry schema (first S1-P02 task, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; schema-only, no crawl/worker/D1 change. Deliverables under docs/pursuing_goal/v0_1/: schemas/source_registry.schema.json (draft-07: source identity + authority enum + authority_level A0/A1/A2 for china_official + official_evidence + enable/health/cursor), tools/validate_source_registry.py, source_registry.sample.json (5 boards + China A0/A1/A2 + discovery). Acceptance (test-results/registry_schema_tests.txt): valid sample VALID; china_official level A3 INVALID; china_official missing level INVALID; media official_evidence=true INVALID; duplicate source_id INVALID. Schema base for DRIFT-FACT-006; migration is T013, compiler T014. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P01-T011: generated the deployment status from the manifest and added a CI drift check, resolving DRIFT-FACT-007 (S1-P01, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; worker/D1/production untouched. Deliverables under docs/pursuing_goal/v0_1/: STATUS_GENERATED.md (machine-generated: cloud-native adp-cloud + D1 + cron, no tunnel/no Mac mirror/no LaunchAgent; build_id bd67a78020a3 from live /build.json, rest from the deployment manifest), tools/generate_status.py, tools/check_status_drift.py. Stale archive: docs/v03/STATUS.yaml R6 marked superseded_by J5_cloud_native + superseded_note. Acceptance (test-results/status_drift_check.txt): check_status_drift PASS; negative test (remove R6 superseded_by) -> DRIFT exit 1 (hand-written old architecture cannot override generated current); restore -> PASS; STATUS.yaml parses; generated build_id == live /build.json. Value (S1): single-truth deployment status. Cost: generate_status optionally pulls /build.json once, D1 0, R2 0, model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id (S1-P01, one task per run). Surgical additive change to deploy/cloudflare/worker_cloud.js (+7/-1): BUILD const + /build.json route + footer build id; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved. build_id/source_sha256 = self-excluding hash. Deployed to Cloudflare adp-cloud (pre 455afd98 rollback target -> post 3816d21c; both domains + cron 30 20 * * * preserved); release_mode PRODUCTION. Acceptance (test-results/deploy_verify.txt): /build.json byte-identical across adp.linzezhang.com and workers.dev (build_id bd67a78020a3, source_sha256, schema_version cn_v0_3); no secret; 7 routes 200 both domains; protected baseline intact both domains (6/6 themes, 3 hero videos, dashboard, fx, ChatGPT). PARAM-ADP-1124 re-attested unchanged (59.6) as adp-v03-j5-cloud-v10. Rollback: wrangler versions deploy 455afd98 (additive, no schema/data change). Value (S1): both domains confirm the live build (FACT-014). Cost: tiny read-only request / D1 0 / R2 0 / model 0 / ~$0 recurring (Free tier). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 4e217cad9..ce384a497 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `70`
+-- pending_or_stale_events: `420`
+-- freshness_counts: `pending_or_stale_events=420; legacy_unbound_events=334`
++- precommit_pending_events: `71`
++- pending_or_stale_events: `421`
++- freshness_counts: `pending_or_stale_events=421; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:08154fdff9f69707a4760e5708dd6a2dc53eee9fbef13892aad910d2ffd0e3d1`
+-- snapshot_event_time: `2026-07-16T14:20:00+10:00`
++- source_snapshot_hash: `sha256:b1459ba1d92b5441ee36bbcdaece4c34ebd9feed7b560423203e5ed0c46b386a`
++- snapshot_event_time: `2026-07-16T14:45:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index d7de15b10..42530d8c6 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:08154fdff9f69707a4760e5708dd6a2dc53eee9fbef13892aad910d2ffd0e3d1`
+-- snapshot_event_time: `2026-07-16T14:20:00+10:00`
++- source_snapshot_hash: `sha256:b1459ba1d92b5441ee36bbcdaece4c34ebd9feed7b560423203e5ed0c46b386a`
++- snapshot_event_time: `2026-07-16T14:45:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `420`
++- Pending/stale events: `421`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/SOURCE_LEGACY_EXCEPTIONS.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/SOURCE_LEGACY_EXCEPTIONS.md
+new file mode 100644
+index 000000000..0bbf66c4b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/SOURCE_LEGACY_EXCEPTIONS.md
+@@ -0,0 +1,25 @@
++# Source Registry · 迁移遗留例外清单（ADP-S1-P02-T013）
++
++> 从线上真身（`worker_cloud.js` 的 `REGISTRY` 数组，33 源）迁入统一 Registry。**不改抓取行为**：迁移前后 source_id 集合与每板块成员完全一致（benchmarks/before==after）。
++> 权威真相 = **worker REGISTRY**（实际运行者）；`config/boards_v0_3.yaml` 与之不一致处按下表登记为例外，不在本任务修复。
++
++## EXC-1 · board3「官方」标签与媒体实体不符（DRIFT-FACT-006 / FACT-003）
++- worker board3（中国政策法规）现有 4 源：`people-politics`、`people-finance`（人民网）、`chinanews-scroll`（中国新闻网）、`sina-china-focus`（新浪），platform 标注「官方 RSS」。
++- **Registry 裁决**：按 T012 schema 与 DIR-002，这四者是**党媒/商业媒体**，非 A0/A1/A2 政府官方源 → `authority_kind: media`、`official_evidence: false`。
++- **缺口**：board3 尚无真正的中国 A0/A1/A2 政府官方源（国务院/部委/省级/重点城市）。补齐属后续来源真相任务（S1-P02 之后 / S2），非本迁移任务。
++
++## EXC-2 · config ↔ worker board3 来源不一致（DRIFT-FACT-006）
++- `config/boards_v0_3.yaml` board3 定义的是 Google News 按部委聚合 + RSSHub 路由（均 official:false）；worker 实际跑的是 EXC-1 的四家媒体。
++- **Registry 裁决**：以 **worker（线上真身）** 为准迁移；config 的 board3 定义与线上不符，登记为待对齐（后续把 config 对齐到 Registry，或反之，由来源真相任务决定）。
++
++## EXC-3 · 聚合/发现源（非官方证据）
++- `gnews-us-tech`（board4，Google News 聚合）→ `authority_kind: aggregator`、`official_evidence: false`（discovery，非官方证据）。
++
++## 非例外（干净迁移）
++- board1 预印本 3（arxiv-all/biorxiv/medrxiv）→ `preprint`, official_evidence=true。
++- board2 顶级期刊 17（nature… ieee-spectrum）→ `journal`, official_evidence=true。
++- board4 美国官方 8（fed-*/sec-*/ftc-press/nist-news/whitehouse-actions）→ `intl_official`, official_evidence=true。
++
++## 汇总
++- 迁入 33 源；official_evidence=true 28（预印本3+期刊17+美国官方8），=false 5（board3 媒体4 + gnews聚合1）。
++- 每个线上 source_id 在 Registry 唯一；迁移前后 fixture 一致。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/SOURCE_MIGRATION_MAPPING.csv b/arxiv-daily-push/docs/pursuing_goal/v0_1/SOURCE_MIGRATION_MAPPING.csv
+new file mode 100644
+index 000000000..1569da875
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/SOURCE_MIGRATION_MAPPING.csv
+@@ -0,0 +1,34 @@
++legacy_location,legacy_id,registry_source_id,board,authority_kind,official_evidence,note
++worker_cloud.js:REGISTRY,arxiv-all,arxiv-all,board1,preprint,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,biorxiv,biorxiv,board1,preprint,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,medrxiv,medrxiv,board1,preprint,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,nature,nature,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,nature-medicine,nature-medicine,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,nature-biotech,nature-biotech,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,nature-machine-intel,nature-machine-intel,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,nature-comms,nature-comms,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,science-advances,science-advances,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,science-news,science-news,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,cell,cell,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,cell-neuron,cell-neuron,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,pnas,pnas,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,lancet,lancet,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,nejm,nejm,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,jama,jama,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,bmj,bmj,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,plos-biology,plos-biology,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,elife,elife,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,ieee-spectrum,ieee-spectrum,board2,journal,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,people-politics,people-politics,board3,media,False,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,people-finance,people-finance,board3,media,False,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,chinanews-scroll,chinanews-scroll,board3,media,False,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,sina-china-focus,sina-china-focus,board3,media,False,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,fed-press,fed-press,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,fed-monetary,fed-monetary,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,fed-speeches,fed-speeches,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,sec-press,sec-press,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,sec-speeches,sec-speeches,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,ftc-press,ftc-press,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,nist-news,nist-news,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,whitehouse-actions,whitehouse-actions,board4,intl_official,True,1:1 id-preserving; worker REGISTRY is the live source-of-truth
++worker_cloud.js:REGISTRY,gnews-us-tech,gnews-us-tech,board4,aggregator,False,1:1 id-preserving; worker REGISTRY is the live source-of-truth
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/TASK_REPORT.md
+new file mode 100644
+index 000000000..3968d99dd
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/TASK_REPORT.md
+@@ -0,0 +1,55 @@
++# TASK_REPORT · ADP-S1-P02-T013｜迁移现有全部来源到 Registry
++
++## 唯一目标（达成）
++不改变现有抓取行为，先消除 YAML、Worker、D1 和 UI 多份来源真相 —— 交付 migration mapping、registry rows、legacy exception list。
++
++## 六个开始前问题（已回答）
++1. 唯一目标：把线上真身（worker REGISTRY 33 源）迁入统一 Registry，消除多份来源真相，抓取行为不变。
++2. 允许修改文件：`docs/pursuing_goal/v0_1/{source_registry.json, SOURCE_MIGRATION_MAPPING.csv, SOURCE_LEGACY_EXCEPTIONS.md}` + 本证据包 + 治理同步。**不改 worker/config/D1**（纯数据迁移文档）。
++3. 绝不能改变：现有抓取行为、六主题、worker、D1 数据（NOT_DEPLOYED，不碰运行时）。
++4. 基线：main `288c76ce`（T012 已合入）；线上真身 = worker_cloud.js REGISTRY（build bd67a78020a3）；33 源，与 D1 cn_sources=33 一致。
++5. 验收：迁移前后 fixture 输出相同；每个线上 source_id 在 Registry 唯一。
++6. 回滚：`git revert <sha>`（纯文档，NOT_DEPLOYED，不改写生产数据）。
++
++## 交付物
++- `source_registry.json` —— 33 条 registry rows（迁自 worker REGISTRY，符合 T012 schema，VALID）。
++- `SOURCE_MIGRATION_MAPPING.csv` —— 33 行 worker id → registry source_id（1:1，保 id；权威真相=worker REGISTRY）。
++- `SOURCE_LEGACY_EXCEPTIONS.md` —— 例外：EXC-1 board3 媒体标「官方」(DRIFT-FACT-006/FACT-003)、EXC-2 config↔worker board3 不一致、EXC-3 聚合源非官方证据。
++
++## 验收结果（实测，见 test-results/ 与 benchmarks/）
++- **迁移前后 fixture 相同**：`benchmarks/before.json`(worker 源集) == `benchmarks/after.json`(registry 源集)——source_id 集合 + 每板块成员完全一致（Python `before==after` = True）。
++- **每个线上 source_id 唯一**：33 个 source_id 无重复（True）。
++- **registry 符合 T012 schema**：`validate_source_registry.py source_registry.json` → **VALID**（media official_evidence=false，无 china_official 非法等级）。
++- **分类**：preprint 3 / journal 17 / media 4 / intl_official 8 / aggregator 1；official_evidence=true 28、=false 5。
++
++## Data / Performance / Visual
++- Data before→after：source set 不变（33→33，逐 id 一致）；仅新增 Registry 表征（authority 分级 + 官方/发现区分）。无 D1 写入。
++- Performance / Visual：N/A（未碰运行时/UI）。
++
++## Value / Cost（S1 = Truth & Content Stabilization）
++- **Value（S1 指标）**：来源真相从「worker/config/D1/UI 多份」收敛为**一份 Registry**（33 源），board3 媒体误标「官方」被纠正为 media/非官方证据（DRIFT-FACT-006 止血基础）；抓取行为零变化。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 行读写 0（未碰 D1，源数与 T006 快照 33 一致，未重查）；R2 0；模型调用 0；人工维护 = 新增/改源改 Registry 一处 + 过 validator。经常性云成本 0。
++
++## Known gaps
++见 known_gaps.md（board3 尚无真 A0-A2 政府源；config 未对齐；worker/D1 未改由 T014 编译器统一）。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（未改 D1 schema；纯文档数据迁移）、`screenshots-or-videos`（无 UI）、`deployment_manifest.preview.json`(T009覆盖) —— N/A。`data-samples` = source_registry.json + benchmarks。
++
++## 完成声明
++```text
++Task: ADP-S1-P02-T013
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: source_registry.json + mapping + exceptions + 证据 + 治理同步（见 changed_files.txt）
++Tests: registry_validate.txt(VALID) + benchmarks before==after(fixture 一致) + source_id 唯一；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 33 源单一 Registry + 迁移映射 + 例外清单；board3 媒体纠正为非官方证据
++Data/Performance/Visual: source set 33→33 逐 id 一致（无 D1 写入）
++Value: 来源真相收敛为一份（DRIFT-FACT-006 止血基础），抓取行为零变化
++Cost: 请求0 / D1 0 / R2 0 / 模型 0 / 人工=新源改 Registry 一处过 validator；经常性成本 0
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED
++Rollback: git revert <sha>（纯文档，未改写生产数据）
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/benchmarks/after.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/benchmarks/after.json
+new file mode 100644
+index 000000000..76aee593a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/benchmarks/after.json
+@@ -0,0 +1,80 @@
++{
++  "source_ids": [
++    "arxiv-all",
++    "biorxiv",
++    "bmj",
++    "cell",
++    "cell-neuron",
++    "chinanews-scroll",
++    "elife",
++    "fed-monetary",
++    "fed-press",
++    "fed-speeches",
++    "ftc-press",
++    "gnews-us-tech",
++    "ieee-spectrum",
++    "jama",
++    "lancet",
++    "medrxiv",
++    "nature",
++    "nature-biotech",
++    "nature-comms",
++    "nature-machine-intel",
++    "nature-medicine",
++    "nejm",
++    "nist-news",
++    "people-finance",
++    "people-politics",
++    "plos-biology",
++    "pnas",
++    "science-advances",
++    "science-news",
++    "sec-press",
++    "sec-speeches",
++    "sina-china-focus",
++    "whitehouse-actions"
++  ],
++  "by_board": {
++    "board1": [
++      "arxiv-all",
++      "biorxiv",
++      "medrxiv"
++    ],
++    "board2": [
++      "bmj",
++      "cell",
++      "cell-neuron",
++      "elife",
++      "ieee-spectrum",
++      "jama",
++      "lancet",
++      "nature",
++      "nature-biotech",
++      "nature-comms",
++      "nature-machine-intel",
++      "nature-medicine",
++      "nejm",
++      "plos-biology",
++      "pnas",
++      "science-advances",
++      "science-news"
++    ],
++    "board3": [
++      "chinanews-scroll",
++      "people-finance",
++      "people-politics",
++      "sina-china-focus"
++    ],
++    "board4": [
++      "fed-monetary",
++      "fed-press",
++      "fed-speeches",
++      "ftc-press",
++      "gnews-us-tech",
++      "nist-news",
++      "sec-press",
++      "sec-speeches",
++      "whitehouse-actions"
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/benchmarks/before.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/benchmarks/before.json
+new file mode 100644
+index 000000000..76aee593a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/benchmarks/before.json
+@@ -0,0 +1,80 @@
++{
++  "source_ids": [
++    "arxiv-all",
++    "biorxiv",
++    "bmj",
++    "cell",
++    "cell-neuron",
++    "chinanews-scroll",
++    "elife",
++    "fed-monetary",
++    "fed-press",
++    "fed-speeches",
++    "ftc-press",
++    "gnews-us-tech",
++    "ieee-spectrum",
++    "jama",
++    "lancet",
++    "medrxiv",
++    "nature",
++    "nature-biotech",
++    "nature-comms",
++    "nature-machine-intel",
++    "nature-medicine",
++    "nejm",
++    "nist-news",
++    "people-finance",
++    "people-politics",
++    "plos-biology",
++    "pnas",
++    "science-advances",
++    "science-news",
++    "sec-press",
++    "sec-speeches",
++    "sina-china-focus",
++    "whitehouse-actions"
++  ],
++  "by_board": {
++    "board1": [
++      "arxiv-all",
++      "biorxiv",
++      "medrxiv"
++    ],
++    "board2": [
++      "bmj",
++      "cell",
++      "cell-neuron",
++      "elife",
++      "ieee-spectrum",
++      "jama",
++      "lancet",
++      "nature",
++      "nature-biotech",
++      "nature-comms",
++      "nature-machine-intel",
++      "nature-medicine",
++      "nejm",
++      "plos-biology",
++      "pnas",
++      "science-advances",
++      "science-news"
++    ],
++    "board3": [
++      "chinanews-scroll",
++      "people-finance",
++      "people-politics",
++      "sina-china-focus"
++    ],
++    "board4": [
++      "fed-monetary",
++      "fed-press",
++      "fed-speeches",
++      "ftc-press",
++      "gnews-us-tech",
++      "nist-news",
++      "sec-press",
++      "sec-speeches",
++      "whitehouse-actions"
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/commands.log
+new file mode 100644
+index 000000000..128c6acac
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/commands.log
+@@ -0,0 +1,17 @@
++# ADP-S1-P02-T013 commands.log · migrate all live sources into the Registry
++# base commit 288c76ce (T012 merged) ; docs/data migration only, NOT_DEPLOYED, no worker/D1 change
++
++## extract live truth = worker_cloud.js REGISTRY (33 sources)
++$ python3 (regex parse const REGISTRY) -> 33 sources ; by board board1=3 board2=17 board3=4 board4=9 (== D1 cn_sources 33)
++
++## build registry rows (classify authority; board3 media -> official_evidence=false = DRIFT-FACT-006 fix)
++# preprint 3 / journal 17 / media 4 / intl_official 8 / aggregator 1 ; official_evidence true=28 false=5
++
++## acceptance
++$ python3 tools/validate_source_registry.py source_registry.json   -> RESULT: VALID (33 sources)
++# fixture: benchmarks/before.json (worker source set) == benchmarks/after.json (registry source set) -> True
++# each live source_id unique -> True
++
++## 治理门（提交步骤记录）
++$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
++$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/cost_value.json
+new file mode 100644
+index 000000000..fac26b831
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/cost_value.json
+@@ -0,0 +1,9 @@
++{
++  "task": "ADP-S1-P02-T013",
++  "stage": "S1 Truth & Content Stabilization",
++  "release_mode": "NOT_DEPLOYED",
++  "value_metric_s1": "source truth converged from multiple copies (worker/config/D1/UI) into one Registry of 33 sources; board3 media mislabeled '官方' corrected to media/non-official-evidence (DRIFT-FACT-006 stabilization base); crawl behaviour unchanged (fixture before==after)",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "one Registry edit per source add/change + validator"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "fixture_equivalence": "benchmarks/before.json == benchmarks/after.json (source_id set + per-board membership); 33 unique source_ids; registry VALID against T012 schema"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/known_gaps.md
+new file mode 100644
+index 000000000..8398190eb
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S1-P02-T013
++
++- **board3 尚无真 A0-A2 政府官方源**：本迁移把现有 board3 四家媒体（人民网/中新网/新浪）纠正为 media/official_evidence=false（EXC-1）；真正的国务院/部委/省级/重点城市 A0-A2 源尚未加入，属后续来源真相任务（DIR-002）。
++- **config/boards_v0_3.yaml 未对齐**（EXC-2）：config board3 定义与 worker 线上不同；本任务以 worker 为准迁移，未改 config；对齐由后续任务处理。
++- **worker/D1/UI 仍各自持源**：本任务只产出权威 Registry（数据），尚未让 worker/D1/UI 从 Registry 编译生成——那是 **T014 Registry 编译器**（runtime/UI/seed SQL 由一个源生成）。故「消除多份真相」在 T013 完成登记、在 T014 完成机制。
++- **platform/website 字段迁移时留空**：为聚焦 id/board/authority/feed 的等价性，platform/website 未逐条回填（可后续从 worker 补全）；不影响 fixture 等价与 schema 合法。
++- **未重查 D1**：源数以 T006 快照（cn_sources=33）与 worker（33）一致为据，未再连 D1（0 D1 读）。
++- 独立验证：以 IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION 结束，实现者不自签。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/test-results/registry_validate.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/test-results/registry_validate.txt
+new file mode 100644
+index 000000000..30d1aa4e9
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T013/test-results/registry_validate.txt
+@@ -0,0 +1,2 @@
++registry: source_registry.json (33 sources)
++RESULT: VALID
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/source_registry.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/source_registry.json
+new file mode 100644
+index 000000000..6ff88add6
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/source_registry.json
+@@ -0,0 +1,501 @@
++{
++  "registry_version": "adp.source_registry.migrated.v0_1_from_worker_288c76ce",
++  "generated_at": null,
++  "sources": [
++    {
++      "source_id": "arxiv-all",
++      "name": "arXiv 全站（所有领域）",
++      "board": "board1",
++      "platform": "",
++      "website": "",
++      "feed_url": "",
++      "method": "arxiv",
++      "authority_kind": "preprint",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "biorxiv",
++      "name": "bioRxiv 生物预印本",
++      "board": "board1",
++      "platform": "",
++      "website": "",
++      "feed_url": "",
++      "method": "api",
++      "authority_kind": "preprint",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "medrxiv",
++      "name": "medRxiv 医学预印本",
++      "board": "board1",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://connect.medrxiv.org/medrxiv_xml.php?subject=all",
++      "method": "rss",
++      "authority_kind": "preprint",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "nature",
++      "name": "Nature 本刊",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.nature.com/nature.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "nature-medicine",
++      "name": "Nature Medicine",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.nature.com/nm.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "nature-biotech",
++      "name": "Nature Biotechnology",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.nature.com/nbt.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "nature-machine-intel",
++      "name": "Nature Machine Intelligence",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.nature.com/natmachintell.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "nature-comms",
++      "name": "Nature Communications",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.nature.com/ncomms.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "science-advances",
++      "name": "Science Advances",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "science-news",
++      "name": "Science 新闻",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.science.org/rss/news_current.xml",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "cell",
++      "name": "Cell 本刊",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.cell.com/cell/current.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "cell-neuron",
++      "name": "Neuron",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.cell.com/neuron/current.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "pnas",
++      "name": "PNAS 最新",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=pnas",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "lancet",
++      "name": "The Lancet",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.thelancet.com/rssfeed/lancet_current.xml",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "nejm",
++      "name": "NEJM",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "jama",
++      "name": "JAMA",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://jamanetwork.com/rss/site_3/67.xml",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "bmj",
++      "name": "The BMJ",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.bmj.com/rss/recent.xml",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "plos-biology",
++      "name": "PLOS Biology",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://journals.plos.org/plosbiology/feed/atom",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "elife",
++      "name": "eLife",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://elifesciences.org/rss/recent.xml",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "ieee-spectrum",
++      "name": "IEEE Spectrum",
++      "board": "board2",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://spectrum.ieee.org/feeds/feed.rss",
++      "method": "rss",
++      "authority_kind": "journal",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "people-politics",
++      "name": "人民网 · 时政（政策/政府）",
++      "board": "board3",
++      "platform": "",
++      "website": "",
++      "feed_url": "http://www.people.com.cn/rss/politics.xml",
++      "method": "rss",
++      "authority_kind": "media",
++      "official_evidence": false,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "people-finance",
++      "name": "人民网 · 经济与财经政策",
++      "board": "board3",
++      "platform": "",
++      "website": "",
++      "feed_url": "http://www.people.com.cn/rss/finance.xml",
++      "method": "rss",
++      "authority_kind": "media",
++      "official_evidence": false,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "chinanews-scroll",
++      "name": "中国新闻网 · 滚动新闻",
++      "board": "board3",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.chinanews.com.cn/rss/scroll-news.xml",
++      "method": "rss",
++      "authority_kind": "media",
++      "official_evidence": false,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "sina-china-focus",
++      "name": "新浪 · 国内焦点",
++      "board": "board3",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://rss.sina.com.cn/news/china/focus15.xml",
++      "method": "rss",
++      "authority_kind": "media",
++      "official_evidence": false,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "fed-press",
++      "name": "美联储新闻稿",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.federalreserve.gov/feeds/press_all.xml",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "fed-monetary",
++      "name": "美联储货币政策",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.federalreserve.gov/feeds/press_monetary.xml",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "fed-speeches",
++      "name": "美联储讲话",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.federalreserve.gov/feeds/speeches.xml",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "sec-press",
++      "name": "SEC 新闻稿",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.sec.gov/news/pressreleases.rss",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "sec-speeches",
++      "name": "SEC 讲话与声明",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.sec.gov/news/statements.rss",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "ftc-press",
++      "name": "FTC 新闻稿",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.ftc.gov/feeds/press-release.xml",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "nist-news",
++      "name": "NIST",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.nist.gov/news-events/news/rss.xml",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "whitehouse-actions",
++      "name": "白宫总统令",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://www.whitehouse.gov/presidential-actions/feed/",
++      "method": "rss",
++      "authority_kind": "intl_official",
++      "official_evidence": true,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    },
++    {
++      "source_id": "gnews-us-tech",
++      "name": "美国科技监管与反垄断",
++      "board": "board4",
++      "platform": "",
++      "website": "",
++      "feed_url": "https://news.google.com/rss/search?q=US%20tech%20regulation%20OR%20antitrust%20FTC%20SEC&hl=en-US&gl=US&ceid=US:en",
++      "method": "rss",
++      "authority_kind": "aggregator",
++      "official_evidence": false,
++      "enabled": true,
++      "health_status": "unknown",
++      "cursor": null,
++      "cadence": "daily"
++    }
++  ]
++}
+\ No newline at end of file

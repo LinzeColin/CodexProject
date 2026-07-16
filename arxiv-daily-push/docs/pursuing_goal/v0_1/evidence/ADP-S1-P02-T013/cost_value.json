@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S1-P02-T013",
+  "stage": "S1 Truth & Content Stabilization",
+  "release_mode": "NOT_DEPLOYED",
+  "value_metric_s1": "source truth converged from multiple copies (worker/config/D1/UI) into one Registry of 33 sources; board3 media mislabeled '官方' corrected to media/non-official-evidence (DRIFT-FACT-006 stabilization base); crawl behaviour unchanged (fixture before==after)",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "one Registry edit per source add/change + validator"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "fixture_equivalence": "benchmarks/before.json == benchmarks/after.json (source_id set + per-board membership); 33 unique source_ids; registry VALID against T012 schema"
+}

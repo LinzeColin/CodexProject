@@ -1,0 +1,17 @@
+# ADP-S1-P02-T013 commands.log · migrate all live sources into the Registry
+# base commit 288c76ce (T012 merged) ; docs/data migration only, NOT_DEPLOYED, no worker/D1 change
+
+## extract live truth = worker_cloud.js REGISTRY (33 sources)
+$ python3 (regex parse const REGISTRY) -> 33 sources ; by board board1=3 board2=17 board3=4 board4=9 (== D1 cn_sources 33)
+
+## build registry rows (classify authority; board3 media -> official_evidence=false = DRIFT-FACT-006 fix)
+# preprint 3 / journal 17 / media 4 / intl_official 8 / aggregator 1 ; official_evidence true=28 false=5
+
+## acceptance
+$ python3 tools/validate_source_registry.py source_registry.json   -> RESULT: VALID (33 sources)
+# fixture: benchmarks/before.json (worker source set) == benchmarks/after.json (registry source set) -> True
+# each live source_id unique -> True
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
