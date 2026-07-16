@@ -1,0 +1,20 @@
+# ADP-S4-P02-T048 commands (A0 history QA Gate; dev-env, NOT_DEPLOYED)
+
+# 1. attachment discovery + readback (dev-env live fetch; not the worker -> 0 cloud cost)
+#    stats.gov.cn zxfb monthly releases (.xlsx/.xls data tables) + gov.cn /files/ (.zip/.pdf)
+python3 evidence/ADP-S4-P02-T048/discover_attachments.py
+#    -> discovered 150 distinct candidate attachment URLs; readable 93 (distinct sha256 93)
+python3 evidence/ADP-S4-P02-T048/topup_attachments.py
+#    -> retried the non-readable (mostly transient SSL handshake timeouts); readable >= 100 distinct
+
+# 2. deterministic QA gate (no network; reads cached attachment_readback.json + corpus)
+python3 tools/a0_qa_gate.py            # attachment / revision / as-of / gap gates -> all_passed
+
+# 3. acceptance verifier
+python3 evidence/ADP-S4-P02-T048/test-results/t048_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED: production worker/cron/data untouched)
+curl -s https://adp.linzezhang.com/build.json     # b189d3cc0703 == T040 (unchanged, no deploy)
+curl -s -o /dev/null -w '%{http_code}' https://adp.linzezhang.com/   # 200
+
+# corpus: Wave 1 (T046, 7 docs) + Wave 2 (T047, 11 docs) = 18 real A0 originals, gov-cn-fagui + stats-gov

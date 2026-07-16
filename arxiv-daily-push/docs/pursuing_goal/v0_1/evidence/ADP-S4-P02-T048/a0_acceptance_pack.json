@@ -1,0 +1,111 @@
+{
+  "task": "ADP-S4-P02-T048",
+  "acceptance": "100 attachments readable; revision-chain & as-of samples correct; 0 unexplained P0 gaps",
+  "corpus_docs": 18,
+  "gates": [
+    {
+      "name": "attachment_gate",
+      "target": 100,
+      "attempted": 150,
+      "readable_count": 115,
+      "distinct_sha256": 115,
+      "by_source": {
+        "null": 2,
+        "stats-gov": 113
+      },
+      "by_magic": {
+        "zip/ooxml": 83,
+        "pdf": 1,
+        "ole/msoffice": 31
+      },
+      "passed": true,
+      "reason": "ok"
+    },
+    {
+      "name": "revision_gate",
+      "samples": [
+        {
+          "kind": "idempotent_no_phantom",
+          "versions": 1,
+          "actions": [
+            "created_v1",
+            "skipped_no_change",
+            "skipped_no_change"
+          ],
+          "correct": true
+        },
+        {
+          "kind": "noise_only_no_version",
+          "versions": 1,
+          "last_action": "skipped_no_change",
+          "correct": true
+        },
+        {
+          "kind": "substantive_body_new_version",
+          "versions": 2,
+          "distinct_hash": true,
+          "correct": true
+        },
+        {
+          "kind": "status_flip_new_version",
+          "versions": 2,
+          "final_status": "已废止",
+          "correct": true
+        },
+        {
+          "kind": "attachment_change_new_version",
+          "versions": 2,
+          "correct": true
+        }
+      ],
+      "passed": true,
+      "reason": "ok"
+    },
+    {
+      "name": "as_of_gate",
+      "target_samples": 100,
+      "chains": 15,
+      "samples": 495,
+      "future_leakage": 0,
+      "oracle_disagreements": 0,
+      "ordering_ok": true,
+      "control_catches_broken": true,
+      "malformed_rejected": true,
+      "violations": [],
+      "passed": true,
+      "reason": "ok"
+    },
+    {
+      "name": "gap_gate",
+      "cells": 140,
+      "months": 35,
+      "reasons": {
+        "source_not_yet_active": 102,
+        "fetch_failed": 2,
+        "covered": 7,
+        "not_backfilled": 29
+      },
+      "unexplained_p0": 0,
+      "attempted_cells": 9,
+      "silent_holes": 0,
+      "silent_hole_sample": [],
+      "fetch_failed_surfaced": 2,
+      "attempted_failures": 2,
+      "control_detects_silent_hole": true,
+      "scope_note": "detecting truly-published-but-missed months needs a ground-truth index (T056 Coverage Debt)",
+      "passed": true,
+      "reason": "ok"
+    }
+  ],
+  "all_passed": true,
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "dev-env live attachment readback (0 cloud cost)"
+  },
+  "deployment": "NOT_DEPLOYED (QA gate; production worker/cron untouched)"
+}

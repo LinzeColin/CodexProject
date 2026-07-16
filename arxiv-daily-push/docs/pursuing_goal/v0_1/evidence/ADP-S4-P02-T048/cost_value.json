@@ -1,0 +1,20 @@
+{
+  "task": "ADP-S4-P02-T048",
+  "stage": "S4 (2016+ A0/A1/A2 Expansion)",
+  "value": {
+    "user_value": "A0 history QA Gate: proves the backfilled 2016+ A0 history is not just URLs but real, readable, versioned, and point-in-time-resolvable content -- readable attachments (real binary files verified by magic bytes + sha256), correct revision chains (idempotent re-observation makes no phantom version; a genuine body edit / status flip 现行有效->已废止 / attachment change each make exactly one new version), correct as-of resolution (a query never resolves to a future version), and 0 unexplained P0 coverage gaps.",
+    "why_it_matters": "This is the quality gate that lets later stages (as-of history query base T056, province/city expansion T049-T051) trust the A0 corpus. Without it, 'we have the history' could silently mean 'we have URLs that 404'."
+  },
+  "cost": {
+    "note": "unknown != 0; the QA gate ran deterministically over the corpus, and the attachment readback ran from the DEV environment (not the worker) -> 0 cloud cost, DIR-007 unaffected.",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "dev-env live attachment readback + deterministic gate authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (QA gate; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

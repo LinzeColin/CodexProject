@@ -1,0 +1,12 @@
+[attachment_gate] readable=115 distinct_sha256=115 target=100 by_source={None: 2, 'stats-gov': 113} by_magic={'zip/ooxml': 83, 'pdf': 1, 'ole/msoffice': 31}
+[revision_gate] passed=True
+    - idempotent_no_phantom: correct=True
+    - noise_only_no_version: correct=True
+    - substantive_body_new_version: correct=True
+    - status_flip_new_version: correct=True
+    - attachment_change_new_version: correct=True
+[as_of_gate] chains=15 samples=495 future_leakage=0 oracle_disagreements=0 ordering_ok=True control_catches_broken=True malformed_rejected=True
+[gap_gate] cells=140 months=35 attempted=9 silent_holes=0 fetch_failed_surfaced=2/2 control_detects_silent_hole=True unexplained_p0=0 reasons={'source_not_yet_active': 102, 'fetch_failed': 2, 'covered': 7, 'not_backfilled': 29}
+
+corpus_docs = 18 | all_gates_passed = True
+ACCEPTANCE = PASS
