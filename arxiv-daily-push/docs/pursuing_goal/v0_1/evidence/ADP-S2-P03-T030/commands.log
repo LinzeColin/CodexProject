@@ -1,0 +1,26 @@
+# ADP-S2-P03-T030 commands (orchestration decision + reliability/cost experiment; NO production change)
+# base: main 6f165a14 (T029)
+
+# 1) deliverables authored
+#    tools/idempotency_harness.py   (at-least-once channel + idempotent processor + DLQ; operation-cost benchmark)
+#    ORCHESTRATION_ADR.md            (Cron+Queue vs Workflows ADR; DECISION = keep free Path A)
+
+# 2) acceptance test
+python3 evidence/ADP-S2-P03-T030/test-results/t030_verify.py | tee evidence/ADP-S2-P03-T030/test-results/orchestration_tests.txt
+# -> reliability sim: 40 tasks / 55 deliveries (duplicates) / 36 effects applied once / 4 poison -> DLQ
+# ->   duplicates_happened True | exactly_once_effect True | poison_all_in_dlq True | no_effect_applied_twice True
+# -> cost: A free (DIR-007 ok) ; B (Queues) + C (Workflows) both require Workers Paid (DIR-007 blocked)
+# -> decision: keep Path A (free Cron+idempotent+D1 DLQ); do NOT adopt Queues/Workflows
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) committed machine report
+python3 tools/idempotency_harness.py --out evidence/ADP-S2-P03-T030/orchestration_report.json
+
+# DECISION (ADR): the free-tier Cron + in-worker idempotent + D1 retry/DLQ path already gives exactly-once
+# effect under at-least-once delivery. Cloudflare Queues AND Workflows both require the Workers Paid plan,
+# which DIR-007 forbids without explicit Owner authorization, and add per-op/per-step cost + maintenance with
+# no reliability gain at 1 cron/day. => keep the simple free path. Revisit only on a real reliability gap AND
+# Owner paid authorization.
+
+# NOT_DEPLOYED: no wrangler / no D1 / no R2 / no worker / no orchestration change.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

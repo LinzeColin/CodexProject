@@ -1,0 +1,10 @@
+{
+  "task": "ADP-S2-P03-T030", "stage": "S2 Durable Evidence & Versioning", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "an evidence-backed orchestration decision: the free-tier path (Cron + in-worker idempotent processing + a D1 retry/DLQ ledger) already delivers exactly-once effect under at-least-once delivery, so Cloudflare Queues and Workflows -- both requiring the paid plan and forbidden by DIR-007 without Owner authorization -- are NOT adopted; the daily pipeline stays simple, free, and reliable",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "decision + simulation only; no production orchestration change; the D1 retry/DLQ ledger is designed, not yet wired"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "decision": "KEEP Path A (free Cron + idempotent + D1 retry/DLQ). Do NOT adopt Queues/Workflows.",
+  "reliability_simulation": {"n_tasks": 40, "deliveries": 55, "duplicates_happened": true, "applied_effects": 36, "dlq": 4, "exactly_once_effect": true, "poison_all_in_dlq": true, "no_effect_applied_twice": true},
+  "cost_benchmark_month": {"messages": 390, "A_free_queue_ops": 0, "A_free_workflow_steps": 0, "B_paid_queue_ops": 1170, "C_paid_workflow_steps": 480, "B_and_C_require_paid_plan": true, "dir007_free_tier_ok": {"A": true, "B": false, "C": false}},
+  "acceptance": {"at_least_once_envelope": true, "dlq": true, "idempotency_exactly_once": true, "cost_benchmark": true, "adr_kept_simple_path": true, "workflows_only_if_reliability_beats_cost": true}
+}

@@ -1,0 +1,5 @@
+reliability sim: {'n_tasks': 40, 'deliveries': 55, 'applied_effects': 36, 'dlq': 4, 'duplicates_happened': True, 'exactly_once_effect': True, 'poison_all_in_dlq': True, 'no_effect_applied_twice': True}
+cost paths: A free = True True | B paid = True | C paid = True
+
+decision: keep Path A (free Cron+idempotent+D1 DLQ); do NOT adopt Queues/Workflows (paid, DIR-007-blocked, no reliability gain)
+ACCEPTANCE = PASS

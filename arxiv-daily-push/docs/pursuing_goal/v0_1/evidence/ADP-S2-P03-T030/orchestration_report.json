@@ -1,0 +1,66 @@
+{
+  "reliability_simulation": {
+    "n_tasks": 40,
+    "distinct_keys": 40,
+    "deliveries": 55,
+    "applied_effects": 36,
+    "dlq": 4,
+    "duplicates_happened": true,
+    "exactly_once_effect": true,
+    "poison_all_in_dlq": true,
+    "no_effect_applied_twice": true,
+    "d1_reads": 55,
+    "d1_writes": 36
+  },
+  "cost_benchmark": {
+    "workload": {
+      "feeds_per_run": 13,
+      "runs_per_month": 30,
+      "messages_per_month": 390
+    },
+    "paths": {
+      "A_cron_d1_idempotent_FREE": {
+        "requires_paid_plan": false,
+        "plan": "Free (Cron Triggers + D1 + Workers free tier)",
+        "queue_operations_month": 0,
+        "workflow_steps_month": 0,
+        "d1_ops_month_approx": 780,
+        "extra_steps": 0,
+        "maintenance": "one worker + one D1 retry/DLQ table",
+        "dir007_free_tier_ok": true
+      },
+      "B_cron_queue_PAID": {
+        "requires_paid_plan": true,
+        "plan": "Workers Paid ($5/mo min) -- Queues need paid",
+        "queue_operations_month": 1170,
+        "workflow_steps_month": 0,
+        "d1_ops_month_approx": 780,
+        "extra_steps": 390,
+        "maintenance": "worker + queue consumer + DLQ queue + D1",
+        "dir007_free_tier_ok": false
+      },
+      "C_workflows_PAID": {
+        "requires_paid_plan": true,
+        "plan": "Workers Paid ($5/mo min) -- Workflows need paid",
+        "queue_operations_month": 0,
+        "workflow_steps_month": 480,
+        "d1_ops_month_approx": 780,
+        "extra_steps": 480,
+        "maintenance": "workflow definition + step retries + versioning",
+        "dir007_free_tier_ok": false
+      }
+    },
+    "decision_inputs": {
+      "reliability_gap_on_A": "none observed: at-least-once + idempotent key + D1 DLQ = exactly-once effect (see simulate)",
+      "scale": "1 cron/day over ~13 feeds -- low volume, no cross-step durability need",
+      "dir007": "Queues and Workflows both require leaving the Free tier -> blocked without explicit Owner paid authorization"
+    }
+  },
+  "decision": "KEEP the free Cron + in-worker idempotent + D1 retry/DLQ path (Path A). Do NOT adopt Cloudflare Queues or Workflows: both require the Workers Paid plan (DIR-007 blocks leaving the Free tier without explicit Owner authorization), they add per-operation/per-step cost and maintenance complexity, and Path A already achieves exactly-once effect at this scale. Revisit only if a real reliability need (many runs/day, cross-step durability) arises AND the Owner authorizes the Paid plan.",
+  "acceptance": {
+    "exactly_once_on_free_path": true,
+    "duplicates_and_dlq_exercised": true,
+    "workflows_only_if_reliability_beats_cost": true,
+    "kept_simple_path": true
+  }
+}
