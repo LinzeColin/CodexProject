@@ -1,0 +1,17 @@
+# ADP-S4-P03-T051 commands (key city A1 cohort; SHADOW, selection task)
+
+# 1. recon: which key city gov portals are reachable server-side (stdlib) -> mostly JS/TLS-blocked;
+#    only news paths reachable. Recorded as honest reachability metadata (not the admission gate).
+
+# 2. value model: tools/city_cohort.py
+#    value_score (tier authority + role bonus) / verify_official (T033 -> A1 official publisher; media never A1) /
+#    select_cohort (admit value>=stop AND verified A1; reject low-value + non-official) / plan_waves
+
+# 3. build the manifest (deterministic)
+python3 evidence/ADP-S4-P03-T051/build_manifest.py     # 18 admitted, 2 rejected, 3 waves
+
+# 4. acceptance verifier (deterministic; re-derives from the tool, checks value/identity/cursor + negative controls)
+python3 evidence/ADP-S4-P03-T051/test-results/t051_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 5. realtime no-regression (SHADOW)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

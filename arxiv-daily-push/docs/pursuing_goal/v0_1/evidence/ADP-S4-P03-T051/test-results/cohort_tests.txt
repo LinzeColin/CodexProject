@@ -1,0 +1,4 @@
+candidates=20 admitted=18 rejected=2 stop=0.6 waves={'wave_1': 8, 'wave_2': 6, 'wave_3': 4}
+negative control: media source value=0.93 (>= stop) but authority=media -> rejected
+
+ACCEPTANCE = PASS

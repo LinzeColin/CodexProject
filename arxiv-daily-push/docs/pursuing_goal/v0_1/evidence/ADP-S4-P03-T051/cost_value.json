@@ -1,0 +1,16 @@
+{
+  "task": "ADP-S4-P03-T051",
+  "stage": "S4 (2016+ A0/A1/A2 Expansion) / P03 A1 省级与重点城市 cohort",
+  "value": {
+    "user_value": "A value-tiered key-city A1 cohort: 18 municipal governments admitted by user value (municipalities > sub-provincial/separately-listed > sub-provincial capitals > key economic cities), each a verified official-original publisher with a 2016 backfill cursor, organized into 3 onboarding waves. Low-value and media sources are rejected, not volume-padded.",
+    "why_it_matters": "Cities are where innovation/finance/manufacturing/trade policy is actually made; onboarding must prioritize value, verify official originals, and never pad the source count with low-value or media sources."
+  },
+  "cost": {
+    "note": "unknown != 0; a selection/manifest task -> 0 cloud cost (recon fetches ran from the dev env).",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0,
+    "r2_bytes": 0, "r2_ops": 0, "model_calls": 0,
+    "human_maintenance": "value model + curated candidate cities + server-side reachability recon",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "SHADOW (cohort manifest + official identity + 2016 cursors; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}
