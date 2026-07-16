@@ -1,0 +1,719 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index dbe98667b..03cfe42f4 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P03-T065 (citation support/counter/mention evidence + graph; NOT_DEPLOYED)
++
++- Sixty-fifth task of the ADP V0.1 FINAL EXECUTION program (closes S5-P03). Aligns the evidence/relationship benefit of Scite/ResearchRabbit/Litmaps: for each citation, capture the citation CONTEXT and label it support/counter/mention -- but the label is derived ONLY from explicit cue phrases found IN THAT CONTEXT, never from the citing paper's title or a model's impression. release_mode NOT_DEPLOYED; a read-only library with NO model call, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/citation_evidence.py: classify_citation (takes ONLY the context; assigns support/counter/mention from the earliest cue found in the context, byte-exact located; no cue -> mention, never guessed; ASCII cues match on word boundaries so 'unlike' does not match inside 'unlikely'), build_citation_graph (feeds only the context to the classifier; citing_title is stored display-only, never classified), query_graph, and label_has_viewable_context. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/: citation_evidence_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P03-T065/test-results/citation_evidence_tests.txt, ACCEPTANCE = PASS, exit 0): every one of the 6 labels is backed by a cue byte-exact in its context (quote == context[offset:offset+length]); the label is not from the title -- classify_citation takes only the context, two conflict cases whose titles read as support (English 'supports and confirms' and Chinese 一致) are labeled counter because the context contradicts, a supportive-titled no-cue citation is labeled mention, and a naive title-based classifier disagrees on 5 cases; cue precision holds ('unlikely' is not counter, 'inconsistent with' stays counter, a genuine 'unlike ' is counter, the stem 'corroborate' is support); and the graph keeps support and counter edges to the same cited paper distinct. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P03-T064 (Research Set / filtering / structured comparison; NOT_DEPLOYED)
+ 
+ - Sixty-fourth task of the ADP V0.1 FINAL EXECUTION program (S5-P03). Aligns the research-set benefit of Elicit/Consensus: collect papers into a Research Set, extract structured method/sample/result fields, and compare them side by side -- WITHOUT guessing. release_mode NOT_DEPLOYED; a read-only library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/research_set.py: extract_fields (label/statistic-driven method/sample/result extraction where every value is a BYTE-EXACT span of the source with an evidence locator offset+length+quote, and a field with no marker is reported {value:None, status:'missing'} -- 缺失不猜, never fabricated), make_set (a Research Set collection, deterministic order), comparison_table (per-paper rows x method/sample/result columns, each cell value+evidence or a missing flag), filter_set (reproducible has-field / keyword filtering, deterministic order), and traces_to_source (every non-missing value is byte-exact at its recorded source offset). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/: research_set_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P03-T064/test-results/research_set_tests.txt, ACCEPTANCE = PASS, exit 0): every one of the 10 present Golden-Set fields traces byte-for-byte back to its source span (value == text[offset:offset+length], quote == value) and matches the hand label; all 5 intentionally-absent fields are reported missing with no fabricated value; a hallucinated value and a guess-a-default extractor are BOTH rejected by the traceability check (so the 回原文 guarantee is non-vacuous); and has-field filtering is identical across 3 runs, deterministically ordered and a non-trivial subset (P001/P002/P005), while a keyword filter yields a different set (P001/P003). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index c8c866e7e..702fd8185 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P03-T063-RESEARCH-METADATA-ENHANCEMENT"
+-source_snapshot_hash: "sha256:d7a41ef29c4ee750e97b0c9ac441891b94fdd4b0cc87805fab4490ec093b2865"
++as_of_event_id: "EVENT-20260717-ADP-V01-S5-P03-T064-RESEARCH-SET-COMPARE-FILTER"
++source_snapshot_hash: "sha256:f1af5d4e438036c0d7c2771d55c4ddd074330e25c115700ffa462a954665a804"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T00:30:00+10:00"
++snapshot_event_time: "2026-07-18T01:05:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 123
++    precommit_pending_events: 124
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 91f750992..a2740d6d6 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S5-P03-T065: implemented citation support/counter/mention evidence + graph (closes S5-P03). release_mode NOT_DEPLOYED; read-only library, NO model call, production untouched. New tool docs/pursuing_goal/v0_1/tools/citation_evidence.py: classify_citation (context-only; support/counter/mention from the earliest cue byte-exact in the context; no cue -> mention; ASCII cues word-boundary matched so 'unlike' != 'unlikely') / build_citation_graph (only context fed to classifier; citing_title display-only, never classified) / query_graph / label_has_viewable_context. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/: citation_evidence_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/citation_evidence_tests.txt, PASS exit 0): all 6 labels backed by a cue byte-exact in context; not from title -- classify_citation takes only context, two support-titled conflict cases (EN 'supports and confirms', CN 一致) labeled counter because context contradicts, a supportive-titled no-cue citation labeled mention, naive title classifier disagrees on 5 cases; cue precision ('unlikely' not counter, 'inconsistent with' counter, 'unlike ' counter, 'corroborate' support); graph keeps support/counter edges to the same cited paper distinct. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T064: implemented the Research Set + structured comparison + filtering (S5-P03). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/research_set.py: extract_fields (label/statistic-driven method/sample/result; every value a byte-exact source span with an evidence locator; no marker -> {value:None, status:'missing'} 缺失不猜) / make_set (Research Set, deterministic order) / comparison_table (rows x method/sample/result, cell value+evidence or missing) / filter_set (reproducible has-field/keyword, deterministic order) / traces_to_source. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/: research_set_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/research_set_tests.txt, PASS exit 0): 10 present Golden-Set fields all trace byte-for-byte to source (value == text[offset:offset+length], quote == value) and match the hand label; 5 absent fields reported missing, none fabricated; a hallucinated value and a guess-a-default extractor both rejected by traceability (non-vacuous); has-field filter identical across 3 runs, deterministic + non-trivial subset (P001/P002/P005), keyword filter differs (P001/P003). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T063: integrated DOI/Crossref/OpenAlex research metadata enhancement (opens S5-P03). release_mode NOT_DEPLOYED; read-only enhancement library, production untouched. New tool docs/pursuing_goal/v0_1/tools/research_metadata.py: make_crossref_adapter / make_openalex_adapter (fixture-backed; enhancement | None | raise AdapterError) / enhance (additive source-tagged enhancements; original paper deepcopied as immutable evidence anchor; adapter gets a throwaway copy; ANY adapter exception -> failed, never blocks) / run_pipeline (degraded fallback) / link_works (preprint->journal linked ONLY on Crossref has_preprint_arxiv_id == this arxiv_id; versions stay distinct in type+evidence, preprint never relabeled, unconfirmed DOI never links) / resolve_authors (reuses T058 entity_resolver). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T063/: research_metadata_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/research_metadata_tests.txt, PASS exit 0): preprint/journal not confused (confirmed publication -> preprint[arXiv] + journal[Crossref DOI] distinct+linked, preprint never relabeled; unconfirmed DOI adds no journal, confirming it WOULD -> gate load-bearing; same-title not merged); enhancement failure does not block (5 in/5 out blocked 0, original byte-identical + never mutated, failures recorded failed, KeyError adapter keeps all, mutating adapter cannot corrupt, drop-on-failure would keep 2/5); authors unified across sources without confusing distinct people. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P02-T062: implemented the version timeline / as-of / old-vs-new diff API (S5-P02). release_mode NOT_DEPLOYED; read-only API library, production untouched. New tool docs/pursuing_goal/v0_1/tools/version_asof_api.py: version_timeline (folds renders into substantive versions; noise-only re-render never becomes a version; carries noise-stripped body snapshot) / diff_payload (line-level locatable add/delete/modify with line numbers + exact text, over the noise-stripped body so template noise is never shown) / as_of (version in force as of a date, parsed-date, never future; reuses T056) / replay_version + replay_is_idempotent (deterministic old-version reconstruction, idempotent). Reuses T026 version_engine + T056 coverage_asof. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P02-T062/: version_asof_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/version_asof_tests.txt, PASS exit 0): substantive v2-vs-v1 diff exactly {add:1,delete:1,modify:1} each located to its line with correct old/new text; noise-only re-render -> empty diff + no new version, while a raw un-stripped diff of the same pair surfaces 6 noise lines (stripping is load-bearing); real text never stripped; old version replays byte-for-byte + idempotent 3x; as_of never future -- 288-sample battery 0 future-leakage / 0 oracle-disagreement, deliberately-future resolver caught on 70 samples. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 2a7caec56..f83de7cb4 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `123`
+-- pending_or_stale_events: `473`
+-- freshness_counts: `pending_or_stale_events=473; legacy_unbound_events=334`
++- precommit_pending_events: `124`
++- pending_or_stale_events: `474`
++- freshness_counts: `pending_or_stale_events=474; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:d7a41ef29c4ee750e97b0c9ac441891b94fdd4b0cc87805fab4490ec093b2865`
+-- snapshot_event_time: `2026-07-18T00:30:00+10:00`
++- source_snapshot_hash: `sha256:f1af5d4e438036c0d7c2771d55c4ddd074330e25c115700ffa462a954665a804`
++- snapshot_event_time: `2026-07-18T01:05:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 8b8de6151..33cbca10c 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:d7a41ef29c4ee750e97b0c9ac441891b94fdd4b0cc87805fab4490ec093b2865`
+-- snapshot_event_time: `2026-07-18T00:30:00+10:00`
++- source_snapshot_hash: `sha256:f1af5d4e438036c0d7c2771d55c4ddd074330e25c115700ffa462a954665a804`
++- snapshot_event_time: `2026-07-18T01:05:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `473`
++- Pending/stale events: `474`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/TASK_REPORT.md
+new file mode 100644
+index 000000000..334333055
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/TASK_REPORT.md
+@@ -0,0 +1,54 @@
++# TASK_REPORT · ADP-S5-P03-T065｜实现引用支持、反驳与关系证据
++
++## 唯一目标（达成）
++对齐 Scite/ResearchRabbit/Litmaps 的证据与关系收益：为每条引用捕获**引用上下文**并标注 **support/counter/mention**——但**标签只由上下文中的显式线索词决定，绝不由标题或模型印象**。每个非 mention 标签都携带**逐字节定位、可查看**的线索词。交付 citation context + support/counter/mention labels + graph view API。release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：引用上下文 + support/counter/mention（仅由上下文线索，不由标题/印象）+ graph API；标签有可查上下文。
++2. **允许修改文件**：`tools/citation_evidence.py`（新）+ `evidence/ADP-S5-P03-T065/*` + 治理同步。**不改 worker/生产/registry/VERSION**。
++3. **绝不能改变**：生产 worker/cron/数据/实时；六主题/MVP；NOT_DEPLOYED。库层只读、无模型调用。
++4. **基线**：main `f3289d6c`（T064 已合入）；Golden 引用集手工构造（含标题 vs 上下文冲突）。
++5. **验收**：标签有可查看上下文（非 mention 线索词逐字节在上下文）；不由标题或模型印象（负控制：标题说 support、上下文 contradict→counter；无线索→mention；title-based 分类器会误判→证明判别）。
++6. **回滚**：`git revert <sha>`（只读库，生产未变更）。
++
++## 交付物
++- `tools/citation_evidence.py` —— `classify_citation(context)`（**仅收 context，不收标题/元数据**；从上下文**最早出现的线索词**定 support/counter/mention，无线索→mention 不猜；线索词逐字节在上下文，quote==context[offset:offset+len]；ASCII 线索**词边界匹配**防 `unlike`⊄`unlikely`，CJK 子串，词干如 corroborat 保留）+ `build_citation_graph`（每条引用只把 context 喂分类器；citing_title 仅存供展示、**不入分类**）+ `query_graph`（按 cited_id/label 查，带证据）+ `label_has_viewable_context`（非 mention 须线索逐字节在上下文）。
++- `evidence/…/build_citation_evidence.py`（6 条 Golden 引用：标题 support 但上下文 contradict→counter ×2[中英]、真 support、无线索→mention、双线索 earliest-wins）+ `citation_evidence_report.json` + `test-results/{t065_verify.py, citation_evidence_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/citation_evidence_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **① 标签有可查看上下文**：6 条标签全部**线索词逐字节在其上下文**（quote==context[offset:offset+length]），mention 携原始上下文；`label_has_viewable_context` 对全部为 True。
++- **② 不由标题或模型印象**：**结构性**——`classify_citation` 参数**仅 context**（标题不可能入参）。**冲突负控制**：P100（标题 "supports and confirms"）+ P103（标题「一致性」）标题读作 support，但上下文 contradict/矛盾 → **标签 counter**（上下文胜、标题被忽略），且驱动线索词在**上下文**内。P102（标题 "support and validate" 但上下文无线索）→ **mention**（不由标题猜 support）。**判别力**：naive title-based 分类器在 **5 处**与本工具不一致（含 P100/P103 标题=support 而本工具=counter）；仅喂 context 字符串复现同标签（标题真无关）。
++- **cue 精度（词边界）**：`unlikely` 不误判 counter；`inconsistent with` 仍 counter（子串 `consistent with` 不翻转）；真 `unlike ` 仍 counter；词干 `corroborate` 仍 support。
++- **③ graph view API**：`query_graph(B1,counter)=[P100]`、`(B1,support)=[P101]`——**同一被引论文的 support 与 counter 边共存且各异**，边带证据。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live `build_id=b189d3cc0703`（==T040）。
++
++## Data / Performance / Visual
++Data = 6 条 Golden 引用（中英混、标题 vs 上下文冲突、双线索）。Performance = 实时无回归。无 UI 改动；六主题保留（graph 为库层，供引用关系视图消费）。
++
++## Value / Cost（S5 多板块深度）
++- **Value**：**证据化引用关系**——support/counter/mention 标签**只由可查上下文线索**决定、绝不由标题/模型印象，同一论文的支持与反驳边并存可查；对齐 Scite/ResearchRabbit/Litmaps 的证据与关系收益而不牺牲证据性、不引入不可查的模型判断。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；**模型 0（确定性线索匹配，无 LLM）**；人工维护 = 线索词表 + Golden 集 + 验证编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：确定性线索词表（有界，非 LLM 语义；双重否定/反讽等语义边界不覆盖，但线索恒在上下文可查）；引用上下文由上游抽取提供；关系类型可扩展（本任务 support/counter/mention 三类）。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED，库层）。`data-samples` = citation_evidence_report.json + Golden 集。`benchmarks` = N/A。
++
++## 完成声明
++```text
++Task: ADP-S5-P03-T065
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/citation_evidence.py(新) + T065 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: citation_evidence_tests.txt —— 6标签线索逐字节在上下文可查;不由标题(结构性仅收context+冲突负控制P100/P103标题support上下文counter+P102无线索mention+title分类器5处不一致);cue词边界(unlikely不误判/inconsistent仍counter/corroborate仍support);graph同论文support与counter并存;实时无回归(build_id b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 引用context + support/counter/mention标签(仅上下文线索) + graph view API
++Data/Performance/Visual: Data=6 Golden引用(标题vs上下文冲突)；Perf=实时无回归；Visual=六主题保留
++Value: 证据化引用关系,标签只由可查上下文,不由标题/模型印象,支持与反驳边并存
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0(确定性无LLM)；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（只读库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/adversarial_review.md
+new file mode 100644
+index 000000000..3251b0061
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/adversarial_review.md
+@@ -0,0 +1,26 @@
++# Adversarial review · ADP-S5-P03-T065｜引用支持/反驳/关系证据
++
++独立对抗复核（general-purpose skeptic），职责是**证伪**验收（找空洞/作弊/误导），非确认。
++
++## 攻击向量
++(a) 不由标题/模型印象（标题是否泄漏进分类、是否有隐藏启发式充当"印象"、判别控制是否真证明 context≠title 驱动）；(b) 可查上下文/可回溯（非 mention 线索是否逐字在上下文、子串陷阱 unlike⊂unlikely / consistent⊂inconsistent / support⊂supportive、多次出现、CJK 偏移、空/None）；(c) 分类稳健（earliest-wins + counter 先 tie-break、双重否定等语义边界——区分"语义不完美但诚实线索支撑[可接受]"与"标签无上下文支撑[空洞]"）；(d) graph（边带证据、同论文 support/counter 并存）；(e) 非空跑/负控制（verifier 从工具而非 report 现推、fixture 是否充分）；NOT_DEPLOYED（无网络/写/时钟/随机/模型）。
++
++## 复核结论：CONFIRMED_SOUND（hole=null, severity=none）
++- **(a) 不由标题**：复核者自造双向标题/上下文冲突（标题 counter+上下文 support→support；标题 support+上下文 mention→mention；CJK 标题 support+上下文 counter→counter）——**标签恒随上下文**。`classify_citation` 签名**仅 context**；`build_citation_graph` 只传 `c["context"]`，title 仅展示。纯有界词表正则，**无隐藏启发式/印象**。
++- **(b) 可查/子串**：词边界防 `unlike⊄unlikely`、`consistent with⊄inconsistent with`、`support⊄supportive/unsupported`、`replicat⊄unreplicated`、`corroborat⊄uncorroborated`；词干仍配屈折；CJK 否定前缀（不支持/不一致）因最早+counter 先压过内嵌正向；多次出现取最早；空/None→mention。**每个非 mention 线索字符精确在其 offset（quote==cue==ctx 切片）**。
++- **(c)**：双重否定/"could not reproduce" 语义不完美但**线索确在上下文**（诚实线索支撑）→ 按验收（可查上下文 + 不由标题，非完美 NLP）**可接受**；**未发现任何标签无线索支撑**。
++- **(d)**：query_graph 带完整证据；同一被引 B1 的 support+counter **并存为不同边**。
++- **(e)**：verifier 从**工具+fixture 现推**（不读 report JSON）；复核者内存 monkeypatch 三处回归均被**抓到**（朴素子串匹配→词边界控制失败；mention→support 静默升级→golden+query 控制失败；title 泄漏进 context→冲突+判别+query 控制全失败）。NOT_DEPLOYED 确认：仅 `import re`，无网络/时钟/随机/模型/subprocess。
++- 复核者注意到复核中工具从**弱 naive-find 版**更新为**词边界正则版**，并核验**当前文件**为 sound。
++
++## 非致命 nit 的主动闭合（4 项）
++1. **"byte-exact/逐字节"措辞**：offset/length 实为 Python **字符索引**（非 UTF-8 字节）；`quote==context[offset:offset+length]` 在字符空间一致成立、消费侧（label_has_viewable_context）亦字符切片，无功能 bug——但下游若把 offset 当字节偏移（CJK）会被误导。**已修**：工具 docstring 明确 offset/length 为字符索引、非字节偏移。
++2. **tie-break docstring 与代码不符**：原 docstring 说"counter 先于 support 再取更长"，代码实为位置优先再长度优先（同位仅当等长才 counter 胜）。**已修**：`_find_earliest_cue` 改为 `min` over `(pos, label_rank[counter<support], -length)`——**位置最早→同位 counter 先→更长**，与 docstring 一致；加对称控制（counter-earliest→counter / support-earliest→support）。
++3. **语义假阳（双重否定/反讽）**：验收范围外、且线索恒在上下文可查——known_gaps 诚实披露。
++4. **中途更新**：非问题，当前文件已被复核者核验 sound。
++
++## 残留（诚实披露，非空洞、恒线索支撑）
++- 确定性词表非 LLM 语义：双重否定/隐含转折按字面线索判；线索恒逐字在上下文可查、绝不由标题/印象。CJK 线索罕见被更长短语包含时按最早线索判。语义级分类留待后续（须保留可查上下文契约）。known_gaps 已列。
++
++## 结论
++复核 **CONFIRMED_SOUND**；两验收条款（标签有可查看上下文 / 不由标题或模型印象）有 load-bearing 判别负控制（monkeypatch 三回归均被抓）、非空跑。4 项非致命 nit 主动闭合（字符索引措辞、tie-break 代码/文档一致 + 对称控制、语义边界披露）。确定性、零副作用、无模型调用。实时无回归（live build_id b189d3cc0703 == T040）。**收尾 S5-P03**。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/build_citation_evidence.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/build_citation_evidence.py
+new file mode 100644
+index 000000000..83d3328c2
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/build_citation_evidence.py
+@@ -0,0 +1,67 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Deterministic fixtures + report for ADP-S5-P03-T065 (citation support/counter/mention evidence).
++
++The fixtures deliberately pit the citing paper's TITLE against the citation CONTEXT so the acceptance
++"不由标题或模型印象直接分类" is testable: a title that screams support but a context that contradicts
++must be labeled COUNTER; a no-cue context must be a MENTION regardless of a suggestive title.
++"""
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent.parent
++sys.path.insert(0, str(V01 / "tools"))
++import citation_evidence as CE
++
++CITATIONS = [
++    # C1: title suggests SUPPORT, but the CONTEXT contradicts -> must be COUNTER (context wins)
++    {"citing_id": "P100", "cited_id": "B1",
++     "citing_title": "This work supports and confirms the folding theory",
++     "context": "Our experiments contradict the results reported by [B1], which we could not reproduce."},
++    # C2: genuine support, cue in context
++    {"citing_id": "P101", "cited_id": "B1",
++     "citing_title": "Notes on decoding",
++     "context": "These findings are consistent with [B1] and corroborate the proposed mechanism."},
++    # C3: neutral mention, NO cue -> mention (even though title sounds supportive)
++    {"citing_id": "P102", "cited_id": "B1",
++     "citing_title": "We support and validate prior work extensively",
++     "context": "The dataset was preprocessed as described in [B1]."},
++    # C4: Chinese counter cue in context
++    {"citing_id": "P103", "cited_id": "B2",
++     "citing_title": "关于该方法的一致性研究",   # title says 一致 (consistent) ...
++     "context": "本文的结论与 [B2] 相矛盾，未能复现其报告的效应。"},   # ... but context says 矛盾 (contradict)
++    # C5: Chinese support cue
++    {"citing_id": "P104", "cited_id": "B2",
++     "citing_title": "方法评述",
++     "context": "我们的结果与 [B2] 一致，进一步证实了该假设。"},
++    # C6: both cues present -> earliest wins (counter appears first here)
++    {"citing_id": "P105", "cited_id": "B3",
++     "citing_title": "Mixed evidence",
++     "context": "While our data are inconsistent with [B3], later analysis is consistent with a weaker claim."},
++]
++
++
++def main():
++    graph = CE.build_citation_graph(CITATIONS)
++    report = {
++        "n_citations": len(CITATIONS),
++        "edges": [{"citing_id": e["citing_id"], "cited_id": e["cited_id"],
++                   "label": e["label"], "cue": e["cue"],
++                   "citing_title": e["citing_title"],
++                   "context": e["evidence"]["context"]} for e in graph["edges"]],
++        "label_counts": {lab: sum(1 for e in graph["edges"] if e["label"] == lab)
++                         for lab in ("support", "counter", "mention")},
++        "query_B1_counter": [e["citing_id"] for e in CE.query_graph(graph, cited_id="B1", label="counter")],
++    }
++    (HERE / "citation_evidence_report.json").write_text(
++        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print("n_citations:", len(CITATIONS))
++    print("labels:", [(e["citing_id"], e["label"], e["cue"]) for e in graph["edges"]])
++    print("label_counts:", report["label_counts"])
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/citation_evidence_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/citation_evidence_report.json
+new file mode 100644
+index 000000000..d2d622bb2
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/citation_evidence_report.json
+@@ -0,0 +1,61 @@
++{
++  "n_citations": 6,
++  "edges": [
++    {
++      "citing_id": "P100",
++      "cited_id": "B1",
++      "label": "counter",
++      "cue": "contradict",
++      "citing_title": "This work supports and confirms the folding theory",
++      "context": "Our experiments contradict the results reported by [B1], which we could not reproduce."
++    },
++    {
++      "citing_id": "P101",
++      "cited_id": "B1",
++      "label": "support",
++      "cue": "consistent with",
++      "citing_title": "Notes on decoding",
++      "context": "These findings are consistent with [B1] and corroborate the proposed mechanism."
++    },
++    {
++      "citing_id": "P102",
++      "cited_id": "B1",
++      "label": "mention",
++      "cue": null,
++      "citing_title": "We support and validate prior work extensively",
++      "context": "The dataset was preprocessed as described in [B1]."
++    },
++    {
++      "citing_id": "P103",
++      "cited_id": "B2",
++      "label": "counter",
++      "cue": "矛盾",
++      "citing_title": "关于该方法的一致性研究",
++      "context": "本文的结论与 [B2] 相矛盾，未能复现其报告的效应。"
++    },
++    {
++      "citing_id": "P104",
++      "cited_id": "B2",
++      "label": "support",
++      "cue": "一致",
++      "citing_title": "方法评述",
++      "context": "我们的结果与 [B2] 一致，进一步证实了该假设。"
++    },
++    {
++      "citing_id": "P105",
++      "cited_id": "B3",
++      "label": "counter",
++      "cue": "inconsistent with",
++      "citing_title": "Mixed evidence",
++      "context": "While our data are inconsistent with [B3], later analysis is consistent with a weaker claim."
++    }
++  ],
++  "label_counts": {
++    "support": 2,
++    "counter": 3,
++    "mention": 1
++  },
++  "query_B1_counter": [
++    "P100"
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/commands.log
+new file mode 100644
+index 000000000..2c1bebc68
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/commands.log
+@@ -0,0 +1,26 @@
++# ADP-S5-P03-T065 commands (deterministic, no network except the read-only realtime build check)
++
++# 1. import sanity
++python3 -c "import sys; sys.path.insert(0,'tools'); import citation_evidence"
++
++# 2. build Golden citations + report (deterministic)
++python3 evidence/ADP-S5-P03-T065/build_citation_evidence.py
++#   -> n_citations: 6
++#   -> labels: P100 counter(contradict), P101 support(consistent with), P102 mention,
++#              P103 counter(矛盾), P104 support(一致), P105 counter(inconsistent with)
++#   -> label_counts: support 2, counter 3, mention 1
++
++# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
++python3 evidence/ADP-S5-P03-T065/test-results/t065_verify.py | tee evidence/ADP-S5-P03-T065/test-results/citation_evidence_tests.txt
++#   viewable context: all 6 labels backed by byte-exact context (or raw context for mention)
++#   not-from-title: classifier takes only context; a title-based classifier disagrees on 5 cases (incl. P100/P103)
++#   graph: B1 counter=['P100'], support=['P101'] (coexist, distinct)
++#   cue precision: 'unlikely' not counter; 'inconsistent with' counter; 'unlike ' counter; 'corroborate' support
++#   ACCEPTANCE = PASS (exit 0)
++
++# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
++curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
++#   -> b189d3cc0703  (== T040; realtime not regressed)
++
++# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t065.py),
++#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/cost_value.json
+new file mode 100644
+index 000000000..f4989954b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/cost_value.json
+@@ -0,0 +1,34 @@
++{
++  "task_id": "ADP-S5-P03-T065",
++  "title": "实现引用支持、反驳与关系证据",
++  "release_mode": "NOT_DEPLOYED",
++  "stage": "S5",
++  "phase": "S5-P03",
++  "value": {
++    "user_value": "证据化引用关系：为每条引用捕获引用上下文并标注 support/counter/mention，标签只由上下文中的显式线索词决定、绝不由标题或模型印象；同一被引论文的支持与反驳边并存可查。对齐 Scite/ResearchRabbit/Litmaps 的证据与关系收益而不引入不可查的模型判断。",
++    "value_metric_stage": "S5 多板块深度：引用关系可查、可信、可反证；收尾 S5-P03 研究集合/证据/反证。",
++    "measured": {
++      "viewable_context": "6 条标签线索词逐字节在其上下文(quote==context[offset:offset+length]); mention 携原始上下文",
++      "not_from_title": "classify_citation 仅收 context; P100/P103 标题读作 support 但上下文 contradict→counter; P102 无线索→mention; naive title 分类器 5 处不一致",
++      "cue_precision": "unlikely 不误判 counter; inconsistent with 仍 counter; unlike 仍 counter; corroborate 仍 support",
++      "graph": "query(B1,counter)=[P100] / (B1,support)=[P101] 共存各异, 边带证据"
++    }
++  },
++  "cost": {
++    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、确定性线索匹配无 LLM，生产零副作用。",
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "human_maintenance": "线索词表 + Golden 集 + 验证编写（一次性）",
++    "recurring_cloud_cost_usd_per_month": 0
++  },
++  "realtime_regression": {
++    "live_build_id": "b189d3cc0703",
++    "equals_T040": true,
++    "regressed": false
++  },
++  "rollback": "git revert <sha>（只读库；生产数据未变更）"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/known_gaps.md
+new file mode 100644
+index 000000000..f8d0840e6
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S5-P03-T065
++
++- **确定性线索词表（非 LLM 语义、无模型印象）**：support/counter/mention 由**有界、显式的线索词表**（`consistent with/corroborat/支持/一致…`；`contradict/in contrast to/矛盾/不支持…`）+ **最早出现优先**（counter 先于 support 做确定性 tie-break）决定。**优点**：完全确定性、**无模型印象/无 LLM 调用**、标签恒由可查上下文线索支撑、可复现。**代价**：不覆盖**语义细节**——双重否定（"not inconsistent with"）、反讽、隐含转折等会按字面线索判。**但线索词恒逐字节在上下文可查**（满足「标签有可查看上下文」），且**绝不由标题或模型印象**（满足第二条款）；语义级引用分类（如 LLM + 证据回链）留待后续，且须保留本可查上下文契约。
++- **ASCII 词边界 / CJK 子串**：ASCII 线索用词边界匹配（`unlike` 不误配 `unlikely`、`consistent with` 不误配 `inconsistent with`），词干（corroborat/replicat/reproduc）仅前边界以配其屈折形；CJK 无词边界用子串（`不一致/不支持` 因 counter 先检+最早优先，正确压过 `一致/支持`）。残留：CJK 线索仍可能被更长短语包含的罕见情形按最早线索判——恒可查、非编造。
++- **双线索上下文**：一句含 support 与 counter 双线索时取**最早出现**者（确定性），并记该线索。真实「对 X 支持、对 Y 反驳」应按**每被引论文各自的上下文**分别成边（本模型每条引用自带针对该被引的 context）。
++- **引用上下文来源**：`context` 由上游引文抽取提供（本任务消费之），完整的从 PDF/全文抽取引文句由摄取阶段负责；本任务专注「给定上下文→可查证据化标签」。
++- **关系类型**：本任务 support/counter/mention 三类（对齐 Scite）。ResearchRabbit/Litmaps 式的共被引/文献耦合图可在此 graph 底座上扩展。
++- **NOT_DEPLOYED**：不接 worker/cron/D1/R2，无模型调用，不改生产数据。实时无回归（live build_id b189d3cc0703 == T040）。**收尾 S5-P03（研究集合、证据与反证）**：T063 元数据增强 + T064 Research Set/比较/筛选 + T065 引用证据。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/citation_evidence_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/citation_evidence_tests.txt
+new file mode 100644
+index 000000000..68696a4ef
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/citation_evidence_tests.txt
+@@ -0,0 +1,6 @@
++viewable context: all 6 labels backed by byte-exact context (or raw context for mention)
++not-from-title: classifier takes only context; a title-based classifier disagrees on 5 cases (incl. P100/P103 where title=support but context=counter)
++graph: B1 counter=['P100'], support=['P101'] (coexist, distinct)
++cue precision: 'unlikely' not counter; 'inconsistent with' counter; 'unlike ' counter; 'corroborate' support
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..60e505976
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/realtime_check.txt
+@@ -0,0 +1,2 @@
++build_id: b189d3cc0703
++MATCH (b189d3cc0703 == T040, realtime NOT regressed)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/t065_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/t065_verify.py
+new file mode 100644
+index 000000000..df5b0e8ae
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/test-results/t065_verify.py
+@@ -0,0 +1,139 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P03-T065 acceptance: citation support/counter/mention evidence + graph.
++
++Acceptance (TASK_INDEX row 65): 标签有可查看上下文；不由标题或模型印象直接分类。
++  (every label has viewable context; labels are NOT assigned from the title or a model impression.)
++
++Deterministic. Re-derives from the TOOL (citation_evidence) + fixtures -- never trusts the report.
++The core negative control pits TITLE against CONTEXT: a title that screams support with a context that
++contradicts must be labeled COUNTER, and a naive title-based classifier (which WOULD mislabel it) is
++shown to disagree -- proving the label is context-grounded, not title/impression-driven.
++"""
++import importlib.util
++import inspect
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import citation_evidence as CE
++
++T065 = V01 / "evidence" / "ADP-S5-P03-T065"
++spec = importlib.util.spec_from_file_location("bce", str(T065 / "build_citation_evidence.py"))
++bce = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(bce)
++
++fails = []
++graph = CE.build_citation_graph(bce.CITATIONS)
++by_citing = {e["citing_id"]: e for e in graph["edges"]}
++
++# =============================================================== 1) 标签有可查看上下文
++for e in graph["edges"]:
++    if not CE.label_has_viewable_context(e):
++        fails.append(f"{e['citing_id']}: label {e['label']} lacks viewable byte-exact context")
++    # a non-mention cue must be located IN the context (not elsewhere)
++    if e["label"] != "mention":
++        ctx = e["evidence"]["context"]
++        if e["cue"] is None or e["cue"].lower() not in ctx.lower():
++            fails.append(f"{e['citing_id']}: cue {e['cue']!r} not found in its context")
++        if ctx[e["evidence"]["offset"]:e["evidence"]["offset"] + e["evidence"]["length"]] != e["cue"]:
++            fails.append(f"{e['citing_id']}: cue not byte-exact at recorded offset")
++print(f"viewable context: all {len(graph['edges'])} labels backed by byte-exact context (or raw context for mention)")
++
++# expected labels from the Golden fixtures
++expect = {"P100": "counter", "P101": "support", "P102": "mention",
++          "P103": "counter", "P104": "support", "P105": "counter"}
++for cid, lab in expect.items():
++    if by_citing[cid]["label"] != lab:
++        fails.append(f"{cid}: label {by_citing[cid]['label']} != expected {lab}")
++
++# =============================================================== 2) 不由标题或模型印象直接分类
++# structural: the classifier's ONLY parameter is the context (title cannot be an input)
++sig = list(inspect.signature(CE.classify_citation).parameters)
++if sig != ["context"]:
++    fails.append(f"classify_citation must take only context, takes {sig}")
++
++# P100 & P103: title screams SUPPORT (support / 一致) but context CONTRADICTS -> must be counter, and the
++# cue must be the CONTEXT's counter cue, not the title's support word.
++for cid in ("P100", "P103"):
++    e = by_citing[cid]
++    if e["label"] != "counter":
++        fails.append(f"{cid}: title-vs-context conflict mislabeled as {e['label']} (title leaked in?)")
++    # the driving cue is in the context, and the title's supportive words are NOT in the context
++    if e["cue"].lower() not in e["evidence"]["context"].lower():
++        fails.append(f"{cid}: label cue not sourced from context")
++
++# P102: supportive-sounding title but NO cue in context -> mention (not guessed support)
++if by_citing["P102"]["label"] != "mention":
++    fails.append("P102: a no-cue context with a supportive title was not labeled mention (guessed from title?)")
++
++# DISCRIMINATION: a naive TITLE-based classifier WOULD mislabel the conflict cases; ours disagrees ->
++# proves the label is context-grounded, not title-driven. If they agreed everywhere, the test is vacuous.
++def naive_title_classifier(title):
++    low = (title or "").lower()
++    if any(c.lower() in low for c in CE.SUPPORT_CUES):
++        return "support"
++    if any(c.lower() in low for c in CE.COUNTER_CUES):
++        return "counter"
++    return "mention"
++disagreements = 0
++for e in graph["edges"]:
++    if naive_title_classifier(e["citing_title"]) != e["label"]:
++        disagreements += 1
++# P100 (title->support, ours counter), P103 (title->support/一致, ours counter), P102 (title->support, ours mention)
++if disagreements < 3:
++    fails.append(f"context vs title classifier disagree on too few cases ({disagreements}) -> discrimination weak")
++# the two title-vs-context CONFLICT cases: title reads as SUPPORT, our context label is COUNTER
++for cid in ("P100", "P103"):
++    if naive_title_classifier(by_citing[cid]["citing_title"]) != "support":
++        fails.append(f"control setup broken: {cid} title should read as support to a naive classifier")
++    if by_citing[cid]["label"] != "counter":
++        fails.append(f"{cid}: context-grounded label should be counter despite a supportive title")
++print(f"not-from-title: classifier takes only context; a title-based classifier disagrees on {disagreements} cases "
++      f"(incl. P100/P103 where title=support but context=counter)")
++
++# feeding ONLY the context string reproduces the same label (title truly irrelevant)
++for cid in ("P100", "P103", "P102"):
++    e = by_citing[cid]
++    if CE.classify_citation(e["evidence"]["context"])["label"] != e["label"]:
++        fails.append(f"{cid}: label changes when title is absent -> title was influencing the label")
++
++# =============================================================== 3) graph view API
++b1_counter = [e["citing_id"] for e in CE.query_graph(graph, cited_id="B1", label="counter")]
++b1_support = [e["citing_id"] for e in CE.query_graph(graph, cited_id="B1", label="support")]
++if b1_counter != ["P100"]:
++    fails.append(f"query B1/counter wrong: {b1_counter}")
++if b1_support != ["P101"]:
++    fails.append(f"query B1/support wrong: {b1_support}")
++# support and counter to the same cited paper coexist as distinct edges
++if not (b1_counter and b1_support):
++    fails.append("support and counter edges to the same cited paper do not coexist")
++print(f"graph: B1 counter={b1_counter}, support={b1_support} (coexist, distinct)")
++
++# =============================================================== 4) cue precision (word boundaries)
++# an ASCII cue must NOT false-match inside a longer word
++if CE.classify_citation("These results are unlikely to be seen again.")["label"] != "mention":
++    fails.append("'unlike' false-matched inside 'unlikely' -> spurious counter label")
++# 'inconsistent with' is counter; the substring 'consistent with' must not flip it to support
++if CE.classify_citation("Our data are inconsistent with [B].")["label"] != "counter":
++    fails.append("'inconsistent with' not labeled counter")
++# a genuine word-boundary cue still matches
++if CE.classify_citation("This is unlike the earlier report.")["label"] != "counter":
++    fails.append("genuine 'unlike ' cue no longer matches")
++# stem cue still matches its inflection
++if CE.classify_citation("Our findings corroborate the model.")["label"] != "support":
++    fails.append("stem cue 'corroborat' no longer matches 'corroborate'")
++print("cue precision: 'unlikely' not counter; 'inconsistent with' counter; 'unlike ' counter; 'corroborate' support")
++
++# earliest-cue-wins is symmetric: counter-earliest -> counter (P105), support-earliest -> support
++if CE.classify_citation("Our data are inconsistent with [X], though later analysis is consistent with a weaker claim.")["label"] != "counter":
++    fails.append("counter-earliest context not labeled counter")
++if CE.classify_citation("Our data are consistent with [X], though one detail contradicts a minor point.")["label"] != "support":
++    fails.append("support-earliest context not labeled support (earliest-wins not symmetric)")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/citation_evidence.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/citation_evidence.py
+new file mode 100644
+index 000000000..c54824008
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/citation_evidence.py
+@@ -0,0 +1,126 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P03-T065 -- citation support / counter / mention evidence + graph.
++
++Aligns the evidence/relationship benefit of Scite/ResearchRabbit/Litmaps: for each citation, capture
++the CITATION CONTEXT (the passage where one paper cites another) and label it support / counter /
++mention -- but the label is derived ONLY from explicit cue phrases found IN THAT CONTEXT, never from
++the citing paper's title or a model's impression. Every non-mention label carries the exact cue,
++located in the context (offset/length are CHARACTER indices, so quote == context[offset:offset+length];
++they are string indices, NOT UTF-8 byte offsets), so it is always viewable and checkable.
++
++  * classify_citation(context) -- takes ONLY the context text (no title, no metadata). Returns
++    {label, cue, evidence:{quote, offset, length, context}} where label in {support, counter, mention}.
++    The label comes from the EARLIEST-occurring cue phrase in the context (deterministic); with no cue
++    the label is "mention" (never a guess). By construction quote == context[offset:offset+length].
++  * build_citation_graph(citations) -- each citation {citing_id, cited_id, context}; classify each and
++    build typed edges (support/counter/mention) carrying the context evidence.
++  * query_graph(graph, cited_id?, label?) -- query edges by cited paper and/or label.
++
++Deterministic; no network, no clock, no randomness, no model call, no production side effects.
++"""
++import re
++
++# Bounded, explicit cue lexicons. A label is assigned ONLY when one of these appears in the context.
++SUPPORT_CUES = [
++    "consistent with", "in agreement with", "in line with", "corroborat", "supports", "support the",
++    "confirms", "confirm the", "replicat", "reproduc", "extends the", "builds on", "agrees with",
++    "一致", "支持", "证实", "印证", "吻合", "符合",
++]
++COUNTER_CUES = [
++    "contradict", "in contrast to", "contrary to", "fails to", "failed to", "does not support",
++    "do not support", "disagree", "refute", "challenge", "inconsistent with", "unlike", "at odds with",
++    "call into question", "反驳", "矛盾", "不一致", "不支持", "质疑", "推翻", "相反",
++]
++_LABEL_CUES = {"support": SUPPORT_CUES, "counter": COUNTER_CUES}
++
++# Cues that are deliberate STEMS (match e.g. corroborate/corroborating) -> no trailing word boundary.
++_STEM_CUES = {"corroborat", "replicat", "reproduc"}
++
++
++def _compile_cue(cue):
++    """Compile a cue matcher. ASCII cues match on word boundaries so 'unlike' does NOT match inside
++    'unlikely' and 'consistent with' does NOT match inside 'inconsistent with'; CJK cues (no word
++    boundaries) match as substrings. Stem cues keep only a leading boundary so they still match their
++    inflections. Case-insensitive."""
++    if re.search(r"[一-鿿]", cue):
++        return re.compile(re.escape(cue))
++    lead = r"(?<![A-Za-z])"
++    trail = "" if cue in _STEM_CUES else r"(?![A-Za-z])"
++    return re.compile(lead + re.escape(cue) + trail, re.I)
++
++
++_CUE_RES = {label: [(cue, _compile_cue(cue)) for cue in cues] for label, cues in _LABEL_CUES.items()}
++
++
++_LABEL_RANK = {"counter": 0, "support": 1}
++
++
++def _find_earliest_cue(context):
++    """The winning cue in the context, chosen deterministically by (earliest position, counter-before-
++    support at an equal position, longer surface). offset/length are character indices into `context`."""
++    text = context or ""
++    matches = []   # (position, label_rank, -length, label, surface, offset, length)
++    for label in ("counter", "support"):
++        for _cue, rgx in _CUE_RES[label]:
++            m = rgx.search(text)
++            if not m:
++                continue
++            pos, length = m.start(), m.end() - m.start()
++            matches.append((pos, _LABEL_RANK[label], -length, label, text[pos:pos + length], pos, length))
++    if not matches:
++        return None
++    _p, _r, _nl, label, surface, offset, length = min(matches)
++    return (offset, label, surface, offset, length)
++
++
++def classify_citation(context):
++    """Label a citation from its CONTEXT ONLY. No title, no metadata, no model impression are inputs."""
++    ctx = context or ""
++    hit = _find_earliest_cue(ctx)
++    if hit is None:
++        return {"label": "mention", "cue": None,
++                "evidence": {"quote": None, "offset": None, "length": None, "context": ctx}}
++    _pos, label, surface, offset, length = hit
++    return {"label": label, "cue": surface,
++            "evidence": {"quote": ctx[offset:offset + length], "offset": offset,
++                         "length": length, "context": ctx}}
++
++
++def build_citation_graph(citations):
++    """citations: [{citing_id, cited_id, context, citing_title?}]. citing_title is stored for display
++    but is NOT passed to the classifier. Returns typed edges with context evidence."""
++    edges = []
++    for c in citations:
++        cls = classify_citation(c["context"])          # NOTE: only c["context"] is used
++        edges.append({
++            "citing_id": c["citing_id"], "cited_id": c["cited_id"],
++            "label": cls["label"], "cue": cls["cue"], "evidence": cls["evidence"],
++            "citing_title": c.get("citing_title"),      # display-only; never fed to classify
++        })
++    return {"edges": edges}
++
++
++def query_graph(graph, cited_id=None, label=None):
++    out = []
++    for e in graph["edges"]:
++        if cited_id is not None and e["cited_id"] != cited_id:
++            continue
++        if label is not None and e["label"] != label:
++            continue
++        out.append(e)
++    out.sort(key=lambda e: (e["cited_id"], e["citing_id"]))
++    return out
++
++
++def label_has_viewable_context(edge):
++    """True iff the label is backed by viewable context: a non-mention label must carry a cue quote
++    that is byte-exact in its context; a mention carries the raw context."""
++    ev = edge["evidence"]
++    if edge["label"] == "mention":
++        return ev.get("context") is not None
++    ctx = ev.get("context") or ""
++    off, length = ev.get("offset"), ev.get("length")
++    if off is None or length is None:
++        return False
++    return ctx[off:off + length] == edge["cue"] == ev.get("quote")

@@ -1,0 +1,61 @@
+{
+  "n_citations": 6,
+  "edges": [
+    {
+      "citing_id": "P100",
+      "cited_id": "B1",
+      "label": "counter",
+      "cue": "contradict",
+      "citing_title": "This work supports and confirms the folding theory",
+      "context": "Our experiments contradict the results reported by [B1], which we could not reproduce."
+    },
+    {
+      "citing_id": "P101",
+      "cited_id": "B1",
+      "label": "support",
+      "cue": "consistent with",
+      "citing_title": "Notes on decoding",
+      "context": "These findings are consistent with [B1] and corroborate the proposed mechanism."
+    },
+    {
+      "citing_id": "P102",
+      "cited_id": "B1",
+      "label": "mention",
+      "cue": null,
+      "citing_title": "We support and validate prior work extensively",
+      "context": "The dataset was preprocessed as described in [B1]."
+    },
+    {
+      "citing_id": "P103",
+      "cited_id": "B2",
+      "label": "counter",
+      "cue": "矛盾",
+      "citing_title": "关于该方法的一致性研究",
+      "context": "本文的结论与 [B2] 相矛盾，未能复现其报告的效应。"
+    },
+    {
+      "citing_id": "P104",
+      "cited_id": "B2",
+      "label": "support",
+      "cue": "一致",
+      "citing_title": "方法评述",
+      "context": "我们的结果与 [B2] 一致，进一步证实了该假设。"
+    },
+    {
+      "citing_id": "P105",
+      "cited_id": "B3",
+      "label": "counter",
+      "cue": "inconsistent with",
+      "citing_title": "Mixed evidence",
+      "context": "While our data are inconsistent with [B3], later analysis is consistent with a weaker claim."
+    }
+  ],
+  "label_counts": {
+    "support": 2,
+    "counter": 3,
+    "mention": 1
+  },
+  "query_B1_counter": [
+    "P100"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "task_id": "ADP-S5-P03-T065",
+  "title": "实现引用支持、反驳与关系证据",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S5",
+  "phase": "S5-P03",
+  "value": {
+    "user_value": "证据化引用关系：为每条引用捕获引用上下文并标注 support/counter/mention，标签只由上下文中的显式线索词决定、绝不由标题或模型印象；同一被引论文的支持与反驳边并存可查。对齐 Scite/ResearchRabbit/Litmaps 的证据与关系收益而不引入不可查的模型判断。",
+    "value_metric_stage": "S5 多板块深度：引用关系可查、可信、可反证；收尾 S5-P03 研究集合/证据/反证。",
+    "measured": {
+      "viewable_context": "6 条标签线索词逐字节在其上下文(quote==context[offset:offset+length]); mention 携原始上下文",
+      "not_from_title": "classify_citation 仅收 context; P100/P103 标题读作 support 但上下文 contradict→counter; P102 无线索→mention; naive title 分类器 5 处不一致",
+      "cue_precision": "unlikely 不误判 counter; inconsistent with 仍 counter; unlike 仍 counter; corroborate 仍 support",
+      "graph": "query(B1,counter)=[P100] / (B1,support)=[P101] 共存各异, 边带证据"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、确定性线索匹配无 LLM，生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "线索词表 + Golden 集 + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更）"
+}

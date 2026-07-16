@@ -1,0 +1,6 @@
+viewable context: all 6 labels backed by byte-exact context (or raw context for mention)
+not-from-title: classifier takes only context; a title-based classifier disagrees on 5 cases (incl. P100/P103 where title=support but context=counter)
+graph: B1 counter=['P100'], support=['P101'] (coexist, distinct)
+cue precision: 'unlikely' not counter; 'inconsistent with' counter; 'unlike ' counter; 'corroborate' support
+
+ACCEPTANCE = PASS
