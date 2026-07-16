@@ -1,0 +1,34 @@
+{
+  "task_id": "ADP-S5-P03-T063",
+  "title": "接入 DOI/Crossref/OpenAlex 等研究元数据增强",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S5",
+  "phase": "S5-P03",
+  "value": {
+    "user_value": "证据锚定的研究元数据增强：用 DOI/Crossref/OpenAlex 完善论文身份/作者/机构/版本/引用图，原始 arXiv 论文始终为证据锚（增强附加、带来源，绝不替换或阻塞）；预印本与期刊版本清晰区分不混淆；任一元数据源失败都不阻塞论文流。",
+    "value_metric_stage": "S5 多板块深度：对齐 Elicit/Consensus/Scite 研究元数据收益而不牺牲证据性，为研究集合(T064)与引用关系(T065)提供确定性底座。",
+    "measured": {
+      "preprint_journal_distinct": "确认发表 work=preprint(arxiv证据)+journal(crossref DOI证据)双版本同work_id链接但证据id不同;preprint从不重标journal",
+      "no_confusion_control": "未确认DOI(has_preprint指向别处)不加journal版本;确认后control立即产journal(门load-bearing);同题两篇不凭题合并",
+      "degraded_fallback": "5入5出blocked=0;原证据逐字节未变更;失败记failed非静默not_found;KeyError(非AdapterError)不阻塞;变异adapter不能污染锚;丢弃式管线只留2/5",
+      "authors_unified": "Alice Chen跨Crossref+OpenAlex统一为一实体带双源provenance;三位不同作者不混"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读增强库，生产零副作用；真实 Crossref/OpenAlex 调用成本由部署阶段门控。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "adapters + fixtures + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读增强库；生产数据未变更）"
+}

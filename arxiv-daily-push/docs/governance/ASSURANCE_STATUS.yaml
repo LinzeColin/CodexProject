@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P02-T061-FTS-SEMANTIC-BENCHMARK-ADR"
-source_snapshot_hash: "sha256:7d16dedb1e8b624827ab6734694d7170ef513d13d6d5f7b6372e6a864d842d58"
+as_of_event_id: "EVENT-20260717-ADP-V01-S5-P02-T062-VERSION-ASOF-DIFF-API"
+source_snapshot_hash: "sha256:d35696364aa4a6078732c5198b69c72438f9adf9a8b0ff176591a4a7cd146478"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-17T23:10:00+10:00"
+snapshot_event_time: "2026-07-17T23:55:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 121
+    precommit_pending_events: 122
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

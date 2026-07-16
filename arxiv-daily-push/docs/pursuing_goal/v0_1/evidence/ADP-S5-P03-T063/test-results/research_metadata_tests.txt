@@ -1,0 +1,7 @@
+preprint/journal: work-of-00001 types=['journal', 'preprint']; unconfirmed 00002=['preprint']; confirmed-00002 control=['journal', 'preprint']
+degraded fallback: in=5 out=5 blocked=0; a drop-on-failure pipeline would keep only 2/5
+robustness: KeyError-raising adapter kept all papers; mutating adapter could not corrupt the anchor
+authors: ['Alice Chen', 'Bob Li', 'Carol Wu']; Alice Chen sources=['crossref', 'openalex']
+institutions: ['MIT', 'Stanford']; MIT sources=['crossref', 'openalex']; confirmed(00001)=True confirmed(00002)=False; citation refs on 00001=2
+
+ACCEPTANCE = PASS

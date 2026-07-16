@@ -1,0 +1,157 @@
+{
+  "papers_in": 5,
+  "enhanced_out": 5,
+  "statuses": {
+    "2401.00001": {
+      "crossref": "ok",
+      "openalex": "ok"
+    },
+    "2401.00002": {
+      "crossref": "ok",
+      "openalex": "ok"
+    },
+    "2401.00003": {
+      "crossref": "not_found",
+      "openalex": "not_found"
+    },
+    "2401.00004": {
+      "crossref": "failed",
+      "openalex": "not_found"
+    },
+    "2401.00005": {
+      "crossref": "not_found",
+      "openalex": "failed"
+    }
+  },
+  "works": {
+    "work-001": [
+      {
+        "work_id": "work-001",
+        "version_type": "preprint",
+        "source": "arxiv",
+        "arxiv_id": "2401.00001",
+        "doi": null,
+        "evidence_anchor": {
+          "type": "preprint",
+          "source": "arxiv",
+          "id": "2401.00001",
+          "url": "https://arxiv.org/pdf/2401.00001"
+        }
+      },
+      {
+        "work_id": "work-001",
+        "version_type": "journal",
+        "source": "crossref",
+        "arxiv_id": null,
+        "doi": "10.1038/s41586-024-00001",
+        "journal": "Nature",
+        "evidence_anchor": {
+          "type": "journal",
+          "source": "crossref",
+          "id": "10.1038/s41586-024-00001"
+        },
+        "linked_via": "crossref_has_preprint"
+      }
+    ],
+    "work-002": [
+      {
+        "work_id": "work-002",
+        "version_type": "preprint",
+        "source": "arxiv",
+        "arxiv_id": "2401.00002",
+        "doi": null,
+        "evidence_anchor": {
+          "type": "preprint",
+          "source": "arxiv",
+          "id": "2401.00002",
+          "url": "https://arxiv.org/pdf/2401.00002"
+        },
+        "unconfirmed_doi": "10.1145/3592979.00002"
+      }
+    ],
+    "work-003": [
+      {
+        "work_id": "work-003",
+        "version_type": "preprint",
+        "source": "arxiv",
+        "arxiv_id": "2401.00003",
+        "doi": null,
+        "evidence_anchor": {
+          "type": "preprint",
+          "source": "arxiv",
+          "id": "2401.00003",
+          "url": "https://arxiv.org/pdf/2401.00003"
+        }
+      }
+    ],
+    "work-004": [
+      {
+        "work_id": "work-004",
+        "version_type": "preprint",
+        "source": "arxiv",
+        "arxiv_id": "2401.00004",
+        "doi": null,
+        "evidence_anchor": {
+          "type": "preprint",
+          "source": "arxiv",
+          "id": "2401.00004",
+          "url": "https://arxiv.org/pdf/2401.00004"
+        }
+      }
+    ],
+    "work-005": [
+      {
+        "work_id": "work-005",
+        "version_type": "preprint",
+        "source": "arxiv",
+        "arxiv_id": "2401.00005",
+        "doi": null,
+        "evidence_anchor": {
+          "type": "preprint",
+          "source": "arxiv",
+          "id": "2401.00005",
+          "url": "https://arxiv.org/pdf/2401.00005"
+        }
+      }
+    ]
+  },
+  "author_entities": {
+    "ent:ba86d94f45ed925f": {
+      "canonical": "Alice Chen",
+      "sources": [
+        "crossref",
+        "openalex"
+      ]
+    },
+    "ent:f3017a74ec19d0cc": {
+      "canonical": "Bob Li",
+      "sources": [
+        "crossref",
+        "openalex"
+      ]
+    },
+    "ent:70aaeabf82c668dc": {
+      "canonical": "Carol Wu",
+      "sources": [
+        "crossref",
+        "openalex"
+      ]
+    }
+  },
+  "institution_entities": {
+    "ent:e5dcffe836b6ec8a": {
+      "canonical": "MIT",
+      "sources": [
+        "crossref",
+        "openalex"
+      ]
+    },
+    "ent:bf90d29a5ccb2df5": {
+      "canonical": "Stanford",
+      "sources": [
+        "crossref",
+        "openalex"
+      ]
+    }
+  }
+}

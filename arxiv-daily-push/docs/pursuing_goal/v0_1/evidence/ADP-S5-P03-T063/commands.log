@@ -1,0 +1,25 @@
+# ADP-S5-P03-T063 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity (reuses T058 entity_resolver)
+python3 -c "import sys; sys.path.insert(0,'tools'); import research_metadata, entity_resolver"
+
+# 2. build fixtures + report (deterministic)
+python3 evidence/ADP-S5-P03-T063/build_research_metadata.py
+#   -> papers_in: 5 enhanced_out: 5
+#   -> works: work-001 [preprint, journal]; work-002..005 [preprint]
+#   -> statuses: 00004 crossref=failed, 00005 openalex=failed (papers still present)
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S5-P03-T063/test-results/t063_verify.py | tee evidence/ADP-S5-P03-T063/test-results/research_metadata_tests.txt
+#   preprint/journal: work-of-00001 types=[journal, preprint]; unconfirmed 00002=[preprint]; confirmed-00002 control=[journal, preprint]
+#   degraded fallback: in=5 out=5 blocked=0; a drop-on-failure pipeline would keep only 2/5
+#   robustness: KeyError-raising adapter kept all papers; mutating adapter could not corrupt the anchor
+#   authors: [Alice Chen, Bob Li, Carol Wu]; Alice Chen sources=[crossref, openalex]
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t063.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
