@@ -1,0 +1,167 @@
+{
+  "schema": "PFIV025Stage8Phase83WCAGAuditV1",
+  "standard": "WCAG 2.2 AA",
+  "engine": "local_deterministic_wcag22aa_contrast_ax_keyboard",
+  "axe_core_available": false,
+  "axe_disposition": "not_claimed; normalized axe_results.json must retain engine_unavailable and bind the deterministic substitute",
+  "status": "pass",
+  "audited_primary_page_count": 10,
+  "audited_secondary_page_count": 10,
+  "audited_route_count": 20,
+  "unique_route_count": 20,
+  "text_sample_count": 3886,
+  "blocking_violation_count": 0,
+  "contrast_failure_count": 0,
+  "target_size_failure_count": 0,
+  "unnamed_interactive_count": 0,
+  "duplicate_id_count": 0,
+  "structural_failure_count": 0,
+  "financial_data_error_prevention_passed": true,
+  "contrast_failures": [],
+  "target_size_failures": [],
+  "unnamed_interactive_nodes": [],
+  "duplicate_ids": [],
+  "structural_failures": [],
+  "route_summaries": [
+    {
+      "route": "/overview",
+      "text_sample_count": 195,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/accounts/overview",
+      "text_sample_count": 163,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/ledger/list",
+      "text_sample_count": 174,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/investment/overview",
+      "text_sample_count": 165,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/consumption/overview",
+      "text_sample_count": 172,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/data/upload",
+      "text_sample_count": 203,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/review/list",
+      "text_sample_count": 164,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/reports/monthly",
+      "text_sample_count": 319,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/market-research/research",
+      "text_sample_count": 167,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/settings/account",
+      "text_sample_count": 210,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/overview/status",
+      "text_sample_count": 195,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/accounts/reconcile",
+      "text_sample_count": 163,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/ledger/review",
+      "text_sample_count": 174,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/investment/holdings",
+      "text_sample_count": 189,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/consumption/budget",
+      "text_sample_count": 172,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/data/sources",
+      "text_sample_count": 203,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/review/detail",
+      "text_sample_count": 164,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/reports/custom",
+      "text_sample_count": 319,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/market-research/strategy-lab",
+      "text_sample_count": 165,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    },
+    {
+      "route": "/settings/feedback",
+      "text_sample_count": 210,
+      "status_region_count": 6,
+      "alert_region_count": 4,
+      "error_prevention_binding_count": 6
+    }
+  ]
+}

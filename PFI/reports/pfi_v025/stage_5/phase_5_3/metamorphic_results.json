@@ -1,0 +1,16 @@
+{
+  "base_dual_metric_fingerprint": "sha256:ec0a87fe3ff82a76cbdcd146dd849919a663340f4b7596d0943e1cef7adc49ac",
+  "cashflow_window_fingerprint": "sha256:0de7cc928d5cd984d670f840c8cc49a2e2b60cb9777283ab191d5060b2e06d31",
+  "contains_private_values": false,
+  "date_translation_window_invariance": "pass",
+  "exact_duplicate_invariance": "pass",
+  "financial_values_emitted": 0,
+  "input_permutation_invariance": "pass",
+  "phase_id": "V025-S5-P5.3",
+  "positive_scaling_invariance": "pass",
+  "scaled_dual_metric_fingerprint": "sha256:eb3fe84c9c265e2b1f21e71f6d179e3548cf8f284bd499860c437c48a4945250",
+  "schema": "PFIV025Stage5Phase53MetamorphicResultsV1",
+  "source_snapshot_mutated": false,
+  "status": "pass",
+  "version": "v0.2.5"
+}

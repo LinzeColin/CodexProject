@@ -1,0 +1,7 @@
+$ $PYTHON -m py_compile PFI/src/pfi_os/application/use_cases/import_review_ledger.py PFI/src/pfi_os/application/use_cases/metric_lineage_drilldown.py PFI/src/pfi_os/infrastructure/operational_import_store.py PFI/src/pfi_os/infrastructure/operational_holding_settings_store.py PFI/src/pfi_os/app/streamlit_app.py PFI/src/pfi_v02/stage2_import.py PFI/src/pfi_v02/stage_v021_runtime_api.py PFI/web/tests/v025/stage7_trace_privacy.py PFI/web/tests/v025/stage7_whole_review_browser.py PFI/scripts/v025/build_stage7_whole_review.py PFI/scripts/v025/run_stage7_final_verification.py
+
+$ node --check PFI/web/app/shell.js
+
+$ node --check PFI/web/tests/v025/stage7_metric_drilldown_cdp.mjs
+
+$ git diff --check

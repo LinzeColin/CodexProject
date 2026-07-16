@@ -1,0 +1,154 @@
+{
+  "artifact_count": 36,
+  "artifacts": {
+    "PFI/config/data_domains/stage11_distribution_boundaries.json": {
+      "byte_size": 1833,
+      "sha256": "sha256:101f28e5324b1cf4738479c1a3b7f1b8d44e71998a05ded0b6d171af89070588"
+    },
+    "PFI/config/release_manifest.json": {
+      "byte_size": 566,
+      "sha256": "sha256:20c00972c2a7be018a8c0b01172a31758e1213a110655dd77c6c25dd44e48660"
+    },
+    "PFI/docs/pfi_v025/stage_11/PHASE_11_3_DISTRIBUTION_BOUNDARY_IMPLEMENTATION.md": {
+      "byte_size": 6499,
+      "sha256": "sha256:a07ba99881eb097743c0c57288ff871f94a6ab46ea85d700613608cdf832127b"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/boundary_scan.json": {
+      "byte_size": 721,
+      "sha256": "sha256:7a19bb98441f0b620430927f678c98b1a8eb7bf952c1bb53b93eddbdcd329c0f"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/changed_files.txt": {
+      "byte_size": 2411,
+      "sha256": "sha256:8adc3939a48446e4cbc007c9035a242b0e4e25f701e538a90c4d62dc3393dafe"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/context_export_rehearsal.json": {
+      "byte_size": 694,
+      "sha256": "sha256:39c0f50b8739a58ce9a7e759399ec7fed06f17a0ed059dca265d114163edbf72"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/context_schema_validation.json": {
+      "byte_size": 954,
+      "sha256": "sha256:b68baa94d11aa6d8d6fba1ec1351a496fea1766ff72335f2a66e2860acada499"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/evidence.json": {
+      "byte_size": 11814,
+      "sha256": "sha256:2bbadc30eb89cc7b0d148a2a258bc89a58fab90293b161208c40346b664e933c"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/phase_contract.json": {
+      "byte_size": 969,
+      "sha256": "sha256:31508683a77255a7aa298f27fe09346c83e8b33fe103df76f1fd1141f97b3835"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/privacy_scan.txt": {
+      "byte_size": 540,
+      "sha256": "sha256:45ba5d9eb104c87ba1596267e6f292facdd2063e49d42a68545b90331fd11745"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/private_distribution_scan.txt": {
+      "byte_size": 391,
+      "sha256": "sha256:80c4cc957919958bd38c7bf768f171675d48a0587d033c9c2786582403a8c9a9"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/public_surface_contract.json": {
+      "byte_size": 1476,
+      "sha256": "sha256:b663b720a75627e2309b869d292cadc0554d9d559119db534b28a41068e55fd9"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/release_identity.json": {
+      "byte_size": 843,
+      "sha256": "sha256:3d9540dcd248f8ff44946c5e0304bb78211268e7e47b3fa41b4d955f5a93d8a3"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/risk_and_rollback.md": {
+      "byte_size": 671,
+      "sha256": "sha256:781d65951ed677bbbe9dac9e3c65dd4dc8ae4de93ef069db672627a759125a6b"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/terminal.log": {
+      "byte_size": 2811,
+      "sha256": "sha256:71306a7366cce0fd06d122102441436efb50ffe5e9fa9f5dee544fb076a91b44"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_3/verification_results.json": {
+      "byte_size": 5056,
+      "sha256": "sha256:9b6f7af469a7526e13716e819596ffcdbc81b32ebd152896b758c4339dd49101"
+    },
+    "PFI/scripts/v025/build_stage11_phase113_evidence.py": {
+      "byte_size": 34281,
+      "sha256": "sha256:9682cc633b79d1b605a00d4817bea7568c7d16070197f727d2c7e25501b353ae"
+    },
+    "PFI/scripts/v025/pfi_context_export.py": {
+      "byte_size": 3494,
+      "sha256": "sha256:c677f7742afe75ed57d258c99becbafdbb30a74f25cff1ba041ab7ec366ec9da"
+    },
+    "PFI/scripts/v025/scan_stage11_distribution_boundaries.py": {
+      "byte_size": 13748,
+      "sha256": "sha256:9808b80030eea7fb95b2ea7677d7dbc29bb037b6d9d5856c7a31155eea8fb445"
+    },
+    "PFI/shared/context/pfi_context_v1.schema.json": {
+      "byte_size": 2352,
+      "sha256": "sha256:401186aec4d820f35b5182f14c9d286dd0199d2f1a293c34922ec2291ce96282"
+    },
+    "PFI/src/pfi_os/application/homepage_summary.py": {
+      "byte_size": 23601,
+      "sha256": "sha256:9327fe958f7cf6d815c38c3d8db626e91a3549b81a26fb2398c474e2a38c49f9"
+    },
+    "PFI/src/pfi_os/security/__init__.py": {
+      "byte_size": 650,
+      "sha256": "sha256:4d58482c3a1a1ee9310512917fd7f3d42425e44b91c453fc66c4f626d3e1f292"
+    },
+    "PFI/src/pfi_os/security/pfi_context_export.py": {
+      "byte_size": 12415,
+      "sha256": "sha256:2237e59376041cf4c4b52e0b91ba7565b492b79498b6e473fee449d8861d1357"
+    },
+    "PFI/src/pfi_v02/stage5_advice_report_alpha.py": {
+      "byte_size": 20329,
+      "sha256": "sha256:9566dcaedbd47e374ce633066b4f1f95edaaeb4d2ee1c0ecae236c7ab92d7ed9"
+    },
+    "PFI/src/pfi_v02/stage6_e2e_stabilization.py": {
+      "byte_size": 27505,
+      "sha256": "sha256:82cf34711ced72222bc3c41d013081ff9297f85f2ce65a0d77b2a76df11a3d2b"
+    },
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py": {
+      "byte_size": 95232,
+      "sha256": "sha256:1e73f6891f93190845e0eb97cbe863bb9fe5ec952f720448685983ce3c0750b9"
+    },
+    "PFI/tests/test_stage5_advice_report_alpha.py": {
+      "byte_size": 9776,
+      "sha256": "sha256:c8a7598523ba7302055bf8aaf462ad11e55f8c48f4b9df0597d22f25f62c268a"
+    },
+    "PFI/tests/test_v025_stage11_distribution_boundary.py": {
+      "byte_size": 12618,
+      "sha256": "sha256:db24d99d2ad9b2f35e58fa37e329ccb3a6fc768102e1a3f77041d16ffcfa5cbb"
+    },
+    "PFI/tests/test_v025_stage1_release_identity.py": {
+      "byte_size": 16354,
+      "sha256": "sha256:42873c92176cfa2c15ea5db61ffd33eca9e9393b7ebdb1b847d3e85e5bd3239d"
+    },
+    "PFI/web/app/shell.js": {
+      "byte_size": 425154,
+      "sha256": "sha256:4091350de858ee33d1416baad8c5f51e6de41c2c56a324f93dd4e63b0f554e6f"
+    },
+    "PFI/web/cloudflare-public/public/404.html": {
+      "byte_size": 998,
+      "sha256": "sha256:e34397bb805631152fb19f76617660915a1a7f73dd947fd99c4450274e0e02fa"
+    },
+    "PFI/web/cloudflare-public/public/index.html": {
+      "byte_size": 3599,
+      "sha256": "sha256:c78c2cdd895d7bc1543a3a64e440984ed988f45b9f527ddf361165f1fa2d1a86"
+    },
+    "PFI/web/cloudflare-public/public/public-surface.json": {
+      "byte_size": 519,
+      "sha256": "sha256:d76b040df95eee4962281f6dfea1a56d5e05be1d8717c8e3d295ec567e1c89bb"
+    },
+    "PFI/web/cloudflare-public/public/styles.css": {
+      "byte_size": 3577,
+      "sha256": "sha256:23b0722789c37e4ba4c619a3cb0d589ed1f55e08952f41bdfe6da7c9d4aac9ba"
+    },
+    "PFI/web/cloudflare-public/wrangler.jsonc": {
+      "byte_size": 262,
+      "sha256": "sha256:d55f8293ac84c8b86b0ab91ccabb5017f43d2e680777348f85f02cf8b4aae4e0"
+    },
+    "PFI/web/index.html": {
+      "byte_size": 65997,
+      "sha256": "sha256:8c781fc288c374711834f55e8a2c80e723a1160488f6b46d8f2a1c1ad2f62645"
+    }
+  },
+  "contains_private_values": false,
+  "observed_at": "2026-07-16T02:53:17+10:00",
+  "phase_id": "V025-S11-P11.3",
+  "product_commit": "890d38a759b9689a65152aa20527bde7ba04b52e",
+  "schema": "PFIV025Stage11Phase113ArtifactHashesV1"
+}

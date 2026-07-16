@@ -1,0 +1,27 @@
+{
+  "schema": "PFIV025Stage1Phase11BackendManifestResponseV1",
+  "transport": "ephemeral_loopback_ThreadingHTTPServer_port_0",
+  "request_path": "/api/release-manifest",
+  "http_status": 200,
+  "response_headers": {
+    "X-PFI-Release-Manifest-SHA256": "ddc7db859efff04bff0513f9a3dda5c23c472e102d112c69366b4a49b55769c0"
+  },
+  "database_accessed": false,
+  "live_ports_8501_8502_touched": false,
+  "response": {
+    "product": "PFI",
+    "version": "v0.2.5",
+    "build_id": "pfi-v025-s1p1-20260712.1",
+    "git_commit": "a9592b8ce457492fd0e6817f74388f146ca657c6",
+    "frontend_bundle_hash": "3c45901b88e24b579c3ef522afae50b430382b42909726c72db98ad66690ef2b",
+    "backend_build_hash": "056c3fd4fa3fa9205b34aa03a72e3b34d468a26c3bc42af1f1087c3b883efcff",
+    "app_short_version": "0.2.5",
+    "app_build_version": "20260712.1",
+    "data_schema_version": "PFIV021HoldingsPersistenceV1",
+    "formula_version": "v0.2.3",
+    "parameter_version": "v0.2.2",
+    "generated_at": "2026-07-11T22:55:09Z"
+  },
+  "equals_machine_manifest": true,
+  "result": "pass"
+}

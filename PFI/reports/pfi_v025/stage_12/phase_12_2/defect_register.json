@@ -1,0 +1,32 @@
+{
+  "contains_private_values": false,
+  "defects": [
+    {
+      "defect_id": "S12-P122-P2-ACTUAL-OS-SLEEP-NOT-RUN",
+      "disposition": "Use deterministic owned-process suspend/resume; do not claim kernel sleep/wake.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "accepted_limitation"
+    },
+    {
+      "defect_id": "S12-P122-P2-HOLDINGS-SOURCE-NOT-LOADED",
+      "disposition": "Keep holding edit not_run and verify no false zero or fixture fallback.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "truthfully_blocked_source"
+    },
+    {
+      "count": 1,
+      "defect_id": "S12-P122-P2-NONCANONICAL-ENTRY-MISMATCH",
+      "disposition": "CLI census only under no-Finder instruction; final entry freeze remains Phase 12.3.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "identified_not_modified"
+    }
+  ],
+  "open_p0_count": 0,
+  "open_p1_count": 0,
+  "open_p2_count": 3,
+  "schema": "PFIV025Stage12Phase122DefectRegisterV1",
+  "status": "pass"
+}

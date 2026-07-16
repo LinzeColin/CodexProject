@@ -1,0 +1,143 @@
+{
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "pack_hash": "sha256:c3df8b878038bffdb28bfe4112d9a875e43e5d41cb910f86b6482768223a19e9",
+  "phase_id": "V025-S9-P9.2",
+  "schema": "PFIV025Stage9Phase92SensitivityEvidenceV1",
+  "sensitivity_previews": [
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-019"
+      ],
+      "impact_summary_zh": "窗口增大时覆盖记录数单调不减；可比较覆盖变化与指纹。",
+      "impact_visible": true,
+      "limitation_zh": "金额影响不在公开证据中输出；窗口结果只证明覆盖与计算指纹变化。",
+      "observations": [
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-05-28",
+          "financial_fingerprint": "sha256:e3846ddb78ab992050692cb48324baf22b2f72fa710d09cde6ab27f816202804",
+          "incremental_record_count": 80,
+          "record_count": 80,
+          "window_days": 7
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-05-14",
+          "financial_fingerprint": "sha256:1a59b2095755a18200f78e1e43b86b3214942c474f0fdfc264240203dd2869a2",
+          "incremental_record_count": 112,
+          "record_count": 192,
+          "window_days": 21
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-05-05",
+          "financial_fingerprint": "sha256:65c805672776c094f75486092be5c83f0c95e3452694f602c4ebf9c2cb2acbe1",
+          "incremental_record_count": 66,
+          "record_count": 258,
+          "window_days": 30
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-04-05",
+          "financial_fingerprint": "sha256:6355303acccabf9ee84e4256589fc3be0c2eec92460d7f0cc81998db8d3d09a6",
+          "incremental_record_count": 210,
+          "record_count": 468,
+          "window_days": 60
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-03-06",
+          "financial_fingerprint": "sha256:1fb6f87280e839c93114a748244ec6d262998b6803180fea2eb85bcdd24534d1",
+          "incremental_record_count": 261,
+          "record_count": 729,
+          "window_days": 90
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2025-12-06",
+          "financial_fingerprint": "sha256:36448d931415328809874e214a597242eec21b142f6fe9803cdcb8b639adf42e",
+          "incremental_record_count": 689,
+          "record_count": 1418,
+          "window_days": 180
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2025-06-09",
+          "financial_fingerprint": "sha256:e8a886fef406d1ba844242f33f5e07bd573460fdb0816832d84e81675943d585",
+          "incremental_record_count": 1817,
+          "record_count": 3235,
+          "window_days": 360
+        }
+      ],
+      "parameter_ids": [
+        "PARAM-PFI-086"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-019",
+      "sensitivity_id": "SENS-CASHFLOW-WINDOW",
+      "status": "partial_ready_nonfinancial_impact",
+      "title_zh": "现金流窗口敏感性"
+    },
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-020"
+      ],
+      "impact_summary_zh": "缺少逐笔 score vector 与 ground-truth labels，调整影响不可验证。",
+      "impact_visible": false,
+      "limitation_zh": "The immutable ledger has no per-record classification score vector or ground truth labels.",
+      "observations": [],
+      "parameter_ids": [
+        "PARAM-PFI-087"
+      ],
+      "review_route": "/settings/parameters?parameter=PARAM-PFI-087",
+      "sensitivity_id": "SENS-CLASSIFICATION-THRESHOLD",
+      "status": "blocked_missing_scores",
+      "title_zh": "分类阈值敏感性"
+    },
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-018"
+      ],
+      "impact_summary_zh": "缺完整 dated funding/return/terminal-value chain，不预演 XIRR 数值。",
+      "impact_visible": false,
+      "limitation_zh": "No complete dated funding/return/terminal-value chain exists in the accepted real snapshot.",
+      "observations": [],
+      "parameter_ids": [
+        "PARAM-PFI-089",
+        "PARAM-PFI-090",
+        "PARAM-PFI-091",
+        "PARAM-PFI-092"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-018",
+      "sensitivity_id": "SENS-XIRR-POLICY",
+      "status": "blocked_insufficient_chain",
+      "title_zh": "XIRR 参数敏感性"
+    },
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-015",
+        "FORM-PFI-016",
+        "FORM-PFI-017"
+      ],
+      "impact_summary_zh": "余额、持仓、价格与 FX 未加载，不生成金额精度调整影响。",
+      "impact_visible": false,
+      "limitation_zh": "当前只保留 Decimal/no-float contract；真实数值影响等待来源 ready。",
+      "observations": [],
+      "parameter_ids": [
+        "PARAM-PFI-081"
+      ],
+      "review_route": "/settings/parameters?parameter=PARAM-PFI-081",
+      "sensitivity_id": "SENS-MONEY-QUANTUM",
+      "status": "blocked_missing_required_sources",
+      "title_zh": "金额精度与核心财务边界"
+    }
+  ]
+}

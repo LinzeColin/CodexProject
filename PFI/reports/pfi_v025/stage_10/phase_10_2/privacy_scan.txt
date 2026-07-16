@@ -1,0 +1,12 @@
+phase_id=V025-S10-P10.2
+scan_scope=phase_product_sources_and_phase_evidence
+scan_mode=case_insensitive_pattern_scan
+actual_username_match_count=0
+absolute_home_path_match_count=0
+private_key_header_match_count=0
+email_address_match_count=0
+raw_financial_uri_match_count=0
+contains_private_values=false
+financial_values_emitted=0
+canonical_private_database_read=false
+result=pass

@@ -1,0 +1,82 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS",
+  "contract_id": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+  "official_primary_entries": [
+    {
+      "icon": "⌂",
+      "index": 1,
+      "label": "首页总览",
+      "routeAlias": "/overview",
+      "workspace": "home"
+    },
+    {
+      "icon": "◫",
+      "index": 2,
+      "label": "账户与资产",
+      "routeAlias": "/accounts",
+      "workspace": "accounts"
+    },
+    {
+      "icon": "≋",
+      "index": 3,
+      "label": "账本流水",
+      "routeAlias": "/ledger",
+      "workspace": "ledger"
+    },
+    {
+      "icon": "↗",
+      "index": 4,
+      "label": "投资管理",
+      "routeAlias": "/investment",
+      "workspace": "investment"
+    },
+    {
+      "icon": "◌",
+      "index": 5,
+      "label": "消费管理",
+      "routeAlias": "/consumption",
+      "workspace": "consumption"
+    },
+    {
+      "icon": "⇄",
+      "index": 6,
+      "label": "数据源与上传",
+      "routeAlias": "/data",
+      "workspace": "sync"
+    },
+    {
+      "icon": "✦",
+      "index": 7,
+      "label": "建议与复盘",
+      "routeAlias": "/review",
+      "workspace": "recommendations"
+    },
+    {
+      "icon": "▣",
+      "index": 8,
+      "label": "报告与洞察",
+      "routeAlias": "/reports",
+      "workspace": "insights"
+    },
+    {
+      "icon": "⌁",
+      "index": 9,
+      "label": "市场与研究",
+      "routeAlias": "/market-research",
+      "workspace": "market_research"
+    },
+    {
+      "icon": "⚙",
+      "index": 10,
+      "label": "设置",
+      "routeAlias": "/settings",
+      "workspace": "settings"
+    }
+  ],
+  "official_primary_entry_count": 10,
+  "route_order_matches_source_roadmap_appendix": true,
+  "schema": "PFIV025Stage6Phase61NavigationContractEvidenceV1",
+  "shared_responsive_primary_tree": true,
+  "status": "pass",
+  "task_id": "S6-P1-T1"
+}

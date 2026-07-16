@@ -1,0 +1,83 @@
+PFI v0.2.5 Stage 6 Phase 6.1 terminal evidence
+timestamp: 2026-07-15T03:11:16+10:00
+mode: IMPLEMENT / CONTROLLED_RUN
+task: S6-P1-T1..T4
+acceptance: ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS
+
+BASELINE
+cwd=<PFI worktree root>
+git_root=<PFI worktree root>
+branch=codex/pfi
+upstream=origin/main
+implementation_base=c2e3e7caa35c4ecc79c84bc0cad8b6fd02f8036c
+roadmap_sha256=fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b
+taskpack_sha256=591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2
+
+RED
+PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage6_navigation_contract.py
+RESULT: expected collection error; pfi_v02.stage_v025_navigation absent
+
+GREEN / REGRESSION
+PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage6_navigation_contract.py
+RESULT: 5 passed
+
+PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_formula_registry.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage5_whole_review.py PFI/tests/test_v025_stage6_navigation_contract.py
+RESULT: 38 passed
+
+PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage1_cache_policy.py PFI/tests/test_v025_stage1_release_identity.py
+RESULT: 24 passed, 2 warnings
+
+node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs PFI/web/tests/v025/stage1_release_identity.test.mjs
+RESULT: 28 passed, 0 failed
+
+node --check PFI/web/app/routes.js
+node --check PFI/web/app/shell.js
+RESULT: pass
+
+BROWSER
+PFI/.venv/bin/python PFI/web/tests/v025/stage6_routes_browser.py
+RESULT: desktop pass; mobile pass; actual formal shell; external network false; financial data loaded false; Finder false
+TRACE_SHA256=3272836d578d74f075a622ae7468508b168da5382467b4e7799d0cad19e1cc2e
+DESKTOP_SHA256=48bf37b433ff76718e06710ea77398fafe81be52f79d88c8cbd3497a8d1bb0a0
+MOBILE_SHA256=a21529dd4a1904f06dd3fd01d0654e376a92369647b2b5fe38803c30d4ad8eef
+VISUAL_REVIEW: pass; displayed financial values are redacted and only one responsive primary tree is present
+
+HISTORICAL DIAGNOSTIC
+PFI/.venv/bin/python -m pytest -q PFI/tests/test_v023_stage3_navigation_routes.py PFI/tests/test_v024_stage3_phase31_navigation_contract.py PFI/tests/test_v024_stage3_phase32_route_implementation.py PFI/tests/test_v024_stage3_phase33_navigation_acceptance.py
+RESULT: 16 passed, 11 expected superseded-contract failures
+DISPOSITION: non-gate; failures require replaced /home, /sources-upload, old aliases/version marker, or duplicated mobile primary DOM
+
+PRIVACY
+text scan: pass
+trace ZIP integrity and decompressed-content scan: pass
+desktop/mobile screenshot visual review: pass
+
+RENDER / GOVERNANCE
+python3 scripts/lean_governance.py render --project PFI --write
+RESULT: 3 human entries updated
+
+python3 scripts/lean_governance.py check-render --project PFI
+RESULT: drift 0; reference issues 0
+
+temporary complete-checkout:
+python3 scripts/lean_governance.py validate --project PFI --base-ref HEAD --mode required --enforce-sync
+RESULT: changed-scope sync errors 0 warnings 0; project errors 0 warnings 0
+
+semantic diagnostic with global checks
+RESULT: non-gate pre-existing KMFA/private-runtime and root run-manifest debt; PFI project validation remained errors 0 warnings 0
+
+BOUNDARIES
+finder_used=false
+external_network_performed=false
+loopback_browser_network_performed=true
+real_financial_data_read=false
+real_financial_data_mutated=false
+database_changed=false
+push_performed=false
+app_install_performed=false
+phase_6_2_started=false
+phase_6_3_started=false
+stage_6_whole_stage_review_started=false
+
+FINAL_PHASE_RESULT=candidate_pass
+NEXT_TASK=S6-P2-T1

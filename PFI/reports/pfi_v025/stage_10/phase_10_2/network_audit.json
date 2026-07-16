@@ -1,0 +1,24 @@
+{
+  "audit_scope": [
+    "dependency registry load",
+    "tracked local config hash",
+    "isolated-empty dependency status",
+    "runtime diff",
+    "cache identity",
+    "active frontend validator"
+  ],
+  "codex_calls": 0,
+  "external_network_performed": false,
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "llm_calls": 0,
+  "loopback_network_performed": false,
+  "mode": "ordinary_local_runtime_diff_and_cache_identity",
+  "network_allowed": false,
+  "observed_network_calls": 0,
+  "product_commit": "a64f3b51576ebe507bd65b3f5b54c5b2a3b74c41",
+  "schema": "PFIV025OrdinaryRunNetworkAuditV1",
+  "status": "pass",
+  "test_ref": "PFI/tests/test_v025_stage10_runtime_diff.py::test_ordinary_runtime_snapshot_performs_zero_network_calls"
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PFI v0.2.5 Phase 2.3 Safe Sandbox Attestation",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "stage",
+    "phase",
+    "status",
+    "git_object_snapshot",
+    "database_before_after_ref",
+    "operational_sqlite_copy_status",
+    "cleanup_complete",
+    "source_mutation_performed",
+    "financial_fixture_fallback_used",
+    "private_values_included",
+    "finder_used"
+  ],
+  "properties": {
+    "schema": {"const": "PFIV025Phase23SafeSandboxAttestationV1"},
+    "version": {"const": "v0.2.5"},
+    "stage": {"const": 2},
+    "phase": {"const": "2.3"},
+    "status": {"enum": ["pass", "blocked"]},
+    "git_object_snapshot": {
+      "type": "object",
+      "required": [
+        "status",
+        "source_id",
+        "isolation_mode",
+        "resolved_commit",
+        "tree_oid",
+        "manifest_blob_oid",
+        "transactions_blob_oid",
+        "snapshot_immutable",
+        "source_write_capability",
+        "source_mutation_performed",
+        "private_values_included"
+      ]
+    },
+    "database_before_after_ref": {"type": "string"},
+    "operational_sqlite_copy_status": {"enum": ["pass", "blocked", "source_missing"]},
+    "database_source_hash": {"type": ["string", "null"]},
+    "database_copy_hash": {"type": ["string", "null"]},
+    "database_source_before_after_unchanged": {"type": ["boolean", "null"]},
+    "cleanup_complete": {"const": true},
+    "source_mutation_performed": {"const": false},
+    "financial_fixture_fallback_used": {"const": false},
+    "private_values_included": {"const": false},
+    "finder_used": {"const": false}
+  },
+  "additionalProperties": false
+}

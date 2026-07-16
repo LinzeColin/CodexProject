@@ -1,0 +1,32 @@
+{
+  "observed_at": "2026-07-16T02:13:12+10:00",
+  "overlay_governance_pending": false,
+  "results": [
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage10_job_lifecycle.py PFI/tests/test_v025_stage10_job_observability.py PFI/tests/test_v025_stage10_crash_recovery.py PFI/tests/test_v025_stage1_release_identity.py",
+      "exit_code": 0,
+      "output": "........................................................................ [ 87%]\n..........                                                               [100%]\n82 passed in 10.38s",
+      "summary": "82 passed in 10.38s"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI",
+      "exit_code": 0,
+      "output": "CodexProject governance validation\nroot: checked\nprojects checked: PFI\nerrors: 0\nwarnings: 0",
+      "summary": "warnings: 0"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI",
+      "exit_code": 0,
+      "output": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}",
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    },
+    {
+      "command": "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI",
+      "exit_code": 0,
+      "output": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}",
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    }
+  ],
+  "schema": "PFIV025Stage11Phase112VerificationV1",
+  "status": "pass"
+}

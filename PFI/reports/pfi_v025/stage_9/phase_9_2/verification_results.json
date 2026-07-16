@@ -1,0 +1,54 @@
+{
+  "app_install_performed": false,
+  "commands": [
+    {
+      "command": "PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage9_report_schema.py PFI/tests/test_v025_stage9_report_consistency.py PFI/tests/test_v025_stage9_model_validation.py PFI/tests/test_v025_stage1_release_identity.py",
+      "command_id": "phase92_target",
+      "exit_code": 0,
+      "summary": "27 passed; Phase 9.2 report schema, cross-report consistency, model-validation UI contract and release identity all passed."
+    },
+    {
+      "command": "PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py",
+      "command_id": "upstream_regression",
+      "exit_code": 0,
+      "summary": "68 passed; selected Stage 4, 5, 7 and 8 upstream behavior remained green."
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python PFI/web/tests/v025/stage9_reports_browser.py",
+      "command_id": "formal_browser",
+      "exit_code": 0,
+      "summary": "11/11 passed in headless Chrome over ephemeral loopback; 5 report cards, 23 workflow cards, no browser errors, no financial amount and no external request."
+    },
+    {
+      "command": "PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage1_release_identity.py; node --check PFI/web/app/pages/reports/stage9Analysis.js; node --check PFI/web/app/shell.js; sha256 artifact and authority verification",
+      "command_id": "release_identity_and_static",
+      "exit_code": 0,
+      "summary": "10 release-identity tests passed; JavaScript syntax passed; frontend hash binding, browser artifacts, Roadmap and Task Pack hashes matched their declared values."
+    },
+    {
+      "command": "complete-checkout overlay: python3 scripts/lean_governance.py validate --project PFI; python3 scripts/lean_governance.py check-render --project PFI",
+      "command_id": "changed_scope_governance",
+      "exit_code": 0,
+      "summary": "Full-checkout PFI governance returned errors=0 and warnings=0; renderer returned drift=0 and reference_issue_count=0."
+    }
+  ],
+  "contains_private_values": false,
+  "database_changed": false,
+  "database_read": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "formula_values_changed": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "model_values_changed": false,
+  "network_performed": true,
+  "network_scope": "ephemeral_local_loopback_only",
+  "observed_at": "2026-07-15T06:12:45Z",
+  "parameter_values_changed": false,
+  "phase_9_3_started": false,
+  "push_performed": false,
+  "schema": "PFIV025Stage9Phase92VerificationResultsV1",
+  "stage_9_whole_stage_review_started": false,
+  "status": "pass",
+  "verified_product_commit": "7566107dfb3e2e3612ea28b9a2c31d8a8a553747"
+}

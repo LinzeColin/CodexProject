@@ -1,0 +1,230 @@
+{
+  "content_manifest_sha256": "sha256:e388efcd721df57399071b4840e3d79ac0ca1db8d09cb2cbd2205cb5ae2d89e1",
+  "excluded_mutable_or_self_bound_files": [
+    "artifact_hashes.json",
+    "evidence.json",
+    "final_evidence_index.json",
+    "human_acceptance.json",
+    "review_audit.json",
+    "reviewed_evidence_overlay.json",
+    "reviewer_results.json"
+  ],
+  "file_count": 53,
+  "files": [
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/analysis_report_set.json",
+      "sha256": "sha256:74369cbb139f2704d0bc3950ef17b1f63dd4f612685f10443bca3cbb794de238"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/authority_binding.json",
+      "sha256": "sha256:284a2b239e1e603731e554c73c0804ccb7470d5bcd384b4272c40532084e54a4"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/browser_trace_sanitized.zip",
+      "sha256": "sha256:f3a0c9100a283d88298a0ef26f5786bdc8c98767c986619d0d6cb2e62a9cd66b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/browser_validation.json",
+      "sha256": "sha256:f188f530279dddeccefc2f6997f81d4a72d365e4ad41cb7c09c1171baffb26d2"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/changed_files.txt",
+      "sha256": "sha256:67ebc2a8ef805fffe6894b5d87d86aa98b790b283cd51226a2f23951456b4026"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/data_quality_report.json",
+      "sha256": "sha256:9641a52abe0b763790a337a9d887d03435371d3e5d8b9e620f7c300e6f95057f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/decision_objects.json",
+      "sha256": "sha256:76d693b56468583bd311fe54bb7558b390b2f38ffb66044d248929a092fb447c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/decision_review_trace.json",
+      "sha256": "sha256:2dd5f842cb3f63120837eb95719b879f55e06a60e9c4cc3247a7ef9a5e93d4d7"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/export_manifest.json",
+      "sha256": "sha256:6c71e31bef0fb505dd82cea5f8d6cd268be532c12bdff538cbcb3f2b978cee59"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/export_snapshot.json",
+      "sha256": "sha256:b50c2b8f9d3524819153d043b96c9b1a4cfe7cb7c3e8e02b0f14af6ed115801c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/export_validation.json",
+      "sha256": "sha256:d1a05d699b765007989e19e385ad2e78f8cc5aca35ca768d1f06f097b08a188a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.csv",
+      "sha256": "sha256:e314a35a8a06dcb15aba1c119070e4c8784a5f6478219d90d44ad273ea5edea5"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.html",
+      "sha256": "sha256:2a9e21806803a080c026ac1fe441acdc2db347d98d6b564fef0689728bcc95bc"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.md",
+      "sha256": "sha256:e0e790725323be3c80959b5e6161339b5a97208af55459e439e4d9266d7d495f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.pdf",
+      "sha256": "sha256:fd787d1a8fd5db6ebb56a053c6cadcf4eca6d25350f621245809041de50adae4"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/formula_drilldown.json",
+      "sha256": "sha256:a795e1c488d3a957ca8d9910271379abc6ed28fcb17ce629395339fbbc2a97aa"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/initial_review_findings.json",
+      "sha256": "sha256:75282bfe3596c74152a7785f9c57d0a7f41705d12b433f75e03dde81f0f2271f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/input_immutability.json",
+      "sha256": "sha256:0ff149cb7e91de4fa6ca4389e103c45d51884760e665efb263e26f278989491f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/model_validation_cards.json",
+      "sha256": "sha256:6978742317f2da54d3a30b27074a9f061ebe1fee60143a2b523a8bbfdbf67dc3"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/model_validation_report.html",
+      "sha256": "sha256:50f65f97bf5b5d4e732765956fd7b267e56830d1b05aefcf8dc65a21db9d91c1"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/pdf_render.png",
+      "sha256": "sha256:e5adb22028fa2a2d579ab2d2a4f666eaa4b78360d5c691e1845cbb9de87415fe"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/pdf_validation.json",
+      "sha256": "sha256:a21f92cfc4a9ec35c535c7685f4575f49a74627031eb2d2245aa2a8ed91d3a09"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_9_2_accessibility_tree.json",
+      "sha256": "sha256:98a47e2d9d641d20421d6c02cd943b22d3b90bcf9bb8852fccd2f4f7dad71441"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_9_2_dom_snapshot.json",
+      "sha256": "sha256:830e25e33b5c4cbbe513e0ccd2a4f1e1864df204092abef8a49cdd53936624b9"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_9_3_accessibility_tree.json",
+      "sha256": "sha256:3cece0caba7957ad9f3460531ca8cf02bce8e0ddc4ae0e9912d59056ad6ac907"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_9_3_dom_snapshot.json",
+      "sha256": "sha256:04b8bab939c180334c298868e9f7173f09f0b600a58f89652c6cc47c0c7b1126"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_commit_binding.json",
+      "sha256": "sha256:03892d8a6e5e5b4b9ace1239bcdb3e6e38c5199b9f1421a5da8788114f2ebb0f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_contract.json",
+      "sha256": "sha256:dca946229f089528584c3bf095172ad6c9fafc371e9b7b4d6d29629778d91238"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_evidence/phase_9_1.json",
+      "sha256": "sha256:210c08022a8b12784949c35d34cf098b3fa97a577baa098523e6fed8d5700d57"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_evidence/phase_9_2.json",
+      "sha256": "sha256:0a44db7354b4be96c74e97ce74e30d77e099655bd2b99f0d75ced17e7a37472d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_evidence/phase_9_3.json",
+      "sha256": "sha256:c27f925cd4c6929d7621d6e38eb8817327dccdc4cd889394e27bfbd38d4cde4d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/playwright_result.json",
+      "sha256": "sha256:2db303e5f13f818de43dc88adf20c07cc86423ea16cd43d1fa724b84694afd98"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/privacy_scan.txt",
+      "sha256": "sha256:d3992fb74044e5b55463729d91357e11517a11f0511d505a2773f411c548acff"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/report_consistency.json",
+      "sha256": "sha256:41d2b3816f3d066ef802b4a29192a0b39601c3e4bf1b1302217092a0d64d0d0b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/report_manifest.json",
+      "sha256": "sha256:572ddc514c3d5265d8399978195f4708597b4cdfbcd14936d0e4ae53b7494b60"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/reviewed_worktree_overlay.json",
+      "sha256": "sha256:d1ed4e629b8af3d3c4ac2e0d1595fb2119e2c527903365c9c0a8199c593d594b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/risk_and_rollback.md",
+      "sha256": "sha256:f05196b56f3f6768ddf2123fe727911fa7f7e2f9bb79821c8bb107441529db7c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/scope_override.json",
+      "sha256": "sha256:654d46ce8ad41ff8ed90b18841ef151b44a6c77fec65faa1e3ecbb861cf36f8c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/sensitivity_preview.json",
+      "sha256": "sha256:6c4868d7c0c125139e3e52eae5c084b38a88630456b8e93398d0be3d8202a338"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/sensitivity_view.png",
+      "sha256": "sha256:e60bb015033faffc2876e392455ca60a78c361858677288f28ef92adf19b3b57"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/source_review_index.json",
+      "sha256": "sha256:74781f21d3e414cf42c37e4f6c91bf1385569bf3779f48d788437dd0bd7b9972"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/stage9_analysis_components.png",
+      "sha256": "sha256:924d0fac3b0115d80152df8e988487431ff80b0fdf934f14d9654df092e5b6f0"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/stage9_decision_review.png",
+      "sha256": "sha256:c653623292fe20844c395608163ea53331050f99eac2545de46c27bdeb3c20f0"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/structured_uat.json",
+      "sha256": "sha256:c751dfeee58ff84456033f69d9e1e0cc15af431371700f2787be07ab0a46c9a5"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/terminal.log",
+      "sha256": "sha256:50a45a2e5af8fee714d05922d5b7529b3a9cb9f21529ac8d9e5c076ff8d2190a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/transition_authorization_binding.json",
+      "sha256": "sha256:c00dbd9ba9f210d015d11cc8326b921b9b6933c309f6111d4acde2c62279af83"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_changed_scope_governance.log",
+      "sha256": "sha256:ad0fec38f67e7dd0e93d0e6ee1975cdddc58889902a51366a7818ab205376a7c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_current_content_browser.log",
+      "sha256": "sha256:cc3564fd86063833d84a598adbe7e2064a6c3ef8ab82d495b4c210956016b9ad"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_focused_stage9.log",
+      "sha256": "sha256:3a09ae5e2a3d86cc2a8112a020fdb1386263d621df2c2d1e5a4b1b23e7b3dfde"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_node_syntax_and_diff.log",
+      "sha256": "sha256:c6140f63afeb274487393d60bcc0328006e80ba1a0f75beadab95c5b39022303"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_pdf_privacy_and_evidence.log",
+      "sha256": "sha256:e1ddcf6ff3fba0acdf39f84edbab3c20951670c82f167e2e1130510dd2fccc46"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_results.json",
+      "sha256": "sha256:7c43a5268f0415cef71ff3552a105f3bc5ba3e6286e3565b3521125097d3338a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_selected_upstream_regression.log",
+      "sha256": "sha256:f284f7caf49246efc5e60250f10d75907f26cec2e50b7e33c97ffd757981b305"
+    }
+  ],
+  "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "schema": "PFIV025Stage9ReviewedEvidenceOverlayV1",
+  "status": "frozen"
+}

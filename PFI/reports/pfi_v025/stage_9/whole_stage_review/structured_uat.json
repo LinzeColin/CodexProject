@@ -1,0 +1,59 @@
+{
+  "schema": "PFIV025Stage9StructuredUATV1",
+  "product": "PFI",
+  "version": "v0.2.5",
+  "stage": 9,
+  "acceptance_id": "ACC-PFI-V025-STAGE9-WHOLE-REVIEW",
+  "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "status": "pass_with_explicit_partial_and_blocked_model_boundaries",
+  "questions": [
+    {
+      "question_id": "UAT-S9-DATA-SUFFICIENCY",
+      "question": "数据是否够？",
+      "answer": "仅足以支持数据质量、消费和现金流覆盖分析；不足以支持净资产、现金、投资金额结论。",
+      "result": "pass_with_limits",
+      "supported": ["data_quality", "consumption_partial", "cashflow_partial"],
+      "blocked": ["net_worth", "cash", "investment"],
+      "evidence_refs": ["data_quality_report.json", "analysis_report_set.json", "report_consistency.json"]
+    },
+    {
+      "question_id": "UAT-S9-FORMULA-CORRECTNESS",
+      "question": "公式是否正确？",
+      "answer": "FORM-PFI-015 与 FORM-PFI-019 的当前 invariant/coverage 证据通过；FORM-PFI-016..018 因输入缺失 blocked；FORM-PFI-020 仅 structure-level。",
+      "result": "pass_with_blocked_formulas",
+      "verified": ["FORM-PFI-015", "FORM-PFI-019"],
+      "blocked": ["FORM-PFI-016", "FORM-PFI-017", "FORM-PFI-018"],
+      "structure_only": ["FORM-PFI-020"],
+      "evidence_refs": ["formula_drilldown.json", "model_validation_cards.json", "model_validation_report.html"]
+    },
+    {
+      "question_id": "UAT-S9-MODEL-EFFECTIVENESS",
+      "question": "模型是否有效？",
+      "answer": "当前只能声明 partial validation；缺 historical/out-of-sample ground truth，不声明准确率、预测能力或 production effectiveness。",
+      "result": "pass_truthful_partial",
+      "historical_out_of_sample_status": "blocked_insufficient_ground_truth",
+      "production_effectiveness_claimed": false,
+      "evidence_refs": ["model_validation_cards.json", "model_validation_report.html"]
+    },
+    {
+      "question_id": "UAT-S9-PARAMETER-ADJUSTMENT",
+      "question": "参数如何调整？",
+      "answer": "cashflow window 的非金额影响可见；阈值、XIRR 与 quantum 影响因缺真实输入保持 blocked，不猜测调整结果。",
+      "result": "pass_with_blocked_impacts",
+      "visible_impacts": ["cashflow_window_non_financial_coverage"],
+      "blocked_impacts": ["threshold", "xirr", "quantum"],
+      "parameter_values_changed": false,
+      "evidence_refs": ["sensitivity_preview.json", "sensitivity_view.png", "model_validation_report.html"]
+    }
+  ],
+  "decision_workflow": {
+    "human_outcomes": ["accepted", "rejected", "deferred", "invalidated"],
+    "automatic_trading_allowed": false,
+    "trade_execution_available": false
+  },
+  "overall_result": "pass_for_stage_transition_only",
+  "stage_10_entry_authorized": true,
+  "stage_10_implementation_started": false,
+  "production_accepted": false,
+  "final_human_acceptance": false
+}

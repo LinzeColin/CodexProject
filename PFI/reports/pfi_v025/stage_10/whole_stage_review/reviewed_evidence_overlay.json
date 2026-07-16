@@ -1,0 +1,157 @@
+{
+  "content_manifest_sha256": "sha256:99abb6942e3dd50a4bf147da4189b0dc93b9a22f6de9a92b1dbb520869c11073",
+  "file_count": 37,
+  "files": [
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/accessibility_tree.json",
+      "sha256": "sha256:158569753bde89da5004bf72aa4067f733c6da140ed167a961f2ac48a8c6ecac"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/browser_trace_sanitized.zip",
+      "sha256": "sha256:1175cbbbc73fbf68e2f8f37345e99dd7935911397d7ed510d4c2f5f691e51fd6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/browser_validation.json",
+      "sha256": "sha256:33baeb611467d73e3efccfa248c5531bce545fb1c792634ddc8989052065ab43"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/crash_recovery.json",
+      "sha256": "sha256:a0951110dbd764f264018411d25e85ecf3aecfeb6270fa8961ec9234a7c2c223"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/database_integrity.json",
+      "sha256": "sha256:9b775d3a5835765768c129f55ae9b66de14428f618903272429f114c74c89a31"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/dom_snapshot.json",
+      "sha256": "sha256:e2869802b25ef19807040f954cedc6e5d859ddfff27453bcd6eb1dab3b741500"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/failure_matrix.json",
+      "sha256": "sha256:4e8c425eee58abd9066d09458d5cd692f4ed5a44d334a80920e7192698a96e5f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/impacted_metrics.json",
+      "sha256": "sha256:6d309145a2ac34ac4d2691d950ed365a010437791bd47b70f7c46d7452411016"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/initial_review_findings.json",
+      "sha256": "sha256:3a20dc536dd0565a507be458eff8da2700039ca9e1638778f4548e602bd7708b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/job_failure_redacted.png",
+      "sha256": "sha256:13c9c8d4f5b63fa7c9651354d01bd5598dcee7f5802a58c319e671a2b7a1fc9e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/job_recovery_redacted.png",
+      "sha256": "sha256:92ea4cf91a1b821f626272ee5964241b18a8d2d6025507f43c277e2e927124d5"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/job_state_transitions.json",
+      "sha256": "sha256:170227c85fd80d987f4d5ff336faa08459b7e692e35f7ff25d0b9a7aceddfcf2"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/migration_before_after.json",
+      "sha256": "sha256:c9d7248959ce29edd9303b89faf0dadf8b93259fc0478e1b4166f4c3ae676039"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/network_audit.json",
+      "sha256": "sha256:102e59225b36037f76eb0445cfa28e4e62b12d95485d2b4ab466256e1449f037"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/phase_commit_binding.json",
+      "sha256": "sha256:d2352ad8c8b352d3f1df20a4e086203dab4fcd2fcbf48bcde6c441f6991a5adc"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/phase_contract.json",
+      "sha256": "sha256:00d95c0c19e8cf90a6b607d7549c31789326ddd2488808465a1bd711a08ba090"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/phase_evidence/phase_10_1.json",
+      "sha256": "sha256:e20b945626e09192690f639c7b7c9f7667927d75d4fd9c632213dfa5be16078a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/phase_evidence/phase_10_2.json",
+      "sha256": "sha256:113354bd0e46affdf38047cb27aced771e17d2599923cfbf659c8265450ae3bb"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/phase_evidence/phase_10_3.json",
+      "sha256": "sha256:9345d74e099fdc52f32baaf3b1f74ac68dcce34dc5d360cb58581d465994d891"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/privacy_scan.txt",
+      "sha256": "sha256:ffb73557ce068b462d6890442311afbbee631ee325f53ec99af44fde4c3563ab"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/reviewed_worktree_overlay.json",
+      "sha256": "sha256:2ff0341b35e601662da59954eebe3f45f32c9351d9f924c000e1de78246e2c53"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/risk_and_rollback.md",
+      "sha256": "sha256:94c443708b80f6eb05ff4aef26f17a3eb90414c11ca0c674119c6c81b9e54994"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/runtime_diff.json",
+      "sha256": "sha256:c43724c0019c1e5ec55dbdddd63f7d78017b69335a7174fc2cfaa7f2f64320b7"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/scope_override.json",
+      "sha256": "sha256:e677e6b8e3b10d7750d66916dcd3eb6d01fa3f1788835e140f538690a06bc17b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/structured_uat.json",
+      "sha256": "sha256:4be05a6449c55a28c59febaea45a1419c73ba8999a71efbf5566fc75dfc9b4b2"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/taskpack_binding.json",
+      "sha256": "sha256:4189fe0c7b292e6cfb3256110d66ac9a3df9ad6c47c52e45c1f43454a305b04f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/terminal.log",
+      "sha256": "sha256:74ec20f076d4287865b580841c4054348e21cd4285bae1f4c429343516b6a86e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/trace_export.json",
+      "sha256": "sha256:6a905128ce97965bfd0d7da41c0e335a896252bfcb23bea002a1402505ecbb21"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/trace_privacy.json",
+      "sha256": "sha256:44f9ddfccc2f22662601875590a0d59a47248b0ace86a35f46c082708cad04da"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/transition_authorization_binding.json",
+      "sha256": "sha256:a0e6c966c57312d9636eda6fb391b5f09468c27eeb02620444a7e17e39219db5"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_build_core_evidence.log",
+      "sha256": "sha256:42cfe23c0f149de01e769d4772297f76d12b19cd7480410e8534502b78fd815d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_changed_scope_governance.log",
+      "sha256": "sha256:2f0ad15ef4adce55a334e715638858176a9b61e496b90dfb260aa89aa8a6e111"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_current_content_browser.log",
+      "sha256": "sha256:96ca8eb5e90df5702f6847716aebcf3c8475d1b6e5ea26c987f9d4e19499e21c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_focused_stage10.log",
+      "sha256": "sha256:6225e1377403eeca9531ed34880a606f658e93712fd458f2232fa6f1b60df067"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_results.json",
+      "sha256": "sha256:6b9a0276ac346b3e177ae3fe1c7d7229271838b1b59684e30a3116f2540d440f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_selected_upstream_regression.log",
+      "sha256": "sha256:6ca48d082a4007f63245726199d559863edf13826d917ceff796d9d3b74bec91"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_syntax_release_and_diff.log",
+      "sha256": "sha256:bd4a429a175fdd2e7ee0dfd09bf7b25956c70c52a22764a4672359811e2df432"
+    }
+  ],
+  "review_base": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+  "schema": "PFIV025Stage10ReviewedEvidenceOverlayV1",
+  "status": "frozen"
+}

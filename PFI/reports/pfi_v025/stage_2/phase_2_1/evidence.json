@@ -1,0 +1,297 @@
+{
+  "schema": "PFIV025Stage2Phase21EvidenceV1",
+  "version": "v0.2.5",
+  "stage": 2,
+  "phase": "2.1",
+  "phase_id": "V025-S2-P2.1",
+  "contract_id": "PFI-V025-STAGE2-PHASE21-DATA-ROOT-SOURCE-MANIFEST",
+  "acceptance_id": "ACC-PFI-V025-S2-P21-DATA-ROOT-SOURCE-MANIFEST",
+  "acceptance_id_origin": "project_governance_assigned_not_taskpack",
+  "acceptance_scope": "Stage 2 human stop gate; Phase 2.1 candidate does not satisfy Stage 2 acceptance",
+  "task_ids": [
+    "S2-P1-T1",
+    "S2-P1-T2",
+    "S2-P1-T3",
+    "S2-P1-T4"
+  ],
+  "risk_tier": "T3_PRIVACY",
+  "implementation_base": "642ab9a7f94e5d7f58c79cb8b4006485714aa90f",
+  "implementation_base_semantics": "stage_1_binding_commit_with_matching_external_attestation",
+  "stage_1_external_attestation_sha256": "a03651248d67f727f001b52c0a08961416155506b374fa08123247ebfa8f0d2a",
+  "git_commit": "SELF",
+  "git_commit_semantics": "commit_containing_this_evidence",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "allowed_files_scope_basis": "Phase 2.1 product files plus selected project/root governance companions required by AGENTS.md and renderer truth",
+  "commands": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage2_source_manifest.py -q",
+      "exit_code": 2,
+      "summary": "expected RED: v0.2.5 inventory module missing"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage2_source_manifest.py -q",
+      "exit_code": 1,
+      "summary": "intermediate GREEN: 7 passed; tracked artifacts not yet present"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q -k 'not tracked_phase_artifacts'",
+      "exit_code": 0,
+      "summary": "safety remediation subset: 15 passed, 1 deselected"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q",
+      "exit_code": 0,
+      "summary": "Phase 2.1 focused contract: 27 passed"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_stage1_*.py PFI/tests/test_stage2_*.py -q",
+      "exit_code": 0,
+      "summary": "legacy Stage 1/2 compatibility: 50 passed"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q",
+      "exit_code": 0,
+      "summary": "pre-final-security-remediation baseline: complete v0.2.5 regression 108 passed, 2 upstream deprecation warnings"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q",
+      "exit_code": 1,
+      "summary": "diagnostic post-remediation run: 20 passed before one old Stage 1 LaunchServices finalization failure; not accepted as final regression"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_isolated_app_acceptance.py::test_prepare_and_finalize_disposable_candidate_without_finder -q",
+      "exit_code": 0,
+      "summary": "standalone retry: 1 passed in 80.49s; no Finder used"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q -k 'not test_prepare_and_finalize_disposable_candidate_without_finder'",
+      "exit_code": 1,
+      "summary": "diagnostic pre-final-binding run: 103 passed, 4 failed, 1 deselected, 2 warnings; two old Stage 1 temporal/state failures and two expected stale privacy-binding failures"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q -k 'not test_prepare_and_finalize_disposable_candidate_without_finder'",
+      "exit_code": 0,
+      "summary": "final post-binding split suite: 107 passed, 1 deselected, 2 upstream dependency deprecation warnings in 964.73s"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -c \"from pathlib import Path; files=('PFI/src/pfi_v02/stage_v025_data_inventory.py','PFI/scripts/v025/data_inventory.py','PFI/tests/test_v025_stage2_source_manifest.py','scripts/lean_governance.py'); [compile(Path(name).read_text(encoding='utf-8'), name, 'exec') for name in files]; print('PASS 4 files; bytecode not written')\"",
+      "exit_code": 0,
+      "summary": "4 Python files compiled in memory; no bytecode written"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q -k 'source_manifest_wrapper_and_each_source_validate_against_both_schemas or taskpack_single_source_schema_is_semantically_preserved or phase_evidence_validates_against_taskpack_schema or tracked_phase_artifacts_are_consistent_and_public_safe'",
+      "exit_code": 0,
+      "summary": "CLI, both source schemas, Evidence schema, and deterministic tracked artifacts passed"
+    },
+    {
+      "command": "python3 -B scripts/validate_project_governance.py --project PFI",
+      "exit_code": 0,
+      "summary": "project governance: errors 0, warnings 0",
+      "execution_context": "full_checkout_shadow_with_staged_overlay"
+    },
+    {
+      "command": "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref 642ab9a7f94e5d7f58c79cb8b4006485714aa90f --semantic",
+      "exit_code": 0,
+      "summary": "governance sync: errors 0, warnings 0",
+      "execution_context": "full_checkout_shadow_with_staged_overlay"
+    },
+    {
+      "command": "python3 -B scripts/lean_governance.py check-render --project PFI",
+      "exit_code": 0,
+      "summary": "renderer drift 0, reference issues 0",
+      "execution_context": "full_checkout_shadow_with_staged_overlay"
+    },
+    {
+      "command": "python3 -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt02_renderer_derives_owner_fields_from_canonical_facts -q",
+      "exit_code": 0,
+      "summary": "targeted renderer regression passed",
+      "execution_context": "full_checkout_shadow_with_staged_overlay"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q -k privacy_scan_is_deterministic",
+      "exit_code": 0,
+      "summary": "private paths, financial rows, account identifiers, credentials, SQLite table names, Finder operations, mutations, and fake-data fallback: 0"
+    },
+    {
+      "command": "zsh -c 'set -e; actual=$(/usr/bin/git -c core.quotePath=false diff --cached --name-only | LC_ALL=C sort); expected=$(LC_ALL=C sort PFI/reports/pfi_v025/stage_2/phase_2_1/changed_files.txt); [[ \"$actual\" == \"$expected\" ]]; [[ $(/usr/bin/git -c core.quotePath=false diff --cached --name-only | wc -l | tr -d \" \") == 32 ]]; /usr/bin/git diff --cached --check; [[ -z $(/usr/bin/git diff --name-only) ]]'",
+      "exit_code": 0,
+      "summary": "whitespace clean and exact 32-file Phase 2.1 scope matched",
+      "execution_context": "current_sparse_worktree"
+    },
+    {
+      "command": "PYTHONPATH=scripts python3 -B -c \"import json,subprocess,types; from pathlib import Path; import lean_governance as c; B='642ab9a7f94e5d7f58c79cb8b4006485714aa90f'; gt=lambda p: subprocess.run(['git','show',f'{B}:{p}'],capture_output=True,text=True,encoding='utf-8').stdout; parse=c.governance.fallback_yaml_load; b=types.ModuleType('lean_governance_baseline'); b.__file__=f'{B}:scripts/lean_governance.py'; exec(compile(gt('scripts/lean_governance.py'),b.__file__,'exec'),b.__dict__); load=lambda p:(parse(gt(f\\\"{p['path']}/docs/governance/project.yaml\\\")),parse(gt(f\\\"{p['path']}/docs/governance/roadmap.yaml\\\")),[json.loads(x) for x in gt(f\\\"{p['path']}/docs/governance/events.jsonl\\\").splitlines() if x.strip()]); cfg=parse(Path('governance/projects.yaml').read_text(encoding='utf-8')); rows=[(str(p['project_id']),b.rendered_project_texts(*(facts:=load(p))),c.rendered_project_texts(*facts)) for p in cfg['projects'] if p['project_id']!='PFI']; diffs=[project_id for project_id,before,after in rows if before!=after]; print(json.dumps({'base_commit':B,'comparison':'non-PFI-rendered-text-byte-identity','checked_project_count':len(rows),'difference_count':len(diffs),'differences':diffs},sort_keys=True)); raise SystemExit(bool(diffs))\"",
+      "exit_code": 0,
+      "summary": "all 12 non-PFI registered projects rendered byte-identically to the implementation-base renderer; unrelated pre-existing project drift was not attributed to this Phase",
+      "execution_context": "git_object_baseline_comparison"
+        }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/config/schemas/v025/data_source_manifest.schema.json",
+    "PFI/config/schemas/v025/source_manifest_collection.schema.json",
+    "PFI/config/sources/v025_phase_2_1_sources.json",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/MODEL_SPEC.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/governance/project.yaml",
+    "PFI/docs/governance/roadmap.yaml",
+    "PFI/docs/pfi_v025/stage_2/PHASE_2_1_DATA_ROOT_SOURCE_MANIFEST_IMPLEMENTATION_PLAN.md",
+    "PFI/docs/pfi_v025/stage_2/data_root_decision.md",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/data_root_inventory.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/database_before_after.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/evidence.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/metric_computability_matrix.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/source_manifest.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/terminal.log",
+    "PFI/scripts/v025/data_inventory.py",
+    "PFI/src/pfi_v02/stage_v025_data_inventory.py",
+    "PFI/tests/test_v025_stage2_source_manifest.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "scripts/lean_governance.py"
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/data_root_inventory.json",
+    "PFI/docs/pfi_v025/stage_2/data_root_decision.md",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/source_manifest.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/metric_computability_matrix.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/database_before_after.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/terminal.log"
+  ],
+  "deliverables": [
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/data_root_inventory.json",
+    "PFI/docs/pfi_v025/stage_2/data_root_decision.md",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/source_manifest.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_1/metric_computability_matrix.json"
+  ],
+  "explicitly_not_done": [
+    "Phase 2.2",
+    "Phase 2.3",
+    "raw data migration/copy/move/merge/delete",
+    "financial metric calculation",
+    "GitHub push",
+    "canonical App install",
+    "production acceptance",
+    "final human acceptance"
+  ],
+  "risks": [
+    "private root mode 0755 and SQLite mode 0644 retain group/other permission risk; this Phase records but does not change permissions",
+    "balance, liability, holding, price, and production FX sources remain not_loaded until source-level aggregate metadata is bound",
+    "all metric outputs remain blocked/null until source and contract dependencies are satisfied"
+  ],
+  "rollback": "Revert only the Phase 2.1 commit; do not migrate, restore, delete, or otherwise mutate source data.",
+  "requires_user_acceptance": true,
+  "contains_private_values": false,
+  "canonical_private_root_id": "ROOT-PFI-DATA-HOME",
+  "canonical_private_root_alias": "$PFI_DATA_HOME",
+  "transaction_source": {
+    "status": "ready",
+    "record_count": 8815,
+    "coverage": {
+      "start": "2022-06-06",
+      "end": "2026-06-03"
+    },
+    "as_of": "2026-06-03",
+    "content_hash": "sha256:13ae4dbd62870e93a82dfbaa0f03c7412d3cf87d5b3a3b2097657ebd4a19209e",
+    "content_hash_scheme": "sha256-framed-mode-path-oid-size-blob-v2"
+  },
+  "database_probe": {
+    "status": "ready_metadata_only",
+    "source_level_record_count": null,
+    "coverage": {
+      "start": null,
+      "end": null
+    },
+    "as_of": null,
+    "quick_check": "ok",
+    "content_hash_scheme": "sha256-file-bytes-v1",
+    "query_mode": "mode=ro",
+    "sqlite_header_mode": "rollback_journal",
+    "unchanged_before_after": true,
+    "quiescence_gate": "sqlite_shared_read_transaction"
+  },
+  "unverified_source_status": "not_loaded",
+  "blocked_metric_ids": [
+    "consumption_classification",
+    "consumption_outflow_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny",
+    "net_worth_cny"
+  ],
+  "transactions_available_is_not_balance_or_holdings_proof": true,
+  "model_ids_changed": [],
+  "formula_ids_changed": [],
+  "parameter_ids_changed": [],
+  "runtime_behavior_changed": false,
+  "financial_data_changed": false,
+  "database_changed": false,
+  "finder_used": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "stage_1_status": "accepted_for_transition",
+  "stage_2_entry_authorized": true,
+  "stage_2_status": "in_progress",
+  "phase_2_2_status": "not_started",
+  "independent_reviews": {
+    "reviewed_at": "2026-07-14T17:50:32+10:00",
+    "basis": "post-remediation staged 32-file diff",
+    "aggregate": {
+      "critical": 0,
+      "important": 0,
+      "minor": 0
+    },
+    "tracks": [
+      {
+        "scope": "code_security",
+        "result": "pass",
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      {
+        "scope": "acceptance_evidence",
+        "result": "pass",
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      {
+        "scope": "governance_renderer",
+        "result": "pass",
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      }
+    ],
+    "finder_used": false
+  },
+  "validation": [
+    "Phase 2.1 focused contract: 27 passed",
+    "legacy Stage 1/2 compatibility: 50 passed",
+    "pre-final-security-remediation baseline: complete v0.2.5 regression 108 passed with 2 upstream dependency deprecation warnings",
+    "final v0.2.5 regression split: 107 suite tests passed plus 1 standalone test passed; 1 suite deselection and 2 upstream dependency deprecation warnings",
+    "TaskPack source and Evidence schemas: pass",
+    "CLI/tracked artifact deterministic equivalence: pass",
+    "Python in-memory compile: 4 files pass",
+    "project governance: errors 0 / warnings 0",
+    "governance sync: errors 0 / warnings 0",
+    "check-render: drift_count 0 / reference_issue_count 0",
+    "targeted renderer regression: pass",
+        "non-PFI renderer compatibility: 12 registered projects byte-identical to implementation base",
+    "privacy scan: pass",
+    "exact changed-file allowlist and git diff --check: pass"
+  ]
+}

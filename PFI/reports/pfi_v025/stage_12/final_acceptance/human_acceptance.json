@@ -1,0 +1,26 @@
+{
+  "acceptance_statement": "我明确最终接受 PFI v0.2.5（build pfi-v025-s1p1-20260712.1，App 0.2.5 / 20260712.1），接受范围为 Stage 0–12；接受 product candidate A c8ce63aac785ae1f119cfe1ff993c4e81436bf97、evidence-index sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344、reviewed closure B 559cf190ccfd97aabcf37a5edf2bf1e9abe300fc、rereview evidence C 123f5a6f7e7af22c283e49e55c2ba581310238d5，并确认验收请求时间 2026-07-15T21:45:47Z；我接受五项非阻断 P2：真实 kernel sleep/wake 未运行、Holdings not_loaded/not_run、全程 CLI-only 且禁止 Finder、axe-core 不可用并采用 WCAG/CDP AX 替代证据、六项 historical-state tests debt；我授权执行 S12-P3-T4 release freeze，并随后仅执行一次 GitHub main 上传及 CLI-only canonical PFI.app 最终重装与校验。",
+  "accepted_at": "2026-07-15T23:50:30Z",
+  "accepted_scope": [
+    "PFI v0.2.5 Stage 0 through Stage 12",
+    "build pfi-v025-s1p1-20260712.1 and canonical App 0.2.5 / 20260712.1",
+    "product candidate A c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+    "reviewed closure B 559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+    "rereview evidence C 123f5a6f7e7af22c283e49e55c2ba581310238d5",
+    "evidence index sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344"
+  ],
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "git_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "known_defects": [
+    "P2: actual kernel sleep/wake was not run; only the owned-process suspend/resume proxy was run",
+    "P2: Holdings remains not_loaded/not_run",
+    "P2: the full workflow is CLI-only and Finder is prohibited",
+    "P2: axe-core is unavailable; deterministic WCAG 2.2 AA, keyboard and CDP AX evidence is used instead",
+    "P2: six historical-state tests remain registered debt with current-state replacement gates"
+  ],
+  "product": "PFI",
+  "stage": 12,
+  "user_confirmation_reference": "Codex Owner exact final acceptance; request_generated_at=2026-07-15T21:45:47Z",
+  "version": "v0.2.5"
+}

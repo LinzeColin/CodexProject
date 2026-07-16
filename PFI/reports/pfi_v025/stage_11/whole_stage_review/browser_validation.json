@@ -1,0 +1,101 @@
+{
+  "schema": "PFIV025Stage11PublicBoundaryBrowserValidationV1",
+  "status": "pass",
+  "checkCount": 23,
+  "checks": {
+    "main_http_200": true,
+    "static_surface_marker": true,
+    "public_h1_present": true,
+    "no_scripts": true,
+    "no_form_controls": true,
+    "no_application_markers": true,
+    "no_private_markers": true,
+    "no_horizontal_overflow": true,
+    "manifest_http_200": true,
+    "manifest_static_boundary": true,
+    "manifest_no_active_ui": true,
+    "manifest_no_runtime": true,
+    "manifest_no_context": true,
+    "manifest_no_data_sources": true,
+    "unknown_route_http_404": true,
+    "unknown_route_is_boundary_404": true,
+    "accessibility_tree_pass": true,
+    "main_console_errors_zero": true,
+    "intentional_404_console_only": true,
+    "page_errors_zero": true,
+    "unexpected_http_errors_zero": true,
+    "blocked_external_requests_zero": true,
+    "loopback_origin_only": true
+  },
+  "main": {
+    "title": "PFI — Public boundary notice",
+    "language": "en",
+    "surface": "static-boundary-notice",
+    "h1": "A description of PFI,not PFI itself.",
+    "headingCount": 6,
+    "scriptCount": 0,
+    "forbiddenInteractiveElementCount": 0,
+    "applicationMarkerCount": 0,
+    "anchorCount": 6,
+    "anchors": [
+      {
+        "label": "Skip to content",
+        "destinationClass": "fragment"
+      },
+      {
+        "label": "PFI Personal Financial Intelligence",
+        "destinationClass": "fragment"
+      },
+      {
+        "label": "HomeHub",
+        "destinationClass": "external-public"
+      },
+      {
+        "label": "Public source",
+        "destinationClass": "external-public"
+      },
+      {
+        "label": "Read the boundary",
+        "destinationClass": "fragment"
+      },
+      {
+        "label": "Back to top",
+        "destinationClass": "fragment"
+      }
+    ],
+    "containsPrivateMarker": false,
+    "horizontalOverflowPx": 0
+  },
+  "manifest": {
+    "status": 200,
+    "surfaceType": "static_boundary_notice",
+    "activeUi": false,
+    "workerRuntimeEnabled": false,
+    "localRuntimeConnection": false,
+    "contextExportExposed": false,
+    "dataSourceCount": 0
+  },
+  "notFound": {
+    "status": 404,
+    "title": "PFI — Page not found",
+    "h1": "There is no application route here.",
+    "scriptCount": 0,
+    "applicationMarkerCount": 0
+  },
+  "diagnostics": {
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "pageErrors": [],
+    "unexpectedHttpErrors": [],
+    "blockedExternal": [],
+    "requestedOriginCount": 1
+  },
+  "loopbackOnly": true,
+  "externalNetworkCalls": 0,
+  "containsPrivateValues": false,
+  "containsAbsolutePaths": false,
+  "finderUsed": false,
+  "launchServicesUsed": false,
+  "guiFileOperationsUsed": false
+}

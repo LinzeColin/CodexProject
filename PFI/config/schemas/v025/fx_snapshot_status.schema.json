@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PFI v0.2.5 FX Snapshot Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "phase",
+    "source_id",
+    "status",
+    "base_currency",
+    "quote_currency",
+    "direction",
+    "meaning",
+    "timezone",
+    "cutoff_local",
+    "evaluated_at",
+    "expected_effective_business_date",
+    "closed_date_source",
+    "closed_date_count",
+    "snapshot_id",
+    "source_provider",
+    "effective_business_date",
+    "fx_effective_at",
+    "rate",
+    "source_hash",
+    "hash_scheme",
+    "stale_status",
+    "stale_business_days",
+    "ordinary_runtime_network_allowed",
+    "blocking_reason_zh",
+    "legacy_reference",
+    "private_values_included",
+    "financial_fixture_fallback_used"
+  ],
+  "properties": {
+    "schema": {"const": "PFIV025FxSnapshotStatusV1"},
+    "version": {"const": "v0.2.5"},
+    "phase": {"const": "2.2"},
+    "source_id": {"const": "SRC-FX-SNAPSHOT"},
+    "status": {"enum": ["ready", "outdated", "not_loaded", "source_missing", "invalid", "blocked"]},
+    "base_currency": {"const": "AUD"},
+    "quote_currency": {"const": "CNY"},
+    "direction": {"const": "AUD_TO_CNY"},
+    "meaning": {"const": "1 AUD = rate CNY"},
+    "timezone": {"const": "Australia/Sydney"},
+    "cutoff_local": {"const": "06:00:00"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "expected_effective_business_date": {"type": "string", "format": "date"},
+    "closed_date_source": {"const": "explicit_source_closed_dates"},
+    "closed_date_count": {"type": "integer", "minimum": 0},
+    "snapshot_id": {"type": ["string", "null"]},
+    "source_provider": {"type": ["string", "null"]},
+    "effective_business_date": {"type": ["string", "null"], "format": "date"},
+    "fx_effective_at": {"type": ["string", "null"], "format": "date-time"},
+    "rate": {"type": ["string", "null"], "pattern": "^[0-9]+(?:\\.[0-9]+)?$"},
+    "source_hash": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "hash_scheme": {"const": "sha256-canonical-json-excluding-source-hash-v1"},
+    "stale_status": {"enum": ["current", "stale", "unavailable"]},
+    "stale_business_days": {"type": ["integer", "null"], "minimum": 0},
+    "ordinary_runtime_network_allowed": {"const": false},
+    "blocking_reason_zh": {"type": ["string", "null"]},
+    "legacy_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path_alias", "content_hash", "disposition", "loaded_as_production"],
+      "properties": {
+        "path_alias": {"const": "PFI/data/fx_snapshots/AUD_CNY/2026-06-28.json"},
+        "content_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "disposition": {"const": "reference_only_not_bound_to_v025_canonical_source"},
+        "loaded_as_production": {"const": false}
+      }
+    },
+    "private_values_included": {"const": false},
+    "financial_fixture_fallback_used": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["not_loaded", "source_missing", "blocked"]}}},
+      "then": {
+        "properties": {
+          "snapshot_id": {"type": "null"},
+          "source_provider": {"type": "null"},
+          "effective_business_date": {"type": "null"},
+          "fx_effective_at": {"type": "null"},
+          "rate": {"type": "null"},
+          "source_hash": {"type": "null"},
+          "stale_status": {"const": "unavailable"},
+          "stale_business_days": {"type": "null"}
+        }
+      }
+    }
+  ]
+}

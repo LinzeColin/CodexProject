@@ -1,0 +1,22 @@
+{
+  "schema": "PFIV025Stage4WholeReviewAuditV1",
+  "review_base": "8478bbc65ed739ef5f22b1cfc4a932f15837be1d",
+  "review_tracks": ["requirements_evidence", "code_security_privacy", "governance_renderer"],
+  "initial_review": {
+    "counts": {"critical": 0, "important": 5, "minor": 1},
+    "result": "remediation_required",
+    "findings": [
+      {"finding_id": "S4-WR-I01", "severity": "important", "track": "requirements_evidence", "finding": "三个 Phase 缺少整阶段不可变 commit/evidence 绑定与只读 verifier。", "remediation": "新增 commit-bound verifier 和回归测试。", "status": "fixed"},
+      {"finding_id": "S4-WR-I02", "severity": "important", "track": "requirements_evidence", "finding": "缺少 12 tasks、6 Acceptance、4 Stop Conditions 与 Pass Gate 的统一索引。", "remediation": "新增 final_evidence_index.json。", "status": "fixed"},
+      {"finding_id": "S4-WR-I03", "severity": "important", "track": "code_security_privacy", "finding": "缺少当前 v0.2.5 非 ready/null 浏览器截图、trace 与可访问性语义证据。", "remediation": "用本地 Chrome headless 生成截图，并固化精确前端状态投影、语义树与 trace；未使用 Finder。", "status": "fixed"},
+      {"finding_id": "S4-WR-I04", "severity": "important", "track": "requirements_evidence", "finding": "缺少符合 TaskPack schema 且绑定最终索引 hash 的阶段用户验收。", "remediation": "新增 human_acceptance.json，明确 not_loaded 残余与非 production 范围。", "status": "fixed"},
+      {"finding_id": "S4-WR-I05", "severity": "important", "track": "governance_renderer", "finding": "README/HANDOFF 仍把 v0.2.4 标为 current，与 v0.2.5 canonical truth 冲突。", "remediation": "在两个入口增加 v0.2.5 当前真值覆盖，并将旧段落明确为历史背景。", "status": "fixed"},
+      {"finding_id": "S4-WR-M01", "severity": "minor", "track": "governance_renderer", "finding": "canonical governance 仍为 whole review not_started。", "remediation": "复审通过后同步 accepted_for_transition、Stage 5 entry authorization 与唯一 next gate。", "status": "fixed"}
+    ]
+  },
+  "post_remediation_review": {
+    "counts": {"critical": 0, "important": 0, "minor": 0},
+    "result": "pass",
+    "reviewed_scope": "Stage 4 only; Stage 5 work not performed"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "contains_private_values": false,
+  "initial_navigation": {
+    "dom_content_loaded_ms": 191,
+    "first_contentful_paint_ms": 192,
+    "load_event_ms": 196
+  },
+  "initial_navigation_budget_ms": 2500,
+  "maximum_route_navigation_ms": 254,
+  "route_count": 10,
+  "route_navigation_budget_ms": 3000,
+  "schema": "PFIV025Stage12Phase121PerformanceSummaryV1",
+  "status": "pass"
+}

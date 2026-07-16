@@ -1,0 +1,24 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE5-WHOLE-REVIEW",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "aggregate_confidence_score_allowed": false,
+  "app_install_performed": false,
+  "current_phase_only": true,
+  "explicitly_not_done": [
+    "Phase 5.2 dual consumption and financial model implementation",
+    "Phase 5.3 real-data invariants, sensitivity and model validation",
+    "Stage 5 whole-stage independent review, remediation, re-review and transition acceptance",
+    "GitHub push and canonical PFI.app reinstall"
+  ],
+  "external_network_performed": false,
+  "finder_used": false,
+  "phase": "5.1",
+  "phase_5_2_started": false,
+  "phase_id": "V025-S5-P5.1",
+  "production_default_fx_rate": null,
+  "push_performed": false,
+  "stage": 5,
+  "stage_5_whole_stage_review_done": false,
+  "task_ids": ["S5-P1-T1", "S5-P1-T2", "S5-P1-T3", "S5-P1-T4"],
+  "version": "v0.2.5"
+}

@@ -1,0 +1,83 @@
+{
+  "component_count_per_surface": 4,
+  "language": "zh-CN",
+  "nodes": [
+    {
+      "name": "消费总流出金额（用户定义活动口径）",
+      "role": "article",
+      "surface": "homepage",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "生活消费金额",
+      "role": "article",
+      "surface": "homepage",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "投资资金流出金额",
+      "role": "article",
+      "surface": "homepage",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "投资域内配置金额",
+      "role": "article",
+      "surface": "homepage",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "消费总流出金额（用户定义活动口径）",
+      "role": "article",
+      "surface": "consumption_page",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "生活消费金额",
+      "role": "article",
+      "surface": "consumption_page",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "投资资金流出金额",
+      "role": "article",
+      "surface": "consumption_page",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "投资域内配置金额",
+      "role": "article",
+      "surface": "consumption_page",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "消费总流出金额（用户定义活动口径）",
+      "role": "article",
+      "surface": "report",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "生活消费金额",
+      "role": "article",
+      "surface": "report",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "投资资金流出金额",
+      "role": "article",
+      "surface": "report",
+      "value": "CNY 已脱敏"
+    },
+    {
+      "name": "投资域内配置金额",
+      "role": "article",
+      "surface": "report",
+      "value": "CNY 已脱敏"
+    }
+  ],
+  "private_financial_values_present": false,
+  "schema": "PFIV025Stage5WholeReviewAccessibilityTreeV1",
+  "source": "semantic projection of actual formal-shell metric tiles after evidence redaction",
+  "status": "pass",
+  "surface_count": 3
+}

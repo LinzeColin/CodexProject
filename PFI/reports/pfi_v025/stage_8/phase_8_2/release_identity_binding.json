@@ -1,0 +1,15 @@
+{
+  "schema": "PFIV025Stage8Phase82ReleaseIdentityBindingV1",
+  "status": "pass",
+  "version": "v0.2.5",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "frontend_bundle_hash": "33ef94e054dfc45bda699a5c44dee209868816eb27e107c3b73a3dae80e7be98",
+  "backend_build_hash": "499096a4762a7f1117395a209eba1ee08035180fd07ed78038e95effcbf2e65e",
+  "frontend_hash_recomputed": true,
+  "backend_hash_recomputed": true,
+  "embedded_and_config_manifest_match": true,
+  "canonical_frontend_source_count": 19,
+  "official_candidate_source_set_match": true,
+  "formula_version_changed": false,
+  "parameter_version_changed": false
+}

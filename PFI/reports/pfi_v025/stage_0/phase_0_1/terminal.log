@@ -1,0 +1,520 @@
+COMMAND: pwd
+EXIT_CODE: 0
+SUMMARY: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+
+COMMAND: git rev-parse --show-toplevel
+EXIT_CODE: 0
+SUMMARY: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+
+COMMAND: git branch --show-current
+EXIT_CODE: 0
+SUMMARY: codex/pfi
+
+COMMAND: git rev-parse --abbrev-ref '@{upstream}'
+EXIT_CODE: 0
+SUMMARY: origin/main
+
+COMMAND: git remote get-url origin
+EXIT_CODE: 0
+SUMMARY: git@github.com:LinzeColin/CodexProject.git
+
+COMMAND: git rev-parse HEAD
+EXIT_CODE: 0
+SUMMARY: 3bc8e4e5780fd19594161b574763a9b2e65b7d30
+
+COMMAND: git rev-parse origin/main
+EXIT_CODE: 0
+SUMMARY: 3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb
+
+COMMAND: git ls-remote origin refs/heads/main
+EXIT_CODE: 0
+SUMMARY: 3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb refs/heads/main
+
+COMMAND: git rev-list --left-right --count HEAD...origin/main
+EXIT_CODE: 0
+SUMMARY: 2 commits ahead, 0 commits behind.
+
+COMMAND: GIT_OPTIONAL_LOCKS=0 git status --porcelain=v1 --untracked-files=all
+EXIT_CODE: 0
+SUMMARY: Empty output; worktree was clean before Phase artifacts were created.
+
+COMMAND: git sparse-checkout list
+EXIT_CODE: 0
+SUMMARY: Patterns: /*, !/*/, /PFI/, /scripts/, /docs/, !/docs/*/, /docs/governance/, /governance/, !/governance/*/, /governance/projects.yaml
+
+COMMAND: git log -5 --oneline --decorate
+EXIT_CODE: 0
+SUMMARY: 3bc8e4e57 (HEAD -> codex/pfi) docs(PFI): plan v0.2.5 stage 0 phase 0.1; cd0898fda docs(PFI): design v0.2.5 stage 0 phase 0.1; 3c7626008 (origin/main, origin/HEAD) codex: 备份并清理 Codex session 历史 2026-07-11; 6bd6f12b6 codex: 备份并清理 Codex session 历史 2026-07-11; 5e48e7397 docs(PFI): prepare final delivery transaction
+
+COMMAND: git rev-parse 5e48e739774575f4d198d6268271e557de434897^1
+EXIT_CODE: 0
+SUMMARY: 17b9f59794740f927c5f531ba1aa334621a832e5
+
+COMMAND: git merge-base --is-ancestor 5e48e739774575f4d198d6268271e557de434897 origin/main
+EXIT_CODE: 0
+SUMMARY: Empty output; exit 0 proves the evidence commit is an ancestor of origin/main.
+
+COMMAND: git diff --quiet 5e48e739774575f4d198d6268271e557de434897..origin/main -- PFI
+EXIT_CODE: 0
+SUMMARY: Empty output; exit 0 proves the PFI subtree did not change after the evidence commit through origin/main.
+
+COMMAND: git log --oneline --ancestry-path 5e48e739774575f4d198d6268271e557de434897..origin/main
+EXIT_CODE: 0
+SUMMARY: 3c7626008 codex: 备份并清理 Codex session 历史 2026-07-11; 6bd6f12b6 codex: 备份并清理 Codex session 历史 2026-07-11
+
+COMMAND: openssl dgst -sha256 \
+  /Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md \
+  /Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip
+EXIT_CODE: 0
+SUMMARY: Roadmap SHA-256 fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b; Task Pack SHA-256 591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2.
+
+COMMAND: unzip -t /Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip
+EXIT_CODE: 0
+SUMMARY: All listed ZIP entries tested OK; no errors detected in compressed data.
+
+PHASE_STATUS: evidence_assembly_in_progress
+
+COMMAND: sed -n '1,10p' PFI/VERSION
+EXIT_CODE: 0
+SUMMARY: Read only; declared value is v0.2.1 前端优化.
+
+COMMAND: rg -n -i 'pfi-version|pfi-app-version|pfi-target-version|pfi-build-id|repair-label|apiBaseUrl' \
+  PFI/web/index.html PFI/web/app/shell.js
+EXIT_CODE: 0
+SUMMARY: index.html reports v0.2.3, App 0.2.3, target v0.2.4, build pfi-v024-stage2-phase22, and local API base 127.0.0.1:8766; shell.js repeats the API-base and v0.2.3 repair-label fallbacks.
+
+COMMAND: rg -n 'PFI_ACTIVE_BUILD_ID|PFI_VERSION_QUERY|PORT=|streamlit_app.py' \
+  PFI/StartPFI.command PFI/scripts/startPFI.sh
+EXIT_CODE: 0
+SUMMARY: Both startup sources declare build pfi-v024-stage2-phase22, App query version 0.2.3, initial port 8501, and relative entrypoint src/pfi_os/app/streamlit_app.py. Neither startup source was executed.
+
+COMMAND: openssl dgst -sha256 PFI/web/index.html PFI/web/app/shell.js \
+  PFI/web/app/routes.js PFI/web/app/home.js
+EXIT_CODE: 1
+SUMMARY: index.html=79d526eea341b805b976794bf6de5c7f62f9cf6267f986ffa93cfc0fd443320f; shell.js=75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821; routes.js=a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf; PFI/web/app/home.js was missing and produced no hash.
+
+COMMAND: for app in \
+  "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app" \
+  "/Applications/PFI.app" \
+  "/Users/linzezhang/Downloads/PFI.app" \
+  "/Users/linzezhang/Desktop/PFI.app"; do
+  printf 'APP=%s\n' "$app"
+  if [ -L "$app" ]; then
+    readlink "$app"
+    realpath "$app"
+  fi
+  if [ ! -e "$app" ]; then
+    echo 'exists=false'
+    continue
+  fi
+  stat -f '%N|%HT|%Sp|%z|%Sm' -t '%Y-%m-%dT%H:%M:%S%z' "$app"
+  /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$app/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Contents/Info.plist"
+  openssl dgst -sha256 "$app/Contents/Info.plist"
+  openssl dgst -sha256 "$app/Contents/MacOS/PFI"
+  codesign --verify --deep --strict "$app"
+done
+EXIT_CODE: 0
+SUMMARY: All four paths existed; Desktop is a symlink to /Applications/PFI.app. All plist hashes are d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc and declare com.linze.pfi.launcher 0.2.3 (20260629.1). Repository executable hash 13d546fa40ad516766b8f525f48e27b779c39b24f8c1029faebc143e9660eb83 differs from installed/Downloads/Desktop-resolved hash 0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d. Repository codesign emitted "code has no resources but signature indicates they must be present"; the exact loop did not expose per-bundle numeric codesign exits, and its overall/final Desktop exit was 0. No App or launcher was executed.
+
+COMMAND: lsof -nP -iTCP:8501-8510 -sTCP:LISTEN
+EXIT_CODE: 0
+SUMMARY: Existing listeners were PID 37511 on 127.0.0.1:8501 and PID 56703 on 127.0.0.1:8502.
+
+COMMAND: ps ax -o pid=,ppid=,command= | rg -i '[p]fi|[s]treamlit.*850[0-9]'
+EXIT_CODE: 0
+SUMMARY: PID 37511 and PID 56703 are existing Streamlit PFI processes using the canonical PFI .venv and src/pfi_os/app/streamlit_app.py; no credentials or private rows were emitted.
+
+COMMAND: for pid in $(lsof -nP -iTCP:8501-8510 -sTCP:LISTEN -t 2>/dev/null | sort -u); do
+  printf 'PID=%s\n' "$pid"
+  ps -p "$pid" -o pid=,ppid=,command=
+  lsof -a -p "$pid" -d cwd -Fn
+  port=$(lsof -nP -a -p "$pid" -iTCP -sTCP:LISTEN -Fn 2>/dev/null \
+    | sed -nE 's/^n.*:([0-9]+)$/\1/p' | head -1)
+  if [ -n "$port" ]; then
+    curl -sS --max-time 2 -o /dev/null -w '%{http_code}\n' \
+      "http://127.0.0.1:$port/_stcore/health"
+  fi
+done
+EXIT_CODE: 0
+SUMMARY: Both PID cwd values resolved exactly to /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI; health returned HTTP 200 on ports 8501 and 8502. No service was started, stopped, or refreshed.
+
+PHASE_STATUS: evidence_assembly_in_progress
+
+COMMAND: jq -e '.schema == "PFIV025Stage0Phase01EntryInventoryV1"
+  and .privacy.contains_private_values == false
+  and (.app_bundles | type == "array")
+  and (.runtime_services | type == "array")' \
+  PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json
+EXIT_CODE: 0
+SUMMARY: true; the brief-required schema, privacy flag, App array, and runtime array checks passed.
+
+COMMAND: jq -e '
+  .version == "v0.2.5"
+  and .stage == 0
+  and .phase == "0.1"
+  and .captured_at_utc == "2026-07-10T21:22:39Z"
+  and .canonical_pfi_root == "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI"
+  and (.formal_ui | type == "object")
+  and (.release_identity_sources | type == "array" and length > 0)
+  and (.startup_entries | type == "array" and length == 2)
+  and (.app_bundles | length == 4)
+  and (.runtime_services | length == 2)
+  and ([.runtime_services[].cwd_within_canonical_pfi_root] | all)
+  and (.conflicts | type == "array" and length > 0)
+  and .privacy == {contains_private_values:false, financial_rows_emitted:0, credentials_emitted:0}
+' PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json
+EXIT_CODE: 0
+SUMMARY: true; required identity, source-array, canonical-cwd, conflict, and exact privacy-object checks passed.
+
+COMMAND: jq -e '[paths(scalars) as $p | getpath($p) | select(type == "string")]
+  | all(test("password|passwd|authorization:|bearer [A-Za-z0-9]|api[_-]?key|secret[_-]?key|account[_ -]?number|counterparty|transaction description"; "i") | not)' \
+  PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json
+EXIT_CODE: 0
+SUMMARY: true; no credential or forbidden private-row marker matched the inventory strings.
+
+COMMAND: cmp -s \
+  <(git show :PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log) \
+  <(sed -n '1,75p' PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log)
+EXIT_CODE: 0
+SUMMARY: The pre-existing staged Task 1 terminal.log blob exactly matches working-tree lines 1-75; Task 2 only appended.
+
+COMMAND: test "$(git diff --cached --name-only | LC_ALL=C sort)" = "$(printf '%s\n' PFI/reports/pfi_v025/stage_0/phase_0_1/git_state.txt PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log | LC_ALL=C sort)"
+EXIT_CODE: 0
+SUMMARY: The staged set remains exactly the two pre-existing Task 1 files; Task 2 did not stage or unstage anything.
+
+COMMAND: unexpected=$(git status --porcelain=v1 --untracked-files=all | awk '{print substr($0,4)}' | rg -v '^(PFI/reports/pfi_v025/stage_0/phase_0_1/(git_state\.txt|terminal\.log|entry_inventory\.json))$' || true); test -z "$unexpected"
+EXIT_CODE: 0
+SUMMARY: No tracked or untracked product-path change exists outside the two Task 1 files and the Task 2 entry_inventory.json target.
+
+COMMAND: test "$(tail -n 1 PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log)" = "PHASE_STATUS: evidence_assembly_in_progress"
+EXIT_CODE: 0
+SUMMARY: The log ended with the required evidence-assembly status before this validation record was appended.
+
+COMMAND: git status --short --branch
+EXIT_CODE: 0
+SUMMARY: codex/pfi is ahead 2; git_state.txt remains staged-added, terminal.log remains staged-added plus Task 2 unstaged append, and entry_inventory.json remains untracked. No stage, unstage, commit, fetch, merge, rebase, or push was performed by Task 2.
+
+PHASE_STATUS: evidence_assembly_in_progress
+
+## Task 3 — repository, data-root, read-model, and SQLite inventory
+
+COMMAND: for d in PFI/src PFI/tests PFI/web PFI/config PFI/docs PFI/reports PFI/macos PFI/scripts; do files=$(rg --files "$d" 2>/dev/null | wc -l | tr -d ' '); bytes=$(du -sk "$d" 2>/dev/null | awk '{print $1 * 1024}'); printf '%s|files=%s|bytes=%s\n' "$d" "$files" "$bytes"; done
+EXIT_CODE: 0
+SUMMARY: PFI/src files=246 bytes=7917568; PFI/tests files=127 bytes=1409024; PFI/web files=32 bytes=790528; PFI/config files=3 bytes=184320; PFI/docs files=235 bytes=3534848; PFI/reports files=653 bytes=66535424; PFI/macos files=5 bytes=606208; PFI/scripts files=80 bytes=585728.
+
+COMMAND: if [ -n "${PFI_DATA_HOME:-}" ]; then
+  printf 'PFI_DATA_HOME=SET_REDACTED\n'
+else
+  printf 'PFI_DATA_HOME=UNSET\n'
+fi
+for spec in 'MetaDatabase/PFI|MetaDatabase/PFI' 'PFI/MetaDatabase|PFI/MetaDatabase' "$HOME/.pfi|~/.pfi"; do
+  root=${spec%%|*}
+  label=${spec#*|}
+  if [ -e "$root" ]; then
+    meta=$(stat -f '%HT|%Sp|%z|%Sm' -t '%Y-%m-%dT%H:%M:%S%z' "$root")
+    count=$(find "$root" -type f 2>/dev/null | wc -l | tr -d ' ')
+    printf '%s|%s|files=%s\n' "$label" "$meta" "$count"
+  else
+    printf '%s|exists=false\n' "$label"
+  fi
+done
+git rev-parse HEAD:MetaDatabase/PFI
+git ls-tree -r -l HEAD MetaDatabase/PFI | awk '{files++; bytes += $4; path=$5; sub(/^.*\./, "", path); ext[tolower(path)]++} END {printf "files=%d|bytes=%d|csv=%d|json=%d|sqlite=%d\n", files, bytes, ext["csv"], ext["json"], ext["db"]+ext["sqlite"]+ext["sqlite3"]}'
+EXIT_CODE: 0
+SUMMARY: PFI_DATA_HOME=UNSET; MetaDatabase/PFI working-tree path absent; PFI/MetaDatabase exists with mode drwxr-xr-x and 1 file; ~/.pfi exists with mode drwxr-xr-x and 1 file. Git-tree hash=19e8f9b3345074881fa063afe76e40cb846c93de; files=6 bytes=3870013 csv=5 json=1 sqlite=0. No private filename was emitted and no sparse data was materialized.
+
+COMMAND: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B - <<'PY'
+import json
+from pfi_os.application.read_model_status import build_v024_data_source_scan, build_v024_read_model_status
+
+scan = build_v024_data_source_scan(project_root="PFI")
+status = build_v024_read_model_status(project_root="PFI")
+safe = {
+    "source": {
+        "status": scan.get("status"),
+        "storage_mode": scan.get("storage_mode"),
+        "raw_file_count": scan.get("raw_file_count"),
+        "record_count": scan.get("record_count"),
+        "date_range": scan.get("date_range"),
+        "as_of": scan.get("as_of"),
+        "evidence_hash": scan.get("evidence_hash"),
+    },
+    "read_model_hash": status.get("read_model_hash"),
+    "blocked_metric_ids": status.get("blocked_metric_ids"),
+    "metric_states": {
+        item.get("metric_id"): item.get("status")
+        for item in status.get("core_metric_states", [])
+    },
+}
+print(json.dumps(safe, ensure_ascii=False, sort_keys=True, indent=2))
+PY
+EXIT_CODE: 0
+SUMMARY: Safe projection only: source status=ready storage_mode=git_tree raw_file_count=4 record_count=8815 date_range=2022-06-06..2026-06-03 as_of=2026-06-03; evidence/read-model hashes captured; 3 blocked metric IDs and 5 metric-status entries captured. No amount, raw row, filename, account, counterparty, credential, or holding value was emitted.
+
+COMMAND: (
+  db_count_before=$(find "$HOME/.pfi" -type f \( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \) 2>/dev/null | wc -l | tr -d ' ')
+  printf 'candidate_count_before=%s\n' "$db_count_before"
+  if [ "$db_count_before" -eq 0 ]; then
+    printf 'local_pfi_sqlite=not_found\n'
+    exit 0
+  fi
+  if [ "$db_count_before" -ne 1 ]; then
+    printf 'local_pfi_sqlite=ambiguous|count=%s\n' "$db_count_before"
+    exit 1
+  fi
+  db_path=$(find "$HOME/.pfi" -type f \( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \) -print -quit 2>/dev/null)
+  before_bytes=$(stat -f '%z' "$db_path")
+  before_mtime=$(stat -f '%m' "$db_path")
+  before_mode=$(stat -f '%Sp' "$db_path")
+  before_hash=$(openssl dgst -sha256 -r "$db_path" | awk '{print $1}')
+  printf 'before|redacted_id=local_sqlite_candidate_01|bytes=%s|mtime_epoch=%s|mode=%s|sha256=%s\n' "$before_bytes" "$before_mtime" "$before_mode" "$before_hash"
+  sqlite_output=$(sqlite3 "file:$db_path?mode=ro&immutable=1" "PRAGMA query_only=ON; PRAGMA quick_check; SELECT 'table_count=' || count(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
+  sqlite_exit=$?
+  printf '%s\n' "$sqlite_output"
+  db_count_after=$(find "$HOME/.pfi" -type f \( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \) 2>/dev/null | wc -l | tr -d ' ')
+  printf 'candidate_count_after=%s\n' "$db_count_after"
+  if [ "$db_count_after" -ne 1 ]; then
+    printf 'local_pfi_sqlite=changed_or_ambiguous|count=%s\n' "$db_count_after"
+    exit 1
+  fi
+  db_path_after=$(find "$HOME/.pfi" -type f \( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \) -print -quit 2>/dev/null)
+  after_bytes=$(stat -f '%z' "$db_path_after")
+  after_mtime=$(stat -f '%m' "$db_path_after")
+  after_mode=$(stat -f '%Sp' "$db_path_after")
+  after_hash=$(openssl dgst -sha256 -r "$db_path_after" | awk '{print $1}')
+  printf 'after|redacted_id=local_sqlite_candidate_01|bytes=%s|mtime_epoch=%s|mode=%s|sha256=%s\n' "$after_bytes" "$after_mtime" "$after_mode" "$after_hash"
+  unchanged=false
+  if [ "$db_count_before" = "$db_count_after" ] && [ "$db_path" = "$db_path_after" ] && [ "$before_bytes" = "$after_bytes" ] && [ "$before_mtime" = "$after_mtime" ] && [ "$before_mode" = "$after_mode" ] && [ "$before_hash" = "$after_hash" ]; then
+    unchanged=true
+  fi
+  printf 'unchanged=%s\n' "$unchanged"
+  [ "$sqlite_exit" -eq 0 ] && [ "$(printf '%s\n' "$sqlite_output" | sed -n '1p')" = 'ok' ] && [ "$(printf '%s\n' "$sqlite_output" | sed -n '2p')" = 'table_count=9' ] && [ "$unchanged" = true ]
+)
+EXIT_CODE: 0
+SUMMARY: candidate_count before=1 after=1; redacted_id=local_sqlite_candidate_01; quick_check=ok; table_count=9; bytes=86016, mtime_epoch=1782735355, mode=-rw-r--r--, and SHA-256=2053c0acc8f9c716d2fc496b9cfde6f8c1ef35c43e18be6d77e06a1c08f33b12 were identical before and after. SQLite was opened only with mode=ro&immutable=1 and query_only=ON.
+
+COMMAND: apply_patch (create repository_inventory.json and append Task 3 evidence to terminal.log)
+EXIT_CODE: 0
+SUMMARY: Created only the Task 3 target artifact and appended after the existing 200-line Task 1+2 log prefix; no index operation was performed.
+
+PHASE_STATUS: evidence_assembly_in_progress
+
+COMMAND: jq -e '.schema == "PFIV025Stage0Phase01RepositoryInventoryV1" and .privacy.contains_private_values == false and (.bounded_surfaces | type == "array") and (.candidate_data_roots | type == "array") and (.sqlite.unchanged == true or .sqlite.unchanged == null)' PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json
+EXIT_CODE: 0
+SUMMARY: true; the brief-required schema, privacy, array, and SQLite unchanged checks passed.
+
+COMMAND: jq -e '.version == "v0.2.5" and .stage == 0 and .phase == "0.1" and .captured_at_utc == "2026-07-10T21:22:39Z" and ([.bounded_surfaces[].path] == ["PFI/src","PFI/tests","PFI/web","PFI/config","PFI/docs","PFI/reports","PFI/macos","PFI/scripts"]) and ([.candidate_data_roots[].root] == ["$PFI_DATA_HOME","MetaDatabase/PFI","PFI/MetaDatabase","~/.pfi"]) and ((.read_model | keys | sort) == (["source","read_model_hash","blocked_metric_ids","metric_states"] | sort)) and ((.read_model.source | keys | sort) == (["status","storage_mode","raw_file_count","record_count","date_range","as_of","evidence_hash"] | sort)) and .sqlite.mode == "ro&immutable=1" and .sqlite.query_only == true and .sqlite.quick_check == "ok" and .sqlite.redacted_id == "local_sqlite_candidate_01" and .sqlite.before == .sqlite.after and .sqlite.before.candidate_count == 1 and .sqlite.unchanged == true and (.excluded_surfaces | type == "array" and length > 0) and .privacy == {contains_private_values:false, financial_rows_emitted:0, credentials_emitted:0}' PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json
+EXIT_CODE: 0
+SUMMARY: true; complete required-field shape, exact captured timestamp, safe read-model field set, immutable/query-only SQLite evidence, before/after equality, and exact privacy object passed.
+
+COMMAND: jq -e '[paths(scalars) as $p | getpath($p) | select(type == "string")] | all(test("password|passwd|authorization:|bearer [A-Za-z0-9]|api[_-]?key|secret[_-]?key|account[_ -]?number|counterparty|transaction description|/Users/|\\.(csv|xlsx|xls)$"; "i") | not)' PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json
+EXIT_CODE: 0
+SUMMARY: true; no credential marker, private absolute path, or raw financial filename extension matched any JSON string.
+
+COMMAND: cmp -s <(git show :PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log | sed -n '1,200p') <(sed -n '1,200p' PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log)
+EXIT_CODE: 0
+SUMMARY: The complete staged Task 1+2 terminal.log blob exactly matches working-tree lines 1-200; Task 3 starts only after that preserved prefix.
+
+COMMAND: test "$(git rev-parse :PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json)" = 184120b06d921dd35f2752d5ba1e1d4d8f5af0ad && test "$(git rev-parse :PFI/reports/pfi_v025/stage_0/phase_0_1/git_state.txt)" = 5921b8d4c9aca46116d8099592c16514ce90d63e && test "$(git rev-parse :PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json)" = 8f022a142e9067cd542cd2f0ca9fb50fd23283d2
+EXIT_CODE: 0
+SUMMARY: The three non-self-referential shared-index artifact blob IDs are unchanged from the review-fix baseline; terminal.log continuity is verified separately by the stable 1-200 prefix comparison above.
+
+COMMAND: unexpected=$(git status --porcelain=v1 --untracked-files=all | awk '{print substr($0,4)}' | rg -v '^(PFI/reports/pfi_v025/stage_0/phase_0_1/(git_state\.txt|terminal\.log|entry_inventory\.json|repository_inventory\.json))$|^\.superpowers/sdd/task-3-report\.md$' || true); test -z "$unexpected"
+EXIT_CODE: 0
+SUMMARY: No tracked or untracked change exists outside the three pre-existing Task 1+2 artifacts, the Task 3 target, and the explicitly allowed ignored report path.
+
+COMMAND: test "$(tail -n 1 PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log)" = "PHASE_STATUS: evidence_assembly_in_progress"
+EXIT_CODE: 0
+SUMMARY: The required evidence-assembly status was the final line before this validation record was appended.
+
+PHASE_STATUS: evidence_assembly_in_progress
+
+COMMAND: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B - <<'PY'
+import json
+from pathlib import Path
+from pfi_os.application.read_model_status import build_v024_data_source_scan, build_v024_read_model_status
+
+inventory = json.loads(Path("PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json").read_text())
+scan = build_v024_data_source_scan(project_root="PFI")
+status = build_v024_read_model_status(project_root="PFI")
+replay = {
+    "source": {
+        "status": scan.get("status"),
+        "storage_mode": scan.get("storage_mode"),
+        "raw_file_count": scan.get("raw_file_count"),
+        "record_count": scan.get("record_count"),
+        "date_range": scan.get("date_range"),
+        "as_of": scan.get("as_of"),
+        "evidence_hash": scan.get("evidence_hash"),
+    },
+    "blocked_metric_ids": status.get("blocked_metric_ids"),
+    "metric_states": {
+        item.get("metric_id"): item.get("status")
+        for item in status.get("core_metric_states", [])
+    },
+}
+snapshot = {key: value for key, value in inventory["read_model"].items() if key != "read_model_hash"}
+assert replay == snapshot
+print("safe_fields_match=true")
+print("snapshot_read_model_hash=" + inventory["read_model"]["read_model_hash"])
+print("replay_read_model_hash=" + status["read_model_hash"])
+PY
+EXIT_CODE: 0
+SUMMARY: safe_fields_match=true; snapshot_read_model_hash=sha256:ada44ca12f3e6ff5f2af2f29abdaefc3a7249b19a2275e3a9169b716739eea8c; replay_read_model_hash=sha256:730001a8e21ad64b169d68d7143bbedaa5f68a4df71ce1e6db09126e23707403. The safe snapshot fields match exactly. Cross-run read_model_hash is intentionally time-sensitive because generated_at_utc enters the scan at PFI/src/pfi_os/application/read_model_status.py:153 and that scan enters the hash at line 165; repository_inventory.json remains the original captured snapshot.
+
+PHASE_STATUS: evidence_assembly_in_progress
+
+## Task 4 — validation and acceptance-evidence assembly
+
+COMMAND: find PFI -path PFI/.venv -prune -o -type d \( -name __pycache__ -o -name .pytest_cache \) -print | wc -l
+EXIT_CODE: 0
+SUMMARY: Before validation, 25 cache directories existed outside PFI/.venv.
+
+COMMAND: git status --porcelain=v1 --untracked-files=all -- PFI
+EXIT_CODE: 0
+SUMMARY: Before validation, status contained only the four already assembled Phase artifacts: entry_inventory.json, git_state.txt, repository_inventory.json, and terminal.log.
+
+COMMAND: for app in \
+  "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app" \
+  "/Applications/PFI.app" \
+  "/Users/linzezhang/Downloads/PFI.app" \
+  "/Users/linzezhang/Desktop/PFI.app"; do
+  if [ -e "$app" ]; then
+    openssl dgst -sha256 "$app/Contents/Info.plist" "$app/Contents/MacOS/PFI"
+    if [ -f "$app/Contents/Resources/PFI_PROJECT_ROOT" ]; then
+      openssl dgst -sha256 "$app/Contents/Resources/PFI_PROJECT_ROOT"
+    fi
+  elif [ -L "$app" ]; then
+    printf 'broken_symlink=%s\n' "$app"
+  else
+    printf 'missing=%s\n' "$app"
+  fi
+done
+EXIT_CODE: 0
+SUMMARY: Before validation, every plist hash was d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc; repository executable hash was 13d546fa40ad516766b8f525f48e27b779c39b24f8c1029faebc143e9660eb83; installed, Downloads, and Desktop-resolved executable hashes were 0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d; the three available PFI_PROJECT_ROOT hashes were 1bcee022b18165ad1d37c76fe8a6ee21357d1e098a6234e5f6cb65170bcdc647. No App was executed.
+
+COMMAND: python3 --version
+EXIT_CODE: 0
+SUMMARY: Python 3.9.6.
+
+COMMAND: node --version
+EXIT_CODE: 0
+SUMMARY: v24.18.0.
+
+COMMAND: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
+EXIT_CODE: 0
+SUMMARY: 3.43.2.
+
+COMMAND: node --check PFI/web/app/shell.js
+EXIT_CODE: 0
+SUMMARY: No output; JavaScript syntax check completed successfully.
+
+COMMAND: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+  PFI/.venv/bin/python -B -m pytest PFI/tests -q --collect-only \
+  -p no:cacheprovider
+EXIT_CODE: 0
+SUMMARY: 795 tests collected in 1.13s. Collection only; zero tests were executed and this is not a test-pass claim.
+
+COMMAND: find PFI -path PFI/.venv -prune -o -type d \( -name __pycache__ -o -name .pytest_cache \) -print | wc -l
+EXIT_CODE: 0
+SUMMARY: After collection, cache-directory count remained 25.
+
+COMMAND: git status --porcelain=v1 --untracked-files=all -- PFI
+EXIT_CODE: 0
+SUMMARY: After collection and before Task 4 artifact assembly, status still contained only the four already assembled Phase artifacts.
+
+COMMAND: for app in \
+  "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app" \
+  "/Applications/PFI.app" \
+  "/Users/linzezhang/Downloads/PFI.app" \
+  "/Users/linzezhang/Desktop/PFI.app"; do
+  if [ -e "$app" ]; then
+    openssl dgst -sha256 "$app/Contents/Info.plist" "$app/Contents/MacOS/PFI"
+    if [ -f "$app/Contents/Resources/PFI_PROJECT_ROOT" ]; then
+      openssl dgst -sha256 "$app/Contents/Resources/PFI_PROJECT_ROOT"
+    fi
+  elif [ -L "$app" ]; then
+    printf 'broken_symlink=%s\n' "$app"
+  else
+    printf 'missing=%s\n' "$app"
+  fi
+done
+EXIT_CODE: 0
+SUMMARY: Every after-state App hash matched the corresponding before-state hash exactly; no App was changed or executed.
+
+COMMAND: if [ -n "${PFI_DATA_HOME:-}" ]; then printf 'PFI_DATA_HOME=SET_REDACTED\n'; else printf 'PFI_DATA_HOME=UNSET\n'; fi; for spec in 'MetaDatabase/PFI|MetaDatabase/PFI' 'PFI/MetaDatabase|PFI/MetaDatabase' "$HOME/.pfi|~/.pfi"; do root=${spec%%|*}; label=${spec#*|}; if [ -e "$root" ]; then meta=$(stat -f '%HT|%Sp|%z|%Sm' -t '%Y-%m-%dT%H:%M:%S%z' "$root"); count=$(find "$root" -type f 2>/dev/null | wc -l | tr -d ' '); printf '%s|%s|files=%s\n' "$label" "$meta" "$count"; else printf '%s|exists=false\n' "$label"; fi; done
+EXIT_CODE: 0
+SUMMARY: After validation, PFI_DATA_HOME remained unset; MetaDatabase/PFI remained sparse-absent; PFI/MetaDatabase and ~/.pfi retained the Task 3 type, permission, mtime, and one-file aggregates. No private filename was printed.
+
+COMMAND: db_count=$(find "$HOME/.pfi" -type f \( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \) 2>/dev/null | wc -l | tr -d ' '); db_path=$(find "$HOME/.pfi" -type f \( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \) -print -quit 2>/dev/null); test "$db_count" -eq 1; stat_value=$(stat -f '%z|%m|%Sp' "$db_path"); hash_value=$(openssl dgst -sha256 -r "$db_path" | awk '{print $1}'); sqlite_value=$(sqlite3 "file:$db_path?mode=ro&immutable=1" "PRAGMA query_only=ON; PRAGMA quick_check; SELECT 'table_count=' || count(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';"); test "$stat_value" = '86016|1782735355|-rw-r--r--'; test "$hash_value" = '2053c0acc8f9c716d2fc496b9cfde6f8c1ef35c43e18be6d77e06a1c08f33b12'; test "$sqlite_value" = $'ok\ntable_count=9'
+EXIT_CODE: 0
+SUMMARY: SQLite candidate count, bytes, mtime, mode, SHA-256, quick_check=ok, and table_count=9 matched Task 3 exactly. The database was opened only with mode=ro&immutable=1 and query_only=ON; its private filename was not emitted.
+
+TOOL_ACTION: apply_patch created changed_files.txt, evidence.json, and risk_and_rollback.md, and appended Task 4 records to terminal.log.
+RESULT: success
+SUMMARY: Product changes remained limited to the seven approved Phase artifact paths.
+
+COMMAND: jq -e . PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json
+EXIT_CODE: 0
+SUMMARY: JSON parsed successfully.
+
+COMMAND: jq -e . PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json
+EXIT_CODE: 0
+SUMMARY: JSON parsed successfully.
+
+COMMAND: jq -e . PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json
+EXIT_CODE: 0
+SUMMARY: JSON parsed successfully.
+
+COMMAND: PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B - <<'PY'
+import json
+import zipfile
+from pathlib import Path
+from jsonschema import Draft202012Validator
+
+archive = Path("/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip")
+member = "PFI_v0.2.5_TaskPack/schemas/evidence_pack.schema.json"
+evidence_path = Path("PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json")
+with zipfile.ZipFile(archive) as zf:
+    schema = json.loads(zf.read(member))
+evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+Draft202012Validator(schema).validate(evidence)
+print("evidence_schema_valid=true")
+PY
+EXIT_CODE: 0
+SUMMARY: evidence_schema_valid=true.
+
+COMMAND: diff -u \
+  <(sort PFI/reports/pfi_v025/stage_0/phase_0_1/changed_files.txt) \
+  <(git status --porcelain=v1 --untracked-files=all -- PFI \
+    | sed -E 's/^.. //' | sort)
+EXIT_CODE: 0
+SUMMARY: No output; the live PFI status reconciled exactly to the seven-file ledger.
+
+COMMAND: if rg -n -i '(password|secret|credential|account_number|card_number|transaction_description|counterparty)[[:space:]]*[:=][[:space:]]*[^"[:space:]]' \
+  PFI/reports/pfi_v025/stage_0/phase_0_1; then
+  echo 'private_value_scan=fail'
+  exit 1
+else
+  rc=$?
+  if [ "$rc" -eq 1 ]; then
+    echo 'private_value_scan=pass|matches=0'
+  else
+    exit "$rc"
+  fi
+fi
+EXIT_CODE: 0
+SUMMARY: private_value_scan=pass|matches=0.
+
+COMMAND: git diff --check -- PFI
+EXIT_CODE: 0
+SUMMARY: No whitespace error in the unstaged PFI diff.
+
+COMMAND: git diff --cached --check -- PFI
+EXIT_CODE: 0
+SUMMARY: No whitespace error in the staged PFI diff.
+
+PHASE_STATUS: candidate_pass

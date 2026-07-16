@@ -1,0 +1,50 @@
+{
+  "backend_build_hash": "d1d60c64e91d21d3dcd8ac76714087c84e3f4d3cbd105bd24e2ccdc209bb0600",
+  "candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "candidate_role": "product and Stage 12 review-remediation anchor",
+  "canonical_app": {
+    "build_version": "20260712.1",
+    "bundle_identifier": "com.linze.pfi.launcher",
+    "bundle_tree_sha256": "sha256:a41a7386253ac1b69d4f2ec09894e3e4daaa74103fbb0ed7d33993279a6eb443",
+    "codesign_valid": true,
+    "executable_sha256": "sha256:a5d87915df40b55e1333d939b6cf1f28c9a9f333867fd70eb864c27744ca922b",
+    "kind": "app_bundle",
+    "project_binding_matches": true,
+    "project_binding_present": true,
+    "project_binding_sha256": "sha256:88dfdbcd8549cfb09c24264106a8d9090a350839bf3ed708a57ecd23de2b4c2b",
+    "short_version": "0.2.5"
+  },
+  "changed_runtime_payload_file_count": 0,
+  "changed_runtime_payload_files": [],
+  "changed_runtime_scope_files": [
+    "PFI/config/release_manifest.json",
+    "PFI/web/index.html"
+  ],
+  "checks": {
+    "candidate_commit_exact": true,
+    "canonical_app_matches_phase122_receipt": true,
+    "config_and_embedded_manifests_exact": true,
+    "disk_backend_hash_matches": true,
+    "frontend_hash_matches": true,
+    "latest_runtime_payload_commit_is_source": true,
+    "release_source_commit_exact": true,
+    "release_source_is_ancestor": true,
+    "running_backend_hash_matches": true,
+    "runtime_payload_unchanged_after_source": true,
+    "runtime_scope_changes_only_identity_carriers": true
+  },
+  "contains_private_values": false,
+  "failed_checks": [],
+  "finder_used": false,
+  "frontend_bundle_hash": "e18644635d69488301030dd57316c2316317a859e8afed4aecfc652c0b7dffee",
+  "gui_file_operations_used": false,
+  "identity_carrier_file_count": 2,
+  "identity_carrier_role": "manifest and embedded web manifest may bind the source commit without changing canonical frontend/backend hashes",
+  "latest_runtime_payload_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "release_source_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "release_source_role": "latest commit changing the immutable runtime payload",
+  "runtime_payload_file_count": 70,
+  "runtime_scope_file_count": 72,
+  "schema": "PFIV025Stage12ReviewRemediationReleaseIdentityV1",
+  "status": "pass"
+}

@@ -1,0 +1,21 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P42-HOLDINGS-VALUATION",
+  "acceptance_id_origin": "project_governance_assigned_not_taskpack",
+  "cost_basis_guess_allowed": false,
+  "current_phase_only": true,
+  "explicitly_not_done": [
+    "Phase 4.3 five-surface metric-state integration and consistency",
+    "Stage 4 whole-stage review and acceptance",
+    "private source loading, production writes, GitHub push and canonical app install"
+  ],
+  "financial_fixture_fallback_allowed": false,
+  "finder_used": false,
+  "legacy_fx_promotion_allowed": false,
+  "phase": "4.2",
+  "phase_id": "V025-S4-P4.2",
+  "read_only_real_sources": true,
+  "stage": 4,
+  "task_ids": ["S4-P2-T1", "S4-P2-T2", "S4-P2-T3", "S4-P2-T4"],
+  "transaction_holding_inference_allowed": false,
+  "version": "v0.2.5"
+}

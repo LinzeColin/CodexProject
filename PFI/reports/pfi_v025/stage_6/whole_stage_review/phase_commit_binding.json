@@ -1,0 +1,50 @@
+{
+  "all_phase_commits_are_ancestors": true,
+  "all_phase_evidence_candidate_pass": true,
+  "all_phase_evidence_present_in_bound_commits": true,
+  "current_head": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431",
+  "linear_commit_chain": true,
+  "phase_commits": {
+    "6.1": "6b96bcb655b1c11d91b23dd10cf25b33e37f0242",
+    "6.2": "80396224f049658e9293f8da313a92a50431f903",
+    "6.3": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431"
+  },
+  "phase_evidence": [
+    {
+      "ancestor_of_current_head": true,
+      "commit": "6b96bcb655b1c11d91b23dd10cf25b33e37f0242",
+      "contract_id": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+      "path": "PFI/reports/pfi_v025/stage_6/phase_6_1/evidence.json",
+      "phase": "6.1",
+      "present": true,
+      "sha256": "sha256:c1f2f37552df0cb601b83323e1584de5199d72e075812dddca02bb09bb8472f1",
+      "status": "candidate_pass"
+    },
+    {
+      "ancestor_of_current_head": true,
+      "commit": "80396224f049658e9293f8da313a92a50431f903",
+      "contract_id": "PFI-V025-STAGE6-PHASE62-PAGE-CONTRACTS",
+      "path": "PFI/reports/pfi_v025/stage_6/phase_6_2/evidence.json",
+      "phase": "6.2",
+      "present": true,
+      "sha256": "sha256:4848c6c0ea081c48e4f38c5f7d7af987a35410461e4755251150e33daa63a095",
+      "status": "candidate_pass"
+    },
+    {
+      "ancestor_of_current_head": true,
+      "commit": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431",
+      "contract_id": "PFI-V025-STAGE6-PHASE63-HISTORY-ACCEPTANCE",
+      "path": "PFI/reports/pfi_v025/stage_6/phase_6_3/evidence.json",
+      "phase": "6.3",
+      "present": true,
+      "sha256": "sha256:9bdb3a8b5181d80e027a4dcf3d34c2a42debed765e98a174e8cf19420a34fced",
+      "status": "candidate_pass"
+    }
+  ],
+  "review_base": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431",
+  "schema": "PFIV025Stage6PhaseCommitBindingV1",
+  "stage": 6,
+  "status": "pass",
+  "task_count": 12,
+  "version": "v0.2.5"
+}

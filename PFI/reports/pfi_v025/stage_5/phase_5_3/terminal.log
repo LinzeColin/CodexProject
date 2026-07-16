@@ -1,0 +1,67 @@
+PFI v0.2.5 Stage 5 Phase 5.3 validation log
+Run mode: IMPLEMENT / T3 / one Phase only
+Implementation base: 61a14d9366c68a8c849c0c056a107116d5b377d1
+
+RED
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_model_validation.py -q
+Result: 1 collection error; ModuleNotFoundError: pfi_os.application.metrics.model_validation
+
+Initial implementation replay
+Result: 7 passed, 1 failed because tracked Phase 5.3 evidence was not yet created.
+
+Boundary attestation
+Real financial rows read=true via immutable Git object; source mutated=false; database changed=false.
+Public financial values emitted=0; private row identifiers emitted=0.
+Finder used=false; network=false; push=false; app install=false.
+Actual Web/report render binding=false; Stage 5 whole-stage review=not started.
+
+Focused Phase 5.3
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_model_validation.py -q
+Result: 8 passed in 5.59s
+
+Stage 5 complete focused regression
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_*.py -q
+Result: 24 passed in 5.71s
+
+Stage 4 plus Stage 5 regression
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage4_*.py PFI/tests/test_v025_stage5_*.py -q
+Result: 70 passed in 6.17s
+
+Stage 3 idempotency and no-double-count regression
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage3_idempotency.py PFI/tests/test_v025_stage3_no_double_count.py -q
+Result: 11 passed in 9.26s
+
+v0.2.2 behavior-only compatibility diagnostic
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_stage5_ledger_taxonomy.py -q -k 'not human_docs'
+Result: 11 passed, 2 deselected in 0.13s
+
+Formula registry and rebuildable hashes
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_formula_registry.py -q
+Result: 6 passed in 0.58s
+
+Renderer
+python3 scripts/lean_governance.py check-render --project PFI
+Result: drift_count=0; reference_issue_count=0
+
+Privacy scan
+Result: pass; absolute user paths=0; private row fields=0; numeric financial amount fields=0.
+
+Non-gate legacy diagnostic
+PFI/tests/test_pfi_parameters_consistency.py was additionally run outside the Phase 5.3 acceptance list.
+Result: 6 failed, 8 passed. Failures require the old hand-written parameter-document structure and conflict with the current canonical renderer output. No Phase 5.3 source or model assertion failed; this diagnostic was not used to claim the Phase pass and was not repaired by widening scope.
+
+Temporary complete-checkout governance - initial
+python3 scripts/validate_project_governance.py --project PFI --mode required
+Result: errors=0; warnings=0
+python3 scripts/validate_governance_sync.py --changed-only --base-ref HEAD --enforce-sync --semantic
+Result: errors=1; warnings=0; parameter_registry.csv provenance update required.
+
+Governance remediation
+PARAM-PFI-081..092 test_ref now includes PFI/tests/test_v025_stage5_model_validation.py.
+Parameter values, versions, statuses, formulas and models changed=0.
+
+Temporary complete-checkout governance - final
+python3 scripts/validate_project_governance.py --project PFI --mode required
+Result: errors=0; warnings=0
+python3 scripts/validate_governance_sync.py --changed-only --base-ref HEAD --enforce-sync --semantic
+Result: errors=0; warnings=0

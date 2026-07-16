@@ -285,7 +285,6 @@ def build_total_acceptance_gate(
     source_ids = {str(row["source_id"]) for row in source_fixture_matrix}
     non_csv = {str(row["source_id"]) for row in source_fixture_matrix if row.get("non_csv_primary")}
     alpha_context = stage5_dashboard["alpha_context_export"]
-    constraints = alpha_context["constraints"]
     gate_items = (
         ("GATE-01", "现有 PFI 入口没有被删", len(primary_entry_labels()) == 8, "stage1_ia.PRIMARY_ENTRIES"),
         ("GATE-02", "PFI V0.2 IA 优先于旧 UX 假设", stage3_dashboard.get("schema") == "PFIV02Stage3ReadableMVPV1", "stage3 read-model"),
@@ -296,7 +295,15 @@ def build_total_acceptance_gate(
         ("GATE-07", "非交易凭证可读且交易密码排除", all(row["read_only"] and not row["requires_trading_password"] for row in source_fixture_matrix), "stage2 credential policy"),
         ("GATE-08", "没有 Ralpha 一级入口", not stage5_dashboard["compatibility"]["ralpha_first_level_entry_added"], "stage5 compatibility"),
         ("GATE-09", "没有 Alpha 一级入口", not stage5_dashboard["compatibility"]["alpha_first_level_entry_added"], "stage5 compatibility"),
-        ("GATE-10", "Alpha 只读读取 PFI Context Export", alpha_context["schema"] == ALPHA_CONTEXT_SCHEMA and alpha_context["source"]["read_only"], "stage5 alpha context"),
+        (
+            "GATE-10",
+            "Alpha 只读读取 PFI Context Export",
+            alpha_context["schema_version"] == ALPHA_CONTEXT_SCHEMA
+            and alpha_context["consumer"] == "Alpha"
+            and alpha_context["read_only"]
+            and not alpha_context["writeback_allowed"],
+            "stage5 alpha context",
+        ),
         ("GATE-11", "没有 System/Development 产品一级入口", not stage5_dashboard["compatibility"]["system_first_level_entry_added"], "stage5 compatibility"),
         ("GATE-12", "没有禁用外部项目产品依赖", True, "product surface scan policy"),
         ("GATE-13", "转账不算消费", _ledger_check_status(ledger_loop, "transfer", affects_consumption=False), "ledger e2e"),
@@ -304,7 +311,13 @@ def build_total_acceptance_gate(
         ("GATE-15", "基金申购/赎回和 ABC 黄金买卖分类正确", _ledger_check_status(ledger_loop, "fund_redemption", affects_investment=True) and _ledger_check_status(ledger_loop, "bullion_buy", affects_investment=True), "ledger e2e"),
         ("GATE-16", "首页用户可读且低操作", bool(stage3_dashboard.get("quick_actions")) and "正常" in stage3_dashboard.get("status_language", ()), "stage3 ux"),
         ("GATE-17", "建议有证据和复盘", recommendation_loop["all_generated_have_evidence"] and recommendation_loop["lifecycle_row_count"] >= recommendation_loop["generated_count"], "stage5 recommendation loop"),
-        ("GATE-18", "报告和 Context Export 有 schema/fixture/test", stage5_dashboard["export_center"]["schema"] == "PFIExportCenterV1" and alpha_context["schema"] == ALPHA_CONTEXT_SCHEMA, "stage5 reports/context"),
+        (
+            "GATE-18",
+            "报告和 Context Export 有 schema/fixture/test",
+            stage5_dashboard["export_center"]["schema"] == "PFIExportCenterV1"
+            and alpha_context["schema_version"] == ALPHA_CONTEXT_SCHEMA,
+            "stage5 reports/context",
+        ),
         ("GATE-19", "Existing smoke + new focused tests documented", True, "stage6 regression gate"),
         ("GATE-20", "可回滚", len(build_delivery_and_rollback_gate()["rollback_plan"]) >= 6, "stage6 rollback gate"),
     )
@@ -330,7 +343,6 @@ def build_taskpack_acceptance_audit(
     source_ids = {str(row["source_id"]) for row in source_fixture_matrix}
     non_csv = {str(row["source_id"]) for row in source_fixture_matrix if row.get("non_csv_primary")}
     alpha_context = stage5_dashboard["alpha_context_export"]
-    constraints = alpha_context["constraints"]
     checks = (
         ("ACC-COMPAT-01", "Existing local PFI owner entries remain accessible", True, "PFI owner entry files"),
         ("ACC-COMPAT-02", "V0.1 six compatibility entries remain accessible", v01_compatibility_entry_labels() == ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"), "stage1 compatibility"),
@@ -361,10 +373,34 @@ def build_taskpack_acceptance_audit(
         ("ACC-REC-01", "Recommendation model has required fields", recommendation_loop["all_generated_have_evidence"], "stage5 recommendation model"),
         ("ACC-REC-02", "Recommendation lifecycle supports review decisions", set(recommendation_loop["supported_decisions"]) == {"accept", "reject", "snooze", "review", "effect_measured"}, "stage6 recommendation loop"),
         ("ACC-REC-03", "Homepage Top N keeps full lifecycle", len(recommendation_loop["displayed_top_ids"]) < recommendation_loop["lifecycle_row_count"], "stage5 top n"),
-        ("ACC-ALPHA-01", "PFI exports pfi_context_snapshot_v1", alpha_context["schema"] == ALPHA_CONTEXT_SCHEMA, "stage5 alpha context"),
+        (
+            "ACC-ALPHA-01",
+            "PFI exports pfi_context.v1",
+            alpha_context["schema_version"] == ALPHA_CONTEXT_SCHEMA,
+            "stage5 alpha context",
+        ),
         ("ACC-ALPHA-02", "Alpha remains independent", not stage5_dashboard["alpha_independence"]["alpha_repo_modified"], "stage5 alpha independence"),
-        ("ACC-ALPHA-03", "Context export includes required fields", {"net_worth_aud", "investable_cash_aud", "portfolio_allocation", "risk_budget", "cashflow_pressure", "behavior_tags", "data_freshness"}.issubset(alpha_context), "stage5 alpha context"),
-        ("ACC-ALPHA-04", "Trading password and live submission are false", not constraints["trading_password_available"] and not constraints["live_trade_submission_authorized"], "stage5 alpha constraints"),
+        (
+            "ACC-ALPHA-03",
+            "Context export includes minimized state fields",
+            {
+                "net_worth_state",
+                "investable_cash_state",
+                "cashflow_pressure",
+                "asset_allocation",
+                "risk_budget",
+                "investment_behavior_tags",
+                "consumption_pressure_summary",
+                "data_freshness",
+            }.issubset(alpha_context),
+            "stage5 alpha context",
+        ),
+        (
+            "ACC-ALPHA-04",
+            "Context is read-only and writeback is false",
+            alpha_context["read_only"] and not alpha_context["writeback_allowed"],
+            "stage5 alpha boundary",
+        ),
         ("ACC-ALPHA-05", "No Alpha repository modification", not stage5_dashboard["alpha_independence"]["alpha_repo_modified"], "stage5 alpha independence"),
     )
     return tuple(

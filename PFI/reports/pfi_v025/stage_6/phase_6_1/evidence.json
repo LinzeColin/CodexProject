@@ -1,0 +1,254 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS",
+  "acceptance_id_origin": "project_governance_assigned_not_taskpack",
+  "acceptance_summary": {
+    "alias_route_count": 7,
+    "aliases_exposed_as_primary_entries": false,
+    "duplicate_primary_dom_node_count": 0,
+    "primary_entry_count": 10,
+    "shared_responsive_primary_tree": true,
+    "strategy_lab_canonical_route": "/market-research/strategy-lab",
+    "unique_primary_dom_node_count": 10
+  },
+  "allowed_files_obeyed": true,
+  "browser_artifacts": {
+    "desktop_screenshot_sha256": "48bf37b433ff76718e06710ea77398fafe81be52f79d88c8cbd3497a8d1bb0a0",
+    "mobile_screenshot_sha256": "a21529dd4a1904f06dd3fd01d0654e376a92369647b2b5fe38803c30d4ad8eef",
+    "trace_sha256": "3272836d578d74f075a622ae7468508b168da5382467b4e7799d0cad19e1cc2e",
+    "trace_zip_integrity": "pass",
+    "tracked_screenshots_redacted": true,
+    "validation_sha256": "d4857ea181aec488d15fc5f2c153f7e5d0742b680a8e009a38b168ec8d76634e"
+  },
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/config/release_manifest.json",
+    "PFI/docs/governance/ASSURANCE_STATUS.yaml",
+    "PFI/docs/governance/DELIVERY_PLAN.md",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/formula_registry.yaml",
+    "PFI/docs/governance/model_registry.yaml",
+    "PFI/docs/governance/MODEL_SPEC.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/parameter_registry.csv",
+    "PFI/docs/governance/project.yaml",
+    "PFI/docs/governance/roadmap.yaml",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/pfi_v025/stage_6/PHASE_6_1_NAVIGATION_ALIAS_IMPLEMENTATION_PLAN.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/alias_matrix.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/browser_trace.zip",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/desktop_navigation.png",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/dom_audit.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/evidence.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/mobile_navigation.png",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/nav_contract.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/phase_contract.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/release_identity_binding.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/route_registry.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v025_navigation.py",
+    "PFI/tests/test_v025_stage6_navigation_contract.py",
+    "PFI/web/app/routes.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/web/tests/v025/stage6_routes_browser.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "commands": [
+    {
+      "command": "pytest PFI/tests/test_v025_stage6_navigation_contract.py -q",
+      "exit_code": 0,
+      "summary": "phase-focused contract tests passed; exact count remains in test_results"
+    },
+    {
+      "command": "browser_mobile",
+      "exit_code": 0,
+      "summary": "phase browser acceptance passed; detailed checks remain in browser artifacts"
+    }
+  ],
+  "contains_private_values": false,
+  "contract_artifact_hashes": {
+    "alias_matrix": "57fb57943bbaf0b4531cb51475dc7db1e791f4c65e38607eeefb1983b3f6554c",
+    "dom_audit": "e67fe58fa072a68916a081933ef662fd48fda34fd8ffd5140bc5292d14335ea9",
+    "nav_contract": "6f1e72250ed5227cb3c6eaa32fef2ab5a880c3121833c873c6cc504c06c0b91c",
+    "release_identity_binding": "c84ae00ec356c31cb2efead7db6fcb182db183fdaf90b4145cc97f9196b57d19",
+    "route_registry": "1701977cec112aa1672e98121c5275775c7bc002d9112890fde7c0b6b6ec8bb9"
+  },
+  "contract_id": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+  "evidence_files": [
+    "PFI/docs/pfi_v025/stage_6/PHASE_6_1_NAVIGATION_ALIAS_IMPLEMENTATION_PLAN.md",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/nav_contract.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/alias_matrix.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/route_registry.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/dom_audit.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/release_identity_binding.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/terminal.log"
+  ],
+  "evidence_refs": [
+    "PFI/docs/pfi_v025/stage_6/PHASE_6_1_NAVIGATION_ALIAS_IMPLEMENTATION_PLAN.md",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/nav_contract.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/alias_matrix.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/route_registry.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/dom_audit.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/release_identity_binding.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_6/phase_6_1/terminal.log"
+  ],
+  "explicitly_not_done": [
+    "Stage 6 independent whole-stage acceptance in the original phase commit",
+    "Stage 7 implementation",
+    "GitHub push or canonical PFI.app installation",
+    "real financial data or database operation"
+  ],
+  "generated_at": "2026-07-15T03:11:16+10:00",
+  "git_commit": "6b96bcb655b1c11d91b23dd10cf25b33e37f0242",
+  "governance": {
+    "actual_changed_file_count": 44,
+    "changed_scope_sync_errors": 0,
+    "changed_scope_sync_warnings": 0,
+    "check_render_drift_count": 0,
+    "check_render_reference_issue_count": 0,
+    "formula_ids_changed": [],
+    "model_ids_changed": [],
+    "parameter_ids_changed": [],
+    "project_validation_errors": 0,
+    "project_validation_warnings": 0,
+    "rendered_human_entry_count": 3,
+    "semantic_global_diagnostic": "non-gate diagnostic exposed pre-existing KMFA/private-runtime and root run-manifest debt; no PFI Phase 6.1 project-validation errors"
+  },
+  "implementation_base": "c2e3e7caa35c4ecc79c84bc0cad8b6fd02f8036c",
+  "iteration_id": "ITER-20260715-PFI-V025-S6-P61",
+  "phase": "6.1",
+  "phase_boundaries": {
+    "final_human_acceptance": false,
+    "next_task_id": "S6-P2-T1",
+    "phase_6_1_status": "candidate_pass",
+    "phase_6_2_status": "not_started",
+    "phase_6_3_status": "not_started",
+    "production_accepted": false,
+    "stage_6_whole_stage_review_status": "not_started"
+  },
+  "privacy_and_scope": {
+    "app_install_performed": false,
+    "contains_private_values": false,
+    "database_changed": false,
+    "evidence_text_scan": "pass",
+    "external_network_performed": false,
+    "finder_used": false,
+    "loopback_browser_network_performed": true,
+    "push_performed": false,
+    "real_financial_data_mutated": false,
+    "real_financial_data_read": false,
+    "screenshots_visually_reviewed": true,
+    "trace_decompression_scan": "pass"
+  },
+  "progress": {
+    "completed_tasks": 76,
+    "completion_percent": 48.72,
+    "stage_6_completed_tasks": 4,
+    "stage_6_completion_percent": 33.33,
+    "stage_6_total_tasks": 12,
+    "total_tasks": 156
+  },
+  "release_identity": {
+    "backend_build_hash": "43b918f761e80bbc4c6e2de54a32c714703cc4d9a60f67b7a180e1cea222ddbb",
+    "binding_semantics": "preserved_stage1_binding_until_final_stage12_release_transaction",
+    "build_id": "pfi-v025-s1p1-20260712.1",
+    "configured_git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+    "frontend_bundle_hash": "37a74d635cac8e0640b8dce357a0698c56a8a5b157517ec5f19c54208ab74d65",
+    "manifest_sha256": "93c398d282f13ba449b378a6a26293ac8d848cf9ba3b90b1fbe232852a7b30db",
+    "version": "v0.2.5"
+  },
+  "requires_user_acceptance": true,
+  "risks": [
+    "Phase-local evidence alone cannot prove cross-phase current-HEAD behavior.",
+    "Installed App parity remains deferred to the Stage 12 release transaction."
+  ],
+  "rollback": "Revert only the Phase 6.1 implementation commit and its review-time schema augmentation; do not rewrite immutable commit evidence, touch real data, push, or install the App.",
+  "schema": "PFIV025Stage6Phase61EvidenceV1",
+  "schema_remediation": {
+    "immutable_original_commit": "6b96bcb655b1c11d91b23dd10cf25b33e37f0242",
+    "reason": "Task Pack evidence_pack.schema.json required fields were absent from the phase-local custom schema.",
+    "status": "fixed_during_stage6_whole_review"
+  },
+  "source_contracts": {
+    "canonical_route_authority": "Roadmap Appendix A",
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "taskpack_zip_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+  },
+  "stage": 6,
+  "status": "candidate_pass",
+  "task_ids": [
+    "S6-P1-T1",
+    "S6-P1-T2",
+    "S6-P1-T3",
+    "S6-P1-T4"
+  ],
+  "test_results": [
+    {
+      "name": "expected_red",
+      "result": "collection error observed because pfi_v02.stage_v025_navigation was absent",
+      "status": "pass"
+    },
+    {
+      "name": "phase_6_1_focused",
+      "result": "5 passed",
+      "status": "pass"
+    },
+    {
+      "name": "stage_5_plus_phase_6_1_regression",
+      "result": "38 passed",
+      "status": "pass"
+    },
+    {
+      "name": "stage_1_python_identity_cache",
+      "result": "24 passed, 2 warnings",
+      "status": "pass"
+    },
+    {
+      "name": "stage_1_node_identity_cache",
+      "result": "28 passed",
+      "status": "pass"
+    },
+    {
+      "name": "browser_desktop",
+      "result": "10 primary clicks, 7 alias resolutions, single active, release identity ready",
+      "status": "pass"
+    },
+    {
+      "name": "browser_mobile",
+      "result": "10 primary clicks, 7 alias resolutions, single active, release identity ready",
+      "status": "pass"
+    },
+    {
+      "name": "renderer",
+      "result": "drift 0, reference issues 0",
+      "status": "pass"
+    },
+    {
+      "name": "changed_scope_governance",
+      "result": "sync errors 0 warnings 0; project errors 0 warnings 0",
+      "status": "pass"
+    },
+    {
+      "name": "historical_route_diagnostic",
+      "result": "16 passed, 11 failed on replaced v0.2.3/v0.2.4 expectations",
+      "status": "expected_superseded_failures"
+    }
+  ],
+  "version": "v0.2.5"
+}

@@ -1,0 +1,14 @@
+status=pass
+trace_actual_playwright=true
+trace_sha256=5773f63688d50ac3dbb0c2d50c7d48357c594a0111055b7d3aa82de5cec1d2b2
+absolute_user_path_count=0
+private_var_path_count=0
+tmp_path_count=0
+runtime_token_count=0
+runtime_token_header_count=0
+private_financial_value_count=0
+resource_bodies_removed=true
+contains_private_values=false
+financial_data_loaded=false
+external_network_performed=false
+finder_used=false

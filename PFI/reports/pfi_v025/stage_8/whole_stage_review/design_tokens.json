@@ -1,0 +1,73 @@
+{
+  "archetypes": {
+    "accounts": "balance_sheet",
+    "consumption": "spending_flow",
+    "home": "status_board",
+    "insights": "report_library",
+    "investment": "portfolio_analytics",
+    "ledger": "review_table",
+    "market_research": "research_workspace",
+    "recommendations": "decision_inbox",
+    "settings": "control_center",
+    "sync": "data_pipeline"
+  },
+  "automatic_os_dark_override": false,
+  "chart_states": [
+    "empty",
+    "error",
+    "stale",
+    "ready"
+  ],
+  "contrast": {
+    "ink_on_surface": 16.598,
+    "minimum_body_text_target": 4.5,
+    "muted_on_surface": 6.428,
+    "status": "pass"
+  },
+  "current_remediation_commit": "2c7b25efd2916c909027333283b499a119d088e0",
+  "current_tokens_css_sha256": "sha256:d40f2352a0fbf5b1bf735df9171fd5299ce1da6467ac6a5878fcde2c78dc33c5",
+  "default_color_scheme": "light",
+  "families": [
+    "color",
+    "spacing",
+    "typography",
+    "radius",
+    "shadow",
+    "focus",
+    "status",
+    "chart",
+    "target",
+    "z_index"
+  ],
+  "formula_ids_changed": [],
+  "initial_token_count": 38,
+  "model_ids_changed": [],
+  "parameter_ids_changed": [],
+  "schema": "PFIV025Stage8WholeReviewDesignTokensV1",
+  "source_artifact_sha256": "sha256:e6c7dcdb7750dc4688dce8284cbadca3d905046a3e3da5aec528a46ceeccf08d",
+  "source_phase_commit": "c47906c3cc7e50bebd0d06b942103cee62d5e7d7",
+  "stage8_scoped_selector_count": 132,
+  "status": "pass",
+  "tokens": {
+    "amber": "#986515",
+    "background": "#f5f6f3",
+    "blue": "#1f5f99",
+    "border": "#d8ded9",
+    "border_strong": "#b5c0ba",
+    "chart_1": "#1f5f99",
+    "chart_2": "#0b716a",
+    "chart_3": "#986515",
+    "control_radius": "0.375rem",
+    "focus": "#174f82",
+    "ink": "#18201f",
+    "muted": "#56615e",
+    "panel_radius": "0.625rem",
+    "panel_shadow": "0 1px 2px rgb(24 32 31 / 8%)",
+    "red": "#a42620",
+    "surface": "#ffffff",
+    "surface_muted": "#edf0ec",
+    "surface_raised": "#fcfdfb",
+    "target_size": "44px",
+    "teal": "#0b716a"
+  }
+}

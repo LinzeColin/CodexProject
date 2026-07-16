@@ -1,0 +1,6697 @@
+{
+  "schema": "PFIV025Stage1WholeReviewAccessibilityTreeV1",
+  "source": "Accessibility.getFullAXTree",
+  "frame_discovery_source": "Page.getFrameTree",
+  "frame_url": "about:srcdoc",
+  "frame_url_sha256": "4a81696362b26de48692e5978ff373d7d11106d55b14b26f0a193e7e1ac94da2",
+  "selected_frame_id_sha256": "76ad8db8f438c38711f02efc9e9fb2823984a8949f9af6721081dc97413047c3",
+  "srcdoc_frame_candidate_count": 1,
+  "node_count": 951,
+  "nodes": [
+    {
+      "role": "RootWebArea",
+      "name": "PFI",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "link",
+      "name": "跳到内容",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "banner",
+      "name": "PFI 顶部栏",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "navigation",
+      "name": "一级工作区",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 10
+    },
+    {
+      "role": "main",
+      "name": "",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 25
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "跳到内容",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "PFI",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "入口版本",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "form",
+      "name": "全局上下文",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "generic",
+      "name": "工作台操作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "button",
+      "name": "⌂ 首页总览 净资产 · 现金流 · 数据健康",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 4
+    },
+    {
+      "role": "button",
+      "name": "◫ 账户与资产 账户地图 · 对账 · 跨币种",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "≋ 账本流水 标准流水 · A/B/C/D 复核",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "↗ 投资管理 持仓 · 归因 · 策略回测",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "◌ 消费管理 预算 · 分类 · 异常 · 订阅",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "⇄ 数据源与上传 上传 · 解析 · 对账 · 队列",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "✦ 建议与复盘 证据 · 决策 · 生命周期",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "▣ 报告与洞察 月报 · 导出 · 本机快照",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "⌁ 市场与研究 市场 · 研究 · 策略实验室",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 3
+    },
+    {
+      "role": "button",
+      "name": "⚙ 设置 反馈 · 参数 · 数据管理",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 4
+    },
+    {
+      "role": "region",
+      "name": "首页总览 · 财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "region",
+      "name": "工作区摘要",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 6
+    },
+    {
+      "role": "region",
+      "name": "首页六个核心问题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 6
+    },
+    {
+      "role": "region",
+      "name": "页面导航",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "region",
+      "name": "二级页面差异化内容",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "region",
+      "name": "常用任务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 6
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 10
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "跳到内容",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "PFI",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "PFI v0.2.5",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "pfi-v025-s1p1-20260712.1",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "bundle f3d02a5632465913",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "PFI-V025-RELEASE-IDENTITY",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "group",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "combobox",
+      "name": "全局搜索",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 2
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "AUD/CNY=未加载",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "打开命令面板",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "打开待办清单",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "打开系统设置",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "⌂",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌂",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "首页总览",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "◫",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◫",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "账户与资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "≋",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "≋",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "账本流水",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "↗",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "↗",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "投资管理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "◌",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◌",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "消费管理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "⇄",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⇄",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "数据源与上传",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "✦",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "✦",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "建议与复盘",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "▣",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "▣",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "报告与洞察",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "⌁",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌁",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "市场与研究",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "⚙",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⚙",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "设置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "首页总览 · 财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "页面导航",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "页面二级入口",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "常用任务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "当前页面：首页六问",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 6
+    },
+    {
+      "role": "article",
+      "name": "今日待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "complementary",
+      "name": "当前待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "status",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI v0.2.5",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "…",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "pfi-v025-s1p1-20260712.1",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "p",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "…",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "bundle f3d02a5632465913",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "b",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "…",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI-V025-RELEASE-IDENTITY",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "…",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "DisclosureTriangle",
+      "name": "发布身份详情",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 2
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "全局搜索",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "数据源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "combobox",
+      "name": "市场",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "账户",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "textbox",
+      "name": "账户",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "视图",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "combobox",
+      "name": "组合",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "AUD/CNY=未加载",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "搜索",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "待办",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "设置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "⌂",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌂",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "首页总览",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产 · 现金流 · 数据健康",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产 · 现金流 · 数据健康",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "◫",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◫",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户与资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "账户地图 · 对账 · 跨币种",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户地图 · 对账 · 跨币种",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "≋",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "≋",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账本流水",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "标准流水 · A/B/C/D 复核",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标准流水 · A/B/C/D 复核",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "↗",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "↗",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资管理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "持仓 · 归因 · 策略回测",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "持仓 · 归因 · 策略回测",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "◌",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◌",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "消费管理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "⇄",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⇄",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据源与上传",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "上传 · 解析 · 对账 · 队列",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "上传 · 解析 · 对账 · 队列",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "✦",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "✦",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "建议与复盘",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "证据 · 决策 · 生命周期",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "证据 · 决策 · 生命周期",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "▣",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "▣",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告与洞察",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "月报 · 导出 · 本机快照",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报 · 导出 · 本机快照",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "⌁",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌁",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "市场与研究",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "市场 · 研究 · 策略实验室",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "市场 · 研究 · 策略实验室",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "⚙",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⚙",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "设置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "反馈 · 参数 · 数据管理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "反馈 · 参数 · 数据管理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "首页总览 · 财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "未加载真实首页状态时，只显示财务状态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离候选未加载真实数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "现金余额",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "投资市值",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "消费总流出",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "数据记录",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "数据源状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "位置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "变化",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "问题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "下一步",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "二级入口",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "页面导航",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "待办事项",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "快捷操作",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "最近报告",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "navigation",
+      "name": "二级页面路径",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "首页总览 · 财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "检查财务状态",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "DescriptionList",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "region",
+      "name": "页面交互状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "StaticText",
+      "name": "快捷操作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "常用任务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "当前页面：首页六问",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "article",
+      "name": "钱，待补齐",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "article",
+      "name": "位置，等待来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "article",
+      "name": "变化，等待记录",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "article",
+      "name": "问题，有阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "article",
+      "name": "下一步，待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "article",
+      "name": "依据，待确认",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "今日待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "刷新本机状态",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "统一趋势图",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "generic",
+      "name": "表格控制",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "table",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "当前待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "关闭待办清单",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "list",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "已切换到首页总览",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "发布身份详情",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "全局搜索",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "MenuListPopup",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "视图",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "MenuListPopup",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "搜索",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待办",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "设置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌂",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产 · 现金流 · 数据健康",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◫",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户地图 · 对账 · 跨币种",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "≋",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标准流水 · A/B/C/D 复核",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "↗",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "持仓 · 归因 · 策略回测",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◌",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⇄",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "上传 · 解析 · 对账 · 队列",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "✦",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "证据 · 决策 · 生命周期",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "▣",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报 · 导出 · 本机快照",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌁",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "市场 · 研究 · 策略实验室",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⚙",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "反馈 · 参数 · 数据管理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "首页总览 · 财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未加载真实首页状态时，只显示财务状态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离候选未加载真实数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "只读空数据 · 未访问财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "现金余额",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资市值",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "消费总流出",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据记录",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据源状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "现在能确认多少钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "只显示真实 read model 已确认的金额；阻断指标保留中文状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "位置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "钱和状态来自哪里",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "按账户、持仓、流水和报告来源展示路径，不补写未知金额。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "变化",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "最近真实记录发生了什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "优先展示真实记录范围、更新时间和报告状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "问题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "哪些指标被阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "把来源缺失、路径、解析、权限、过期和计算状态直接暴露。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下一步",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "我现在该处理什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "由数据状态生成可跳转任务，进入上传、来源、账本或设置页面。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": " ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "这些判断来自哪些真实来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "读取 ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "code",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "、记录数、日期和 hash。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "二级入口",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "页面导航",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "待办事项",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "快捷操作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "最近报告",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "首页总览",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "首页总览 · 财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "未加载真实首页状态时，只显示财务状态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "检查财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "term",
+      "name": "主对象",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "term",
+      "name": "数据来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "term",
+      "name": "空状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "term",
+      "name": "错误状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "状态摘要",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "数据新鲜度",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "状态动作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "article",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "快捷操作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "常用任务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "查看阻断状态",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "查看账户",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "查看报告",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "处理来源",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "补齐净资产",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "查看依据",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "待办列表",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "今日待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "刷新本机状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "状态趋势",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "CNY 基准",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "Canvas",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "generic",
+      "name": "趋势图例",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "searchbox",
+      "name": "筛选表格",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 2
+    },
+    {
+      "role": "button",
+      "name": "排序",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "导出",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "rowgroup",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "rowgroup",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 6
+    },
+    {
+      "role": "StaticText",
+      "name": "待办清单",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "当前待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "×",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "成功",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已切换到首页总览",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "发布身份详情",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 4
+    },
+    {
+      "role": "option",
+      "name": "支付宝",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 0
+    },
+    {
+      "role": "option",
+      "name": "微信",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 0
+    },
+    {
+      "role": "option",
+      "name": "CBA",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 0
+    },
+    {
+      "role": "option",
+      "name": "Moomoo",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "主账户",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "option",
+      "name": "个人财务",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 0
+    },
+    {
+      "role": "option",
+      "name": "投资复盘",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 0
+    },
+    {
+      "role": "option",
+      "name": "消费复盘",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "只读空数据 · 未访问财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离验收未读取财务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离验收未读取财务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离验收未读取财务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离验收未读取财务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离验收未读取财务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待补充",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离验收未读取财务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "现在能确认多少钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "只显示真实 read model 已确认的金额；阻断指标保留中文状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "钱和状态来自哪里",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "按账户、持仓、流水和报告来源展示路径，不补写未知金额。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "最近真实记录发生了什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "优先展示真实记录范围、更新时间和报告状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "哪些指标被阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "把来源缺失、路径、解析、权限、过期和计算状态直接暴露。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "我现在该处理什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "由数据状态生成可跳转任务，进入上传、来源、账本或设置页面。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "这些判断来自哪些真实来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "读取 ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "pfi-read-model-status",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "、记录数、日期和 hash。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待办事项",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "快捷操作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "最近报告",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "首页总览",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "首页总览 · 财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未加载真实首页状态时，只显示财务状态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "检查财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "主对象",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "数据来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "待补",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "空状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "未加载真实首页状态时，只显示财务状态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "错误状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "无法读取财务状态，请检查账户、账本、投资和消费 read-model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "状态摘要",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "展示净资产、现金、投资、消费和数据健康的状态来源。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "数据新鲜度",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "标记未加载、过期、路径错误和待复核状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "状态动作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "进入数据源、账户或账本修复缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "加载中",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "查看财务状态",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "已就绪",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "检查财务状态",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "读取失败",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "重试财务状态",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "heading",
+      "name": "暂无数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "button",
+      "name": "打开财务状态处理",
+      "ignored": false,
+      "focusable": true,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "查看阻断状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "位置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "查看账户",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "变化",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "查看报告",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "问题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "处理来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "下一步",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "补齐净资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "查看依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待办列表",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "今日待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "刷新本机状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "首页总览 · 统一趋势",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "状态趋势",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "CNY 基准",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "趋势数据需要先接入真实数据，当前不显示伪造曲线。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "排序",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "导出",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "row",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "row",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "row",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "row",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "row",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "row",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "row",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 5
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待办清单",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "当前待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "×",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "ListMarker",
+      "name": "1. ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "ListMarker",
+      "name": "2. ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "ListMarker",
+      "name": "3. ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "ListMarker",
+      "name": "4. ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "消费总流出：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "ListMarker",
+      "name": "5. ",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "报告数据状态：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "成功",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "主账户",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "pfi-read-model-status",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "主对象",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待补",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "空状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未加载真实首页状态时，只显示财务",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "状态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "错误状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "无法读取财务状态，请检查账户、账",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "本、投资和消费 read-model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "状态摘要",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "展示净资产、现金、投资、消费和数据健康的状态来源。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据新鲜度",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标记未加载、过期、路径错误和待复核状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "状态动作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入数据源、账户或账本修复缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "加载中",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "正在加载财务状态，保持当前页面路径与返回栈。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "查看财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "已就绪",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "财务状态已按当前页面状态准备完成。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "检查财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "读取失败",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "无法读取财务状态，请检查账户、账本、投资和消费 read-model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "重试财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "暂无数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "未加载真实首页状态时，只显示财务状态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "打开财务状态处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看阻断状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "位置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看账户",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "变化",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看报告",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "问题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "处理来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下一步",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐净资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "首页总览 · 统一趋势",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "状态趋势",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "趋势数据需要先接入真实数据，当前不显示伪造曲线。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "排序",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "导出",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "columnheader",
+      "name": "优先级",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "columnheader",
+      "name": "对象",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "columnheader",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "columnheader",
+      "name": "动作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "columnheader",
+      "name": "状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "1",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "现在能确认多少钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "暂无可直接展示的金额，所有金额保持真实数据状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "待补齐",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "2",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "位置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "钱和状态来自哪里",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "等待账户、持仓或流水来源挂链。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "等待来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "3",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "变化",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "最近真实记录发生了什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "当前真实记录范围：等待真实记录日期；隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "等待记录",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "4",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "问题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "哪些指标被真实数据状态阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "净资产：隔离验收未读取财务数据；现金余额：隔离验收未读取财务数据；投资市值：隔离验收未读取财务数据；消费总流出：隔离验收未读取财务数据；报告数据状态：隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "有阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "5",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "下一步",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "我现在该处理什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "净资产：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "6",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "这些判断来自哪些真实来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "cell",
+      "name": "",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "cell",
+      "name": "待确认",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "补齐净资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产：隔离验收未读取财务数据。先补",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "补齐现金余额",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "现金余额：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "补齐投资市值",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "投资市值：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "补齐消费总流出",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "消费总流出：隔离验收未读取财务数据。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "none",
+      "name": "",
+      "ignored": true,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "补齐报告数据状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告数据状态：隔离验收未读取财务数",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "加载中",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "正在加载财务状态，保持当前页面路径",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "与返回栈。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已就绪",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "财务状态已按当前页面状态准备完成。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "检查财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "读取失败",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "无法读取财务状态，请检查账户、账",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "本、投资和消费 read-model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "重试财务状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "暂无数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未加载真实首页状态时，只显示财务状",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "态空态和数据缺口。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "打开财务状态处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "StaticText",
+      "name": "优先级",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "对象",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "动作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "1",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "现在能确认多少钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "暂无可直接展示的金额，所有金额保持真实数据状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "待补齐",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "2",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "位置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "钱和状态来自哪里",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "等待账户、持仓或流水来源挂链。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "等待来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "3",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "变化",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "最近真实记录发生了什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "当前真实记录范围：等待真实记录日期；隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "等待记录",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "4",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "问题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "哪些指标被真实数据状态阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产：隔离验收未读取财务数据；现金余额：隔离验收未读取财务数据；投资市值：隔离验收未读取财务数据；消费总流出：隔离验收未读取财务数据；报告数据状态：隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "有阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "5",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "下一步",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "我现在该处理什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "待处理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "6",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 1
+    },
+    {
+      "role": "StaticText",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "StaticText",
+      "name": "这些判断来自哪些真实来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 3
+    },
+    {
+      "role": "StaticText",
+      "name": "待确认",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 2
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐净资产",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐现金余额",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "现金余额：隔离验收未读取财务数据。先",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐投资市值",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资市值：隔离验收未读取财务数据。先",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐消费总流出",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐报告数据状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "优",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "先",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "级",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "对象",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "依据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "动作",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "状态",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "1",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "现在能确认",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "多少钱",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "暂无可直接展示的金额，所有金额保持真实数据状态。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待补",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "齐",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "2",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "位",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "置",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "钱和状态来",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "自哪里",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待账户、持仓或流水来源挂链。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "3",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "变",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "化",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "最近真实记",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "录发生了什",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "当前真实记录范围：等待真实记录日期；隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "记录",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "4",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "问",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "题",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "哪些指标被",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "真实数据状",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "态阻断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产：隔离验收未读取财务数据；现金余额：隔离验收未读取财务数据；投",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "资市值：隔离验收未读取财务数据；消费总流出：隔离验收未读取财务数据；",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告数据状态：隔离验收未读取财务数据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "有阻",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "断",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "5",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "一",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "步",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "我现在该处",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "理什么",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产：隔离验收未读取财务数据。先补齐真实文件或 read model。",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待处",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "理",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "6",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "依",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "据",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "这些判断来",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "自哪些真实",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待确",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "认",
+      "ignored": false,
+      "focusable": false,
+      "child_count": 0
+    }
+  ],
+  "ax_contract": {
+    "h1_exact_match_count": 2,
+    "primary_navigation_named_count": 10,
+    "named_focusable_count": 45,
+    "unnamed_focusable_count": 0
+  },
+  "official_dom_contract": {
+    "shell_schema": "PFIOSWebShellContractV1",
+    "header_present": true,
+    "navigation_present": true,
+    "main_present": true,
+    "skip_link_present": true,
+    "h1_text": "首页总览 · 财务状态",
+    "primary_entries": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "duplicate_id_count": 0,
+    "focusable_without_name_count": 0
+  }
+}

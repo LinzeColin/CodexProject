@@ -1,0 +1,12 @@
+PFI v0.2.5 Stage 1 Phase 1.2 privacy scan
+scope=all Phase 1.2 tracked reports, plan, diagnostics, screenshot and trace
+absolute_home_path_findings=0
+private_value_findings=0
+credential_findings=0
+financial_row_findings=0
+pid_findings=0
+evidence_contains_only=public release identifiers, hashes, counts, dates, versions, statuses, synthetic test labels
+zip_integrity_scan=PASS
+zip_decompressed_member_scan=PASS
+binary_strings_scan=PASS
+result=PASS

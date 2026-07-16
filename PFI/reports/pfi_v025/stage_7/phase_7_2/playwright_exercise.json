@@ -1,0 +1,28 @@
+{
+  "schema": "PFIV025Stage7Phase72BrowserExerciseV1",
+  "status": "pass",
+  "checks": {
+    "initial_sqlite_empty": true,
+    "create_persisted": true,
+    "refresh_persisted": true,
+    "update_persisted": true,
+    "financial_values_fail_closed": true,
+    "surface_hashes_same": true,
+    "home_surface_synced": true,
+    "investment_surface_synced": true,
+    "report_surface_synced": true,
+    "settings_persisted": true,
+    "settings_refresh_persisted": true,
+    "settings_feedback_isolated": true,
+    "saved_draft_not_in_local_storage": true
+  },
+  "active_count_before": 0,
+  "active_count_after_create": 1,
+  "created_revision": 1,
+  "updated_revision": 2,
+  "projection_hash_after_update": "sha256:91991c7540098fadc7c0828b7a68a3d7886d9cd70c7061aeff131108e83e5dc8",
+  "financial_values_emitted": 0,
+  "settings_revision": 1,
+  "settings_hash": "ef2a299e381c9459b1ede9ec14b9b06617c4b60f2b6b679e1539eaab37c81ee8",
+  "browser_context_closed_after_run": true
+}

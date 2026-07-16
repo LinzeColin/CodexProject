@@ -1,0 +1,9 @@
+{
+  "browser_storage_used_for_formal_settings": false,
+  "revision_after_reset": 2,
+  "revision_after_restart": 1,
+  "revision_before_restart": 1,
+  "schema": "PFIV025Stage7Phase72SettingsPersistenceV1",
+  "settings_surface_scope": "settings_only",
+  "status": "pass"
+}

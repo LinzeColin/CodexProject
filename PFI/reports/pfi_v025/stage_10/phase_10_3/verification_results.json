@@ -1,0 +1,69 @@
+{
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider Phase 10.3 observability/supervisor/API/UI/SIGKILL target",
+      "exit_code": 0,
+      "result": "14 passed in 3.54s",
+      "verification_id": "phase_10_3_target"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest final Phase 10.3/10.1/10.2/release/Stage8/Stage7/Stage9 focused set -q -p no:cacheprovider",
+      "exit_code": 0,
+      "result": "121 passed, 2 upstream protobuf deprecation warnings, no failures in 11.84s",
+      "verification_id": "final_combined_product_regression"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python PFI/web/tests/v025/stage10_jobs_browser.py --output-dir PFI/reports/pfi_v025/stage_10/phase_10_3",
+      "exit_code": 0,
+      "result": "browser/database/trace_privacy pass; same job recovered after 10503ms; retry=1; external network calls=0",
+      "verification_id": "formal_shell_browser_recovery"
+    },
+    {
+      "command": "Python compileall plus node --check on Phase 10.3 Python/JS and release validator sources",
+      "exit_code": 0,
+      "result": "all selected Python and JavaScript sources passed syntax checks",
+      "verification_id": "syntax"
+    },
+    {
+      "command": "Ruby YAML parse plus Python JSON/JSONL/CSV parse",
+      "exit_code": 0,
+      "result": "five YAML files, all Phase JSON files, 65 JSONL events and 126 CSV rows with 12 columns passed",
+      "verification_id": "canonical_fact_parse"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B scripts/lean_governance.py render/check-render --project PFI",
+      "exit_code": 0,
+      "result": "three Chinese human entries updated; final drift_count=0 and reference_issue_count=0",
+      "verification_id": "human_entry_render"
+    },
+    {
+      "command": "sparse worktree scripts/lean_governance.py validate --project PFI",
+      "exit_code": 1,
+      "result": "28 environment errors because root schemas and unrelated registered projects are sparse-excluded; no PFI content error was emitted",
+      "verification_id": "sparse_environment_diagnostic"
+    },
+    {
+      "command": "temporary complete HEAD archive plus current PFI overlay: validate_project_governance.py --project PFI --mode required",
+      "exit_code": 0,
+      "result": "errors=0; warnings=0; temporary directory removed",
+      "verification_id": "complete_union_project_governance"
+    },
+    {
+      "command": "temporary complete HEAD archive plus current PFI overlay: validate_project_governance.py --project PFI --mode required --semantic",
+      "exit_code": 1,
+      "result": "PFI project validation itself returned errors=0/warnings=0; the optional global semantic preflight separately found 37 pre-existing KMFA/EEI/ADP/root issues outside this Phase scope, so no semantic pass is claimed",
+      "verification_id": "global_semantic_diagnostic"
+    },
+    {
+      "command": "Phase product-source, evidence, screenshot and sanitized-trace privacy identity scan",
+      "exit_code": 0,
+      "result": "actual username/home identity, private-key header, email identity and raw financial URI matches were all zero",
+      "verification_id": "privacy_scan"
+    }
+  ],
+  "phase_id": "V025-S10-P10.3",
+  "product_commit": "9d2a8eb9f7b3e91492cdabffa9965339cd3bba2e",
+  "schema": "PFIV025Stage10Phase103VerificationResultsV1",
+  "status": "pass",
+  "verification_group_count": 10
+}

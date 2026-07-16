@@ -1,0 +1,204 @@
+{
+  "version": "v0.2.5",
+  "stage": 0,
+  "phase": "0.1",
+  "status": "candidate_pass",
+  "git_commit": "3bc8e4e5780fd19594161b574763a9b2e65b7d30",
+  "git_commit_semantics": "audited_clean_base_commit_before_phase_artifacts",
+  "allowed_files_obeyed": true,
+  "acceptance_id": "ACC-PFI-V025-S0-P01-BASELINE",
+  "commands": [
+    {
+      "command": "find PFI -path PFI/.venv -prune -o -type d \\( -name __pycache__ -o -name .pytest_cache \\) -print | wc -l",
+      "exit_code": 0,
+      "summary": "Before validation: 25 existing cache directories outside PFI/.venv."
+    },
+    {
+      "command": "git status --porcelain=v1 --untracked-files=all -- PFI",
+      "exit_code": 0,
+      "summary": "Before validation: only the four already assembled Phase artifacts were present."
+    },
+    {
+      "command": "for app in \"/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app\" \"/Applications/PFI.app\" \"/Users/linzezhang/Downloads/PFI.app\" \"/Users/linzezhang/Desktop/PFI.app\"; do if [ -e \"$app\" ]; then openssl dgst -sha256 \"$app/Contents/Info.plist\" \"$app/Contents/MacOS/PFI\"; if [ -f \"$app/Contents/Resources/PFI_PROJECT_ROOT\" ]; then openssl dgst -sha256 \"$app/Contents/Resources/PFI_PROJECT_ROOT\"; fi; elif [ -L \"$app\" ]; then printf 'broken_symlink=%s\\n' \"$app\"; else printf 'missing=%s\\n' \"$app\"; fi; done",
+      "exit_code": 0,
+      "summary": "Before validation: plist, executable, and available PFI_PROJECT_ROOT hashes captured without executing an App."
+    },
+    {
+      "command": "python3 --version",
+      "exit_code": 0,
+      "summary": "Python 3.9.6."
+    },
+    {
+      "command": "node --version",
+      "exit_code": 0,
+      "summary": "Node v24.18.0."
+    },
+    {
+      "command": "python3 -c \"import sqlite3; print(sqlite3.sqlite_version)\"",
+      "exit_code": 0,
+      "summary": "SQLite 3.43.2."
+    },
+    {
+      "command": "node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "No syntax diagnostic."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PFI/.venv/bin/python -B -m pytest PFI/tests -q --collect-only -p no:cacheprovider",
+      "exit_code": 0,
+      "summary": "795 tests collected in 1.13s; no test was executed."
+    },
+    {
+      "command": "find PFI -path PFI/.venv -prune -o -type d \\( -name __pycache__ -o -name .pytest_cache \\) -print | wc -l",
+      "exit_code": 0,
+      "summary": "After collection: cache count remained 25."
+    },
+    {
+      "command": "git status --porcelain=v1 --untracked-files=all -- PFI",
+      "exit_code": 0,
+      "summary": "After collection and before Task 4 assembly: only the four already assembled Phase artifacts were present."
+    },
+    {
+      "command": "for app in \"/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app\" \"/Applications/PFI.app\" \"/Users/linzezhang/Downloads/PFI.app\" \"/Users/linzezhang/Desktop/PFI.app\"; do if [ -e \"$app\" ]; then openssl dgst -sha256 \"$app/Contents/Info.plist\" \"$app/Contents/MacOS/PFI\"; if [ -f \"$app/Contents/Resources/PFI_PROJECT_ROOT\" ]; then openssl dgst -sha256 \"$app/Contents/Resources/PFI_PROJECT_ROOT\"; fi; elif [ -L \"$app\" ]; then printf 'broken_symlink=%s\\n' \"$app\"; else printf 'missing=%s\\n' \"$app\"; fi; done",
+      "exit_code": 0,
+      "summary": "After collection: all App hashes matched the before-state."
+    },
+    {
+      "command": "if [ -n \"${PFI_DATA_HOME:-}\" ]; then printf 'PFI_DATA_HOME=SET_REDACTED\\n'; else printf 'PFI_DATA_HOME=UNSET\\n'; fi; for spec in 'MetaDatabase/PFI|MetaDatabase/PFI' 'PFI/MetaDatabase|PFI/MetaDatabase' \"$HOME/.pfi|~/.pfi\"; do root=${spec%%|*}; label=${spec#*|}; if [ -e \"$root\" ]; then meta=$(stat -f '%HT|%Sp|%z|%Sm' -t '%Y-%m-%dT%H:%M:%S%z' \"$root\"); count=$(find \"$root\" -type f 2>/dev/null | wc -l | tr -d ' '); printf '%s|%s|files=%s\\n' \"$label\" \"$meta\" \"$count\"; else printf '%s|exists=false\\n' \"$label\"; fi; done",
+      "exit_code": 0,
+      "summary": "After collection: data-root environment, existence, permissions, mtime, and aggregate file counts matched Task 3."
+    },
+    {
+      "command": "db_count=$(find \"$HOME/.pfi\" -type f \\( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \\) 2>/dev/null | wc -l | tr -d ' '); db_path=$(find \"$HOME/.pfi\" -type f \\( -iname '*.db' -o -iname '*.sqlite' -o -iname '*.sqlite3' \\) -print -quit 2>/dev/null); test \"$db_count\" -eq 1; stat_value=$(stat -f '%z|%m|%Sp' \"$db_path\"); hash_value=$(openssl dgst -sha256 -r \"$db_path\" | awk '{print $1}'); sqlite_value=$(sqlite3 \"file:$db_path?mode=ro&immutable=1\" \"PRAGMA query_only=ON; PRAGMA quick_check; SELECT 'table_count=' || count(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';\"); test \"$stat_value\" = '86016|1782735355|-rw-r--r--'; test \"$hash_value\" = '2053c0acc8f9c716d2fc496b9cfde6f8c1ef35c43e18be6d77e06a1c08f33b12'; test \"$sqlite_value\" = $'ok\\ntable_count=9'",
+      "exit_code": 0,
+      "summary": "One redacted immutable/query-only SQLite candidate; quick_check ok; table_count 9; count, bytes, mtime, mode, and SHA-256 unchanged."
+    },
+    {
+      "command": "jq -e . PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "exit_code": 0,
+      "summary": "JSON parsed."
+    },
+    {
+      "command": "jq -e . PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json",
+      "exit_code": 0,
+      "summary": "JSON parsed."
+    },
+    {
+      "command": "jq -e . PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "exit_code": 0,
+      "summary": "JSON parsed."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B - <<'PY'\nimport json\nimport zipfile\nfrom pathlib import Path\nfrom jsonschema import Draft202012Validator\narchive = Path(\"/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip\")\nmember = \"PFI_v0.2.5_TaskPack/schemas/evidence_pack.schema.json\"\nevidence_path = Path(\"PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json\")\nwith zipfile.ZipFile(archive) as zf:\n    schema = json.loads(zf.read(member))\nevidence = json.loads(evidence_path.read_text(encoding=\"utf-8\"))\nDraft202012Validator(schema).validate(evidence)\nprint(\"evidence_schema_valid=true\")\nPY",
+      "exit_code": 0,
+      "summary": "evidence_schema_valid=true."
+    },
+    {
+      "command": "diff -u <(sort PFI/reports/pfi_v025/stage_0/phase_0_1/changed_files.txt) <(git status --porcelain=v1 --untracked-files=all -- PFI | sed -E 's/^.. //' | sort)",
+      "exit_code": 0,
+      "summary": "Seven-file scope reconciled exactly."
+    },
+    {
+      "command": "if rg -n -i '(password|secret|credential|account_number|card_number|transaction_description|counterparty)[[:space:]]*[:=][[:space:]]*[^\"[:space:]]' PFI/reports/pfi_v025/stage_0/phase_0_1; then echo 'private_value_scan=fail'; exit 1; else rc=$?; if [ \"$rc\" -eq 1 ]; then echo 'private_value_scan=pass|matches=0'; else exit \"$rc\"; fi; fi",
+      "exit_code": 0,
+      "summary": "private_value_scan=pass|matches=0."
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "No whitespace error in the unstaged PFI diff."
+    },
+    {
+      "command": "git diff --cached --check -- PFI",
+      "exit_code": 0,
+      "summary": "No whitespace error in the staged PFI diff."
+    }
+  ],
+  "changed_files": [
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/git_state.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log"
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/git_state.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log"
+  ],
+  "tasks": [
+    {
+      "task_id": "S0-P1-T1",
+      "status": "complete",
+      "artifacts": ["git_state.txt", "terminal.log"]
+    },
+    {
+      "task_id": "S0-P1-T2",
+      "status": "complete_with_recorded_conflicts",
+      "artifacts": ["entry_inventory.json", "terminal.log"]
+    },
+    {
+      "task_id": "S0-P1-T3",
+      "status": "complete_with_recorded_risk",
+      "artifacts": ["repository_inventory.json", "terminal.log"]
+    },
+    {
+      "task_id": "S0-P1-T4",
+      "status": "candidate_pass",
+      "artifacts": ["terminal.log", "evidence.json", "changed_files.txt", "risk_and_rollback.md"]
+    }
+  ],
+  "source_hashes": {
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "taskpack_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+  },
+  "privacy": {
+    "contains_private_values": false,
+    "financial_rows_emitted": 0,
+    "credentials_emitted": 0,
+    "redaction_rules": [
+      "No raw financial row, amount, account identifier, counterparty, holding, or private database filename is emitted.",
+      "Only aggregate counts, ranges, statuses, hashes, permissions, table counts, metric IDs, and redacted identifiers are retained."
+    ]
+  },
+  "v024_carry_forward": {
+    "product_commit": "17b9f59794740f927c5f531ba1aa334621a832e5",
+    "evidence_commit": "5e48e739774575f4d198d6268271e557de434897",
+    "evidence_parent": "17b9f59794740f927c5f531ba1aa334621a832e5",
+    "evidence_in_remote_history": true,
+    "pfi_subtree_changed_after_evidence": false,
+    "current_live_verifier": "not_replayable_after_unrelated_main_advance"
+  },
+  "explicitly_not_done": [
+    "Phase 0.2 and Phase 0.3",
+    "whole-Stage review and Stage 1 through Stage 12",
+    "business code, UI, launcher, App, data, database, governance, formula, parameter, or schema changes",
+    "full test execution; pytest collection only",
+    "browser UAT",
+    "real-data import or mutation",
+    "database write or migration",
+    "GitHub push or merge",
+    "final App reinstall"
+  ],
+  "risks": [
+    "The v0.2.4 live verifier is not replayable after unrelated main advancement; ancestry and unchanged PFI subtree are the retained facts.",
+    "Release identity is mixed across v0.2.1, 0.2.3, v0.2.4, and the v0.2.5 evidence contract.",
+    "PFI/web/app/home.js is missing and the grouped hash command exited 1.",
+    "The repository App codesign check reports missing resources, and original per-bundle numeric codesign exits are partially unavailable.",
+    "The repository App executable hash differs from installed and copied bundles.",
+    "Two healthy canonical PFI services coexist and no preferred instance is designated.",
+    "PFI_DATA_HOME is unset and data-root facts remain split across sparse Git-tree and local roots.",
+    "Net worth, cash balance, and investment market value metrics remain blocked by missing sources.",
+    "read_model_hash is time-sensitive because generated_at_utc is included; all other safe replay fields matched.",
+    "795 tests were collected but no test was executed, and browser UAT was not run."
+  ],
+  "rollback": "remove the seven artifacts before commit or revert the local Phase commit after commit",
+  "requires_user_acceptance": true,
+  "contains_private_values": false
+}

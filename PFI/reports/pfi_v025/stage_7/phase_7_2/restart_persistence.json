@@ -1,0 +1,10 @@
+{
+  "browser_reopened": true,
+  "holding_revision_after_restart": 2,
+  "projection_hash_stable_across_restart": true,
+  "runtime_api_port_changed": true,
+  "runtime_service_restarted": true,
+  "schema": "PFIV025Stage7Phase72RestartPersistenceV1",
+  "settings_revision_after_restart": 1,
+  "status": "pass"
+}

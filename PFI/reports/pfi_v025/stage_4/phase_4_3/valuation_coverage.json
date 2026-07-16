@@ -1,0 +1,45 @@
+{
+  "aggregate_valuation_status": "not_loaded",
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "investment_metric_count": 3,
+  "investment_metrics": [
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "fx_effective_at": null,
+      "metric_id": "investment_market_value_cny",
+      "price_as_of": null,
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "fx_effective_at": null,
+      "metric_id": "investment_cost_basis_cny",
+      "price_as_of": null,
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "fx_effective_at": null,
+      "metric_id": "investment_unrealized_pnl_cny",
+      "price_as_of": null,
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null
+    }
+  ],
+  "phase": "4.3",
+  "ready_valuation_metric_count": 0,
+  "schema": "PFIV025Stage4ValuationCoverageV1",
+  "stage": 4,
+  "status": "pass_fail_closed",
+  "valuation_missing_or_not_loaded_count": 3,
+  "version": "v0.2.5"
+}

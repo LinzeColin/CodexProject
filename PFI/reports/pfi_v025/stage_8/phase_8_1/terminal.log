@@ -1,0 +1,17 @@
+Phase 8.1 RED: 5 tests run, 5 expected failures.
+Phase 8.1 implementation contract: 4/5 pass; evidence closeout pending.
+MutationObserver remediation: eliminated self-trigger loop with idempotent text/state writes and microtask coalescing.
+Nested-route harness remediation: canonical app/styles asset mapping restored release identity on secondary paths.
+Responsive remediation: account archetype mobile overflow removed; mobile canonical navigation target >=44px.
+Final Playwright run: 20/20 route+viewport results pass; 10 archetypes; no console/page/HTTP/external-network errors.
+Forced OS dark validation: computed root color-scheme=light and warm-light body background on all pages.
+Visual artifact validation: 20 PNG decoded; black-pixel files=0; representative screenshots manually inspected.
+Trace privacy: 3 entries retained; 2 absolute paths redacted; private values/runtime tokens/local paths=0.
+Finder/LaunchServices/GUI file operations: not used.
+Push/install/production/final acceptance: not performed.
+Final Phase 8.1 contract: 5/5 passed.
+Release identity plus active Stage 6/7 compatibility: 39 passed.
+Stage 7 frozen-current-overlay diagnostic: 9 passed / 2 expected superseded after legitimate Stage 8 worktree changes; no Phase 8.1 functional failure.
+Node and Python syntax: pass.
+Lean renderer: drift_count=0 / reference_issue_count=0.
+Changed-scope semantic governance: only two pre-existing sparse Cloudflare test_ref omissions; the referenced file is present in the implementation-base Git tree.

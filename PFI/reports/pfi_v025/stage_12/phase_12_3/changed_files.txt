@@ -1,0 +1,8 @@
+PFI/reports/pfi_v025/stage_12/phase_12_3/artifact_manifest.json
+PFI/reports/pfi_v025/stage_12/phase_12_3/evidence.json
+PFI/reports/pfi_v025/stage_12/phase_12_3/final_evidence_index.json
+PFI/reports/pfi_v025/stage_12/phase_12_3/final_evidence_index.sha256
+PFI/reports/pfi_v025/stage_12/phase_12_3/human_acceptance_request.json
+PFI/reports/pfi_v025/stage_12/phase_12_3/phase_contract.json
+PFI/reports/pfi_v025/stage_12/phase_12_3/privacy_scan.txt
+PFI/reports/pfi_v025/stage_12/phase_12_3/state_consistency.json

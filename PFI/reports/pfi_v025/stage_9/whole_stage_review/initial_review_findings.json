@@ -1,0 +1,67 @@
+{
+  "initial_remediation_commit": "a1178bef79b982d343c4610ae7286d356214b03d",
+  "initial_totals": {
+    "critical": 2,
+    "important": 11,
+    "minor": 3
+  },
+  "remediation_review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "review_base_before_remediation": "32449d58946809647ef917caf7e5b94a6836001b",
+  "reviewers": [
+    {
+      "counts": {
+        "critical": 0,
+        "important": 4,
+        "minor": 0
+      },
+      "decision": "CHANGES_REQUIRED",
+      "findings": [
+        "full localStorage view model was not bound to the embedded immutable contract",
+        "unverified persisted state could be published before asynchronous ledger validation",
+        "decision-pack validator did not fail closed on pack_hash or deterministic ui_contract/manifest metadata drift",
+        "re-signed export byte_size or sha256 drift was accepted without binding the manifest to deterministic export bytes"
+      ],
+      "remediation": "persist exact review delta only; bind immutable fields to embedded data; validate before atomic publication; reject drift; require exact pack hash, deterministic UI contract, strict manifest metadata and exact deterministic export byte sizes/hashes",
+      "reviewer_id": "final_code_security_review"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 4,
+        "minor": 2
+      },
+      "decision": "CHANGES_REQUIRED",
+      "findings": [
+        "Phase 9.1 evidence lacked seven source TaskPack fields",
+        "model_validation_report.html and Phase 9.2/9.3 DOM/AX evidence were absent",
+        "owner views skipped the Stage 9 whole-review gate",
+        "fallback YAML and PyYAML renderer semantics differed",
+        "Phase 9.2/9.3 git_commit semantics did not distinguish product and evidence commits",
+        "verification evidence reversed the PyYAML and fallback-parser runtime labels"
+      ],
+      "remediation": "normalize copies without overwriting history; add missing report/DOM/AX; fix gate routing and deterministic YAML parsing; bind both commits; label the PyYAML and no-PyYAML parser evidence exactly",
+      "reviewer_id": "final_governance_renderer_review"
+    },
+    {
+      "counts": {
+        "critical": 2,
+        "important": 3,
+        "minor": 1
+      },
+      "decision": "REMEDIATION_REQUIRED",
+      "findings": [
+        "main renderer did not show all four dual-consumption components",
+        "Pass Gate and structured owner UAT were not yet evidenced",
+        "current reports retained stale Phase-relative wording",
+        "model_validation_report.html was absent",
+        "S9-P3-T4 completion wording exceeded pending whole-review truth",
+        "PDF long-hash copyability required recheck after rebuild"
+      ],
+      "remediation": "create an immutable reviewed snapshot; bind four components to UI/exports; add structured transition UAT and current evidence; preserve blocked/partial truth",
+      "reviewer_id": "final_acceptance_evidence_review"
+    }
+  ],
+  "schema": "PFIV025Stage9InitialIndependentReviewFindingsV1",
+  "stage_10_started": false,
+  "status": "remediated_pending_independent_rereview"
+}

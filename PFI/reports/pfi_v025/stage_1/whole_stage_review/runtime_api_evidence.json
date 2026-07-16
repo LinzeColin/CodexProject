@@ -1,0 +1,438 @@
+{
+  "schema": "PFIV025Stage1WholeReviewRuntimeAPIEvidenceV1",
+  "runtime_api_port": 56855,
+  "required_headers": [
+    "X-PFI-Running-Backend-SHA256",
+    "X-PFI-Release-Manifest-SHA256",
+    "X-PFI-Streamlit-Cache-Key",
+    "X-PFI-Read-Model-SHA256",
+    "X-PFI-Data-Boundary"
+  ],
+  "initial_node_probe": {
+    "manifest": {
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Content-Type",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "X-PFI-Release-Manifest-SHA256, X-PFI-Running-Backend-SHA256, X-PFI-Streamlit-Cache-Key, ETag, Last-Modified",
+        "cache-control": "no-store, private",
+        "content-length": "566",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Mon, 13 Jul 2026 01:21:11 GMT",
+        "etag": "\"d701de1762d86923d0c4ff5c5799d810732093b35a35a78044ad272642ff877b\"",
+        "last-modified": "Mon, 13 Jul 2026 01:19:49 GMT",
+        "server": "PFI-V021-RuntimeAPI/1.0 Python/3.12.13",
+        "x-pfi-release-manifest-sha256": "d701de1762d86923d0c4ff5c5799d810732093b35a35a78044ad272642ff877b",
+        "x-pfi-running-backend-sha256": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d"
+      },
+      "body": {
+        "product": "PFI",
+        "version": "v0.2.5",
+        "build_id": "pfi-v025-s1p1-20260712.1",
+        "git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+        "frontend_bundle_hash": "f3d02a56324659138a83930c7a07904097802f4e2a35722709fca62d8e33c269",
+        "backend_build_hash": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "app_short_version": "0.2.5",
+        "app_build_version": "20260712.1",
+        "data_schema_version": "PFIV021HoldingsPersistenceV1",
+        "formula_version": "v0.2.3",
+        "parameter_version": "v0.2.2",
+        "generated_at": "2026-07-13T01:19:06Z"
+      },
+      "body_sha256": "d701de1762d86923d0c4ff5c5799d810732093b35a35a78044ad272642ff877b"
+    },
+    "policy": {
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Content-Type",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "X-PFI-Release-Manifest-SHA256, X-PFI-Running-Backend-SHA256, X-PFI-Streamlit-Cache-Key, ETag, Last-Modified",
+        "cache-control": "no-store, private",
+        "content-length": "1576",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Mon, 13 Jul 2026 01:21:11 GMT",
+        "etag": "\"8431c19c6f21cb3c36dcf07a24cfa275b38be5bab60235a9100a993702b83997\"",
+        "last-modified": "Sun, 12 Jul 2026 23:44:11 GMT",
+        "server": "PFI-V021-RuntimeAPI/1.0 Python/3.12.13",
+        "x-pfi-running-backend-sha256": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "x-pfi-streamlit-cache-key": "7e7cf97ff0efb7e9648209f69d9c93eb988fb66d6017e37ef1dc1e02fab9c91d"
+      },
+      "body": {
+        "schema": "PFIV025Stage1ReleaseCachePolicyV1",
+        "build_id": "pfi-v025-s1p1-20260712.1",
+        "git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+        "frontend_bundle_hash": "f3d02a56324659138a83930c7a07904097802f4e2a35722709fca62d8e33c269",
+        "backend_build_hash": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "data_hash": "1bd3b1a1fee048e30d2011db83b18231d02f6f139579440280719a7dcaa252fa",
+        "parameter_hash": "dcaea12554acf3fa1cde5bf5c982c0a3dff125f96bcdaf4fbfe91f620815dc5f",
+        "formula_hash": "a853172aa287566c897368ab0c99de14d1ca472ae469a33c0fc312a5a0858e46",
+        "fx_snapshot_id": "candidate_fx_not_loaded",
+        "fx_snapshot_hash": "99fc5eda6189b21b75cb744a85ffe6ea832121f6a194536abb88f04653046159",
+        "read_model_hash": "144857a0c275be38d15e7ad1d7d1398fe1911fdfd06e16299656629a7f72d08a",
+        "streamlit_version": "1.35.0",
+        "requirements_lock_hash": "1449d530c8fecc78557700cfd024c5362cc425a3a23ebeb758eaf2e1a40a990b",
+        "streamlit_cache_key": "7e7cf97ff0efb7e9648209f69d9c93eb988fb66d6017e37ef1dc1e02fab9c91d",
+        "process_cache_key": "7e7cf97ff0efb7e9648209f69d9c93eb988fb66d6017e37ef1dc1e02fab9c91d",
+        "ttl_seconds": 30,
+        "cache_mode": "streamlit_cache_data_composite_key_v1",
+        "persistent": false,
+        "invalidation": [
+          "build_id",
+          "git_commit",
+          "frontend_bundle_hash",
+          "backend_build_hash",
+          "data_hash",
+          "parameter_hash",
+          "formula_hash",
+          "fx_snapshot_id",
+          "fx_snapshot_hash",
+          "read_model_hash",
+          "streamlit_version",
+          "requirements_lock_hash"
+        ],
+        "running_backend_hash": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "asset_identity_valid": true,
+        "valid": true
+      },
+      "body_sha256": "8431c19c6f21cb3c36dcf07a24cfa275b38be5bab60235a9100a993702b83997"
+    },
+    "read_model_status": {
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Content-Type",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "X-PFI-Release-Manifest-SHA256, X-PFI-Running-Backend-SHA256, X-PFI-Streamlit-Cache-Key, X-PFI-Read-Model-SHA256, X-PFI-Data-Boundary",
+        "cache-control": "no-store, private",
+        "content-length": "2290",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Mon, 13 Jul 2026 01:21:11 GMT",
+        "server": "PFI-V021-RuntimeAPI/1.0 Python/3.12.13",
+        "x-pfi-data-boundary": "isolated-empty-read-only",
+        "x-pfi-read-model-sha256": "17b0ac83e5c728464ab27af95e3bc1813e447a6bf7b615a53a7ff58848dcfc01",
+        "x-pfi-running-backend-sha256": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d"
+      },
+      "body": {
+        "schema": "PFIV024Stage4ReadModelStatusV1",
+        "isolated_candidate": true,
+        "target_version": "v0.2.5",
+        "stage": "Stage 1",
+        "phase_id": "Phase 1.3 whole-review remediation",
+        "contract_version": "PFI-V025-STAGE1-OFFICIAL-UI-ISOLATED-EMPTY",
+        "source": {
+          "type": "isolated_candidate",
+          "status": "not_loaded",
+          "storage_mode": "isolated_empty",
+          "record_count": 0,
+          "raw_file_count": 0,
+          "as_of": null,
+          "evidence_hash": null,
+          "blocking_reason_zh": "隔离验收未读取财务数据"
+        },
+        "as_of": null,
+        "read_model_hash": "17b0ac83e5c728464ab27af95e3bc1813e447a6bf7b615a53a7ff58848dcfc01",
+        "core_metric_states": [
+          {
+            "metric_id": "net_worth_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "cash_balance_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "investment_market_value_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "consumption_outflow_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "report_summary_status",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          }
+        ],
+        "blocked_metric_ids": [
+          "net_worth_cny",
+          "cash_balance_cny",
+          "investment_market_value_cny",
+          "consumption_outflow_cny",
+          "report_summary_status"
+        ],
+        "surface_ids": [
+          "home",
+          "accounts",
+          "investment",
+          "consumption",
+          "insights"
+        ],
+        "generated_at_utc": ""
+      },
+      "body_sha256": "da47e58d1b26eb81eb85927301058c8a153560de376fc6f6f4e701c5f87f542a"
+    },
+    "blocked_post": {
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Content-Type",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "X-PFI-Release-Manifest-SHA256, X-PFI-Running-Backend-SHA256, X-PFI-Streamlit-Cache-Key, X-PFI-Read-Model-SHA256, X-PFI-Data-Boundary",
+        "cache-control": "no-store, private",
+        "content-length": "71",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Mon, 13 Jul 2026 01:21:11 GMT",
+        "server": "PFI-V021-RuntimeAPI/1.0 Python/3.12.13"
+      },
+      "body": {
+        "error": "candidate_read_only",
+        "message": "隔离候选禁止写入"
+      },
+      "body_sha256": "5d3b0576680b9291d453ddbd19c9a76687b5d6be5d89fc3cbecc8788c8512cd1"
+    }
+  },
+  "browser_response_counts": {
+    "/api/read-model": 8,
+    "/api/read-model-status": 29,
+    "/api/release-cache-policy": 30,
+    "/api/release-manifest": 30,
+    "/api/trends": 8
+  },
+  "browser_initial": {
+    "manifest": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store, private",
+        "content-length": "566",
+        "content-type": "application/json; charset=utf-8",
+        "etag": "\"d701de1762d86923d0c4ff5c5799d810732093b35a35a78044ad272642ff877b\"",
+        "last-modified": "Mon, 13 Jul 2026 01:19:49 GMT",
+        "x-pfi-release-manifest-sha256": "d701de1762d86923d0c4ff5c5799d810732093b35a35a78044ad272642ff877b",
+        "x-pfi-running-backend-sha256": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d"
+      },
+      "body": {
+        "product": "PFI",
+        "version": "v0.2.5",
+        "build_id": "pfi-v025-s1p1-20260712.1",
+        "git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+        "frontend_bundle_hash": "f3d02a56324659138a83930c7a07904097802f4e2a35722709fca62d8e33c269",
+        "backend_build_hash": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "app_short_version": "0.2.5",
+        "app_build_version": "20260712.1",
+        "data_schema_version": "PFIV021HoldingsPersistenceV1",
+        "formula_version": "v0.2.3",
+        "parameter_version": "v0.2.2",
+        "generated_at": "2026-07-13T01:19:06Z"
+      }
+    },
+    "cache_policy": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store, private",
+        "content-length": "1576",
+        "content-type": "application/json; charset=utf-8",
+        "etag": "\"8431c19c6f21cb3c36dcf07a24cfa275b38be5bab60235a9100a993702b83997\"",
+        "last-modified": "Sun, 12 Jul 2026 23:44:11 GMT",
+        "x-pfi-running-backend-sha256": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "x-pfi-streamlit-cache-key": "7e7cf97ff0efb7e9648209f69d9c93eb988fb66d6017e37ef1dc1e02fab9c91d"
+      },
+      "body": {
+        "schema": "PFIV025Stage1ReleaseCachePolicyV1",
+        "build_id": "pfi-v025-s1p1-20260712.1",
+        "git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+        "frontend_bundle_hash": "f3d02a56324659138a83930c7a07904097802f4e2a35722709fca62d8e33c269",
+        "backend_build_hash": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "data_hash": "1bd3b1a1fee048e30d2011db83b18231d02f6f139579440280719a7dcaa252fa",
+        "parameter_hash": "dcaea12554acf3fa1cde5bf5c982c0a3dff125f96bcdaf4fbfe91f620815dc5f",
+        "formula_hash": "a853172aa287566c897368ab0c99de14d1ca472ae469a33c0fc312a5a0858e46",
+        "fx_snapshot_id": "candidate_fx_not_loaded",
+        "fx_snapshot_hash": "99fc5eda6189b21b75cb744a85ffe6ea832121f6a194536abb88f04653046159",
+        "read_model_hash": "144857a0c275be38d15e7ad1d7d1398fe1911fdfd06e16299656629a7f72d08a",
+        "streamlit_version": "1.35.0",
+        "requirements_lock_hash": "1449d530c8fecc78557700cfd024c5362cc425a3a23ebeb758eaf2e1a40a990b",
+        "streamlit_cache_key": "7e7cf97ff0efb7e9648209f69d9c93eb988fb66d6017e37ef1dc1e02fab9c91d",
+        "process_cache_key": "7e7cf97ff0efb7e9648209f69d9c93eb988fb66d6017e37ef1dc1e02fab9c91d",
+        "ttl_seconds": 30,
+        "cache_mode": "streamlit_cache_data_composite_key_v1",
+        "persistent": false,
+        "invalidation": [
+          "build_id",
+          "git_commit",
+          "frontend_bundle_hash",
+          "backend_build_hash",
+          "data_hash",
+          "parameter_hash",
+          "formula_hash",
+          "fx_snapshot_id",
+          "fx_snapshot_hash",
+          "read_model_hash",
+          "streamlit_version",
+          "requirements_lock_hash"
+        ],
+        "running_backend_hash": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d",
+        "asset_identity_valid": true,
+        "valid": true
+      }
+    },
+    "read_model_status": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store, private",
+        "content-length": "2290",
+        "content-type": "application/json; charset=utf-8",
+        "x-pfi-data-boundary": "isolated-empty-read-only",
+        "x-pfi-read-model-sha256": "17b0ac83e5c728464ab27af95e3bc1813e447a6bf7b615a53a7ff58848dcfc01",
+        "x-pfi-running-backend-sha256": "0ea51683af61382f3fde5b5cfd285f3b42b669b76b207d54919944986911f81d"
+      },
+      "body": {
+        "schema": "PFIV024Stage4ReadModelStatusV1",
+        "isolated_candidate": true,
+        "target_version": "v0.2.5",
+        "stage": "Stage 1",
+        "phase_id": "Phase 1.3 whole-review remediation",
+        "contract_version": "PFI-V025-STAGE1-OFFICIAL-UI-ISOLATED-EMPTY",
+        "source": {
+          "type": "isolated_candidate",
+          "status": "not_loaded",
+          "storage_mode": "isolated_empty",
+          "record_count": 0,
+          "raw_file_count": 0,
+          "as_of": null,
+          "evidence_hash": null,
+          "blocking_reason_zh": "隔离验收未读取财务数据"
+        },
+        "as_of": null,
+        "read_model_hash": "17b0ac83e5c728464ab27af95e3bc1813e447a6bf7b615a53a7ff58848dcfc01",
+        "core_metric_states": [
+          {
+            "metric_id": "net_worth_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "cash_balance_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "investment_market_value_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "consumption_outflow_cny",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          },
+          {
+            "metric_id": "report_summary_status",
+            "value": null,
+            "currency": null,
+            "status": "not_loaded",
+            "source_id": null,
+            "record_count": null,
+            "as_of": null,
+            "formula_id": null,
+            "confidence": null,
+            "blocking_reason_zh": "隔离验收未读取财务数据",
+            "calculation_state": "not_evaluated"
+          }
+        ],
+        "blocked_metric_ids": [
+          "net_worth_cny",
+          "cash_balance_cny",
+          "investment_market_value_cny",
+          "consumption_outflow_cny",
+          "report_summary_status"
+        ],
+        "surface_ids": [
+          "home",
+          "accounts",
+          "investment",
+          "consumption",
+          "insights"
+        ],
+        "generated_at_utc": ""
+      }
+    }
+  }
+}

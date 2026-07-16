@@ -1,0 +1,29 @@
+{
+  "browser_trace": {
+    "event_count": 8,
+    "job_revision": 7,
+    "log_count": 8,
+    "span_count": 8,
+    "span_id": "0c554d0a6da654cc",
+    "trace_id": "ef0267c6a06715842ce2a348ef426b14"
+  },
+  "contains_financial_values": false,
+  "contains_private_values": false,
+  "external_network_calls": 0,
+  "log_hash_chain_verified": true,
+  "redaction_tokens_tested": [
+    "<redacted-private-path>",
+    "<redacted-email>",
+    "<redacted-secret>",
+    "<redacted-financial-value>"
+  ],
+  "schema": "PFIV025Stage10Phase103TraceExportV1",
+  "schemas": {
+    "log": "PFIV025DurableJobStructuredLogV1",
+    "span": "PFIV025DurableJobSpanV1",
+    "trace": "PFIV025DurableJobTraceV1"
+  },
+  "status": "pass",
+  "structured_log_payload_values_persisted": false,
+  "test_ref": "PFI/tests/test_v025_stage10_job_observability.py"
+}

@@ -1,0 +1,145 @@
+{
+  "browser_close_service_healthy": true,
+  "contains_private_values": false,
+  "initial": {
+    "checks": {
+      "console_clean": true,
+      "external_network_blocked_or_absent": true,
+      "http_errors_clean": true,
+      "human_task_protocol": true,
+      "official_shell_ready": true,
+      "offline_failure_observed": true,
+      "online_recovery_observed": true,
+      "page_errors_clean": true,
+      "primary_route_matrix": true,
+      "release_identity_match": true,
+      "ten_primary_entries_exact": true
+    },
+    "contains_private_values": false,
+    "diagnostics": {
+      "blocked_external_count": 0,
+      "console_error_count": 0,
+      "page_error_count": 0,
+      "unexpected_http_error_count": 0
+    },
+    "financial_values_emitted": 0,
+    "finder_used": false,
+    "launchservices_used": false,
+    "mode": "initial",
+    "offline_recovery": {
+      "browser_offline_performed": true,
+      "offline_failure_observed": true,
+      "online_recovery_observed": true
+    },
+    "open_command_used": false,
+    "primary_entry_count": 10,
+    "release_identity": {
+      "backend_build_hash": "d1d60c64e91d21d3dcd8ac76714087c84e3f4d3cbd105bd24e2ccdc209bb0600",
+      "build_id": "pfi-v025-s1p1-20260712.1",
+      "frontend_bundle_hash": "e18644635d69488301030dd57316c2316317a859e8afed4aecfc652c0b7dffee",
+      "git_commit": "0b2aa6677a61a600eb2596bd8b5d39ca32522084",
+      "version": "v0.2.5"
+    },
+    "route_audit_count": 10,
+    "schema": "PFIV025Stage12Phase122TargetMacBrowserV1",
+    "screenshot": {
+      "file": "target_mac_app.png",
+      "sha256": "sha256:7f0889aab418cfec35e712851f24405714f4b034343d25d39bf43d852aa5088f"
+    },
+    "status": "pass",
+    "trace": {
+      "file": "initial_browser_trace_sanitized.zip",
+      "privacy_status": "pass",
+      "sha256": "sha256:53a271bbb2a4937b08aa57123f56b28d2231c05d7835f1e77db59a82e2bb2219"
+    },
+    "uat": {
+      "drilldown": {
+        "formula_visible": true,
+        "interconnection_visible": true,
+        "parameter_visible": true,
+        "source_visible": true
+      },
+      "fallback_used": false,
+      "fixture_used": false,
+      "holdings": {
+        "false_zero_count": 0,
+        "panel_visible": true,
+        "truthful_not_loaded": true
+      },
+      "ledger_count": 8808,
+      "raw_record_count": 8815,
+      "reports": {
+        "blocked_count": 3,
+        "partial_count": 2,
+        "report_count": 5,
+        "status": "pass"
+      },
+      "review_count_after": 802,
+      "review_count_before": 803,
+      "review_write_status": 200,
+      "source_blob_count": 4,
+      "transaction_count": 8808
+    }
+  },
+  "restart": {
+    "checks": {
+      "console_clean": true,
+      "external_network_blocked_or_absent": true,
+      "http_errors_clean": true,
+      "human_task_protocol": true,
+      "official_shell_ready": true,
+      "offline_failure_observed": true,
+      "online_recovery_observed": true,
+      "page_errors_clean": true,
+      "primary_route_matrix": true,
+      "release_identity_match": true,
+      "ten_primary_entries_exact": true
+    },
+    "contains_private_values": false,
+    "diagnostics": {
+      "blocked_external_count": 0,
+      "console_error_count": 0,
+      "page_error_count": 0,
+      "unexpected_http_error_count": 0
+    },
+    "financial_values_emitted": 0,
+    "finder_used": false,
+    "launchservices_used": false,
+    "mode": "restart",
+    "offline_recovery": {
+      "browser_offline_performed": false,
+      "offline_failure_observed": null,
+      "online_recovery_observed": null
+    },
+    "open_command_used": false,
+    "primary_entry_count": 10,
+    "release_identity": {
+      "backend_build_hash": "d1d60c64e91d21d3dcd8ac76714087c84e3f4d3cbd105bd24e2ccdc209bb0600",
+      "build_id": "pfi-v025-s1p1-20260712.1",
+      "frontend_bundle_hash": "e18644635d69488301030dd57316c2316317a859e8afed4aecfc652c0b7dffee",
+      "git_commit": "0b2aa6677a61a600eb2596bd8b5d39ca32522084",
+      "version": "v0.2.5"
+    },
+    "route_audit_count": 10,
+    "schema": "PFIV025Stage12Phase122RestartBrowserV1",
+    "screenshot": {
+      "file": "restart_persistence.png",
+      "sha256": "sha256:3b2c7c50b1a903ef93112288b55cae93073c2c21a858458e893bbb5bbfacc963"
+    },
+    "status": "pass",
+    "trace": {
+      "file": "restart_browser_trace_sanitized.zip",
+      "privacy_status": "pass",
+      "sha256": "sha256:7211fcdb222b74d6f3e0db4cc8ae5f6641651a9b8ac58c37cf51b873babca7b7"
+    },
+    "uat": {
+      "expected_ledger_count": 8808,
+      "expected_review_count": 802,
+      "observed_ledger_count": 8808,
+      "observed_review_count": 802,
+      "review_page_visible": true
+    }
+  },
+  "schema": "PFIV025Stage12Phase122BrowserEvidenceV1",
+  "status": "pass"
+}

@@ -1,12 +1,18 @@
 {
-  "version": "v0.2.4 Repair Pack",
-  "stage": "V024-FD",
-  "phase": "V024-FD-P1",
-  "task": "PFI-V024-FINAL-DELIVERY-20260710",
-  "real_progress": "96.00%（这是走完了多少道结构关卡；离真正做完还差多少，要对着真实数据核一遍才知道）",
-  "report_grade": "",
-  "business_verdict": "",
-  "evidence_status": "EXTRACTED",
-  "rendered_at": "2026-07-15",
-  "migrated_from_legacy": "功能清单.md"
+  "version": "v0.2.5",
+  "stage": "V025-S12",
+  "phase": "PFI-V025-FINAL-DELIVERY",
+  "task": "PFI-V025-FINAL-DELIVERY（App 最终重装已完成；等待唯一 main 上传）",
+  "real_progress": "156/156（100%）；Stage 12 为 12/12（100%）",
+  "report_grade": "最终验收、release freeze 与唯一 CLI App 最终重装已通过；等待单次 main 上传和只读 parity",
+  "business_verdict": "PFI v0.2.5 Stage 0–12 已获 owner 最终验收并冻结；canonical App 已完成唯一 CLI 重装，仅余唯一 GitHub main 上传与 post-push parity",
+  "evidence_status": "VERIFIED_FINAL_APP_REINSTALL_WAITING_SINGLE_MAIN_UPLOAD",
+  "rendered_at": "2026-07-16",
+  "facts_commit": "SELF",
+  "next_task": "PFI-V025-SINGLE-MAIN-UPLOAD-AND-POST-PUSH-PARITY",
+  "final_human_acceptance": true,
+  "release_freeze_performed": true,
+  "push_performed": false,
+  "app_reinstall_performed": true,
+  "production_accepted": false
 }

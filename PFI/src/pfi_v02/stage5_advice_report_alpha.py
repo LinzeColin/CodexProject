@@ -8,13 +8,17 @@ from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from typing import Iterable
 
+from pfi_os.security.pfi_context_export import (
+    PFI_CONTEXT_SCHEMA_VERSION,
+    build_blocked_pfi_context_export,
+)
 from pfi_v02.stage3_read_mvp import STAGE3_FX_TO_AUD, build_stage3_read_model
 from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
 
 
 RECOMMENDATION_DECISIONS = ("pending", "accept", "reject", "snooze", "review", "effect_measured")
 EXPORT_FORMATS = ("markdown", "json", "csv")
-ALPHA_CONTEXT_SCHEMA = "pfi_context_snapshot_v1"
+ALPHA_CONTEXT_SCHEMA = PFI_CONTEXT_SCHEMA_VERSION
 
 
 @dataclass(frozen=True)
@@ -386,43 +390,14 @@ def build_alpha_context_snapshot(
     *,
     generated_at: str,
 ) -> dict[str, object]:
-    cashflow = stage4_dashboard["consumption_analysis"]["cashflow_forecast"]
-    behavior = stage4_dashboard["investment_analysis"]["behavior"]
-    risk = stage4_dashboard["investment_analysis"]["risk"]
-    return {
-        "schema": ALPHA_CONTEXT_SCHEMA,
-        "version": "1.0.0",
-        "generated_at": generated_at,
-        "source": {
-            "project": "PFI",
-            "source_schema": stage4_dashboard.get("schema", ""),
-            "read_only": True,
-        },
-        "net_worth_aud": _net_worth_aud(stage3_dashboard),
-        "investable_cash_aud": cashflow["horizons"][0]["available_to_invest_aud"],
-        "portfolio_allocation": stage4_dashboard["investment_analysis"]["summary"]["asset_allocation_pct"],
-        "risk_budget": {
-            "max_single_position_weight_pct": 35.0,
-            "current_largest_weight_pct": risk["concentration"]["largest_weight_pct"],
-            "max_drawdown_watch_pct": 10.0,
-            "reserve_floor_aud": cashflow["reserve_floor_aud"],
-            "status": risk["concentration"]["status"],
-        },
-        "cashflow_pressure": cashflow["horizons"][0]["cashflow_pressure"],
-        "behavior_tags": tuple(behavior.get("conclusions", ())),
-        "data_freshness": {
-            "account_statuses": tuple(row.get("status", "") for row in stage3_dashboard.get("account_map", [])),
-            "ledger_rows": len(stage3_dashboard.get("ledger", [])),
-            "review_queue_count": len(stage3_dashboard.get("review_queue", [])),
-            "source": "stage3_read_model",
-        },
-        "constraints": {
-            "trading_password_available": False,
-            "live_trade_submission_authorized": False,
-            "broker_order_submission_authorized": False,
-            "payment_submission_authorized": False,
-        },
-    }
+    # Legacy Stage 3/4 dashboards are not accepted financial truth for v0.2.5.
+    # They may contribute only a provenance hash; every exported state remains
+    # fail-closed until a current validated read model explicitly supplies it.
+    return build_blocked_pfi_context_export(
+        as_of=generated_at,
+        source_payload=stage3_dashboard,
+        read_model_payload=stage4_dashboard,
+    )
 
 
 def _report(

@@ -1,0 +1,36 @@
+{
+  "carriers": [
+    "formula_registry_json",
+    "pfi_parameters_yaml",
+    "python_runtime",
+    "ui_report_contract",
+    "模型参数文件.md"
+  ],
+  "conflict_count": 0,
+  "conflicts": [],
+  "formula_ids": [
+    "FORM-PFI-015",
+    "FORM-PFI-016",
+    "FORM-PFI-017",
+    "FORM-PFI-018",
+    "FORM-PFI-019",
+    "FORM-PFI-020"
+  ],
+  "model_version": "pfi-v0.2.5-financial-models-v1",
+  "parameter_ids": [
+    "PARAM-PFI-081",
+    "PARAM-PFI-082",
+    "PARAM-PFI-083",
+    "PARAM-PFI-084",
+    "PARAM-PFI-085",
+    "PARAM-PFI-086",
+    "PARAM-PFI-087",
+    "PARAM-PFI-088",
+    "PARAM-PFI-089",
+    "PARAM-PFI-090",
+    "PARAM-PFI-091",
+    "PARAM-PFI-092"
+  ],
+  "schema": "PFIV025Stage5Phase52ParameterConsistencyV1",
+  "status": "pass"
+}

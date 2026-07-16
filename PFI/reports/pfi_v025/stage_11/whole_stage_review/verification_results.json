@@ -1,0 +1,284 @@
+{
+  "app_install_performed": false,
+  "browser_check_count": 23,
+  "canonical_private_database_mutated": false,
+  "canonical_private_database_used": true,
+  "commands": [
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/web/tests/v025/stage11_whole_review_evidence.py",
+      "command_id": "build_core_evidence",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_11/whole_stage_review/verification_build_core_evidence.log",
+      "output_sha256": "sha256:8bb6a394801cca1e64b79ec500b508ced5575b9d115c555aeb65f5449a833242",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/web/tests/v025/stage11_whole_review_evidence.py"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_distribution_boundary.py PFI/tests/test_stage5_advice_report_alpha.py PFI/tests/test_stage6_e2e_stabilization.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage10_job_lifecycle.py",
+      "command_id": "focused_stage11",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_11/whole_stage_review/verification_focused_stage11.log",
+      "output_sha256": "sha256:0e58a66d9bf6033f2378dc449d7bc8c6c3bf71f63c0f4313b25e72839d0f7b16",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_distribution_boundary.py PFI/tests/test_stage5_advice_report_alpha.py PFI/tests/test_stage6_e2e_stabilization.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage10_job_lifecycle.py"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage6_navigation_contract.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_crash_recovery.py",
+      "command_id": "selected_adjacent_regression",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_11/whole_stage_review/verification_selected_adjacent_regression.log",
+      "output_sha256": "sha256:3ff5f5086687167f7052a99896a53021e13947f0e6e87b5ebb1c124c4b079c36",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage6_navigation_contract.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_crash_recovery.py"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -c 'from pathlib import Path; files=['\"'\"'PFI/src/pfi_os/infrastructure/operational_store_backup.py'\"'\"', '\"'\"'PFI/src/pfi_v02/stage_v021_runtime_api.py'\"'\"', '\"'\"'PFI/scripts/v025/pfi_operational_backup_restore.py'\"'\"', '\"'\"'PFI/scripts/v025/stage11_readonly_backup_rehearsal.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_public_boundary_browser.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_whole_review_evidence.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_whole_review_verify.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_whole_review_finalize.py'\"'\"']; [compile(Path(path).read_text(encoding='\"'\"'utf-8'\"'\"'), path, '\"'\"'exec'\"'\"') for path in files]' && node --check PFI/web/tests/v025/stage11_public_boundary_cdp.mjs && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json && git diff --check",
+      "command_id": "syntax_release_boundary",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_11/whole_stage_review/verification_syntax_release_boundary.log",
+      "output_sha256": "sha256:72e769963629a770ae1932523816df322cabc67dff1d3e941303e5d939871fec",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -c 'from pathlib import Path; files=['\"'\"'PFI/src/pfi_os/infrastructure/operational_store_backup.py'\"'\"', '\"'\"'PFI/src/pfi_v02/stage_v021_runtime_api.py'\"'\"', '\"'\"'PFI/scripts/v025/pfi_operational_backup_restore.py'\"'\"', '\"'\"'PFI/scripts/v025/stage11_readonly_backup_rehearsal.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_public_boundary_browser.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_whole_review_evidence.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_whole_review_verify.py'\"'\"', '\"'\"'PFI/web/tests/v025/stage11_whole_review_finalize.py'\"'\"']; [compile(Path(path).read_text(encoding='\"'\"'utf-8'\"'\"'), path, '\"'\"'exec'\"'\"') for path in files]'",
+        "node --check PFI/web/tests/v025/stage11_public_boundary_cdp.mjs",
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json",
+        "git diff --check"
+      ]
+    },
+    {
+      "command": "git archive HEAD into an isolated complete root && overlay exact current non-evidence Stage 11 files && $PYTHON scripts/validate_project_governance.py --project PFI && $PYTHON scripts/lean_governance.py check-render --project PFI && /usr/bin/python3 scripts/lean_governance.py check-render --project PFI",
+      "command_id": "changed_scope_governance",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_11/whole_stage_review/verification_changed_scope_governance.log",
+      "output_sha256": "sha256:1e47da0a1017b35eb150fa2caa272be57f0ba5e6a06ac689b761d4bdde456d3c",
+      "subcommands": [
+        "git archive HEAD into an isolated complete root",
+        "overlay exact current non-evidence Stage 11 files",
+        "$PYTHON scripts/validate_project_governance.py --project PFI",
+        "$PYTHON scripts/lean_governance.py check-render --project PFI",
+        "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI"
+      ],
+      "validation_scope": "complete_git_archive_plus_exact_current_stage11_overlay"
+    }
+  ],
+  "external_network_performed": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "generated_at": "2026-07-16T03:46:48+10:00",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "overlay_stable_during_verification": true,
+  "private_values_emitted": false,
+  "production_accepted": false,
+  "project_task_progress": "144/156 (92.31%)",
+  "push_performed": false,
+  "real_database_pages_read": true,
+  "reviewed_evidence_overlay": {
+    "content_manifest_sha256": "sha256:a6251f14cf860b08764f8e13c805d6e41931e9cf7cb54a1eb6f5eb904616cc34",
+    "file_count": 20,
+    "files": [
+      {
+        "byte_size": 15636,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/accessibility_tree.json",
+        "sha256": "sha256:5f62e4371b70e4da6cbef1c1b47e5d7feed682e8f776c9432fd2f1cdf260238e"
+      },
+      {
+        "byte_size": 6011,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/browser_trace_sanitized.zip",
+        "sha256": "sha256:9fd76db91c4a3a8f77e63fb8047cfc89b11dbb29b75d321987c718d5d85e61d2"
+      },
+      {
+        "byte_size": 2794,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/browser_validation.json",
+        "sha256": "sha256:e58930c7b55e4466bcaefeea1e22f9e5ecf1e562db4d85439be316392491a2e2"
+      },
+      {
+        "byte_size": 787,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/core_evidence_summary.json",
+        "sha256": "sha256:07f51b813b38e90a66958256cef9dd4f2044d896fea429f1b962fe2ba8cf6615"
+      },
+      {
+        "byte_size": 1313,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/dom_snapshot.json",
+        "sha256": "sha256:9eb0c922a42105bb8e1e5b680c9b723ac69a59ef42b9cb81a442c5781363f511"
+      },
+      {
+        "byte_size": 2870,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/initial_review_findings.json",
+        "sha256": "sha256:0f6b0a2fca0974cd564c5bc1c562a4a7102c93c645ebfa0c91b995b4064ac4c2"
+      },
+      {
+        "byte_size": 354,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/network_audit.json",
+        "sha256": "sha256:bf163f85aa9c54aea96ac67bd53cd864831f3df316830b83f3f80ca213a34bfb"
+      },
+      {
+        "byte_size": 36572,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/phase_commit_binding.json",
+        "sha256": "sha256:45084d2dfe9109d53edd386886b5d72b1b0beba2dfd1629b94962a22cb2a8003"
+      },
+      {
+        "byte_size": 1311,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/phase_contract.json",
+        "sha256": "sha256:045cbfa0fc09a677402ca010a7caa510ce739c839e7a3224fbddb6c1d2cef521"
+      },
+      {
+        "byte_size": 258348,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/public_boundary.png",
+        "sha256": "sha256:b5f2b5fa962cdcd567d79dc6d6ed2b71a2a72ec6042e62f73fe7a447d2a94013"
+      },
+      {
+        "byte_size": 507,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/public_distribution_scan.json",
+        "sha256": "sha256:21a20e8412650ea3a5f613295bcbadeca9124428643e49cf39c07dabb2318dba"
+      },
+      {
+        "byte_size": 1552,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/real_backup_restore_rehearsal.json",
+        "sha256": "sha256:2149d5d69599b6f0540d56a9aff4de729b828b3b69e971673c4658308844d973"
+      },
+      {
+        "byte_size": 711,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/release_identity.json",
+        "sha256": "sha256:e0f377933aeaf84e850e4ad2ce2588dd051a46aec1c957fd31c1a87b0f449ab9"
+      },
+      {
+        "byte_size": 641,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/risk_and_rollback.md",
+        "sha256": "sha256:650a9847832621a5f00baa03669750349961dafb069f82939a740fe5680f84c0"
+      },
+      {
+        "byte_size": 522,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/scope_override.json",
+        "sha256": "sha256:b0e162b02389394f7be5145f3687100e5c74da3b1f8cd9dced3dd7c724a1117c"
+      },
+      {
+        "byte_size": 619,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/sqlite_runtime.json",
+        "sha256": "sha256:edc13c41faa86f5534c8dddae31676b7a5130e60eb8e3f669266c9ade8e0ffba"
+      },
+      {
+        "byte_size": 966,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/structured_uat.json",
+        "sha256": "sha256:dcaa0a04b93ba28d2e4dc1a7f759165509bbd57b3e5a7b5c45c24ad8b609c7d5"
+      },
+      {
+        "byte_size": 470,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/taskpack_binding.json",
+        "sha256": "sha256:427569d1c523b17d17bbf08d618f305a0bc0c69199a796d6071a417d9c9ac178"
+      },
+      {
+        "byte_size": 494,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/trace_privacy.json",
+        "sha256": "sha256:f7b5053e7a8b33aa491c65e019aa5cebe4a7508ad57e38aae999aa9d5ddbf965"
+      },
+      {
+        "byte_size": 1241,
+        "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/transition_authorization_binding.json",
+        "sha256": "sha256:341681a76d1d4f219d6054ef1b6a2ffdf1b1f9c4cfae973003871618fad9c2ec"
+      }
+    ],
+    "schema": "PFIV025Stage11ReviewedEvidenceOverlayV1",
+    "status": "frozen"
+  },
+  "schema": "PFIV025Stage11FinalVerificationResultsV1",
+  "stage_12_started": false,
+  "stage_task_count": 12,
+  "status": "pass",
+  "verified_overlay": {
+    "base_commit": "9c450ea483cd2040636e375c9f7d84e5127e44cf",
+    "content_manifest_sha256": "sha256:9bc51c45cbab91f23aa3992ae911b206b39ac4d8d3221c4219c371d3583c72f0",
+    "file_count": 21,
+    "files": [
+      {
+        "path": "PFI/CHANGELOG.md",
+        "sha256": "sha256:acdd13a5bff367f7ae9ac68e5d5bdbbb2340b91d20ea56599eb611a8dc5697fe"
+      },
+      {
+        "path": "PFI/HANDOFF.md",
+        "sha256": "sha256:46a0bb4b82a322fbf0276be5515d0b9e358e18b48b31868a0591a1353bf7e66b"
+      },
+      {
+        "path": "PFI/README.md",
+        "sha256": "sha256:8a2480f8c63f6d77b4b85f0fc0029a85ee95da1b798c3aa9ae019e349acce2bf"
+      },
+      {
+        "path": "PFI/docs/governance/ASSURANCE_STATUS.yaml",
+        "sha256": "sha256:edd068526bc84bf5466e5e9414a4776a3ec12a0fae24a97928725fff36b02e27"
+      },
+      {
+        "path": "PFI/docs/governance/DELIVERY_PLAN.md",
+        "sha256": "sha256:f17e655120b9a7f0e64661c6a02e2c9f8ffab64f42faafe4e0e6ee68c9fc8a1f"
+      },
+      {
+        "path": "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+        "sha256": "sha256:37e6a8a57baee5be5c5408fa73495eb5749533d671959001df724f7f6764b468"
+      },
+      {
+        "path": "PFI/docs/governance/OWNER_STATUS.md",
+        "sha256": "sha256:88662803df35e13106f89fe7cddb6e2e889cf3b47e17fdfcc8e8107c54d0a404"
+      },
+      {
+        "path": "PFI/docs/governance/STATUS.md",
+        "sha256": "sha256:cdaa54327e644bb1d5f099c99c6ef2133bc7a48efa1af1572f13556993741d7f"
+      },
+      {
+        "path": "PFI/docs/governance/VERSION_MATRIX.yaml",
+        "sha256": "sha256:c582d850ac053667475d4d381c066c5aa10deeccbe2049b3b28973551b84f86c"
+      },
+      {
+        "path": "PFI/docs/governance/delivery_tasks.yaml",
+        "sha256": "sha256:ab4aeae8b8cfaac76cdc8533468856282ea3c55d931a5d306837203f1cd241c0"
+      },
+      {
+        "path": "PFI/docs/governance/development_events.jsonl",
+        "sha256": "sha256:007715e9d5098f1766165080a5931e5cf0a88986741d7e39f3b8d467d276770f"
+      },
+      {
+        "path": "PFI/docs/governance/project.yaml",
+        "sha256": "sha256:f580aaa8e2afbb15e6bcb7df71ed52940a5119e18fb88381ae1b109bbe15bf73"
+      },
+      {
+        "path": "PFI/docs/governance/roadmap.yaml",
+        "sha256": "sha256:9a7cf1d0c6c176babdf9976b8f2754dbf36a838034cf5f1edf3b43c07eca9941"
+      },
+      {
+        "path": "PFI/docs/pfi_v025/stage_11/STAGE_11_WHOLE_STAGE_REVIEW.md",
+        "sha256": "sha256:c04e0a0d5c7229d72ef6aa630d78fd24046f970f7c34d96158f27ab1c2166274"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage11_public_boundary_browser.py",
+        "sha256": "sha256:8506169f3c2103da908ffab9baffd7d6586e9fa0c52bf1d38d9b56e170757fba"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage11_whole_review_evidence.py",
+        "sha256": "sha256:c6736a9cefb1c5230a8b785f70d4d9145ab9eed480c76687dbda17533ba6417b"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage11_whole_review_finalize.py",
+        "sha256": "sha256:1e722a33f3207c5c2fcf5a70711fd0424cedba9961638b943e186a8a5131087d"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage11_whole_review_verify.py",
+        "sha256": "sha256:98930bf3884d64ee3c3b9fd5c44e3cbd2e5e4a07adf2050940694f5453b8367d"
+      },
+      {
+        "path": "PFI/功能清单.md",
+        "sha256": "sha256:c145492f417298f23cb9bc5ca07490ec176b9cd00f2f0006209010fa4a630f56"
+      },
+      {
+        "path": "PFI/开发记录.md",
+        "sha256": "sha256:b9262e5b7bce8343b6f52ba6ae7840f6738f83db3c2e4a1c734567dc910a399f"
+      },
+      {
+        "path": "PFI/模型参数文件.md",
+        "sha256": "sha256:10d435a6d72b51a80dd991cce9612498f2913c50b27b75f5b8e5a8cfaed11920"
+      }
+    ],
+    "schema": "PFIV025Stage11ReviewedWorktreeOverlayV1",
+    "status": "frozen",
+    "whole_review_output_excluded_from_manifest": true
+  }
+}

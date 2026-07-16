@@ -1,0 +1,361 @@
+{
+  "automatic_trading_allowed": false,
+  "browser_review_persisted_across_reload": true,
+  "decision_reviews": [
+    {
+      "action": "review_pending_transaction_classification",
+      "action_label_zh": "人工复核待复核交易分类",
+      "allowed_review_outcomes": [
+        "accepted",
+        "rejected",
+        "deferred",
+        "invalidated"
+      ],
+      "automatic_trading_allowed": false,
+      "catalysts": [
+        {
+          "catalyst_id": "CAT-QUEUE-REVIEW",
+          "review_route": "/ledger?tab=review",
+          "statement_zh": "待复核记录减少且无静默丢弃时，可扩大消费报告的已验证覆盖。"
+        }
+      ],
+      "confidence_dimensions": [
+        {
+          "basis_refs": [
+            "pfi-v025-consumption",
+            "REVIEW-SRC-TRANSACTIONS-ALIPAY"
+          ],
+          "dimension": "evidence_coverage",
+          "status": "partial"
+        },
+        {
+          "basis_refs": [
+            "FORM-PFI-015",
+            "FORM-PFI-020",
+            "MOD-PFI-010"
+          ],
+          "dimension": "model_validity",
+          "status": "structure_validated_ground_truth_missing"
+        },
+        {
+          "basis_refs": [
+            "V025-S9-P9.3"
+          ],
+          "dimension": "execution_safety",
+          "status": "review_only_no_trade_capability"
+        }
+      ],
+      "contains_private_values": false,
+      "counter_evidence": [
+        {
+          "counter_evidence_id": "COUNTER-QUEUE-CONTEXT",
+          "effect": "blocks_accuracy_claim",
+          "review_route": "/reports/metric-drilldown?formula=FORM-PFI-020",
+          "statement_zh": "队列数量不能证明分类准确性，且未标注 ground truth 时不能声明模型有效率。"
+        },
+        {
+          "counter_evidence_id": "COUNTER-QUEUE-STALE",
+          "effect": "requires_snapshot_refresh",
+          "review_route": "/data/sources",
+          "statement_zh": "新导入、退款识别或人工重分类会改变当前队列与覆盖结论。"
+        }
+      ],
+      "decision_id": "DEC-PFI-V025-REVIEW-QUEUE",
+      "evidence": [
+        {
+          "evidence_id": "EVID-QUEUE-PARTITION",
+          "kind": "real_source_partition",
+          "source_refs": [
+            "pfi-v025-consumption",
+            "SRC-TRANSACTIONS-ALIPAY"
+          ],
+          "statement_zh": "真实来源分区中待复核记录为 1,936 条，当前财务金额未进入公开决策对象。"
+        }
+      ],
+      "financial_values_emitted": 0,
+      "horizon": "next_human_review_session",
+      "human_review_required": true,
+      "invalidation_conditions": [
+        {
+          "condition_id": "INVALIDATE-QUEUE-EMPTY",
+          "current_state": "not_met",
+          "predicate": "review_queue_record_count_equals_zero",
+          "review_route": "/ledger?tab=review"
+        },
+        {
+          "condition_id": "INVALIDATE-ANALYSIS-HASH-DRIFT",
+          "current_state": "not_met",
+          "predicate": "source_analysis_pack_hash_changes",
+          "review_route": "/reports"
+        }
+      ],
+      "model_versions": [
+        {
+          "model_id": "MOD-PFI-010",
+          "status": "partial_validated_with_blocked_components",
+          "version": "v0.2.5"
+        },
+        {
+          "model_id": "FORM-PFI-015",
+          "status": "validated_real_snapshot",
+          "version": "1.0.0"
+        },
+        {
+          "model_id": "FORM-PFI-020",
+          "status": "validated_structure_only",
+          "version": "1.0.0"
+        }
+      ],
+      "portfolio_effect": {
+        "statement_zh": "该动作只影响分类复核与报告覆盖，不生成组合交易或金额影响。",
+        "status": "not_calculable"
+      },
+      "review_history": [
+        {
+          "actor_ref": "phase_9_3_builder",
+          "actor_role": "system",
+          "event_hash": "sha256:07b7f95a3cdc094bcac2649e795778129a5ea99b6a3924620e81a9aee2cebade",
+          "event_id": "DEC-PFI-V025-REVIEW-QUEUE-EVT-0001",
+          "event_type": "created",
+          "from_status": null,
+          "observed_at": "2026-07-15T16:30:00+10:00",
+          "outcome": null,
+          "prior_event_hash": null,
+          "reason_zh": "由同一 Phase 9.2 分析快照生成，等待人工复核。",
+          "to_status": "awaiting_human_review"
+        },
+        {
+          "actor_ref": "isolated_browser_validation_owner",
+          "actor_role": "owner",
+          "event_hash": "sha256:228b73f57392b4d7657898e97d7a8a06b14bcbc250c6fbf52405ed28162a0466",
+          "event_id": "DEC-PFI-V025-REVIEW-QUEUE-EVT-0002",
+          "event_type": "human_review",
+          "from_status": "awaiting_human_review",
+          "observed_at": "2026-07-15T16:45:00+10:00",
+          "outcome": "accepted",
+          "prior_event_hash": "sha256:07b7f95a3cdc094bcac2649e795778129a5ea99b6a3924620e81a9aee2cebade",
+          "reason_zh": "验证接受结果会保留事件链且不触发交易。",
+          "to_status": "accepted"
+        }
+      ],
+      "review_route": "/ledger?tab=review",
+      "risks": [
+        "待复核记录可能包含转账、退款或投资活动，不能直接解释为生活消费。",
+        "缺少分类 labels 与样本外 ground truth，不能声明分类准确率。"
+      ],
+      "source_analysis_pack_hash": "sha256:c3df8b878038bffdb28bfe4112d9a875e43e5d41cb910f86b6482768223a19e9",
+      "source_ids": [
+        "SRC-TRANSACTIONS-ALIPAY"
+      ],
+      "status": "accepted",
+      "thesis": {
+        "evidence_refs": [
+          "pfi-v025-consumption",
+          "FORM-PFI-015",
+          "FORM-PFI-020"
+        ],
+        "scope": "operational_review_only",
+        "statement_zh": "当前有 1,936 条记录仍在待复核队列；先人工核对分类与退款/转账边界，再解释消费结构。"
+      },
+      "trade_execution_available": false,
+      "version": "1.0.0"
+    },
+    {
+      "action": "complete_missing_financial_source_review",
+      "action_label_zh": "补齐并复核关键财务来源",
+      "allowed_review_outcomes": [
+        "accepted",
+        "rejected",
+        "deferred",
+        "invalidated"
+      ],
+      "automatic_trading_allowed": false,
+      "catalysts": [
+        {
+          "catalyst_id": "CAT-SOURCES-READY",
+          "review_route": "/data/sources",
+          "statement_zh": "所有关键来源与 lineage 达到 ready 后，可重建完整度并重新评估报告状态。"
+        }
+      ],
+      "confidence_dimensions": [
+        {
+          "basis_refs": [
+            "REVIEW-ECONOMIC-EVENT-ADAPTER",
+            "REVIEW-SRC-ACCOUNT-BALANCES",
+            "REVIEW-SRC-FX-SNAPSHOT",
+            "REVIEW-SRC-HOLDINGS",
+            "REVIEW-SRC-LIABILITIES",
+            "REVIEW-SRC-MARKET-PRICES"
+          ],
+          "dimension": "evidence_coverage",
+          "status": "blocked_missing_required_sources"
+        },
+        {
+          "basis_refs": [
+            "FORM-PFI-016",
+            "FORM-PFI-017",
+            "FORM-PFI-018"
+          ],
+          "dimension": "model_validity",
+          "status": "blocked_for_full_financial_conclusion"
+        },
+        {
+          "basis_refs": [
+            "V025-S9-P9.3"
+          ],
+          "dimension": "execution_safety",
+          "status": "review_only_no_trade_capability"
+        }
+      ],
+      "contains_private_values": false,
+      "counter_evidence": [
+        {
+          "counter_evidence_id": "COUNTER-TRANSACTIONS-READY",
+          "effect": "prevents_all_reports_blocked_claim",
+          "review_route": "/data/sources",
+          "statement_zh": "交易来源已有真实覆盖，因此消费与现金流仍可保留 partial 的覆盖结论。"
+        },
+        {
+          "counter_evidence_id": "COUNTER-SOURCE-STATE-DRIFT",
+          "effect": "requires_snapshot_refresh",
+          "review_route": "/reports",
+          "statement_zh": "来源状态可能在新快照中改变，当前建议不得跨 snapshot 延用。"
+        }
+      ],
+      "decision_id": "DEC-PFI-V025-SOURCE-COMPLETENESS",
+      "evidence": [
+        {
+          "evidence_id": "EVID-MISSING-SOURCE-SET",
+          "kind": "source_dependency_state",
+          "source_refs": [
+            "SRC-ACCOUNT-BALANCES",
+            "SRC-FX-SNAPSHOT",
+            "SRC-HOLDINGS",
+            "SRC-LIABILITIES",
+            "SRC-MARKET-PRICES",
+            "economic_event_adapter"
+          ],
+          "statement_zh": "当前有 6 个关键来源或 lineage 依赖未 ready。"
+        }
+      ],
+      "financial_values_emitted": 0,
+      "horizon": "next_human_review_session",
+      "human_review_required": true,
+      "invalidation_conditions": [
+        {
+          "condition_id": "INVALIDATE-SOURCES-READY",
+          "current_state": "not_met",
+          "predicate": "all_required_sources_and_lineage_ready",
+          "review_route": "/data/sources"
+        },
+        {
+          "condition_id": "INVALIDATE-ANALYSIS-HASH-DRIFT",
+          "current_state": "not_met",
+          "predicate": "source_analysis_pack_hash_changes",
+          "review_route": "/reports"
+        }
+      ],
+      "model_versions": [
+        {
+          "model_id": "MOD-PFI-010",
+          "status": "partial_validated_with_blocked_components",
+          "version": "v0.2.5"
+        },
+        {
+          "model_id": "FORM-PFI-016",
+          "status": "blocked_missing_required_sources",
+          "version": "1.0.0"
+        },
+        {
+          "model_id": "FORM-PFI-017",
+          "status": "blocked_missing_required_sources",
+          "version": "1.0.0"
+        },
+        {
+          "model_id": "FORM-PFI-018",
+          "status": "blocked_insufficient_chain",
+          "version": "1.0.0"
+        }
+      ],
+      "portfolio_effect": {
+        "statement_zh": "缺少余额、持仓、价格与 FX，组合影响保持不可计算且不生成交易动作。",
+        "status": "not_calculable"
+      },
+      "review_history": [
+        {
+          "actor_ref": "phase_9_3_builder",
+          "actor_role": "system",
+          "event_hash": "sha256:b92e5e3d3f8ab1e748c00bbfb20ec8f19612a9f840935ea851389911b8884dfd",
+          "event_id": "DEC-PFI-V025-SOURCE-COMPLETENESS-EVT-0001",
+          "event_type": "created",
+          "from_status": null,
+          "observed_at": "2026-07-15T16:30:00+10:00",
+          "outcome": null,
+          "prior_event_hash": null,
+          "reason_zh": "由同一 Phase 9.2 分析快照生成，等待人工复核。",
+          "to_status": "awaiting_human_review"
+        },
+        {
+          "actor_ref": "isolated_contract_validation_owner",
+          "actor_role": "owner",
+          "event_hash": "sha256:a67bf82e1c2066d8f64245d760eefe5409dfd3eeadb7b0a96261bae4eb178f76",
+          "event_id": "DEC-PFI-V025-SOURCE-COMPLETENESS-EVT-0002",
+          "event_type": "human_review",
+          "from_status": "awaiting_human_review",
+          "observed_at": "2026-07-15T16:46:00+10:00",
+          "outcome": "deferred",
+          "prior_event_hash": "sha256:b92e5e3d3f8ab1e748c00bbfb20ec8f19612a9f840935ea851389911b8884dfd",
+          "reason_zh": "验证延后结果会保留事件链且不改变来源状态。",
+          "to_status": "deferred"
+        }
+      ],
+      "review_route": "/data/sources",
+      "risks": [
+        "来源未 ready 时强行解释净资产、现金或投资会制造假结论。",
+        "持仓、价格与 FX 时间不一致会破坏估值和收益解释。"
+      ],
+      "source_analysis_pack_hash": "sha256:c3df8b878038bffdb28bfe4112d9a875e43e5d41cb910f86b6482768223a19e9",
+      "source_ids": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-FX-SNAPSHOT",
+        "SRC-HOLDINGS",
+        "SRC-LIABILITIES",
+        "SRC-MARKET-PRICES",
+        "economic_event_adapter"
+      ],
+      "status": "deferred",
+      "thesis": {
+        "evidence_refs": [
+          "pfi-v025-net-worth",
+          "pfi-v025-cash",
+          "pfi-v025-investment",
+          "REVIEW-ECONOMIC-EVENT-ADAPTER",
+          "REVIEW-SRC-ACCOUNT-BALANCES",
+          "REVIEW-SRC-FX-SNAPSHOT",
+          "REVIEW-SRC-HOLDINGS",
+          "REVIEW-SRC-LIABILITIES",
+          "REVIEW-SRC-MARKET-PRICES"
+        ],
+        "scope": "data_completeness_review_only",
+        "statement_zh": "账户余额、负债、持仓、价格、FX 与 Economic Event lineage 未全部 ready；先补齐来源，再解释净资产、现金或投资结果。"
+      },
+      "trade_execution_available": false,
+      "version": "1.0.0"
+    }
+  ],
+  "not_persisted_as_owner_financial_decision": true,
+  "phase_candidate_authorization_status": "standing_authorization_active",
+  "schema": "PFIV025Stage9Phase93DecisionReviewTraceV1",
+  "stage_9_transition_acceptance_status": "not_evaluated_until_whole_stage_review",
+  "standing_interim_authorization": {
+    "authorization_id": "PFI-V025-INTERIM-STAGE-TRANSITION-AUTH-20260712",
+    "no_reprompt_before_final": true,
+    "status": "active",
+    "user_decision_sha256": "2c9fe289b301b229d5df677f8c16467177e5950098d2407f198dd99e699480ca",
+    "waives_independent_review": false,
+    "waives_technical_gates": false
+  },
+  "status": "pass",
+  "trade_execution_available": false,
+  "validation_only": true
+}

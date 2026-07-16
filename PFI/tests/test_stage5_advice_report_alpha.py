@@ -4,6 +4,11 @@ import unittest
 from pathlib import Path
 
 from pfi_os.application.homepage_summary import empty_homepage_summary
+from pfi_os.security.pfi_context_export import (
+    CONTEXT_METADATA_FIELDS,
+    CONTEXT_PAYLOAD_FIELDS,
+    validate_pfi_context_export,
+)
 from pfi_v02.stage5_advice_report_alpha import (
     ALPHA_CONTEXT_SCHEMA,
     EXPORT_FORMATS,
@@ -127,16 +132,26 @@ class Stage5AdviceReportAlphaTest(unittest.TestCase):
     def test_alpha_context_schema_and_export_fields_are_read_only(self) -> None:
         snapshot = self.model["alpha_context_export"]
 
-        self.assertEqual(snapshot["schema"], ALPHA_CONTEXT_SCHEMA)
-        self.assertTrue(snapshot["version"])
-        self.assertTrue(snapshot["generated_at"])
-        for key in ("net_worth_aud", "investable_cash_aud", "portfolio_allocation", "risk_budget", "cashflow_pressure", "behavior_tags", "data_freshness"):
-            self.assertIn(key, snapshot)
-        constraints = snapshot["constraints"]
-        self.assertFalse(constraints["trading_password_available"])
-        self.assertFalse(constraints["live_trade_submission_authorized"])
-        self.assertFalse(constraints["broker_order_submission_authorized"])
-        self.assertFalse(constraints["payment_submission_authorized"])
+        self.assertEqual(snapshot["schema_version"], ALPHA_CONTEXT_SCHEMA)
+        self.assertEqual(set(snapshot), set(CONTEXT_METADATA_FIELDS + CONTEXT_PAYLOAD_FIELDS))
+        self.assertEqual(snapshot["consumer"], "Alpha")
+        self.assertTrue(snapshot["read_only"])
+        self.assertFalse(snapshot["writeback_allowed"])
+        self.assertTrue(all(snapshot[field] == "blocked" for field in (
+            "net_worth_state",
+            "investable_cash_state",
+            "cashflow_pressure",
+            "asset_allocation",
+            "risk_budget",
+            "consumption_pressure_summary",
+        )))
+        self.assertEqual(snapshot["data_freshness"], "not_loaded")
+        self.assertEqual(snapshot["investment_behavior_tags"], ["review_required"])
+        self.assertFalse(any(
+            isinstance(snapshot[field], (int, float)) and not isinstance(snapshot[field], bool)
+            for field in CONTEXT_PAYLOAD_FIELDS
+        ))
+        validate_pfi_context_export(snapshot)
 
     def test_alpha_remains_independent_and_is_not_pfi_first_level_entry(self) -> None:
         independence = self.model["alpha_independence"]
@@ -154,7 +169,10 @@ class Stage5AdviceReportAlphaTest(unittest.TestCase):
         self.assertEqual(summary["stage5_dashboard"]["schema"], "PFIV02Stage5AdviceReportAlphaExportV1")
         self.assertGreaterEqual(len(summary["decision_rows"]), 3)
         self.assertIn("第 5 阶段", summary["evidence_drawer"]["title"])
-        self.assertEqual(summary["stage5_dashboard"]["alpha_context_export"]["schema"], ALPHA_CONTEXT_SCHEMA)
+        self.assertEqual(
+            summary["stage5_dashboard"]["alpha_context_export"]["schema_version"],
+            ALPHA_CONTEXT_SCHEMA,
+        )
 
     def test_web_shell_exposes_stage5_labels_without_alpha_first_level_entry(self) -> None:
         root = Path(__file__).resolve().parents[1]

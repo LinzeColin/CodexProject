@@ -1,0 +1,12 @@
+{
+  "schema": "PFIV025Stage7Phase73ArtifactHashesV1",
+  "sha256": {
+    "browser_trace_sanitized.zip": "570300ad261a60a781214ae1fb7c29b5f7a4501c8526ca44d91ad1c37a3edef8",
+    "browser_validation.json": "a133c36ff81d3971725b244bfc2acbdc999d9c89e48edd4b8e4b5b5a3e86df99",
+    "interconnection_map.png": "6db807092c93729f3d766c60311229956bfbd9359ffec0df3ff136cfabdcdc12",
+    "metric_drilldown.json": "ac7779d769c96e693dbbce157baca43ad8e61f4aeefd3a759ad47880b6945aff",
+    "parameter_center.png": "6045188b3ce5c7e3655f9c144fb21631126fb7b385707a656d876f643bd130f0",
+    "playwright_result.json": "a787d043a5fba40964c45ab458880531391684c0a8b985110b486895574e78a6"
+  },
+  "status": "pass"
+}

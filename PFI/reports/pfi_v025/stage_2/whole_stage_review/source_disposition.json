@@ -1,0 +1,66 @@
+{
+  "schema": "PFIV025Stage2SourceDispositionV1",
+  "version": "v0.2.5",
+  "stage": 2,
+  "canonical_private_root_alias": "$PFI_DATA_HOME",
+  "alias_strategy": "explicit_aliases_no_automatic_migration",
+  "transaction_source": {
+    "source_id": "SRC-TRANSACTIONS-ALIPAY",
+    "status": "ready",
+    "record_count": 8815,
+    "coverage_start": "2022-06-06",
+    "coverage_end": "2026-06-03"
+  },
+  "operational_sqlite": {
+    "source_id": "SRC-OPERATIONAL-SQLITE",
+    "status": "ready_metadata_only",
+    "quick_check": "ok",
+    "known_table_count": 7,
+    "source_before_after_unchanged": true,
+    "isolation_verified": true,
+    "financial_rows_read": 0,
+    "next_resolution_task_ids": ["S3-P1-T1", "S3-P1-T3"]
+  },
+  "production_fx": {
+    "source_id": "SRC-FX-SNAPSHOT",
+    "status": "not_loaded",
+    "rate_present": false,
+    "direction": "AUD_TO_CNY",
+    "cutoff_local": "06:00:00",
+    "ordinary_runtime_network_allowed": false,
+    "next_resolution_task_ids": ["S3-P1-T1", "S3-P1-T3", "S4-P2-T3"]
+  },
+  "other_not_loaded_source_ids": [
+    "SRC-ACCOUNT-BALANCES",
+    "SRC-LIABILITIES",
+    "SRC-HOLDINGS",
+    "SRC-MARKET-PRICES"
+  ],
+  "temporal_fields": {
+    "transaction_time": "aggregate_coverage_only",
+    "posted_at": "not_verified",
+    "effective_at": "not_verified",
+    "imported_at": "not_verified",
+    "reconciled_at": "not_verified",
+    "valued_at": "not_verified",
+    "fx_effective_at": "not_verified",
+    "report_as_of": "not_verified"
+  },
+  "metric_computability": {
+    "consumption_classification": "blocked_missing_dependencies",
+    "consumption_outflow_cny": "blocked_missing_dependencies",
+    "cash_balance_cny": "blocked_missing_dependencies",
+    "investment_market_value_cny": "blocked_missing_dependencies",
+    "net_worth_cny": "blocked_missing_dependencies"
+  },
+  "financial_zero_claims": 0,
+  "financial_fixture_fallback_used": false,
+  "contains_private_values": false,
+  "permission_risks_accepted_for_stage_transition": [
+    "canonical private root was observed with mode 0755",
+    "operational SQLite was observed with mode 0644"
+  ],
+  "permission_changes_performed": false,
+  "source_mutation_performed": false,
+  "stage_3_work_performed": false
+}

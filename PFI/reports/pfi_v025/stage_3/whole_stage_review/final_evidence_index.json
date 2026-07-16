@@ -1,0 +1,102 @@
+{
+  "schema": "PFIV025Stage3FinalEvidenceIndexV1",
+  "version": "v0.2.5",
+  "stage": 3,
+  "acceptance_id": "ACC-PFI-V025-STAGE3-WHOLE-REVIEW",
+  "status": "accepted_for_transition",
+  "review_base": "0f9672081463523bab35a2b310216078fd3ad9d3",
+  "task_disposition": {
+    "S3-P1-T1": "pass",
+    "S3-P1-T2": "pass",
+    "S3-P1-T3": "pass",
+    "S3-P1-T4": "pass",
+    "S3-P2-T1": "pass",
+    "S3-P2-T2": "pass",
+    "S3-P2-T3": "pass",
+    "S3-P2-T4": "pass",
+    "S3-P3-T1": "pass",
+    "S3-P3-T2": "pass",
+    "S3-P3-T3": "pass",
+    "S3-P3-T4": "pass"
+  },
+  "acceptance_criteria": [
+    {
+      "criterion_id": "S3-AC-01",
+      "status": "pass",
+      "summary": "Source Profile supports capabilities; account roles can overlap and have effective dates; unknown roles enter review.",
+      "evidence_refs": [
+        "PFI/reports/pfi_v025/stage_3/phase_3_1/schema_inventory.json",
+        "PFI/reports/pfi_v025/stage_3/phase_3_1/review_queue_summary.json"
+      ]
+    },
+    {
+      "criterion_id": "S3-AC-02",
+      "status": "pass",
+      "summary": "All 6879 published records have complete raw-to-ledger lineage and no missing lineage.",
+      "evidence_refs": ["PFI/reports/pfi_v025/stage_3/phase_3_3/lineage_samples_redacted.json"]
+    },
+    {
+      "criterion_id": "S3-AC-03",
+      "status": "pass",
+      "summary": "Repeated import publishes zero additional ledger events with zero idempotency-key collisions.",
+      "evidence_refs": ["PFI/reports/pfi_v025/stage_3/phase_3_3/idempotency_result.json"]
+    },
+    {
+      "criterion_id": "S3-AC-04",
+      "status": "pass",
+      "summary": "Required event types have explicit impact flags; unresolved transfer/refund semantics fail closed and are not represented as confirmed chains.",
+      "evidence_refs": [
+        "PFI/reports/pfi_v025/stage_3/phase_3_3/event_type_matrix.json",
+        "PFI/reports/pfi_v025/stage_3/whole_stage_review/source_disposition.json"
+      ]
+    },
+    {
+      "criterion_id": "S3-AC-05",
+      "status": "pass",
+      "summary": "Per-metric duplicate count is zero and all five declared pages share one snapshot read_model_hash.",
+      "evidence_refs": ["PFI/reports/pfi_v025/stage_3/phase_3_3/read_model_contract.json"]
+    },
+    {
+      "criterion_id": "S3-AC-06",
+      "status": "pass",
+      "summary": "All 1936 non-published records are partitioned into explicit review reasons; silent-drop count is zero.",
+      "evidence_refs": [
+        "PFI/reports/pfi_v025/stage_3/phase_3_3/reconciliation_summary.json",
+        "PFI/reports/pfi_v025/stage_3/phase_3_3/review_queue_summary.json"
+      ]
+    }
+  ],
+  "stop_conditions": [
+    {
+      "condition_id": "S3-SC-01",
+      "status": "clear",
+      "summary": "Source records, normalized transactions, interconnection groups, economic events and ledger events are distinct and traceable."
+    },
+    {
+      "condition_id": "S3-SC-02",
+      "status": "clear",
+      "summary": "No economic event is counted more than once per metric."
+    },
+    {
+      "condition_id": "S3-SC-03",
+      "status": "clear",
+      "summary": "Account and event roles are policy-driven; source/provider names do not infer business categories."
+    },
+    {
+      "condition_id": "S3-SC-04",
+      "status": "clear",
+      "summary": "Validation used an immutable Git-object snapshot and did not modify real data."
+    }
+  ],
+  "pass_gate_status": "pass",
+  "pass_gate_result": "pass_with_review_queue",
+  "pass_gate_interpretation": "Duplicate import and investment reconciliation pass. Transfer and refund candidates without required structured evidence pass only through fail-closed review routing; they are not confirmed chains.",
+  "human_traceability_status": "pass_via_redacted_lineage_contract",
+  "human_traceability_scope": "Any published metric event can be traced through the six-layer lineage identifiers without exposing private values in public evidence.",
+  "stage_3_user_acceptance_status": "accepted",
+  "stage_4_entry_authorized": true,
+  "stage_4_status": "not_started",
+  "next_gate_id": "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT",
+  "production_accepted": false,
+  "final_human_acceptance": false
+}

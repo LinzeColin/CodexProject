@@ -1,0 +1,8 @@
+status=pass
+contains_private_values=false
+raw_trace_persisted=false
+resource_bodies_removed=true
+runtime_token_hit_count=0
+absolute_local_path_hit_count=0
+external_network_performed=false
+finder_used=false

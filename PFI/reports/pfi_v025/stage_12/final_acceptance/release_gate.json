@@ -1,0 +1,33 @@
+{
+  "app_reinstall_performed": false,
+  "checks": {
+    "build_exact": true,
+    "candidate_a_exact": true,
+    "canonical_app_build_exact": true,
+    "canonical_app_version_exact": true,
+    "closure_b_exact": true,
+    "closure_overlay_pass": true,
+    "head_is_rereview_evidence_c": true,
+    "index_hash_exact": true,
+    "known_defect_count_exact": true,
+    "request_index_hash_exact": true,
+    "request_time_exact": true,
+    "rereview_evidence_commit_c_exists": true,
+    "rereview_minor_zero": true,
+    "rereview_p0_zero": true,
+    "rereview_p1_zero": true,
+    "rereview_pass": true,
+    "rereview_verifier_pass": true,
+    "runtime_payload_drift_zero": true,
+    "version_exact": true
+  },
+  "contains_private_values": false,
+  "failed_checks": [],
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "head": "123f5a6f7e7af22c283e49e55c2ba581310238d5",
+  "launchservices_used": false,
+  "push_performed": false,
+  "schema": "PFIV025Stage12FinalAcceptanceGateV1",
+  "status": "pass"
+}

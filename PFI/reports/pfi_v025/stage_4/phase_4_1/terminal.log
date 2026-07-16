@@ -1,0 +1,59 @@
+PFI v0.2.5 Stage 4 Phase 4.1 terminal evidence
+observed_at=2026-07-14T11:49:30Z
+implementation_base=9ce3022e8025f53e31f2ff6c9d86eb65a01b33ab
+
+RED
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage4_accounts_read_model.py -q
+exit_code=2
+result=2 expected collection errors; pfi_os.application.read_models absent
+
+CORE_CONTRACT
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage4_accounts_read_model.py PFI/tests/test_v025_stage4_metric_states.py -q -k 'not tracked_phase_41_reports'
+exit_code=0
+result=8 passed, 1 deselected
+
+STAGE3_COMPATIBILITY
+exit_code=0
+result=48 passed, 4 historical current-state tests deselected
+
+STAGE2_COMPATIBILITY
+exit_code=0
+result=69 passed, 3 historical current-state tests deselected
+
+FOCUSED_FINAL
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage4_accounts_read_model.py PFI/tests/test_v025_stage4_metric_states.py -q
+exit_code=0
+result=9 passed
+
+STATIC_AND_SCOPE
+exit_code=0
+result=5 Python compiled; 9 JSON parsed; 37 JSONL events parsed; 60 parameter rows parsed; exact changed files 38/38; absolute private paths 0
+taskpack_evidence_schema=valid
+
+PROJECT_GOVERNANCE
+execution_context=full_checkout_shadow_with_worktree_overlay
+exit_code=0
+result=errors 0; warnings 0
+
+GOVERNANCE_SEMANTIC_SYNC
+execution_context=full_checkout_shadow_with_worktree_overlay
+exit_code=0
+result=errors 0; warnings 0
+
+RENDERER
+execution_context=full_checkout_shadow_with_worktree_overlay
+exit_code=0
+result=drift 0; reference issues 0
+
+NON_ACCEPTANCE_GLOBAL_DIAGNOSTIC
+result=lean_governance aggregate validate also reported pre-existing root/KMFA issues outside PFI scope; its embedded PFI project validation remained errors 0 and warnings 0. This diagnostic is not used as the Phase 4.1 acceptance command.
+
+SOURCE_TRUTH
+SRC-ACCOUNT-BALANCES=not_loaded
+SRC-LIABILITIES=not_loaded
+metrics_non_ready=3
+non_ready_value_count=0
+financial_values_emitted=0
+same_source_hash=true
+finder_used=false
+network_performed=false

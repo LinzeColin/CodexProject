@@ -1,0 +1,8 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW-INITIAL",
+  "roadmap_sha256": "sha256:fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+  "schema": "PFIV025Stage12InitialReviewTaskpackBindingV1",
+  "stage": 12,
+  "status": "pass",
+  "taskpack_sha256": "sha256:591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+}

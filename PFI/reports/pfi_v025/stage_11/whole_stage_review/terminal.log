@@ -1,0 +1,51 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/web/tests/v025/stage11_whole_review_evidence.py
+{"browser_check_count": 23, "canonical_private_database_mutated": false, "canonical_private_database_used": true, "core_statuses": {"browser": "pass", "phase_commit_binding": "pass", "public_distribution": "pass", "real_backup_restore": "pass", "release_identity": "pass", "taskpack_binding": "pass"}, "external_network_performed": false, "finder_used": false, "generated_at": "2026-07-16T03:45:51+10:00", "gui_file_operations_used": false, "launchservices_used": false, "private_values_emitted": false, "remediation_commit": "9c450ea483cd2040636e375c9f7d84e5127e44cf", "review_base": "f49e10f47a2f9996e4de0e66402686ae502ce16c", "schema": "PFIV025Stage11WholeReviewCoreEvidenceV1", "stage_12_started": false, "status": "pass"}
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_distribution_boundary.py PFI/tests/test_stage5_advice_report_alpha.py PFI/tests/test_stage6_e2e_stabilization.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage10_job_lifecycle.py
+........................................................................ [ 62%]
+...........................................                              [100%]
+115 passed in 9.81s
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage6_navigation_contract.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_crash_recovery.py
+.................................................................        [100%]
+65 passed in 27.42s
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -c 'from pathlib import Path; files=['"'"'PFI/src/pfi_os/infrastructure/operational_store_backup.py'"'"', '"'"'PFI/src/pfi_v02/stage_v021_runtime_api.py'"'"', '"'"'PFI/scripts/v025/pfi_operational_backup_restore.py'"'"', '"'"'PFI/scripts/v025/stage11_readonly_backup_rehearsal.py'"'"', '"'"'PFI/web/tests/v025/stage11_public_boundary_browser.py'"'"', '"'"'PFI/web/tests/v025/stage11_whole_review_evidence.py'"'"', '"'"'PFI/web/tests/v025/stage11_whole_review_verify.py'"'"', '"'"'PFI/web/tests/v025/stage11_whole_review_finalize.py'"'"']; [compile(Path(path).read_text(encoding='"'"'utf-8'"'"'), path, '"'"'exec'"'"') for path in files]'
+
+$ node --check PFI/web/tests/v025/stage11_public_boundary_cdp.mjs
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json
+{
+  "backend_build_hash": "0a1c129dde6f5e7ea002c444720eb4a62ba3322abff8de12a568f05c637270c2",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "data_access": "disabled",
+  "frontend_bundle_hash": "e76e38dfc2ef7bf4042cb6b07e21b2be96253433aa21ff9e1a756e31dca4ae67",
+  "git_commit": "0b2aa6677a61a600eb2596bd8b5d39ca32522084",
+  "namespace": "isolated_candidate_empty_data_v1",
+  "persistent": false,
+  "process_cache_key": "f8ce7c9ef46ba11ce350324f18c46cb43e2c63f110577ce96563360199daacda",
+  "release_manifest_sha256": "90d93e17923e256a65ec60eb4370a6358e5ac6fe608a3ccafb4aee06810d0cf5",
+  "runtime_api": "disabled",
+  "schema": "PFIV025Stage1IsolatedCandidateCachePolicyV1",
+  "streamlit_cache_key": "f8ce7c9ef46ba11ce350324f18c46cb43e2c63f110577ce96563360199daacda",
+  "valid": true
+}
+
+$ git diff --check
+
+complete root assembled; overlay files=21
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI
+CodexProject governance validation
+root: checked
+projects checked: PFI
+errors: 0
+warnings: 0
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+
+$ /usr/bin/python3 scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}

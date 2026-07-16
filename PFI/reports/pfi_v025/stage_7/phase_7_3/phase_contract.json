@@ -1,0 +1,21 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S7-P73-METRIC-DRILLDOWN",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "app_install_performed": false,
+  "contract_id": "PFI-V025-STAGE7-PHASE73-METRIC-DRILLDOWN",
+  "current_phase_only": true,
+  "database_changed": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "implementation_base": "45d362c7ff95320aa2bbe0fcc841102abc48c146",
+  "iteration_id": "ITER-20260715-PFI-V025-S7-P73",
+  "push_performed": false,
+  "real_financial_data_mutated": false,
+  "real_financial_data_read": true,
+  "schema": "PFIV025Stage7Phase73RunContractV1",
+  "stage_7_phase_7_1_status": "candidate_pass",
+  "stage_7_phase_7_2_status": "candidate_pass",
+  "stage_7_whole_stage_review_started": false,
+  "status": "candidate_pass",
+  "task_ids": ["S7-P3-T1", "S7-P3-T2", "S7-P3-T3", "S7-P3-T4"]
+}

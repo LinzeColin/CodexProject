@@ -1,0 +1,419 @@
+{
+  "historical_artifact_validation": [
+    {
+      "all_match": true,
+      "declared_file_count": 13,
+      "evidence_commit": "9b9d942de48c0001186fe3f10c1a5d22938c5f12",
+      "files": [
+        {
+          "actual_sha256": "sha256:57fd920a9e4819c2d9b631984b4f31e4b4ce28692f323d6ddbde76141c5c86d0",
+          "expected_sha256": "sha256:57fd920a9e4819c2d9b631984b4f31e4b4ce28692f323d6ddbde76141c5c86d0",
+          "match": true,
+          "path": "PFI/docs/pfi_v025/stage_9/PHASE_9_1_REPORT_CONTRACT_IMPLEMENTATION.md"
+        },
+        {
+          "actual_sha256": "sha256:4e7571089db58d3d05e526edbfada64275ec48434de3c42f0f0068966713f0d6",
+          "expected_sha256": "sha256:4e7571089db58d3d05e526edbfada64275ec48434de3c42f0f0068966713f0d6",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/changed_files.txt"
+        },
+        {
+          "actual_sha256": "sha256:8a0251584acddfda7053c428037007fceb94816f5806b62eb7eac2cc72f7a818",
+          "expected_sha256": "sha256:8a0251584acddfda7053c428037007fceb94816f5806b62eb7eac2cc72f7a818",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/completeness_rules.json"
+        },
+        {
+          "actual_sha256": "sha256:4e9b22b5ec10d3990d5192dfb13feb24760f9c44856ecb49107c03455c632fde",
+          "expected_sha256": "sha256:4e9b22b5ec10d3990d5192dfb13feb24760f9c44856ecb49107c03455c632fde",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/data_quality_report.json"
+        },
+        {
+          "actual_sha256": "sha256:dc985132d36fefcc2972f314a83108bcbbf007a14064af255caf01aca7814df1",
+          "expected_sha256": "sha256:dc985132d36fefcc2972f314a83108bcbbf007a14064af255caf01aca7814df1",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/input_immutability.json"
+        },
+        {
+          "actual_sha256": "sha256:bfe6f5406378dc6e2ce0e9bd599a292821d2042c4e9ed46d65644a2bd9628402",
+          "expected_sha256": "sha256:bfe6f5406378dc6e2ce0e9bd599a292821d2042c4e9ed46d65644a2bd9628402",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/phase_contract.json"
+        },
+        {
+          "actual_sha256": "sha256:6a33c35c074d6ef5660aaaadf177f11d94e6daeee3b5b555d71f074d8b6b8b4f",
+          "expected_sha256": "sha256:6a33c35c074d6ef5660aaaadf177f11d94e6daeee3b5b555d71f074d8b6b8b4f",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/privacy_scan.txt"
+        },
+        {
+          "actual_sha256": "sha256:741cac624d86eaf993db81b0f070dd6ea42740608808f498579c199df9573da5",
+          "expected_sha256": "sha256:741cac624d86eaf993db81b0f070dd6ea42740608808f498579c199df9573da5",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/report_manifest.json"
+        },
+        {
+          "actual_sha256": "sha256:837228ff7959aa260030abe7725557fa9b61acd5ecd7b8434cfaf292a1db37a9",
+          "expected_sha256": "sha256:837228ff7959aa260030abe7725557fa9b61acd5ecd7b8434cfaf292a1db37a9",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/report_schema.json"
+        },
+        {
+          "actual_sha256": "sha256:a39c81e3f070d61074a60e55369dda7316f71ebebfeeb615e4651b52b9d7384d",
+          "expected_sha256": "sha256:a39c81e3f070d61074a60e55369dda7316f71ebebfeeb615e4651b52b9d7384d",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/report_validation.json"
+        },
+        {
+          "actual_sha256": "sha256:321b98e3add1248acbfc84c70ad22eb2b5e7f7e62a3cd7cb062ee7b9b155e819",
+          "expected_sha256": "sha256:321b98e3add1248acbfc84c70ad22eb2b5e7f7e62a3cd7cb062ee7b9b155e819",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/risk_and_rollback.md"
+        },
+        {
+          "actual_sha256": "sha256:5b0f971bd19c2b754a78e52c917acc407d1bd847340270aee5f75c9ab8d05adc",
+          "expected_sha256": "sha256:5b0f971bd19c2b754a78e52c917acc407d1bd847340270aee5f75c9ab8d05adc",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/terminal.log"
+        },
+        {
+          "actual_sha256": "sha256:b8505bf262fd7e50adb84aeec07167c1c4a2b595247c779f4e7e3cd7de099d51",
+          "expected_sha256": "sha256:b8505bf262fd7e50adb84aeec07167c1c4a2b595247c779f4e7e3cd7de099d51",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/verification_results.json"
+        }
+      ],
+      "manifest_path": "PFI/reports/pfi_v025/stage_9/phase_9_1/artifact_hashes.json",
+      "phase": "9.1",
+      "verified_file_count": 13
+    },
+    {
+      "all_match": true,
+      "declared_file_count": 20,
+      "evidence_commit": "14cc26a7d48a1eab6f6f5b81ccbed3c1bcfff78a",
+      "files": [
+        {
+          "actual_sha256": "sha256:fef7a73e0bd272b055313884d512d634eaa5188913a6c88833b6060a2a242a71",
+          "expected_sha256": "sha256:fef7a73e0bd272b055313884d512d634eaa5188913a6c88833b6060a2a242a71",
+          "match": true,
+          "path": "PFI/config/reports/v025_phase92_analysis_snapshot.json"
+        },
+        {
+          "actual_sha256": "sha256:f773fc2d330474d11c171863d44aa78518e5e5474188940db43628aa61c3c48a",
+          "expected_sha256": "sha256:f773fc2d330474d11c171863d44aa78518e5e5474188940db43628aa61c3c48a",
+          "match": true,
+          "path": "PFI/docs/pfi_v025/stage_9/PHASE_9_2_FINANCIAL_ANALYSIS_IMPLEMENTATION.md"
+        },
+        {
+          "actual_sha256": "sha256:0c63d1d960e2ce2081e2cb7247310814e3bbfb80e077cc8474a28cb056331751",
+          "expected_sha256": "sha256:0c63d1d960e2ce2081e2cb7247310814e3bbfb80e077cc8474a28cb056331751",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/analysis_report_set.json"
+        },
+        {
+          "actual_sha256": "sha256:c8a2a90233b3a1eb8b419f8a092c59631b587a5b2958d5a95d19c133d64c9128",
+          "expected_sha256": "sha256:c8a2a90233b3a1eb8b419f8a092c59631b587a5b2958d5a95d19c133d64c9128",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/browser_trace_sanitized.zip"
+        },
+        {
+          "actual_sha256": "sha256:7f52be057496d97442943f253bfba20c2a3c8331c722546a601aaca882312f3e",
+          "expected_sha256": "sha256:7f52be057496d97442943f253bfba20c2a3c8331c722546a601aaca882312f3e",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/browser_validation.json"
+        },
+        {
+          "actual_sha256": "sha256:3d918428a58eb41beb27368f8f52531ae04f2f3aacea1a4f5c50d1a46ca90367",
+          "expected_sha256": "sha256:3d918428a58eb41beb27368f8f52531ae04f2f3aacea1a4f5c50d1a46ca90367",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/changed_files.txt"
+        },
+        {
+          "actual_sha256": "sha256:8ade5dcdb8c364d0f44d9caea0655725f7336bb194774fc66e4142878f1b8835",
+          "expected_sha256": "sha256:8ade5dcdb8c364d0f44d9caea0655725f7336bb194774fc66e4142878f1b8835",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/formula_drilldown.json"
+        },
+        {
+          "actual_sha256": "sha256:3c456cd3466b74a2e09072a310b7f54c4b978b0a4fb673c4add67126b4455b8c",
+          "expected_sha256": "sha256:3c456cd3466b74a2e09072a310b7f54c4b978b0a4fb673c4add67126b4455b8c",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/input_immutability.json"
+        },
+        {
+          "actual_sha256": "sha256:958634ca315b9ffed015794c01edbaa0c25ec33df759dba18d0c42fc8e7d59e0",
+          "expected_sha256": "sha256:958634ca315b9ffed015794c01edbaa0c25ec33df759dba18d0c42fc8e7d59e0",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/model_validation_cards.json"
+        },
+        {
+          "actual_sha256": "sha256:3389a14ce9173744dd563a9120b0deaaf9a9b75e6de2be3893bb029605ddec7d",
+          "expected_sha256": "sha256:3389a14ce9173744dd563a9120b0deaaf9a9b75e6de2be3893bb029605ddec7d",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/phase_contract.json"
+        },
+        {
+          "actual_sha256": "sha256:28cc654efd9dcb90e378fe444f333bcfbe92a917cdeb404a1f056ae8c94972d7",
+          "expected_sha256": "sha256:28cc654efd9dcb90e378fe444f333bcfbe92a917cdeb404a1f056ae8c94972d7",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/playwright_result.json"
+        },
+        {
+          "actual_sha256": "sha256:cd0432829e4204a45dfb71d149d09c173ce8c4adc495860a67b1eba8c9607b69",
+          "expected_sha256": "sha256:cd0432829e4204a45dfb71d149d09c173ce8c4adc495860a67b1eba8c9607b69",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/privacy_scan.txt"
+        },
+        {
+          "actual_sha256": "sha256:c1fef2784d31dc88c5bf5840c60b7648bde70d54eb45e44f9e12dcc5089c5121",
+          "expected_sha256": "sha256:c1fef2784d31dc88c5bf5840c60b7648bde70d54eb45e44f9e12dcc5089c5121",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/report_consistency.json"
+        },
+        {
+          "actual_sha256": "sha256:b227a869c5214caf5a578468aa76de0a8827830e6760227657a5f7fb157ca1cf",
+          "expected_sha256": "sha256:b227a869c5214caf5a578468aa76de0a8827830e6760227657a5f7fb157ca1cf",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/risk_and_rollback.md"
+        },
+        {
+          "actual_sha256": "sha256:c7161da6e1ecd9f3bb396edd96a61b6c4f364dece041719b6c7d0023c77ab061",
+          "expected_sha256": "sha256:c7161da6e1ecd9f3bb396edd96a61b6c4f364dece041719b6c7d0023c77ab061",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/sensitivity_preview.json"
+        },
+        {
+          "actual_sha256": "sha256:1a005a57fa5b135073ae3ebdab01a3a3035367dff8494330598c387d1474307e",
+          "expected_sha256": "sha256:1a005a57fa5b135073ae3ebdab01a3a3035367dff8494330598c387d1474307e",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/sensitivity_view.png"
+        },
+        {
+          "actual_sha256": "sha256:d98f2921e5f4a5495401dd82dbe8d0f5afd82c67d1ef3dc65384c36ec3a6b3e0",
+          "expected_sha256": "sha256:d98f2921e5f4a5495401dd82dbe8d0f5afd82c67d1ef3dc65384c36ec3a6b3e0",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/source_review_index.json"
+        },
+        {
+          "actual_sha256": "sha256:f6f92e06dcbefc8358f0c2a854c84992c21a7471cac76656043f155c77495804",
+          "expected_sha256": "sha256:f6f92e06dcbefc8358f0c2a854c84992c21a7471cac76656043f155c77495804",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/terminal.log"
+        },
+        {
+          "actual_sha256": "sha256:9a5dd42845cd8ba0dc5f4586a76604b6351424f438bfda8a1e0c155346b55568",
+          "expected_sha256": "sha256:9a5dd42845cd8ba0dc5f4586a76604b6351424f438bfda8a1e0c155346b55568",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/ui_contract.json"
+        },
+        {
+          "actual_sha256": "sha256:f7980606be872d2c371c0020a48ee48088bc681536a92a5a7c8b0f6524d2404e",
+          "expected_sha256": "sha256:f7980606be872d2c371c0020a48ee48088bc681536a92a5a7c8b0f6524d2404e",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/verification_results.json"
+        }
+      ],
+      "manifest_path": "PFI/reports/pfi_v025/stage_9/phase_9_2/artifact_hashes.json",
+      "phase": "9.2",
+      "verified_file_count": 20
+    },
+    {
+      "all_match": true,
+      "declared_file_count": 24,
+      "evidence_commit": "32449d58946809647ef917caf7e5b94a6836001b",
+      "files": [
+        {
+          "actual_sha256": "sha256:8226081ae9ffbd6ed528f0257b44adb6643b7d7812a0fccec18fba78e1d9dfd6",
+          "expected_sha256": "sha256:8226081ae9ffbd6ed528f0257b44adb6643b7d7812a0fccec18fba78e1d9dfd6",
+          "match": true,
+          "path": "PFI/config/reports/v025_phase93_decision_snapshot.json"
+        },
+        {
+          "actual_sha256": "sha256:224e92b05fe38e6ed7b769bc6bc0bef9f27040506466088f49d8078f114c23d7",
+          "expected_sha256": "sha256:224e92b05fe38e6ed7b769bc6bc0bef9f27040506466088f49d8078f114c23d7",
+          "match": true,
+          "path": "PFI/docs/pfi_v025/stage_9/PHASE_9_3_DECISION_REVIEW_EXPORT_IMPLEMENTATION.md"
+        },
+        {
+          "actual_sha256": "sha256:d25c7c79548dc295287f48e383405a82cb8ced989c790ac9d315a272d77332e3",
+          "expected_sha256": "sha256:d25c7c79548dc295287f48e383405a82cb8ced989c790ac9d315a272d77332e3",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/browser_trace_sanitized.zip"
+        },
+        {
+          "actual_sha256": "sha256:dd28dbf394d146e805b45f98ec732b0b0ee245661cd7b592bccecacec1c0be33",
+          "expected_sha256": "sha256:dd28dbf394d146e805b45f98ec732b0b0ee245661cd7b592bccecacec1c0be33",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/browser_validation.json"
+        },
+        {
+          "actual_sha256": "sha256:f130a690673b466e535b22a1557745ef445ef904bfb5e0454ad829423747f84d",
+          "expected_sha256": "sha256:f130a690673b466e535b22a1557745ef445ef904bfb5e0454ad829423747f84d",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/changed_files.txt"
+        },
+        {
+          "actual_sha256": "sha256:0fd149200846dc87ce770171712c761f2117a8d43c29bbbce276b3409564a458",
+          "expected_sha256": "sha256:0fd149200846dc87ce770171712c761f2117a8d43c29bbbce276b3409564a458",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/decision_objects.json"
+        },
+        {
+          "actual_sha256": "sha256:fc4ca327c0b64380fc9d3ece5dc7aa7167790ed3b7562217d54bd6bb41868160",
+          "expected_sha256": "sha256:fc4ca327c0b64380fc9d3ece5dc7aa7167790ed3b7562217d54bd6bb41868160",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/decision_review_trace.json"
+        },
+        {
+          "actual_sha256": "sha256:e70837d4f00cab886a6d52a718ed3bdaa245e1dbf33cee86ed8b2f566893c1f6",
+          "expected_sha256": "sha256:e70837d4f00cab886a6d52a718ed3bdaa245e1dbf33cee86ed8b2f566893c1f6",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/decision_review_view.png"
+        },
+        {
+          "actual_sha256": "sha256:bbd6f6e05a3acce0056e4c37abf62b577a8ffe1375714e99e570fbaff53c3548",
+          "expected_sha256": "sha256:bbd6f6e05a3acce0056e4c37abf62b577a8ffe1375714e99e570fbaff53c3548",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/export_manifest.json"
+        },
+        {
+          "actual_sha256": "sha256:68237197907762e5fcdce38a589c5b302ded7f4ee9f115f23bb08618e8d85acf",
+          "expected_sha256": "sha256:68237197907762e5fcdce38a589c5b302ded7f4ee9f115f23bb08618e8d85acf",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/export_snapshot.json"
+        },
+        {
+          "actual_sha256": "sha256:322eed5d081dd4faa967f0e2e214394fef7276d720169617a2ec84169f3c55f2",
+          "expected_sha256": "sha256:322eed5d081dd4faa967f0e2e214394fef7276d720169617a2ec84169f3c55f2",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/export_validation.json"
+        },
+        {
+          "actual_sha256": "sha256:a4da3c8adaa78a2bc1325ff60adb43125ac8c824037224d7e296a30299af459b",
+          "expected_sha256": "sha256:a4da3c8adaa78a2bc1325ff60adb43125ac8c824037224d7e296a30299af459b",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.csv"
+        },
+        {
+          "actual_sha256": "sha256:0d564ce2a109197c5c30589abe5dd5d089bf506df69a38eabdc5c2439f4497fb",
+          "expected_sha256": "sha256:0d564ce2a109197c5c30589abe5dd5d089bf506df69a38eabdc5c2439f4497fb",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.html"
+        },
+        {
+          "actual_sha256": "sha256:3a88968121fbb1ebc61fe0c55133f43b0d0994aee6a771223fb25630bb55b498",
+          "expected_sha256": "sha256:3a88968121fbb1ebc61fe0c55133f43b0d0994aee6a771223fb25630bb55b498",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.md"
+        },
+        {
+          "actual_sha256": "sha256:de7f2c7ff94ecb95298a68d447525610d0753536fbff2ef91e55c632dff08dc0",
+          "expected_sha256": "sha256:de7f2c7ff94ecb95298a68d447525610d0753536fbff2ef91e55c632dff08dc0",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.pdf"
+        },
+        {
+          "actual_sha256": "sha256:466009b292d4e43cf7f27cef4b93e34eb930273a2886f3c2ca906e3792e1746c",
+          "expected_sha256": "sha256:466009b292d4e43cf7f27cef4b93e34eb930273a2886f3c2ca906e3792e1746c",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/input_immutability.json"
+        },
+        {
+          "actual_sha256": "sha256:e25b2f511f6f4e92c09909adea586897d4600fccba064cc140ba8c53612ff8ba",
+          "expected_sha256": "sha256:e25b2f511f6f4e92c09909adea586897d4600fccba064cc140ba8c53612ff8ba",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/pdf_render.png"
+        },
+        {
+          "actual_sha256": "sha256:decca841e822273173fe8c9763a00e28fcb90c56853f95221ba0f2b307b9edb6",
+          "expected_sha256": "sha256:decca841e822273173fe8c9763a00e28fcb90c56853f95221ba0f2b307b9edb6",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/pdf_validation.json"
+        },
+        {
+          "actual_sha256": "sha256:7ad7f176e39de71874e5abd534dda48e5e19f54fab2b240876a2f398a6c4ecf7",
+          "expected_sha256": "sha256:7ad7f176e39de71874e5abd534dda48e5e19f54fab2b240876a2f398a6c4ecf7",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/phase_contract.json"
+        },
+        {
+          "actual_sha256": "sha256:c2e79e1e5e94835db0e734f63720d7b01bea1cd55161510ace03a043f1f62898",
+          "expected_sha256": "sha256:c2e79e1e5e94835db0e734f63720d7b01bea1cd55161510ace03a043f1f62898",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/playwright_result.json"
+        },
+        {
+          "actual_sha256": "sha256:502956a373a3f7e31026adb95cbe5a3bc3286e92e3085073e55accf554c8613d",
+          "expected_sha256": "sha256:502956a373a3f7e31026adb95cbe5a3bc3286e92e3085073e55accf554c8613d",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/privacy_scan.txt"
+        },
+        {
+          "actual_sha256": "sha256:ed2d9475ce0c5e90a0e524fe9afd67d285882f8fbc156338546ff3a68dc1c563",
+          "expected_sha256": "sha256:ed2d9475ce0c5e90a0e524fe9afd67d285882f8fbc156338546ff3a68dc1c563",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/risk_and_rollback.md"
+        },
+        {
+          "actual_sha256": "sha256:8045dbcb1ef15fde7067acda2b6228b12c7b1d5193fc922117ee56a97e9b6056",
+          "expected_sha256": "sha256:8045dbcb1ef15fde7067acda2b6228b12c7b1d5193fc922117ee56a97e9b6056",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/terminal.log"
+        },
+        {
+          "actual_sha256": "sha256:3a78d8f417160d26e33ccb2ee90bfd6afb07c1180e7e20bc914449eff8a36e44",
+          "expected_sha256": "sha256:3a78d8f417160d26e33ccb2ee90bfd6afb07c1180e7e20bc914449eff8a36e44",
+          "match": true,
+          "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/verification_results.json"
+        }
+      ],
+      "manifest_path": "PFI/reports/pfi_v025/stage_9/phase_9_3/artifact_hashes.json",
+      "phase": "9.3",
+      "verified_file_count": 24
+    }
+  ],
+  "historical_phase_evidence_overwritten": false,
+  "phases": [
+    {
+      "current_historical_evidence_unchanged": true,
+      "evidence_at_or_after_product": true,
+      "evidence_commit": "9b9d942de48c0001186fe3f10c1a5d22938c5f12",
+      "historical_evidence_path": "PFI/reports/pfi_v025/stage_9/phase_9_1/evidence.json",
+      "historical_evidence_sha256": "sha256:1b18c825765223bb4bd5a488df1ed613d044c94742b5d24456abf7760566f6f8",
+      "normalized_evidence_path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_evidence/phase_9_1.json",
+      "normalized_evidence_sha256": "sha256:210c08022a8b12784949c35d34cf098b3fa97a577baa098523e6fed8d5700d57",
+      "phase": "9.1",
+      "product_after_prior_phase": true,
+      "product_commit": "9b9d942de48c0001186fe3f10c1a5d22938c5f12"
+    },
+    {
+      "current_historical_evidence_unchanged": true,
+      "evidence_at_or_after_product": true,
+      "evidence_commit": "14cc26a7d48a1eab6f6f5b81ccbed3c1bcfff78a",
+      "historical_evidence_path": "PFI/reports/pfi_v025/stage_9/phase_9_2/evidence.json",
+      "historical_evidence_sha256": "sha256:ad97bed8e29c4535ce1a0a940185eb12033cb99f6536bc46810b53e42a76b716",
+      "normalized_evidence_path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_evidence/phase_9_2.json",
+      "normalized_evidence_sha256": "sha256:0a44db7354b4be96c74e97ce74e30d77e099655bd2b99f0d75ced17e7a37472d",
+      "phase": "9.2",
+      "product_after_prior_phase": true,
+      "product_commit": "7566107dfb3e2e3612ea28b9a2c31d8a8a553747"
+    },
+    {
+      "current_historical_evidence_unchanged": true,
+      "evidence_at_or_after_product": true,
+      "evidence_commit": "32449d58946809647ef917caf7e5b94a6836001b",
+      "historical_evidence_path": "PFI/reports/pfi_v025/stage_9/phase_9_3/evidence.json",
+      "historical_evidence_sha256": "sha256:ba8f34f94556093a074f65dd9cf0a05279fe9eb8968c09069c000144c7502d9d",
+      "normalized_evidence_path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/phase_evidence/phase_9_3.json",
+      "normalized_evidence_sha256": "sha256:c27f925cd4c6929d7621d6e38eb8817327dccdc4cd889394e27bfbd38d4cde4d",
+      "phase": "9.3",
+      "product_after_prior_phase": true,
+      "product_commit": "168666305c874d91ab8fd45e9f925e49928e7e63"
+    }
+  ],
+  "schema": "PFIV025Stage9PhaseCommitBindingV1",
+  "stage_8_transition_base": "be592b1ccecdd68c15eb3b225c0fa2184be67488",
+  "stage_9_remediation_review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "status": "pass"
+}

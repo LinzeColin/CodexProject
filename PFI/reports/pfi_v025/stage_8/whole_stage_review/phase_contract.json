@@ -1,0 +1,20 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE8-WHOLE-REVIEW",
+  "app_install_performed": false,
+  "completed_task_count": 12,
+  "contract_id": "PFI-V025-STAGE8-WHOLE-REVIEW",
+  "external_network_performed": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "launchservices_used_in_current_review": false,
+  "production_accepted": false,
+  "push_performed": false,
+  "review_base": "2c7b25efd2916c909027333283b499a119d088e0",
+  "reviewed_overlay_sha256": "sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180",
+  "schema": "PFIV025Stage8WholeReviewContractV1",
+  "stage": 8,
+  "stage_9_started": false,
+  "status": "candidate_ready_for_final_rereview",
+  "task_count": 12,
+  "unique_acceptance_target": true
+}

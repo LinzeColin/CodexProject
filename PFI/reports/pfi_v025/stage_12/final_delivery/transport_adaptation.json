@@ -1,0 +1,15 @@
+{
+  "schema": "PFIV025FinalDeliveryTransportAdaptationV1",
+  "status": "adapted_before_successful_main_ref_update",
+  "rejected_commit": "051ed048a2faf60dc2def768926c8fff109eac27",
+  "remote_result": "rejected_before_ref_update",
+  "remote_error": "pack exceeds maximum allowed size (2.00 GiB)",
+  "main_ref_updated": false,
+  "cause": "the proposed second parent made more than 2700 local-history commits reachable and exceeded the GitHub receive-pack limit",
+  "adaptation": "deliver the identical curated tree as a single-parent snapshot on the latest live main; retain exact A/B/C and evidence-index bindings inside the accepted evidence chain",
+  "runtime_payload_changed": false,
+  "app_reinstall_repeated": false,
+  "successful_main_ref_update_count": 0,
+  "finder_used": false,
+  "contains_private_values": false
+}

@@ -1,0 +1,12 @@
+scope=PFI/docs/pfi_v025/stage_10_and_PFI/reports/pfi_v025/stage_10/phase_10_1
+actual_username_count=0
+absolute_home_count=0
+private_key_or_AWS_access_key_pattern_count=0
+email_address_count=0
+raw_lease_token_fixture_count=0
+financial_values_emitted=0
+payload_values_emitted=0
+real_pfi_database_path_emitted=0
+external_network_performed=false
+finder_used=false
+result=pass

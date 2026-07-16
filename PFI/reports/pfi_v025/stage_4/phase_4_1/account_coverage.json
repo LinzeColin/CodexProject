@@ -1,0 +1,24 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT",
+  "blocking_reason_zh": "账户余额与负债快照尚未加载；交易流水不构成余额证据。",
+  "contains_private_values": false,
+  "coverage_end": null,
+  "coverage_start": null,
+  "data_as_of": null,
+  "metric_count": 3,
+  "missing_dependencies": [
+    "SRC-ACCOUNT-BALANCES",
+    "SRC-LIABILITIES"
+  ],
+  "non_ready_metric_count": 3,
+  "not_loaded_source_count": 2,
+  "observed_at": "2026-07-14T11:49:30Z",
+  "phase": "4.1",
+  "ready_metric_count": 0,
+  "ready_source_count": 0,
+  "required_source_count": 2,
+  "schema": "PFIV025AccountCoverageV1",
+  "stage": 4,
+  "status": "not_loaded",
+  "version": "v0.2.5"
+}

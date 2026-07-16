@@ -1,0 +1,40 @@
+{
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "finder_used": false,
+  "first_import_candidate_count": 6879,
+  "first_import_published_count": 6879,
+  "idempotency_key_collision_count": 0,
+  "input_content_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+  "input_record_count": 8815,
+  "isolation_mode": "immutable_git_object_snapshot",
+  "path_alias": "MetaDatabase/PFI",
+  "phase_id": "V025-S3-P3.3",
+  "raw_rows_emitted": 0,
+  "resolved_commit": "debdd04a9c5d12393d098dc65dd8937da3ce43f3",
+  "schema": "PFIV025Stage3Phase33IdempotencyResultV1",
+  "second_import_candidate_count": 6879,
+  "second_import_duplicate_count": 6879,
+  "second_import_published_count": 0,
+  "source_id": "SRC-TRANSACTIONS-ALIPAY",
+  "source_identity_after": {
+    "input_bytes": 2387686,
+    "input_content_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+    "resolved_commit": "debdd04a9c5d12393d098dc65dd8937da3ce43f3",
+    "snapshot_immutable": true,
+    "source_write_capability": false,
+    "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba"
+  },
+  "source_identity_before": {
+    "input_bytes": 2387686,
+    "input_content_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+    "resolved_commit": "debdd04a9c5d12393d098dc65dd8937da3ce43f3",
+    "snapshot_immutable": true,
+    "source_write_capability": false,
+    "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba"
+  },
+  "source_mutation_performed": false,
+  "status": "pass",
+  "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba",
+  "version": "v0.2.5"
+}

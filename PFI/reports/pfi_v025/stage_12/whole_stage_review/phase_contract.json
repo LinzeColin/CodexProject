@@ -1,0 +1,23 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW-INITIAL",
+  "candidate_commit": "9a7245acf984a4eb98f93c4aab7bb4d02095294f",
+  "finder_prohibited": true,
+  "gui_file_operations_prohibited": true,
+  "non_goals": [
+    "finding remediation",
+    "rereview",
+    "final human acceptance",
+    "release freeze",
+    "GitHub push",
+    "canonical App reinstall",
+    "v0.2.6 work"
+  ],
+  "observed_at": "2026-07-15T21:20:41Z",
+  "origin_main": "5ff1f3c5ce49d0bb5466125333b873082d2ddd58",
+  "phase": "stage12-whole-review-initial",
+  "review_scope": "Stage 12.1 through 12.3 candidate, release identity, real workflow, target-Mac CLI evidence, governance and final binding",
+  "schema": "PFIV025Stage12InitialWholeReviewContractV1",
+  "stage": 12,
+  "status": "in_progress",
+  "version": "v0.2.5"
+}

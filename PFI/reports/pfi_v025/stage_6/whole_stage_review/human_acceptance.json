@@ -1,0 +1,20 @@
+{
+  "acceptance_statement": "用户在最终验收前的统一授权已精确绑定本 Stage 6 证据索引；接受仅授权进入 Stage 7，不等于生产或最终验收。",
+  "accepted_at": "2026-07-15T04:43:40+10:00",
+  "accepted_scope": [
+    "Stage 6 10-entry information architecture and historical alias normalization",
+    "45 secondary page contracts, current-HEAD browser/history/no-JS/keyboard/accessibility acceptance",
+    "Stage 6 transition only; Stage 7 work remains not started"
+  ],
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:236477d251384e6350be8a13ec4d6a28ab3855634604b755b612cfdf41e04d7b",
+  "git_commit": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431",
+  "known_defects": [
+    "Four legacy versioned test assertions remain intentionally superseded and are recorded in legacy_test_disposition.json.",
+    "Installed PFI.app parity and GitHub main delivery remain deferred to the Stage 12 release transaction."
+  ],
+  "product": "PFI",
+  "stage": 6,
+  "user_confirmation_reference": "thread_pre_final_acceptance_blanket_authorization_and_active_goal_continuation",
+  "version": "v0.2.5"
+}

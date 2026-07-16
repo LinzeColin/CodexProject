@@ -1,0 +1,64 @@
+ledger_schema=PFIV025Stage2WholeReviewTerminalLedgerV1
+ledger_recorded_at=2026-07-14T19:27:14+10:00
+timestamp_semantics=ledger_aggregation_time_not_individual_command_time
+ledger_state=finalized
+
+record_id=RED-01
+command=Stage 2 whole-review focused pytest before verifier implementation
+exit_code=2
+summary=expected RED because whole-review module was absent
+
+record_id=INITIAL-REVIEW-01
+command=independent requirements evidence code-security privacy and governance review
+exit_code=1
+summary=critical 0 important 3 minor 1; all four findings entered remediation
+
+record_id=REMEDIATION-PARTIAL-01
+command=Stage 2 whole-review focused pytest after core artifacts before Evidence and governance completion
+exit_code=1
+summary=7 passed and 4 expected evidence or governance failures
+
+record_id=REMEDIATION-STAGE2-01
+command=all Stage 2 focused and compatibility tests before final Evidence
+exit_code=1
+summary=68 passed and 4 expected current-truth or final-Evidence failures
+
+record_id=GREEN-STAGE2-01
+command=all Stage 2 focused and compatibility tests
+exit_code=0
+summary=72 passed
+
+record_id=GREEN-VERIFIER-01
+command=read-only Stage 2 whole-review verifier
+exit_code=0
+summary=12 tasks 6 acceptance criteria 4 stop conditions and review C0 I0 M0 pass
+
+record_id=GREEN-GOVERNANCE-01
+command=full Git worktree project governance validation
+exit_code=0
+summary=errors 0 and warnings 0
+
+record_id=GREEN-SYNC-01
+command=full Git worktree changed-only semantic governance sync
+exit_code=0
+summary=errors 0 and warnings 0
+
+record_id=GREEN-RENDER-01
+command=python3 -B scripts/lean_governance.py check-render --project PFI
+exit_code=0
+summary=drift 0 and reference issues 0
+
+record_id=GREEN-SCOPE-01
+command=exact staged changed-files comparison and git diff check
+exit_code=0
+summary=exact 31-file scope and whitespace clean
+
+finder_used=false
+network_performed=false
+source_mutation_performed=false
+financial_fixture_fallback_used=false
+stage_3_work_performed=false
+push_performed=false
+app_install_performed=false
+production_accepted=false
+final_human_acceptance=false

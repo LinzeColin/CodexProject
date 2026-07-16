@@ -1,0 +1,21 @@
+parameters:
+  基础币种:
+    value: "CNY"
+    intent: "所有跨币种结果先声明方向、来源和时间，再转换到统一基础币种。"
+    where: "PFI/config/pfi_parameters.yaml"
+  时区:
+    value: "Australia/Sydney"
+    intent: "交易日、快照日和运行时间使用同一明确时区。"
+    where: "PFI/config/pfi_parameters.yaml"
+  日切时间:
+    value: "06:00"
+    intent: "避免午夜附近运行把同一业务日拆成两个状态。"
+    where: "PFI/config/pfi_parameters.yaml"
+  缓存时限秒:
+    value: 30
+    intent: "只允许短暂进程内缓存；任一依赖 hash 改变立即失效。"
+    where: "PFI/config/release_manifest.json 与 release cache policy"
+  数据库日志模式:
+    value: "DELETE"
+    intent: "当前 SQLite 3.50.4 不在批准的 WAL 安全集合，必须失败关闭。"
+    where: "PFI/src/pfi_os/infrastructure/operational_store_runtime.py"

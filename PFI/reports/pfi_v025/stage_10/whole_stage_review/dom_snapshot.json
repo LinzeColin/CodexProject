@@ -1,0 +1,38 @@
+{
+  "schema": "PFIV025Stage10WholeReviewDOMSnapshotV1",
+  "route": "/overview",
+  "bodyJobId": "job-a4c97700256163899d7d23b7e6cae0736acbc65f24619b1d009290a212cf777d",
+  "bodyJobStatus": "failed",
+  "taskPhase": "刷新失败 · local cache refresh failed validation",
+  "errorBanner": "\n            暂时无法刷新该切片。\n            正在使用 08:45 的缓存快照；来源时钟恢复后可重试。\n            重试\n            使用缓存\n          ",
+  "timeline": [
+    {
+      "id": "job-216a582cefebb40f3535ce8da2a8a3c71060b4ce95a7e468f3c0576754a53fe6",
+      "state": "retrying",
+      "backendState": "retrying",
+      "source": "durable_job_api",
+      "text": "缓存切片刷新等待重试lease_expired_requeuedSQLite revision 2 · trace 6298eebaced40c8cbf277d1ec4e4f8e9 · 重试 1 次错误 LEASE_EXPIRED · worker lease expired before a terminal result"
+    },
+    {
+      "id": "job-9f775a56d472267cac6a06d5b64a8afe7a9d0660ff2b2d2e9870545b98c60a3b",
+      "state": "dead_letter",
+      "backendState": "dead_letter",
+      "source": "durable_job_api",
+      "text": "缓存切片刷新死信dead_lettered · worker lease expired before a terminal resultSQLite revision 2 · trace 2c980f130b1744387fcff6729e9665e0 · 重试 0 次错误 LEASE_EXPIRED · worker lease expired before a terminal result"
+    },
+    {
+      "id": "job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1",
+      "state": "succeeded",
+      "backendState": "succeeded",
+      "source": "durable_job_api",
+      "text": "缓存切片刷新已完成cache.runtime_readySQLite revision 15 · trace 68fa4a39652514c7627e1c4b11c9505b · 重试 0 次结果入口 artifact://runtime-cache/1335a315d97564b65eaee1fc1b73ca402a2e735d4022053592ebae368fe463e0"
+    },
+    {
+      "id": "job-a4c97700256163899d7d23b7e6cae0736acbc65f24619b1d009290a212cf777d",
+      "state": "failed",
+      "backendState": "failed",
+      "source": "durable_job_api",
+      "text": "缓存切片刷新失败failed · local cache refresh failed validationSQLite revision 2 · trace 377e19dc09f9e73e5b130a78a0fc15a0 · 重试 0 次错误 CACHE_REFRESH_ERROR · local cache refresh failed validation"
+    }
+  ]
+}

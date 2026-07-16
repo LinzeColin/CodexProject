@@ -1,0 +1,50 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE10-WHOLE-REVIEW",
+  "app_install_performed": false,
+  "canonical_private_database_used": false,
+  "contract_id": "PFI-V025-STAGE10-WHOLE-REVIEW",
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "push_performed": false,
+  "remediation_commit": "92579cfdd",
+  "rollback": "revert remediation commit and evidence/governance commit; isolated review databases are disposable",
+  "schema": "PFIV025Stage10WholeReviewContractV1",
+  "scope": "Stage 10 whole-stage review, remediation, rereview and transition acceptance only",
+  "source_review_base": "e9465c0c7747c17cab66c07073d5bde999cb9043",
+  "stage_11_started": false,
+  "status": "controlled_whole_stage_review",
+  "stop_conditions": [
+    "any memory-only job truth or timer-based progress",
+    "healthy lease expiry, duplicate execution or stale CAS success",
+    "failed job presented as success",
+    "ordinary startup network or full recompute",
+    "any Stage 11 implementation, push or app installation in this run"
+  ],
+  "task_ids": [
+    "S10-P1-T1",
+    "S10-P1-T2",
+    "S10-P1-T3",
+    "S10-P1-T4",
+    "S10-P2-T1",
+    "S10-P2-T2",
+    "S10-P2-T3",
+    "S10-P2-T4",
+    "S10-P3-T1",
+    "S10-P3-T2",
+    "S10-P3-T3",
+    "S10-P3-T4"
+  ],
+  "task_progress": {
+    "completed": 12,
+    "project_progress": "132/156 (84.62%)",
+    "total": 12
+  },
+  "validation_targets": [
+    "seven-state durable lifecycle with revision CAS, lease and healthy-worker heartbeat",
+    "nine-domain precise runtime diff and no-diff zero action/network/Codex/LLM",
+    "kill/restart/offline/timeout/failure recovery with UI/SQLite parity",
+    "structured trace/span/log, privacy, migration and release identity",
+    "TaskPack evidence and human transition acceptance schemas"
+  ]
+}

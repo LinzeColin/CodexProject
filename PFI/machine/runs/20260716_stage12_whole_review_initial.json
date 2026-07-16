@@ -1,0 +1,6 @@
+{
+  "run_id": "PFI-V025-STAGE12-WHOLE-REVIEW-INITIAL",
+  "action": "对 Stage 12.1 至 12.3 candidate 做独立证据重算、fresh real E2E 与 release truth 初审",
+  "result": "0 个 P0、3 个 P1；初审需整改，复审与最终验收均未开始",
+  "ts": "2026-07-16"
+}

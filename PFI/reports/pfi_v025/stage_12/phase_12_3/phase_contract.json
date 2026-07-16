@@ -1,0 +1,24 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW-REMEDIATION",
+  "candidate_git_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "candidate_git_commit_semantics": "exact product and Stage 12 remediation anchor; later commits may only add non-runtime evidence and governance overlays",
+  "finder_prohibited": true,
+  "phase": "12.3",
+  "schema": "PFIV025Stage12Phase123ContractV1",
+  "stage": 12,
+  "stop_before": [
+    "independent post-remediation whole-stage rereview",
+    "S12-P3-T4 release freeze",
+    "explicit final human acceptance",
+    "GitHub push",
+    "post-push canonical App reinstall"
+  ],
+  "target": "exact remediation candidate ready for independent post-remediation rereview",
+  "task_ids": [
+    "S12-P3-T1",
+    "S12-P3-T2",
+    "S12-P3-T3",
+    "S12-P3-T4"
+  ],
+  "version": "v0.2.5"
+}

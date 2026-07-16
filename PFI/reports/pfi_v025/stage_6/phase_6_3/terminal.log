@@ -1,0 +1,45 @@
+PFI v0.2.5 Stage 6 Phase 6.3 validation log
+timestamp: 2026-07-15T04:22:32+10:00
+implementation_base: 80396224f049658e9293f8da313a92a50431f903
+
+EXPECTED RED
+- PFI/.venv/bin/python -B -m pytest -p no:cacheprovider -q PFI/tests/test_v025_stage6_history_acceptance.py
+- result: 4 failed; Phase 6.3 contract, Shell history/invalid-route runtime, browser/AX harness and hash redirect classification were absent.
+
+FOCUSED AND REGRESSION
+- Phase 6.3 focused: 4 passed.
+- Phase 6.3 + Phase 6.2 + Phase 6.1 + Stage 5 page regression: 23 passed.
+- Stage 1 Python release identity/cache: 24 passed, 2 dependency deprecation warnings.
+- Stage 1 Node release identity/cache: 28 passed.
+- node --check navigation.js/routes.js/shell.js/stage6_history_acceptance_cdp.mjs: pass.
+
+BROWSER
+- Cached Playwright with local Google Chrome and an ephemeral 127.0.0.1 formal shell: pass.
+- Canonical path, actual back/forward, history state, scroll restore, repeated click, deep-link/CDP reload: pass.
+- Actionable invalid route and recovery: pass.
+- Keyboard Enter navigation and page-heading focus: pass.
+- CDP Accessibility.getFullAXTree primary entries: 10 ordered, 10 unique, hidden duplicates 0.
+- DOM primary entries: 10 with exactly one active entry.
+- Console/page/HTTP errors: 0; external requests: 0.
+- Browser screenshots were redacted before tracked write and visually reviewed.
+- browser_trace.zip uses action screenshots only; DOM/resource snapshots are disabled and the runner executes from /tmp.
+
+RELEASE IDENTITY
+- frontend bundle hash: aa8c62370292f5aa7ff0ae6743282e8c715f76949369c9369cd870e5c2dc1669
+- backend build hash: 43b918f761e80bbc4c6e2de54a32c714703cc4d9a60f67b7a180e1cea222ddbb
+- configured/embedded manifest equality: pass.
+- Stage 1 git-commit binding semantics preserved until final Stage 12 release transaction.
+
+GOVERNANCE
+- render: 3 human entries updated.
+- check-render: drift 0, reference issues 0.
+- complete local root project validation: root checked, PFI checked, errors 0, warnings 0.
+- validation assembly: existing long-lived complete root governance and registered project paths, with candidate PFI mounted read-only; no network fetch.
+- direct local clone attempt was discarded because the repository is shallow/promisor and an unrelated object was unavailable; this did not run validation or change the repository.
+
+BOUNDARY
+- Finder: not used.
+- External network: not used; browser network was ephemeral localhost only.
+- Real financial data/database: not read and not mutated.
+- GitHub push/App install: not performed.
+- Stage 6 whole-stage review and Stage 7: not started.

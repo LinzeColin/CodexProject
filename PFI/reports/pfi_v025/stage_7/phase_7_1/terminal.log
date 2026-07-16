@@ -1,0 +1,56 @@
+PFI v0.2.5 Stage 7 Phase 7.1 validation log
+timestamp: 2026-07-15T05:35:42+10:00
+implementation_base: 0e127a4dd7c3ccfd49f8aaac9c653bb17dc48b0c
+
+EXPECTED RED
+- Phase-focused test initially failed during collection because pfi_os.application.use_cases did not exist.
+
+FOCUSED
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage7_import_review_ledger.py -q
+- result: 6 passed.
+- atomicity trigger, preview=0 ledger, idempotency, review/undo, rollback/retry, failure-no-fabrication and HTTP loop: pass.
+
+REAL FORMAL-SHELL BROWSER
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -B PFI/web/tests/v025/stage7_import_review_ledger_browser.py
+- cached Playwright + local Chrome + ephemeral loopback + isolated /tmp SQLite/private raw store.
+- 20 checks passed; console/page/HTTP/external-network errors=0.
+- real source copy: 1571 transactions, 74 review rows, date range 2022-06-06..2023-06-05.
+- preview ledger=0; confirm=1571; duplicate=1571; rollback=0; retry/reconfirm=1571.
+- one review save reduced pending by 1; undo restored it.
+- invalid CSV: failed with zero fabricated transactions and zero failed-batch ledger rows.
+- canonical source SHA-256 unchanged.
+- raw trace disabled; three screenshots redacted before persistence and visually reviewed.
+
+RELEASE AND REGRESSION
+- Phase 7.1 + Stage 1 release/whole-review focused: 23 passed.
+- Stage 1 cache + Stage 6 regressions: 37 passed.
+- total Python release/Stage 6 regression: 60 passed; dependency deprecation warnings only.
+- Node Stage 1 identity/cache: 28 passed.
+- node --check shell.js, Stage 1 validator and Stage 7 CDP harness: pass.
+- Python browser harness py_compile: pass.
+
+DATABASE
+- PRAGMA foreign_key_check: pass, issue_count=0.
+- PRAGMA integrity_check: ok.
+- final isolated counts: batches=2, files=2, staged=1571, ledger=1571, reviews=74, audit_events=8.
+
+RELEASE IDENTITY
+- frontend bundle hash: 5ff0ca5cb63c0bd4dd482933d534fe1f5c7f86626700fa2ca907da605aa18bc6
+- backend build hash: 3e90fc26bce786071f89aee3cb8c66ad729539065e020a0f9ca70739071b0465
+- configured/embedded manifest equality: pass.
+- data schema: PFIV025Stage7ImportReviewLedgerV1.
+
+GOVERNANCE
+- renderer: 3 Chinese human entries updated.
+- check-render: drift 0, reference issues 0.
+- Task Pack evidence_pack.schema.json: pass.
+- direct sparse-worktree diagnostic listed 28 missing root/other-project paths and no candidate-specific finding.
+- /tmp complete local root validation assembly reused local root governance/schemas/other project paths and mounted current PFI read-only: errors 0, warnings 0.
+
+BOUNDARY
+- Finder: not used.
+- External network: not used; browser network was ephemeral localhost only.
+- External canonical financial source: read-only and hash unchanged; acceptance writes were /tmp only.
+- Remediated intermediate incident: an earlier test path briefly wrote the repository MetaDatabase working copy; the two tracked files were restored and the new raw file removed before acceptance. Final `git status -- MetaDatabase PFI/MetaDatabase` was empty.
+- GitHub push/App install: not performed.
+- Phase 7.2/7.3 and Stage 7 whole-stage review: not started.

@@ -1,0 +1,60 @@
+{
+  "cases": [
+    {
+      "actual_external_network_calls": 0,
+      "expected_status": "succeeded",
+      "observed_progress": "3/3",
+      "result": "pass",
+      "scenario": "offline_cache_refresh"
+    },
+    {
+      "cache_fallback_used": true,
+      "error_code": "LOCAL_TIMEOUT",
+      "expected_status": "failed",
+      "progress_percent": null,
+      "result": "pass",
+      "scenario": "bounded_local_timeout"
+    },
+    {
+      "actual_external_network_calls": 0,
+      "completed_units": 0,
+      "error_code": "CACHE_REFRESH_ERROR",
+      "expected_status": "failed",
+      "result": "pass",
+      "scenario": "policy_claims_external_network"
+    },
+    {
+      "checkpoint_preserved": true,
+      "event_required": "lease_expired_requeued",
+      "expected_status": "succeeded",
+      "final_attempt_count": 2,
+      "final_retry_count": 1,
+      "result": "pass",
+      "scenario": "worker_restart_after_expired_lease"
+    },
+    {
+      "actual_signal": "SIGKILL",
+      "checkpoint_preserved": true,
+      "expected_status": "succeeded",
+      "integrity_status": "pass",
+      "result": "pass",
+      "scenario": "actual_process_kill_and_new_process"
+    },
+    {
+      "external_network_calls": 0,
+      "left_page_elapsed_ms": 10503,
+      "restored_same_job": true,
+      "result": "pass",
+      "scenario": "formal_browser_leave_and_recover",
+      "ui_api_database_parity": true
+    }
+  ],
+  "phase_target_result": "14 passed",
+  "schema": "PFIV025Stage10Phase103FailureMatrixV1",
+  "status": "pass",
+  "test_refs": [
+    "PFI/tests/test_v025_stage10_runtime_supervisor.py",
+    "PFI/tests/test_v025_stage10_crash_recovery.py",
+    "PFI/web/tests/v025/stage10_jobs_browser.py"
+  ]
+}

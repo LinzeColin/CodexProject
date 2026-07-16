@@ -1,0 +1,17 @@
+{
+  "schema": "PFIV025Stage8Phase82MotionValidationV1",
+  "status": "pass",
+  "max_motion_ms": 220,
+  "state_motion_ms": 180,
+  "animated_properties": ["transform", "opacity"],
+  "view_transition": "progressive_enhancement",
+  "css_fallback_available": true,
+  "prefers_reduced_motion": {
+    "tested": true,
+    "duration_ms": 0,
+    "active_animation_count": 0,
+    "state_information_preserved": true
+  },
+  "blocking_motion_present": false,
+  "decorative_infinite_motion_present": false
+}

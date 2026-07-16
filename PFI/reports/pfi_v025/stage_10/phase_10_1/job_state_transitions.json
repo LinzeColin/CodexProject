@@ -1,0 +1,61 @@
+{
+  "event_count": 20,
+  "phase_id": "V025-S10-P10.1",
+  "schema": "PFIV025Stage10Phase101JobStateTransitionsV1",
+  "status": "pass",
+  "status_counts": {
+    "cancelled": 1,
+    "dead_letter": 1,
+    "failed": 1,
+    "queued": 1,
+    "retrying": 1,
+    "running": 1,
+    "succeeded": 1
+  },
+  "transitions": {
+    "cancelled": [
+      "0::queued",
+      "1:queued:running",
+      "2:running:cancelled"
+    ],
+    "dead_letter": [
+      "0::queued",
+      "1:queued:running",
+      "2:running:dead_letter"
+    ],
+    "failed": [
+      "0::queued",
+      "1:queued:running",
+      "2:running:failed"
+    ],
+    "queued": [
+      "0::queued"
+    ],
+    "retrying": [
+      "0::queued",
+      "1:queued:running",
+      "2:running:retrying"
+    ],
+    "running": [
+      "0::queued",
+      "1:queued:running"
+    ],
+    "succeeded": [
+      "0::queued",
+      "1:queued:running",
+      "2:running:running:progress=1/2:step=parse",
+      "3:running:running:progress=2/2:step=persist",
+      "4:running:succeeded:progress=2/2:step=persist"
+    ]
+  },
+  "verified_invariants": {
+    "all_required_statuses_materialized": true,
+    "append_only_event_triggers": true,
+    "event_revision_is_contiguous_per_job": true,
+    "heartbeat_is_not_progress": true,
+    "lease_token_plaintext_persisted": false,
+    "progress_is_completed_units_over_total_units": true,
+    "progress_is_monotonic": true,
+    "stale_worker_write_rejected": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "actual_playwright_trace": true,
+  "contains_absolute_local_path": false,
+  "contains_private_values": false,
+  "contains_runtime_token": false,
+  "replacements": {
+    "absolute_paths": 1,
+    "auth_tokens": 0,
+    "financial_text": 0,
+    "image_entries_removed": 0,
+    "private_payloads": 0,
+    "resource_entries_removed": 0,
+    "sensitive_fields": 0
+  },
+  "resource_bodies_removed": true,
+  "retained_entry_count": 3,
+  "status": "pass",
+  "trace": "browser_trace_sanitized.zip"
+}

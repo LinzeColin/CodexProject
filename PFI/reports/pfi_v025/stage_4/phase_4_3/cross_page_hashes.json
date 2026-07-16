@@ -1,0 +1,133 @@
+{
+  "contains_private_values": false,
+  "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+  "difference_count": 0,
+  "frontend_contract": "PFIV025Stage4SurfaceStateViewsV1",
+  "legacy_surface_aliases": {
+    "home": "homepage",
+    "insights": "report"
+  },
+  "page_identity_in_hash": false,
+  "phase": "4.3",
+  "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+  "runtime_endpoint": "/api/read-model-status",
+  "schema": "PFIV025Stage4CrossPageHashesV1",
+  "stage": 4,
+  "status": "pass",
+  "surface_dependency_set_hashes": {
+    "accounts": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+    "consumption": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+    "homepage": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+    "investment": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+    "report": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db"
+  },
+  "surface_hashes": {
+    "accounts": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+    "consumption": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+    "homepage": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+    "investment": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+    "report": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e"
+  },
+  "surface_ids": [
+    "homepage",
+    "accounts",
+    "investment",
+    "consumption",
+    "report"
+  ],
+  "surface_metric_fingerprints": {
+    "accounts": [
+      "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+      "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+      "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+      "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+      "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+      "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+      "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+    ],
+    "consumption": [
+      "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+      "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+      "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+      "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+      "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+      "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+      "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+    ],
+    "homepage": [
+      "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+      "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+      "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+      "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+      "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+      "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+      "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+    ],
+    "investment": [
+      "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+      "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+      "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+      "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+      "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+      "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+      "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+    ],
+    "report": [
+      "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+      "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+      "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+      "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+      "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+      "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+      "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+    ]
+  },
+  "surface_metric_ids": {
+    "accounts": [
+      "net_worth_cny",
+      "account_assets_cny",
+      "cash_balance_cny",
+      "liabilities_cny",
+      "investment_market_value_cny",
+      "investment_cost_basis_cny",
+      "investment_unrealized_pnl_cny"
+    ],
+    "consumption": [
+      "net_worth_cny",
+      "account_assets_cny",
+      "cash_balance_cny",
+      "liabilities_cny",
+      "investment_market_value_cny",
+      "investment_cost_basis_cny",
+      "investment_unrealized_pnl_cny"
+    ],
+    "homepage": [
+      "net_worth_cny",
+      "account_assets_cny",
+      "cash_balance_cny",
+      "liabilities_cny",
+      "investment_market_value_cny",
+      "investment_cost_basis_cny",
+      "investment_unrealized_pnl_cny"
+    ],
+    "investment": [
+      "net_worth_cny",
+      "account_assets_cny",
+      "cash_balance_cny",
+      "liabilities_cny",
+      "investment_market_value_cny",
+      "investment_cost_basis_cny",
+      "investment_unrealized_pnl_cny"
+    ],
+    "report": [
+      "net_worth_cny",
+      "account_assets_cny",
+      "cash_balance_cny",
+      "liabilities_cny",
+      "investment_market_value_cny",
+      "investment_cost_basis_cny",
+      "investment_unrealized_pnl_cny"
+    ]
+  },
+  "version": "v0.2.5"
+}

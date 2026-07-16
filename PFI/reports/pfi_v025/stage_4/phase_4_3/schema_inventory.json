@@ -1,0 +1,42 @@
+{
+  "contains_private_values": false,
+  "metric_statuses": [
+    "ready",
+    "confirmed_zero",
+    "partial_coverage",
+    "not_loaded",
+    "source_missing",
+    "path_error",
+    "parse_failed",
+    "outdated_snapshot",
+    "permission_denied",
+    "calculation_failed",
+    "reconciliation_failed",
+    "valuation_missing",
+    "filtered_empty"
+  ],
+  "phase": "4.3",
+  "schema": "PFIV025Stage4Phase43SchemaInventoryV1",
+  "schemas": [
+    {
+      "path": "PFI/docs/pfi_v025/stage_4/metric_state.schema.json",
+      "role": "canonical Task Pack base schema",
+      "schema_id": "PFI Metric State",
+      "taskpack_exact": true
+    },
+    {
+      "path": "PFI/docs/pfi_v025/stage_4/metric_state_strict.schema.json",
+      "role": "project strict invariant extension",
+      "schema_id": "PFIV025MetricStateStrictV1",
+      "taskpack_exact": false
+    },
+    {
+      "path": "PFI/src/pfi_os/application/read_models/unified.py",
+      "role": "deterministic runtime object contract",
+      "schema_id": "PFIV025UnifiedReadModelV1",
+      "taskpack_exact": false
+    }
+  ],
+  "stage": 4,
+  "version": "v0.2.5"
+}

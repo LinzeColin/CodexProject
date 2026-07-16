@@ -1,0 +1,280 @@
+{
+  "version": "v0.2.5",
+  "stage": 0,
+  "phase": "0.2",
+  "status": "candidate_pass",
+  "git_commit": "82869ffdb37e4de22244d5423c9b7f71f4cb7076",
+  "git_commit_semantics": "approved_phase_plan_and_clean_implementation_base",
+  "initial_live_main": "d90e82adc75a71f4d9b05dcee68d080d46331d9e",
+  "initial_remote_object_hydration_performed": true,
+  "allowed_files_obeyed": true,
+  "contract_id": "PFI-V025-STAGE0-PHASE02-ACTIVE-REQUIREMENTS",
+  "acceptance_id": "ACC-PFI-V025-S0-P02-ACTIVE-CONTRACT",
+  "iteration_id": "ITER-20260711-PFI-V025-S0-P02",
+  "source_hashes": {
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "task_pack_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+  },
+  "design_identity": {
+    "path": "PFI/docs/pfi_v025/stage_0/PHASE_0_2_DESIGN.md",
+    "sha256": "cc9a451558ab36ccb2a06724c628b874952d579efe5b5b95f1eb3d9d10a51deb"
+  },
+  "implementation_plan_identity": {
+    "path": "PFI/docs/pfi_v025/stage_0/PHASE_0_2_IMPLEMENTATION_PLAN.md",
+    "sha256": "c1de0092253c1e545ae17ab2d1b3f135545e2a5ee4854e4b55fe27f7662fe8e8"
+  },
+  "commands": [
+    {
+      "command": "Task 1 exact advertised SHA object-only hydration with no ref/FETCH_HEAD/shallow mutation",
+      "exit_code": 0,
+      "summary": "Initial live main d90e82adc75a71f4d9b05dcee68d080d46331d9e hydrated; immediate ref, FETCH_HEAD and shallow snapshots unchanged."
+    },
+    {
+      "command": "Task 1 pinned source, ZIP, merge-base, PFI remote diff, scope and protected-metadata preflight",
+      "exit_code": 0,
+      "summary": "Pinned hashes and ZIP passed; PFI remote-side diff quiet; 8-new/12-existing scope and six-target protected baseline passed."
+    },
+    {
+      "command": "Task 2 active requirements identity, full semantic/type and route snapshot gates",
+      "exit_code": 0,
+      "summary": "Canonical root order and values passed; verified-current navigation and shell inputs matched repository truth."
+    },
+    {
+      "command": "Task 3 human-policy existence, source-hash and active projection parity gates",
+      "exit_code": 0,
+      "summary": "Three policies passed with 21 history rows, six boundary surfaces, 14 run sections, seven conflicts and two overrides."
+    },
+    {
+      "command": "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref $PHASE_BASE --enforce-sync",
+      "exit_code": 1,
+      "summary": "Expected Task 4 RED before companion edits; exact missing twelve-companion set observed."
+    },
+    {
+      "command": "Task 4 repository fallback-YAML and CSV base/current structural comparison",
+      "exit_code": 0,
+      "summary": "Models, assumptions, formulas, tasks and parameter runtime values unchanged; counts remain 1/1/23/10/10."
+    },
+    {
+      "command": "PFI/.venv/bin/python -B direct import-yaml diagnostic for the approved registry comparison",
+      "exit_code": 1,
+      "summary": "Expected environment diagnostic: ModuleNotFoundError for yaml; no dependency was installed and the repository fallback YAML parser supplied the equivalent assertion."
+    },
+    {
+      "command": "LC_ALL=C sort -c changed_files.txt and exact line-count assertion",
+      "exit_code": 0,
+      "summary": "Exact sorted 20-path implementation ledger passed."
+    },
+    {
+      "command": "isolated guarded pytest PFI/tests/test_v024_stage0_phase02_contract.py",
+      "exit_code": 0,
+      "summary": "3 passed in 0.11s; temporary HOME/data/cache/report roots removed with preserved exit status."
+    },
+    {
+      "command": "Task Pack active_requirements and evidence_pack Draft 2020-12 schema validation",
+      "exit_code": 0,
+      "summary": "Both streamed schemas and preliminary instances validated."
+    },
+    {
+      "command": "complete Active Requirements strong semantic and type gate",
+      "exit_code": 0,
+      "summary": "active_contract_semantic_gate=pass."
+    },
+    {
+      "command": "Node current navigation/routes/shell compatibility snapshot parity",
+      "exit_code": 0,
+      "summary": "current_route_snapshot_valid=true."
+    },
+    {
+      "command": "four-document active-contract projection and source-hash parity gate",
+      "exit_code": 0,
+      "summary": "cross_document_parity=pass."
+    },
+    {
+      "command": "recorded sparse-aware selective shadow governance preflight",
+      "exit_code": 0,
+      "summary": "Project governance and governance sync selected PFI with errors=0 and warnings=0; shadow worktree cleaned."
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/config/pfi_v025_active_requirements.json",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/MODEL_SPEC.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/governance/formula_registry.yaml",
+    "PFI/docs/governance/model_registry.yaml",
+    "PFI/docs/governance/parameter_registry.csv",
+    "PFI/docs/pfi_v025/stage_0/history_deprecation.md",
+    "PFI/docs/pfi_v025/stage_0/run_contract.md",
+    "PFI/docs/pfi_v025/stage_0/scope_boundary.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/terminal.log"
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/terminal.log"
+  ],
+  "tasks": [
+    {
+      "task_id": "S0-P2-T1",
+      "status": "candidate_pass",
+      "artifacts": [
+        "PFI/config/pfi_v025_active_requirements.json",
+        "PFI/reports/pfi_v025/stage_0/phase_0_2/terminal.log"
+      ]
+    },
+    {
+      "task_id": "S0-P2-T2",
+      "status": "candidate_pass",
+      "artifacts": [
+        "PFI/docs/pfi_v025/stage_0/history_deprecation.md",
+        "PFI/reports/pfi_v025/stage_0/phase_0_2/terminal.log"
+      ]
+    },
+    {
+      "task_id": "S0-P2-T3",
+      "status": "candidate_pass",
+      "artifacts": [
+        "PFI/docs/pfi_v025/stage_0/scope_boundary.md",
+        "PFI/reports/pfi_v025/stage_0/phase_0_2/terminal.log"
+      ]
+    },
+    {
+      "task_id": "S0-P2-T4",
+      "status": "candidate_pass",
+      "artifacts": [
+        "PFI/docs/pfi_v025/stage_0/run_contract.md",
+        "PFI/reports/pfi_v025/stage_0/phase_0_2/terminal.log"
+      ]
+    }
+  ],
+  "active_contract_projection": {
+    "contract_id": "PFI-V025-STAGE0-PHASE02-ACTIVE-REQUIREMENTS",
+    "blocking_conflicts": [
+      {
+        "conflict_id": "PFI-V025-CONFLICT-OWNER-VIEWS",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "status": "blocked",
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": [
+          "S0-P3-T1",
+          "S12-P3-T1"
+        ]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-RELEASE-IDENTITY",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "status": "blocked",
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": [
+          "S1-P1-T1",
+          "S12-P3-T1"
+        ]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-APP-IDENTITY",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "status": "blocked",
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": [
+          "S12-P2-T1"
+        ]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-RUNTIME-LISTENERS",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "status": "blocked",
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": [
+          "S1-P3-T2",
+          "S12-P2-T2"
+        ]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-STALE-ROUTE-MARKERS",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "status": "blocked",
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": [
+          "S1-P1-T1",
+          "S6-P1-T1",
+          "S6-P1-T2",
+          "S6-P1-T3",
+          "S12-P3-T1"
+        ]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-ROUTE-TARGET-GAP",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "status": "blocked",
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": [
+          "S6-P1-T1",
+          "S6-P1-T2",
+          "S6-P1-T3"
+        ]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-GOVERNANCE-SCOPE",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "status": "approved_pending_validation",
+        "blocks_phase_0_2_candidate": true,
+        "resolution_tasks": [
+          "S0-P3-T1"
+        ]
+      }
+    ],
+    "policy_overrides": [
+      {
+        "override_id": "PFI-V025-OVERRIDE-STAGE1-ISOLATED-CANDIDATE",
+        "authority": "latest_user_decision",
+        "source_contract": "PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md:S1-P3-T1,S1-P3-T3",
+        "original_action": "canonical_app_install_and_entry_replacement_in_stage_1",
+        "status": "superseded",
+        "effective_rule": "stage_1_uses_isolated_disposable_candidate_without_canonical_entry_mutation",
+        "replacement_gate": "canonical_install_only_at_S12-P2-T1_after_stage_12_preconditions",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/run_contract.md#approved-policy-overrides"
+      },
+      {
+        "override_id": "PFI-V025-S0-GOVERNANCE-COMPANIONS",
+        "authority": "latest_user_decision",
+        "source_contract": "PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md:Stage_0_allowed_files",
+        "original_action": "stage_0_phase_0_2_writes_limited_to_eight_core_artifacts",
+        "status": "superseded",
+        "effective_rule": "phase_0_2_allows_exact_eight_core_artifacts_plus_twelve_named_governance_companions",
+        "replacement_gate": "exact_twenty_path_ledger_plus_sparse_aware_preflight_and_postcommit_attestation",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/scope_boundary.md#approved-governance-companion-override"
+      }
+    ]
+  },
+  "active_contract_projection_sha256": "1154f15e1824bcd6ce8826c6bf3b0a76389152e63a06aef7a8cafe8c4f9e23bf",
+  "governance_override_state": "approved_pending_postcommit_attestation",
+  "explicitly_not_done": [
+    "Phase 0.3 and every later Phase or Stage",
+    "whole-Stage review or Stage acceptance",
+    "full PFI suite and non-selected validation scripts",
+    "real-data or MetaDatabase tests and any financial-data read or mutation",
+    "App browser Playwright launcher runtime installer or final-delivery tests",
+    "database write migration manifest generation or write-mode governance generation",
+    "GitHub fetch with ref mutation push merge release upload or App reinstall"
+  ],
+  "risks": [
+    "Six current owner release App runtime and route conflicts remain blocked and are routed to later Roadmap tasks.",
+    "The approved governance-scope override remains approved_pending_validation until candidate and post-commit attestation gates pass.",
+    "PFI/tests/test_pfi_parameters_consistency.py has a known baseline of 3 passed and 5 failed against a legacy owner catalog and is routed to PFI-V025-CONFLICT-OWNER-VIEWS / S0-P3-T1; it is not a Phase 0.2 gate.",
+    "The planned direct PyYAML comparison cannot run because no available Python contains yaml; the repository fallback YAML parser is used without installing dependencies.",
+    "Remote main can move independently; final attestation must re-read the advertised SHA and remain fail-closed."
+  ],
+  "rollback": "Before commit remove only the exact twenty-path candidate diff and restore the immutable PHASE_BASE; after commit use an append-only-safe compensating commit and preserve all historical events/evidence.",
+  "requires_user_acceptance": true,
+  "contains_private_values": false
+}

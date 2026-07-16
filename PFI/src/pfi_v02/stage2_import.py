@@ -7,10 +7,17 @@ import json
 import zipfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from pfi_v02.classification_rules import ClassificationInput, classify_transaction
 from pfi_v02.core_models import ImportBatch, LedgerEventType, NormalizedTransaction, RawRecord
+
+
+MAX_IMPORT_AMOUNT_ABS = Decimal("1000000000000")
+MAX_ALIPAY_ZIP_MEMBERS = 20
+MAX_ALIPAY_ZIP_UNCOMPRESSED_BYTES = 100 * 1024 * 1024
+MAX_ALIPAY_ZIP_COMPRESSION_RATIO = 100
 
 
 @dataclass(frozen=True)
@@ -102,7 +109,7 @@ def _clean_row(row: dict[str | None, str | None]) -> dict[str, str]:
 def _csv_rows_after_header(content: bytes, *, required_headers: tuple[str, ...]) -> list[dict[str, str]]:
     text = _decode_text(content)
     lines = text.splitlines()
-    header_index = 0
+    header_index: int | None = None
     for index, line in enumerate(lines):
         try:
             cells = next(csv.reader([line]))
@@ -112,6 +119,8 @@ def _csv_rows_after_header(content: bytes, *, required_headers: tuple[str, ...])
         if all(header in normalized for header in required_headers):
             header_index = index
             break
+    if header_index is None:
+        raise ValueError("Alipay CSV required headers are missing.")
     rows: list[dict[str, str]] = []
     for row in csv.DictReader(io.StringIO("\n".join(lines[header_index:]))):
         cleaned = _clean_row(row)
@@ -140,8 +149,16 @@ def _parse_money(value: str) -> float:
         return 0.0
     negative = cleaned.startswith("(") and cleaned.endswith(")")
     cleaned = cleaned.strip("()")
-    amount = float(cleaned)
-    return -amount if negative else amount
+    try:
+        amount = Decimal(cleaned)
+    except InvalidOperation as exc:
+        raise ValueError("money value is invalid") from exc
+    if not amount.is_finite() or abs(amount) > MAX_IMPORT_AMOUNT_ABS:
+        raise ValueError("money value is outside the accepted finite range")
+    if amount.as_tuple().exponent < -2:
+        raise ValueError("money value has more than two decimal places")
+    normalized = -amount if negative else amount
+    return float(normalized)
 
 
 def _parse_date(value: str) -> str:
@@ -151,7 +168,34 @@ def _parse_date(value: str) -> str:
             return datetime.strptime(value, fmt).date().isoformat()
         except ValueError:
             continue
-    return value
+    raise ValueError("transaction date is invalid")
+
+
+def validated_alipay_zip_csv_bytes(content: bytes) -> bytes:
+    """Return the sole validated CSV member without unsafe ZIP expansion."""
+
+    with zipfile.ZipFile(io.BytesIO(content)) as archive:
+        members = [info for info in archive.infolist() if not info.is_dir()]
+        if not members or len(members) > MAX_ALIPAY_ZIP_MEMBERS:
+            raise ValueError("Alipay ZIP member count is outside the accepted limit.")
+        if any(info.flag_bits & 0x1 for info in members):
+            raise ValueError("Encrypted Alipay ZIP members are not supported.")
+        csv_members = [info for info in members if info.filename.lower().endswith(".csv")]
+        if len(csv_members) != 1:
+            raise ValueError("Alipay ZIP must contain exactly one CSV bill file.")
+        total_uncompressed = sum(int(info.file_size) for info in members)
+        if total_uncompressed > MAX_ALIPAY_ZIP_UNCOMPRESSED_BYTES:
+            raise ValueError("Alipay ZIP uncompressed content exceeds the accepted limit.")
+        for info in members:
+            compressed = max(int(info.compress_size), 1)
+            if int(info.file_size) / compressed > MAX_ALIPAY_ZIP_COMPRESSION_RATIO:
+                raise ValueError("Alipay ZIP compression ratio exceeds the accepted limit.")
+        selected = csv_members[0]
+        with archive.open(selected, "r") as source:
+            payload = source.read(MAX_ALIPAY_ZIP_UNCOMPRESSED_BYTES + 1)
+        if len(payload) > MAX_ALIPAY_ZIP_UNCOMPRESSED_BYTES:
+            raise ValueError("Alipay ZIP CSV content exceeds the accepted limit.")
+        return payload
 
 
 def _make_batch(source_id: str, parser_version: str, content: bytes, raw_record_count: int) -> ImportBatch:
@@ -221,24 +265,24 @@ def parse_cba_csv_bytes(content: bytes, *, account_id: str = "acct_cba_main", cu
 def _normalise_alipay_amount(row: dict[str, str]) -> float:
     amount = abs(_parse_money(_field(row, "金额", "Amount", "交易金额")))
     direction = _field(row, "收/支", "收支", "Direction", "资金流向")
-    text = " ".join(row.values())
-    if "支出" in direction or "付款" in direction or "支出" in text or "付款" in text:
+    # The source's explicit direction column is authoritative.  Description
+    # text can contain words such as “付款” for an incoming refund and must not
+    # be allowed to reverse the declared sign.
+    direction = direction.strip()
+    if direction in {"支出", "付款"}:
         return -amount
-    if "收入" in direction or "收款" in direction or "退款" in text or "到账" in text:
+    if direction in {"收入", "收款"}:
         return amount
-    raw_amount = _field(row, "金额", "Amount", "交易金额")
-    return _parse_money(raw_amount)
+    if direction == "不计收支":
+        return _parse_money(_field(row, "金额", "Amount", "交易金额"))
+    raise ValueError("Alipay row has an empty or unsupported 收/支 direction.")
 
 
 def parse_alipay_bill_bytes(content: bytes, *, account_id: str = "acct_alipay", currency: str = "CNY") -> Stage2ImportResult:
     if zipfile.is_zipfile(io.BytesIO(content)):
-        with zipfile.ZipFile(io.BytesIO(content)) as archive:
-            csv_names = [name for name in archive.namelist() if name.lower().endswith(".csv")]
-            if not csv_names:
-                raise ValueError("Alipay ZIP contains no CSV bill file.")
-            content = archive.read(csv_names[0])
+        content = validated_alipay_zip_csv_bytes(content)
 
-    rows = _csv_rows_after_header(content, required_headers=("交易时间", "金额"))
+    rows = _csv_rows_after_header(content, required_headers=("交易时间", "金额", "收/支"))
     rows = [
         row
         for row in rows
@@ -272,10 +316,22 @@ def parse_alipay_bill_bytes(content: bytes, *, account_id: str = "acct_alipay", 
         )
         amount = _normalise_alipay_amount(row)
         date = _parse_date(_field(row, "交易时间", "日期", "Date", "Time"))
+        direction = _field(row, "收/支", "收支", "Direction", "资金流向")
         classification = classify_transaction(
             ClassificationInput("alipay_daily", description, amount, currency, account_id, "")
         )
-        if "退款" in description or "refund" in description.lower():
+        if direction.strip() == "不计收支":
+            # “不计收支” describes cash-flow direction, not economic type.
+            # Preserve the classifier's FUND/TRANSFER/etc. result.  An
+            # otherwise generic CASH classification stays review-gated so it
+            # cannot silently become consumption.
+            event_type = classification.event_type
+            review_state = classification.review_state
+            confidence = 0.95 if review_state == "ACCEPTED" else 0.55
+            if event_type == LedgerEventType.CASH:
+                review_state = "NEEDS_REVIEW"
+                confidence = 0.55
+        elif "退款" in description or "refund" in description.lower():
             event_type = LedgerEventType.REFUND
             review_state = "ACCEPTED"
             confidence = 0.93

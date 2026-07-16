@@ -1,0 +1,60 @@
+{
+  "artifact_count": 10,
+  "artifacts": {
+    "PFI/docs/pfi_v025/stage_10/PHASE_10_1_DURABLE_JOB_LIFECYCLE_IMPLEMENTATION.md": {
+      "byte_size": 3972,
+      "category": "phase_document",
+      "sha256": "sha256:05b326757ee8b52bcd6e6a95f326da2bcd96f2f1b31686ec568eaae84959ad85"
+    },
+    "PFI/reports/pfi_v025/stage_10/phase_10_1/database_before_after.json": {
+      "byte_size": 3509,
+      "category": "database_evidence",
+      "sha256": "sha256:00f403b150663a267e30fd39452f2754d540246b96297b259feee380f62da53d"
+    },
+    "PFI/reports/pfi_v025/stage_10/phase_10_1/job_state_transitions.json": {
+      "byte_size": 1434,
+      "category": "lifecycle_evidence",
+      "sha256": "sha256:7fafed73dd2bb838494f8ab2413de303df8e750de4685a2a3dfcb12fb3a515e4"
+    },
+    "PFI/reports/pfi_v025/stage_10/phase_10_1/phase_contract.json": {
+      "byte_size": 2075,
+      "category": "contract_evidence",
+      "sha256": "sha256:065035dab2cf6cf97e052d8c58d45d4d97068af073e4ff1d714c1ce98b3f3096"
+    },
+    "PFI/reports/pfi_v025/stage_10/phase_10_1/risk_and_rollback.md": {
+      "byte_size": 1520,
+      "category": "risk_evidence",
+      "sha256": "sha256:a11445179d9f0457fdd50188e4dd667060c749319ec3e5a7afab0858c395ba8e"
+    },
+    "PFI/src/pfi_os/application/jobs/__init__.py": {
+      "byte_size": 806,
+      "category": "product_source",
+      "sha256": "sha256:f50c119ffb0f14fd4b07386c9df4b742793e841e65f50fbbda2615de5da5f710"
+    },
+    "PFI/src/pfi_os/application/jobs/lifecycle.py": {
+      "byte_size": 3792,
+      "category": "product_source",
+      "sha256": "sha256:b9202f9523b500f40e672f7e4453d521cb34079f27df0da64702cda525d1145b"
+    },
+    "PFI/src/pfi_os/infrastructure/jobs/__init__.py": {
+      "byte_size": 164,
+      "category": "product_source",
+      "sha256": "sha256:765d09aa0dea4961fef0ee41ca67af00e396e3a33276dbdf4fbd929fcef12c97"
+    },
+    "PFI/src/pfi_os/infrastructure/jobs/sqlite_store.py": {
+      "byte_size": 45888,
+      "category": "product_source",
+      "sha256": "sha256:83b9d0c23db2b9d384b70bfdb565592f6814302e25249f55da8a745da3cc8f4c"
+    },
+    "PFI/tests/test_v025_stage10_job_lifecycle.py": {
+      "byte_size": 17877,
+      "category": "test_source",
+      "sha256": "sha256:9d6249a2d3533c09fdb77ea97737e418f7c29518bc50f9b72867e29c6d6eabbc"
+    }
+  },
+  "contains_private_values": false,
+  "observed_at": "2026-07-15T20:28:07+10:00",
+  "phase_id": "V025-S10-P10.1",
+  "product_commit": "b97827f0b90f7e72de9fec64f88f702658a823bf",
+  "schema": "PFIV025Stage10Phase101ArtifactHashesV1"
+}

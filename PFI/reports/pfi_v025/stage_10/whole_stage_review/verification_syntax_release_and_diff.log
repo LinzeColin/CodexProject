@@ -1,0 +1,28 @@
+$ node --check PFI/web/app/jobs/runtimeJobs.js
+
+$ node --check PFI/web/app/components/jobTimeline.js
+
+$ node --check PFI/web/app/shell.js
+
+$ node --check PFI/web/tests/v025/stage10_jobs_cdp.mjs
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m py_compile PFI/src/pfi_os/application/supervisor/runtime_jobs.py PFI/web/tests/v025/stage10_jobs_browser.py PFI/web/tests/v025/stage10_whole_review_evidence.py PFI/web/tests/v025/stage10_whole_review_verify.py PFI/web/tests/v025/stage10_whole_review_finalize.py
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json
+{
+  "backend_build_hash": "adeaa59df4cce95e2c34725225b0048411710af04dd356d03f5094038b3ce758",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "data_access": "disabled",
+  "frontend_bundle_hash": "65121489a4d6a64376f07115d9ba99379cc285b9518b7a41f9e82b1325d87f3a",
+  "git_commit": "0b2aa6677a61a600eb2596bd8b5d39ca32522084",
+  "namespace": "isolated_candidate_empty_data_v1",
+  "persistent": false,
+  "process_cache_key": "9cd1d0e55a11a8d937b32e19c1574d54729a631fcb6cc79edd710640bc7aded4",
+  "release_manifest_sha256": "6c078ddce18bc4e2804c08a59fa7cba155afcba087c3119f2b542e5090b701c2",
+  "runtime_api": "disabled",
+  "schema": "PFIV025Stage1IsolatedCandidateCachePolicyV1",
+  "streamlit_cache_key": "9cd1d0e55a11a8d937b32e19c1574d54729a631fcb6cc79edd710640bc7aded4",
+  "valid": true
+}
+
+$ git diff --check

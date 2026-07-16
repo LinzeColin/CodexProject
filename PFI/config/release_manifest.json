@@ -1,0 +1,14 @@
+{
+  "product": "PFI",
+  "version": "v0.2.5",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "git_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "frontend_bundle_hash": "e18644635d69488301030dd57316c2316317a859e8afed4aecfc652c0b7dffee",
+  "backend_build_hash": "d1d60c64e91d21d3dcd8ac76714087c84e3f4d3cbd105bd24e2ccdc209bb0600",
+  "app_short_version": "0.2.5",
+  "app_build_version": "20260712.1",
+  "data_schema_version": "PFIV025Stage7MetricLineageV1",
+  "formula_version": "v0.2.3",
+  "parameter_version": "v0.2.2",
+  "generated_at": "2026-07-15T21:43:27Z"
+}

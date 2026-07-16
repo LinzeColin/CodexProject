@@ -1,0 +1,18 @@
+$ node PFI/web/tests/v025/stage7_metric_drilldown.test.mjs
+stage7 metric drilldown frontend contract: pass
+
+$ node PFI/web/tests/v025/stage9_reports.test.mjs
+stage9 reviewed reports frontend contract: pass
+
+$ node PFI/web/tests/v025/stage9_decision_review.test.mjs
+stage9 phase 9.3 decision review frontend contract: pass
+
+$ node --check PFI/web/app/shell.js
+
+$ node --check PFI/web/app/pages/reports/stage9Analysis.js
+
+$ node --check PFI/web/app/pages/reports/stage9DecisionReview.js
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -c 'import ast,pathlib; paths=('"'"'PFI/web/tests/v025/stage9_whole_review_browser.py'"'"','"'"'PFI/web/tests/v025/stage9_whole_review_evidence.py'"'"','"'"'PFI/web/tests/v025/stage9_whole_review_verify.py'"'"','"'"'PFI/web/tests/v025/stage9_whole_review_finalize.py'"'"'); [ast.parse(pathlib.Path(p).read_text(encoding='"'"'utf-8'"'"'),filename=p) for p in paths]'
+
+$ git diff --check

@@ -1,6 +1,7 @@
 const CONTEXT_STORAGE_KEY = "pfi-context-v2";
 const RUNTIME_CONFIG = readRuntimeConfig();
 const PFI_RUNTIME_API_BASE_URL = RUNTIME_CONFIG.apiBaseUrl || "http://127.0.0.1:8766";
+const PFI_RUNTIME_API_AUTH_TOKEN = String(RUNTIME_CONFIG.apiAuthToken || "");
 const PFI_STAGE1_SHELL_INTEGRITY_CONTRACT = "PFI-V024-STAGE1-SHELL-INTEGRITY";
 const PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT = "PFI-V024-STAGE2-ENTRY-CONSISTENCY";
 const PFI_STAGE2_ENTRY_METADATA = Object.freeze({
@@ -21,6 +22,8 @@ const PFI_STAGE2_ENTRY_METADATA = Object.freeze({
   stage: RUNTIME_CONFIG.stage || document.body?.dataset.pfiStage || "Stage 2",
   phase: RUNTIME_CONFIG.phase || document.body?.dataset.pfiPhase || "2.2",
   webBundleHash: RUNTIME_CONFIG.webBundleHash || document.body?.dataset.pfiWebBundleHash || "",
+  backendBuildHash: RUNTIME_CONFIG.backendBuildHash || "",
+  gitCommit: RUNTIME_CONFIG.gitCommit || "",
   webIndexSha256: RUNTIME_CONFIG.webIndexSha256 || document.body?.dataset.pfiWebIndexSha256 || "",
   tokensCssSha256: RUNTIME_CONFIG.tokensCssSha256 || document.body?.dataset.pfiTokensCssSha256 || "",
   versionJsSha256: RUNTIME_CONFIG.versionJsSha256 || document.body?.dataset.pfiVersionJsSha256 || "",
@@ -53,11 +56,30 @@ function applyPFIStage2EntryMetadata(metadata = PFI_STAGE2_ENTRY_METADATA) {
     const node = document.querySelector(selector);
     if (node) node.textContent = value;
   };
-  const hash = metadata.webBundleHash || body.dataset.pfiWebBundleHash || "runtime-computed";
+  const manifest = readEmbeddedReleaseManifest();
+  const hash = manifest.frontend_bundle_hash || metadata.webBundleHash || body.dataset.pfiWebBundleHash || "runtime-computed";
+  const releaseIdentity = Object.freeze({
+    version: manifest.version || metadata.targetVersion || metadata.pfiVersion || "未加载",
+    build: manifest.build_id || metadata.buildId || "未加载",
+    commit: manifest.git_commit || metadata.gitCommit || "未加载",
+    frontend: manifest.frontend_bundle_hash || metadata.webBundleHash || "未加载",
+    backend: manifest.backend_build_hash || metadata.backendBuildHash || "未加载",
+  });
   write("[data-pfi-entry-repair-label]", metadata.repairLabel || "PFI v0.2.3 Repair");
   write("[data-pfi-entry-build-id]", metadata.buildId || "pfi-v024-stage2-phase22");
   write("[data-pfi-entry-bundle-hash]", `bundle ${String(hash).slice(0, 16)}`);
   write("[data-pfi-entry-ui-contract]", metadata.uiContractVersion || PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT);
+  write("[data-pfi-release-detail-version]", releaseIdentity.version);
+  write("[data-pfi-release-detail-build]", releaseIdentity.build);
+  write("[data-pfi-release-detail-commit]", releaseIdentity.commit);
+  write("[data-pfi-release-detail-frontend]", releaseIdentity.frontend);
+  write("[data-pfi-release-detail-backend]", releaseIdentity.backend);
+  const detailNode = document.querySelector("[data-pfi-release-identity-details]");
+  if (detailNode) {
+    detailNode.dataset.pfiReleaseIdentityComplete = Object.values(releaseIdentity).every((value) => value !== "未加载")
+      ? "true"
+      : "false";
+  }
   return metadata;
 }
 
@@ -105,21 +127,40 @@ function handlePFIStage1ShellError(error, context = {}) {
 
 function mountPFIStage1Route(routeAlias = "", options = {}) {
   try {
-    const clean = normalizeRouteAlias(routeAlias || routeAliasFromLocation());
+    const requestedRouteAlias = String(routeAlias || routeAliasFromLocation() || "").trim();
+    const clean = normalizeRouteAlias(requestedRouteAlias);
     if (!clean) return { status: "skipped", routeAlias: "" };
     const routeTarget = workspaceTargetFromRoute(clean);
-    if (!routeTarget) return { status: "unmatched", routeAlias: clean };
+    if (!routeTarget) {
+      renderInvalidRouteState(requestedRouteAlias || clean, {
+        preserveFocus: options.preserveFocus === true,
+        source: options.source || "route",
+        historyState: options.historyState || null,
+      });
+      return { status: "unmatched", routeAlias: clean, recoveryRouteAlias: "/overview" };
+    }
     if (routeTarget.view) {
       openFunctionView(routeTarget.view, { silent: true, routeAlias: clean, skipRouteSync: true });
     } else if (routeTarget.workspace) {
       renderWorkspace(routeTarget.workspace, {
         routeAlias: clean,
         silent: true,
-        preserveFocus: true,
+        preserveFocus: options.preserveFocus === true,
         skipRouteSync: true,
+        historyScrollY: options.historyState?.scrollY,
       });
     }
-    syncBrowserRoute(clean, { replace: options.replace === true });
+    if (options.historyTraversal === true) {
+      replaceCurrentStage6HistoryState(clean, {
+        source: options.source || "popstate",
+        scrollY: options.historyState?.scrollY,
+      });
+    } else {
+      syncBrowserRoute(clean, {
+        replace: options.replace === true || normalizeRouteAlias(requestedRouteAlias) !== requestedRouteAlias,
+        source: options.source || "route",
+      });
+    }
     return { status: "mounted", routeAlias: clean, workspace: routeTarget.workspace || "" };
   } catch (error) {
     return handlePFIStage1ShellError(error, { source: "route" });
@@ -200,6 +241,7 @@ const FX_SNAPSHOT = Object.freeze({
   cacheState: "cached",
 });
 const CURRENT_FX_BADGE_DISPLAY = "AUD/CNY=4.69（2026/06/28 06:00）";
+const NOT_LOADED_FX_BADGE_DISPLAY = "AUD/CNY=未加载";
 const FX_TO_CNY = Object.freeze({
   CNY: 1,
   AUD: FX_SNAPSHOT.rateAudToCny,
@@ -482,17 +524,28 @@ const SEARCH_ALIASES = {
 };
 
 const SEARCH_DEFAULT_LIMIT = 10;
-const STAGE3_NAV = window.PFI_V024_STAGE3_NAVIGATION || window.PFI_V024_STAGE3_NAV || window.PFI_V023_STAGE3_NAV || Object.freeze({
+const STAGE6_ROUTES = window.PFI_V025_STAGE6_ROUTES || window.PFI_V025_STAGE6_NAVIGATION || Object.freeze({});
+const STAGE6_PAGE_CONTRACTS = window.PFI_V025_STAGE6_PAGE_CONTRACTS || Object.freeze({ pages: Object.freeze([]), pageGroups: Object.freeze({}) });
+const STAGE7_LINEAGE = window.PFI_V025_STAGE7_LINEAGE || Object.freeze({});
+const ACTIVE_PAGE_CONTRACTS = STAGE6_ROUTES.pageContracts?.pages
+  ? STAGE6_ROUTES.pageContracts
+  : STAGE6_PAGE_CONTRACTS;
+const PFI_V025_STAGE6_PHASE63_HISTORY = STAGE6_ROUTES.phase63HistoryContract || Object.freeze({
+  schema: "PFIV025Stage6Phase63HistoryContractV1",
+  historyMode: "canonical_path_with_hash_compatibility_fallback",
+  invalidRouteRecovery: "/overview",
+});
+const STAGE3_NAV = STAGE6_ROUTES.schema ? STAGE6_ROUTES : window.PFI_V024_STAGE3_NAVIGATION || window.PFI_V024_STAGE3_NAV || window.PFI_V023_STAGE3_NAV || Object.freeze({
   legacyAliasEntries: Object.freeze([
-    Object.freeze({ taskId: "T3.1.2", label: "首页", targetWorkspace: "home", routeAlias: "/home/today", resolvedRouteAlias: "/home", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
-    Object.freeze({ taskId: "T3.1.2", label: "市场", targetWorkspace: "market_research", routeAlias: "/market/watch", resolvedRouteAlias: "/market-research?tab=market", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
-    Object.freeze({ taskId: "T3.1.2", label: "研究", targetWorkspace: "market_research", routeAlias: "/market/research", resolvedRouteAlias: "/market-research?tab=research", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
-    Object.freeze({ taskId: "T3.1.2", label: "持仓", targetWorkspace: "investment", routeAlias: "/investment/holdings", resolvedRouteAlias: "/investment?tab=holdings", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
-    Object.freeze({ taskId: "T3.1.2", label: "策略实验室", targetWorkspace: "market_research", routeAlias: "/market/lab", resolvedRouteAlias: "/market-research/strategy-lab", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
-    Object.freeze({ taskId: "T3.1.2", label: "数据与系统", targetWorkspace: "settings", routeAlias: "/settings/data", resolvedRouteAlias: "/settings?tab=data-system", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "S6-P1-T2", label: "首页", targetWorkspace: "home", routeAlias: "/home", resolvedRouteAlias: "/overview", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "S6-P1-T2", label: "市场", targetWorkspace: "market_research", routeAlias: "/market", resolvedRouteAlias: "/market-research/market", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "S6-P1-T2", label: "研究", targetWorkspace: "market_research", routeAlias: "/research", resolvedRouteAlias: "/market-research/research", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "S6-P1-T2", label: "持仓", targetWorkspace: "investment", routeAlias: "/holdings", resolvedRouteAlias: "/investment/holdings", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "S6-P1-T2", label: "策略实验室", targetWorkspace: "market_research", routeAlias: "/strategy-lab", resolvedRouteAlias: "/market-research/strategy-lab", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "S6-P1-T2", label: "数据与系统", targetWorkspace: "settings", routeAlias: "/data-system", resolvedRouteAlias: "/settings/data-system", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
   ]),
 });
-const STAGE3_ROUTES = window.PFI_V024_STAGE3_ROUTES || STAGE3_NAV || Object.freeze({});
+const STAGE3_ROUTES = STAGE6_ROUTES.schema ? STAGE6_ROUTES : window.PFI_V024_STAGE3_ROUTES || STAGE3_NAV || Object.freeze({});
 const LEGACY_ALIAS_ENTRIES = Object.freeze([...(STAGE3_NAV.legacyAliasEntries || [])]);
 const LEGACY_ALIAS_KEYWORDS = Object.freeze({
   首页: "home 首页 今日 总览",
@@ -503,14 +556,15 @@ const LEGACY_ALIAS_KEYWORDS = Object.freeze({
   数据与系统: "data system 数据 系统 设置 来源",
 });
 const LEGACY_ROUTE_ALIAS_TARGETS = Object.freeze({
-  "/": "/home",
-  "/market": "/market-research?tab=market",
-  "/research": "/market-research?tab=research",
-  "/holdings": "/investment?tab=holdings",
+  "/": "/overview",
+  "/home": "/overview",
+  "/market": "/market-research/market",
+  "/research": "/market-research/research",
+  "/holdings": "/investment/holdings",
   "/strategy-lab": "/market-research/strategy-lab",
-  "/data-system": "/settings?tab=data-system",
-  "/investment?tab=market": "/market-research?tab=market",
-  "/investment?tab=research": "/market-research?tab=research",
+  "/data-system": "/settings/data-system",
+  "/investment?tab=market": "/market-research/market",
+  "/investment?tab=research": "/market-research/research",
   "/investment/strategy-lab": "/market-research/strategy-lab",
   ...Object.fromEntries(LEGACY_ALIAS_ENTRIES.map((entry) => [entry.routeAlias, entry.resolvedRouteAlias || entry.routeAlias])),
 });
@@ -521,7 +575,7 @@ const LEGACY_COMMAND_ALIASES = Object.freeze(LEGACY_ALIAS_ENTRIES.map((entry) =>
   keywords: LEGACY_ALIAS_KEYWORDS[entry.label] || "",
 })));
 const STRATEGY_LAB_VIEWS = new Set(["single", "scan", "strategy_slice", "pit_backtest", "train_test_validation", "walk_forward_validation", "strategy_registry", "market_feel", "big_data", "library"]);
-const STAGE2_SECONDARY_TABS = {
+const LEGACY_STAGE2_SECONDARY_TABS = {
   home: [
     { title: "财务状态", routeAlias: "/home?tab=status" },
     { title: "待办事项", routeAlias: "/home?tab=todo" },
@@ -588,19 +642,30 @@ const STAGE2_SECONDARY_TABS = {
     { title: "备份恢复", routeAlias: "/settings?tab=backup" },
   ],
 };
+const STAGE2_SECONDARY_TABS = Object.freeze(
+  Object.keys(ACTIVE_PAGE_CONTRACTS.pageGroups || {}).length
+    ? ACTIVE_PAGE_CONTRACTS.pageGroups
+    : LEGACY_STAGE2_SECONDARY_TABS
+);
+const STAGE6_ROUTE_SCROLL_STORAGE_KEY = "pfi-v025-stage6-route-scroll";
+let stage6RouteScrollMemory = Object.create(null);
+let runtimeStage7LineageState = null;
+let runtimeStage7LineageLoading = false;
+let runtimeStage7LineageError = "";
 let globalSearchState = { items: [], results: [], activeIndex: 0 };
 let clickFeedbackSerial = 0;
 let clickSafeBound = false;
-let feedbackRuntimeState = { haptic: true, sound: false, motion: true };
+let feedbackRuntimeState = { haptic: false, sound: false, motion: true };
 let feedbackAudioContext = null;
 
-const UPLOAD_ALLOWED_EXTENSIONS = [".csv", ".zip", ".xls", ".xlsx"];
+const UPLOAD_ALLOWED_EXTENSIONS = [".csv", ".zip"];
 const UPLOAD_MAX_FILE_MB = 50;
 let uploadCenterState = {
   files: [],
   rejected: [],
   lastSource: "",
   importing: false,
+  previewManifest: null,
   importedManifest: null,
   confirmedAt: "",
 };
@@ -609,6 +674,10 @@ let alipayImportState = defaultAlipayImportSummary();
 let ledgerOperationState = {
   filter: "",
   category: "",
+  reviewQueue: [],
+  ledger: null,
+  selectedReviewId: "",
+  lastResolvedReviewId: "",
   reviewSavedAt: "",
   exportPreparedAt: "",
 };
@@ -616,12 +685,23 @@ let ledgerOperationState = {
 let settingsOperationState = {
   defaultAccount: "主账户",
   themeLanguage: "中文优先",
+  feedbackHaptic: false,
+  feedbackSound: false,
+  feedbackMotion: true,
+  revision: 0,
+  persisted: false,
+  loaded: false,
+  loading: false,
   savedAt: "",
   resetAt: "",
 };
 
 const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
+let pendingHoldingSoftDeleteId = "";
+let holdingPendingRequest = null;
+const MAX_STAGE7_UPLOAD_FILES = 20;
+const MAX_STAGE7_UPLOAD_TOTAL_BYTES = 100 * 1024 * 1024;
 let runtimeTrendState = null;
 let stage4PagesCatalog = typeof window !== "undefined" ? window.PFI_V023_STAGE4_PAGES || null : null;
 let stage5SubpageCatalog = typeof window !== "undefined" ? window.PFI_V024_STAGE5_PAGES || null : null;
@@ -631,6 +711,12 @@ let stage5HomeExperience =
 let stage7ReportCenterApi =
   typeof window !== "undefined" ? window.PFI_V024_STAGE7_REPORTS || window.PFI_V023_STAGE7_REPORTS || null : null;
 let stage7ReportCenterViewModel = null;
+let stage9AnalysisApi =
+  typeof window !== "undefined" ? window.PFI_V025_STAGE9_ANALYSIS || null : null;
+let stage9AnalysisViewModel = null;
+let stage9DecisionReviewApi =
+  typeof window !== "undefined" ? window.PFI_V025_STAGE9_DECISION_REVIEW || null : null;
+let stage9DecisionReviewViewModel = null;
 let runtimeReadModelState = null;
 let runtimeStage4SyncState = null;
 let runtimeReadModelStatusState = null;
@@ -1483,14 +1569,14 @@ function installStage3WorkspaceAliases() {
     conclusion: "上传支付宝账单、查看导入批次、处理失败反馈，并把低置信度记录送到账本复核。",
     runtime: "上传 / 拖拽 / 状态 / 失败反馈 / 导入批次",
     cards: [
-      ["上传中心", "可用", "CSV / ZIP / XLSX 多文件本机预检"],
+      ["上传中心", "可用", "CSV / ZIP 多文件本机预检"],
       ["拖拽上传", "可用", "拖拽、点击选择、键盘选择都可触发"],
       ["导入中心", "可用", "批次、摘要、待复核入口同屏显示"],
       ["本机数据管理", "本机", "原始账单不进入 公共仓库"],
     ],
     features: [
       feature("上传中心", "可用", "本机预检", "点击选择文件或拖拽账单，立即显示状态、文件列表和失败反馈。", { workspace: "sync", label: "打开上传" }),
-      feature("上传支付宝账单", "可用", "本机上传", "接收 CSV、ZIP、XLS、XLSX 格式的支付宝账单，只做本机预检。", { workspace: "sync", label: "查看上传" }),
+      feature("上传支付宝账单", "可用", "本机上传", "接收 CSV、ZIP 格式的支付宝账单，在本机解析预览后由用户确认入账。", { workspace: "sync", label: "查看上传" }),
       feature("拖拽上传", "可用", "多文件", "拖入多个文件后显示已选择、预检完成或失败原因。", { workspace: "sync", label: "打开拖拽" }),
       feature("导入中心", "可用", "批次摘要", "查看导入批次、导入摘要、失败原因和账本复核入口。", { workspace: "sync", label: "打开导入" }),
       feature("导入批次", "可用", "批次状态", "展示批次、来源、文件数、记录数、待复核和状态。", { workspace: "sync", label: "查看批次" }),
@@ -1502,13 +1588,13 @@ function installStage3WorkspaceAliases() {
       feature("本机数据管理", "可用", "本地数据", "私有数据和凭证按本机目录规则管理。"),
     ],
     rows: [
-      row("P0", "上传中心", "CSV / ZIP / XLSX", "点击或拖拽选择账单文件。", "可用"),
+      row("P0", "上传中心", "CSV / ZIP", "点击或拖拽选择账单文件。", "可用"),
       row("P0", "导入中心", "批次摘要", "显示本轮预检批次和旧账单待接入批次。", "可用"),
       row("P1", "账本复核", "低置信度记录", "进入账本流水处理待复核记录。", "复核"),
       row("P1", "本机数据管理", "本机私有目录", "原始账单保存在本机私有目录，公共仓库只记录脱敏清单。", "可用"),
     ],
     tasks: [
-      task("上传中心", "可用 · 支持多文件 CSV / ZIP / XLSX", "ready"),
+      task("上传中心", "可用 · 支持多文件 CSV / ZIP", "ready"),
       task("拖拽上传", "可用 · 拖入文件后显示状态", "ready"),
       task("导入摘要", "可用 · 批次、记录和待复核同屏展示", "ready"),
       task("账本复核", "导入后处理低置信度分类", "review"),
@@ -1634,7 +1720,7 @@ function installStage2PageSkeletons() {
       ["现金余额", "暂无真实数据", "账户流水接入后显示"],
       ["投资市值", "暂无真实数据", "持仓接入后显示"],
       ["本月支出", "暂无真实数据", "真实流水导入后显示"],
-      ["待复核交易", "未读取状态", "read model 返回后显示"],
+      ["待复核交易", "未读取状态", "财务数据就绪后显示"],
       ["数据源状态", "等待上传", "进入数据源与上传处理"],
     ],
     features: [
@@ -1668,7 +1754,7 @@ function installStage2PageSkeletons() {
     secondaryTabs: STAGE2_SECONDARY_TABS.accounts,
     cards: [
       ["账户总览", "暂无真实数据", "绑定或导入账户后显示"],
-      ["账户列表", "0", "等待数据源"],
+      ["账户列表", "未加载", "等待数据源"],
       ["资产趋势", "暂无真实数据", "不伪造趋势"],
       ["对账状态", "等待数据", "导入后可对账"],
     ],
@@ -1702,7 +1788,7 @@ function installStage2PageSkeletons() {
     cards: [
       ["流水列表", "暂无真实数据", "上传后显示"],
       ["筛选搜索", "可用", "按账户、日期、金额和分类筛选"],
-      ["分类复核", "0", "低置信度记录导入后显示"],
+      ["分类复核", "待导入", "低置信度记录导入后显示"],
       ["导出流水", "可用", "导出功能在后续操作流完善"],
     ],
     features: [
@@ -1769,7 +1855,7 @@ function installStage2PageSkeletons() {
       ["消费总览", "暂无真实数据", "流水导入后显示"],
       ["分类分析", "暂无真实数据", "导入后分类"],
       ["预算", "未设置", "后续设置保存阶段接入"],
-      ["异常消费", "0", "真实流水导入后识别"],
+      ["异常消费", "未加载", "真实流水导入后识别"],
     ],
     features: [
       feature("消费总览", "可用", "消费总览", "查看本月支出、预算剩余、固定和弹性支出。", { workspace: "consumption", routeAlias: "/consumption?tab=overview", label: "打开总览" }),
@@ -1801,10 +1887,10 @@ function installStage2PageSkeletons() {
     runtime: "当前页面：上传中心与导入中心",
     secondaryTabs: STAGE2_SECONDARY_TABS.sync,
     cards: [
-      ["上传中心", "可用", "选择 CSV / ZIP / XLSX"],
+      ["上传中心", "可用", "选择 CSV / ZIP"],
       ["导入中心", "可用", "查看批次和摘要"],
       ["数据源管理", "可用", "管理支付宝、微信、银行和券商来源"],
-      ["待复核", "0", "导入后显示"],
+      ["待复核", "待导入", "导入后显示"],
     ],
     features: [
       feature("上传中心", "可用", "上传中心", "选择账单或数据文件，进入解析预览前的本机预检。", { workspace: "sync", routeAlias: "/sources-upload?tab=upload", label: "打开上传" }),
@@ -1816,10 +1902,10 @@ function installStage2PageSkeletons() {
     rows: [
       row("1", "上传中心", "等待文件", "选择文件", "可用"),
       row("2", "导入中心", "暂无批次", "上传后查看", "等待数据"),
-      row("3", "待复核", "0", "进入账本流水", "等待数据"),
+      row("3", "待复核", "待导入", "进入账本流水", "等待数据"),
     ],
     tasks: [
-      task("上传文件", "支持 CSV / ZIP / XLSX", "ready"),
+      task("上传文件", "支持 CSV / ZIP", "ready"),
       task("解析预览", "后续真实操作流阶段接入", "queued"),
       task("确认入库", "后续真实操作流阶段接入", "queued"),
     ],
@@ -2042,15 +2128,29 @@ function writeContext(nextContext) {
 }
 
 function refreshFxBadgeDisplay() {
+  const embeddedStatus = readEmbeddedReadModelStatus();
+  const source = embeddedStatus?.source || {};
+  const candidatePolicy = RUNTIME_CONFIG.candidateCachePolicy || {};
+  const isolatedCandidate = (
+    RUNTIME_CONFIG.isolatedCandidate === true ||
+    RUNTIME_CONFIG.stage1OfficialCandidate === true ||
+    RUNTIME_CONFIG.candidateDataMode === "isolated_empty"
+  );
+  const candidateNotLoaded = isolatedCandidate && (
+    candidatePolicy.data_access === "disabled" ||
+    source.status !== "ready" ||
+    source.storage_mode === "isolated_empty"
+  );
+  const display = candidateNotLoaded ? NOT_LOADED_FX_BADGE_DISPLAY : CURRENT_FX_BADGE_DISPLAY;
   document.querySelectorAll('[data-fx-badge], [data-context-field="fx_badge"]').forEach((node) => {
     if ("value" in node) {
-      node.value = CURRENT_FX_BADGE_DISPLAY;
+      node.value = display;
     } else {
-      node.textContent = CURRENT_FX_BADGE_DISPLAY;
+      node.textContent = display;
     }
-    node.dataset.fxSourceLabel = CURRENT_FX_BADGE_DISPLAY;
-    node.dataset.fxEffectiveDate = FX_SNAPSHOT.effectiveDate;
-    node.dataset.fxCacheState = FX_SNAPSHOT.cacheState;
+    node.dataset.fxSourceLabel = display;
+    node.dataset.fxEffectiveDate = candidateNotLoaded ? "" : FX_SNAPSHOT.effectiveDate;
+    node.dataset.fxCacheState = candidateNotLoaded ? "not_loaded" : FX_SNAPSHOT.cacheState;
   });
 }
 
@@ -2064,6 +2164,16 @@ function readRuntimeConfig() {
   }
 }
 
+function readEmbeddedReleaseManifest() {
+  try {
+    const node = document.querySelector("#pfi-release-manifest");
+    const parsed = JSON.parse(node?.textContent || "{}");
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch (_error) {
+    return {};
+  }
+}
+
 function readEmbeddedReadModelStatus() {
   try {
     const node = document.querySelector("#pfi-read-model-status");
@@ -2072,6 +2182,151 @@ function readEmbeddedReadModelStatus() {
   } catch (_error) {
     return null;
   }
+}
+
+function buildStage7CanonicalStatusFallback() {
+  const dependencyReason = "财务数据暂不可用；请先检查本机数据源和读取状态。";
+  const metric = (metricId, formulaId = null) => ({
+    metric_id: metricId,
+    value: null,
+    currency: metricId === "report_summary_status" ? null : "CNY",
+    status: "not_loaded",
+    source_id: null,
+    record_count: null,
+    as_of: null,
+    formula_id: formulaId,
+    confidence: null,
+    blocking_reason_zh: dependencyReason,
+    calculation_state: "blocked",
+  });
+  return {
+    schema: "PFIV024Stage4ReadModelStatusV1",
+    target_version: "v0.2.5",
+    stage: "Stage 7",
+    contract_version: "PFI-V025-STAGE7-CANONICAL-STATUS-FALLBACK",
+    stage7_operational_authority: true,
+    legacy_metadatabase_suppressed: true,
+    source: {
+      type: "sqlite_operational_authorities",
+      status: "not_loaded",
+      storage_mode: "local_private_sqlite",
+      record_count: null,
+      raw_file_count: null,
+      as_of: null,
+      evidence_hash: null,
+      blocking_reason_zh: dependencyReason,
+    },
+    as_of: null,
+    read_model_hash: null,
+    core_metric_states: [
+      metric("net_worth_cny", "FORM-PFI-012"),
+      metric("cash_balance_cny", "FORM-PFI-008"),
+      metric("investment_market_value_cny", "FORM-PFI-010"),
+      metric("consumption_outflow_cny", "FORM-PFI-015"),
+      metric("report_summary_status"),
+    ],
+    blocked_metric_ids: [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny",
+      "consumption_outflow_cny",
+      "report_summary_status",
+    ],
+    surface_ids: ["home", "accounts", "investment", "consumption", "insights"],
+    generated_at_utc: "",
+  };
+}
+
+function isCanonicalStage7Status(payload) {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
+  const expectedMetricIds = [
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny",
+    "consumption_outflow_cny",
+    "report_summary_status",
+  ];
+  const metrics = Array.isArray(payload.core_metric_states) ? payload.core_metric_states : [];
+  const byId = new Map(metrics.map((metric) => [metric?.metric_id, metric]));
+  const safeMetricStatuses = new Set([
+    "not_loaded",
+    "source_missing",
+    "valuation_missing",
+    "partial_coverage",
+    "calculation_failed",
+  ]);
+  const metricsFailClosed = metrics.length === expectedMetricIds.length
+    && byId.size === expectedMetricIds.length
+    && expectedMetricIds.every((metricId) => {
+      const metric = byId.get(metricId);
+      const status = String(metric?.status || "");
+      return metric?.value === null
+        && metric?.calculation_state === "blocked"
+        && (safeMetricStatuses.has(status) || status.startsWith("blocked"));
+    });
+  const blockedMetricIds = Array.isArray(payload.blocked_metric_ids)
+    ? new Set(payload.blocked_metric_ids)
+    : new Set();
+  return payload.schema === "PFIV024Stage4ReadModelStatusV1"
+    && payload.target_version === "v0.2.5"
+    && payload.stage === "Stage 7"
+    && payload.contract_version === "PFI-V025-STAGE7-SQLITE-FAIL-CLOSED-AUTHORITY"
+    && payload.stage7_operational_authority === true
+    && payload.legacy_metadatabase_suppressed === true
+    && payload.source?.type === "sqlite_operational_authorities"
+    && payload.source?.storage_mode === "local_private_sqlite"
+    && payload.stage5_financial_model == null
+    && metricsFailClosed
+    && expectedMetricIds.every((metricId) => blockedMetricIds.has(metricId));
+}
+
+function isOfficialStage1CandidateStatus(payload) {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
+  const expectedMetricIds = [
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny",
+    "consumption_outflow_cny",
+    "report_summary_status",
+  ];
+  const metrics = Array.isArray(payload.core_metric_states) ? payload.core_metric_states : [];
+  const byId = new Map(metrics.map((metric) => [metric?.metric_id, metric]));
+  const blockedMetricIds = Array.isArray(payload.blocked_metric_ids)
+    ? new Set(payload.blocked_metric_ids)
+    : new Set();
+  return payload.schema === "PFIV024Stage4ReadModelStatusV1"
+    && payload.isolated_candidate === true
+    && payload.target_version === "v0.2.5"
+    && payload.stage === "Stage 1"
+    && payload.contract_version === "PFI-V025-STAGE1-OFFICIAL-UI-ISOLATED-EMPTY"
+    && payload.source?.type === "isolated_candidate"
+    && payload.source?.storage_mode === "isolated_empty"
+    && Number(payload.source?.record_count) === 0
+    && payload.stage5_financial_model == null
+    && metrics.length === expectedMetricIds.length
+    && byId.size === expectedMetricIds.length
+    && expectedMetricIds.every((metricId) => {
+      const metric = byId.get(metricId);
+      return metric?.value === null
+        && metric?.status === "not_loaded"
+        && metric?.calculation_state === "not_evaluated"
+        && blockedMetricIds.has(metricId);
+    });
+}
+
+function canonicalStage7StatusOrFallback(payload) {
+  if (RUNTIME_CONFIG.stage1OfficialCandidate === true) {
+    return isOfficialStage1CandidateStatus(payload)
+      ? payload
+      : buildStage7CanonicalStatusFallback();
+  }
+  return isCanonicalStage7Status(payload) ? payload : buildStage7CanonicalStatusFallback();
+}
+
+function markReadModelStatusSettlement(value) {
+  if (!document.body) return;
+  document.body.dataset.pfiReadModelStatusSettled = value === "pending" ? "false" : "true";
+  document.body.dataset.pfiReadModelStatusSettlement = value;
 }
 
 function readEmbeddedStage7ReportPack() {
@@ -2098,20 +2353,33 @@ function shouldFetchRuntimeReadModelStatus() {
 }
 
 async function runtimeApiJson(path, options = {}) {
+  if (RUNTIME_CONFIG.runtimeApiEnabled === true && !PFI_RUNTIME_API_AUTH_TOKEN) {
+    throw new Error("本机服务授权令牌缺失");
+  }
   const response = await fetch(runtimeApiUrl(path), {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      "X-PFI-Runtime-Token": PFI_RUNTIME_API_AUTH_TOKEN,
       ...(options.headers || {}),
     },
   });
   if (!response.ok) {
-    throw new Error(`本机服务响应失败：${response.status}`);
+    let message = `本机服务响应失败：${response.status}`;
+    try {
+      const payload = await response.json();
+      if (payload?.message) message = String(payload.message);
+    } catch (_error) {
+      // Keep the status-based fallback when the local service returns no JSON.
+    }
+    throw new Error(message);
   }
   return response.json();
 }
 
 async function refreshRuntimeTrends(options = {}) {
+  let statusSettlement = "runtime_error_fallback";
+  markReadModelStatusSettlement("pending");
   try {
     const payload = await runtimeApiJson("/api/trends");
     runtimeTrendState = payload.trends || null;
@@ -2122,29 +2390,53 @@ async function refreshRuntimeTrends(options = {}) {
       runtimeStage4SyncState = null;
     }
     const embeddedReadModelStatus = readEmbeddedReadModelStatus();
-    if (embeddedReadModelStatus) {
-      runtimeReadModelStatusState = embeddedReadModelStatus;
-    } else if (shouldFetchRuntimeReadModelStatus()) {
+    if (shouldFetchRuntimeReadModelStatus()) {
       try {
-        runtimeReadModelStatusState = await runtimeApiJson("/api/read-model-status");
+        const apiReadModelStatus = await runtimeApiJson("/api/read-model-status");
+        const apiStatusIsCanonical = isCanonicalStage7Status(apiReadModelStatus)
+          || (RUNTIME_CONFIG.stage1OfficialCandidate === true
+            && isOfficialStage1CandidateStatus(apiReadModelStatus));
+        runtimeReadModelStatusState = canonicalStage7StatusOrFallback(apiReadModelStatus);
+        statusSettlement = apiStatusIsCanonical
+          ? "api_canonical"
+          : "api_rejected_fallback";
       } catch (_statusError) {
-        runtimeReadModelStatusState = null;
+        runtimeReadModelStatusState = canonicalStage7StatusOrFallback(embeddedReadModelStatus);
+        statusSettlement = "api_error_fallback";
       }
+    } else if (embeddedReadModelStatus) {
+      runtimeReadModelStatusState = canonicalStage7StatusOrFallback(embeddedReadModelStatus);
+      statusSettlement = isCanonicalStage7Status(embeddedReadModelStatus)
+        ? "embedded_canonical"
+        : "embedded_rejected_fallback";
     } else {
-      runtimeReadModelStatusState = null;
+      runtimeReadModelStatusState = canonicalStage7StatusOrFallback(null);
+      statusSettlement = "embedded_missing_fallback";
     }
-    applyOperationalReadModel(runtimeReadModelState);
+    // Stage 7 status is the canonical financial publication gate.  The older
+    // /api/trends payload may still contain transaction-derived aggregates,
+    // but it must not repaint formal cards while Stage 7 says the operational
+    // economic-event adapter is unavailable (including API-fetch fallback to
+    // the embedded Stage 7 status).
+    if (runtimeReadModelStatusState?.stage7_operational_authority !== true) {
+      applyOperationalReadModel(runtimeReadModelState);
+    }
     applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
+    applyStage7HoldingProjectionToSurfaces(runtimeStage4SyncState);
     if (options.rerender) {
       const current = document.querySelector("#main-workspace")?.dataset.activeWorkspace || currentContext().workspace || "home";
       drawTrendChart(resolveWorkspaceTrend(WORKSPACES[current] || WORKSPACES.home));
       renderCards((WORKSPACES[current] || WORKSPACES.home).cards);
     }
+    return { ok: true, statusSettlement };
   } catch (_error) {
     runtimeTrendState = null;
     runtimeStage4SyncState = null;
-    runtimeReadModelStatusState = readEmbeddedReadModelStatus();
+    runtimeReadModelStatusState = canonicalStage7StatusOrFallback(readEmbeddedReadModelStatus());
     applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
+    return { ok: false, statusSettlement, error: "runtime_refresh_failed" };
+  } finally {
+    markReadModelStatusSettlement(statusSettlement);
   }
 }
 
@@ -2209,14 +2501,39 @@ function applyOperationalReadModel(model) {
       ["现金余额", hasAccounts ? formatCnyAmount(accounts.cash_cny) : "暂无真实数据", hasAccounts ? "账户现金汇总" : "账户流水接入后显示"],
       ["投资市值", hasInvestment ? formatCnyAmount(investment.market_value_cny) : "暂无真实数据", hasInvestment ? "持仓读模型" : "持仓接入后显示"],
       ["本月支出", hasConsumption ? formatCnyAmount(consumption.month_spend_cny) : "暂无真实数据", hasConsumption ? "MetaDatabase 真实支付宝流水" : "真实流水导入后显示"],
-      ["待复核交易", hasConsumption ? String(consumption.review_count || 0) : "未读取状态", hasConsumption ? `${consumption.transaction_count || 0} 条真实流水` : "read model 返回后显示"],
+      ["待复核交易", hasConsumption ? String(consumption.review_count || 0) : "未读取状态", hasConsumption ? `${consumption.transaction_count || 0} 条真实流水` : "财务数据就绪后显示"],
       ["数据源状态", hasConsumption ? "已导入" : "等待上传", hasConsumption ? "真实流水可读取" : "进入数据源与上传处理"],
     ];
   }
 }
 
+function applyStage7HoldingProjectionToSurfaces(payload) {
+  const projection = payload?.projection;
+  if (!projection || projection.schema !== "PFIV025Stage7HoldingProjectionV1") return;
+  const surfaces = [projection.home, projection.investment, projection.report];
+  const hashes = surfaces.map((surface) => String(surface?.projection_hash || ""));
+  if (hashes.some((value) => !value) || new Set(hashes).size !== 1) return;
+  const holdingCount = Number(projection.holding_count || 0);
+  const stateLabel = projection.valuation_status === "valuation_missing" ? "估值依赖缺失" : "尚未加载真实持仓";
+  const syncCard = [
+    "持仓同步",
+    `${holdingCount.toLocaleString("zh-CN")} 条`,
+    `${stateLabel} · ${shortReadModelHash(projection.projection_hash)}`,
+  ];
+  for (const workspaceId of ["home", "investment", "insights"]) {
+    const workspace = WORKSPACES[workspaceId];
+    if (!workspace || !Array.isArray(workspace.cards)) continue;
+    const existingIndex = workspace.cards.findIndex((card) => Array.isArray(card) && card[0] === "持仓同步");
+    if (existingIndex >= 0) workspace.cards[existingIndex] = syncCard;
+    else if (workspace.cards.length >= 6) workspace.cards = [...workspace.cards.slice(0, 5), syncCard];
+    else workspace.cards = [...workspace.cards, syncCard];
+    workspace.stage7HoldingProjectionHash = projection.projection_hash;
+  }
+}
+
 function applyV024ReadModelStatusToSurfaces(statusPayload) {
   if (!statusPayload || typeof statusPayload !== "object") return;
+  applySourceAvailabilityBanner(statusPayload);
   const api = v024DataStateApi();
   const surfaceViews = api?.buildSurfaceMetricViews
     ? api.buildSurfaceMetricViews(statusPayload)
@@ -2243,7 +2560,7 @@ function applyV024ReadModelStatusToSurfaces(statusPayload) {
       cardFromMetric(accounts.net_worth_cny),
       cardFromMetric(accounts.cash_balance_cny),
       cardFromMetric(accounts.report_summary_status, "数据记录"),
-      ["状态同步", "同一 read model", shortReadModelHash(statusPayload.read_model_hash)],
+      ["状态同步", "同一数据快照", shortReadModelHash(statusPayload.read_model_hash)],
     ];
   }
   if (WORKSPACES.investment) {
@@ -2251,7 +2568,7 @@ function applyV024ReadModelStatusToSurfaces(statusPayload) {
       cardFromMetric(investment.investment_market_value_cny),
       cardFromMetric(investment.net_worth_cny),
       cardFromMetric(investment.report_summary_status, "数据记录"),
-      ["状态同步", "同一 read model", shortReadModelHash(statusPayload.read_model_hash)],
+      ["状态同步", "同一数据快照", shortReadModelHash(statusPayload.read_model_hash)],
     ];
   }
   if (WORKSPACES.consumption) {
@@ -2259,7 +2576,7 @@ function applyV024ReadModelStatusToSurfaces(statusPayload) {
       cardFromMetric(consumption.consumption_outflow_cny, "消费总流出"),
       cardFromMetric(consumption.report_summary_status, "数据记录"),
       ["数据源状态", sourceStatusLabel(statusPayload), sourceStatusDetail(statusPayload)],
-      ["状态同步", "同一 read model", shortReadModelHash(statusPayload.read_model_hash)],
+      ["状态同步", "同一数据快照", shortReadModelHash(statusPayload.read_model_hash)],
     ];
   }
   if (WORKSPACES.insights) {
@@ -2270,6 +2587,506 @@ function applyV024ReadModelStatusToSurfaces(statusPayload) {
       cardFromMetric(insights.consumption_outflow_cny, "消费结构报告"),
       cardFromMetric(insights.report_summary_status, "数据质量报告"),
     ];
+  }
+  applyV025Stage5FinancialModelToSurfaces(statusPayload.stage5_financial_model);
+  applyV025Stage9Phase92Analysis();
+  applyV025Stage9Phase93DecisionReview();
+}
+
+function applyV025Stage5FinancialModelToSurfaces(payload) {
+  if (!payload || typeof payload !== "object") return;
+  const requiredMetricIds = [
+    "total_consumption_outflow_cny",
+    "living_consumption_cny",
+    "investment_funding_outflow_cny",
+    "investment_allocation_amount_cny",
+  ];
+  const components = Array.isArray(payload.components) ? payload.components : [];
+  const byId = Object.fromEntries(components.map((item) => [item?.metric_id, item]));
+  if (!requiredMetricIds.every((metricId) => byId[metricId])) return;
+  if (!requiredMetricIds.every((metricId) =>
+    byId[metricId]?.status === "ready" && /^-?[0-9]+\.[0-9]{2}$/.test(String(byId[metricId]?.value || ""))
+  )) return;
+  const surfaceHashes = payload.surface_payload_hashes || {};
+  const requiredSurfaceIds = ["homepage", "consumption_page", "report"];
+  if (!requiredSurfaceIds.every((surfaceId) => typeof surfaceHashes[surfaceId] === "string" && surfaceHashes[surfaceId])) return;
+  if (new Set(requiredSurfaceIds.map((surfaceId) => surfaceHashes[surfaceId])).size !== 1) return;
+  if (payload.actual_ui_render_binding_completed !== true || payload.actual_report_render_binding_completed !== true) return;
+
+  const componentCards = requiredMetricIds.map((metricId) => stage5FinancialCard(byId[metricId]));
+  const source = payload.source || {};
+  const sourceCounts = [
+    source.input_record_count,
+    source.published_record_count,
+    source.review_queue_record_count,
+    source.silent_drop_count,
+  ].map(Number);
+  if (!sourceCounts.every((count) => Number.isInteger(count) && count >= 0)) return;
+  if (sourceCounts[0] !== sourceCounts[1] + sourceCounts[2] || sourceCounts[3] !== 0) return;
+  const coverageCard = [
+    "来源覆盖",
+    `${Number(source.published_record_count || 0).toLocaleString("zh-CN")} 条已发布`,
+    `${Number(source.review_queue_record_count || 0).toLocaleString("zh-CN")} 条待复核 · 0 条静默丢弃`,
+  ];
+  const validationCard = [
+    "模型验证",
+    "部分验证 · 缺失模型已阻断",
+    "FORM-PFI-015/019 已验证；FORM-PFI-016/017/018 保持 blocked",
+  ];
+  if (WORKSPACES.home) {
+    WORKSPACES.home.cards = [...componentCards, coverageCard, validationCard];
+    WORKSPACES.home.runtime = "Stage 5 真实只读口径 · 三表面同一 payload";
+    WORKSPACES.home.stage5FinancialSurfaceHash = surfaceHashes.homepage || null;
+  }
+  if (WORKSPACES.consumption) {
+    WORKSPACES.consumption.cards = [...componentCards, coverageCard, validationCard];
+    WORKSPACES.consumption.conclusion = payload.scope_explanation_zh || "四项消费与投资活动口径来自同一真实只读快照。";
+    WORKSPACES.consumption.runtime = "FORM-PFI-015 · 已发布经济事件口径";
+    WORKSPACES.consumption.features = components.map((component) =>
+      feature(
+        component.label_zh,
+        "已就绪",
+        `${component.formula_id} · ${component.coverage_scope}`,
+        `${stage5FinancialDetail(component)}；待复核记录不进入当前金额。`,
+        { workspace: "consumption", routeAlias: "/consumption?tab=analysis", label: "查看口径" },
+      ),
+    );
+    WORKSPACES.consumption.stage5FinancialSurfaceHash = surfaceHashes.consumption_page || null;
+  }
+  if (WORKSPACES.insights) {
+    WORKSPACES.insights.cards = [...componentCards, coverageCard, validationCard];
+    WORKSPACES.insights.conclusion = "报告同时展示四项真实只读活动口径，并明确来源覆盖、公式、限制与被阻断模型。";
+    WORKSPACES.insights.runtime = "Stage 5 model card · actual report binding";
+    WORKSPACES.insights.features = components.map((component) =>
+      feature(
+        component.label_zh,
+        "已就绪",
+        `${component.formula_id} · ${component.formula_version}`,
+        `${stage5FinancialDetail(component)}｜口径：已发布事件；限制：${Number(component.excluded_review_record_count || 0).toLocaleString("zh-CN")} 条待复核记录未计入。`,
+        { workspace: "insights", routeAlias: "/reports?tab=consumption", label: "查看报告" },
+      ),
+    );
+    WORKSPACES.insights.rows = [
+      row("P0", "真实来源覆盖", "immutable Git-object snapshot", `${source.input_record_count} = ${source.published_record_count} 已发布 + ${source.review_queue_record_count} 待复核 + ${source.silent_drop_count} 静默丢弃`, "已核验"),
+      row("P0", "公式与不变量", "FORM-PFI-015 / FORM-PFI-019", "双口径精确守恒、七窗口、变形与敏感性验证通过。", "通过"),
+      row("P0", "被阻断模型", "FORM-PFI-016 / 017 / 018", "余额、持仓、价格、FX 与完整 dated chain 缺失，不生成虚假成功。", "阻断"),
+      row("P1", "分类与样本外", "FORM-PFI-020", "结构合同通过；缺少 scores、labels 与 ground truth，不声明准确率或样本外有效。", "部分验证"),
+    ];
+    WORKSPACES.insights.tasks = [
+      task("四项口径同屏", "首页、消费页、报告使用同一 payload hash", "ready"),
+      task("来源覆盖", `${source.published_record_count} 已发布 · ${source.review_queue_record_count} 待复核`, "review"),
+      task("模型限制", "未验证模型明确 blocked", "ready"),
+      task("生产验收", "Stage 5 只授权进入 Stage 6；不等于最终生产验收", "review"),
+    ];
+    WORKSPACES.insights.stage5FinancialSurfaceHash = surfaceHashes.report || null;
+  }
+}
+
+function stage5FinancialCard(component) {
+  const display = formatStage5ExactCnyAmount(component?.value);
+  return [
+    safeUserText(component?.label_zh, "财务口径"),
+    display,
+    stage5FinancialDetail(component),
+  ];
+}
+
+function formatStage5ExactCnyAmount(value) {
+  const match = String(value ?? "").match(/^(-?)([0-9]+)\.([0-9]{2})$/);
+  if (!match) return "已阻断";
+  const whole = BigInt(match[2]).toLocaleString("zh-CN");
+  return `CNY ${match[1]}${whole}.${match[3]}`;
+}
+
+function stage5FinancialDetail(component) {
+  const count = Number(component?.record_count || 0).toLocaleString("zh-CN");
+  return `真实已发布范围 · ${count} 条事件 · 截至 ${safeUserText(component?.as_of, "未知日期")} · ${safeUserText(component?.formula_id, "公式待补")}`;
+}
+
+function applyV025Stage9Phase92Analysis() {
+  if (!WORKSPACES.insights) return;
+  const api = stage9AnalysisApi || window.PFI_V025_STAGE9_ANALYSIS || null;
+  stage9AnalysisApi = api;
+  if (!api || typeof api.buildPhase92ViewModel !== "function") return;
+  let viewModel;
+  try {
+    viewModel = api.buildPhase92ViewModel();
+  } catch (_error) {
+    return;
+  }
+  if (viewModel?.validation?.status !== "pass") return;
+  stage9AnalysisViewModel = viewModel;
+
+  const statusLabel = (value) => {
+    if (value === "blocked") return "已阻断";
+    if (value === "partial") return "部分可算";
+    if (String(value).includes("validated") || value === "pass") return "已验证";
+    if (String(value).includes("blocked")) return "已阻断";
+    return "待复核";
+  };
+  const reportFeatures = viewModel.report_cards.map((report) => feature(
+    safeUserText(report.title_zh, "财务报告"),
+    statusLabel(report.status),
+    `${report.formula_ids.join(" / ")} · 参数 ${report.parameter_ids.join(" / ")}`,
+    `${safeUserText(report.status_statement_zh, "等待真实来源")}｜数据范围：${safeUserText(report.data_range?.start, "未加载")} 至 ${safeUserText(report.data_range?.end, "未加载")}｜样本：${Number(report.transaction_record_count || 0).toLocaleString("zh-CN")} 条｜${safeUserText(report.scope_explanation_zh, "缺失输入不解释为零。")}`,
+    { workspace: "insights", routeAlias: report.primary_review_route, label: "复核来源" },
+  ));
+  const componentFeatures = viewModel.component_cards.map((component) => feature(
+    `活动组件 · ${safeUserText(component.label_zh, "活动组件")}`,
+    safeUserText(component.status_zh, "待复核"),
+    `${safeUserText(component.formula_id, "FORM-PFI-015")} · 数值仅在本机私有运行时显示`,
+    safeUserText(component.scope_zh, "活动组件必须独立展示和复核。"),
+    { workspace: "insights", routeAlias: component.review_route, label: "复核组件" },
+  ));
+  const formulaFeatures = viewModel.formula_cards.map((formulaCard) => feature(
+    `${safeUserText(formulaCard.label_zh, "财务公式")} · ${safeUserText(formulaCard.formula_id, "公式待补")}`,
+    statusLabel(formulaCard.validation_status),
+    `参数 ${formulaCard.parameters.join(" / ")} · 报告 ${formulaCard.report_types.join(" / ")}`,
+    `验证：${safeUserText(formulaCard.validation_status, "待复核")}｜限制：${safeUserText(formulaCard.limitation, "限制待补")}`,
+    { workspace: "insights", routeAlias: formulaCard.review_route, label: "下钻公式" },
+  ));
+  const sensitivityFeatures = viewModel.sensitivity_cards.map((sensitivityCard) => feature(
+    safeUserText(sensitivityCard.title_zh, "敏感性预览"),
+    statusLabel(sensitivityCard.status),
+    `参数 ${sensitivityCard.parameter_ids.join(" / ")} · 观测 ${Number(sensitivityCard.observation_count || 0)}`,
+    `${safeUserText(sensitivityCard.impact_summary_zh, "参数影响待复核")}｜影响可见：${sensitivityCard.impact_visible ? "是" : "否，保持阻断"}`,
+    { workspace: "insights", routeAlias: sensitivityCard.review_route, label: "查看敏感性" },
+  ));
+  const modelFeatures = viewModel.model_cards.map((modelCard) => feature(
+    `模型验证卡 · ${safeUserText(modelCard.model_id, "模型待补")}`,
+    statusLabel(modelCard.status),
+    `不变量 ${safeUserText(modelCard.invariant_status, "待复核")} · 变形 ${safeUserText(modelCard.metamorphic_status, "待复核")}`,
+    `历史/样本外：${safeUserText(modelCard.historical_out_of_sample_status, "待复核")}｜限制 ${Number(modelCard.limitation_count || 0)} 项｜反证 ${Number(modelCard.counter_evidence_count || 0)} 项`,
+    { workspace: "insights", routeAlias: `/reports/metric-drilldown?model=${encodeURIComponent(modelCard.model_id)}`, label: "查看模型" },
+  ));
+  const reviewFeatures = viewModel.review_cards.map((reviewCard) => feature(
+    `来源复核 · ${safeUserText(reviewCard.label_zh, "来源")}`,
+    statusLabel(reviewCard.status),
+    safeUserText(reviewCard.review_id, "复核编号待补"),
+    safeUserText(reviewCard.action_label_zh, "检查来源与缺口。"),
+    { workspace: "insights", routeAlias: reviewCard.review_route, label: "进入复核" },
+  ));
+
+  const hasPrivateStage5Cards = Boolean(WORKSPACES.insights.stage5FinancialSurfaceHash);
+  const publicComponentCards = viewModel.component_cards.map((component) => [
+    safeUserText(component.label_zh, "活动组件"),
+    safeUserText(component.status_zh, "待复核"),
+    `${safeUserText(component.formula_id, "FORM-PFI-015")} · ${safeUserText(component.scope_zh, "独立复核")}`,
+  ]);
+  WORKSPACES.insights = {
+    ...WORKSPACES.insights,
+    label: "报告与洞察",
+    kicker: safeUserText(viewModel.kicker_zh, "Stage 9 Phase 9.2 财务分析与模型验证"),
+    conclusion: safeUserText(viewModel.warning_zh, "缺失来源不解释为零。"),
+    freshness: "脱敏报告快照 · 真实来源覆盖截至 2026-06-03",
+    runtime: "Stage 9 reviewed snapshot：四项活动组件、五份报告、公式、敏感性、模型限制与来源复核",
+    cards: hasPrivateStage5Cards ? WORKSPACES.insights.cards : publicComponentCards,
+    features: [...componentFeatures, ...reportFeatures, ...formulaFeatures, ...sensitivityFeatures, ...modelFeatures, ...reviewFeatures],
+    rows: viewModel.formula_cards.map((formulaCard, index) => row(
+      String(formulaCard.validation_status).includes("blocked") ? "P0" : `P${Math.min(index + 1, 3)}`,
+      safeUserText(formulaCard.formula_id, "公式"),
+      `参数 ${formulaCard.parameters.join(" / ")}`,
+      `${safeUserText(formulaCard.label_zh, "公式")} · ${safeUserText(formulaCard.limitation, "限制待补")}`,
+      statusLabel(formulaCard.validation_status),
+    )),
+    tasks: [
+      task("四项活动组件", `${viewModel.component_cards.length} 项分别可见；投资活动不等于净资产损失`, "ready"),
+      task("五份财务报告", `${viewModel.validation.blockedCount} 份阻断 · ${viewModel.validation.partialCount} 份部分可算 · 缺失输入不解释为零`, "review"),
+      task("公式下钻", `${viewModel.formula_cards.length} 条公式及参数影响可见`, "ready"),
+      task("敏感性预览", `${viewModel.sensitivity_cards.length} 组；不可证明结果保持阻断`, "review"),
+      task("模型验证卡", `${viewModel.model_cards.length} 张；历史/样本外限制明确`, "review"),
+      task("来源复核入口", `${viewModel.review_cards.length} 个可执行入口`, "ready"),
+      task("Phase 9.3", "建议复核与四格式导出 candidate complete；等待 Stage 9 整体复审", "review"),
+    ],
+    evidence: evidence(
+      "Stage 9 Phase 9.2 财务分析与模型验证",
+      safeUserText(viewModel.summary_zh, "报告、公式、敏感性、模型与来源复核保持同一快照。"),
+      safeUserText(viewModel.snapshot_binding?.packHash, "快照 hash 待补"),
+      "公开界面契约不含财务金额；私有运行时金额继续受来源、lineage、公式和 hash 门禁。",
+    ),
+    stage9Phase92ViewModel: viewModel,
+  };
+  document.body?.setAttribute("data-v025-stage9-phase92", "ready");
+  document.body?.setAttribute("data-v025-stage9-component-count", String(viewModel.component_cards.length));
+}
+
+function applyV025Stage9Phase93DecisionReview(verifiedPersistedViewModel = null) {
+  if (!WORKSPACES.insights) return;
+  const api = stage9DecisionReviewApi || window.PFI_V025_STAGE9_DECISION_REVIEW || null;
+  stage9DecisionReviewApi = api;
+  if (!api || typeof api.buildPhase93ViewModel !== "function") return;
+  let viewModel;
+  try {
+    viewModel = verifiedPersistedViewModel || api.buildPhase93ViewModel();
+  } catch (_error) {
+    return;
+  }
+  if (api.validatePhase93ViewModel(viewModel)?.status !== "pass") return;
+  stage9DecisionReviewViewModel = viewModel;
+
+  const reviewStatusLabel = (status) => ({
+    awaiting_human_review: "等待人工复核",
+    accepted: "已接受复核",
+    rejected: "已拒绝",
+    deferred: "已延后",
+    invalidated: "已失效",
+  }[String(status)] || "待复核");
+  const decisionFeatures = viewModel.decision_cards.map((decision) => feature(
+    `人工复核 · ${safeUserText(decision.action_label_zh, "建议")}`,
+    reviewStatusLabel(decision.status),
+    `${safeUserText(decision.decision_id, "建议编号")} · ${safeUserText(decision.horizon, "复核期限")}`,
+    `${safeUserText(decision.thesis?.statement_zh, "依据待复核")}｜反方证据 ${decision.counter_evidence.length} 条｜失效条件 ${decision.invalidation_conditions.length} 个`,
+    { workspace: "insights", routeAlias: `/reports?tab=decision-review&decision=${encodeURIComponent(decision.decision_id)}`, label: "人工复核" },
+  ));
+  const exportFeatures = viewModel.export_cards.map((exportCard) => feature(
+    `同源导出 · ${String(exportCard.format || "").toUpperCase()}`,
+    "已校验",
+    `${safeUserText(exportCard.filename, "导出文件")} · ${Number(exportCard.byte_size || 0).toLocaleString("zh-CN")} bytes`,
+    `${phase93ShortHash(exportCard.source_snapshot_hash)}｜下载前再次核对文件 hash。`,
+    { workspace: "insights", routeAlias: "/reports?tab=export", label: "查看导出" },
+  ));
+  const priorFeatures = (WORKSPACES.insights.features || []).filter((item) => (
+    !String(item?.title || "").startsWith("人工复核 ·")
+    && !String(item?.title || "").startsWith("同源导出 ·")
+  ));
+  const priorRows = (WORKSPACES.insights.rows || []).filter((item) => !String(item?.object || "").startsWith("建议复核"));
+  const priorTasks = (WORKSPACES.insights.tasks || []).filter((item) => item?.title !== "Phase 9.3" && item?.title !== "人工建议复核" && item?.title !== "同源导出" && item?.title !== "Stage 9 整阶段审查");
+  WORKSPACES.insights = {
+    ...WORKSPACES.insights,
+    kicker: safeUserText(viewModel.kicker_zh, "Stage 9 Phase 9.3 建议、复盘与导出"),
+    conclusion: safeUserText(viewModel.warning_zh, "人工接受不触发交易。"),
+    runtime: "Phase 9.3：人工建议复核、反方证据、失效条件与四格式同源导出",
+    features: [...priorFeatures, ...decisionFeatures, ...exportFeatures],
+    rows: [
+      ...priorRows,
+      ...viewModel.decision_cards.map((decision, index) => row(
+        index === 0 ? "P0" : "P1",
+        `建议复核 · ${safeUserText(decision.action_label_zh, "建议")}`,
+        safeUserText(decision.status, "awaiting_human_review"),
+        `${safeUserText(decision.thesis?.statement_zh, "依据待复核")} · 接受只记录人工结果，不执行交易。`,
+        reviewStatusLabel(decision.status),
+      )),
+    ],
+    tasks: [
+      ...priorTasks,
+      task("人工建议复核", `${viewModel.decision_cards.length} 个建议；接受/拒绝/延后/失效均保留事件链`, "review"),
+      task("同源导出", `${viewModel.export_cards.length} 种格式绑定 ${safeUserText(viewModel.export_snapshot_hash, "同一快照")}`, "ready"),
+      task("Stage 9 整阶段审查", "尚未开始；本轮完成后必须独立审查、整改与复审", "queued"),
+    ],
+    evidence: evidence(
+      "Stage 9 Phase 9.3 建议、复盘与同源导出",
+      safeUserText(viewModel.summary_zh, "建议、反证、失效条件和导出保持同源。"),
+      phase93ShortHash(viewModel.export_snapshot_hash),
+      "建议只用于数据与报告复核；人工接受不触发交易，Stage 9 whole-stage review 尚未开始。",
+    ),
+    stage9Phase93ViewModel: viewModel,
+  };
+  document.body?.setAttribute("data-v025-stage9-phase93", "ready");
+  if (!verifiedPersistedViewModel && typeof api.loadPersistedViewModel === "function") {
+    void api.loadPersistedViewModel().then((persisted) => {
+      document.body.dataset.v025Stage9ReviewRestore = persisted ? "verified" : "canonical";
+      if (!persisted) return;
+      applyV025Stage9Phase93DecisionReview(persisted);
+      const main = document.querySelector("#main-workspace");
+      if (main?.dataset.activeWorkspace === "insights") {
+        renderWorkspace("insights", {
+          silent: true,
+          routeAlias: main.dataset.routeAlias,
+          skipRouteSync: true,
+          preserveFocus: true,
+        });
+      }
+    }).catch(() => {
+      document.body.dataset.v025Stage9ReviewRestore = "canonical";
+    });
+  }
+}
+
+function phase93ShortHash(value) {
+  const match = String(value || "").match(/^sha256:([0-9a-f]{64})$/);
+  return match ? `sha256:${match[1].slice(0, 12)}…${match[1].slice(-8)}` : "hash 待补";
+}
+
+function phase93ConditionLabel(predicate) {
+  return ({
+    review_queue_record_count_equals_zero: "待复核队列归零",
+    source_analysis_pack_hash_changes: "分析快照 hash 发生变化",
+    all_required_sources_and_lineage_ready: "所有关键来源与 lineage 已就绪",
+  }[String(predicate)] || "未识别的失效条件");
+}
+
+function phase93ConditionStateLabel(state) {
+  return ({ not_met: "当前未满足", met: "已满足" }[String(state)] || "待复核");
+}
+
+function phase93StatusLabel(status) {
+  return ({
+    awaiting_human_review: "等待人工复核",
+    accepted: "已接受复核",
+    rejected: "已拒绝",
+    deferred: "已延后",
+    invalidated: "已失效",
+  }[String(status)] || "待复核");
+}
+
+function phase93OutcomeLabel(outcome) {
+  return ({ accepted: "接受", rejected: "拒绝", deferred: "延后", invalidated: "标记失效" }[String(outcome)] || String(outcome));
+}
+
+function renderStage9DecisionReviewPanel(workspaceId) {
+  document.querySelector("[data-stage9-decision-review-panel]")?.remove();
+  if (workspaceId !== "insights" || !stage9DecisionReviewApi || !stage9DecisionReviewViewModel) return;
+  const viewModel = stage9DecisionReviewViewModel;
+  const panel = document.createElement("section");
+  panel.className = "stage8-workspace-focus";
+  panel.hidden = false;
+  panel.dataset.stage9DecisionReviewPanel = "true";
+  panel.setAttribute("aria-labelledby", "stage9-decision-review-title");
+
+  const heading = document.createElement("div");
+  heading.className = "stage8-workspace-focus-head";
+  const headingText = document.createElement("div");
+  const kicker = document.createElement("p");
+  kicker.className = "panel-kicker";
+  kicker.textContent = "人工判断与导出";
+  const title = document.createElement("h2");
+  title.id = "stage9-decision-review-title";
+  title.textContent = "反方证据、失效条件与复核结果";
+  const safety = document.createElement("p");
+  safety.textContent = "接受只记录人工复核结果，不触发交易；报告仍保持 3 blocked / 2 partial。";
+  headingText.append(kicker, title, safety);
+  const phaseStatus = document.createElement("span");
+  phaseStatus.className = "status-pill status-review";
+  phaseStatus.textContent = "Phase candidate · Stage 9 整阶段审查尚未开始";
+  heading.append(headingText, phaseStatus);
+  panel.appendChild(heading);
+
+  const decisionGrid = document.createElement("div");
+  decisionGrid.className = "workflow-grid";
+  decisionGrid.dataset.stage9DecisionGrid = "true";
+  viewModel.decision_cards.forEach((decision) => {
+    const card = document.createElement("article");
+    card.className = "workflow-card";
+    card.dataset.stage9DecisionId = decision.decision_id;
+    const cardTitle = document.createElement("h3");
+    cardTitle.textContent = safeUserText(decision.action_label_zh, "复核建议");
+    const status = document.createElement("p");
+    status.dataset.stage9DecisionStatus = decision.status;
+    status.textContent = `${phase93StatusLabel(decision.status)} · ${decision.review_history.length} 条历史事件`;
+    const thesis = document.createElement("p");
+    thesis.textContent = safeUserText(decision.thesis?.statement_zh, "等待复核依据");
+    const counterTitle = document.createElement("strong");
+    counterTitle.textContent = "反方证据";
+    const counterList = document.createElement("ul");
+    decision.counter_evidence.forEach((item) => {
+      const listItem = document.createElement("li");
+      listItem.textContent = safeUserText(item.statement_zh, "反方证据待补");
+      counterList.appendChild(listItem);
+    });
+    const invalidationTitle = document.createElement("strong");
+    invalidationTitle.textContent = "失效条件";
+    const invalidationList = document.createElement("ul");
+    decision.invalidation_conditions.forEach((item) => {
+      const listItem = document.createElement("li");
+      listItem.textContent = `${phase93ConditionLabel(item.predicate)} · ${phase93ConditionStateLabel(item.current_state)}`;
+      invalidationList.appendChild(listItem);
+    });
+    const actions = document.createElement("div");
+    actions.className = "workflow-actions";
+    stage9DecisionReviewApi.availableOutcomes(decision.status).forEach((outcome) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.stage9ReviewOutcome = outcome;
+      button.dataset.stage9DecisionId = decision.decision_id;
+      button.textContent = phase93OutcomeLabel(outcome);
+      button.addEventListener("click", async () => {
+        button.disabled = true;
+        try {
+          const next = await stage9DecisionReviewApi.applyHumanReview(
+            stage9DecisionReviewViewModel,
+            decision.decision_id,
+            outcome,
+            { reviewerRef: "local_owner", reasonZh: `人工复核：${phase93OutcomeLabel(outcome)}` },
+          );
+          stage9DecisionReviewViewModel = next;
+          WORKSPACES.insights.stage9Phase93ViewModel = next;
+          const persisted = await stage9DecisionReviewApi.persistViewModel(next);
+          document.body.dataset.v025Stage9ReviewPersisted = persisted ? "true" : "false";
+          renderStage9DecisionReviewPanel("insights");
+          showToast(`已记录：${phase93OutcomeLabel(outcome)}；未触发交易`);
+        } catch (_error) {
+          button.disabled = false;
+          showToast("复核记录未写入；当前数据未修改");
+        }
+      });
+      actions.appendChild(button);
+    });
+    card.append(cardTitle, status, thesis, counterTitle, counterList, invalidationTitle, invalidationList, actions);
+    decisionGrid.appendChild(card);
+  });
+  panel.appendChild(decisionGrid);
+
+  const exportTitle = document.createElement("h3");
+  exportTitle.textContent = "HTML / PDF / CSV / Markdown 同源导出";
+  const exportSummary = document.createElement("p");
+  exportSummary.textContent = `同一 snapshot：${phase93ShortHash(viewModel.export_snapshot_hash)}；下载前逐文件核对 manifest。`;
+  const exportActions = document.createElement("div");
+  exportActions.className = "workflow-actions";
+  viewModel.export_cards.forEach((entry) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.stage9ExportFormat = entry.format;
+    button.textContent = `下载 ${String(entry.format).toUpperCase()}`;
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        const validation = await stage9DecisionReviewApi.verifyExportAsset(entry.format);
+        if (validation.status !== "pass") throw new Error("export hash mismatch");
+        stage9DecisionReviewApi.downloadExport(entry.format);
+        panel.dataset.lastExportStatus = `pass:${entry.format}`;
+        showToast(`${String(entry.format).toUpperCase()} 已按同一快照导出`);
+      } catch (_error) {
+        panel.dataset.lastExportStatus = `fail:${entry.format}`;
+        showToast("导出 hash 校验失败；未下载文件");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    exportActions.appendChild(button);
+  });
+  panel.append(exportTitle, exportSummary, exportActions);
+  document.querySelector(".workflow-runtime")?.insertAdjacentElement("afterend", panel);
+}
+
+function applySourceAvailabilityBanner(statusPayload) {
+  const source = statusPayload?.source || {};
+  const label = document.querySelector("[data-source-availability-label]");
+  const dot = document.querySelector("[data-source-status-dot]");
+  const freshness = document.querySelector("#freshness-label");
+  const container = document.querySelector("[data-source-availability]");
+  const ready = source.status === "ready";
+  const isolatedEmpty = source.storage_mode === "isolated_empty";
+  const labelText = ready
+    ? "本机数据可用"
+    : isolatedEmpty
+      ? "隔离候选未加载真实数据"
+      : source.blocking_reason_zh || "本机数据尚未加载";
+  const detailText = ready
+    ? source.as_of
+      ? `截至 ${source.as_of}`
+      : "财务数据已同步"
+    : isolatedEmpty
+      ? "只读空数据 · 未访问财务数据"
+      : "等待财务数据状态";
+  if (label) label.textContent = labelText;
+  if (freshness) freshness.textContent = detailText;
+  if (dot) {
+    dot.classList.toggle("status-ready", ready);
+    dot.classList.toggle("status-review", !ready);
+  }
+  if (container) {
+    container.dataset.sourceStatus = String(source.status || "not_loaded");
+    container.dataset.storageMode = String(source.storage_mode || "unknown");
   }
 }
 
@@ -2301,12 +3118,22 @@ function metricMapForSurface(surface) {
 
 function cardFromMetric(metric, labelOverride = "") {
   const label = labelOverride || metricLabel(metric?.metric_id);
-  if (!metric) return [label, "未加载真实数据", "read model 状态缺失"];
+  if (!metric) return [label, "未加载真实数据", "财务数据状态缺失"];
   return [
     label,
     metric.display_value || fallbackV024MetricDisplay(metric),
-    metric.display_detail || fallbackV024MetricDetail(metric),
+    humanMetricDetail(metric),
   ];
+}
+
+function humanMetricDetail(metric) {
+  const parts = [];
+  if (metric?.record_count !== null && metric?.record_count !== undefined && Number.isFinite(Number(metric.record_count))) {
+    parts.push(`${Number(metric.record_count).toLocaleString("zh-CN")} 条记录`);
+  }
+  if (metric?.as_of) parts.push(`截至 ${metric.as_of}`);
+  if (metric?.source_id) parts.push("来源已登记");
+  return parts.join(" · ") || "等待可追溯数据来源";
 }
 
 function metricLabel(metricId) {
@@ -2348,16 +3175,20 @@ function sourceStatusLabel(statusPayload) {
 
 function sourceStatusDetail(statusPayload) {
   const source = statusPayload?.source || {};
+  if (source.status !== "ready") {
+    return source.blocking_reason_zh || "等待财务数据状态";
+  }
   const parts = [];
-  if (Number.isFinite(Number(source.record_count))) parts.push(`${Number(source.record_count).toLocaleString("zh-CN")} 条记录`);
-  if (Number.isFinite(Number(source.raw_file_count))) parts.push(`${Number(source.raw_file_count).toLocaleString("zh-CN")} 个原始文件`);
+  const hasCount = (value) => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+  if (hasCount(source.record_count)) parts.push(`${Number(source.record_count).toLocaleString("zh-CN")} 条记录`);
+  if (hasCount(source.raw_file_count)) parts.push(`${Number(source.raw_file_count).toLocaleString("zh-CN")} 个原始文件`);
   if (source.as_of) parts.push(`截至 ${source.as_of}`);
-  return parts.join(" · ") || source.blocking_reason_zh || "等待 read model 状态";
+  return parts.join(" · ") || source.blocking_reason_zh || "等待财务数据状态";
 }
 
 function shortReadModelHash(hash) {
   const text = String(hash || "");
-  if (!text) return "hash 未生成";
+  if (!text) return "状态标识未生成";
   return text.length > 24 ? `${text.slice(0, 18)}…${text.slice(-6)}` : text;
 }
 
@@ -2490,7 +3321,14 @@ function feedbackLaneFromKind(kind = "select") {
   return "visual";
 }
 
-function updateFeedbackHub({ lane = "visual", label = "操作已响应", state = "success", kind = "confirm" } = {}) {
+function updateFeedbackHub({
+  lane = "visual",
+  label = "操作已响应",
+  state = "success",
+  kind = "confirm",
+  completedUnits = null,
+  totalUnits = null,
+} = {}) {
   const hub = document.querySelector("[data-feedback-hub]");
   if (!hub) return;
   const normalizedLane = Object.prototype.hasOwnProperty.call(FEEDBACK_HUB_LANES, lane) ? lane : "visual";
@@ -2506,8 +3344,12 @@ function updateFeedbackHub({ lane = "visual", label = "操作已响应", state =
 
   const meter = hub.querySelector(`[data-feedback-meter="${normalizedLane}"] i`);
   if (meter) {
-    const width = state === "progress" ? "64%" : state === "failure" ? "100%" : kind === "select" ? "74%" : "88%";
-    meter.style.width = width;
+    const completed = Number(completedUnits);
+    const total = Number(totalUnits);
+    const hasActualProgress = Number.isFinite(completed) && Number.isFinite(total) && total > 0 && completed >= 0;
+    meter.style.removeProperty("width");
+    meter.style.setProperty("--pfi-feedback-actual-progress", hasActualProgress ? String(Math.min(completed, total) / total) : "0");
+    meter.dataset.actualProgress = hasActualProgress ? "true" : "false";
   }
 
   const log = hub.querySelector("[data-feedback-event-log]");
@@ -2525,6 +3367,10 @@ function updateFeedbackHub({ lane = "visual", label = "操作已响应", state =
 }
 
 function emitMultimodalFeedback(kind = "select") {
+  if (window.PFI_V025_STAGE8_HAPTICS?.emit) {
+    window.PFI_V025_STAGE8_HAPTICS.emit(kind);
+    return;
+  }
   vibrateFeedback(kind);
   playFeedbackTone(kind);
 }
@@ -2609,11 +3455,23 @@ function bindFeedbackToggles() {
     toggle.dataset.v024FeedbackSetting = "phase_6_3";
     if (key === "haptic") feedbackRuntimeState.haptic = Boolean(toggle.checked);
     feedbackRuntimeState[key] = Boolean(toggle.checked);
+    window.PFI_V025_STAGE8_HAPTICS?.configure?.({
+      haptic: feedbackRuntimeState.haptic,
+      sound: feedbackRuntimeState.sound,
+    });
+    window.PFI_V025_STAGE8_MOTION?.setEnabled?.(feedbackRuntimeState.motion);
     document.body.classList.toggle("reduce-motion", !feedbackRuntimeState.motion);
     toggle.addEventListener("change", () => {
       if (key === "haptic") feedbackRuntimeState.haptic = Boolean(toggle.checked);
       feedbackRuntimeState[key] = Boolean(toggle.checked);
+      window.PFI_V025_STAGE8_HAPTICS?.configure?.({
+        haptic: feedbackRuntimeState.haptic,
+        sound: feedbackRuntimeState.sound,
+      });
+      window.PFI_V025_STAGE8_MOTION?.setEnabled?.(feedbackRuntimeState.motion);
       document.body.classList.toggle("reduce-motion", !feedbackRuntimeState.motion);
+      readSettingsOperationInputs();
+      renderSettingsOperationFlow("settings");
       const label = toggle.closest(".toggle-item")?.querySelector("strong")?.textContent || "反馈";
       setActionFeedback("success", `${label}已更新`);
     });
@@ -2643,16 +3501,69 @@ function bindSettingsOperationEvents() {
   });
   document.querySelector("[data-settings-save]")?.addEventListener("click", saveSettingsOperationFlow);
   document.querySelector("[data-settings-reset]")?.addEventListener("click", resetSettingsOperationFlow);
+  void refreshSettingsFromBackend();
 }
 
 function readSettingsOperationInputs() {
   const account = document.querySelector('[data-settings-preference="default_account"]');
   const language = document.querySelector('[data-settings-preference="theme_language"]');
+  const haptic = document.querySelector('[data-feedback-toggle="haptic"]');
+  const sound = document.querySelector('[data-feedback-toggle="sound"]');
+  const motion = document.querySelector('[data-feedback-toggle="motion"]');
   settingsOperationState = {
     ...settingsOperationState,
     defaultAccount: account?.value || settingsOperationState.defaultAccount,
     themeLanguage: language?.value || settingsOperationState.themeLanguage,
+    feedbackHaptic: haptic ? Boolean(haptic.checked) : settingsOperationState.feedbackHaptic,
+    feedbackSound: sound ? Boolean(sound.checked) : settingsOperationState.feedbackSound,
+    feedbackMotion: motion ? Boolean(motion.checked) : settingsOperationState.feedbackMotion,
   };
+}
+
+async function refreshSettingsFromBackend() {
+  if (settingsOperationState.loading) return;
+  settingsOperationState = { ...settingsOperationState, loading: true };
+  try {
+    const payload = await runtimeApiJson("/api/settings/preferences");
+    applySettingsBackendPayload(payload);
+  } catch (_error) {
+    settingsOperationState = { ...settingsOperationState, loading: false, loaded: true };
+    const status = document.querySelector("[data-settings-save-status]");
+    if (status) {
+      status.textContent = "SQLite 读取失败";
+      status.className = "status-pill status-blocked";
+    }
+  }
+  const activeWorkspace = document.querySelector("#main-workspace")?.dataset.activeWorkspace || currentContext().workspace || "home";
+  renderSettingsOperationFlow(activeWorkspace);
+}
+
+function applySettingsBackendPayload(payload = {}) {
+  const preferences = payload.preferences && typeof payload.preferences === "object" ? payload.preferences : {};
+  settingsOperationState = {
+    ...settingsOperationState,
+    defaultAccount: String(preferences.default_account || "主账户"),
+    themeLanguage: String(preferences.theme_language || "中文优先"),
+    feedbackHaptic: preferences.feedback_haptic === true,
+    feedbackSound: preferences.feedback_sound === true,
+    feedbackMotion: preferences.feedback_motion !== false,
+    revision: Number(payload.revision || 0),
+    persisted: payload.persisted === true,
+    loaded: true,
+    loading: false,
+    savedAt: String(payload.updated_at || ""),
+  };
+  feedbackRuntimeState = {
+    haptic: settingsOperationState.feedbackHaptic,
+    sound: settingsOperationState.feedbackSound,
+    motion: settingsOperationState.feedbackMotion,
+  };
+  window.PFI_V025_STAGE8_HAPTICS?.configure?.({
+    haptic: feedbackRuntimeState.haptic,
+    sound: feedbackRuntimeState.sound,
+  });
+  window.PFI_V025_STAGE8_MOTION?.setEnabled?.(feedbackRuntimeState.motion);
+  document.body.classList.toggle("reduce-motion", !feedbackRuntimeState.motion);
 }
 
 function renderSettingsOperationFlow(workspaceId) {
@@ -2661,6 +3572,7 @@ function renderSettingsOperationFlow(workspaceId) {
   const visible = workspaceId === "settings";
   panel.hidden = !visible;
   if (!visible) return;
+  if (!settingsOperationState.loaded && !settingsOperationState.loading) void refreshSettingsFromBackend();
 
   const account = panel.querySelector('[data-settings-preference="default_account"]');
   const language = panel.querySelector('[data-settings-preference="theme_language"]');
@@ -2668,10 +3580,24 @@ function renderSettingsOperationFlow(workspaceId) {
   const state = panel.querySelector("[data-settings-operation-state]");
   if (account && account.value !== settingsOperationState.defaultAccount) account.value = settingsOperationState.defaultAccount;
   if (language && language.value !== settingsOperationState.themeLanguage) language.value = settingsOperationState.themeLanguage;
+  const toggles = {
+    haptic: settingsOperationState.feedbackHaptic,
+    sound: settingsOperationState.feedbackSound,
+    motion: settingsOperationState.feedbackMotion,
+  };
+  Object.entries(toggles).forEach(([key, enabled]) => {
+    const toggle = panel.closest("[data-settings-feedback-console]")?.querySelector(`[data-feedback-toggle="${key}"]`)
+      || document.querySelector(`[data-feedback-toggle="${key}"]`);
+    if (toggle && toggle.checked !== enabled) toggle.checked = enabled;
+  });
 
   if (status) {
-    status.textContent = settingsOperationState.savedAt ? "已保存" : settingsOperationState.resetAt ? "已恢复默认" : "等待保存";
-    status.className = `status-pill ${settingsOperationState.savedAt ? "status-ready" : "status-review"}`;
+    status.textContent = settingsOperationState.loading
+      ? "正在读取 SQLite"
+      : settingsOperationState.persisted
+        ? "SQLite 已保存"
+        : "尚未持久化";
+    status.className = `status-pill ${settingsOperationState.persisted ? "status-ready" : "status-review"}`;
   }
   if (state) {
     const timeText = settingsOperationState.savedAt
@@ -2679,30 +3605,61 @@ function renderSettingsOperationFlow(workspaceId) {
       : settingsOperationState.resetAt
         ? `最近恢复 ${formatLocalSaveTime(settingsOperationState.resetAt)}`
         : "尚未保存";
-    state.textContent = `默认账户：${settingsOperationState.defaultAccount} · 主题语言：${settingsOperationState.themeLanguage} · ${timeText}`;
+    state.textContent = `默认账户：${settingsOperationState.defaultAccount} · 主题语言：${settingsOperationState.themeLanguage} · 反馈 ${settingsOperationState.feedbackHaptic ? "触感开" : "触感关"}/${settingsOperationState.feedbackSound ? "声音开" : "声音关"}/${settingsOperationState.feedbackMotion ? "动效开" : "动效关"} · ${timeText}`;
   }
 }
 
-function saveSettingsOperationFlow() {
+async function saveSettingsOperationFlow() {
   readSettingsOperationInputs();
-  settingsOperationState = {
-    ...settingsOperationState,
-    savedAt: new Date().toISOString(),
-    resetAt: "",
-  };
-  renderSettingsOperationFlow("settings");
-  showToast("设置已保存到当前本机页面状态");
+  try {
+    const payload = await runtimeApiJson("/api/settings/preferences", {
+      method: "POST",
+      body: JSON.stringify({
+        preferences: settingsPreferencePayload(),
+        expected_revision: settingsOperationState.revision,
+      }),
+    });
+    applySettingsBackendPayload(payload);
+    settingsOperationState = { ...settingsOperationState, resetAt: "" };
+    renderSettingsOperationFlow("settings");
+    showToast("设置偏好已写入 SQLite", "success");
+  } catch (error) {
+    showToast(error?.message || "设置保存失败，请刷新后重试", "failure");
+  }
 }
 
-function resetSettingsOperationFlow() {
-  settingsOperationState = {
-    defaultAccount: "主账户",
-    themeLanguage: "中文优先",
-    savedAt: "",
-    resetAt: new Date().toISOString(),
+async function resetSettingsOperationFlow() {
+  try {
+    const payload = await runtimeApiJson("/api/settings/preferences", {
+      method: "POST",
+      body: JSON.stringify({
+        preferences: {
+          default_account: "主账户",
+          theme_language: "中文优先",
+          feedback_haptic: false,
+          feedback_sound: false,
+          feedback_motion: true,
+        },
+        expected_revision: settingsOperationState.revision,
+      }),
+    });
+    applySettingsBackendPayload(payload);
+    settingsOperationState = { ...settingsOperationState, resetAt: new Date().toISOString() };
+    renderSettingsOperationFlow("settings");
+    showToast("默认设置已写入 SQLite", "success");
+  } catch (error) {
+    showToast(error?.message || "恢复默认失败，请刷新后重试", "failure");
+  }
+}
+
+function settingsPreferencePayload() {
+  return {
+    default_account: settingsOperationState.defaultAccount,
+    theme_language: settingsOperationState.themeLanguage,
+    feedback_haptic: settingsOperationState.feedbackHaptic,
+    feedback_sound: settingsOperationState.feedbackSound,
+    feedback_motion: settingsOperationState.feedbackMotion,
   };
-  renderSettingsOperationFlow("settings");
-  showToast("设置已恢复默认");
 }
 
 function readHomeSummary() {
@@ -2749,27 +3706,42 @@ function normalizeAlipayImportSummary(summary = {}) {
 
 function applyAlipayImportSummary(summary) {
   alipayImportState = normalizeAlipayImportSummary(summary);
-  const hasRealData = alipayImportState.transactionCount > 0;
-  const dateRange = hasRealData ? `${alipayImportState.dateStart} 至 ${alipayImportState.dateEnd}` : "等待真实账单";
-  const recordLabel = hasRealData ? `${alipayImportState.transactionCount.toLocaleString("zh-CN")} 条` : "待导入";
-  const reviewLabel = hasRealData ? `${alipayImportState.reviewCount.toLocaleString("zh-CN")} 条` : "待导入";
+  const sourceStatus = (runtimeReadModelStatusState || readEmbeddedReadModelStatus())?.source || {};
+  const sourceReady = sourceStatus.status === "ready";
+  const hasSourceCount = (snakeKey, camelKey) => {
+    const value = summary?.[snakeKey] ?? summary?.[camelKey];
+    return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+  };
+  const transactionCountReady = sourceReady && hasSourceCount("transaction_count", "transactionCount");
+  const reviewCountReady = sourceReady && hasSourceCount("review_count", "reviewCount");
+  const fileCountReady = sourceReady && hasSourceCount("file_count", "fileCount");
+  const hasRealData = transactionCountReady && alipayImportState.transactionCount > 0;
+  const dateRange = sourceReady && alipayImportState.dateStart && alipayImportState.dateEnd
+    ? `${alipayImportState.dateStart} 至 ${alipayImportState.dateEnd}`
+    : sourceReady
+      ? "数据范围未提供"
+      : "等待真实账单";
+  const recordLabel = transactionCountReady ? `${alipayImportState.transactionCount.toLocaleString("zh-CN")} 条` : "待导入";
+  const reviewLabel = reviewCountReady ? `${alipayImportState.reviewCount.toLocaleString("zh-CN")} 条` : "待导入";
+  const fileLabel = fileCountReady ? `${alipayImportState.fileCount} 个文件` : "文件数未加载";
+  const rawFileLabel = fileCountReady ? `${alipayImportState.fileCount} 个原始文件` : "原始文件数未加载";
 
   WORKSPACES.sync.cards = [
-    ["真实支付宝流水", recordLabel, `${alipayImportState.fileCount} 个文件 · ${dateRange}`],
+    ["真实支付宝流水", recordLabel, `${fileLabel} · ${dateRange}`],
     ["待复核流水", reviewLabel, "低置信度记录进入账本复核"],
-    ["上传中心", "可用", "CSV / ZIP / XLSX 多文件本机预检"],
+    ["上传中心", "可用", "CSV / ZIP 多文件本机预检"],
     ["导入中心", alipayImportState.status, "批次、摘要、待复核入口同屏显示"],
   ];
   WORKSPACES.sync.rows = [
-    row("P0", "真实支付宝流水", `${alipayImportState.fileCount} 个原始文件`, `${dateRange} · ${recordLabel}标准化流水`, alipayImportState.status),
+    row("P0", "真实支付宝流水", rawFileLabel, `${dateRange} · ${recordLabel}标准化流水`, alipayImportState.status),
     row("P0", "导入中心", "真实账本摘要", `待复核 ${reviewLabel}，进入账本流水处理。`, hasRealData ? "可用" : "复核"),
-    row("P1", "上传中心", "CSV / ZIP / XLSX", "点击或拖拽选择账单文件；已有真实账本不会被伪造覆盖。", "可用"),
+    row("P1", "上传中心", "CSV / ZIP", "点击或拖拽选择账单文件；已有真实账本不会被伪造覆盖。", "可用"),
     row("P1", "账本复核", "低置信度记录", "进入账本流水处理待复核记录。", "复核"),
   ];
   WORKSPACES.sync.tasks = [
     task("真实支付宝流水", `${recordLabel} · ${dateRange}`, hasRealData ? "ready" : "review"),
     task("待复核流水", `${reviewLabel} · 进入账本流水处理`, hasRealData ? "review" : "queued"),
-    task("上传中心", "可用 · 支持多文件 CSV / ZIP / XLSX", "ready"),
+    task("上传中心", "可用 · 支持多文件 CSV / ZIP", "ready"),
     task("导入摘要", "可用 · 批次、记录和待复核同屏展示", "ready"),
   ];
 }
@@ -2887,6 +3859,10 @@ function applyStage5Phase51Home() {
 
 function applyStage5Phase53HomeSurfacePolicy(workspaceId) {
   const isHome = workspaceId === "home";
+  document.querySelectorAll("[data-stage8-home-only]").forEach((homeOnly) => {
+    homeOnly.hidden = !isHome;
+    homeOnly.setAttribute("aria-hidden", isHome ? "false" : "true");
+  });
   document.querySelectorAll("[data-evidence-toggle]").forEach((button) => {
     button.hidden = isHome;
     button.setAttribute("aria-hidden", isHome ? "true" : "false");
@@ -2899,6 +3875,231 @@ function applyStage5Phase53HomeSurfacePolicy(workspaceId) {
     drawer.setAttribute("aria-expanded", "false");
   }
   hideFunctionDetail();
+}
+
+const STAGE8_WORKSPACE_FOCUS = Object.freeze({
+  accounts: Object.freeze({
+    shape: "balance_sheet",
+    kicker: "账户覆盖",
+    title: "账户、来源与对账状态",
+    items: Object.freeze([
+      ["账户地图", "等待真实账户来源"],
+      ["币种覆盖", "等待账户与 FX 状态"],
+      ["对账差异", "没有真实快照时不推断差额"],
+      ["更新时间", "以来源返回时间为准"],
+    ]),
+  }),
+  ledger: Object.freeze({
+    shape: "review_table",
+    kicker: "复核队列",
+    title: "流水筛选、分类与证据",
+    items: Object.freeze([
+      ["定位", "按账户、日期、金额、分类或备注筛选"],
+      ["复核", "选择真实待复核流水后才能保存"],
+      ["撤销", "最近一次复核可从账本操作流撤销"],
+    ]),
+  }),
+  investment: Object.freeze({
+    shape: "portfolio_analytics",
+    kicker: "持仓结构",
+    title: "持仓、估值与风险边界",
+    items: Object.freeze([
+      ["持仓", "SQLite 返回后展示真实数量"],
+      ["估值", "缺价格或 FX 时保持不可用"],
+      ["集中度", "等待可追溯持仓与价格"],
+      ["收益", "没有交易证据时不显示金额"],
+    ]),
+  }),
+  consumption: Object.freeze({
+    shape: "spending_flow",
+    kicker: "支出结构",
+    title: "分类、预算与异常路径",
+    items: Object.freeze([
+      ["分类", "真实流水导入后形成结构"],
+      ["预算", "等待预算与支出口径"],
+      ["订阅", "等待周期扣费证据"],
+      ["异常", "没有记录时不生成异常判断"],
+    ]),
+  }),
+  sync: Object.freeze({
+    shape: "data_pipeline",
+    kicker: "本机数据链路",
+    title: "选择、预览、确认、复核",
+    items: Object.freeze([
+      ["1", "选择 CSV / ZIP"],
+      ["2", "本机解析预览"],
+      ["3", "确认后事务入账"],
+      ["4", "处理待复核流水"],
+    ]),
+  }),
+  recommendations: Object.freeze({
+    shape: "decision_inbox",
+    kicker: "决策收件箱",
+    title: "建议、依据与失效条件",
+    items: Object.freeze([
+      ["待决策", "只接收有来源与影响说明的建议"],
+      ["已接受", "保留执行理由与复盘入口"],
+      ["暂缓", "记录前置条件和再次检查时间"],
+    ]),
+  }),
+  insights: Object.freeze({
+    shape: "report_library",
+    kicker: "报告资料库",
+    title: "报告范围、状态与导出",
+    items: Object.freeze([
+      ["月报", "数据门禁通过后生成草稿"],
+      ["季报", "不可比范围保持显式"],
+      ["年报", "覆盖和关闭状态通过后生成"],
+      ["自定义", "按受控数据域组合"],
+    ]),
+  }),
+  market_research: Object.freeze({
+    shape: "research_workspace",
+    kicker: "研究工作台",
+    title: "证据、假设与反方条件",
+    items: Object.freeze([
+      ["观察对象", "组织指数、ETF、主题与公司"],
+      ["证据笔记", "保留来源、日期与引用范围"],
+      ["实验", "参数、结果和失效条件分开记录"],
+    ]),
+  }),
+  settings: Object.freeze({
+    shape: "control_center",
+    kicker: "控制中心",
+    title: "账户、隐私与反馈偏好",
+    items: Object.freeze([
+      ["账户偏好", "显示币种和默认账户"],
+      ["数据与系统", "本机服务与质量状态"],
+      ["隐私", "本地存储与敏感数据边界"],
+      ["反馈", "视觉、声音、触感与动效"],
+    ]),
+  }),
+});
+
+function stage8FocusText(tagName, text, className = "") {
+  const node = document.createElement(tagName);
+  if (className) node.className = className;
+  node.textContent = ownerVisibleText(text, "等待真实状态");
+  return node;
+}
+
+function renderStage8WorkspaceFocus(workspaceId, stage4Subpage = null) {
+  const focus = document.querySelector("[data-stage8-workspace-focus]");
+  const body = focus?.querySelector("[data-stage8-workspace-focus-body]");
+  const config = STAGE8_WORKSPACE_FOCUS[workspaceId];
+  if (!focus || !body || !config) {
+    if (focus) focus.hidden = true;
+    if (body) body.replaceChildren();
+    return;
+  }
+  focus.hidden = false;
+  focus.dataset.stage8WorkspaceShape = config.shape;
+  const kicker = focus.querySelector("[data-stage8-workspace-focus-kicker]");
+  const title = focus.querySelector("[data-stage8-workspace-focus-title]");
+  const status = focus.querySelector("[data-stage8-workspace-focus-status]");
+  if (kicker) kicker.textContent = config.kicker;
+  if (title) title.textContent = ownerVisibleText(stage4Subpage?.title || config.title, config.title);
+  if (status) status.textContent = "等待真实数据";
+  body.replaceChildren();
+
+  if (config.shape === "balance_sheet") {
+    const list = document.createElement("dl");
+    list.className = "stage8-balance-sheet";
+    config.items.forEach(([label, detail]) => {
+      const row = document.createElement("div");
+      row.append(stage8FocusText("dt", label), stage8FocusText("dd", detail));
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+  } else if (config.shape === "review_table") {
+    const list = document.createElement("ol");
+    list.className = "stage8-review-queue-shape";
+    config.items.forEach(([label, detail], index) => {
+      const item = document.createElement("li");
+      item.append(stage8FocusText("span", String(index + 1), "stage8-step-index"));
+      const copy = document.createElement("div");
+      copy.append(stage8FocusText("strong", label), stage8FocusText("small", detail));
+      item.appendChild(copy);
+      list.appendChild(item);
+    });
+    body.appendChild(list);
+  } else if (config.shape === "portfolio_analytics") {
+    const layout = document.createElement("div");
+    layout.className = "stage8-portfolio-shape";
+    const figure = document.createElement("figure");
+    figure.append(stage8FocusText("div", "真实持仓接入后显示配置", "stage8-allocation-ring"));
+    figure.append(stage8FocusText("figcaption", "当前不生成模拟配置比例"));
+    const list = document.createElement("dl");
+    config.items.forEach(([label, detail]) => {
+      const row = document.createElement("div");
+      row.append(stage8FocusText("dt", label), stage8FocusText("dd", detail));
+      list.appendChild(row);
+    });
+    layout.append(figure, list);
+    body.appendChild(layout);
+  } else if (config.shape === "spending_flow") {
+    const list = document.createElement("ol");
+    list.className = "stage8-spending-shape";
+    config.items.forEach(([label, detail], index) => {
+      const item = document.createElement("li");
+      item.style.setProperty("--stage8-flow-order", String(index + 1));
+      item.append(stage8FocusText("strong", label), stage8FocusText("span", detail));
+      list.appendChild(item);
+    });
+    body.appendChild(list);
+  } else if (config.shape === "data_pipeline") {
+    const list = document.createElement("ol");
+    list.className = "stage8-pipeline-shape";
+    config.items.forEach(([step, detail]) => {
+      const item = document.createElement("li");
+      item.append(stage8FocusText("span", step, "stage8-pipeline-index"), stage8FocusText("strong", detail));
+      list.appendChild(item);
+    });
+    body.appendChild(list);
+  } else if (config.shape === "decision_inbox") {
+    const inbox = document.createElement("div");
+    inbox.className = "stage8-decision-shape";
+    config.items.forEach(([label, detail]) => {
+      const card = document.createElement("article");
+      card.append(stage8FocusText("h3", label), stage8FocusText("p", detail), stage8FocusText("small", "等待可追溯建议"));
+      inbox.appendChild(card);
+    });
+    body.appendChild(inbox);
+  } else if (config.shape === "report_library") {
+    const library = document.createElement("div");
+    library.className = "stage8-report-library-shape";
+    config.items.forEach(([label, detail]) => {
+      const card = document.createElement("article");
+      card.append(stage8FocusText("time", "未生成"), stage8FocusText("h3", label), stage8FocusText("p", detail));
+      library.appendChild(card);
+    });
+    body.appendChild(library);
+  } else if (config.shape === "research_workspace") {
+    const workspace = document.createElement("div");
+    workspace.className = "stage8-research-shape";
+    const note = document.createElement("section");
+    note.append(stage8FocusText("h3", config.items[1][0]), stage8FocusText("p", config.items[1][1]));
+    const checklist = document.createElement("ul");
+    [config.items[0], config.items[2]].forEach(([label, detail]) => {
+      const item = document.createElement("li");
+      item.append(stage8FocusText("strong", label), stage8FocusText("span", detail));
+      checklist.appendChild(item);
+    });
+    workspace.append(note, checklist);
+    body.appendChild(workspace);
+  } else {
+    const controls = document.createElement("div");
+    controls.className = "stage8-control-shape";
+    const fieldset = document.createElement("fieldset");
+    fieldset.append(stage8FocusText("legend", "本机偏好与边界"));
+    config.items.forEach(([label, detail]) => {
+      const row = document.createElement("div");
+      row.append(stage8FocusText("strong", label), stage8FocusText("span", detail));
+      fieldset.appendChild(row);
+    });
+    controls.appendChild(fieldset);
+    body.appendChild(controls);
+  }
 }
 
 function applyStage3Dashboard(dashboard) {
@@ -2978,9 +4179,13 @@ function applyStage5Dashboard(dashboard) {
   const exportCenter = dashboard.export_center || {};
   const exportItems = exportCenter.exports || [];
   const alphaContext = dashboard.alpha_context_export || {};
-  const constraints = alphaContext.constraints || {};
-  const submissionReviewReady = constraints[["live", "trade", "submission", "authorized"].join("_")] === false;
-  const credentialReviewReady = constraints[["trading", "password", "available"].join("_")] === false;
+  const contextBoundaryReady =
+    alphaContext.schema_version === "pfi_context.v1" &&
+    alphaContext.consumer === "Alpha" &&
+    alphaContext.read_only === true &&
+    alphaContext.writeback_allowed === false;
+  const submissionReviewReady = contextBoundaryReady;
+  const credentialReviewReady = contextBoundaryReady;
   const investmentCount = recommendations.filter((item) => item.domain === "investment").length;
   const consumptionCount = recommendations.filter((item) => item.domain === "consumption").length;
   const totalSavings = recommendations
@@ -3190,6 +4395,7 @@ function buildV024Stage7Phase72RuntimeViewModel() {
   const embeddedPack = readEmbeddedStage7ReportPack();
   const reportPack = embeddedPack || buildV024Stage7ReportPackFromStatus(runtimeReadModelStatusState || readEmbeddedReadModelStatus());
   if (!reportPack) return null;
+  if (reportPack.source?.status !== "ready") return null;
   try {
     return api.buildV024Stage7Phase72ReportCenterViewModel(reportPack);
   } catch (_error) {
@@ -3200,16 +4406,22 @@ function buildV024Stage7Phase72RuntimeViewModel() {
 function buildV024Stage7ReportPackFromStatus(statusPayload) {
   if (!statusPayload || typeof statusPayload !== "object" || !statusPayload.source) return null;
   const source = statusPayload.source || {};
+  const sourceReady = source.status === "ready";
   const metrics = {};
   (statusPayload.core_metric_states || []).forEach((metric) => {
     metrics[metric.metric_id] = metric;
   });
-  const dataRange = source.date_range || { start: null, end: source.as_of || null };
+  const dataRange = sourceReady ? (source.date_range || { start: null, end: source.as_of || null }) : { start: null, end: null };
+  const sourceCount = (field) => {
+    if (!sourceReady || source[field] === null || source[field] === undefined || source[field] === "") return null;
+    const value = Number(source[field]);
+    return Number.isFinite(value) ? value : null;
+  };
   const sampleSize = {
-    transaction_count: Number(source.record_count || 0),
-    raw_file_count: Number(source.raw_file_count || 0),
-    account_count: 0,
-    holding_count: 0,
+    transaction_count: sourceCount("record_count"),
+    raw_file_count: sourceCount("raw_file_count"),
+    account_count: null,
+    holding_count: null,
   };
   const exportFields = [
     "report_id",
@@ -3232,6 +4444,15 @@ function buildV024Stage7ReportPackFromStatus(statusPayload) {
     { parameter_id: "blocking_policy", label_zh: "阻断策略", value: "缺少真实输入时不补零", source: "v0.2.4 Stage 7.2", adjustable: false },
     ...extra,
   ];
+  const metricIsReady = (metric) => sourceReady && ["ready", "confirmed_zero"].includes(String(metric?.status || ""));
+  const metricSources = (metric) => typeof metric?.source_id === "string" && metric.source_id.trim()
+    ? [metric.source_id.trim()]
+    : [];
+  const metricConfidence = (metric) => {
+    if (metric?.confidence === null || metric?.confidence === undefined || metric?.confidence === "") return null;
+    const value = Number(metric.confidence);
+    return Number.isFinite(value) ? value : null;
+  };
   const gap = (metricId, route) => ({
     metric_id: metricId,
     status: metrics[metricId]?.status || "source_missing",
@@ -3248,7 +4469,7 @@ function buildV024Stage7ReportPackFromStatus(statusPayload) {
     parameters: parameterSet(),
     data_range: dataRange,
     sample_size: sampleSize,
-    metric_sources: sources,
+    metric_sources: (sources || []).filter(Boolean),
     confidence: null,
     gaps: metricIds.map((metricId) => gap(metricId, route)),
     anomalies: [],
@@ -3285,7 +4506,7 @@ function buildV024Stage7ReportPackFromStatus(statusPayload) {
       route: "/investment?tab=holdings",
       sources: ["read_model:holdings"],
     }),
-    {
+    metricIsReady(consumptionMetric) ? {
       report_id: "consumption_report",
       report_type: "consumption",
       title_zh: "消费报告",
@@ -3295,13 +4516,21 @@ function buildV024Stage7ReportPackFromStatus(statusPayload) {
       parameters: parameterSet([{ parameter_id: "consumption_scope", label_zh: "消费口径", value: "双消费口径", source: "v0.2.4 Stage 4", adjustable: false }]),
       data_range: dataRange,
       sample_size: sampleSize,
-      metric_sources: [consumptionMetric.source_id || "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"],
-      confidence: consumptionMetric.confidence || 0.98,
+      metric_sources: metricSources(consumptionMetric),
+      confidence: metricConfidence(consumptionMetric),
       gaps: [],
       anomalies: [],
       review_entry: { label_zh: "查看消费报告复核入口", route: "/consumption?tab=analysis" },
       export_fields: exportFields,
-    },
+    } : blockedReport({
+      reportId: "consumption_report",
+      reportType: "consumption",
+      title: "消费报告",
+      metricIds: ["consumption_outflow_cny"],
+      formula: "消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消；真实来源或指标未就绪时阻断。",
+      route: "/consumption?tab=analysis",
+      sources: metricSources(consumptionMetric),
+    }),
     blockedReport({
       reportId: "cashflow_report",
       reportType: "cashflow",
@@ -3311,7 +4540,7 @@ function buildV024Stage7ReportPackFromStatus(statusPayload) {
       route: "/reports?tab=data-quality&metric=cashflow",
       sources: ["read_model:cashflow"],
     }),
-    {
+    metricIsReady(qualityMetric) ? {
       report_id: "data_quality_report",
       report_type: "data_quality",
       title_zh: "数据质量报告",
@@ -3321,13 +4550,21 @@ function buildV024Stage7ReportPackFromStatus(statusPayload) {
       parameters: parameterSet([{ parameter_id: "minimum_visible_sections", label_zh: "最低可见区块", value: "结论/公式/参数/样本量/缺口/复核入口", source: "v0.2.4 Stage 7.2", adjustable: false }]),
       data_range: dataRange,
       sample_size: sampleSize,
-      metric_sources: [qualityMetric.source_id || "MetaDatabase/PFI"],
-      confidence: qualityMetric.confidence || 0.9,
+      metric_sources: metricSources(qualityMetric),
+      confidence: metricConfidence(qualityMetric),
       gaps: ["net_worth_cny", "cash_balance_cny", "investment_market_value_cny"].map((metricId) => gap(metricId, "/reports?tab=data-quality")),
       anomalies: [],
       review_entry: { label_zh: "查看数据质量复核入口", route: "/reports?tab=data-quality" },
       export_fields: exportFields,
-    },
+    } : blockedReport({
+      reportId: "data_quality_report",
+      reportType: "data_quality",
+      title: "数据质量报告",
+      metricIds: ["report_summary_status", "net_worth_cny", "cash_balance_cny", "investment_market_value_cny"],
+      formula: "数据质量 = 已加载来源、记录范围、阻断指标、缺失输入和复核入口的组合检查；来源或质量指标未就绪时阻断。",
+      route: "/reports?tab=data-quality",
+      sources: metricSources(qualityMetric),
+    }),
   ];
   return {
     schema: "PFIV024Stage7Phase71ReportPackV1",
@@ -3355,42 +4592,42 @@ function applyV024Stage7Phase72FallbackReportCenter() {
     ...WORKSPACES.insights,
     label: "报告与洞察",
     kicker: "Stage 7 Phase 7.2 报告中心",
-    conclusion: "净资产、现金余额和投资市值报告因账户余额或持仓 read model 未挂载而阻断；消费结构和数据质量只展示真实支付宝流水支持的部分结论。页面展示包含结论、公式、参数、样本量、数据范围、置信度、缺口和复核入口。",
-    freshness: "真实支付宝流水截至 2026-06-03",
-    runtime: "Stage 7 Phase 7.2 页面展示：阻断或部分可用时不生成伪结论",
+    conclusion: "报告来源或指标尚未就绪。净资产、现金、投资、消费、现金流和数据质量报告全部保持阻断，只展示公式、未加载状态、缺口与复核入口。",
+    freshness: "报告数据未加载",
+    runtime: "Stage 7 Phase 7.2 页面展示：未加载时不生成财务结论、样本事实或置信度",
     secondaryTabs: STAGE2_SECONDARY_TABS.insights,
     cards: [
-      ["净资产报告", "已阻断", "样本量：8815 条交易 · 公式：现金余额 + 投资市值 · 缺口：账户余额/持仓"],
-      ["现金报告", "已阻断", "样本量：8815 条交易 · 公式：已挂链账户余额合计 · 缺口：账户余额"],
-      ["投资报告", "已阻断", "样本量：8815 条交易 · 公式：持仓数量 * 价格 * 汇率 · 缺口：持仓市值"],
-      ["消费报告", "部分可用", "数据范围：2022-06-06 至 2026-06-03 · 置信度：98%"],
-      ["现金流报告", "已阻断", "公式：收入 - 支出 - 投资现金变动 · 缺口：收入/现金余额"],
-      ["数据质量报告", "可用", "复核入口：缺失输入、样本范围和阻断项"],
+      ["净资产报告", "已阻断", "样本量：未加载 · 缺口：账户余额/持仓"],
+      ["现金报告", "已阻断", "样本量：未加载 · 缺口：账户余额"],
+      ["投资报告", "已阻断", "样本量：未加载 · 缺口：持仓市值"],
+      ["消费报告", "已阻断", "样本量：未加载 · 数据范围：未加载 · 置信度：未加载"],
+      ["现金流报告", "已阻断", "样本量：未加载 · 缺口：收入/现金余额"],
+      ["数据质量报告", "已阻断", "样本量：未加载 · 复核入口：数据质量"],
     ],
     features: [
-      feature("净资产报告", "阻塞", "公式：现金余额 + 投资市值 + 其他真实资产 - 真实负债", "参数：CNY、缺失输入不补零；样本量：8815 条交易；数据范围：2022-06-06 至 2026-06-03；置信度待补；缺口：账户余额与持仓 read model；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality&metric=net_worth_cny", label: "查看阻断" }),
-      feature("现金报告", "阻塞", "公式：已挂链账户余额合计", "参数：CNY、缺失输入不补零；样本量：8815 条交易；缺口：账户余额 read model；复核入口：账户对账。", { workspace: "insights", routeAlias: "/accounts?tab=reconcile", label: "查看阻断" }),
-      feature("投资报告", "阻塞", "公式：持仓数量 * 最新真实价格 * 有效汇率", "参数：CNY、缺失输入不补零；样本量：8815 条交易；缺口：持仓市值 read model；复核入口：持仓。", { workspace: "insights", routeAlias: "/investment?tab=holdings", label: "查看阻断" }),
-      feature("消费报告", "部分可用", "公式：消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消", "参数：双消费口径；样本量：8815 条真实支付宝流水、4 个原始文件；数据范围：2022-06-06 至 2026-06-03；置信度：98%；复核入口：消费分析。", { workspace: "insights", routeAlias: "/consumption?tab=analysis", label: "查看部分报告" }),
-      feature("现金流报告", "阻塞", "公式：真实收入 - 真实支出 - 投资现金变动", "参数：CNY、缺失输入不补零；样本量：8815 条交易；缺口：收入、现金余额和投资现金变动；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality&metric=cashflow", label: "查看阻断" }),
-      feature("数据质量报告", "可用", "公式：来源、记录范围、阻断指标、缺失输入和复核入口组合检查", "参数：最低可见区块；样本量：8815 条真实流水、4 个原始文件；缺口：3 个核心指标；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality", label: "查看质量" }),
+      feature("净资产报告", "阻塞", "公式：现金余额 + 投资市值 + 其他真实资产 - 真实负债", "参数：缺少真实输入时不补零；样本量：未加载；数据范围：未加载；置信度：未加载；缺口：账户余额与持仓 read model；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality&metric=net_worth_cny", label: "查看阻断" }),
+      feature("现金报告", "阻塞", "公式：已挂链账户余额合计", "参数：缺少真实输入时不补零；样本量：未加载；数据范围：未加载；置信度：未加载；缺口：账户余额 read model；复核入口：账户对账。", { workspace: "insights", routeAlias: "/accounts?tab=reconcile", label: "查看阻断" }),
+      feature("投资报告", "阻塞", "公式：持仓数量 * 最新真实价格 * 有效汇率", "参数：缺少真实输入时不补零；样本量：未加载；数据范围：未加载；置信度：未加载；缺口：持仓市值 read model；复核入口：持仓。", { workspace: "insights", routeAlias: "/investment?tab=holdings", label: "查看阻断" }),
+      feature("消费报告", "阻塞", "公式：消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消", "参数：真实来源或消费指标未就绪时阻断；样本量：未加载；数据范围：未加载；置信度：未加载；复核入口：消费分析。", { workspace: "insights", routeAlias: "/consumption?tab=analysis", label: "查看阻断" }),
+      feature("现金流报告", "阻塞", "公式：真实收入 - 真实支出 - 投资现金变动", "参数：缺少真实输入时不补零；样本量：未加载；数据范围：未加载；置信度：未加载；缺口：收入、现金余额和投资现金变动；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality&metric=cashflow", label: "查看阻断" }),
+      feature("数据质量报告", "阻塞", "公式：来源、记录范围、阻断指标、缺失输入和复核入口组合检查", "参数：来源或质量指标未就绪时阻断；样本量：未加载；数据范围：未加载；置信度：未加载；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality", label: "查看阻断" }),
     ],
     rows: [
       row("P0", "净资产报告", "账户余额/持仓缺失", "未挂载账户余额与持仓 read model，阻断净资产结论。", "阻塞"),
       row("P0", "现金报告", "账户余额缺失", "未挂载账户余额 read model，阻断现金余额结论。", "阻塞"),
       row("P0", "投资报告", "持仓市值缺失", "未挂载持仓市值 read model，阻断投资市值结论。", "阻塞"),
-      row("P1", "消费结构报告", "支付宝流水", "4 个原始文件、8815 条标准化流水，消费相关结论部分可用。", "部分可用"),
+      row("P0", "消费结构报告", "来源/消费指标未加载", "来源或消费指标未就绪，保持阻断。", "阻塞"),
       row("P0", "现金流报告", "收入/现金余额缺失", "现金流公式缺少真实收入与现金余额输入，保持阻断。", "阻塞"),
-      row("P1", "数据质量报告", "缺失输入清单", "展示阻断项、样本范围、证据哈希和下一步补数动作。", "部分可用"),
+      row("P0", "数据质量报告", "来源/质量指标未加载", "来源或质量指标未就绪，保持阻断并展示复核入口。", "阻塞"),
     ],
     tasks: [
-      task("报告中心页面", "6 份报告可见：净资产、现金、投资、消费、现金流、数据质量", "ready"),
+      task("报告中心页面", "6 份阻断报告可见：净资产、现金、投资、消费、现金流、数据质量", "review"),
       task("公式解释区", "每份报告显示公式，不是单段文本", "ready"),
-      task("参数与样本量区", "参数、样本量、数据范围和置信度可见", "ready"),
+      task("参数与样本量区", "样本量、数据范围和置信度均明确显示未加载", "review"),
       task("缺口/复核入口", "阻断报告显示缺口和复核入口", "review"),
       task("伪零拦截", "阻断报告不显示财务假零", "ready"),
     ],
-    evidence: evidence("Stage 7 Phase 7.2 报告证据", "报告中心、公式解释区、参数与样本量区、缺口/复核入口", "Stage 7 Phase 7.1 report schema + MetaDatabase/PFI", "阻断或部分可用报告只展示真实来源支持的结论。"),
+    evidence: evidence("Stage 7 Phase 7.2 报告证据", "报告中心、公式解释区、参数与样本量区、缺口/复核入口", "PFI read model status（未加载）", "来源或指标未就绪时，全部报告保持阻断且不填充样本事实或置信度。"),
   };
 }
 
@@ -3579,7 +4816,7 @@ async function handleUploadSelection(fileList, source) {
   if (!selectedFiles.length) {
     uploadCenterState = {
       ...uploadCenterState,
-      rejected: [{ name: "未选择文件", reason: "请先选择 CSV / ZIP / XLS / XLSX 文件。" }],
+      rejected: [{ name: "未选择文件", reason: "请先选择 CSV / ZIP 文件。" }],
       lastSource: source || "",
       importing: false,
     };
@@ -3609,11 +4846,13 @@ async function handleUploadSelection(fileList, source) {
   });
 
   uploadCenterState = {
-    files: [...uploadCenterState.files, ...accepted],
+    files: accepted,
     rejected,
     lastSource: source || "file_picker",
     importing: acceptedFiles.length > 0 && rejected.length === 0,
-    importedManifest: uploadCenterState.importedManifest || null,
+    previewManifest: null,
+    importedManifest: null,
+    confirmedAt: "",
   };
   renderUploadStatus();
   renderStage3UploadFlow();
@@ -3623,53 +4862,63 @@ async function handleUploadSelection(fileList, source) {
     showToast(`有 ${rejected.length} 个文件需要处理`);
     return;
   }
-  showToast(`已选择 ${accepted.length} 个文件，正在接入真实数据`);
+  showToast(`已选择 ${accepted.length} 个文件，正在本机解析预览`);
   try {
     const manifest = await uploadAlipayFilesToBackend(acceptedFiles);
+    const previewErrors = Array.isArray(manifest.errors) ? manifest.errors : [];
     uploadCenterState = {
       ...uploadCenterState,
       importing: false,
-      importedManifest: manifest,
+      previewManifest: manifest,
+      importedManifest: manifest.status === "confirmed" ? manifest : null,
+      rejected: manifest.status === "failed"
+        ? previewErrors.map((item) => ({ name: "解析失败", reason: item.message || item.code || "本机解析失败" }))
+        : [],
     };
-    applyAlipayImportSummary(manifestToAlipaySummary(manifest));
+    if (manifest.status === "confirmed") {
+      applyAlipayImportSummary(manifestToAlipaySummary(manifest));
+      await refreshStage7WorkflowState();
+    }
     renderUploadStatus();
     renderStage3UploadFlow();
     renderImportCenter();
-    await refreshRuntimeTrends({ rerender: true });
-    showToast(`真实账单已接入：${Number(manifest.transaction_count || 0).toLocaleString("zh-CN")} 条流水`, "success");
+    if (manifest.status === "preview_ready") {
+      showToast(`解析预览完成：${Number(manifest.transaction_count || 0).toLocaleString("zh-CN")} 条流水，尚未入账`, "success");
+    } else if (manifest.status === "confirmed") {
+      showToast(`相同文件已确认入账：幂等复用 ${Number(manifest.ledger_count || 0).toLocaleString("zh-CN")} 条流水`, "success");
+    } else {
+      showToast("解析失败，未生成预览且未写入账本", "failure");
+    }
   } catch (error) {
     uploadCenterState = {
       ...uploadCenterState,
       importing: false,
-      rejected: [{ name: "真实数据接入失败", reason: error?.message || "本机服务未完成导入。" }],
+      previewManifest: null,
+      importedManifest: null,
+      rejected: [{ name: "解析预览失败", reason: error?.message || "本机服务未完成解析。" }],
     };
     renderUploadStatus();
     renderStage3UploadFlow();
     renderImportCenter();
-    showToast("真实数据接入失败，请检查本机服务", "failure");
+    showToast("解析预览失败，请检查本机服务", "failure");
   }
 }
 
 async function confirmStage3Import() {
-  if (uploadCenterState.importedManifest) {
+  const preview = uploadCenterState.previewManifest || uploadCenterState.importedManifest;
+  if (!preview?.batch_id) {
     uploadCenterState = {
       ...uploadCenterState,
-      confirmedAt: new Date().toISOString(),
-    };
-    renderStage3UploadFlow();
-    renderImportCenter();
-    showToast("导入批次已确认，待复核流水已进入队列");
-    return;
-  }
-  if (!uploadCenterState.files.length) {
-    uploadCenterState = {
-      ...uploadCenterState,
-      rejected: [{ name: "未选择文件", reason: "请先选择真实文件，再确认入库。" }],
+      rejected: [{ name: "没有可确认批次", reason: "请先选择真实文件并等待解析预览通过。" }],
     };
     renderUploadStatus();
     renderStage3UploadFlow();
     renderImportCenter();
-    showToast("请先选择真实文件", "failure");
+    showToast("请先完成真实解析预览", "failure");
+    return;
+  }
+  if (preview.status === "failed") {
+    showToast("解析失败的批次不能入账，请修复文件或重试", "failure");
     return;
   }
 
@@ -3678,31 +4927,28 @@ async function confirmStage3Import() {
     status.textContent = "等待本机服务解析";
     status.className = "status-pill status-watch";
   }
-  setActionFeedback("progress", "正在确认真实上传文件");
-  showToast("正在确认真实上传文件", "progress");
+  setActionFeedback("progress", "正在执行事务确认入账");
+  showToast("正在执行事务确认入账", "progress");
   try {
     const manifest = await runtimeApiJson("/api/imports/alipay/confirm", {
       method: "POST",
-      body: JSON.stringify({
-        files: uploadCenterState.files.map((file) => ({
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          source: file.source,
-        })),
-      }),
+      body: JSON.stringify({ batch_id: preview.batch_id }),
     });
     uploadCenterState = {
       ...uploadCenterState,
+      previewManifest: manifest,
       importedManifest: manifest,
       importing: false,
       confirmedAt: new Date().toISOString(),
+      rejected: [],
     };
     applyAlipayImportSummary(manifestToAlipaySummary(manifest));
     renderUploadStatus();
     renderStage3UploadFlow();
     renderImportCenter();
-    showToast("导入确认完成，待复核流水已进入账本", "success");
+    await refreshStage7WorkflowState();
+    await refreshRuntimeTrends({ rerender: true });
+    showToast(`事务入账完成：${Number(manifest.ledger_count || 0).toLocaleString("zh-CN")} 条，待复核 ${Number(manifest.pending_review_count || 0).toLocaleString("zh-CN")} 条`, "success");
   } catch (error) {
     uploadCenterState = {
       ...uploadCenterState,
@@ -3723,27 +4969,62 @@ function renderStage3UploadFlow() {
   const reviewEntry = document.querySelector("[data-review-queue-entry]");
   const acceptedCount = uploadCenterState.files.length;
   const rejectedCount = uploadCenterState.rejected.length;
-  const manifest = uploadCenterState.importedManifest;
+  const previewManifest = uploadCenterState.previewManifest;
+  const confirmedManifest = uploadCenterState.importedManifest;
+  const manifest = confirmedManifest || previewManifest;
 
   if (preview) {
+    preview.replaceChildren();
+    const title = document.createElement("strong");
+    title.textContent = "解析预览";
+    const detail = document.createElement("span");
+    preview.append(title, detail);
     if (!acceptedCount) {
-      preview.innerHTML = "<strong>解析预览</strong><span>等待真实文件；记录数以本机解析结果为准。</span>";
+      detail.textContent = "等待真实文件；记录数以本机解析结果为准。";
+    } else if (!manifest) {
+      const fileNames = uploadCenterState.files.map((file) => `${file.name}（${formatFileSize(file.size)}）`).join("、");
+      detail.textContent = `${fileNames} · 正在等待本机解析结果。`;
     } else {
-      const fileNames = uploadCenterState.files.map((file) => `${escapeHtml(file.name)}（${formatFileSize(file.size)}）`).join("、");
-      preview.innerHTML = `<strong>解析预览</strong><span>${fileNames}</span>`;
+      const fileDetails = (manifest.file_summaries || []).map((file) => {
+        const source = file.source_id || "未识别来源";
+        const parser = file.parser_version || "无可用解析器";
+        const digest = String(file.content_sha256 || "").slice(0, 16);
+        const status = file.status === "ready" ? "可解析" : `失败：${file.error_code || "parse_failed"}`;
+        return `${file.file_name || "本机文件"} · ${source} · ${parser} · SHA-256 ${digest}… · ${status}`;
+      });
+      if (!fileDetails.length) {
+        detail.textContent = "没有可显示的解析结果";
+      } else {
+        fileDetails.forEach((value, index) => {
+          if (index) detail.appendChild(document.createElement("br"));
+          detail.appendChild(document.createTextNode(value));
+        });
+      }
     }
   }
 
   if (mapping) {
-    mapping.textContent = acceptedCount
-      ? "已准备字段映射：日期、金额、币种、账户、备注。最终字段以后端真实解析结果为准。"
-      : "等待真实文件解析后确认日期、金额、币种、账户和备注字段。";
+    const mappedFields = (manifest?.field_mapping || []).map((item) => `${(item.source_fields || []).join(" + ")} → ${item.canonical_field}`).join("；");
+    mapping.textContent = mappedFields
+      ? `后端解析字段映射：${mappedFields}`
+      : acceptedCount
+        ? "正在等待后端返回真实字段映射。"
+        : "等待真实文件解析后确认日期、金额、币种、账户和备注字段。";
   }
 
   if (confirmStatus) {
-    if (manifest) {
-      confirmStatus.textContent = `已确认 ${Number(manifest.transaction_count || 0).toLocaleString("zh-CN")} 条真实流水`;
+    if (confirmedManifest?.status === "confirmed") {
+      confirmStatus.textContent = `已事务入账 ${Number(confirmedManifest.ledger_count || 0).toLocaleString("zh-CN")} 条`;
       confirmStatus.className = "status-pill status-ready";
+    } else if (previewManifest?.status === "preview_ready") {
+      confirmStatus.textContent = `预览通过 · ${Number(previewManifest.transaction_count || 0).toLocaleString("zh-CN")} 条待确认`;
+      confirmStatus.className = "status-pill status-watch";
+    } else if (previewManifest?.status === "failed") {
+      confirmStatus.textContent = "解析失败 · 未入账";
+      confirmStatus.className = "status-pill status-blocked";
+    } else if (previewManifest?.status === "rolled_back") {
+      confirmStatus.textContent = "已补偿回滚 · 可重试解析";
+      confirmStatus.className = "status-pill status-watch";
     } else if (rejectedCount) {
       confirmStatus.textContent = "需要处理失败反馈";
       confirmStatus.className = "status-pill status-blocked";
@@ -3757,8 +5038,12 @@ function renderStage3UploadFlow() {
   }
 
   if (reviewEntry) {
-    if (manifest) {
-      reviewEntry.textContent = `待复核队列：${Number(manifest.review_count || 0).toLocaleString("zh-CN")} 条真实流水待处理。`;
+    if (confirmedManifest?.status === "confirmed") {
+      reviewEntry.textContent = `待复核队列：${Number(confirmedManifest.pending_review_count || confirmedManifest.review_count || 0).toLocaleString("zh-CN")} 条真实流水待处理；复核决定可撤销。`;
+    } else if (previewManifest?.status === "preview_ready") {
+      reviewEntry.textContent = `预览识别 ${Number(previewManifest.review_count || 0).toLocaleString("zh-CN")} 条待复核流水；确认入账前不会进入正式队列。`;
+    } else if (previewManifest?.status === "failed") {
+      reviewEntry.textContent = "解析失败：没有生成待复核队列，也没有写入账本。";
     } else if (acceptedCount) {
       reviewEntry.textContent = "待复核队列：文件已选择，等待本机服务解析后生成真实队列。";
     } else {
@@ -3768,14 +5053,23 @@ function renderStage3UploadFlow() {
 }
 
 async function uploadAlipayFilesToBackend(files) {
-  const payloadFiles = await Promise.all(
-    Array.from(files || []).map(async (file) => ({
+  const selected = Array.from(files || []);
+  if (!selected.length || selected.length > MAX_STAGE7_UPLOAD_FILES) {
+    throw new Error(`一次最多上传 ${MAX_STAGE7_UPLOAD_FILES} 个文件`);
+  }
+  const totalBytes = selected.reduce((sum, file) => sum + Number(file.size || 0), 0);
+  if (totalBytes > MAX_STAGE7_UPLOAD_TOTAL_BYTES) {
+    throw new Error("上传文件总量超过 100MB");
+  }
+  const payloadFiles = [];
+  for (const file of selected) {
+    payloadFiles.push({
       name: file.name,
       size: file.size,
       type: file.type || "本机文件",
       contentBase64: await readFileAsBase64(file),
-    })),
-  );
+    });
+  }
   return runtimeApiJson("/api/imports/alipay", {
     method: "POST",
     body: JSON.stringify({ files: payloadFiles }),
@@ -3842,13 +5136,17 @@ function renderUploadStatus() {
     status.dataset.uploadState = "error";
     status.className = "status-pill status-blocked";
   } else if (uploadCenterState.importing) {
-    status.textContent = `正在接入 ${acceptedCount} 个真实文件`;
+    status.textContent = `正在解析 ${acceptedCount} 个本机文件`;
     status.dataset.uploadState = "running";
     status.className = "status-pill status-watch";
-  } else if (uploadCenterState.importedManifest) {
-    status.textContent = `已接入 ${Number(uploadCenterState.importedManifest.transaction_count || 0).toLocaleString("zh-CN")} 条真实流水`;
+  } else if (uploadCenterState.importedManifest?.status === "confirmed") {
+    status.textContent = `已事务入账 ${Number(uploadCenterState.importedManifest.ledger_count || 0).toLocaleString("zh-CN")} 条真实流水`;
     status.dataset.uploadState = "ready";
     status.className = "status-pill status-ready";
+  } else if (uploadCenterState.previewManifest?.status === "preview_ready") {
+    status.textContent = `预览通过 ${Number(uploadCenterState.previewManifest.transaction_count || 0).toLocaleString("zh-CN")} 条 · 尚未入账`;
+    status.dataset.uploadState = "preview";
+    status.className = "status-pill status-watch";
   } else if (acceptedCount) {
     status.textContent = `已选择 ${acceptedCount} 个文件 · 等待真实解析`;
     status.dataset.uploadState = "ready";
@@ -3867,7 +5165,7 @@ function renderUploadStatus() {
   fileList.replaceChildren();
   if (!acceptedCount) {
     const item = document.createElement("li");
-    item.textContent = "等待 CSV / ZIP / XLSX 文件";
+    item.textContent = "等待 CSV / ZIP 文件";
     fileList.appendChild(item);
     return;
   }
@@ -3877,7 +5175,10 @@ function renderUploadStatus() {
     const name = document.createElement("strong");
     const meta = document.createElement("span");
     name.textContent = file.name;
-    meta.textContent = `文件 ${index + 1} · ${formatFileSize(file.size)} · 将写入本机 PFI 和 MetaDatabase`;
+    const summary = (uploadCenterState.previewManifest?.file_summaries || [])[index] || {};
+    const digest = String(summary.content_sha256 || "").slice(0, 16);
+    const parser = summary.parser_version || "等待来源识别";
+    meta.textContent = `文件 ${index + 1} · ${formatFileSize(file.size)} · ${parser}${digest ? ` · SHA-256 ${digest}…` : ""} · 仅本机私有 raw store`;
     item.appendChild(name);
     item.appendChild(meta);
     fileList.appendChild(item);
@@ -3922,24 +5223,70 @@ function renderImportCenter() {
     const item = document.createElement("article");
     item.className = "import-batch";
     item.dataset.importBatchId = batch.batchId;
-    item.innerHTML = `
-      <div>
-        <strong>${batch.batchId}</strong>
-        <span>${batch.source}</span>
-      </div>
-      <dl>
-        <div><dt>文件数</dt><dd>${batch.fileCount}</dd></div>
-        <div><dt>记录数</dt><dd>${batch.recordCount}</dd></div>
-        <div><dt>待复核</dt><dd>${batch.reviewCount}</dd></div>
-        <div><dt>状态</dt><dd>${batch.status}</dd></div>
-      </dl>
-      <p>${batch.summary}</p>
-    `;
+    const heading = document.createElement("div");
+    const identifier = document.createElement("strong");
+    identifier.textContent = String(batch.batchId || "");
+    const source = document.createElement("span");
+    source.textContent = String(batch.source || "");
+    heading.append(identifier, source);
+    const details = document.createElement("dl");
+    for (const [label, value] of [
+      ["文件数", batch.fileCount], ["记录数", batch.recordCount],
+      ["待复核", batch.reviewCount], ["状态", batch.status],
+    ]) {
+      const row = document.createElement("div");
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const description = document.createElement("dd");
+      description.textContent = String(value ?? "");
+      row.append(term, description);
+      details.appendChild(row);
+    }
+    const summary = document.createElement("p");
+    summary.textContent = String(batch.summary || "");
+    item.append(heading, details, summary);
+    if (batch.canRollback || batch.canRetry) {
+      const actions = document.createElement("div");
+      actions.className = "operation-actions stage7-import-actions";
+      if (batch.canRollback) {
+        const rollback = document.createElement("button");
+        rollback.type = "button";
+        rollback.className = "secondary-action";
+        rollback.dataset.stage7ImportRollback = batch.batchId;
+        rollback.textContent = "撤销本批入账";
+        rollback.addEventListener("click", () => void rollbackStage7Import(batch.batchId));
+        actions.appendChild(rollback);
+      }
+      if (batch.canRetry) {
+        const retry = document.createElement("button");
+        retry.type = "button";
+        retry.className = "secondary-action";
+        retry.dataset.stage7ImportRetry = batch.batchId;
+        retry.textContent = "重试本机解析";
+        retry.addEventListener("click", () => void retryStage7Import(batch.batchId));
+        actions.appendChild(retry);
+      }
+      item.appendChild(actions);
+    }
     batches.appendChild(item);
   });
 }
 
 function buildRealAlipayImportBatch() {
+  const manifest = uploadCenterState.importedManifest;
+  if (manifest?.status === "confirmed") {
+    return {
+      batchId: manifest.batch_id,
+      source: manifest.source_id || "alipay_daily",
+      fileCount: Number(manifest.file_count || 0),
+      recordCount: Number(manifest.ledger_count || 0),
+      reviewCount: Number(manifest.pending_review_count || 0),
+      status: manifest.idempotent_replay ? "已确认 · 幂等复用" : "已确认入账",
+      summary: `${manifest.date_start || "日期待核"} 至 ${manifest.date_end || "日期待核"} · 账本 ${Number(manifest.ledger_count || 0)} 条 · 待复核 ${Number(manifest.pending_review_count || 0)} 条`,
+      canRollback: true,
+      canRetry: false,
+    };
+  }
   if (!alipayImportState || Number(alipayImportState.transactionCount || 0) <= 0) return null;
   return {
     batchId: "真实支付宝流水",
@@ -3956,15 +5303,88 @@ function buildPendingBatchFromFiles() {
   const fileCount = uploadCenterState.files.length;
   if (!fileCount) return null;
   if (uploadCenterState.importedManifest) return null;
+  const preview = uploadCenterState.previewManifest;
+  if (preview) {
+    const statusLabel = {
+      preview_ready: "预览通过 · 尚未入账",
+      failed: "解析失败 · 未入账",
+      rolled_back: "已补偿回滚 · 可重试",
+    }[preview.status] || "批次状态待核";
+    return {
+      batchId: preview.batch_id,
+      source: preview.source_id || "来源待识别",
+      fileCount: Number(preview.file_count || fileCount),
+      recordCount: Number(preview.transaction_count || 0),
+      reviewCount: Number(preview.review_count || 0),
+      status: statusLabel,
+      summary: preview.status === "preview_ready"
+        ? `来源、hash、解析器与字段映射已确认；账本仍为 0，等待事务确认。`
+        : preview.status === "rolled_back"
+          ? "正式账本写入已撤销；私有 raw hash 与解析审计保留，可从原始字节重试。"
+          : `${(preview.errors || []).map((item) => item.message || item.code).join("；") || "解析失败且未生成预览。"}`,
+      canRollback: false,
+      canRetry: ["failed", "rolled_back"].includes(preview.status),
+    };
+  }
   return {
     batchId: uploadCenterState.importing ? "正在接入真实上传" : "待接入真实上传",
     source: uploadCenterState.lastSource === "drag_drop" ? "拖拽上传" : "文件选择",
     fileCount,
     recordCount: 0,
     reviewCount: 0,
-    status: uploadCenterState.importing ? "写入中" : "待真实解析",
-    summary: "已选择真实文件；记录数和待复核数只以后端解析结果为准。",
+    status: uploadCenterState.importing ? "解析中" : "待真实解析",
+    summary: "已选择真实文件；记录数和待复核数只以后端解析结果为准，确认前账本不写入。",
+    canRollback: false,
+    canRetry: false,
   };
+}
+
+async function rollbackStage7Import(batchId) {
+  try {
+    const manifest = await runtimeApiJson("/api/imports/alipay/rollback", {
+      method: "POST",
+      body: JSON.stringify({ batch_id: batchId }),
+    });
+    uploadCenterState = {
+      ...uploadCenterState,
+      previewManifest: manifest,
+      importedManifest: null,
+      confirmedAt: "",
+      rejected: [],
+    };
+    applyAlipayImportSummary(defaultAlipayImportSummary());
+    await refreshStage7WorkflowState();
+    renderUploadStatus();
+    renderStage3UploadFlow();
+    renderImportCenter();
+    showToast("本批账本写入已补偿撤销；原始 hash 与解析记录保留", "success");
+  } catch (error) {
+    showToast(error?.message || "批次回滚失败", "failure");
+  }
+}
+
+async function retryStage7Import(batchId) {
+  try {
+    const manifest = await runtimeApiJson("/api/imports/alipay/retry", {
+      method: "POST",
+      body: JSON.stringify({ batch_id: batchId }),
+    });
+    uploadCenterState = {
+      ...uploadCenterState,
+      previewManifest: manifest,
+      importedManifest: null,
+      importing: false,
+      rejected: manifest.status === "failed"
+        ? (manifest.errors || []).map((item) => ({ name: "重试失败", reason: item.message || item.code }))
+        : [],
+    };
+    renderUploadStatus();
+    renderStage3UploadFlow();
+    renderImportCenter();
+    showToast(manifest.status === "preview_ready" ? "重试解析通过，仍需确认入账" : "重试后仍未通过，账本未改变", manifest.status === "preview_ready" ? "success" : "failure");
+  } catch (error) {
+    showToast(error?.message || "批次重试失败", "failure");
+  }
 }
 
 function formatFileSize(bytes) {
@@ -3978,7 +5398,8 @@ function openImportReviewQueue() {
   const taskPhase = document.querySelector("#task-phase");
   if (taskPhase) taskPhase.textContent = "账本复核 · 已进入待处理队列";
   renderWorkspace("ledger", { routeAlias: "/ledger", preserveFocus: true });
-  showToast("已进入账本流水复核");
+  void refreshStage7WorkflowState();
+  showToast("已进入真实账本复核队列");
 }
 
 function bindLedgerOperationEvents() {
@@ -3999,8 +5420,35 @@ function bindLedgerOperationEvents() {
     };
     renderLedgerOperationFlow("ledger");
   });
-  document.querySelector("[data-ledger-review-save]")?.addEventListener("click", saveLedgerReview);
+  document.querySelector("[data-ledger-review-save]")?.addEventListener("click", () => void saveLedgerReview());
   document.querySelector("[data-ledger-export]")?.addEventListener("click", exportLedgerReview);
+}
+
+async function refreshStage7WorkflowState() {
+  try {
+    const [queue, ledger] = await Promise.all([
+      runtimeApiJson("/api/imports/review-queue?status=pending"),
+      runtimeApiJson("/api/ledger"),
+    ]);
+    const reviewQueue = Array.isArray(queue.items) ? queue.items : [];
+    const selectedExists = reviewQueue.some((item) => item.review_id === ledgerOperationState.selectedReviewId);
+    ledgerOperationState = {
+      ...ledgerOperationState,
+      reviewQueue,
+      ledger,
+      selectedReviewId: selectedExists ? ledgerOperationState.selectedReviewId : String(reviewQueue[0]?.review_id || ""),
+    };
+    renderLedgerOperationFlow("ledger");
+    return { queue, ledger };
+  } catch (error) {
+    ledgerOperationState = {
+      ...ledgerOperationState,
+      reviewQueue: [],
+      ledger: null,
+    };
+    renderLedgerOperationFlow("ledger");
+    throw error;
+  }
 }
 
 function renderLedgerOperationFlow(workspaceId) {
@@ -4014,8 +5462,10 @@ function renderLedgerOperationFlow(workspaceId) {
   const state = panel.querySelector("[data-ledger-review-state]");
   const filterInput = panel.querySelector("[data-ledger-filter]");
   const categorySelect = panel.querySelector("[data-ledger-category-select]");
-  const visibleRows = [...document.querySelectorAll("#decision-rows tr")].filter((rowNode) => !rowNode.hidden);
-  const hasRealLedger = alipayImportState.transactionCount > 0 || Boolean(uploadCenterState.importedManifest);
+  const ledger = ledgerOperationState.ledger;
+  const ledgerCount = Number(ledger?.ledger_count || 0);
+  const pendingCount = Number(ledger?.pending_review_count || 0);
+  const hasRealLedger = ledgerCount > 0;
   const filterText = ledgerOperationState.filter ? `筛选：“${ledgerOperationState.filter}”` : "未筛选";
   const categoryText = ledgerOperationState.category ? `分类：“${ledgerOperationState.category}”` : "未修改分类";
 
@@ -4023,33 +5473,131 @@ function renderLedgerOperationFlow(workspaceId) {
   if (categorySelect && categorySelect.value !== ledgerOperationState.category) categorySelect.value = ledgerOperationState.category;
 
   if (status) {
-    status.textContent = hasRealLedger ? `真实流水 ${alipayImportState.transactionCount.toLocaleString("zh-CN")} 条` : "暂无真实流水";
+    status.textContent = hasRealLedger ? `账本 ${ledgerCount.toLocaleString("zh-CN")} 条 · 待复核 ${pendingCount.toLocaleString("zh-CN")} 条` : "暂无 Stage 7 入账流水";
     status.className = `status-pill ${hasRealLedger ? "status-ready" : "status-review"}`;
   }
   if (state) {
     const saved = ledgerOperationState.reviewSavedAt ? ` · 已保存复核 ${formatLocalSaveTime(ledgerOperationState.reviewSavedAt)}` : "";
     const exported = ledgerOperationState.exportPreparedAt ? ` · 已准备导出 ${formatLocalSaveTime(ledgerOperationState.exportPreparedAt)}` : "";
-    state.textContent = `${filterText} · ${categoryText} · 当前显示 ${visibleRows.length} 行${saved}${exported}。无真实流水时显示中文空状态。`;
+    state.textContent = `${filterText} · ${categoryText} · SQLite 当前 ${ledgerCount} 条，待复核 ${pendingCount} 条${saved}${exported}。`;
+  }
+  renderStage7ReviewQueue(panel);
+  if (!ledgerOperationState.ledger) void refreshStage7WorkflowState().catch(() => undefined);
+}
+
+function renderStage7ReviewQueue(panel) {
+  let container = panel.querySelector("[data-stage7-review-queue]");
+  if (!container) {
+    container = document.createElement("div");
+    container.className = "stage7-review-queue";
+    container.dataset.stage7ReviewQueue = "true";
+    panel.querySelector("[data-ledger-review-state]")?.insertAdjacentElement("afterend", container);
+  }
+  container.replaceChildren();
+  const filter = ledgerOperationState.filter.trim().toLowerCase();
+  const items = ledgerOperationState.reviewQueue.filter((item) => {
+    if (!filter) return true;
+    return [item.description, item.occurred_at, item.amount, item.currency, item.event_type]
+      .some((value) => String(value || "").toLowerCase().includes(filter));
+  });
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.className = "stage7-review-empty";
+    empty.textContent = ledgerOperationState.reviewQueue.length
+      ? "当前筛选没有待复核流水。"
+      : "暂无待复核流水；已确认记录直接发布，低置信记录才进入这里。";
+    container.appendChild(empty);
+  }
+  items.forEach((item) => {
+    const label = document.createElement("label");
+    label.className = "stage7-review-item";
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = "stage7-review-item";
+    radio.value = item.review_id;
+    radio.checked = item.review_id === ledgerOperationState.selectedReviewId;
+    radio.addEventListener("change", () => {
+      ledgerOperationState = { ...ledgerOperationState, selectedReviewId: item.review_id };
+    });
+    const body = document.createElement("span");
+    const title = document.createElement("strong");
+    title.textContent = `${item.occurred_at || "日期待核"} · ${item.currency || ""} ${item.amount || ""}`;
+    const description = document.createElement("span");
+    description.textContent = `${item.description || "描述缺失"} · ${Math.round(Number(item.confidence || 0) * 100)}% · ${item.reason || "等待复核"}`;
+    body.appendChild(title);
+    body.appendChild(description);
+    label.appendChild(radio);
+    label.appendChild(body);
+    container.appendChild(label);
+  });
+  if (ledgerOperationState.lastResolvedReviewId) {
+    const undo = document.createElement("button");
+    undo.type = "button";
+    undo.className = "secondary-action stage7-review-undo";
+    undo.dataset.stage7ReviewUndo = ledgerOperationState.lastResolvedReviewId;
+    undo.textContent = "撤销最近一次复核";
+    undo.addEventListener("click", () => void undoLedgerReview());
+    container.appendChild(undo);
   }
 }
 
-function saveLedgerReview() {
-  ledgerOperationState = {
-    ...ledgerOperationState,
-    reviewSavedAt: new Date().toISOString(),
-  };
-  renderLedgerOperationFlow("ledger");
-  const taskPhase = document.querySelector("#task-phase");
-  if (taskPhase) taskPhase.textContent = "账本复核 · 已保存当前复核状态";
-  showToast("账本复核状态已更新");
+async function saveLedgerReview() {
+  const reviewId = ledgerOperationState.selectedReviewId;
+  if (!reviewId) {
+    showToast("请先选择一条待复核流水", "failure");
+    return;
+  }
+  const category = ledgerOperationState.category.trim();
+  const decision = category ? "reclassify" : "accept";
+  try {
+    await runtimeApiJson("/api/imports/review", {
+      method: "POST",
+      body: JSON.stringify({ review_id: reviewId, decision, category }),
+    });
+    ledgerOperationState = {
+      ...ledgerOperationState,
+      lastResolvedReviewId: reviewId,
+      selectedReviewId: "",
+      reviewSavedAt: new Date().toISOString(),
+    };
+    await refreshStage7WorkflowState();
+    const taskPhase = document.querySelector("#task-phase");
+    if (taskPhase) taskPhase.textContent = "账本复核 · SQLite 已持久化复核决定";
+    showToast("复核决定已写入 SQLite，可撤销", "success");
+  } catch (error) {
+    showToast(error?.message || "复核保存失败，账本未改变", "failure");
+  }
+}
+
+async function undoLedgerReview() {
+  const reviewId = ledgerOperationState.lastResolvedReviewId;
+  if (!reviewId) return;
+  try {
+    await runtimeApiJson("/api/imports/review/undo", {
+      method: "POST",
+      body: JSON.stringify({ review_id: reviewId }),
+    });
+    ledgerOperationState = {
+      ...ledgerOperationState,
+      lastResolvedReviewId: "",
+      selectedReviewId: reviewId,
+      reviewSavedAt: new Date().toISOString(),
+    };
+    await refreshStage7WorkflowState();
+    showToast("最近一次复核已撤销，流水恢复为待复核", "success");
+  } catch (error) {
+    showToast(error?.message || "撤销复核失败", "failure");
+  }
 }
 
 function exportLedgerReview() {
-  const rows = [...document.querySelectorAll("#decision-rows tr")]
-    .filter((rowNode) => !rowNode.hidden)
-    .map((rowNode) => [...rowNode.cells].map((cell) => cell.textContent.trim()));
-  const hasRealLedger = alipayImportState.transactionCount > 0 || Boolean(uploadCenterState.importedManifest);
-  const header = ["优先级", "对象", "依据", "动作", "状态"];
+  const entries = Array.isArray(ledgerOperationState.ledger?.entries) ? ledgerOperationState.ledger.entries : [];
+  const filter = ledgerOperationState.filter.trim().toLowerCase();
+  const rows = entries
+    .filter((item) => !filter || [item.occurred_at, item.description, item.amount, item.category].some((value) => String(value || "").toLowerCase().includes(filter)))
+    .map((item) => [item.occurred_at, item.description, item.amount, item.currency, item.event_type, item.category, item.ledger_state]);
+  const hasRealLedger = entries.length > 0;
+  const header = ["日期", "说明", "金额", "币种", "事件类型", "分类", "账本状态"];
   const payload = [header, ...rows].map((rowItems) => rowItems.map(csvCell).join(",")).join("\n");
   const blob = new Blob([payload], { type: "text/csv;charset=utf-8" });
   const link = document.createElement("a");
@@ -4072,51 +5620,61 @@ function bindHoldingsPersistenceEvents() {
   document.querySelector("[data-holdings-rows]")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-holdings-soft-delete-row]");
     if (!button) return;
-    void softDeleteHoldingRow(button.dataset.snapshotId || "");
+    requestHoldingSoftDelete(button.dataset.snapshotId || "");
   });
   document.querySelector("[data-holdings-rows]")?.addEventListener("input", () => {
     stageHoldingsDraftFromInputs();
+  });
+  document.querySelector("[data-holdings-delete-cancel]")?.addEventListener("click", cancelHoldingSoftDelete);
+  document.querySelector("[data-holdings-delete-confirm]")?.addEventListener("click", confirmHoldingSoftDelete);
+  document.querySelector("[data-holdings-delete-dialog]")?.addEventListener("cancel", () => {
+    pendingHoldingSoftDeleteId = "";
   });
 }
 
 function defaultHoldingsState() {
   return {
-    schema: "PFIV021HoldingsFrontendStateV1",
+    schema: "PFIV025HoldingsFrontendStateV1",
     rows: [],
+    persistedRows: [],
+    projection: null,
+    projectionHash: "",
     lastSavedAt: "",
     draft: false,
   };
 }
 
-function loadUnsubmittedHoldingsDraft() {
+function clearLegacyHoldingsDraftStorage() {
   try {
-    const stored = JSON.parse(localStorage.getItem(HOLDINGS_DRAFT_STORAGE_KEY) || "null");
-    if (!stored || stored.schema !== "PFIV021HoldingsFrontendStateV1" || !Array.isArray(stored.rows)) return defaultHoldingsState();
-    return {
-      schema: stored.schema,
-      rows: stored.rows.map(normalizeHoldingRow).filter(Boolean),
-      lastSavedAt: String(stored.lastSavedAt || ""),
-      draft: true,
-    };
+    localStorage.removeItem(HOLDINGS_DRAFT_STORAGE_KEY);
+    return true;
   } catch (_error) {
-    return defaultHoldingsState();
+    return false;
   }
+}
+
+function loadUnsubmittedHoldingsDraft() {
+  clearLegacyHoldingsDraftStorage();
+  return defaultHoldingsState();
 }
 
 function saveUnsubmittedHoldingsDraft(state = holdingsPersistenceState) {
   const next = {
-    schema: "PFIV021HoldingsFrontendStateV1",
+    schema: "PFIV025HoldingsFrontendStateV1",
     rows: (state.rows || []).map(normalizeHoldingRow).filter(Boolean),
+    persistedRows: (state.persistedRows || []).map(normalizeHoldingRow).filter(Boolean),
+    projection: state.projection || null,
+    projectionHash: String(state.projectionHash || ""),
     lastSavedAt: state.lastSavedAt || "",
     draft: true,
   };
-  localStorage.setItem(HOLDINGS_DRAFT_STORAGE_KEY, JSON.stringify(next));
+  clearLegacyHoldingsDraftStorage();
   holdingsPersistenceState = next;
   return next;
 }
 
 function clearUnsubmittedHoldingsDraft() {
-  localStorage.removeItem(HOLDINGS_DRAFT_STORAGE_KEY);
+  clearLegacyHoldingsDraftStorage();
 }
 
 function normalizeHoldingRow(row) {
@@ -4125,20 +5683,28 @@ function normalizeHoldingRow(row) {
   const note = String(row.note || row.memo || metadata.note || "").trim();
   if (note) metadata.note = note;
   return {
-    snapshotId: String(row.snapshotId || row.snapshot_id || `v021-snap-${Date.now()}`),
-    instrumentId: String(row.instrumentId || row.instrument_id || "").trim() || "待补标的",
-    displayName: String(row.displayName || row.display_name || row.instrumentId || row.instrument_id || "待补名称"),
-    quantity: nonNegativeNumber(row.quantity),
-    averageCost: nonNegativeNumber(row.averageCost ?? row.average_cost),
-    marketPrice: nonNegativeNumber(row.marketPrice ?? row.market_price),
+    snapshotId: String(row.snapshotId || row.snapshot_id || row.holdingId || row.holding_id || `draft:${Date.now()}`),
+    clientRef: String(row.clientRef || row.client_ref || row.snapshotId || row.snapshot_id || `draft:${Date.now()}`),
+    instrumentId: String(row.instrumentId || row.instrument_id || "").trim(),
+    displayName: String(row.displayName || row.display_name || row.instrumentId || row.instrument_id || "").trim(),
+    quantity: holdingDecimalInput(row.quantity),
+    averageCost: holdingDecimalInput(row.averageCost ?? row.average_cost, { optional: true }),
+    marketPrice: holdingDecimalInput(row.marketPrice ?? row.market_price, { optional: true }),
     currency: String(row.currency || "CNY").trim().toUpperCase(),
     portfolioId: String(row.portfolioId || row.portfolio_id || row.account || "manual").trim() || "manual",
-    sourceId: String(row.sourceId || row.source_id || "manual_review"),
-    asOf: String(row.asOf || row.as_of || row.updatedAt || row.updated_at || "2026-06-27"),
+    sourceId: String(row.sourceId || row.source_id || "manual_user_entry"),
+    asOf: String(row.asOf || row.as_of || row.updatedAt || row.updated_at || localDateValue(new Date())),
     note,
     metadata,
-    softDeleted: Boolean(row.softDeleted || row.soft_deleted),
+    softDeleted: Boolean(row.softDeleted || row.soft_deleted || row.status === "deleted"),
+    revision: Number(row.revision || 0),
+    persisted: Number(row.revision || 0) > 0 && !String(row.snapshotId || row.snapshot_id || row.holding_id || "").startsWith("draft:"),
   };
+}
+
+function holdingDecimalInput(value, options = {}) {
+  if (value === null || value === undefined || String(value).trim() === "") return options.optional ? "" : "";
+  return String(value).trim();
 }
 
 function nonNegativeNumber(value) {
@@ -4158,22 +5724,43 @@ function renderHoldingsPersistencePanel(workspaceId, routeAlias = "") {
 }
 
 async function refreshHoldingsFromBackend() {
-  const draft = loadUnsubmittedHoldingsDraft();
-  if (draft.rows.length) {
-    holdingsPersistenceState = draft;
-    renderHoldingsRows();
-    updateHoldingsSummary({ preserveStatus: true });
-    setHoldingsStatus("未提交草稿 · 尚未写入数据库", "review");
-    return;
-  }
   try {
     const payload = await runtimeApiJson("/api/holdings");
-    holdingsPersistenceState = {
-      schema: "PFIV021HoldingsFrontendStateV1",
-      rows: (payload.rows || []).map(normalizeHoldingRow).filter(Boolean),
-      lastSavedAt: payload.summary?.snapshot_count ? new Date().toISOString() : "",
-      draft: false,
-    };
+    const backendRows = (payload.rows || []).map(normalizeHoldingRow).filter(Boolean);
+    const projectionHash = String(payload.projection?.projection_hash || "");
+    const draft = loadUnsubmittedHoldingsDraft();
+    const canRestoreDraft = draft.rows.length > 0 && draft.projectionHash === projectionHash;
+    if (draft.rows.length && !canRestoreDraft) clearUnsubmittedHoldingsDraft();
+    holdingsPersistenceState = canRestoreDraft
+      ? {
+          ...draft,
+          persistedRows: backendRows,
+          projection: payload.projection || null,
+          projectionHash,
+          draft: true,
+        }
+      : {
+          schema: "PFIV025HoldingsFrontendStateV1",
+          rows: backendRows,
+          persistedRows: backendRows,
+          projection: payload.projection || null,
+          projectionHash,
+          lastSavedAt: backendRows.length ? new Date().toISOString() : "",
+          draft: false,
+        };
+    renderHoldingsRows();
+    updateHoldingsSummary({ preserveStatus: true });
+    setHoldingsStatus(
+      canRestoreDraft
+        ? "未提交草稿 · 尚未写入数据库"
+        : draft.rows.length
+          ? "后端已变化 · 旧草稿已放弃"
+          : backendRows.length
+            ? "已从 SQLite 读取"
+            : "SQLite 暂无持仓",
+      canRestoreDraft ? "review" : backendRows.length ? "ready" : "review",
+    );
+    return;
   } catch (_error) {
     holdingsPersistenceState = defaultHoldingsState();
     setHoldingsStatus("SQLite 读取失败 · 请检查本机服务", "review");
@@ -4230,7 +5817,7 @@ function readHoldingsRowsFromDom() {
     const row = currentRows.get(snapshotId);
     if (!row || !field) return;
     if (["quantity", "averageCost", "marketPrice"].includes(field)) {
-      row[field] = nonNegativeNumber(input.value);
+      row[field] = String(input.value || "").trim();
     } else {
       row[field] = String(input.value || "").trim();
     }
@@ -4250,16 +5837,17 @@ function stageHoldingsDraftFromInputs() {
 
 async function saveHoldingsEdits() {
   const rows = readHoldingsRowsFromDom();
+  const operations = buildHoldingCommitOperations(rows, holdingsPersistenceState.persistedRows || []);
+  if (!operations.length) {
+    setHoldingsStatus("没有需要保存的变更", "ready");
+    showToast("持仓没有变更");
+    return;
+  }
   setHoldingsStatus("正在写入 SQLite", "watch");
   try {
-    const payload = await saveHoldingsToBackend(rows);
+    const payload = await saveHoldingsToBackend(operations);
     clearUnsubmittedHoldingsDraft();
-    holdingsPersistenceState = {
-      schema: "PFIV021HoldingsFrontendStateV1",
-      rows: (payload.rows || []).map(normalizeHoldingRow).filter(Boolean),
-      lastSavedAt: new Date().toISOString(),
-      draft: false,
-    };
+    applyHoldingsBackendPayload(payload);
     renderHoldingsRows();
     updateHoldingsSummary({ preserveStatus: true });
     setHoldingsStatus("已写入 SQLite 数据库", "ready");
@@ -4272,11 +5860,96 @@ async function saveHoldingsEdits() {
   }
 }
 
-async function saveHoldingsToBackend(rows) {
-  return runtimeApiJson("/api/holdings", {
-    method: "POST",
-    body: JSON.stringify({ rows }),
+async function saveHoldingsToBackend(operations) {
+  const signature = JSON.stringify({
+    expected_projection_hash: holdingsPersistenceState.projectionHash,
+    operations,
   });
+  if (!holdingPendingRequest || holdingPendingRequest.signature !== signature) {
+    holdingPendingRequest = { signature, requestId: holdingRequestId() };
+  }
+  return runtimeApiJson("/api/holdings/commit", {
+    method: "POST",
+    body: JSON.stringify({
+      request_id: holdingPendingRequest.requestId,
+      expected_projection_hash: holdingsPersistenceState.projectionHash,
+      operations,
+    }),
+  });
+}
+
+function applyHoldingsBackendPayload(payload = {}) {
+  const rows = (payload.rows || []).map(normalizeHoldingRow).filter(Boolean);
+  holdingsPersistenceState = {
+    schema: "PFIV025HoldingsFrontendStateV1",
+    rows,
+    persistedRows: rows,
+    projection: payload.projection || null,
+    projectionHash: String(payload.projection?.projection_hash || ""),
+    lastSavedAt: new Date().toISOString(),
+    draft: false,
+  };
+  holdingPendingRequest = null;
+}
+
+function buildHoldingCommitOperations(rows, persistedRows) {
+  const baseline = new Map((persistedRows || []).map((row) => [row.snapshotId, normalizeHoldingRow(row)]));
+  const operations = [];
+  (rows || []).forEach((row) => {
+    const normalized = normalizeHoldingRow(row);
+    if (!normalized) return;
+    const persisted = baseline.get(normalized.snapshotId);
+    if (normalized.softDeleted) {
+      if (persisted?.revision > 0) {
+        operations.push({
+          operation: "delete",
+          holding_id: persisted.snapshotId,
+          expected_revision: persisted.revision,
+        });
+      }
+      return;
+    }
+    if (!persisted || persisted.revision < 1) {
+      operations.push({
+        operation: "create",
+        client_ref: normalized.clientRef || normalized.snapshotId,
+        holding: holdingCommandPayload(normalized),
+      });
+      return;
+    }
+    if (holdingComparablePayload(normalized) !== holdingComparablePayload(persisted)) {
+      operations.push({
+        operation: "update",
+        holding_id: persisted.snapshotId,
+        expected_revision: persisted.revision,
+        holding: holdingCommandPayload(normalized),
+      });
+    }
+  });
+  return operations;
+}
+
+function holdingCommandPayload(row) {
+  return {
+    instrument_id: row.instrumentId,
+    display_name: row.displayName,
+    quantity: row.quantity,
+    average_cost: row.averageCost || null,
+    market_price: row.marketPrice || null,
+    currency: row.currency,
+    portfolio_id: row.portfolioId,
+    as_of: row.asOf,
+    note: row.note || "",
+  };
+}
+
+function holdingComparablePayload(row) {
+  return JSON.stringify(holdingCommandPayload(row));
+}
+
+function holdingRequestId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return `holding-request:${crypto.randomUUID()}`;
+  return `holding-request:${Date.now()}:${Math.random().toString(16).slice(2)}`;
 }
 
 function addHoldingDraft() {
@@ -4284,15 +5957,16 @@ function addHoldingDraft() {
   const rows = [
     ...readHoldingsRowsFromDom(),
     {
-      snapshotId: `v021-snap-draft-${timestamp}`,
-      instrumentId: "NEW",
-      displayName: "新增持仓",
-      quantity: 0,
-      averageCost: 0,
-      marketPrice: 0,
+      snapshotId: `draft:${timestamp}`,
+      clientRef: `browser-draft:${timestamp}`,
+      instrumentId: "",
+      displayName: "",
+      quantity: "",
+      averageCost: "",
+      marketPrice: "",
       currency: "CNY",
       portfolioId: "manual",
-      sourceId: "manual_review",
+      sourceId: "manual_user_entry",
       asOf: localDateValue(new Date()),
       note: "",
       metadata: {},
@@ -4306,19 +5980,70 @@ function addHoldingDraft() {
   setHoldingsStatus("未提交草稿 · 尚未写入数据库", "review");
 }
 
+function closeHoldingSoftDeleteDialog() {
+  const dialog = document.querySelector("[data-holdings-delete-dialog]");
+  if (!dialog) return;
+  if (typeof dialog.close === "function" && dialog.open) dialog.close();
+  else dialog.removeAttribute("open");
+  delete dialog.dataset.snapshotId;
+}
+
+function requestHoldingSoftDelete(snapshotId) {
+  if (!snapshotId) return;
+  const row = (holdingsPersistenceState.rows || []).find((item) => item.snapshotId === snapshotId);
+  if (!row) return;
+  pendingHoldingSoftDeleteId = snapshotId;
+  const dialog = document.querySelector("[data-holdings-delete-dialog]");
+  const summary = dialog?.querySelector("[data-holdings-delete-summary]");
+  const confirm = dialog?.querySelector("[data-holdings-delete-confirm]");
+  const persisted = (holdingsPersistenceState.persistedRows || []).some((item) => item.snapshotId === snapshotId);
+  const label = ownerVisibleText(row.displayName || row.instrumentId, "该持仓");
+  if (summary) {
+    summary.textContent = persisted
+      ? `将把“${label}”标记为已软删除并写入本机 SQLite。确认前不会发送请求或修改数据库。`
+      : `将从未提交草稿移除“${label}”。确认前不会发送请求或修改数据库。`;
+  }
+  if (confirm) confirm.textContent = persisted ? "确认软删除" : "移除草稿";
+  if (!dialog) return;
+  dialog.dataset.snapshotId = snapshotId;
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+  dialog.querySelector("[data-holdings-delete-cancel]")?.focus();
+}
+
+function cancelHoldingSoftDelete() {
+  pendingHoldingSoftDeleteId = "";
+  closeHoldingSoftDeleteDialog();
+  setHoldingsStatus("已取消软删除 · 数据库未改变", "review");
+}
+
+function confirmHoldingSoftDelete() {
+  const snapshotId = pendingHoldingSoftDeleteId;
+  pendingHoldingSoftDeleteId = "";
+  closeHoldingSoftDeleteDialog();
+  if (snapshotId) void softDeleteHoldingRow(snapshotId);
+}
+
 async function softDeleteHoldingRow(snapshotId) {
   if (!snapshotId) return;
   const rows = readHoldingsRowsFromDom().map((row) => (row.snapshotId === snapshotId ? { ...row, softDeleted: true } : row));
+  const operations = buildHoldingCommitOperations(rows, holdingsPersistenceState.persistedRows || []);
+  const target = (holdingsPersistenceState.persistedRows || []).find((row) => row.snapshotId === snapshotId);
+  if (!target) {
+    holdingsPersistenceState = saveUnsubmittedHoldingsDraft({
+      ...holdingsPersistenceState,
+      rows: rows.filter((row) => row.snapshotId !== snapshotId),
+    });
+    renderHoldingsRows();
+    updateHoldingsSummary();
+    setHoldingsStatus("已移除未提交草稿", "review");
+    return;
+  }
   setHoldingsStatus("正在写入 SQLite", "watch");
   try {
-    const payload = await saveHoldingsToBackend(rows);
+    const payload = await saveHoldingsToBackend(operations);
     clearUnsubmittedHoldingsDraft();
-    holdingsPersistenceState = {
-      schema: "PFIV021HoldingsFrontendStateV1",
-      rows: (payload.rows || []).map(normalizeHoldingRow).filter(Boolean),
-      lastSavedAt: new Date().toISOString(),
-      draft: false,
-    };
+    applyHoldingsBackendPayload(payload);
     renderHoldingsRows();
     updateHoldingsSummary({ preserveStatus: true });
     setHoldingsStatus("已软删除并写入 SQLite", "ready");
@@ -4346,12 +6071,16 @@ function updateHoldingsSummary(options = {}) {
   const count = document.querySelector("[data-holdings-summary-count]");
   const value = document.querySelector("[data-holdings-summary-value]");
   const saved = document.querySelector("[data-holdings-summary-saved]");
-  const total = activeRows.reduce((sum, row) => {
-    const originalValue = nonNegativeNumber(row.quantity) * nonNegativeNumber(row.marketPrice);
-    return sum + toCnyAmount(originalValue, row.currency);
-  }, 0);
   if (count) count.textContent = String(activeRows.length);
-  if (value) value.textContent = `CNY ${total.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (value) {
+    const projection = holdingsPersistenceState.projection;
+    value.textContent = projection?.valuation_status === "valuation_missing"
+      ? "持仓已保存 · 估值依赖缺失"
+      : activeRows.length
+        ? "尚未生成可信估值"
+        : "暂无真实持仓";
+    value.title = String(projection?.blocked_reason_zh || "缺少真实持仓、价格或 FX 时不显示财务 0。");
+  }
   if (saved) {
     if (holdingsPersistenceState.draft) {
       saved.textContent = "未提交草稿";
@@ -4396,7 +6125,9 @@ function escapeHtml(value) {
 }
 
 function csvCell(value) {
-  return `"${String(value || "").replace(/"/g, '""')}"`;
+  const text = String(value ?? "");
+  const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+  return `"${safe.replace(/"/g, '""')}"`;
 }
 
 function renderWorkspace(workspaceId, options = {}) {
@@ -4412,6 +6143,12 @@ function renderWorkspace(workspaceId, options = {}) {
   const activeRoute = Object.prototype.hasOwnProperty.call(options, "routeAlias") ? normalizeRouteAlias(options.routeAlias) : "";
   const routeForState = normalizeRouteAlias(activeRoute || defaultRouteAliasForWorkspace(workspaceId));
   const stage4Subpage = resolveStage4Subpage(workspaceId, routeForState);
+  const departingRoute = normalizeRouteAlias(main?.dataset.routeAlias || "");
+  if (departingRoute && departingRoute !== routeForState) saveStage6RouteScroll(departingRoute);
+  const invalidRoute = document.querySelector("[data-stage6-invalid-route]");
+  if (invalidRoute) invalidRoute.hidden = true;
+  main.setAttribute("data-stage6-route-state", "resolved");
+  main.removeAttribute("data-stage6-invalid-route-requested");
 
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     const isAlias = button.dataset.entryType === "v01_alias" || button.hasAttribute("data-feature-view");
@@ -4426,19 +6163,26 @@ function renderWorkspace(workspaceId, options = {}) {
   syncMobileTabs(workspaceId);
 
   title.textContent = ownerVisibleText(stage4Subpage?.title || workspace.label, "首页总览");
+  document.title = `${ownerVisibleText(stage4Subpage?.title || workspace.label, "PFI")} · PFI`;
   kicker.textContent = ownerVisibleText(stage4Subpage?.primaryObject || workspace.kicker, "今日总览");
   conclusion.textContent = ownerVisibleText(stage4Subpage?.emptyState || workspace.conclusion, "");
-  if (freshness) freshness.textContent = ownerVisibleText(workspace.freshness, "本机数据");
+  if (freshness && !runtimeReadModelStatusState) {
+    freshness.textContent = ownerVisibleText(workspace.freshness, "等待财务数据状态");
+  }
   if (runtimeTarget) runtimeTarget.textContent = ownerVisibleText(workspace.runtime);
   main.dataset.activeWorkspace = workspaceId;
   main.dataset.routeAlias = routeForState;
   main.dataset.stage4SubpageRoute = stage4Subpage?.routeAlias || "";
+  main.dataset.stage6PageContract = stage4Subpage?.phase73LineagePage
+    ? "phase_7_3"
+    : stage4Subpage?.phase62PageContract ? "phase_6_2" : "primary_workspace";
   main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
   main.setAttribute("data-stage5-history-ready", routeForState ? "true" : "false");
   applyV024Stage6RouteTransition(main, "enter");
   const settingsConsole = document.querySelector("[data-settings-feedback-console]");
   if (settingsConsole) settingsConsole.hidden = workspaceId !== "settings";
   applyStage5Phase53HomeSurfacePolicy(workspaceId);
+  renderStage8WorkspaceFocus(workspaceId, stage4Subpage);
   shell.dataset.state = "ready";
 
   renderCards(workspace.cards);
@@ -4451,6 +6195,7 @@ function renderWorkspace(workspaceId, options = {}) {
   renderLedgerOperationFlow(workspaceId);
   renderHoldingsPersistencePanel(workspaceId, routeForState);
   renderSettingsOperationFlow(workspaceId);
+  renderStage9DecisionReviewPanel(workspaceId);
   applyEvidenceDrawer(workspace.evidence);
   drawTrendChart(resolveWorkspaceTrend(workspace));
   refreshClickSafeInventory();
@@ -4463,11 +6208,14 @@ function renderWorkspace(workspaceId, options = {}) {
   }
   if (!options.keepFunctionDetail) delete nextContext.feature_view;
   writeContext(nextContext);
+  if (runtimeReadModelStatusState) applySourceAvailabilityBanner(runtimeReadModelStatusState);
   if (workspaceId === "settings") setEvidenceDrawer(false);
   if (!options.skipRouteSync) syncBrowserRoute(routeForState, { replace: options.replaceRoute === true });
 
   if (!options.silent) showToast(`已切换到${workspace.label}`);
-  if (!options.preserveFocus) main.focus({ preventScroll: true });
+  restoreStage6RouteScroll(routeForState, options.historyScrollY);
+  const heading = document.querySelector("[data-stage6-page-heading]") || title;
+  if (!options.preserveFocus && heading) heading.focus({ preventScroll: true });
 }
 
 function applyV024Stage6RouteTransition(main, state = "enter") {
@@ -4529,24 +6277,46 @@ function resolveStage4Subpage(workspaceId, routeAlias) {
   const pages = catalog[workspaceId] || [];
   if (!pages.length) return null;
   const cleanRoute = normalizeRouteAlias(routeAlias || defaultRouteAliasForWorkspace(workspaceId));
+  const cleanPath = cleanRoute.split("?", 1)[0];
   return pages.find((page) => {
-    if (normalizeRouteAlias(page.routeAlias) === cleanRoute) return true;
-    return (page.alternateRoutes || []).some((alternateRoute) => normalizeRouteAlias(alternateRoute) === cleanRoute);
+    if (normalizeRouteAlias(page.routeAlias).split("?", 1)[0] === cleanPath) return true;
+    return (page.alternateRoutes || []).some((alternateRoute) => normalizeRouteAlias(alternateRoute).split("?", 1)[0] === cleanPath);
   }) || pages[0] || null;
 }
 
 function stage4SubpageCatalog() {
   stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
   stage5SubpageCatalog = stage5SubpageCatalog || window.PFI_V024_STAGE5_PAGES || null;
-  if (stage5SubpageCatalog && typeof stage5SubpageCatalog.buildV024Stage5Phase52Catalog === "function") {
-    return stage5SubpageCatalog.buildV024Stage5Phase52Catalog();
-  }
-  return {
+  const legacyCatalog = stage5SubpageCatalog && typeof stage5SubpageCatalog.buildV024Stage5Phase52Catalog === "function"
+    ? stage5SubpageCatalog.buildV024Stage5Phase52Catalog()
+    : {
     ...(stage4PagesCatalog?.stage4ReviewSubpages || {}),
     ...(stage4PagesCatalog?.phase41Subpages || {}),
     ...(stage4PagesCatalog?.phase42Subpages || {}),
     ...(stage4PagesCatalog?.phase43Subpages || {}),
   };
+  if (!(ACTIVE_PAGE_CONTRACTS.pages || []).length) return legacyCatalog;
+  const legacyByRoute = Object.fromEntries(Object.values(legacyCatalog).flat().map((page) => [page.routeAlias, page]));
+  return Object.freeze(Object.fromEntries(Object.entries(ACTIVE_PAGE_CONTRACTS.pageGroups || {}).map(([workspace]) => [
+    workspace,
+    Object.freeze(ACTIVE_PAGE_CONTRACTS.pages.filter((page) => page.workspace === workspace).map((page) => {
+      const legacy = legacyByRoute[page.legacyRouteAlias] || {};
+      return Object.freeze({
+        ...legacy,
+        ...page,
+        emptyState: page.states.empty,
+        errorState: page.states.error,
+        loadingState: page.states.loading,
+        alternateRoutes: Object.freeze([page.legacyRouteAlias, ...(legacy.alternateRoutes || []), ...(legacy.legacyAliases || [])]),
+        sections: Object.freeze((legacy.sections || [
+          { kind: "task", title: "页面任务", detail: page.jobToBeDone },
+          { kind: "data", title: "页面数据", detail: page.dataObject },
+          { kind: "action", title: "主要动作", detail: page.primaryAction },
+        ]).map((section) => Object.freeze({ ...section }))),
+        phase62PageContract: page.phase73LineagePage !== true,
+      });
+    })),
+  ])));
 }
 
 function renderStage4SubpageSurface(page, workspaceId, routeForState) {
@@ -4576,6 +6346,12 @@ function renderStage4SubpageSurface(page, workspaceId, routeForState) {
   article.setAttribute("data-stage5-differentiated-subpage", "phase_5_2");
   article.setAttribute("data-stage5-ux-state", "phase_5_3");
   article.setAttribute("data-stage5-history-ready", "true");
+  article.setAttribute("data-stage6-page-contract", page.phase73LineagePage ? "phase_7_3" : page.phase62PageContract ? "phase_6_2" : "compatibility");
+  article.setAttribute("data-stage6-job-to-be-done", ownerVisibleText(page.jobToBeDone, page.primaryObject));
+  article.setAttribute("data-stage6-loading-state", ownerVisibleText(page.loadingState, "正在读取页面数据。"));
+  article.setAttribute("data-stage6-empty-state", ownerVisibleText(page.emptyState, "暂无可用数据。"));
+  article.setAttribute("data-stage6-error-state", ownerVisibleText(page.errorState, "无法读取页面数据。"));
+  article.setAttribute("data-stage6-structural-signature", ownerVisibleText(page.structuralSignature, page.layoutKind));
   article.setAttribute("data-stage5-state-key", ownerVisibleText(page.stateKey, ""));
   article.setAttribute("data-stage5-data-object", ownerVisibleText(page.dataObject || page.primaryObject, ""));
   article.setAttribute("data-stage4-primary-object", page.primaryObject);
@@ -4608,9 +6384,16 @@ function renderStage4SubpageSurface(page, workspaceId, routeForState) {
   kicker.textContent = ownerVisibleText(page.primaryObject, "二级页面");
   const heading = document.createElement("h2");
   heading.textContent = ownerVisibleText(page.title, "二级页面");
+  heading.tabIndex = -1;
+  heading.dataset.stage6PageHeading = "";
   const summary = document.createElement("p");
-  summary.textContent = ownerVisibleText(page.emptyState, "等待真实数据");
-  headingWrap.append(kicker, heading, summary);
+  summary.textContent = ownerVisibleText(page.jobToBeDone, page.emptyState || "等待真实数据");
+  summary.dataset.stage6JobToBeDone = "";
+  const stateHint = document.createElement("p");
+  stateHint.className = "stage6-page-state-hint";
+  stateHint.textContent = ownerVisibleText(page.emptyState, "等待真实数据");
+  stateHint.dataset.stage6EmptyState = "";
+  headingWrap.append(kicker, heading, summary, stateHint);
   const action = document.createElement("button");
   action.type = "button";
   action.className = "primary-action stage4-primary-action";
@@ -4640,8 +6423,391 @@ function renderStage4SubpageSurface(page, workspaceId, routeForState) {
   });
 
   article.append(breadcrumb, header, stateGrid, sectionGrid);
-  appendStage5UxStates(article, stage5StateModel);
+  if (page.phase73LineagePage) {
+    renderStage7LineagePage(article, page, routeForState);
+  } else {
+    appendStage5UxStates(article, stage5StateModel);
+  }
   surface.appendChild(article);
+}
+
+async function refreshStage7Lineage() {
+  if (runtimeStage7LineageLoading) return;
+  runtimeStage7LineageLoading = true;
+  runtimeStage7LineageError = "";
+  try {
+    const payload = await runtimeApiJson("/api/lineage");
+    if (payload?.schema !== "PFIV025Stage7Phase73FormalWorkflowV1") {
+      throw new Error("指标 lineage 响应格式不受支持");
+    }
+    runtimeStage7LineageState = payload;
+  } catch (error) {
+    runtimeStage7LineageState = null;
+    runtimeStage7LineageError = String(error?.message || "无法读取指标 lineage");
+  } finally {
+    runtimeStage7LineageLoading = false;
+    const main = document.querySelector("#main-workspace");
+    const routeAlias = normalizeRouteAlias(main?.dataset.routeAlias || "");
+    const resolved = STAGE6_ROUTES.resolveRouteAlias?.(routeAlias);
+    const page = resolveStage4Subpage(resolved?.workspace || "", routeAlias);
+    if (page?.phase73LineagePage && WORKSPACES[resolved.workspace]) {
+      renderWorkspace(resolved.workspace, {
+        silent: true,
+        preserveFocus: true,
+        routeAlias,
+        skipRouteSync: true,
+      });
+    }
+  }
+}
+
+function renderStage7LineagePage(article, page, routeForState) {
+  article.dataset.stage7Phase73Page = page.pageKind || "lineage";
+  article.querySelector(".stage4-state-grid")?.setAttribute("hidden", "");
+  const sectionGrid = article.querySelector(".stage4-section-grid");
+  if (!sectionGrid) return;
+  sectionGrid.className = "stage7-lineage-surface";
+  sectionGrid.replaceChildren();
+  const stateHint = article.querySelector(".stage6-page-state-hint");
+  const action = article.querySelector("[data-stage4-primary-action-button]");
+  if (action) action.hidden = true;
+
+  if (!runtimeStage7LineageState && !runtimeStage7LineageError) {
+    if (stateHint) stateHint.textContent = "正在从本机服务读取参数、事件链与指标状态。";
+    sectionGrid.appendChild(stage7MessageCard("正在读取正式 runtime lineage…", "loading"));
+    void refreshStage7Lineage();
+    return;
+  }
+  if (runtimeStage7LineageError) {
+    if (stateHint) stateHint.textContent = runtimeStage7LineageError;
+    const card = stage7MessageCard(`读取失败：${runtimeStage7LineageError}`, "error");
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "primary-action";
+    retry.textContent = "重试读取";
+    retry.addEventListener("click", () => {
+      runtimeStage7LineageError = "";
+      void refreshStage7Lineage();
+    });
+    card.appendChild(retry);
+    sectionGrid.appendChild(card);
+    return;
+  }
+
+  const payload = runtimeStage7LineageState || {};
+  if (stateHint) stateHint.textContent = payload.status === "ready"
+    ? "当前正式 runtime 投影已就绪；页面不读取旁路 HTML。"
+    : "部分来源未加载，页面保持 fail-closed。";
+  if (page.pageKind === "parameters") {
+    renderStage7ParameterCenter(sectionGrid, payload.parameter_center || {}, routeForState);
+  } else if (page.pageKind === "interconnection") {
+    renderStage7InterconnectionMap(sectionGrid, payload.interconnection_map || {}, routeForState);
+  } else if (page.pageKind === "metric") {
+    renderStage7MetricDrilldown(sectionGrid, payload.metric_drilldown || {}, routeForState);
+  }
+}
+
+function stage7MessageCard(message, state) {
+  const card = document.createElement("section");
+  card.className = `stage7-lineage-message stage7-lineage-${state}`;
+  card.dataset.stage7LineageState = state;
+  const text = document.createElement("p");
+  text.textContent = message;
+  card.appendChild(text);
+  return card;
+}
+
+function stage7QueryValue(routeAlias, key) {
+  try {
+    return new URL(String(routeAlias || ""), window.location.origin).searchParams.get(key) || "";
+  } catch (_error) {
+    return "";
+  }
+}
+
+function stage7DisplayValue(value) {
+  if (value === null || value === undefined || value === "") return "未设置";
+  if (typeof value === "object") return JSON.stringify(value, null, 2);
+  if (value === true) return "是";
+  if (value === false) return "否";
+  return String(value);
+}
+
+function stage7HashValue(value, missingText = "未生成（输入阻断）") {
+  const clean = String(value || "").trim();
+  return clean || missingText;
+}
+
+function stage7DefinitionRow(list, label, value, className = "") {
+  const wrapper = document.createElement("div");
+  if (className) wrapper.className = className;
+  const term = document.createElement("dt");
+  term.textContent = label;
+  const description = document.createElement("dd");
+  description.textContent = stage7DisplayValue(value);
+  wrapper.append(term, description);
+  list.appendChild(wrapper);
+}
+
+function renderStage7ParameterCenter(container, payload, routeAlias) {
+  const domainId = stage7QueryValue(routeAlias, "domain");
+  const viewModel = STAGE7_LINEAGE.buildParameterCenterViewModel?.(payload, domainId);
+  if (!viewModel) {
+    container.appendChild(stage7MessageCard("参数中心合同未加载。", "error"));
+    return;
+  }
+  container.dataset.stage7ParameterCenter = viewModel.status;
+
+  const summary = document.createElement("section");
+  summary.className = "stage7-lineage-summary";
+  const title = document.createElement("h3");
+  title.textContent = "当前参数与公式身份";
+  const text = document.createElement("p");
+  text.textContent = `${viewModel.summaryZh} · ${viewModel.consistencyZh}`;
+  const hashes = document.createElement("dl");
+  hashes.className = "stage7-hash-grid";
+  stage7DefinitionRow(hashes, "parameter hash", stage7HashValue(viewModel.parameterHash), "stage7-hash-row");
+  stage7DefinitionRow(hashes, "formula registry hash", stage7HashValue(viewModel.formulaRegistryHash), "stage7-hash-row");
+  stage7DefinitionRow(hashes, "写入状态", viewModel.writeEnabled ? "允许修改" : "本页只读");
+  summary.append(title, text, hashes);
+
+  const layout = document.createElement("div");
+  layout.className = "stage7-parameter-layout";
+  const nav = document.createElement("nav");
+  nav.className = "stage7-domain-list";
+  nav.setAttribute("aria-label", "参数域");
+  viewModel.domains.forEach((domain) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.stage7ParameterDomain = domain.domain_id;
+    button.className = "stage7-domain-button";
+    button.classList.toggle("is-active", viewModel.selectedDomain?.domain_id === domain.domain_id);
+    button.setAttribute("aria-pressed", button.classList.contains("is-active") ? "true" : "false");
+    button.textContent = `${domain.label_zh} · ${Number(domain.entry_count || 0)}`;
+    button.addEventListener("click", () => setActiveWorkspace("settings", {
+      routeAlias: `/settings/parameters?domain=${encodeURIComponent(domain.domain_id)}`,
+    }));
+    nav.appendChild(button);
+  });
+  const detail = document.createElement("section");
+  detail.className = "stage7-parameter-detail";
+  detail.dataset.stage7SelectedDomain = viewModel.selectedDomain?.domain_id || "";
+  const detailTitle = document.createElement("h3");
+  detailTitle.textContent = viewModel.selectedDomain?.label_zh || "暂无参数域";
+  const detailDescription = document.createElement("p");
+  detailDescription.textContent = viewModel.selectedDomain?.description_zh || "当前参数域没有可展示条目。";
+  const entryGrid = document.createElement("div");
+  entryGrid.className = "stage7-parameter-entry-grid";
+  (viewModel.selectedDomain?.entries || []).forEach((entry) => {
+    const card = document.createElement("article");
+    card.className = "stage7-parameter-card";
+    card.dataset.stage7ParameterId = entry.parameter_id;
+    const heading = document.createElement("h4");
+    heading.textContent = entry.label_zh;
+    const value = document.createElement("pre");
+    value.textContent = stage7DisplayValue(entry.value);
+    const description = document.createElement("p");
+    description.textContent = entry.description_zh;
+    const impact = document.createElement("p");
+    impact.textContent = `影响范围：${(entry.impact_surfaces || []).join("、") || "以公式与调用方为准"}`;
+    const editable = document.createElement("span");
+    editable.className = "stage7-lineage-badge";
+    editable.textContent = entry.user_editable ? "可由用户修改" : "只读治理参数";
+    card.append(heading, value, description, impact, editable);
+    entryGrid.appendChild(card);
+  });
+  if (!entryGrid.childElementCount) entryGrid.appendChild(stage7MessageCard("此参数域当前无可展示条目。", "empty"));
+  detail.append(detailTitle, detailDescription, entryGrid);
+  layout.append(nav, detail);
+
+  const formulas = document.createElement("section");
+  formulas.className = "stage7-formula-register";
+  const formulaTitle = document.createElement("h3");
+  formulaTitle.textContent = "公式注册表";
+  const formulaGrid = document.createElement("div");
+  formulaGrid.className = "stage7-formula-grid";
+  viewModel.formulas.forEach((formula) => {
+    const card = document.createElement("article");
+    card.className = "stage7-formula-card";
+    card.dataset.stage7FormulaId = formula.formula_id;
+    const heading = document.createElement("h4");
+    heading.textContent = `${formula.formula_id} · ${formula.label_zh}`;
+    const definition = document.createElement("p");
+    definition.textContent = formula.definition_zh;
+    const meta = document.createElement("p");
+    meta.textContent = `${formula.version} · ${formula.validation_status} · ${formula.lifecycle_status}`;
+    const hash = document.createElement("code");
+    hash.textContent = stage7HashValue(formula.formula_hash);
+    card.append(heading, definition, meta, hash);
+    formulaGrid.appendChild(card);
+  });
+  formulas.append(formulaTitle, formulaGrid);
+  container.append(summary, layout, formulas);
+}
+
+function renderStage7InterconnectionMap(container, payload, routeAlias) {
+  const nodeId = stage7QueryValue(routeAlias, "node");
+  const viewModel = STAGE7_LINEAGE.buildInterconnectionMapViewModel?.(payload, nodeId);
+  if (!viewModel) {
+    container.appendChild(stage7MessageCard("Interconnection Map 合同未加载。", "error"));
+    return;
+  }
+  container.dataset.stage7InterconnectionMap = viewModel.status;
+  const identity = document.createElement("dl");
+  identity.className = "stage7-hash-grid";
+  stage7DefinitionRow(identity, "data hash", stage7HashValue(viewModel.dataHash), "stage7-hash-row");
+  stage7DefinitionRow(identity, "read-model hash", stage7HashValue(viewModel.readModelHash), "stage7-hash-row");
+  stage7DefinitionRow(identity, "完整 lineage", viewModel.lineageCompleteCount ?? "未加载");
+  stage7DefinitionRow(identity, "缺失 lineage", viewModel.lineageMissingCount ?? "未加载");
+  container.appendChild(identity);
+  if (viewModel.status !== "ready") {
+    container.appendChild(stage7MessageCard(viewModel.blockingReasonZh || "真实事件来源尚未加载。", "empty"));
+  }
+
+  const graph = document.createElement("section");
+  graph.className = "stage7-interconnection-graph";
+  graph.setAttribute("aria-label", "真实事件关联图");
+  viewModel.nodes.forEach((node, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "stage7-map-node";
+    button.dataset.stage7InterconnectionNode = node.node_id;
+    button.classList.toggle("is-active", viewModel.selectedNode?.node_id === node.node_id);
+    button.setAttribute("aria-pressed", button.classList.contains("is-active") ? "true" : "false");
+    const label = document.createElement("strong");
+    label.textContent = node.label_zh;
+    const count = document.createElement("span");
+    count.textContent = node.count === null || node.count === undefined ? "未加载" : `${Number(node.count).toLocaleString("zh-CN")} 项`;
+    button.append(label, count);
+    button.addEventListener("click", () => setActiveWorkspace("sync", {
+      routeAlias: `/data/interconnection?node=${encodeURIComponent(node.node_id)}`,
+    }));
+    graph.appendChild(button);
+    if (index < viewModel.nodes.length - 1) {
+      const arrow = document.createElement("span");
+      arrow.className = "stage7-map-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      graph.appendChild(arrow);
+    }
+  });
+
+  const detail = document.createElement("section");
+  detail.className = "stage7-map-detail";
+  detail.dataset.stage7SelectedNode = viewModel.selectedNode?.node_id || "";
+  const detailTitle = document.createElement("h3");
+  detailTitle.textContent = viewModel.selectedNode?.label_zh || "关联节点";
+  const detailText = document.createElement("p");
+  detailText.textContent = viewModel.selectedEdges.length
+    ? viewModel.selectedEdges.map((edge) => `${edge.from} → ${edge.to}：${edge.label_zh}`).join("；")
+    : "当前节点没有额外关联边。";
+  detail.append(detailTitle, detailText);
+  if (viewModel.selectedNode?.route && !String(viewModel.selectedNode.route).startsWith("/data/interconnection")) {
+    const related = document.createElement("button");
+    related.type = "button";
+    related.className = "secondary-action";
+    related.textContent = "打开相关正式页面";
+    related.addEventListener("click", () => {
+      const target = STAGE6_ROUTES.resolveRouteAlias?.(viewModel.selectedNode.route);
+      if (target?.status === "resolved") setActiveWorkspace(target.workspace, { routeAlias: target.routeAlias });
+    });
+    detail.appendChild(related);
+  }
+
+  const eventSection = document.createElement("section");
+  eventSection.className = "stage7-event-types";
+  const eventTitle = document.createElement("h3");
+  eventTitle.textContent = "经济事件类型与发布状态";
+  const table = document.createElement("table");
+  table.innerHTML = "<thead><tr><th>事件</th><th>已发布</th><th>待复核</th><th>未决策略</th></tr></thead>";
+  const body = document.createElement("tbody");
+  viewModel.eventTypes.forEach((item) => {
+    const row = document.createElement("tr");
+    [item.label_zh, item.published_count, item.review_count, item.unresolved_policy === "review_required_no_publication" ? "缺证据不发布" : "映射完整后发布"].forEach((value) => {
+      const cell = document.createElement("td");
+      cell.textContent = stage7DisplayValue(value);
+      row.appendChild(cell);
+    });
+    body.appendChild(row);
+  });
+  table.appendChild(body);
+  eventSection.append(eventTitle, table);
+  container.append(graph, detail, eventSection);
+}
+
+function renderStage7MetricDrilldown(container, payload, routeAlias) {
+  const metricId = stage7QueryValue(routeAlias, "metric");
+  const viewModel = STAGE7_LINEAGE.buildMetricDrilldownViewModel?.(payload, metricId);
+  if (!viewModel) {
+    container.appendChild(stage7MessageCard("指标下钻合同未加载。", "error"));
+    return;
+  }
+  container.dataset.stage7MetricDrilldown = viewModel.status;
+  container.dataset.stage7NonReadyFalseZeroCount = String(viewModel.nonReadyFalseZeroCount);
+  const picker = document.createElement("label");
+  picker.className = "stage7-metric-picker";
+  const pickerLabel = document.createElement("span");
+  pickerLabel.textContent = "选择指标";
+  const select = document.createElement("select");
+  select.dataset.stage7MetricSelect = "";
+  viewModel.metrics.forEach((metric) => {
+    const option = document.createElement("option");
+    option.value = metric.metric_id;
+    option.textContent = `${metric.label_zh} · ${metric.status}`;
+    option.selected = metric.metric_id === viewModel.selectedMetric?.metric_id;
+    select.appendChild(option);
+  });
+  select.addEventListener("change", () => setActiveWorkspace("insights", {
+    routeAlias: `/reports/metric-drilldown?metric=${encodeURIComponent(select.value)}`,
+  }));
+  picker.append(pickerLabel, select);
+  container.appendChild(picker);
+  const metric = viewModel.selectedMetric;
+  if (!metric) {
+    container.appendChild(stage7MessageCard("当前没有可下钻指标。", "empty"));
+    return;
+  }
+
+  const headline = document.createElement("section");
+  headline.className = "stage7-metric-headline";
+  headline.dataset.stage7SelectedMetric = metric.metric_id;
+  const heading = document.createElement("h3");
+  heading.textContent = metric.label_zh;
+  const value = document.createElement("strong");
+  value.textContent = viewModel.selectedValueZh;
+  const status = document.createElement("span");
+  status.className = `stage7-lineage-badge stage7-metric-${metric.status}`;
+  status.textContent = metric.status;
+  const reason = document.createElement("p");
+  reason.textContent = metric.blocking_reason_zh || "当前指标基于已发布真实事件计算；待复核事件不进入当前值。";
+  headline.append(heading, value, status, reason);
+
+  const range = metric.data_range || {};
+  const trace = document.createElement("dl");
+  trace.className = "stage7-metric-trace";
+  stage7DefinitionRow(trace, "数据范围", `${range.start || "未加载"} → ${range.end || "未加载"} · as of ${range.as_of || "未加载"}`);
+  stage7DefinitionRow(trace, "公式", `${metric.formula_id || "未绑定"} · ${metric.formula_version || "版本未加载"}`);
+  stage7DefinitionRow(trace, "公式说明", metric.formula_definition_zh || "公式说明未加载");
+  stage7DefinitionRow(trace, "formula hash", stage7HashValue(metric.formula_hash), "stage7-hash-row");
+  stage7DefinitionRow(trace, "parameter hash", stage7HashValue(metric.parameter_hash), "stage7-hash-row");
+  stage7DefinitionRow(trace, "data hash", stage7HashValue(metric.data_hash), "stage7-hash-row");
+  stage7DefinitionRow(trace, "read-model hash", stage7HashValue(metric.read_model_hash), "stage7-hash-row");
+  stage7DefinitionRow(trace, "来源", (metric.source_ids || []).join("、") || "来源未加载");
+  stage7DefinitionRow(trace, "记录数", metric.record_count ?? "未加载");
+  stage7DefinitionRow(trace, "阻断", metric.blocking_reason_zh || "无");
+
+  const event = metric.event_lineage || {};
+  const eventCard = document.createElement("section");
+  eventCard.className = "stage7-metric-event-lineage";
+  const eventTitle = document.createElement("h3");
+  eventTitle.textContent = "事件 lineage";
+  const eventList = document.createElement("dl");
+  stage7DefinitionRow(eventList, "事件口径", event.metric_event_key || "当前指标不由交易事件集合直接计算");
+  stage7DefinitionRow(eventList, "经济事件数", event.economic_event_count ?? "输入阻断");
+  stage7DefinitionRow(eventList, "事件集合 hash", stage7HashValue(event.economic_event_set_hash), "stage7-hash-row");
+  stage7DefinitionRow(eventList, "单事件最大计数", event.maximum_count_per_economic_event ?? "不适用");
+  eventCard.append(eventTitle, eventList);
+  container.append(headline, trace, eventCard);
 }
 
 function ensureStage4SubpageSurface() {
@@ -5157,25 +7323,20 @@ function bindClickSafeFeedback() {
   document.addEventListener("click", (event) => {
     const button = event.target.closest("button");
     if (!button || button.disabled) return;
-    const label = buttonReadableLabel(button);
     const serial = clickFeedbackSerial + 1;
     clickFeedbackSerial = serial;
     clickSafeId(button, serial);
     createRipple(event, button);
     setPressedFeedback(button);
-    setActionFeedback("progress", `${label} · 正在处理`, { serial });
-    window.setTimeout(() => {
-      const feedback = document.querySelector("[data-action-feedback]");
-      if (!feedback) return;
-      if (feedback.dataset.feedbackSerial === String(serial) && feedback.dataset.feedbackState === "progress") {
-        setActionFeedback("success", `${label} · 已响应`, { serial });
-      }
-    }, 180);
   }, true);
 }
 
 function setActiveWorkspace(workspaceId, options = {}) {
-  renderWorkspace(workspaceId, options);
+  const motion = window.PFI_V025_STAGE8_MOTION;
+  if (motion?.transitionRoute && options.motion !== false) {
+    return motion.transitionRoute(() => renderWorkspace(workspaceId, options), document.querySelector("#main-workspace"));
+  }
+  return renderWorkspace(workspaceId, options);
 }
 
 function defaultRouteAliasForWorkspace(workspaceId) {
@@ -5186,11 +7347,47 @@ function defaultRouteAliasForWorkspace(workspaceId) {
   return (primary || any)?.dataset.routeAlias || "";
 }
 
+function loadStage6RouteScrollMemory() {
+  try {
+    const stored = JSON.parse(window.sessionStorage.getItem(STAGE6_ROUTE_SCROLL_STORAGE_KEY) || "{}");
+    if (stored && typeof stored === "object") stage6RouteScrollMemory = { ...stored };
+  } catch (_error) {
+    stage6RouteScrollMemory = Object.create(null);
+  }
+  return stage6RouteScrollMemory;
+}
+
+function saveStage6RouteScroll(routeAlias) {
+  const clean = normalizeRouteAlias(routeAlias);
+  if (!clean) return;
+  loadStage6RouteScrollMemory();
+  const scrollY = Math.max(0, Number(window.scrollY || 0));
+  stage6RouteScrollMemory[clean] = scrollY;
+  try {
+    window.sessionStorage.setItem(STAGE6_ROUTE_SCROLL_STORAGE_KEY, JSON.stringify(stage6RouteScrollMemory));
+  } catch (_error) {
+    // Static/private previews can deny sessionStorage; in-memory restoration remains available.
+  }
+  if (normalizeRouteAlias(routeAliasFromLocation()) === clean) {
+    replaceCurrentStage6HistoryState(clean, { scrollY, source: "scroll_snapshot" });
+  }
+}
+
+function restoreStage6RouteScroll(routeAlias, historyScrollY) {
+  const clean = normalizeRouteAlias(routeAlias);
+  loadStage6RouteScrollMemory();
+  const stored = Number(stage6RouteScrollMemory[clean] || 0);
+  const fromHistory = Number(historyScrollY);
+  const target = Number.isFinite(fromHistory) && fromHistory >= 0 ? fromHistory : stored;
+  window.requestAnimationFrame(() => window.scrollTo({ top: target, left: 0, behavior: "auto" }));
+}
+
 function normalizeRouteAlias(routeAlias) {
-  const clean = String(routeAlias || "").trim();
+  const raw = String(routeAlias || "").trim();
+  const clean = raw.startsWith("#") ? raw.slice(1) : raw;
   if (!clean) return "";
   if (typeof STAGE3_ROUTES.resolveRouteAlias === "function") {
-    const resolved = STAGE3_ROUTES.resolveRouteAlias(clean);
+    const resolved = STAGE3_ROUTES.resolveRouteAlias(raw || clean);
     if (resolved?.status === "resolved" && resolved.routeAlias) return resolved.routeAlias;
   }
   if (Object.prototype.hasOwnProperty.call(LEGACY_ROUTE_ALIAS_TARGETS, clean)) return LEGACY_ROUTE_ALIAS_TARGETS[clean];
@@ -5210,12 +7407,12 @@ function routeWorkspaceFromAlias(routeAlias) {
     return { workspace: "market_research", routeAlias: "/market-research/strategy-lab", view: "" };
   }
   const routePrefixes = [
-    ["/home", "home"],
+    ["/overview", "home"],
     ["/accounts", "accounts"],
     ["/ledger", "ledger"],
     ["/investment", "investment"],
     ["/consumption", "consumption"],
-    ["/sources-upload", "sync"],
+    ["/data", "sync"],
     ["/review", "recommendations"],
     ["/reports", "insights"],
     ["/market-research", "market_research"],
@@ -5253,39 +7450,146 @@ function workspaceTargetFromRoute(routeAlias) {
 }
 
 function routeAliasFromLocation() {
+  const pathname = decodeURIComponent(String(window.location.pathname || ""));
   const hashRoute = decodeURIComponent(String(window.location.hash || "").replace(/^#/, ""));
-  if (hashRoute.startsWith("/")) return normalizeRouteAlias(hashRoute);
+  if (stage6HistoryMode() === "canonical_path" && pathname.startsWith("/") && !["/", "/index.html"].includes(pathname)) {
+    const source = new URLSearchParams(window.location.search || "");
+    const routeParams = new URLSearchParams();
+    ["tab", "domain", "node", "metric"].forEach((key) => {
+      if (source.has(key)) routeParams.set(key, source.get(key) || "");
+    });
+    const query = routeParams.toString();
+    return query ? `${pathname}?${query}` : pathname;
+  }
+  if (hashRoute.startsWith("/")) return `#${hashRoute}`;
   const params = initialSearchParams();
-  return normalizeRouteAlias(params.get("route") || "");
+  return params.get("route") || "";
+}
+
+function stage6HistoryMode() {
+  const protocol = String(window.location.protocol || "");
+  const pathname = String(window.location.pathname || "");
+  const directHttpShell = (protocol === "http:" || protocol === "https:") && !pathname.includes("/component/");
+  return directHttpShell ? "canonical_path" : "hash_compatibility";
+}
+
+function stage6CanonicalUrlForRoute(routeAlias) {
+  const clean = normalizeRouteAlias(routeAlias);
+  const url = new URL(String(window.location || ""), window.location.origin || "http://127.0.0.1");
+  ["route", "tab", "view", "domain", "node", "metric"].forEach((key) => url.searchParams.delete(key));
+  const routeUrl = new URL(clean || "/overview", url.origin);
+  routeUrl.searchParams.forEach((value, key) => url.searchParams.set(key, value));
+  if (stage6HistoryMode() === "canonical_path") {
+    url.pathname = routeUrl.pathname || "/overview";
+    url.hash = "";
+  } else {
+    url.hash = clean || "/overview";
+  }
+  return url;
+}
+
+function stage6HistoryState(routeAlias, overrides = {}) {
+  const clean = normalizeRouteAlias(routeAlias);
+  const resolved = typeof STAGE3_ROUTES.resolveRouteAlias === "function"
+    ? STAGE3_ROUTES.resolveRouteAlias(clean)
+    : null;
+  return {
+    schema: "PFIV025Stage6Phase63HistoryStateV1",
+    routeAlias: clean,
+    workspace: resolved?.workspace || "",
+    routeState: resolved?.status === "resolved" ? "resolved" : "invalid",
+    scrollY: Math.max(0, Number(overrides.scrollY ?? window.scrollY ?? 0)),
+    source: overrides.source || "navigation",
+    ...overrides,
+  };
+}
+
+function replaceCurrentStage6HistoryState(routeAlias, overrides = {}) {
+  if (!window.history || typeof window.history.replaceState !== "function") return null;
+  const state = stage6HistoryState(routeAlias, overrides);
+  try {
+    window.history.replaceState(state, "", String(window.location || ""));
+    return state;
+  } catch (_error) {
+    return null;
+  }
 }
 
 function syncBrowserRoute(routeAlias, options = {}) {
   const clean = normalizeRouteAlias(routeAlias);
   if (!clean || !window.history || typeof window.history.pushState !== "function") return;
   try {
-    const url = new URL(String(window.location || ""));
-    url.hash = clean;
-    if (String(window.location.hash || "") === `#${encodeURI(clean)}`) return;
+    const resolution = typeof STAGE3_ROUTES.resolveRouteAlias === "function"
+      ? STAGE3_ROUTES.resolveRouteAlias(clean)
+      : { status: "resolved", routeAlias: clean };
+    if (resolution?.status !== "resolved") return;
+    const canonical = resolution.routeAlias || clean;
+    const url = stage6CanonicalUrlForRoute(canonical);
+    const current = normalizeRouteAlias(routeAliasFromLocation());
+    const sameRoute = current === canonical && url.href === String(window.location || "");
+    const state = stage6HistoryState(canonical, { source: options.source || "navigation" });
+    if (sameRoute) {
+      window.history.replaceState(state, "", url);
+      return { status: "unchanged", routeAlias: canonical, historyLength: window.history.length };
+    }
     const method = options.replace ? "replaceState" : "pushState";
-    window.history[method]({ routeAlias: clean }, "", url);
+    window.history[method](state, "", url);
+    return { status: method === "pushState" ? "pushed" : "replaced", routeAlias: canonical, historyLength: window.history.length };
   } catch (_error) {
     // Static file previews can have unusual URLs; route state is still stored in context.
+    return null;
   }
 }
 
 function applyRouteFromLocation() {
-  const routeTarget = workspaceTargetFromRoute(routeAliasFromLocation());
-  if (routeTarget?.view) {
-    openFunctionView(routeTarget.view, { silent: true, routeAlias: routeTarget.routeAlias, skipRouteSync: true });
-    syncBrowserRoute(routeTarget.routeAlias, { replace: true });
-    return true;
-  }
-  if (routeTarget?.workspace) {
-    renderWorkspace(routeTarget.workspace, { routeAlias: routeTarget.routeAlias, silent: true, preserveFocus: true, skipRouteSync: true });
-    syncBrowserRoute(routeTarget.routeAlias, { replace: true });
-    return true;
-  }
-  return false;
+  const requestedRouteAlias = routeAliasFromLocation();
+  if (!requestedRouteAlias) return false;
+  mountPFIStage1Route(requestedRouteAlias, { replace: true, preserveFocus: true, source: "initial_location" });
+  return true;
+}
+
+function renderInvalidRouteState(routeAlias, options = {}) {
+  const requested = String(routeAlias || "").replace(/^#/, "") || "/";
+  const main = document.querySelector("#main-workspace");
+  const shell = document.querySelector(".app-shell");
+  const surface = document.querySelector("[data-stage6-invalid-route]");
+  const requestedNode = document.querySelector("[data-stage6-invalid-route-requested]");
+  const heading = document.querySelector("[data-stage6-invalid-route-title]");
+  if (!main || !surface) return;
+  const departingRoute = normalizeRouteAlias(main.dataset.routeAlias || "");
+  if (departingRoute && workspaceTargetFromRoute(departingRoute)) saveStage6RouteScroll(departingRoute);
+  document.querySelectorAll('[data-primary-entry="true"]').forEach((button) => {
+    button.classList.remove("is-active");
+    button.setAttribute("aria-current", "false");
+  });
+  main.setAttribute("data-stage6-route-state", "invalid");
+  main.setAttribute("data-stage6-invalid-requested", requested);
+  main.dataset.routeAlias = requested;
+  main.dataset.activeWorkspace = "";
+  if (shell) shell.dataset.state = "route_error";
+  if (requestedNode) requestedNode.textContent = requested;
+  surface.hidden = false;
+  document.title = "页面地址无效 · PFI";
+  writeContext({ ...currentContext(), route_alias: requested, route_state: "invalid" });
+  replaceCurrentStage6HistoryState(requested, {
+    source: options.source || "invalid_route",
+    routeState: "invalid",
+    recoveryRouteAlias: PFI_V025_STAGE6_PHASE63_HISTORY.invalidRouteRecovery || "/overview",
+    scrollY: Number(options.historyState?.scrollY || 0),
+  });
+  if (!options.preserveFocus && heading) heading.focus({ preventScroll: true });
+}
+
+function applyStage6HistoryNavigation(event) {
+  const routeFromUrl = routeAliasFromLocation();
+  const routeFromState = String(event?.state?.routeAlias || "");
+  const requested = routeFromUrl || routeFromState || "/overview";
+  return mountPFIStage1Route(requested, {
+    historyTraversal: true,
+    historyState: event?.state || null,
+    preserveFocus: false,
+    source: "popstate",
+  });
 }
 
 function openCommandPalette() {
@@ -5662,15 +7966,88 @@ function handleGlobalSearchKeydown(event) {
   }
 }
 
-function runCachedRefresh() {
+function runtimeJobRequestId() {
+  if (globalThis.crypto?.randomUUID) return `cache-refresh-${globalThis.crypto.randomUUID()}`;
+  const values = new Uint32Array(4);
+  globalThis.crypto.getRandomValues(values);
+  return `cache-refresh-${[...values].map((value) => value.toString(16).padStart(8, "0")).join("")}`;
+}
+
+function applyRuntimeJobStatus(job, { skeleton, taskPhase, jobLabel }) {
+  const progress = job.progress || {};
+  const completed = Number(progress.completed_units);
+  const total = Number(progress.total_units);
+  const hasRealProgress = Number.isFinite(completed) && Number.isFinite(total) && total > 0;
+  const progressText = hasRealProgress ? `${completed}/${total}` : "等待首个持久化工作单元";
+  const stage = String(progress.step || job.trace?.stage || job.status || "");
+  const terminalFailure = ["failed", "cancelled", "dead_letter"].includes(job.status);
+  if (skeleton) {
+    skeleton.hidden = job.status === "succeeded" || terminalFailure;
+    skeleton.dataset.v024SkeletonState = job.status;
+  }
+  if (taskPhase) {
+    taskPhase.textContent = `${progressText} · ${stage}`;
+    taskPhase.dataset.progressState = job.status === "succeeded"
+      ? "success"
+      : terminalFailure ? "failure" : "loading";
+  }
+  if (jobLabel) {
+    jobLabel.textContent = `后台任务 ${job.job_id} · SQLite revision ${job.revision}`;
+    jobLabel.dataset.progressState = job.status === "succeeded"
+      ? "success"
+      : terminalFailure ? "failure" : "loading";
+  }
+}
+
+async function pollRuntimeJob(pollUri, mounts, { maximumPolls = 240, pollDelayMs = 125 } = {}) {
+  const runtimeJobs = window.PFI_V025_STAGE10_RUNTIME_JOBS;
+  for (let pollIndex = 0; pollIndex < maximumPolls; pollIndex += 1) {
+    const payload = await runtimeApiJson(pollUri);
+    const job = payload?.job;
+    runtimeJobs?.ingest?.(job);
+    applyRuntimeJobStatus(job, mounts);
+    if (runtimeJobs?.isTerminal?.(job?.status)) return payload;
+    await new Promise((resolve) => window.setTimeout(resolve, pollDelayMs));
+  }
+  throw new Error("后台任务轮询超时；持久任务仍可从任务中心恢复");
+}
+
+async function restoreRuntimeJobsFromApi() {
+  const runtimeJobs = window.PFI_V025_STAGE10_RUNTIME_JOBS;
+  if (!runtimeJobs) return;
+  try {
+    const payload = await runtimeApiJson("/api/jobs?limit=20");
+    const mounts = {
+      skeleton: document.querySelector("[data-skeleton]"),
+      taskPhase: document.querySelector("#task-phase"),
+      jobLabel: document.querySelector("#background-job-label"),
+    };
+    [...(payload.jobs || [])].reverse().forEach((job) => {
+      runtimeJobs.ingest(job);
+      if (!runtimeJobs.isTerminal(job.status) && job.job_type === "cache.refresh") {
+        void pollRuntimeJob(`/api/jobs/${job.job_id}`, mounts).catch(() => {
+          // Preserve the last persisted snapshot; a later reload can recover it.
+        });
+      }
+    });
+  } catch (_error) {
+    // Static/candidate surfaces remain usable when the local writable API is absent.
+  }
+}
+
+async function runCachedRefresh() {
   const skeleton = document.querySelector("[data-skeleton]");
   const errorBanner = document.querySelector("[data-error-banner]");
   const taskPhase = document.querySelector("#task-phase");
   const jobLabel = document.querySelector("#background-job-label");
+  const timelineApi = window.PFI_V025_STAGE8_JOB_TIMELINE;
+  const runtimeJobs = window.PFI_V025_STAGE10_RUNTIME_JOBS;
+  const mounts = { skeleton, taskPhase, jobLabel };
   if (errorBanner) errorBanner.hidden = true;
   if (skeleton) {
     skeleton.classList.add("v024-skeleton-row");
     skeleton.dataset.v024SkeletonState = "queued";
+    skeleton.hidden = false;
   }
   if (taskPhase) {
     taskPhase.dataset.v024ReportProgress = "phase_6_2";
@@ -5681,29 +8058,21 @@ function runCachedRefresh() {
     jobLabel.dataset.progressState = "loading";
   }
   setActionFeedback("progress", "正在刷新缓存切片");
-
-  window.setTimeout(() => {
-    if (skeleton) {
-      skeleton.hidden = false;
-      skeleton.dataset.v024SkeletonState = "loading";
+  try {
+    if (!runtimeJobs || !timelineApi) throw new Error("后台任务客户端未加载");
+    const submitted = await runtimeApiJson("/api/jobs/cache-refresh", {
+      method: "POST",
+      body: JSON.stringify({ request_id: runtimeJobRequestId() }),
+    });
+    runtimeJobs.ingest(submitted.job);
+    applyRuntimeJobStatus(submitted.job, mounts);
+    const settled = await pollRuntimeJob(submitted.poll_uri, mounts);
+    const job = settled.job;
+    if (job.status !== "succeeded") {
+      throw new Error(job.error?.message || `后台任务以 ${job.status} 结束`);
     }
-  }, FEEDBACK_SLA_MS.skeleton);
-
-  window.setTimeout(() => {
-    if (taskPhase) {
-      taskPhase.textContent = "第 2/3 步 · 正在读取缓存证据";
-      taskPhase.dataset.progressState = "loading";
-    }
-  }, FEEDBACK_SLA_MS.stepped);
-
-  window.setTimeout(() => {
-    if (jobLabel) {
-      jobLabel.textContent = `后台任务 PFI-${Date.now()} · 可离开页面`;
-      jobLabel.dataset.progressState = "loading";
-    }
-  }, FEEDBACK_SLA_MS.background);
-
-  window.setTimeout(() => {
+    const refreshResult = await refreshRuntimeTrends({ rerender: true });
+    if (!refreshResult?.ok) throw new Error("缓存任务已完成，但界面读取缓存结果失败");
     if (skeleton) {
       skeleton.hidden = true;
       skeleton.dataset.v024SkeletonState = "success";
@@ -5712,9 +8081,24 @@ function runCachedRefresh() {
       taskPhase.textContent = "第 3/3 步 · 缓存切片已准备";
       taskPhase.dataset.progressState = "success";
     }
-    if (jobLabel) jobLabel.dataset.progressState = "success";
+    if (jobLabel) {
+      jobLabel.textContent = `缓存切片已准备 · SQLite revision ${job.revision}`;
+      jobLabel.dataset.progressState = "success";
+    }
     showToast("缓存切片已刷新", "success");
-  }, 1350);
+    return;
+  } catch (error) {
+    if (skeleton) {
+      skeleton.hidden = true;
+      skeleton.dataset.v024SkeletonState = "failure";
+    }
+    if (taskPhase) {
+      taskPhase.textContent = `刷新失败 · ${String(error?.message || "后台任务不可用")}`;
+      taskPhase.dataset.progressState = "failure";
+    }
+    if (jobLabel) jobLabel.dataset.progressState = "failure";
+    showRecoverableError();
+  }
 }
 
 function showRecoverableError() {
@@ -6010,7 +8394,7 @@ function bindEvents() {
     });
   });
 
-  document.querySelectorAll("[data-mobile-workspace]").forEach((button) => {
+  document.querySelectorAll('[data-mobile-workspace]:not([data-primary-entry="true"])').forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);
       setActiveWorkspace(button.dataset.mobileWorkspace || "home", { routeAlias: button.dataset.routeAlias || "" });
@@ -6115,6 +8499,10 @@ function bindEvents() {
       setPressedFeedback(button);
       setActiveWorkspace("settings", { routeAlias: "/settings" });
     });
+  });
+
+  document.querySelector("[data-stage6-invalid-route-recover]")?.addEventListener("click", () => {
+    setActiveWorkspace("home", { routeAlias: "/overview" });
   });
 
   document.querySelectorAll("[data-evidence-toggle]").forEach((button) => {
@@ -6244,9 +8632,14 @@ function loadStage5HomeExperience() {
 }
 
 function bootPFIShell() {
+  if (window.history && "scrollRestoration" in window.history) {
+    window.history.scrollRestoration = "manual";
+  }
+  clearLegacyHoldingsDraftStorage();
   restoreContext();
   bindEvents();
-  runtimeReadModelStatusState = readEmbeddedReadModelStatus();
+  void restoreRuntimeJobsFromApi();
+  runtimeReadModelStatusState = canonicalStage7StatusOrFallback(readEmbeddedReadModelStatus());
   applyHomeSummary(readHomeSummary());
   applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
   const params = initialSearchParams();
@@ -6272,16 +8665,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("hashchange", () => {
+  if (stage6HistoryMode() !== "hash_compatibility") return;
   try {
-    mountPFIStage1Route(routeAliasFromLocation(), { replace: true });
+    mountPFIStage1Route(routeAliasFromLocation(), { replace: true, source: "hashchange" });
   } catch (error) {
     handlePFIStage1ShellError(error, { source: "route" });
   }
 });
 
-window.addEventListener("popstate", () => {
+window.addEventListener("popstate", (event) => {
   try {
-    mountPFIStage1Route(routeAliasFromLocation(), { replace: true });
+    applyStage6HistoryNavigation(event);
   } catch (error) {
     handlePFIStage1ShellError(error, { source: "route" });
   }

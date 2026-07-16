@@ -1,0 +1,14 @@
+data_flow: "外部来源先进入私有只读登记与预览，再经显式确认写入本机账本；账户、持仓、价格、汇率和公式依赖共同生成不可变状态快照；页面、报告与导出只消费同一快照。公共静态面只接收固定状态型元数据，不能连接本机运行面。"
+entities:
+  - entity: "来源清单"
+    keys: ["source_id", "status", "parser_version", "content_hash", "as_of"]
+    pk: "source_id"
+  - entity: "账本事件"
+    keys: ["event_id", "source_record_id", "event_type", "lineage_hash", "state"]
+    pk: "event_id"
+  - entity: "指标状态"
+    keys: ["metric_id", "status", "value", "as_of", "read_model_hash"]
+    pk: "metric_id"
+  - entity: "报告快照"
+    keys: ["report_id", "status", "snapshot_hash", "manifest_hash"]
+    pk: "report_id"

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/v0.2.5/account_snapshot.schema.json",
+  "title": "PFI v0.2.5 Account or Liability Snapshot",
+  "type": "object",
+  "required": [
+    "schema",
+    "snapshot_id",
+    "snapshot_kind",
+    "account_ref",
+    "source_id",
+    "currency",
+    "opening_balance",
+    "closing_balance",
+    "coverage_start",
+    "coverage_end",
+    "data_as_of",
+    "source_record_count",
+    "source_content_hash"
+  ],
+  "properties": {
+    "schema": {"const": "PFIV025AccountSnapshotV1"},
+    "snapshot_id": {"type": "string", "minLength": 1},
+    "snapshot_kind": {"enum": ["cash_account", "liability"]},
+    "account_ref": {"type": "string", "minLength": 1},
+    "source_id": {"enum": ["SRC-ACCOUNT-BALANCES", "SRC-LIABILITIES"]},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "opening_balance": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"},
+    "closing_balance": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"},
+    "coverage_start": {"type": "string", "format": "date"},
+    "coverage_end": {"type": "string", "format": "date"},
+    "data_as_of": {"type": "string", "format": "date"},
+    "source_record_count": {"type": "integer", "minimum": 1},
+    "source_content_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"snapshot_kind": {"const": "cash_account"}}},
+      "then": {"properties": {"source_id": {"const": "SRC-ACCOUNT-BALANCES"}}}
+    },
+    {
+      "if": {"properties": {"snapshot_kind": {"const": "liability"}}},
+      "then": {"properties": {"source_id": {"const": "SRC-LIABILITIES"}}}
+    }
+  ],
+  "additionalProperties": false
+}

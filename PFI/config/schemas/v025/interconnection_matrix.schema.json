@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/v025/interconnection_matrix.schema.json",
+  "title": "PFI v0.2.5 Interconnection Matrix UI Data Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "phase_id",
+    "status",
+    "policy_version",
+    "main_path_coverage_count",
+    "main_path_required_count",
+    "same_economic_event_per_metric_max_count",
+    "read_model_hash_scope",
+    "ui_surfaces",
+    "review_pools",
+    "event_types",
+    "financial_values_emitted",
+    "private_identifiers_emitted"
+  ],
+  "properties": {
+    "schema": {"const": "PFIV025Stage3Phase33InterconnectionMatrixV1"},
+    "version": {"const": "v0.2.5"},
+    "phase_id": {"const": "V025-S3-P3.3"},
+    "status": {"const": "pass"},
+    "policy_version": {"type": "string", "minLength": 1},
+    "main_path_coverage_count": {"type": "integer", "minimum": 0},
+    "main_path_required_count": {"type": "integer", "minimum": 1},
+    "same_economic_event_per_metric_max_count": {"const": 1},
+    "read_model_hash_scope": {"const": "snapshot_not_page"},
+    "ui_surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+    },
+    "review_pools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["review_pool_id", "record_count", "candidate_event_types", "additive_across_event_rows"],
+        "properties": {
+          "review_pool_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "record_count": {"type": "integer", "minimum": 0},
+          "candidate_event_types": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+          },
+          "additive_across_event_rows": {"const": false}
+        }
+      }
+    },
+    "event_types": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_type",
+          "impact_flags",
+          "required_structured_evidence",
+          "unresolved_policy",
+          "ui_surfaces",
+          "real_snapshot_published_count",
+          "real_snapshot_review_count",
+          "review_pool_ids"
+        ],
+        "properties": {
+          "event_type": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "impact_flags": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "net_worth_effect",
+              "cash_effect",
+              "living_consumption_included",
+              "activity_outflow_included",
+              "investment_allocation_included",
+              "requires_offset_event_id",
+              "fee_tax_requires_separate_event"
+            ],
+            "properties": {
+              "net_worth_effect": {"type": "string"},
+              "cash_effect": {"type": "string"},
+              "living_consumption_included": {"type": "boolean"},
+              "activity_outflow_included": {"type": "boolean"},
+              "investment_allocation_included": {"type": "boolean"},
+              "requires_offset_event_id": {"type": "boolean"},
+              "fee_tax_requires_separate_event": {"type": "boolean"}
+            }
+          },
+          "required_structured_evidence": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+          },
+          "unresolved_policy": {"enum": ["publish_if_mapped", "review_required_no_publication"]},
+          "ui_surfaces": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+          },
+          "real_snapshot_published_count": {"type": "integer", "minimum": 0},
+          "real_snapshot_review_count": {"type": "integer", "minimum": 0},
+          "review_pool_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+          }
+        }
+      }
+    },
+    "financial_values_emitted": {"const": 0},
+    "private_identifiers_emitted": {"const": 0}
+  }
+}

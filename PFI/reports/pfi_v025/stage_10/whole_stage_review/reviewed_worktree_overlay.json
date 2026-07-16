@@ -1,0 +1,90 @@
+{
+  "base_commit": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+  "content_manifest_sha256": "sha256:8b3ccb6d2db4fcbc14c55710d1cf53eb7def2688c891786c22b3bbee49aa8d93",
+  "file_count": 20,
+  "files": [
+    {
+      "path": "PFI/HANDOFF.md",
+      "sha256": "sha256:73d2daf8e56c4da3e2233a7f75c22740cc9c582998951f3e50783d2c269c8d1a"
+    },
+    {
+      "path": "PFI/README.md",
+      "sha256": "sha256:a9cf9f66adbd5dbd4b4da330fe3d6c00cdd1974d9376c6415d1ed5d38cc23236"
+    },
+    {
+      "path": "PFI/docs/governance/ASSURANCE_STATUS.yaml",
+      "sha256": "sha256:f9ca35b5a81f488792133990891f23026409c74e18e8156a6de2db7bf90a011c"
+    },
+    {
+      "path": "PFI/docs/governance/DELIVERY_PLAN.md",
+      "sha256": "sha256:f8f64ffd89c6c09ba44aac6968b15b54df66c68328db72224955fa40cca2bc19"
+    },
+    {
+      "path": "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+      "sha256": "sha256:b6d72824c7e4c4c6888f41d385e811d1e061da5c426981b395374db2b0593f85"
+    },
+    {
+      "path": "PFI/docs/governance/OWNER_STATUS.md",
+      "sha256": "sha256:94be64e03679884ce5a3004f2745e049b4b39e02ca0a426beab02092518515db"
+    },
+    {
+      "path": "PFI/docs/governance/STATUS.md",
+      "sha256": "sha256:a7b12ae6c89361ac1c0ec51871134e911f50e1f49c65eb384d11c13e4d385177"
+    },
+    {
+      "path": "PFI/docs/governance/VERSION_MATRIX.yaml",
+      "sha256": "sha256:31fb939477894328fec3db732d173a60e1751bea8b491cbf49e64c8f3462362c"
+    },
+    {
+      "path": "PFI/docs/governance/delivery_tasks.yaml",
+      "sha256": "sha256:baea6f0a6b08b65020b513bac3db711fa801301821c3d761e6eb62b3bf991245"
+    },
+    {
+      "path": "PFI/docs/governance/development_events.jsonl",
+      "sha256": "sha256:9de4ca624da210237e96db45d8518cf749328e6ce2c42780ce7a2c8537a9e239"
+    },
+    {
+      "path": "PFI/docs/governance/project.yaml",
+      "sha256": "sha256:9764a53587e755a4b75fbbcabb8b11dc8b4a935811b58f329e844f2b80e68fd5"
+    },
+    {
+      "path": "PFI/docs/governance/roadmap.yaml",
+      "sha256": "sha256:9ce4373576da0a8c3f13df90024cb6c17e543a75b1f8ac3d7d8f9a3ab31263e7"
+    },
+    {
+      "path": "PFI/docs/pfi_v025/stage_10/STAGE_10_WHOLE_STAGE_REVIEW.md",
+      "sha256": "sha256:f7c25bdaf56a94ae3dd6e4fe3396349e86ba67e963b071be52feb20e314d7853"
+    },
+    {
+      "path": "PFI/tests/test_v025_stage10_whole_review.py",
+      "sha256": "sha256:0ea85169ba9b8e0e97e096792a2f006ca0abbe6609a3eb5cff4052cfbcbe6696"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage10_whole_review_evidence.py",
+      "sha256": "sha256:d6dd2473cdb9f562f25cfb4194a5b10636602cd42721544f702ad4ac7158dac8"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage10_whole_review_finalize.py",
+      "sha256": "sha256:8089a3ce4742bf43f1fe2c0179aa4abf026e73f1f5c416ddeca114b821ed3e0b"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage10_whole_review_verify.py",
+      "sha256": "sha256:4ea1fbbb439e8b1a4e0ec23147407f22d11307f8d4c111ae53aff283999e5491"
+    },
+    {
+      "path": "PFI/功能清单.md",
+      "sha256": "sha256:1d82144bed8fb0de455321ee83ec701ae6244783f555a7b44472e18adef23435"
+    },
+    {
+      "path": "PFI/开发记录.md",
+      "sha256": "sha256:7a6d121d89f832cc16265537ec814af4f37ba68d5f635acb990305a2fa22ad48"
+    },
+    {
+      "path": "PFI/模型参数文件.md",
+      "sha256": "sha256:8a35acdbe5cc30577af30d5832a78b7ab0540f0c05a7670f43bd9c815041c4e2"
+    }
+  ],
+  "schema": "PFIV025Stage10ReviewedWorktreeOverlayV1",
+  "status": "frozen",
+  "whole_review_output_excluded_from_manifest": true
+}

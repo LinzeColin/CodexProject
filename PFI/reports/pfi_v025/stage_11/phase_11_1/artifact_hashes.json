@@ -1,0 +1,114 @@
+{
+  "artifact_count": 26,
+  "artifacts": {
+    "PFI/config/release_manifest.json": {
+      "byte_size": 566,
+      "sha256": "sha256:18b1dbbf70572dad3f9645d16603efaa1641ee32f7637b552ea0d08752d9e0f4"
+    },
+    "PFI/docs/pfi_v025/stage_11/PHASE_11_1_SQLITE_SAFETY_IMPLEMENTATION.md": {
+      "byte_size": 4146,
+      "sha256": "sha256:3f0b4c3ef0629ecad3b38330c7add8d6906bf57b9ff59b3bf6e65d4dd9c7d939"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/changed_files.txt": {
+      "byte_size": 2015,
+      "sha256": "sha256:e12cf36f03a346fa9e2c5679f7b9a3eb311cd0cd0169f7fa7002ab8a2486a0c8"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/concurrency_result.json": {
+      "byte_size": 242,
+      "sha256": "sha256:b5c87eeb35c691aed391a74ddd979a271b5ea9edb66424d0e92ab84bbc8ab63d"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/database_before_after.json": {
+      "byte_size": 759,
+      "sha256": "sha256:9dc989f8f808161844f68333c703d54e9bc1fe3884384ed93aa4d30b4da858f6"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/evidence.json": {
+      "byte_size": 9105,
+      "sha256": "sha256:4b7771a6ebbb6135240ee055db564f04f68ede5d60640de177698ea26f1bed10"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/integrity_checks.txt": {
+      "byte_size": 121,
+      "sha256": "sha256:011fa2e799b47860336e21e247303a77a0cab0e1291cc15967bb18ef3b61acb2"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/migration_rehearsal.json": {
+      "byte_size": 1021,
+      "sha256": "sha256:39d7dcc988c07fa76b93419d8d3583145b9daeabc0705ae29c6670403d26dc1d"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/phase_contract.json": {
+      "byte_size": 1361,
+      "sha256": "sha256:1d51c1ecefee7c4285f556765e81dd6934aa377ef59e41d15fba7e6a9f35db92"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/power_loss_recovery.json": {
+      "byte_size": 241,
+      "sha256": "sha256:eecc16481edb996f4f433b50fda6bcc7f8b19b5472454fcd39fb58de4b065a31"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/pragma_settings.json": {
+      "byte_size": 301,
+      "sha256": "sha256:7d2c9b54bbcbef210298191a2530f62924017d5f863d4420dfa8f0f8d44c060c"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/privacy_scan.txt": {
+      "byte_size": 352,
+      "sha256": "sha256:13c5f6ace37818c9b49a207d1f805fab7acb45efddaa15fafb470ff1883caa6b"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/risk_and_rollback.md": {
+      "byte_size": 1200,
+      "sha256": "sha256:6e69133cc409f3882ff70a0f533cdb1257a4b55acbc128e0e2800a3fd11f5967"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/sqlite_runtime.json": {
+      "byte_size": 849,
+      "sha256": "sha256:45fd3ac0c2fbb1abc4cf44e98a013d9efd14390b637602391f584391e780950b"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/terminal.log": {
+      "byte_size": 1446,
+      "sha256": "sha256:93f35c689dbbcfa116de8368364413fe20cdac8b55620485ad3d129a075c09c9"
+    },
+    "PFI/reports/pfi_v025/stage_11/phase_11_1/verification_results.json": {
+      "byte_size": 2302,
+      "sha256": "sha256:0e526ee4c5d76ce4e3b8eb1df6f1f3fe307736fd6ce3156b1636f411c8560670"
+    },
+    "PFI/scripts/v025/build_stage11_phase111_evidence.py": {
+      "byte_size": 30526,
+      "sha256": "sha256:66d7b696172fbd1f1f319fd142ab945fc86953a0d8247676337845116d8081f0"
+    },
+    "PFI/src/pfi_os/application/operational_store.py": {
+      "byte_size": 21666,
+      "sha256": "sha256:dd9428741722e0e7fafc0e8240a7b7a600f5f30e2914e65d7c3f3450943a771c"
+    },
+    "PFI/src/pfi_os/infrastructure/operational_holding_settings_store.py": {
+      "byte_size": 7448,
+      "sha256": "sha256:6f3fe1967f6162c2e6a3fffa32b9221dd68148796df0906953719e96d7eec00d"
+    },
+    "PFI/src/pfi_os/infrastructure/operational_import_store.py": {
+      "byte_size": 8640,
+      "sha256": "sha256:fcd46056ba84bcd0e39282dada071691f4f0d6ac1747e6673c197c22ee1e447d"
+    },
+    "PFI/src/pfi_os/infrastructure/operational_store_runtime.py": {
+      "byte_size": 12404,
+      "sha256": "sha256:fc7a6a1aea6e644d52c6262bc5934a58ab7cc35b8f1058da387c90932536bbbd"
+    },
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py": {
+      "byte_size": 94668,
+      "sha256": "sha256:0f392223d221b44c63d599a924854e7047817fa4c34a33121d26354b66857b0c"
+    },
+    "PFI/tests/test_v025_stage11_migration_lifecycle.py": {
+      "byte_size": 4846,
+      "sha256": "sha256:e9eb31931a36a5431be0a493a92fb4430a5890c410a986b63bcf33e3c5e318c8"
+    },
+    "PFI/tests/test_v025_stage11_sqlite_concurrency.py": {
+      "byte_size": 5392,
+      "sha256": "sha256:2f425f269183fafa36730e2ffef0069926c7594c73c90fe1e30fb3b448754264"
+    },
+    "PFI/tests/test_v025_stage1_release_identity.py": {
+      "byte_size": 15746,
+      "sha256": "sha256:be869a7b17f85ce6e60992abbe3629389c6f7bd5e1f37d1be0a6cf340aaf6abb"
+    },
+    "PFI/web/index.html": {
+      "byte_size": 65997,
+      "sha256": "sha256:116a75fde88baf44015b9285c78e9bd3dad3e0a42bbb4e4184d4ae1fbc43b3eb"
+    }
+  },
+  "contains_private_values": false,
+  "observed_at": "2026-07-16T01:20:22+10:00",
+  "phase_id": "V025-S11-P11.1",
+  "product_commit": "ad16901505f7e6f23653aa8b1e03945211dc4e93",
+  "schema": "PFIV025Stage11Phase111ArtifactHashesV1"
+}

@@ -1,0 +1,13 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -c 'import ast,pathlib; paths=('"'"'PFI/web/tests/v025/stage8_whole_review_evidence.py'"'"','"'"'PFI/web/tests/v025/stage8_whole_review_verify.py'"'"','"'"'PFI/web/tests/v025/stage8_whole_review_finalize.py'"'"'); [ast.parse(pathlib.Path(p).read_text(encoding='"'"'utf-8'"'"'), filename=p) for p in paths]'
+
+$ node --check PFI/web/app/shell.js
+
+$ node --check PFI/web/app/components/jobTimeline.js
+
+$ node --check PFI/web/tests/v025/stage8_phase81_cdp.mjs
+
+$ node --check PFI/web/tests/v025/stage8_phase82_cdp.mjs
+
+$ node --check PFI/web/tests/v025/stage8_phase83_cdp.mjs
+
+$ git diff --check

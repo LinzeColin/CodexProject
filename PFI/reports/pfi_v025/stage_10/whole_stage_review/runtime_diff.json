@@ -1,0 +1,119 @@
+{
+  "baseline_snapshot": {
+    "contains_private_values": false,
+    "financial_values_emitted": 0,
+    "hashes": {
+      "formula": "65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+      "fx": "6c3013a8deae4520f7798b395a6e7e646e4160bb1388db13c82ce49b9f494d9c",
+      "interconnection": "f3e265abb2c0643f1bb841e13d5113ba4330e190fb708df85f27a3c96348e171",
+      "ledger": "d7a5186d8320044b73b0bce183fd28b550530bc77ebd5c359fc4adaf8e7ea006",
+      "parameter": "d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+      "raw": "04413243ca2b8aa3e8f674b4c0fa1da6cd0f542de1b013ae6c5ddedab0e4f72b",
+      "read_model": "17b0ac83e5c728464ab27af95e3bc1813e447a6bf7b615a53a7ff58848dcfc01",
+      "report": "2e37ee5aedc4b0b8d74b38195d4b1f48a255ea14741d2804ce8e8e4cf671ee96",
+      "source": "91777cf91605f124d0de5a17c07f08bfcc5c2f28845d82d33e809a5733ec8117"
+    },
+    "network_calls": 0,
+    "observations": {
+      "formula": {
+        "hash": "65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+        "provenance": "config.formulas.v025_formula_registry_json",
+        "record_count": 1,
+        "status": "ready"
+      },
+      "fx": {
+        "hash": "6c3013a8deae4520f7798b395a6e7e646e4160bb1388db13c82ce49b9f494d9c",
+        "provenance": "latest_local_fx_snapshot",
+        "record_count": 0,
+        "status": "isolated_empty"
+      },
+      "interconnection": {
+        "hash": "f3e265abb2c0643f1bb841e13d5113ba4330e190fb708df85f27a3c96348e171",
+        "provenance": "blocked_economic_event_adapter_contract",
+        "record_count": 0,
+        "status": "blocked_economic_event_adapter"
+      },
+      "ledger": {
+        "hash": "d7a5186d8320044b73b0bce183fd28b550530bc77ebd5c359fc4adaf8e7ea006",
+        "provenance": "sqlite.ledger_entries.non_value_identity_projection",
+        "record_count": 0,
+        "status": "isolated_empty"
+      },
+      "parameter": {
+        "hash": "d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+        "provenance": "config.pfi_parameters_yaml",
+        "record_count": 1,
+        "status": "ready"
+      },
+      "raw": {
+        "hash": "04413243ca2b8aa3e8f674b4c0fa1da6cd0f542de1b013ae6c5ddedab0e4f72b",
+        "provenance": "sqlite.import_files.content_sha256_only",
+        "record_count": 0,
+        "status": "isolated_empty"
+      },
+      "read_model": {
+        "hash": "17b0ac83e5c728464ab27af95e3bc1813e447a6bf7b615a53a7ff58848dcfc01",
+        "provenance": "active_stage7_read_model_dependency_identity",
+        "record_count": 1,
+        "status": "not_loaded"
+      },
+      "report": {
+        "hash": "2e37ee5aedc4b0b8d74b38195d4b1f48a255ea14741d2804ce8e8e4cf671ee96",
+        "provenance": "reviewed_stage9_report_contract",
+        "record_count": 1,
+        "status": "ready"
+      },
+      "source": {
+        "hash": "91777cf91605f124d0de5a17c07f08bfcc5c2f28845d82d33e809a5733ec8117",
+        "provenance": "sqlite.import_files.aggregate_source_projection",
+        "record_count": 0,
+        "status": "isolated_empty"
+      }
+    },
+    "registry_sha256": "9676c06493b347ff7d202c4378dcbe06a69dd43693bc4f10a33eddff9504404d",
+    "schema": "PFIV025DependencySnapshotV1",
+    "snapshot_hash": "be37c125da7312447ab16f5e4385d51e2b8351a81f167f247585c4fd9d6903a9"
+  },
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "no_diff_result": {
+    "changed_domains": [],
+    "codex_calls": 0,
+    "current_snapshot_hash": "be37c125da7312447ab16f5e4385d51e2b8351a81f167f247585c4fd9d6903a9",
+    "explanations": [],
+    "full_metric_recompute": false,
+    "impacted_metrics": [],
+    "invalidated_cache_scopes": [],
+    "llm_calls": 0,
+    "network_calls": 0,
+    "no_diff": true,
+    "not_impacted_metrics": [
+      "cash_balance_cny",
+      "consumption_outflow_cny",
+      "investment_market_value_cny",
+      "net_worth_cny",
+      "report_summary_status"
+    ],
+    "ordinary_run_network_allowed": false,
+    "previous_snapshot_hash": "be37c125da7312447ab16f5e4385d51e2b8351a81f167f247585c4fd9d6903a9",
+    "recompute_domains": [],
+    "recompute_scope": "none",
+    "registry_changed": false,
+    "registry_sha256": "9676c06493b347ff7d202c4378dcbe06a69dd43693bc4f10a33eddff9504404d",
+    "schema": "PFIV025RuntimeDiffV1",
+    "unchanged_domains": [
+      "raw",
+      "source",
+      "ledger",
+      "interconnection",
+      "parameter",
+      "formula",
+      "fx",
+      "read_model",
+      "report"
+    ]
+  },
+  "ordinary_run_network_allowed": false,
+  "product_commit": "a64f3b51576ebe507bd65b3f5b54c5b2a3b74c41",
+  "schema": "PFIV025Stage10Phase102RuntimeDiffEvidenceV1"
+}

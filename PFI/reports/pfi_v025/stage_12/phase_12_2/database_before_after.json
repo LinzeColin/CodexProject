@@ -1,0 +1,25 @@
+{
+  "after_restart": {
+    "active_holding_count": 0,
+    "foreign_key_issue_count": 0,
+    "import_batch_count": 1,
+    "import_file_count": 4,
+    "integrity_check": [
+      "ok"
+    ],
+    "ledger_entry_count": 8808,
+    "pending_review_count": 802,
+    "resolved_review_count": 1,
+    "staged_transaction_count": 8808
+  },
+  "before": {
+    "database_exists": false,
+    "ledger_entry_count": 0
+  },
+  "canonical_private_database_mutated": false,
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "isolated_database_deleted_after_run": true,
+  "schema": "PFIV025Stage12Phase122DatabaseBeforeAfterV1",
+  "status": "pass"
+}

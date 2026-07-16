@@ -1,0 +1,7 @@
+{
+  "run_id": "PFI-V025-STAGE12-WHOLE-REVIEW-REREVIEW",
+  "action": "独立重算 Stage 12 三项整改、完整要求矩阵、运行时绑定、入口和重新执行的真实端到端流程",
+  "result": "3 项原 P1 均 closed_verified；复审新增 0 P0、0 P1、0 minor，等待精确最终验收",
+  "reviewed_closure_commit": "559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+  "ts": "2026-07-16"
+}

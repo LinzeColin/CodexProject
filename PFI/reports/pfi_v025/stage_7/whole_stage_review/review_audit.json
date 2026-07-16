@@ -1,0 +1,38 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE7-WHOLE-REVIEW",
+  "initial_review": {
+    "counts": {
+      "critical": 0,
+      "important": 14,
+      "minor": 4
+    },
+    "source_reviews": {
+      "final_acceptance_evidence_review": {
+        "critical": 0,
+        "important": 5,
+        "minor": 0
+      },
+      "final_code_security_review": {
+        "critical": 0,
+        "important": 5,
+        "minor": 3
+      },
+      "final_governance_renderer_review": {
+        "critical": 0,
+        "important": 4,
+        "minor": 1
+      }
+    }
+  },
+  "post_remediation_review": {
+    "counts": {
+      "critical": 0,
+      "important": 0,
+      "minor": 0
+    },
+    "reviewer_results_ref": "PFI/reports/pfi_v025/stage_7/whole_stage_review/reviewer_results.json",
+    "status": "pass"
+  },
+  "schema": "PFIV025Stage7WholeReviewAuditV1",
+  "status": "pass"
+}

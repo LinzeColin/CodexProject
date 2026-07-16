@@ -1,0 +1,84 @@
+{
+  "schema": "PFIV025Stage3WholeReviewAuditV1",
+  "version": "v0.2.5",
+  "stage": 3,
+  "acceptance_id": "ACC-PFI-V025-STAGE3-WHOLE-REVIEW",
+  "review_base": "0f9672081463523bab35a2b310216078fd3ad9d3",
+  "reviewed_phase_commits": {
+    "3.1": "c0cf0a11291a7848206f72a13bce37bb2d41ff39",
+    "3.2": "debdd04a9c5d12393d098dc65dd8937da3ce43f3",
+    "3.3": "0f9672081463523bab35a2b310216078fd3ad9d3"
+  },
+  "initial_review": {
+    "result": "findings_require_remediation",
+    "counts": {"critical": 0, "important": 3, "minor": 1},
+    "findings": [
+      {
+        "finding_id": "S3-WR-I01",
+        "severity": "important",
+        "track": "requirements_evidence",
+        "title": "缺少可执行的整阶段复核器和 Phase 提交绑定",
+        "evidence": "Phase 3.1/3.2/3.3 均为 candidate_pass，但不存在 Stage 3 whole-review verifier 来逐提交重算 evidence 与 artifact hash。",
+        "remediation": "新增只读 stage3_whole_review 模块和定向测试，固定三个 Phase commit、evidence hash、12 个 task ID 及 artifact hash。",
+        "status": "fixed"
+      },
+      {
+        "finding_id": "S3-WR-I02",
+        "severity": "important",
+        "track": "requirements_evidence",
+        "title": "缺少 6 项 Acceptance、4 项 Stop Condition 与 Pass Gate 的最终证据索引",
+        "evidence": "Phase evidence 分散，尚无整阶段单一索引证明全部任务、Acceptance、Stop Condition 和 lineage gate。",
+        "remediation": "新增 final_evidence_index.json，逐项绑定既有 phase evidence，并保留 pass_with_review_queue 解释。",
+        "status": "fixed"
+      },
+      {
+        "finding_id": "S3-WR-I03",
+        "severity": "important",
+        "track": "code_security_privacy",
+        "title": "缺少真实快照残余范围与阶段人工授权的哈希绑定",
+        "evidence": "真实快照已有精确 partition，但 1250 条未确认转账候选和 249 条未确认退款尚未在整阶段验收对象中显式保留。",
+        "remediation": "新增 source_disposition.json 和 human_acceptance.json；明确未确认链路只进入 review queue，并将授权绑定到最终证据索引 hash。",
+        "status": "fixed"
+      },
+      {
+        "finding_id": "S3-WR-M01",
+        "severity": "minor",
+        "track": "governance_renderer",
+        "title": "Canonical governance 仍停在 Stage 3 candidate_complete",
+        "evidence": "当前治理仍把 STAGE3-WHOLE-REVIEW 标记为 not_started。",
+        "remediation": "在复审通过后将 Stage 3 标记 accepted_for_transition，仅授权 Stage 4 entry，Stage 4 保持 not_started。",
+        "status": "fixed"
+      }
+    ]
+  },
+  "implementation_review": {
+    "result": "no_additional_defects",
+    "code_security_findings": 0,
+    "verified_invariants": [
+      "source/account role does not infer business role from provider name",
+      "unknown roles and unresolved event semantics fail closed without publication",
+      "duplicate import publishes zero second-pass ledger events",
+      "same economic event counts at most once per metric",
+      "real source is read from an immutable Git object and is not mutated",
+      "public evidence emits no raw rows, account identifiers or financial values"
+    ]
+  },
+  "post_remediation_review": {
+    "result": "pass",
+    "counts": {"critical": 0, "important": 0, "minor": 0},
+    "residual_risks_accepted": [
+      "1250 transfer candidates lack explicit link or effective account-role evidence and remain unconfirmed in review queue",
+      "249 refund candidates lack offset economic event identifiers and remain unconfirmed in review queue",
+      "source time precision is date-only and normalization does not claim exact transaction time",
+      "review queue persistence is outside Stage 3 and no production financial acceptance is claimed"
+    ]
+  },
+  "independent_review_tracks": {
+    "requirements_evidence": "pass",
+    "code_security_privacy": "pass",
+    "governance_renderer": "pass"
+  },
+  "finder_used": false,
+  "push_performed": false,
+  "app_install_performed": false
+}

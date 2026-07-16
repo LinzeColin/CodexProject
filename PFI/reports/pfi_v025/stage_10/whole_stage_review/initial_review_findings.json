@@ -1,0 +1,58 @@
+{
+  "initial_totals": {
+    "critical": 1,
+    "important": 7,
+    "minor": 0
+  },
+  "remediation_commit": "92579cfdd",
+  "reviewers": [
+    {
+      "counts": {
+        "critical": 1,
+        "important": 2,
+        "minor": 0
+      },
+      "decision": "REMEDIATION_REQUIRED",
+      "findings": [
+        "healthy work exceeding the 5-second lease had no supervisor heartbeat and was re-executed after false lease expiry",
+        "retrying and dead_letter were collapsed to blocked and failed in the formal UI",
+        "old job polling could overwrite the body projection of the newest persisted job"
+      ],
+      "review_mode": "deterministic_isolated_review_pass",
+      "reviewer_id": "isolated_code_security_pass"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 2,
+        "minor": 0
+      },
+      "decision": "CHANGES_REQUIRED",
+      "findings": [
+        "Phase 10.3 evidence failed the TaskPack schema because changed_files was absent",
+        "release, shell, shared timeline and governance integration files exceeded the literal Roadmap glob without a whole-review scope binding"
+      ],
+      "review_mode": "deterministic_isolated_review_pass",
+      "reviewer_id": "isolated_governance_schema_pass"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 3,
+        "minor": 0
+      },
+      "decision": "CHANGES_REQUIRED",
+      "findings": [
+        "formal UI evidence omitted explicit failed-state, structured DOM and accessibility-tree proof",
+        "observability migration evidence omitted lifecycle-only before, backup and backfilled after proof",
+        "Phase product/evidence commit chains and historical artifact hashes were not frozen in a whole-stage binding"
+      ],
+      "review_mode": "deterministic_isolated_review_pass",
+      "reviewer_id": "isolated_acceptance_evidence_pass"
+    }
+  ],
+  "schema": "PFIV025Stage10InitialReviewFindingsV1",
+  "source_review_base": "e9465c0c7747c17cab66c07073d5bde999cb9043",
+  "stage_11_started": false,
+  "status": "remediated_pending_final_rereview"
+}

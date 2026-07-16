@@ -1,0 +1,22 @@
+{
+  "run_id": "20260716_stage12_final_acceptance",
+  "stage": "V025-S12",
+  "phase": "V025-S12-P12.3",
+  "task": "S12-P3-T4",
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW",
+  "status": "accepted_release_frozen_waiting_final_delivery",
+  "product_candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "reviewed_closure_commit": "559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+  "rereview_evidence_commit": "123f5a6f7e7af22c283e49e55c2ba581310238d5",
+  "evidence_index_sha256": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "acceptance_requested_at": "2026-07-15T21:45:47Z",
+  "accepted_at": "2026-07-15T23:50:30Z",
+  "known_nonblocking_p2_count": 5,
+  "release_freeze_performed": true,
+  "final_human_acceptance": true,
+  "push_performed": false,
+  "app_reinstall_performed": false,
+  "production_accepted": false,
+  "finder_used": false,
+  "evidence": "PFI/reports/pfi_v025/stage_12/final_acceptance/evidence.json"
+}

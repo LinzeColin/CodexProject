@@ -1,0 +1,79 @@
+{
+  "schema": "PFIV025Stage2EvidenceIndexV1",
+  "version": "v0.2.5",
+  "stage": 2,
+  "status": "ready_for_whole_stage_review",
+  "phase_status": {
+    "2.1": "candidate_pass",
+    "2.2": "candidate_pass",
+    "2.3": "candidate_pass"
+  },
+  "phase_evidence": [
+    {
+      "phase": "2.1",
+      "ref": "PFI/reports/pfi_v025/stage_2/phase_2_1/evidence.json",
+      "sha256": "81fb9fb6b1f4fef1974474622c08b1b08510f1692014bc896f689d3de14723db"
+    },
+    {
+      "phase": "2.2",
+      "ref": "PFI/reports/pfi_v025/stage_2/phase_2_2/evidence.json",
+      "sha256": "dcefd989c4c82dadbcee03037318bff978cadf1158b1d160c9ed703316dc15f7"
+    },
+    {
+      "phase": "2.3",
+      "ref": "PFI/reports/pfi_v025/stage_2/phase_2_3/evidence.json",
+      "sha256": "SELF_EXCLUDED_FROM_INDEX_HASH"
+    }
+  ],
+  "technical_acceptance_criteria": [
+    {
+      "criterion_id": "AC-S2-01-CANONICAL-ROOT",
+      "status": "pass",
+      "evidence_ref": "PFI/docs/pfi_v025/stage_2/data_root_decision.md"
+    },
+    {
+      "criterion_id": "AC-S2-02-SOURCE-MANIFEST",
+      "status": "pass",
+      "evidence_ref": "PFI/reports/pfi_v025/stage_2/phase_2_1/source_manifest.json"
+    },
+    {
+      "criterion_id": "AC-S2-03-COMPUTABILITY-SEPARATION",
+      "status": "pass",
+      "evidence_ref": "PFI/reports/pfi_v025/stage_2/phase_2_1/metric_computability_matrix.json"
+    },
+    {
+      "criterion_id": "AC-S2-04-TEMPORAL-FIELDS",
+      "status": "pass",
+      "evidence_ref": "PFI/reports/pfi_v025/stage_2/phase_2_2/temporal_coverage.json"
+    },
+    {
+      "criterion_id": "AC-S2-05-REAL-DATA-SANDBOX-NO-FAKE",
+      "status": "pass",
+      "evidence_ref": "PFI/reports/pfi_v025/stage_2/phase_2_3/sandbox_attestation.json"
+    },
+    {
+      "criterion_id": "AC-S2-06-FX-ACTUAL-SNAPSHOT-OR-NULL",
+      "status": "pass",
+      "evidence_ref": "PFI/reports/pfi_v025/stage_2/phase_2_2/fx_snapshot_status.json",
+      "current_production_fx_status": "not_loaded",
+      "production_rate_present": false,
+      "rationale": "No production rate is claimed; any future non-null production rate must be bound to an actual source snapshot and ordinary runtime remains offline."
+    }
+  ],
+  "technical_acceptance_criteria_passed": 6,
+  "technical_acceptance_criteria_total": 6,
+  "known_limitations": [
+    "Production FX snapshot remains not_loaded; no rate is claimed.",
+    "Balance, liability, holding and market-price sources remain not_loaded.",
+    "Performance baseline is an observed three-run Python allocation sample, not a hard SLA."
+  ],
+  "stage_2_whole_stage_review_status": "not_started",
+  "user_acceptance_status": "pending_whole_stage_review",
+  "stage_3_entry_authorized": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "private_values_included": false
+}

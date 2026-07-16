@@ -237,13 +237,18 @@ def parse_scalar(value: str) -> Any:
         return True
     if value in {"false", "False", "FALSE"}:
         return False
-    if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
-        return value[1:-1]
+    if value.startswith('"') and value.endswith('"'):
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return value[1:-1]
+    if value.startswith("'") and value.endswith("'"):
+        return value[1:-1].replace("''", "'")
     if value.startswith("[") and value.endswith("]"):
         inner = value[1:-1].strip()
         if not inner:
             return []
-        return [parse_scalar(part.strip()) for part in inner.split(",")]
+        return [parse_scalar(part.strip()) for part in split_inline_values(inner)]
     try:
         if re.fullmatch(r"-?\d+", value):
             return int(value)
@@ -252,6 +257,34 @@ def parse_scalar(value: str) -> Any:
     except ValueError:
         pass
     return value
+
+
+def split_inline_values(text: str) -> list[str]:
+    values: list[str] = []
+    start = 0
+    in_single = False
+    in_double = False
+    escaped = False
+    depth = 0
+    for index, char in enumerate(text):
+        if char == "\\" and in_double and not escaped:
+            escaped = True
+            continue
+        if char == "'" and not in_double and not escaped:
+            in_single = not in_single
+        elif char == '"' and not in_single and not escaped:
+            in_double = not in_double
+        elif not in_single and not in_double:
+            if char in "[{(":
+                depth += 1
+            elif char in "]})":
+                depth = max(0, depth - 1)
+            elif char == "," and depth == 0:
+                values.append(text[start:index])
+                start = index + 1
+        escaped = False
+    values.append(text[start:])
+    return values
 
 
 def split_key_value(text: str) -> tuple[str, str | None]:

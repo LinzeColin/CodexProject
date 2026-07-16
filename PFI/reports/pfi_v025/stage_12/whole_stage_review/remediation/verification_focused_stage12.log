@@ -1,0 +1,11 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_cache_policy.py PFI/tests/test_v025_stage12_release_gates.py PFI/tests/test_v025_stage12_target_mac_uat.py PFI/tests/test_v025_stage12_release_freeze.py PFI/tests/test_v025_stage12_whole_review_remediation.py
+......................................................                   [100%]
+=============================== warnings summary ===============================
+tests/test_v025_stage1_cache_policy.py::test_adapter_hits_inside_real_streamlit_runtime
+  <frozen importlib._bootstrap>:488: DeprecationWarning: Type google._upb._message.MessageMapContainer uses PyType_Spec with a metaclass that has custom tp_new. This is deprecated and will no longer be allowed in Python 3.14.
+
+tests/test_v025_stage1_cache_policy.py::test_adapter_hits_inside_real_streamlit_runtime
+  <frozen importlib._bootstrap>:488: DeprecationWarning: Type google._upb._message.ScalarMapContainer uses PyType_Spec with a metaclass that has custom tp_new. This is deprecated and will no longer be allowed in Python 3.14.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+54 passed, 2 warnings in 6.17s

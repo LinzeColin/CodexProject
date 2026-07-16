@@ -1,0 +1,78 @@
+{
+  "schema": "PFIV025Stage9Phase93BrowserResultV1",
+  "status": "pass",
+  "checks": {
+    "phase_contract_ready": true,
+    "reports_route_mounted": true,
+    "two_review_decisions_visible": true,
+    "all_human_outcomes_available": true,
+    "counter_evidence_and_invalidation_visible": true,
+    "phase92_report_workflow_preserved": true,
+    "accepted_review_is_audited": true,
+    "accepted_review_has_no_execution": true,
+    "review_persists_after_reload": true,
+    "four_export_assets_verified": true,
+    "four_downloads_match_manifest": true,
+    "same_snapshot_across_formats": true,
+    "no_financial_amount_visible": true,
+    "no_trade_or_whole_stage_claim": true,
+    "no_browser_errors": true,
+    "loopback_only": true
+  },
+  "checkCount": 16,
+  "passedCheckCount": 16,
+  "visible": {
+    "phase92": "ready",
+    "phase93": "ready",
+    "routeAlias": "/reports?tab=decision-review",
+    "decisionCount": 2,
+    "outcomeButtonCount": 8,
+    "exportButtonCount": 4,
+    "workflowCardCount": 29,
+    "missingRequiredText": [],
+    "acceptedStatus": "accepted",
+    "acceptedAvailableOutcomes": [
+      "invalidated"
+    ]
+  },
+  "downloads": [
+    {
+      "format": "html",
+      "filename": "pfi_v025_decision_review.html",
+      "byteSize": 21433,
+      "sha256": "sha256:0d564ce2a109197c5c30589abe5dd5d089bf506df69a38eabdc5c2439f4497fb"
+    },
+    {
+      "format": "pdf",
+      "filename": "pfi_v025_decision_review.pdf",
+      "byteSize": 146764,
+      "sha256": "sha256:de7f2c7ff94ecb95298a68d447525610d0753536fbff2ef91e55c632dff08dc0"
+    },
+    {
+      "format": "csv",
+      "filename": "pfi_v025_decision_review.csv",
+      "byteSize": 7905,
+      "sha256": "sha256:a4da3c8adaa78a2bc1325ff60adb43125ac8c824037224d7e296a30299af459b"
+    },
+    {
+      "format": "markdown",
+      "filename": "pfi_v025_decision_review.md",
+      "byteSize": 19631,
+      "sha256": "sha256:3a88968121fbb1ebc61fe0c55133f43b0d0994aee6a771223fb25630bb55b498"
+    }
+  ],
+  "diagnostics": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "httpErrors": [],
+    "blockedExternal": [],
+    "requestedOriginCount": 1
+  },
+  "finderUsed": false,
+  "launchServicesUsed": false,
+  "externalNetworkUsed": false,
+  "financialValuesPersisted": 0,
+  "containsPrivateValues": false,
+  "automaticTradingAllowed": false,
+  "tradeExecutionAvailable": false
+}

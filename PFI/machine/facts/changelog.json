@@ -1,0 +1,14 @@
+[
+  {
+    "version": "v0.2.5",
+    "date": "2026-07-16",
+    "summary": "唯一 CLI-only canonical App 最终重装已实际执行并通过 version/build/codesign/project-binding/hash 校验；仅余唯一 main 上传与 post-push parity。"
+  },
+  {"version": "v0.2.5", "date": "2026-07-16", "summary": "Owner 已精确最终接受 Stage 0–12、A/B/C、evidence-index 与五项 P2；S12-P3-T4 完成并 release freeze，当前 156/156，等待唯一最终交付事务。"},
+  {"version": "v0.2.5", "date": "2026-07-16", "summary": "完成 Stage 12 整改独立复审：3 项原 P1 均 closed_verified，新增 0 P0/0 P1/0 minor，等待精确最终验收。"},
+  {"version": "v0.2.5", "date": "2026-07-16", "summary": "完成 Stage 12 初审三项 P1 整改：精确 runtime source/candidate/index 绑定与 CLI 旧 App 隔离通过，当前 0 P0/0 P1，等待独立复审。"},
+  {"version": "v0.2.5", "date": "2026-07-16", "summary": "完成 Stage 12 独立整阶段初审；119 个 Phase artifacts、89 个 final-index inputs 与 fresh real E2E 通过，登记 3 项 P1 等待整改和复审。"},
+  {"version": "v0.2.5", "date": "2026-07-16", "summary": "完成 Stage 12 Phase 12.3 的状态、证据索引与最终验收请求候选；保留最后整阶段审查和明确验收边界。"},
+  {"version": "v0.2.5", "date": "2026-07-16", "summary": "完成目标 Mac 的 CLI-only App、真实工作流、恢复与磁盘压力候选验证。"},
+  {"version": "v0.2.5", "date": "2026-07-16", "summary": "完成自动化真实导入、报告、路由、可访问性与回归候选验证。"}
+]

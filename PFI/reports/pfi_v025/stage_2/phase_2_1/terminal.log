@@ -1,0 +1,114 @@
+ledger_schema=PFIV025Phase21TerminalLedgerV2
+ledger_recorded_at=2026-07-14T18:09:35+10:00
+timestamp_semantics=ledger_aggregation_time_not_command_execution_time
+command_execution_times=not_individually_recorded
+ledger_state=finalized
+
+record_id=RED-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage2_source_manifest.py -q
+exit_code=2
+summary=expected RED: v0.2.5 inventory module missing
+
+record_id=GREEN-PARTIAL-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage2_source_manifest.py -q
+exit_code=1
+summary=intermediate GREEN: 7 passed; tracked artifacts not yet present
+
+record_id=GREEN-SAFETY-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q -k 'not tracked_phase_artifacts'
+exit_code=0
+summary=safety remediation subset: 15 passed, 1 deselected
+
+record_id=GREEN-FOCUSED-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q
+exit_code=0
+summary=Phase 2.1 focused contract: 27 passed
+
+record_id=GREEN-COMPAT-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_stage1_*.py PFI/tests/test_stage2_*.py -q
+exit_code=0
+summary=legacy Stage 1/2 compatibility: 50 passed
+
+record_id=GREEN-V025-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q
+exit_code=0
+summary=pre-final-security-remediation baseline: complete v0.2.5 regression 108 passed, 2 upstream deprecation warnings
+
+record_id=DIAGNOSTIC-V025-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q
+exit_code=1
+summary=diagnostic post-remediation run: 20 passed before one old Stage 1 LaunchServices finalization failure; not accepted as final regression
+
+record_id=GREEN-STAGE1-RETRY-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_isolated_app_acceptance.py::test_prepare_and_finalize_disposable_candidate_without_finder -q
+exit_code=0
+summary=standalone retry: 1 passed in 80.49s; no Finder used
+
+record_id=DIAGNOSTIC-V025-02
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q -k 'not test_prepare_and_finalize_disposable_candidate_without_finder'
+exit_code=1
+summary=diagnostic pre-final-binding run: 103 passed, 4 failed, 1 deselected, 2 warnings; two old Stage 1 temporal/state failures and two expected stale privacy-binding failures
+
+record_id=GREEN-V025-FINAL-SPLIT-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_*.py -q -k 'not test_prepare_and_finalize_disposable_candidate_without_finder'
+exit_code=0
+summary=final post-binding split suite: 107 passed, 1 deselected, 2 upstream dependency deprecation warnings in 964.73s
+
+record_id=GREEN-COMPILE-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -c "from pathlib import Path; files=('PFI/src/pfi_v02/stage_v025_data_inventory.py','PFI/scripts/v025/data_inventory.py','PFI/tests/test_v025_stage2_source_manifest.py','scripts/lean_governance.py'); [compile(Path(name).read_text(encoding='utf-8'), name, 'exec') for name in files]; print('PASS 4 files; bytecode not written')"
+exit_code=0
+summary=4 Python files compiled in memory; no bytecode written
+
+record_id=GREEN-ARTIFACTS-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q -k 'source_manifest_wrapper_and_each_source_validate_against_both_schemas or taskpack_single_source_schema_is_semantically_preserved or phase_evidence_validates_against_taskpack_schema or tracked_phase_artifacts_are_consistent_and_public_safe'
+exit_code=0
+summary=CLI, both source schemas, Evidence schema, and deterministic tracked artifacts passed
+
+record_id=GREEN-GOVERNANCE-01
+command=python3 -B scripts/validate_project_governance.py --project PFI
+exit_code=0
+summary=project governance: errors 0, warnings 0
+execution_context=full_checkout_shadow_with_staged_overlay
+
+record_id=GREEN-SYNC-01
+command=python3 -B scripts/validate_governance_sync.py --changed-only --base-ref 642ab9a7f94e5d7f58c79cb8b4006485714aa90f --semantic
+exit_code=0
+summary=governance sync: errors 0, warnings 0
+execution_context=full_checkout_shadow_with_staged_overlay
+
+record_id=GREEN-RENDER-01
+command=python3 -B scripts/lean_governance.py check-render --project PFI
+exit_code=0
+summary=renderer drift 0, reference issues 0
+execution_context=full_checkout_shadow_with_staged_overlay
+
+record_id=GREEN-RENDERER-UNIT-01
+command=python3 -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt02_renderer_derives_owner_fields_from_canonical_facts -q
+exit_code=0
+summary=targeted renderer regression passed
+execution_context=full_checkout_shadow_with_staged_overlay
+
+record_id=GREEN-PRIVACY-01
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q -k privacy_scan_is_deterministic
+exit_code=0
+summary=private paths, financial rows, account identifiers, credentials, SQLite table names, Finder operations, mutations, and fake-data fallback: 0
+
+record_id=GREEN-SCOPE-01
+command=zsh -c 'set -e; actual=$(/usr/bin/git -c core.quotePath=false diff --cached --name-only | LC_ALL=C sort); expected=$(LC_ALL=C sort PFI/reports/pfi_v025/stage_2/phase_2_1/changed_files.txt); [[ "$actual" == "$expected" ]]; [[ $(/usr/bin/git -c core.quotePath=false diff --cached --name-only | wc -l | tr -d " ") == 32 ]]; /usr/bin/git diff --cached --check; [[ -z $(/usr/bin/git diff --name-only) ]]'
+exit_code=0
+summary=whitespace clean and exact 32-file Phase 2.1 scope matched
+execution_context=current_sparse_worktree
+
+record_id=GREEN-RENDER-COMPAT-01
+command=PYTHONPATH=scripts python3 -B -c "import json,subprocess,types; from pathlib import Path; import lean_governance as c; B='642ab9a7f94e5d7f58c79cb8b4006485714aa90f'; gt=lambda p: subprocess.run(['git','show',f'{B}:{p}'],capture_output=True,text=True,encoding='utf-8').stdout; parse=c.governance.fallback_yaml_load; b=types.ModuleType('lean_governance_baseline'); b.__file__=f'{B}:scripts/lean_governance.py'; exec(compile(gt('scripts/lean_governance.py'),b.__file__,'exec'),b.__dict__); load=lambda p:(parse(gt(f\"{p['path']}/docs/governance/project.yaml\")),parse(gt(f\"{p['path']}/docs/governance/roadmap.yaml\")),[json.loads(x) for x in gt(f\"{p['path']}/docs/governance/events.jsonl\").splitlines() if x.strip()]); cfg=parse(Path('governance/projects.yaml').read_text(encoding='utf-8')); rows=[(str(p['project_id']),b.rendered_project_texts(*(facts:=load(p))),c.rendered_project_texts(*facts)) for p in cfg['projects'] if p['project_id']!='PFI']; diffs=[project_id for project_id,before,after in rows if before!=after]; print(json.dumps({'base_commit':B,'comparison':'non-PFI-rendered-text-byte-identity','checked_project_count':len(rows),'difference_count':len(diffs),'differences':diffs},sort_keys=True)); raise SystemExit(bool(diffs))"
+exit_code=0
+summary=all 12 non-PFI registered projects rendered byte-identically to the implementation-base renderer; unrelated pre-existing project drift was not attributed to this Phase
+execution_context=git_object_baseline_comparison
+
+independent_review_state=final
+independent_reviewed_at=2026-07-14T17:50:32+10:00
+independent_review_aggregate=C0/I0/M0
+independent_review_code_security=pass
+independent_review_acceptance_evidence=pass
+independent_review_governance_renderer=pass
+finder_used=false

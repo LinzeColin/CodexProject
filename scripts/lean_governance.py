@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -387,6 +388,75 @@ def roadmap_totals(roadmap: dict[str, Any]) -> dict[str, float]:
     return {"total": total, "completed": completed}
 
 
+def roadmap_display_metrics(roadmap: dict[str, Any]) -> dict[str, str]:
+    totals = roadmap_totals(roadmap)
+    current_scope = roadmap.get("current_scope_metrics")
+    if not isinstance(current_scope, dict):
+        return {
+            "total_hours": f"{totals['total']:.2f}",
+            "completed_hours": f"{totals['completed']:.2f}",
+            "progress": pct(totals["completed"], totals["total"]),
+        }
+
+    hours_unknown = str(current_scope.get("hours_status") or "").upper() == "UNKNOWN"
+    scope_id = text_or_na(current_scope.get("scope_id"))
+    stage_prefix = str(current_scope.get("stage_id_prefix") or "")
+    scope_stages = [
+        stage
+        for stage in governance.as_list(roadmap.get("stages"))
+        if isinstance(stage, dict) and str(stage.get("stage_id") or "").startswith(stage_prefix)
+    ] if stage_prefix else []
+    scope_tasks = [
+        task
+        for stage in scope_stages
+        for phase in governance.as_list(stage.get("phases"))
+        if isinstance(phase, dict)
+        for task in governance.as_list(phase.get("tasks"))
+        if isinstance(task, dict)
+    ]
+    expected_stage_count = int(current_scope.get("expected_stage_count") or 0)
+    expected_task_count = int(current_scope.get("expected_task_count") or 0)
+    scope_registry_complete = (
+        bool(stage_prefix)
+        and len(scope_stages) == expected_stage_count
+        and len(scope_tasks) == expected_task_count
+    )
+    completed_scope_tasks = sum(
+        1 for task in scope_tasks if str(task.get("status") or "") == "completed"
+    )
+    current_stage_id = str(roadmap.get("current_stage_id") or "")
+    current_stage = next(
+        (
+            stage
+            for stage in governance.as_list(roadmap.get("stages"))
+            if isinstance(stage, dict) and str(stage.get("stage_id") or "") == current_stage_id
+        ),
+        None,
+    )
+    stage_tasks = [
+        task
+        for phase in governance.as_list((current_stage or {}).get("phases"))
+        if isinstance(phase, dict)
+        for task in governance.as_list(phase.get("tasks"))
+        if isinstance(task, dict)
+    ]
+    completed_stage_tasks = sum(1 for task in stage_tasks if str(task.get("status") or "") == "completed")
+    stage_progress = pct(float(completed_stage_tasks), float(len(stage_tasks)))
+    overall_progress = (
+        f"{completed_scope_tasks}/{len(scope_tasks)} ({pct(float(completed_scope_tasks), float(len(scope_tasks)))})"
+        if scope_registry_complete
+        else "UNKNOWN_INCOMPLETE_ROADMAP_REGISTRY"
+    )
+    return {
+        "total_hours": "UNKNOWN" if hours_unknown else f"{totals['total']:.2f}",
+        "completed_hours": "UNKNOWN" if hours_unknown else f"{totals['completed']:.2f}",
+        "progress": (
+            f"{scope_id} tasks={overall_progress}; "
+            f"{text_or_na(current_stage_id)} tasks={completed_stage_tasks}/{len(stage_tasks)} ({stage_progress})"
+        ),
+    }
+
+
 def active_count(items: list[dict[str, Any]]) -> int:
     return sum(1 for item in items if str(item.get("status") or "").lower() == "active")
 
@@ -429,7 +499,18 @@ def roadmap_blockers(roadmap: dict[str, Any]) -> list[str]:
 
 
 def next_unique_task(roadmap: dict[str, Any]) -> str:
-    terminal_states = {"completed", "rejected", "deprecated"}
+    terminal_states = {"completed", "rejected", "deprecated", "historical_superseded", "accepted_for_transition"}
+    completion = roadmap.get("completion_predicate")
+    current_stage_id = str(roadmap.get("current_stage_id") or "")
+    stage_match = re.search(r"(?:^|-)S(\d+)$", current_stage_id)
+    if isinstance(completion, dict) and stage_match:
+        stage_number = stage_match.group(1)
+        review_status = str(completion.get(f"stage_{stage_number}_whole_stage_review_status") or "")
+        if review_status and review_status not in {"pass", "accepted", "accepted_for_transition", "not_applicable"}:
+            for key in (f"stage_{stage_number}_next_task", "next_executable_task"):
+                gate_task = str(completion.get(key) or "").strip()
+                if gate_task:
+                    return gate_task
     tasks = roadmap_tasks(roadmap)
     current_task_id = str(roadmap.get("current_task_id") or "")
     for task in tasks:
@@ -527,47 +608,98 @@ def roadmap_fact_summary(project_facts: dict[str, Any], roadmap: dict[str, Any])
 def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
     use_contextual_fallbacks = str(roadmap.get("project_id") or "") == "arxiv-daily-push"
     totals = roadmap_totals(roadmap)
+    current_scope = roadmap.get("current_scope_metrics")
+    scope_enabled = isinstance(current_scope, dict)
+    scope_prefix = str(current_scope.get("stage_id_prefix") or "") if scope_enabled else ""
+    scope_hours_unknown = (
+        scope_enabled and str(current_scope.get("hours_status") or "").upper() == "UNKNOWN"
+    )
     lines: list[str] = ["Stage -> Phase -> Task", ""]
     for stage in [item for item in governance.as_list(roadmap.get("stages")) if isinstance(item, dict)]:
         stage_gate = stage.get("stop_gate") if isinstance(stage.get("stop_gate"), dict) else {}
-        stage_hours = sum(
-            float(task.get("estimated_hours") or 0)
+        stage_tasks = [
+            task
             for phase in governance.as_list(stage.get("phases"))
             if isinstance(phase, dict)
             for task in governance.as_list(phase.get("tasks"))
             if isinstance(task, dict)
+        ]
+        stage_hours = sum(
+            float(task.get("estimated_hours") or 0) for task in stage_tasks
         )
-        lines.extend(
+        stage_in_scope = bool(scope_prefix) and str(stage.get("stage_id") or "").startswith(scope_prefix)
+        stage_hours_display = "UNKNOWN" if stage_in_scope and scope_hours_unknown else f"{stage_hours:.2f}"
+        stage_percent_display = (
+            "UNKNOWN" if stage_in_scope and scope_hours_unknown else pct(stage_hours, totals["total"])
+        )
+        stage_lines = [
+            f"### {text_or_na(stage.get('stage_id'))} {text_or_na(stage.get('name'))}",
+            "",
+            f"- person_goal: `{text_or_na(stage.get('person_goal'))}`",
+            f"- status: `{text_or_na(stage.get('status'))}`",
+            f"- derived_hours: `{stage_hours_display}`",
+            f"- derived_percent: `{stage_percent_display}`",
+        ]
+        if stage_in_scope:
+            completed = sum(1 for task in stage_tasks if str(task.get("status") or "") == "completed")
+            stage_lines.extend(
+                [
+                    f"- task_progress: `{completed}/{len(stage_tasks)} ({pct(float(completed), float(len(stage_tasks)))})`",
+                    f"- declared_percent: `{text_or_na(stage.get('estimated_pct'))}`",
+                    f"- percentage_basis: `{text_or_na(stage.get('percentage_basis'))}`",
+                    f"- hours_source: `{text_or_na(stage.get('hours_source'))}`",
+                ]
+            )
+        stage_lines.extend(
             [
-                f"### {text_or_na(stage.get('stage_id'))} {text_or_na(stage.get('name'))}",
-                "",
-                f"- person_goal: `{text_or_na(stage.get('person_goal'))}`",
-                f"- status: `{text_or_na(stage.get('status'))}`",
-                f"- derived_hours: `{stage_hours:.2f}`",
-                f"- derived_percent: `{pct(stage_hours, totals['total'])}`",
                 f"- stop_conditions: `{text_or_na(stage.get('stop_conditions'))}`",
                 f"- stop_gate: `{text_or_na(stage_gate.get('gate_id'))}`",
                 f"- stop_gate_pass_criteria: `{stop_gate_field(stage_gate, 'pass_criteria', 'pass_conditions') if use_contextual_fallbacks else text_or_na(stage_gate.get('pass_criteria'))}`",
                 f"- stop_gate_evidence: `{stop_gate_field(stage_gate, 'evidence', 'evidence_refs') if use_contextual_fallbacks else text_or_na(stage_gate.get('evidence'))}`",
                 f"- stop_gate_failure_action: `{stop_gate_failure_action(stage_gate) if use_contextual_fallbacks else text_or_na(stage_gate.get('failure_action'))}`",
-                "",
             ]
         )
+        if stage_in_scope:
+            stage_lines.extend(
+                [
+                    f"- stop_gate_planned_evidence: `{text_or_na(stage_gate.get('planned_evidence'))}`",
+                    f"- human_acceptance: `{text_or_na(stage.get('human_acceptance'))}`",
+                ]
+            )
+        stage_lines.append("")
+        lines.extend(stage_lines)
         for phase in [item for item in governance.as_list(stage.get("phases")) if isinstance(item, dict)]:
             phase_gate = phase.get("stop_gate") if isinstance(phase.get("stop_gate"), dict) else {}
+            phase_tasks = [
+                task for task in governance.as_list(phase.get("tasks")) if isinstance(task, dict)
+            ]
             phase_hours = sum(
-                float(task.get("estimated_hours") or 0)
-                for task in governance.as_list(phase.get("tasks"))
-                if isinstance(task, dict)
+                float(task.get("estimated_hours") or 0) for task in phase_tasks
             )
-            lines.extend(
+            phase_hours_display = "UNKNOWN" if stage_in_scope and scope_hours_unknown else f"{phase_hours:.2f}"
+            phase_percent_display = (
+                "UNKNOWN" if stage_in_scope and scope_hours_unknown else pct(phase_hours, totals["total"])
+            )
+            phase_lines = [
+                f"#### {text_or_na(phase.get('phase_id'))} {text_or_na(phase.get('name'))}",
+                "",
+                f"- objective: `{text_or_na(phase.get('objective'))}`",
+                f"- status: `{text_or_na(phase.get('status'))}`",
+                f"- derived_hours: `{phase_hours_display}`",
+                f"- derived_percent: `{phase_percent_display}`",
+            ]
+            if stage_in_scope:
+                completed = sum(1 for task in phase_tasks if str(task.get("status") or "") == "completed")
+                phase_lines.extend(
+                    [
+                        f"- task_progress: `{completed}/{len(phase_tasks)} ({pct(float(completed), float(len(phase_tasks)))})`",
+                        f"- declared_percent: `{text_or_na(phase.get('estimated_pct'))}`",
+                        f"- percentage_basis: `{text_or_na(phase.get('percentage_basis'))}`",
+                        f"- hours_source: `{text_or_na(phase.get('hours_source'))}`",
+                    ]
+                )
+            phase_lines.extend(
                 [
-                    f"#### {text_or_na(phase.get('phase_id'))} {text_or_na(phase.get('name'))}",
-                    "",
-                    f"- objective: `{text_or_na(phase.get('objective'))}`",
-                    f"- status: `{text_or_na(phase.get('status'))}`",
-                    f"- derived_hours: `{phase_hours:.2f}`",
-                    f"- derived_percent: `{pct(phase_hours, totals['total'])}`",
                     f"- stop_conditions: `{text_or_na(phase.get('stop_conditions'))}`",
                     f"- stop_gate: `{text_or_na(phase_gate.get('gate_id'))}`",
                     f"- stop_gate_pass_criteria: `{stop_gate_field(phase_gate, 'pass_criteria', 'pass_conditions') if use_contextual_fallbacks else text_or_na(phase_gate.get('pass_criteria'))}`",
@@ -578,22 +710,34 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                     "|---|---|---|---:|---:|---|---|",
                 ]
             )
-            for task in [item for item in governance.as_list(phase.get("tasks")) if isinstance(item, dict)]:
+            lines.extend(phase_lines)
+            for task in phase_tasks:
                 hours = float(task.get("estimated_hours") or 0)
+                hours_display = "UNKNOWN" if stage_in_scope and scope_hours_unknown else f"{hours:.2f}"
+                percent_display = (
+                    "UNKNOWN" if stage_in_scope and scope_hours_unknown else pct(hours, totals["total"])
+                )
                 lines.append(
-                    f"| {text_or_na(task.get('task_id'))} | {text_or_na(task.get('name'))} | {text_or_na(task.get('status'))} | {hours:.2f} | {pct(hours, totals['total'])} | {text_or_na(task.get('dependencies'))} | {text_or_na(task.get('acceptance_ids'))} |"
+                    f"| {text_or_na(task.get('task_id'))} | {text_or_na(task.get('name'))} | {text_or_na(task.get('status'))} | {hours_display} | {percent_display} | {text_or_na(task.get('dependencies'))} | {text_or_na(task.get('acceptance_ids'))} |"
                 )
             lines.extend(["", "Task detail fields:", ""])
-            for task in [item for item in governance.as_list(phase.get("tasks")) if isinstance(item, dict)]:
-                lines.extend(
-                    [
-                        f"- {text_or_na(task.get('task_id'))} test_commands: `{text_or_na(task.get('test_commands'))}`",
-                        f"- {text_or_na(task.get('task_id'))} test_results: `{task_test_results(task) if use_contextual_fallbacks else text_or_na(task.get('test_results'))}`",
-                        f"- {text_or_na(task.get('task_id'))} evidence_refs: `{text_or_na(task.get('evidence_refs'))}`",
-                        f"- {text_or_na(task.get('task_id'))} risks: `{task_risks(task) if use_contextual_fallbacks else text_or_na(task.get('risks'))}`",
-                        f"- {text_or_na(task.get('task_id'))} rollback: `{text_or_na(task.get('rollback'))}`",
-                    ]
-                )
+            for task in phase_tasks:
+                task_lines = [
+                    f"- {text_or_na(task.get('task_id'))} test_commands: `{text_or_na(task.get('test_commands'))}`",
+                    f"- {text_or_na(task.get('task_id'))} test_results: `{task_test_results(task) if use_contextual_fallbacks else text_or_na(task.get('test_results'))}`",
+                    f"- {text_or_na(task.get('task_id'))} evidence_refs: `{text_or_na(task.get('evidence_refs'))}`",
+                    f"- {text_or_na(task.get('task_id'))} risks: `{task_risks(task) if use_contextual_fallbacks else text_or_na(task.get('risks'))}`",
+                    f"- {text_or_na(task.get('task_id'))} rollback: `{text_or_na(task.get('rollback'))}`",
+                ]
+                if stage_in_scope:
+                    task_lines.extend(
+                        [
+                            f"- {text_or_na(task.get('task_id'))} planned_deliverable: `{text_or_na(task.get('planned_deliverable'))}`",
+                            f"- {text_or_na(task.get('task_id'))} acceptance_summary: `{text_or_na(task.get('acceptance_summary'))}`",
+                            f"- {text_or_na(task.get('task_id'))} current_result: `{text_or_na(task.get('current_result'))}`",
+                        ]
+                    )
+                lines.extend(task_lines)
             lines.append("")
     return lines
 
@@ -602,6 +746,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
     features = [item for item in governance.as_list(project_facts.get("features")) if isinstance(item, dict)]
     evidence = [item for item in governance.as_list(project_facts.get("evidence_refs")) if isinstance(item, dict)]
     totals = roadmap_totals(roadmap)
+    display = roadmap_display_metrics(roadmap)
     summary = roadmap_fact_summary(project_facts, roadmap)
     project_root = ROOT / str(project_facts.get("project_id") or "")
     v72 = load_adp_v7_2_current(project_root)
@@ -617,7 +762,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
         f"- current_stage: `{text_or_na(roadmap.get('current_stage_id'))}`",
         f"- current_phase: `{text_or_na(roadmap.get('current_phase_id'))}`",
         f"- current_task: `{text_or_na(roadmap.get('current_task_id'))}`",
-        f"- progress: `{pct(totals['completed'], totals['total'])}`",
+        f"- progress: `{display['progress']}`",
         f"- capability_count: `{len(features)}`",
         f"- blockers: `{summary['blockers']}`",
         f"- next_gate: `{text_or_na(roadmap.get('next_gate_id'))}`",
@@ -649,6 +794,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
 def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> str:
     ensure_product_roadmap(roadmap, target="project development record")
     totals = roadmap_totals(roadmap)
+    display = roadmap_display_metrics(roadmap)
     summary = roadmap_fact_summary(project_facts, roadmap)
     project_root = ROOT / str(project_facts.get("project_id") or "")
     v72 = load_adp_v7_2_current(project_root)
@@ -664,9 +810,9 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
         f"- current_stage: `{text_or_na(roadmap.get('current_stage_id'))}`",
         f"- current_phase: `{text_or_na(roadmap.get('current_phase_id'))}`",
         f"- current_task: `{text_or_na(roadmap.get('current_task_id'))}`",
-        f"- total_hours: `{totals['total']:.2f}`",
-        f"- completed_hours: `{totals['completed']:.2f}`",
-        f"- progress: `{pct(totals['completed'], totals['total'])}`",
+        f"- total_hours: `{display['total_hours']}`",
+        f"- completed_hours: `{display['completed_hours']}`",
+        f"- progress: `{display['progress']}`",
         f"- blockers: `{summary['blockers']}`",
         f"- next_gate: `{text_or_na(roadmap.get('next_gate_id'))}`",
         f"- next_unique_task: `{summary['next_unique_task']}`",

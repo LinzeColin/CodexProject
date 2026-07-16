@@ -1,0 +1,67 @@
+{
+  "alias_route_count": 7,
+  "aliases": [
+    {
+      "aliasClass": "command_or_compatibility_alias",
+      "label": "首页",
+      "primaryEntryAllowed": false,
+      "resolvedRouteAlias": "/overview",
+      "routeAlias": "/home",
+      "targetWorkspace": "home"
+    },
+    {
+      "aliasClass": "command_or_compatibility_alias",
+      "label": "市场",
+      "primaryEntryAllowed": false,
+      "resolvedRouteAlias": "/market-research/market",
+      "routeAlias": "/market",
+      "targetWorkspace": "market_research"
+    },
+    {
+      "aliasClass": "command_or_compatibility_alias",
+      "label": "研究",
+      "primaryEntryAllowed": false,
+      "resolvedRouteAlias": "/market-research/research",
+      "routeAlias": "/research",
+      "targetWorkspace": "market_research"
+    },
+    {
+      "aliasClass": "command_or_compatibility_alias",
+      "label": "持仓",
+      "primaryEntryAllowed": false,
+      "resolvedRouteAlias": "/investment/holdings",
+      "routeAlias": "/holdings",
+      "targetWorkspace": "investment"
+    },
+    {
+      "aliasClass": "command_or_compatibility_alias",
+      "label": "策略实验室",
+      "primaryEntryAllowed": false,
+      "resolvedRouteAlias": "/market-research/strategy-lab",
+      "routeAlias": "/strategy-lab",
+      "targetWorkspace": "market_research"
+    },
+    {
+      "aliasClass": "command_or_compatibility_alias",
+      "label": "策略实验室",
+      "primaryEntryAllowed": false,
+      "resolvedRouteAlias": "/market-research/strategy-lab",
+      "routeAlias": "/investment/strategy-lab",
+      "targetWorkspace": "market_research"
+    },
+    {
+      "aliasClass": "command_or_compatibility_alias",
+      "label": "数据与系统",
+      "primaryEntryAllowed": false,
+      "resolvedRouteAlias": "/settings/data-system",
+      "routeAlias": "/data-system",
+      "targetWorkspace": "settings"
+    }
+  ],
+  "aliases_exposed_as_primary_entries": false,
+  "contract_id": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+  "legacy_label_count": 6,
+  "schema": "PFIV025Stage6Phase61AliasMatrixEvidenceV1",
+  "status": "pass",
+  "task_id": "S6-P1-T2"
+}

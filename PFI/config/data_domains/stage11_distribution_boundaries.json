@@ -1,0 +1,81 @@
+{
+  "schema": "PFIV025Stage11DistributionBoundaryV1",
+  "public_cloudflare": {
+    "surface_type": "static_boundary_notice",
+    "active_ui": false,
+    "application_routes_enabled": false,
+    "worker_runtime_enabled": false,
+    "local_runtime_connection": false,
+    "pfi_context_export_exposed": false,
+    "data_classification": "PUBLIC_SHARED_CANONICAL",
+    "private_domains_readable": [],
+    "allowed_asset_types": [
+      ".css",
+      ".html",
+      ".json"
+    ]
+  },
+  "pfi_context": {
+    "schema_version": "pfi_context.v1",
+    "consumer": "Alpha",
+    "privacy_classification": "PRIVATE_DERIVED_MINIMIZED",
+    "read_only": true,
+    "writeback_allowed": false,
+    "payload_fields": [
+      "net_worth_state",
+      "investable_cash_state",
+      "cashflow_pressure",
+      "asset_allocation",
+      "risk_budget",
+      "investment_behavior_tags",
+      "consumption_pressure_summary",
+      "data_freshness"
+    ],
+    "metadata_fields": [
+      "schema_version",
+      "as_of",
+      "source_or_read_model_hash",
+      "privacy_classification",
+      "consumer",
+      "read_only",
+      "writeback_allowed"
+    ],
+    "metric_state_values": [
+      "blocked",
+      "confirmed_zero",
+      "error",
+      "not_loaded",
+      "partial",
+      "ready",
+      "stale"
+    ],
+    "pressure_values": [
+      "blocked",
+      "error",
+      "high",
+      "low",
+      "moderate",
+      "not_loaded",
+      "stale"
+    ],
+    "freshness_values": [
+      "blocked",
+      "error",
+      "fresh",
+      "not_loaded",
+      "stale"
+    ],
+    "behavior_tag_values": [
+      "concentration_watch",
+      "liquidity_watch",
+      "loss_chasing_watch",
+      "review_required",
+      "turnover_watch"
+    ]
+  },
+  "excluded_systems": [
+    "Ralpha",
+    "Serenity-Alipay"
+  ],
+  "live_trading_or_payment_authorized": false
+}

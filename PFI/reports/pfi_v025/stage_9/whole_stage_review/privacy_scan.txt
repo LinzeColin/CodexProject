@@ -1,0 +1,11 @@
+
+PASS
+scope=Stage 9 reviewed analysis, browser evidence, exports and whole-review metadata
+financial_values_persisted=0
+private_paths_detected=0
+credentials_detected=0
+automatic_trading_allowed=false
+trade_execution_available=false
+finder_used=false
+launchservices_used=false
+external_network_used=false

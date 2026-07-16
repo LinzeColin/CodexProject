@@ -1,0 +1,25 @@
+{
+  "schema": "PFIV025Stage8Phase81VisualArtifactValidationV1",
+  "status": "pass",
+  "method": "Pillow RGB decode plus representative manual visual inspection",
+  "decoded_png_count": 20,
+  "desktop_png_count": 10,
+  "mobile_png_count": 10,
+  "black_pixel_file_count": 0,
+  "total_black_pixel_count": 0,
+  "representative_manual_inspection": [
+    "desktop/home",
+    "desktop/accounts",
+    "desktop/ledger",
+    "desktop/sync",
+    "desktop/settings",
+    "mobile/home",
+    "mobile/ledger",
+    "mobile/sync",
+    "mobile/settings"
+  ],
+  "browser_context_isolation": "one independent context per route and viewport",
+  "viewer_path_cache_discarded": true,
+  "final_artifacts_decoded_directly": true,
+  "finder_used": false
+}

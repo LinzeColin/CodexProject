@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PFI v0.2.5 Source Manifest Collection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "stage",
+    "phase",
+    "observed_at",
+    "acceptance_id",
+    "canonical_private_root_id",
+    "canonical_private_root_alias",
+    "taskpack_source_schema",
+    "taskpack_schema_applies_to",
+    "wrapper_schema",
+    "wrapper_schema_applies_to",
+    "sources",
+    "financial_fixture_fallback_used",
+    "source_registry",
+    "source_registry_content_hash",
+    "observed_root_metadata_unchanged",
+    "operational_database_unchanged",
+    "acceptance_gate_status",
+    "privacy"
+  ],
+  "properties": {
+    "schema": {"const": "PFIV025SourceManifestCollectionV1"},
+    "version": {"const": "v0.2.5"},
+    "stage": {"const": 2},
+    "phase": {"const": "2.1"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "acceptance_id": {"const": "ACC-PFI-V025-S2-P21-DATA-ROOT-SOURCE-MANIFEST"},
+    "canonical_private_root_id": {"const": "ROOT-PFI-DATA-HOME"},
+    "canonical_private_root_alias": {"const": "$PFI_DATA_HOME"},
+    "taskpack_source_schema": {"const": "PFI/config/schemas/v025/data_source_manifest.schema.json"},
+    "taskpack_schema_applies_to": {"const": "sources[*]"},
+    "wrapper_schema": {"const": "PFI/config/schemas/v025/source_manifest_collection.schema.json"},
+    "wrapper_schema_applies_to": {"const": "document"},
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "financial_fixture_fallback_used": {"const": false},
+    "source_registry": {"const": "PFI/config/sources/v025_phase_2_1_sources.json"},
+    "source_registry_content_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "observed_root_metadata_unchanged": {"const": true},
+    "operational_database_unchanged": {"type": ["boolean", "null"]},
+    "acceptance_gate_status": {"const": "pass"},
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_private_values",
+        "raw_filenames_emitted",
+        "financial_rows_emitted",
+        "account_identifiers_emitted",
+        "absolute_private_paths_emitted",
+        "credentials_emitted"
+      ],
+      "properties": {
+        "contains_private_values": {"const": false},
+        "raw_filenames_emitted": {"const": 0},
+        "financial_rows_emitted": {"const": 0},
+        "account_identifiers_emitted": {"const": 0},
+        "absolute_private_paths_emitted": {"const": 0},
+        "credentials_emitted": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "label",
+        "source_type",
+        "capabilities",
+        "path_alias",
+        "parser_version",
+        "status",
+        "record_count",
+        "coverage",
+        "as_of",
+        "content_hash",
+        "blocking_reason_zh",
+        "root_id",
+        "observation_mode",
+        "source_role",
+        "resolution_task_ids"
+      ],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+        "label": {"type": "string", "minLength": 1},
+        "source_type": {"type": "string", "minLength": 1},
+        "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "path_alias": {
+          "enum": [
+            "MetaDatabase/PFI",
+            "PFI/MetaDatabase",
+            "$PFI_DATA_HOME",
+            "$PFI_DATA_HOME/private/operational/pfi.sqlite",
+            "~/.pfi"
+          ]
+        },
+        "parser_version": {"type": ["string", "null"]},
+        "status": {
+          "enum": [
+            "ready",
+            "partial",
+            "not_loaded",
+            "source_missing",
+            "path_error",
+            "parse_failed",
+            "outdated",
+            "permission_denied",
+            "blocked"
+          ]
+        },
+        "record_count": {"type": ["integer", "null"], "minimum": 0},
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": {"type": ["string", "null"]},
+            "end": {"type": ["string", "null"]}
+          }
+        },
+        "as_of": {"type": ["string", "null"]},
+        "content_hash": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+        "blocking_reason_zh": {"type": ["string", "null"]},
+        "root_id": {"type": ["string", "null"]},
+        "observation_mode": {"type": "string", "minLength": 1},
+        "source_role": {"type": "string", "minLength": 1},
+        "resolution_task_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    }
+  }
+}

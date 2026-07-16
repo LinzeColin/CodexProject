@@ -1,0 +1,138 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW-REMEDIATION",
+  "acceptance_request_status": "awaiting_stage12_independent_rereview_then_explicit_human_acceptance",
+  "allowed_files_obeyed": false,
+  "app_install_performed": false,
+  "canonical_database_changed": false,
+  "changed_files": [
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/artifact_manifest.json",
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/evidence.json",
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/final_evidence_index.json",
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/final_evidence_index.sha256",
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/human_acceptance_request.json",
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/phase_contract.json",
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_12/phase_12_3/state_consistency.json"
+  ],
+  "commands": [
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_cache_policy.py PFI/tests/test_v025_stage12_release_gates.py PFI/tests/test_v025_stage12_target_mac_uat.py PFI/tests/test_v025_stage12_release_freeze.py PFI/tests/test_v025_stage12_whole_review_remediation.py",
+      "command_id": "focused_release_stage12_python",
+      "exit_code": 0,
+      "summary": "54 passed, 2 warnings in 5.97s"
+    },
+    {
+      "command": "node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs",
+      "command_id": "release_cache_node",
+      "exit_code": 0,
+      "summary": "ℹ duration_ms 74.077958"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B PFI/machine/tools/check_dual_plane_ci.py --root PFI --projects . --require-projects",
+      "command_id": "pfi_dual_plane_ci",
+      "exit_code": 0,
+      "summary": "PASS —— 全部项目双平面合规"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B scripts/lean_governance.py check-render --project PFI",
+      "command_id": "pfi_lean_renderer",
+      "exit_code": 0,
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    },
+    {
+      "command": "git diff --check",
+      "command_id": "git_diff_check",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI",
+      "command_id": "complete_overlay_governance_1",
+      "exit_code": 0,
+      "summary": "warnings: 0"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI",
+      "command_id": "complete_overlay_governance_2",
+      "exit_code": 0,
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    },
+    {
+      "command": "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI",
+      "command_id": "complete_overlay_governance_3",
+      "exit_code": 0,
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    }
+  ],
+  "contains_private_values": false,
+  "evidence_files": [
+    "changed_files.txt",
+    "evidence.json",
+    "final_evidence_index.json",
+    "final_evidence_index.sha256",
+    "human_acceptance_request.json",
+    "phase_contract.json",
+    "privacy_scan.txt",
+    "risk_and_rollback.md",
+    "source_migration_lock.json",
+    "state_consistency.json",
+    "terminal.log"
+  ],
+  "evidence_index_hash": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "explicitly_not_done": [
+    "Stage 12 independent post-remediation rereview",
+    "S12-P3-T4 final release freeze",
+    "final human acceptance artifact",
+    "GitHub main push",
+    "post-push canonical PFI.app reinstall and parity proof",
+    "production acceptance",
+    "v0.2.6 work"
+  ],
+  "external_network_performed": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "git_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "git_commit_semantics": "exact product and Stage 12 remediation anchor; this evidence is a non-runtime overlay",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "observed_at": "2026-07-15T21:45:47Z",
+  "open_command_used": false,
+  "open_p0_count": 0,
+  "open_p1_count": 0,
+  "open_p2_count": 5,
+  "phase": "12.3",
+  "phase_completion_status": "3_of_4_candidate_complete_waiting_final_gate",
+  "phase_id": "V025-S12-P12.3",
+  "production_accepted": false,
+  "push_performed": false,
+  "release_freeze_performed": false,
+  "requires_stage_whole_review": true,
+  "requires_user_acceptance": true,
+  "risks": [
+    "Actual kernel sleep/wake remains an accepted P2 limitation; only the owned-process proxy ran.",
+    "SRC-HOLDINGS remains not_loaded/not_run; no holding financial pass is claimed.",
+    "Finder remains prohibited; CLI-only entry quarantine is complete and must be rechecked without GUI discovery.",
+    "Any runtime payload change after the exact release source commit requires a new release identity and candidate anchor."
+  ],
+  "rollback": "Revert the Phase 12.3 candidate commit and upstream merge if necessary; retain the installed Phase 12.2 rollback archive. No canonical database, remote branch or final acceptance artifact is changed in this Phase.",
+  "schema": "PFIV025Stage12Phase123EvidenceV1",
+  "scope_override_authorized": true,
+  "scope_override_reason": "Upstream dual-plane integration and the bounded immutable-source lock repair are required to preserve current repository truth without restoring the migrated MetaDatabase tree.",
+  "source_migration_lock_used": true,
+  "stage": 12,
+  "stage_12_whole_stage_review_status": "remediation_complete_waiting_independent_rereview",
+  "status": "candidate_pass",
+  "task_ids": [
+    "S12-P3-T1",
+    "S12-P3-T2",
+    "S12-P3-T3",
+    "S12-P3-T4"
+  ],
+  "task_statuses": {
+    "S12-P3-T1": "candidate_complete",
+    "S12-P3-T2": "candidate_complete",
+    "S12-P3-T3": "candidate_complete",
+    "S12-P3-T4": "waiting_whole_stage_review_then_explicit_human_acceptance"
+  },
+  "version": "v0.2.5"
+}

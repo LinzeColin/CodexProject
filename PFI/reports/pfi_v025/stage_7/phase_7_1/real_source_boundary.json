@@ -1,0 +1,16 @@
+{
+  "canonical_hash_unchanged": true,
+  "external_canonical_source_write_performed": false,
+  "final_repo_metadatabase_diff_count": 0,
+  "finder_used": false,
+  "intermediate_repo_metadatabase_write_remediated": true,
+  "intermediate_repository_data_mutation_occurred": true,
+  "final_repository_state_restored": true,
+  "isolated_snapshot_root": "/tmp",
+  "private_values_persisted_in_evidence": false,
+  "schema": "PFIV025Stage7Phase71RealSourceBoundaryV1",
+  "source_bytes": 264554,
+  "source_content_sha256": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342",
+  "source_kind": "real_read_only_alipay_csv_or_zip",
+  "status": "pass_with_remediated_intermediate_write"
+}

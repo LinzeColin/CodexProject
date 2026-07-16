@@ -1,0 +1,21 @@
+{
+  "base_currency": "CNY",
+  "direction_definition_zh": "1 AUD = X CNY",
+  "example_only": true,
+  "example_rate": "4.81",
+  "production_default_fx_rate": null,
+  "rate_unit": "CNY/AUD",
+  "results": {
+    "aud_example": {
+      "amount": "10.00",
+      "currency": "AUD",
+      "direction": "AUD_TO_CNY",
+      "result_cny": "48.1000",
+      "status": "pass"
+    },
+    "cny_identity": {"amount": "10.00", "result_cny": "10.00", "status": "pass"},
+    "reverse_direction": {"error": "AUD conversion requires fixed AUD_TO_CNY direction", "status": "rejected"},
+    "zero_rate": {"error": "fx_rate must be a positive finite Decimal", "status": "rejected"}
+  },
+  "status": "pass"
+}

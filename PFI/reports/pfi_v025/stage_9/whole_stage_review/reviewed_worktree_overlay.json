@@ -1,0 +1,106 @@
+{
+  "base_commit": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "content_manifest_sha256": "sha256:67e49cdf90ad8d8c0663b0066e216457216b3ab5908d9475b2f4328779c42303",
+  "file_count": 24,
+  "files": [
+    {
+      "path": "PFI/CHANGELOG.md",
+      "sha256": "sha256:4461c58c6630c47403a8a33690381b76d53b611ce2869cffe3051393e2e5fe04"
+    },
+    {
+      "path": "PFI/HANDOFF.md",
+      "sha256": "sha256:b9f237be684099ba4d8ab1889d331816c706184456ed669c2d59c663c9363124"
+    },
+    {
+      "path": "PFI/README.md",
+      "sha256": "sha256:4fb21edfd53e139a1097f00ddf7642b680abb7fe64f0139e0235751df62ce125"
+    },
+    {
+      "path": "PFI/docs/governance/ASSURANCE_STATUS.yaml",
+      "sha256": "sha256:1b622ce76d1b8091c44ef0b8ec96a80c918be71a13cdd2e1c7be3ddf54dc321d"
+    },
+    {
+      "path": "PFI/docs/governance/DELIVERY_PLAN.md",
+      "sha256": "sha256:a7fe1f77ff923169ec52ff81191abb0634eb4361428080e8e51a6132c0e244ea"
+    },
+    {
+      "path": "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+      "sha256": "sha256:74dcac4d3440399bb465796caf5662bd15b60a4f7057c1409a8e91870eb1e5da"
+    },
+    {
+      "path": "PFI/docs/governance/MODEL_SPEC.md",
+      "sha256": "sha256:54c730f1f950a08f9ce561ffeda8cca9289bb49042a48321a1ad057954ddc17a"
+    },
+    {
+      "path": "PFI/docs/governance/OWNER_STATUS.md",
+      "sha256": "sha256:4bc5cc7bd5f5af47455e242bc759de42260b6792df53aac1b4eaf1120e76aa5c"
+    },
+    {
+      "path": "PFI/docs/governance/STATUS.md",
+      "sha256": "sha256:cdef82dba8707f8636c39b91033df6adc5e7ebfbcf7bff0532d8327a1d893971"
+    },
+    {
+      "path": "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+      "sha256": "sha256:70e07f0ac6d668c8a191d86d96c71cc2b64ce29a0552f7360aad4cb9eb1015b4"
+    },
+    {
+      "path": "PFI/docs/governance/VERSION_MATRIX.yaml",
+      "sha256": "sha256:54b63d6058d310a54585734d75606a560fa13bc1d87c67d8dc52e1e8cd0a17b0"
+    },
+    {
+      "path": "PFI/docs/governance/delivery_tasks.yaml",
+      "sha256": "sha256:3cfe32f787658c1895d8d3ce30fde9e6c93e2e494d313876a3744cb80cfcfeeb"
+    },
+    {
+      "path": "PFI/docs/governance/development_events.jsonl",
+      "sha256": "sha256:45053475921e659afe78cae3dfdcd86f8e6d9f1d1b03e6e7ae0ca4eac6e63095"
+    },
+    {
+      "path": "PFI/docs/governance/project.yaml",
+      "sha256": "sha256:591cbf45e7ef9b7e631422146ad47427092226c175726a6e66b4c650d01a4703"
+    },
+    {
+      "path": "PFI/docs/governance/roadmap.yaml",
+      "sha256": "sha256:943f3339da80457ee4ddf3a1c41023f10b823e26f10a576a510ac05d803533cc"
+    },
+    {
+      "path": "PFI/docs/pfi_v025/stage_9/STAGE_9_WHOLE_STAGE_REVIEW.md",
+      "sha256": "sha256:f9b6cfe3f2ae6bef9cd62963012f6704b7341d0bd5ca3e86bce23a2828d7d9c9"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage9_whole_review_browser.py",
+      "sha256": "sha256:e763cf3934eec711a418e3f0b6cbc04b7cb75b23c0f4ede52ffb133267fee281"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage9_whole_review_cdp.mjs",
+      "sha256": "sha256:5134da8e1bea6bb606a37bd319a4a7ff1106bc059a31d00689869f32d298f725"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage9_whole_review_evidence.py",
+      "sha256": "sha256:3562bd3a9e7119d692b7f24e41ef8c634b1de7e65a1aef7a099ee63ce22628be"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage9_whole_review_finalize.py",
+      "sha256": "sha256:1e42bbe69f71a41b27fabdcdf07f218645f9098d00b49ad7f11ea48180fbeeba"
+    },
+    {
+      "path": "PFI/web/tests/v025/stage9_whole_review_verify.py",
+      "sha256": "sha256:4d07e6e91ab5ee240a11869495749248f961f0bde054a6e95c8187d2fa8c4cc7"
+    },
+    {
+      "path": "PFI/功能清单.md",
+      "sha256": "sha256:aa84011a82ac856458bb3d3e088bafff04aca8b7f0638caf0b8b301058793509"
+    },
+    {
+      "path": "PFI/开发记录.md",
+      "sha256": "sha256:b532c30cdbaae04ebbe6b14326bb3526a0bdd28f82e56bf7d342684671a03edc"
+    },
+    {
+      "path": "PFI/模型参数文件.md",
+      "sha256": "sha256:4e82d23aa6025ed1b6702e81be80f110b8e7cd381dd56a01226725f3ca963f43"
+    }
+  ],
+  "schema": "PFIV025Stage9ReviewedWorktreeOverlayV1",
+  "status": "frozen",
+  "whole_review_output_excluded_from_manifest": true
+}

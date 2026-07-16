@@ -1,0 +1,13 @@
+{
+  "database_changed": false,
+  "database_read": false,
+  "formula_values_changed": false,
+  "historical_phase_evidence_overwritten": false,
+  "model_values_changed": false,
+  "parameter_values_changed": false,
+  "phase_commit_binding_hash": "sha256:03892d8a6e5e5b4b9ace1239bcdb3e6e38c5199b9f1421a5da8788114f2ebb0f",
+  "phase_count": 3,
+  "real_financial_rows_read": false,
+  "schema": "PFIV025Stage9WholeReviewInputImmutabilityV1",
+  "status": "pass"
+}

@@ -1,0 +1,37 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P42-HOLDINGS-VALUATION",
+  "contains_private_values": false,
+  "cost_basis_guess_used": false,
+  "evidence_refs": [
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/source_status.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/holding_coverage.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/cost_basis_policy.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/valuation_contract.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/investment_read_model.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/investment_api_contract.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/no_fake_valuation_result.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/schema_inventory.json",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_4/phase_4_2/terminal.log"
+  ],
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "finder_used": false,
+  "legacy_fx_reference_used": false,
+  "observed_at": "2026-07-14T06:36:09Z",
+  "phase": "4.2",
+  "phase_id": "V025-S4-P4.2",
+  "production_dependency_statuses": {
+    "SRC-FX-SNAPSHOT": "not_loaded",
+    "SRC-HOLDINGS": "not_loaded",
+    "SRC-MARKET-PRICES": "not_loaded"
+  },
+  "production_values_calculated": 0,
+  "requires_user_acceptance": true,
+  "stage": 4,
+  "stage_status": "in_progress",
+  "status": "candidate_pass",
+  "task_ids": ["S4-P2-T1", "S4-P2-T2", "S4-P2-T3", "S4-P2-T4"],
+  "transaction_holding_inference_used": false,
+  "version": "v0.2.5"
+}

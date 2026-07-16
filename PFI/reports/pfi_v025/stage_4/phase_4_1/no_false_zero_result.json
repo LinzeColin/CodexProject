@@ -1,0 +1,17 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT",
+  "confirmed_zero_count": 0,
+  "contains_private_values": false,
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "metric_count": 3,
+  "non_ready_metric_count": 3,
+  "non_ready_value_count": 0,
+  "observed_at": "2026-07-14T11:49:30Z",
+  "phase": "4.1",
+  "result": "pass",
+  "schema": "PFIV025NoFalseZeroResultV1",
+  "stage": 4,
+  "transaction_balance_inference_used": false,
+  "version": "v0.2.5"
+}

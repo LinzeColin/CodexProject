@@ -1,0 +1,47 @@
+{
+  "all_phase_commits_are_ancestors": true,
+  "all_phase_evidence_candidate_pass": true,
+  "all_phase_evidence_present_in_bound_commits": true,
+  "current_head": "ec3e3af020cc37f5bddd39dba2e445895e015f9e",
+  "linear_commit_chain": true,
+  "phase_commits": {
+    "5.1": "73a3186d0e64b65d77555aeb6f882c8e237790ae",
+    "5.2": "61a14d9366c68a8c849c0c056a107116d5b377d1",
+    "5.3": "ec3e3af020cc37f5bddd39dba2e445895e015f9e"
+  },
+  "phase_evidence": [
+    {
+      "commit": "73a3186d0e64b65d77555aeb6f882c8e237790ae",
+      "contract_id": null,
+      "path": "PFI/reports/pfi_v025/stage_5/phase_5_1/evidence.json",
+      "phase": "5.1",
+      "present": true,
+      "sha256": "sha256:192c38f0b39392a2d983cf87d8688226a9cb73794dd40a12056db5489db7fe31",
+      "status": "candidate_pass"
+    },
+    {
+      "commit": "61a14d9366c68a8c849c0c056a107116d5b377d1",
+      "contract_id": "PFI-V025-STAGE5-PHASE52-FINANCIAL-MODELS",
+      "path": "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json",
+      "phase": "5.2",
+      "present": true,
+      "sha256": "sha256:82adb495d81a4bf2691f57909864439e097f55b1315698d778682d06d502af33",
+      "status": "candidate_pass"
+    },
+    {
+      "commit": "ec3e3af020cc37f5bddd39dba2e445895e015f9e",
+      "contract_id": "PFI-V025-STAGE5-PHASE53-MODEL-VALIDATION",
+      "path": "PFI/reports/pfi_v025/stage_5/phase_5_3/evidence.json",
+      "phase": "5.3",
+      "present": true,
+      "sha256": "sha256:a5e8225145ec482e3df3a4d9a4d50b26daaf7fa2d5d6ca67494b01371b2ed03e",
+      "status": "candidate_pass"
+    }
+  ],
+  "review_base": "ec3e3af020cc37f5bddd39dba2e445895e015f9e",
+  "schema": "PFIV025Stage5PhaseCommitBindingV1",
+  "stage": 5,
+  "status": "pass",
+  "task_count": 12,
+  "version": "v0.2.5"
+}

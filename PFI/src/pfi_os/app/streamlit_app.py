@@ -938,6 +938,8 @@ def run_backtest_for_strategy(
 
 
 def _pfi_ui_v2_enabled() -> bool:
+    if os.environ.get("PFI_STAGE1_CANDIDATE_MODE") == "1":
+        return True
     env_enabled = os.environ.get("PFI_UI_V2", "1") != "0"
     if not env_enabled:
         return False
@@ -947,15 +949,75 @@ def _pfi_ui_v2_enabled() -> bool:
         return True
 
 
-def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
+def build_stage1_candidate_read_model_status() -> dict[str, object]:
+    from pfi_v02.stage_v021_runtime_api import (
+        build_v025_stage1_candidate_read_model_status,
+    )
+
+    return build_v025_stage1_candidate_read_model_status()
+
+
+def build_stage1_candidate_home_summary() -> dict[str, object]:
+    """Return a deterministic empty shell model without reading canonical data."""
+
+    return {
+        "schema": "PFIOSHomeSummaryV1",
+        "generated_at": "",
+        "as_of": "",
+        "source_registry": {
+            "schema": "PFIOSSourceRegistrySummaryV1",
+            "source_count": 0,
+            "domain_counts": {},
+            "freshness_counts": {},
+            "rows": [],
+            "private_uri_policy": "隔离候选不读取私有来源。",
+            "truth_role": "isolated_empty",
+        },
+        "metric_cards": [],
+        "decision_rows": [],
+        "evidence_drawer": {},
+        "stage6_dashboard": {},
+        "stage5_dashboard": {},
+        "stage4_dashboard": {},
+        "stage3_dashboard": {},
+        "workflow_runtime": {},
+        "alipay_import_summary": {
+            "schema": "PFIAlipayRealImportSummaryV1",
+            "source_id": "alipay_daily",
+            "status": "隔离验收未读取",
+            "file_count": 0,
+            "valid_file_count": 0,
+            "transaction_count": 0,
+            "review_count": 0,
+            "date_start": "",
+            "date_end": "",
+            "search_tokens": [],
+            "batch": None,
+        },
+        "read_model": "isolated_empty",
+        "cache_policy": "候选使用非持久复合缓存键。",
+        "safety_boundary": "隔离、只读、空数据候选。",
+    }
+
+
+def _pfi_web_shell_html(
+    home_summary: dict | None = None,
+    *,
+    read_model_status: dict | None = None,
+) -> str:
+    official_candidate = os.environ.get("PFI_STAGE1_CANDIDATE_MODE") == "1"
     try:
-        from pfi_v02.stage_v021_runtime_api import ensure_v021_runtime_api_server
+        from pfi_v02.stage_v021_runtime_api import (
+            build_v025_stage7_operational_read_model_status,
+            ensure_v021_runtime_api_server,
+            v021_runtime_api_client_token,
+        )
 
         runtime_api_base_url = ensure_v021_runtime_api_server()
-    except Exception:
-        runtime_api_base_url = "http://127.0.0.1:8766"
+        runtime_api_auth_token = v021_runtime_api_client_token()
+    except Exception as exc:
+        raise RuntimeError("PFI runtime API is unavailable") from exc
     from pfi_v02.stage_v024_stage2_entry_consistency import build_v024_stage2_entry_runtime_metadata
-    from pfi_os.application.read_model_status import build_v024_read_model_status
 
     shell_path = ROOT / "web" / "index.html"
     css_path = ROOT / "web" / "styles" / "tokens.css"
@@ -963,6 +1025,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     version_path = ROOT / "web" / "app" / "version.js"
     entry_audit_path = ROOT / "web" / "app" / "entry_audit.js"
     navigation_path = ROOT / "web" / "app" / "navigation.js"
+    stage7_lineage_path = ROOT / "web" / "app" / "pages" / "stage7Lineage.js"
     routes_path = ROOT / "web" / "app" / "routes.js"
     data_state_path = ROOT / "web" / "app" / "data_state.js"
     stage4_pages_path = ROOT / "web" / "app" / "pages" / "stage4Subpages.js"
@@ -973,11 +1036,20 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     stage7_report_schema_path = ROOT / "reports" / "pfi_v024" / "stage_7" / "phase_7_1" / "report_schema.json"
     js_path = ROOT / "web" / "app" / "shell.js"
     shell_html = shell_path.read_text(encoding="utf-8")
+    canonical_script_refs = re.findall(r'<script\s+src="\./([^"?#]+)"', shell_html)
+    inline_script_sources: dict[str, str] = {}
+    for relative in canonical_script_refs:
+        candidate = (ROOT / "web" / relative).resolve()
+        web_root = (ROOT / "web").resolve()
+        if not candidate.is_file() or (candidate != web_root and web_root not in candidate.parents):
+            raise RuntimeError("PFI canonical frontend script is unavailable")
+        inline_script_sources[relative] = candidate.read_text(encoding="utf-8")
     css = css_path.read_text(encoding="utf-8")
     legacy_css = legacy_css_path.read_text(encoding="utf-8")
     version_js = version_path.read_text(encoding="utf-8")
     entry_audit_js = entry_audit_path.read_text(encoding="utf-8")
     navigation_js = navigation_path.read_text(encoding="utf-8")
+    stage7_lineage_js = stage7_lineage_path.read_text(encoding="utf-8")
     routes_js = routes_path.read_text(encoding="utf-8")
     data_state_js = data_state_path.read_text(encoding="utf-8")
     stage4_pages_js = stage4_pages_path.read_text(encoding="utf-8")
@@ -986,21 +1058,44 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     home_page_js = home_page_path.read_text(encoding="utf-8")
     reports_page_js = reports_page_path.read_text(encoding="utf-8")
     js = js_path.read_text(encoding="utf-8")
-    summary_payload = home_summary if isinstance(home_summary, dict) else empty_homepage_summary()
+    if isinstance(home_summary, dict):
+        summary_payload = home_summary
+    elif official_candidate:
+        summary_payload = build_stage1_candidate_home_summary()
+    else:
+        summary_payload = empty_homepage_summary()
     summary_json = json.dumps(summary_payload, ensure_ascii=False).replace("</", "<\\/")
-    read_model_status_payload = build_v024_read_model_status(ROOT)
+    read_model_status_payload = (
+        dict(read_model_status)
+        if isinstance(read_model_status, dict)
+        else (
+            build_stage1_candidate_read_model_status()
+            if official_candidate
+            else build_v025_stage7_operational_read_model_status()
+        )
+    )
     read_model_status_json = json.dumps(read_model_status_payload, ensure_ascii=False).replace("</", "<\\/")
-    if stage7_report_schema_path.exists():
+    if official_candidate:
+        stage7_report_schema_payload = {}
+    elif stage7_report_schema_path.exists():
         stage7_report_schema_payload = json.loads(stage7_report_schema_path.read_text(encoding="utf-8"))
     else:
         stage7_report_schema_payload = {}
     stage7_report_schema_json = json.dumps(stage7_report_schema_payload, ensure_ascii=False).replace("</", "<\\/")
     runtime_payload = {
-        "apiBaseUrl": runtime_api_base_url,
-        "readModelStatusApi": True,
-        "projectRoot": str(ROOT),
         **build_v024_stage2_entry_runtime_metadata(ROOT),
+        "apiBaseUrl": runtime_api_base_url,
+        "apiAuthToken": runtime_api_auth_token,
+        "readModelStatusApi": True,
+        "runtimeApiEnabled": True,
+        "releaseManifestApi": True,
+        "releaseCachePolicyApi": True,
+        "projectRoot": str(ROOT),
+        "stage1OfficialCandidate": official_candidate,
+        "candidateDataMode": "isolated_empty" if official_candidate else "canonical",
     }
+    if official_candidate:
+        runtime_payload["projectRoot"] = ""
     runtime_json = json.dumps(runtime_payload, ensure_ascii=False).replace("</", "<\\/")
     shell_html = shell_html.replace(
         '<link rel="stylesheet" href="./styles/tokens.css" />',
@@ -1047,6 +1142,10 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
         f'<script data-pfi-source="web/app/navigation.js">{navigation_js}</script>',
     )
     shell_html = shell_html.replace(
+        '<script src="./app/pages/stage7Lineage.js"></script>',
+        f'<script data-pfi-source="web/app/pages/stage7Lineage.js">{stage7_lineage_js}</script>',
+    )
+    shell_html = shell_html.replace(
         '<script src="./app/routes.js"></script>',
         f'<script data-pfi-source="web/app/routes.js">{routes_js}</script>',
     )
@@ -1078,6 +1177,13 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
         '<script src="./app/shell.js"></script>',
         f'<script data-pfi-source="web/app/shell.js">{js}</script>',
     )
+    for relative, source in inline_script_sources.items():
+        shell_html = shell_html.replace(
+            f'<script src="./{relative}"></script>',
+            f'<script data-pfi-source="web/{relative}">{source}</script>',
+        )
+    if '<script src="./' in shell_html:
+        raise RuntimeError("PFI canonical frontend script was not embedded")
     return shell_html
 
 
@@ -1370,14 +1476,24 @@ def _pfi_segmented_control(label: str, options: list[str], *, default: str, key:
 
 def render_pfi_ui_v2_shell() -> None:
     _render_pfi_native_shell_style()
-    store = OperationalStore()
-    try:
-        store.initialize()
-        ingest_command_center_cache(store, project_root=ROOT)
-        home_summary = build_homepage_summary(store)
-    except Exception:
-        home_summary = empty_homepage_summary()
-    _render_html_frame(_pfi_web_shell_html(home_summary), height=1120, scrolling=True)
+    official_candidate = os.environ.get("PFI_STAGE1_CANDIDATE_MODE") == "1"
+    if official_candidate:
+        home_summary = build_stage1_candidate_home_summary()
+        read_model_status = build_stage1_candidate_read_model_status()
+    else:
+        store = OperationalStore()
+        try:
+            store.initialize()
+            ingest_command_center_cache(store, project_root=ROOT)
+            home_summary = build_homepage_summary(store)
+        except Exception:
+            home_summary = empty_homepage_summary()
+        read_model_status = None
+    _render_html_frame(
+        _pfi_web_shell_html(home_summary, read_model_status=read_model_status),
+        height=1120,
+        scrolling=True,
+    )
 
 
 def main() -> None:

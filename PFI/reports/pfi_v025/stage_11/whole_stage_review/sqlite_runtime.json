@@ -1,0 +1,22 @@
+{
+  "decision": "wal_rejected_use_delete_rollback_journal",
+  "effective_journal_mode": "DELETE",
+  "fix_versions": [
+    "3.44.6",
+    "3.50.7",
+    "3.51.3"
+  ],
+  "journal_default": "DELETE",
+  "official_sources": [
+    "https://sqlite.org/wal.html",
+    "https://sqlite.org/releaselog/3_51_3.html"
+  ],
+  "risk_id": "sqlite-wal-reset-2026-03",
+  "schema": "PFIV025Stage11WholeReviewSQLiteRuntimeV1",
+  "source_id": "2025-07-30 19:33:53 4d8adfb30e03f9cf27f800a2c1ba3c48fb4ca1b08b0f5ed59a4d5ecbf45e20a3",
+  "status": "pass",
+  "threadsafety": 3,
+  "version": "3.50.4",
+  "wal_requested": false,
+  "wal_safe": false
+}

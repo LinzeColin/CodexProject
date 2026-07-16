@@ -1,0 +1,42 @@
+{
+  "after": {
+    "build_version": "20260712.1",
+    "bundle_identifier": "com.linze.pfi.launcher",
+    "bundle_tree_sha256": "sha256:a41a7386253ac1b69d4f2ec09894e3e4daaa74103fbb0ed7d33993279a6eb443",
+    "codesign_valid": true,
+    "executable_sha256": "sha256:a5d87915df40b55e1333d939b6cf1f28c9a9f333867fd70eb864c27744ca922b",
+    "kind": "app_bundle",
+    "project_binding_matches": true,
+    "project_binding_present": true,
+    "project_binding_sha256": "sha256:88dfdbcd8549cfb09c24264106a8d9090a350839bf3ed708a57ecd23de2b4c2b",
+    "short_version": "0.2.5"
+  },
+  "before": {
+    "build_version": "20260712.1",
+    "bundle_identifier": "com.linze.pfi.launcher",
+    "bundle_tree_sha256": "sha256:a41a7386253ac1b69d4f2ec09894e3e4daaa74103fbb0ed7d33993279a6eb443",
+    "codesign_valid": true,
+    "executable_sha256": "sha256:a5d87915df40b55e1333d939b6cf1f28c9a9f333867fd70eb864c27744ca922b",
+    "kind": "app_bundle",
+    "project_binding_matches": true,
+    "project_binding_present": true,
+    "project_binding_sha256": "sha256:88dfdbcd8549cfb09c24264106a8d9090a350839bf3ed708a57ecd23de2b4c2b",
+    "short_version": "0.2.5"
+  },
+  "canonical_location": "applications_pfi_app",
+  "contains_private_values": false,
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "install_performed_in_phase": true,
+  "install_performed_this_invocation": false,
+  "installation_mode": "cli_atomic_replace",
+  "launchservices_used": false,
+  "open_command_used": false,
+  "restored_after_failure": false,
+  "rollback_archive_retained": true,
+  "rollback_archive_sha256": "sha256:2fc9f41bfd93df6cc9fd5226bc9dc733b0164d8a4ea8424e9efae12cd9cc8290",
+  "same_build_as_release_manifest": true,
+  "schema": "PFIV025Stage12Phase122CLIAppInstallV1",
+  "status": "pass",
+  "user_no_finder_override_sha256": "091fff69dad4a06a7002de39235c506732f8456bcd176f02c2b45eb1fb84931e"
+}

@@ -1,0 +1,37 @@
+{
+  "automatic_trading_allowed": false,
+  "browser_check_count": 16,
+  "browser_passed_check_count": 16,
+  "checks": {
+    "broken_event_ledger_rejected_before_render": true,
+    "delta_only_persisted": true,
+    "four_components_and_reports_visible": true,
+    "four_downloads_match_manifest": true,
+    "four_export_assets_verified": true,
+    "legacy_full_view_model_rejected_before_render": true,
+    "loopback_only": true,
+    "no_browser_errors": true,
+    "no_public_financial_amount_or_private_path": true,
+    "no_trade_or_stage10_capability": true,
+    "phase92_dom_and_accessibility_pass": true,
+    "phase93_dom_and_accessibility_pass": true,
+    "reviewed_analysis_contract_bound": true,
+    "same_snapshot_across_formats": true,
+    "tampered_identity_and_extra_field_fail_closed": true,
+    "valid_delta_restored_after_reload": true
+  },
+  "decision_pack_hash": "sha256:b1cf69e7ebe48b3c8fa1003d219c3bf2ebf4a8adcb8cb6873c3216326e0cc3d6",
+  "export_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760",
+  "persistence_summary": {
+    "broken_event_ledger_rejected": true,
+    "delta_only_persisted": true,
+    "legacy_full_payload_rejected": true,
+    "tampered_identity_failed_closed": true,
+    "valid_delta_restored": true
+  },
+  "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "schema": "PFIV025Stage9WholeReviewDecisionReviewTraceV1",
+  "source_analysis_pack_hash": "sha256:9bd7c8a32fd25d47c7658d7cbf5ddbc132c1cebab187ab9a500c178a1882c6ae",
+  "status": "pass",
+  "trade_execution_available": false
+}

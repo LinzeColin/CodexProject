@@ -1,0 +1,30 @@
+{
+  "schema": "PFIV025FxPolicyV1",
+  "version": "v0.2.5",
+  "phase": "2.2",
+  "source_id": "SRC-FX-SNAPSHOT",
+  "timezone": "Australia/Sydney",
+  "cutoff_local": "06:00:00",
+  "pair": "AUD/CNY",
+  "base_currency": "AUD",
+  "quote_currency": "CNY",
+  "direction": "AUD_TO_CNY",
+  "meaning": "1 AUD = rate CNY",
+  "ordinary_runtime_network_allowed": false,
+  "explicit_network_refresh_in_v025": false,
+  "holiday_policy": {
+    "weekend_closed_iso_weekdays": [6, 7],
+    "source": "explicit_source_closed_dates",
+    "fallback": "previous_open_business_date",
+    "implicit_holiday_inference": false
+  },
+  "snapshot_policy": {
+    "hash_scheme": "sha256-canonical-json-excluding-source-hash-v1",
+    "current_definition": "effective_business_date_equals_expected_effective_business_date",
+    "stale_definition": "effective_business_date_before_expected_effective_business_date",
+    "future_date_policy": "invalid"
+  },
+  "production_source_status": "not_loaded",
+  "production_rate": null,
+  "legacy_snapshot_disposition": "reference_only_not_bound_to_v025_canonical_source"
+}

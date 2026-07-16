@@ -1,0 +1,24 @@
+{
+  "contains_private_values": false,
+  "finder_used": false,
+  "free_bytes_after_pressure_release": 24535040,
+  "free_bytes_before_pressure": 24539136,
+  "free_bytes_under_pressure": 786432,
+  "gui_file_operations_used": false,
+  "host_volume_filled": false,
+  "launchservices_used": false,
+  "partial_backup_removed": true,
+  "real_financial_data_used": false,
+  "recovery_backup_integrity_check": [
+    "ok"
+  ],
+  "recovery_backup_row_count": 1,
+  "schema": "PFIV025Stage12Phase122DiskPressureV1",
+  "sqlite_error_code": 13,
+  "sqlite_error_name": "SQLITE_FULL",
+  "sqlite_full_observed": true,
+  "status": "pass",
+  "technical_nonfinancial_payload": true,
+  "volume_capacity_bytes": 25124864,
+  "volume_kind": "temporary_hfs_sparse_image_nobrowse"
+}

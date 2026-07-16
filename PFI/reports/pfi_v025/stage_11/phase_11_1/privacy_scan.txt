@@ -1,0 +1,13 @@
+PFI v0.2.5 Stage 11 Phase 11.1 privacy scan
+absolute_home_path: 0
+private_key_header: 0
+email_identity: 0
+canonical_private_uri: 0
+total_forbidden_match_count: 0
+canonical_private_database_used: false
+real_financial_rows_read: false
+financial_values_emitted: 0
+finder_used: false
+launchservices_used: false
+gui_file_operations_used: false
+status: pass

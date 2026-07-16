@@ -1,0 +1,67 @@
+{
+  "all_exit_zero": true,
+  "candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "command_count": 7,
+  "commands": [
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_cache_policy.py PFI/tests/test_v025_stage12_release_gates.py PFI/tests/test_v025_stage12_target_mac_uat.py PFI/tests/test_v025_stage12_release_freeze.py PFI/tests/test_v025_stage12_whole_review_remediation.py",
+      "command_id": "focused_stage12",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/remediation/verification_focused_stage12.log",
+      "output_sha256": "sha256:7460163047a3c8ef12daa8c6ab051d12faafe34c63bb3a40fc640bb02c2d9ffb",
+      "summary": "pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage6_navigation_contract.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_crash_recovery.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_distribution_boundary.py",
+      "command_id": "selected_adjacent_regression",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/remediation/verification_selected_adjacent_regression.log",
+      "output_sha256": "sha256:78518aa4e53ea63e387fe6cb663c08d9f74e9029b4639e5374c6705b2cdb9310",
+      "summary": "pass"
+    },
+    {
+      "command": "node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs",
+      "command_id": "node_cache_policy",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/remediation/verification_node_cache_policy.log",
+      "output_sha256": "sha256:0180e0f521b070b08acb9239247846ef17b4f8eb641848cf579b6f95825d9001",
+      "summary": "pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/machine/tools/check_dual_plane_ci.py --root PFI --projects . --require-projects && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B scripts/lean_governance.py check-render --project PFI && git diff --check",
+      "command_id": "release_and_dual_plane",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/remediation/verification_release_and_dual_plane.log",
+      "output_sha256": "sha256:3b5f9345355df87fbd8d62cde377aaa9853f0fb03274b6e0ae61bb023fdde73d",
+      "summary": "pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI",
+      "command_id": "complete_overlay_governance_1",
+      "exit_code": 0,
+      "summary": "warnings: 0"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI",
+      "command_id": "complete_overlay_governance_2",
+      "exit_code": 0,
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    },
+    {
+      "command": "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI",
+      "command_id": "complete_overlay_governance_3",
+      "exit_code": 0,
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    }
+  ],
+  "entry_audit_status": "pass",
+  "exact_binding_status": "pass",
+  "external_network_performed": false,
+  "finder_used": false,
+  "fresh_real_e2e_status": "pass",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "release_identity_status": "pass",
+  "schema": "PFIV025Stage12WholeReviewRemediationVerificationV1",
+  "status": "pass"
+}

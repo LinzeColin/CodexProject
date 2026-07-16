@@ -1,0 +1,21 @@
+Phase: V025-S3-P3.3
+Acceptance: ACC-PFI-V025-S3-P33-RECONCILIATION
+Observed at: 2026-07-14T10:53:39Z
+Input mode: immutable_git_object_snapshot
+Input records: 8815
+RED: 2 collection errors, missing pfi_os.application.stage3_reconciliation (expected)
+Intermediate GREEN: 8 passed, 3 artifact tests deselected
+Final Phase 3.3 focused validation: 11 passed
+Phase 3.2 compatibility: 13 passed, 1 historical-state test deselected
+Phase 3.1 compatibility: 15 passed, 1 historical-state test deselected
+Stage 2 compatibility: 69 passed, 3 historical-state tests deselected
+In-memory compile/data parse/privacy scan: pass
+Full-checkout shadow project governance: errors 0, warnings 0
+Full-checkout shadow governance semantic sync: errors 0, warnings 0
+Full-checkout shadow renderer: drift 0, reference issues 0
+Stage 3 whole-stage review: not started
+Finder used: false
+Source mutation: false
+Database changed: false
+GitHub push: false
+Canonical App install: false

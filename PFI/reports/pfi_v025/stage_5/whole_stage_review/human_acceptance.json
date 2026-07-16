@@ -1,0 +1,22 @@
+{
+  "acceptance_statement": "用户在最终验收前已授权本轮持续推进；本文件明确接受 PFI v0.2.5 Stage 5 整阶段审查结果及其已披露限制，仅授权进入 Stage 6，不代表 Production Acceptance。",
+  "accepted_at": "2026-07-14T16:09:38Z",
+  "accepted_scope": [
+    "PFI v0.2.5 Stage 5 的 12 个 Roadmap Task 与三笔 Phase 提交",
+    "Stage 5 公式、财务模型、真实验证、正式三页面绑定与隐私证据",
+    "Stage 5 accepted_for_transition；仅授权下一轮进入 Stage 6 Phase 6.1"
+  ],
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:e11493265658ed4a491e164e45f71a9ec8aa70886d6209fd2c27f428a7be68c3",
+  "git_commit": "ec3e3af020cc37f5bddd39dba2e445895e015f9e",
+  "known_defects": [
+    "1,936 条 review queue 记录继续排除在发布指标之外，必须完成人工复核后才可发布。",
+    "FORM-PFI-016 与 FORM-PFI-017 缺真实模型参数，FORM-PFI-018 的真实证据链不完整，均保持 blocked。",
+    "FORM-PFI-020 尚未完成真实 out-of-sample accuracy 验证，保持 blocked。",
+    "Stage 6–12、GitHub main push、canonical PFI.app reinstall 与 Production Acceptance 均不在本验收范围。"
+  ],
+  "product": "PFI",
+  "stage": 5,
+  "user_confirmation_reference": "thread_pre_final_acceptance_blanket_authorization_and_active_goal_continuation",
+  "version": "v0.2.5"
+}

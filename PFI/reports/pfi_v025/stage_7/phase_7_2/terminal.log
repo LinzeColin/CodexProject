@@ -1,0 +1,47 @@
+PFI v0.2.5 Stage 7 Phase 7.2 terminal evidence
+generated_at=2026-07-15T06:19:36+10:00
+cwd=$WORKTREE
+git_root=$WORKTREE
+branch=codex/pfi
+upstream=origin/main
+implementation_base=a81175771a5186605b506a77ea4e9e852c739e2d
+
+node --check PFI/web/tests/v025/stage7_holding_settings_cdp.mjs
+exit=0
+
+python AST parse: holding store, holding settings use case, browser harness, runtime API
+exit=0
+
+pytest -q PFI/tests/test_v025_stage7_holding_persistence.py
+result=6 passed
+exit=0
+
+pytest -q release identity + whole-review compatibility + Phase 7.2
+result=initial focused compatibility 23 passed, 2 dependency deprecation warnings; final current-HEAD regression 66 passed, 2 dependency deprecation warnings
+exit=0
+
+node --test Stage 1 release identity and cache policy
+result=28 passed
+exit=0
+
+python PFI/web/tests/v025/stage7_holding_settings_browser.py
+result=final current-HEAD status pass; browser first-run checks=13; restart/reopen checks=12; DB before/after expected=true; integrity=true; finder_used=false
+exit=0
+
+visual evidence review through local image tool, without Finder
+result=holding/settings/restart screenshots readable and redacted
+exit=0
+
+lean_governance render --project PFI --write
+result=3 human entries updated
+exit=0
+
+lean_governance check-render --project PFI
+result=drift_count 0; reference_issue_count 0
+exit=0
+
+complete /tmp HEAD archive plus 53-file overlay: lean_governance validate --project PFI --mode required --semantic --drift-report
+result=CodexProject governance validation; root checked; projects checked PFI; errors 0; warnings 0
+exit=0
+
+privacy_boundary=finder false; external network false; real financial data read/mutated false; push false; app install false

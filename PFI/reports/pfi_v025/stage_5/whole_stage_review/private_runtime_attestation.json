@@ -1,0 +1,28 @@
+{
+  "actual_report_render_binding_completed": true,
+  "actual_ui_render_binding_completed": true,
+  "component_count": 4,
+  "component_statuses": {
+    "investment_allocation_amount_cny": "ready",
+    "investment_funding_outflow_cny": "ready",
+    "living_consumption_cny": "ready",
+    "total_consumption_outflow_cny": "ready"
+  },
+  "contains_private_values": false,
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "financial_values_verified_in_memory": true,
+  "input_record_count": 8815,
+  "published_record_count": 6879,
+  "review_queue_record_count": 1936,
+  "schema": "PFIV025Stage5PrivateRuntimeAttestationV1",
+  "silent_drop_count": 0,
+  "source_snapshot_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+  "status": "pass",
+  "surface_ids": [
+    "homepage",
+    "consumption_page",
+    "report"
+  ],
+  "surface_payload_hash_count": 1
+}

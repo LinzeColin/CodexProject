@@ -1,0 +1,15 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE9-WHOLE-REVIEW",
+  "app_install_allowed_in_this_run": false,
+  "finder_or_gui_file_operations_allowed": false,
+  "historical_phase_evidence_immutable": true,
+  "push_allowed_in_this_run": false,
+  "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "risk_tier": "T3_FINANCIAL_MODEL_REPORT_DECISION_ACCEPTANCE",
+  "schema": "PFIV025Stage9WholeReviewContractV1",
+  "stage": 9,
+  "stage_10_implementation_allowed": false,
+  "task_id": "STAGE9-WHOLE-REVIEW",
+  "unique_acceptance_target": true,
+  "version": "v0.2.5"
+}

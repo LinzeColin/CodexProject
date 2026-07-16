@@ -1,0 +1,49 @@
+{
+  "contains_financial_values": false,
+  "contains_private_paths": false,
+  "counts": {
+    "durable_job_events": 8,
+    "durable_job_logs": 8,
+    "durable_job_spans": 8,
+    "durable_job_trace_contexts": 1,
+    "durable_jobs": 1
+  },
+  "event_types": [
+    "queued",
+    "claimed",
+    "lease_expired_requeued",
+    "claimed",
+    "progressed",
+    "progressed",
+    "progressed",
+    "succeeded"
+  ],
+  "foreign_key_check": "pass",
+  "foreign_key_issue_count": 0,
+  "integrity_check": "ok",
+  "jobs": [
+    {
+      "attempt_count": 2,
+      "job_id": "job-dad9d8424fe60452ec8d251e4ddbdbf8097e6685e7f171bff51a70afcffeec1e",
+      "job_type": "cache.refresh",
+      "progress_completed": 3,
+      "progress_step": "cache.runtime_ready",
+      "progress_total": 3,
+      "revision": 7,
+      "status": "succeeded"
+    }
+  ],
+  "journal_mode": "DELETE",
+  "schema": "PFIV025Stage10Phase103DatabaseEvidenceV1",
+  "status": "pass",
+  "trace_rows": [
+    {
+      "external_network_calls": 0,
+      "job_id": "job-dad9d8424fe60452ec8d251e4ddbdbf8097e6685e7f171bff51a70afcffeec1e",
+      "log_count": 8,
+      "span_count": 8,
+      "trace_id": "ef0267c6a06715842ce2a348ef426b14"
+    }
+  ],
+  "wal_enabled": false
+}

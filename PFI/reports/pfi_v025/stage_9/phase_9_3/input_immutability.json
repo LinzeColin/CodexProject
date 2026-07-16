@@ -1,0 +1,21 @@
+{
+  "after": {
+    "config/reports/v025_phase92_analysis_snapshot.json": "sha256:fef7a73e0bd272b055313884d512d634eaa5188913a6c88833b6060a2a242a71",
+    "docs/pfi_v025/stage_0/interim_stage_transition_authorization.json": "sha256:368c90a5dd949bc09807c604cea23d05de476fe69e64ad723ced49bab3b5e3ac",
+    "reports/pfi_v025/stage_9/phase_9_1/data_quality_report.json": "sha256:4e9b22b5ec10d3990d5192dfb13feb24760f9c44856ecb49107c03455c632fde"
+  },
+  "before": {
+    "config/reports/v025_phase92_analysis_snapshot.json": "sha256:fef7a73e0bd272b055313884d512d634eaa5188913a6c88833b6060a2a242a71",
+    "docs/pfi_v025/stage_0/interim_stage_transition_authorization.json": "sha256:368c90a5dd949bc09807c604cea23d05de476fe69e64ad723ced49bab3b5e3ac",
+    "reports/pfi_v025/stage_9/phase_9_1/data_quality_report.json": "sha256:4e9b22b5ec10d3990d5192dfb13feb24760f9c44856ecb49107c03455c632fde"
+  },
+  "database_changed": false,
+  "database_read": false,
+  "decision_core_current_input_binding": true,
+  "embedded_ui_pack_binding": true,
+  "product_commit": "168666305c874d91ab8fd45e9f925e49928e7e63",
+  "real_financial_rows_read": false,
+  "real_financial_source_mutated": false,
+  "schema": "PFIV025Stage9Phase93InputImmutabilityV1",
+  "status": "pass"
+}

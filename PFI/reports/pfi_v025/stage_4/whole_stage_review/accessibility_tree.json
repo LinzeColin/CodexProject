@@ -1,0 +1,62 @@
+{
+  "false_zero_text_count": 0,
+  "language": "zh-CN",
+  "main_landmark_count": 1,
+  "metric_article_count": 7,
+  "metric_region_label": "核心财务指标状态",
+  "missing_state_explanation_count": 7,
+  "nodes": [
+    {
+      "description": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "name": "net_worth_cny",
+      "role": "article",
+      "status": "not_loaded",
+      "value": null
+    },
+    {
+      "description": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "name": "account_assets_cny",
+      "role": "article",
+      "status": "not_loaded",
+      "value": null
+    },
+    {
+      "description": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "name": "cash_balance_cny",
+      "role": "article",
+      "status": "not_loaded",
+      "value": null
+    },
+    {
+      "description": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "name": "liabilities_cny",
+      "role": "article",
+      "status": "not_loaded",
+      "value": null
+    },
+    {
+      "description": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "name": "investment_market_value_cny",
+      "role": "article",
+      "status": "not_loaded",
+      "value": null
+    },
+    {
+      "description": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "name": "investment_cost_basis_cny",
+      "role": "article",
+      "status": "not_loaded",
+      "value": null
+    },
+    {
+      "description": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "name": "investment_unrealized_pnl_cny",
+      "role": "article",
+      "status": "not_loaded",
+      "value": null
+    }
+  ],
+  "schema": "PFIV025Stage4WholeReviewAccessibilityTreeV1",
+  "source": "semantic projection of the metric cards captured by local Chrome headless",
+  "status": "pass"
+}

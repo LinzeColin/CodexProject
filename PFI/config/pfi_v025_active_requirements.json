@@ -1,0 +1,472 @@
+{
+  "schema": "PFIV025ActiveRequirementsV1",
+  "contract_id": "PFI-V025-STAGE0-PHASE02-ACTIVE-REQUIREMENTS",
+  "version": "v0.2.5",
+  "authority_order": [
+    "latest_explicit_user_decision",
+    "pinned_v025_task_pack_and_roadmap",
+    "verified_current_repository_runtime_app_database_test_evidence",
+    "non_conflicting_classified_history",
+    "historical_completion_claims_have_no_independent_authority"
+  ],
+  "source_hashes": {
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "task_pack_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+  },
+  "official_nav": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "navigation_policy": {
+    "target_primary_routes": {
+      "首页总览": "/overview",
+      "账户与资产": "/accounts",
+      "账本流水": "/ledger",
+      "投资管理": "/investment",
+      "消费管理": "/consumption",
+      "数据源与上传": "/data",
+      "建议与复盘": "/review",
+      "报告与洞察": "/reports",
+      "市场与研究": "/market-research",
+      "设置": "/settings"
+    },
+    "target_compatibility_aliases": {
+      "/home": "/overview",
+      "/market": "/market-research/market",
+      "/research": "/market-research/research",
+      "/holdings": "/investment/holdings",
+      "/strategy-lab": "/market-research/strategy-lab",
+      "/investment/strategy-lab": "/market-research/strategy-lab",
+      "/data-system": "/settings/data-system"
+    },
+    "verified_current_primary_routes": {
+      "首页总览": "/home",
+      "账户与资产": "/accounts",
+      "账本流水": "/ledger",
+      "投资管理": "/investment",
+      "消费管理": "/consumption",
+      "数据源与上传": "/sources-upload",
+      "建议与复盘": "/review",
+      "报告与洞察": "/reports",
+      "市场与研究": "/market-research",
+      "设置": "/settings"
+    },
+    "verified_current_declared_aliases": {
+      "/home/today": "/home",
+      "/market/watch": "/market-research?tab=market",
+      "/market/research": "/market-research?tab=research",
+      "/investment/holdings": "/investment?tab=holdings",
+      "/market/lab": "/market-research/strategy-lab",
+      "/settings/data": "/settings?tab=data-system"
+    },
+    "verified_current_shell_compatibility_inputs": {
+      "/": "/home",
+      "/market": "/market-research?tab=market",
+      "/research": "/market-research?tab=research",
+      "/holdings": "/investment?tab=holdings",
+      "/strategy-lab": "/market-research/strategy-lab",
+      "/data-system": "/settings?tab=data-system",
+      "/investment?tab=market": "/market-research?tab=market",
+      "/investment?tab=research": "/market-research?tab=research",
+      "/investment/strategy-lab": "/market-research/strategy-lab"
+    },
+    "verified_current_workspace_bindings": [
+      "home",
+      "accounts",
+      "ledger",
+      "investment",
+      "consumption",
+      "sync",
+      "recommendations",
+      "insights",
+      "market_research",
+      "settings"
+    ],
+    "current_gap_status": "blocked_pending_S6-P1",
+    "resolution_tasks": [
+      "S6-P1-T1",
+      "S6-P1-T2",
+      "S6-P1-T3"
+    ]
+  },
+  "product_boundaries": {
+    "pfi_only": true,
+    "alpha_read_only": true,
+    "no_ralpha": true,
+    "exclude_serenity_alipay": true,
+    "single_active_product": true,
+    "single_active_ui": true,
+    "alpha_context_fields": [
+      "net_worth_state",
+      "investable_cash_state",
+      "cashflow_pressure",
+      "asset_allocation",
+      "risk_budget",
+      "investment_behavior_tags",
+      "consumption_pressure_summary",
+      "data_freshness"
+    ],
+    "alpha_context_metadata_fields": [
+      "schema_version",
+      "as_of",
+      "source_or_read_model_hash",
+      "privacy_classification"
+    ],
+    "alpha_writeback_allowed": false,
+    "pfi_os_second_product_allowed": false,
+    "cloudflare_private_financial_reads_allowed": false,
+    "qbvs_quantlab_primary_navigation_allowed": false,
+    "live_trading_or_payment_execution_authorized": false
+  },
+  "experience_policy": {
+    "visual_direction": {
+      "brightness": "bright",
+      "quality": "high",
+      "restraint": "restrained",
+      "language": "zh-CN"
+    },
+    "distinct_secondary_page_semantics": true,
+    "real_url_history_deeplink_refresh": true,
+    "focus_and_error_states": true,
+    "settings_only_feedback_controls": true,
+    "motion_user_disable_supported": true,
+    "haptics_user_disable_supported": true,
+    "unsupported_feedback_silently_degrades": true,
+    "reduced_motion_respected": true
+  },
+  "data_policy": {
+    "real_financial_data_only": true,
+    "no_financial_fallback": true,
+    "missing_real_input_results": [
+      "blocked",
+      "not_run"
+    ],
+    "no_non_ready_financial_zero": true,
+    "metric_required_provenance": [
+      "source",
+      "coverage",
+      "as_of",
+      "formula",
+      "parameter_hash",
+      "read_model_hash"
+    ],
+    "private_values_in_git_allowed": false,
+    "private_values_in_evidence_allowed": false,
+    "metric_states": [
+      "ready",
+      "confirmed_zero",
+      "partial_coverage",
+      "source_missing",
+      "not_loaded",
+      "path_error",
+      "parse_failed",
+      "outdated_snapshot",
+      "permission_denied",
+      "calculation_failed",
+      "reconciliation_failed",
+      "valuation_missing",
+      "filtered_empty"
+    ],
+    "confirmed_zero_required_evidence": [
+      "source",
+      "record_count",
+      "coverage",
+      "as_of",
+      "formula",
+      "read_model_hash",
+      "confidence_or_coverage_evidence"
+    ]
+  },
+  "financial_policy": {
+    "primary_currency": "CNY",
+    "aud_cny_direction": "1 AUD = X CNY",
+    "example_rate": 4.81,
+    "example_only": true,
+    "production_hardcode_allowed": false,
+    "fx_refresh_local_time": "06:00",
+    "fx_timezone": "Australia/Sydney",
+    "ordinary_run_network_dependency": false,
+    "prior_valid_publication_day_conditions": [
+      "before_06_00",
+      "weekend",
+      "NSW_holiday"
+    ],
+    "outflow_views": [
+      "消费总流出金额（用户定义活动口径）",
+      "生活消费金额",
+      "投资资金流出/配置金额"
+    ],
+    "outflow_views_share_sources": true,
+    "investment_funding_and_purchases_may_enter_total_outflow": true,
+    "investment_funding_and_purchases_are_living_consumption": false,
+    "investment_funding_and_purchases_are_net_worth_loss": false,
+    "double_count_controls": [
+      "source_record_deduplication",
+      "economic_event_lineage",
+      "formula_rules"
+    ]
+  },
+  "retained_business_rules": {
+    "source_account_roles": {
+      "hardcoded": false,
+      "multiple_roles": true,
+      "effective_periods": true
+    },
+    "category_limits": {
+      "l1_max": 12,
+      "l2_per_l1_max": 5,
+      "l2_total_max": 50,
+      "exactly_one_primary_category": true
+    },
+    "tags": {
+      "default_and_custom": true,
+      "create": true,
+      "update": true,
+      "disable": true,
+      "history": true,
+      "persistence": true,
+      "view_filters": true
+    },
+    "classification_confidence": {
+      "field_completeness": 30,
+      "amount_direction": 10,
+      "rule_match": 20,
+      "merchant_counterparty": 15,
+      "interconnection": 15,
+      "historical_consistency": 10,
+      "threshold": 70
+    },
+    "cashflow_windows_days": [
+      7,
+      21,
+      30,
+      60,
+      90,
+      180,
+      360
+    ],
+    "formal_secondary_pages": [
+      "Parameter Center",
+      "Interconnection Map"
+    ]
+  },
+  "execution_policy": {
+    "max_phases_per_run": 1,
+    "stage_requires_user_acceptance": true,
+    "automatic_phase_advancement": false,
+    "automatic_stage_advancement": false,
+    "stage_requires_independent_review": true,
+    "stage_findings_must_be_remediated_before_acceptance": true,
+    "stage_requires_rereview_pass": true,
+    "stage_sequence": [
+      "whole_stage_fresh_review",
+      "findings_remediation",
+      "rereview_pass",
+      "explicit_acceptance",
+      "next_stage"
+    ],
+    "completion_proof_disallowed": [
+      "documentation_only",
+      "toast_or_marker",
+      "string_only_test",
+      "fake_screenshot",
+      "screenshot_path_only",
+      "single_number_only"
+    ],
+    "review_findings_and_evidence_persistence_allowed": true,
+    "private_chain_of_thought_or_internal_review_transcript_persistence_allowed": false
+  },
+  "delivery_policy": {
+    "local_phase_commits_allowed": true,
+    "per_stage_github_main_upload_allowed": false,
+    "per_stage_app_reinstall_allowed": false,
+    "stage_1_validation_mode": "isolated_candidate_app",
+    "stage_1_candidate_source": "PFI/macos/PFI.app",
+    "stage_1_finder_launch_allowed": true,
+    "stage_1_canonical_entry_mutation_allowed": false,
+    "stage_1_temp_root_policy": "run_created_mktemp_not_canonical_entry",
+    "stage_1_candidate_path_template": "$STAGE1_TEMP_ROOT/PFI.app",
+    "stage_1_isolated_environment": [
+      "HOME",
+      "PFI_DATA_HOME",
+      "browser_profile",
+      "runtime_cache",
+      "ports"
+    ],
+    "stage_1_required_binding_hashes": [
+      "source_tree_hash",
+      "copied_bundle_hash",
+      "checkout_binding_hash"
+    ],
+    "stage_1_required_identity_match": [
+      "frontend",
+      "backend",
+      "manifest",
+      "asset",
+      "commit"
+    ],
+    "stage_1_canonical_entry_before_after_hash_required": true,
+    "stage_1_launchservices_registration_and_cleanup_recorded": true,
+    "stage_1_candidate_disposable_and_never_final_promoted": true,
+    "final_delivery_stage": 12,
+    "final_candidate_fresh_rebuild_from_release_content_commit": true,
+    "final_candidate_hashes_required": [
+      "build_hash",
+      "asset_hash",
+      "commit_hash"
+    ],
+    "final_commit_identities": [
+      "release_content_commit",
+      "acceptance_candidate_commit",
+      "final_record_commit"
+    ],
+    "final_app_reinstall_required": true,
+    "final_app_reinstall_gate": "S12-P2-T1",
+    "canonical_app_backup_before_promotion_required": true,
+    "failed_promotion_restores_backup": true,
+    "automatic_install_retry_allowed": false,
+    "final_github_main_upload_required": true,
+    "final_github_main_upload_gate": "after_S12-P3-T4_explicit_acceptance",
+    "expected_remote_main_sha_required": true,
+    "final_strict_fast_forward_required": true,
+    "post_release_content_freeze_rebase_merge_runtime_content_commit_allowed": false,
+    "final_push_count": 1,
+    "final_push_from_ref": "expected_remote_main_sha",
+    "final_push_to_commit_identity": "final_record_commit",
+    "final_remote_parity_verification_required": true,
+    "final_independent_evidence_gates": [
+      "remote_parity",
+      "installed_app_identity",
+      "local_owner_view_consistency"
+    ],
+    "force_push_allowed": false,
+    "pre_push_remote_drift_result": "blocked_restore_saved_canonical_app_require_new_explicit_decision",
+    "post_push_remote_updated_but_parity_failed_result": "freeze_remote_local_app_no_auto_rollback_or_rewrite"
+  },
+  "blocking_conflicts": {
+    "unresolved_result": "blocked",
+    "self_declared_unified_allowed": false,
+    "evidence_reference_required": true,
+    "blocks_claims": [
+      "release_identity_unified",
+      "v0.2.5_accepted",
+      "final_delivery_ready"
+    ],
+    "items": [
+      {
+        "conflict_id": "PFI-V025-CONFLICT-OWNER-VIEWS",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "fact_level": "EXTRACTED",
+        "owner_evidence_state": "unified_owner_view_not_proven",
+        "status": "blocked",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/history_deprecation.md#active-conflict-projection",
+        "affected_surfaces": ["README", "HANDOFF", "功能清单.md", "开发记录.md", "模型参数文件.md"],
+        "prohibited_claims": ["owner_views_unified", "v0.2.5_accepted"],
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": ["S0-P3-T1", "S12-P3-T1"]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-RELEASE-IDENTITY",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "fact_level": "EXTRACTED",
+        "owner_evidence_state": "release_identity_conflicted",
+        "status": "blocked",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/run_contract.md#release-identity-gates",
+        "affected_surfaces": ["PFI/VERSION", "page_metadata", "launcher_markers", "App_plist", "App_executable"],
+        "prohibited_claims": ["release_identity_unified", "v0.2.5_installed"],
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": ["S1-P1-T1", "S12-P3-T1"]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-APP-IDENTITY",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "fact_level": "EXTRACTED",
+        "owner_evidence_state": "installed_app_identity_conflicted",
+        "status": "blocked",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/scope_boundary.md#stage-1-isolated-candidate",
+        "affected_surfaces": ["repository_app", "/Applications/PFI.app", "Desktop/PFI.app", "Downloads/PFI.app", "codesign"],
+        "prohibited_claims": ["canonical_app_is_v0.2.5", "final_app_promoted"],
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": ["S12-P2-T1"]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-RUNTIME-LISTENERS",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "fact_level": "EXTRACTED",
+        "owner_evidence_state": "canonical_listener_unresolved",
+        "status": "blocked",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/run_contract.md#runtime-stop-gates",
+        "affected_surfaces": ["canonical_root_listeners", "preferred_runtime", "localhost_entry"],
+        "prohibited_claims": ["single_canonical_listener_proven", "runtime_acceptance_complete"],
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": ["S1-P3-T2", "S12-P2-T2"]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-STALE-ROUTE-MARKERS",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "fact_level": "EXTRACTED",
+        "owner_evidence_state": "stale_markers_and_duplicate_inventories_present",
+        "status": "blocked",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/history_deprecation.md#navigation-history",
+        "affected_surfaces": ["route_modules", "stage_markers", "route_inventories"],
+        "prohibited_claims": ["navigation_inventory_converged", "release_markers_current"],
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": ["S1-P1-T1", "S6-P1-T1", "S6-P1-T2", "S6-P1-T3", "S12-P3-T1"]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-ROUTE-TARGET-GAP",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "fact_level": "EXTRACTED",
+        "owner_evidence_state": "target_routes_not_implemented",
+        "status": "blocked",
+        "evidence_ref": "PFI/config/pfi_v025_active_requirements.json#navigation_policy",
+        "affected_surfaces": ["primary_routes", "declared_aliases", "shell_compatibility_inputs"],
+        "prohibited_claims": ["appendix_a_routes_complete", "browser_route_acceptance_complete"],
+        "blocks_phase_0_2_candidate": false,
+        "resolution_tasks": ["S6-P1-T1", "S6-P1-T2", "S6-P1-T3"]
+      },
+      {
+        "conflict_id": "PFI-V025-CONFLICT-GOVERNANCE-SCOPE",
+        "requirement_disposition": "BLOCKING_CURRENT_CONFLICT",
+        "fact_level": "EXTRACTED",
+        "owner_evidence_state": "approved_override_pending_postcommit_attestation",
+        "status": "approved_pending_validation",
+        "evidence_ref": "PFI/docs/pfi_v025/stage_0/scope_boundary.md#approved-governance-companion-override",
+        "affected_surfaces": ["eight_core_artifacts", "twelve_governance_companions", "changed_scope_ci"],
+        "prohibited_claims": ["governance_override_resolved", "phase_0_2_candidate_pass"],
+        "blocks_phase_0_2_candidate": true,
+        "resolution_tasks": ["S0-P3-T1"]
+      }
+    ]
+  },
+  "policy_overrides": [
+    {
+      "override_id": "PFI-V025-OVERRIDE-STAGE1-ISOLATED-CANDIDATE",
+      "authority": "latest_user_decision",
+      "source_contract": "PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md:S1-P3-T1,S1-P3-T3",
+      "original_action": "canonical_app_install_and_entry_replacement_in_stage_1",
+      "status": "superseded",
+      "effective_rule": "stage_1_uses_isolated_disposable_candidate_without_canonical_entry_mutation",
+      "replacement_gate": "canonical_install_only_at_S12-P2-T1_after_stage_12_preconditions",
+      "evidence_ref": "PFI/docs/pfi_v025/stage_0/run_contract.md#approved-policy-overrides"
+    },
+    {
+      "override_id": "PFI-V025-S0-GOVERNANCE-COMPANIONS",
+      "authority": "latest_user_decision",
+      "source_contract": "PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md:Stage_0_allowed_files",
+      "original_action": "stage_0_phase_0_2_writes_limited_to_eight_core_artifacts",
+      "status": "superseded",
+      "effective_rule": "phase_0_2_allows_exact_eight_core_artifacts_plus_twelve_named_governance_companions",
+      "replacement_gate": "exact_twenty_path_ledger_plus_sparse_aware_preflight_and_postcommit_attestation",
+      "evidence_ref": "PFI/docs/pfi_v025/stage_0/scope_boundary.md#approved-governance-companion-override"
+    }
+  ]
+}

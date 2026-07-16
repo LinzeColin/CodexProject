@@ -1,0 +1,44 @@
+{
+  "algorithm": "sha256",
+  "contains_private_values": false,
+  "dependency_hashes": {
+    "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+    "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+    "stage2_source_manifest": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+    "stage3_event_read_model": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf"
+  },
+  "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+  "formulas": [
+    {
+      "expression": "source_snapshot_sum_cny = sum(explicit source-reported CNY snapshot values); transaction events never infer missing balances",
+      "formula_hash": "sha256:d5c2fce29a627662e1fd2ca4fe2b30318a321d081e891f94b22653c704522605",
+      "formula_id": "FORM-PFI-011",
+      "formula_version": "pfi-v0.2.5-source-snapshot-sum-v1"
+    },
+    {
+      "expression": "net_worth_cny = account_assets_cny + investment_market_value_cny - liabilities_cny",
+      "formula_hash": "sha256:5f08599c2c5d88d7a823e4a7f19141d88e715cc95dced80d231f6e35284b53e6",
+      "formula_id": "FORM-PFI-012",
+      "formula_version": "pfi-v0.2.5-net-worth-composition-v1"
+    },
+    {
+      "expression": "dependency_set_hash = SHA256(canonical_json(sorted dependency hashes)); read_model_hash = SHA256(canonical_json(metric states without page identity or observation time, dependency hashes and formula/parameter contract)); every surface binds the same snapshot hash",
+      "formula_hash": "sha256:4bcdb3cbb7e048314d84d64f35521c7af55ac578aa0bf5f0d9120e0a2b8ac0c4",
+      "formula_id": "FORM-PFI-013",
+      "formula_version": "pfi-v0.2.5-unified-read-model-hash-v1"
+    }
+  ],
+  "observation_time_in_hash": false,
+  "page_identity_in_hash": false,
+  "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+  "phase": "4.3",
+  "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+  "reconstructed_read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+  "reconstruction_matches": true,
+  "schema": "PFIV025Stage4ReadModelHashContractV1",
+  "scope": "snapshot_not_page",
+  "serialization": "canonical_json_sort_keys_utf8_no_whitespace",
+  "stage": 4,
+  "status": "pass",
+  "version": "v0.2.5"
+}

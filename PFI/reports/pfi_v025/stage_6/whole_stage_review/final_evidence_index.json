@@ -1,0 +1,99 @@
+{
+  "acceptance_criteria": [
+    {
+      "id": "S6-ACC-01",
+      "result": "Visual/DOM/AX/no-JS all expose exactly 10 primary entries.",
+      "status": "pass"
+    },
+    {
+      "id": "S6-ACC-02",
+      "result": "Primary labels and order exactly match Roadmap Appendix A.",
+      "status": "pass"
+    },
+    {
+      "id": "S6-ACC-03",
+      "result": "Seven historical aliases normalize and never appear as primary entries.",
+      "status": "pass"
+    },
+    {
+      "id": "S6-ACC-04",
+      "result": "45 secondary pages have canonical contracts; ten workspace representatives pass live structural checks.",
+      "status": "pass"
+    },
+    {
+      "id": "S6-ACC-05",
+      "result": "push/replace/pop, back/forward, scroll, reload/deep-link, repeat-click and invalid recovery pass.",
+      "status": "pass"
+    },
+    {
+      "id": "S6-ACC-06",
+      "result": "Strategy Lab has one canonical route /market-research/strategy-lab.",
+      "status": "pass"
+    }
+  ],
+  "acceptance_id": "ACC-PFI-V025-STAGE6-WHOLE-REVIEW",
+  "browser_validation_status": "pass",
+  "contract_id": "PFI-V025-STAGE6-WHOLE-REVIEW",
+  "desktop_mobile_keyboard_back_forward_reload_nojs": "pass",
+  "evidence_refs": [
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/phase_commit_binding.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/review_audit.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/accessibility_tree.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/legacy_test_disposition.json"
+  ],
+  "final_human_acceptance": false,
+  "initial_review_counts": {
+    "critical": 0,
+    "important": 4,
+    "minor": 1
+  },
+  "pass_gate_result": "pass",
+  "phase_commit_binding_status": "pass",
+  "production_accepted": false,
+  "rereview_counts": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "review_base": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431",
+  "schema": "PFIV025Stage6FinalEvidenceIndexV1",
+  "stage": 6,
+  "stage_7_entry_authorized": true,
+  "stage_7_status": "not_started",
+  "status": "accepted_for_transition",
+  "stop_conditions": [
+    {
+      "condition": "anchor/display-none fake routing",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "hidden accessibility tree retains 16 primary entries",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "secondary pages are title-only clones",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "URL and application state diverge",
+      "status": "safety_stop_active"
+    }
+  ],
+  "task_disposition": {
+    "S6-P1-T1": "pass",
+    "S6-P1-T2": "pass",
+    "S6-P1-T3": "pass",
+    "S6-P1-T4": "pass",
+    "S6-P2-T1": "pass",
+    "S6-P2-T2": "pass",
+    "S6-P2-T3": "pass",
+    "S6-P2-T4": "pass",
+    "S6-P3-T1": "pass",
+    "S6-P3-T2": "pass",
+    "S6-P3-T3": "pass",
+    "S6-P3-T4": "pass"
+  },
+  "taskpack_schema_validation_status": "pass",
+  "version": "v0.2.5"
+}

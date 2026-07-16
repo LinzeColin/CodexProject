@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PFI v0.2.5 Holding Snapshot",
+  "type": "object",
+  "required": [
+    "schema",
+    "snapshot_id",
+    "account_ref",
+    "instrument_ref",
+    "source_id",
+    "quantity",
+    "acquisition_cost_ex_fees",
+    "capitalized_fee_total",
+    "original_currency",
+    "cost_basis_method",
+    "transaction_link_status",
+    "transaction_event_ids",
+    "quantity_as_of",
+    "source_record_count",
+    "source_content_hash"
+  ],
+  "properties": {
+    "schema": {"const": "PFIV025HoldingSnapshotV1"},
+    "snapshot_id": {"type": "string", "minLength": 1},
+    "account_ref": {"type": "string", "minLength": 1},
+    "instrument_ref": {"type": "string", "minLength": 1},
+    "source_id": {"const": "SRC-HOLDINGS"},
+    "quantity": {"type": "string", "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"},
+    "acquisition_cost_ex_fees": {"type": "string", "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"},
+    "capitalized_fee_total": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?$"},
+    "original_currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "cost_basis_method": {
+      "enum": ["source_reported", "specific_identification", "fifo", "weighted_average"]
+    },
+    "transaction_link_status": {"enum": ["linked", "source_snapshot_only"]},
+    "transaction_event_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "quantity_as_of": {"type": "string", "format": "date-time"},
+    "source_record_count": {"type": "integer", "minimum": 1},
+    "source_content_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"transaction_link_status": {"const": "linked"}}},
+      "then": {"properties": {"transaction_event_ids": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"transaction_link_status": {"const": "source_snapshot_only"}}},
+      "then": {"properties": {"transaction_event_ids": {"maxItems": 0}}}
+    }
+  ],
+  "additionalProperties": false
+}

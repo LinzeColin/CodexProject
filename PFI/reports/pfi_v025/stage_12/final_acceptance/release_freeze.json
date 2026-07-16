@@ -1,0 +1,21 @@
+{
+  "acceptance_requested_at": "2026-07-15T21:45:47Z",
+  "accepted_at": "2026-07-15T23:50:30Z",
+  "app_build": "20260712.1",
+  "app_reinstall_performed": false,
+  "app_version": "0.2.5",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "final_human_acceptance": true,
+  "finder_used": false,
+  "known_nonblocking_p2_count": 5,
+  "product_candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "production_accepted": false,
+  "push_performed": false,
+  "release_freeze_performed": true,
+  "rereview_evidence_commit": "123f5a6f7e7af22c283e49e55c2ba581310238d5",
+  "reviewed_closure_commit": "559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+  "schema": "PFIV025Stage12ReleaseFreezeV1",
+  "status": "frozen_waiting_single_delivery_transaction",
+  "version": "v0.2.5"
+}

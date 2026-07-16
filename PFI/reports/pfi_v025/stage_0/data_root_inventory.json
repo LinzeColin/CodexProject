@@ -1,0 +1,339 @@
+{
+  "schema": "PFIV025Stage0DataRootInventoryV1",
+  "version": "v0.2.5",
+  "stage": 0,
+  "candidate_roots": [
+    {
+      "root_id": "ROOT-01",
+      "order": 1,
+      "symbolic_path": "env:PFI_DATA_HOME",
+      "existence": "unset",
+      "status": "source_missing",
+      "permission_class": {
+        "state": "not_applicable",
+        "value_type": "permission",
+        "reason": "candidate_root_unset_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "file_count": {
+        "state": "not_applicable",
+        "value_type": "integer",
+        "reason": "candidate_root_unset_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "record_count": {
+        "state": "not_applicable",
+        "value_type": "integer",
+        "reason": "candidate_root_unset_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "date_range": {
+        "state": "not_applicable",
+        "value_type": "date_range",
+        "reason": "candidate_root_unset_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "as_of": {
+        "state": "not_applicable",
+        "value_type": "date",
+        "reason": "candidate_root_unset_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "aggregate_sha256": {
+        "state": "not_applicable",
+        "value_type": "sha256",
+        "reason": "candidate_root_unset_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "source_evidence_ref": "guard:raw_data_probe.json",
+      "source_evidence_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f"
+    },
+    {
+      "root_id": "ROOT-02",
+      "order": 2,
+      "symbolic_path": "repo-worktree:MetaDatabase/PFI",
+      "existence": "absent",
+      "status": "source_missing",
+      "permission_class": {
+        "state": "not_applicable",
+        "value_type": "permission",
+        "reason": "candidate_root_absent_in_sparse_worktree_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "file_count": {
+        "state": "not_applicable",
+        "value_type": "integer",
+        "reason": "candidate_root_absent_in_sparse_worktree_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "record_count": {
+        "state": "not_applicable",
+        "value_type": "integer",
+        "reason": "candidate_root_absent_in_sparse_worktree_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "date_range": {
+        "state": "not_applicable",
+        "value_type": "date_range",
+        "reason": "candidate_root_absent_in_sparse_worktree_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "as_of": {
+        "state": "not_applicable",
+        "value_type": "date",
+        "reason": "candidate_root_absent_in_sparse_worktree_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "aggregate_sha256": {
+        "state": "not_applicable",
+        "value_type": "sha256",
+        "reason": "candidate_root_absent_in_sparse_worktree_at_phase_0_3_observation",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T2"]
+      },
+      "source_evidence_ref": "guard:raw_data_probe.json",
+      "source_evidence_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f"
+    },
+    {
+      "root_id": "ROOT-03",
+      "order": 3,
+      "symbolic_path": "repo-worktree:PFI/MetaDatabase",
+      "existence": "present",
+      "status": "metadata_only",
+      "permission_class": {
+        "state": "metadata_unavailable",
+        "value_type": "permission",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "file_count": {
+        "state": "metadata_unavailable",
+        "value_type": "integer",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "record_count": {
+        "state": "metadata_unavailable",
+        "value_type": "integer",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "date_range": {
+        "state": "metadata_unavailable",
+        "value_type": "date_range",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "as_of": {
+        "state": "metadata_unavailable",
+        "value_type": "date",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "aggregate_sha256": {
+        "state": "metadata_unavailable",
+        "value_type": "sha256",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "source_evidence_ref": "guard:raw_data_probe.json",
+      "source_evidence_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f"
+    },
+    {
+      "root_id": "ROOT-04",
+      "order": 4,
+      "symbolic_path": "user-state:~/.pfi",
+      "existence": "present",
+      "status": "metadata_only",
+      "permission_class": {
+        "state": "metadata_unavailable",
+        "value_type": "permission",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "file_count": {
+        "state": "metadata_unavailable",
+        "value_type": "integer",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "record_count": {
+        "state": "metadata_unavailable",
+        "value_type": "integer",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "date_range": {
+        "state": "metadata_unavailable",
+        "value_type": "date_range",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "as_of": {
+        "state": "metadata_unavailable",
+        "value_type": "date",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "aggregate_sha256": {
+        "state": "metadata_unavailable",
+        "value_type": "sha256",
+        "reason": "not_exposed_by_phase_0_3_redacted_raw_probe",
+        "resolution_tasks": ["S2-P1-T1", "S2-P1-T3"]
+      },
+      "source_evidence_ref": "guard:raw_data_probe.json",
+      "source_evidence_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f"
+    }
+  ],
+  "repository_object_surfaces": [
+    {
+      "surface_id": "GIT-DATA-01",
+      "related_root_id": "ROOT-02",
+      "git_commit": "ede905cd96c7b6682cf38971de54f4544f46251b",
+      "tree_hash": "19e8f9b3345074881fa063afe76e40cb846c93de",
+      "file_count": 6,
+      "bytes": 3870013,
+      "extension_counts": {
+        "csv": 5,
+        "json": 1,
+        "sqlite": 0
+      },
+      "permission_class": "git_object_readable",
+      "source_evidence_ref": "guard:raw_data_probe.json",
+      "source_evidence_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f"
+    }
+  ],
+  "raw_sources": [
+    {
+      "raw_source_id": "RAW-01",
+      "source_surface_id": "GIT-DATA-01",
+      "source_class": "alipay_bill_export",
+      "storage_mode": "git_tree_object",
+      "status": "ready",
+      "record_count": {"state": "present", "value_type": "integer", "value": 1571},
+      "date_range": {"state": "present", "value_type": "date_range", "value": {"start": "2022-06-06", "end": "2023-06-05"}},
+      "as_of": {"state": "present", "value_type": "date", "value": "2023-06-05"},
+      "bytes": {"state": "present", "value_type": "integer", "value": 264554},
+      "content_sha256": {"state": "present", "value_type": "sha256", "value": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342"},
+      "permission_class": {"state": "present", "value_type": "permission", "value": "git_object_readable"},
+      "source_path_redacted": true
+    },
+    {
+      "raw_source_id": "RAW-02",
+      "source_surface_id": "GIT-DATA-01",
+      "source_class": "alipay_bill_export",
+      "storage_mode": "git_tree_object",
+      "status": "ready",
+      "record_count": {"state": "present", "value_type": "integer", "value": 1531},
+      "date_range": {"state": "present", "value_type": "date_range", "value": {"start": "2023-06-06", "end": "2024-06-05"}},
+      "as_of": {"state": "present", "value_type": "date", "value": "2024-06-05"},
+      "bytes": {"state": "present", "value_type": "integer", "value": 259891},
+      "content_sha256": {"state": "present", "value_type": "sha256", "value": "c16e278e987c3c626fc2495254e5d0b5eeb71bd8ec4dcacc8d3a7cec2e6d1e13"},
+      "permission_class": {"state": "present", "value_type": "permission", "value": "git_object_readable"},
+      "source_path_redacted": true
+    },
+    {
+      "raw_source_id": "RAW-03",
+      "source_surface_id": "GIT-DATA-01",
+      "source_class": "alipay_bill_export",
+      "storage_mode": "git_tree_object",
+      "status": "ready",
+      "record_count": {"state": "present", "value_type": "integer", "value": 1586},
+      "date_range": {"state": "present", "value_type": "date_range", "value": {"start": "2024-06-06", "end": "2025-06-05"}},
+      "as_of": {"state": "present", "value_type": "date", "value": "2025-06-05"},
+      "bytes": {"state": "present", "value_type": "integer", "value": 263668},
+      "content_sha256": {"state": "present", "value_type": "sha256", "value": "c592e6a224da1e31995760b59f3597c351a87d545f535e219c27f4bec6792ba1"},
+      "permission_class": {"state": "present", "value_type": "permission", "value": "git_object_readable"},
+      "source_path_redacted": true
+    },
+    {
+      "raw_source_id": "RAW-04",
+      "source_surface_id": "GIT-DATA-01",
+      "source_class": "alipay_bill_export",
+      "storage_mode": "git_tree_object",
+      "status": "ready",
+      "record_count": {"state": "present", "value_type": "integer", "value": 4127},
+      "date_range": {"state": "present", "value_type": "date_range", "value": {"start": "2025-06-05", "end": "2026-06-03"}},
+      "as_of": {"state": "present", "value_type": "date", "value": "2026-06-03"},
+      "bytes": {"state": "present", "value_type": "integer", "value": 689203},
+      "content_sha256": {"state": "present", "value_type": "sha256", "value": "eaff20de65cc44de54b9b39ab7b90f097c375662b5bb1f8870ad15c16409bc54"},
+      "permission_class": {"state": "present", "value_type": "permission", "value": "git_object_readable"},
+      "source_path_redacted": true
+    }
+  ],
+  "databases": [
+    {
+      "database_id": "DB-01",
+      "root_id": "ROOT-04",
+      "status": "ready",
+      "candidate_count": {"state": "present", "value_type": "integer", "value": 1},
+      "bytes": {"state": "present", "value_type": "integer", "value": 86016},
+      "mtime_epoch": {"state": "present", "value_type": "epoch_integer", "value": 1782735355},
+      "permission_class": {"state": "present", "value_type": "permission", "value": "readable_no_write_attempt"},
+      "content_sha256": {"state": "present", "value_type": "sha256", "value": "2053c0acc8f9c716d2fc496b9cfde6f8c1ef35c43e18be6d77e06a1c08f33b12"},
+      "record_count": {"state": "present", "value_type": "integer", "value": 0},
+      "date_range": {
+        "state": "metadata_unavailable",
+        "value_type": "date_range",
+        "reason": "not_exposed_by_phase_0_3_query_only_probe",
+        "resolution_tasks": ["S2-P1-T3"]
+      },
+      "as_of": {
+        "state": "metadata_unavailable",
+        "value_type": "date",
+        "reason": "not_exposed_by_phase_0_3_query_only_probe",
+        "resolution_tasks": ["S2-P1-T3"]
+      },
+      "query_mode": "ro&immutable=1",
+      "query_only": true,
+      "quick_check": "ok",
+      "table_count": 9,
+      "unchanged_before_after": true,
+      "database_path_redacted": true,
+      "before": {
+        "candidate_count": {"state": "present", "value_type": "integer", "value": 1},
+        "bytes": {"state": "present", "value_type": "integer", "value": 86016},
+        "mtime_epoch": {"state": "present", "value_type": "epoch_integer", "value": 1782735355},
+        "permission_class": {"state": "present", "value_type": "permission", "value": "readable_no_write_attempt"},
+        "content_sha256": {"state": "present", "value_type": "sha256", "value": "2053c0acc8f9c716d2fc496b9cfde6f8c1ef35c43e18be6d77e06a1c08f33b12"}
+      },
+      "after": {
+        "candidate_count": {"state": "present", "value_type": "integer", "value": 1},
+        "bytes": {"state": "present", "value_type": "integer", "value": 86016},
+        "mtime_epoch": {"state": "present", "value_type": "epoch_integer", "value": 1782735355},
+        "permission_class": {"state": "present", "value_type": "permission", "value": "readable_no_write_attempt"},
+        "content_sha256": {"state": "present", "value_type": "sha256", "value": "2053c0acc8f9c716d2fc496b9cfde6f8c1ef35c43e18be6d77e06a1c08f33b12"}
+      },
+      "source_evidence_ref": "guard:db_probe.json",
+      "source_evidence_sha256": "d5fa62da8edaa3395134fd64bf4756c878ad0a1753d5c13c1f54fd06726ad198"
+    }
+  ],
+  "read_model": {
+    "storage_mode": "git_tree",
+    "raw_file_count": 4,
+    "record_count": 8815,
+    "date_range": {"start": "2022-06-06", "end": "2026-06-03"},
+    "as_of": "2026-06-03",
+    "evidence_hash": "sha256:da98c88a7c617afa0ad029d28ba7d5853550bcde51e82cdd6aadee5d64199325",
+    "read_model_hash": "sha256:7071941c85d72b8e330dc5d2ae3d13ba53f26dec94a68fbdec0ecaaedc8873c5",
+    "metric_states": {
+      "cash_balance_cny": "source_missing",
+      "consumption_outflow_cny": "ready",
+      "investment_market_value_cny": "source_missing",
+      "net_worth_cny": "source_missing",
+      "report_summary_status": "ready"
+    },
+    "blocked_metric_ids": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ]
+  },
+  "privacy": {
+    "contains_private_values": false,
+    "raw_filenames_emitted": 0,
+    "raw_rows_emitted": 0,
+    "financial_values_emitted": 0,
+    "credentials_emitted": 0,
+    "absolute_private_paths_emitted": 0
+  }
+}

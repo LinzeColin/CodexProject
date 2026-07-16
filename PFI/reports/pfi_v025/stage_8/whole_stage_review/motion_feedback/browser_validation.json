@@ -1,0 +1,220 @@
+{
+  "schema": "PFIV025Stage8Phase82BrowserValidationV1",
+  "status": "pass",
+  "contract_id": "PFI-V025-STAGE8-PHASE82-MOTION-FEEDBACK",
+  "acceptance_id": "ACC-PFI-V025-STAGE8-WHOLE-REVIEW",
+  "method": "actual_current_worktree_formal_shell_playwright_ephemeral_loopback",
+  "actual_formal_shell": true,
+  "financial_data_loaded": false,
+  "private_values_persisted": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "checks": {
+    "feedback_budget_contract": true,
+    "normal_motion_bounded": true,
+    "progressive_route_transition": true,
+    "haptics_sound_default_off": true,
+    "haptic_explicit_opt_in": true,
+    "actual_units_only_progress": true,
+    "durable_job_survives_route": true,
+    "skeleton_after_real_300ms_budget": true,
+    "real_refresh_settles_success": true,
+    "delayed_failure_never_auto_succeeds": true,
+    "reduced_motion_zero_duration": true,
+    "unsupported_haptic_silent_degrade": true,
+    "elapsed_classification_exact": true,
+    "screenshot_written": true,
+    "only_expected_console_failure": true,
+    "no_page_errors": true,
+    "only_expected_http_failure": true,
+    "no_external_requests": true
+  },
+  "normal": {
+    "initial": {
+      "motionContract": {
+        "schema": "PFIV025Stage8Phase82MotionContractV1",
+        "targetVersion": "v0.2.5",
+        "stage": "Stage 8",
+        "phase": "8.2",
+        "feedbackBudgetMs": {
+          "instant": 100,
+          "cached": 300,
+          "staged": 1000,
+          "durable": 10000
+        },
+        "stateMotionMs": 180,
+        "maxMotionMs": 220,
+        "animatedProperties": [
+          "transform",
+          "opacity"
+        ],
+        "viewTransitionMode": "progressive_enhancement",
+        "reducedMotionMode": "zero_duration_state_preserving"
+      },
+      "hapticsContract": {
+        "schema": "PFIV025Stage8Phase82HapticsContractV1",
+        "targetVersion": "v0.2.5",
+        "stage": "Stage 8",
+        "phase": "8.2",
+        "defaultPreferences": {
+          "haptic": false,
+          "sound": false,
+          "intensity": "light"
+        },
+        "capabilitySources": [
+          "navigator.vibrate",
+          "AudioContext"
+        ],
+        "userActivationRequired": true,
+        "unsupportedDelivery": "visual_only"
+      },
+      "jobsContract": {
+        "schema": "PFIV025Stage8Phase82JobTimelineContractV1",
+        "targetVersion": "v0.2.5",
+        "stage": "Stage 8",
+        "phase": "8.2",
+        "stageMs": 1000,
+        "durableMs": 10000,
+        "persistence": "sessionStorage",
+        "storageFields": [
+          "id",
+          "state",
+          "startedAt",
+          "updatedAt",
+          "completedUnits",
+          "totalUnits"
+        ],
+        "routeBehavior": "leave_page_safe",
+        "progressTruth": "completedUnits_over_totalUnits_only",
+        "states": [
+          "queued",
+          "running",
+          "blocked",
+          "succeeded",
+          "failed",
+          "cancelled"
+        ]
+      },
+      "reduced": false,
+      "hapticChecked": false,
+      "soundChecked": false,
+      "hapticCapability": {
+        "haptic": true,
+        "sound": true
+      }
+    },
+    "haptic": {
+      "checked": true,
+      "calls": [
+        [
+          10
+        ],
+        [
+          6
+        ],
+        [
+          10
+        ],
+        [
+          10
+        ]
+      ],
+      "status": "multimodal"
+    },
+    "jobBeforeRoute": {
+      "noUnits": {
+        "id": "browser-real-job",
+        "label": "真实工作量校验",
+        "stageLabel": "核对 4 个已知单元",
+        "state": "running",
+        "startedAt": 1784088048983,
+        "updatedAt": 1784088059983,
+        "completedUnits": null,
+        "totalUnits": null,
+        "elapsedMs": 11000,
+        "durable": true,
+        "actualProgress": null
+      },
+      "withUnits": {
+        "id": "browser-real-job",
+        "label": "真实工作量校验",
+        "stageLabel": "已核对 2/4 个单元",
+        "state": "running",
+        "startedAt": 1784088048983,
+        "updatedAt": 1784088059983,
+        "completedUnits": 2,
+        "totalUnits": 4,
+        "elapsedMs": 11000,
+        "durable": true,
+        "actualProgress": 0.5
+      },
+      "durable": "true",
+      "progressValue": 2,
+      "progressMax": 4,
+      "progressText": "2/4 个真实单元"
+    },
+    "routeMotion": {
+      "jobStillVisible": true,
+      "routeMode": "view_transition",
+      "activeAnimations": 11
+    },
+    "beforeSkeleton": true,
+    "afterBudget": {
+      "skeletonVisible": true,
+      "feedbackState": "progress"
+    },
+    "refreshComplete": {
+      "skeletonHidden": true,
+      "feedbackState": "success"
+    },
+    "delayedSettingsBeforeResponse": {
+      "feedbackState": "blocked",
+      "feedbackMessage": "页面说明已关闭"
+    },
+    "delayedSettingsFailure": {
+      "feedbackState": "failure",
+      "feedbackMessage": "本机服务响应失败：503"
+    },
+    "screenshotBytes": 166126
+  },
+  "reduced": {
+    "reduced": true,
+    "motionDuration": 0,
+    "capability": {
+      "haptic": false,
+      "sound": false
+    },
+    "unsupportedResult": {
+      "delivery": "visual_only",
+      "hapticDelivered": false,
+      "soundDelivered": false,
+      "userActivation": true,
+      "capability": {
+        "haptic": false,
+        "sound": false
+      }
+    },
+    "activeAnimations": 0,
+    "elapsedClasses": [
+      "instant",
+      "cached",
+      "skeleton",
+      "staged",
+      "durable"
+    ]
+  },
+  "diagnostics": {
+    "console_errors": [
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    ],
+    "page_errors": [],
+    "http_errors": [
+      {
+        "status": 503,
+        "url": "http://127.0.0.1:57457/api/settings/preferences"
+      }
+    ],
+    "blocked_external_requests": [],
+    "requested_origin_count": 1
+  }
+}

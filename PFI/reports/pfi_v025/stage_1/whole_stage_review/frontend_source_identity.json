@@ -1,0 +1,150 @@
+{
+  "schema": "PFIV025Stage1WholeReviewFrontendSourceIdentityV1",
+  "disk": {
+    "files": [
+      {
+        "path": "PFI/web/index.html",
+        "sha256": "e68de86bee5ce26f171a1327ba91ffcce6ea12f6c29530989fad9580a39db741",
+        "bytes": 49136
+      },
+      {
+        "path": "PFI/web/styles/tokens.css",
+        "sha256": "9c11b1d903d4e17639859289a76903837622360ec585f838fae07a8ab61cb7c4",
+        "bytes": 44435
+      },
+      {
+        "path": "PFI/web/styles.css",
+        "sha256": "018c2dd26172694f947c205b59eb089e15bf1b1530a93fd5925cab0b8bc4e239",
+        "bytes": 33774
+      },
+      {
+        "path": "PFI/web/app/version.js",
+        "sha256": "fe5ffbb90f2b796dd70bccf89502659eab52218a678fe0b8731484493c9b45d4",
+        "bytes": 26481
+      },
+      {
+        "path": "PFI/web/app/entry_audit.js",
+        "sha256": "395fcd584407113e4e87177c470bf6133aefce4045b3fd90d5f118cc68684e39",
+        "bytes": 2747
+      },
+      {
+        "path": "PFI/web/app/navigation.js",
+        "sha256": "163d74a1a0b9e533e712386341024e842b506a113c10a8de87b91d68628859e9",
+        "bytes": 5222
+      },
+      {
+        "path": "PFI/web/app/routes.js",
+        "sha256": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf",
+        "bytes": 12599
+      },
+      {
+        "path": "PFI/web/app/data_state.js",
+        "sha256": "d7a921d9c3f1a5c1cb7e628943ace44f1b2185c9ecf8d7b138b78be137f8adc6",
+        "bytes": 5566
+      },
+      {
+        "path": "PFI/web/app/pages/stage4Subpages.js",
+        "sha256": "0e059e68c8d9f5624f70c6156af7093a955bb19531f0cb6b3a076ab4584d6983",
+        "bytes": 35090
+      },
+      {
+        "path": "PFI/web/app/pages/stage5Subpages.js",
+        "sha256": "d92b38ec3f4d4c858b2f2025d29169e96356abc7935bcdce84ae161e6df2e12e",
+        "bytes": 9786
+      },
+      {
+        "path": "PFI/web/app/ux_state.js",
+        "sha256": "275694009d1c37f24fc23ef525b4c35f8b77de7a6d05d991ba0053dfc8a223f8",
+        "bytes": 8980
+      },
+      {
+        "path": "PFI/web/app/pages/home.js",
+        "sha256": "a13136d5be1d77b814432884bcdcb03d83e4afba7a245a284e56cdba990a37af",
+        "bytes": 43950
+      },
+      {
+        "path": "PFI/web/app/pages/reports.js",
+        "sha256": "b8e6f05baae61f1eec6a4e679a7c920b6c9d677d8be61507eeadadac39b037eb",
+        "bytes": 31269
+      },
+      {
+        "path": "PFI/web/app/shell.js",
+        "sha256": "48a2f5b49f05d577dd4cbe97efff14afebcaae5c346511851424ab3ee3327a67",
+        "bytes": 316875
+      }
+    ],
+    "file_count": 14,
+    "sha256": "f3d02a56324659138a83930c7a07904097802f4e2a35722709fca62d8e33c269"
+  },
+  "browser": {
+    "files": [
+      {
+        "path": "PFI/web/app/data_state.js",
+        "sha256": "d7a921d9c3f1a5c1cb7e628943ace44f1b2185c9ecf8d7b138b78be137f8adc6",
+        "bytes": 5566
+      },
+      {
+        "path": "PFI/web/app/entry_audit.js",
+        "sha256": "395fcd584407113e4e87177c470bf6133aefce4045b3fd90d5f118cc68684e39",
+        "bytes": 2747
+      },
+      {
+        "path": "PFI/web/app/navigation.js",
+        "sha256": "163d74a1a0b9e533e712386341024e842b506a113c10a8de87b91d68628859e9",
+        "bytes": 5222
+      },
+      {
+        "path": "PFI/web/app/pages/home.js",
+        "sha256": "a13136d5be1d77b814432884bcdcb03d83e4afba7a245a284e56cdba990a37af",
+        "bytes": 43950
+      },
+      {
+        "path": "PFI/web/app/pages/reports.js",
+        "sha256": "b8e6f05baae61f1eec6a4e679a7c920b6c9d677d8be61507eeadadac39b037eb",
+        "bytes": 31269
+      },
+      {
+        "path": "PFI/web/app/pages/stage4Subpages.js",
+        "sha256": "0e059e68c8d9f5624f70c6156af7093a955bb19531f0cb6b3a076ab4584d6983",
+        "bytes": 35090
+      },
+      {
+        "path": "PFI/web/app/pages/stage5Subpages.js",
+        "sha256": "d92b38ec3f4d4c858b2f2025d29169e96356abc7935bcdce84ae161e6df2e12e",
+        "bytes": 9786
+      },
+      {
+        "path": "PFI/web/app/routes.js",
+        "sha256": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf",
+        "bytes": 12599
+      },
+      {
+        "path": "PFI/web/app/shell.js",
+        "sha256": "48a2f5b49f05d577dd4cbe97efff14afebcaae5c346511851424ab3ee3327a67",
+        "bytes": 316875
+      },
+      {
+        "path": "PFI/web/app/ux_state.js",
+        "sha256": "275694009d1c37f24fc23ef525b4c35f8b77de7a6d05d991ba0053dfc8a223f8",
+        "bytes": 8980
+      },
+      {
+        "path": "PFI/web/app/version.js",
+        "sha256": "fe5ffbb90f2b796dd70bccf89502659eab52218a678fe0b8731484493c9b45d4",
+        "bytes": 26481
+      },
+      {
+        "path": "PFI/web/styles.css",
+        "sha256": "018c2dd26172694f947c205b59eb089e15bf1b1530a93fd5925cab0b8bc4e239",
+        "bytes": 33774
+      },
+      {
+        "path": "PFI/web/styles/tokens.css",
+        "sha256": "9c11b1d903d4e17639859289a76903837622360ec585f838fae07a8ab61cb7c4",
+        "bytes": 44435
+      }
+    ],
+    "file_count_with_index": 14,
+    "sha256": "f3d02a56324659138a83930c7a07904097802f4e2a35722709fca62d8e33c269"
+  }
+}

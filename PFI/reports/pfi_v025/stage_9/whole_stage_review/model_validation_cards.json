@@ -1,0 +1,98 @@
+{
+  "items": [
+    {
+      "actual_report_render_binding_completed": true,
+      "actual_ui_render_binding_completed": true,
+      "automatic_trading_allowed": false,
+      "contains_private_values": false,
+      "counter_evidence": [
+        "FORM-PFI-016..018 must remain blocked instead of inheriting the passing transaction-only evidence.",
+        "Taxonomy constraints do not prove classification accuracy without labels.",
+        "Consumer payload equality is not evidence of actual rendered UI/report parity."
+      ],
+      "coverage_dimensions": {
+        "classification_confidence": "unverified_missing_scores_and_labels",
+        "model_validation": "partial_validated_with_blocked_components",
+        "reconciliation_coverage": "partition_complete_with_review_queue",
+        "report_completeness": "actual_four_component_render_binding_complete",
+        "source_coverage": "partial_6879_published_1936_review",
+        "valuation_coverage": "blocked_missing_holdings_prices_fx"
+      },
+      "financial_values_emitted": 0,
+      "formal_ui_contract_embedded": true,
+      "formula_validation": [
+        {
+          "formula_hash": "sha256:10b45da2fac5aa066aaf2ebc47d8615d6d144dbce6c09dd9bdbb2896ff3e57f2",
+          "formula_id": "FORM-PFI-015",
+          "formula_version": "pfi-v0.2.5-dual-consumption-v1",
+          "limitation": "Published real events validate living consumption and investment allocation; unresolved transfer/refund pools prevent full funding/refund coverage.",
+          "status": "validated_real_snapshot"
+        },
+        {
+          "formula_hash": "sha256:d09de306632fd79988c735abc49e9e94730f5c7b5505f133d8f1f9715232a755",
+          "formula_id": "FORM-PFI-016",
+          "formula_version": "pfi-v0.2.5-core-financial-invariants-v1",
+          "limitation": "Account balance, liability, holding, price and FX snapshots are not loaded.",
+          "status": "blocked_missing_required_sources"
+        },
+        {
+          "formula_hash": "sha256:27843944f347cb6729fdb0b5abcf4c5e72d70067c2a78d8c84b7b52af5dbece8",
+          "formula_id": "FORM-PFI-017",
+          "formula_version": "pfi-v0.2.5-investment-return-cost-drag-v1",
+          "limitation": "Holdings, cost basis, point-in-time price, fee, tax and FX lineage are incomplete.",
+          "status": "blocked_missing_required_sources"
+        },
+        {
+          "formula_hash": "sha256:14b8695fadf9dd361f462e060120b879dba7a136268f568d07a14f7ce73f69cf",
+          "formula_id": "FORM-PFI-018",
+          "formula_version": "pfi-v0.2.5-xirr-v1",
+          "limitation": "No complete dated funding/return/terminal-value chain is available for real XIRR.",
+          "status": "blocked_insufficient_chain"
+        },
+        {
+          "formula_hash": "sha256:e886fe19fce26640578da1c2e6d8ab45c83581b185e57120a13b23675cb94e30",
+          "formula_id": "FORM-PFI-019",
+          "formula_version": "pfi-v0.2.5-seven-window-cashflow-v1",
+          "limitation": "Seven real lookback windows and empty-window false-zero boundaries pass; date precision remains daily.",
+          "status": "validated_real_snapshot"
+        },
+        {
+          "formula_hash": "sha256:af21e5447bdd9f3d5528c328be4a9fcee236dfc99fb96a7f9f645740be1a2906",
+          "formula_id": "FORM-PFI-020",
+          "formula_version": "pfi-v0.2.5-taxonomy-tag-policy-v1",
+          "limitation": "Taxonomy structure passes, but classification accuracy lacks labels and out-of-sample ground truth.",
+          "status": "validated_structure_only"
+        }
+      ],
+      "historical_out_of_sample_validation": {
+        "reason": "No complete target, labels and pre-specified split are available for a defensible historical or out-of-sample claim.",
+        "status": "blocked_insufficient_ground_truth"
+      },
+      "invariant_status": "partial_pass_with_blocked_components",
+      "limitations": [
+        "1,936 source rows remain fail-closed in review and are excluded from published metrics.",
+        "The unresolved transfer pool prevents real validation of investment-funding activity.",
+        "Unlinked refunds cannot offset living consumption until explicit lineage exists.",
+        "Balance, liability, holding, price, fee, tax and FX sources required by core and investment formulas are not loaded.",
+        "Source time precision is daily; intraday ordering is not claimed.",
+        "正式 Stage 9 报告已分别渲染四个活动组件；公开证据只保存状态、lineage 与 hash。",
+        "真实金额仅在本机私有运行时显示，不写入 tracked evidence。"
+      ],
+      "metamorphic_status": "pass",
+      "model_id": "MOD-PFI-010",
+      "model_version": "pfi-v0.2.5-financial-models-v1",
+      "production_accepted": false,
+      "report_types": [
+        "net_worth",
+        "cash",
+        "investment",
+        "consumption",
+        "cashflow"
+      ],
+      "schema": "PFIV025Stage9ReviewedModelValidationCardV1",
+      "status": "partial_validated_with_blocked_components"
+    }
+  ],
+  "schema": "PFIV025Stage9WholeReviewModelValidationCardsV1",
+  "status": "pass"
+}

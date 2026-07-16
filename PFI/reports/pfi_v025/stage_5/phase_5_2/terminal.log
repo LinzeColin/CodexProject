@@ -1,0 +1,39 @@
+PFI v0.2.5 Stage 5 Phase 5.2 validation log
+Run mode: IMPLEMENT / T2 / one Phase only
+Implementation base: 73a3186d0e64b65d77555aeb6f882c8e237790ae
+
+RED
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py -q
+Result: 2 collection errors; ModuleNotFoundError: pfi_os.application.metrics.financial_models
+
+Focused Phase 5.1 + Phase 5.2
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_formula_registry.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py -q
+Result: 16 passed in 0.67s
+
+Phase 5 + Stage 4 regression
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_formula_registry.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage4_*.py -q
+Result: 62 passed in 1.05s
+
+v0.2.2 behavior-only compatibility diagnostic
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_stage5_ledger_taxonomy.py -q -k 'not human_docs'
+Result: 11 passed, 2 deselected in 0.12s
+Note: the two excluded legacy tests assert stale hand-written human headings absent from the current canonical renderer; the behavior tests pass and no legacy source was rewritten.
+
+Formula registry JSON Schema and rebuildable hashes
+Result: pass; formula_count=20; hash_mismatch_count=0
+
+Renderer
+python3 scripts/lean_governance.py check-render --project PFI
+Result: drift_count=0; reference_issue_count=0
+
+Boundary attestation
+Real financial rows read=false; real financial rows mutated=false; database changed=false.
+Finder used=false; network=false; push=false; app install=false.
+Real UI/report binding=false; Phase 5.3 model validation=not run; Stage 5 whole-stage review=not started.
+
+Temporary complete-checkout governance
+The temporary detached worktree disabled sparse checkout, overlaid the current PFI tree, ran both validators, and was automatically removed.
+python3 scripts/validate_project_governance.py --project PFI --mode required
+Result: errors=0; warnings=0
+python3 scripts/validate_governance_sync.py --changed-only --base-ref HEAD --enforce-sync --semantic
+Result: errors=0; warnings=0

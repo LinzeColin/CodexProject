@@ -1,0 +1,260 @@
+{
+  "schema": "PFIV025Stage1Phase11EvidenceV1",
+  "version": "v0.2.5",
+  "stage": 1,
+  "phase": "1.1",
+  "status": "candidate_pass",
+  "iteration_id": "ITER-20260712-PFI-V025-S1-P11",
+  "acceptance_id": "ACC-PFI-V025-S1-P11-RELEASE-IDENTITY",
+  "task_ids": [
+    "S1-P1-T1",
+    "S1-P1-T2",
+    "S1-P1-T3",
+    "S1-P1-T4"
+  ],
+  "git_commit": "a9592b8ce457492fd0e6817f74388f146ca657c6",
+  "git_commit_semantics": "final_post_review_remediation_release_content_commit_before_identity_binding_commit",
+  "release_content_commit": "a9592b8ce457492fd0e6817f74388f146ca657c6",
+  "identity_binding_commit": "PENDING_POSTCOMMIT_ATTESTATION",
+  "allowed_files_obeyed": true,
+  "commands": [
+    {
+      "command": "Python focused TDD RED",
+      "exit_code": 1,
+      "expected_outcome": "expected_tdd_red",
+      "summary": "1 passed, 6 failed on missing Phase 1.1 behavior"
+    },
+    {
+      "command": "Node focused TDD RED after correcting test root",
+      "exit_code": 1,
+      "expected_outcome": "expected_tdd_red",
+      "summary": "tests 7, pass 0, fail 7 on missing PFI_RELEASE_IDENTITY"
+    },
+    {
+      "command": "Initial Python focused GREEN before independent self-review remediation",
+      "exit_code": 0,
+      "summary": "8 passed"
+    },
+    {
+      "command": "Initial Node focused GREEN before independent self-review remediation",
+      "exit_code": 0,
+      "summary": "tests 7, pass 7, fail 0"
+    },
+    {
+      "command": "Python remediation TDD RED in temporary worktree at initial binding commit",
+      "exit_code": 1,
+      "expected_outcome": "expected_tdd_red",
+      "summary": "7 passed, 2 failed on missing manifest response hash header and unsafe manifest-load error"
+    },
+    {
+      "command": "Node remediation TDD RED in temporary worktree at initial binding commit",
+      "exit_code": 1,
+      "expected_outcome": "expected_tdd_red",
+      "summary": "tests 10, pass 8, fail 2 on launcher manifest hash mismatch and stale runtime-config normalization"
+    },
+    {
+      "command": "Python remediation GREEN",
+      "exit_code": 0,
+      "summary": "9 passed"
+    },
+    {
+      "command": "Node remediation GREEN",
+      "exit_code": 0,
+      "summary": "tests 10, pass 10, fail 0"
+    },
+    {
+      "command": "Independent exact-range core and acceptance review of superseded binding candidate 9cc8e0f6",
+      "exit_code": 1,
+      "expected_outcome": "review_findings_require_remediation",
+      "summary": "Critical 1, Important 2, Minor 0: Streamlit iframe launcher query loss, invalid static manifest bypass, and silent Finder identity failure"
+    },
+    {
+      "command": "Python visible-launcher-error remediation RED",
+      "exit_code": 1,
+      "expected_outcome": "expected_tdd_red",
+      "summary": "9 passed, 1 failed on missing visible Chinese Finder recovery surface"
+    },
+    {
+      "command": "Node iframe and static-manifest remediation RED",
+      "exit_code": 1,
+      "expected_outcome": "expected_tdd_red",
+      "summary": "tests 15, pass 10, fail 5 on missing iframe parent/referrer enforcement, source conflict blocking, and static embedded validation"
+    },
+    {
+      "command": "Post-review Python remediation GREEN",
+      "exit_code": 0,
+      "summary": "10 passed"
+    },
+    {
+      "command": "Post-review Node remediation GREEN",
+      "exit_code": 0,
+      "summary": "tests 15, pass 15, fail 0"
+    },
+    {
+      "command": "Fresh independent evidence review of superseded binding 4ca28530",
+      "exit_code": 1,
+      "expected_outcome": "review_finding_requires_binding_evidence_correction",
+      "summary": "Critical 0, Important 1, Minor 0: app_info_plist launcher binary SHA remained stale after the native rebuild"
+    },
+    {
+      "command": "App evidence hash correction and verifier coverage",
+      "exit_code": 0,
+      "summary": "app_info plist, launcher binary, and CodeResources hashes now match candidate blobs and are asserted by the commit-object verifier"
+    },
+    {
+      "command": "Node, zsh, C, plist and strict codesign checks",
+      "exit_code": 0,
+      "summary": "all checks passed"
+    },
+    {
+      "command": "Task Pack Draft 2020-12 release manifest validation",
+      "exit_code": 0,
+      "summary": "schema hash pinned; 0 validation errors"
+    },
+    {
+      "command": "Isolated Chrome partial-launcher mismatch screenshot",
+      "exit_code": 0,
+      "summary": "Chinese version conflict visible; old shell hidden; no live PFI ports"
+    },
+    {
+      "command": "Full-tree temporary shadow project and semantic governance validation",
+      "exit_code": 0,
+      "summary": "project errors 0 warnings 0; sync errors 0 warnings 0; shadow removed"
+    },
+    {
+      "command": "Added-line privacy scan",
+      "exit_code": 0,
+      "summary": "private values 0; credentials 0; absolute home paths 0; raw rows 0"
+    },
+    {
+      "command": "Post-remediation working-tree Phase verifier",
+      "exit_code": 0,
+      "summary": "PASS; exact paths 37; frontend files 14; response-header integrity, runtime normalization, endpoint, launcher, schema, evidence and privacy bindings passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/StartPFI.command",
+    "PFI/VERSION",
+    "PFI/config/release_manifest.json",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/pfi_v025/stage_0/interim_stage_transition_authorization.json",
+    "PFI/docs/pfi_v025/stage_1/PHASE_1_1_RELEASE_IDENTITY_IMPLEMENTATION_PLAN.md",
+    "PFI/macos/PFI.app/Contents/Info.plist",
+    "PFI/macos/PFI.app/Contents/MacOS/PFI",
+    "PFI/macos/PFI.app/Contents/_CodeSignature/CodeResources",
+    "PFI/macos/PFI_launcher.c",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/app_info_plist.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/asset_hashes.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/backend_manifest_response.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/evidence.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/identity_matrix.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/mismatch_chinese_error.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/release_manifest_schema_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/terminal.log",
+    "PFI/scripts/pfiReleaseIdentity.sh",
+    "PFI/scripts/startPFI.sh",
+    "PFI/scripts/v025/verify_stage1_phase11.py",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+    "PFI/tests/test_v025_stage1_release_identity.py",
+    "PFI/web/app/version.js",
+    "PFI/web/index.html",
+    "PFI/web/tests/v025/stage1_release_identity.test.mjs"
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/evidence.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/terminal.log",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/release_manifest_schema_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/app_info_plist.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/asset_hashes.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/backend_manifest_response.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/identity_matrix.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/mismatch_chinese_error.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/privacy_scan.txt"
+  ],
+  "artifact_hashes": {
+    "PFI/StartPFI.command": "764e5c855debd5bdecd6bc58fbed80d8fc68f9200b14dd1d1060104265e33a05",
+    "PFI/VERSION": "35461307fe187b0161fb7e73804548d3ada9521b08115141e6ec461a4ff5d1a9",
+    "PFI/config/release_manifest.json": "ddc7db859efff04bff0513f9a3dda5c23c472e102d112c69366b4a49b55769c0",
+    "PFI/docs/pfi_v025/stage_0/interim_stage_transition_authorization.json": "368c90a5dd949bc09807c604cea23d05de476fe69e64ad723ced49bab3b5e3ac",
+    "PFI/docs/pfi_v025/stage_1/PHASE_1_1_RELEASE_IDENTITY_IMPLEMENTATION_PLAN.md": "ed89f278b06cbfd0e3f334158b541bc6248b670a0738fe515424a361b79928f1",
+    "PFI/macos/PFI.app/Contents/Info.plist": "23ab4b10a1ef2d1d932f03974ff28ebfa26f4d3fc33925ddb7dac51ef060f84b",
+    "PFI/macos/PFI.app/Contents/MacOS/PFI": "15a6666eab31a99f20b535043d3fd516ece4c36b6dd71d2dc83e42eb32fd4436",
+    "PFI/macos/PFI.app/Contents/_CodeSignature/CodeResources": "67b1a2d1bbf4776b7cd8a49530d2b2c02dc7db948cdb42c7da3f1e44b7bae925",
+    "PFI/macos/PFI_launcher.c": "3b232ef0e38b6ecb4812ca8a3b6e6e1e463fcd2abbf6029faa3ae1a2d351a4ed",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/app_info_plist.json": "b30143b7a5bbd29c2ca4da9de6fb73d45f6b6c7f9816bafa06bcef74545eaa3c",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/asset_hashes.json": "9a3f7248a83a43a985557bcfb447062d8a88dfa240be7da0da23c190acffa769",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/backend_manifest_response.json": "fc52427b265dcb41fcb5207530be86e5f74a478cead1771ee8582568dd60b9e0",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/browser_validation.json": "a9552e1b903ba110711c4bf426621b7d03f94f7b3535b18a8a467b9148edb453",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/identity_matrix.json": "a265dc40b952576aa8d4e66ecda500e9b7aa647783f4bb7a3666fc87986709b7",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/mismatch_chinese_error.png": "130812bdbc0d1e7b18872647cf79deb4987139c08ab38255d4a3ff6ad6f43a59",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/privacy_scan.txt": "db739357e5fc15170c7b88f348914344d3f2b670b85e78a8ecc3316de89ecd70",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/release_manifest_schema_validation.json": "49d7ffc1bfdf58579e9c31c698a4e5f8904290cdc58ac2a634d82459810acd97",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/risk_and_rollback.md": "ace73300005aef2cd32d8df0c33da50fa02e61795a56f5538f894f2571a37a79",
+    "PFI/reports/pfi_v025/stage_1/phase_1_1/terminal.log": "18280cbdc701432af7737e3f5ce1ffa9543611c5411ed39fe42c5c5326841793",
+    "PFI/scripts/pfiReleaseIdentity.sh": "1be255340eb48d27949073d352b8b99926962c56c24298946dccb1f62c19b857",
+    "PFI/scripts/startPFI.sh": "7baf8e4d5979db6debd2591b0b302015eb81f343c8c43245bf3d3e6d7976f603",
+    "PFI/scripts/v025/verify_stage1_phase11.py": "bc38e3e4e2e9cefa52d911c8a220acfe308baeb5eef53c76282f1d4d83f40b9d",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py": "056c3fd4fa3fa9205b34aa03a72e3b34d468a26c3bc42af1f1087c3b883efcff",
+    "PFI/tests/test_v025_stage1_release_identity.py": "f38ce2b4ec532cab2d9ec0bb5f9fe580a4ba6285062feef3e9fb806766a8f31e",
+    "PFI/web/app/version.js": "d87c1e9bccf78d0c2e18dec65ee359abb41d6264dd46825cee73db3686273ce6",
+    "PFI/web/index.html": "a8bf241c3beb23a4addd57524e9b19257571b22e3e83ea065eb423148adaefd1",
+    "PFI/web/tests/v025/stage1_release_identity.test.mjs": "4332fb873f4677ed35ad65a310061a19b6d67bef9e89ab88cf8be6bcce00b26f"
+  },
+  "release_identity": {
+    "version": "v0.2.5",
+    "build_id": "pfi-v025-s1p1-20260712.1",
+    "git_commit": "a9592b8ce457492fd0e6817f74388f146ca657c6",
+    "frontend_bundle_hash": "3c45901b88e24b579c3ef522afae50b430382b42909726c72db98ad66690ef2b",
+    "backend_build_hash": "056c3fd4fa3fa9205b34aa03a72e3b34d468a26c3bc42af1f1087c3b883efcff",
+    "app_short_version": "0.2.5",
+    "app_build_version": "20260712.1"
+  },
+  "interim_transition_authorization": "active_not_final_human_acceptance",
+  "review_status": "superseded_candidate_remediated_pending_external_postcommit_independent_rereview",
+  "explicitly_not_done": [
+    "Phase 1.2 cache, Service Worker and bfcache",
+    "Phase 1.3 canonical App install, Finder and full browser trace",
+    "GitHub push, fetch, merge and rebase",
+    "live 8501/8502 mutation or Streamlit-port release endpoint claim",
+    "financial data read or write",
+    "SQLite read or write",
+    "model, formula or parameter behavior change",
+    "whole Stage 1 acceptance",
+    "Stage 2 entry",
+    "final Stage 12 human acceptance"
+  ],
+  "risks": [
+    "identity-binding commit cannot be self-recorded in tracked manifest/evidence; external post-commit attestation remains required",
+    "superseded binding commit 9cc8e0f6 failed independent review at C1/I2/M0 and must not be attested as final",
+    "Streamlit iframe parent/referrer identity and Finder dialog are source-level tested; real Finder/browser trace remains Phase 1.3",
+    "full App/localhost cache and Finder proof remains Phase 1.2/1.3",
+    "selected historical compatibility baseline retains one pre-existing failure",
+    "seven obsolete identity tests remain hard-coded to v0.2.3/v0.2.4; retirement or redirection is routed to S12-P1-T1 before final release"
+  ],
+  "rollback": "Revert the identity-binding commit, then release-content commit; remove only its external attestation; do not touch installed Apps or user data.",
+  "requires_user_acceptance": true,
+  "requires_final_stage12_human_acceptance": true,
+  "contains_private_values": false,
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "stage_1_status": "in_progress",
+  "stage_2_status": "not_started",
+  "push_performed": false,
+  "app_install_performed": false,
+  "live_ports_mutated": false,
+  "financial_data_or_database_mutated": false
+}

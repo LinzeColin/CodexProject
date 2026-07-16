@@ -1,0 +1,167 @@
+{
+  "schema": "PFIV025DependencyRegistryV1",
+  "registry_version": "pfi-v0.2.5-stage10-phase10.2-v1",
+  "impact_policy": "changed_domain_explicit_metrics_only",
+  "ordinary_run_network_allowed": false,
+  "cache_contract": {
+    "ttl_seconds": 30,
+    "persistent": false,
+    "invalidation_mode": "composite_dependency_snapshot_hash",
+    "no_diff_recompute_scope": "none",
+    "no_diff_network_allowed": false,
+    "no_diff_codex_allowed": false,
+    "no_diff_llm_allowed": false
+  },
+  "domains": [
+    {
+      "domain_id": "raw",
+      "upstream": [],
+      "impacted_metrics": [
+        "consumption_outflow_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "sqlite.import_files.content_sha256_only"
+    },
+    {
+      "domain_id": "source",
+      "upstream": [
+        "raw"
+      ],
+      "impacted_metrics": [
+        "consumption_outflow_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "sqlite.import_files.aggregate_source_projection"
+    },
+    {
+      "domain_id": "ledger",
+      "upstream": [
+        "source"
+      ],
+      "impacted_metrics": [
+        "consumption_outflow_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "sqlite.ledger_entries.non_value_identity_projection"
+    },
+    {
+      "domain_id": "interconnection",
+      "upstream": [
+        "ledger"
+      ],
+      "impacted_metrics": [
+        "consumption_outflow_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "blocked_economic_event_adapter_contract"
+    },
+    {
+      "domain_id": "parameter",
+      "upstream": [],
+      "impacted_metrics": [
+        "cash_balance_cny",
+        "consumption_outflow_cny",
+        "investment_market_value_cny",
+        "net_worth_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "config.pfi_parameters_yaml"
+    },
+    {
+      "domain_id": "formula",
+      "upstream": [
+        "parameter"
+      ],
+      "impacted_metrics": [
+        "cash_balance_cny",
+        "consumption_outflow_cny",
+        "investment_market_value_cny",
+        "net_worth_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "config.formulas.v025_formula_registry_json"
+    },
+    {
+      "domain_id": "fx",
+      "upstream": [],
+      "impacted_metrics": [
+        "cash_balance_cny",
+        "consumption_outflow_cny",
+        "investment_market_value_cny",
+        "net_worth_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "latest_local_fx_snapshot"
+    },
+    {
+      "domain_id": "read_model",
+      "upstream": [
+        "interconnection",
+        "parameter",
+        "formula",
+        "fx"
+      ],
+      "impacted_metrics": [
+        "cash_balance_cny",
+        "consumption_outflow_cny",
+        "investment_market_value_cny",
+        "net_worth_cny",
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "streamlit_read_model",
+        "frontend_read_model",
+        "report_render"
+      ],
+      "provenance": "active_stage7_read_model_dependency_identity"
+    },
+    {
+      "domain_id": "report",
+      "upstream": [
+        "read_model"
+      ],
+      "impacted_metrics": [
+        "report_summary_status"
+      ],
+      "cache_scopes": [
+        "report_render"
+      ],
+      "provenance": "reviewed_stage9_report_contract"
+    }
+  ]
+}

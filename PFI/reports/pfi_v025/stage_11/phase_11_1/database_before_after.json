@@ -1,0 +1,33 @@
+{
+  "after": {
+    "exists": true,
+    "foreign_key_issue_count": 0,
+    "integrity_check": "ok",
+    "migration_ids": [
+      "v025_stage11_evidence_probe_v1",
+      "v025_stage11_operational_migration_registry_v1"
+    ],
+    "table_count": 11,
+    "tables": [
+      "concurrency_probe",
+      "entity_records",
+      "evidence_records",
+      "holding_snapshots",
+      "job_records",
+      "kill_probe",
+      "migration_probe",
+      "pfi_operational_migrations",
+      "source_records",
+      "source_versions",
+      "task_records"
+    ]
+  },
+  "before": {
+    "exists": false,
+    "migration_ids": [],
+    "table_count": 0,
+    "tables": []
+  },
+  "database_scope": "ephemeral_isolated_sqlite_only",
+  "schema": "PFIV025Stage11DatabaseBeforeAfterV1"
+}

@@ -1,0 +1,230 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S6-P62-PAGE-CONTRACTS",
+  "acceptance_id_origin": "project_governance_assigned_not_taskpack",
+  "acceptance_summary": {
+    "canonical_route_count": 45,
+    "historical_query_redirect_count": 45,
+    "loading_empty_error_contract_count": 45,
+    "no_js_readable_page_count": 45,
+    "page_count": 45,
+    "strategy_lab_canonical_route": "/market-research/strategy-lab",
+    "unique_data_object_count": 45,
+    "unique_layout_signature_count": 45,
+    "unique_primary_action_count": 45,
+    "workspace_count": 10
+  },
+  "allowed_files_obeyed": true,
+  "browser_artifacts": {
+    "desktop_screenshot_sha256": "44456ec43e47cb42930ec7fad12f84cebf0161d63c51a8d8e8cb7dab3a285d97",
+    "mobile_screenshot_sha256": "65334ac6ef3f6047cfb6d0885e0b36d3e82209bac84c2abaa94470d27ce3afad",
+    "nojs_screenshot_sha256": "7cb88b5b28177e1d4e055b09ad5674a228cd847ed304f07799ed4d365a81183a",
+    "trace_sha256": "c715fbca10301e111dc5e452b5b78a617fb3ed2403805ab441137e416d5cc804",
+    "trace_zip_integrity": "pass",
+    "tracked_screenshots_redacted": true,
+    "validation_sha256": "0eba7a863ea3c4c6d5baa3699cc2ed689ce1db6d104aee3c49c13c5c0a95fee6"
+  },
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/config/release_manifest.json",
+    "PFI/docs/governance/ASSURANCE_STATUS.yaml",
+    "PFI/docs/governance/DELIVERY_PLAN.md",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/MODEL_SPEC.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/governance/formula_registry.yaml",
+    "PFI/docs/governance/model_registry.yaml",
+    "PFI/docs/governance/parameter_registry.csv",
+    "PFI/docs/governance/project.yaml",
+    "PFI/docs/governance/roadmap.yaml",
+    "PFI/docs/pfi_v025/stage_6/PHASE_6_2_PAGE_CONTRACTS_IMPLEMENTATION_PLAN.md",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/browser_trace.zip",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/deep_link_fallback.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/desktop_page_contracts.png",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/evidence.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/mobile_page_contracts.png",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/navigation_behavior.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/nojs_navigation.png",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/page_contracts.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/page_data_actions.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/phase_contract.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/release_identity_binding.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/terminal.log",
+    "PFI/tests/test_v025_stage6_page_contracts.py",
+    "PFI/web/app/navigation.js",
+    "PFI/web/app/routes.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/web/tests/v025/stage6_page_contracts_browser.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "commands": [
+    {
+      "command": "pytest PFI/tests/test_v025_stage6_page_contracts.py -q",
+      "exit_code": 0,
+      "summary": "phase-focused contract tests passed; exact count remains in test_results"
+    },
+    {
+      "command": "browser_desktop_mobile_nojs",
+      "exit_code": 0,
+      "summary": "phase browser acceptance passed; detailed checks remain in browser artifacts"
+    }
+  ],
+  "contains_private_values": false,
+  "contract_artifact_hashes": {
+    "deep_link_fallback": "08cc5c83ea77c9871924e45b630922ed15661f7454aae2d60b9e028a96d45f37",
+    "navigation_behavior": "d2f7668c0cd86d5ff5dcdbb7d3998ce7129acd04f32143f381567c04aed1b04e",
+    "page_contracts": "11c44b0693cc0bef9653553ca9d394d23fd1fd12039ebf8d48260289b821a20c",
+    "page_data_actions": "6bd3dda61fa64b08d883aaf95057a588805594bc6cae26ac5962a0eee3d46348",
+    "phase_contract": "9997750177d70265839c2188ef733b6e3ac24ccae20d9e300bcf6f0b3f184f5d"
+  },
+  "contract_id": "PFI-V025-STAGE6-PHASE62-PAGE-CONTRACTS",
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_6/phase_6_2/evidence.json"
+  ],
+  "explicitly_not_done": [
+    "Stage 6 independent whole-stage acceptance in the original phase commit",
+    "Stage 7 implementation",
+    "GitHub push or canonical PFI.app installation",
+    "real financial data or database operation"
+  ],
+  "generated_at": "2026-07-15T03:48:45+10:00",
+  "git_commit": "80396224f049658e9293f8da313a92a50431f903",
+  "governance": {
+    "actual_changed_file_count": 45,
+    "check_render_drift_count": 0,
+    "check_render_reference_issue_count": 0,
+    "complete_checkout_project_validation_errors": 0,
+    "complete_checkout_project_validation_warnings": 0,
+    "formula_ids_changed": [],
+    "model_ids_changed": [],
+    "parameter_ids_changed": [],
+    "rendered_human_entry_count": 3
+  },
+  "implementation_base": "6b96bcb655b1c11d91b23dd10cf25b33e37f0242",
+  "iteration_id": "ITER-20260715-PFI-V025-S6-P62",
+  "phase": "6.2",
+  "phase_boundaries": {
+    "final_human_acceptance": false,
+    "next_task_id": "S6-P3-T1",
+    "phase_6_2_status": "candidate_pass",
+    "phase_6_3_status": "not_started",
+    "production_accepted": false,
+    "stage_6_whole_stage_review_status": "not_started"
+  },
+  "privacy_and_scope": {
+    "app_install_performed": false,
+    "contains_private_values": false,
+    "database_changed": false,
+    "evidence_text_scan": "pass",
+    "external_network_performed": false,
+    "finder_used": false,
+    "loopback_browser_network_performed": true,
+    "push_performed": false,
+    "real_financial_data_mutated": false,
+    "real_financial_data_read": false,
+    "screenshots_visually_reviewed": true,
+    "trace_decompression_scan": "pass"
+  },
+  "progress": {
+    "completed_tasks": 80,
+    "completion_percent": 51.28,
+    "stage_6_completed_tasks": 8,
+    "stage_6_completion_percent": 66.67,
+    "stage_6_total_tasks": 12,
+    "total_tasks": 156
+  },
+  "release_identity": {
+    "backend_build_hash": "43b918f761e80bbc4c6e2de54a32c714703cc4d9a60f67b7a180e1cea222ddbb",
+    "binding_semantics": "preserved_stage1_binding_until_final_stage12_release_transaction",
+    "build_id": "pfi-v025-s1p1-20260712.1",
+    "configured_git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+    "frontend_bundle_hash": "70cbc136567db2c3f4ec57001294cdc59c1ac317d3c006d0215d79961886b6d1",
+    "manifest_sha256": "05e5597d99bcc438ad72d3ac327565084226e45443d532ab7cb50014c5b5032e",
+    "version": "v0.2.5"
+  },
+  "requires_user_acceptance": true,
+  "risks": [
+    "Phase-local evidence alone cannot prove cross-phase current-HEAD behavior.",
+    "Installed App parity remains deferred to the Stage 12 release transaction."
+  ],
+  "rollback": "Revert only the Phase 6.2 implementation commit and its review-time schema augmentation; do not rewrite immutable commit evidence, touch real data, push, or install the App.",
+  "schema": "PFIV025Stage6Phase62EvidenceV1",
+  "schema_remediation": {
+    "immutable_original_commit": "80396224f049658e9293f8da313a92a50431f903",
+    "reason": "Task Pack evidence_pack.schema.json required fields were absent from the phase-local custom schema.",
+    "status": "fixed_during_stage6_whole_review"
+  },
+  "source_contracts": {
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "taskpack_zip_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+  },
+  "stage": 6,
+  "status": "candidate_pass",
+  "task_ids": [
+    "S6-P2-T1",
+    "S6-P2-T2",
+    "S6-P2-T3",
+    "S6-P2-T4"
+  ],
+  "test_results": [
+    {
+      "name": "expected_red",
+      "result": "4 expected failures before implementation",
+      "status": "pass"
+    },
+    {
+      "name": "phase_6_2_focused",
+      "result": "4 passed",
+      "status": "pass"
+    },
+    {
+      "name": "phase_6_2_navigation_stage_5_regression",
+      "result": "19 passed",
+      "status": "pass"
+    },
+    {
+      "name": "stage_1_python_identity_cache",
+      "result": "24 passed, 2 dependency deprecation warnings",
+      "status": "pass"
+    },
+    {
+      "name": "stage_1_node_identity_cache",
+      "result": "28 passed",
+      "status": "pass"
+    },
+    {
+      "name": "browser_desktop_mobile_nojs",
+      "result": "desktop pass; mobile pass; no-JS pass",
+      "status": "pass"
+    },
+    {
+      "name": "javascript_syntax",
+      "result": "navigation.js, routes.js and shell.js",
+      "status": "pass"
+    },
+    {
+      "name": "renderer",
+      "result": "drift 0, reference issues 0",
+      "status": "pass"
+    },
+    {
+      "name": "complete_checkout_project_governance",
+      "result": "errors 0, warnings 0",
+      "status": "pass"
+    }
+  ],
+  "version": "v0.2.5"
+}

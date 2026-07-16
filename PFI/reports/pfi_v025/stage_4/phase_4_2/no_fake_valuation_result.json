@@ -1,0 +1,12 @@
+{
+  "confirmed_zero_count": 0,
+  "cost_basis_guess_used": false,
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "legacy_fx_reference_used": false,
+  "non_ready_metric_count": 3,
+  "non_ready_value_count": 0,
+  "result": "pass",
+  "transaction_holding_inference_used": false,
+  "valuation_calculation_count": 0
+}

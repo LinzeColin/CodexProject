@@ -105,9 +105,6 @@ pfi_os_ensure_app_python() {
   local python_bin
   python_bin="$(pfi_os_choose_app_python "$project_dir" || true)"
   if [[ -n "$python_bin" ]]; then
-    if [[ "$python_bin" == "$project_dir/.venv/bin/python" ]]; then
-      date -u +"%Y-%m-%dT%H:%M:%SZ" > "$project_dir/.venv/.pfi_os_app_ready"
-    fi
     printf "%s\n" "$python_bin"
     return 0
   fi

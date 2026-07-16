@@ -1,0 +1,69 @@
+{
+  "accessibility": {
+    "duplicate_primary_label_count": 0,
+    "expected_primary_navigation_count": 10,
+    "found_primary_navigation_count": 10,
+    "legacy_alias_primary_navigation_count": 0,
+    "non_ignored_node_count": 1187,
+    "source": "Chrome_DevTools_Protocol_Accessibility.getFullAXTree"
+  },
+  "check_count": 17,
+  "checks": {
+    "accessibility_tree_pass": true,
+    "canonical_primary_routes": true,
+    "holding_missing_source_truthful": true,
+    "loopback_only": true,
+    "no_console_errors": true,
+    "no_false_zero": true,
+    "no_http_errors": true,
+    "no_old_primary_ui": true,
+    "no_page_errors": true,
+    "no_template_clone": true,
+    "performance_budget_pass": true,
+    "real_import_confirmed": true,
+    "real_import_four_git_objects": true,
+    "real_import_record_coverage": true,
+    "real_import_replay_idempotent": true,
+    "report_truth_states": true,
+    "route_matrix_pass": true
+  },
+  "contains_private_values": false,
+  "diagnostics": {
+    "blocked_external": [],
+    "console_errors": [],
+    "http_errors": [],
+    "page_errors": [],
+    "requested_origin_count": 2
+  },
+  "external_network_performed": false,
+  "finder_used": false,
+  "loopback_only": true,
+  "passed_check_count": 17,
+  "performance": {
+    "initial_navigation": {
+      "dom_content_loaded_ms": 191,
+      "first_contentful_paint_ms": 192,
+      "load_event_ms": 196
+    },
+    "initial_navigation_budget_ms": 2500,
+    "maximum_route_navigation_ms": 254,
+    "route_count": 10,
+    "route_navigation_budget_ms": 3000
+  },
+  "schema": "PFIV025Stage12Phase121BrowserValidationV1",
+  "screenshots": [
+    {
+      "file": "real_import_preview_redacted.png",
+      "sha256": "31149c5787cd9174421f166a351e24b4d9c1eb0e1723965e915ca204ceab65dc"
+    },
+    {
+      "file": "holding_source_blocked.png",
+      "sha256": "d75409c1654584abffed4217239c228a3bd911bd1336af62708db766231b5a0b"
+    },
+    {
+      "file": "report_truth_states.png",
+      "sha256": "43dea5481ae349c89c5b7598b92b2df607a26e6017db9ff0b3b17396c44cbb60"
+    }
+  ],
+  "status": "pass"
+}

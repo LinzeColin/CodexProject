@@ -1,0 +1,113 @@
+PFI v0.2.5 Stage 1 Phase 1.2 terminal ledger
+Acceptance: ACC-PFI-V025-S1-P12-CACHE-GOVERNANCE
+Phase base: 1a995226d34822b5e98191a716bca665136e300f
+
+[RED-001]
+command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_cache_policy.py -q
+exit_code: 1
+summary: 9 failed; every failure was a missing Phase 1.2 wrapper, cache-policy callable, launcher binding, or HTTP contract. Collection and syntax succeeded.
+
+[RED-002]
+command: node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs
+exit_code: 1
+summary: 8 failed; failures were missing Service Worker cleanup, cache-policy validation, pageshow revalidation, and epoch-ordering contracts. Test discovery and JavaScript parsing succeeded.
+
+[GREEN-001]
+command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_cache_policy.py -q
+exit_code: 0
+summary: 10 passed; includes stable semantic hashing, all cache dimensions, privacy-safe policy, private no-store API validators, real Streamlit AppTest cache hit, launcher binding, and isolated same-process HTTP headers/304.
+
+[GREEN-002]
+command: node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs PFI/web/tests/v025/stage1_release_identity.test.mjs
+exit_code: 0
+summary: 23 passed; includes Service Worker/CacheStorage cleanup, fail-closed controller, cache-policy validation, paired static opt-out, pageshow persisted revalidation, stale-epoch isolation, and all Phase 1.1 identity regressions.
+
+[EXPECTED-BINDING-RED-001]
+command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py -q
+exit_code: 1
+summary: 9 passed, 1 failed only because release_manifest.json still contains the Phase 1.1 frontend hash; Phase 1.2 binding commit has not yet been created.
+
+[GREEN-003]
+command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_cache_policy.py PFI/tests/test_v025_stage1_release_identity.py -q
+exit_code: 0
+summary: 20 passed; Phase 1.2 cache tests and Phase 1.1 release-identity regressions are both green after binding to content commit 5edd378828bc7795cd2920a73be19657a3f749b7.
+
+[GREEN-004]
+command: node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs PFI/web/tests/v025/stage1_release_identity.test.mjs
+exit_code: 0
+summary: 23 passed, 0 failed.
+
+[GREEN-005]
+command: PYTHONPATH=PFI/src PFI/.venv/bin/python PFI/scripts/v025/release_cache_contract.py --project-root PFI --policy-json
+exit_code: 0
+summary: composite cache policy valid=true; asset_identity_valid=true; TTL=30; actual Streamlit=1.35.0; output contains hashes/status only.
+
+[BROWSER-FIXTURE-001]
+command: node PFI/scripts/v025/browser_validate_stage1_phase12.mjs --pfi-root PFI --output-dir PFI/reports/pfi_v025/stage_1/phase_1_2
+exit_code: 1
+summary: pre-launch fixture path error (relative Python executable under changed cwd); no service/browser started. Fixed by absolute-path normalization.
+
+[BROWSER-FIXTURE-002]
+command: same isolated browser command after path fix
+exit_code: 1
+summary: 9/10 browser checks passed; Chinese text was decoded without UTF-8 charset and immediate-state observation occurred after the fast response. Fixed charset and captured pending state in the dispatch call.
+
+[GREEN-006]
+command: PFI_PLAYWRIGHT_MODULE_DIR=<cached-module-dir> PFI_PYTHON=PFI/.venv/bin/python node PFI/scripts/v025/browser_validate_stage1_phase12.mjs --pfi-root PFI --output-dir PFI/reports/pfi_v025/stage_1/phase_1_2
+exit_code: 0
+summary: HTTP 4/4 and browser 10/10 checks passed; real back/forward navigation type was back_forward with persisted=false; deterministic persisted mismatch path passed; no 8501/8502 access, console error, page error, install, or dependency download.
+
+[GREEN-007]
+command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B PFI/scripts/v025/verify_stage1_phase12.py
+exit_code: 0
+summary: worktree exact verifier PASS; 36 changed paths, 14 frontend sources, HTTP 4, browser 10, pinned Roadmap/TaskPack hashes and privacy/status boundaries passed.
+
+[GREEN-008]
+command: temporary detached full-tree shadow; overlay exact 36 Phase paths; validate_project_governance --project PFI; validate_governance_sync --changed-only --base-ref PHASE_BASE --semantic; remove worktree
+exit_code: 0
+summary: full-tree project governance errors 0 warnings 0; semantic governance sync errors 0 warnings 0; temporary worktree removed.
+
+[INDEPENDENT-REVIEW-001]
+command: three independent read-only reviews of binding commit df7e2add249f3547d1f6c37438c0b8085dc3480d
+exit_code: 1
+summary: combined C0/I4/M0; wrapper did not prestart/verify the ephemeral API owner, stable hash included financial value, HTTP validators violated If-None-Match precedence and non-release scope, and trace ZIP members leaked an absolute home path. The pair 5edd3788/df7e2add is superseded and receives no attestation.
+
+[REMEDIATION-RED-001]
+command: PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage1_cache_policy.py
+exit_code: 1
+summary: 4 failed and 8 passed; the four failures exactly reproduced the independent-review findings before implementation, with successful collection and no fixture/dependency failure.
+
+[REMEDIATION-GREEN-001]
+command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_cache_policy.py PFI/tests/test_v025_stage1_release_identity.py -q
+exit_code: 0
+summary: 22 passed with 2 upstream deprecation warnings; includes value-excluding semantic hash, pre-CLI ephemeral owner, conditional precedence/weak-list-wildcard matching, non-release route isolation and all Phase 1.1 regressions.
+
+[REMEDIATION-GREEN-002]
+command: node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs PFI/web/tests/v025/stage1_release_identity.test.mjs
+exit_code: 0
+summary: 23 passed, 0 failed.
+
+[REMEDIATION-GREEN-003]
+command: release_cache_contract key/policy plus node --check, py_compile, zsh -n and git diff --check
+exit_code: 0
+summary: cache key 5ac651d6... valid; source hashes match remediation content commit b3885f15; syntax and whitespace checks passed.
+
+[REMEDIATION-GREEN-004]
+command: cached Playwright/Chromium isolated browser validator with random loopback origins and PFI_V021_RUNTIME_API_PORT=0
+exit_code: 0
+summary: HTTP 4/4 and browser 10/10; the wrapper prestarted a non-8766 same-process API owner; no 8501/8502 access, install or dependency download.
+
+[REMEDIATION-GREEN-005]
+command: unzip integrity test plus decompressed-member absolute-home scan for playwright_trace.zip
+exit_code: 0
+summary: 22 ZIP members readable; absolute home findings 0 after explicit trace sanitization.
+
+[REMEDIATION-GREEN-006]
+command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B PFI/scripts/v025/verify_stage1_phase12.py
+exit_code: 0
+summary: exact worktree verifier PASS; 36 changed paths, final content b3885f15, Python expected 22, Node expected 23, HTTP 4, browser 10 and decompressed trace privacy passed.
+
+[REMEDIATION-GREEN-007]
+command: temporary detached full-tree shadow at Phase base; disable sparse checkout; overlay exact Phase diff; validate_project_governance --project PFI; validate_governance_sync --changed-only --base-ref PHASE_BASE --semantic; remove worktree
+exit_code: 0
+summary: full-tree project governance errors 0 warnings 0; semantic governance sync errors 0 warnings 0; temporary worktree removed.

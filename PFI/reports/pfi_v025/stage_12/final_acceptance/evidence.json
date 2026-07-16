@@ -1,0 +1,61 @@
+{
+  "allowed_files_obeyed": true,
+  "app_reinstall_performed": false,
+  "changed_files": [
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/human_acceptance.json",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/phase_contract.json",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/release_gate.json",
+    "PFI/scripts/v025/stage12_whole_review_final_acceptance.py",
+    "PFI/scripts/v025/stage12_whole_review_rereview.py",
+    "PFI/tests/test_v025_stage12_release_freeze.py",
+    "PFI/tests/test_v025_stage12_whole_review_final_acceptance.py",
+    "PFI/tests/test_v025_stage12_whole_review_rereview.py"
+  ],
+  "commands": [
+    {
+      "command": "internal exact A/B/C/index/request/App/schema gate",
+      "exit_code": 0,
+      "summary": "all exact final-acceptance preconditions passed"
+    }
+  ],
+  "contains_private_values": false,
+  "evidence_files": [
+    "human_acceptance.json",
+    "release_gate.json",
+    "phase_contract.json",
+    "release_freeze.json",
+    "risk_and_rollback.md",
+    "terminal.log"
+  ],
+  "explicitly_not_done": [
+    "GitHub main upload",
+    "canonical PFI.app final reinstall",
+    "production delivery parity acceptance",
+    "v0.2.6 work"
+  ],
+  "final_human_acceptance": true,
+  "finder_used": false,
+  "git_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "git_commit_semantics": "exact accepted product candidate A; closure B and rereview C are non-runtime reviewed evidence anchors",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "overall_completed_task_count": 156,
+  "overall_total_task_count": 156,
+  "phase": "12.3",
+  "production_accepted": false,
+  "push_performed": false,
+  "release_freeze_performed": true,
+  "requires_user_acceptance": true,
+  "risks": [
+    "The five explicitly accepted nonblocking P2 residuals remain open by design",
+    "The one permitted final delivery transaction still requires separate preflight and parity proof"
+  ],
+  "rollback": "Before delivery, revert only the final-acceptance governance overlay; never rewrite A/B/C or restore migrated directories.",
+  "schema": "PFIV025Stage12FinalAcceptanceEvidenceV1",
+  "stage": 12,
+  "stage_12_accepted": true,
+  "status": "candidate_pass",
+  "task_id": "S12-P3-T4",
+  "task_status": "completed",
+  "version": "v0.2.5"
+}

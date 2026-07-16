@@ -1,0 +1,31 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P43-METRIC-CONSISTENCY",
+  "acceptance_id_origin": "project_governance_assigned_not_taskpack",
+  "current_phase_only": true,
+  "explicitly_not_done": [
+    "Stage 4 whole-stage independent review, remediation, re-review and transition acceptance",
+    "Stage 5 formula/model implementation",
+    "private financial row loading, production writes, GitHub push and canonical app install"
+  ],
+  "financial_fixture_fallback_allowed": false,
+  "finder_used": false,
+  "phase": "4.3",
+  "phase_id": "V025-S4-P4.3",
+  "read_only_real_sources": true,
+  "stage": 4,
+  "stage_4_whole_stage_review_done": false,
+  "surface_ids": [
+    "homepage",
+    "accounts",
+    "investment",
+    "consumption",
+    "report"
+  ],
+  "task_ids": [
+    "S4-P3-T1",
+    "S4-P3-T2",
+    "S4-P3-T3",
+    "S4-P3-T4"
+  ],
+  "version": "v0.2.5"
+}

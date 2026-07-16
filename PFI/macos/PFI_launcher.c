@@ -15,11 +15,6 @@ static int executable_exists(const char *path) {
   return path != NULL && path[0] != '\0' && access(path, X_OK) == 0;
 }
 
-static int file_exists(const char *path) {
-  struct stat st;
-  return path != NULL && path[0] != '\0' && stat(path, &st) == 0;
-}
-
 static void dirname_in_place(char *path) {
   char *slash = strrchr(path, '/');
   if (slash == NULL) {
@@ -56,7 +51,24 @@ static int read_first_line(const char *path, char *out, size_t out_size) {
 
 static int spawn_detached(const char *path, char *const argv[]) {
   pid_t pid = 0;
-  int rc = posix_spawn(&pid, path, NULL, NULL, argv, environ);
+  int rc = 0;
+#ifdef PFI_STAGE1_ISOLATED_PROCESS_GROUP
+  posix_spawnattr_t attributes;
+  rc = posix_spawnattr_init(&attributes);
+  if (rc != 0) {
+    return rc;
+  }
+  rc = posix_spawnattr_setflags(&attributes, POSIX_SPAWN_SETPGROUP);
+  if (rc == 0) {
+    rc = posix_spawnattr_setpgroup(&attributes, 0);
+  }
+  if (rc == 0) {
+    rc = posix_spawn(&pid, path, NULL, &attributes, argv, environ);
+  }
+  posix_spawnattr_destroy(&attributes);
+#else
+  rc = posix_spawn(&pid, path, NULL, NULL, argv, environ);
+#endif
   if (rc != 0) {
     return rc;
   }
@@ -76,6 +88,10 @@ static void show_error(const char *message) {
       NULL,
   };
   spawn_detached("/usr/bin/osascript", argv);
+}
+
+static void show_release_error(void) {
+  show_error("display dialog \"PFI 版本冲突或本地发布身份缺失。请重新启动 PFI；仍不一致时从受信任的本地 checkout 重新安装 PFI.app，并清除缓存后重试。\" buttons {\"好\"} default button \"好\" with icon caution");
 }
 
 static void add_candidate(char candidates[][PATH_MAX], int *count, const char *candidate) {
@@ -150,6 +166,8 @@ int main(void) {
   }
 
   int dry_run = getenv("PFI_APP_LAUNCH_DRY_RUN") != NULL && strcmp(getenv("PFI_APP_LAUNCH_DRY_RUN"), "1") == 0;
+  int identity_dry_run = getenv("PFI_APP_LAUNCH_IDENTITY_DRY_RUN") != NULL &&
+                         strcmp(getenv("PFI_APP_LAUNCH_IDENTITY_DRY_RUN"), "1") == 0;
 
   for (int i = 0; i < candidate_count; i++) {
     char command_path[PATH_MAX];
@@ -166,18 +184,34 @@ int main(void) {
           command_path);
       return 0;
     }
-    return spawn_command_direct(command_path) ? 0 : 1;
+    if (identity_dry_run) {
+      printf(
+          "PFI_APP_LAUNCH_IDENTITY: app_path=%s project=%s command_path=%s mode=spawn-command\n",
+          app_dir,
+          candidates[i],
+          command_path);
+      return 0;
+    }
+    if (setenv("PFI_LAUNCHER_APP_PATH", app_dir, 1) != 0) {
+      show_release_error();
+      return 1;
+    }
+    if (!spawn_command_direct(command_path)) {
+      show_release_error();
+      return 1;
+    }
+    return 0;
   }
 
   if (dry_run) {
     printf("PFI_APP_LAUNCH: missing_project\n");
     return 1;
   }
-
-  if (file_exists(root_file)) {
-    show_error("display dialog \"PFI local project was not found or StartPFI.command is not executable. Reinstall PFI.app from a local checkout.\" buttons {\"OK\"} default button \"OK\" with icon caution");
-  } else {
-    show_error("display dialog \"PFI local project binding is missing. Reinstall PFI.app from a local checkout.\" buttons {\"OK\"} default button \"OK\" with icon caution");
+  if (identity_dry_run) {
+    printf("PFI_APP_LAUNCH_IDENTITY: missing_project app_path=%s\n", app_dir);
+    return 1;
   }
+
+  show_release_error();
   return 1;
 }

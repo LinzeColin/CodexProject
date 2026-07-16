@@ -1,0 +1,22 @@
+{
+  "draft": "2020-12",
+  "phase": "4.2",
+  "schemas": [
+    {
+      "path": "PFI/docs/pfi_v025/stage_4/holding_snapshot.schema.json",
+      "schema": "PFIV025HoldingSnapshotV1",
+      "status": "valid"
+    },
+    {
+      "path": "PFI/docs/pfi_v025/stage_4/valuation_snapshot.schema.json",
+      "schema": "PFIV025ValuationSnapshotV1",
+      "status": "valid"
+    },
+    {
+      "path": "PFI/docs/pfi_v025/stage_4/metric_state.schema.json",
+      "schema": "TaskPack canonical metric state",
+      "status": "valid"
+    }
+  ],
+  "version": "v0.2.5"
+}

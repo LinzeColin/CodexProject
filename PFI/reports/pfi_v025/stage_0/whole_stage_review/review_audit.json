@@ -1,0 +1,75 @@
+{
+  "schema": "PFIV025Stage0WholeReviewAuditV1",
+  "version": "v0.2.5",
+  "stage": 0,
+  "review_id": "PFI-V025-S0-WHOLE-REVIEW",
+  "acceptance_id": "ACC-PFI-V025-S0-WHOLE-REVIEW",
+  "review_base": "a590a3da20f2cf569c11114a3f46e1ff1a0ef6f2",
+  "observed_at": "2026-07-12T05:26:02+10:00",
+  "status": "pass_after_remediation",
+  "findings": [
+    {
+      "finding_id": "PFI-V025-S0-REVIEW-C01",
+      "severity": "Critical",
+      "status": "fixed",
+      "summary": "Stage 0 lacked a durable whole-stage closure that persisted the external compensation resolution and user acceptance target.",
+      "resolution": "Added a tracked whole-stage evidence index, executable verifier, typed execution ledger, review audit, rollback record and evidence-bound acceptance request. Human acceptance remains intentionally absent."
+    },
+    {
+      "finding_id": "PFI-V025-S0-REVIEW-I01",
+      "severity": "Important",
+      "status": "fixed",
+      "summary": "Phase 0.2 and Phase 0.3 terminal records were semantic task ledgers rather than a portable fresh executable command ledger.",
+      "resolution": "Added verify_stage0_whole_review.py with an exact invocation. terminal.log now reserves COMMAND for complete argv and represents independent reviews or temporary-shadow setup as typed result records."
+    },
+    {
+      "finding_id": "PFI-V025-S0-REVIEW-I02",
+      "severity": "Important",
+      "status": "fixed",
+      "summary": "The trace lifecycle initially omitted the external review-commit attestation gate retained by the other current-truth surfaces.",
+      "resolution": "Aligned trace, event, delivery and owner/status lifecycle to pending external review-commit attestation plus evidence-bound user acceptance."
+    },
+    {
+      "finding_id": "PFI-V025-S0-REVIEW-M01",
+      "severity": "Minor",
+      "status": "fixed",
+      "summary": "The historical priority registry selector FND-030 was not unique inside PHASE_0_3_DESIGN.md.",
+      "resolution": "Preserved immutable P03 evidence and added the correction-specific unique line selector overlay below, which supersedes the ambiguous selector for all current interpretation."
+    }
+  ],
+  "selector_compensation": {
+    "correction_id": "PFI-V025-S0-WHOLE-REVIEW-FND030-SELECTOR",
+    "superseded_registry_id": "SUBFINDING-FND-003-P1",
+    "superseded_selector": "FND-030",
+    "artifact_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+    "artifact_commit": "31368570082c34eca50c72c7d7b2ef46b0e6854d",
+    "artifact_sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+    "selector_type": "line_exact",
+    "selector": "| FND-030 | `PFI/web/app/home.js` 缺失 | P01-RISK-03;P01-CONFLICT:FORMAL_UI_HOME_SOURCE_MISSING | NOT_APPLICABLE | New / P1 | VERIFIED / SUBFINDING-FND-003-P1 | P03_TERM / new_current_fact | NOT_APPLICABLE | S1-P1-T3;S6-P2-T1;S6-P2-T2 |",
+    "selector_match_count": 1,
+    "source_text_sha256": "3ce280f9dd90e938a7727bb8b0ee0c697fd98a47fb19bd94c3434d2ef2ad25df",
+    "current_disposition_ref": "PFI-V025-S0-P03-COMP-FND030",
+    "current_disposition": "N/A/non-gap"
+  },
+  "initial_review_counts": {
+    "critical": 1,
+    "important": 2,
+    "minor": 1
+  },
+  "post_remediation_counts": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "privacy": {
+    "status": "pass",
+    "private_financial_values": 0,
+    "credentials": 0,
+    "raw_rows": 0,
+    "raw_filenames": 0,
+    "email_like_false_positive": "git_ssh_remote_token",
+    "contains_private_values": false
+  },
+  "stage_1_status": "not_started",
+  "human_acceptance_status": "absent_pending_explicit_user_acceptance"
+}

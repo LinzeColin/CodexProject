@@ -1,0 +1,26 @@
+{
+  "contains_private_values": false,
+  "failed_manifests": [],
+  "manifest_count": 2,
+  "manifests": [
+    {
+      "declared_file_count": 22,
+      "mismatch_count": 0,
+      "mismatches": [],
+      "observed_file_count": 22,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_3/artifact_manifest.json",
+      "status": "pass"
+    },
+    {
+      "declared_file_count": 24,
+      "mismatch_count": 0,
+      "mismatches": [],
+      "observed_file_count": 24,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/remediation/artifact_manifest.json",
+      "status": "pass"
+    }
+  ],
+  "schema": "PFIV025Stage12WholeReviewRereviewArtifactIntegrityV1",
+  "status": "pass",
+  "total_mismatch_count": 0
+}

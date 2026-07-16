@@ -1,0 +1,57 @@
+{
+  "adapted_event_type_counts": {
+    "consumption": 3567,
+    "fund_subscription": 21,
+    "income": 146,
+    "investment_buy": 12,
+    "investment_sell": 3133
+  },
+  "adapted_financial_event_count": 6879,
+  "contains_private_values": false,
+  "coverage_end": "2026-06-03",
+  "coverage_start": "2022-06-06",
+  "currencies": [
+    "CNY"
+  ],
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "input_content_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+  "input_record_count": 8815,
+  "isolation_mode": "immutable_git_object_snapshot",
+  "path_alias": "MetaDatabase/PFI",
+  "phase_id": "V025-S5-P5.3",
+  "published_event_type_counts": {
+    "fund_subscription": 21,
+    "income": 146,
+    "investment_purchase": 12,
+    "investment_sale": 3133,
+    "living_consumption": 3567
+  },
+  "published_record_count": 6879,
+  "raw_rows_emitted": 0,
+  "resolved_commit": "61a14d9366c68a8c849c0c056a107116d5b377d1",
+  "review_queue_record_count": 1936,
+  "schema": "PFIV025Stage5Phase53SourceSnapshotAttestationV1",
+  "silent_drop_count": 0,
+  "source_id": "SRC-TRANSACTIONS-ALIPAY",
+  "source_identity_after": {
+    "input_bytes": 2387686,
+    "input_content_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+    "resolved_commit": "61a14d9366c68a8c849c0c056a107116d5b377d1",
+    "snapshot_immutable": true,
+    "source_write_capability": false,
+    "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba"
+  },
+  "source_identity_before": {
+    "input_bytes": 2387686,
+    "input_content_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+    "resolved_commit": "61a14d9366c68a8c849c0c056a107116d5b377d1",
+    "snapshot_immutable": true,
+    "source_write_capability": false,
+    "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba"
+  },
+  "source_mutation_performed": false,
+  "status": "pass",
+  "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba",
+  "version": "v0.2.5"
+}

@@ -1,0 +1,23 @@
+Stage 4 whole-review RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage4_whole_review.py -q
+result=expected collection error; stage4_whole_review module absent; exit=2
+
+INITIAL INDEPENDENT REVIEW:
+result=C0 I5 M1; remediation required
+
+BROWSER VALIDATION:
+PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B PFI/scripts/v025/browser_validate_stage4_whole_review.py
+result=pass; screenshot_bytes=119175; seven visible metric cards; false_zero_render_count=0; Finder=false; network=false
+
+REREVIEW TARGET:
+12 tasks; 6 acceptance criteria; 4 safety stops; C0 I0 M0
+seven metrics=not_loaded/null; five surfaces=one hash; production valuation=not_run
+
+FINAL REREVIEW:
+- Stage 4 focused and whole-review suite: 46 passed
+- read-only Stage 4 whole-review verifier: status=pass; errors=[]
+- lean check-render: drift=0; reference_issues=0
+- full-checkout shadow project governance: errors=0; warnings=0
+- full-checkout shadow semantic sync/enforce-sync: errors=0; warnings=0
+- exact changed scope and git diff --check: pass
+- post-remediation review: C0 I0 M0; Stage 5 work=false

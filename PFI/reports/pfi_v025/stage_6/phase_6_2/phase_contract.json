@@ -1,0 +1,20 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S6-P62-PAGE-CONTRACTS",
+  "app_install_performed": false,
+  "contract_id": "PFI-V025-STAGE6-PHASE62-PAGE-CONTRACTS",
+  "current_phase_only": true,
+  "finder_used": false,
+  "implementation_base": "6b96bcb655b1c11d91b23dd10cf25b33e37f0242",
+  "iteration_id": "ITER-20260715-PFI-V025-S6-P62",
+  "phase_6_3_started": false,
+  "push_performed": false,
+  "schema": "PFIV025Stage6Phase62RunContractV1",
+  "stage_6_whole_stage_review_started": false,
+  "status": "candidate_pass",
+  "task_ids": [
+    "S6-P2-T1",
+    "S6-P2-T2",
+    "S6-P2-T3",
+    "S6-P2-T4"
+  ]
+}

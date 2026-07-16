@@ -1,0 +1,37 @@
+PFI v0.2.5 Stage 0 Phase 0.1 Git State
+captured_at_utc: 2026-07-10T21:22:39Z
+cwd: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git_root: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch: codex/pfi
+upstream: origin/main
+remote_url: git@github.com:LinzeColin/CodexProject.git
+base_head: 3bc8e4e5780fd19594161b574763a9b2e65b7d30
+origin_main: 3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb
+live_remote_main: 3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb
+ahead_behind: 2	0
+worktree_porcelain: CLEAN
+sparse_checkout:
+/*
+!/*/
+/PFI/
+/scripts/
+/docs/
+!/docs/*/
+/docs/governance/
+/governance/
+!/governance/*/
+/governance/projects.yaml
+recent_commits:
+3bc8e4e57 (HEAD -> codex/pfi) docs(PFI): plan v0.2.5 stage 0 phase 0.1
+cd0898fda docs(PFI): design v0.2.5 stage 0 phase 0.1
+3c7626008 (origin/main, origin/HEAD) codex: 备份并清理 Codex session 历史 2026-07-11
+6bd6f12b6 codex: 备份并清理 Codex session 历史 2026-07-11
+5e48e7397 docs(PFI): prepare final delivery transaction
+v024_product_commit: 17b9f59794740f927c5f531ba1aa334621a832e5
+v024_evidence_commit: 5e48e739774575f4d198d6268271e557de434897
+v024_evidence_parent: 17b9f59794740f927c5f531ba1aa334621a832e5
+v024_evidence_in_remote_history: true
+v024_pfi_subtree_changed_after_evidence: false
+v024_current_live_verifier: not_replayable_after_unrelated_main_advance
+roadmap_sha256: fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b
+taskpack_sha256: 591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2

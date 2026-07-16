@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PFI Metric State",
+  "type": "object",
+  "required": [
+    "metric_id",
+    "status",
+    "currency",
+    "source_ids",
+    "record_count",
+    "formula_id",
+    "read_model_hash",
+    "blocking_reason_zh"
+  ],
+  "properties": {
+    "metric_id": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "currency": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "confirmed_zero",
+        "partial_coverage",
+        "not_loaded",
+        "source_missing",
+        "path_error",
+        "parse_failed",
+        "outdated_snapshot",
+        "permission_denied",
+        "calculation_failed",
+        "reconciliation_failed",
+        "valuation_missing",
+        "filtered_empty"
+      ]
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "record_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "coverage_start": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "coverage_end": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "data_as_of": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "valued_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fx_snapshot_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "formula_id": {
+      "type": "string"
+    },
+    "formula_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "formula_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parameter_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "data_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "read_model_hash": {
+      "type": "string"
+    },
+    "classification_confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "source_coverage": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "reconciliation_coverage": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "valuation_coverage": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "model_validation": {
+      "enum": [
+        "validated",
+        "partial",
+        "blocked",
+        "not_applicable",
+        null
+      ]
+    },
+    "report_completeness": {
+      "enum": [
+        "complete",
+        "partial",
+        "blocked",
+        null
+      ]
+    },
+    "blocking_reason_zh": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "calculation_state": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "not": {
+              "enum": [
+                "ready",
+                "confirmed_zero"
+              ]
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "value": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true
+}

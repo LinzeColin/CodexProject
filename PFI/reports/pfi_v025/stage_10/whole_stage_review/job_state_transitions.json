@@ -1,0 +1,27 @@
+{
+  "durable_states": [
+    "queued",
+    "running",
+    "retrying",
+    "succeeded",
+    "failed",
+    "cancelled",
+    "dead_letter"
+  ],
+  "formal_ui_exact_state_projection": {
+    "dead_letter": "dead_letter",
+    "failed": "failed",
+    "retrying": "retrying",
+    "succeeded": "succeeded"
+  },
+  "healthy_long_task": {
+    "attempt_count": 1,
+    "heartbeat_count": 10,
+    "lease_expired_requeued": false,
+    "leave_page_elapsed_ms": 10503
+  },
+  "schema": "PFIV025Stage10WholeReviewJobStateTransitionsV1",
+  "status": "pass",
+  "timer_based_progress": false,
+  "ui_database_status_match": true
+}

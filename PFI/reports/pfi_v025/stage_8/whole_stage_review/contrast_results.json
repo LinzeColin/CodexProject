@@ -1,0 +1,12 @@
+{
+  "audited_route_count": 20,
+  "blocking_violation_count": 0,
+  "contrast_failure_count": 0,
+  "schema": "PFIV025Stage8WholeReviewContrastResultsV1",
+  "source_ref": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/wcag_audit.json",
+  "source_sha256": "sha256:5a3b7827dad617534f6394b144cb8fb379bf66ca15a1196d2191a257d0158c9d",
+  "standard": "WCAG 2.2 AA",
+  "status": "pass",
+  "target_size_failure_count": 0,
+  "text_sample_count": 3646
+}

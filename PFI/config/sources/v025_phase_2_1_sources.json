@@ -1,0 +1,126 @@
+{
+  "schema": "PFIV025Phase21SourceRegistryV1",
+  "version": "v0.2.5",
+  "canonical_private_root_id": "ROOT-PFI-DATA-HOME",
+  "canonical_private_root_alias": "$PFI_DATA_HOME",
+  "canonical_resolution": "environment_or_user_state_default",
+  "migration_policy": "explicit_alias_no_auto_copy_move_merge_or_delete",
+  "sources": [
+    {
+      "source_id": "SRC-TRANSACTIONS-ALIPAY",
+      "label": "支付宝交易流水（历史 Git object 只读来源）",
+      "source_type": "transaction_ledger",
+      "capabilities": ["transaction_history", "consumption_classification_input"],
+      "path_alias": "MetaDatabase/PFI",
+      "immutable_source_lock": "PFI/config/sources/v025_immutable_real_source_lock.json",
+      "parser_version": "pfi-v023-import-manifest-metadata-projection-v1",
+      "root_id": "ROOT-METADATABASE-PFI",
+      "observation_mode": "pinned_historical_git_object_read_only_hash_and_manifest_metadata",
+      "source_role": "available_transaction_source_not_balance_proof",
+      "resolution_task_ids": []
+    },
+    {
+      "source_id": "SRC-OPERATIONAL-SQLITE",
+      "label": "PFI 本地 operational SQLite（元数据探测）",
+      "source_type": "operational_sqlite",
+      "capabilities": ["source_registry", "account_state_container", "holding_state_container"],
+      "path_alias": "$PFI_DATA_HOME/private/operational/pfi.sqlite",
+      "parser_version": "pfi-v025-sqlite-metadata-probe-v2",
+      "root_id": "ROOT-PFI-DATA-HOME",
+      "observation_mode": "sqlite_mode_ro_shared_read_transaction_query_only_metadata",
+      "source_role": "private_operational_container_not_metric_source",
+      "resolution_task_ids": ["S2-P3-T1"]
+    },
+    {
+      "source_id": "SRC-ACCOUNT-BALANCES",
+      "label": "账户余额与期初/期末快照",
+      "source_type": "account_balance_snapshot",
+      "capabilities": ["cash_balance", "net_worth_asset_input"],
+      "path_alias": "$PFI_DATA_HOME",
+      "parser_version": null,
+      "root_id": "ROOT-PFI-DATA-HOME",
+      "observation_mode": "registry_linkage_not_loaded_in_phase_2_1",
+      "source_role": "required_metric_dependency",
+      "resolution_task_ids": ["S4-P1-T1", "S4-P1-T2"]
+    },
+    {
+      "source_id": "SRC-LIABILITIES",
+      "label": "负债余额快照",
+      "source_type": "liability_snapshot",
+      "capabilities": ["liability_balance", "net_worth_liability_input"],
+      "path_alias": "$PFI_DATA_HOME",
+      "parser_version": null,
+      "root_id": "ROOT-PFI-DATA-HOME",
+      "observation_mode": "registry_linkage_not_loaded_in_phase_2_1",
+      "source_role": "required_metric_dependency",
+      "resolution_task_ids": ["S4-P1-T1", "S4-P1-T2"]
+    },
+    {
+      "source_id": "SRC-HOLDINGS",
+      "label": "真实持仓快照",
+      "source_type": "holding_snapshot",
+      "capabilities": ["investment_positions", "investment_market_value_input"],
+      "path_alias": "$PFI_DATA_HOME",
+      "parser_version": null,
+      "root_id": "ROOT-PFI-DATA-HOME",
+      "observation_mode": "registry_linkage_not_loaded_in_phase_2_1",
+      "source_role": "required_metric_dependency",
+      "resolution_task_ids": ["S4-P2-T1", "S4-P2-T3", "S4-P2-T4"]
+    },
+    {
+      "source_id": "SRC-MARKET-PRICES",
+      "label": "持仓估值价格快照",
+      "source_type": "market_price_snapshot",
+      "capabilities": ["holding_valuation"],
+      "path_alias": "$PFI_DATA_HOME",
+      "parser_version": null,
+      "root_id": "ROOT-PFI-DATA-HOME",
+      "observation_mode": "registry_linkage_not_loaded_in_phase_2_1",
+      "source_role": "required_metric_dependency",
+      "resolution_task_ids": ["S4-P2-T3", "S4-P2-T4"]
+    },
+    {
+      "source_id": "SRC-FX-SNAPSHOT",
+      "label": "生产 FX snapshot",
+      "source_type": "fx_snapshot",
+      "capabilities": ["currency_conversion", "cny_valuation"],
+      "path_alias": "$PFI_DATA_HOME",
+      "parser_version": null,
+      "root_id": "ROOT-PFI-DATA-HOME",
+      "observation_mode": "registry_linkage_not_loaded_in_phase_2_1",
+      "source_role": "required_metric_dependency",
+      "resolution_task_ids": ["S2-P2-T2", "S2-P2-T3"]
+    }
+  ],
+  "unverified_source_policy": {
+    "status": "not_loaded",
+    "record_count": null,
+    "coverage": {"start": null, "end": null},
+    "as_of": null,
+    "content_hash": null,
+    "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。"
+  },
+  "privacy": {
+    "public_evidence_fields": [
+      "source_id",
+      "label",
+      "source_type",
+      "capabilities",
+      "path_alias",
+      "parser_version",
+      "record_count",
+      "coverage",
+      "as_of",
+      "content_hash",
+      "status",
+      "blocking_reason_zh"
+    ],
+    "forbidden": [
+      "absolute_private_path",
+      "raw_filename",
+      "financial_row",
+      "account_identifier",
+      "credential"
+    ]
+  }
+}

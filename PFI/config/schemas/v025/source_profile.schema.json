@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/v025/source_profile.schema.json",
+  "title": "PFI v0.2.5 Extensible Source Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_id", "source_type", "capabilities", "parser_provenance", "profile_version", "status"],
+  "properties": {
+    "source_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "source_type": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"}
+    },
+    "parser_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parser_id", "parser_version", "source_hash", "hash_algorithm", "hash_scheme"],
+      "properties": {
+        "parser_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+        "parser_version": {"type": "string", "minLength": 1, "pattern": "^\\S+$"},
+        "source_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "hash_algorithm": {"const": "sha256"},
+        "hash_scheme": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"}
+      }
+    },
+    "profile_version": {"type": "string", "minLength": 1},
+    "status": {"enum": ["active", "inactive", "blocked"]}
+  }
+}

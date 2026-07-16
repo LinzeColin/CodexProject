@@ -1,0 +1,12 @@
+PFI v0.2.5 Stage 11 Phase 11.3 private distribution scan
+public_active_ui: false
+public_runtime_binding_count: 0
+public_context_field_exposure_count: 0
+absolute_path_match_count: 0
+credential_match_count: 0
+private_value_match_count: 0
+financial_value_match_count: 0
+ralpha_active_dependency_count: 0
+serenity_alipay_active_dependency_count: 0
+negative_injection_rejected: true
+status: pass

@@ -1,0 +1,19 @@
+{
+  "contains_private_values": false,
+  "controls": [
+    "runtime token/Host/Origin/CORS and upload limits",
+    "text-only dynamic DOM and CSV formula neutralization",
+    "strict source/header/date/money/ZIP parsing",
+    "atomic cross-batch ledger and command-hash idempotency",
+    "cross-process locked migration backup and private raw lifecycle integrity",
+    "Stage 7 SQLite canonical trends plus fail-closed economic-event lineage",
+    "raw traces confined to /tmp before sanitized persistence"
+  ],
+  "external_network_performed": false,
+  "finder_used": false,
+  "reviewer_results_sha256": "sha256:8ebe951ce73aa6a69fe711dd62028d5ab9e86540ec3d24b66e040763782926fb",
+  "schema": "PFIV025Stage7WholeReviewSecurityValidationV1",
+  "status": "pass",
+  "verification_results_sha256": "sha256:f160a32a58da8650194002b58ff4417f4515ad80d9365ba54a51a51a7faa251c",
+  "workflow_validation_sha256": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+}

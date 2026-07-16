@@ -1,0 +1,373 @@
+{
+  "schema": "PFIV025Stage0Phase01EntryInventoryV1",
+  "version": "v0.2.5",
+  "stage": 0,
+  "phase": "0.1",
+  "captured_at_utc": "2026-07-10T21:22:39Z",
+  "canonical_pfi_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+  "formal_ui": {
+    "status": "conflicted",
+    "entry_document": {
+      "source_path": "PFI/web/index.html",
+      "exists": true,
+      "sha256": "79d526eea341b805b976794bf6de5c7f62f9cf6267f986ffa93cfc0fd443320f"
+    },
+    "shell_module": {
+      "source_path": "PFI/web/app/shell.js",
+      "exists": true,
+      "sha256": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821"
+    },
+    "supporting_modules": [
+      {
+        "source_path": "PFI/web/app/routes.js",
+        "exists": true,
+        "sha256": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf"
+      },
+      {
+        "source_path": "PFI/web/app/home.js",
+        "exists": false,
+        "sha256": null
+      }
+    ],
+    "markers": {
+      "pfi_version": "v0.2.3",
+      "pfi_app_version": "0.2.3",
+      "pfi_target_version": "v0.2.4",
+      "repair_label": "PFI v0.2.3 Repair",
+      "build_id": "pfi-v024-stage2-phase22",
+      "api_base_url": "http://127.0.0.1:8766",
+      "shell_api_base_url_fallback": "http://127.0.0.1:8766",
+      "shell_repair_label_fallback": "PFI v0.2.3 Repair"
+    },
+    "hash_command_exit_code": 1
+  },
+  "release_identity_sources": [
+    {
+      "source_path": "PFI/VERSION",
+      "source_type": "version_file",
+      "exists": true,
+      "status": "read",
+      "declared_value": "v0.2.1 前端优化",
+      "command_exit_code": 0
+    },
+    {
+      "source_path": "PFI/web/index.html",
+      "source_type": "web_entry_markers",
+      "exists": true,
+      "status": "read",
+      "declared_values": {
+        "pfi_version": "v0.2.3",
+        "pfi_app_version": "0.2.3",
+        "pfi_target_version": "v0.2.4",
+        "repair_label": "PFI v0.2.3 Repair",
+        "build_id": "pfi-v024-stage2-phase22",
+        "api_base_url": "http://127.0.0.1:8766"
+      },
+      "sha256": "79d526eea341b805b976794bf6de5c7f62f9cf6267f986ffa93cfc0fd443320f",
+      "command_exit_code": 0
+    },
+    {
+      "source_path": "PFI/web/app/shell.js",
+      "source_type": "web_shell_fallbacks",
+      "exists": true,
+      "status": "read",
+      "declared_values": {
+        "api_base_url_fallback": "http://127.0.0.1:8766",
+        "repair_label_fallback": "PFI v0.2.3 Repair"
+      },
+      "sha256": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821",
+      "command_exit_code": 0
+    },
+    {
+      "source_path": "PFI/StartPFI.command",
+      "source_type": "startup_source",
+      "exists": true,
+      "status": "source_read_not_executed",
+      "declared_values": {
+        "active_build_id": "pfi-v024-stage2-phase22",
+        "version_query": "pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY",
+        "initial_port": 8501,
+        "entrypoint": "src/pfi_os/app/streamlit_app.py"
+      },
+      "command_exit_code": 0
+    },
+    {
+      "source_path": "PFI/scripts/startPFI.sh",
+      "source_type": "startup_source",
+      "exists": true,
+      "status": "source_read_not_executed",
+      "declared_values": {
+        "active_build_id": "pfi-v024-stage2-phase22",
+        "version_query": "pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY",
+        "initial_port": 8501,
+        "entrypoint": "src/pfi_os/app/streamlit_app.py"
+      },
+      "command_exit_code": 0
+    },
+    {
+      "source_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app/Contents/Info.plist",
+      "source_type": "app_plist",
+      "exists": true,
+      "status": "read",
+      "declared_values": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI"
+      },
+      "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+    },
+    {
+      "source_path": "/Applications/PFI.app/Contents/Info.plist",
+      "source_type": "app_plist",
+      "exists": true,
+      "status": "read",
+      "declared_values": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI"
+      },
+      "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+    },
+    {
+      "source_path": "/Users/linzezhang/Downloads/PFI.app/Contents/Info.plist",
+      "source_type": "app_plist",
+      "exists": true,
+      "status": "read",
+      "declared_values": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI"
+      },
+      "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+    },
+    {
+      "source_path": "/Users/linzezhang/Desktop/PFI.app/Contents/Info.plist",
+      "source_type": "app_plist_via_symlink",
+      "exists": true,
+      "status": "read_via_symlink_to_applications",
+      "declared_values": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI"
+      },
+      "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+    }
+  ],
+  "startup_entries": [
+    {
+      "source_path": "PFI/StartPFI.command",
+      "exists": true,
+      "status": "source_only_not_executed",
+      "active_build_id": "pfi-v024-stage2-phase22",
+      "version_query": "pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY",
+      "initial_port": 8501,
+      "entrypoint": "src/pfi_os/app/streamlit_app.py"
+    },
+    {
+      "source_path": "PFI/scripts/startPFI.sh",
+      "exists": true,
+      "status": "source_only_not_executed",
+      "active_build_id": "pfi-v024-stage2-phase22",
+      "version_query": "pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY",
+      "initial_port": 8501,
+      "entrypoint": "src/pfi_os/app/streamlit_app.py"
+    }
+  ],
+  "app_bundles": [
+    {
+      "source_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app",
+      "exists": true,
+      "status": "present_codesign_failed",
+      "is_symlink": false,
+      "stat": {
+        "type": "Directory",
+        "mode": "drwxr-xr-x",
+        "size_bytes": 96,
+        "modified_at": "2026-06-30T08:03:05+1000"
+      },
+      "plist": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI",
+        "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+      },
+      "executable": {
+        "source_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/macos/PFI.app/Contents/MacOS/PFI",
+        "sha256": "13d546fa40ad516766b8f525f48e27b779c39b24f8c1029faebc143e9660eb83"
+      },
+      "codesign": {
+        "status": "failed_with_diagnostic",
+        "exit_code": null,
+        "diagnostic": "code has no resources but signature indicates they must be present"
+      },
+      "exact_metadata_loop_overall_exit_code": 0
+    },
+    {
+      "source_path": "/Applications/PFI.app",
+      "exists": true,
+      "status": "present_no_codesign_diagnostic",
+      "is_symlink": false,
+      "stat": {
+        "type": "Directory",
+        "mode": "drwxr-xr-x",
+        "size_bytes": 96,
+        "modified_at": "2026-06-30T08:03:05+1000"
+      },
+      "plist": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI",
+        "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+      },
+      "executable": {
+        "source_path": "/Applications/PFI.app/Contents/MacOS/PFI",
+        "sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d"
+      },
+      "codesign": {
+        "status": "no_diagnostic_output_in_exact_loop",
+        "exit_code": null,
+        "diagnostic": null
+      },
+      "exact_metadata_loop_overall_exit_code": 0
+    },
+    {
+      "source_path": "/Users/linzezhang/Downloads/PFI.app",
+      "exists": true,
+      "status": "present_no_codesign_diagnostic",
+      "is_symlink": false,
+      "stat": {
+        "type": "Directory",
+        "mode": "drwxr-xr-x",
+        "size_bytes": 96,
+        "modified_at": "2026-06-30T08:03:05+1000"
+      },
+      "plist": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI",
+        "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+      },
+      "executable": {
+        "source_path": "/Users/linzezhang/Downloads/PFI.app/Contents/MacOS/PFI",
+        "sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d"
+      },
+      "codesign": {
+        "status": "no_diagnostic_output_in_exact_loop",
+        "exit_code": null,
+        "diagnostic": null
+      },
+      "exact_metadata_loop_overall_exit_code": 0
+    },
+    {
+      "source_path": "/Users/linzezhang/Desktop/PFI.app",
+      "exists": true,
+      "status": "present_symlink_codesign_exit_zero",
+      "is_symlink": true,
+      "symlink_target": "/Applications/PFI.app",
+      "resolved_path": "/Applications/PFI.app",
+      "stat": {
+        "type": "Symbolic Link",
+        "mode": "lrwxr-xr-x",
+        "size_bytes": 21,
+        "modified_at": "2026-07-10T23:38:14+1000"
+      },
+      "plist": {
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3",
+        "bundle_version": "20260629.1",
+        "executable": "PFI",
+        "sha256": "d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+      },
+      "executable": {
+        "source_path": "/Users/linzezhang/Desktop/PFI.app/Contents/MacOS/PFI",
+        "sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d"
+      },
+      "codesign": {
+        "status": "passed_silently_as_final_loop_command",
+        "exit_code": 0,
+        "diagnostic": null
+      },
+      "exact_metadata_loop_overall_exit_code": 0
+    }
+  ],
+  "runtime_services": [
+    {
+      "pid": 37511,
+      "ppid": 1,
+      "listener_command_name": "python3.1",
+      "process_command": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m streamlit run src/pfi_os/app/streamlit_app.py --server.port 8501 --server.address 127.0.0.1 --server.headless true --server.fileWatcherType none --browser.gatherUsageStats false",
+      "cwd": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+      "cwd_within_canonical_pfi_root": true,
+      "listener": {
+        "address": "127.0.0.1",
+        "port": 8501,
+        "protocol": "TCP",
+        "status": "LISTEN"
+      },
+      "health_probe": {
+        "url": "http://127.0.0.1:8501/_stcore/health",
+        "http_status": 200,
+        "response_body_emitted": false
+      },
+      "provenance_loop_overall_exit_code": 0
+    },
+    {
+      "pid": 56703,
+      "ppid": 1,
+      "listener_command_name": "python3.1",
+      "process_command": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m streamlit run src/pfi_os/app/streamlit_app.py --server.port 8502 --server.address 127.0.0.1 --server.headless true --server.fileWatcherType none --browser.gatherUsageStats false",
+      "cwd": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+      "cwd_within_canonical_pfi_root": true,
+      "listener": {
+        "address": "127.0.0.1",
+        "port": 8502,
+        "protocol": "TCP",
+        "status": "LISTEN"
+      },
+      "health_probe": {
+        "url": "http://127.0.0.1:8502/_stcore/health",
+        "http_status": 200,
+        "response_body_emitted": false
+      },
+      "provenance_loop_overall_exit_code": 0
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "RELEASE_IDENTITY_MIXED_VERSIONS",
+      "detail": "The inventory contract is v0.2.5, while PFI/VERSION declares v0.2.1 前端优化, web and App sources declare 0.2.3, web target metadata declares v0.2.4, and startup build markers declare pfi-v024-stage2-phase22. No source was normalized."
+    },
+    {
+      "id": "FORMAL_UI_HOME_SOURCE_MISSING",
+      "detail": "PFI/web/app/home.js did not exist during the exact hash command; its sha256 is null and the openssl command exited 1."
+    },
+    {
+      "id": "REPOSITORY_APP_CODESIGN_FAILED",
+      "detail": "The repository App bundle emitted: code has no resources but signature indicates they must be present. The exact loop did not emit this individual codesign numeric exit code, so it is null."
+    },
+    {
+      "id": "APP_EXECUTABLE_HASH_MISMATCH",
+      "detail": "The repository App executable SHA-256 is 13d546fa40ad516766b8f525f48e27b779c39b24f8c1029faebc143e9660eb83, while /Applications, Downloads, and Desktop-resolved copies are 0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d; their Info.plist hashes are identical."
+    },
+    {
+      "id": "APP_CODESIGN_EXIT_CODES_PARTIALLY_UNAVAILABLE",
+      "detail": "The exact metadata loop exposed only its overall exit code, which is also the final Desktop symlink codesign exit code 0. Per-bundle numeric codesign exit codes for the repository, /Applications, and Downloads bundles were not emitted and are null; all diagnostics were preserved."
+    },
+    {
+      "id": "MULTIPLE_CANONICAL_RUNTIME_SERVICES",
+      "detail": "Two existing canonical PFI Streamlit services were observed on ports 8501 and 8502. Both cwd values are canonical and both health probes returned 200; the probe did not designate a preferred instance."
+    }
+  ],
+  "privacy": {
+    "contains_private_values": false,
+    "financial_rows_emitted": 0,
+    "credentials_emitted": 0
+  }
+}

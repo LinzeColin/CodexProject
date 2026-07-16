@@ -1,0 +1,23 @@
+{
+  "carriers": [
+    "formula_registry_json",
+    "pfi_parameters_yaml",
+    "python_runtime",
+    "ui_payload",
+    "模型参数文件.md"
+  ],
+  "conflict_count": 0,
+  "conflicts": [],
+  "expected": {
+    "aggregate_confidence_score_allowed": "false",
+    "base_currency": "CNY",
+    "classification_policy": "threshold=70;source_layered=false;weights=30|10|20|15|15|10",
+    "confidence_dimensions": "classification_confidence|source_coverage|reconciliation_coverage|valuation_coverage|model_validation|report_completeness",
+    "fx_contract": "AUD_TO_CNY;1 AUD = X CNY;CNY/AUD",
+    "fx_example_policy": "4.81;example_only=true;production_default=null",
+    "lifecycle": "draft|active|deprecated|superseded",
+    "registry_version": "pfi-v0.2.5-formula-registry-v1"
+  },
+  "schema": "PFIV025Stage5Phase51ParameterConsistencyV1",
+  "status": "pass"
+}

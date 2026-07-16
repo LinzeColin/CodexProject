@@ -1,0 +1,75 @@
+{
+  "cashflow_window_invariant": {
+    "formula_id": "FORM-PFI-019",
+    "internal_transfer_excluded_from_net_cashflow": true,
+    "record_counts": [
+      80,
+      192,
+      258,
+      468,
+      729,
+      1418,
+      3235
+    ],
+    "status": "pass",
+    "window_record_counts_non_decreasing": true,
+    "windows": [
+      7,
+      21,
+      30,
+      60,
+      90,
+      180,
+      360
+    ]
+  },
+  "contains_private_values": false,
+  "core_balance_invariants": {
+    "financial_values_emitted": 0,
+    "formula_id": "FORM-PFI-016",
+    "missing_source_ids": [
+      "SRC-ACCOUNT-BALANCES",
+      "SRC-LIABILITIES",
+      "SRC-HOLDINGS",
+      "SRC-MARKET-PRICES",
+      "SRC-FX-SNAPSHOT"
+    ],
+    "status": "blocked_missing_required_sources"
+  },
+  "dual_metric_reconciliation": {
+    "component_event_counts": {
+      "financial_fee": 0,
+      "investment_allocation": 33,
+      "investment_funding": 0,
+      "linked_refund": 0,
+      "living_consumption": 3567
+    },
+    "deduped_economic_event_type_count": 6879,
+    "difference_is_exact_zero": true,
+    "duplicate_economic_event_count": 0,
+    "financial_value_fingerprint": "sha256:ec0a87fe3ff82a76cbdcd146dd849919a663340f4b7596d0943e1cef7adc49ac",
+    "formula_id": "FORM-PFI-015",
+    "investment_activity_is_net_worth_loss": false,
+    "source_record_count": 6879,
+    "status": "pass"
+  },
+  "financial_values_emitted": 0,
+  "investment_return_xirr": {
+    "financial_values_emitted": 0,
+    "formula_ids": [
+      "FORM-PFI-017",
+      "FORM-PFI-018"
+    ],
+    "missing_inputs": [
+      "explicit holdings and remaining cost basis",
+      "point-in-time prices and required FX",
+      "fee and tax lineage",
+      "dated investment funding/return/terminal-value chain"
+    ],
+    "status": "blocked_insufficient_chain"
+  },
+  "phase_id": "V025-S5-P5.3",
+  "schema": "PFIV025Stage5Phase53InvariantResultsV1",
+  "status": "partial_pass_with_blocked_components",
+  "version": "v0.2.5"
+}

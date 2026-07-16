@@ -1,0 +1,36 @@
+{
+  "schema": "PFIV025Stage4WholeReviewFinalEvidenceIndexV1",
+  "version": "v0.2.5",
+  "stage": 4,
+  "acceptance_id": "ACC-PFI-V025-STAGE4-WHOLE-REVIEW",
+  "review_base": "8478bbc65ed739ef5f22b1cfc4a932f15837be1d",
+  "status": "accepted_for_transition",
+  "task_disposition": {
+    "S4-P1-T1": "pass", "S4-P1-T2": "pass", "S4-P1-T3": "pass", "S4-P1-T4": "pass",
+    "S4-P2-T1": "pass", "S4-P2-T2": "pass", "S4-P2-T3": "pass", "S4-P2-T4": "pass",
+    "S4-P3-T1": "pass", "S4-P3-T2": "pass", "S4-P3-T3": "pass", "S4-P3-T4": "pass"
+  },
+  "acceptance_criteria": [
+    {"criterion_id": "S4-AC-01", "status": "pass", "result": "七个核心 metric 均有显式状态、来源、coverage、as_of/valuation、formula 与 hash 字段；未知字段保持 null。"},
+    {"criterion_id": "S4-AC-02", "status": "pass", "result": "Strict schema 与 Python/JavaScript 合同覆盖 13 个规定状态。"},
+    {"criterion_id": "S4-AC-03", "status": "pass", "result": "只有证据完整的 confirmed_zero 可显示 CNY 0.00；当前 confirmed_zero=0，浏览器假零=0。"},
+    {"criterion_id": "S4-AC-04", "status": "pass", "result": "交易数据存在不推断余额、持仓或价格；缺失依赖保持 not_loaded/null。"},
+    {"criterion_id": "S4-AC-05", "status": "pass", "result": "homepage/accounts/investment/consumption/report 绑定同一 read_model_hash 与 dependency_set_hash。"},
+    {"criterion_id": "S4-AC-06", "status": "pass", "result": "估值合同显式要求 original currency、price_as_of、fx_effective_at、valuation_as_of；当前依赖未加载，生产估值未运行。"}
+  ],
+  "stop_conditions": [
+    {"condition_id": "S4-SC-01", "status": "safety_stop_active", "result": "账户余额与持仓快照未加载；系统停止计算并返回 not_loaded/null。"},
+    {"condition_id": "S4-SC-02", "status": "safety_stop_active", "result": "生产成本基础方法未选择；系统未猜测成本。"},
+    {"condition_id": "S4-SC-03", "status": "safety_stop_active", "result": "价格/FX 无法与持仓对齐时估值不运行；当前 production valuation not_run。"},
+    {"condition_id": "S4-SC-04", "status": "safety_stop_active", "result": "所有非 ready 指标保持 null；浏览器 false-zero render count=0。"}
+  ],
+  "pass_gate_status": "pass",
+  "pass_gate_result": "pass_with_not_loaded_sources",
+  "pass_gate_interpretation": "当前真实 aggregate 输入状态可解释、fail-closed、无假零且五个页面同 hash；不声称余额/持仓/估值数据已就绪。",
+  "stage_4_user_acceptance_status": "accepted",
+  "stage_5_entry_authorized": true,
+  "stage_5_status": "not_started",
+  "stage_5_work_performed": false,
+  "production_accepted": false,
+  "final_human_acceptance": false
+}

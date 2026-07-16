@@ -6,125 +6,75 @@
     <meta name="color-scheme" content="light" />
     <meta
       name="description"
-      content="PFI is a redacted public product shell for Personal Financial Intelligence."
+      content="A static public boundary notice describing PFI without exposing its application or data."
     />
-    <title>PFI — Redacted Public Dashboard</title>
+    <title>PFI — Public boundary notice</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body data-pfi-public-surface="static-boundary-notice">
     <a class="skip-link" href="#content">Skip to content</a>
 
     <header class="site-header">
-      <a class="brand" href="#content" aria-label="PFI public dashboard home">
-        <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-        <span><strong>PFI</strong> — Personal Financial Intelligence</span>
+      <a class="brand" href="#content" aria-label="PFI public boundary notice">
+        <span class="brand-mark" aria-hidden="true">PFI</span>
+        <span>Personal Financial Intelligence</span>
       </a>
-      <div class="header-meta">
-        <span><i aria-hidden="true"></i>L2 public dashboard · static demo</span>
-        <a href="https://home.linzezhang.com">LinzeHomeHub</a>
-      </div>
+      <span class="surface-label">Static public description</span>
     </header>
 
     <main id="content">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="context">Public product shell · redacted by design</p>
-          <h1 id="hero-title">Understand money<br />without exposing it.</h1>
-          <p class="lead">
-            PFI is a public-facing map of Personal Financial Intelligence. It shows how the product is
-            organized without loading a financial account, portfolio, report, broker connection, or local
-            database.
-          </p>
-          <div class="actions">
-            <a class="button primary" href="#demo">View the redacted demo <span aria-hidden="true">→</span></a>
-            <a class="button secondary" href="#safety">Data boundary</a>
-          </div>
-          <p class="zero-data">No real accounts. No retained input. No connection to private PFI runtime.</p>
-        </div>
-
-        <section class="product-preview" id="demo" aria-labelledby="preview-title">
-          <nav class="preview-nav" aria-label="Illustrative PFI modules">
-            <strong>PFI</strong>
-            <a class="active" href="#allocation">Overview</a>
-            <a href="#allocation">Allocation</a>
-            <a href="#map">Map</a>
-            <a href="#modules">Signals</a>
-            <a href="#safety">Scenarios</a>
-            <a href="#safety">About</a>
-            <small>No accounts.<br />No data retained.</small>
-          </nav>
-          <div class="preview-content">
-            <div class="preview-heading">
-              <div>
-                <p>Illustrative workspace</p>
-                <h2 id="preview-title">Allocation overview</h2>
-              </div>
-              <span>All ranges redacted</span>
-            </div>
-            <div class="allocation" id="allocation" aria-label="Qualitative illustrative allocation bands">
-              <div><span>Equity</span><i style="--band: 64%"></i><em>Moderate</em></div>
-              <div><span>Fixed income</span><i style="--band: 34%"></i><em>Below moderate</em></div>
-              <div><span>Real assets</span><i class="coral" style="--band: 51%"></i><em>Moderate</em></div>
-              <div><span>Cash &amp; equivalents</span><i class="neutral" style="--band: 42%"></i><em>Below moderate</em></div>
-            </div>
-            <div class="intelligence-map" id="map">
-              <div class="map-copy">
-                <p>Financial intelligence map</p>
-                <span>Structure without private values</span>
-              </div>
-              <div class="map-diagram" aria-label="Illustrative PFI module map">
-                <span class="map-node center">PFI</span>
-                <span class="map-node n1">Allocation<br /><small>Redacted</small></span>
-                <span class="map-node n2">Risk profile<br /><small>Redacted</small></span>
-                <span class="map-node n3">Cash flow<br /><small>Redacted</small></span>
-                <span class="map-node n4 coral-node">Signals<br /><small>Redacted</small></span>
-                <svg viewBox="0 0 600 300" aria-hidden="true">
-                  <path d="M300 150L300 40M300 150L85 78M300 150L98 245M300 150L515 215" />
-                </svg>
-              </div>
-            </div>
-            <div class="preview-boundary">
-              <span><b aria-hidden="true">◇</b> Privacy first</span>
-              <span><b aria-hidden="true">□</b> Illustrative only</span>
-              <span><b aria-hidden="true">○</b> Static Cloudflare L2</span>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      <section class="modules" id="modules" aria-labelledby="modules-title">
-        <div class="section-intro">
-          <p>Public capability map</p>
-          <h2 id="modules-title">A product outline, not a financial record.</h2>
-        </div>
-        <div class="module-list">
-          <article><strong>Accounts</strong><span>Explain account organization without identifiers or balances.</span></article>
-          <article><strong>Ledger</strong><span>Show the reconciliation workflow without importing transactions.</span></article>
-          <article><strong>Investment</strong><span>Describe analysis boundaries without holdings, returns, or orders.</span></article>
-          <article><strong>Reports</strong><span>Present the reporting architecture without private documents.</span></article>
+        <p class="eyebrow">Public boundary notice</p>
+        <h1 id="hero-title">A description of PFI,<br />not PFI itself.</h1>
+        <p class="lead">
+          PFI is a local-first workspace for organizing financial evidence, review, and decisions. This
+          page describes that purpose without providing an application, workspace, account connection,
+          data view, or interactive product route.
+        </p>
+        <div class="links" aria-label="Public project links">
+          <a href="https://home.linzezhang.com">HomeHub</a>
+          <a href="https://github.com/LinzeColin/CodexProject/tree/main/PFI">Public source</a>
+          <a href="#boundary">Read the boundary</a>
         </div>
       </section>
 
-      <section class="safety" id="safety" aria-labelledby="safety-title">
+      <section class="purpose" aria-labelledby="purpose-title">
+        <p class="eyebrow">Purpose</p>
+        <h2 id="purpose-title">Evidence before action.</h2>
+        <div class="principles">
+          <article>
+            <h3>Organize</h3>
+            <p>Bring source lineage, review status, and decision context into one coherent local workflow.</p>
+          </article>
+          <article>
+            <h3>Explain</h3>
+            <p>Keep assumptions, formulas, limitations, and evidence visible to the person making a decision.</p>
+          </article>
+          <article>
+            <h3>Review</h3>
+            <p>Keep consequential financial actions behind explicit human review and separate authorization.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="boundary" id="boundary" aria-labelledby="boundary-title">
         <div>
-          <p>Safety boundary</p>
-          <h2 id="safety-title">The public shell cannot see, store, or move money.</h2>
+          <p class="eyebrow">Distribution boundary</p>
+          <h2 id="boundary-title">This public surface has no financial runtime.</h2>
         </div>
         <ul>
-          <li><strong>No real accounts</strong><span>No account number, institution credential, or linked identity.</span></li>
-          <li><strong>No financial core</strong><span>No SQLite, DuckDB, private report, holdings file, or local runtime.</span></li>
-          <li><strong>No execution</strong><span>No broker connection, order, payment, cron, or automation.</span></li>
+          <li><strong>No accounts or credentials</strong><span>Nothing here connects to an institution or identity.</span></li>
+          <li><strong>No records or reports</strong><span>Nothing here loads balances, holdings, transactions, or documents.</span></li>
+          <li><strong>No local connection</strong><span>Nothing here connects to the local PFI application or its databases.</span></li>
+          <li><strong>No external execution</strong><span>Nothing here can submit an order, payment, automation, or writeback.</span></li>
+          <li><strong>No exported context</strong><span>The minimized read-only integration contract is not published here.</span></li>
         </ul>
       </section>
     </main>
 
     <footer>
-      <span>PFI · Cloudflare Compatibility Envelope · L2</span>
-      <nav aria-label="Project links">
-        <a href="https://home.linzezhang.com">HomeHub</a>
-        <a href="https://github.com/LinzeColin/CodexProject/tree/main/PFI">GitHub source</a>
-        <a href="#content">Deployment status</a>
-      </nav>
+      <span>PFI · static public boundary</span>
+      <a href="#content">Back to top</a>
     </footer>
   </body>
 </html>

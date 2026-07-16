@@ -1,0 +1,13 @@
+{
+  "backend_build_hash": "3e90fc26bce786071f89aee3cb8c66ad729539065e020a0f9ca70739071b0465",
+  "binding_semantics": "source_hashes_updated_without_changing_version_build_or_configured_git_commit_semantics",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "configured_git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+  "data_schema_version": "PFIV025Stage7ImportReviewLedgerV1",
+  "embedded_manifest_equals_configured_manifest": true,
+  "frontend_bundle_hash": "5ff0ca5cb63c0bd4dd482933d534fe1f5c7f86626700fa2ca907da605aa18bc6",
+  "manifest_sha256": "9652839cb2c91bfb06408c9d7f84d8ad1b22e912ef2622b3a09ae5e3ee9443f0",
+  "schema": "PFIV025Stage7Phase71ReleaseIdentityBindingV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

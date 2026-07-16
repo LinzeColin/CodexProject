@@ -1,0 +1,57 @@
+{
+  "schema": "PFIV025Stage3Phase33ReconciliationPolicyV1",
+  "version": "v0.2.5",
+  "phase_id": "V025-S3-P3.3",
+  "policy_version": "1",
+  "source_name_inference": false,
+  "amount_time_heuristic_grouping": false,
+  "unresolved_transfer_policy": "review_required_no_publication",
+  "unresolved_refund_policy": "review_required_no_publication",
+  "upstream_review_state_policy": "review_required_no_publication",
+  "zero_amount_policy": "review_required_no_publication",
+  "same_economic_event_per_metric_max_count": 1,
+  "read_model_hash_scope": "snapshot_not_page",
+  "source_temporal_granularity": "date",
+  "date_normalization": "utc_start_of_source_date_no_time_precision_claim",
+  "real_source_mapping": {
+    "BUY_ASSET": {
+      "negative": "investment_purchase",
+      "positive": "review_required",
+      "zero": "review_required"
+    },
+    "CASH": {
+      "negative": "living_consumption",
+      "positive": "income",
+      "zero": "review_required"
+    },
+    "FUND": {
+      "negative": "fund_subscription",
+      "positive": "investment_sale",
+      "zero": "review_required"
+    },
+    "REFUND": {
+      "negative": "review_required",
+      "positive": "review_required",
+      "zero": "review_required"
+    },
+    "TRANSFER": {
+      "negative": "review_required",
+      "positive": "review_required",
+      "zero": "review_required"
+    }
+  },
+  "review_reason_precedence": [
+    "upstream_review_required",
+    "zero_amount",
+    "transfer_role_or_link_missing",
+    "refund_offset_missing",
+    "unsupported_event_semantics"
+  ],
+  "ui_surfaces": [
+    "homepage",
+    "consumption",
+    "investment",
+    "cashflow",
+    "report"
+  ]
+}

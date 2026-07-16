@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/v025/ledger_event.schema.json",
+  "title": "PFI v0.2.5 Ledger Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ledger_event_id",
+    "idempotency_key",
+    "raw_record_ids",
+    "normalized_transaction_ids",
+    "interconnection_group_id",
+    "economic_event_id",
+    "event_type",
+    "occurred_at",
+    "postings",
+    "impact_flags",
+    "policy_version",
+    "status"
+  ],
+  "properties": {
+    "ledger_event_id": {"type": "string", "pattern": "^ledger_event_[0-9a-f]{20}$"},
+    "idempotency_key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "raw_record_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"}
+    },
+    "normalized_transaction_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^normalized_transaction_[0-9a-f]{20}$"}
+    },
+    "interconnection_group_id": {"type": "string", "pattern": "^interconnection_group_[0-9a-f]{20}$"},
+    "economic_event_id": {"type": "string", "pattern": "^economic_event_[0-9a-f]{20}$"},
+    "event_type": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "postings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/posting"}
+    },
+    "impact_flags": {"$ref": "#/$defs/impactFlags"},
+    "offset_economic_event_id": {"type": "string", "pattern": "^economic_event_[0-9a-f]{20}$"},
+    "policy_version": {"type": "string", "minLength": 1, "pattern": "^[^\\s]+$"},
+    "status": {"const": "candidate"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "impact_flags": {
+            "properties": {"requires_offset_event_id": {"const": true}},
+            "required": ["requires_offset_event_id"]
+          }
+        }
+      },
+      "then": {"required": ["offset_economic_event_id"]}
+    }
+  ],
+  "$defs": {
+    "posting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["normalized_transaction_id", "account_ref", "direction", "amount", "currency"],
+      "properties": {
+        "normalized_transaction_id": {"type": "string", "pattern": "^normalized_transaction_[0-9a-f]{20}$"},
+        "account_ref": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+        "direction": {"enum": ["inflow", "outflow", "neutral"]},
+        "amount": {"type": "string", "pattern": "^(?:0|[1-9][0-9]*)(?:\\.[0-9]{1,6})?$"},
+        "currency": {"type": "string", "pattern": "^[A-Z]{3}$"}
+      }
+    },
+    "impactFlags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "net_worth_effect",
+        "cash_effect",
+        "living_consumption_included",
+        "activity_outflow_included",
+        "investment_allocation_included",
+        "requires_offset_event_id",
+        "fee_tax_requires_separate_event"
+      ],
+      "properties": {
+        "net_worth_effect": {"enum": ["increase", "decrease", "neutral", "composition_only", "reversal"]},
+        "cash_effect": {"enum": ["inflow", "outflow", "neutral", "mixed"]},
+        "living_consumption_included": {"type": "boolean"},
+        "activity_outflow_included": {"type": "boolean"},
+        "investment_allocation_included": {"type": "boolean"},
+        "requires_offset_event_id": {"type": "boolean"},
+        "fee_tax_requires_separate_event": {"type": "boolean"}
+      }
+    }
+  }
+}

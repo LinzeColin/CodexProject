@@ -1,0 +1,11 @@
+status=pass
+trace_actual_playwright=true
+trace_retained_entries=3
+absolute_paths_replaced=2
+resource_bodies_removed=true
+contains_private_values=false
+contains_runtime_token=false
+contains_absolute_local_path=false
+financial_data_loaded=false
+external_network_performed=false
+finder_used=false

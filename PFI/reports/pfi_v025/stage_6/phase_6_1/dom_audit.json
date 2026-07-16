@@ -1,0 +1,49 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS",
+  "alias_primary_node_count": 0,
+  "auxiliary_primary_tree_count": 0,
+  "bottom_primary_tree_count": 0,
+  "checks": {
+    "alias_primary_node_count": true,
+    "desktop_primary_count": true,
+    "duplicate_responsive_primary_node_count": true,
+    "mobile_primary_count": true,
+    "nojs_primary_count": true,
+    "primary_route_order": true,
+    "unique_primary_node_count": true
+  },
+  "contract_id": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+  "desktop_primary_count": 10,
+  "duplicate_responsive_primary_node_count": 0,
+  "mobile_primary_count": 10,
+  "nojs_primary_count": 10,
+  "nojs_routes": [
+    "/overview",
+    "/accounts",
+    "/ledger",
+    "/investment",
+    "/consumption",
+    "/data",
+    "/review",
+    "/reports",
+    "/market-research",
+    "/settings"
+  ],
+  "primary_routes": [
+    "/overview",
+    "/accounts",
+    "/ledger",
+    "/investment",
+    "/consumption",
+    "/data",
+    "/review",
+    "/reports",
+    "/market-research",
+    "/settings"
+  ],
+  "schema": "PFIV025Stage6Phase61DOMAuditV1",
+  "status": "pass",
+  "task_id": "S6-P1-T4",
+  "unique_primary_node_count": 10,
+  "visual_duplicate_primary_tree_count": 0
+}

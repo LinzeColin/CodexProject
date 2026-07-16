@@ -1,0 +1,17 @@
+{
+  "schema": "PFIV025Stage7Phase72ArtifactHashesV1",
+  "sha256": {
+    "browser_trace_sanitized.zip": "70114b01c04cd36afe51aa16d28bc4e08e7cf452e442a36129d8358ca7d58977",
+    "browser_validation.json": "e5be2362cedeed03a6d66027c3f79e7a5896124adeae78adcecebeb561d4adb1",
+    "db_integrity.json": "65c6de0e2a820554bd8c6a0000efda62cba6805771fe1ab2031ead74bd0aef5c",
+    "holding_db_before_after.json": "9bc4e756c3bf2b2839cc4a3248e0886162d020d188ce94287169215273f160da",
+    "holding_saved_redacted.png": "a2adb3c478aa9b0c4684895389b3e40cffa5236704f10f995cf7f44c5384bd20",
+    "playwright_exercise.json": "cbe00161514f212aaea972ebbf56990796147f99c1ee949121428c5d087d62ed",
+    "playwright_result.json": "75efcd71905dc9d1d34907dcb107655e58316e4e9bb0355e2ca317845fc966ff",
+    "restart_persistence.json": "a21fd5d9c98c80936dd14860596f4db22f1f15641e7625f2a5c4a61e127e4f6f",
+    "restart_persistence_redacted.png": "d166f0cfbcc354f33250204efe784834f6b00c990d4b210600a5a4cdbe13d4d9",
+    "settings_persistence.json": "212ec31ee322f7b7e12ec413eb9ff608c8ae67a482b5838f013ed8bbf8b6dd82",
+    "settings_saved_redacted.png": "5100bcd0609f058304bb2ff637335930fcb1dc194ddcbbd8003f89741bf9777d"
+  },
+  "status": "pass"
+}

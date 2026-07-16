@@ -1,0 +1,15 @@
+{
+  "actual_write_count": 100,
+  "elapsed_ms": 881.036,
+  "expected_write_count": 100,
+  "status": "pass",
+  "unique_write_count": 100,
+  "worker_count": 4,
+  "worker_exit_codes": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "writes_per_worker": 25
+}

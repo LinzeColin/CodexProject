@@ -1,0 +1,22 @@
+{
+  "aggregate_confidence_score_allowed": false,
+  "base_currency": "CNY",
+  "confidence_dimension_ids": [
+    "classification_confidence",
+    "source_coverage",
+    "reconciliation_coverage",
+    "valuation_coverage",
+    "model_validation",
+    "report_completeness"
+  ],
+  "example_fx_rate": "4.81",
+  "example_only": true,
+  "formula_lifecycle_statuses": ["draft", "active", "deprecated", "superseded"],
+  "fx_definition_zh": "1 AUD = X CNY",
+  "fx_direction": "AUD_TO_CNY",
+  "fx_pair": "AUD/CNY",
+  "fx_rate_unit": "CNY/AUD",
+  "production_default_fx_rate": null,
+  "registry_version": "pfi-v0.2.5-formula-registry-v1",
+  "schema": "PFIV025FormulaGovernanceUIPayloadV1"
+}

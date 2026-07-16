@@ -1,0 +1,41 @@
+{
+  "after": {
+    "ready_marker": {
+      "exists": true,
+      "mode": 420,
+      "mtime_ns": 1782826005861556236,
+      "sha256": "b16b8efbdbfc8d832d62acdcf75daf574119891a8ddb572e879133ab72b1dab2"
+    },
+    "source_app": {
+      "codesign_valid": true,
+      "executable_sha256": "15a6666eab31a99f20b535043d3fd516ece4c36b6dd71d2dc83e42eb32fd4436",
+      "plist_identity": {
+        "build_version": "20260712.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.5"
+      },
+      "tree_sha256": "ee03e938cdfc3f8c6d256e7c749a457b9898e2b2755773114322ad24bebfa716"
+    }
+  },
+  "before": {
+    "ready_marker": {
+      "exists": true,
+      "mode": 420,
+      "mtime_ns": 1782826005861556236,
+      "sha256": "b16b8efbdbfc8d832d62acdcf75daf574119891a8ddb572e879133ab72b1dab2"
+    },
+    "source_app": {
+      "codesign_valid": true,
+      "executable_sha256": "15a6666eab31a99f20b535043d3fd516ece4c36b6dd71d2dc83e42eb32fd4436",
+      "plist_identity": {
+        "build_version": "20260712.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.5"
+      },
+      "tree_sha256": "ee03e938cdfc3f8c6d256e7c749a457b9898e2b2755773114322ad24bebfa716"
+    }
+  },
+  "git_status_unchanged": true,
+  "protected_metadata_unchanged": true,
+  "schema": "PFIV025Stage1Phase13ProtectedMetadataV1"
+}

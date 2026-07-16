@@ -1,0 +1,12 @@
+{
+  "busy_timeout_ms": 30000,
+  "foreign_keys": true,
+  "journal_mode": "DELETE",
+  "observed_at": "2026-07-16T01:20:22+10:00",
+  "phase_id": "V025-S11-P11.1",
+  "schema": "PFIV025Stage11PragmaSettingsV1",
+  "status": "pass",
+  "synchronous": "FULL",
+  "synchronous_code": 2,
+  "wal_enabled": false
+}

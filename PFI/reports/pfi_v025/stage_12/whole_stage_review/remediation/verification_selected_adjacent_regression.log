@@ -1,0 +1,4 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage6_navigation_contract.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_crash_recovery.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_distribution_boundary.py
+........................................................................ [ 62%]
+...........................................                              [100%]
+115 passed in 9.94s

@@ -1,0 +1,55 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE11-WHOLE-REVIEW",
+  "counts": {
+    "critical": 0,
+    "important": 4,
+    "minor": 0
+  },
+  "findings": [
+    {
+      "finding_id": "S11-WR-I1",
+      "owner_track": "acceptance_evidence",
+      "resolution": "Added a path-free real operational-database rehearsal that uses the Online Backup API, restores only isolated temporary targets, injects and verifies automatic rollback, and proves the source file and directory remain unchanged.",
+      "resolution_status": "remediated_pending_frozen_rereview",
+      "severity": "important",
+      "summary": "Phase 11.2 used only disposable nonfinancial SQLite, so the Stage 11 real backup/restore rehearsal gate was not yet evidenced."
+    },
+    {
+      "finding_id": "S11-WR-I2",
+      "owner_track": "code_security",
+      "resolution": "The online backup source now opens through SQLite URI mode=ro with query_only and relies on SQLite Online Backup consistency; it no longer creates an application lock file beside the source. A source-directory immutability regression test was added.",
+      "resolution_status": "remediated_pending_frozen_rereview",
+      "severity": "important",
+      "summary": "create_online_backup created a coordination lock in the source directory, preventing a strict source-zero-write claim."
+    },
+    {
+      "finding_id": "S11-WR-I3",
+      "owner_track": "code_security",
+      "resolution": "Backup, inspect and restore CLI receipts now omit database and directory paths; restore reports only the generated rollback artifact basename. Tests reject temporary absolute-path disclosure.",
+      "resolution_status": "remediated_pending_frozen_rereview",
+      "severity": "important",
+      "summary": "The operator CLI emitted absolute local database, backup, target and rollback paths into terminal/log output."
+    },
+    {
+      "finding_id": "S11-WR-I4",
+      "owner_track": "acceptance_evidence",
+      "resolution": "Added a loopback-only headless Chrome/Playwright validator covering the built static surface, unknown-route 404, manifest, DOM, accessibility tree, screenshot, sanitized trace and zero external requests.",
+      "resolution_status": "remediated_pending_frozen_rereview",
+      "severity": "important",
+      "summary": "The public boundary had source/build scanners but no browser screenshot, DOM, accessibility or trace evidence required for a browser-facing phase."
+    }
+  ],
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "initial_conclusion": "remediation_required_before_stage_11_acceptance",
+  "launchservices_used": false,
+  "review_base": "f49e10f47a2f9996e4de0e66402686ae502ce16c",
+  "review_tracks": [
+    "code_security",
+    "governance_renderer",
+    "acceptance_evidence"
+  ],
+  "schema": "PFIV025Stage11InitialWholeReviewFindingsV1",
+  "stage_12_started": false,
+  "status": "complete"
+}

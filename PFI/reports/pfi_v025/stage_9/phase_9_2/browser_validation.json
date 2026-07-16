@@ -1,0 +1,91 @@
+{
+  "check_count": 11,
+  "checks": {
+    "actionable_routes_present": true,
+    "all_analysis_sections_visible": true,
+    "five_report_cards_visible": true,
+    "loopback_only": true,
+    "no_browser_errors": true,
+    "no_false_complete_conclusion": true,
+    "no_financial_amount_visible": true,
+    "no_phase93_or_trade_execution": true,
+    "phase_contract_ready": true,
+    "report_truth_statuses_visible": true,
+    "reports_route_mounted": true
+  },
+  "contains_private_values": false,
+  "diagnostics": {
+    "blockedExternal": [],
+    "consoleErrors": [],
+    "httpErrors": [],
+    "pageErrors": [],
+    "requestedOriginCount": 1
+  },
+  "external_network_used": false,
+  "financial_values_persisted": 0,
+  "finder_used": false,
+  "launchservices_used": false,
+  "loopback_only": true,
+  "passed_check_count": 11,
+  "product_commit": "7566107dfb3e2e3612ea28b9a2c31d8a8a553747",
+  "schema": "PFIV025Stage9Phase92BrowserEvidenceV1",
+  "sensitivity_screenshot": "sensitivity_view.png",
+  "sensitivity_screenshot_sha256": "sha256:1a005a57fa5b135073ae3ebdab01a3a3035367dff8494330598c387d1474307e",
+  "status": "pass",
+  "trace": "browser_trace_sanitized.zip",
+  "trace_privacy_scan": {
+    "actual_playwright_trace": true,
+    "contains_absolute_local_path": false,
+    "contains_private_values": false,
+    "contains_runtime_token": false,
+    "replacements": {
+      "absolute_paths": 1,
+      "auth_tokens": 0,
+      "financial_text": 0,
+      "image_entries_removed": 0,
+      "private_payloads": 0,
+      "resource_entries_removed": 0,
+      "sensitive_fields": 0
+    },
+    "resource_bodies_removed": true,
+    "retained_entry_count": 3,
+    "status": "pass",
+    "trace": "browser_trace_sanitized.zip"
+  },
+  "trace_sha256": "sha256:c8a2a90233b3a1eb8b419f8a092c59631b587a5b2958d5a95d19c133d64c9128",
+  "visible": {
+    "kicker": "月报",
+    "missingRequiredText": [],
+    "phaseAttribute": "ready",
+    "reportCards": [
+      {
+        "detail": "8,815 条来源记录 · 关键真实输入未 ready；只展示公式、限制与复核入口。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "label": "净资产报告",
+        "value": "已阻断"
+      },
+      {
+        "detail": "8,815 条来源记录 · 关键真实输入未 ready；只展示公式、限制与复核入口。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "label": "现金报告",
+        "value": "已阻断"
+      },
+      {
+        "detail": "8,815 条来源记录 · 关键真实输入未 ready；只展示公式、限制与复核入口。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "label": "投资报告",
+        "value": "已阻断"
+      },
+      {
+        "detail": "8,815 条来源记录 · 部分可算：只展示真实来源覆盖与非金额敏感性。 · 消费总流出是用户定义的 gross activity 口径；生活消费、投资资金流出与投资域内配置必须拆分展示，投资活动不等于净资产损失。",
+        "label": "消费报告",
+        "value": "部分可算"
+      },
+      {
+        "detail": "8,815 条来源记录 · 部分可算：只展示真实来源覆盖与非金额敏感性。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "label": "现金流报告",
+        "value": "部分可算"
+      }
+    ],
+    "routeAlias": "/reports",
+    "title": "报告与洞察 · 月报",
+    "workflowCardCount": 23
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "all_phase_commits_are_ancestors": true,
+  "all_phase_evidence_candidate_pass": true,
+  "all_phase_evidence_present_in_bound_commits": true,
+  "current_head": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+  "linear_commit_chain": true,
+  "phase_commits": {
+    "7.1": "a81175771a5186605b506a77ea4e9e852c739e2d",
+    "7.2": "45d362c7ff95320aa2bbe0fcc841102abc48c146",
+    "7.3": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf"
+  },
+  "phase_evidence": [
+    {
+      "ancestor_of_current_head": true,
+      "commit": "a81175771a5186605b506a77ea4e9e852c739e2d",
+      "contract_id": "PFI-V025-STAGE7-PHASE71-IMPORT-REVIEW-LEDGER",
+      "path": "PFI/reports/pfi_v025/stage_7/phase_7_1/evidence.json",
+      "phase": "7.1",
+      "present": true,
+      "sha256": "sha256:e37da836b1cbb9bb15360eec55f757a6a6c946a2d0c907508397845ea398ed81",
+      "status": "candidate_pass"
+    },
+    {
+      "ancestor_of_current_head": true,
+      "commit": "45d362c7ff95320aa2bbe0fcc841102abc48c146",
+      "contract_id": "PFI-V025-STAGE7-PHASE72-HOLDING-SETTINGS-PERSISTENCE",
+      "path": "PFI/reports/pfi_v025/stage_7/phase_7_2/evidence.json",
+      "phase": "7.2",
+      "present": true,
+      "sha256": "sha256:dc84f00ed594b24e07f43f3bc5c8625d9ec5197611f9982f39fca959bfdc7fc8",
+      "status": "candidate_pass"
+    },
+    {
+      "ancestor_of_current_head": true,
+      "commit": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+      "contract_id": "PFI-V025-STAGE7-PHASE73-METRIC-DRILLDOWN",
+      "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/evidence.json",
+      "phase": "7.3",
+      "present": true,
+      "sha256": "sha256:5a5cf404ce559cc0ae198c78c301f3e7d49644d87e030349e2d9d10e27fdde12",
+      "status": "candidate_pass"
+    }
+  ],
+  "review_base": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+  "schema": "PFIV025Stage7PhaseCommitBindingV1",
+  "stage": 7,
+  "status": "pass",
+  "task_count": 12,
+  "version": "v0.2.5"
+}

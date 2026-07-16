@@ -1,0 +1,295 @@
+{
+  "commands": [
+    {
+      "command": "$PYTHON -m pytest -q PFI/tests/test_stage2_alipay_import.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_whole_review_remediation.py",
+      "command_id": "focused_stage7",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_7/whole_stage_review/verification_focused_stage7.log",
+      "output_sha256": "sha256:4c9060d65cc802194071d1136cd3eb998b29ccff6881914fa1166c8cf9c4292a",
+      "subcommands": [
+        "$PYTHON -m pytest -q PFI/tests/test_stage2_alipay_import.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_whole_review_remediation.py"
+      ]
+    },
+    {
+      "command": "$PYTHON -m py_compile PFI/src/pfi_os/application/use_cases/import_review_ledger.py PFI/src/pfi_os/application/use_cases/metric_lineage_drilldown.py PFI/src/pfi_os/infrastructure/operational_import_store.py PFI/src/pfi_os/infrastructure/operational_holding_settings_store.py PFI/src/pfi_os/app/streamlit_app.py PFI/src/pfi_v02/stage2_import.py PFI/src/pfi_v02/stage_v021_runtime_api.py PFI/web/tests/v025/stage7_trace_privacy.py PFI/web/tests/v025/stage7_whole_review_browser.py PFI/scripts/v025/build_stage7_whole_review.py PFI/scripts/v025/run_stage7_final_verification.py && node --check PFI/web/app/shell.js && node --check PFI/web/tests/v025/stage7_metric_drilldown_cdp.mjs && git diff --check",
+      "command_id": "syntax_and_diff",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_7/whole_stage_review/verification_syntax_and_diff.log",
+      "output_sha256": "sha256:c7a507963e82ba872ed27e6579e62631621cba17ac71880eaa658060fbeda69e",
+      "subcommands": [
+        "$PYTHON -m py_compile PFI/src/pfi_os/application/use_cases/import_review_ledger.py PFI/src/pfi_os/application/use_cases/metric_lineage_drilldown.py PFI/src/pfi_os/infrastructure/operational_import_store.py PFI/src/pfi_os/infrastructure/operational_holding_settings_store.py PFI/src/pfi_os/app/streamlit_app.py PFI/src/pfi_v02/stage2_import.py PFI/src/pfi_v02/stage_v021_runtime_api.py PFI/web/tests/v025/stage7_trace_privacy.py PFI/web/tests/v025/stage7_whole_review_browser.py PFI/scripts/v025/build_stage7_whole_review.py PFI/scripts/v025/run_stage7_final_verification.py",
+        "node --check PFI/web/app/shell.js",
+        "node --check PFI/web/tests/v025/stage7_metric_drilldown_cdp.mjs",
+        "git diff --check"
+      ]
+    },
+    {
+      "command": "git archive --format=tar HEAD -> $ISOLATED_COMPLETE_ROOT && overlay current PFI tracked/untracked changes -> $ISOLATED_COMPLETE_ROOT/PFI && $PYTHON scripts/validate_project_governance.py --project PFI (cwd=$ISOLATED_COMPLETE_ROOT) && $PYTHON scripts/lean_governance.py check-render --project PFI",
+      "command_id": "changed_scope_governance",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_7/whole_stage_review/verification_changed_scope_governance.log",
+      "output_sha256": "sha256:895cd5dcec6e4fa2164c394a73bb698124c7b36b8660f511668c2bd84ff0c98a",
+      "subcommands": [
+        "git archive --format=tar HEAD -> $ISOLATED_COMPLETE_ROOT",
+        "overlay current PFI tracked/untracked changes -> $ISOLATED_COMPLETE_ROOT/PFI",
+        "$PYTHON scripts/validate_project_governance.py --project PFI (cwd=$ISOLATED_COMPLETE_ROOT)",
+        "$PYTHON scripts/lean_governance.py check-render --project PFI"
+      ],
+      "validation_scope": "complete_git_archive_root_plus_current_pfi_overlay"
+    }
+  ],
+  "contains_private_values": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "generated_at": "2026-07-15T10:35:50+10:00",
+  "overlay_stable_during_verification": true,
+  "schema": "PFIV025Stage7FinalVerificationResultsV1",
+  "status": "pass",
+  "verified_overlay": {
+    "base_commit": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+    "content_manifest_sha256": "sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a",
+    "file_count": 60,
+    "files": [
+      {
+        "path": "PFI/CHANGELOG.md",
+        "sha256": "sha256:c93de126a1d6cc16768733d2038c06b160396470fb681d08bdb8c5339342d53b"
+      },
+      {
+        "path": "PFI/HANDOFF.md",
+        "sha256": "sha256:eaac08a747e6d837975fafc80c9811787248b6be3942dc10a35633280142fd6e"
+      },
+      {
+        "path": "PFI/config/release_manifest.json",
+        "sha256": "sha256:d2e0b5ace8a2c9935ab258cf691455b0c2ac6a169092cd3bb7ee183d66814643"
+      },
+      {
+        "path": "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+        "sha256": "sha256:64b15e6e0483a5760c1a6225c9000f1d2787f1773e08410720af28dbfdb54470"
+      },
+      {
+        "path": "PFI/docs/governance/OWNER_STATUS.md",
+        "sha256": "sha256:d57d1ad4db3d276c326c418376289fdc1531e76a322d2e8f5294e3e63b4eb2d2"
+      },
+      {
+        "path": "PFI/docs/governance/STATUS.md",
+        "sha256": "sha256:ba987146dfc8616b1a281611d8a672b3d6e2e812ee34ace92681a6aa6e2e273d"
+      },
+      {
+        "path": "PFI/docs/governance/VERSION_MATRIX.yaml",
+        "sha256": "sha256:d818c930c0ec74cf4c02be2840e695a50c682658ffa1ff41dcd24fdbf7aac9b9"
+      },
+      {
+        "path": "PFI/docs/governance/delivery_tasks.yaml",
+        "sha256": "sha256:4f7b308f1279f06054db2dcacdab536ba16df0caeb41228b8980ed6ae24af088"
+      },
+      {
+        "path": "PFI/docs/governance/development_events.jsonl",
+        "sha256": "sha256:92590db79ceb90822dc74e05302069b1bcaf168e8348b7a154e50a251756ed5f"
+      },
+      {
+        "path": "PFI/docs/governance/project.yaml",
+        "sha256": "sha256:d23fb573050113d54f7ceb606bc49ffcbd628aa967e6782791f68736bdaa74e0"
+      },
+      {
+        "path": "PFI/docs/governance/roadmap.yaml",
+        "sha256": "sha256:b937884f367460044d9534711110ab13b69e0f99da1c60b6da5f6230d6e623b7"
+      },
+      {
+        "path": "PFI/docs/pfi_v025/stage_7/PHASE_7_3_METRIC_DRILLDOWN_IMPLEMENTATION_PLAN.md",
+        "sha256": "sha256:164338a0451f270957648a561dcbc9cf8b07e1392a8c4cae59b0bbedf1467c58"
+      },
+      {
+        "path": "PFI/docs/pfi_v025/stage_7/STAGE_7_WHOLE_STAGE_REVIEW.md",
+        "sha256": "sha256:5750b1c575396ee4adbccde5b2f7bb5cfcdc01fddcc4df4690ed76f660b02b29"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_1/evidence.json",
+        "sha256": "sha256:185534e6f75e6fc60f022ec33ad4e7b231710d2b9358c4ce722ebe1324d0226b"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_1/real_source_boundary.json",
+        "sha256": "sha256:4de76a1e16837b020bf77c24cee8a07651609eb51738fa68400f168268042fe9"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_2/evidence.json",
+        "sha256": "sha256:8bbf80c9d65f504b5d2607949b0d2f2174274c1ca00d5fe67193d6d0806293ca"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_2/terminal.log",
+        "sha256": "sha256:afcdcf711b2e26cb7b953839b74454ebb72d64bbef8f121523904fb04129579d"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/browser_trace_sanitized.zip",
+        "sha256": "sha256:b7a175f4ed390ce900130551b524229a5d7b8c7ebe4f458a426a243b0ec602cd"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/browser_validation.json",
+        "sha256": "sha256:96792b5641d5f863a08205a09db91a1bc85e7ec3d930e9477e88c91565539173"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/evidence.json",
+        "sha256": "sha256:63267ae07b19fadb5720ebefba69ef1c9fb4788ebe17ce489d33e699986d9f0f"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/interconnection_map.png",
+        "sha256": "sha256:d306105eff444a62605be722f616ccb43eb182301cff693a02d337883b9bb9a6"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/metric_drilldown.json",
+        "sha256": "sha256:ee15d387536aa5e5e220b30007a81c5a0b54c05fe1599e70cc6b717110faff54"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/parameter_center.png",
+        "sha256": "sha256:633b11a7123f3d55aa73bc31427c316e113544d7fc40224f66f4fd380f954c09"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/playwright_result.json",
+        "sha256": "sha256:425f7732ecf564068414b58b002b9288df8c9e22272b72ca93e151eef9a37ead"
+      },
+      {
+        "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/privacy_scan.txt",
+        "sha256": "sha256:47c05437bd4b54ee560d31c5356120df8df510ae02103fe23fae10f7c1161394"
+      },
+      {
+        "path": "PFI/scripts/v025/browser_validate_stage1_phase13.mjs",
+        "sha256": "sha256:8c5099d57c1ccdbfcb4cd11a360520b10f7d436fd861ff96f2d56556edd2a3de"
+      },
+      {
+        "path": "PFI/scripts/v025/build_stage7_whole_review.py",
+        "sha256": "sha256:efc29bbbcbe0e1d2b089ad8ba2e00cacaba87ab90d517475e4dcbe5893d8e51d"
+      },
+      {
+        "path": "PFI/scripts/v025/run_stage7_final_verification.py",
+        "sha256": "sha256:fe015c29b6156002ce089aaf85e7e0c7401851e1fda1a007ea1691cb76bac9e8"
+      },
+      {
+        "path": "PFI/scripts/v025/verify_stage1_phase11.py",
+        "sha256": "sha256:7d3e8de7ada5d8f7c25a06b56e4f7f11490841c924fef2d651192a1acbd12aa0"
+      },
+      {
+        "path": "PFI/src/pfi_os/app/streamlit_app.py",
+        "sha256": "sha256:33a90b907f47c1aed85ed77917a9895636003767e253527971f10aeb00c97e17"
+      },
+      {
+        "path": "PFI/src/pfi_os/application/use_cases/holding_settings_persistence.py",
+        "sha256": "sha256:ac60f5a655b3697f3baed64f8a9289e75fc729f09d6d7384c79d3394c52d0f2f"
+      },
+      {
+        "path": "PFI/src/pfi_os/application/use_cases/import_review_ledger.py",
+        "sha256": "sha256:932402d8bf53e2434aa2c8fddd30f17314ecc1a1cc55247cf4f5c58d33b26b87"
+      },
+      {
+        "path": "PFI/src/pfi_os/application/use_cases/metric_lineage_drilldown.py",
+        "sha256": "sha256:065de3280a66e8f5a5507529b5325f27593ef74ead787099ba7652a245e17d01"
+      },
+      {
+        "path": "PFI/src/pfi_os/infrastructure/operational_holding_settings_store.py",
+        "sha256": "sha256:7b3d10d985844d6cbba1f33aa1e65d464e0d09d8b805a8f599feaef95d869f54"
+      },
+      {
+        "path": "PFI/src/pfi_os/infrastructure/operational_import_store.py",
+        "sha256": "sha256:acd336b3e1df0a2b492e99ae3126ddeb7b6689ab656f2fffb131846cd18fda16"
+      },
+      {
+        "path": "PFI/src/pfi_os/migrations/v025_stage7_holding_idempotency.sql",
+        "sha256": "sha256:13a269561cc7d33515c274f5aac8fc89c02e77265990a52c80a69de2a30f0767"
+      },
+      {
+        "path": "PFI/src/pfi_v02/stage2_import.py",
+        "sha256": "sha256:64124fdb4aae9e98d2950ef5eb798687d52654bf7928187c3016ac8e788576bb"
+      },
+      {
+        "path": "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+        "sha256": "sha256:5af6540d86c84ddff670490f0716a9a1021d17053d7869b59fe2f4a3b9c5491a"
+      },
+      {
+        "path": "PFI/src/pfi_v02/stage_v025_stage7_whole_review.py",
+        "sha256": "sha256:a8bd17b9058a4fbd619a38e1926e9e5d998e93bfc34c4b5ac3739244005851e9"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage1_cache_policy.py",
+        "sha256": "sha256:9e0851b61a77d9abbad4ee0b123e085a73549ab4212e617cc934fa1f75e88e68"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage1_isolated_app_acceptance.py",
+        "sha256": "sha256:44fa6dedf03dd9385c89744c77b1b0a3c97625f377aef32c83f57770d62981b8"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage1_release_identity.py",
+        "sha256": "sha256:cf29e992e1420bb02d41bd981575e97176613f43c11d1aa1fe870c19133c5a8e"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage1_whole_review_remediation.py",
+        "sha256": "sha256:dc048ca55ae210a6d94692197fe3359db8241aa8392063c30e58537e53342d0e"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage7_holding_persistence.py",
+        "sha256": "sha256:5eb209b9cca3ebfd1f662498b86b6293128f8ced055fe4927fcef6815fdc0861"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage7_import_review_ledger.py",
+        "sha256": "sha256:620c9d0228ef399e6faf151efcf6e79aeba356dcad3ec277d0ebb07096542756"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage7_metric_drilldown.py",
+        "sha256": "sha256:1f203923fceecc9dacb3545ae3e12a0805ad660e563a07451448ba0cba1fec67"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage7_whole_review.py",
+        "sha256": "sha256:46d5f72962c7f3dcb254d01579db7f67a1291ed9b1954b6e0d617667d5dd4ff8"
+      },
+      {
+        "path": "PFI/web/app/shell.js",
+        "sha256": "sha256:2ba2a7049dc8e21fbc8d1ca0f8fed008be88733f65149acca564b3f7bfb786d8"
+      },
+      {
+        "path": "PFI/web/index.html",
+        "sha256": "sha256:66cc73e390ed02bc07ea9114c553f9d47427a42dcb01d6b988283775b032bd5d"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_holding_settings_browser.py",
+        "sha256": "sha256:36dbc22743c25949ced1b1fb5777251e9afb605bf1adc263803b8f0d32eabe76"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_holding_settings_cdp.mjs",
+        "sha256": "sha256:e78cb1aae9e2e5ed544d6f083e394826a632c1e7f75b60837d2d2f8119a64805"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_import_review_ledger_browser.py",
+        "sha256": "sha256:532861cca079aaeb127d6bc1d1690dfe9b3f219f2f5043433312548feb77cf02"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_import_review_ledger_cdp.mjs",
+        "sha256": "sha256:1eb22e74fa9fe11e998b85c22f51204bcfd9dfd1b678041ecea5fc3dd018d373"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_metric_drilldown_browser.py",
+        "sha256": "sha256:90c5784b02d323b9fc5a8017a105f73b27dbad49fc4862e2889bd3661ea366ad"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_metric_drilldown_cdp.mjs",
+        "sha256": "sha256:d4ad1537e53788665e6e6a9aa8c122ac5fdfc30f2391af65b785160eeb2ca6f4"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_trace_privacy.py",
+        "sha256": "sha256:77de43cc9c3d6206fed10f3dab28ad43e22292e96230255fcb3ec65ca3686c30"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage7_whole_review_browser.py",
+        "sha256": "sha256:660a697fa29347a9707b7eb8ad30eb722dadcd8af6910fb9791ff97bd7d34423"
+      },
+      {
+        "path": "PFI/功能清单.md",
+        "sha256": "sha256:10be34cbbc3c7b52ae4ee2f7c58a5b0448ca0193f9e6735ab02df2ae3fdb09c0"
+      },
+      {
+        "path": "PFI/开发记录.md",
+        "sha256": "sha256:d12cb9f3dd193913351a19f0fde8d997d88beb4ab1e732d747cc5a8525e33e62"
+      },
+      {
+        "path": "PFI/模型参数文件.md",
+        "sha256": "sha256:19fe68a95cabe0b68f3593ceadd0e23dc4d340c8f145fcdcd3f368c1b2fe0dde"
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+Stage 6 whole-stage review command summary
+- RED: test_v025_stage6_whole_review.py -> 8 failed, 2 passed (expected missing remediation/evidence)
+- combined current Stage 6 tests -> 23 passed
+- current-HEAD Playwright formal-shell review -> 14/14 checks passed
+- phase commit binding -> pass; linear chain; 3/3 evidence present and candidate_pass
+- initial review -> C0/I4/M1
+- post-remediation rereview -> C0/I0/M0
+- legacy diagnostic -> 17 passed, 4 expected superseded failures, 0 unclassified
+- Stage 1 release/cache regression -> Python 24 passed; Node 28 passed
+- renderer -> drift 0; reference issues 0
+- complete-root PFI structural governance -> errors 0; warnings 0
+- changed-scope PFI semantic governance -> errors 0; warnings 0
+- Finder=false; external network=false; real financial data/database=false; push/install=false

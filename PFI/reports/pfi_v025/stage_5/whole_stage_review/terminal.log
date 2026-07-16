@@ -1,0 +1,44 @@
+PFI v0.2.5 Stage 5 whole-stage review validation log
+Run mode: IMPLEMENT / T3 / one Gate only
+Review base: ec3e3af020cc37f5bddd39dba2e445895e015f9e
+Acceptance: ACC-PFI-V025-STAGE5-WHOLE-REVIEW
+
+RED
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_whole_review.py -q
+Result: expected collection error; build_stage5_private_surface_payload was absent; exit=2.
+
+INITIAL INDEPENDENT REVIEW
+Result: C1 I4 M1; remediation required.
+
+FORMAL BROWSER REMEDIATION AND VALIDATION
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B PFI/scripts/v025/browser_validate_stage5_whole_review.py
+Result: pass; 3 formal routes; 4 components per route; release identity ready; values verified before redaction; private values emitted=0; Finder=false; external network=false.
+Visual inspection: homepage, consumption_page and report screenshots show the expected page title and four redacted metric cards; no conflict overlay.
+
+FOCUSED REREVIEW
+Stage 5: 33 passed in 11.59s.
+Stage 4 plus Stage 5: 79 passed in 12.11s.
+Stage 3 idempotency/no-double-count: 11 passed in 8.63s.
+v0.2.2 behavior compatibility: 11 passed, 2 deselected in 0.17s.
+Release identity/cache policy: 28 passed.
+node --check PFI/web/app/shell.js: pass.
+
+PRIVACY
+Public review evidence absolute user paths=0; private row fields=0; numeric financial values=0.
+Sanitized trace and PNG strings numeric financial values=0.
+contains_private_values=false; Finder=false; external network=false.
+
+RENDERER
+python3 scripts/lean_governance.py check-render --project PFI
+Result: drift_count=0; reference_issue_count=0.
+
+SPARSE CHECKOUT DIAGNOSTIC
+Current sparse checkout project validator reported 29 missing root/other-project files; semantic sync reported only two sparse-missing Cloudflare test refs after parameter-registry provenance remediation. These are checkout-shape diagnostics, not accepted as the complete-checkout result.
+
+FINAL REREVIEW TARGET
+Temporary complete-checkout project governance: errors=0; warnings=0.
+Temporary complete-checkout semantic sync/enforce-sync: errors=0; warnings=0.
+Temporary complete-checkout renderer: drift=0; reference issues=0.
+Temporary worktree removed after validation.
+Post-commit Stage 5 focused and complete-checkout governance will run against the immutable review commit and be reported in the final handoff without creating a second evidence commit.
+Stage 6 work=false; push=false; app install=false.

@@ -1,0 +1,27 @@
+{
+  "complete_lineage_count": 6879,
+  "financial_values_emitted": 0,
+  "lineage_order": [
+    "raw_record_id_hash",
+    "normalized_transaction_id",
+    "interconnection_group_id",
+    "economic_event_id",
+    "ledger_event_id",
+    "idempotency_key"
+  ],
+  "missing_lineage_count": 0,
+  "phase_id": "V025-S3-P3.3",
+  "private_identifiers_emitted": 0,
+  "published_record_count": 6879,
+  "redacted_sample": {
+    "economic_event_id": "economic_event_redacted",
+    "idempotency_key": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "interconnection_group_id": "interconnection_group_redacted",
+    "ledger_event_id": "ledger_event_redacted",
+    "normalized_transaction_id": "normalized_transaction_redacted",
+    "raw_record_id_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "schema": "PFIV025Stage3Phase33RedactedLineageV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

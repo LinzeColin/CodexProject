@@ -1,0 +1,26 @@
+{
+  "command": "pytest test_v024_stage3_phase32_route_implementation.py test_v0211_stage1_product_shell_contract.py test_v021_stage3_settings_search_contract.py test_v021_stage7_clicksafe_feedback.py -q",
+  "expected_superseded_failures": 4,
+  "failures": [
+    {
+      "expectation": "v0.2.4 /home primary",
+      "v025_contract": "/overview canonical; /home alias only"
+    },
+    {
+      "expectation": "v0.2.4 /home route kind",
+      "v025_contract": "/home resolves as legacy_redirect"
+    },
+    {
+      "expectation": "v0.2.1 /settings?tab=data-system",
+      "v025_contract": "/settings/data-system canonical"
+    },
+    {
+      "expectation": "v0.2.1 feedback style marker",
+      "v025_contract": "superseded presentation assertion outside Stage 6 route acceptance"
+    }
+  ],
+  "passed": 17,
+  "schema": "PFIV025Stage6LegacyTestDispositionV1",
+  "status": "pass",
+  "unclassified_failures": 0
+}

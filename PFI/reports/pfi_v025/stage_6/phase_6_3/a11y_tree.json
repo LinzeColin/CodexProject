@@ -1,0 +1,742 @@
+{
+  "expected_primary_navigation_names": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "hidden_or_duplicate_primary_count": 0,
+  "navigation_found": true,
+  "nodes": [
+    {
+      "child_count": 10,
+      "focusable": false,
+      "ignored": false,
+      "name": "一级工作区",
+      "role": "navigation"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "⌂ 首页总览 净资产 · 现金流 · 数据健康",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "◫ 账户与资产 账户地图 · 对账 · 跨币种",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "≋ 账本流水 标准流水 · A/B/C/D 复核",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "↗ 投资管理 持仓 · 归因 · 策略回测",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "◌ 消费管理 预算 · 分类 · 异常 · 订阅",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "⇄ 数据源与上传 上传 · 解析 · 对账 · 队列",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "✦ 建议与复盘 证据 · 决策 · 生命周期",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "▣ 报告与洞察 月报 · 导出 · 本机快照",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "⌁ 市场与研究 市场 · 研究 · 策略实验室",
+      "role": "button"
+    },
+    {
+      "child_count": 3,
+      "focusable": true,
+      "ignored": false,
+      "name": "⚙ 设置 反馈 · 参数 · 数据管理",
+      "role": "button"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "首页总览",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "账户与资产",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "账本流水",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "投资管理",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "消费管理",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "数据源与上传",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "建议与复盘",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "报告与洞察",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "市场与研究",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": true,
+      "name": "",
+      "role": "none"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "设置",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "首页总览",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "净资产 · 现金流 · 数据健康",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "账户与资产",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "账户地图 · 对账 · 跨币种",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "账本流水",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "标准流水 · A/B/C/D 复核",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "投资管理",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "持仓 · 归因 · 策略回测",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "消费管理",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "数据源与上传",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "上传 · 解析 · 对账 · 队列",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "建议与复盘",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "证据 · 决策 · 生命周期",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "报告与洞察",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "月报 · 导出 · 本机快照",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "市场与研究",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "市场 · 研究 · 策略实验室",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "",
+      "role": "generic"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "设置",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "反馈 · 参数 · 数据管理",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "⌂",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "净资产 · 现金流 · 数据健康",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "◫",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "账户地图 · 对账 · 跨币种",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "≋",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "标准流水 · A/B/C/D 复核",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "↗",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "持仓 · 归因 · 策略回测",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "◌",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "⇄",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "上传 · 解析 · 对账 · 队列",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "✦",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "证据 · 决策 · 生命周期",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "▣",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "月报 · 导出 · 本机快照",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "⌁",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "市场 · 研究 · 策略实验室",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 1,
+      "focusable": false,
+      "ignored": false,
+      "name": "⚙",
+      "role": "StaticText"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "反馈 · 参数 · 数据管理",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "⌂",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "◫",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "≋",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "↗",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "◌",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "⇄",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "✦",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "▣",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "⌁",
+      "role": "InlineTextBox"
+    },
+    {
+      "child_count": 0,
+      "focusable": false,
+      "ignored": false,
+      "name": "⚙",
+      "role": "InlineTextBox"
+    }
+  ],
+  "primary_navigation_count": 10,
+  "primary_navigation_names": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "primary_navigation_unique_count": 10,
+  "schema": "PFIV025Stage6Phase63AccessibilityTreeV1",
+  "source": "Accessibility.getFullAXTree",
+  "status": "pass"
+}

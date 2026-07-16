@@ -1,0 +1,31 @@
+{
+  "schema": "PFIV025TemporalCoverageV1",
+  "version": "v0.2.5",
+  "stage": 2,
+  "phase": "2.2",
+  "source_id": "SRC-TRANSACTIONS-ALIPAY",
+  "source_manifest_sha256": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+  "timezone_contract": "Australia/Sydney",
+  "record_count": 8815,
+  "source_coverage": {
+    "start": "2022-06-06",
+    "end": "2026-06-03"
+  },
+  "fields": {
+    "transaction_time": {
+      "status": "aggregate_coverage_only",
+      "coverage_start": "2022-06-06",
+      "coverage_end": "2026-06-03"
+    },
+    "posted_at": {"status": "not_verified", "coverage_start": null, "coverage_end": null},
+    "effective_at": {"status": "not_verified", "coverage_start": null, "coverage_end": null},
+    "imported_at": {"status": "not_verified", "coverage_start": null, "coverage_end": null},
+    "reconciled_at": {"status": "not_verified", "coverage_start": null, "coverage_end": null},
+    "valued_at": {"status": "not_verified", "coverage_start": null, "coverage_end": null},
+    "fx_effective_at": {"status": "not_verified", "coverage_start": null, "coverage_end": null},
+    "report_as_of": {"status": "not_verified", "coverage_start": null, "coverage_end": null}
+  },
+  "private_values_included": false,
+  "temporal_values_invented": false,
+  "source_mutation_performed": false
+}

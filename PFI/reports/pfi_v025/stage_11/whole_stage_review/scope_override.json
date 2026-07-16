@@ -1,0 +1,13 @@
+{
+  "allowed_files_obeyed": false,
+  "authorized_by": "standing pre-final authorization",
+  "override_paths": [
+    "PFI/config/release_manifest.json",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+    "PFI/tests/test_v025_stage1_release_identity.py",
+    "PFI/web/index.html"
+  ],
+  "reason": "Release-critical backup tooling changed, so the existing release identity closure and embedded manifest had to remain exact.",
+  "schema": "PFIV025Stage11WholeReviewScopeOverrideV1",
+  "status": "authorized_and_minimized"
+}

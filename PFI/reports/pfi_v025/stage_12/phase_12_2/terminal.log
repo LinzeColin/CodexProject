@@ -1,0 +1,6 @@
+canonical_app_cli_atomic_install|exit=0|canonical App v0.2.5 installed and release identity verified
+target_mac_browser_initial|exit=0|initial target-Mac browser UAT passed
+target_mac_browser_restart|exit=0|restart target-Mac browser UAT passed
+canonical_app_lifecycle_matrix|exit=0|start/repeat/suspend/recover/stop/restart/browser-close passed
+canonical_readonly_backup_restore|exit=0|canonical private DB unchanged; isolated restore and rollback passed
+temporary_disk_pressure_recovery|exit=0|real SQLITE_FULL observed on temporary volume; recovery backup passed

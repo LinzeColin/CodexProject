@@ -1,0 +1,20 @@
+{
+  "acceptance_statement": "用户统一授权绑定本 evidence index，仅授权 Stage 7 transition；不等于 production/final acceptance。",
+  "accepted_at": "2026-07-15T10:39:28+10:00",
+  "accepted_scope": [
+    "Stage 7 production-truth upload/review/ledger workflow",
+    "Stage 7 holding/settings SQLite workflow",
+    "Stage 7 parameter/interconnection/metric workflow",
+    "transition to Stage 8 only; Stage 8 remains not started"
+  ],
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:65e3e744255e7e96f992e227b07c95f5c1bcd952cbd83af21176b4fb93da3c28",
+  "git_commit": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+  "known_defects": [
+    "Installed App parity, GitHub push, production acceptance and final human acceptance remain Stage 12 gates."
+  ],
+  "product": "PFI",
+  "stage": 7,
+  "user_confirmation_reference": "thread_pre_final_acceptance_blanket_authorization_and_no_more_blocks",
+  "version": "v0.2.5"
+}

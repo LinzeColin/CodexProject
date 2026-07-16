@@ -1,0 +1,65 @@
+{
+  "schema": "PFIV025StandingInterimTransitionAuthorizationV1",
+  "authorization_id": "PFI-V025-INTERIM-STAGE-TRANSITION-AUTH-20260712",
+  "document_type": "standing_interim_execution_and_transition_authorization",
+  "status": "active",
+  "authority": "latest_explicit_user_decision",
+  "recorded_at": "2026-07-11T21:26:06Z",
+  "user_decision": {
+    "exact_message": "在最终验收前我全部都同意授权，不允许block",
+    "sha256": "2c9fe289b301b229d5df677f8c16467177e5950098d2407f198dd99e699480ca",
+    "conversation_reference": "current_codex_task_user_message"
+  },
+  "authorized_transitions": [
+    "0->1",
+    "1->2",
+    "2->3",
+    "3->4",
+    "4->5",
+    "5->6",
+    "6->7",
+    "7->8",
+    "8->9",
+    "9->10",
+    "10->11",
+    "11->12"
+  ],
+  "no_reprompt_before_final": true,
+  "transition_prerequisites": [
+    "all_planned_phases_have_truthful_evidence",
+    "independent_whole_stage_review_completed",
+    "all_in_scope_findings_remediated",
+    "independent_rereview_result_C0_I0_M0",
+    "codex_explicit_stage_acceptance",
+    "stop_conditions_clear",
+    "one_phase_per_run_preserved"
+  ],
+  "stage_0_binding": {
+    "whole_review_commit": "9380fdf4a500f48a2b15859044ab7926b4924391",
+    "whole_review_evidence_sha256": "f30cab259f84660ef18749288251198f3964720fc2af61e71d198f48fe92954a",
+    "external_attestation_sha256": "27d7596b4b41991d3e1749cc28447e41af501073e0343415b2f97ec9f421f0b2",
+    "post_remediation_review": "C0/I0/M0"
+  },
+  "current_transition": {
+    "stage_0_transition": "authorized",
+    "stage_1_entry_authorized": true
+  },
+  "final_acceptance_boundary": {
+    "is_human_release_acceptance": false,
+    "human_acceptance_json_created": false,
+    "final_stage_12_human_acceptance_required": true,
+    "final_human_acceptance_path": "PFI/reports/pfi_v025/stage_12/final_acceptance/human_acceptance.json",
+    "v025_production_accepted": false,
+    "production_accepted": false
+  },
+  "controls": {
+    "revocable_by_later_explicit_user_decision": true,
+    "waives_technical_gates": false,
+    "waives_independent_review": false,
+    "waives_evidence_requirements": false,
+    "waives_privacy_controls": false,
+    "waives_one_phase_per_run": false,
+    "authorizes_intermediate_push": false,
+    "authorizes_intermediate_app_install": false
+  }
+}

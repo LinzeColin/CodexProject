@@ -1,0 +1,36 @@
+{
+  "after": {
+    "config/formulas/v025_formula_registry.json": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+    "config/pfi_parameters.yaml": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+    "config/reports/v025_completeness_rules.json": "sha256:e7c4318b5cae0bea5aeea8b3dcc66d8e5fcd66aafb38abebef16f3e73ed2d933",
+    "reports/pfi_v025/stage_2/phase_2_1/source_manifest.json": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+    "reports/pfi_v025/stage_4/phase_4_3/read_model_status.json": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+    "reports/pfi_v025/stage_5/phase_5_3/invariant_results.json": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+    "reports/pfi_v025/stage_5/phase_5_3/metamorphic_results.json": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+    "reports/pfi_v025/stage_5/phase_5_3/model_validation_card.json": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+    "reports/pfi_v025/stage_5/phase_5_3/sensitivity_results.json": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+    "reports/pfi_v025/stage_7/whole_stage_review/workflow_validation.json": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca",
+    "reports/pfi_v025/stage_9/phase_9_1/report_manifest.json": "sha256:741cac624d86eaf993db81b0f070dd6ea42740608808f498579c199df9573da5"
+  },
+  "before": {
+    "config/formulas/v025_formula_registry.json": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+    "config/pfi_parameters.yaml": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+    "config/reports/v025_completeness_rules.json": "sha256:e7c4318b5cae0bea5aeea8b3dcc66d8e5fcd66aafb38abebef16f3e73ed2d933",
+    "reports/pfi_v025/stage_2/phase_2_1/source_manifest.json": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+    "reports/pfi_v025/stage_4/phase_4_3/read_model_status.json": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+    "reports/pfi_v025/stage_5/phase_5_3/invariant_results.json": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+    "reports/pfi_v025/stage_5/phase_5_3/metamorphic_results.json": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+    "reports/pfi_v025/stage_5/phase_5_3/model_validation_card.json": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+    "reports/pfi_v025/stage_5/phase_5_3/sensitivity_results.json": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+    "reports/pfi_v025/stage_7/whole_stage_review/workflow_validation.json": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca",
+    "reports/pfi_v025/stage_9/phase_9_1/report_manifest.json": "sha256:741cac624d86eaf993db81b0f070dd6ea42740608808f498579c199df9573da5"
+  },
+  "database_changed": false,
+  "database_read": false,
+  "product_commit": "7566107dfb3e2e3612ea28b9a2c31d8a8a553747",
+  "real_financial_rows_read": false,
+  "real_financial_source_mutated": false,
+  "schema": "PFIV025Stage9Phase92InputImmutabilityV1",
+  "snapshot_current_input_binding": true,
+  "status": "pass"
+}

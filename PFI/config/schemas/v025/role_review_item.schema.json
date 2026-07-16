@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/v025/role_review_item.schema.json",
+  "title": "PFI v0.2.5 Unknown Account Role Review Item",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["review_id", "source_id", "account_ref", "proposed_role", "effective_from", "effective_to", "reason_code", "created_at", "status", "publish_allowed"],
+  "properties": {
+    "review_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "source_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "account_ref": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "proposed_role": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "effective_from": {"type": "string", "format": "date"},
+    "effective_to": {"type": ["string", "null"], "format": "date"},
+    "reason_code": {"const": "unknown_role"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "status": {"const": "open"},
+    "publish_allowed": {"const": false}
+  }
+}

@@ -1,0 +1,22 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -c 'from pathlib import Path; files=['"'"'PFI/src/pfi_os/infrastructure/operational_store_backup.py'"'"', '"'"'PFI/src/pfi_v02/stage_v021_runtime_api.py'"'"', '"'"'PFI/scripts/v025/pfi_operational_backup_restore.py'"'"', '"'"'PFI/scripts/v025/stage11_readonly_backup_rehearsal.py'"'"', '"'"'PFI/web/tests/v025/stage11_public_boundary_browser.py'"'"', '"'"'PFI/web/tests/v025/stage11_whole_review_evidence.py'"'"', '"'"'PFI/web/tests/v025/stage11_whole_review_verify.py'"'"', '"'"'PFI/web/tests/v025/stage11_whole_review_finalize.py'"'"']; [compile(Path(path).read_text(encoding='"'"'utf-8'"'"'), path, '"'"'exec'"'"') for path in files]'
+
+$ node --check PFI/web/tests/v025/stage11_public_boundary_cdp.mjs
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json
+{
+  "backend_build_hash": "0a1c129dde6f5e7ea002c444720eb4a62ba3322abff8de12a568f05c637270c2",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "data_access": "disabled",
+  "frontend_bundle_hash": "e76e38dfc2ef7bf4042cb6b07e21b2be96253433aa21ff9e1a756e31dca4ae67",
+  "git_commit": "0b2aa6677a61a600eb2596bd8b5d39ca32522084",
+  "namespace": "isolated_candidate_empty_data_v1",
+  "persistent": false,
+  "process_cache_key": "f8ce7c9ef46ba11ce350324f18c46cb43e2c63f110577ce96563360199daacda",
+  "release_manifest_sha256": "90d93e17923e256a65ec60eb4370a6358e5ac6fe608a3ccafb4aee06810d0cf5",
+  "runtime_api": "disabled",
+  "schema": "PFIV025Stage1IsolatedCandidateCachePolicyV1",
+  "streamlit_cache_key": "f8ce7c9ef46ba11ce350324f18c46cb43e2c63f110577ce96563360199daacda",
+  "valid": true
+}
+
+$ git diff --check

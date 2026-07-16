@@ -1,0 +1,91 @@
+{
+  "entry_mismatch_count": 0,
+  "evidence_index_sha256": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "final_human_acceptance": false,
+  "product_candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "release_source_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "requirement_count": 10,
+  "requirements": [
+    {
+      "evidence_ref": "rereview/closure_overlay_audit.json",
+      "requirement_id": "S12-ACC-01-RELEASE-IDENTITY",
+      "result": "release source, runtime hashes, embedded identity and canonical App independently revalidated through closure B",
+      "status": "pass_rereviewed"
+    },
+    {
+      "evidence_ref": "rereview/fresh_real_e2e.json",
+      "requirement_id": "S12-ACC-02-REAL-IMPORT-REVIEW",
+      "result": "fresh disposable real E2E revalidated 8808 transactions and 8808 ledger rows",
+      "status": "pass_rereviewed"
+    },
+    {
+      "evidence_ref": "rereview/fresh_real_e2e.json",
+      "requirement_id": "S12-ACC-03-HOLDING-TRUTH",
+      "result": "SRC-HOLDINGS remains truthfully not_loaded/not_run with no false zero, fixture fallback or financial pass",
+      "status": "pass_with_known_limitation_rereviewed"
+    },
+    {
+      "evidence_ref": "rereview/fresh_real_e2e.json",
+      "requirement_id": "S12-ACC-04-REPORT-TRUTH",
+      "result": "fresh E2E preserves 3 blocked and 2 partial truthful report states",
+      "status": "pass_rereviewed"
+    },
+    {
+      "axe_pass_claimed": false,
+      "evidence_ref": "PFI/reports/pfi_v025/stage_12/phase_12_1/quality_evidence.json",
+      "requirement_id": "S12-ACC-05-ROUTES-UX-QUALITY",
+      "result": "20-route WCAG/CDP AX/keyboard/visual suite passed; axe-core remains explicitly not claimed",
+      "status": "pass_with_truthful_substitute"
+    },
+    {
+      "actual_os_sleep_performed": false,
+      "evidence_ref": "PFI/reports/pfi_v025/stage_12/phase_12_2/target_mac_lifecycle.json",
+      "requirement_id": "S12-ACC-06-TARGET-MAC-LIFECYCLE",
+      "result": "start/stop/restart/repeated-start/offline recovery pass; kernel sleep/wake remains an explicit proxy-only limitation",
+      "status": "pass_with_known_limitation"
+    },
+    {
+      "canonical_private_database_mutated": false,
+      "evidence_ref": "PFI/reports/pfi_v025/stage_12/phase_12_2/backup_restore_result.json",
+      "requirement_id": "S12-ACC-07-BACKUP-DISK-RECOVERY",
+      "result": "canonical read-only backup plus isolated restore/rollback and real SQLITE_FULL recovery passed",
+      "sqlite_full_observed": true,
+      "status": "pass"
+    },
+    {
+      "evidence_ref": "rereview/entry_audit.json",
+      "finder_method_overridden_by_latest_user_instruction": true,
+      "requirement_id": "S12-ACC-08-ENTRY-SURFACES",
+      "result": "CLI-only live census independently revalidated canonical App, Desktop symlink and zero noncanonical App copies",
+      "status": "pass_rereviewed"
+    },
+    {
+      "evidence_ref": "rereview/exact_binding.json; rereview/artifact_integrity.json",
+      "requirement_id": "S12-ACC-09-STATE-AND-EVIDENCE",
+      "result": "candidate A, evidence-index hash, request/state/evidence and both artifact manifests independently revalidated",
+      "status": "pass_rereviewed"
+    },
+    {
+      "evidence_ref": "rereview/evidence.json",
+      "requirement_id": "S12-ACC-10-FINAL-HUMAN-ACCEPTANCE",
+      "result": "independent rereview passed with 0 P0/P1; exact final human acceptance remains absent and is the next gate",
+      "status": "pending_explicit_human_acceptance"
+    }
+  ],
+  "rereview_minor_count": 0,
+  "rereview_open_p0_count": 0,
+  "rereview_open_p1_count": 0,
+  "rereview_status": "pass",
+  "reviewed_closure_commit": "559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+  "schema": "PFIV025Stage12WholeReviewRereviewRequirementMatrixV1",
+  "stage_12_accepted": false,
+  "status": "rereview_pass_waiting_explicit_final_acceptance",
+  "status_counts": {
+    "pass": 1,
+    "pass_rereviewed": 5,
+    "pass_with_known_limitation": 1,
+    "pass_with_known_limitation_rereviewed": 1,
+    "pass_with_truthful_substitute": 1,
+    "pending_explicit_human_acceptance": 1
+  }
+}

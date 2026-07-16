@@ -1,0 +1,32 @@
+{
+  "browser_job": {
+    "attempt_count": 2,
+    "completed_units": 3,
+    "event_types": [
+      "queued",
+      "claimed",
+      "lease_expired_requeued",
+      "claimed",
+      "progressed",
+      "progressed",
+      "progressed",
+      "succeeded"
+    ],
+    "job_id": "job-dad9d8424fe60452ec8d251e4ddbdbf8097e6685e7f171bff51a70afcffeec1e",
+    "progress_step": "cache.runtime_ready",
+    "retry_count": 1,
+    "revision": 7,
+    "span_count": 8,
+    "status": "succeeded",
+    "structured_log_count": 8,
+    "total_units": 3,
+    "trace_id": "ef0267c6a06715842ce2a348ef426b14"
+  },
+  "event_log_span_cardinality_equal": true,
+  "external_network_calls": 0,
+  "progress_source": "durable_job_events",
+  "schema": "PFIV025Stage10Phase103JobStateTransitionsV1",
+  "status": "pass",
+  "timer_based_progress": false,
+  "validation_ref": "PFI/reports/pfi_v025/stage_10/phase_10_3/browser_validation.json"
+}

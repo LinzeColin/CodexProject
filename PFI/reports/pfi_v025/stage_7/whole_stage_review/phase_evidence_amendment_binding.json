@@ -1,0 +1,52 @@
+{
+  "all_amended_evidence_schema_valid": true,
+  "base_commit": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+  "binding_semantics": "immutable_phase_commit_plus_reviewed_worktree_overlay",
+  "original_schema_gap_disclosed": true,
+  "overlay_manifest_sha256": "sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a",
+  "phase_evidence": [
+    {
+      "amended_schema_errors": [],
+      "amended_schema_valid": true,
+      "amended_sha256": "sha256:185534e6f75e6fc60f022ec33ad4e7b231710d2b9358c4ce722ebe1324d0226b",
+      "amendment_reason": "Task Pack changed_files/schema completion and review clarification; immutable phase commit is not rewritten",
+      "evidence_path": "PFI/reports/pfi_v025/stage_7/phase_7_1/evidence.json",
+      "original_commit": "a81175771a5186605b506a77ea4e9e852c739e2d",
+      "original_schema_errors": [],
+      "original_schema_valid": true,
+      "original_sha256": "sha256:e37da836b1cbb9bb15360eec55f757a6a6c946a2d0c907508397845ea398ed81",
+      "phase": "7.1"
+    },
+    {
+      "amended_schema_errors": [],
+      "amended_schema_valid": true,
+      "amended_sha256": "sha256:8bbf80c9d65f504b5d2607949b0d2f2174274c1ca00d5fe67193d6d0806293ca",
+      "amendment_reason": "Task Pack changed_files/schema completion and review clarification; immutable phase commit is not rewritten",
+      "evidence_path": "PFI/reports/pfi_v025/stage_7/phase_7_2/evidence.json",
+      "original_commit": "45d362c7ff95320aa2bbe0fcc841102abc48c146",
+      "original_schema_errors": [
+        "'changed_files' is a required property"
+      ],
+      "original_schema_valid": false,
+      "original_sha256": "sha256:dc84f00ed594b24e07f43f3bc5c8625d9ec5197611f9982f39fca959bfdc7fc8",
+      "phase": "7.2"
+    },
+    {
+      "amended_schema_errors": [],
+      "amended_schema_valid": true,
+      "amended_sha256": "sha256:63267ae07b19fadb5720ebefba69ef1c9fb4788ebe17ce489d33e699986d9f0f",
+      "amendment_reason": "Task Pack changed_files/schema completion and review clarification; immutable phase commit is not rewritten",
+      "evidence_path": "PFI/reports/pfi_v025/stage_7/phase_7_3/evidence.json",
+      "original_commit": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+      "original_schema_errors": [
+        "'changed_files' is a required property"
+      ],
+      "original_schema_valid": false,
+      "original_sha256": "sha256:5a5cf404ce559cc0ae198c78c301f3e7d49644d87e030349e2d9d10e27fdde12",
+      "phase": "7.3"
+    }
+  ],
+  "schema": "PFIV025Stage7PhaseEvidenceAmendmentBindingV1",
+  "status": "pass",
+  "taskpack_schema_sha256": "sha256:87ea45ff47fd19d84b9b7885b62f08dac473a6215ab81b25befb86a82fb7e5ca"
+}

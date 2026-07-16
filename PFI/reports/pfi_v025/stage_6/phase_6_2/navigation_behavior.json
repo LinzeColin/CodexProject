@@ -1,0 +1,9 @@
+{
+  "breadcrumb_bound_to_page": true,
+  "document_title_bound_to_page": true,
+  "full_back_forward_reload_acceptance_deferred_to_phase_6_3": true,
+  "heading_focus_after_navigation": true,
+  "schema": "PFIV025Stage6Phase62NavigationBehaviorV1",
+  "scroll_restored_per_canonical_route": true,
+  "status": "pass"
+}

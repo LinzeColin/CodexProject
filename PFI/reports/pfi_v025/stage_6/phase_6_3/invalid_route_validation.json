@@ -1,0 +1,55 @@
+{
+  "invalid_snapshot": {
+    "active_primary_count": 0,
+    "hash": "",
+    "heading": "无法打开这个 PFI 页面",
+    "heading_focused": false,
+    "history_length": 6,
+    "history_state": {
+      "recoveryRouteAlias": "/overview",
+      "routeAlias": "/not-a-real-route",
+      "routeState": "invalid",
+      "schema": "PFIV025Stage6Phase63HistoryStateV1",
+      "scrollY": 0,
+      "source": "initial_location",
+      "workspace": ""
+    },
+    "invalid_recovery_label": "返回首页总览",
+    "invalid_requested": "/not-a-real-route",
+    "invalid_visible": true,
+    "pathname": "/not-a-real-route",
+    "primary_dom_count": 10,
+    "route_alias": "/not-a-real-route",
+    "route_state": "invalid",
+    "scroll_y": 0,
+    "title": "页面地址无效 · PFI",
+    "workspace": ""
+  },
+  "recovered_snapshot": {
+    "active_primary_count": 1,
+    "hash": "",
+    "heading": "首页总览 · 财务状态",
+    "heading_focused": true,
+    "history_length": 7,
+    "history_state": {
+      "routeAlias": "/overview",
+      "routeState": "resolved",
+      "schema": "PFIV025Stage6Phase63HistoryStateV1",
+      "scrollY": 0,
+      "source": "navigation",
+      "workspace": "home"
+    },
+    "invalid_recovery_label": "返回首页总览",
+    "invalid_requested": "/not-a-real-route",
+    "invalid_visible": false,
+    "pathname": "/overview",
+    "primary_dom_count": 10,
+    "route_alias": "/overview",
+    "route_state": "resolved",
+    "scroll_y": 0,
+    "title": "首页总览 · 财务状态 · PFI",
+    "workspace": "home"
+  },
+  "schema": "PFIV025Stage6Phase63InvalidRouteValidationV1",
+  "status": "pass"
+}

@@ -1,0 +1,48 @@
+{
+  "atomic_replace_performed": true,
+  "automatic_rollback_attempted": true,
+  "automatic_rollback_performed": true,
+  "failure_type": "RuntimeError",
+  "original_application_invariants_restored": true,
+  "original_target_pre_restore_sha256": "8b3cb855259d640170386655f6a4016be7994dd0320272cf40b3a40fec324e8c",
+  "pre_restore_byte_identity": false,
+  "restored_matches_verified_rollback_snapshot": true,
+  "restored_sha256": "a9e008f480fd714f1cd77a4648dd75f391c396c2da652ad844383981b6b495ac",
+  "rollback_verification": {
+    "application_invariants": [
+      {
+        "invariant_id": "restore_state_matches_expected",
+        "result_shape": [
+          1,
+          1
+        ],
+        "status": "pass"
+      },
+      {
+        "invariant_id": "parent_child_transaction_pairing",
+        "result_shape": [
+          1,
+          1
+        ],
+        "status": "pass"
+      }
+    ],
+    "database_sha256": "a9e008f480fd714f1cd77a4648dd75f391c396c2da652ad844383981b6b495ac",
+    "database_size_bytes": 90112,
+    "foreign_key_issue_count": 0,
+    "guard_mode": "exclusive_automatic_rollback",
+    "integrity_check": [
+      "ok"
+    ],
+    "migration_registry_valid": true,
+    "missing_migration_count": 0,
+    "missing_table_count": 0,
+    "observed_migration_count": 1,
+    "observed_table_count": 11,
+    "schema_sha256": "2a9058b87ef2ec4395ae679c1777255b5c9d801fe20ec1b7497e4d57aa1a611d",
+    "status": "pass"
+  },
+  "schema": "PFIV025Stage11RollbackRehearsalV1",
+  "status": "rolled_back",
+  "verified_rollback_snapshot_sha256": "a9e008f480fd714f1cd77a4648dd75f391c396c2da652ad844383981b6b495ac"
+}

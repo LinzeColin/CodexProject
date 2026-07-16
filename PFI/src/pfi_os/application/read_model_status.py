@@ -163,6 +163,7 @@ def build_v024_read_model_status(
     v023_model = build_stage6_core_metrics_read_model(project_root=project_root, data_root=data_root)
     metrics = _build_core_metric_states(scan, v023_model)
     read_model_hash = _hash_payload({"source": scan, "metrics": metrics, "phase_id": PHASE_ID})
+    stage5_financial_model = _build_stage5_financial_model(project_root)
     return {
         "schema": "PFIV024Stage4ReadModelStatusV1",
         "target_version": TARGET_VERSION,
@@ -187,6 +188,7 @@ def build_v024_read_model_status(
         "as_of": scan["as_of"],
         "read_model_hash": read_model_hash,
         "core_metric_states": metrics,
+        "stage5_financial_model": stage5_financial_model,
         "blocked_metric_ids": [
             metric["metric_id"]
             for metric in metrics
@@ -195,6 +197,33 @@ def build_v024_read_model_status(
         "surface_ids": list(SHARED_SURFACES),
         "generated_at_utc": _utc_now(),
     }
+
+
+def _build_stage5_financial_model(project_root: str | Path | None) -> dict[str, Any]:
+    from pfi_os.application.metrics.model_validation import build_stage5_private_surface_payload
+
+    pfi_root = (
+        Path(project_root).expanduser().resolve()
+        if project_root is not None
+        else Path(__file__).resolve().parents[3]
+    )
+    try:
+        return build_stage5_private_surface_payload(pfi_root)
+    except Exception as exc:
+        return {
+            "schema": "PFIV025Stage5PrivateFinancialSurfaceV1",
+            "version": "v0.2.5",
+            "stage": 5,
+            "status": "blocked_runtime_validation_failed",
+            "components": [],
+            "surface_ids": ["homepage", "consumption_page", "report"],
+            "actual_ui_render_binding_completed": False,
+            "actual_report_render_binding_completed": False,
+            "financial_fixture_fallback_used": False,
+            "private_runtime_only": True,
+            "persist_to_tracked_evidence_allowed": False,
+            "blocking_reason_code": type(exc).__name__,
+        }
 
 
 def build_v024_surface_state_views(read_model_status: dict[str, Any]) -> dict[str, Any]:

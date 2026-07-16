@@ -1,0 +1,12 @@
+PASS
+scanner=pfi-v025-stage12-initial-whole-review-public-evidence-v1
+input_count=19
+absolute_private_paths=0
+financial_values=0
+raw_source_filenames=0
+email_addresses=0
+private_key_headers=0
+contains_private_values=false
+finder_operations=0
+launchservices_operations=0
+gui_file_operations=0

@@ -1,0 +1,22 @@
+{
+  "cashflow_formula_id": "FORM-PFI-019",
+  "cashflow_windows_days": [7, 21, 30, 60, 90, 180, 360],
+  "default_tag_count": 56,
+  "empty_window_policy": "filtered_empty_and_null_values",
+  "internal_transfer_excluded_from_net_cashflow": true,
+  "model_validation": "blocked_pending_phase_5_3_real_data",
+  "schema": "PFIV025Stage5Phase52CashflowTaxonomyEvidenceV1",
+  "status": "capability_pass_real_data_not_run",
+  "tag_history_required": true,
+  "tag_types": ["default", "custom"],
+  "taxonomy_formula_id": "FORM-PFI-020",
+  "taxonomy_validation": {
+    "l1_count": 12,
+    "l2_total": 50,
+    "max_l2_per_l1_actual": 5,
+    "primary_category_per_transaction": 1,
+    "status": "通过",
+    "violations": []
+  },
+  "view_filter_modes": ["all", "any"]
+}

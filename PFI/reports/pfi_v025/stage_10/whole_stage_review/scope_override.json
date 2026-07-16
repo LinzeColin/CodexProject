@@ -1,0 +1,27 @@
+{
+  "integration_surfaces": [
+    "PFI/config/release_manifest.json",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+    "PFI/scripts/v025/release_cache_contract.py",
+    "PFI/web/index.html",
+    "PFI/web/app/version.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/app/components/jobTimeline.js",
+    "PFI/tests/test_v025_stage1_*.py"
+  ],
+  "push_or_install_in_scope": false,
+  "reason": "formal Shell integration, release identity, whole-stage evidence and mandatory project governance require these bounded shared surfaces",
+  "review_and_governance_surfaces": [
+    "PFI/web/tests/v025/stage10_*.py",
+    "PFI/web/tests/v025/stage10_*.mjs",
+    "PFI/tests/test_v025_stage10_*.py",
+    "PFI/docs/governance/**",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "roadmap_product_scope_obeyed": true,
+  "schema": "PFIV025Stage10WholeReviewScopeOverrideV1",
+  "stage_11_implementation_in_scope": false,
+  "status": "approved_by_project_contract_and_standing_scope_authorization"
+}

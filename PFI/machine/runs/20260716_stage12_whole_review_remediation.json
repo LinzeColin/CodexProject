@@ -1,0 +1,6 @@
+{
+  "run_id": "PFI-V025-STAGE12-WHOLE-REVIEW-REMEDIATION",
+  "action": "关闭 Stage 12 初审三项 P1，重建精确 release/candidate/evidence 绑定，并以 CLI 可逆隔离旧 App",
+  "result": "3 项 P1 已整改；当前 0 个 P0、0 个 P1，等待独立复审",
+  "ts": "2026-07-16"
+}

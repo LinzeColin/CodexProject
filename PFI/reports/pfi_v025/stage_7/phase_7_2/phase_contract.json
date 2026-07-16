@@ -1,0 +1,23 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S7-P72-HOLDINGS-SETTINGS",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "app_install_performed": false,
+  "contract_id": "PFI-V025-STAGE7-PHASE72-HOLDING-SETTINGS-PERSISTENCE",
+  "current_phase_only": true,
+  "database_changed": true,
+  "database_scope": "isolated_/tmp_only",
+  "external_network_performed": false,
+  "financial_sentinel_counts_as_real_acceptance": false,
+  "finder_used": false,
+  "implementation_base": "a81175771a5186605b506a77ea4e9e852c739e2d",
+  "iteration_id": "ITER-20260715-PFI-V025-S7-P72",
+  "push_performed": false,
+  "real_financial_data_mutated": false,
+  "real_financial_data_read": false,
+  "schema": "PFIV025Stage7Phase72RunContractV1",
+  "stage_7_phase_7_1_status": "candidate_pass",
+  "stage_7_phase_7_3_started": false,
+  "stage_7_whole_stage_review_started": false,
+  "status": "candidate_pass",
+  "task_ids": ["S7-P2-T1", "S7-P2-T2", "S7-P2-T3", "S7-P2-T4"]
+}

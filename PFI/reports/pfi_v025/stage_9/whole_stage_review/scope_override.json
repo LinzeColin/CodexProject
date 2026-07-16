@@ -1,0 +1,16 @@
+{
+  "additional_review_only_files": [
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "PFI/docs/governance/**",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "reason": "whole-stage review must repair deterministic governance rendering and record accepted transition truth",
+  "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "roadmap_allowed_scope_obeyed_for_product_changes": true,
+  "schema": "PFIV025Stage9WholeReviewScopeOverrideV1",
+  "stage_10_implementation_in_scope": false,
+  "status": "approved_by_project_contract"
+}

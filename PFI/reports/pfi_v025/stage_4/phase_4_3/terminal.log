@@ -1,0 +1,33 @@
+PFI v0.2.5 Stage 4 Phase 4.3 validation transcript
+observed_at: 2026-07-14T23:27:17+10:00
+implementation_base: 1ab51eb518c30b10bab6a7d9b4442e7c462c6452
+
+EXPECTED RED
+- pytest PFI/tests/test_v025_stage4_cross_page_consistency.py
+- result: collection error; pfi_os.application.read_models.metric_state absent
+
+FOCUSED AND COMPATIBILITY
+- Phase 4.3 focused: 19 passed
+- Stage 4 complete phase regression: 38 passed
+- Stage 1 release/cache/runtime compatibility: 24 passed, 2 dependency deprecation warnings
+- Stage 3 functional compatibility: 48 passed, 4 historical-state tests deselected
+- Stage 2 functional compatibility: 69 passed, 3 historical-state tests deselected
+- node --check PFI/web/app/data_state.js: pass
+
+GOVERNANCE
+- changed-only enforce-sync: errors 0, warnings 0
+- local lean-governance check-render: drift 0, reference issues 0
+- full-checkout shadow validate_project_governance --project PFI: errors 0, warnings 0
+- PFI scoped semantic: current/latest iteration both ITER-20260714-PFI-V025-S4-P43; unexpected errors 0
+- known pre-existing sparse-reference errors excluded from scoped result: 2 legacy Cloudflare root test refs
+
+BOUNDARIES
+- seven core metrics: all not_loaded with value null
+- financial values emitted: 0
+- shared surfaces: homepage, accounts, investment, consumption, report
+- Finder: not used
+- external network: not performed
+- GitHub push: not performed
+- PFI.app install: not performed
+- Stage 4 whole-stage review: not started
+- Stage 5: not started

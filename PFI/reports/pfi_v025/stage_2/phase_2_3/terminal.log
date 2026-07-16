@@ -1,0 +1,68 @@
+ledger_schema=PFIV025Phase23TerminalLedgerV1
+ledger_recorded_at=2026-07-14T19:14:32+10:00
+timestamp_semantics=ledger_aggregation_time_not_individual_command_time
+ledger_state=finalized
+
+record_id=RED-01
+command=Phase 2.3 focused pytest before implementation
+exit_code=2
+summary=expected RED because safe sandbox module was absent
+
+record_id=GREEN-CORE-01
+command=Phase 2.3 focused pytest before final evidence files
+exit_code=1
+summary=10 core tests passed and 4 expected evidence or tracking tests failed
+
+record_id=GREEN-BASELINE-01
+command=Phase 2.3 actual read-only baseline with three iterations
+exit_code=0
+summary=8815 records matched manifest in all iterations; source identity unchanged; isolated database copy cleaned
+
+record_id=GREEN-RENDER-01
+command=python3 -B scripts/lean_governance.py render --project PFI --write
+exit_code=0
+summary=three complete Chinese human entry files rendered
+
+record_id=GREEN-P23-FINAL-01
+command=Phase 2.3 final focused pytest
+exit_code=0
+summary=14 passed
+
+record_id=GREEN-P21-COMPAT-01
+command=Phase 2.1 source manifest compatibility pytest
+exit_code=0
+summary=27 passed
+
+record_id=GREEN-P22-COMPAT-01
+command=Phase 2.2 temporal and FX compatibility pytest
+exit_code=0
+summary=20 passed
+
+record_id=GREEN-GOVERNANCE-01
+command=full Git worktree project governance validation
+exit_code=0
+summary=errors 0 and warnings 0
+
+record_id=GREEN-SYNC-01
+command=full Git worktree changed-only semantic governance sync
+exit_code=0
+summary=errors 0 and warnings 0
+
+record_id=GREEN-RENDER-CHECK-01
+command=python3 -B scripts/lean_governance.py check-render --project PFI
+exit_code=0
+summary=drift 0 and reference issues 0
+
+record_id=GREEN-SCOPE-01
+command=exact staged changed-files comparison and git diff check
+exit_code=0
+summary=exact 35-file scope and whitespace clean
+
+finder_used=false
+network_performed=false
+source_mutation_performed=false
+financial_fixture_fallback_used=false
+push_performed=false
+app_install_performed=false
+production_accepted=false
+final_human_acceptance=false

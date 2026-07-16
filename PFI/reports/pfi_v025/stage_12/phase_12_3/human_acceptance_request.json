@@ -1,0 +1,76 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW-REMEDIATION",
+  "accepted_scope": [
+    "PFI v0.2.5 Stage 0 through Stage 11 accepted transition evidence",
+    "Stage 12 Phase 12.1 automated real E2E and regression candidate",
+    "Stage 12 Phase 12.2 canonical CLI App and target-Mac resilience candidate",
+    "Stage 12 Phase 12.3 exact candidate binding regenerated after initial-review remediation",
+    "Stage 12 initial-review findings I01, I02 and I03 remediated, pending independent rereview"
+  ],
+  "app_build": "20260712.1",
+  "app_version": "0.2.5",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "evidence_index_ref": "PFI/reports/pfi_v025/stage_12/phase_12_3/final_evidence_index.json",
+  "explicit_confirmation_required": true,
+  "final_human_acceptance": false,
+  "final_reinstall_performed": false,
+  "finder_used": false,
+  "git_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "git_commit_semantics": "exact product and Stage 12 remediation anchor; evidence-index hash binds the later non-runtime evidence overlay",
+  "human_acceptance_artifact_exists": false,
+  "human_acceptance_artifact_to_create_after_confirmation": "PFI/reports/pfi_v025/stage_12/final_acceptance/human_acceptance.json",
+  "known_defects": [
+    {
+      "defect_id": "S12-P122-P2-ACTUAL-OS-SLEEP-NOT-RUN",
+      "disposition": "Use deterministic owned-process suspend/resume; do not claim kernel sleep/wake.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "accepted_limitation"
+    },
+    {
+      "defect_id": "S12-P122-P2-HOLDINGS-SOURCE-NOT-LOADED",
+      "disposition": "Keep holding edit not_run and verify no false zero or fixture fallback.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "truthfully_blocked_source"
+    },
+    {
+      "defect_id": "S12-WR-R03-FINDER-METHOD-OVERRIDDEN",
+      "disposition": "Retain CLI bundle execution and headless-browser evidence; never claim Finder execution.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "accepted_user_method_constraint"
+    },
+    {
+      "defect_id": "S12-WR-R04-AXE-CORE-NOT-AVAILABLE",
+      "disposition": "Retain the explicit no-axe claim and deterministic WCAG 2.2 AA, keyboard and CDP AX substitute.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "accepted_substitute_evidence"
+    },
+    {
+      "count": 6,
+      "defect_id": "S12-WR-R05-HISTORICAL-STATE-TEST-DEBT",
+      "disposition": "Retain six immutable historical-state tests as debt and require current-state replacement gates.",
+      "release_blocking": false,
+      "severity": "P2",
+      "status": "accepted_current_state_replacement_gates"
+    }
+  ],
+  "prior_blanket_authorization_is_not_final_acceptance": true,
+  "product": "PFI",
+  "production_accepted": false,
+  "push_performed": false,
+  "release_freeze_performed": false,
+  "request_generated_at": "2026-07-15T21:45:47Z",
+  "required_before_confirmation": [
+    "independent Stage 12 post-remediation rereview passes",
+    "open P0 and P1 counts remain zero",
+    "version, build, exact commit and evidence-index hash still match this request",
+    "the user explicitly accepts the exact reviewed release and listed known defects"
+  ],
+  "schema": "PFIV025Stage12FinalHumanAcceptanceRequestV1",
+  "status": "awaiting_stage12_independent_rereview_then_explicit_human_acceptance",
+  "version": "v0.2.5"
+}

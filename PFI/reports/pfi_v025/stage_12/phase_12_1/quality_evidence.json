@@ -1,0 +1,26 @@
+{
+  "accessibility_tree_status": "pass",
+  "audited_route_count": 20,
+  "axe_core_available": false,
+  "axe_pass_claimed": false,
+  "blocking_violation_count": 0,
+  "component_statuses": {
+    "accessibility_tree": "pass",
+    "browser": "pass",
+    "keyboard": "pass",
+    "visual": "pass",
+    "wcag": "pass"
+  },
+  "contains_private_values": false,
+  "deterministic_wcag_substitute_status": "pass",
+  "external_network_performed": false,
+  "finder_used": false,
+  "keyboard_status": "pass",
+  "schema": "PFIV025Stage12Phase121QualityEvidenceV1",
+  "screenshot_count": 40,
+  "standard": "WCAG 2.2 AA",
+  "status": "pass",
+  "trace": "quality_browser/browser_trace.zip",
+  "trace_sha256": "sha256:4ab4e968c16a4f1dae848fc6c3bad7193e0d877de6bb1d6bc38b2637caf83ed9",
+  "visual_regression_failure_count": 0
+}

@@ -1,0 +1,13 @@
+{
+  "canonical_app_version": "0.2.5",
+  "desktop_targets_canonical": true,
+  "finder_used": false,
+  "launchservices_used": false,
+  "noncanonical_copies_modified": false,
+  "noncanonical_copy_build": "20260629.1",
+  "noncanonical_copy_mismatch_count": 1,
+  "noncanonical_copy_version": "0.2.3",
+  "remediation_must_remain_cli_only": true,
+  "schema": "PFIV025Stage12InitialReviewEntryAuditV1",
+  "status": "fail_noncanonical_old_app_remains"
+}

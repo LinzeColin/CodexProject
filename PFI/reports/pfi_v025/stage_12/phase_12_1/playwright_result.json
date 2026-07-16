@@ -1,0 +1,294 @@
+{
+  "schema": "PFIV025Stage12Phase121PlaywrightResultV1",
+  "status": "pass",
+  "check_count": 17,
+  "passed_check_count": 17,
+  "checks": {
+    "real_import_four_git_objects": true,
+    "real_import_record_coverage": true,
+    "real_import_confirmed": true,
+    "real_import_replay_idempotent": true,
+    "holding_missing_source_truthful": true,
+    "report_truth_states": true,
+    "no_false_zero": true,
+    "canonical_primary_routes": true,
+    "no_old_primary_ui": true,
+    "route_matrix_pass": true,
+    "no_template_clone": true,
+    "accessibility_tree_pass": true,
+    "performance_budget_pass": true,
+    "no_console_errors": true,
+    "no_page_errors": true,
+    "no_http_errors": true,
+    "loopback_only": true
+  },
+  "import": {
+    "execution_status": "completed",
+    "source_kind": "real_alipay_csv_git_objects",
+    "source_blob_count": 4,
+    "raw_record_count": 8815,
+    "transaction_count": 8808,
+    "review_count": 803,
+    "confirmed_ledger_count": 8808,
+    "replay_idempotent": true,
+    "fixture_used": false,
+    "fallback_used": false
+  },
+  "holding": {
+    "execution_status": "not_run",
+    "truth_gate_status": "pass",
+    "reason_code": "SRC_HOLDINGS_NOT_LOADED",
+    "source_fixture_used": false,
+    "financial_pass_claimed": false,
+    "active_holding_count": 0,
+    "valuation_status": "暂无真实持仓",
+    "row_count": 1,
+    "false_zero_count": 0
+  },
+  "report": {
+    "execution_status": "completed",
+    "source_kind": "current_real_aggregate_manifest",
+    "financial_values_emitted": 0,
+    "visible_runtime_card_count": 4,
+    "analysis_validation_status": "pass",
+    "report_card_count": 5,
+    "blocked_report_count": 3,
+    "partial_report_count": 2,
+    "financial_amount_visible": false
+  },
+  "route_regression": {
+    "primary_route_count": 10,
+    "primary_routes": [
+      {
+        "requested_route": "/overview",
+        "canonical_route": "/overview",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 215,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/accounts",
+        "canonical_route": "/accounts",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 230,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/ledger",
+        "canonical_route": "/ledger",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 254,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/investment",
+        "canonical_route": "/investment",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 221,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/consumption",
+        "canonical_route": "/consumption",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 247,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/data",
+        "canonical_route": "/data",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 230,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/review",
+        "canonical_route": "/review",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 230,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/reports",
+        "canonical_route": "/reports",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 196,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/market-research",
+        "canonical_route": "/market-research",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 231,
+        "horizontal_overflow_px": 0
+      },
+      {
+        "requested_route": "/settings",
+        "canonical_route": "/settings",
+        "title_present": true,
+        "active_primary_count": 1,
+        "primary_entry_count": 10,
+        "duration_ms": 235,
+        "horizontal_overflow_px": 0
+      }
+    ],
+    "secondary_route_count": 10,
+    "secondary_routes": [
+      {
+        "requested_route": "/overview/status",
+        "canonical_route": "/overview/status",
+        "structural_signature": "overview-status-command",
+        "data_object": "财务状态快照",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/accounts/overview",
+        "canonical_route": "/accounts/overview",
+        "structural_signature": "accounts-source-map",
+        "data_object": "账户来源地图",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/ledger/list",
+        "canonical_route": "/ledger/list",
+        "structural_signature": "ledger-evidence-table",
+        "data_object": "标准化流水记录",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/investment/holdings",
+        "canonical_route": "/investment/holdings",
+        "structural_signature": "investment-holdings-editor",
+        "data_object": "真实持仓快照",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/consumption/overview",
+        "canonical_route": "/consumption/overview",
+        "structural_signature": "consumption-dual-metric-overview",
+        "data_object": "消费双口径汇总",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/data/upload",
+        "canonical_route": "/data/upload",
+        "structural_signature": "data-upload-dropzone",
+        "data_object": "待上传文件队列",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/review/list",
+        "canonical_route": "/review/list",
+        "structural_signature": "review-evidence-inbox",
+        "data_object": "证据化建议队列",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/reports/monthly",
+        "canonical_route": "/reports/monthly",
+        "structural_signature": "reports-monthly-close",
+        "data_object": "月度报告草稿",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/market-research/market",
+        "canonical_route": "/market-research/market",
+        "structural_signature": "research-market-watchlist",
+        "data_object": "市场观察清单",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      },
+      {
+        "requested_route": "/settings/account",
+        "canonical_route": "/settings/account",
+        "structural_signature": "settings-account-preferences",
+        "data_object": "账户显示偏好",
+        "job_to_be_done_present": true,
+        "primary_action_present": true
+      }
+    ],
+    "canonical_primary_route_count": 10,
+    "legacy_primary_route_count": 0
+  },
+  "no_false_zero": {
+    "status": "pass",
+    "holding_false_zero_count": 0,
+    "report_financial_amount_visible": false
+  },
+  "no_template_clone": {
+    "status": "pass",
+    "representative_route_count": 10,
+    "distinct_structural_signature_count": 10,
+    "distinct_data_object_count": 10
+  },
+  "performance": {
+    "initial_navigation": {
+      "dom_content_loaded_ms": 191,
+      "load_event_ms": 196,
+      "first_contentful_paint_ms": 192
+    },
+    "route_count": 10,
+    "maximum_route_navigation_ms": 254,
+    "route_navigation_budget_ms": 3000,
+    "initial_navigation_budget_ms": 2500
+  },
+  "accessibility": {
+    "source": "Chrome_DevTools_Protocol_Accessibility.getFullAXTree",
+    "non_ignored_node_count": 1187,
+    "expected_primary_navigation_count": 10,
+    "found_primary_navigation_count": 10,
+    "legacy_alias_primary_navigation_count": 0,
+    "duplicate_primary_label_count": 0
+  },
+  "diagnostics": {
+    "console_errors": [],
+    "page_errors": [],
+    "http_errors": [],
+    "blocked_external": [],
+    "requested_origin_count": 2
+  },
+  "screenshots": [
+    {
+      "file": "real_import_preview_redacted.png",
+      "sha256": "31149c5787cd9174421f166a351e24b4d9c1eb0e1723965e915ca204ceab65dc"
+    },
+    {
+      "file": "holding_source_blocked.png",
+      "sha256": "d75409c1654584abffed4217239c228a3bd911bd1336af62708db766231b5a0b"
+    },
+    {
+      "file": "report_truth_states.png",
+      "sha256": "43dea5481ae349c89c5b7598b92b2df607a26e6017db9ff0b3b17396c44cbb60"
+    }
+  ],
+  "private_values_persisted": false,
+  "financial_values_emitted": 0,
+  "external_network_performed": false,
+  "finder_used": false
+}

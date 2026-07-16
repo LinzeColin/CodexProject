@@ -1,11 +1,11 @@
 project_id: "PFI"
-as_of_event_id: "EVENT-20260710-PFI-CF-L2-DEPLOYMENT-BINDING"
-source_snapshot_hash: "sha256:03ed8687b7d9a5a0c3710a7c246751260049e16c671b1e2d5a8855326b9ca16e"
-source_base_commit: "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
+as_of_event_id: "EVENT-20260716-PFI-V025-S12-FINAL-ACCEPTANCE"
+source_snapshot_hash: "sha256:9366525aa37f9ffb1339bb3348367f7e002d7da4d303eb93cc3dbf3dbd2ebe2f"
+source_base_commit: "04390bcf17c18de107eb2f1b4ce051c83638f98c"
 source_tree_hash: "5f05ad339e9519bd5981b54e788f0dbeefbcac9c"
-snapshot_event_time: "2026-07-10T19:46:00+10:00"
+snapshot_event_time: "2026-07-16T03:25:58+10:00"
 generator_version: "4.0.1"
-final_commit_binding: "COMMIT_BOUND:ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -17,9 +17,9 @@ dimensions:
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
     checked_active_parameters: 0
-    total_active_parameters: 23
+    total_active_parameters: 92
     checked_active_formulas: 0
-    total_active_formulas: 1
+    total_active_formulas: 20
     unresolved_fact_ids:
       - "FACT-PFI-IMPLEMENTATION-FORMULA-REVIEW"
       - "FACT-PFI-IMPLEMENTATION-PARAMETER-REVIEW"
@@ -30,7 +30,7 @@ dimensions:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
     checked_active_parameters: 0
-    total_active_parameters: 23
+    total_active_parameters: 92
     evidence_refs:
       - "PFI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -61,25 +61,26 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 3
-    legacy_unbound_events: 6
-    precommit_pending_events: 2
+    commit_bound_events: 15
+    legacy_unbound_events: 51
+    precommit_pending_events: 4
     evidence_refs:
       - "PFI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ACC-CF-L2-20260710-PASSED"
+  release_gate: "ACC-PFI-V025-STAGE12-WHOLE-REVIEW"
   blocker_ids:
     - "FACT-PFI-IMPLEMENTATION-FORMULA-REVIEW"
     - "FACT-PFI-IMPLEMENTATION-PARAMETER-REVIEW"
 next_executable_task:
-  task_id: "NONE"
-  status: "not_applicable"
-  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
-  acceptance_ids: []
-  owner: "project owner"
+  task_id: "PFI-V025-SINGLE-MAIN-UPLOAD-AND-POST-PUSH-PARITY"
+  status: "authorized_app_reinstalled_waiting_single_main_upload"
+  reason: "Owner 已精确接受 Stage 0-12、A/B/C、evidence-index 与五项 P2；S12-P3-T4、release freeze 和唯一 CLI App 最终重装已完成。下一步只执行一次 GitHub main 上传与 post-push 只读 parity。"
+  acceptance_ids:
+    - "ACC-PFI-V025-STAGE12-WHOLE-REVIEW"
+  owner: "Codex"
   human_owner_role: "project_owner"
-  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
+  unblock_condition: "Already satisfied by exact Owner acceptance; final delivery must preserve live main outside the curated PFI plus two approved root-governance-script overlay and remain CLI-only."
   stale_candidates: []
 owner_decision:
   required: true

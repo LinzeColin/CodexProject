@@ -1,0 +1,15 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage10_job_lifecycle.py PFI/tests/test_v025_stage1_release_identity.py
+....................................................................     [100%]
+68 passed in 6.45s
+$ disposable SQLite runtime/config/concurrency/SIGKILL/migration rehearsal
+runtime gate pass; 100/100 writes; SIGKILL uncommitted rows 0; integrity/FK pass
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI
+CodexProject governance validation
+root: checked
+projects checked: PFI
+errors: 0
+warnings: 0
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+$ /usr/bin/python3 scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}

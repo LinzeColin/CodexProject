@@ -1,0 +1,52 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE9-WHOLE-REVIEW",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "app_install_performed": false,
+  "blocked_financial_conclusion_allowed": false,
+  "completeness_statuses": [
+    "complete",
+    "partial",
+    "blocked"
+  ],
+  "cross_report_hash_fields": [
+    "data_manifest_hash",
+    "read_model_hash",
+    "formula_registry_hash",
+    "parameter_hash"
+  ],
+  "current_phase_only": true,
+  "data_quality_report_generatable_in_any_dependency_state": true,
+  "explicitly_not_done": [
+    "Phase 9.2 financial analysis, sensitivity and model validation",
+    "Phase 9.3 decision lifecycle, review and multi-format export",
+    "Stage 9 whole-stage independent review, remediation, re-review and transition acceptance",
+    "GitHub push, canonical PFI.app reinstall and production/final acceptance"
+  ],
+  "external_network_performed": false,
+  "finder_used": false,
+  "phase": "9.1",
+  "phase_9_2_started": false,
+  "phase_9_3_started": false,
+  "phase_id": "V025-S9-P9.1",
+  "phase_name": "报告合同与完整度",
+  "push_performed": false,
+  "report_types": [
+    "data_quality",
+    "net_worth",
+    "cash",
+    "investment",
+    "consumption",
+    "cashflow"
+  ],
+  "risk_tier": "T2",
+  "schema": "PFIV025Stage9Phase91ContractV1",
+  "stage": 9,
+  "stage_9_whole_stage_review_done": false,
+  "task_ids": [
+    "S9-P1-T1",
+    "S9-P1-T2",
+    "S9-P1-T3",
+    "S9-P1-T4"
+  ],
+  "version": "v0.2.5"
+}

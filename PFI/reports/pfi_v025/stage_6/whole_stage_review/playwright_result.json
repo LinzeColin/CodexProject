@@ -1,0 +1,1667 @@
+{
+  "schema": "PFIV025Stage6WholeReviewPlaywrightResultV1",
+  "status": "pass",
+  "acceptance_id": "ACC-PFI-V025-STAGE6-WHOLE-REVIEW",
+  "checks": {
+    "primary_routes_exact_and_operable": true,
+    "shared_responsive_tree_and_single_active": true,
+    "aliases_normalize_without_primary_pollution": true,
+    "ten_structurally_distinct_secondary_pages": true,
+    "history_back_forward_and_state": true,
+    "scroll_restoration": true,
+    "repeated_click_no_extra_history": true,
+    "deep_link_reload_same_page": true,
+    "invalid_route_actionable_and_recoverable": true,
+    "keyboard_focus_contract": true,
+    "accessibility_tree_exactly_ten_primary": true,
+    "nojs_complete_and_readable": true,
+    "no_console_page_http_errors": true,
+    "external_network_unused": true
+  },
+  "primary_snapshots": [
+    {
+      "pathname": "/overview",
+      "route_alias": "/overview",
+      "route_state": "resolved",
+      "workspace": "home",
+      "title": "首页总览 · 财务状态 · PFI",
+      "heading": "首页总览 · 财务状态",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/overview",
+        "workspace": "home",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 2,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "确认当前财务状态、数据新鲜度与阻断项。",
+      "loading": "正在读取财务状态快照，页面操作暂不可用。",
+      "empty": "尚无可用的财务状态快照；保留页面结构并说明下一步。",
+      "error": "无法读取财务状态快照；请检查本机来源、权限与证据状态。",
+      "signature": "overview-status-command",
+      "action": "检查财务状态",
+      "data_object": "财务状态快照",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/accounts",
+      "route_alias": "/accounts",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 账户地图 · PFI",
+      "heading": "账户与资产 · 账户地图",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 3,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "确认账户、来源、币种与更新时间的覆盖关系。",
+      "loading": "正在读取账户来源地图，页面操作暂不可用。",
+      "empty": "尚无可用的账户来源地图；保留页面结构并说明下一步。",
+      "error": "无法读取账户来源地图；请检查本机来源、权限与证据状态。",
+      "signature": "accounts-source-map",
+      "action": "核对账户来源",
+      "data_object": "账户来源地图",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/ledger",
+      "route_alias": "/ledger",
+      "route_state": "resolved",
+      "workspace": "ledger",
+      "title": "账本流水 · 流水列表 · PFI",
+      "heading": "账本流水 · 流水列表",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/ledger",
+        "workspace": "ledger",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 4,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "逐笔查看流水、来源批次与证据链。",
+      "loading": "正在读取标准化流水记录，页面操作暂不可用。",
+      "empty": "尚无可用的标准化流水记录；保留页面结构并说明下一步。",
+      "error": "无法读取标准化流水记录；请检查本机来源、权限与证据状态。",
+      "signature": "ledger-evidence-table",
+      "action": "打开流水证据",
+      "data_object": "标准化流水记录",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/investment",
+      "route_alias": "/investment",
+      "route_state": "resolved",
+      "workspace": "investment",
+      "title": "投资管理 · 投资总览 · PFI",
+      "heading": "投资管理 · 投资总览",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/investment",
+        "workspace": "investment",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 5,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "核对投资市值、现金仓位与配置集中度。",
+      "loading": "正在读取投资配置快照，页面操作暂不可用。",
+      "empty": "尚无可用的投资配置快照；保留页面结构并说明下一步。",
+      "error": "无法读取投资配置快照；请检查本机来源、权限与证据状态。",
+      "signature": "investment-allocation-overview",
+      "action": "查看资产配置",
+      "data_object": "投资配置快照",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/consumption",
+      "route_alias": "/consumption",
+      "route_state": "resolved",
+      "workspace": "consumption",
+      "title": "消费管理 · 消费总览 · PFI",
+      "heading": "消费管理 · 消费总览",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/consumption",
+        "workspace": "consumption",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 6,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "对照现金流与行为口径理解消费结构。",
+      "loading": "正在读取消费双口径汇总，页面操作暂不可用。",
+      "empty": "尚无可用的消费双口径汇总；保留页面结构并说明下一步。",
+      "error": "无法读取消费双口径汇总；请检查本机来源、权限与证据状态。",
+      "signature": "consumption-dual-metric-overview",
+      "action": "检查消费口径",
+      "data_object": "消费双口径汇总",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/data",
+      "route_alias": "/data",
+      "route_state": "resolved",
+      "workspace": "sync",
+      "title": "数据源与上传 · 上传中心 · PFI",
+      "heading": "数据源与上传 · 上传中心",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/data",
+        "workspace": "sync",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 7,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "选择文件并在解析前确认格式与隐私边界。",
+      "loading": "正在读取待上传文件队列，页面操作暂不可用。",
+      "empty": "尚无可用的待上传文件队列；保留页面结构并说明下一步。",
+      "error": "无法读取待上传文件队列；请检查本机来源、权限与证据状态。",
+      "signature": "data-upload-dropzone",
+      "action": "选择本机文件",
+      "data_object": "待上传文件队列",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/review",
+      "route_alias": "/review",
+      "route_state": "resolved",
+      "workspace": "recommendations",
+      "title": "建议与复盘 · 建议列表 · PFI",
+      "heading": "建议与复盘 · 建议列表",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/review",
+        "workspace": "recommendations",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 8,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "按证据、影响与可执行性整理建议。",
+      "loading": "正在读取证据化建议队列，页面操作暂不可用。",
+      "empty": "尚无可用的证据化建议队列；保留页面结构并说明下一步。",
+      "error": "无法读取证据化建议队列；请检查本机来源、权限与证据状态。",
+      "signature": "review-evidence-inbox",
+      "action": "整理建议优先级",
+      "data_object": "证据化建议队列",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/reports",
+      "route_alias": "/reports",
+      "route_state": "resolved",
+      "workspace": "insights",
+      "title": "报告与洞察 · 月报 · PFI",
+      "heading": "报告与洞察 · 月报",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/reports",
+        "workspace": "insights",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 9,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "在月度数据门禁通过后生成可追溯草稿。",
+      "loading": "正在读取月度报告草稿，页面操作暂不可用。",
+      "empty": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "error": "无法读取月度报告草稿；请检查本机来源、权限与证据状态。",
+      "signature": "reports-monthly-close",
+      "action": "生成月报草稿",
+      "data_object": "月度报告草稿",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/market-research",
+      "route_alias": "/market-research",
+      "route_state": "resolved",
+      "workspace": "market_research",
+      "title": "市场与研究 · 市场观察 · PFI",
+      "heading": "市场与研究 · 市场观察",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/market-research",
+        "workspace": "market_research",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 10,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "组织指数、ETF、主题与自选观察对象。",
+      "loading": "正在读取市场观察清单，页面操作暂不可用。",
+      "empty": "尚无可用的市场观察清单；保留页面结构并说明下一步。",
+      "error": "无法读取市场观察清单；请检查本机来源、权限与证据状态。",
+      "signature": "research-market-watchlist",
+      "action": "打开观察清单",
+      "data_object": "市场观察清单",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/settings",
+      "route_alias": "/settings",
+      "route_state": "resolved",
+      "workspace": "settings",
+      "title": "设置 · 账户偏好 · PFI",
+      "heading": "设置 · 账户偏好",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/settings",
+        "workspace": "settings",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 11,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "管理显示币种、默认账户与界面偏好。",
+      "loading": "正在读取账户显示偏好，页面操作暂不可用。",
+      "empty": "尚无可用的账户显示偏好；保留页面结构并说明下一步。",
+      "error": "无法读取账户显示偏好；请检查本机来源、权限与证据状态。",
+      "signature": "settings-account-preferences",
+      "action": "保存账户偏好",
+      "data_object": "账户显示偏好",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    }
+  ],
+  "secondary_snapshots": [
+    {
+      "pathname": "/overview/status",
+      "route_alias": "/overview/status",
+      "route_state": "resolved",
+      "workspace": "home",
+      "title": "首页总览 · 财务状态 · PFI",
+      "heading": "首页总览 · 财务状态",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/overview/status",
+        "workspace": "home",
+        "routeState": "resolved",
+        "scrollY": 607,
+        "source": "navigation"
+      },
+      "history_length": 13,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "确认当前财务状态、数据新鲜度与阻断项。",
+      "loading": "正在读取财务状态快照，页面操作暂不可用。",
+      "empty": "尚无可用的财务状态快照；保留页面结构并说明下一步。",
+      "error": "无法读取财务状态快照；请检查本机来源、权限与证据状态。",
+      "signature": "overview-status-command",
+      "action": "检查财务状态",
+      "data_object": "财务状态快照",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/accounts/overview",
+      "route_alias": "/accounts/overview",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 账户地图 · PFI",
+      "heading": "账户与资产 · 账户地图",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/overview",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 15,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "确认账户、来源、币种与更新时间的覆盖关系。",
+      "loading": "正在读取账户来源地图，页面操作暂不可用。",
+      "empty": "尚无可用的账户来源地图；保留页面结构并说明下一步。",
+      "error": "无法读取账户来源地图；请检查本机来源、权限与证据状态。",
+      "signature": "accounts-source-map",
+      "action": "核对账户来源",
+      "data_object": "账户来源地图",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/ledger/list",
+      "route_alias": "/ledger/list",
+      "route_state": "resolved",
+      "workspace": "ledger",
+      "title": "账本流水 · 流水列表 · PFI",
+      "heading": "账本流水 · 流水列表",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/ledger/list",
+        "workspace": "ledger",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 17,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "逐笔查看流水、来源批次与证据链。",
+      "loading": "正在读取标准化流水记录，页面操作暂不可用。",
+      "empty": "尚无可用的标准化流水记录；保留页面结构并说明下一步。",
+      "error": "无法读取标准化流水记录；请检查本机来源、权限与证据状态。",
+      "signature": "ledger-evidence-table",
+      "action": "打开流水证据",
+      "data_object": "标准化流水记录",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/investment/overview",
+      "route_alias": "/investment/overview",
+      "route_state": "resolved",
+      "workspace": "investment",
+      "title": "投资管理 · 投资总览 · PFI",
+      "heading": "投资管理 · 投资总览",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/investment/overview",
+        "workspace": "investment",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 19,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "核对投资市值、现金仓位与配置集中度。",
+      "loading": "正在读取投资配置快照，页面操作暂不可用。",
+      "empty": "尚无可用的投资配置快照；保留页面结构并说明下一步。",
+      "error": "无法读取投资配置快照；请检查本机来源、权限与证据状态。",
+      "signature": "investment-allocation-overview",
+      "action": "查看资产配置",
+      "data_object": "投资配置快照",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/consumption/overview",
+      "route_alias": "/consumption/overview",
+      "route_state": "resolved",
+      "workspace": "consumption",
+      "title": "消费管理 · 消费总览 · PFI",
+      "heading": "消费管理 · 消费总览",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/consumption/overview",
+        "workspace": "consumption",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 21,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "对照现金流与行为口径理解消费结构。",
+      "loading": "正在读取消费双口径汇总，页面操作暂不可用。",
+      "empty": "尚无可用的消费双口径汇总；保留页面结构并说明下一步。",
+      "error": "无法读取消费双口径汇总；请检查本机来源、权限与证据状态。",
+      "signature": "consumption-dual-metric-overview",
+      "action": "检查消费口径",
+      "data_object": "消费双口径汇总",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/data/upload",
+      "route_alias": "/data/upload",
+      "route_state": "resolved",
+      "workspace": "sync",
+      "title": "数据源与上传 · 上传中心 · PFI",
+      "heading": "数据源与上传 · 上传中心",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/data/upload",
+        "workspace": "sync",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 23,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "选择文件并在解析前确认格式与隐私边界。",
+      "loading": "正在读取待上传文件队列，页面操作暂不可用。",
+      "empty": "尚无可用的待上传文件队列；保留页面结构并说明下一步。",
+      "error": "无法读取待上传文件队列；请检查本机来源、权限与证据状态。",
+      "signature": "data-upload-dropzone",
+      "action": "选择本机文件",
+      "data_object": "待上传文件队列",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/review/list",
+      "route_alias": "/review/list",
+      "route_state": "resolved",
+      "workspace": "recommendations",
+      "title": "建议与复盘 · 建议列表 · PFI",
+      "heading": "建议与复盘 · 建议列表",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/review/list",
+        "workspace": "recommendations",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 25,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "按证据、影响与可执行性整理建议。",
+      "loading": "正在读取证据化建议队列，页面操作暂不可用。",
+      "empty": "尚无可用的证据化建议队列；保留页面结构并说明下一步。",
+      "error": "无法读取证据化建议队列；请检查本机来源、权限与证据状态。",
+      "signature": "review-evidence-inbox",
+      "action": "整理建议优先级",
+      "data_object": "证据化建议队列",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/reports/monthly",
+      "route_alias": "/reports/monthly",
+      "route_state": "resolved",
+      "workspace": "insights",
+      "title": "报告与洞察 · 月报 · PFI",
+      "heading": "报告与洞察 · 月报",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/reports/monthly",
+        "workspace": "insights",
+        "routeState": "resolved",
+        "scrollY": 590,
+        "source": "navigation"
+      },
+      "history_length": 27,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "在月度数据门禁通过后生成可追溯草稿。",
+      "loading": "正在读取月度报告草稿，页面操作暂不可用。",
+      "empty": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "error": "无法读取月度报告草稿；请检查本机来源、权限与证据状态。",
+      "signature": "reports-monthly-close",
+      "action": "生成月报草稿",
+      "data_object": "月度报告草稿",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/market-research/market",
+      "route_alias": "/market-research/market",
+      "route_state": "resolved",
+      "workspace": "market_research",
+      "title": "市场与研究 · 市场观察 · PFI",
+      "heading": "市场与研究 · 市场观察",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/market-research/market",
+        "workspace": "market_research",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 29,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "组织指数、ETF、主题与自选观察对象。",
+      "loading": "正在读取市场观察清单，页面操作暂不可用。",
+      "empty": "尚无可用的市场观察清单；保留页面结构并说明下一步。",
+      "error": "无法读取市场观察清单；请检查本机来源、权限与证据状态。",
+      "signature": "research-market-watchlist",
+      "action": "打开观察清单",
+      "data_object": "市场观察清单",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    {
+      "pathname": "/settings/account",
+      "route_alias": "/settings/account",
+      "route_state": "resolved",
+      "workspace": "settings",
+      "title": "设置 · 账户偏好 · PFI",
+      "heading": "设置 · 账户偏好",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/settings/account",
+        "workspace": "settings",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 31,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "管理显示币种、默认账户与界面偏好。",
+      "loading": "正在读取账户显示偏好，页面操作暂不可用。",
+      "empty": "尚无可用的账户显示偏好；保留页面结构并说明下一步。",
+      "error": "无法读取账户显示偏好；请检查本机来源、权限与证据状态。",
+      "signature": "settings-account-preferences",
+      "action": "保存账户偏好",
+      "data_object": "账户显示偏好",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    }
+  ],
+  "alias_snapshots": [
+    {
+      "alias": "/home",
+      "target": "/overview",
+      "snapshot": {
+        "pathname": "/overview",
+        "route_alias": "/overview",
+        "route_state": "resolved",
+        "workspace": "home",
+        "title": "首页总览 · 财务状态 · PFI",
+        "heading": "首页总览 · 财务状态",
+        "heading_focused": false,
+        "history_state": {
+          "schema": "PFIV025Stage6Phase63HistoryStateV1",
+          "routeAlias": "/overview",
+          "workspace": "home",
+          "routeState": "resolved",
+          "scrollY": 0,
+          "source": "initial_location"
+        },
+        "history_length": 32,
+        "scroll_y": 607,
+        "primary_dom_count": 10,
+        "active_primary_count": 1,
+        "job": "确认当前财务状态、数据新鲜度与阻断项。",
+        "loading": "正在读取财务状态快照，页面操作暂不可用。",
+        "empty": "尚无可用的财务状态快照；保留页面结构并说明下一步。",
+        "error": "无法读取财务状态快照；请检查本机来源、权限与证据状态。",
+        "signature": "overview-status-command",
+        "action": "检查财务状态",
+        "data_object": "财务状态快照",
+        "invalid_visible": false,
+        "invalid_requested": ""
+      }
+    },
+    {
+      "alias": "/market",
+      "target": "/market-research/market",
+      "snapshot": {
+        "pathname": "/market-research/market",
+        "route_alias": "/market-research/market",
+        "route_state": "resolved",
+        "workspace": "market_research",
+        "title": "市场与研究 · 市场观察 · PFI",
+        "heading": "市场与研究 · 市场观察",
+        "heading_focused": false,
+        "history_state": {
+          "schema": "PFIV025Stage6Phase63HistoryStateV1",
+          "routeAlias": "/market-research/market",
+          "workspace": "market_research",
+          "routeState": "resolved",
+          "scrollY": 0,
+          "source": "initial_location"
+        },
+        "history_length": 33,
+        "scroll_y": 0,
+        "primary_dom_count": 10,
+        "active_primary_count": 1,
+        "job": "组织指数、ETF、主题与自选观察对象。",
+        "loading": "正在读取市场观察清单，页面操作暂不可用。",
+        "empty": "尚无可用的市场观察清单；保留页面结构并说明下一步。",
+        "error": "无法读取市场观察清单；请检查本机来源、权限与证据状态。",
+        "signature": "research-market-watchlist",
+        "action": "打开观察清单",
+        "data_object": "市场观察清单",
+        "invalid_visible": false,
+        "invalid_requested": ""
+      }
+    },
+    {
+      "alias": "/research",
+      "target": "/market-research/research",
+      "snapshot": {
+        "pathname": "/market-research/research",
+        "route_alias": "/market-research/research",
+        "route_state": "resolved",
+        "workspace": "market_research",
+        "title": "市场与研究 · 研究笔记 · PFI",
+        "heading": "市场与研究 · 研究笔记",
+        "heading_focused": false,
+        "history_state": {
+          "schema": "PFIV025Stage6Phase63HistoryStateV1",
+          "routeAlias": "/market-research/research",
+          "workspace": "market_research",
+          "routeState": "resolved",
+          "scrollY": 0,
+          "source": "initial_location"
+        },
+        "history_length": 34,
+        "scroll_y": 0,
+        "primary_dom_count": 10,
+        "active_primary_count": 1,
+        "job": "按主题整理研究证据、引用与反方条件。",
+        "loading": "正在读取研究证据笔记，页面操作暂不可用。",
+        "empty": "尚无可用的研究证据笔记；保留页面结构并说明下一步。",
+        "error": "无法读取研究证据笔记；请检查本机来源、权限与证据状态。",
+        "signature": "research-citation-notebook",
+        "action": "整理研究笔记",
+        "data_object": "研究证据笔记",
+        "invalid_visible": false,
+        "invalid_requested": ""
+      }
+    },
+    {
+      "alias": "/holdings",
+      "target": "/investment/holdings",
+      "snapshot": {
+        "pathname": "/investment/holdings",
+        "route_alias": "/investment/holdings",
+        "route_state": "resolved",
+        "workspace": "investment",
+        "title": "投资管理 · 持仓 · PFI",
+        "heading": "投资管理 · 持仓",
+        "heading_focused": false,
+        "history_state": {
+          "schema": "PFIV025Stage6Phase63HistoryStateV1",
+          "routeAlias": "/investment/holdings",
+          "workspace": "investment",
+          "routeState": "resolved",
+          "scrollY": 0,
+          "source": "initial_location"
+        },
+        "history_length": 35,
+        "scroll_y": 0,
+        "primary_dom_count": 10,
+        "active_primary_count": 1,
+        "job": "查看或维护持仓，并保留持久化状态。",
+        "loading": "正在读取真实持仓快照，页面操作暂不可用。",
+        "empty": "尚无可用的真实持仓快照；保留页面结构并说明下一步。",
+        "error": "无法读取真实持仓快照；请检查本机来源、权限与证据状态。",
+        "signature": "investment-holdings-editor",
+        "action": "编辑持仓快照",
+        "data_object": "真实持仓快照",
+        "invalid_visible": false,
+        "invalid_requested": ""
+      }
+    },
+    {
+      "alias": "/strategy-lab",
+      "target": "/market-research/strategy-lab",
+      "snapshot": {
+        "pathname": "/market-research/strategy-lab",
+        "route_alias": "/market-research/strategy-lab",
+        "route_state": "resolved",
+        "workspace": "market_research",
+        "title": "市场与研究 · 策略实验室 · PFI",
+        "heading": "市场与研究 · 策略实验室",
+        "heading_focused": false,
+        "history_state": {
+          "schema": "PFIV025Stage6Phase63HistoryStateV1",
+          "routeAlias": "/market-research/strategy-lab",
+          "workspace": "market_research",
+          "routeState": "resolved",
+          "scrollY": 0,
+          "source": "initial_location"
+        },
+        "history_length": 36,
+        "scroll_y": 0,
+        "primary_dom_count": 10,
+        "active_primary_count": 1,
+        "job": "配置研究实验并保留参数、结果与失效条件。",
+        "loading": "正在读取策略实验定义，页面操作暂不可用。",
+        "empty": "尚无可用的策略实验定义；保留页面结构并说明下一步。",
+        "error": "无法读取策略实验定义；请检查本机来源、权限与证据状态。",
+        "signature": "research-strategy-experiment",
+        "action": "进入策略实验",
+        "data_object": "策略实验定义",
+        "invalid_visible": false,
+        "invalid_requested": ""
+      }
+    },
+    {
+      "alias": "/investment/strategy-lab",
+      "target": "/market-research/strategy-lab",
+      "snapshot": {
+        "pathname": "/market-research/strategy-lab",
+        "route_alias": "/market-research/strategy-lab",
+        "route_state": "resolved",
+        "workspace": "market_research",
+        "title": "市场与研究 · 策略实验室 · PFI",
+        "heading": "市场与研究 · 策略实验室",
+        "heading_focused": false,
+        "history_state": {
+          "schema": "PFIV025Stage6Phase63HistoryStateV1",
+          "routeAlias": "/market-research/strategy-lab",
+          "workspace": "market_research",
+          "routeState": "resolved",
+          "scrollY": 0,
+          "source": "initial_location"
+        },
+        "history_length": 37,
+        "scroll_y": 0,
+        "primary_dom_count": 10,
+        "active_primary_count": 1,
+        "job": "配置研究实验并保留参数、结果与失效条件。",
+        "loading": "正在读取策略实验定义，页面操作暂不可用。",
+        "empty": "尚无可用的策略实验定义；保留页面结构并说明下一步。",
+        "error": "无法读取策略实验定义；请检查本机来源、权限与证据状态。",
+        "signature": "research-strategy-experiment",
+        "action": "进入策略实验",
+        "data_object": "策略实验定义",
+        "invalid_visible": false,
+        "invalid_requested": ""
+      }
+    },
+    {
+      "alias": "/data-system",
+      "target": "/settings/data-system",
+      "snapshot": {
+        "pathname": "/settings/data-system",
+        "route_alias": "/settings/data-system",
+        "route_state": "resolved",
+        "workspace": "settings",
+        "title": "设置 · 数据与系统 · PFI",
+        "heading": "设置 · 数据与系统",
+        "heading_focused": false,
+        "history_state": {
+          "schema": "PFIV025Stage6Phase63HistoryStateV1",
+          "routeAlias": "/settings/data-system",
+          "workspace": "settings",
+          "routeState": "resolved",
+          "scrollY": 0,
+          "source": "initial_location"
+        },
+        "history_length": 38,
+        "scroll_y": 0,
+        "primary_dom_count": 10,
+        "active_primary_count": 1,
+        "job": "核对本机数据路径、服务与质量状态。",
+        "loading": "正在读取数据系统状态，页面操作暂不可用。",
+        "empty": "尚无可用的数据系统状态；保留页面结构并说明下一步。",
+        "error": "无法读取数据系统状态；请检查本机来源、权限与证据状态。",
+        "signature": "settings-system-health",
+        "action": "检查数据系统",
+        "data_object": "数据系统状态",
+        "invalid_visible": false,
+        "invalid_requested": ""
+      }
+    }
+  ],
+  "history": {
+    "back": {
+      "pathname": "/accounts/list",
+      "route_alias": "/accounts/list",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 账户清单 · PFI",
+      "heading": "账户与资产 · 账户清单",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/list",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "popstate"
+      },
+      "history_length": 41,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "筛选账户并查看余额、来源和数据状态。",
+      "loading": "正在读取账户余额清单，页面操作暂不可用。",
+      "empty": "尚无可用的账户余额清单；保留页面结构并说明下一步。",
+      "error": "无法读取账户余额清单；请检查本机来源、权限与证据状态。",
+      "signature": "accounts-balance-table",
+      "action": "打开账户明细",
+      "data_object": "账户余额清单",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    "forward": {
+      "pathname": "/accounts/trend",
+      "route_alias": "/accounts/trend",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 资产趋势 · PFI",
+      "heading": "账户与资产 · 资产趋势",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/trend",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "popstate"
+      },
+      "history_length": 41,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "检查资产时间序列的覆盖范围与缺口。",
+      "loading": "正在读取资产趋势序列，页面操作暂不可用。",
+      "empty": "尚无可用的资产趋势序列；保留页面结构并说明下一步。",
+      "error": "无法读取资产趋势序列；请检查本机来源、权限与证据状态。",
+      "signature": "accounts-asset-timeseries",
+      "action": "查看趋势缺口",
+      "data_object": "资产趋势序列",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    "scroll_restored": {
+      "pathname": "/accounts/trend",
+      "route_alias": "/accounts/trend",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 资产趋势 · PFI",
+      "heading": "账户与资产 · 资产趋势",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/trend",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 360,
+        "source": "popstate"
+      },
+      "history_length": 42,
+      "scroll_y": 360,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "检查资产时间序列的覆盖范围与缺口。",
+      "loading": "正在读取资产趋势序列，页面操作暂不可用。",
+      "empty": "尚无可用的资产趋势序列；保留页面结构并说明下一步。",
+      "error": "无法读取资产趋势序列；请检查本机来源、权限与证据状态。",
+      "signature": "accounts-asset-timeseries",
+      "action": "查看趋势缺口",
+      "data_object": "资产趋势序列",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    "repeated_click_delta": 0
+  },
+  "deep_link": {
+    "before_reload": {
+      "pathname": "/market-research/strategy-lab",
+      "route_alias": "/market-research/strategy-lab",
+      "route_state": "resolved",
+      "workspace": "market_research",
+      "title": "市场与研究 · 策略实验室 · PFI",
+      "heading": "市场与研究 · 策略实验室",
+      "heading_focused": false,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/market-research/strategy-lab",
+        "workspace": "market_research",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "initial_location"
+      },
+      "history_length": 42,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "配置研究实验并保留参数、结果与失效条件。",
+      "loading": "正在读取策略实验定义，页面操作暂不可用。",
+      "empty": "尚无可用的策略实验定义；保留页面结构并说明下一步。",
+      "error": "无法读取策略实验定义；请检查本机来源、权限与证据状态。",
+      "signature": "research-strategy-experiment",
+      "action": "进入策略实验",
+      "data_object": "策略实验定义",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    },
+    "after_reload": {
+      "pathname": "/market-research/strategy-lab",
+      "route_alias": "/market-research/strategy-lab",
+      "route_state": "resolved",
+      "workspace": "market_research",
+      "title": "市场与研究 · 策略实验室 · PFI",
+      "heading": "市场与研究 · 策略实验室",
+      "heading_focused": false,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/market-research/strategy-lab",
+        "workspace": "market_research",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "initial_location"
+      },
+      "history_length": 42,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "配置研究实验并保留参数、结果与失效条件。",
+      "loading": "正在读取策略实验定义，页面操作暂不可用。",
+      "empty": "尚无可用的策略实验定义；保留页面结构并说明下一步。",
+      "error": "无法读取策略实验定义；请检查本机来源、权限与证据状态。",
+      "signature": "research-strategy-experiment",
+      "action": "进入策略实验",
+      "data_object": "策略实验定义",
+      "invalid_visible": false,
+      "invalid_requested": ""
+    }
+  },
+  "invalid": {
+    "invalid": {
+      "pathname": "/not-a-real-route",
+      "route_alias": "/not-a-real-route",
+      "route_state": "invalid",
+      "workspace": "",
+      "title": "页面地址无效 · PFI",
+      "heading": "",
+      "heading_focused": false,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/not-a-real-route",
+        "workspace": "",
+        "routeState": "invalid",
+        "scrollY": 0,
+        "source": "initial_location",
+        "recoveryRouteAlias": "/overview"
+      },
+      "history_length": 43,
+      "scroll_y": 0,
+      "primary_dom_count": 10,
+      "active_primary_count": 0,
+      "job": "",
+      "loading": "",
+      "empty": "",
+      "error": "",
+      "signature": "",
+      "action": "",
+      "data_object": "",
+      "invalid_visible": true,
+      "invalid_requested": "/not-a-real-route"
+    },
+    "recovered": {
+      "pathname": "/overview",
+      "route_alias": "/overview",
+      "route_state": "resolved",
+      "workspace": "home",
+      "title": "首页总览 · 财务状态 · PFI",
+      "heading": "首页总览 · 财务状态",
+      "heading_focused": true,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/overview",
+        "workspace": "home",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "history_length": 44,
+      "scroll_y": 607,
+      "primary_dom_count": 10,
+      "active_primary_count": 1,
+      "job": "确认当前财务状态、数据新鲜度与阻断项。",
+      "loading": "正在读取财务状态快照，页面操作暂不可用。",
+      "empty": "尚无可用的财务状态快照；保留页面结构并说明下一步。",
+      "error": "无法读取财务状态快照；请检查本机来源、权限与证据状态。",
+      "signature": "overview-status-command",
+      "action": "检查财务状态",
+      "data_object": "财务状态快照",
+      "invalid_visible": false,
+      "invalid_requested": "/not-a-real-route"
+    }
+  },
+  "mobile": {
+    "pathname": "/settings/data-system",
+    "route_alias": "/settings/data-system",
+    "route_state": "resolved",
+    "workspace": "settings",
+    "title": "设置 · 数据与系统 · PFI",
+    "heading": "设置 · 数据与系统",
+    "heading_focused": false,
+    "history_state": {
+      "schema": "PFIV025Stage6Phase63HistoryStateV1",
+      "routeAlias": "/settings/data-system",
+      "workspace": "settings",
+      "routeState": "resolved",
+      "scrollY": 0,
+      "source": "initial_location"
+    },
+    "history_length": 45,
+    "scroll_y": 0,
+    "primary_dom_count": 10,
+    "active_primary_count": 1,
+    "job": "核对本机数据路径、服务与质量状态。",
+    "loading": "正在读取数据系统状态，页面操作暂不可用。",
+    "empty": "尚无可用的数据系统状态；保留页面结构并说明下一步。",
+    "error": "无法读取数据系统状态；请检查本机来源、权限与证据状态。",
+    "signature": "settings-system-health",
+    "action": "检查数据系统",
+    "data_object": "数据系统状态",
+    "invalid_visible": false,
+    "invalid_requested": ""
+  },
+  "nojs": {
+    "primary_route_count": 10,
+    "secondary_route_count": 45,
+    "directory_visible": true
+  },
+  "a11y": {
+    "source": "Accessibility.getFullAXTree",
+    "navigation_found": true,
+    "primary_navigation_names": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "primary_navigation_count": 10,
+    "primary_navigation_unique_count": 10,
+    "expected_primary_navigation_names": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "hidden_or_duplicate_primary_count": 0,
+    "nodes": [
+      {
+        "role": "navigation",
+        "name": "一级工作区",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "⌂ 首页总览 净资产 · 现金流 · 数据健康",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "◫ 账户与资产 账户地图 · 对账 · 跨币种",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "≋ 账本流水 标准流水 · A/B/C/D 复核",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "↗ 投资管理 持仓 · 归因 · 策略回测",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "◌ 消费管理 预算 · 分类 · 异常 · 订阅",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "⇄ 数据源与上传 上传 · 解析 · 对账 · 队列",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "✦ 建议与复盘 证据 · 决策 · 生命周期",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "▣ 报告与洞察 月报 · 导出 · 本机快照",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "⌁ 市场与研究 市场 · 研究 · 策略实验室",
+        "ignored": false
+      },
+      {
+        "role": "button",
+        "name": "⚙ 设置 反馈 · 参数 · 数据管理",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "首页总览",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "账户与资产",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "账本流水",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "投资管理",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "消费管理",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "数据源与上传",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "建议与复盘",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "报告与洞察",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "市场与研究",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true
+      },
+      {
+        "role": "StaticText",
+        "name": "设置",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "首页总览",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "净资产 · 现金流 · 数据健康",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "账户与资产",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "账户地图 · 对账 · 跨币种",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "账本流水",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "标准流水 · A/B/C/D 复核",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "投资管理",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "持仓 · 归因 · 策略回测",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "消费管理",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "预算 · 分类 · 异常 · 订阅",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "数据源与上传",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "上传 · 解析 · 对账 · 队列",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "建议与复盘",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "证据 · 决策 · 生命周期",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "报告与洞察",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "月报 · 导出 · 本机快照",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "市场与研究",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "市场 · 研究 · 策略实验室",
+        "ignored": false
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "设置",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "反馈 · 参数 · 数据管理",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "⌂",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "净资产 · 现金流 · 数据健康",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "◫",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "账户地图 · 对账 · 跨币种",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "≋",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "标准流水 · A/B/C/D 复核",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "↗",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "持仓 · 归因 · 策略回测",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "◌",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "预算 · 分类 · 异常 · 订阅",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "⇄",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "上传 · 解析 · 对账 · 队列",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "✦",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "证据 · 决策 · 生命周期",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "▣",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "月报 · 导出 · 本机快照",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "⌁",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "市场 · 研究 · 策略实验室",
+        "ignored": false
+      },
+      {
+        "role": "StaticText",
+        "name": "⚙",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "反馈 · 参数 · 数据管理",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⌂",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "◫",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "≋",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "↗",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "◌",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⇄",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "✦",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "▣",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⌁",
+        "ignored": false
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⚙",
+        "ignored": false
+      }
+    ]
+  },
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "requested_origins": [
+    "http://127.0.0.1:61890",
+    "http://127.0.0.1:8766"
+  ],
+  "blocked_external_requests": [],
+  "external_network_performed": false,
+  "finder_used": false,
+  "evidence_redaction": "browser_init_script_fx_and_currency_values"
+}

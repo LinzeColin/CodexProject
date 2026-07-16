@@ -1,0 +1,18 @@
+{
+  "app_build_version": "20260712.1",
+  "app_short_version": "0.2.5",
+  "backend_build_hash": "d1d60c64e91d21d3dcd8ac76714087c84e3f4d3cbd105bd24e2ccdc209bb0600",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "contains_private_values": false,
+  "disk_backend_valid": true,
+  "disk_frontend_valid": true,
+  "frontend_bundle_hash": "e18644635d69488301030dd57316c2316317a859e8afed4aecfc652c0b7dffee",
+  "git_commit": "0b2aa6677a61a600eb2596bd8b5d39ca32522084",
+  "installed_app_matches": true,
+  "launcher_query_matches": true,
+  "runtime_manifest_matches": true,
+  "same_build": true,
+  "schema": "PFIV025Stage12Phase122ReleaseIdentityV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

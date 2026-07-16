@@ -1,0 +1,37 @@
+{
+  "counts": {
+    "critical": 4,
+    "important": 14,
+    "minor": 2
+  },
+  "material_remediation": [
+    "removed expected-archetype self-certification and rendered differentiated non-home workspaces",
+    "removed generic timer-based success and proved delayed failure cannot auto-succeed",
+    "added explicit holding deletion confirmation and 44px interactive targets",
+    "persisted only opaque durable-job state and counts",
+    "expanded current-content visual, keyboard, AX and WCAG evidence to 20 unique routes and 40 screenshots",
+    "normalized TaskPack evidence without rewriting immutable Phase commits",
+    "corrected release identity and governance truth"
+  ],
+  "product_remediation_commit": "2c7b25efd2916c909027333283b499a119d088e0",
+  "review_base_before_remediation": "684a359d0cad79baaaf780b6ce733ce26c3e8117",
+  "reviewers": {
+    "final_acceptance_evidence_review": {
+      "critical": 3,
+      "important": 2,
+      "minor": 1
+    },
+    "final_code_security_review": {
+      "critical": 1,
+      "important": 4,
+      "minor": 1
+    },
+    "final_governance_renderer_review": {
+      "critical": 0,
+      "important": 8,
+      "minor": 0
+    }
+  },
+  "schema": "PFIV025Stage8InitialIndependentReviewV1",
+  "status": "remediated_pending_final_rereview"
+}

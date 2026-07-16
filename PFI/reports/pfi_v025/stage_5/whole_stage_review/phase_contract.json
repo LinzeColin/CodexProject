@@ -1,0 +1,54 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE5-WHOLE-REVIEW",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "app_install_performed": false,
+  "contract_id": "PFI-V025-STAGE5-WHOLE-REVIEW",
+  "database_changed": false,
+  "explicit_acceptance_required": true,
+  "external_network_performed": false,
+  "financial_fixture_fallback_allowed": false,
+  "finder_used": false,
+  "independent_whole_stage_review": true,
+  "initial_review_required": true,
+  "network_performed": true,
+  "network_scope": "ephemeral_local_loopback_only",
+  "phase_commits": {
+    "5.1": "73a3186d0e64b65d77555aeb6f882c8e237790ae",
+    "5.2": "61a14d9366c68a8c849c0c056a107116d5b377d1",
+    "5.3": "ec3e3af020cc37f5bddd39dba2e445895e015f9e"
+  },
+  "public_evidence_redacted": true,
+  "push_performed": false,
+  "real_data_read_only": true,
+  "remediation_required": true,
+  "rereview_required": true,
+  "review_base": "ec3e3af020cc37f5bddd39dba2e445895e015f9e",
+  "risk_tier": "T3_FINANCIAL_MODEL_UI_REPORT_PRIVACY",
+  "schema": "PFIV025Stage5WholeReviewContractV1",
+  "scope_exception": {
+    "exception_files": [
+      "PFI/src/pfi_os/application/read_model_status.py",
+      "PFI/web/app/shell.js",
+      "PFI/scripts/v025/browser_validate_stage5_whole_review.py"
+    ],
+    "reason": "Stage 5 Allowed Files omit the formal Web/read-model consumers while the same Roadmap requires the main UI, consumption page and report to display the real four-component metric. The whole-stage remediation therefore touches only the minimum formal runtime binding files needed to satisfy that acceptance criterion.",
+    "status": "accepted_for_required_acceptance_remediation"
+  },
+  "stage": 5,
+  "stage_6_started": false,
+  "task_ids": [
+    "S5-P1-T1",
+    "S5-P1-T2",
+    "S5-P1-T3",
+    "S5-P1-T4",
+    "S5-P2-T1",
+    "S5-P2-T2",
+    "S5-P2-T3",
+    "S5-P2-T4",
+    "S5-P3-T1",
+    "S5-P3-T2",
+    "S5-P3-T3",
+    "S5-P3-T4"
+  ],
+  "version": "v0.2.5"
+}

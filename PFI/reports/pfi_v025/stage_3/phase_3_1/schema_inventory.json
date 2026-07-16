@@ -1,0 +1,17 @@
+{
+  "capability_extension_policy": "lowercase_namespaced_token",
+  "phase_id": "V025-S3-P3.1",
+  "real_financial_data_read": false,
+  "schema": "PFIV025Stage3Phase31SchemaInventoryV1",
+  "schema_count": 4,
+  "schemas": {
+    "account_role_assignment.schema.json": "sha256:0dc62ad2f3771fa86ddd1efca8526b0f8bad72d7f0948c58e1d3123152fc548e",
+    "parser_provenance.schema.json": "sha256:3ee571577a5e92ba36e1c337870c5d52cb7a5d5cb2b0e755b49b1af0754bf9c6",
+    "role_review_item.schema.json": "sha256:8ccc9ea6b7254c21c32eea151e4cf2cff342b2265d89540d024f024aa1cebbfa",
+    "source_profile.schema.json": "sha256:37953e34a504bf7a83396f360a10044ae70e487c01f8494adcd7e3211058f7f7"
+  },
+  "source_name_enumeration_count": 0,
+  "source_type_extension_policy": "lowercase_namespaced_token",
+  "status": "pass",
+  "version": "v0.2.5"
+}

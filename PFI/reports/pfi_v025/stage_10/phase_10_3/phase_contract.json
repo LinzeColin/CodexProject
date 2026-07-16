@@ -1,0 +1,48 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE10-WHOLE-REVIEW",
+  "current_phase_only": true,
+  "failure_matrix_required": [
+    "offline",
+    "timeout",
+    "external_network_preflight",
+    "worker_restart",
+    "actual_sigkill",
+    "browser_leave_over_ten_seconds"
+  ],
+  "implementation_base": "9800d202d7eab7ab8b5fed4d0336327d4c4bd12e",
+  "observability_contract": {
+    "log_schema": "PFIV025DurableJobStructuredLogV1",
+    "migration_id": "v025_stage10_job_observability_v1",
+    "redacted_before_persist": true,
+    "span_schema": "PFIV025DurableJobSpanV1",
+    "trace_schema": "PFIV025DurableJobTraceV1"
+  },
+  "phase_id": "V025-S10-P10.3",
+  "product_commit": "9d2a8eb9f7b3e91492cdabffa9965339cd3bba2e",
+  "safety_boundary": {
+    "canonical_private_database_used": false,
+    "external_network_allowed": false,
+    "financial_values_emitted": 0,
+    "finder_used": false,
+    "formula_values_changed": false,
+    "gui_file_operations_used": false,
+    "launchservices_used": false,
+    "model_values_changed": false,
+    "parameter_values_changed": false
+  },
+  "schema": "PFIV025Stage10Phase103ContractV1",
+  "stage_10_user_acceptance_status": "not_started",
+  "stage_10_whole_review_status": "not_started",
+  "stage_11_started": false,
+  "status": "implementation_contract",
+  "task_ids": [
+    "S10-P3-T1",
+    "S10-P3-T2",
+    "S10-P3-T3",
+    "S10-P3-T4"
+  ],
+  "upstream_evidence_refs": {
+    "impacted_metrics": "PFI/reports/pfi_v025/stage_10/phase_10_2/impacted_metrics.json",
+    "runtime_diff": "PFI/reports/pfi_v025/stage_10/phase_10_2/runtime_diff.json"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "boundary_scan_status": "pass",
+  "contains_absolute_paths": false,
+  "contains_private_values": false,
+  "finding_count": 0,
+  "generic_scan_status": "pass",
+  "public_active_ui": false,
+  "public_context_fields_exposed": 0,
+  "public_runtime_bindings": 0,
+  "ralpha_active_dependency_count": 0,
+  "scanned_file_count": 13,
+  "schema": "PFIV025Stage11WholeReviewPublicDistributionScanV1",
+  "serenity_alipay_active_dependency_count": 0,
+  "status": "pass",
+  "temporary_distribution_retained": false
+}

@@ -1,0 +1,28 @@
+{
+  "file_count": 20,
+  "files": {
+    "config/reports/v025_phase92_analysis_snapshot.json": "sha256:fef7a73e0bd272b055313884d512d634eaa5188913a6c88833b6060a2a242a71",
+    "docs/pfi_v025/stage_9/PHASE_9_2_FINANCIAL_ANALYSIS_IMPLEMENTATION.md": "sha256:f773fc2d330474d11c171863d44aa78518e5e5474188940db43628aa61c3c48a",
+    "reports/pfi_v025/stage_9/phase_9_2/analysis_report_set.json": "sha256:0c63d1d960e2ce2081e2cb7247310814e3bbfb80e077cc8474a28cb056331751",
+    "reports/pfi_v025/stage_9/phase_9_2/browser_trace_sanitized.zip": "sha256:c8a2a90233b3a1eb8b419f8a092c59631b587a5b2958d5a95d19c133d64c9128",
+    "reports/pfi_v025/stage_9/phase_9_2/browser_validation.json": "sha256:7f52be057496d97442943f253bfba20c2a3c8331c722546a601aaca882312f3e",
+    "reports/pfi_v025/stage_9/phase_9_2/changed_files.txt": "sha256:3d918428a58eb41beb27368f8f52531ae04f2f3aacea1a4f5c50d1a46ca90367",
+    "reports/pfi_v025/stage_9/phase_9_2/formula_drilldown.json": "sha256:8ade5dcdb8c364d0f44d9caea0655725f7336bb194774fc66e4142878f1b8835",
+    "reports/pfi_v025/stage_9/phase_9_2/input_immutability.json": "sha256:3c456cd3466b74a2e09072a310b7f54c4b978b0a4fb673c4add67126b4455b8c",
+    "reports/pfi_v025/stage_9/phase_9_2/model_validation_cards.json": "sha256:958634ca315b9ffed015794c01edbaa0c25ec33df759dba18d0c42fc8e7d59e0",
+    "reports/pfi_v025/stage_9/phase_9_2/phase_contract.json": "sha256:3389a14ce9173744dd563a9120b0deaaf9a9b75e6de2be3893bb029605ddec7d",
+    "reports/pfi_v025/stage_9/phase_9_2/playwright_result.json": "sha256:28cc654efd9dcb90e378fe444f333bcfbe92a917cdeb404a1f056ae8c94972d7",
+    "reports/pfi_v025/stage_9/phase_9_2/privacy_scan.txt": "sha256:cd0432829e4204a45dfb71d149d09c173ce8c4adc495860a67b1eba8c9607b69",
+    "reports/pfi_v025/stage_9/phase_9_2/report_consistency.json": "sha256:c1fef2784d31dc88c5bf5840c60b7648bde70d54eb45e44f9e12dcc5089c5121",
+    "reports/pfi_v025/stage_9/phase_9_2/risk_and_rollback.md": "sha256:b227a869c5214caf5a578468aa76de0a8827830e6760227657a5f7fb157ca1cf",
+    "reports/pfi_v025/stage_9/phase_9_2/sensitivity_preview.json": "sha256:c7161da6e1ecd9f3bb396edd96a61b6c4f364dece041719b6c7d0023c77ab061",
+    "reports/pfi_v025/stage_9/phase_9_2/sensitivity_view.png": "sha256:1a005a57fa5b135073ae3ebdab01a3a3035367dff8494330598c387d1474307e",
+    "reports/pfi_v025/stage_9/phase_9_2/source_review_index.json": "sha256:d98f2921e5f4a5495401dd82dbe8d0f5afd82c67d1ef3dc65384c36ec3a6b3e0",
+    "reports/pfi_v025/stage_9/phase_9_2/terminal.log": "sha256:f6f92e06dcbefc8358f0c2a854c84992c21a7471cac76656043f155c77495804",
+    "reports/pfi_v025/stage_9/phase_9_2/ui_contract.json": "sha256:9a5dd42845cd8ba0dc5f4586a76604b6351424f438bfda8a1e0c155346b55568",
+    "reports/pfi_v025/stage_9/phase_9_2/verification_results.json": "sha256:f7980606be872d2c371c0020a48ee48088bc681536a92a5a7c8b0f6524d2404e"
+  },
+  "product_commit": "7566107dfb3e2e3612ea28b9a2c31d8a8a553747",
+  "schema": "PFIV025Stage9Phase92ArtifactHashesV1",
+  "status": "pass"
+}

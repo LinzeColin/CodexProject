@@ -1,0 +1,85 @@
+{
+  "candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "entry_mismatch_count": 0,
+  "evidence_index_sha256": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "final_human_acceptance": false,
+  "release_source_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "requirement_count": 10,
+  "requirements": [
+    {
+      "evidence_ref": "remediation/release_identity.json",
+      "requirement_id": "S12-ACC-01-RELEASE-IDENTITY",
+      "result": "release source, asset hashes, embedded identity and canonical App are exact",
+      "status": "pass_remediated_pending_rereview"
+    },
+    {
+      "evidence_ref": "fresh_real_e2e.json",
+      "requirement_id": "S12-ACC-02-REAL-IMPORT-REVIEW",
+      "result": "fresh headless recheck imported 8808 real transactions idempotently",
+      "status": "pass"
+    },
+    {
+      "evidence_ref": "fresh_real_e2e.json",
+      "requirement_id": "S12-ACC-03-HOLDING-TRUTH",
+      "result": "SRC-HOLDINGS remains not_loaded/not_run; no fixture, false zero or financial pass",
+      "status": "pass_with_known_limitation"
+    },
+    {
+      "evidence_ref": "fresh_real_e2e.json",
+      "requirement_id": "S12-ACC-04-REPORT-TRUTH",
+      "result": "available reports remain truthful partial/blocked states without private values",
+      "status": "pass"
+    },
+    {
+      "axe_pass_claimed": false,
+      "evidence_ref": "PFI/reports/pfi_v025/stage_12/phase_12_1/quality_evidence.json",
+      "requirement_id": "S12-ACC-05-ROUTES-UX-QUALITY",
+      "result": "20-route WCAG/CDP AX/keyboard/visual suite passed; axe-core remains explicitly not claimed",
+      "status": "pass_with_truthful_substitute"
+    },
+    {
+      "actual_os_sleep_performed": false,
+      "evidence_ref": "PFI/reports/pfi_v025/stage_12/phase_12_2/target_mac_lifecycle.json",
+      "requirement_id": "S12-ACC-06-TARGET-MAC-LIFECYCLE",
+      "result": "start/stop/restart/repeated-start/offline recovery pass; kernel sleep/wake remains an explicit proxy-only limitation",
+      "status": "pass_with_known_limitation"
+    },
+    {
+      "canonical_private_database_mutated": false,
+      "evidence_ref": "PFI/reports/pfi_v025/stage_12/phase_12_2/backup_restore_result.json",
+      "requirement_id": "S12-ACC-07-BACKUP-DISK-RECOVERY",
+      "result": "canonical read-only backup plus isolated restore/rollback and real SQLITE_FULL recovery passed",
+      "sqlite_full_observed": true,
+      "status": "pass"
+    },
+    {
+      "evidence_ref": "remediation/entry_audit.json",
+      "finder_method_overridden_by_latest_user_instruction": true,
+      "requirement_id": "S12-ACC-08-ENTRY-SURFACES",
+      "result": "canonical App and Desktop symlink are exact; Downloads noncanonical App count is zero after reversible CLI quarantine",
+      "status": "pass_remediated_pending_rereview"
+    },
+    {
+      "evidence_ref": "remediation/exact_binding.json",
+      "requirement_id": "S12-ACC-09-STATE-AND-EVIDENCE",
+      "result": "index, request, state and evidence bind one exact candidate commit and evidence-index hash",
+      "status": "pass_remediated_pending_rereview"
+    },
+    {
+      "evidence_ref": "remediation/exact_binding.json",
+      "requirement_id": "S12-ACC-10-FINAL-HUMAN-ACCEPTANCE",
+      "result": "final acceptance remains absent and may only follow independent rereview",
+      "status": "pending_after_rereview"
+    }
+  ],
+  "rereview_status": "not_started",
+  "schema": "PFIV025Stage12ReviewRemediationRequirementMatrixV1",
+  "status": "remediation_complete_waiting_independent_rereview",
+  "status_counts": {
+    "pass": 3,
+    "pass_remediated_pending_rereview": 3,
+    "pass_with_known_limitation": 2,
+    "pass_with_truthful_substitute": 1,
+    "pending_after_rereview": 1
+  }
+}

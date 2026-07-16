@@ -1,0 +1,8 @@
+focused_release_stage12_python|exit=0|54 passed, 2 warnings in 5.97s
+release_cache_node|exit=0|ℹ duration_ms 74.077958
+pfi_dual_plane_ci|exit=0|PASS —— 全部项目双平面合规
+pfi_lean_renderer|exit=0|{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+git_diff_check|exit=0|pass
+complete_overlay_governance_1|exit=0|warnings: 0
+complete_overlay_governance_2|exit=0|{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+complete_overlay_governance_3|exit=0|{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}

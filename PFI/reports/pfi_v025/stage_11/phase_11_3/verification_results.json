@@ -1,0 +1,62 @@
+{
+  "observed_at": "2026-07-16T02:53:17+10:00",
+  "overlay_governance_pending": false,
+  "results": [
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_distribution_boundary.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_stage5_advice_report_alpha.py PFI/tests/test_stage6_e2e_stabilization.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v024_stage1_phase13_validation_closeout.py",
+      "exit_code": 0,
+      "output": "........................................................................ [ 93%]\n.....                                                                    [100%]\n77 passed in 6.26s",
+      "summary": "77 passed in 6.26s"
+    },
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "output": "> @pfi/cloudflare-public@1.0.0 build\n> node ../../../scripts/cloudflare/build_static_surface.mjs --source public --output dist\n\nPASS: static surface built public -> dist",
+      "summary": "PASS: static surface built public -> dist"
+    },
+    {
+      "command": "npm run validate",
+      "exit_code": 0,
+      "output": "> @pfi/cloudflare-public@1.0.0 validate\n> python3 ../../../scripts/cloudflare/scan_public_dist.py --path public\n\nPASS: public distribution scan (1 paths)",
+      "summary": "PASS: public distribution scan (1 paths)"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/cloudflare/scan_public_dist.py --path PFI/web/cloudflare-public/dist",
+      "exit_code": 0,
+      "output": "PASS: public distribution scan (1 paths)",
+      "summary": "PASS: public distribution scan (1 paths)"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/scan_stage11_distribution_boundaries.py --public-dist PFI/web/cloudflare-public/dist",
+      "exit_code": 0,
+      "output": "{\"alpha_context_read_only\": true, \"alpha_context_writeback_allowed\": false, \"contains_absolute_paths\": false, \"contains_private_values\": false, \"finding_count\": 0, \"findings\": [], \"public_active_ui\": false, \"public_context_fields_exposed\": 0, \"public_dist_scanned\": true, \"public_runtime_bindings\": 0, \"public_source_scanned\": true, \"ralpha_active_dependency_count\": 0, \"scanned_file_count\": 13, \"schema\": \"PFIV025Stage11DistributionBoundaryScanV1\", \"serenity_alipay_active_dependency_count\": 0, \"status\": \"pass\"}",
+      "summary": "{\"alpha_context_read_only\": true, \"alpha_context_writeback_allowed\": false, \"contains_absolute_paths\": false, \"contains_private_values\": false, \"finding_count\": 0, \"findings\": [], \"public_active_ui\": false, \"public_context_fields_exposed\": 0, \"public_dist_scanned\": true, \"public_runtime_bindings\": 0, \"public_source_scanned\": true, \"ralpha_active_dependency_count\": 0, \"scanned_file_count\": 13, \"schema\": \"PFIV025Stage11DistributionBoundaryScanV1\", \"serenity_alipay_active_dependency_count\": 0, \"status\": \"pass\"}"
+    },
+    {
+      "command": "build_v025_release_asset_identity(PFI)",
+      "exit_code": 0,
+      "output": "frontend/backend machine and embedded identity match",
+      "summary": "release identity pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI",
+      "exit_code": 0,
+      "output": "CodexProject governance validation\nroot: checked\nprojects checked: PFI\nerrors: 0\nwarnings: 0",
+      "summary": "warnings: 0"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI",
+      "exit_code": 0,
+      "output": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}",
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    },
+    {
+      "command": "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI",
+      "exit_code": 0,
+      "output": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}",
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    }
+  ],
+  "schema": "PFIV025Stage11Phase113VerificationV1",
+  "status": "pass"
+}

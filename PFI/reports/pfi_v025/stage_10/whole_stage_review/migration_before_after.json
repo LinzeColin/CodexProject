@@ -1,0 +1,80 @@
+{
+  "after": {
+    "event_count": 1,
+    "event_projection_sha256": "sha256:10d1c757bab521ebf9db5bccf13ba0008833682563f44e42f5b954092cb8557c",
+    "foreign_key_issue_count": 0,
+    "integrity_check": "ok",
+    "job_count": 1,
+    "job_projection_sha256": "sha256:f986506e8b4c7881b1ef57e7b9125cb47c5f321bbf284c5892d47f22c6bfefe7",
+    "migration_ids": [
+      "v025_stage10_durable_jobs_v1",
+      "v025_stage10_job_observability_v1"
+    ],
+    "observability_counts": {
+      "durable_job_logs": 1,
+      "durable_job_spans": 1,
+      "durable_job_trace_contexts": 1
+    },
+    "tables": [
+      "durable_job_events",
+      "durable_job_logs",
+      "durable_job_spans",
+      "durable_job_trace_contexts",
+      "durable_jobs",
+      "pfi_schema_migrations",
+      "sqlite_sequence"
+    ]
+  },
+  "backup": {
+    "count": 1,
+    "file_mode": "0600",
+    "matches_before": true,
+    "sha256": "sha256:0ad06f95fc9080ec389f52653d935512acdbaf0ee97293898fe36535e5563318",
+    "snapshot": {
+      "event_count": 1,
+      "event_projection_sha256": "sha256:10d1c757bab521ebf9db5bccf13ba0008833682563f44e42f5b954092cb8557c",
+      "foreign_key_issue_count": 0,
+      "integrity_check": "ok",
+      "job_count": 1,
+      "job_projection_sha256": "sha256:f986506e8b4c7881b1ef57e7b9125cb47c5f321bbf284c5892d47f22c6bfefe7",
+      "migration_ids": [
+        "v025_stage10_durable_jobs_v1"
+      ],
+      "observability_counts": {},
+      "tables": [
+        "durable_job_events",
+        "durable_jobs",
+        "pfi_schema_migrations",
+        "sqlite_sequence"
+      ]
+    }
+  },
+  "backup_directory_mode": "0700",
+  "before": {
+    "event_count": 1,
+    "event_projection_sha256": "sha256:10d1c757bab521ebf9db5bccf13ba0008833682563f44e42f5b954092cb8557c",
+    "foreign_key_issue_count": 0,
+    "integrity_check": "ok",
+    "job_count": 1,
+    "job_projection_sha256": "sha256:f986506e8b4c7881b1ef57e7b9125cb47c5f321bbf284c5892d47f22c6bfefe7",
+    "migration_ids": [
+      "v025_stage10_durable_jobs_v1"
+    ],
+    "observability_counts": {},
+    "tables": [
+      "durable_job_events",
+      "durable_jobs",
+      "pfi_schema_migrations",
+      "sqlite_sequence"
+    ]
+  },
+  "canonical_private_database_used": false,
+  "contains_private_paths": false,
+  "database_file_mode": "0600",
+  "financial_values_read": 0,
+  "lifecycle_rows_unchanged": true,
+  "migration_id": "v025_stage10_job_observability_v1",
+  "observability_backfill_consistent": true,
+  "schema": "PFIV025Stage10WholeReviewMigrationBeforeAfterV1",
+  "status": "pass"
+}

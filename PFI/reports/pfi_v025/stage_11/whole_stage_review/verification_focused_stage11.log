@@ -1,0 +1,4 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_distribution_boundary.py PFI/tests/test_stage5_advice_report_alpha.py PFI/tests/test_stage6_e2e_stabilization.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage10_job_lifecycle.py
+........................................................................ [ 62%]
+...........................................                              [100%]
+115 passed in 9.81s

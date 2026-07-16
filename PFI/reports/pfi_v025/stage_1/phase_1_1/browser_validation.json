@@ -1,0 +1,36 @@
+{
+  "schema": "PFIV025Stage1Phase11BrowserValidationV1",
+  "browser": "Google Chrome 150.0.7871.47",
+  "profile": "isolated_temporary_profile_removed_after_capture",
+  "surface": "file://<repository>/PFI/web/index.html?pfi_build=partial",
+  "network_mode": "no_PFI_runtime_or_live_port_connection",
+  "scenario": "partial_launcher_identity",
+  "expected_state": "blocked",
+  "observed_title_zh": "版本冲突",
+  "old_shell_visible": false,
+  "streamlit_srcdoc_topology": {
+    "evidence": "Node VM tests model empty iframe-local search with launcher query on parent or document.referrer",
+    "complete_parent_query": "pass_app_launcher",
+    "partial_or_tampered_parent_query": "pass_blocked",
+    "inaccessible_parent_referrer_fallback": "pass_app_launcher",
+    "conflicting_sources": "pass_blocked",
+    "real_live_streamlit_trace": "deferred_to_phase_1_3"
+  },
+  "recovery_actions_visible": [
+    "重新启动 PFI",
+    "重新安装 PFI.app",
+    "清除缓存"
+  ],
+  "screenshot": {
+    "ref": "PFI/reports/pfi_v025/stage_1/phase_1_1/mismatch_chinese_error.png",
+    "sha256": "130812bdbc0d1e7b18872647cf79deb4987139c08ab38255d4a3ff6ad6f43a59",
+    "width": 1440,
+    "height": 900,
+    "bytes": 246436
+  },
+  "playwright_trace": {
+    "status": "not_created",
+    "reason": "Playwright is not installed; Phase 1.1 uses Node VM behavior tests and an isolated real-Chrome screenshot. Full App/localhost trace remains Phase 1.3."
+  },
+  "result": "pass"
+}

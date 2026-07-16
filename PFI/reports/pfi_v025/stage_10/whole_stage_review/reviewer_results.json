@@ -1,0 +1,78 @@
+{
+  "contains_private_values": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "review_execution_truth": "three isolated deterministic review passes; no external human or subagent reviewer is claimed",
+  "reviewers": [
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 1,
+        "important": 2,
+        "minor": 0
+      },
+      "result_sha256": "sha256:dc1c6b766c661ef4d8f23b0edd240a9fe770d7aa52b8557af4b23a73f0f3d711",
+      "result_text": "最终代码与安全复审确认 heartbeat 防止健康长任务重复执行，七态与最新 job 投影准确，CAS/lease/timeout/zero-network 未发现新问题。",
+      "review_base": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+      "review_mode": "deterministic_isolated_rereview_pass",
+      "reviewed_evidence_file_count": 37,
+      "reviewed_evidence_sha256": "sha256:99abb6942e3dd50a4bf147da4189b0dc93b9a22f6de9a92b1dbb520869c11073",
+      "reviewed_overlay_file_count": 20,
+      "reviewed_overlay_sha256": "sha256:8b3ccb6d2db4fcbc14c55710d1cf53eb7def2688c891786c22b3bbee49aa8d93",
+      "reviewer_id": "isolated_code_security_pass"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 0,
+        "important": 2,
+        "minor": 0
+      },
+      "result_sha256": "sha256:0e5995f1238130c805a46746bbc0ecd47ddc0175fba0ae6e99773259861de32e",
+      "result_text": "最终治理与 schema 复审确认三 Phase commit/hash 链一致，Phase 10.3 仅在不可变规范化副本补齐 changed_files，scope 与 renderer 零漂移。",
+      "review_base": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+      "review_mode": "deterministic_isolated_rereview_pass",
+      "reviewed_evidence_file_count": 37,
+      "reviewed_evidence_sha256": "sha256:99abb6942e3dd50a4bf147da4189b0dc93b9a22f6de9a92b1dbb520869c11073",
+      "reviewed_overlay_file_count": 20,
+      "reviewed_overlay_sha256": "sha256:8b3ccb6d2db4fcbc14c55710d1cf53eb7def2688c891786c22b3bbee49aa8d93",
+      "reviewer_id": "isolated_governance_schema_pass"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 0,
+        "important": 3,
+        "minor": 0
+      },
+      "result_sha256": "sha256:69f70ab472d56c0e6ebeb0f52fd7419f8ccd7476a48c1af9fccfd4634cc3118c",
+      "result_text": "最终验收证据复审确认 22/22 浏览器、DOM/AX、migration backup/backfill、SIGKILL、runtime diff、trace、隐私和 transition-only 边界通过。",
+      "review_base": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+      "review_mode": "deterministic_isolated_rereview_pass",
+      "reviewed_evidence_file_count": 37,
+      "reviewed_evidence_sha256": "sha256:99abb6942e3dd50a4bf147da4189b0dc93b9a22f6de9a92b1dbb520869c11073",
+      "reviewed_overlay_file_count": 20,
+      "reviewed_overlay_sha256": "sha256:8b3ccb6d2db4fcbc14c55710d1cf53eb7def2688c891786c22b3bbee49aa8d93",
+      "reviewer_id": "isolated_acceptance_evidence_pass"
+    }
+  ],
+  "schema": "PFIV025Stage10IsolatedReviewerResultsV1",
+  "status": "pass"
+}

@@ -1,0 +1,135 @@
+{
+  "after": {
+    "byte_size": 69632,
+    "event_count": 20,
+    "event_type_counts": {
+      "cancelled": 1,
+      "claimed": 6,
+      "dead_lettered": 1,
+      "failed": 1,
+      "progressed": 2,
+      "queued": 7,
+      "retry_scheduled": 1,
+      "succeeded": 1
+    },
+    "exists_during_probe": true,
+    "job_count": 7,
+    "sha256": "sha256:27106f064323c0c4690ac63a7874e910782b3c4e120c949f397c32c1a0ed113f",
+    "status_counts": {
+      "cancelled": 1,
+      "dead_letter": 1,
+      "failed": 1,
+      "queued": 1,
+      "retrying": 1,
+      "running": 1,
+      "succeeded": 1
+    }
+  },
+  "before": {
+    "byte_size": 0,
+    "event_count": 0,
+    "exists": false,
+    "job_count": 0,
+    "sha256": null
+  },
+  "checks": {
+    "all_required_statuses_materialized": true,
+    "duplicate_claim_blocked": true,
+    "external_network_performed": false,
+    "financial_result_publishable": false,
+    "financial_result_review_state": "pending_human_review",
+    "financial_values_emitted": 0,
+    "finder_used": false,
+    "one_job_per_required_status": true,
+    "raw_lease_tokens_found_in_database_bytes": 0,
+    "real_pfi_database_used": false,
+    "revision_event_chain_valid": true,
+    "stale_worker_write_rejected": true
+  },
+  "database_identity": "isolated-temporary-phase10.sqlite",
+  "observed_at": "2026-07-15T20:28:07+10:00",
+  "phase_id": "V025-S10-P10.1",
+  "probe_status": "pass",
+  "scenario_clock_start": "2026-07-15T19:30:00+10:00",
+  "schema": "PFIV025Stage10Phase101DatabaseProbeV1",
+  "schema_snapshot": {
+    "migration_id": "v025_stage10_durable_jobs_v1",
+    "tables": {
+      "durable_job_events": [
+        "event_id",
+        "event_schema",
+        "job_id",
+        "job_revision",
+        "event_type",
+        "from_status",
+        "to_status",
+        "worker_id",
+        "progress_completed",
+        "progress_total",
+        "progress_step",
+        "detail_code",
+        "detail_message",
+        "occurred_at",
+        "previous_event_hash",
+        "event_hash"
+      ],
+      "durable_jobs": [
+        "job_id",
+        "schema_version",
+        "job_type",
+        "idempotency_key",
+        "payload_json",
+        "payload_hash",
+        "contains_financial_facts",
+        "status",
+        "revision",
+        "attempt_count",
+        "max_attempts",
+        "available_at",
+        "lease_owner",
+        "lease_token_hash",
+        "lease_expires_at",
+        "heartbeat_at",
+        "progress_completed",
+        "progress_total",
+        "progress_step",
+        "result_uri",
+        "result_review_state",
+        "error_code",
+        "error_message",
+        "cancel_reason",
+        "created_at",
+        "updated_at",
+        "finished_at"
+      ],
+      "pfi_schema_migrations": [
+        "migration_id",
+        "applied_at"
+      ]
+    },
+    "triggers": [
+      "durable_job_events_no_delete",
+      "durable_job_events_no_update"
+    ]
+  },
+  "sqlite_runtime": {
+    "busy_timeout_ms": 30000,
+    "event_count": 20,
+    "explicit_transactions": true,
+    "foreign_key_check": "pass",
+    "foreign_key_issue_count": 0,
+    "foreign_keys": true,
+    "integrity_check": "ok",
+    "job_count": 7,
+    "journal_mode": "DELETE",
+    "migration_count": 1,
+    "migration_id": "v025_stage10_durable_jobs_v1",
+    "python_sqlite3_module_version": "2.6.0",
+    "rollback_on_error": true,
+    "sqlite_runtime_version": "3.50.4",
+    "status": "pass",
+    "synchronous": 2,
+    "wal_enabled": false
+  },
+  "temporary_database_removed_after_probe": true
+}

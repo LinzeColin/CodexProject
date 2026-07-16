@@ -1,0 +1,41 @@
+{
+  "contains_private_values": false,
+  "defect_register": "defect_register.json",
+  "entry_identity_same_build": true,
+  "final_human_acceptance_claimed": false,
+  "formula_source_interconnection_drilldown": {
+    "formula_visible": true,
+    "interconnection_visible": true,
+    "parameter_visible": true,
+    "source_visible": true
+  },
+  "holding_uat": {
+    "execution_status": "not_run",
+    "false_zero_count": 0,
+    "financial_pass_claimed": false,
+    "reason_code": "SRC_HOLDINGS_NOT_LOADED",
+    "truthful_block": true
+  },
+  "ledger_persisted_after_restart": true,
+  "manual_user_click_claimed": false,
+  "one_review_completed": true,
+  "operator_kind": "codex_agent_on_behalf_of_user_under_standing_authorization",
+  "primary_navigation_count": 10,
+  "real_upload_preview_confirm": {
+    "fallback_used": false,
+    "fixture_used": false,
+    "raw_record_count": 8815,
+    "source_blob_count": 4,
+    "transaction_count": 8808
+  },
+  "report_truth_states": {
+    "blocked_count": 3,
+    "partial_count": 2,
+    "report_count": 5,
+    "status": "pass"
+  },
+  "schema": "PFIV025Stage12Phase122HumanTaskUATV1",
+  "standing_authorization_bound": true,
+  "status": "pass",
+  "user_no_finder_override_sha256": "091fff69dad4a06a7002de39235c506732f8456bcd176f02c2b45eb1fb84931e"
+}

@@ -1,0 +1,14 @@
+
+status=pass
+contains_private_values=false
+financial_data_loaded=false
+financial_data_mutated=false
+database_changed=false
+finder_used=false
+launchservices_used_in_current_review=false
+gui_file_operations_used=false
+external_network_performed=false
+network_scope=ephemeral_local_loopback_only
+push_performed=false
+app_install_performed=false
+historical_phase83_launchservices_event=one_aborted_lsregister_dump_truthfully_disclosed

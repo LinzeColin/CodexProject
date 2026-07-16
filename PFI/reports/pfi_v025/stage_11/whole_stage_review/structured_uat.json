@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "result": "Canonical operational SQLite was read through URI mode=ro, backed up online, restored only to isolated targets, and source file/directory state remained unchanged.",
+      "status": "pass",
+      "uat_id": "S11-UAT-BACKUP-RESTORE"
+    },
+    {
+      "result": "Static public build, 23 browser checks, screenshot, DOM, AX, trace and distribution scans expose no application runtime, Context or private values.",
+      "status": "pass",
+      "uat_id": "S11-UAT-PUBLIC-PRIVACY"
+    },
+    {
+      "result": "Alpha is only the read-only pfi_context.v1 consumer and is absent from PFI primary navigation; Ralpha and Serenity-Alipay active dependency counts are zero.",
+      "status": "pass",
+      "uat_id": "S11-UAT-ALPHA-BOUNDARY"
+    }
+  ],
+  "final_human_acceptance": false,
+  "production_accepted": false,
+  "schema": "PFIV025Stage11StructuredUATV1",
+  "standing_transition_authorization_applied": true,
+  "status": "pass"
+}

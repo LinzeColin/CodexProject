@@ -1,0 +1,37 @@
+{
+  "schema": "PFIV025Stage7Phase72PlaywrightResultV1",
+  "status": "pass",
+  "checks": {
+    "exercise_passed_before_restart": true,
+    "service_restart_holding_exists": true,
+    "service_restart_revision_persisted": true,
+    "service_restart_edit_persisted": true,
+    "service_restart_projection_hash_same": true,
+    "browser_reopen_settings_persisted": true,
+    "delete_persisted": true,
+    "settings_reset_persisted": true,
+    "no_console_errors": true,
+    "no_page_errors": true,
+    "no_http_errors": true,
+    "no_external_requests": true
+  },
+  "active_count_after_restart": 1,
+  "revision_after_restart": 2,
+  "projection_hash_after_restart": "sha256:91991c7540098fadc7c0828b7a68a3d7886d9cd70c7061aeff131108e83e5dc8",
+  "settings_revision_after_restart": 1,
+  "active_count_after_delete": 0,
+  "deleted_count_after_delete": 1,
+  "settings_revision_after_reset": 2,
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "blocked_external_requests": [],
+  "requested_origins": [
+    "http://127.0.0.1:65307",
+    "http://127.0.0.1:65346"
+  ],
+  "financial_sentinel_counts_as_real_acceptance": false,
+  "private_values_persisted": false,
+  "screenshots_redacted": true,
+  "finder_used": false
+}

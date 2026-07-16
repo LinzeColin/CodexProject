@@ -1,0 +1,10 @@
+{
+  "financial_records_read": 0,
+  "financial_values_emitted": 0,
+  "private_account_identifiers_emitted": 0,
+  "schema": "PFIV025Stage3Phase31ReviewQueueSummaryV1",
+  "source_name_classification": false,
+  "status": "pass",
+  "unknown_role_policy": "review_queue",
+  "unknown_role_publish_allowed": false
+}

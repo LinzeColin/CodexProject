@@ -1,0 +1,160 @@
+{
+  "acceptance_criteria": [
+    {
+      "id": "S7-ACC-01",
+      "result": "真实上传、hash/parser/preview/mapping/error/review 闭环。",
+      "status": "pass"
+    },
+    {
+      "id": "S7-ACC-02",
+      "result": "原子确认、跨批幂等、retry 与 rollback 闭环。",
+      "status": "pass"
+    },
+    {
+      "id": "S7-ACC-03",
+      "result": "持仓/设置 SQLite 保存、刷新、重开、重启与 surface 同步。",
+      "status": "pass"
+    },
+    {
+      "id": "S7-ACC-04",
+      "result": "参数中心、Interconnection、指标下钻为正式页面。",
+      "status": "pass"
+    },
+    {
+      "id": "S7-ACC-05",
+      "result": "可证 range/hash/source 显示；未接入 economic-event lineage 明确阻断且无 false-zero。",
+      "status": "pass"
+    },
+    {
+      "id": "S7-ACC-06",
+      "result": "冻结 worktree 三条真实 browser+SQLite 工作流 68/68。",
+      "status": "pass"
+    }
+  ],
+  "acceptance_id": "ACC-PFI-V025-STAGE7-WHOLE-REVIEW",
+  "contract_id": "PFI-V025-STAGE7-WHOLE-REVIEW",
+  "evidence_artifacts": [
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/workflow_validation.json",
+      "sha256": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/reviewed_worktree_overlay.json",
+      "sha256": "sha256:e1eee8002390e790dbe16ac9b53de98fbe03d02d3d24df6345a9bef448f38933"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/phase_contract.json",
+      "sha256": "sha256:7d185f2c188a5ad1ee25cbed0211b203f17ae5fd28bf30b3c8b894e99dd9eb95"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/phase_commit_binding.json",
+      "sha256": "sha256:79bd451480a1c551243d2e10b4c8b2eb23827a9a1a6f65f604743c24908b4e86"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/phase_evidence_amendment_binding.json",
+      "sha256": "sha256:7775f6e9768813485f4c717dbdbcb513c6be880a3a832cd3b4af6741a0af45ed"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/verification_results.json",
+      "sha256": "sha256:f160a32a58da8650194002b58ff4417f4515ad80d9365ba54a51a51a7faa251c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/reviewer_results.json",
+      "sha256": "sha256:8ebe951ce73aa6a69fe711dd62028d5ab9e86540ec3d24b66e040763782926fb"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/verification_focused_stage7.log",
+      "sha256": "sha256:4c9060d65cc802194071d1136cd3eb998b29ccff6881914fa1166c8cf9c4292a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/verification_syntax_and_diff.log",
+      "sha256": "sha256:c7a507963e82ba872ed27e6579e62631621cba17ac71880eaa658060fbeda69e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/verification_changed_scope_governance.log",
+      "sha256": "sha256:895cd5dcec6e4fa2164c394a73bb698124c7b36b8660f511668c2bd84ff0c98a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/security_validation.json",
+      "sha256": "sha256:64df93cf6460b97d49cde6ebb5e516789548aa7749a9675f411aa16968a6a524"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/review_audit.json",
+      "sha256": "sha256:994d3808a850637c0a13a307372c416102784d47b44f9eb87b80cb705dfb7a9e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/import_browser_trace_sanitized.zip",
+      "sha256": "sha256:e89d8bfbd82580aa19956f42f1dfc35c342738eb7c3515aec63741f33e02b740"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/holding_browser_trace_sanitized.zip",
+      "sha256": "sha256:786f0a7ec088dae0f5bbd2151e3a62e30b08467eade05ebfeb76993f7e83daac"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/holding_restart_browser_trace_sanitized.zip",
+      "sha256": "sha256:9c43b6dd65eba3f8250231194495dbeaef4470122dc4247893f0c87c398a7e49"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/metric_browser_trace_sanitized.zip",
+      "sha256": "sha256:1a73d234d4e83f1a207f61d0a227ac0e9de30f9078f17abadb762642ec327498"
+    }
+  ],
+  "final_human_acceptance": false,
+  "initial_review_counts": {
+    "critical": 0,
+    "important": 14,
+    "minor": 4
+  },
+  "pass_gate_result": "pass",
+  "phase_amendment_binding_status": "pass",
+  "phase_commit_binding_status": "pass",
+  "production_accepted": false,
+  "rereview_counts": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "review_base": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+  "review_execution_semantics": "review_base_commit_plus_frozen_worktree_overlay",
+  "schema": "PFIV025Stage7FinalEvidenceIndexV1",
+  "security_validation_status": "pass",
+  "stage": 7,
+  "stage_8_entry_authorized": true,
+  "stage_8_status": "not_started",
+  "status": "accepted_for_transition",
+  "stop_conditions": [
+    {
+      "condition": "browser-only save",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "toast-only completion",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "fake preview or fabricated financial value",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "sidecar parameter/interconnection page",
+      "status": "safety_stop_active"
+    }
+  ],
+  "task_disposition": {
+    "S7-P1-T1": "pass",
+    "S7-P1-T2": "pass",
+    "S7-P1-T3": "pass",
+    "S7-P1-T4": "pass",
+    "S7-P2-T1": "pass",
+    "S7-P2-T2": "pass",
+    "S7-P2-T3": "pass",
+    "S7-P2-T4": "pass",
+    "S7-P3-T1": "pass",
+    "S7-P3-T2": "pass",
+    "S7-P3-T3": "pass",
+    "S7-P3-T4": "pass"
+  },
+  "taskpack_schema_validation_status": "amended_current_evidence_pass_original_gaps_disclosed",
+  "version": "v0.2.5",
+  "workflow_validation_status": "pass"
+}

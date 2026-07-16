@@ -1,0 +1,20 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW",
+  "accepted_at": "2026-07-15T23:50:30Z",
+  "evidence_index_hash": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "finder_prohibited": true,
+  "phase": "12.3",
+  "product_candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "rereview_evidence_commit": "123f5a6f7e7af22c283e49e55c2ba581310238d5",
+  "reviewed_closure_commit": "559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+  "schema": "PFIV025Stage12FinalAcceptanceContractV1",
+  "stage": 12,
+  "status": "release_frozen_waiting_single_delivery_transaction",
+  "stop_before": [
+    "GitHub main upload until release-freeze commit passes validation",
+    "canonical PFI.app reinstall until release-freeze commit passes validation",
+    "v0.2.6 work"
+  ],
+  "task_id": "S12-P3-T4",
+  "version": "v0.2.5"
+}

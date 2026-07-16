@@ -1,0 +1,74 @@
+{
+  "schema": "PFIV025Stage9IndependentReviewerResultsV1",
+  "status": "pass",
+  "reviewers": [
+    {
+      "reviewer_id": "final_code_security_review",
+      "decision": "ACCEPT",
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "initial_counts": {
+        "critical": 0,
+        "important": 4,
+        "minor": 0
+      },
+      "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+      "reviewed_overlay_file_count": 24,
+      "reviewed_overlay_sha256": "sha256:67e49cdf90ad8d8c0663b0066e216457216b3ab5908d9475b2f4328779c42303",
+      "reviewed_evidence_file_count": 53,
+      "reviewed_evidence_sha256": "sha256:e388efcd721df57399071b4840e3d79ac0ca1db8d09cb2cbd2205cb5ae2d89e1",
+      "result_text": "最终冻结快照通过只读代码与安全复核，七类完整性漂移全部拒绝，两份 overlay 清单、数量及内容哈希一致，未发现新问题。",
+      "result_sha256": "sha256:2a57934495abff79295b12cd1f796cd1bba79fad957d3da657a8772ba3a22ac3"
+    },
+    {
+      "reviewer_id": "final_governance_renderer_review",
+      "decision": "ACCEPT",
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "initial_counts": {
+        "critical": 0,
+        "important": 4,
+        "minor": 2
+      },
+      "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+      "reviewed_overlay_file_count": 24,
+      "reviewed_overlay_sha256": "sha256:67e49cdf90ad8d8c0663b0066e216457216b3ab5908d9475b2f4328779c42303",
+      "reviewed_evidence_file_count": 53,
+      "reviewed_evidence_sha256": "sha256:e388efcd721df57399071b4840e3d79ac0ca1db8d09cb2cbd2205cb5ae2d89e1",
+      "result_text": "双 parser 标签与零漂移证据准确，冻结 overlays 一致，Stage 9 仅 transition pass。",
+      "result_sha256": "sha256:2e0106bafd2c70a0f7d504ab660a65fa04d6836e1b896c78d78fcbac4cbfc9cc"
+    },
+    {
+      "reviewer_id": "final_acceptance_evidence_review",
+      "decision": "ACCEPT",
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "initial_counts": {
+        "critical": 2,
+        "important": 3,
+        "minor": 1
+      },
+      "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+      "reviewed_overlay_file_count": 24,
+      "reviewed_overlay_sha256": "sha256:67e49cdf90ad8d8c0663b0066e216457216b3ab5908d9475b2f4328779c42303",
+      "reviewed_evidence_file_count": 53,
+      "reviewed_evidence_sha256": "sha256:e388efcd721df57399071b4840e3d79ac0ca1db8d09cb2cbd2205cb5ae2d89e1",
+      "result_text": "最终冻结验收证据一致，39+68、16/16、六组验证、PDF/隐私与 transition-only 边界通过。",
+      "result_sha256": "sha256:f276ed3e4e66144904423edd5f057b5fd65320a24002c387d52417852c3ace5d"
+    }
+  ],
+  "contains_private_values": false,
+  "finder_used": false,
+  "launchservices_used": false,
+  "gui_file_operations_used": false,
+  "external_network_performed": false
+}

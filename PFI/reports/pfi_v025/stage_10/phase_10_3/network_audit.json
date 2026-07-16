@@ -1,0 +1,20 @@
+{
+  "audit_scope": [
+    "offline runtime supervisor",
+    "timeout and unsafe-policy failure matrix",
+    "actual SIGKILL recovery",
+    "formal-shell browser job recovery"
+  ],
+  "blocked_external_requests": 0,
+  "canonical_private_database_used": false,
+  "external_network_calls": 0,
+  "external_network_performed": false,
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "loopback_network_performed": true,
+  "loopback_origin_count": 2,
+  "network_scope": "ephemeral_local_loopback_only",
+  "schema": "PFIV025Stage10Phase103NetworkAuditV1",
+  "status": "pass"
+}

@@ -1,0 +1,66 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S7-P73-METRIC-DRILLDOWN",
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "formal_routes": [
+    "/settings/parameters",
+    "/data/interconnection",
+    "/reports/metric-drilldown"
+  ],
+  "interconnection_map": {
+    "data_hash": "sha256:afb13cc80df82ef37b60425edf024b178576fc49d97011e7215b7550d803ea27",
+    "edge_count": 6,
+    "lineage_complete_count": 0,
+    "lineage_missing_count": 1571,
+    "node_count": 7,
+    "read_model_hash": "sha256:afb13cc80df82ef37b60425edf024b178576fc49d97011e7215b7550d803ea27",
+    "status": "blocked"
+  },
+  "metric_drilldown": {
+    "all_required_fields_present": true,
+    "drilldown_hashes": [
+      "sha256:89eafe3b257372dd89e48572a21c3669208b79ba7fc684479a99ce4831c330b1",
+      "sha256:53b27bae56016bc41299a7ac548e3ce0a87e37aa8d9d3864b4f92d4998fb0abb",
+      "sha256:52399bf9930dc7ae59267ec662134dc5440890a074c7aca7af4db7f013a62bf5",
+      "sha256:3b6b395944d78e4f1863796682069f64277b206521b9dcbe78bbb781f6c615a0",
+      "sha256:2dc2cfb24f0fc47b923eec8eb45f4cb43dbfbd03cf8db062fb5897b55b84ee3e",
+      "sha256:aac13c25b8cc20677613c780df99d08af87265e3b8cee305afe9a7edbf0828bc",
+      "sha256:b1f3238e7a6a1df5df642b9d330c1c594d71da9a53ed805cfccc8fac8d341f7f",
+      "sha256:69d5fb7fc92a78d12d36c97f45827d29fe17b8911108d1feb530cd1ff489873d",
+      "sha256:e6b13909c0dae4cc9bd9fc0bc79b9a760f5fb5727f9822ceef2518f514ab5756",
+      "sha256:c424e99faa774d27fb071f66e8c57819573acd6ccd9ddcedd8b505c27303c9de",
+      "sha256:58d56ca7160c8d180bd69e812d24679d46f0ef9c17c855d8e0b09383e399c83d"
+    ],
+    "metric_count": 11,
+    "metric_ids": [
+      "net_worth_cny",
+      "account_assets_cny",
+      "cash_balance_cny",
+      "liabilities_cny",
+      "investment_market_value_cny",
+      "investment_cost_basis_cny",
+      "investment_unrealized_pnl_cny",
+      "total_consumption_outflow_cny",
+      "living_consumption_cny",
+      "investment_funding_outflow_cny",
+      "investment_allocation_amount_cny"
+    ],
+    "non_ready_false_zero_count": 0,
+    "required_field_values_valid": true,
+    "status": "blocked"
+  },
+  "parameter_center": {
+    "domain_count": 15,
+    "formula_count": 20,
+    "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+    "parameter_count": 96,
+    "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+    "status": "ready"
+  },
+  "phase_id": "V025-S7-P7.3",
+  "schema": "PFIV025Stage7Phase73EvidenceProjectionV1",
+  "sidecar_html_used": false,
+  "status": "pass",
+  "version": "v0.2.5",
+  "write_operation_count": 0
+}

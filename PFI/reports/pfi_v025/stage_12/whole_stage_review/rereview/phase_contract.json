@@ -1,0 +1,26 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW",
+  "finder_prohibited": true,
+  "gui_file_operations_prohibited": true,
+  "non_goals": [
+    "remediate a newly discovered P0/P1 in this run",
+    "S12-P3-T4 release freeze",
+    "final human acceptance",
+    "GitHub push",
+    "canonical PFI.app final reinstall",
+    "production acceptance",
+    "v0.2.6 work"
+  ],
+  "observed_at": "2026-07-15T23:23:12Z",
+  "phase": "stage12-whole-review-rereview",
+  "product_candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "release_source_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "review_method": "independent_deterministic_local_rereview",
+  "reviewed_closure_commit": "559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+  "schema": "PFIV025Stage12WholeReviewRereviewContractV1",
+  "stage": 12,
+  "status": "rereview_pass_waiting_explicit_final_acceptance",
+  "subagent_reviewer_claimed": false,
+  "target": "independently rereview all three remediations and the full Stage 12 acceptance matrix",
+  "version": "v0.2.5"
+}

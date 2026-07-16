@@ -1,0 +1,65 @@
+PFI v0.2.5 Stage 4 Phase 4.2 terminal evidence
+observed_at=2026-07-14T12:32:48Z
+implementation_base=c12acf6de23111eea71ccd077bd94bcefa05fdb4
+
+RED
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage4_holdings_valuation.py -q
+exit_code=2
+result=1 expected collection error; pfi_os.application.read_models.investment absent
+
+CORE_CONTRACT
+exit_code=0
+result=10 passed
+
+FOCUSED_FINAL
+command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage4_holdings_valuation.py PFI/tests/test_v025_stage4_accounts_read_model.py PFI/tests/test_v025_stage4_metric_states.py -q
+exit_code=0
+result=19 passed
+
+STAGE3_COMPATIBILITY
+exit_code=0
+result=48 passed, 4 historical current-state tests deselected
+
+STAGE2_COMPATIBILITY
+exit_code=0
+result=69 passed, 3 historical current-state tests deselected
+
+SOURCE_TRUTH
+SRC-HOLDINGS=not_loaded
+SRC-MARKET-PRICES=not_loaded
+SRC-FX-SNAPSHOT=not_loaded
+metrics_non_ready=3
+non_ready_value_count=0
+financial_values_emitted=0
+transaction_holding_inference_used=false
+cost_basis_guess_used=false
+legacy_fx_reference_used=false
+finder_used=false
+network_performed=false
+
+STATIC_AND_SCOPE
+exit_code=0
+result=4 Python files compiled; 12 JSON files parsed; 38 JSONL events parsed; 67 parameter rows parsed; exact changed files 41/41; absolute private paths 0; git diff check clean
+
+PROJECT_GOVERNANCE
+execution_context=full_checkout_shadow_with_worktree_overlay
+exit_code=0
+result=errors 0; warnings 0
+
+GOVERNANCE_CHANGED_SCOPE_SYNC
+execution_context=full_checkout_shadow_with_worktree_overlay
+exit_code=0
+result=errors 0; warnings 0
+
+PFI_SEMANTIC_SYNC
+execution_context=full_checkout_shadow_with_worktree_overlay
+exit_code=0
+result=errors 0; warnings 0; current_iteration equals latest_event_iteration ITER-20260714-PFI-V025-S4-P42
+
+RENDERER
+execution_context=full_checkout_shadow_with_worktree_overlay
+exit_code=0
+result=drift 0; reference issues 0
+
+NON_ACCEPTANCE_GLOBAL_DIAGNOSTIC
+result=aggregate semantic validation also reported 37 pre-existing root/KMFA issues outside PFI scope; PFI scoped project, changed-scope sync and semantic checks all remained errors 0 and warnings 0. This diagnostic is not used as the Phase 4.2 acceptance command.

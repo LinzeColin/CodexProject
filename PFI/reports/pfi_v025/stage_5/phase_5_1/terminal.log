@@ -1,0 +1,57 @@
+PFI v0.2.5 Stage 5 Phase 5.1 validation transcript
+observed_at=2026-07-15T00:26:39+10:00
+implementation_base=dbf2f726ae4356ce69cbb2500f9d1cfdbc285cec
+
+[expected_red]
+command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage5_formula_registry.py -q
+result=collection error: ModuleNotFoundError: No module named 'pfi_os.application.metrics'
+
+[focused_validation]
+phase_5_1_target=6 passed
+phase_5_1_plus_stage_4=52 passed
+stage_4_regression=46 passed
+formula_registry_count=14
+formula_hash_mismatch_count=0
+parameter_carrier_count=5
+parameter_conflict_count=0
+confidence_dimension_count=6
+aggregate_confidence_score_allowed=false
+base_currency=CNY
+fx_direction=AUD_TO_CNY
+example_fx_rate=4.81
+example_fx_rate_is_production_default=false
+production_default_fx_rate=null
+production_fx_status=not_loaded
+
+[governance_validation]
+full_checkout_shadow_project_errors=0
+full_checkout_shadow_project_warnings=0
+full_checkout_shadow_changed_scope_errors=0
+full_checkout_shadow_changed_scope_warnings=0
+renderer_drift=0
+renderer_reference_issues=0
+json_and_schema_validation=pass
+current_sparse_checkout_missing_reference_diagnostic_count=2
+current_sparse_checkout_diagnostic_treatment=excluded only after complete-checkout changed scope passed
+repository_aggregate_history_diagnostic=37 errors outside PFI Phase 5.1 scope
+
+[known_baseline_diagnostic]
+test=PFI/tests/test_pfi_parameters_consistency.py
+result=6 failed, 2 passed
+baseline_required_legacy_aliases_already_absent=true
+treatment=diagnostic only; not a Phase 5.1 acceptance command and no out-of-scope renderer/test rewrite
+
+[scope_boundaries]
+phase_5_2_started=false
+phase_5_3_started=false
+stage_5_whole_stage_review_started=false
+real_financial_data_read=false
+real_financial_data_mutated=false
+database_changed=false
+contains_private_values=false
+finder_used=false
+network_performed=false
+push_performed=false
+app_install_performed=false
+production_accepted=false
+final_human_acceptance=false

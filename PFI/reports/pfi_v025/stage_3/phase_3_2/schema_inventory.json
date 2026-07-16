@@ -1,0 +1,14 @@
+{
+  "schema": "PFIV025Stage3Phase32SchemaInventoryV1",
+  "version": "v0.2.5",
+  "phase_id": "V025-S3-P3.2",
+  "status": "pass",
+  "schema_count": 4,
+  "schemas": {
+    "normalized_transaction.schema.json": "sha256:1b9990f2bdb222405ebabe6b5d795f1976a087469ae86f3470dec85bb6e21425",
+    "interconnection_group.schema.json": "sha256:c74eb29e2e0f22dcd88a9e98d673c3e5d51e44e8d2b9ff3d64e8d8ca9901dbc1",
+    "economic_event.schema.json": "sha256:021eb43e296a5e18da1acbddf516c29f54fb2cd8ecfd40c5c32d9902648b2201",
+    "ledger_event.schema.json": "sha256:d6b729ba9fe45967cb9061de01db5dc9210886e11de4366f3c0419f5ab67b9f3"
+  },
+  "real_financial_data_read": false
+}

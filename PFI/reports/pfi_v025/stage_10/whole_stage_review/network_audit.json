@@ -1,0 +1,15 @@
+{
+  "blocked_external_requests": [],
+  "browser_requested_origins": [
+    "http://127.0.0.1:61969",
+    "http://127.0.0.1:61970"
+  ],
+  "codex_calls": 0,
+  "llm_calls": 0,
+  "loopback_only": true,
+  "ordinary_external_network_calls": 0,
+  "phase_10_2_evidence_ref": "PFI/reports/pfi_v025/stage_10/phase_10_2/network_audit.json",
+  "phase_10_3_evidence_ref": "PFI/reports/pfi_v025/stage_10/phase_10_3/network_audit.json",
+  "schema": "PFIV025Stage10WholeReviewNetworkAuditV1",
+  "status": "pass"
+}

@@ -1,0 +1,32 @@
+{
+  "file_count": 24,
+  "files": {
+    "config/reports/v025_phase93_decision_snapshot.json": "sha256:8226081ae9ffbd6ed528f0257b44adb6643b7d7812a0fccec18fba78e1d9dfd6",
+    "docs/pfi_v025/stage_9/PHASE_9_3_DECISION_REVIEW_EXPORT_IMPLEMENTATION.md": "sha256:224e92b05fe38e6ed7b769bc6bc0bef9f27040506466088f49d8078f114c23d7",
+    "reports/pfi_v025/stage_9/phase_9_3/browser_trace_sanitized.zip": "sha256:d25c7c79548dc295287f48e383405a82cb8ced989c790ac9d315a272d77332e3",
+    "reports/pfi_v025/stage_9/phase_9_3/browser_validation.json": "sha256:dd28dbf394d146e805b45f98ec732b0b0ee245661cd7b592bccecacec1c0be33",
+    "reports/pfi_v025/stage_9/phase_9_3/changed_files.txt": "sha256:f130a690673b466e535b22a1557745ef445ef904bfb5e0454ad829423747f84d",
+    "reports/pfi_v025/stage_9/phase_9_3/decision_objects.json": "sha256:0fd149200846dc87ce770171712c761f2117a8d43c29bbbce276b3409564a458",
+    "reports/pfi_v025/stage_9/phase_9_3/decision_review_trace.json": "sha256:fc4ca327c0b64380fc9d3ece5dc7aa7167790ed3b7562217d54bd6bb41868160",
+    "reports/pfi_v025/stage_9/phase_9_3/decision_review_view.png": "sha256:e70837d4f00cab886a6d52a718ed3bdaa245e1dbf33cee86ed8b2f566893c1f6",
+    "reports/pfi_v025/stage_9/phase_9_3/export_manifest.json": "sha256:bbd6f6e05a3acce0056e4c37abf62b577a8ffe1375714e99e570fbaff53c3548",
+    "reports/pfi_v025/stage_9/phase_9_3/export_snapshot.json": "sha256:68237197907762e5fcdce38a589c5b302ded7f4ee9f115f23bb08618e8d85acf",
+    "reports/pfi_v025/stage_9/phase_9_3/export_validation.json": "sha256:322eed5d081dd4faa967f0e2e214394fef7276d720169617a2ec84169f3c55f2",
+    "reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.csv": "sha256:a4da3c8adaa78a2bc1325ff60adb43125ac8c824037224d7e296a30299af459b",
+    "reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.html": "sha256:0d564ce2a109197c5c30589abe5dd5d089bf506df69a38eabdc5c2439f4497fb",
+    "reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.md": "sha256:3a88968121fbb1ebc61fe0c55133f43b0d0994aee6a771223fb25630bb55b498",
+    "reports/pfi_v025/stage_9/phase_9_3/exports/pfi_v025_decision_review.pdf": "sha256:de7f2c7ff94ecb95298a68d447525610d0753536fbff2ef91e55c632dff08dc0",
+    "reports/pfi_v025/stage_9/phase_9_3/input_immutability.json": "sha256:466009b292d4e43cf7f27cef4b93e34eb930273a2886f3c2ca906e3792e1746c",
+    "reports/pfi_v025/stage_9/phase_9_3/pdf_render.png": "sha256:e25b2f511f6f4e92c09909adea586897d4600fccba064cc140ba8c53612ff8ba",
+    "reports/pfi_v025/stage_9/phase_9_3/pdf_validation.json": "sha256:decca841e822273173fe8c9763a00e28fcb90c56853f95221ba0f2b307b9edb6",
+    "reports/pfi_v025/stage_9/phase_9_3/phase_contract.json": "sha256:7ad7f176e39de71874e5abd534dda48e5e19f54fab2b240876a2f398a6c4ecf7",
+    "reports/pfi_v025/stage_9/phase_9_3/playwright_result.json": "sha256:c2e79e1e5e94835db0e734f63720d7b01bea1cd55161510ace03a043f1f62898",
+    "reports/pfi_v025/stage_9/phase_9_3/privacy_scan.txt": "sha256:502956a373a3f7e31026adb95cbe5a3bc3286e92e3085073e55accf554c8613d",
+    "reports/pfi_v025/stage_9/phase_9_3/risk_and_rollback.md": "sha256:ed2d9475ce0c5e90a0e524fe9afd67d285882f8fbc156338546ff3a68dc1c563",
+    "reports/pfi_v025/stage_9/phase_9_3/terminal.log": "sha256:8045dbcb1ef15fde7067acda2b6228b12c7b1d5193fc922117ee56a97e9b6056",
+    "reports/pfi_v025/stage_9/phase_9_3/verification_results.json": "sha256:3a78d8f417160d26e33ccb2ee90bfd6afb07c1180e7e20bc914449eff8a36e44"
+  },
+  "product_commit": "168666305c874d91ab8fd45e9f925e49928e7e63",
+  "schema": "PFIV025Stage9Phase93ArtifactHashesV1",
+  "status": "pass"
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/pfi_context_v1.schema.json",
+  "title": "PFI Context v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "as_of",
+    "source_or_read_model_hash",
+    "privacy_classification",
+    "consumer",
+    "read_only",
+    "writeback_allowed",
+    "net_worth_state",
+    "investable_cash_state",
+    "cashflow_pressure",
+    "asset_allocation",
+    "risk_budget",
+    "investment_behavior_tags",
+    "consumption_pressure_summary",
+    "data_freshness"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pfi_context.v1"
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_or_read_model_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "privacy_classification": {
+      "const": "PRIVATE_DERIVED_MINIMIZED"
+    },
+    "consumer": {
+      "const": "Alpha"
+    },
+    "read_only": {
+      "const": true
+    },
+    "writeback_allowed": {
+      "const": false
+    },
+    "net_worth_state": {
+      "$ref": "#/$defs/metric_state"
+    },
+    "investable_cash_state": {
+      "$ref": "#/$defs/metric_state"
+    },
+    "cashflow_pressure": {
+      "$ref": "#/$defs/pressure"
+    },
+    "asset_allocation": {
+      "$ref": "#/$defs/metric_state"
+    },
+    "risk_budget": {
+      "$ref": "#/$defs/metric_state"
+    },
+    "investment_behavior_tags": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "concentration_watch",
+          "liquidity_watch",
+          "loss_chasing_watch",
+          "review_required",
+          "turnover_watch"
+        ]
+      },
+      "maxItems": 5,
+      "uniqueItems": true
+    },
+    "consumption_pressure_summary": {
+      "$ref": "#/$defs/pressure"
+    },
+    "data_freshness": {
+      "enum": [
+        "blocked",
+        "error",
+        "fresh",
+        "not_loaded",
+        "stale"
+      ]
+    }
+  },
+  "$defs": {
+    "metric_state": {
+      "enum": [
+        "blocked",
+        "confirmed_zero",
+        "error",
+        "not_loaded",
+        "partial",
+        "ready",
+        "stale"
+      ]
+    },
+    "pressure": {
+      "enum": [
+        "blocked",
+        "error",
+        "high",
+        "low",
+        "moderate",
+        "not_loaded",
+        "stale"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

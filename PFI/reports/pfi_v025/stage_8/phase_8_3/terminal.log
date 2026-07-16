@@ -1,0 +1,22 @@
+Phase 8.3 expected RED: 8 tests run, 8 expected failures before implementation.
+JavaScript syntax: accessibility runtime and browser harness pass.
+Initial browser audit after color(srgb) parser correction: 38 repeated contrast findings; all other gates pass.
+Remediation: legacy dark feedback surfaces, runtime target contrast and financial-data error prevention corrected.
+Actual formal-shell browser: 9/9 top-level gates pass across 10 primary and 10 secondary routes.
+WCAG 2.2 AA deterministic audit: 3776 text samples; blocking/contrast/target/unnamed/duplicate/structure failures = 0/0/0/0/0/0.
+Keyboard: skip link, primary route, secondary route, focus visibility, global search and 30-Tab no-trap pass; 15 unique targets.
+CDP Accessibility.getFullAXTree: 801 summarized nodes; unnamed interactive 0; duplicate IDs 0; primary navigation 10.
+Financial/data error prevention: 5/5 described controls; import confirm disabled before preview.
+Visual regression: 20/20 PNG pass; decode/dimension/regression failures 0/0/0; maximum diff 0.078533 <= 0.12.
+Browser errors: console/page/HTTP/external requests = 0/0/0/0.
+Sanitized trace SHA-256: 5773f63688d50ac3dbb0c2d50c7d48357c594a0111055b7d3aa82de5cec1d2b2.
+Finder/GUI file operations: not used.
+LaunchServices incident: one historical regression test unexpectedly spawned lsregister -dump; it was detected and immediately interrupted. No file open, reveal, install, or GUI operation occurred. That test path was excluded from all subsequent validation.
+Financial data/database/model/formula/parameter changes: none.
+Push/install/Stage 8 acceptance/Stage 9/production/final acceptance: not performed.
+Focused Stage 8 compatibility: 20/20 tests pass.
+Release identity regression: 10/10 tests pass.
+Safe legacy diagnostic: 103/106 aggregate; the order-sensitive migration concurrency test passes 1/1 in isolation; the remaining 2 failures are Stage 7 frozen-overlay checks expected to be superseded by the legitimate Phase 8.3 worktree.
+Renderer: drift 0, reference issues 0.
+Changed-scope governance: P83 event binding and required governance coverage pass; only two inherited sparse Cloudflare test_ref omissions remain.
+Complete-root governance from this sparse project worktree: 28 inherited root/missing-project errors; not introduced or widened by Phase 8.3.

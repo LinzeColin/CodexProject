@@ -1,0 +1,33 @@
+{
+  "schema": "PFIV025Stage1Phase11IdentityMatrixV1",
+  "acceptance_id": "ACC-PFI-V025-S1-P11-RELEASE-IDENTITY",
+  "release_content_commit": "a9592b8ce457492fd0e6817f74388f146ca657c6",
+  "identity": {
+    "version": "v0.2.5",
+    "build_id": "pfi-v025-s1p1-20260712.1",
+    "git_commit": "a9592b8ce457492fd0e6817f74388f146ca657c6",
+    "frontend_bundle_hash": "3c45901b88e24b579c3ef522afae50b430382b42909726c72db98ad66690ef2b",
+    "backend_build_hash": "056c3fd4fa3fa9205b34aa03a72e3b34d468a26c3bc42af1f1087c3b883efcff",
+    "app_short_version": "0.2.5",
+    "app_build_version": "20260712.1"
+  },
+  "surfaces": {
+    "machine_manifest": "exact_match",
+    "app_info_plist": "exact_match",
+    "launcher_query": "streamlit_iframe_parent_or_referrer_consumed_and_actual_app_plist_checked",
+    "runtime_api": "exact_manifest_response_with_raw_manifest_sha256_header",
+    "frontend_embedded_manifest": "exact_match",
+    "finder_identity_failure": "visible_chinese_dialog_with_restart_reinstall_and_cache_recovery"
+  },
+  "launcher_query_keys": [
+    "pfi_app_version",
+    "pfi_app_build",
+    "pfi_build",
+    "pfi_commit",
+    "pfi_frontend_hash",
+    "pfi_backend_hash",
+    "pfi_manifest_sha256"
+  ],
+  "mismatch_policy": "fail_closed_chinese_conflict_page_or_launcher_dialog_including_iframe_source_conflict_static_manifest_invalidity_and_manifest_sha_header_mismatch",
+  "result": "pass"
+}

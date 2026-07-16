@@ -1,0 +1,86 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S5-P52-FINANCIAL-MODELS",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "app_install_performed": false,
+  "capability_results": {
+    "cashflow_window_count": 7,
+    "component_reconciliation_difference_cny": "0.00",
+    "dual_metric_component_count": 4,
+    "formula_hash_mismatch_count": 0,
+    "formula_registry_count": 20,
+    "invariant_violation_failed_closed": true,
+    "parameter_carrier_count": 5,
+    "parameter_conflict_count": 0,
+    "taxonomy_l1_count": 12,
+    "taxonomy_l2_count": 50,
+    "xirr_multiple_sign_change_policy": "blocked_non_unique"
+  },
+  "contract_id": "PFI-V025-STAGE5-PHASE52-FINANCIAL-MODELS",
+  "database_changed": false,
+  "finder_used": false,
+  "iteration_id": "ITER-20260715-PFI-V025-S5-P52",
+  "model_ids_changed": ["MOD-PFI-010"],
+  "formula_ids_changed": [
+    "FORM-PFI-015",
+    "FORM-PFI-016",
+    "FORM-PFI-017",
+    "FORM-PFI-018",
+    "FORM-PFI-019",
+    "FORM-PFI-020"
+  ],
+  "network_performed": false,
+  "not_completed": [
+    "Phase 5.3 real-data invariant, metamorphic, sensitivity and model validation",
+    "real Web/UI and report source binding",
+    "Stage 5 whole-stage review",
+    "production acceptance and final human acceptance",
+    "GitHub push and canonical PFI.app reinstall"
+  ],
+  "overall_progress": {
+    "completed_tasks": 68,
+    "percent": 43.59,
+    "total_tasks": 156
+  },
+  "parameter_ids_changed": [
+    "PARAM-PFI-081",
+    "PARAM-PFI-082",
+    "PARAM-PFI-083",
+    "PARAM-PFI-084",
+    "PARAM-PFI-085",
+    "PARAM-PFI-086",
+    "PARAM-PFI-087",
+    "PARAM-PFI-088",
+    "PARAM-PFI-089",
+    "PARAM-PFI-090",
+    "PARAM-PFI-091",
+    "PARAM-PFI-092"
+  ],
+  "phase": "5.2",
+  "phase_5_3_started": false,
+  "production_accepted": false,
+  "push_performed": false,
+  "real_data_model_validation_status": "not_run_pending_phase_5_3",
+  "real_financial_data_mutated": false,
+  "real_financial_data_read": false,
+  "real_report_binding_completed": false,
+  "real_ui_binding_completed": false,
+  "result": "candidate_pass",
+  "stage": 5,
+  "stage_5_progress": {
+    "completed_tasks": 8,
+    "percent": 66.67,
+    "total_tasks": 12
+  },
+  "stage_5_whole_stage_review_started": false,
+  "task_ids": ["S5-P2-T1", "S5-P2-T2", "S5-P2-T3", "S5-P2-T4"],
+  "test_results": {
+    "expected_red": "2 collection errors: pfi_os.application.metrics.financial_models missing",
+    "full_checkout_changed_scope_sync": "errors 0; warnings 0",
+    "full_checkout_project_governance": "errors 0; warnings 0",
+    "formula_schema_and_hash": "pass; 20 formulas; 0 hash mismatches",
+    "phase_5_1_plus_phase_5_2": "16 passed",
+    "phase_5_plus_stage_4_regression": "62 passed",
+    "renderer": "drift 0; reference issues 0",
+    "v0_2_2_behavior_only": "11 passed; 2 stale human-entry tests deselected"
+  }
+}

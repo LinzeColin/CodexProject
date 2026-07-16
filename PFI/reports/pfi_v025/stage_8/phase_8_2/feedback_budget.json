@@ -1,0 +1,20 @@
+{
+  "schema": "PFIV025Stage8Phase82FeedbackBudgetV1",
+  "status": "pass",
+  "budget_ms": {
+    "instant": 100,
+    "cached": 300,
+    "staged": 1000,
+    "durable": 10000
+  },
+  "runtime_behavior": {
+    "pressed_or_focus": "0-100ms state acknowledgement",
+    "cached_result": "100-300ms direct result without artificial loader",
+    "skeleton": "shown only while a real operation remains pending after 300ms",
+    "stage": "real stage label after 1000ms without estimated percentage",
+    "durable_job": "persistent timeline state after 10000ms; page may change"
+  },
+  "fake_progress_present": false,
+  "elapsed_time_converted_to_percent": false,
+  "actual_progress_source": "completedUnits/totalUnits only"
+}

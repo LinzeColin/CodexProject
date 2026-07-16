@@ -1,0 +1,28 @@
+{
+  "schema": "PFIV025Stage3Phase31SourceAccountPolicyV1",
+  "version": "v0.2.5",
+  "phase_id": "V025-S3-P3.1",
+  "source_type_extension_policy": "lowercase_namespaced_token",
+  "capability_extension_policy": "lowercase_namespaced_token",
+  "role_registry": [
+    "asset_account",
+    "cash_account",
+    "consumption_account",
+    "external_counterparty",
+    "income_account",
+    "investment_account",
+    "investment_funding_source",
+    "liability_account",
+    "payment_account",
+    "savings_account"
+  ],
+  "multiple_roles_per_account": true,
+  "overlapping_role_periods_allowed": true,
+  "role_effective_range_required": true,
+  "parser_provenance_required": true,
+  "unknown_role_policy": "review_queue",
+  "unknown_role_publish_allowed": false,
+  "source_name_classification": false,
+  "real_financial_data_read": false,
+  "real_financial_data_mutated": false
+}

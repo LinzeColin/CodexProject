@@ -1,0 +1,38 @@
+{
+  "duplicate_economic_event_count": 0,
+  "financial_values_emitted": 0,
+  "input_ledger_event_count": 6879,
+  "metrics": {
+    "activity_outflow": {
+      "economic_event_count": 3600,
+      "economic_event_set_hash": "sha256:6d37e61dee498e41b143c18e86c6d94e7424c39f3966be44bdfadea5385e7aca",
+      "maximum_count_per_economic_event": 1
+    },
+    "investment_allocation": {
+      "economic_event_count": 3166,
+      "economic_event_set_hash": "sha256:ab8f45e00a646e7d853f2ea5c754870a5288ff1184da22bf4df349072a9c58df",
+      "maximum_count_per_economic_event": 1
+    },
+    "living_consumption": {
+      "economic_event_count": 3567,
+      "economic_event_set_hash": "sha256:386c9398c9f9c802f1af60d76bc230e72bdbb67fcc5c2956ac60e41deb928f4e",
+      "maximum_count_per_economic_event": 1
+    }
+  },
+  "page_read_model_hashes": {
+    "cashflow": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf",
+    "consumption": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf",
+    "homepage": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf",
+    "investment": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf",
+    "report": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf"
+  },
+  "per_metric_duplicate_count": 0,
+  "phase_id": "V025-S3-P3.3",
+  "private_identifiers_emitted": 0,
+  "read_model_hash": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf",
+  "same_economic_event_per_metric_max_count": 1,
+  "schema": "PFIV025Stage3Phase33ReadModelContractV1",
+  "status": "pass",
+  "unique_economic_event_count": 6879,
+  "version": "v0.2.5"
+}

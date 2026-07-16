@@ -1,0 +1,24 @@
+{
+  "schema": "PFIV025Stage3Phase32EventTypeMatrixV1",
+  "version": "v0.2.5",
+  "phase_id": "V025-S3-P3.2",
+  "status": "pass",
+  "policy_version": "1",
+  "policy_hash": "sha256:02725f39f153e16fffd231e443e8eb0a0149376260669ccb6681f552a349ede8",
+  "event_type_count": 10,
+  "event_types": [
+    {"event_type": "credit_card_repayment", "impact_flags": {"net_worth_effect": "neutral", "cash_effect": "mixed", "living_consumption_included": false, "activity_outflow_included": false, "investment_allocation_included": false, "requires_offset_event_id": false, "fee_tax_requires_separate_event": false}},
+    {"event_type": "fund_subscription", "impact_flags": {"net_worth_effect": "composition_only", "cash_effect": "outflow", "living_consumption_included": false, "activity_outflow_included": true, "investment_allocation_included": true, "requires_offset_event_id": false, "fee_tax_requires_separate_event": true}},
+    {"event_type": "gold_subscription", "impact_flags": {"net_worth_effect": "composition_only", "cash_effect": "outflow", "living_consumption_included": false, "activity_outflow_included": true, "investment_allocation_included": true, "requires_offset_event_id": false, "fee_tax_requires_separate_event": true}},
+    {"event_type": "income", "impact_flags": {"net_worth_effect": "increase", "cash_effect": "inflow", "living_consumption_included": false, "activity_outflow_included": false, "investment_allocation_included": false, "requires_offset_event_id": false, "fee_tax_requires_separate_event": false}},
+    {"event_type": "investment_funding", "impact_flags": {"net_worth_effect": "composition_only", "cash_effect": "mixed", "living_consumption_included": false, "activity_outflow_included": true, "investment_allocation_included": true, "requires_offset_event_id": false, "fee_tax_requires_separate_event": true}},
+    {"event_type": "investment_purchase", "impact_flags": {"net_worth_effect": "composition_only", "cash_effect": "outflow", "living_consumption_included": false, "activity_outflow_included": true, "investment_allocation_included": true, "requires_offset_event_id": false, "fee_tax_requires_separate_event": true}},
+    {"event_type": "investment_sale", "impact_flags": {"net_worth_effect": "composition_only", "cash_effect": "inflow", "living_consumption_included": false, "activity_outflow_included": false, "investment_allocation_included": true, "requires_offset_event_id": false, "fee_tax_requires_separate_event": true}},
+    {"event_type": "living_consumption", "impact_flags": {"net_worth_effect": "decrease", "cash_effect": "outflow", "living_consumption_included": true, "activity_outflow_included": true, "investment_allocation_included": false, "requires_offset_event_id": false, "fee_tax_requires_separate_event": false}},
+    {"event_type": "own_account_transfer", "impact_flags": {"net_worth_effect": "neutral", "cash_effect": "mixed", "living_consumption_included": false, "activity_outflow_included": false, "investment_allocation_included": false, "requires_offset_event_id": false, "fee_tax_requires_separate_event": false}},
+    {"event_type": "refund", "impact_flags": {"net_worth_effect": "reversal", "cash_effect": "inflow", "living_consumption_included": false, "activity_outflow_included": false, "investment_allocation_included": false, "requires_offset_event_id": true, "fee_tax_requires_separate_event": false}}
+  ],
+  "unknown_event_type_policy": "review_required_no_publication",
+  "same_economic_event_per_metric_max_count": 1,
+  "financial_values_emitted": 0
+}

@@ -1,0 +1,31 @@
+{
+  "blocked_report_ids": [
+    "pfi-v025-cash",
+    "pfi-v025-investment",
+    "pfi-v025-net-worth"
+  ],
+  "complete_report_ids": [
+    "pfi-v025-data-quality"
+  ],
+  "contains_private_values": false,
+  "cross_report_hashes_consistent": true,
+  "errors": [],
+  "financial_values_emitted": 0,
+  "partial_report_ids": [
+    "pfi-v025-cashflow",
+    "pfi-v025-consumption"
+  ],
+  "phase_id": "V025-S9-P9.1",
+  "report_count": 6,
+  "report_types": [
+    "cash",
+    "cashflow",
+    "consumption",
+    "data_quality",
+    "investment",
+    "net_worth"
+  ],
+  "schema": "PFIV025Stage9Phase91ReportValidationV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

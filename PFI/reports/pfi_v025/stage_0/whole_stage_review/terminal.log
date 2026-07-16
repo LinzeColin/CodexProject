@@ -1,0 +1,88 @@
+PFI_V025_STAGE0_WHOLE_REVIEW_EXECUTION_LEDGER_V2
+observed_at=2026-07-12T05:26:02+10:00
+review_base=a590a3da20f2cf569c11114a3f46e1ff1a0ef6f2
+
+COMMAND_ID=WSR-001
+COMMAND=pwd; git rev-parse --show-toplevel; git branch --show-current; git rev-parse HEAD; git status --short --branch; git sparse-checkout list; git log --oneline -12
+EXIT_CODE=0
+SUMMARY=cwd_git_root_branch_head_sparse_history_verified; initial_worktree_clean; branch=codex/pfi; head=a590a3da20f2cf569c11114a3f46e1ff1a0ef6f2
+
+COMMAND_ID=WSR-002
+COMMAND=openssl dgst -sha256 "$HOME/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md" "$HOME/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip" && unzip -t "$HOME/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip"
+EXIT_CODE=0
+SUMMARY=roadmap_fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b; taskpack_591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2; zip_integrity_pass
+
+COMMAND_ID=WSR-003
+COMMAND=git rev-parse origin/main; git ls-remote origin refs/heads/main
+EXIT_CODE=0
+SUMMARY=local_tracking_a8fdd0f6278d9819ea2e5c29c3c275166a5e46e5_stale; authoritative_remote_2c91c22f3d334f82aa111245e452f8a35ac51cc6; ls_remote_did_not_mutate_refs_fetch_head_or_shallow
+
+COMMAND_ID=WSR-004
+COMMAND=for p in 8501 8502; do test "$(lsof -nP -iTCP:$p -sTCP:LISTEN -t | wc -l | tr -d ' ')" = 1; test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:$p/_stcore/health)" = 200; for pid in $(lsof -nP -iTCP:$p -sTCP:LISTEN -t); do test "$(lsof -a -p "$pid" -d cwd -Fn | sed -n 's/^n//p')" = "$PWD/PFI"; done; done
+EXIT_CODE=0
+SUMMARY=listener_count_2; ports_8501_8502; health_200_200; all_sources_canonical; no_runtime_mutation
+
+COMMAND_ID=WSR-005
+COMMAND=db=$(find "$HOME/.pfi" -maxdepth 3 -type f \( -name '*.db' -o -name '*.sqlite' -o -name '*.sqlite3' \) | head -n 1); test -n "$db"; before=$(stat -f '%z:%m:%Sp' "$db"):$(DB_PATH="$db" python3 -c 'import hashlib,os; print(hashlib.sha256(open(os.environ["DB_PATH"],"rb").read()).hexdigest())'); DB_PATH="$db" python3 -c 'import os,sqlite3,urllib.parse; p=os.environ["DB_PATH"]; c=sqlite3.connect("file:"+urllib.parse.quote(p,safe="/")+"?mode=ro&immutable=1",uri=True); c.execute("PRAGMA query_only=ON"); assert c.execute("PRAGMA quick_check").fetchone()[0]=="ok"; assert c.execute("SELECT COUNT(*) FROM sqlite_master WHERE type=\"table\"").fetchone()[0]==9; c.close()'; after=$(stat -f '%z:%m:%Sp' "$db"):$(DB_PATH="$db" python3 -c 'import hashlib,os; print(hashlib.sha256(open(os.environ["DB_PATH"],"rb").read()).hexdigest())'); test "$before" = "$after"
+EXIT_CODE=0
+SUMMARY=candidate_count_1; size_86016; sha256_2053c0acc8f9c716d2fc496b9cfde6f8c1ef35c43e18be6d77e06a1c08f33b12; quick_check_ok; table_count_9; before_after_unchanged; filenames_0; rows_0
+
+COMMAND_ID=WSR-006
+COMMAND=PFI/.venv/bin/python --version; node --version; PFI/.venv/bin/python -c 'import sqlite3; print(sqlite3.sqlite_version)'; node --check PFI/web/app/shell.js
+EXIT_CODE=0
+SUMMARY=Python_3.12.13; Node_v24.18.0; SQLite_3.50.4; shell_syntax_pass
+
+COMMAND_ID=WSR-007
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -m pytest PFI/tests/test_pfi_parameters_consistency.py -q -p no:cacheprovider
+EXIT_CODE=1
+OUTCOME=expected_diagnostic_failure
+SUMMARY=5_failed_3_passed; owner_parameter_conflict_preserved; not_a_stage0_pass_gate
+
+COMMAND_ID=WSR-008
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -m pytest PFI/tests -q --collect-only -p no:cacheprovider
+EXIT_CODE=0
+SUMMARY=795_tests_collected; full_tests_not_run_by_stage0_contract
+
+COMMAND_ID=WSR-009
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python PFI/reports/pfi_v025/stage_0/whole_stage_review/verify_stage0_whole_review.py
+EXIT_CODE=0
+SUMMARY=source_and_schema_hashes_pinned; exact_paths_16; artifact_hashes_14; commit_qualified_bindings_6; findings_38; open_p0p1_27; unique_selector_1; privacy_scan_pass; human_acceptance_absent; stage1_not_started
+
+RESULT_RECORD_ID=WSR-010
+RECORD_TYPE=READ_ONLY_ARTIFACT_AUDIT
+RESULT=phase_0_3_artifact_hashes_35_of_35; findings_38_unique; status_23_7_0_4_4; priority_26_10_2; open_p0p1_27; gaps_12; stage0_range_paths_46; protected_product_paths_0; active_requirements_1_pass; phase_evidence_packs_3_pass
+
+RESULT_RECORD_ID=WSR-011
+RECORD_TYPE=PRIVACY_REVIEW
+RESULT=private_financial_values_0; credentials_0; raw_rows_0; raw_filenames_0; git_at_github_dot_com_is_ssh_remote_not_pii; executable_high_risk_pattern_scan_in_WSR_009
+
+REVIEW_RECORD_ID=WSR-012
+REVIEW_SCOPE=three_independent_read_only_reviews_over_Roadmap_fidelity_evidence_hash_privacy_and_governance_remote_lifecycle
+RESULT=initial_findings_C1_I2_M1; all_in_scope_findings_fixed_by_whole_stage_overlay; classifier_false_positive_routed_as_external_tooling_risk
+
+SHADOW_RECORD_ID=WSR-013
+CORE_COMMAND=python3 scripts/validate_project_governance.py --project PFI
+RESULT=errors_0_warnings_0; temporary_shadow_removed; main_repo_refs_unchanged
+
+SHADOW_RECORD_ID=WSR-014
+CORE_COMMAND=python3 scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic
+RESULT=changed_files_16; selected_project_PFI; errors_0_warnings_0; temporary_shadow_removed
+
+COMMAND_ID=WSR-015
+COMMAND=python3 scripts/validate_governance_sync.py --changed-only --base-ref HEAD --enforce-sync
+EXIT_CODE=1
+OUTCOME=expected_classifier_false_positive
+SUMMARY=required_scope_gap_for_unchanged_MODEL_SPEC_formula_registry_model_registry_parameter_registry; legacy_result_preserved
+
+COMMAND_ID=WSR-016
+COMMAND=python3 scripts/lean_governance.py ci --changed-only --base-ref HEAD
+EXIT_CODE=1
+OUTCOME=expected_legacy_sparse_stop
+SUMMARY=decision_STOP; changed_files_16; selected_project_PFI; zero_tracked_write_true; stable_summary_sha256_9e393610459225d10ec7c9c17877bb29936c491a4918f18368973c176ee35f41; full_evidence_sha256_a89d95e90457a80e2f4d4d727b0b097b9dab9ebe574148e026a7a1dbbd066e10
+
+RESULT_RECORD_ID=WSR-017
+RECORD_TYPE=FINAL_PARSE_SCOPE_CHECK
+RESULT=JSON_YAML_JSONL_diff_check_and_exact_scope_pass; exact_paths_16; executable_schema_hash_scope_lifecycle_check_in_WSR_009
+
+PHASE_STATUS=whole_stage_candidate_pass_pending_review_commit_attestation_and_user_acceptance
+STAGE_1_STATUS=not_started

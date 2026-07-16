@@ -1,0 +1,14 @@
+PFI_V025_STAGE1_PHASE11_PRIVACY_SCAN_V1
+scope=added tracked candidate text from phase base plus untracked Phase artifacts
+PRIVACY_SCAN=PASS
+added_lines_scanned_at_precommit_scan=3189
+absolute_home_paths=0
+explicit_user_names=0
+private_keys=0
+cloud_or_api_credentials=0
+private_financial_values=0
+raw_financial_rows=0
+raw_financial_filenames=0
+pid_or_process_command_evidence=0
+screenshot_contains_conflict_copy_only=true
+contains_private_values=false

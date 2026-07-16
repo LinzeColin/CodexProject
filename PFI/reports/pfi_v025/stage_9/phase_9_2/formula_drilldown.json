@@ -1,0 +1,292 @@
+{
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "formula_drilldowns": [
+    {
+      "boundaries_zh": [
+        "同一 source record 和同一 economic event/type 各只计一次。",
+        "投资入金与域内配置是不同活动阶段，必须拆分展示并显式解释。",
+        "退款必须唯一链接原事件，冲突或超额时失败关闭。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "消费总流出按版本化广义活动口径汇总生活消费、投资入金、投资域内配置与金融费用，并按已关联退款抵消；各组件同源展示且不得解释为净资产损失。",
+      "dependencies": [
+        "FORM-PFI-004",
+        "FORM-PFI-007",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:10b45da2fac5aa066aaf2ebc47d8615d6d144dbce6c09dd9bdbb2896ff3e57f2",
+      "formula_id": "FORM-PFI-015",
+      "formula_version": "pfi-v0.2.5-dual-consumption-v1",
+      "inputs": [
+        "financial_event_set",
+        "source_record_id",
+        "economic_event_id",
+        "interconnection_group_id",
+        "offset_economic_event_id"
+      ],
+      "label_zh": "双消费与投资活动组件",
+      "limitation": "Published real events validate living consumption and investment allocation; unresolved transfer/refund pools prevent full funding/refund coverage.",
+      "outputs": [
+        "total_consumption_outflow_cny",
+        "living_consumption_cny",
+        "investment_funding_outflow_cny",
+        "investment_allocation_amount_cny",
+        "financial_fee_outflow_cny",
+        "refund_offset_cny"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-082",
+        "PARAM-PFI-083",
+        "PARAM-PFI-084",
+        "PARAM-PFI-085"
+      ],
+      "report_types": [
+        "consumption",
+        "cashflow"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-015",
+      "sensitivity_ids": [
+        "SENS-MONEY-QUANTUM"
+      ],
+      "unit": "CNY",
+      "validation_status": "validated_real_snapshot"
+    },
+    {
+      "boundaries_zh": [
+        "任一差异非精确零时失败关闭且不发布财务值。",
+        "投资入金或买入本身不是净资产损失。",
+        "Phase 5.2 只证明能力，真实数据不变量留给 Phase 5.3。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "净资产等于现金、投资市值与其他资产之和减负债；现金按期初加流入减流出加调整滚动；投资重配置除显式费用外不得改变资产总额。",
+      "dependencies": [
+        "FORM-PFI-008",
+        "FORM-PFI-012",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:d09de306632fd79988c735abc49e9e94730f5c7b5505f133d8f1f9715232a755",
+      "formula_id": "FORM-PFI-016",
+      "formula_version": "pfi-v0.2.5-core-financial-invariants-v1",
+      "inputs": [
+        "core_financial_snapshot",
+        "cash_rollforward",
+        "investment_reallocation"
+      ],
+      "label_zh": "净资产、现金与投资重配置不变量",
+      "limitation": "Account balance, liability, holding, price and FX snapshots are not loaded.",
+      "outputs": [
+        "net_worth_cny",
+        "net_worth_discrepancy_cny",
+        "cash_rollforward_discrepancy_cny",
+        "investment_reallocation_discrepancy_cny",
+        "ledger_conserved"
+      ],
+      "parameters": [
+        "PARAM-PFI-081"
+      ],
+      "report_types": [
+        "net_worth",
+        "cash"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-016",
+      "sensitivity_ids": [
+        "SENS-MONEY-QUANTUM"
+      ],
+      "unit": "CNY and invariant status",
+      "validation_status": "blocked_missing_required_sources"
+    },
+    {
+      "boundaries_zh": [
+        "费用和税费只扣一次。",
+        "分母为零时拖累率为 null，不伪造零。",
+        "生产结果必须绑定持仓、价格、成本、FX 和交易 lineage。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "已实现净收益等于卖出收入减分摊成本、费用和税费；总净收益叠加未实现收益、分红和利息并扣持有成本，同时分别计算费用、税费、汇率与闲置现金拖累。",
+      "dependencies": [
+        "FORM-PFI-009",
+        "FORM-PFI-010",
+        "FORM-PFI-014",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:27843944f347cb6729fdb0b5abcf4c5e72d70067c2a78d8c84b7b52af5dbece8",
+      "formula_id": "FORM-PFI-017",
+      "formula_version": "pfi-v0.2.5-investment-return-cost-drag-v1",
+      "inputs": [
+        "market_value_cny",
+        "remaining_cost_cny",
+        "sell_proceeds_cny",
+        "allocated_cost_cny",
+        "fees_cny",
+        "taxes_cny",
+        "income_cny",
+        "fx_exposure",
+        "idle_cash_cny"
+      ],
+      "label_zh": "投资收益、成本与拖累",
+      "limitation": "Holdings, cost basis, point-in-time price, fee, tax and FX lineage are incomplete.",
+      "outputs": [
+        "unrealized_pnl_cny",
+        "realized_pnl_net_cny",
+        "total_return_net_cny",
+        "fee_drag_rate",
+        "tax_drag_rate",
+        "fx_drag_cny",
+        "idle_cash_drag_cny"
+      ],
+      "parameters": [
+        "PARAM-PFI-081"
+      ],
+      "report_types": [
+        "investment"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-017",
+      "sensitivity_ids": [
+        "SENS-MONEY-QUANTUM"
+      ],
+      "unit": "CNY and decimal rate",
+      "validation_status": "blocked_missing_required_sources"
+    },
+    {
+      "boundaries_zh": [
+        "至少一个负流和一个正流且日期不少于两个。",
+        "多次符号变化导致潜在多根时标记 blocked，不选择任意根。",
+        "无法括根或不收敛时失败关闭。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "按实际日期和 365 日基准求解使投资现金流净现值为零的年化收益率；投资入金为负，回流、分红、利息和终值为正。",
+      "dependencies": [
+        "FORM-PFI-017",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:14b8695fadf9dd361f462e060120b879dba7a136268f568d07a14f7ce73f69cf",
+      "formula_id": "FORM-PFI-018",
+      "formula_version": "pfi-v0.2.5-xirr-v1",
+      "inputs": [
+        "dated_investment_cashflows"
+      ],
+      "label_zh": "日期感知投资 XIRR",
+      "limitation": "No complete dated funding/return/terminal-value chain is available for real XIRR.",
+      "outputs": [
+        "xirr",
+        "residual_abs",
+        "iterations",
+        "sign_change_count"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-089",
+        "PARAM-PFI-090",
+        "PARAM-PFI-091",
+        "PARAM-PFI-092"
+      ],
+      "report_types": [
+        "investment"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-018",
+      "sensitivity_ids": [
+        "SENS-XIRR-POLICY"
+      ],
+      "unit": "annual decimal rate",
+      "validation_status": "blocked_insufficient_chain"
+    },
+    {
+      "boundaries_zh": [
+        "窗口固定为 7/21/30/60/90/180/360。",
+        "无事件窗口返回 filtered_empty/null，不显示假零。",
+        "内部转账不改变体系外净现金流。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "按 as_of 对去重经济事件计算 7、21、30、60、90、180、360 日外部流入、外部流出和净现金流，内部转账单列且不进入净现金流。",
+      "dependencies": [
+        "FORM-PFI-004",
+        "FORM-PFI-007",
+        "FORM-PFI-015",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:e886fe19fce26640578da1c2e6d8ab45c83581b185e57120a13b23675cb94e30",
+      "formula_id": "FORM-PFI-019",
+      "formula_version": "pfi-v0.2.5-seven-window-cashflow-v1",
+      "inputs": [
+        "financial_event_set",
+        "as_of"
+      ],
+      "label_zh": "七窗口外部现金流",
+      "limitation": "Seven real lookback windows and empty-window false-zero boundaries pass; date precision remains daily.",
+      "outputs": [
+        "external_inflow_cny",
+        "external_outflow_cny",
+        "internal_transfer_cny",
+        "net_cashflow_cny"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-086"
+      ],
+      "report_types": [
+        "cash",
+        "cashflow"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-019",
+      "sensitivity_ids": [
+        "SENS-CASHFLOW-WINDOW"
+      ],
+      "unit": "CNY by day window",
+      "validation_status": "validated_real_snapshot"
+    },
+    {
+      "boundaries_zh": [
+        "L1 不超过 12、单个 L1 的 L2 不超过 5、总 L2 不超过 50。",
+        "每笔记录恰有一个主分类，多维维度使用标签。",
+        "停用标签保留历史但不得用于新分配。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "分类保持 L1、L2 上限且每笔交易仅一个主分类；多维分析使用默认或自定义标签，保留停用历史并支持 all/any 视图筛选。",
+      "dependencies": [
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:af21e5447bdd9f3d5528c328be4a9fcee236dfc99fb96a7f9f645740be1a2906",
+      "formula_id": "FORM-PFI-020",
+      "formula_version": "pfi-v0.2.5-taxonomy-tag-policy-v1",
+      "inputs": [
+        "taxonomy",
+        "primary_category_assignments",
+        "tag_definitions",
+        "tag_history",
+        "view_filter"
+      ],
+      "label_zh": "分类与标签治理规则",
+      "limitation": "Taxonomy structure passes, but classification accuracy lacks labels and out-of-sample ground truth.",
+      "outputs": [
+        "taxonomy_validation",
+        "primary_category_validation",
+        "tag_policy_validation"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-087",
+        "PARAM-PFI-088"
+      ],
+      "report_types": [
+        "consumption"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-020",
+      "sensitivity_ids": [
+        "SENS-CLASSIFICATION-THRESHOLD"
+      ],
+      "unit": "governance decision",
+      "validation_status": "validated_structure_only"
+    }
+  ],
+  "pack_hash": "sha256:c3df8b878038bffdb28bfe4112d9a875e43e5d41cb910f86b6482768223a19e9",
+  "phase_id": "V025-S9-P9.2",
+  "schema": "PFIV025Stage9Phase92FormulaEvidenceV1"
+}

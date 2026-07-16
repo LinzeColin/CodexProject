@@ -3339,6 +3339,109 @@
       }
     }
   },
+  "formula_governance_v025": {
+    "registry_version": "pfi-v0.2.5-formula-registry-v1",
+    "base_currency": "CNY",
+    "fx_pair": "AUD/CNY",
+    "fx_direction": "AUD_TO_CNY",
+    "fx_definition_zh": "1 AUD = X CNY",
+    "fx_rate_unit": "CNY/AUD",
+    "example_fx_rate": "4.81",
+    "example_only": true,
+    "production_default_fx_rate": null,
+    "formula_lifecycle_statuses": [
+      "draft",
+      "active",
+      "deprecated",
+      "superseded"
+    ],
+    "active_formula_versions_immutable": true,
+    "classification_review_threshold": 70,
+    "source_layered_thresholds_allowed": false,
+    "classification_confidence_weights": {
+      "field_completeness": 30,
+      "amount_direction": 10,
+      "rule_match": 20,
+      "counterparty": 15,
+      "interconnection": 15,
+      "history_consistency": 10
+    },
+    "confidence_dimension_ids": [
+      "classification_confidence",
+      "source_coverage",
+      "reconciliation_coverage",
+      "valuation_coverage",
+      "model_validation",
+      "report_completeness"
+    ],
+    "aggregate_confidence_score_allowed": false
+  },
+  "financial_models_v025": {
+    "model_version": "pfi-v0.2.5-financial-models-v1",
+    "base_currency": "CNY",
+    "labels_zh": {
+      "total_consumption_outflow": "消费总流出金额（用户定义活动口径）",
+      "living_consumption": "生活消费金额",
+      "investment_funding_outflow": "投资资金流出金额",
+      "investment_allocation_amount": "投资域内配置金额"
+    },
+    "gross_activity_event_types": [
+      "consumption",
+      "investment_deposit",
+      "fund_subscription",
+      "bullion_purchase",
+      "investment_buy",
+      "fee"
+    ],
+    "living_consumption_event_types": [
+      "consumption"
+    ],
+    "investment_funding_event_types": [
+      "investment_deposit"
+    ],
+    "investment_allocation_event_types": [
+      "fund_subscription",
+      "bullion_purchase",
+      "investment_buy"
+    ],
+    "cashflow_windows_days": [
+      7,
+      21,
+      30,
+      60,
+      90,
+      180,
+      360
+    ],
+    "taxonomy_limits": {
+      "max_l1_categories": 12,
+      "max_l2_per_l1": 5,
+      "max_l2_total": 50,
+      "primary_category_per_transaction": 1
+    },
+    "tag_policy": {
+      "tag_types": [
+        "default",
+        "custom"
+      ],
+      "history_required": true,
+      "view_filter_modes": [
+        "all",
+        "any"
+      ]
+    },
+    "xirr_policy": {
+      "day_count_basis": 365,
+      "npv_tolerance": "0.0000000001",
+      "rate_quantum": "0.0000000001",
+      "max_iterations": 256,
+      "lower_bound": "-0.999999",
+      "initial_upper_bound": "10",
+      "maximum_upper_bound": "1000000",
+      "multiple_sign_change_policy": "blocked_non_unique"
+    },
+    "real_data_model_validation_status": "blocked_pending_phase_5_3"
+  },
   "formulas": [
     {
       "formula_id": "amount_cny",

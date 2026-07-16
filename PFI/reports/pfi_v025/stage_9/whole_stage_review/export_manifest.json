@@ -1,0 +1,88 @@
+{
+  "contains_private_values": false,
+  "cross_format_same_snapshot": true,
+  "decision_pack_hash": "sha256:b1cf69e7ebe48b3c8fa1003d219c3bf2ebf4a8adcb8cb6873c3216326e0cc3d6",
+  "files": [
+    {
+      "byte_size": 24906,
+      "content_type": "text/html; charset=utf-8",
+      "filename": "pfi_v025_decision_review.html",
+      "format": "html",
+      "sha256": "sha256:2a9e21806803a080c026ac1fe441acdc2db347d98d6b564fef0689728bcc95bc",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    },
+    {
+      "byte_size": 163625,
+      "content_type": "application/pdf",
+      "filename": "pfi_v025_decision_review.pdf",
+      "format": "pdf",
+      "sha256": "sha256:fd787d1a8fd5db6ebb56a053c6cadcf4eca6d25350f621245809041de50adae4",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    },
+    {
+      "byte_size": 10911,
+      "content_type": "text/csv; charset=utf-8",
+      "filename": "pfi_v025_decision_review.csv",
+      "format": "csv",
+      "sha256": "sha256:e314a35a8a06dcb15aba1c119070e4c8784a5f6478219d90d44ad273ea5edea5",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    },
+    {
+      "byte_size": 22669,
+      "content_type": "text/markdown; charset=utf-8",
+      "filename": "pfi_v025_decision_review.md",
+      "format": "markdown",
+      "sha256": "sha256:e0e790725323be3c80959b5e6161339b5a97208af55459e439e4d9266d7d495f",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    }
+  ],
+  "financial_values_emitted": 0,
+  "format_count": 4,
+  "formats": [
+    "html",
+    "pdf",
+    "csv",
+    "markdown"
+  ],
+  "manifest_hash": "sha256:0977e6a9d5908685ad590a741d43022158334184464ff60166355c2dbef1c2f1",
+  "phase_id": "V025-S9-P9.3",
+  "physical_files": [
+    {
+      "byte_size": 24906,
+      "format": "html",
+      "match": true,
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.html",
+      "sha256": "sha256:2a9e21806803a080c026ac1fe441acdc2db347d98d6b564fef0689728bcc95bc",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    },
+    {
+      "byte_size": 163625,
+      "format": "pdf",
+      "match": true,
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.pdf",
+      "sha256": "sha256:fd787d1a8fd5db6ebb56a053c6cadcf4eca6d25350f621245809041de50adae4",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    },
+    {
+      "byte_size": 10911,
+      "format": "csv",
+      "match": true,
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.csv",
+      "sha256": "sha256:e314a35a8a06dcb15aba1c119070e4c8784a5f6478219d90d44ad273ea5edea5",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    },
+    {
+      "byte_size": 22669,
+      "format": "markdown",
+      "match": true,
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/exports/pfi_v025_decision_review.md",
+      "sha256": "sha256:e0e790725323be3c80959b5e6161339b5a97208af55459e439e4d9266d7d495f",
+      "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760"
+    }
+  ],
+  "review_base": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "schema": "PFIV025Stage9WholeReviewPhysicalExportManifestV1",
+  "source_snapshot_hash": "sha256:b12e2796b89d4c60947fd32f0bf5efd1e789f5a254205536d9252dbfb05a9760",
+  "status": "pass",
+  "version": "v0.2.5"
+}

@@ -1,0 +1,28 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE11-WHOLE-REVIEW",
+  "app_install_performed": false,
+  "contract_id": "PFI-V025-STAGE11-WHOLE-REVIEW",
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "push_performed": false,
+  "remediation_commit": "9c450ea483cd2040636e375c9f7d84e5127e44cf",
+  "rollback": "revert remediation commit and the evidence/governance commit; canonical source was read-only and all restored targets were temporary isolated copies",
+  "schema": "PFIV025Stage11WholeReviewContractV1",
+  "scope": "Stage 11 whole-stage review, remediation, rereview and transition acceptance only",
+  "source_review_base": "f49e10f47a2f9996e4de0e66402686ae502ce16c",
+  "stage_12_started": false,
+  "status": "controlled_whole_stage_review",
+  "stop_conditions": [
+    "unsafe WAL enabled on the current runtime",
+    "real source backup or isolated restore cannot be rehearsed without source mutation",
+    "restore can overwrite unknown data or cannot automatically roll back",
+    "public surface, trace or CLI output exposes private values, credentials or absolute local paths",
+    "any Stage 12 implementation, push or app installation in this run"
+  ],
+  "task_progress": {
+    "completed": 12,
+    "project_progress": "144/156 (92.31%)",
+    "total": 12
+  }
+}

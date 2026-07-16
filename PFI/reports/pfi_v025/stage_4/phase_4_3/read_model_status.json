@@ -1,0 +1,752 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P43-METRIC-CONSISTENCY",
+  "as_of": null,
+  "blocked_metric_ids": [
+    "net_worth_cny",
+    "account_assets_cny",
+    "cash_balance_cny",
+    "liabilities_cny",
+    "investment_market_value_cny",
+    "investment_cost_basis_cny",
+    "investment_unrealized_pnl_cny"
+  ],
+  "confirmed_zero_count": 0,
+  "contains_private_values": false,
+  "core_metric_states": [
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-011",
+        "FORM-PFI-010",
+        "FORM-PFI-011"
+      ],
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:35f86b091ef6722032d773c52d014b256611a70a0c3efbb5bdeb75ee7c0c16d0",
+      "formula_hash": "sha256:5f08599c2c5d88d7a823e4a7f19141d88e715cc95dced80d231f6e35284b53e6",
+      "formula_id": "FORM-PFI-012",
+      "formula_version": "pfi-v0.2.5-net-worth-composition-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "net_worth_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": 0,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT",
+        "SRC-LIABILITIES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_id": "SOURCE-SNAPSHOT-SUM",
+      "component_read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931"
+      },
+      "dependency_set_hash": "sha256:724633e6200e3a59ef8c7b07cdcdbb85ff4f9d4d7362a1c329f0cbfbefeb5442",
+      "formula_hash": "sha256:d5c2fce29a627662e1fd2ca4fe2b30318a321d081e891f94b22653c704522605",
+      "formula_id": "FORM-PFI-011",
+      "formula_version": "pfi-v0.2.5-source-snapshot-sum-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "account_assets_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-ACCOUNT-BALANCES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": null,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931"
+      },
+      "dependency_set_hash": "sha256:724633e6200e3a59ef8c7b07cdcdbb85ff4f9d4d7362a1c329f0cbfbefeb5442",
+      "formula_hash": "sha256:6b45bda48fca6409c71ad49b82276e1d0a73a9af0d8b26ea6eb210c93159a2e3",
+      "formula_id": "FORM-PFI-008",
+      "formula_version": "pfi-v0.2.5-cash-reconciliation-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "cash_balance_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": 0,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-ACCOUNT-BALANCES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": null,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_id": "SOURCE-SNAPSHOT-SUM",
+      "component_read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931"
+      },
+      "dependency_set_hash": "sha256:724633e6200e3a59ef8c7b07cdcdbb85ff4f9d4d7362a1c329f0cbfbefeb5442",
+      "formula_hash": "sha256:d5c2fce29a627662e1fd2ca4fe2b30318a321d081e891f94b22653c704522605",
+      "formula_id": "FORM-PFI-011",
+      "formula_version": "pfi-v0.2.5-source-snapshot-sum-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "liabilities_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-LIABILITIES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": null,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-010"
+      ],
+      "component_read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:9e44305ac6489d470bc643d65b9e8ec3e40850492ed374c851795cfd9d72f356",
+      "formula_hash": "sha256:5ae1ad7dcb0ac9594be33ae30ee0128723677106337add0a29559fcb323494d1",
+      "formula_id": "FORM-PFI-010",
+      "formula_version": "pfi-v0.2.5-point-in-time-valuation-v1",
+      "fx_effective_at": null,
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "investment_market_value_cny",
+      "model_validation": "blocked",
+      "original_currency": null,
+      "parameter_hash": "sha256:ffdfccc6c15c879404f868ac57bda447b76e8bfa6da5be1d488df8014032978e",
+      "price_as_of": null,
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-009",
+        "FORM-PFI-010"
+      ],
+      "component_read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:9e44305ac6489d470bc643d65b9e8ec3e40850492ed374c851795cfd9d72f356",
+      "formula_hash": "sha256:5ae1ad7dcb0ac9594be33ae30ee0128723677106337add0a29559fcb323494d1",
+      "formula_id": "FORM-PFI-010",
+      "formula_version": "pfi-v0.2.5-point-in-time-valuation-v1",
+      "fx_effective_at": null,
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "investment_cost_basis_cny",
+      "model_validation": "blocked",
+      "original_currency": null,
+      "parameter_hash": "sha256:ffdfccc6c15c879404f868ac57bda447b76e8bfa6da5be1d488df8014032978e",
+      "price_as_of": null,
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-009",
+        "FORM-PFI-010"
+      ],
+      "component_read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:9e44305ac6489d470bc643d65b9e8ec3e40850492ed374c851795cfd9d72f356",
+      "formula_hash": "sha256:5ae1ad7dcb0ac9594be33ae30ee0128723677106337add0a29559fcb323494d1",
+      "formula_id": "FORM-PFI-010",
+      "formula_version": "pfi-v0.2.5-point-in-time-valuation-v1",
+      "fx_effective_at": null,
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "investment_unrealized_pnl_cny",
+      "model_validation": "blocked",
+      "original_currency": null,
+      "parameter_hash": "sha256:ffdfccc6c15c879404f868ac57bda447b76e8bfa6da5be1d488df8014032978e",
+      "price_as_of": null,
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    }
+  ],
+  "cross_page_difference_count": 0,
+  "dependency_hashes": {
+    "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+    "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+    "stage2_source_manifest": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+    "stage3_event_read_model": "sha256:9983d54bb4c8f28d015ae448702a54dfbe4c9b16f1a7cd26866eca663e028abf"
+  },
+  "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "metric_fingerprints": [
+    "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+    "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+    "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+    "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+    "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+    "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+    "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+  ],
+  "metric_ids": [
+    "net_worth_cny",
+    "account_assets_cny",
+    "cash_balance_cny",
+    "liabilities_cny",
+    "investment_market_value_cny",
+    "investment_cost_basis_cny",
+    "investment_unrealized_pnl_cny"
+  ],
+  "metrics": [
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-011",
+        "FORM-PFI-010",
+        "FORM-PFI-011"
+      ],
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:35f86b091ef6722032d773c52d014b256611a70a0c3efbb5bdeb75ee7c0c16d0",
+      "formula_hash": "sha256:5f08599c2c5d88d7a823e4a7f19141d88e715cc95dced80d231f6e35284b53e6",
+      "formula_id": "FORM-PFI-012",
+      "formula_version": "pfi-v0.2.5-net-worth-composition-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "net_worth_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": 0,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT",
+        "SRC-LIABILITIES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_id": "SOURCE-SNAPSHOT-SUM",
+      "component_read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931"
+      },
+      "dependency_set_hash": "sha256:724633e6200e3a59ef8c7b07cdcdbb85ff4f9d4d7362a1c329f0cbfbefeb5442",
+      "formula_hash": "sha256:d5c2fce29a627662e1fd2ca4fe2b30318a321d081e891f94b22653c704522605",
+      "formula_id": "FORM-PFI-011",
+      "formula_version": "pfi-v0.2.5-source-snapshot-sum-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "account_assets_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-ACCOUNT-BALANCES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": null,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931"
+      },
+      "dependency_set_hash": "sha256:724633e6200e3a59ef8c7b07cdcdbb85ff4f9d4d7362a1c329f0cbfbefeb5442",
+      "formula_hash": "sha256:6b45bda48fca6409c71ad49b82276e1d0a73a9af0d8b26ea6eb210c93159a2e3",
+      "formula_id": "FORM-PFI-008",
+      "formula_version": "pfi-v0.2.5-cash-reconciliation-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "cash_balance_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": 0,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-ACCOUNT-BALANCES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": null,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_id": "SOURCE-SNAPSHOT-SUM",
+      "component_read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "account_balance_read_model": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931"
+      },
+      "dependency_set_hash": "sha256:724633e6200e3a59ef8c7b07cdcdbb85ff4f9d4d7362a1c329f0cbfbefeb5442",
+      "formula_hash": "sha256:d5c2fce29a627662e1fd2ca4fe2b30318a321d081e891f94b22653c704522605",
+      "formula_id": "FORM-PFI-011",
+      "formula_version": "pfi-v0.2.5-source-snapshot-sum-v1",
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "liabilities_cny",
+      "model_validation": "blocked",
+      "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-LIABILITIES"
+      ],
+      "status": "not_loaded",
+      "valuation_coverage": null,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-010"
+      ],
+      "component_read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:9e44305ac6489d470bc643d65b9e8ec3e40850492ed374c851795cfd9d72f356",
+      "formula_hash": "sha256:5ae1ad7dcb0ac9594be33ae30ee0128723677106337add0a29559fcb323494d1",
+      "formula_id": "FORM-PFI-010",
+      "formula_version": "pfi-v0.2.5-point-in-time-valuation-v1",
+      "fx_effective_at": null,
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "investment_market_value_cny",
+      "model_validation": "blocked",
+      "original_currency": null,
+      "parameter_hash": "sha256:ffdfccc6c15c879404f868ac57bda447b76e8bfa6da5be1d488df8014032978e",
+      "price_as_of": null,
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-009",
+        "FORM-PFI-010"
+      ],
+      "component_read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:9e44305ac6489d470bc643d65b9e8ec3e40850492ed374c851795cfd9d72f356",
+      "formula_hash": "sha256:5ae1ad7dcb0ac9594be33ae30ee0128723677106337add0a29559fcb323494d1",
+      "formula_id": "FORM-PFI-010",
+      "formula_version": "pfi-v0.2.5-point-in-time-valuation-v1",
+      "fx_effective_at": null,
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "investment_cost_basis_cny",
+      "model_validation": "blocked",
+      "original_currency": null,
+      "parameter_hash": "sha256:ffdfccc6c15c879404f868ac57bda447b76e8bfa6da5be1d488df8014032978e",
+      "price_as_of": null,
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    },
+    {
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "calculation_state": "not_run",
+      "classification_confidence": null,
+      "component_formula_ids": [
+        "FORM-PFI-009",
+        "FORM-PFI-010"
+      ],
+      "component_read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+      "coverage_end": null,
+      "coverage_start": null,
+      "currency": "CNY",
+      "data_as_of": null,
+      "data_hash": null,
+      "dependency_hashes": {
+        "investment_read_model": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3"
+      },
+      "dependency_set_hash": "sha256:9e44305ac6489d470bc643d65b9e8ec3e40850492ed374c851795cfd9d72f356",
+      "formula_hash": "sha256:5ae1ad7dcb0ac9594be33ae30ee0128723677106337add0a29559fcb323494d1",
+      "formula_id": "FORM-PFI-010",
+      "formula_version": "pfi-v0.2.5-point-in-time-valuation-v1",
+      "fx_effective_at": null,
+      "fx_snapshot_id": null,
+      "metric_contract_version": "PFIV025MetricStateStrictV1",
+      "metric_id": "investment_unrealized_pnl_cny",
+      "model_validation": "blocked",
+      "original_currency": null,
+      "parameter_hash": "sha256:ffdfccc6c15c879404f868ac57bda447b76e8bfa6da5be1d488df8014032978e",
+      "price_as_of": null,
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+      "reconciliation_coverage": null,
+      "record_count": null,
+      "report_completeness": "blocked",
+      "source_coverage": 0,
+      "source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "status": "not_loaded",
+      "valuation_as_of": null,
+      "valuation_coverage": 0,
+      "value": null,
+      "valued_at": null
+    }
+  ],
+  "net_worth_formula_hash": "sha256:5f08599c2c5d88d7a823e4a7f19141d88e715cc95dced80d231f6e35284b53e6",
+  "non_ready_value_count": 0,
+  "observed_at": "2026-07-14T13:09:21Z",
+  "parameter_hash": "sha256:0484ce2b3fe0a15168570d4f0d854c4addb779742f8404f0a3352db6a254b39c",
+  "phase": "4.3",
+  "phase_id": "V025-S4-P4.3",
+  "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+  "read_model_hash_formula_hash": "sha256:4bcdb3cbb7e048314d84d64f35521c7af55ac578aa0bf5f0d9120e0a2b8ac0c4",
+  "schema": "PFIV025UnifiedReadModelV1",
+  "source_snapshot_formula_hash": "sha256:d5c2fce29a627662e1fd2ca4fe2b30318a321d081e891f94b22653c704522605",
+  "stage": 4,
+  "stage_4_whole_stage_review_done": false,
+  "stage_5_started": false,
+  "status": "not_loaded",
+  "surface_ids": [
+    "homepage",
+    "accounts",
+    "investment",
+    "consumption",
+    "report"
+  ],
+  "surfaces": {
+    "accounts": {
+      "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+      "metric_fingerprints": [
+        "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+        "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+        "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+        "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+        "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+        "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+        "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+      ],
+      "metric_ids": [
+        "net_worth_cny",
+        "account_assets_cny",
+        "cash_balance_cny",
+        "liabilities_cny",
+        "investment_market_value_cny",
+        "investment_cost_basis_cny",
+        "investment_unrealized_pnl_cny"
+      ],
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e"
+    },
+    "consumption": {
+      "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+      "metric_fingerprints": [
+        "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+        "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+        "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+        "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+        "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+        "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+        "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+      ],
+      "metric_ids": [
+        "net_worth_cny",
+        "account_assets_cny",
+        "cash_balance_cny",
+        "liabilities_cny",
+        "investment_market_value_cny",
+        "investment_cost_basis_cny",
+        "investment_unrealized_pnl_cny"
+      ],
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e"
+    },
+    "homepage": {
+      "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+      "metric_fingerprints": [
+        "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+        "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+        "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+        "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+        "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+        "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+        "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+      ],
+      "metric_ids": [
+        "net_worth_cny",
+        "account_assets_cny",
+        "cash_balance_cny",
+        "liabilities_cny",
+        "investment_market_value_cny",
+        "investment_cost_basis_cny",
+        "investment_unrealized_pnl_cny"
+      ],
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e"
+    },
+    "investment": {
+      "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+      "metric_fingerprints": [
+        "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+        "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+        "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+        "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+        "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+        "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+        "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+      ],
+      "metric_ids": [
+        "net_worth_cny",
+        "account_assets_cny",
+        "cash_balance_cny",
+        "liabilities_cny",
+        "investment_market_value_cny",
+        "investment_cost_basis_cny",
+        "investment_unrealized_pnl_cny"
+      ],
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e"
+    },
+    "report": {
+      "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+      "metric_fingerprints": [
+        "sha256:ccb2d9eacc42047619f1e29e6cc5787ac7656d196ffa1d5373f246a8f64a027f",
+        "sha256:f23cec421cfea2441c6d0983e62a692e310e5aa606ed17e727fd27c14fd97006",
+        "sha256:a174829dc773ed34d7ed99118ecaaa1d362e1537b48e2ffa97bdcbc3633a3aad",
+        "sha256:1d8487012f4727c04963df6d06bf8ca42590c41ab50ca2a561dbe6613940e964",
+        "sha256:be0c7d21a25dd06d5621b7337f1a7eba63945a4a181d3258b632d35f8659af65",
+        "sha256:99c447d21b35166bdac8c4805a8e62a26d651c5e168eb46c5d2798d837613dc8",
+        "sha256:65e71c760dfa5f11bb49324fdabde79cdb86f1247d1bb8d55d160eeb53aca741"
+      ],
+      "metric_ids": [
+        "net_worth_cny",
+        "account_assets_cny",
+        "cash_balance_cny",
+        "liabilities_cny",
+        "investment_market_value_cny",
+        "investment_cost_basis_cny",
+        "investment_unrealized_pnl_cny"
+      ],
+      "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e"
+    }
+  },
+  "transaction_balance_inference_used": false,
+  "transaction_holding_inference_used": false,
+  "transactions_available_is_not_balance_or_holding_proof": true,
+  "version": "v0.2.5"
+}

@@ -1,0 +1,119 @@
+{
+  "schema": "PFIV025Stage3Phase32EventPolicyV1",
+  "version": "v0.2.5",
+  "phase_id": "V025-S3-P3.2",
+  "policy_version": "1",
+  "source_name_inference": false,
+  "amount_time_heuristic_grouping": false,
+  "unknown_event_type_policy": "review_required_no_publication",
+  "event_time_strategy": "earliest_transaction_time",
+  "same_economic_event_per_metric_max_count": 1,
+  "grouping_rules": {
+    "explicit_link_reference_exact": {
+      "version": "1",
+      "basis": "exact_explicit_link_reference",
+      "uses_amount": false,
+      "uses_time_proximity": false,
+      "uses_source_name": false
+    },
+    "singleton_normalized_transaction": {
+      "version": "1",
+      "basis": "no_explicit_link_reference",
+      "uses_amount": false,
+      "uses_time_proximity": false,
+      "uses_source_name": false
+    }
+  },
+  "event_types": {
+    "income": {
+      "net_worth_effect": "increase",
+      "cash_effect": "inflow",
+      "living_consumption_included": false,
+      "activity_outflow_included": false,
+      "investment_allocation_included": false,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": false
+    },
+    "living_consumption": {
+      "net_worth_effect": "decrease",
+      "cash_effect": "outflow",
+      "living_consumption_included": true,
+      "activity_outflow_included": true,
+      "investment_allocation_included": false,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": false
+    },
+    "own_account_transfer": {
+      "net_worth_effect": "neutral",
+      "cash_effect": "mixed",
+      "living_consumption_included": false,
+      "activity_outflow_included": false,
+      "investment_allocation_included": false,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": false
+    },
+    "credit_card_repayment": {
+      "net_worth_effect": "neutral",
+      "cash_effect": "mixed",
+      "living_consumption_included": false,
+      "activity_outflow_included": false,
+      "investment_allocation_included": false,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": false
+    },
+    "refund": {
+      "net_worth_effect": "reversal",
+      "cash_effect": "inflow",
+      "living_consumption_included": false,
+      "activity_outflow_included": false,
+      "investment_allocation_included": false,
+      "requires_offset_event_id": true,
+      "fee_tax_requires_separate_event": false
+    },
+    "investment_funding": {
+      "net_worth_effect": "composition_only",
+      "cash_effect": "mixed",
+      "living_consumption_included": false,
+      "activity_outflow_included": true,
+      "investment_allocation_included": true,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": true
+    },
+    "fund_subscription": {
+      "net_worth_effect": "composition_only",
+      "cash_effect": "outflow",
+      "living_consumption_included": false,
+      "activity_outflow_included": true,
+      "investment_allocation_included": true,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": true
+    },
+    "gold_subscription": {
+      "net_worth_effect": "composition_only",
+      "cash_effect": "outflow",
+      "living_consumption_included": false,
+      "activity_outflow_included": true,
+      "investment_allocation_included": true,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": true
+    },
+    "investment_purchase": {
+      "net_worth_effect": "composition_only",
+      "cash_effect": "outflow",
+      "living_consumption_included": false,
+      "activity_outflow_included": true,
+      "investment_allocation_included": true,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": true
+    },
+    "investment_sale": {
+      "net_worth_effect": "composition_only",
+      "cash_effect": "inflow",
+      "living_consumption_included": false,
+      "activity_outflow_included": false,
+      "investment_allocation_included": true,
+      "requires_offset_event_id": false,
+      "fee_tax_requires_separate_event": true
+    }
+  }
+}

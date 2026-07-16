@@ -1,0 +1,17 @@
+{
+  "schema": "PFIV025Phase22NetworkAuditV1",
+  "version": "v0.2.5",
+  "phase": "2.2",
+  "status": "pass",
+  "audited_module": "PFI/src/pfi_v02/stage_v025_fx_policy.py",
+  "policy_file": "PFI/config/sources/v025_phase_2_2_fx_policy.json",
+  "network_import_count": 0,
+  "network_import_roots": [],
+  "network_call_count": 0,
+  "network_call_symbols": [],
+  "ordinary_runtime_network_allowed": false,
+  "v025_explicit_refresh_implemented": false,
+  "legacy_refresh_requires_explicit_allow_network": true,
+  "source_mutation_performed": false,
+  "finder_used": false
+}

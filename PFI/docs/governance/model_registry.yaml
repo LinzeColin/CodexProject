@@ -69,3 +69,710 @@ models:
       - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
       - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"
       - "PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md"
+      - "PFI/reports/pfi_v025/stage_8/phase_8_2/evidence.json"
+      - "PFI/reports/pfi_v025/stage_8/phase_8_3/evidence.json"
+  - model_id: "MOD-PFI-002"
+    name: "PFI v0.2.5 FX effective business-day policy"
+    kind: "deterministic_rule_model"
+    purpose: "以 Australia/Sydney local time、06:00 cutoff、周末与显式 source-closed dates 计算预期 FX business date，并把 snapshot 归类为 current、stale 或 blocked；不获取或生成汇率。"
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "pfi-v0.2.5-fx-effective-day-v1"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-002"
+    parameter_ids:
+      - "PARAM-PFI-024"
+      - "PARAM-PFI-025"
+      - "PARAM-PFI-026"
+      - "PARAM-PFI-027"
+    inputs:
+      - "timezone-aware observed_at timestamp"
+      - "explicit source-closed dates"
+      - "optional declared FX snapshot metadata"
+    outputs:
+      - "expected business date and current, stale, or blocked snapshot status"
+    code_refs:
+      - "PFI/src/pfi_v02/stage_v025_fx_policy.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage2_temporal_truth.py"
+      - "PFI/tests/test_v025_stage2_fx_policy.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_2/temporal_truth.md"
+      - "PFI/reports/pfi_v025/stage_2/phase_2_2/evidence.json"
+  - model_id: "MOD-PFI-003"
+    name: "PFI v0.2.5 source-account role routing policy"
+    kind: "deterministic_rule_model"
+    purpose: "Only roles in the explicit registry are publishable; unknown roles enter review_required with publish_allowed=false, without source-name inference."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P1-T4"
+    model_version: "pfi-v0.2.5-source-account-role-routing-v1"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-003"
+    parameter_ids:
+      - "PARAM-PFI-028"
+      - "PARAM-PFI-029"
+      - "PARAM-PFI-030"
+      - "PARAM-PFI-031"
+      - "PARAM-PFI-032"
+      - "PARAM-PFI-033"
+      - "PARAM-PFI-034"
+      - "PARAM-PFI-035"
+    inputs:
+      - "extensible SourceProfile metadata with parser provenance"
+      - "opaque account_ref and proposed_role"
+      - "explicit role_registry and inclusive effective range"
+    outputs:
+      - "publishable AccountRoleAssignment or non-publishable RoleReviewItem"
+    code_refs:
+      - "PFI/src/pfi_os/domain/source_accounts.py"
+      - "PFI/src/pfi_os/application/source_account_roles.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_source_profiles.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_1_SOURCE_ACCOUNT_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_1/evidence.json"
+  - model_id: "MOD-PFI-004"
+    name: "PFI v0.2.5 normalized economic-event and ledger policy"
+    kind: "deterministic_rule_model"
+    purpose: "Normalize provenance-bound transaction fields, group only by explicit link references or singleton fallback, apply registered economic-event impact flags, and emit a lineage-complete ledger event with a deterministic idempotency key."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P2-T1"
+      - "S3-P2-T2"
+      - "S3-P2-T3"
+      - "S3-P2-T4"
+    model_version: "pfi-v0.2.5-normalized-economic-ledger-v1"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-004"
+      - "FORM-PFI-005"
+    parameter_ids:
+      - "PARAM-PFI-036"
+      - "PARAM-PFI-037"
+      - "PARAM-PFI-038"
+      - "PARAM-PFI-039"
+      - "PARAM-PFI-040"
+      - "PARAM-PFI-041"
+      - "PARAM-PFI-042"
+      - "PARAM-PFI-043"
+      - "PARAM-PFI-044"
+      - "PARAM-PFI-045"
+      - "PARAM-PFI-046"
+      - "PARAM-PFI-047"
+    inputs:
+      - "explicit parsed record fields with source-record provenance"
+      - "optional explicit link reference"
+      - "registered event type and versioned impact policy"
+    outputs:
+      - "NormalizedTransaction, InterconnectionGroup, EconomicEvent and lineage-complete LedgerEvent candidate"
+    code_refs:
+      - "PFI/src/pfi_os/domain/economic_events.py"
+      - "PFI/src/pfi_os/application/economic_event_pipeline.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_interconnection.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_2_NORMALIZED_EVENT_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_2/evidence.json"
+  - model_id: "MOD-PFI-005"
+    name: "PFI v0.2.5 real-data reconciliation, idempotency and read-model deduplication policy"
+    kind: "deterministic_rule_model"
+    purpose: "Read one immutable real-data Git object, fail closed unresolved transfers/refunds, prevent duplicate ledger publication and deduplicate each economic event per metric with a page-independent read-model hash."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P3-T1"
+      - "S3-P3-T2"
+      - "S3-P3-T3"
+      - "S3-P3-T4"
+    model_version: "pfi-v0.2.5-real-reconciliation-idempotency-v1"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-006"
+      - "FORM-PFI-007"
+    parameter_ids:
+      - "PARAM-PFI-048"
+      - "PARAM-PFI-049"
+      - "PARAM-PFI-050"
+      - "PARAM-PFI-051"
+      - "PARAM-PFI-052"
+      - "PARAM-PFI-053"
+      - "PARAM-PFI-054"
+      - "PARAM-PFI-055"
+      - "PARAM-PFI-056"
+      - "PARAM-PFI-057"
+    inputs:
+      - "immutable Git-object transaction snapshot"
+      - "upstream review_state, source event type, signed amount direction and date-only temporal field"
+      - "Phase 3.2 event impact and idempotency policy"
+    outputs:
+      - "idempotent ledger publication set, locatable review queue, Interconnection Matrix and page-independent read-model hash"
+    code_refs:
+      - "PFI/src/pfi_os/application/stage3_reconciliation.py"
+      - "PFI/config/event_types/v025_phase_3_3_reconciliation_policy.json"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_idempotency.py"
+      - "PFI/tests/test_v025_stage3_no_double_count.py"
+      - "PFI/tests/test_v025_stage12_release_gates.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_3_RECONCILIATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/evidence.json"
+      - "PFI/docs/pfi_v025/stage_12/PHASE_12_1_AUTOMATED_REAL_E2E_REGRESSION.md"
+      - "PFI/reports/pfi_v025/stage_12/phase_12_1/evidence.json"
+  - model_id: "MOD-PFI-006"
+    name: "PFI v0.2.5 account snapshot, exact cash reconciliation and no-false-zero policy"
+    kind: "deterministic_rule_model"
+    purpose: "Require complete source lineage for account/liability snapshots, perform exact Decimal cash reconciliation, expose missing coverage instead of zero, and bind homepage/accounts to one snapshot hash."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S4-P1-T1"
+      - "S4-P1-T2"
+      - "S4-P1-T3"
+      - "S4-P1-T4"
+    model_version: "pfi-v0.2.5-account-balance-read-model-v1"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-008"
+    parameter_ids:
+      - "PARAM-PFI-058"
+      - "PARAM-PFI-059"
+      - "PARAM-PFI-060"
+    inputs:
+      - "source-proven account opening/closing snapshot"
+      - "source-proven liability snapshot"
+      - "confirmed net flows and explicit adjustments"
+    outputs:
+      - "account metric states, coverage, exact cash reconciliation and page-independent account read-model hash"
+    code_refs:
+      - "PFI/src/pfi_os/domain/accounts.py"
+      - "PFI/src/pfi_os/application/read_models/account_balance.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage4_metric_states.py"
+      - "PFI/tests/test_v025_stage4_accounts_read_model.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_1_ACCOUNT_BALANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_1/evidence.json"
+  - model_id: "MOD-PFI-007"
+    name: "PFI v0.2.5 explicit holding cost-basis and point-in-time valuation policy"
+    kind: "deterministic_rule_model"
+    purpose: "Require source-proven holdings, explicit fee-inclusive cost-basis policy, price/FX point-in-time alignment and fail-closed null metrics whenever valuation dependencies are incomplete."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S4-P2-T1"
+      - "S4-P2-T2"
+      - "S4-P2-T3"
+      - "S4-P2-T4"
+    model_version: "pfi-v0.2.5-holdings-valuation-v1"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-009"
+      - "FORM-PFI-010"
+    parameter_ids:
+      - "PARAM-PFI-061"
+      - "PARAM-PFI-062"
+      - "PARAM-PFI-063"
+      - "PARAM-PFI-064"
+      - "PARAM-PFI-065"
+      - "PARAM-PFI-066"
+      - "PARAM-PFI-067"
+    inputs:
+      - "source-proven holding snapshot and explicit transaction linkage status"
+      - "explicit acquisition cost, capitalized fees and registered cost-basis method"
+      - "source-proven market price and required BASE_TO_CNY FX snapshot"
+    outputs:
+      - "investment market value, cost basis and unrealized PnL metric states with PIT lineage and one investment read-model hash"
+    code_refs:
+      - "PFI/src/pfi_os/domain/holdings.py"
+      - "PFI/src/pfi_os/domain/valuation.py"
+      - "PFI/src/pfi_os/application/read_models/investment.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage4_holdings_valuation.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_2_HOLDINGS_VALUATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_2/evidence.json"
+  - model_id: "MOD-PFI-008"
+    name: "PFI v0.2.5 strict metric state and unified cross-surface read-model policy"
+    kind: "deterministic_rule_model"
+    purpose: "Keep absent financial facts null, require complete evidence for confirmed zero, and bind homepage, accounts, investment, consumption and report surfaces to one page-independent dependency/read-model hash."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S4-P3-T1"
+      - "S4-P3-T2"
+      - "S4-P3-T3"
+      - "S4-P3-T4"
+    model_version: "pfi-v0.2.5-unified-metric-state-v1"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-011"
+      - "FORM-PFI-012"
+      - "FORM-PFI-013"
+    parameter_ids:
+      - "PARAM-PFI-059"
+      - "PARAM-PFI-060"
+      - "PARAM-PFI-068"
+      - "PARAM-PFI-069"
+      - "PARAM-PFI-070"
+      - "PARAM-PFI-071"
+      - "PARAM-PFI-072"
+    inputs:
+      - "tracked Stage 2 source-status manifest and Stage 3/4 aggregate read-model hashes"
+      - "strict account, liability and investment metric states"
+      - "registered formula and parameter contract hashes"
+    outputs:
+      - "seven core metric states, dependency-set hash and one page-independent unified read-model hash"
+      - "the same immutable snapshot contract for homepage, accounts, investment, consumption and report surfaces"
+    code_refs:
+      - "PFI/src/pfi_os/application/read_models/metric_state.py"
+      - "PFI/src/pfi_os/application/read_models/unified.py"
+      - "PFI/src/pfi_v02/stage_v021_runtime_api.py"
+      - "PFI/web/app/data_state.js"
+    test_refs:
+      - "PFI/tests/test_v025_stage4_cross_page_consistency.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_3_METRIC_CONSISTENCY_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json"
+  - model_id: "MOD-PFI-009"
+    name: "PFI v0.2.5 formula lifecycle, fixed FX units and separate confidence-dimension policy"
+    kind: "deterministic_governance_and_unit_model"
+    purpose: "Freeze current formulas as immutable version/hash contracts, fix CNY and AUD_TO_CNY units, preserve the v0.2.2 classification score only for record classification, and prohibit one score from hiding source, reconciliation, valuation, model or report quality."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids: ["S5-P1-T1", "S5-P1-T2", "S5-P1-T3", "S5-P1-T4"]
+    model_version: "pfi-v0.2.5-formula-governance-v1"
+    assumptions: ["ASM-PFI-001", "ASM-PFI-002"]
+    formula_ids: ["FORM-PFI-014"]
+    parameter_ids: ["PARAM-PFI-073", "PARAM-PFI-074", "PARAM-PFI-075", "PARAM-PFI-076", "PARAM-PFI-077", "PARAM-PFI-078", "PARAM-PFI-079", "PARAM-PFI-080"]
+    inputs:
+      - "FORM-PFI-001..013 current governance definitions and Stage 5 Roadmap/Task Pack fields"
+      - "JSON-compatible parameter catalog, Python runtime, UI payload and rendered human parameter view"
+      - "v0.2.2 record-classification weights and threshold policy"
+    outputs:
+      - "14 rebuildable formula versions with explicit lifecycle"
+      - "exact CNY/AUD unit conversion and six separate quality dimensions"
+      - "five-carrier zero-conflict consistency report"
+    code_refs:
+      - "PFI/src/pfi_os/application/metrics/formula_governance.py"
+      - "PFI/config/formulas/v025_formula_registry.json"
+    test_refs:
+      - "PFI/tests/test_v025_stage5_formula_registry.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_1_FORMULA_PARAMETER_GOVERNANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_1/evidence.json"
+  - model_id: "MOD-PFI-010"
+    name: "PFI v0.2.5 dual-consumption, core-invariant, investment-return, XIRR, cashflow and taxonomy policy"
+    kind: "deterministic_financial_capability_model"
+    purpose: "Implement exact and fail-closed Phase 5.2 capability contracts without loading real financial rows or claiming Phase 5.3 model validity."
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids: ["S5-P2-T1", "S5-P2-T2", "S5-P2-T3", "S5-P2-T4"]
+    model_version: "pfi-v0.2.5-financial-models-v1"
+    assumptions: ["ASM-PFI-001", "ASM-PFI-002"]
+    formula_ids: ["FORM-PFI-015", "FORM-PFI-016", "FORM-PFI-017", "FORM-PFI-018", "FORM-PFI-019", "FORM-PFI-020"]
+    parameter_ids: ["PARAM-PFI-081", "PARAM-PFI-082", "PARAM-PFI-083", "PARAM-PFI-084", "PARAM-PFI-085", "PARAM-PFI-086", "PARAM-PFI-087", "PARAM-PFI-088", "PARAM-PFI-089", "PARAM-PFI-090", "PARAM-PFI-091", "PARAM-PFI-092"]
+    inputs:
+      - "explicit FinancialEvent values with source/economic-event/interconnection lineage"
+      - "explicit core snapshot, cash rollforward, investment reallocation and investment formula inputs"
+      - "preserved v0.2.2 taxonomy/tag constraints"
+    outputs:
+      - "reconciled four-component dual-consumption and same-payload surface contract"
+      - "core invariant, investment return/cost/drag and single-root XIRR capability results"
+      - "seven-window cashflow and taxonomy/tag validation"
+    code_refs:
+      - "PFI/src/pfi_os/application/metrics/financial_models.py"
+      - "PFI/config/formulas/v025_formula_registry.json"
+      - "PFI/src/pfi_os/application/metrics/model_validation.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage5_dual_consumption.py"
+      - "PFI/tests/test_v025_stage5_financial_invariants.py"
+      - "PFI/tests/test_v025_stage5_model_validation.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_2_FINANCIAL_MODELS_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_3/model_validation_card.json"
+phase_contracts:
+  - iteration_id: "ITER-20260711-PFI-V025-S0-P02"
+    contract_id: "PFI-V025-STAGE0-PHASE02-ACTIVE-REQUIREMENTS"
+    acceptance_id: "ACC-PFI-V025-S0-P02-ACTIVE-CONTRACT"
+    fact_level: "EXTRACTED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/config/pfi_v025_active_requirements.json"
+      - "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+  - iteration_id: "ITER-20260713-PFI-V025-S1-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE1-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE1-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_1/STAGE_1_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_1/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    lifecycle: "candidate_pass_pending_postcommit_attestation"
+    stage_2_status: "not_started"
+  - iteration_id: "ITER-20260711-PFI-V025-S0-P03"
+    contract_id: "PFI-V025-STAGE0-PHASE03-GAP-EVIDENCE"
+    acceptance_id: "ACC-PFI-V025-S0-P03-GAP-EVIDENCE"
+    fact_level: "EXTRACTED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_0/finding_ledger.csv"
+      - "PFI/docs/pfi_v025/stage_0/gap_register.md"
+      - "PFI/reports/pfi_v025/stage_0/phase_0_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+  - iteration_id: "ITER-20260714-PFI-V025-S2-P22"
+    contract_id: "PFI-V025-STAGE2-PHASE22-TEMPORAL-FX-TRUTH"
+    acceptance_id: "ACC-PFI-V025-S2-P22-TEMPORAL-FX"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_2/temporal_truth.md"
+      - "PFI/reports/pfi_v025/stage_2/phase_2_2/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-002"
+    formula_ids_changed:
+      - "FORM-PFI-002"
+    parameter_ids_changed:
+      - "PARAM-PFI-024"
+      - "PARAM-PFI-025"
+      - "PARAM-PFI-026"
+      - "PARAM-PFI-027"
+  - iteration_id: "ITER-20260714-PFI-V025-S2-P23"
+    contract_id: "PFI-V025-STAGE2-PHASE23-SAFE-SANDBOX"
+    acceptance_id: "ACC-PFI-V025-S2-P23-SAFE-SANDBOX"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_2/sandbox_spec.md"
+      - "PFI/reports/pfi_v025/stage_2/phase_2_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 2.3 implements source isolation, privacy/no-fake checks and measured read/parse evidence only; it does not add or change a finance model, formula, rule engine, heuristic or LLM route."
+  - iteration_id: "ITER-20260714-PFI-V025-S2-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE2-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE2-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/reports/pfi_v025/stage_2/whole_stage_review/final_evidence_index.json"
+      - "PFI/reports/pfi_v025/stage_2/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Whole-stage review verifies evidence and source dispositions only; it adds no finance model, scoring, heuristic, formula, threshold or LLM routing behavior."
+  - iteration_id: "ITER-20260714-PFI-V025-S3-P31"
+    contract_id: "PFI-V025-STAGE3-PHASE31-SOURCE-ACCOUNT"
+    acceptance_id: "ACC-PFI-V025-S3-P31-SOURCE-ACCOUNT"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_1_SOURCE_ACCOUNT_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_1/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-003"
+    formula_ids_changed:
+      - "FORM-PFI-003"
+    parameter_ids_changed:
+      - "PARAM-PFI-028"
+      - "PARAM-PFI-029"
+      - "PARAM-PFI-030"
+      - "PARAM-PFI-031"
+      - "PARAM-PFI-032"
+      - "PARAM-PFI-033"
+      - "PARAM-PFI-034"
+      - "PARAM-PFI-035"
+    rationale: "Phase 3.1 adds the deterministic role-routing rule and its explicit policy parameters; it does not read or calculate financial values."
+  - iteration_id: "ITER-20260714-PFI-V025-S3-P32"
+    contract_id: "PFI-V025-STAGE3-PHASE32-NORMALIZED-EVENT"
+    acceptance_id: "ACC-PFI-V025-S3-P32-NORMALIZED-EVENT"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_2_NORMALIZED_EVENT_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_2/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-004"
+    formula_ids_changed:
+      - "FORM-PFI-004"
+      - "FORM-PFI-005"
+    parameter_ids_changed:
+      - "PARAM-PFI-036"
+      - "PARAM-PFI-037"
+      - "PARAM-PFI-038"
+      - "PARAM-PFI-039"
+      - "PARAM-PFI-040"
+      - "PARAM-PFI-041"
+      - "PARAM-PFI-042"
+      - "PARAM-PFI-043"
+      - "PARAM-PFI-044"
+      - "PARAM-PFI-045"
+      - "PARAM-PFI-046"
+      - "PARAM-PFI-047"
+    rationale: "Phase 3.2 adds deterministic normalized identity, explicit grouping, event impact and ledger-idempotency rules; contract values are not real financial acceptance and no real source or database is accessed."
+  - iteration_id: "ITER-20260714-PFI-V025-S3-P33"
+    contract_id: "PFI-V025-STAGE3-PHASE33-RECONCILIATION"
+    acceptance_id: "ACC-PFI-V025-S3-P33-RECONCILIATION"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_3_RECONCILIATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-005"
+    formula_ids_changed:
+      - "FORM-PFI-006"
+      - "FORM-PFI-007"
+    parameter_ids_changed:
+      - "PARAM-PFI-048"
+      - "PARAM-PFI-049"
+      - "PARAM-PFI-050"
+      - "PARAM-PFI-051"
+      - "PARAM-PFI-052"
+      - "PARAM-PFI-053"
+      - "PARAM-PFI-054"
+      - "PARAM-PFI-055"
+      - "PARAM-PFI-056"
+      - "PARAM-PFI-057"
+    rationale: "Phase 3.3 adds deterministic fail-closed real-source reconciliation, duplicate-publication prevention and per-metric read-model deduplication; it emits no financial values and mutates no source or database."
+  - iteration_id: "ITER-20260714-PFI-V025-S4-P41"
+    contract_id: "PFI-V025-STAGE4-PHASE41-ACCOUNT-BALANCE"
+    acceptance_id: "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_1_ACCOUNT_BALANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_1/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-006"
+    formula_ids_changed:
+      - "FORM-PFI-008"
+    parameter_ids_changed:
+      - "PARAM-PFI-058"
+      - "PARAM-PFI-059"
+      - "PARAM-PFI-060"
+    rationale: "Phase 4.1 adds an exact, evidence-gated cash formula and a fail-closed no-false-zero read model; current account/liability sources remain not_loaded, so no financial value is emitted."
+  - iteration_id: "ITER-20260714-PFI-V025-S4-P42"
+    contract_id: "PFI-V025-STAGE4-PHASE42-HOLDINGS-VALUATION"
+    acceptance_id: "ACC-PFI-V025-S4-P42-HOLDINGS-VALUATION"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_2_HOLDINGS_VALUATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_2/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-007"
+    formula_ids_changed:
+      - "FORM-PFI-009"
+      - "FORM-PFI-010"
+    parameter_ids_changed:
+      - "PARAM-PFI-061"
+      - "PARAM-PFI-062"
+      - "PARAM-PFI-063"
+      - "PARAM-PFI-064"
+      - "PARAM-PFI-065"
+      - "PARAM-PFI-066"
+      - "PARAM-PFI-067"
+    rationale: "Phase 4.2 adds explicit holding/cost lineage and deterministic PIT valuation rules; current holdings/prices/FX remain not_loaded, so no production financial value is calculated."
+  - iteration_id: "ITER-20260714-PFI-V025-S4-P43"
+    contract_id: "PFI-V025-STAGE4-PHASE43-METRIC-CONSISTENCY"
+    acceptance_id: "ACC-PFI-V025-S4-P43-METRIC-CONSISTENCY"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_3_METRIC_CONSISTENCY_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-008"
+    formula_ids_changed:
+      - "FORM-PFI-011"
+      - "FORM-PFI-012"
+      - "FORM-PFI-013"
+    parameter_ids_changed:
+      - "PARAM-PFI-068"
+      - "PARAM-PFI-069"
+      - "PARAM-PFI-070"
+      - "PARAM-PFI-071"
+      - "PARAM-PFI-072"
+    rationale: "Phase 4.3 adds strict no-false-zero state validation and one deterministic page-independent snapshot for five surfaces; all seven current financial values remain null because their production dependencies are not_loaded."
+  - iteration_id: "ITER-20260714-PFI-V025-S4-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE4-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE4-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/STAGE_4_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_4/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Whole-stage review binds existing Stage 4 models to fail-closed not_loaded/null evidence; no model, formula or parameter value changed."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-P51"
+    contract_id: "PFI-V025-STAGE5-PHASE51-FORMULA-PARAMETER-GOVERNANCE"
+    acceptance_id: "ACC-PFI-V025-STAGE5-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_1_FORMULA_PARAMETER_GOVERNANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_1/evidence.json"
+    model_ids_changed: ["MOD-PFI-009"]
+    formula_ids_changed: ["FORM-PFI-014"]
+    parameter_ids_changed: ["PARAM-PFI-073", "PARAM-PFI-074", "PARAM-PFI-075", "PARAM-PFI-076", "PARAM-PFI-077", "PARAM-PFI-078", "PARAM-PFI-079", "PARAM-PFI-080"]
+    rationale: "Phase 5.1 creates one deterministic governance/unit model over immutable formula versions, fixed FX direction and separate confidence dimensions; no financial value or Phase 5.2 model is produced."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-P52"
+    contract_id: "PFI-V025-STAGE5-PHASE52-FINANCIAL-MODELS"
+    acceptance_id: "ACC-PFI-V025-S5-P52-FINANCIAL-MODELS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_2_FINANCIAL_MODELS_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"
+    model_ids_changed: ["MOD-PFI-010"]
+    formula_ids_changed: ["FORM-PFI-015", "FORM-PFI-016", "FORM-PFI-017", "FORM-PFI-018", "FORM-PFI-019", "FORM-PFI-020"]
+    parameter_ids_changed: ["PARAM-PFI-081", "PARAM-PFI-082", "PARAM-PFI-083", "PARAM-PFI-084", "PARAM-PFI-085", "PARAM-PFI-086", "PARAM-PFI-087", "PARAM-PFI-088", "PARAM-PFI-089", "PARAM-PFI-090", "PARAM-PFI-091", "PARAM-PFI-092"]
+    rationale: "Phase 5.2 adds deterministic dual-consumption, core invariant, investment return/XIRR, cashflow and taxonomy capability contracts while keeping real-data validation blocked for Phase 5.3."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-P53"
+    contract_id: "PFI-V025-STAGE5-PHASE53-MODEL-VALIDATION"
+    acceptance_id: "ACC-PFI-V025-S5-P53-MODEL-VALIDATION"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_3_MODEL_VALIDATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_3/model_validation_card.json"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 5.3 validates selected existing formulas against an immutable real CNY snapshot and records blocked coverage without changing model, formula or parameter versions."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE5-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE5-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/STAGE_5_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_5/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Whole-stage review binds the existing Stage 5 models to actual formal surfaces and preserves every blocked validation residual; no model, formula or parameter version/value changed."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-P61"
+    contract_id: "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS"
+    acceptance_id: "ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/PHASE_6_1_NAVIGATION_ALIAS_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_6/phase_6_1/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 6.1 changes navigation ownership, canonical routes and responsive DOM only; it does not change any model, formula, parameter value or financial result."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-P62"
+    contract_id: "PFI-V025-STAGE6-PHASE62-PAGE-CONTRACTS"
+    acceptance_id: "ACC-PFI-V025-S6-P62-PAGE-CONTRACTS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/PHASE_6_2_PAGE_CONTRACTS_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_6/phase_6_2/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 6.2 changes page identity, routing, UI state and navigation recovery only; it does not change any model, formula, parameter value or financial result."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-P63"
+    contract_id: "PFI-V025-STAGE6-PHASE63-HISTORY-ACCEPTANCE"
+    acceptance_id: "ACC-PFI-V025-S6-P63-HISTORY-ACCEPTANCE"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/PHASE_6_3_BROWSER_HISTORY_ACCEPTANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_6/phase_6_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 6.3 changes browser history, invalid-route recovery, keyboard and accessibility behavior only; it does not change any model, formula, parameter value or financial result."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE6-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE6-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/STAGE_6_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_6/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "The Stage 6 whole review binds route/page/history/accessibility evidence only; it does not change any model, formula, parameter value or financial result."
+  - iteration_id: "ITER-20260715-PFI-V025-S7-P71"
+    contract_id: "PFI-V025-STAGE7-PHASE71-IMPORT-REVIEW-LEDGER"
+    acceptance_id: "ACC-PFI-V025-S7-P71-IMPORT-REVIEW-LEDGER"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_7/PHASE_7_1_IMPORT_REVIEW_LEDGER_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_7/phase_7_1/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 7.1 changes local upload, parser preview, SQLite transaction and review workflow only; real record counts are observations, not model or parameter values."
+  - iteration_id: "ITER-20260715-PFI-V025-S7-P72"
+    contract_id: "PFI-V025-STAGE7-PHASE72-HOLDING-SETTINGS-PERSISTENCE"
+    acceptance_id: "ACC-PFI-V025-S7-P72-HOLDINGS-SETTINGS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_7/PHASE_7_2_HOLDING_SETTINGS_PERSISTENCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_7/phase_7_2/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 7.2 changes atomic holding/settings persistence and restart behavior only; the non-financial contract sentinel emits no money and is not model validation."
+  - iteration_id: "ITER-20260715-PFI-V025-S7-P73"
+    contract_id: "PFI-V025-STAGE7-PHASE73-METRIC-DRILLDOWN"
+    acceptance_id: "ACC-PFI-V025-S7-P73-METRIC-DRILLDOWN"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_7/PHASE_7_3_METRIC_DRILLDOWN_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_7/phase_7_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 7.3 exposes existing parameter, formula, read-model and event lineage on formal read-only pages; it does not change a model, formula expression, parameter value or financial result."

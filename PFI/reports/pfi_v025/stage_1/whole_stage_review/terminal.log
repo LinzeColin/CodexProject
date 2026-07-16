@@ -1,0 +1,34 @@
+PFI v0.2.5 Stage 1 whole-stage terminal ledger
+Acceptance: ACC-PFI-V025-STAGE1-WHOLE-REVIEW
+Whole-review base: 96305405dcf7eb56246d2cede2f5b50b2b1be101
+Final remediation content: 04390bcf17c18de107eb2f1b4ce051c83638f98c
+
+[CONTENT-FULL-GREEN]
+command: full Stage 1 isolated App acceptance suite
+exit_code: 0
+summary: 50 passed with 2 upstream dependency deprecation warnings in 1052.52 seconds.
+
+[C20-TARGETED-REGRESSION]
+command: LaunchServices candidate lifecycle and browser-validator targeted pytest selection
+exit_code: 0
+summary: 4 passed, 53 deselected, 2 upstream dependency deprecation warnings in 191.44 seconds.
+
+[C20-LAUNCHSERVICES-CANDIDATE]
+command: /usr/bin/open -n -a ${ISOLATED_ROOT}/PFI.app followed by candidate inspect
+exit_code: 0
+summary: no Finder or UI automation; three process members and three loopback endpoints verified; runtime API ready.
+
+[C20-BROWSER-CANDIDATE]
+command: cached Playwright runtime against the isolated LaunchServices candidate
+exit_code: 0
+summary: 36 of 36 checks and 10 of 10 primary routes passed; console/page/request/HTTP/WebSocket error counts were zero; both PNGs passed visual privacy inspection.
+
+[C20-FINALIZE]
+command: candidate finalizer with evidence directory
+exit_code: 0
+summary: cleanup_complete=true, canonical_unchanged=true, temp_root_deleted=true, all three ports released, LaunchServices registration absent.
+
+[FINAL-VERIFIER]
+command: committed direct binding successor plus external postbinding attestation verifier
+exit_code: NOT_RUN
+summary: intentionally deferred until the single binding commit and external C0/I0/M0 attestation exist.

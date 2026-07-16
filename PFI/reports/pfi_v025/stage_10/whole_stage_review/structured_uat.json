@@ -1,0 +1,50 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE10-WHOLE-REVIEW",
+  "checks": [
+    {
+      "id": "S10-UAT-01",
+      "result": "SQLite-backed real completed/total units and steps are visible",
+      "status": "pass"
+    },
+    {
+      "id": "S10-UAT-02",
+      "result": "page was left for more than 10 seconds and the same healthy job completed once under heartbeat",
+      "status": "pass"
+    },
+    {
+      "id": "S10-UAT-03",
+      "result": "failed state, error code and recoverable banner are visible and never presented as success",
+      "status": "pass"
+    },
+    {
+      "id": "S10-UAT-04",
+      "result": "retrying and dead-letter projections, retry count and crash-recovery retry are evidenced",
+      "status": "pass"
+    },
+    {
+      "id": "S10-UAT-05",
+      "result": "successful result artifact entry is visible",
+      "status": "pass"
+    },
+    {
+      "id": "S10-UAT-06",
+      "result": "structured DOM and CDP accessibility tree contain the job workflow",
+      "status": "pass"
+    },
+    {
+      "id": "S10-UAT-07",
+      "result": "no timer-based queue/progress state is used for durable jobs",
+      "status": "pass"
+    },
+    {
+      "id": "S10-UAT-08",
+      "result": "Stage 10 transition only; Stage 11 remains not_started",
+      "status": "accepted_via_standing_transition_authorization"
+    }
+  ],
+  "final_human_acceptance": false,
+  "overall_result": "pass_for_stage_transition_only",
+  "production_accepted": false,
+  "schema": "PFIV025Stage10StructuredUATV1",
+  "stage_11_started": false
+}

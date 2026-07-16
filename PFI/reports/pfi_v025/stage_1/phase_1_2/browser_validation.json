@@ -1,0 +1,76 @@
+{
+  "schema": "PFIV025Stage1Phase12BrowserValidationV1",
+  "browser": "Playwright Chromium headless",
+  "origin": "ephemeral_loopback_dedicated_to_pfi_validation",
+  "live_ports_8501_8502_accessed": false,
+  "service_worker": {
+    "seeded": {
+      "scope": "http://127.0.0.1:64678/",
+      "cacheNames": [
+        "pfi-v024-shell"
+      ]
+    },
+    "controlled_gate": {
+      "state": "blocked",
+      "shellHidden": true,
+      "conflictHidden": false,
+      "detail": "版本冲突：service_worker:controller:still_active。请重新启动 PFI；仍不一致时重新安装 PFI.app，并清除缓存后重试。",
+      "controllerActive": true,
+      "registrations": 0,
+      "caches": []
+    },
+    "clean_reload": {
+      "state": "ready",
+      "shellHidden": false,
+      "controllerActive": false,
+      "registrations": 0,
+      "caches": []
+    }
+  },
+  "bfcache": {
+    "real_navigation": {
+      "pageshowEvents": [
+        {
+          "persisted": false,
+          "navigationType": "back_forward"
+        }
+      ],
+      "state": "ready",
+      "navigationType": "back_forward"
+    },
+    "real_persisted_observed": false,
+    "synthetic_event_used_only_for_deterministic_mismatch_path": true,
+    "immediate_pending": {
+      "state": "pending",
+      "shellHidden": true
+    },
+    "mismatch": {
+      "state": "blocked",
+      "shellHidden": true,
+      "title": "版本冲突",
+      "detail": "版本冲突：cache_policy:process_key:mismatch；cache_policy:valid:false。请重新启动 PFI；仍不一致时重新安装 PFI.app，并清除缓存后重试。"
+    }
+  },
+  "backend_request_counts": {
+    "manifest": 3,
+    "policy": 3
+  },
+  "console_errors": [],
+  "page_errors": [],
+  "evidence_files": [
+    "bfcache_mismatch.png",
+    "playwright_trace.zip"
+  ],
+  "checks": {
+    "legacy_worker_seeded": true,
+    "controlled_page_failed_closed": true,
+    "cleanup_removed_registration_and_cache": true,
+    "controlled_page_skipped_backend_fetch": true,
+    "reload_has_no_old_controller": true,
+    "reload_ready_after_manifest_and_policy": true,
+    "pageshow_telemetry_recorded": true,
+    "synthetic_persisted_immediately_hides": true,
+    "mismatch_fails_visible_in_chinese": true,
+    "no_console_or_page_errors": true
+  }
+}

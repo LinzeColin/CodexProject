@@ -1,0 +1,21 @@
+{
+  "evidence_refs": [
+    "PFI/reports/pfi_v025/stage_6/phase_6_3/playwright_result.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_3/browser_history_validation.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_3/a11y_tree.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_3/route_runtime.json",
+    "PFI/reports/pfi_v025/stage_6/phase_6_3/invalid_route_validation.json"
+  ],
+  "final_human_acceptance": false,
+  "phase_6_1_status": "candidate_pass",
+  "phase_6_2_status": "candidate_pass",
+  "phase_6_3_status": "candidate_pass",
+  "production_accepted": false,
+  "schema": "PFIV025Stage6Phase63CandidateEvidenceV1",
+  "stage_6_phase_task_completed_count": 12,
+  "stage_6_phase_task_count": 12,
+  "stage_6_user_acceptance_status": "waiting",
+  "stage_6_whole_stage_review_status": "not_started",
+  "stage_7_status": "not_started",
+  "status": "candidate_pass_waiting_for_independent_whole_stage_review"
+}

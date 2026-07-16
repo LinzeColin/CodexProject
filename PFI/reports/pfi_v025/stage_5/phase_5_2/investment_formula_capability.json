@@ -1,0 +1,25 @@
+{
+  "calculation_context": "deterministic_contract_examples_not_financial_acceptance",
+  "fee_and_tax_counted_once": true,
+  "formula_ids": ["FORM-PFI-017", "FORM-PFI-018"],
+  "formula_outputs": [
+    "unrealized_pnl_cny",
+    "realized_pnl_before_costs_cny",
+    "realized_pnl_net_cny",
+    "total_return_net_cny",
+    "fee_drag_rate",
+    "tax_drag_rate",
+    "fx_effect_cny",
+    "fx_drag_cny",
+    "idle_cash_drag_cny",
+    "xirr"
+  ],
+  "real_data_validation": "not_run_pending_phase_5_3",
+  "schema": "PFIV025Stage5Phase52InvestmentFormulaEvidenceV1",
+  "status": "capability_pass_real_data_not_run",
+  "xirr_day_count_basis": 365,
+  "xirr_multiple_sign_change_policy": "blocked_non_unique",
+  "xirr_npv_tolerance": "0.0000000001",
+  "xirr_simple_annual_example": "0.10",
+  "zero_denominator_drag_rate": null
+}

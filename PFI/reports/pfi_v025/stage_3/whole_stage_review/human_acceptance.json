@@ -1,0 +1,24 @@
+{
+  "product": "PFI",
+  "version": "v0.2.5",
+  "build_id": "PFI-V025-STAGE3-WHOLE-REVIEW",
+  "git_commit": "0f9672081463523bab35a2b310216078fd3ad9d3",
+  "stage": 3,
+  "evidence_index_hash": "sha256:6c82b7c410c6cd5e282179e1756f56530372caeff49dbdfc6a7856539680854b",
+  "accepted_scope": [
+    "Stage 3 tasks are accepted as 12 of 12 with six acceptance criteria passed and four stop conditions clear",
+    "the immutable real snapshot partitions 8815 records into 6879 published events and 1936 explicit review items with zero silent drops",
+    "all published records have complete redacted raw-to-ledger lineage and repeated import publishes zero additional ledger events",
+    "same economic event counting is limited to once per metric and five declared pages share one read model hash",
+    "Stage 4 entry is authorized but Stage 4 work production acceptance and final human acceptance are not included"
+  ],
+  "known_defects": [
+    "1,250 条转账候选缺少明确关联或有效账户角色，未确认，只保留在 review queue",
+    "249 条退款候选缺少 offset economic event id，未确认，只保留在 review queue",
+    "来源时间只有日期粒度，UTC 日起点标准化不代表精确交易时间",
+    "review queue 持久化、生产估值输入和 production acceptance 不在本阶段范围"
+  ],
+  "accepted_at": "2026-07-14T11:25:01Z",
+  "acceptance_statement": "用户在最终验收前提供持续的阶段授权；本记录仅接受 Stage 3 技术范围及已明确列出的残余风险，不构成 production 或最终人工验收。",
+  "user_confirmation_reference": "conversation_user_blanket_interim_authorization_before_final_acceptance"
+}

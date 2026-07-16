@@ -1,0 +1,66 @@
+{
+  "schema": "PFIV025Stage9Phase92BrowserResultV1",
+  "status": "pass",
+  "checks": {
+    "phase_contract_ready": true,
+    "reports_route_mounted": true,
+    "five_report_cards_visible": true,
+    "report_truth_statuses_visible": true,
+    "all_analysis_sections_visible": true,
+    "actionable_routes_present": true,
+    "no_financial_amount_visible": true,
+    "no_false_complete_conclusion": true,
+    "no_phase93_or_trade_execution": true,
+    "no_browser_errors": true,
+    "loopback_only": true
+  },
+  "checkCount": 11,
+  "passedCheckCount": 11,
+  "visible": {
+    "phaseAttribute": "ready",
+    "routeAlias": "/reports",
+    "title": "报告与洞察 · 月报",
+    "kicker": "月报",
+    "reportCards": [
+      {
+        "label": "净资产报告",
+        "value": "已阻断",
+        "detail": "8,815 条来源记录 · 关键真实输入未 ready；只展示公式、限制与复核入口。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。"
+      },
+      {
+        "label": "现金报告",
+        "value": "已阻断",
+        "detail": "8,815 条来源记录 · 关键真实输入未 ready；只展示公式、限制与复核入口。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。"
+      },
+      {
+        "label": "投资报告",
+        "value": "已阻断",
+        "detail": "8,815 条来源记录 · 关键真实输入未 ready；只展示公式、限制与复核入口。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。"
+      },
+      {
+        "label": "消费报告",
+        "value": "部分可算",
+        "detail": "8,815 条来源记录 · 部分可算：只展示真实来源覆盖与非金额敏感性。 · 消费总流出是用户定义的 gross activity 口径；生活消费、投资资金流出与投资域内配置必须拆分展示，投资活动不等于净资产损失。"
+      },
+      {
+        "label": "现金流报告",
+        "value": "部分可算",
+        "detail": "8,815 条来源记录 · 部分可算：只展示真实来源覆盖与非金额敏感性。 · 当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。"
+      }
+    ],
+    "workflowCardCount": 23,
+    "missingRequiredText": []
+  },
+  "diagnostics": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "httpErrors": [],
+    "blockedExternal": [],
+    "requestedOriginCount": 1
+  },
+  "finderUsed": false,
+  "launchServicesUsed": false,
+  "externalNetworkUsed": false,
+  "financialValuesPersisted": 0,
+  "containsPrivateValues": false
+}

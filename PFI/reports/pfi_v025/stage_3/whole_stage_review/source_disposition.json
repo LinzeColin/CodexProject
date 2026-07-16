@@ -1,0 +1,61 @@
+{
+  "schema": "PFIV025Stage3SourceDispositionV1",
+  "version": "v0.2.5",
+  "stage": 3,
+  "status": "accepted_with_explicit_review_queue",
+  "real_snapshot": {
+    "source_id": "SRC-TRANSACTIONS-ALIPAY",
+    "isolation_mode": "immutable_git_object_snapshot",
+    "input_record_count": 8815,
+    "published_record_count": 6879,
+    "review_queue_record_count": 1936,
+    "silent_drop_count": 0
+  },
+  "review_reason_counts": {
+    "refund_offset_missing": 249,
+    "transfer_role_or_link_missing": 1250,
+    "upstream_review_required": 406,
+    "zero_amount": 31
+  },
+  "transfer_chain": {
+    "status": "fail_closed_to_review",
+    "confirmed": false,
+    "unresolved_review_count": 1250,
+    "published_without_required_evidence_count": 0,
+    "review_pool_additive_across_candidate_event_types": false
+  },
+  "refund_chain": {
+    "status": "fail_closed_to_review",
+    "confirmed": false,
+    "unresolved_review_count": 249,
+    "published_without_offset_count": 0
+  },
+  "investment_chain": {
+    "status": "pass_for_mapped_snapshot_events",
+    "published_count": 3166
+  },
+  "lineage": {
+    "published_record_count": 6879,
+    "complete_lineage_count": 6879,
+    "missing_lineage_count": 0
+  },
+  "idempotency": {
+    "second_import_published_count": 0,
+    "second_import_duplicate_count": 6879,
+    "idempotency_key_collision_count": 0
+  },
+  "read_model": {
+    "per_metric_duplicate_count": 0,
+    "page_count": 5,
+    "page_hash_consistent": true
+  },
+  "source_temporal_granularity": "date",
+  "exact_transaction_time_claimed": false,
+  "review_queue_persistence_changed": false,
+  "financial_zero_claims": 0,
+  "financial_values_emitted": 0,
+  "private_identifiers_emitted": 0,
+  "source_mutation_performed": false,
+  "database_changed": false,
+  "finder_used": false
+}

@@ -1,0 +1,103 @@
+{
+  "automatic_trading_allowed": false,
+  "check_count": 16,
+  "checks": {
+    "accepted_review_has_no_execution": true,
+    "accepted_review_is_audited": true,
+    "all_human_outcomes_available": true,
+    "counter_evidence_and_invalidation_visible": true,
+    "four_downloads_match_manifest": true,
+    "four_export_assets_verified": true,
+    "loopback_only": true,
+    "no_browser_errors": true,
+    "no_financial_amount_visible": true,
+    "no_trade_or_whole_stage_claim": true,
+    "phase92_report_workflow_preserved": true,
+    "phase_contract_ready": true,
+    "reports_route_mounted": true,
+    "review_persists_after_reload": true,
+    "same_snapshot_across_formats": true,
+    "two_review_decisions_visible": true
+  },
+  "contains_private_values": false,
+  "decision_review_screenshot": "decision_review_view.png",
+  "decision_review_screenshot_sha256": "sha256:e70837d4f00cab886a6d52a718ed3bdaa245e1dbf33cee86ed8b2f566893c1f6",
+  "diagnostics": {
+    "blockedExternal": [],
+    "consoleErrors": [],
+    "httpErrors": [],
+    "pageErrors": [],
+    "requestedOriginCount": 1
+  },
+  "downloads": [
+    {
+      "byteSize": 21433,
+      "filename": "pfi_v025_decision_review.html",
+      "format": "html",
+      "sha256": "sha256:0d564ce2a109197c5c30589abe5dd5d089bf506df69a38eabdc5c2439f4497fb"
+    },
+    {
+      "byteSize": 146764,
+      "filename": "pfi_v025_decision_review.pdf",
+      "format": "pdf",
+      "sha256": "sha256:de7f2c7ff94ecb95298a68d447525610d0753536fbff2ef91e55c632dff08dc0"
+    },
+    {
+      "byteSize": 7905,
+      "filename": "pfi_v025_decision_review.csv",
+      "format": "csv",
+      "sha256": "sha256:a4da3c8adaa78a2bc1325ff60adb43125ac8c824037224d7e296a30299af459b"
+    },
+    {
+      "byteSize": 19631,
+      "filename": "pfi_v025_decision_review.md",
+      "format": "markdown",
+      "sha256": "sha256:3a88968121fbb1ebc61fe0c55133f43b0d0994aee6a771223fb25630bb55b498"
+    }
+  ],
+  "external_network_used": false,
+  "financial_values_persisted": 0,
+  "finder_used": false,
+  "launchservices_used": false,
+  "loopback_only": true,
+  "passed_check_count": 16,
+  "product_commit": "168666305c874d91ab8fd45e9f925e49928e7e63",
+  "schema": "PFIV025Stage9Phase93BrowserEvidenceV1",
+  "status": "pass",
+  "trace": "browser_trace_sanitized.zip",
+  "trace_privacy_scan": {
+    "actual_playwright_trace": true,
+    "contains_absolute_local_path": false,
+    "contains_private_values": false,
+    "contains_runtime_token": false,
+    "replacements": {
+      "absolute_paths": 1,
+      "auth_tokens": 0,
+      "financial_text": 0,
+      "image_entries_removed": 0,
+      "private_payloads": 0,
+      "resource_entries_removed": 0,
+      "sensitive_fields": 0
+    },
+    "resource_bodies_removed": true,
+    "retained_entry_count": 3,
+    "status": "pass",
+    "trace": "browser_trace_sanitized.zip"
+  },
+  "trace_sha256": "sha256:d25c7c79548dc295287f48e383405a82cb8ced989c790ac9d315a272d77332e3",
+  "trade_execution_available": false,
+  "visible": {
+    "acceptedAvailableOutcomes": [
+      "invalidated"
+    ],
+    "acceptedStatus": "accepted",
+    "decisionCount": 2,
+    "exportButtonCount": 4,
+    "missingRequiredText": [],
+    "outcomeButtonCount": 8,
+    "phase92": "ready",
+    "phase93": "ready",
+    "routeAlias": "/reports?tab=decision-review",
+    "workflowCardCount": 29
+  }
+}

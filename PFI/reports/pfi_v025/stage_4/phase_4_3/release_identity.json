@@ -1,0 +1,17 @@
+{
+  "app_install_performed": false,
+  "backend_build_hash": "0fa98ca0481ce16f31f3afdfec3dc4267773ebeba702416c2ba2b9b1bf418301",
+  "backend_hash_valid": true,
+  "canonical_app_parity_claimed": false,
+  "contains_private_values": false,
+  "embedded_manifest_matches_source_manifest": true,
+  "frontend_bundle_hash": "1ac026cf60bdd0a12d60a4ff521986aa94f9b9dec64b97240bcffb97be8f5f7c",
+  "frontend_hash_valid": true,
+  "generated_at": "2026-07-14T13:09:21Z",
+  "phase": "4.3",
+  "schema": "PFIV025Stage4Phase43SourceReleaseIdentityV1",
+  "source_asset_identity_valid": true,
+  "stage": 4,
+  "status": "source_identity_synchronized_not_installed",
+  "version": "v0.2.5"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "PFIV025Stage9TransitionAuthorizationBindingV1",
+  "authorization_id": "AUTH-PFI-V025-STAGE9-TRANSITION-20260715",
+  "status": "accepted_via_standing_transition_authorization",
+  "recorded_at": "2026-07-15T18:11:49+10:00",
+  "user_confirmation_reference": "在最终验收前我全部都同意授权，不允许block",
+  "user_confirmation_sha256": "sha256:2c9fe289b301b229d5df677f8c16467177e5950098d2407f198dd99e699480ca",
+  "user_finder_instruction": "不要再进行任何的finder操作，纯粹浪费时间！",
+  "user_finder_instruction_sha256": "sha256:091fff69dad4a06a7002de39235c506732f8456bcd176f02c2b45eb1fb84931e",
+  "authorized_scope": [
+    "accept Stage 9 for transition only after all technical gates pass",
+    "authorize Stage 10 entry only; Stage 10 implementation remains not_started in this run"
+  ],
+  "technical_prerequisites": [
+    "focused and regression verification pass",
+    "current-content browser, export, PDF, privacy, governance and renderer checks pass",
+    "three independent reviewers bind the same frozen overlays and return ACCEPT C0/I0/M0",
+    "final evidence index and human acceptance bind exact content hashes"
+  ],
+  "explicitly_not_authorized": [
+    "waiving a failed technical gate",
+    "Stage 10 implementation in the Stage 9 whole-review run",
+    "automatic trading or order execution",
+    "external network, GitHub push or PFI.app installation",
+    "Finder, LaunchServices or GUI file operations",
+    "production acceptance",
+    "final human acceptance"
+  ],
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "stage_10_implementation_started": false,
+  "finder_used": false,
+  "launchservices_used": false,
+  "gui_file_operations_used": false
+}

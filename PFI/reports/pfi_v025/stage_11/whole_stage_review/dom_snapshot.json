@@ -1,0 +1,52 @@
+{
+  "schema": "PFIV025Stage11PublicBoundaryDOMSnapshotV1",
+  "status": "pass",
+  "main": {
+    "title": "PFI — Public boundary notice",
+    "language": "en",
+    "surface": "static-boundary-notice",
+    "h1": "A description of PFI,not PFI itself.",
+    "headingCount": 6,
+    "scriptCount": 0,
+    "forbiddenInteractiveElementCount": 0,
+    "applicationMarkerCount": 0,
+    "anchorCount": 6,
+    "anchors": [
+      {
+        "label": "Skip to content",
+        "destinationClass": "fragment"
+      },
+      {
+        "label": "PFI Personal Financial Intelligence",
+        "destinationClass": "fragment"
+      },
+      {
+        "label": "HomeHub",
+        "destinationClass": "external-public"
+      },
+      {
+        "label": "Public source",
+        "destinationClass": "external-public"
+      },
+      {
+        "label": "Read the boundary",
+        "destinationClass": "fragment"
+      },
+      {
+        "label": "Back to top",
+        "destinationClass": "fragment"
+      }
+    ],
+    "containsPrivateMarker": false,
+    "horizontalOverflowPx": 0
+  },
+  "notFound": {
+    "status": 404,
+    "title": "PFI — Page not found",
+    "h1": "There is no application route here.",
+    "scriptCount": 0,
+    "applicationMarkerCount": 0
+  },
+  "containsPrivateValues": false,
+  "containsAbsolutePaths": false
+}

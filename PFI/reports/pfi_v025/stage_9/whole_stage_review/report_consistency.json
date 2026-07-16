@@ -1,0 +1,20 @@
+{
+  "component_count": 4,
+  "contains_private_values": false,
+  "cross_format_same_snapshot": true,
+  "cross_report_hashes_consistent": true,
+  "investment_activity_not_net_worth_loss_explained": true,
+  "report_count": 5,
+  "report_statuses": {
+    "cash": "blocked",
+    "cashflow": "partial",
+    "consumption": "partial",
+    "investment": "blocked",
+    "net_worth": "blocked"
+  },
+  "reviewed_analysis_to_decision_bound": true,
+  "schema": "PFIV025Stage9WholeReviewReportConsistencyV1",
+  "stage_10_started": false,
+  "stage_9_whole_stage_review_done_in_product_snapshot": false,
+  "status": "pass"
+}

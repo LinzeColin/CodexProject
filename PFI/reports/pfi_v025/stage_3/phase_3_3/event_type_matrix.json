@@ -1,0 +1,34 @@
+{
+  "event_types": [
+    {"event_type":"credit_card_repayment","impact_flags":{"activity_outflow_included":false,"cash_effect":"mixed","fee_tax_requires_separate_event":false,"investment_allocation_included":false,"living_consumption_included":false,"net_worth_effect":"neutral","requires_offset_event_id":false},"real_snapshot_published_count":0,"real_snapshot_review_count":0,"required_structured_evidence":["explicit_link_reference","effective_account_roles"],"review_pool_ids":["unresolved_transfer"],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"review_required_no_publication"},
+    {"event_type":"fund_subscription","impact_flags":{"activity_outflow_included":true,"cash_effect":"outflow","fee_tax_requires_separate_event":true,"investment_allocation_included":true,"living_consumption_included":false,"net_worth_effect":"composition_only","requires_offset_event_id":false},"real_snapshot_published_count":21,"real_snapshot_review_count":0,"required_structured_evidence":["source_event_type","signed_direction"],"review_pool_ids":[],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"publish_if_mapped"},
+    {"event_type":"gold_subscription","impact_flags":{"activity_outflow_included":true,"cash_effect":"outflow","fee_tax_requires_separate_event":true,"investment_allocation_included":true,"living_consumption_included":false,"net_worth_effect":"composition_only","requires_offset_event_id":false},"real_snapshot_published_count":0,"real_snapshot_review_count":0,"required_structured_evidence":["explicit_asset_class","signed_direction"],"review_pool_ids":[],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"review_required_no_publication"},
+    {"event_type":"income","impact_flags":{"activity_outflow_included":false,"cash_effect":"inflow","fee_tax_requires_separate_event":false,"investment_allocation_included":false,"living_consumption_included":false,"net_worth_effect":"increase","requires_offset_event_id":false},"real_snapshot_published_count":146,"real_snapshot_review_count":0,"required_structured_evidence":["source_event_type","signed_direction"],"review_pool_ids":[],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"publish_if_mapped"},
+    {"event_type":"investment_funding","impact_flags":{"activity_outflow_included":true,"cash_effect":"mixed","fee_tax_requires_separate_event":true,"investment_allocation_included":true,"living_consumption_included":false,"net_worth_effect":"composition_only","requires_offset_event_id":false},"real_snapshot_published_count":0,"real_snapshot_review_count":0,"required_structured_evidence":["explicit_link_reference","effective_account_roles"],"review_pool_ids":["unresolved_transfer"],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"review_required_no_publication"},
+    {"event_type":"investment_purchase","impact_flags":{"activity_outflow_included":true,"cash_effect":"outflow","fee_tax_requires_separate_event":true,"investment_allocation_included":true,"living_consumption_included":false,"net_worth_effect":"composition_only","requires_offset_event_id":false},"real_snapshot_published_count":12,"real_snapshot_review_count":0,"required_structured_evidence":["source_event_type","signed_direction"],"review_pool_ids":[],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"publish_if_mapped"},
+    {"event_type":"investment_sale","impact_flags":{"activity_outflow_included":false,"cash_effect":"inflow","fee_tax_requires_separate_event":true,"investment_allocation_included":true,"living_consumption_included":false,"net_worth_effect":"composition_only","requires_offset_event_id":false},"real_snapshot_published_count":3133,"real_snapshot_review_count":0,"required_structured_evidence":["source_event_type","signed_direction"],"review_pool_ids":[],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"publish_if_mapped"},
+    {"event_type":"living_consumption","impact_flags":{"activity_outflow_included":true,"cash_effect":"outflow","fee_tax_requires_separate_event":false,"investment_allocation_included":false,"living_consumption_included":true,"net_worth_effect":"decrease","requires_offset_event_id":false},"real_snapshot_published_count":3567,"real_snapshot_review_count":0,"required_structured_evidence":["source_event_type","signed_direction"],"review_pool_ids":[],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"publish_if_mapped"},
+    {"event_type":"own_account_transfer","impact_flags":{"activity_outflow_included":false,"cash_effect":"mixed","fee_tax_requires_separate_event":false,"investment_allocation_included":false,"living_consumption_included":false,"net_worth_effect":"neutral","requires_offset_event_id":false},"real_snapshot_published_count":0,"real_snapshot_review_count":0,"required_structured_evidence":["explicit_link_reference","effective_account_roles"],"review_pool_ids":["unresolved_transfer"],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"review_required_no_publication"},
+    {"event_type":"refund","impact_flags":{"activity_outflow_included":false,"cash_effect":"inflow","fee_tax_requires_separate_event":false,"investment_allocation_included":false,"living_consumption_included":false,"net_worth_effect":"reversal","requires_offset_event_id":true},"real_snapshot_published_count":0,"real_snapshot_review_count":249,"required_structured_evidence":["offset_economic_event_id"],"review_pool_ids":[],"ui_surfaces":["homepage","consumption","investment","cashflow","report"],"unresolved_policy":"review_required_no_publication"}
+  ],
+  "financial_values_emitted": 0,
+  "main_path_coverage_count": 8,
+  "main_path_required_count": 8,
+  "phase_id": "V025-S3-P3.3",
+  "policy_version": "1",
+  "private_identifiers_emitted": 0,
+  "read_model_hash_scope": "snapshot_not_page",
+  "review_pools": [
+    {
+      "additive_across_event_rows": false,
+      "candidate_event_types": ["credit_card_repayment", "investment_funding", "own_account_transfer"],
+      "record_count": 1250,
+      "review_pool_id": "unresolved_transfer"
+    }
+  ],
+  "same_economic_event_per_metric_max_count": 1,
+  "schema": "PFIV025Stage3Phase33InterconnectionMatrixV1",
+  "status": "pass",
+  "ui_surfaces": ["homepage", "consumption", "investment", "cashflow", "report"],
+  "version": "v0.2.5"
+}

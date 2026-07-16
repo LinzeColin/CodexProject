@@ -1,0 +1,25 @@
+PASS
+scanner=pfi-v025-phase22-public-artifact-scan-v1
+observed_at=2026-07-14T18:39:44+10:00
+input_count=9
+input=PFI/reports/pfi_v025/stage_2/phase_2_2/temporal_coverage.json|sha256:f3a4737cb11844c7b69091f1d23823fb2a1748f9bc0c003a9c1cc678a8f2521d
+input=PFI/reports/pfi_v025/stage_2/phase_2_2/fx_snapshot_status.json|sha256:33864ff939063c4825d70b8e1e5b79536b71aa6293b5fdaeff58256524e0da25
+input=PFI/reports/pfi_v025/stage_2/phase_2_2/network_audit.json|sha256:51c72d169d0773cd0eac4277c2373f04f77610bd38b7824b50534cd0207b748c
+input=PFI/reports/pfi_v025/stage_2/phase_2_2/evidence.json|sha256:dcefd989c4c82dadbcee03037318bff978cadf1158b1d160c9ed703316dc15f7
+input=PFI/docs/pfi_v025/stage_2/temporal_truth.md|sha256:5f0884ed4789a601d3fb55eba7658fa138c7c9faefd75ec2619f3905720eb496
+input=PFI/reports/pfi_v025/stage_2/phase_2_2/risk_and_rollback.md|sha256:41c6a7da8c45dc1dfb73e15b3cfdf4015a885719ab0eaf11d5038849f0b3aa05
+input=PFI/reports/pfi_v025/stage_2/phase_2_2/terminal.log|sha256:2fd30943aac2fb8ff1e12ce8a73c11f04cb9a26eba87c0b4761d2dc76c249292
+input=PFI/reports/pfi_v025/stage_2/phase_2_2/changed_files.txt|sha256:4067ce7878a1859e46d182f0d985971dd25fae350192a001741600fc8d2863d7
+input=PFI/config/sources/v025_phase_2_2_fx_policy.json|sha256:4da4399f1dc03b7b9e42574a03ff9eb01b3068662eb6a040ed454e7c52fefde1
+absolute_private_paths=0
+raw_filenames=0
+financial_row_values=0
+account_identifiers=0
+credentials=0
+sqlite_table_names=0
+finder_operations=0
+source_mutations=0
+financial_fixture_fallback=0
+scan_command=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_fx_policy.py -q -k phase22_privacy_scan_is_deterministic
+generation_contract=fixed_input_list_semantic_and_text_recompute
+self_scan_excluded=true

@@ -1,0 +1,488 @@
+{
+  "schema": "PFIV025Stage10WholeReviewBrowserValidationV1",
+  "status": "pass",
+  "checks": {
+    "initial_job_was_running": true,
+    "left_page_and_restored_same_job": true,
+    "left_page_over_ten_seconds": true,
+    "healthy_long_task_single_attempt": true,
+    "ui_status_matches_db": true,
+    "ui_exact_backend_state": true,
+    "ui_revision_matches_db": true,
+    "ui_trace_matches_db": true,
+    "ui_progress_matches_db": true,
+    "ui_uses_durable_api": true,
+    "ui_is_not_timer_progress": true,
+    "trace_and_retry_visible": true,
+    "result_entry_visible": true,
+    "persisted_retrying_state_visible": true,
+    "persisted_dead_letter_state_visible": true,
+    "explicit_failure_matches_db": true,
+    "failure_reason_retry_and_fallback_visible": true,
+    "failure_never_presented_as_success": true,
+    "structured_dom_snapshot_present": true,
+    "accessibility_tree_present": true,
+    "external_network_zero": true,
+    "browser_clean": true
+  },
+  "job_id": "job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1",
+  "failure_job_id": "job-a4c97700256163899d7d23b7e6cae0736acbc65f24619b1d009290a212cf777d",
+  "database_projection": {
+    "status": "succeeded",
+    "revision": 15,
+    "attempt_count": 1,
+    "completed_units": 3,
+    "total_units": 3,
+    "trace_id": "68fa4a39652514c7627e1c4b11c9505b",
+    "span_id": "66922dd94968af88",
+    "retry_count": 0,
+    "external_network_calls": 0,
+    "structured_log_count": 16
+  },
+  "browser_projection": {
+    "jobId": "job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1",
+    "status": "succeeded",
+    "revision": 15,
+    "traceId": "68fa4a39652514c7627e1c4b11c9505b",
+    "progressSource": "durable_job_api",
+    "timerBased": "false",
+    "externalNetworkCalls": 0,
+    "timelineState": "succeeded",
+    "backendState": "succeeded",
+    "timelineSource": "durable_job_api",
+    "completedUnits": 3,
+    "totalUnits": 3,
+    "meta": "SQLite revision 15 · trace 68fa4a39652514c7627e1c4b11c9505b · 重试 0 次",
+    "resultText": "结果入口 artifact://runtime-cache/1335a315d97564b65eaee1fc1b73ca402a2e735d4022053592ebae368fe463e0",
+    "taskPhase": "后续操作流阶段接入",
+    "jobLabel": "只在设置页显示"
+  },
+  "failure_database_projection": {
+    "status": "failed",
+    "revision": 2,
+    "error_code": "CACHE_REFRESH_ERROR",
+    "cache_fallback_used": true
+  },
+  "failure_browser_projection": {
+    "state": "failed",
+    "backendState": "failed",
+    "source": "durable_job_api",
+    "fallback": "true",
+    "errorText": "错误 CACHE_REFRESH_ERROR · local cache refresh failed validation",
+    "resultText": "",
+    "taskPhase": "刷新失败 · local cache refresh failed validation",
+    "taskPhaseState": "failure",
+    "jobLabelState": "failure",
+    "errorBannerVisible": true,
+    "text": "缓存切片刷新失败failed · local cache refresh failed validationSQLite revision 2 · trace 377e19dc09f9e73e5b130a78a0fc15a0 · 重试 0 次错误 CACHE_REFRESH_ERROR · local cache refresh failed validation"
+  },
+  "fixture_projection": {
+    "retrying": {
+      "state": "retrying",
+      "backendState": "retrying",
+      "source": "durable_job_api",
+      "fallback": "",
+      "text": "缓存切片刷新等待重试lease_expired_requeuedSQLite revision 2 · trace 6298eebaced40c8cbf277d1ec4e4f8e9 · 重试 1 次错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "errorText": "错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "resultText": "",
+      "completedUnits": -1,
+      "totalUnits": 1
+    },
+    "dead_letter": {
+      "state": "dead_letter",
+      "backendState": "dead_letter",
+      "source": "durable_job_api",
+      "fallback": "",
+      "text": "缓存切片刷新死信dead_lettered · worker lease expired before a terminal resultSQLite revision 2 · trace 2c980f130b1744387fcff6729e9665e0 · 重试 0 次错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "errorText": "错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "resultText": "",
+      "completedUnits": -1,
+      "totalUnits": 1
+    }
+  },
+  "restored_before_lease_recovery": {
+    "status": "running",
+    "revision": "1",
+    "traceId": "68fa4a39652514c7627e1c4b11c9505b",
+    "timelineState": "running"
+  },
+  "leave_page_elapsed_ms": 10503,
+  "event_types": [
+    "queued",
+    "claimed",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "heartbeat",
+    "progressed",
+    "progressed",
+    "progressed",
+    "succeeded"
+  ],
+  "structured_log_count": 16,
+  "requested_origins": [
+    "http://127.0.0.1:61969",
+    "http://127.0.0.1:61970"
+  ],
+  "blocked_external_requests": [],
+  "job_requests": [
+    {
+      "method": "GET",
+      "path": "/api/jobs"
+    },
+    {
+      "method": "POST",
+      "path": "/api/jobs/cache-refresh"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-55f72c9a3f862c2743d7a0029d807ed340838add5ee498afaff79c42bd7743b1"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs"
+    },
+    {
+      "method": "POST",
+      "path": "/api/jobs/cache-refresh"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-a4c97700256163899d7d23b7e6cae0736acbc65f24619b1d009290a212cf777d"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/job-a4c97700256163899d7d23b7e6cae0736acbc65f24619b1d009290a212cf777d"
+    }
+  ],
+  "diagnostics": {
+    "console_errors": [],
+    "page_errors": [],
+    "http_errors": []
+  },
+  "finder_used": false,
+  "launchservices_used": false,
+  "gui_file_operations_used": false
+}

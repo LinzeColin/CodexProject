@@ -1,0 +1,24 @@
+{
+  "product": "PFI",
+  "version": "v0.2.5",
+  "build_id": "PFI-V025-STAGE4-WHOLE-REVIEW",
+  "git_commit": "8478bbc65ed739ef5f22b1cfc4a932f15837be1d",
+  "stage": 4,
+  "evidence_index_hash": "sha256:f39281f2497a9630416d6ea27efd97f3170017c134b66471beff7061c7746ee5",
+  "accepted_scope": [
+    "Stage 4 的 12/12 tasks、6/6 acceptance criteria 与三个 Phase 的不可变 evidence 绑定",
+    "13 状态 strict Metric State、非 ready 必须 null、confirmed_zero 必须完整证据",
+    "当前七个核心指标全部 not_loaded/null，浏览器不显示 CNY 0.00",
+    "homepage、accounts、investment、consumption、report 使用同一 read_model_hash",
+    "Stage 5 entry 已授权但 Stage 5 work、production acceptance 与 final human acceptance 不包含在本记录"
+  ],
+  "known_defects": [
+    "账户余额、负债、持仓、市场价格与生产 FX 均 not_loaded，七个核心指标没有真实数值",
+    "当前没有完整证据的真实 confirmed_zero 指标，不能把任何缺失状态解释为财务零",
+    "生产 cost-basis method 尚未选择，真实持仓估值未运行",
+    "Stage 5 公式注册表、双消费口径与模型有效性验证尚未开始"
+  ],
+  "accepted_at": "2026-07-14T13:46:08Z",
+  "acceptance_statement": "用户在最终验收前提供持续阶段授权；本记录仅接受 Stage 4 fail-closed 技术范围及明确列出的 not_loaded 残余，不构成 production 或最终人工验收。",
+  "user_confirmation_reference": "conversation_user_blanket_interim_authorization_before_final_acceptance"
+}

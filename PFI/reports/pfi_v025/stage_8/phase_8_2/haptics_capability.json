@@ -1,0 +1,17 @@
+{
+  "schema": "PFIV025Stage8Phase82HapticsCapabilityV1",
+  "status": "pass",
+  "defaults": {"haptic": false, "sound": false, "intensity": "light"},
+  "supported_context": {
+    "explicit_opt_in_required": true,
+    "actual_user_activation_required": true,
+    "vibration_call_observed_after_opt_in": true
+  },
+  "unsupported_context": {
+    "navigator_vibrate": false,
+    "audio_context": false,
+    "delivery": "visual_only",
+    "exception_count": 0
+  },
+  "silent_degradation": true
+}

@@ -1,0 +1,37 @@
+{
+  "additional_properties_allowed": false,
+  "consumer": "Alpha",
+  "contains_private_values": false,
+  "legacy_amount_field_count": 0,
+  "metadata_field_count": 7,
+  "metadata_fields": [
+    "schema_version",
+    "as_of",
+    "source_or_read_model_hash",
+    "privacy_classification",
+    "consumer",
+    "read_only",
+    "writeback_allowed"
+  ],
+  "numeric_financial_field_count": 0,
+  "payload_field_count": 8,
+  "payload_fields": [
+    "net_worth_state",
+    "investable_cash_state",
+    "cashflow_pressure",
+    "asset_allocation",
+    "risk_budget",
+    "investment_behavior_tags",
+    "consumption_pressure_summary",
+    "data_freshness"
+  ],
+  "read_only": true,
+  "required_field_count": 15,
+  "schema": "PFIV025Stage11ContextSchemaValidationV1",
+  "schema_validation_error_count": 0,
+  "schema_version": "pfi_context.v1",
+  "sha256_provenance_required": true,
+  "status": "pass",
+  "timezone_aware_as_of": true,
+  "writeback_allowed": false
+}

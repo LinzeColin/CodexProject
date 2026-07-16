@@ -1,0 +1,10 @@
+{
+  "active_animation_count": 0,
+  "motion_duration_ms": 0,
+  "prefers_reduced_motion": true,
+  "schema": "PFIV025Stage8WholeReviewReducedMotionV1",
+  "source_ref": "PFI/reports/pfi_v025/stage_8/whole_stage_review/motion_feedback/browser_validation.json",
+  "source_sha256": "sha256:53de754c601eb285c6ec9428a76ba0d730f05293fc1dc63e6d396c5dc198291b",
+  "status": "pass",
+  "view_transition_mode": "progressive_enhancement"
+}

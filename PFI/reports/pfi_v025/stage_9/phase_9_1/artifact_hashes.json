@@ -1,0 +1,20 @@
+{
+  "file_count": 13,
+  "files": {
+    "docs/pfi_v025/stage_9/PHASE_9_1_REPORT_CONTRACT_IMPLEMENTATION.md": "sha256:57fd920a9e4819c2d9b631984b4f31e4b4ce28692f323d6ddbde76141c5c86d0",
+    "reports/pfi_v025/stage_9/phase_9_1/changed_files.txt": "sha256:4e7571089db58d3d05e526edbfada64275ec48434de3c42f0f0068966713f0d6",
+    "reports/pfi_v025/stage_9/phase_9_1/completeness_rules.json": "sha256:8a0251584acddfda7053c428037007fceb94816f5806b62eb7eac2cc72f7a818",
+    "reports/pfi_v025/stage_9/phase_9_1/data_quality_report.json": "sha256:4e9b22b5ec10d3990d5192dfb13feb24760f9c44856ecb49107c03455c632fde",
+    "reports/pfi_v025/stage_9/phase_9_1/input_immutability.json": "sha256:dc985132d36fefcc2972f314a83108bcbbf007a14064af255caf01aca7814df1",
+    "reports/pfi_v025/stage_9/phase_9_1/phase_contract.json": "sha256:bfe6f5406378dc6e2ce0e9bd599a292821d2042c4e9ed46d65644a2bd9628402",
+    "reports/pfi_v025/stage_9/phase_9_1/privacy_scan.txt": "sha256:6a33c35c074d6ef5660aaaadf177f11d94e6daeee3b5b555d71f074d8b6b8b4f",
+    "reports/pfi_v025/stage_9/phase_9_1/report_manifest.json": "sha256:741cac624d86eaf993db81b0f070dd6ea42740608808f498579c199df9573da5",
+    "reports/pfi_v025/stage_9/phase_9_1/report_schema.json": "sha256:837228ff7959aa260030abe7725557fa9b61acd5ecd7b8434cfaf292a1db37a9",
+    "reports/pfi_v025/stage_9/phase_9_1/report_validation.json": "sha256:a39c81e3f070d61074a60e55369dda7316f71ebebfeeb615e4651b52b9d7384d",
+    "reports/pfi_v025/stage_9/phase_9_1/risk_and_rollback.md": "sha256:321b98e3add1248acbfc84c70ad22eb2b5e7f7e62a3cd7cb062ee7b9b155e819",
+    "reports/pfi_v025/stage_9/phase_9_1/terminal.log": "sha256:5b0f971bd19c2b754a78e52c917acc407d1bd847340270aee5f75c9ab8d05adc",
+    "reports/pfi_v025/stage_9/phase_9_1/verification_results.json": "sha256:b8505bf262fd7e50adb84aeec07167c1c4a2b595247c779f4e7e3cd7de099d51"
+  },
+  "schema": "PFIV025Stage9Phase91ArtifactHashesV1",
+  "status": "pass"
+}

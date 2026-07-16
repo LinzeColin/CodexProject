@@ -1,0 +1,26 @@
+{
+  "aggregate_confidence_score_allowed": false,
+  "dimension_ids": [
+    "classification_confidence",
+    "source_coverage",
+    "reconciliation_coverage",
+    "valuation_coverage",
+    "model_validation",
+    "report_completeness"
+  ],
+  "record_classification": {
+    "review_threshold": 70,
+    "source_layered_thresholds_allowed": false,
+    "weights": {
+      "field_completeness": 30,
+      "amount_direction": 10,
+      "rule_match": 20,
+      "counterparty": 15,
+      "interconnection": 15,
+      "history_consistency": 10
+    },
+    "weights_total": 100
+  },
+  "schema_ref": "PFI/config/schemas/v025/confidence_dimensions.schema.json",
+  "status": "pass"
+}

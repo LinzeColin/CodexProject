@@ -1,0 +1,25 @@
+schema=PFIV025Stage0GitStateV1
+observed_at=2026-07-12T01:09:30.659834+10:00
+cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git_root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+upstream=origin/main
+head=ede905cd96c7b6682cf38971de54f4544f46251b
+phase_base=ede905cd96c7b6682cf38971de54f4544f46251b
+advertised_remote_main=a65f30c19241b14c4a895bc68dd4422b5a1e4a5c
+initial_remote_base=3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb
+merge_base=3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb
+remote_diff_range=3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb..a65f30c19241b14c4a895bc68dd4422b5a1e4a5c
+pfi_remote_diff=none
+initial_remote_object_hydration_performed=false
+clean_pre_write_state=true
+pre_write_porcelain_entries=0
+candidate_commit_binding=external_attestation_required
+
+recent_commits_begin
+ede905cd96c7b6682cf38971de54f4544f46251b docs(PFI): plan v0.2.5 stage 0 phase 0.3
+35ef4148723c5885bf9c2f962390bc9e562f5e50 docs(PFI): design v0.2.5 stage 0 phase 0.3
+7433be0d70bdae42959c1b71753d93f8737db60d docs(PFI): freeze v0.2.5 stage 0 phase 0.2 contract
+82869ffdb37e4de22244d5423c9b7f71f4cb7076 docs(PFI): plan v0.2.5 stage 0 phase 0.2
+e117583df788d7a9043cce74ea984b1144d10008 docs(PFI): design v0.2.5 stage 0 phase 0.2
+recent_commits_end

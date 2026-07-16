@@ -1,0 +1,29 @@
+{
+  "contains_private_values": false,
+  "cross_report_hashes_consistent": true,
+  "errors": [],
+  "financial_values_emitted": 0,
+  "formula_drilldown_count": 6,
+  "model_validation_card_count": 1,
+  "pack_hash": "sha256:c3df8b878038bffdb28bfe4112d9a875e43e5d41cb910f86b6482768223a19e9",
+  "phase_id": "V025-S9-P9.2",
+  "report_count": 5,
+  "report_snapshot_hashes": {
+    "cash": "sha256:98f9d5ad26191b1c525c9a4b6d62f36ff95e3c8abd7bc16150568c1c48e0942e",
+    "cashflow": "sha256:67b50f1b388aaaf1d41549da6496a5ebdcd160a279274fc8a3fd85585ac23e0b",
+    "consumption": "sha256:0ca9eb2865f9fd4b08a3dabaab2233781faf8b3e4038db40ff1a749a2736c62a",
+    "investment": "sha256:7abd708c7a8897d3d1e6779416e98fba4b492266691263c435d35845bbf79916",
+    "net_worth": "sha256:9500548d803ed1588574c27aa6221e17ef00ea9794840fdf40c1829e90304d44"
+  },
+  "report_statuses": {
+    "cash": "blocked",
+    "cashflow": "partial",
+    "consumption": "partial",
+    "investment": "blocked",
+    "net_worth": "blocked"
+  },
+  "schema": "PFIV025Stage9Phase92AnalysisValidationV1",
+  "sensitivity_preview_count": 4,
+  "source_review_count": 7,
+  "status": "pass"
+}

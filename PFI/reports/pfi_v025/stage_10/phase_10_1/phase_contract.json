@@ -1,0 +1,72 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE10-WHOLE-REVIEW",
+  "current_phase_only": true,
+  "phase_10_2_started": false,
+  "phase_10_3_started": false,
+  "phase_id": "V025-S10-P10.1",
+  "progress": {
+    "completed_units_and_total_units_required": true,
+    "heartbeat_counts_as_progress": false,
+    "monotonic": true,
+    "source": "durable_job_events",
+    "timer_based": false
+  },
+  "recovery": {
+    "bounded_attempts": true,
+    "cancel": true,
+    "dead_letter": true,
+    "retry": true,
+    "stale_worker_write_rejected": true
+  },
+  "safety_boundary": {
+    "background_publish_unverified_financial_facts": false,
+    "external_network_allowed": false,
+    "finder_used": false,
+    "raw_financial_values_in_evidence": false,
+    "real_database_used_by_phase_tests": false,
+    "result_artifact_is_publication": false
+  },
+  "schema": "PFIV025DurableJobLifecycleV1",
+  "sqlite": {
+    "busy_timeout_ms": 30000,
+    "explicit_transactions": true,
+    "foreign_keys": true,
+    "journal_mode": "DELETE",
+    "reason": "Phase 10 leaves WAL disabled; Stage 11 must prove SQLite 3.51.3+ or an official safe backport such as 3.44.6/3.50.7 before concurrent WAL",
+    "rollback_on_error": true,
+    "wal_enabled": false
+  },
+  "stage_10_whole_review_status": "not_started",
+  "states": [
+    "queued",
+    "running",
+    "retrying",
+    "succeeded",
+    "failed",
+    "cancelled",
+    "dead_letter"
+  ],
+  "status": "implementation_contract",
+  "storage": {
+    "event_table": "durable_job_events",
+    "events_append_only": true,
+    "job_table": "durable_jobs",
+    "migration_id": "v025_stage10_durable_jobs_v1",
+    "process_memory_only": false
+  },
+  "task_ids": [
+    "S10-P1-T1",
+    "S10-P1-T2",
+    "S10-P1-T3",
+    "S10-P1-T4"
+  ],
+  "worker_protocol": {
+    "claim_compare_and_swap": "job_id + revision + prior status",
+    "claim_lock": "BEGIN IMMEDIATE",
+    "duplicate_execution_prevention": true,
+    "expired_lease_recovery": true,
+    "heartbeat_requires_active_lease": true,
+    "lease_token_hash_persisted": true,
+    "lease_token_persisted": false
+  }
+}

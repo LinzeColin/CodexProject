@@ -8,6 +8,64 @@
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./styles/tokens.css" />
     <link rel="stylesheet" href="./styles.css" />
+    <style id="pfi-release-identity-gate-style">
+      [hidden] { display: none !important; }
+      .pfi-release-conflict {
+        box-sizing: border-box;
+        max-width: 760px;
+        margin: 8vh auto;
+        padding: 28px;
+        border: 1px solid #f0b44d;
+        border-radius: 16px;
+        background: #fff8e8;
+        color: #352607;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      }
+      .pfi-release-conflict h1 { margin-top: 0; }
+      .pfi-release-conflict-actions { padding-left: 1.25rem; line-height: 1.8; }
+      .top-bar { z-index: 130; }
+      .entry-status-strip { overflow: visible; }
+      .pfi-release-identity-details { position: relative; flex: 0 0 auto; }
+      .pfi-release-identity-details summary {
+        cursor: pointer;
+        list-style-position: inside;
+        padding: 3px 7px;
+        border: 1px solid var(--pfi-border, #d8dde3);
+        border-radius: 999px;
+        background: var(--pfi-surface, #fff);
+        color: var(--pfi-ink, #17202a);
+        white-space: nowrap;
+      }
+      .pfi-release-identity-panel {
+        position: absolute;
+        z-index: 120;
+        top: calc(100% + 8px);
+        left: 0;
+        box-sizing: border-box;
+        width: min(720px, calc(100vw - 32px));
+        max-height: min(70vh, 520px);
+        overflow: auto;
+        margin: 0;
+        padding: 16px;
+        border: 1px solid var(--pfi-border, #d8dde3);
+        border-radius: 12px;
+        background: var(--pfi-surface, #fff);
+        box-shadow: 0 14px 36px rgb(23 32 42 / 18%);
+        color: var(--pfi-ink, #17202a);
+        white-space: normal;
+      }
+      .pfi-release-identity-panel div + div { margin-top: 10px; }
+      .pfi-release-identity-panel dt { font-weight: 760; }
+      .pfi-release-identity-panel dd {
+        margin: 3px 0 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+        user-select: text;
+      }
+    </style>
   </head>
   <body
     data-shell-schema="PFIOSWebShellContractV1"
@@ -15,33 +73,58 @@
     data-fallback-flag-value="1"
     data-cached-home-target-seconds="2"
     data-uiux-delivery-target="v021_feedback_preferences"
-    data-pfi-version="v0.2.3"
-    data-pfi-app-version="0.2.3"
-    data-pfi-target-version="v0.2.4"
-    data-pfi-repair-label="PFI v0.2.3 Repair"
-    data-pfi-build-id="pfi-v024-stage2-phase22"
-    data-pfi-bundle-version="20260630.2"
-    data-pfi-web-bundle-hash="runtime-computed"
-    data-pfi-ui-contract-version="PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+    data-pfi-version="v0.2.5"
+    data-pfi-app-version="0.2.5"
+    data-pfi-target-version="v0.2.5"
+    data-pfi-repair-label="PFI v0.2.5"
+    data-pfi-build-id="pfi-v025-s1p1-20260712.1"
+    data-pfi-bundle-version="20260712.1"
+    data-pfi-web-bundle-hash="manifest-bound"
+    data-pfi-ui-contract-version="PFI-V025-RELEASE-IDENTITY"
+    data-pfi-release-identity-state="pending"
     data-pfi-stage="Stage 6"
     data-pfi-phase="6.3"
     data-stage3-navigation-contract="PFI-V024-STAGE3-PHASE31-NAVIGATION"
     data-v024-stage6-design-system="phase_6_1"
     data-v024-stage6-motion-feedback="phase_6_2"
     data-v024-stage6-haptics-settings="phase_6_3"
+    data-v025-stage8-design-system="phase_8_1"
+    data-v025-stage8-motion-feedback="phase_8_2"
+    data-stage8-feedback-budget="phase_8_2"
+    data-v025-stage8-accessibility="phase_8_3"
   >
+    <section id="pfi-release-conflict" class="pfi-release-conflict" role="alert" aria-live="assertive">
+      <h1 data-pfi-release-conflict-title>正在核对 PFI 发布身份</h1>
+      <p data-pfi-release-conflict-detail>页面会在 App、启动 URL、后端与前端身份一致后显示。</p>
+      <p>如果出现版本冲突，请按顺序执行：</p>
+      <ol class="pfi-release-conflict-actions">
+        <li>重新启动 PFI。</li>
+        <li>从受信任的本地 checkout 重新安装 PFI.app。</li>
+        <li>清除缓存后再次打开；仍不一致时保留此页，不继续使用旧 UI。</li>
+      </ol>
+    </section>
     <a class="skip-link" href="#main-workspace">跳到内容</a>
-    <div class="app-shell" data-state="ready">
+    <div class="app-shell" data-state="ready" hidden>
       <header class="top-bar" aria-label="PFI 顶部栏">
         <div class="brand" aria-label="PFI">
           <span class="brand-mark" aria-hidden="true">PFI</span>
           <span class="brand-name">PFI</span>
         </div>
         <div class="entry-status-strip" data-pfi-entry-version-strip aria-label="入口版本">
-          <span data-pfi-entry-repair-label>PFI v0.2.3 Repair</span>
-          <span data-pfi-entry-build-id>pfi-v024-stage2-phase22</span>
-          <span data-pfi-entry-bundle-hash>bundle runtime-computed</span>
-          <span data-pfi-entry-ui-contract>PFI-V024-STAGE2-ENTRY-CONSISTENCY</span>
+          <span data-pfi-entry-repair-label>PFI v0.2.5</span>
+          <span data-pfi-entry-build-id>pfi-v025-s1p1-20260712.1</span>
+          <span data-pfi-entry-bundle-hash>bundle manifest-bound</span>
+          <span data-pfi-entry-ui-contract>PFI-V025-RELEASE-IDENTITY</span>
+          <details class="pfi-release-identity-details" data-pfi-release-identity-details>
+            <summary data-pfi-release-identity-summary>发布身份详情</summary>
+            <dl class="pfi-release-identity-panel" aria-label="PFI v0.2.5 完整发布身份">
+              <div><dt>版本</dt><dd data-pfi-release-detail-version>正在核对</dd></div>
+              <div><dt>构建</dt><dd data-pfi-release-detail-build>正在核对</dd></div>
+              <div><dt>Commit</dt><dd data-pfi-release-detail-commit>正在核对</dd></div>
+              <div><dt>Frontend SHA-256</dt><dd data-pfi-release-detail-frontend>正在核对</dd></div>
+              <div><dt>Backend SHA-256</dt><dd data-pfi-release-detail-backend>正在核对</dd></div>
+            </dl>
+          </details>
         </div>
         <div class="global-search" data-search-surface="global">
           <label for="global-search" class="sr-only">全局搜索</label>
@@ -98,10 +181,10 @@
             class="fx-badge"
             data-fx-badge
             data-context-field="fx_badge"
-            data-fx-effective-date="2026-06-28"
-            data-fx-cache-state="cached"
-            data-fx-source-label="AUD/CNY=4.69（2026/06/28 06:00）"
-          >AUD/CNY=4.69（2026/06/28 06:00）</span>
+            data-fx-effective-date=""
+            data-fx-cache-state="not_loaded"
+            data-fx-source-label="AUD/CNY=未加载"
+          >AUD/CNY=未加载</span>
           <button class="icon-button" type="button" data-command-open aria-label="打开命令面板" title="命令面板">
             <span aria-hidden="true">⌘</span><span class="button-label">搜索</span>
           </button>
@@ -117,30 +200,44 @@
         </div>
       </header>
 
-      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="10" data-stage3-primary-nav-contract="PFI-V024-STAGE3-PHASE31-NAVIGATION" data-legacy-primary-entries="0">
-        <button class="nav-item is-active" type="button" data-primary-entry="true" data-nav-index="1" data-workspace="home" data-route-alias="/home" data-nav-icon="⌂" data-nav-hint="净资产 · 现金流 · 数据健康">首页总览</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="2" data-workspace="accounts" data-route-alias="/accounts" data-nav-icon="◫" data-nav-hint="账户地图 · 对账 · 跨币种">账户与资产</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="3" data-workspace="ledger" data-route-alias="/ledger" data-nav-icon="≋" data-nav-hint="标准流水 · A/B/C/D 复核">账本流水</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="4" data-workspace="investment" data-route-alias="/investment" data-nav-icon="↗" data-nav-hint="持仓 · 归因 · 策略回测">投资管理</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="5" data-workspace="consumption" data-route-alias="/consumption" data-nav-icon="◌" data-nav-hint="预算 · 分类 · 异常 · 订阅">消费管理</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="6" data-workspace="sync" data-route-alias="/sources-upload" data-nav-icon="⇄" data-nav-hint="上传 · 解析 · 对账 · 队列">数据源与上传</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="7" data-workspace="recommendations" data-route-alias="/review" data-nav-icon="✦" data-nav-hint="证据 · 决策 · 生命周期">建议与复盘</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="8" data-workspace="insights" data-route-alias="/reports" data-nav-icon="▣" data-nav-hint="月报 · 导出 · 本机快照">报告与洞察</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="9" data-workspace="market_research" data-route-alias="/market-research" data-nav-icon="⌁" data-nav-hint="市场 · 研究 · 策略实验室">市场与研究</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="10" data-workspace="settings" data-route-alias="/settings" data-nav-icon="⚙" data-nav-hint="反馈 · 参数 · 数据管理">设置</button>
+      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="10" data-stage6-primary-nav-contract="PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS" data-shared-responsive-primary-tree="true" data-legacy-primary-entries="0">
+        <button class="nav-item is-active" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="home" data-nav-index="1" data-workspace="home" data-route-alias="/overview" data-nav-icon="⌂" data-nav-hint="净资产 · 现金流 · 数据健康">首页总览</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="accounts" data-nav-index="2" data-workspace="accounts" data-route-alias="/accounts" data-nav-icon="◫" data-nav-hint="账户地图 · 对账 · 跨币种">账户与资产</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="ledger" data-nav-index="3" data-workspace="ledger" data-route-alias="/ledger" data-nav-icon="≋" data-nav-hint="标准流水 · A/B/C/D 复核">账本流水</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="investment" data-nav-index="4" data-workspace="investment" data-route-alias="/investment" data-nav-icon="↗" data-nav-hint="持仓 · 归因 · 策略回测">投资管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="consumption" data-nav-index="5" data-workspace="consumption" data-route-alias="/consumption" data-nav-icon="◌" data-nav-hint="预算 · 分类 · 异常 · 订阅">消费管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="sync" data-nav-index="6" data-workspace="sync" data-route-alias="/data" data-nav-icon="⇄" data-nav-hint="上传 · 解析 · 对账 · 队列">数据源与上传</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="recommendations" data-nav-index="7" data-workspace="recommendations" data-route-alias="/review" data-nav-icon="✦" data-nav-hint="证据 · 决策 · 生命周期">建议与复盘</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="insights" data-nav-index="8" data-workspace="insights" data-route-alias="/reports" data-nav-icon="▣" data-nav-hint="月报 · 导出 · 本机快照">报告与洞察</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="market_research" data-nav-index="9" data-workspace="market_research" data-route-alias="/market-research" data-nav-icon="⌁" data-nav-hint="市场 · 研究 · 策略实验室">市场与研究</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-mobile-primary-entry="true" data-mobile-workspace="settings" data-nav-index="10" data-workspace="settings" data-route-alias="/settings" data-nav-icon="⚙" data-nav-hint="反馈 · 参数 · 数据管理">设置</button>
       </nav>
 
       <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home" data-v024-stage5-home="phase_5_1">
+        <section
+          class="stage6-invalid-route"
+          data-stage6-invalid-route
+          role="alert"
+          aria-live="assertive"
+          aria-labelledby="stage6-invalid-route-title"
+          hidden
+        >
+          <p class="panel-kicker">页面地址无效</p>
+          <h1 id="stage6-invalid-route-title" data-stage6-invalid-route-title tabindex="-1">无法打开这个 PFI 页面</h1>
+          <p data-stage6-invalid-route-detail>该地址没有注册为 PFI 一级入口或二级页面。当前数据没有被修改。</p>
+          <p class="stage6-invalid-route-requested">请求地址：<code data-stage6-invalid-route-requested></code></p>
+          <button type="button" data-stage6-invalid-route-recover data-route-alias="/overview">返回首页总览</button>
+        </section>
         <section class="workspace-header" aria-labelledby="workspace-title">
           <div>
             <p class="workspace-kicker" id="workspace-kicker">今日总览</p>
             <h1 id="workspace-title">首页总览</h1>
             <p id="workspace-conclusion">先看当前财务状态、待处理事项和最近报告，再进入账户、流水、投资、消费或上传页面。</p>
           </div>
-          <div class="sync-status" aria-live="polite">
-            <span class="status-dot status-ready" aria-hidden="true"></span>
-            <span>本机数据可用</span>
-            <strong id="freshness-label" data-context-field="freshness">更新 08:45</strong>
+          <div class="sync-status" aria-live="polite" data-source-availability>
+            <span class="status-dot status-review" aria-hidden="true" data-source-status-dot></span>
+            <span data-source-availability-label>等待财务数据状态</span>
+            <strong id="freshness-label" data-context-field="freshness">尚未确认数据可用性</strong>
           </div>
         </section>
 
@@ -168,7 +265,7 @@
           <article class="metric-tile" data-home-card="review_queue">
             <span>待复核交易</span>
             <strong data-card-value>未读取状态</strong>
-            <small data-card-detail>read model 返回后显示</small>
+            <small data-card-detail>财务数据就绪后显示</small>
           </article>
           <article class="metric-tile" data-home-card="data_source_status">
             <span>数据源状态</span>
@@ -177,11 +274,22 @@
           </article>
         </section>
 
-        <section class="home-question-grid" data-v024-stage5-home="phase_5_1" data-home-question-grid aria-label="首页六个核心问题">
+        <section class="stage8-workspace-focus" data-stage8-workspace-focus hidden aria-labelledby="stage8-workspace-focus-title">
+          <div class="stage8-workspace-focus-head">
+            <div>
+              <p class="panel-kicker" data-stage8-workspace-focus-kicker>当前工作对象</p>
+              <h2 id="stage8-workspace-focus-title" data-stage8-workspace-focus-title>工作区</h2>
+            </div>
+            <span class="status-pill status-review" data-stage8-workspace-focus-status>等待真实数据</span>
+          </div>
+          <div data-stage8-workspace-focus-body></div>
+        </section>
+
+        <section class="home-question-grid" data-v024-stage5-home="phase_5_1" data-home-question-grid data-stage8-home-only aria-label="首页六个核心问题">
           <article class="home-question-card">
             <span>钱</span>
             <strong>现在能确认多少钱</strong>
-            <p>只显示真实 read model 已确认的金额；阻断指标保留中文状态。</p>
+            <p>只显示已经核验的真实金额；数据未就绪时保留明确中文状态。</p>
           </article>
           <article class="home-question-card">
             <span>位置</span>
@@ -332,8 +440,8 @@
                 <span class="status-pill status-review" data-upload-status data-upload-state="idle">等待选择文件</span>
               </div>
               <label class="upload-dropzone" data-upload-dropzone for="pfi-upload-input" tabindex="0">
-                <strong>拖拽 CSV / ZIP / XLSX 到这里</strong>
-                <span>也可以点击选择文件；写入本机 PFI 和 MetaDatabase，不上传到外部服务。</span>
+                <strong>拖拽 CSV / ZIP 到这里</strong>
+                <span>也可以点击选择文件；原始字节只进入本机私有 raw store，确认前不会写入正式账本。</span>
               </label>
               <input
                 id="pfi-upload-input"
@@ -341,11 +449,11 @@
                 data-upload-input
                 type="file"
                 multiple
-                accept=".csv,.zip,.xls,.xlsx,text/csv,application/zip"
+                accept=".csv,.zip,text/csv,application/zip"
               />
               <div class="upload-error" data-upload-error role="alert" hidden></div>
               <ul class="upload-file-list" data-upload-file-list aria-label="已选择文件">
-                <li>等待 CSV / ZIP / XLSX 文件</li>
+                <li>等待 CSV / ZIP 文件</li>
               </ul>
               <div class="operation-status" data-upload-preview aria-live="polite">
                 <strong>解析预览</strong>
@@ -420,13 +528,13 @@
             <div>
               <p class="panel-kicker">持仓操作流</p>
               <h2 id="holdings-persistence-title">持仓编辑</h2>
-              <p>编辑标的、数量、成本、币种、账户、更新时间和备注后点击保存；生产保存必须调用本机服务并写入 SQLite。</p>
+              <p>编辑标的、数量、成本、价格、币种、账户、时间和备注后点击保存；本机服务以单一 SQLite transaction 提交。缺少真实价格/FX 时只同步持仓数量与 hash，不显示财务 0。</p>
             </div>
             <span class="status-pill status-review" data-holdings-persistence-status>等待保存</span>
           </div>
           <dl class="holdings-summary" data-holdings-summary aria-label="持仓摘要">
             <div><dt>持仓数</dt><dd data-holdings-summary-count>0</dd></div>
-            <div><dt>总市值</dt><dd data-holdings-summary-value>暂无真实持仓</dd></div>
+            <div><dt>估值状态</dt><dd data-holdings-summary-value>暂无真实持仓</dd></div>
             <div><dt>草稿状态</dt><dd data-holdings-summary-saved data-holdings-draft-label>未提交草稿</dd></div>
           </dl>
           <div class="holdings-table-wrap" data-holding-edit-form>
@@ -451,9 +559,23 @@
           <div class="holdings-actions">
             <button class="primary-action" type="button" data-holdings-save data-holdings-save-action>保存修改</button>
             <button class="secondary-action" type="button" data-holdings-add>新增持仓</button>
-            <button class="secondary-action" type="button" data-holdings-reset>恢复默认</button>
+            <button class="secondary-action" type="button" data-holdings-reset>放弃未提交修改</button>
           </div>
         </section>
+
+        <dialog class="confirmation-dialog" data-holdings-delete-dialog aria-labelledby="holdings-delete-dialog-title" aria-describedby="holdings-delete-dialog-description">
+          <form method="dialog">
+            <p class="panel-kicker">持仓变更确认</p>
+            <h2 id="holdings-delete-dialog-title">确认软删除</h2>
+            <p id="holdings-delete-dialog-description" data-holdings-delete-summary>
+              确认前不会发送请求或修改本机数据库。
+            </p>
+            <div class="confirmation-dialog-actions">
+              <button class="secondary-action" type="button" data-holdings-delete-cancel>取消</button>
+              <button class="primary-action" type="button" data-holdings-delete-confirm data-stage8-error-prevention="holding-soft-delete-confirmation" aria-describedby="holdings-delete-dialog-description">确认软删除</button>
+            </div>
+          </form>
+        </dialog>
 
         <section class="content-grid">
           <article class="panel main-panel" aria-labelledby="main-panel-title">
@@ -589,7 +711,7 @@
           <div class="toggle-row" aria-label="反馈开关">
             <label class="toggle-item">
               <span><strong>触感反馈</strong><small>关闭、轻、标准、强按浏览器能力降级</small></span>
-              <input class="toggle" type="checkbox" data-feedback-toggle="haptic" checked />
+              <input class="toggle" type="checkbox" data-feedback-toggle="haptic" />
             </label>
             <label class="toggle-item">
               <span><strong>声音反馈</strong><small>仅用户点击后播放</small></span>
@@ -630,7 +752,7 @@
               <button class="primary-action" type="button" data-settings-save>保存设置</button>
               <button class="secondary-action" type="button" data-settings-reset>恢复默认</button>
             </div>
-            <p class="operation-status" data-settings-operation-state aria-live="polite">设置只在本页显示；保存后会更新本页状态。</p>
+            <p class="operation-status" data-settings-operation-state aria-live="polite">设置只在本页显示和管理；反馈偏好保存后写入本机 SQLite，刷新或重启仍保留。</p>
           </section>
         </section>
 
@@ -677,19 +799,6 @@
       </aside>
     </div>
 
-    <nav class="mobile-bottom-nav" aria-label="移动端一级工作区" data-stage3-mobile-primary="10" data-stage3-primary-nav-contract="PFI-V024-STAGE3-PHASE31-NAVIGATION" data-legacy-primary-entries="0">
-      <button type="button" class="mobile-tab is-active" data-mobile-primary-entry="true" data-mobile-workspace="home" data-route-alias="/home"><span aria-hidden="true">⌂</span><span>首页总览</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="accounts" data-route-alias="/accounts"><span aria-hidden="true">◫</span><span>账户与资产</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="ledger" data-route-alias="/ledger"><span aria-hidden="true">≋</span><span>账本流水</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="investment" data-route-alias="/investment"><span aria-hidden="true">↗</span><span>投资管理</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="consumption" data-route-alias="/consumption"><span aria-hidden="true">◌</span><span>消费管理</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="sync" data-route-alias="/sources-upload"><span aria-hidden="true">⇄</span><span>数据源与上传</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="recommendations" data-route-alias="/review"><span aria-hidden="true">✦</span><span>建议与复盘</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="insights" data-route-alias="/reports"><span aria-hidden="true">▣</span><span>报告与洞察</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="market_research" data-route-alias="/market-research"><span aria-hidden="true">⌁</span><span>市场与研究</span></button>
-      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="settings" data-route-alias="/settings"><span aria-hidden="true">⚙</span><span>设置</span></button>
-    </nav>
-
     <dialog class="command-palette" data-command-palette aria-label="命令面板">
       <form method="dialog">
         <label>
@@ -706,36 +815,112 @@
           <button type="button" role="option" data-command-workspace="recommendations">建议与复盘</button>
           <button type="button" role="option" data-command-workspace="insights">报告与洞察</button>
           <button type="button" role="option" data-command-workspace="market_research">市场与研究</button>
-          <button type="button" role="option" data-command-workspace="home" data-command-route="/home/today">首页</button>
-          <button type="button" role="option" data-command-workspace="market_research" data-command-route="/market/watch">市场</button>
-          <button type="button" role="option" data-command-workspace="market_research" data-command-route="/market/research">研究</button>
-          <button type="button" role="option" data-command-workspace="investment" data-command-route="/investment/holdings">持仓</button>
-          <button type="button" role="option" data-command-workspace="market_research" data-command-route="/market/lab">策略实验室</button>
-          <button type="button" role="option" data-command-workspace="settings" data-command-route="/settings/data">数据与系统</button>
+          <button type="button" role="option" data-command-workspace="home" data-command-route="/home">首页</button>
+          <button type="button" role="option" data-command-workspace="market_research" data-command-route="/market">市场</button>
+          <button type="button" role="option" data-command-workspace="market_research" data-command-route="/research">研究</button>
+          <button type="button" role="option" data-command-workspace="investment" data-command-route="/holdings">持仓</button>
+          <button type="button" role="option" data-command-workspace="market_research" data-command-route="/strategy-lab">策略实验室</button>
+          <button type="button" role="option" data-command-workspace="settings" data-command-route="/data-system">数据与系统</button>
           <button type="button" role="option" data-command-workspace="settings" data-command-route="/settings">设置</button>
         </div>
       </form>
     </dialog>
     <noscript>
-      <section class="no-js-route-fallback" data-no-js-route-fallback="10" aria-label="PFI 无脚本一级入口">
-        <h2>PFI 一级入口</h2>
-        <p>浏览器脚本关闭时，可以使用这些入口定位到对应 route；完整页面状态和浏览器历史需要启用脚本。</p>
+      <style>
+        .app-shell, .command-palette, #pfi-release-conflict { display: none !important; }
+        .no-js-route-fallback { max-width: 1180px; margin: 0 auto; padding: 32px; color: #eff6ff; background: #071426; font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        .no-js-route-fallback nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; }
+        .no-js-route-fallback a { padding: 8px 12px; color: #dbeafe; border: 1px solid #31527a; border-radius: 999px; text-decoration: none; }
+        .no-js-page-directory { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+        .no-js-page-directory > h3 { grid-column: 1 / -1; }
+        .no-js-page-directory article { min-height: 120px; padding: 16px; border: 1px solid #284565; border-radius: 14px; background: #0d2138; }
+        .no-js-page-directory article:target { border-color: #5eead4; box-shadow: 0 0 0 3px rgba(94, 234, 212, .2); }
+        .no-js-page-directory h4 { display: block !important; visibility: visible !important; opacity: 1 !important; margin: 0 0 8px; color: #f8fafc !important; }
+        .no-js-page-directory article p { display: block !important; visibility: visible !important; opacity: 1 !important; margin: 0; color: #bfd0e3 !important; }
+      </style>
+      <section class="no-js-route-fallback" data-no-js-route-fallback="10" data-no-js-secondary-page-count="45" aria-label="PFI 无脚本入口">
+        <h2>PFI 无脚本页面目录</h2>
+        <p>浏览器脚本关闭时，10 个一级入口和 45 个独立二级页面仍保留标题、主要任务与 canonical route；动态数据和浏览器历史需要启用脚本。</p>
         <nav aria-label="无脚本一级入口">
-          <a href="#/home" data-no-js-route="/home">首页总览</a>
+          <a href="#/overview" data-no-js-route="/overview">首页总览</a>
           <a href="#/accounts" data-no-js-route="/accounts">账户与资产</a>
           <a href="#/ledger" data-no-js-route="/ledger">账本流水</a>
           <a href="#/investment" data-no-js-route="/investment">投资管理</a>
           <a href="#/consumption" data-no-js-route="/consumption">消费管理</a>
-          <a href="#/sources-upload" data-no-js-route="/sources-upload">数据源与上传</a>
+          <a href="#/data" data-no-js-route="/data">数据源与上传</a>
           <a href="#/review" data-no-js-route="/review">建议与复盘</a>
           <a href="#/reports" data-no-js-route="/reports">报告与洞察</a>
           <a href="#/market-research" data-no-js-route="/market-research">市场与研究</a>
           <a href="#/settings" data-no-js-route="/settings">设置</a>
         </nav>
+        <section class="no-js-page-directory" aria-label="无脚本二级页面 fallback">
+          <h3>独立二级页面</h3>
+          <article id="/overview/status" data-no-js-page-route="/overview/status" data-no-js-page-title="财务状态" data-no-js-page-task="确认当前财务状态、数据新鲜度与阻断项。"><h4>财务状态</h4><p>确认当前财务状态、数据新鲜度与阻断项。</p></article>
+          <article id="/overview/todo" data-no-js-page-route="/overview/todo" data-no-js-page-title="待办事项" data-no-js-page-task="按影响与阻断程度处理财务工作待办。"><h4>待办事项</h4><p>按影响与阻断程度处理财务工作待办。</p></article>
+          <article id="/overview/actions" data-no-js-page-route="/overview/actions" data-no-js-page-title="快捷操作" data-no-js-page-task="从已满足前置条件的动作中进入下一项工作。"><h4>快捷操作</h4><p>从已满足前置条件的动作中进入下一项工作。</p></article>
+          <article id="/overview/reports" data-no-js-page-route="/overview/reports" data-no-js-page-title="最近报告" data-no-js-page-task="核对最近报告的数据范围、状态与证据。"><h4>最近报告</h4><p>核对最近报告的数据范围、状态与证据。</p></article>
+          <article id="/accounts/overview" data-no-js-page-route="/accounts/overview" data-no-js-page-title="账户地图" data-no-js-page-task="确认账户、来源、币种与更新时间的覆盖关系。"><h4>账户地图</h4><p>确认账户、来源、币种与更新时间的覆盖关系。</p></article>
+          <article id="/accounts/list" data-no-js-page-route="/accounts/list" data-no-js-page-title="账户清单" data-no-js-page-task="筛选账户并查看余额、来源和数据状态。"><h4>账户清单</h4><p>筛选账户并查看余额、来源和数据状态。</p></article>
+          <article id="/accounts/trend" data-no-js-page-route="/accounts/trend" data-no-js-page-title="资产趋势" data-no-js-page-task="检查资产时间序列的覆盖范围与缺口。"><h4>资产趋势</h4><p>检查资产时间序列的覆盖范围与缺口。</p></article>
+          <article id="/accounts/reconcile" data-no-js-page-route="/accounts/reconcile" data-no-js-page-title="账户对账" data-no-js-page-task="比较平台快照与本机账本并处理差异。"><h4>账户对账</h4><p>比较平台快照与本机账本并处理差异。</p></article>
+          <article id="/ledger/list" data-no-js-page-route="/ledger/list" data-no-js-page-title="流水列表" data-no-js-page-task="逐笔查看流水、来源批次与证据链。"><h4>流水列表</h4><p>逐笔查看流水、来源批次与证据链。</p></article>
+          <article id="/ledger/filter" data-no-js-page-route="/ledger/filter" data-no-js-page-title="筛选搜索" data-no-js-page-task="组合条件定位需要核验的真实流水。"><h4>筛选搜索</h4><p>组合条件定位需要核验的真实流水。</p></article>
+          <article id="/ledger/review" data-no-js-page-route="/ledger/review" data-no-js-page-title="分类复核" data-no-js-page-task="复核低置信度分类并记录决策理由。"><h4>分类复核</h4><p>复核低置信度分类并记录决策理由。</p></article>
+          <article id="/ledger/export" data-no-js-page-route="/ledger/export" data-no-js-page-title="导出流水" data-no-js-page-task="确认范围与格式后导出当前真实结果。"><h4>导出流水</h4><p>确认范围与格式后导出当前真实结果。</p></article>
+          <article id="/investment/overview" data-no-js-page-route="/investment/overview" data-no-js-page-title="投资总览" data-no-js-page-task="核对投资市值、现金仓位与配置集中度。"><h4>投资总览</h4><p>核对投资市值、现金仓位与配置集中度。</p></article>
+          <article id="/investment/holdings" data-no-js-page-route="/investment/holdings" data-no-js-page-title="持仓" data-no-js-page-task="查看或维护持仓，并保留持久化状态。"><h4>持仓</h4><p>查看或维护持仓，并保留持久化状态。</p></article>
+          <article id="/investment/trades" data-no-js-page-route="/investment/trades" data-no-js-page-title="交易记录" data-no-js-page-task="核对买卖、费用、税费与汇率证据。"><h4>交易记录</h4><p>核对买卖、费用、税费与汇率证据。</p></article>
+          <article id="/investment/returns" data-no-js-page-route="/investment/returns" data-no-js-page-title="收益分析" data-no-js-page-task="基于持仓与交易证据解释收益和风险。"><h4>收益分析</h4><p>基于持仓与交易证据解释收益和风险。</p></article>
+          <article id="/consumption/overview" data-no-js-page-route="/consumption/overview" data-no-js-page-title="消费总览" data-no-js-page-task="对照现金流与行为口径理解消费结构。"><h4>消费总览</h4><p>对照现金流与行为口径理解消费结构。</p></article>
+          <article id="/consumption/category" data-no-js-page-route="/consumption/category" data-no-js-page-title="分类分析" data-no-js-page-task="从分类汇总下钻到真实流水与证据。"><h4>分类分析</h4><p>从分类汇总下钻到真实流水与证据。</p></article>
+          <article id="/consumption/budget" data-no-js-page-route="/consumption/budget" data-no-js-page-title="预算" data-no-js-page-task="比较预算与真实支出并处理超支项。"><h4>预算</h4><p>比较预算与真实支出并处理超支项。</p></article>
+          <article id="/consumption/subscription" data-no-js-page-route="/consumption/subscription" data-no-js-page-title="订阅" data-no-js-page-task="识别周期扣费并复核订阅状态。"><h4>订阅</h4><p>识别周期扣费并复核订阅状态。</p></article>
+          <article id="/consumption/anomaly" data-no-js-page-route="/consumption/anomaly" data-no-js-page-title="异常消费" data-no-js-page-task="复核大额、重复或异常时段消费。"><h4>异常消费</h4><p>复核大额、重复或异常时段消费。</p></article>
+          <article id="/data/upload" data-no-js-page-route="/data/upload" data-no-js-page-title="上传中心" data-no-js-page-task="选择文件并在解析前确认格式与隐私边界。"><h4>上传中心</h4><p>选择文件并在解析前确认格式与隐私边界。</p></article>
+          <article id="/data/import" data-no-js-page-route="/data/import" data-no-js-page-title="导入中心" data-no-js-page-task="查看批次解析、映射、失败和待复核状态。"><h4>导入中心</h4><p>查看批次解析、映射、失败和待复核状态。</p></article>
+          <article id="/data/sources" data-no-js-page-route="/data/sources" data-no-js-page-title="数据源管理" data-no-js-page-task="核对来源、账户映射、格式与更新时间。"><h4>数据源管理</h4><p>核对来源、账户映射、格式与更新时间。</p></article>
+          <article id="/data/review" data-no-js-page-route="/data/review" data-no-js-page-title="待复核" data-no-js-page-task="处理解析、映射与质量门禁产生的复核项。"><h4>待复核</h4><p>处理解析、映射与质量门禁产生的复核项。</p></article>
+          <article id="/data/history" data-no-js-page-route="/data/history" data-no-js-page-title="导入历史" data-no-js-page-task="追踪导入批次、结果、版本与证据。"><h4>导入历史</h4><p>追踪导入批次、结果、版本与证据。</p></article>
+          <article id="/review/list" data-no-js-page-route="/review/list" data-no-js-page-title="建议列表" data-no-js-page-task="按证据、影响与可执行性整理建议。"><h4>建议列表</h4><p>按证据、影响与可执行性整理建议。</p></article>
+          <article id="/review/detail" data-no-js-page-route="/review/detail" data-no-js-page-title="建议详情" data-no-js-page-task="核对建议依据、代价、失效条件与行动。"><h4>建议详情</h4><p>核对建议依据、代价、失效条件与行动。</p></article>
+          <article id="/review/decision" data-no-js-page-route="/review/decision" data-no-js-page-title="决策记录" data-no-js-page-task="记录接受、暂缓或忽略建议的理由。"><h4>决策记录</h4><p>记录接受、暂缓或忽略建议的理由。</p></article>
+          <article id="/review/history" data-no-js-page-route="/review/history" data-no-js-page-title="复盘记录" data-no-js-page-task="比较建议执行结果与原始预期并形成复盘。"><h4>复盘记录</h4><p>比较建议执行结果与原始预期并形成复盘。</p></article>
+          <article id="/reports/monthly" data-no-js-page-route="/reports/monthly" data-no-js-page-title="月报" data-no-js-page-task="在月度数据门禁通过后生成可追溯草稿。"><h4>月报</h4><p>在月度数据门禁通过后生成可追溯草稿。</p></article>
+          <article id="/reports/quarterly" data-no-js-page-route="/reports/quarterly" data-no-js-page-title="季报" data-no-js-page-task="比较季度覆盖与变化并保留不可比项。"><h4>季报</h4><p>比较季度覆盖与变化并保留不可比项。</p></article>
+          <article id="/reports/yearly" data-no-js-page-route="/reports/yearly" data-no-js-page-title="年报" data-no-js-page-task="核对全年覆盖与关闭状态后形成年度草稿。"><h4>年报</h4><p>核对全年覆盖与关闭状态后形成年度草稿。</p></article>
+          <article id="/reports/custom" data-no-js-page-route="/reports/custom" data-no-js-page-title="自定义报告" data-no-js-page-task="组合数据域与筛选条件构建受控报告。"><h4>自定义报告</h4><p>组合数据域与筛选条件构建受控报告。</p></article>
+          <article id="/reports/export" data-no-js-page-route="/reports/export" data-no-js-page-title="报告导出" data-no-js-page-task="在证据检查通过后选择格式与目标位置。"><h4>报告导出</h4><p>在证据检查通过后选择格式与目标位置。</p></article>
+          <article id="/market-research/market" data-no-js-page-route="/market-research/market" data-no-js-page-title="市场观察" data-no-js-page-task="组织指数、ETF、主题与自选观察对象。"><h4>市场观察</h4><p>组织指数、ETF、主题与自选观察对象。</p></article>
+          <article id="/market-research/research" data-no-js-page-route="/market-research/research" data-no-js-page-title="研究笔记" data-no-js-page-task="按主题整理研究证据、引用与反方条件。"><h4>研究笔记</h4><p>按主题整理研究证据、引用与反方条件。</p></article>
+          <article id="/market-research/company" data-no-js-page-route="/market-research/company" data-no-js-page-title="公司研究" data-no-js-page-task="核对公司资料、关键假设、证据与风险。"><h4>公司研究</h4><p>核对公司资料、关键假设、证据与风险。</p></article>
+          <article id="/market-research/fund" data-no-js-page-route="/market-research/fund" data-no-js-page-title="基金研究" data-no-js-page-task="检查基金持仓、费用、风格与披露来源。"><h4>基金研究</h4><p>检查基金持仓、费用、风格与披露来源。</p></article>
+          <article id="/market-research/strategy-lab" data-no-js-page-route="/market-research/strategy-lab" data-no-js-page-title="策略实验室" data-no-js-page-task="配置研究实验并保留参数、结果与失效条件。"><h4>策略实验室</h4><p>配置研究实验并保留参数、结果与失效条件。</p></article>
+          <article id="/settings/account" data-no-js-page-route="/settings/account" data-no-js-page-title="账户偏好" data-no-js-page-task="管理显示币种、默认账户与界面偏好。"><h4>账户偏好</h4><p>管理显示币种、默认账户与界面偏好。</p></article>
+          <article id="/settings/data-system" data-no-js-page-route="/settings/data-system" data-no-js-page-title="数据与系统" data-no-js-page-task="核对本机数据路径、服务与质量状态。"><h4>数据与系统</h4><p>核对本机数据路径、服务与质量状态。</p></article>
+          <article id="/settings/privacy" data-no-js-page-route="/settings/privacy" data-no-js-page-title="隐私与本地存储" data-no-js-page-task="确认本地存储、忽略规则与敏感数据边界。"><h4>隐私与本地存储</h4><p>确认本地存储、忽略规则与敏感数据边界。</p></article>
+          <article id="/settings/feedback" data-no-js-page-route="/settings/feedback" data-no-js-page-title="反馈偏好" data-no-js-page-task="管理视觉、声音、触感与无障碍反馈。"><h4>反馈偏好</h4><p>管理视觉、声音、触感与无障碍反馈。</p></article>
+          <article id="/settings/backup" data-no-js-page-route="/settings/backup" data-no-js-page-title="备份恢复" data-no-js-page-task="核对备份完整性、恢复点与操作风险。"><h4>备份恢复</h4><p>核对备份完整性、恢复点与操作风险。</p></article>
+        </section>
       </section>
     </noscript>
     <script type="application/json" id="pfi-runtime-config">
-      {"apiBaseUrl":"http://127.0.0.1:8766","readModelStatusApi":false}
+      {"apiBaseUrl":"http://127.0.0.1:8766","readModelStatusApi":false,"releaseManifestApi":false,"releaseCachePolicyApi":false}
+    </script>
+    <script type="application/json" id="pfi-release-manifest">
+      {
+        "product": "PFI",
+        "version": "v0.2.5",
+        "build_id": "pfi-v025-s1p1-20260712.1",
+        "git_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+        "frontend_bundle_hash": "e18644635d69488301030dd57316c2316317a859e8afed4aecfc652c0b7dffee",
+        "backend_build_hash": "d1d60c64e91d21d3dcd8ac76714087c84e3f4d3cbd105bd24e2ccdc209bb0600",
+        "app_short_version": "0.2.5",
+        "app_build_version": "20260712.1",
+        "data_schema_version": "PFIV025Stage7MetricLineageV1",
+        "formula_version": "v0.2.3",
+        "parameter_version": "v0.2.2",
+        "generated_at": "2026-07-15T21:43:27Z"
+      }
     </script>
     <script type="application/json" id="pfi-home-summary">
       {
@@ -778,6 +963,7 @@
     <script src="./app/version.js"></script>
     <script src="./app/entry_audit.js"></script>
     <script src="./app/navigation.js"></script>
+    <script src="./app/pages/stage7Lineage.js"></script>
     <script src="./app/routes.js"></script>
     <script src="./app/data_state.js"></script>
     <script src="./app/pages/stage4Subpages.js"></script>
@@ -785,6 +971,16 @@
     <script src="./app/ux_state.js"></script>
     <script src="./app/pages/home.js"></script>
     <script src="./app/pages/reports.js"></script>
+    <script src="./app/pages/reports/stage9AnalysisData.js"></script>
+    <script src="./app/pages/reports/stage9Analysis.js"></script>
+    <script src="./app/pages/reports/stage9DecisionReviewData.js"></script>
+    <script src="./app/pages/reports/stage9DecisionReview.js"></script>
+    <script src="./app/motion.js"></script>
+    <script src="./app/haptics.js"></script>
+    <script src="./app/components/jobTimeline.js"></script>
+    <script src="./app/jobs/runtimeJobs.js"></script>
     <script src="./app/shell.js"></script>
+    <script src="./app/components/designSystem.js"></script>
+    <script src="./app/accessibility.js"></script>
   </body>
 </html>

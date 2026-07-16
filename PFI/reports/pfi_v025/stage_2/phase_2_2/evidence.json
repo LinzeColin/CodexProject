@@ -1,0 +1,182 @@
+{
+  "schema": "PFIV025Stage2Phase22EvidenceV1",
+  "version": "v0.2.5",
+  "stage": 2,
+  "phase": "2.2",
+  "phase_id": "V025-S2-P2.2",
+  "contract_id": "PFI-V025-STAGE2-PHASE22-TEMPORAL-FX-TRUTH",
+  "acceptance_id": "ACC-PFI-V025-S2-P22-TEMPORAL-FX",
+  "acceptance_id_origin": "project_governance_assigned_not_taskpack",
+  "acceptance_scope": "Phase 2.2 candidate only; does not satisfy Stage 2 whole-stage or final human acceptance",
+  "task_ids": [
+    "S2-P2-T1",
+    "S2-P2-T2",
+    "S2-P2-T3",
+    "S2-P2-T4"
+  ],
+  "risk_tier": "T3_FINANCIAL_TEMPORAL_POLICY",
+  "implementation_base": "bce1b21826a829094481a3ef63c46aa5aa95c99e",
+  "git_commit": "SELF",
+  "git_commit_semantics": "commit_containing_this_evidence",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "changed_file_count": 37,
+  "changed_files_manifest": "PFI/reports/pfi_v025/stage_2/phase_2_2/changed_files.txt",
+  "timezone": "Australia/Sydney",
+  "cutoff_local": "06:00:00",
+  "temporal_field_count": 8,
+  "temporal_coverage_record_count": 8815,
+  "fx_pair": "AUD/CNY",
+  "fx_direction": "AUD_TO_CNY",
+  "fx_meaning": "1 AUD = rate CNY",
+  "production_fx_status": "not_loaded",
+  "production_rate_present": false,
+  "ordinary_runtime_network_allowed": false,
+  "explicit_closed_date_count": 0,
+  "model_ids_changed": [
+    "MOD-PFI-002"
+  ],
+  "formula_ids_changed": [
+    "FORM-PFI-002"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-PFI-024",
+    "PARAM-PFI-025",
+    "PARAM-PFI-026",
+    "PARAM-PFI-027"
+  ],
+  "artifact_hashes": {
+    "policy_sha256": "4da4399f1dc03b7b9e42574a03ff9eb01b3068662eb6a040ed454e7c52fefde1",
+    "temporal_schema_sha256": "f7a2f4cdfcafd834ec8db329032cb662b0bc7b0d5a071aa61f8900b53b33c578",
+    "snapshot_schema_sha256": "d4e385be9803b97c9a5d0683096c0b1e4565f9de3c42209f310c92c872849276",
+    "policy_module_sha256": "4fe91150c6848cd28d7606eb5476f83b03419328956efaca26b56d7897ecc548",
+    "temporal_coverage_sha256": "f3a4737cb11844c7b69091f1d23823fb2a1748f9bc0c003a9c1cc678a8f2521d",
+    "fx_status_sha256": "33864ff939063c4825d70b8e1e5b79536b71aa6293b5fdaeff58256524e0da25",
+    "network_audit_sha256": "51c72d169d0773cd0eac4277c2373f04f77610bd38b7824b50534cd0207b748c"
+  },
+  "commands": [
+    {
+      "command": "Phase 2.2 temporal focused pytest",
+      "exit_code": 2,
+      "summary": "expected RED because implementation module was absent"
+    },
+    {
+      "command": "Phase 2.2 FX focused pytest",
+      "exit_code": 2,
+      "summary": "expected RED because implementation module was absent"
+    },
+    {
+      "command": "Phase 2.2 temporal intermediate pytest",
+      "exit_code": 1,
+      "summary": "4 passed and 1 expected missing-document failure"
+    },
+    {
+      "command": "Phase 2.2 FX intermediate pytest",
+      "exit_code": 1,
+      "summary": "12 passed and 3 artifact-or-audit failures"
+    },
+    {
+      "command": "Phase 2.1 compatibility pytest after scanner refactor",
+      "exit_code": 0,
+      "summary": "27 passed"
+    },
+    {
+      "command": "combined temporal FX and Phase 2.1 pytest before privacy artifact",
+      "exit_code": 1,
+      "summary": "46 passed and 1 expected missing-privacy-artifact failure"
+    },
+    {
+      "command": "lean governance renderer write",
+      "exit_code": 0,
+      "summary": "three Chinese human entries rendered"
+    },
+    {
+      "command": "Phase 2.2 final focused pytest",
+      "exit_code": 0,
+      "summary": "20 passed"
+    },
+    {
+      "command": "Phase 2.1 compatibility pytest",
+      "exit_code": 0,
+      "summary": "27 passed"
+    },
+    {
+      "command": "legacy FX parameter and Stage 2 compatibility selection",
+      "exit_code": 1,
+      "summary": "8 failed and 22 passed; baseline HEAD reproduced the same exact 8 failures and 22 passes, so they are pre-existing and not accepted as Phase 2.2 evidence"
+    },
+    {
+      "command": "full Git worktree project governance validation",
+      "exit_code": 0,
+      "summary": "errors 0 and warnings 0"
+    },
+    {
+      "command": "full Git worktree changed-only governance sync",
+      "exit_code": 0,
+      "summary": "errors 0 and warnings 0"
+    },
+    {
+      "command": "lean governance check-render",
+      "exit_code": 0,
+      "summary": "drift 0 and reference issues 0"
+    },
+    {
+      "command": "YAML CSV JSONL and in-memory Python format checks",
+      "exit_code": 0,
+      "summary": "7 YAML documents, 27 CSV parameter rows, 29 JSONL event lines, and 4 Python files valid"
+    },
+    {
+      "command": "exact staged scope and diff check",
+      "exit_code": 0,
+      "summary": "exact 37-file scope and whitespace clean"
+    }
+  ],
+  "validation_summary": {
+    "phase_2_2_focused_passed": 20,
+    "phase_2_1_compatibility_passed": 27,
+    "project_governance_errors": 0,
+    "project_governance_warnings": 0,
+    "governance_sync_errors": 0,
+    "governance_sync_warnings": 0,
+    "renderer_drift_count": 0,
+    "renderer_reference_issue_count": 0,
+    "privacy_scan_status": "pass",
+    "legacy_selection_baseline_equivalent": true
+  },
+  "deliverables": [
+    "PFI/docs/pfi_v025/stage_2/temporal_truth.md",
+    "PFI/reports/pfi_v025/stage_2/phase_2_2/temporal_coverage.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_2/fx_snapshot_status.json",
+    "PFI/reports/pfi_v025/stage_2/phase_2_2/network_audit.json"
+  ],
+  "explicitly_not_done": [
+    "Phase 2.3",
+    "Stage 2 whole-stage review",
+    "production FX fetch or source promotion",
+    "source or database mutation",
+    "GitHub push",
+    "canonical App install",
+    "production acceptance",
+    "final human acceptance"
+  ],
+  "risks": [
+    "production FX snapshot remains not_loaded",
+    "explicit source-closed date input is currently empty and is not a complete holiday calendar",
+    "temporal coverage beyond transaction_time remains not_verified"
+  ],
+  "rollback": "Revert only the Phase 2.2 commit; do not fetch FX data or mutate financial sources.",
+  "requires_user_acceptance": true,
+  "contains_private_values": false,
+  "finder_used": false,
+  "network_refresh_performed": false,
+  "financial_data_changed": false,
+  "database_changed": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "stage_1_status": "accepted_for_transition",
+  "stage_2_status": "in_progress",
+  "phase_2_3_status": "not_started",
+  "next_task_id": "S2-P3-T1"
+}

@@ -1,0 +1,23 @@
+{
+  "run_id": "20260716_final_delivery",
+  "stage": "V025-S12",
+  "phase": "PFI-V025-FINAL-DELIVERY",
+  "task": "PFI-V025-FINAL-DELIVERY-TRANSACTION",
+  "acceptance_id": "ACC-PFI-V025-FINAL-DELIVERY-PARITY",
+  "status": "app_reinstalled_waiting_single_main_upload",
+  "release_freeze_commit": "1e9b6aa8c8271c881edffdf7f7ab564fae343c05",
+  "app_reinstalled_at": "2026-07-16T00:27:09Z",
+  "app_version": "0.2.5",
+  "app_build": "20260712.1",
+  "app_bundle_tree_sha256": "sha256:a41a7386253ac1b69d4f2ec09894e3e4daaa74103fbb0ed7d33993279a6eb443",
+  "app_executable_sha256": "sha256:a5d87915df40b55e1333d939b6cf1f28c9a9f333867fd70eb864c27744ca922b",
+  "app_reinstall_performed": true,
+  "push_performed": false,
+  "single_actual_push_remaining": 1,
+  "rejected_transport_attempt_count": 1,
+  "successful_main_ref_update_count": 0,
+  "transport_adaptation_ref": "PFI/reports/pfi_v025/stage_12/final_delivery/transport_adaptation.json",
+  "production_accepted": false,
+  "finder_used": false,
+  "evidence": "PFI/reports/pfi_v025/stage_12/final_delivery/cli_app_reinstall.json"
+}

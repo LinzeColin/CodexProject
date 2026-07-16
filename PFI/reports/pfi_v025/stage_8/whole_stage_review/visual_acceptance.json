@@ -1,0 +1,13 @@
+{
+  "allowed_diff_ratio": 0.12,
+  "baseline_semantics": "stage8_whole_review_repaired_content_commit",
+  "maximum_diff_ratio": 0,
+  "near_black_ratio_max": 0.0,
+  "primary_page_count": 10,
+  "schema": "PFIV025Stage8WholeReviewVisualAcceptanceV1",
+  "screenshot_count": 40,
+  "secondary_page_count": 10,
+  "source_ref": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/visual_regression.json",
+  "status": "pass",
+  "unique_route_count": 20
+}

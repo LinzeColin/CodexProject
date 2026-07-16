@@ -1,0 +1,76 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE5-WHOLE-REVIEW",
+  "initial_review": {
+    "counts": {
+      "critical": 1,
+      "important": 4,
+      "minor": 1
+    },
+    "findings": [
+      {
+        "id": "C1",
+        "severity": "critical",
+        "finding": "Stage 5 的四项真实财务指标尚未绑定到正式主页、消费页和报告消费链；read-model 仍报告 actual binding=false。",
+        "remediation": "新增私有运行时四指标 payload，将其接入正式 read-model 与 shell，并以三页面真实渲染、数值确认后脱敏的截图/DOM/a11y 复核。复核期间发现 file:// service-worker 遮罩会隐藏 UI，改用本地 loopback 与隔离 profile adapter 后新增 release identity ready 硬断言。",
+        "status": "fixed"
+      },
+      {
+        "id": "I1",
+        "severity": "important",
+        "finding": "Phase 5.1、5.2、5.3 的候选证据未在整阶段审查中逐提交绑定。",
+        "remediation": "验证三提交线性链、祖先关系、提交内证据存在性与 SHA-256。",
+        "status": "fixed"
+      },
+      {
+        "id": "I2",
+        "severity": "important",
+        "finding": "缺少正式 Web shell 的主页、消费页、报告页截图、trace 与可访问性证据。",
+        "remediation": "新增隔离 headless Chrome 验证器并生成三张脱敏截图、sanitized trace 和 a11y projection。",
+        "status": "fixed"
+      },
+      {
+        "id": "I3",
+        "severity": "important",
+        "finding": "真实金额运行时验证与 tracked evidence 的隐私边界没有形成可执行契约。",
+        "remediation": "真实金额只在内存与临时页面中验证；写证据前将四项金额替换为 CNY 已脱敏，并清空嵌入 payload；tracked evidence 只保留计数、状态和 hash。",
+        "status": "fixed"
+      },
+      {
+        "id": "I4",
+        "severity": "important",
+        "finding": "缺少 schema-valid evidence pack、final index 和 human acceptance。",
+        "remediation": "按 TaskPack schema 补齐 evidence.json、final_evidence_index.json 与 human_acceptance.json，并绑定 evidence index hash。",
+        "status": "fixed"
+      },
+      {
+        "id": "M1",
+        "severity": "minor",
+        "finding": "Roadmap 的 Stage 5 Allowed Files 未列出正式 Web/read-model consumer，但 Acceptance 又要求三处实际展示。",
+        "remediation": "记录最小范围例外，仅触及 read-model、formal shell 与审查验证器；未扩展到 Stage 6、安装或生产发布。",
+        "status": "fixed"
+      }
+    ],
+    "result": "remediation_required"
+  },
+  "post_remediation_review": {
+    "checks": [
+      "12 个 Stage 5 Task 的三阶段证据提交绑定通过",
+      "真实 8,815 条输入只读重放，6,879 条发布、1,936 条 review、0 条 silent drop",
+      "四项财务指标在主页、消费页和报告页同 hash 渲染",
+      "三页 release identity ready、冲突层隐藏、app shell 可见",
+      "四项金额在截图、trace、a11y 和 JSON 中均已脱敏",
+      "未使用 Finder，未访问外部网络，未 push，未安装 App，未启动 Stage 6",
+      "缺参数或证据链不完整的模型继续 fail-closed"
+    ],
+    "counts": {
+      "critical": 0,
+      "important": 0,
+      "minor": 0
+    },
+    "result": "pass_with_explicit_blocked_models"
+  },
+  "review_base": "ec3e3af020cc37f5bddd39dba2e445895e015f9e",
+  "schema": "PFIV025Stage5WholeReviewAuditV1",
+  "stage": 5,
+  "version": "v0.2.5"
+}

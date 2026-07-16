@@ -1,0 +1,14 @@
+schema=PFIV025Stage1WholeReviewPrivacyScanV1
+acceptance_id=ACC-PFI-V025-STAGE1-WHOLE-REVIEW
+status=PASS
+text_scope=C11_to_binding_added_bytes
+private_key_findings=0
+credential_findings=0
+private_home_path_findings=0
+private_tmp_path_findings=0
+private_var_path_findings=0
+visible_dom_findings=0
+live_form_control_findings=0
+trace_decompressed_findings=0
+browser_accessibility_tree_findings=0
+png_visual_findings=0

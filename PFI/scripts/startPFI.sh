@@ -14,9 +14,9 @@ PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
 LOG_DIR="$PROJECT_DIR/data/cache"
 LOG_FILE="$LOG_DIR/pfi_streamlit.log"
 mkdir -p "$LOG_DIR"
-PFI_ACTIVE_BUILD_ID="pfi-v024-stage2-phase22"
-PFI_ACTIVE_UI_CONTRACT="PFI-V024-STAGE2-ENTRY-CONSISTENCY"
-PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+source "$PROJECT_DIR/scripts/pfiReleaseIdentity.sh"
+pfi_release_identity_init "$PROJECT_DIR"
+pfi_release_cache_key_init "$PROJECT_DIR" "$PYTHON_BIN"
 PFI_ACTIVE_SERVICE_FILE="$LOG_DIR/pfi_active_service.env"
 
 process_cwd() {
@@ -41,6 +41,7 @@ active_service_url_if_current_build() {
   [[ "$marker_project" == "$PROJECT_DIR" ]] || return 1
   [[ "$marker_build" == "$PFI_ACTIVE_BUILD_ID" ]] || return 1
   [[ "$marker_contract" == "$PFI_ACTIVE_UI_CONTRACT" ]] || return 1
+  pfi_release_identity_marker_matches "$PFI_ACTIVE_SERVICE_FILE" || return 1
   [[ -n "$marker_pid" && -n "$marker_port" && -n "$marker_url" ]] || return 1
   kill -0 "$marker_pid" >/dev/null 2>&1 || return 1
   curl -s -o /dev/null -w "%{http_code}" "$marker_url/_stcore/health" | grep -q "200" || return 1
@@ -61,8 +62,7 @@ write_active_service_marker() {
     printf "PFI_ACTIVE_PID=%s\n" "$pid"
     printf "PFI_ACTIVE_PORT=%s\n" "$port"
     printf "PFI_ACTIVE_URL=%s\n" "$url"
-    printf "PFI_ACTIVE_BUILD_ID=%s\n" "$PFI_ACTIVE_BUILD_ID"
-    printf "PFI_ACTIVE_UI_CONTRACT=%s\n" "$PFI_ACTIVE_UI_CONTRACT"
+    pfi_release_identity_marker_lines
     printf "PFI_ACTIVE_STARTED_AT=%s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
   } > "$PFI_ACTIVE_SERVICE_FILE"
 }
@@ -92,9 +92,10 @@ URL="http://localhost:$PORT"
 OPEN_URL="$URL/?$PFI_VERSION_QUERY"
 echo "正在启动 PFI：$URL"
 echo "研究和回测专用；禁止实盘自动下单、券商提交、支付或无人值守执行。"
+export PFI_V021_RUNTIME_API_PORT=0
 
 STREAMLIT_ARGS=(
-  -m streamlit run src/pfi_os/app/streamlit_app.py
+  "$PROJECT_DIR/scripts/v025/run_streamlit_with_release_cache.py" run src/pfi_os/app/streamlit_app.py
   --server.port "$PORT" \
   --server.address 127.0.0.1 \
   --server.headless true \

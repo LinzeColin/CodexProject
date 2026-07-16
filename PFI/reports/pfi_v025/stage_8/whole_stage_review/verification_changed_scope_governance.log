@@ -1,0 +1,14 @@
+$ git archive --format=tar HEAD -> $ISOLATED_COMPLETE_ROOT
+complete root assembled
+$ overlay current PFI source changes -> $ISOLATED_COMPLETE_ROOT/PFI
+overlay files=22
+
+$ $PYTHON scripts/validate_project_governance.py --project PFI (cwd=$ISOLATED_COMPLETE_ROOT)
+CodexProject governance validation
+root: checked
+projects checked: PFI
+errors: 0
+warnings: 0
+
+$ $PYTHON scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}

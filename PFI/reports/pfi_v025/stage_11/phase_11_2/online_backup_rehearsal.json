@@ -1,0 +1,46 @@
+{
+  "backup_overwrite_allowed": false,
+  "backup_sha256": "7536572d7e31180ad573d5c1cbcfb23200ce2f377aefdcce6aca35aa3b1771bc",
+  "method": "sqlite_online_backup_api",
+  "online_file_copy_used": false,
+  "schema": "PFIV025Stage11OnlineBackupRehearsalV1",
+  "snapshot_transaction_pair_count": 60,
+  "source_final_transaction_pair_count": 60,
+  "source_guard": "shared_operational_lock",
+  "status": "pass",
+  "transaction_pair_difference": 0,
+  "verification": {
+    "application_invariants": [
+      {
+        "invariant_id": "restore_state_matches_expected",
+        "result_shape": [
+          1,
+          1
+        ],
+        "status": "pass"
+      },
+      {
+        "invariant_id": "parent_child_transaction_pairing",
+        "result_shape": [
+          1,
+          1
+        ],
+        "status": "pass"
+      }
+    ],
+    "database_sha256": "7536572d7e31180ad573d5c1cbcfb23200ce2f377aefdcce6aca35aa3b1771bc",
+    "database_size_bytes": 2453504,
+    "foreign_key_issue_count": 0,
+    "guard_mode": "isolated_backup",
+    "integrity_check": [
+      "ok"
+    ],
+    "migration_registry_valid": true,
+    "missing_migration_count": 0,
+    "missing_table_count": 0,
+    "observed_migration_count": 1,
+    "observed_table_count": 12,
+    "schema_sha256": "0e232954b8e1e21c420dd4c7aa881cd03f596b2c66e7d2784bf8b4d81607d632",
+    "status": "pass"
+  }
+}

@@ -1,0 +1,3 @@
+$ $PYTHON -m pytest -q PFI/tests/test_stage2_alipay_import.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_whole_review_remediation.py
+...............................................................          [100%]
+63 passed in 25.51s

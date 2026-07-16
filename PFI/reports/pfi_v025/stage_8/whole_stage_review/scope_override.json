@@ -1,0 +1,13 @@
+{
+  "allowed_files_obeyed": false,
+  "authorization_reference": "thread_pre_final_acceptance_blanket_authorization",
+  "authorization_text": "在最终验收前我全部都同意授权，不允许block",
+  "bounded_to_stage_8": true,
+  "phase": "8.2",
+  "production_side_effects_authorized": false,
+  "push_or_install_authorized_in_this_run": false,
+  "reason": "Phase 8.2 required cross-layer release-identity, governance, renderer and compatibility binding beyond the narrow source-Roadmap deliverable names.",
+  "schema": "PFIV025Stage8ScopeOverrideV1",
+  "stage_9_authorized_for_entry_only": true,
+  "status": "accepted_for_review"
+}

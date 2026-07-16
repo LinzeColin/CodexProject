@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/v025/normalized_transaction.schema.json",
+  "title": "PFI v0.2.5 Normalized Transaction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "normalized_transaction_id",
+    "raw_record_id",
+    "source_id",
+    "account_ref",
+    "source_record_hash",
+    "amount",
+    "currency",
+    "direction",
+    "transaction_time",
+    "posted_at",
+    "effective_at",
+    "imported_at",
+    "normalization_version"
+  ],
+  "properties": {
+    "normalized_transaction_id": {"type": "string", "pattern": "^normalized_transaction_[0-9a-f]{20}$"},
+    "raw_record_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "source_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "account_ref": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "source_record_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "amount": {"type": "string", "pattern": "^(?:0|[1-9][0-9]*)(?:\\.[0-9]{1,6})?$"},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "direction": {"enum": ["inflow", "outflow", "neutral"]},
+    "transaction_time": {"type": "string", "format": "date-time"},
+    "posted_at": {"type": "string", "format": "date-time"},
+    "effective_at": {"type": "string", "format": "date-time"},
+    "imported_at": {"type": "string", "format": "date-time"},
+    "link_reference": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "normalization_version": {"type": "string", "minLength": 1, "pattern": "^[^\\s]+$"}
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "content_manifest_sha256": "sha256:a6251f14cf860b08764f8e13c805d6e41931e9cf7cb54a1eb6f5eb904616cc34",
+  "file_count": 20,
+  "files": [
+    {
+      "byte_size": 15636,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/accessibility_tree.json",
+      "sha256": "sha256:5f62e4371b70e4da6cbef1c1b47e5d7feed682e8f776c9432fd2f1cdf260238e"
+    },
+    {
+      "byte_size": 6011,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/browser_trace_sanitized.zip",
+      "sha256": "sha256:9fd76db91c4a3a8f77e63fb8047cfc89b11dbb29b75d321987c718d5d85e61d2"
+    },
+    {
+      "byte_size": 2794,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/browser_validation.json",
+      "sha256": "sha256:e58930c7b55e4466bcaefeea1e22f9e5ecf1e562db4d85439be316392491a2e2"
+    },
+    {
+      "byte_size": 787,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/core_evidence_summary.json",
+      "sha256": "sha256:07f51b813b38e90a66958256cef9dd4f2044d896fea429f1b962fe2ba8cf6615"
+    },
+    {
+      "byte_size": 1313,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/dom_snapshot.json",
+      "sha256": "sha256:9eb0c922a42105bb8e1e5b680c9b723ac69a59ef42b9cb81a442c5781363f511"
+    },
+    {
+      "byte_size": 2870,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/initial_review_findings.json",
+      "sha256": "sha256:0f6b0a2fca0974cd564c5bc1c562a4a7102c93c645ebfa0c91b995b4064ac4c2"
+    },
+    {
+      "byte_size": 354,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/network_audit.json",
+      "sha256": "sha256:bf163f85aa9c54aea96ac67bd53cd864831f3df316830b83f3f80ca213a34bfb"
+    },
+    {
+      "byte_size": 36572,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/phase_commit_binding.json",
+      "sha256": "sha256:45084d2dfe9109d53edd386886b5d72b1b0beba2dfd1629b94962a22cb2a8003"
+    },
+    {
+      "byte_size": 1311,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/phase_contract.json",
+      "sha256": "sha256:045cbfa0fc09a677402ca010a7caa510ce739c839e7a3224fbddb6c1d2cef521"
+    },
+    {
+      "byte_size": 258348,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/public_boundary.png",
+      "sha256": "sha256:b5f2b5fa962cdcd567d79dc6d6ed2b71a2a72ec6042e62f73fe7a447d2a94013"
+    },
+    {
+      "byte_size": 507,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/public_distribution_scan.json",
+      "sha256": "sha256:21a20e8412650ea3a5f613295bcbadeca9124428643e49cf39c07dabb2318dba"
+    },
+    {
+      "byte_size": 1552,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/real_backup_restore_rehearsal.json",
+      "sha256": "sha256:2149d5d69599b6f0540d56a9aff4de729b828b3b69e971673c4658308844d973"
+    },
+    {
+      "byte_size": 711,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/release_identity.json",
+      "sha256": "sha256:e0f377933aeaf84e850e4ad2ce2588dd051a46aec1c957fd31c1a87b0f449ab9"
+    },
+    {
+      "byte_size": 641,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/risk_and_rollback.md",
+      "sha256": "sha256:650a9847832621a5f00baa03669750349961dafb069f82939a740fe5680f84c0"
+    },
+    {
+      "byte_size": 522,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/scope_override.json",
+      "sha256": "sha256:b0e162b02389394f7be5145f3687100e5c74da3b1f8cd9dced3dd7c724a1117c"
+    },
+    {
+      "byte_size": 619,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/sqlite_runtime.json",
+      "sha256": "sha256:edc13c41faa86f5534c8dddae31676b7a5130e60eb8e3f669266c9ade8e0ffba"
+    },
+    {
+      "byte_size": 966,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/structured_uat.json",
+      "sha256": "sha256:dcaa0a04b93ba28d2e4dc1a7f759165509bbd57b3e5a7b5c45c24ad8b609c7d5"
+    },
+    {
+      "byte_size": 470,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/taskpack_binding.json",
+      "sha256": "sha256:427569d1c523b17d17bbf08d618f305a0bc0c69199a796d6071a417d9c9ac178"
+    },
+    {
+      "byte_size": 494,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/trace_privacy.json",
+      "sha256": "sha256:f7b5053e7a8b33aa491c65e019aa5cebe4a7508ad57e38aae999aa9d5ddbf965"
+    },
+    {
+      "byte_size": 1241,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/transition_authorization_binding.json",
+      "sha256": "sha256:341681a76d1d4f219d6054ef1b6a2ffdf1b1f9c4cfae973003871618fad9c2ec"
+    }
+  ],
+  "schema": "PFIV025Stage11ReviewedEvidenceOverlayV1",
+  "status": "frozen"
+}

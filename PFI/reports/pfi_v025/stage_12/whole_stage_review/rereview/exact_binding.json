@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "candidate_exact": true,
+    "final_human_acceptance_absent": true,
+    "indexed_file_mismatch_zero": true,
+    "recalculated_binding_pass": true,
+    "release_source_exact": true
+  },
+  "contains_private_values": false,
+  "evidence_index_sha256": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "failed_checks": [],
+  "final_human_acceptance": false,
+  "indexed_file_count": 98,
+  "indexed_file_mismatch_count": 0,
+  "product_candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "release_source_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "schema": "PFIV025Stage12WholeReviewRereviewExactBindingV1",
+  "status": "pass"
+}

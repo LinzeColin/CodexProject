@@ -1,0 +1,66 @@
+{
+  "all_exit_zero": true,
+  "candidate_commit": "9a7245acf984a4eb98f93c4aab7bb4d02095294f",
+  "command_count": 7,
+  "commands": [
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_cache_policy.py PFI/tests/test_v025_stage12_release_gates.py PFI/tests/test_v025_stage12_target_mac_uat.py PFI/tests/test_v025_stage12_release_freeze.py",
+      "command_id": "focused_stage12",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/verification_focused_stage12.log",
+      "output_sha256": "sha256:3552af24432dbdb2c65b4cfc57e65e3d6769e3c3e5f59a92fb6337bf0f320ace",
+      "summary": "pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage6_navigation_contract.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_crash_recovery.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_distribution_boundary.py",
+      "command_id": "selected_adjacent_regression",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/verification_selected_adjacent_regression.log",
+      "output_sha256": "sha256:6841112d2ddd6c7712d4b0a29c904f6b452f762446d25faa919a699a2e2cff65",
+      "summary": "pass"
+    },
+    {
+      "command": "node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs",
+      "command_id": "node_cache_policy",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/verification_node_cache_policy.log",
+      "output_sha256": "sha256:0c0087c88e219ce3479133bdaf3451f73e9d50be7e4cb56453fa4f23633f0180",
+      "summary": "pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/machine/tools/check_dual_plane_ci.py --root PFI --projects . --require-projects && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B scripts/lean_governance.py check-render --project PFI && git diff --check",
+      "command_id": "release_and_dual_plane",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_12/whole_stage_review/verification_release_and_dual_plane.log",
+      "output_sha256": "sha256:350c9931b23cc4fb9c141e96e70de0a30668e5def151d74db2f855df9ce3250d",
+      "summary": "pass"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI",
+      "command_id": "complete_overlay_governance_1",
+      "exit_code": 0,
+      "summary": "warnings: 0"
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI",
+      "command_id": "complete_overlay_governance_2",
+      "exit_code": 0,
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    },
+    {
+      "command": "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI",
+      "command_id": "complete_overlay_governance_3",
+      "exit_code": 0,
+      "summary": "{\"command\":\"check-render\",\"drift\":[],\"drift_count\":0,\"path\":\"PFI\",\"project_id\":\"PFI\",\"reference_issue_count\":0,\"reference_issues\":[],\"schema_version\":1,\"view\":\"all\",\"write\":false}"
+    }
+  ],
+  "external_network_performed": false,
+  "final_index_file_count": 89,
+  "finder_used": false,
+  "fresh_real_e2e_status": "pass",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "phase_artifact_file_count": 119,
+  "schema": "PFIV025Stage12InitialReviewVerificationV1",
+  "status": "pass"
+}

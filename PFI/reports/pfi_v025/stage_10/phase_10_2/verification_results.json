@@ -1,0 +1,57 @@
+{
+  "commands": [
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage10_runtime_diff.py -q -p no:cacheprovider",
+      "exit_code": 0,
+      "result": "7 passed",
+      "verification_id": "phase_10_2_target"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest Phase 10.2 + Phase 10.1 + Stage 1 cache/release focused set",
+      "exit_code": 0,
+      "result": "45 passed after deterministic Python/Node release-closure ordering remediation",
+      "verification_id": "phase_and_stage1_regression"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest Stage 7 import/holding + Stage 9 report contract",
+      "exit_code": 0,
+      "result": "40 passed",
+      "verification_id": "stage7_stage9_adjacent_regression"
+    },
+    {
+      "command": "active release asset identity plus Python/Node backend closure cross-check",
+      "exit_code": 0,
+      "result": "frontend_valid=true; disk_backend_valid=true; running_backend_valid=true; 24 frontend and 24 backend files",
+      "verification_id": "release_asset_identity"
+    },
+    {
+      "command": "Streamlit AppTest followed by multiprocessing migration test",
+      "exit_code": 0,
+      "result": "initial two-test reproduction failed 1/2 because AppTest replaced __main__; remediation restores sys.modules __main__, __file__ and __spec__; rerun passed 2/2",
+      "verification_id": "cross_test_main_module_isolation"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest final Phase 10.2/10.1/Stage1/Stage7/Stage9 combined set -q -p no:cacheprovider",
+      "exit_code": 0,
+      "result": "85 passed; 2 upstream deprecation warnings; no failures",
+      "verification_id": "final_combined_tests"
+    },
+    {
+      "command": "nine-domain non-financial hash-change matrix, no-diff probe, read-only empty SQLite observation and active Node frontend validator",
+      "exit_code": 0,
+      "result": "9/9 domains changed cache identity; raw is not full metric recompute; no-diff zero action; DB bytes unchanged; valid frontend policy accepted and network drift rejected",
+      "verification_id": "runtime_diff_cache_network_behavior"
+    },
+    {
+      "command": "Ruby YAML parse plus Python JSONL/CSV parse and lean_governance render",
+      "exit_code": 0,
+      "result": "five YAML files parsed; 64 JSONL events parsed; 126 CSV rows have 12 columns; three Chinese human entries rendered and stable",
+      "verification_id": "canonical_fact_parse_and_render"
+    }
+  ],
+  "phase_id": "V025-S10-P10.2",
+  "product_commit": "a64f3b51576ebe507bd65b3f5b54c5b2a3b74c41",
+  "schema": "PFIV025Stage10Phase102VerificationResultsV1",
+  "status": "pass",
+  "verification_group_count": 8
+}

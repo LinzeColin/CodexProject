@@ -1,0 +1,18 @@
+{
+  "allowed_cost_basis_methods": [
+    "source_reported",
+    "specific_identification",
+    "fifo",
+    "weighted_average"
+  ],
+  "cost_formula_hash": "sha256:a157bf919c79446f5019d3f4193c0388b531e238aa8258796459412c4e5ac0e6",
+  "cost_formula_id": "FORM-PFI-009",
+  "cost_formula_version": "pfi-v0.2.5-explicit-cost-basis-v1",
+  "expression": "cost_basis_original = acquisition_cost_ex_fees + capitalized_fee_total; cost basis method must be explicit",
+  "fee_inclusion_rule": "capitalized_fee_total_is_explicit_and_never_inferred",
+  "phase": "4.2",
+  "production_method_selected": null,
+  "production_status": "not_loaded",
+  "unknown_cost_basis_calculation_allowed": false,
+  "version": "v0.2.5"
+}

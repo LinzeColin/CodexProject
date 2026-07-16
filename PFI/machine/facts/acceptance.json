@@ -1,0 +1,13 @@
+{
+  "items": [
+    {"id": "S12-P3-T1", "criteria": "VERSION、README、HANDOFF、三份人类入口与机器事实无当前状态冲突", "status": "候选完成"},
+    {"id": "S12-P3-T2", "criteria": "Stage 0 至 12.2 的关键证据形成确定性索引与独立 SHA-256", "status": "候选完成"},
+    {"id": "S12-P3-T3", "criteria": "验收请求绑定版本、构建、commit 语义、证据索引、范围与已知缺陷", "status": "候选完成"},
+    {"id": "S12-P3-T4", "criteria": "独立整阶段审查和整改复审通过后，用户明确接受精确 release；随后才冻结、上传和最终重装", "status": "已完成；owner 精确接受 A/B/C、evidence-index、Stage 0–12 与五项 P2，release 已冻结"},
+    {"id": "S12-WR-I01", "criteria": "runtime manifest 的 source commit 必须晚于并精确覆盖全部 runtime-bound 变更", "status": "已整改并独立复审 closed_verified"},
+    {"id": "S12-WR-I02", "criteria": "candidate state、evidence index 与 acceptance request 必须绑定明确不可变 commit，不能使用 SELF 或提交前快照", "status": "已整改并独立复审 closed_verified"},
+    {"id": "S12-WR-I03", "criteria": "旧非 canonical App 必须在 no-Finder 边界下以 CLI 隔离或移除，并重新 census", "status": "已整改并独立复审 closed_verified"},
+    {"id": "STAGE12-WHOLE-REVIEW-REREVIEW", "criteria": "A/B 提交链、运行时零漂移、精确绑定、产物清单、命令行入口与重新执行的真实端到端流程均独立重算，P0/P1 归零", "status": "通过；0 P0 / 0 P1 / 0 minor"},
+    {"id": "PFI-V025-FINAL-DELIVERY", "criteria": "验收冻结后仅执行一次 GitHub main 上传与一次 CLI-only canonical App 最终重装，并验证三方一致", "status": "进行中；唯一 App 重装已通过，仅余唯一 main 上传与 post-push 只读 parity；不属于 156 个 Roadmap task"}
+  ]
+}

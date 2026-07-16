@@ -1,0 +1,26 @@
+PASS
+scanner=pfi-v025-stage2-whole-review-public-artifact-scan-v1
+observed_at=2026-07-14T19:27:14+10:00
+input_count=10
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/review_audit.json|sha256:fa2abc837760e34d0a15a14eac71c58f0d8b99445e926e0f54b9a8f4d226051d
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/final_evidence_index.json|sha256:6e2e55bbf1cc1a0a105ab38791bd690751e2931dbe8afc2d9bdfe7a963f720e4
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/source_disposition.json|sha256:8b3622228d05de14e648eff0da24c6b1a7dc0b0607b798848c138f7bea5d32f6
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/human_acceptance.json|sha256:eadac4b27ee24db82f593e0d358f98521d13ebd29fc267d5307e9676609494a7
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/evidence.json|sha256:336c257208eedbaafa011a9e9d9e109a2caa075014db10a85a8ae9f739f34a92
+input=PFI/docs/pfi_v025/stage_2/STAGE_2_WHOLE_STAGE_REVIEW.md|sha256:22778e4b7838ce09fe0e1a25ab2f89aebc523e0b617fdf864077e2c5c75c9eba
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/risk_and_rollback.md|sha256:b7f4dd2b3c07bd2493fb8c3a3fb208bce05323ad30f8196cd5d3fd3248bc4250
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/terminal.log|sha256:96ffe536cf7dbcd2c9cc2e74b225ecaf76ca3699f5a0d5f5ed9d0b1ee7a3f7f0
+input=PFI/reports/pfi_v025/stage_2/whole_stage_review/changed_files.txt|sha256:473570da3459c7fa6cd06690f7f0d6bc91bc183056f6858bcdb422567d2e467f
+input=PFI/reports/pfi_v025/stage_2/phase_2_3/privacy_scan.txt|sha256:f5c2e91b66688289a5c7ce394f2e7f0210bfe594e539fde8b0f41efb891e983f
+absolute_private_paths=0
+raw_filenames=0
+financial_row_values=0
+account_identifiers=0
+credentials=0
+sqlite_table_names=0
+finder_operations=0
+source_mutations=0
+financial_fixture_fallback=0
+scan_command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_whole_review.py -q
+generation_contract=fixed_input_list_semantic_and_text_recompute
+self_scan_excluded=true

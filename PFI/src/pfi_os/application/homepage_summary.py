@@ -314,7 +314,7 @@ def _stage5_evidence_drawer(stage5_dashboard: dict[str, Any]) -> dict[str, str]:
         "Evidence": "第 5 阶段使用本地模型验证建议模型、复盘生命周期、投资/消费建议、重点建议排序、四类报告、导出中心和 PFI 上下文快照。",
         "Source": "pfi_v02.stage5_advice_report_alpha",
         "Model": str(stage5_dashboard.get("schema", "PFIV02Stage5AdviceReportAlphaExportV1")),
-        "Parameters": f"重点建议数={len(stage5_dashboard.get('top_recommendations', []))}; 导出格式={', '.join(export_center.get('preferred_formats', ())) or 'Markdown/JSON/CSV'}; 上下文快照={alpha_context.get('schema', 'pfi_context_snapshot_v1')}",
+        "Parameters": f"重点建议数={len(stage5_dashboard.get('top_recommendations', []))}; 导出格式={', '.join(export_center.get('preferred_formats', ())) or 'Markdown/JSON/CSV'}; 上下文快照={alpha_context.get('schema_version', 'pfi_context.v1')}",
         "Data lineage": "第 3 阶段账户和账本读模型 + 第 4 阶段分析读模型 -> 第 5 阶段建议、报告、上下文导出。",
         "Raw document": "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md",
     }

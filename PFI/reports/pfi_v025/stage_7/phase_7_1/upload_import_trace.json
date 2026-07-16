@@ -1,0 +1,14 @@
+{
+  "contains_private_values": false,
+  "date_end": "2023-06-05",
+  "date_start": "2022-06-06",
+  "failed_parse_ledger_delta": 0,
+  "failed_parse_transaction_count": 0,
+  "parser_version": "alipay_bill_csv_v1",
+  "review_count": 74,
+  "schema": "PFIV025Stage7Phase71UploadImportTraceV1",
+  "source_content_sha256": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342",
+  "source_detected": "alipay_daily",
+  "status": "pass",
+  "transaction_count": 1571
+}

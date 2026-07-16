@@ -1,0 +1,28 @@
+{
+  "candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "checks": {
+    "all_indexed_files_match_current_bytes": true,
+    "detached_index_hash_matches": true,
+    "final_human_acceptance_absent": true,
+    "index_candidate_exact": true,
+    "index_release_source_exact": true,
+    "no_self_sentinel": true,
+    "phase_evidence_candidate_exact": true,
+    "request_candidate_exact": true,
+    "request_index_hash_exact": true,
+    "state_candidate_exact": true,
+    "state_exact_flag_true": true,
+    "state_head_exact_at_generation": true
+  },
+  "contains_private_values": false,
+  "evidence_index_sha256": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+  "failed_checks": [],
+  "final_human_acceptance": false,
+  "indexed_file_count": 98,
+  "indexed_file_mismatch_count": 0,
+  "indexed_file_mismatches": [],
+  "release_source_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "rereview_status": "not_started",
+  "schema": "PFIV025Stage12ReviewRemediationExactBindingV1",
+  "status": "pass"
+}

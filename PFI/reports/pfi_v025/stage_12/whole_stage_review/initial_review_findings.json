@@ -1,0 +1,96 @@
+{
+  "candidate_commit": "9a7245acf984a4eb98f93c4aab7bb4d02095294f",
+  "counts": {
+    "critical": 0,
+    "important": 3,
+    "minor": 0
+  },
+  "final_human_acceptance": false,
+  "findings": [
+    {
+      "classification": "important",
+      "evidence_ref": "release_identity_audit.json",
+      "finding_id": "S12-WR-I01-RELEASE-COMMIT-DRIFT",
+      "release_blocking": true,
+      "remediation": "define and bind a post-review product-source commit, regenerate manifest/frontend/backend identity, and prove no runtime-bound drift after that source anchor",
+      "result": "release_manifest git_commit 0b2aa6677a predates 39 runtime-bound file changes",
+      "severity": "P1",
+      "status": "open_for_remediation"
+    },
+    {
+      "classification": "important",
+      "evidence_ref": "final_index_audit.json",
+      "finding_id": "S12-WR-I02-EXACT-ACCEPTANCE-BINDING",
+      "release_blocking": true,
+      "remediation": "regenerate the candidate state/index/request after review remediation with an explicit immutable candidate/source-commit model and no stale precommit snapshot",
+      "result": "acceptance request commit=SELF; state head=665ee5aa89; candidate=9a7245acf9",
+      "severity": "P1",
+      "status": "open_for_remediation"
+    },
+    {
+      "classification": "important",
+      "evidence_ref": "entry_audit.json",
+      "finding_id": "S12-WR-I03-NONCANONICAL-OLD-APP",
+      "release_blocking": true,
+      "remediation": "quarantine or remove the old noncanonical bundle using CLI only, then rerun the entry census without Finder or LaunchServices",
+      "result": "CLI census still finds one noncanonical App at version 0.2.3 build 20260629.1",
+      "severity": "P1",
+      "status": "open_for_remediation"
+    }
+  ],
+  "open_p0_count": 0,
+  "open_p1_count": 3,
+  "production_accepted": false,
+  "rereview_status": "not_started",
+  "residual_risks": [
+    {
+      "disposition": "bind as a known limitation unless a later safe CLI-only target-Mac rehearsal is explicitly chosen",
+      "risk_id": "S12-WR-R01-ACTUAL-SLEEP-WAKE-NOT-RUN",
+      "severity": "P2"
+    },
+    {
+      "disposition": "retain truthful not_loaded/not_run and no-false-zero behavior; no data may be invented",
+      "risk_id": "S12-WR-R02-HOLDINGS-SOURCE-NOT-LOADED",
+      "severity": "P2"
+    },
+    {
+      "disposition": "latest user instruction prohibits Finder/GUI; retain CLI bundle and headless-browser evidence",
+      "risk_id": "S12-WR-R03-FINDER-METHOD-OVERRIDDEN",
+      "severity": "P2"
+    },
+    {
+      "disposition": "retain explicit no-axe claim and deterministic WCAG 2.2 AA/CDP AX substitute",
+      "risk_id": "S12-WR-R04-AXE-CORE-NOT-AVAILABLE",
+      "severity": "P2"
+    },
+    {
+      "count": 6,
+      "disposition": "retain current-state replacement gates without rewriting immutable historical evidence",
+      "risk_id": "S12-WR-R05-HISTORICAL-STATE-TEST-DEBT",
+      "severity": "P2"
+    }
+  ],
+  "review_execution_truth": "one local deterministic review runner evaluated three independent lenses; no external human, subagent, Finder operation or GUI reviewer is claimed",
+  "review_lenses": [
+    {
+      "finding_ids": [
+        "S12-WR-I01-RELEASE-COMMIT-DRIFT",
+        "S12-WR-I03-NONCANONICAL-OLD-APP"
+      ],
+      "lens_id": "release_identity_and_entry_truth"
+    },
+    {
+      "finding_ids": [
+        "S12-WR-I02-EXACT-ACCEPTANCE-BINDING"
+      ],
+      "lens_id": "evidence_and_acceptance_binding"
+    },
+    {
+      "finding_ids": [],
+      "lens_id": "real_workflow_quality_and_resilience",
+      "result": "technical gates pass with five explicit P2 residual risks"
+    }
+  ],
+  "schema": "PFIV025Stage12InitialReviewFindingsV1",
+  "status": "remediation_required"
+}

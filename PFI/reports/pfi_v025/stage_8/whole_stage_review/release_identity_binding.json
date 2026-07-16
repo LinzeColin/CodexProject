@@ -1,0 +1,16 @@
+{
+  "app_install_performed": false,
+  "backend_build_hash": "499096a4762a7f1117395a209eba1ee08035180fd07ed78038e95effcbf2e65e",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "canonical_manifest_sha256": "sha256:856e499330884d5d2a3c8b1770114387e93a2bf5683a0daff79148e9dd5eca0e",
+  "embedded_manifest_equal": true,
+  "formula_version_changed": false,
+  "frontend_bundle_hash": "0e3da07efc9b569b00e4182d445da1d12cd2cee0e505fd7f913fb74016dd01ca",
+  "model_version_changed": false,
+  "parameter_version_changed": false,
+  "product_content_commit": "2c7b25efd2916c909027333283b499a119d088e0",
+  "push_performed": false,
+  "schema": "PFIV025Stage8WholeReviewReleaseIdentityV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

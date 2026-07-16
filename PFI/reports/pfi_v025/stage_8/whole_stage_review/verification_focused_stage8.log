@@ -1,0 +1,3 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage8_whole_review.py PFI/tests/test_v025_stage1_release_identity.py
+.............................................                            [100%]
+45 passed in 1.99s

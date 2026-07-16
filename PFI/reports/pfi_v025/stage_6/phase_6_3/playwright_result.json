@@ -1,0 +1,1051 @@
+{
+  "schema": "PFIV025Stage6Phase63PlaywrightResultV1",
+  "status": "pass",
+  "driver": "cached_playwright_with_local_google_chrome_and_cdp_ax_tree",
+  "acceptance_id": "ACC-PFI-V025-S6-P63-HISTORY-ACCEPTANCE",
+  "checks": {
+    "canonical_path_history": true,
+    "back_forward_restores_route": true,
+    "history_state_matches_url": true,
+    "scroll_restoration": true,
+    "repeated_click_no_new_entry": true,
+    "deep_link_and_reload": true,
+    "invalid_route_actionable": true,
+    "invalid_route_recovery": true,
+    "keyboard_primary_navigation": true,
+    "accessibility_tree_only_ten_primary_entries": true,
+    "dom_only_ten_primary_entries": true,
+    "console_page_http_errors": true,
+    "external_network_blocked_and_unused": true
+  },
+  "snapshots": {
+    "initial": {
+      "pathname": "/accounts/reconcile",
+      "hash": "",
+      "history_length": 2,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/reconcile",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "initial_location"
+      },
+      "route_alias": "/accounts/reconcile",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 账户对账 · PFI",
+      "heading": "账户与资产 · 账户对账",
+      "heading_focused": false,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "list": {
+      "pathname": "/accounts/list",
+      "hash": "",
+      "history_length": 3,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/list",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "route_alias": "/accounts/list",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 账户清单 · PFI",
+      "heading": "账户与资产 · 账户清单",
+      "heading_focused": true,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "trend": {
+      "pathname": "/accounts/trend",
+      "hash": "",
+      "history_length": 4,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/trend",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "route_alias": "/accounts/trend",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 资产趋势 · PFI",
+      "heading": "账户与资产 · 资产趋势",
+      "heading_focused": true,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "back": {
+      "pathname": "/accounts/list",
+      "hash": "",
+      "history_length": 4,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/list",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "popstate"
+      },
+      "route_alias": "/accounts/list",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 账户清单 · PFI",
+      "heading": "账户与资产 · 账户清单",
+      "heading_focused": true,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "forward": {
+      "pathname": "/accounts/trend",
+      "hash": "",
+      "history_length": 4,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/trend",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "popstate"
+      },
+      "route_alias": "/accounts/trend",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 资产趋势 · PFI",
+      "heading": "账户与资产 · 资产趋势",
+      "heading_focused": true,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "restored": {
+      "pathname": "/accounts/trend",
+      "hash": "",
+      "history_length": 5,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/accounts/trend",
+        "workspace": "accounts",
+        "routeState": "resolved",
+        "scrollY": 360,
+        "source": "popstate"
+      },
+      "route_alias": "/accounts/trend",
+      "route_state": "resolved",
+      "workspace": "accounts",
+      "title": "账户与资产 · 资产趋势 · PFI",
+      "heading": "账户与资产 · 资产趋势",
+      "heading_focused": true,
+      "scroll_y": 360,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "deep_link": {
+      "pathname": "/market-research/strategy-lab",
+      "hash": "",
+      "history_length": 5,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/market-research/strategy-lab",
+        "workspace": "market_research",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "initial_location"
+      },
+      "route_alias": "/market-research/strategy-lab",
+      "route_state": "resolved",
+      "workspace": "market_research",
+      "title": "市场与研究 · 策略实验室 · PFI",
+      "heading": "市场与研究 · 策略实验室",
+      "heading_focused": false,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "reload": {
+      "pathname": "/market-research/strategy-lab",
+      "hash": "",
+      "history_length": 5,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/market-research/strategy-lab",
+        "workspace": "market_research",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "initial_location"
+      },
+      "route_alias": "/market-research/strategy-lab",
+      "route_state": "resolved",
+      "workspace": "market_research",
+      "title": "市场与研究 · 策略实验室 · PFI",
+      "heading": "市场与研究 · 策略实验室",
+      "heading_focused": false,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "invalid": {
+      "pathname": "/not-a-real-route",
+      "hash": "",
+      "history_length": 6,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/not-a-real-route",
+        "workspace": "",
+        "routeState": "invalid",
+        "scrollY": 0,
+        "source": "initial_location",
+        "recoveryRouteAlias": "/overview"
+      },
+      "route_alias": "/not-a-real-route",
+      "route_state": "invalid",
+      "workspace": "",
+      "title": "页面地址无效 · PFI",
+      "heading": "无法打开这个 PFI 页面",
+      "heading_focused": false,
+      "scroll_y": 0,
+      "invalid_visible": true,
+      "invalid_requested": "/not-a-real-route",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 0
+    },
+    "recovered": {
+      "pathname": "/overview",
+      "hash": "",
+      "history_length": 7,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/overview",
+        "workspace": "home",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "route_alias": "/overview",
+      "route_state": "resolved",
+      "workspace": "home",
+      "title": "首页总览 · 财务状态 · PFI",
+      "heading": "首页总览 · 财务状态",
+      "heading_focused": true,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "/not-a-real-route",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    },
+    "keyboard": {
+      "pathname": "/ledger",
+      "hash": "",
+      "history_length": 8,
+      "history_state": {
+        "schema": "PFIV025Stage6Phase63HistoryStateV1",
+        "routeAlias": "/ledger",
+        "workspace": "ledger",
+        "routeState": "resolved",
+        "scrollY": 0,
+        "source": "navigation"
+      },
+      "route_alias": "/ledger",
+      "route_state": "resolved",
+      "workspace": "ledger",
+      "title": "账本流水 · 流水列表 · PFI",
+      "heading": "账本流水 · 流水列表",
+      "heading_focused": true,
+      "scroll_y": 0,
+      "invalid_visible": false,
+      "invalid_requested": "/not-a-real-route",
+      "invalid_recovery_label": "返回首页总览",
+      "primary_dom_count": 10,
+      "active_primary_count": 1
+    }
+  },
+  "repeated_click_history_delta": 0,
+  "a11y": {
+    "source": "Accessibility.getFullAXTree",
+    "navigation_found": true,
+    "primary_navigation_names": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "primary_navigation_count": 10,
+    "primary_navigation_unique_count": 10,
+    "expected_primary_navigation_names": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "hidden_or_duplicate_primary_count": 0,
+    "nodes": [
+      {
+        "role": "navigation",
+        "name": "一级工作区",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 10
+      },
+      {
+        "role": "button",
+        "name": "⌂ 首页总览 净资产 · 现金流 · 数据健康",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "◫ 账户与资产 账户地图 · 对账 · 跨币种",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "≋ 账本流水 标准流水 · A/B/C/D 复核",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "↗ 投资管理 持仓 · 归因 · 策略回测",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "◌ 消费管理 预算 · 分类 · 异常 · 订阅",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "⇄ 数据源与上传 上传 · 解析 · 对账 · 队列",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "✦ 建议与复盘 证据 · 决策 · 生命周期",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "▣ 报告与洞察 月报 · 导出 · 本机快照",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "⌁ 市场与研究 市场 · 研究 · 策略实验室",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "button",
+        "name": "⚙ 设置 反馈 · 参数 · 数据管理",
+        "ignored": false,
+        "focusable": true,
+        "child_count": 3
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "首页总览",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "账户与资产",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "账本流水",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "投资管理",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "消费管理",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "数据源与上传",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "建议与复盘",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "报告与洞察",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "市场与研究",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "none",
+        "name": "",
+        "ignored": true,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "设置",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "首页总览",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "净资产 · 现金流 · 数据健康",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "账户与资产",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "账户地图 · 对账 · 跨币种",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "账本流水",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "标准流水 · A/B/C/D 复核",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "投资管理",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "持仓 · 归因 · 策略回测",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "消费管理",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "预算 · 分类 · 异常 · 订阅",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "数据源与上传",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "上传 · 解析 · 对账 · 队列",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "建议与复盘",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "证据 · 决策 · 生命周期",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "报告与洞察",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "月报 · 导出 · 本机快照",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "市场与研究",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "市场 · 研究 · 策略实验室",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "设置",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "反馈 · 参数 · 数据管理",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "StaticText",
+        "name": "⌂",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "净资产 · 现金流 · 数据健康",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "◫",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "账户地图 · 对账 · 跨币种",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "≋",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "标准流水 · A/B/C/D 复核",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "↗",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "持仓 · 归因 · 策略回测",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "◌",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "预算 · 分类 · 异常 · 订阅",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "⇄",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "上传 · 解析 · 对账 · 队列",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "✦",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "证据 · 决策 · 生命周期",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "▣",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "月报 · 导出 · 本机快照",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "⌁",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "市场 · 研究 · 策略实验室",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "StaticText",
+        "name": "⚙",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 1
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "反馈 · 参数 · 数据管理",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⌂",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "◫",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "≋",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "↗",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "◌",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⇄",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "✦",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "▣",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⌁",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "⚙",
+        "ignored": false,
+        "focusable": false,
+        "child_count": 0
+      }
+    ]
+  },
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "requested_origins": [
+    "http://127.0.0.1:61118",
+    "http://127.0.0.1:8766"
+  ],
+  "blocked_external_requests": [],
+  "external_network_performed": false,
+  "finder_used": false,
+  "evidence_redaction": "browser_init_script_fx_and_currency_values"
+}

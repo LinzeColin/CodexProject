@@ -1,0 +1,40 @@
+{
+  "app_install_performed": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "initial_review": {
+    "counts": {
+      "critical": 1,
+      "important": 7,
+      "minor": 0
+    },
+    "result": "remediation_required"
+  },
+  "launchservices_used": false,
+  "post_remediation_rereview": {
+    "counts": {
+      "critical": 0,
+      "important": 0,
+      "minor": 0
+    },
+    "result": "accept_for_stage_transition_only",
+    "reviewer_result_sha256": "sha256:ab0996a29de94b7766b2170f24adf50022c808cdf74c061ec60c2f9960fa5243"
+  },
+  "privacy": {
+    "contains_private_values": false,
+    "credential_marker_matches": 0,
+    "private_path_matches": 0,
+    "runtime_token_matches": 0,
+    "status": "pass",
+    "text_file_count": 33,
+    "zip_member_count": 3
+  },
+  "production_accepted": false,
+  "push_performed": false,
+  "remediation_commit": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+  "schema": "PFIV025Stage10WholeReviewAuditV1",
+  "source_review_base": "e9465c0c7747c17cab66c07073d5bde999cb9043",
+  "stage_11_started": false,
+  "status": "pass"
+}

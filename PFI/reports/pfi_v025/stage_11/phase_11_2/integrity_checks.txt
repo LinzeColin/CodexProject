@@ -1,0 +1,6 @@
+integrity_check: ok
+foreign_key_issue_count: 0
+migration_registry_valid: true
+application_invariant_failures: 0
+automatic_rollback_verified: true
+status: pass

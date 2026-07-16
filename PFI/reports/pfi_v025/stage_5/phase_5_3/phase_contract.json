@@ -1,0 +1,28 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S5-P53-MODEL-VALIDATION",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "app_install_performed": false,
+  "contract_id": "PFI-V025-STAGE5-PHASE53-MODEL-VALIDATION",
+  "current_phase_only": true,
+  "database_changed": false,
+  "financial_fixture_fallback_allowed": false,
+  "finder_used": false,
+  "network_performed": false,
+  "phase": "5.3",
+  "phase_id": "V025-S5-P5.3",
+  "public_evidence_redacted": true,
+  "push_performed": false,
+  "real_data_read_only": true,
+  "risk_tier": "T3_FINANCIAL_MODEL_VALIDATION_PRIVACY",
+  "schema": "PFIV025Stage5Phase53ContractV1",
+  "stage": 5,
+  "stage_5_whole_stage_review_started": false,
+  "stage_6_started": false,
+  "task_ids": [
+    "S5-P3-T1",
+    "S5-P3-T2",
+    "S5-P3-T3",
+    "S5-P3-T4"
+  ],
+  "version": "v0.2.5"
+}

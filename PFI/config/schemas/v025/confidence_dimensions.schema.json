@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PFI v0.2.5 Separate Confidence Dimensions",
+  "type": "object",
+  "required": ["classification_confidence", "source_coverage", "reconciliation_coverage", "valuation_coverage", "model_validation", "report_completeness"],
+  "properties": {
+    "classification_confidence": {
+      "type": "object",
+      "required": ["label_zh", "value_type", "weights", "review_threshold", "source_layered_thresholds_allowed", "missing_policy"],
+      "properties": {
+        "label_zh": {"const": "记录分类置信度"},
+        "value_type": {"const": "score_0_100"},
+        "weights": {
+          "const": {"field_completeness": 30, "amount_direction": 10, "rule_match": 20, "counterparty": 15, "interconnection": 15, "history_consistency": 10}
+        },
+        "review_threshold": {"const": 70},
+        "source_layered_thresholds_allowed": {"const": false},
+        "missing_policy": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "source_coverage": {"$ref": "#/$defs/dimension"},
+    "reconciliation_coverage": {"$ref": "#/$defs/dimension"},
+    "valuation_coverage": {"$ref": "#/$defs/dimension"},
+    "model_validation": {"$ref": "#/$defs/dimension"},
+    "report_completeness": {"$ref": "#/$defs/dimension"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "dimension": {
+      "type": "object",
+      "required": ["label_zh", "value_type", "missing_policy"],
+      "properties": {
+        "label_zh": {"type": "string", "pattern": "[一-龥]"},
+        "value_type": {"type": "string", "minLength": 1},
+        "missing_policy": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  }
+}

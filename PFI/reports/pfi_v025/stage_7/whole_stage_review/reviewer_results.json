@@ -1,0 +1,66 @@
+{
+  "schema": "PFIV025Stage7IndependentReviewerResultsV1",
+  "status": "pass",
+  "reviewers": [
+    {
+      "reviewer_id": "final_code_security_review",
+      "decision": "ACCEPT",
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "initial_counts": {
+        "critical": 0,
+        "important": 5,
+        "minor": 3
+      },
+      "review_base": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+      "reviewed_overlay_file_count": 60,
+      "reviewed_overlay_sha256": "sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a",
+      "result_text": "ACCEPT — final independent code/security/privacy rereview C0/I0/M0; initial baseline C0/I5/M3 and all remediation residuals are closed. Reviewed base fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf with the exact frozen 60-file source overlay sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a; reviewed_worktree_overlay, workflow_validation, and verification_results all bind exactly to that manifest, workflow is 68/68 pass, and verification is pass with overlay_stable_during_verification=true. The reviewer structured-binding gate requires review_base, reviewed_overlay_file_count, and reviewed_overlay_sha256 to equal the frozen overlay; a read-only direct exercise accepted the exact binding and rejected independent tampering of each of the three fields. Builder evidence commands are projected directly from the validated real verification rows, with TaskPack-required summaries derived from command_id, exit_code=0, and output_ref; the projected evidence validates with zero TaskPack schema errors. Stage 7 canonical boot/API fail-closed behavior, trace sanitization, and builder safety gates remain intact. All four persisted whole-review traces hash-match their workflow bindings, retain timelines without resources, and scan to zero for the known holding/legacy sentinels, MetaDatabase/legacy-contract markers, private absolute paths, and CNY-number patterns. Frontend 584ff69880dcacf84da0a94b0fd7f4f42c3e2c28b50a920467a77cdf362a11de and backend 83dbc65036a8921b4d45048eb736af4a526afb39a4d3fd6b7cb8d222165f8467 remain manifest-matched. Content-bound verification records 63 focused tests passed, complete-root governance errors/warnings 0/0, renderer drift/reference issues 0/0, exact command-log hashes, and clean syntax/diff checks. This reviewer used no Finder, LaunchServices, GUI, external network, or filesystem writes.",
+      "result_sha256": "sha256:5b5174ab7bc12c506d1158dda34d3147f0541eb6137e82bc5735c1fcedacd11b"
+    },
+    {
+      "reviewer_id": "final_governance_renderer_review",
+      "decision": "ACCEPT",
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "initial_counts": {
+        "critical": 0,
+        "important": 4,
+        "minor": 1
+      },
+      "review_base": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+      "reviewed_overlay_file_count": 60,
+      "reviewed_overlay_sha256": "sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a",
+      "result_text": "ACCEPT — Independent read-only final governance and renderer rereview of PFI v0.2.5 Stage 7 found C0/I0/M0 after remediation of the initial C0/I4/M1 baseline. Reviewed HEAD `fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf` plus the exact final frozen 60-file source overlay `sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a`. Independent recomputation exactly matches `reviewed_worktree_overlay`; workflow validation passes 68/68 with `post_run_rescan_identical=true`; verification is pass/exact/stable, all three commands have exit code 0, and every persisted output hash matches its log. The official PFI renderer reports 0 drift and 0 reference issues. The new fail-closed reviewer gate requires each reviewer’s `review_base`, `reviewed_overlay_file_count`, and `reviewed_overlay_sha256` to match the frozen overlay exactly; direct read-only exercises confirmed the valid binding is accepted and tampering of each structured field is rejected. `git diff --check` is clean. Acceptance remains Stage 7 transition-scoped and does not imply production or final-human acceptance. No Finder, LaunchServices, GUI file operation, external network, or filesystem write was performed by this reviewer.",
+      "result_sha256": "sha256:332a7605545c25164bab6f1549ef5e79f15b0b059f25a7995fa43ec3e1cd2319"
+    },
+    {
+      "reviewer_id": "final_acceptance_evidence_review",
+      "decision": "ACCEPT",
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "initial_counts": {
+        "critical": 0,
+        "important": 5,
+        "minor": 0
+      },
+      "review_base": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+      "reviewed_overlay_file_count": 60,
+      "reviewed_overlay_sha256": "sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a",
+      "result_text": "ACCEPT — Independent read-only final acceptance/evidence rereview of PFI v0.2.5 Stage 7 at review base fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf plus the exact final frozen 60-file overlay sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a found C0/I0/M0 after remediation of this reviewer’s formal initial C0/I5/M0 baseline. Independent recomputation confirmed the current manifest exactly matches reviewed_worktree_overlay, post_run_rescan_identical=true, and all three formal workflows pass 68/68 (20 import/review/ledger, 27 holding/settings/restart, 21 parameter/interconnection/metric). Final verification is pass, overlay_stable_during_verification=true, verified_overlay exactly matches the final frozen source overlay, all three persisted command logs have exit_code=0 and matching SHA-256, focused tests report 63 passed, complete-root governance reports 0 errors and 0 warnings, and renderer reports 0 drift and 0 reference issues. The TaskPack evidence.commands schema fix remains closed: its required command, exit_code and summary fields are present for all three real verification groups, every generated summary is non-empty and private-path-free, and independent Draft 2020-12 validation reports zero command-schema errors. Reviewer evidence is now structurally bound to this exact final source: each reviewer must provide review_base=fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf, reviewed_overlay_file_count=60 and reviewed_overlay_sha256=sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a in addition to content-bound ACCEPT C0/I0/M0 result_text; an independent in-memory probe passed the valid payload and rejected a tampered overlay hash with fail-closed error. All four persisted Playwright traces have matching hashes, retain trace.trace, contain no resources, and independently scan to zero for the known holding sentinels, legacy financial markers, private local paths, and CNY numeric values. Phase commit binding passes for 12/12 tasks; current Phase 7.1/7.2/7.3 evidence packs pass the TaskPack schema, while the original immutable Phase 7.2/7.3 missing-changed_files gaps remain explicitly disclosed and the amended evidence is content-bound. The finalizer fails closed on unsafe workflow flags, non-loopback/non-/tmp scope, trace hash or privacy drift, stale verification overlay, failed or private-path verification logs, structurally stale reviewer bindings, and any reviewer result not ACCEPT C0/I0/M0 with content-bound result_text; it builds a per-artifact SHA-256 final index before transition-only human acceptance. The operational economic-event adapter remains absent, so event lineage and all 11 operational metrics remain blocked/null with lineage_complete_count=0, lineage_missing_count=1571 and non_ready_false_zero_count=0. Stage 8 is authorized for entry but all Stage 8 status items remain not_started; production_accepted=false and final_human_acceptance=false. The reviewed workflow records finder_used=false, external_network_performed=false, push_performed=false and app_install_performed=false; this reviewer likewise used no Finder, LaunchServices, GUI file operation, external network or file write.",
+      "result_sha256": "sha256:c3625b462cce7eb640a245ccc3f5254c3120447ac9cdfb54f1be0546b96327ea"
+    }
+  ],
+  "contains_private_values": false,
+  "finder_used": false,
+  "external_network_performed": false
+}

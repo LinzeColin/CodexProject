@@ -1,0 +1,59 @@
+PFI v0.2.5 Stage 1 Phase 1.3 terminal ledger
+Acceptance: ACC-PFI-V025-S1-P13-ISOLATED-APP-ACCEPTANCE
+Phase base: 4065146761859b002f61b03387fa2c724a8ddf8a
+Release content commit: 128c6b889c91f5d7f64c7cd9635466fa2caf0275
+
+[CONTENT-GREEN-001]
+command: PFI/.venv/bin/python -m pytest -q test_v025_stage1_release_identity.py test_v025_stage1_cache_policy.py test_v025_stage1_isolated_app_acceptance.py
+exit_code: 0
+summary: 71 passed with 2 upstream dependency deprecation warnings in 443.29 seconds.
+
+[CONTENT-GREEN-002]
+command: node --test stage1_release_identity.test.mjs stage1_cache_policy.test.mjs
+exit_code: 0
+summary: 24 passed, 0 failed; Node syntax and git diff whitespace checks also passed.
+
+[TASK6-REJECTED-LS-001]
+command: first replacement candidate Finder/browser/finalize sequence
+exit_code: 1
+summary: runtime and evidence checks passed, but an open temporary Finder window republished one stale LaunchServices path after root deletion. The gate failed closed, the stale path was removed, and all rejected evidence was deleted.
+
+[TASK6-FINDER-001]
+command: Computer Use Finder double-click of the second disposable PFI.app candidate
+exit_code: 0
+summary: sidebar, path bar and status bar hidden; screenshot captured from the selected temporary PFI.app; canonical entries were not activated.
+
+[TASK6-INSPECT-001]
+command: stage1_phase13_candidate.py inspect --state ${ISOLATED_STATE}
+exit_code: 0
+summary: Finder marker ready; three-member process group verified; Streamlit and monitor each owned one listener; exact two-endpoint set verified.
+
+[TASK6-BROWSER-001]
+command: cached Playwright browser_validate_stage1_phase13.mjs --state ${ISOLATED_STATE} --output-dir ${EXTERNAL_EVIDENCE_ROOT}
+exit_code: 0
+summary: 25 browser checks passed; 6 pageshow observations and 6 websockets; all console, page, request, HTTP, websocket and unexpected-host error counts were 0; only the candidate App port was requested; persisted=false was recorded as observed.
+
+[TASK6-FINALIZE-001]
+command: stage1_phase13_candidate.py finalize --state ${ISOLATED_STATE} --evidence-dir ${EXTERNAL_EVIDENCE_ROOT}
+exit_code: 0
+summary: owned process group stopped; both ports released; canonical, protected metadata and Git status unchanged; LaunchServices final absence verified; temporary root deleted.
+
+[PRIVACY-001]
+command: strict JSON, PNG CRC/chunk, ZIP CRC/decompressed-member and binary privacy scan
+exit_code: 0
+summary: 13 report surfaces passed; no absolute home path, raw process identifier, credential, private financial value, resource member or private screenshot metadata.
+
+[INDEPENDENT-EVIDENCE-REVIEW-001]
+command: independent Task 6 evidence and privacy review
+exit_code: 0
+summary: APPROVED C0/I0/M0; artifact hash chain, visuals, process boundaries, cleanup and canonical equality independently confirmed.
+
+[FINAL-WORKTREE-VERIFY]
+command: PFI/.venv/bin/python -B PFI/scripts/v025/verify_stage1_phase13.py
+exit_code: 0
+summary: worktree verification PASS before direct binding commit.
+
+[SHADOW-GOVERNANCE]
+command: temporary full-tree shadow validate_project_governance and semantic governance sync
+exit_code: 0
+summary: project governance 0 errors 0 warnings; semantic governance sync 0 errors 0 warnings; temporary worktree removed.

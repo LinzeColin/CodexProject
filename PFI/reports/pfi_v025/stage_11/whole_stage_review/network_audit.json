@@ -1,0 +1,12 @@
+{
+  "browser_check_count": 23,
+  "browser_external_network_calls": 0,
+  "deployment_performed": false,
+  "external_network_performed": false,
+  "loopback_browser_performed": true,
+  "loopback_only": true,
+  "product_runtime_network_performed": false,
+  "push_performed": false,
+  "schema": "PFIV025Stage11WholeReviewNetworkAuditV1",
+  "status": "pass"
+}

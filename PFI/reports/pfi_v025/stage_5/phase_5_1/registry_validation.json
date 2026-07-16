@@ -1,0 +1,15 @@
+{
+  "active_formula_count": 14,
+  "formula_count": 14,
+  "formula_ids": [
+    "FORM-PFI-001", "FORM-PFI-002", "FORM-PFI-003", "FORM-PFI-004",
+    "FORM-PFI-005", "FORM-PFI-006", "FORM-PFI-007", "FORM-PFI-008",
+    "FORM-PFI-009", "FORM-PFI-010", "FORM-PFI-011", "FORM-PFI-012",
+    "FORM-PFI-013", "FORM-PFI-014"
+  ],
+  "formula_hash_mismatch_count": 0,
+  "registry_file_sha256": "d5f9deac8a8480e6c1f2ba4dd71435e1176f72bea5fe1dcfab5c1b1aa79831fa",
+  "registry_version": "pfi-v0.2.5-formula-registry-v1",
+  "schema_validation": "pass",
+  "status": "pass"
+}

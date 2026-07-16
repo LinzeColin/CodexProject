@@ -1,0 +1,178 @@
+{
+  "schema": "PFIV025Stage7Phase73BrowserValidationV1",
+  "status": "pass",
+  "checks": {
+    "parameter_route_formal": true,
+    "parameter_center_chinese_readable": true,
+    "parameter_hashes_visible": true,
+    "interconnection_route_formal_and_clickable": true,
+    "interconnection_nodes_visible": true,
+    "interconnection_hashes_visible": true,
+    "blocked_metric_selected": true,
+    "blocked_metric_no_false_zero": true,
+    "blocked_reason_visible": true,
+    "blocked_hash_contract_visible": true,
+    "operational_metric_selected": true,
+    "operational_metric_fail_closed": true,
+    "operational_four_hashes_visible": true,
+    "operational_event_lineage_not_fabricated": true,
+    "deep_link_reload_restored": true,
+    "canonical_runtime_status_fail_closed": true,
+    "api_operational_metric_fail_closed": true,
+    "no_external_request": true,
+    "no_console_error": true,
+    "no_page_error": true,
+    "no_http_error": true
+  },
+  "parameter_domain_count": 15,
+  "formula_card_count": 20,
+  "interconnection_node_count": 7,
+  "event_type_row_count": 0,
+  "metric_count": 11,
+  "lineage_complete_count": 0,
+  "lineage_missing_count": 1571,
+  "requested_origins": [
+    "http://127.0.0.1:59380",
+    "http://127.0.0.1:59381"
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "blocked_external": [],
+  "contains_private_values": false,
+  "financial_values_persisted": 0,
+  "finder_used": false,
+  "canonical_runtime_status_diagnostics": {
+    "api_blocked_value_null": true,
+    "api_blocked_reason_present": true,
+    "runtime_stage7_authority": true,
+    "runtime_legacy_suppressed": true,
+    "runtime_core_metrics_null": true,
+    "home_refresh_settled": true,
+    "home_has_no_legacy_source": true,
+    "home_has_no_financial_number": true,
+    "fallback_has_no_legacy_source": true,
+    "fallback_has_no_financial_number": true,
+    "fallback_refresh_settled": true,
+    "legacy_200_has_no_legacy_source": true,
+    "legacy_200_has_no_financial_number": true,
+    "legacy_200_refresh_settled": true,
+    "home_financial_number_card_indices": [],
+    "fallback_financial_number_card_indices": [],
+    "home_financial_number_fields": [
+      {
+        "label": "净资产",
+        "redacted_value": "账户现金、负债或持仓估值权威依赖未完成；指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "现金余额",
+        "redacted_value": "账户现金、负债或持仓估值权威依赖未完成；指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "投资市值",
+        "redacted_value": "账户现金、负债或持仓估值权威依赖未完成；指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "消费总流出",
+        "redacted_value": "SQLite ledger 含待复核流水；未决记录与财务指标均不发布为零。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "数据记录",
+        "redacted_value": "财务指标输入阻断，报告摘要不发布结论。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "持仓同步",
+        "redacted_value": "# 条",
+        "value": false,
+        "detail": false
+      }
+    ],
+    "fallback_financial_number_fields": [
+      {
+        "label": "净资产",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "现金余额",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "投资市值",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "消费总流出",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "数据记录",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "持仓同步",
+        "redacted_value": "# 条",
+        "value": false,
+        "detail": false
+      }
+    ],
+    "legacy_200_financial_number_card_indices": [],
+    "legacy_200_financial_number_fields": [
+      {
+        "label": "净资产",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "现金余额",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "投资市值",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "消费总流出",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "数据记录",
+        "redacted_value": "Stage # canonical runtime 状态尚未返回；财务指标保持阻断。",
+        "value": false,
+        "detail": false
+      },
+      {
+        "label": "持仓同步",
+        "redacted_value": "# 条",
+        "value": false,
+        "detail": false
+      }
+    ]
+  }
+}

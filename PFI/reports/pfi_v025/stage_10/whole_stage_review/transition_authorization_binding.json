@@ -1,0 +1,24 @@
+{
+  "authorization_id": "AUTH-PFI-V025-STAGE10-TRANSITION-20260715",
+  "authorized_scope": [
+    "accept Stage 10 for transition only after every technical gate passes",
+    "authorize a later independent run to enter Stage 11"
+  ],
+  "explicitly_not_authorized": [
+    "waiving a failed technical gate",
+    "Stage 11 implementation in this Stage 10 review run",
+    "external network, GitHub push or PFI.app installation",
+    "Finder, LaunchServices or GUI file operations",
+    "production acceptance or final Stage 12 human acceptance"
+  ],
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "schema": "PFIV025Stage10TransitionAuthorizationBindingV1",
+  "stage_11_implementation_started": false,
+  "status": "accepted_via_standing_transition_authorization",
+  "user_confirmation_reference": "在最终验收前我全部都同意授权，不允许block；确认 不允许再有任何block",
+  "user_confirmation_sha256": "sha256:4d8b52c219581fccba593ef462ba428ad111e5df7ade26ee25a4922556f22d5b",
+  "user_finder_instruction": "不要再进行任何的finder操作，纯粹浪费时间！",
+  "user_finder_instruction_sha256": "sha256:091fff69dad4a06a7002de39235c506732f8456bcd176f02c2b45eb1fb84931e"
+}

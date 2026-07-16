@@ -1,0 +1,22 @@
+{
+  "chrome_binary": "Google Chrome local headless",
+  "console_errors": [],
+  "false_zero_render_count": 0,
+  "finder_used": false,
+  "method": "local_chrome_headless_screenshot_and_exact_frontend_state_projection",
+  "metric_count": 7,
+  "metric_statuses": {
+    "not_loaded": 7
+  },
+  "missing_state_explanation_count": 7,
+  "network_performed": false,
+  "non_null_value_count": 0,
+  "projection_sha256": "61f5aadac3e7bc1e08b93b4df941bd618da09a7f2fcdcf736a276e2f23a676c0",
+  "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+  "schema": "PFIV025Stage4WholeReviewBrowserValidationV1",
+  "screenshot": "PFI/reports/pfi_v025/stage_4/whole_stage_review/data_missing_state.png",
+  "screenshot_bytes": 119175,
+  "status": "pass",
+  "surface_count": 5,
+  "surface_hash_count": 1
+}

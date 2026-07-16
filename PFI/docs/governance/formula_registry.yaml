@@ -84,6 +84,8 @@ formulas:
       - "Stage 6 E2E stabilization must keep all 20 total gates and ACC-* audit checks PASS before closeout."
       - "Stage 6 synthetic E2E must not be written as production connectivity or release-ready evidence."
       - "Stage 6 rollback plan must not move QBVS runtime or require private data migration."
+      - "Stage 8 Phase 8.2 motion, feedback, haptics and durable-job UI must not alter any financial formula or publish synthetic progress as a financial value."
+      - "Stage 8 Phase 8.3 accessibility, contrast, keyboard, AX and visual-regression work must not alter any financial formula, model output or parameter value."
     missing_policy: "If production evidence is missing, status remains not production ready."
     output_range: "Owner status is partial governance verified, not production ready."
     code_refs:
@@ -103,3 +105,911 @@ formulas:
       - "PFI/tests/test_stage6_e2e_stabilization.py"
     evidence_refs:
       - "PFI/README.md"
+      - "PFI/reports/pfi_v025/stage_8/phase_8_2/evidence.json"
+      - "PFI/reports/pfi_v025/stage_8/phase_8_3/evidence.json"
+  - formula_id: "FORM-PFI-002"
+    model_id: "MOD-PFI-002"
+    assumption_ids:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "effective_business_date = previous_open_date(local_date - I(local_time < 06:00:00), explicit_source_closed_dates)"
+    variables:
+      - name: "local_date"
+        data_type: "date"
+        unit: "Australia/Sydney calendar date"
+        input_domain: "valid timezone-aware observation"
+      - name: "local_time"
+        data_type: "time"
+        unit: "Australia/Sydney local time"
+        input_domain: "00:00:00 through 23:59:59"
+      - name: "explicit_source_closed_dates"
+        data_type: "date set"
+        unit: "source-declared closed dates"
+        input_domain: "zero or more ISO dates"
+    constraints:
+      - "Before 06:00 local time, start from the prior local calendar date."
+      - "Saturday, Sunday, and explicit source-closed dates roll backward to the prior open date."
+      - "Naive timestamps, invalid cutoffs, missing source metadata, pair-direction mismatch, and future snapshots fail closed."
+      - "Ordinary runtime performs no network refresh."
+    missing_policy: "If the production snapshot is absent or incomplete, rate remains null and status is blocked/not_loaded."
+    output_range: "ISO local business date plus current, stale, or blocked snapshot classification."
+    code_refs:
+      - "PFI/src/pfi_v02/stage_v025_fx_policy.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage2_fx_policy.py"
+      - "PFI/tests/test_v025_stage2_temporal_truth.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_2/temporal_truth.md"
+      - "PFI/reports/pfi_v025/stage_2/phase_2_2/evidence.json"
+  - formula_id: "FORM-PFI-003"
+    model_id: "MOD-PFI-003"
+    assumption_ids:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P1-T4"
+    expression: "role_decision = publishable iff proposed_role is in explicit role_registry; otherwise review_required and publish_allowed = false"
+    variables:
+      - name: "proposed_role"
+        data_type: "namespaced string"
+        unit: "account role"
+        input_domain: "lowercase namespaced token"
+      - name: "role_registry"
+        data_type: "unique string set"
+        unit: "publishable roles"
+        input_domain: "explicit configuration only"
+      - name: "effective_range"
+        data_type: "inclusive date range"
+        unit: "calendar date"
+        input_domain: "effective_from through optional effective_to"
+    constraints:
+      - "Source names, labels, providers and filenames cannot select a role."
+      - "One account_ref may have multiple roles with overlapping effective ranges."
+      - "Unknown roles create an open review item and cannot publish."
+      - "SourceProfile requires parser id, parser version and sha256 source hash."
+    missing_policy: "Missing or unregistered role is review_required; no default role is inferred."
+    output_range: "publishable AccountRoleAssignment or non-publishable RoleReviewItem."
+    code_refs:
+      - "PFI/src/pfi_os/domain/source_accounts.py"
+      - "PFI/src/pfi_os/application/source_account_roles.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_source_profiles.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_1_SOURCE_ACCOUNT_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_1/evidence.json"
+  - formula_id: "FORM-PFI-004"
+    model_id: "MOD-PFI-004"
+    assumption_ids:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P2-T1"
+      - "S3-P2-T2"
+      - "S3-P2-T3"
+    expression: "normalized_id = SHA256(source_id || raw_record_id || source_record_hash || normalization_version)[0:20]; group_id = SHA256(rule_id || rule_hash || sorted(normalized_ids))[0:20]; economic_event_id = SHA256(group_id || event_type || policy_version || policy_hash)[0:20]"
+    variables:
+      - name: "source_record_identity"
+        data_type: "provenance tuple"
+        unit: "record identity"
+        input_domain: "explicit source_id, raw_record_id and sha256 source_record_hash"
+      - name: "group_members"
+        data_type: "unique sorted token tuple"
+        unit: "normalized transaction ids"
+        input_domain: "exact explicit link-reference group or singleton"
+      - name: "event_policy"
+        data_type: "versioned deterministic policy"
+        unit: "event-type impact flags"
+        input_domain: "registered event types only"
+    constraints:
+      - "Amount is a positive canonical decimal string with at most six places; currency is uppercase three-letter and direction is explicit."
+      - "Grouping cannot use amount equality, time proximity, source name, provider label or filename."
+      - "Unknown event types require review and cannot publish."
+      - "Event time is the earliest explicit transaction_time in the group."
+    missing_policy: "Missing mandatory fields or unregistered event type fails closed; no inferred default is published."
+    output_range: "Stable normalized, group and economic-event identifiers plus explicit impact flags."
+    code_refs:
+      - "PFI/src/pfi_os/domain/economic_events.py"
+      - "PFI/src/pfi_os/application/economic_event_pipeline.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_interconnection.py"
+    evidence_refs:
+      - "PFI/reports/pfi_v025/stage_3/phase_3_2/event_type_matrix.json"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_2/evidence.json"
+  - formula_id: "FORM-PFI-005"
+    model_id: "MOD-PFI-004"
+    assumption_ids:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P2-T4"
+    expression: "ledger_idempotency_key = SHA256(canonical_json(economic_event_id, group_id, sorted(raw_ids), sorted(normalized_ids), event_type, occurred_at, policy_version, policy_hash, impact_flags, sorted(postings)))"
+    variables:
+      - name: "ledger_lineage"
+        data_type: "ordered canonical object"
+        unit: "event identity"
+        input_domain: "complete raw, normalized, group and economic-event lineage"
+      - name: "postings"
+        data_type: "normalized posting tuple"
+        unit: "per-record amount, currency and direction"
+        input_domain: "one posting per normalized transaction"
+    constraints:
+      - "Canonical JSON uses UTF-8, sorted keys and deterministic posting order."
+      - "Every normalized transaction is represented exactly once in postings."
+      - "Amounts from different postings or currencies are not aggregated without an FX policy."
+      - "This Phase proves key determinism only; persistence and real duplicate-import verification remain Phase 3.3."
+    missing_policy: "Incomplete lineage or posting coverage prevents ledger publication."
+    output_range: "sha256:<64 lowercase hex> idempotency key and deterministic ledger_event_id."
+    code_refs:
+      - "PFI/src/pfi_os/domain/economic_events.py"
+      - "PFI/src/pfi_os/application/economic_event_pipeline.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_interconnection.py"
+    evidence_refs:
+      - "PFI/reports/pfi_v025/stage_3/phase_3_2/lineage_samples_redacted.json"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_2/evidence.json"
+  - formula_id: "FORM-PFI-006"
+    model_id: "MOD-PFI-005"
+    assumption_ids:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P3-T1"
+      - "S3-P3-T2"
+    expression: "publish = accepted_upstream AND nonzero_amount AND structured_mapping_resolved AND NOT missing_required_link_role_or_offset; insert_once(ledger_idempotency_key); otherwise route exactly once to a locatable review reason"
+    variables:
+      - name: "real_source_record"
+        data_type: "immutable parsed record"
+        unit: "source record"
+        input_domain: "Git-object snapshot with unique transaction_id and raw_id"
+      - name: "publication_registry"
+        data_type: "idempotency-key map"
+        unit: "ledger event"
+        input_domain: "deterministic Phase 3.2 LedgerEvent candidates"
+    constraints:
+      - "Source is read from an immutable Git blob and cannot be mutated."
+      - "Financial fixture fallback, source-name inference and amount/time heuristic grouping are forbidden."
+      - "Unresolved transfer and refund records cannot publish and must enter review queue."
+      - "Date-only source time is represented at UTC start-of-date without claiming transaction-time precision."
+    missing_policy: "Missing structured link, account role, refund offset, accepted state or nonzero amount routes to review with no publication."
+    output_range: "One published LedgerEvent per new idempotency key or one opaque review item per unresolved input record."
+    code_refs:
+      - "PFI/src/pfi_os/application/stage3_reconciliation.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_idempotency.py"
+      - "PFI/tests/test_v025_stage12_release_gates.py"
+    evidence_refs:
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/idempotency_result.json"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/reconciliation_summary.json"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/evidence.json"
+      - "PFI/reports/pfi_v025/stage_12/phase_12_1/real_data_e2e.json"
+      - "PFI/reports/pfi_v025/stage_12/phase_12_1/evidence.json"
+  - formula_id: "FORM-PFI-007"
+    model_id: "MOD-PFI-005"
+    assumption_ids:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S3-P3-T3"
+    expression: "metric_event_set = unique(economic_event_id where impact_flag(metric)=true); read_model_hash = SHA256(canonical(metric event-set hashes, unique ledger idempotency-key set)); every page binds this snapshot hash"
+    variables:
+      - name: "economic_event_set"
+        data_type: "unique token set"
+        unit: "economic events per metric"
+        input_domain: "published lineage-complete LedgerEvents"
+      - name: "page_binding"
+        data_type: "page-to-hash map"
+        unit: "read-model snapshot"
+        input_domain: "homepage, consumption, investment, cashflow and report"
+    constraints:
+      - "One economic_event_id counts at most once per metric."
+      - "Page identity is excluded from read_model_hash."
+      - "No financial amount or private identifier is emitted by this evidence contract."
+    missing_policy: "Conflicting ledger events for one economic_event_id fail closed."
+    output_range: "Per-metric event counts/set hashes plus one page-independent read_model_hash."
+    code_refs:
+      - "PFI/src/pfi_os/application/stage3_reconciliation.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage3_no_double_count.py"
+    evidence_refs:
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/event_type_matrix.json"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/read_model_contract.json"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/evidence.json"
+  - formula_id: "FORM-PFI-008"
+    model_id: "MOD-PFI-006"
+    assumption_ids:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids:
+      - "S4-P1-T2"
+      - "S4-P1-T3"
+      - "S4-P1-T4"
+    expression: "expected_closing_balance = opening_balance + confirmed_net_flows + adjustments; discrepancy = observed_closing_balance - expected_closing_balance; ready iff discrepancy = 0 and complete source lineage exists; otherwise value = null"
+    variables:
+      - name: "opening_balance"
+        data_type: "Decimal"
+        unit: "source currency"
+        input_domain: "source-proven account snapshot"
+      - name: "confirmed_net_flows"
+        data_type: "Decimal"
+        unit: "source currency"
+        input_domain: "confirmed ledger flows for the same coverage interval"
+      - name: "adjustments"
+        data_type: "Decimal"
+        unit: "source currency"
+        input_domain: "explicit source-proven adjustments only"
+      - name: "observed_closing_balance"
+        data_type: "Decimal"
+        unit: "source currency"
+        input_domain: "source-proven account snapshot"
+    constraints:
+      - "All amounts are finite Decimal values; float input is rejected."
+      - "Tolerance is exact Decimal zero; no unexplained rounding tolerance is introduced."
+      - "Missing source, coverage, as_of or content hash prevents calculation and value remains null."
+      - "Transaction availability does not authorize opening or closing balance inference."
+      - "confirmed_zero requires complete evidence; every other non-ready state has value null."
+    missing_policy: "Any incomplete account/liability snapshot or reconciliation lineage returns an explicit non-ready metric state with null value."
+    output_range: "ready with exact closing balance, confirmed_zero with complete evidence, or a fail-closed non-ready state with null value."
+    code_refs:
+      - "PFI/src/pfi_os/application/read_models/account_balance.py"
+    test_refs:
+      - "PFI/tests/test_v025_stage4_accounts_read_model.py"
+      - "PFI/tests/test_v025_stage4_metric_states.py"
+    evidence_refs:
+      - "PFI/reports/pfi_v025/stage_4/phase_4_1/cash_read_model.json"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_1/no_false_zero_result.json"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_1/evidence.json"
+  - formula_id: "FORM-PFI-009"
+    model_id: "MOD-PFI-007"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids: ["S4-P2-T2", "S4-P2-T4"]
+    expression: "cost_basis_original = acquisition_cost_ex_fees + capitalized_fee_total; cost basis method must be explicit"
+    variables:
+      - name: "acquisition_cost_ex_fees"
+        data_type: "Decimal"
+        unit: "original currency"
+        input_domain: "source-proven explicit amount"
+      - name: "capitalized_fee_total"
+        data_type: "Decimal"
+        unit: "original currency"
+        input_domain: "explicit non-negative amount"
+      - name: "cost_basis_method"
+        data_type: "registered token"
+        unit: "policy"
+        input_domain: "source_reported|specific_identification|fifo|weighted_average"
+    constraints:
+      - "Amounts are finite Decimal values; float input is rejected."
+      - "Cost-basis method must be explicit and registered; unknown methods never calculate."
+      - "Fees are explicit and never inferred as already included or excluded."
+    missing_policy: "Missing holding, fee or method evidence prevents calculation and value remains null."
+    output_range: "Exact fee-inclusive cost basis in original currency, or a fail-closed null metric state."
+    code_refs: ["PFI/src/pfi_os/domain/holdings.py", "PFI/src/pfi_os/application/read_models/investment.py"]
+    test_refs: ["PFI/tests/test_v025_stage4_holdings_valuation.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_4/phase_4_2/cost_basis_policy.json", "PFI/reports/pfi_v025/stage_4/phase_4_2/evidence.json"]
+  - formula_id: "FORM-PFI-010"
+    model_id: "MOD-PFI-007"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids: ["S4-P2-T3", "S4-P2-T4"]
+    expression: "market_value_original = quantity * price; market_value_cny = market_value_original * fx_rate; cost_basis_cny = cost_basis_original * fx_rate; unrealized_pnl_cny = market_value_cny - cost_basis_cny"
+    variables:
+      - name: "quantity"
+        data_type: "Decimal"
+        unit: "instrument units"
+        input_domain: "source-proven holding snapshot"
+      - name: "price"
+        data_type: "Decimal"
+        unit: "original currency per unit"
+        input_domain: "positive market-price snapshot"
+      - name: "fx_rate"
+        data_type: "Decimal"
+        unit: "CNY per original currency"
+        input_domain: "positive BASE_TO_CNY snapshot or CNY identity 1"
+      - name: "valuation_as_of"
+        data_type: "RFC3339 datetime"
+        unit: "time"
+        input_domain: "not before quantity/price/FX timestamps"
+    constraints:
+      - "Price instrument and currency must match the holding snapshot."
+      - "quantity_as_of, price_as_of and fx_effective_at must not be after valuation_as_of."
+      - "Non-CNY valuations require direction BASE_TO_CNY; CNY uses identity rate 1 without an invented FX snapshot."
+      - "Arithmetic is exact Decimal with no Phase 4.2 rounding."
+    missing_policy: "Any missing or misaligned holding, price or required FX dependency returns an explicit non-ready null metric state."
+    output_range: "Exact original/CNY market value, CNY cost basis and unrealized PnL, or a fail-closed null metric state."
+    code_refs: ["PFI/src/pfi_os/domain/valuation.py", "PFI/src/pfi_os/application/read_models/investment.py"]
+    test_refs: ["PFI/tests/test_v025_stage4_holdings_valuation.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_4/phase_4_2/valuation_contract.json", "PFI/reports/pfi_v025/stage_4/phase_4_2/investment_read_model.json", "PFI/reports/pfi_v025/stage_4/phase_4_2/evidence.json"]
+  - formula_id: "FORM-PFI-011"
+    model_id: "MOD-PFI-008"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids: ["S4-P3-T1", "S4-P3-T3"]
+    expression: "source_snapshot_sum_cny = sum(explicit source-reported CNY snapshot values); transaction events never infer missing balances"
+    variables:
+      - name: "source_reported_snapshot_values"
+        data_type: "list[Decimal]"
+        unit: "CNY"
+        input_domain: "complete, source-proven snapshots only"
+      - name: "source_state"
+        data_type: "registered metric status"
+        unit: "state"
+        input_domain: "ready|confirmed_zero or an explicit non-ready state"
+    constraints:
+      - "Only complete source-proven snapshot values participate in the sum."
+      - "Transaction rows, counts and event impacts never synthesize an absent balance."
+      - "All non-ready states have value null; confirmed_zero requires complete evidence."
+    missing_policy: "Any missing dependency returns its explicit non-ready state with null value and blocks the dependent aggregate."
+    output_range: "Exact Decimal CNY sum for complete evidence, confirmed_zero for complete zero evidence, or null."
+    code_refs: ["PFI/src/pfi_os/application/read_models/metric_state.py", "PFI/src/pfi_os/application/read_models/unified.py"]
+    test_refs: ["PFI/tests/test_v025_stage4_cross_page_consistency.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_4/phase_4_3/core_metric_states.json", "PFI/reports/pfi_v025/stage_4/phase_4_3/no_false_zero_result.json", "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json"]
+  - formula_id: "FORM-PFI-012"
+    model_id: "MOD-PFI-008"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids: ["S4-P3-T1", "S4-P3-T3"]
+    expression: "net_worth_cny = account_assets_cny + investment_market_value_cny - liabilities_cny"
+    variables:
+      - name: "account_assets_cny"
+        data_type: "Decimal"
+        unit: "CNY"
+        input_domain: "ready or complete confirmed-zero account aggregate"
+      - name: "investment_market_value_cny"
+        data_type: "Decimal"
+        unit: "CNY"
+        input_domain: "ready or complete confirmed-zero PIT investment aggregate"
+      - name: "liabilities_cny"
+        data_type: "Decimal"
+        unit: "CNY"
+        input_domain: "ready or complete confirmed-zero liability aggregate"
+    constraints:
+      - "All three dependencies must be ready or complete confirmed_zero before calculation."
+      - "Arithmetic is exact Decimal; absent values are not coerced to zero."
+    missing_policy: "Any non-ready dependency makes net worth non-ready with null value and explicit blocker lineage."
+    output_range: "Exact Decimal CNY net worth, complete confirmed_zero, or null."
+    code_refs: ["PFI/src/pfi_os/application/read_models/unified.py"]
+    test_refs: ["PFI/tests/test_v025_stage4_cross_page_consistency.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_4/phase_4_3/core_metric_states.json", "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json"]
+  - formula_id: "FORM-PFI-013"
+    model_id: "MOD-PFI-008"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "EXTRACTED"
+    task_ids: ["S4-P3-T2", "S4-P3-T3"]
+    expression: "dependency_set_hash = SHA256(canonical_json(sorted dependency hashes)); read_model_hash = SHA256(canonical_json(metric states without page identity or observation time, dependency hashes and formula/parameter contract))"
+    variables:
+      - name: "dependency_hashes"
+        data_type: "sorted map[string, sha256]"
+        unit: "identity"
+        input_domain: "tracked Stage 2/3/4 aggregate evidence only"
+      - name: "metric_states"
+        data_type: "canonical JSON"
+        unit: "snapshot"
+        input_domain: "strictly validated page-independent metric states"
+      - name: "contract_hashes"
+        data_type: "canonical JSON"
+        unit: "identity"
+        input_domain: "registered formula and parameter contract hashes"
+    constraints:
+      - "JSON keys are sorted and UTF-8 serialization is compact and deterministic."
+      - "Page identity, request identity and observation time are excluded from read-model identity."
+      - "Homepage, accounts, investment, consumption and report bind the same read_model_hash."
+    missing_policy: "Malformed or missing sha256 dependencies fail closed and prevent snapshot publication."
+    output_range: "Lowercase sha256-prefixed dependency-set and read-model hashes."
+    code_refs: ["PFI/src/pfi_os/application/read_models/metric_state.py", "PFI/src/pfi_os/application/read_models/unified.py", "PFI/src/pfi_v02/stage_v021_runtime_api.py", "PFI/web/app/data_state.js"]
+    test_refs: ["PFI/tests/test_v025_stage4_cross_page_consistency.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_4/phase_4_3/hash_contract.json", "PFI/reports/pfi_v025/stage_4/phase_4_3/cross_page_hashes.json", "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json"]
+  - formula_id: "FORM-PFI-014"
+    model_id: "MOD-PFI-009"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "VERIFIED"
+    task_ids: ["S5-P1-T1", "S5-P1-T3"]
+    formula_version: "pfi-v0.2.5-cny-conversion-v1"
+    effective_from: "2026-07-15"
+    formula_hash: "sha256:d9f3d8bc7ce0c05cabdc5a94e7f820013a8798e99a9ca50fcd34cc76cbec149f"
+    expression: "amount_cny = amount when original_currency=CNY; amount_cny = amount * fx_rate only when original_currency=AUD, fx_direction=AUD_TO_CNY and rate_unit=CNY/AUD; exact Decimal, no reciprocal inference and no rounding"
+    variables:
+      - name: "amount"
+        data_type: "Decimal"
+        unit: "original currency"
+        input_domain: "finite Decimal; float forbidden"
+      - name: "original_currency"
+        data_type: "registered token"
+        unit: "ISO currency"
+        input_domain: "CNY|AUD for Phase 5.1"
+      - name: "fx_rate"
+        data_type: "Decimal or null"
+        unit: "CNY/AUD"
+        input_domain: "positive finite Decimal for AUD; null or identity 1 for CNY"
+      - name: "fx_direction"
+        data_type: "registered token"
+        unit: "direction"
+        input_domain: "AUD_TO_CNY for AUD; CNY_IDENTITY or null for CNY"
+    constraints:
+      - "Base currency is CNY; AUD/CNY always means 1 AUD = X CNY."
+      - "AUD conversion multiplies by CNY/AUD and never infers a reciprocal direction."
+      - "4.81 is an example only; production_default_fx_rate remains null."
+      - "Exact Decimal arithmetic has no Phase 5.1 rounding."
+    missing_policy: "Missing, zero, negative, non-finite, float, wrong-direction or wrong-unit FX input fails closed."
+    output_range: "Exact CNY Decimal for valid CNY identity or AUD_TO_CNY input; otherwise error with no financial result."
+    code_refs: ["PFI/src/pfi_os/application/metrics/formula_governance.py"]
+    test_refs: ["PFI/tests/test_v025_stage5_formula_registry.py"]
+    evidence_refs: ["PFI/config/formulas/v025_formula_registry.json", "PFI/reports/pfi_v025/stage_5/phase_5_1/evidence.json"]
+  - formula_id: "FORM-PFI-015"
+    model_id: "MOD-PFI-010"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "VERIFIED"
+    task_ids: ["S5-P2-T1"]
+    formula_version: "pfi-v0.2.5-dual-consumption-v1"
+    effective_from: "2026-07-15"
+    formula_hash: "sha256:10b45da2fac5aa066aaf2ebc47d8615d6d144dbce6c09dd9bdbb2896ff3e57f2"
+    expression: "gross activity = living + investment funding + investment allocation + financial fees after linked refunds and source/economic-event deduplication"
+    variables:
+      - name: "financial_event_set"
+        data_type: "FinancialEvent sequence"
+        unit: "economic events with CNY Decimal"
+        input_domain: "explicit source_record_id, economic_event_id, group, type, date, direction and linked refund"
+    constraints: ["Conflicting duplicate or unresolved/over-refund fails closed.", "Funding and allocation remain separate and are not net-worth loss."]
+    missing_policy: "Missing lineage or refund offset prevents calculation."
+    output_range: "Exact Decimal components with zero reconciliation difference."
+    code_refs: ["PFI/src/pfi_os/application/metrics/financial_models.py"]
+    test_refs: ["PFI/tests/test_v025_stage5_dual_consumption.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_5/phase_5_2/dual_consumption_reconciliation.json", "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"]
+  - formula_id: "FORM-PFI-016"
+    model_id: "MOD-PFI-010"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "VERIFIED"
+    task_ids: ["S5-P2-T2"]
+    formula_version: "pfi-v0.2.5-core-financial-invariants-v1"
+    effective_from: "2026-07-15"
+    formula_hash: "sha256:d09de306632fd79988c735abc49e9e94730f5c7b5505f133d8f1f9715232a755"
+    expression: "net worth, cash rollforward and investment reallocation must reconcile at exact Decimal zero"
+    variables:
+      - name: "core_financial_inputs"
+        data_type: "explicit Decimal snapshots"
+        unit: "CNY"
+        input_domain: "snapshot, rollforward and reallocation values"
+    constraints: ["No tolerance is introduced.", "Investment reallocation changes assets only by explicit fee."]
+    missing_policy: "Any non-zero discrepancy returns failed_closed and no financial value."
+    output_range: "pass with exact discrepancies zero, otherwise failed_closed/null."
+    code_refs: ["PFI/src/pfi_os/application/metrics/financial_models.py"]
+    test_refs: ["PFI/tests/test_v025_stage5_financial_invariants.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_5/phase_5_2/core_invariant_capability.json", "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"]
+  - formula_id: "FORM-PFI-017"
+    model_id: "MOD-PFI-010"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "VERIFIED"
+    task_ids: ["S5-P2-T3"]
+    formula_version: "pfi-v0.2.5-investment-return-cost-drag-v1"
+    effective_from: "2026-07-15"
+    formula_hash: "sha256:27843944f347cb6729fdb0b5abcf4c5e72d70067c2a78d8c84b7b52af5dbece8"
+    expression: "realized net = proceeds - allocated cost - fees - taxes; total net = realized net + unrealized + dividends + interest - holding costs; drag dimensions separate"
+    variables:
+      - name: "investment_inputs"
+        data_type: "explicit Decimal values"
+        unit: "CNY and decimal rates"
+        input_domain: "non-negative amounts and positive FX rates"
+    constraints: ["Fees and taxes count once.", "Zero trade-value denominator returns null drag rates."]
+    missing_policy: "Incomplete production lineage remains blocked for Phase 5.3."
+    output_range: "Signed CNY returns/effects and null-or-decimal drag rates."
+    code_refs: ["PFI/src/pfi_os/application/metrics/financial_models.py"]
+    test_refs: ["PFI/tests/test_v025_stage5_financial_invariants.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_5/phase_5_2/investment_formula_capability.json", "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"]
+  - formula_id: "FORM-PFI-018"
+    model_id: "MOD-PFI-010"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "VERIFIED"
+    task_ids: ["S5-P2-T3"]
+    formula_version: "pfi-v0.2.5-xirr-v1"
+    effective_from: "2026-07-15"
+    formula_hash: "sha256:14b8695fadf9dd361f462e060120b879dba7a136268f568d07a14f7ce73f69cf"
+    expression: "solve XNPV(rate)=0 with actual dates/365 using Decimal bisection"
+    variables:
+      - name: "dated_investment_cashflows"
+        data_type: "dated Decimal sequence"
+        unit: "CNY by date"
+        input_domain: "at least one negative and one positive flow on at least two dates"
+    constraints: ["Exactly one aggregated sign change.", "Tolerance 1e-10 and at most 256 iterations."]
+    missing_policy: "Non-unique sign pattern, unbracketed root or non-convergence is blocked."
+    output_range: "Annual decimal rate greater than -1 with residual evidence."
+    code_refs: ["PFI/src/pfi_os/application/metrics/financial_models.py"]
+    test_refs: ["PFI/tests/test_v025_stage5_financial_invariants.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_5/phase_5_2/investment_formula_capability.json", "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"]
+  - formula_id: "FORM-PFI-019"
+    model_id: "MOD-PFI-010"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "VERIFIED"
+    task_ids: ["S5-P2-T4"]
+    formula_version: "pfi-v0.2.5-seven-window-cashflow-v1"
+    effective_from: "2026-07-15"
+    formula_hash: "sha256:e886fe19fce26640578da1c2e6d8ab45c83581b185e57120a13b23675cb94e30"
+    expression: "net external cashflow = external inflow - external outflow for 7/21/30/60/90/180/360; internal transfer separate"
+    variables:
+      - name: "financial_event_set_and_as_of"
+        data_type: "FinancialEvent sequence and date"
+        unit: "CNY by day window"
+        input_domain: "deduplicated explicit events at or before as_of"
+    constraints: ["Exact seven windows only.", "Internal transfers do not enter net external cashflow."]
+    missing_policy: "No selected events returns filtered_empty and null financial values."
+    output_range: "CNY inflow/outflow/net or null for empty window."
+    code_refs: ["PFI/src/pfi_os/application/metrics/financial_models.py"]
+    test_refs: ["PFI/tests/test_v025_stage5_dual_consumption.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_5/phase_5_2/cashflow_taxonomy_contract.json", "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"]
+  - formula_id: "FORM-PFI-020"
+    model_id: "MOD-PFI-010"
+    assumption_ids: ["ASM-PFI-001", "ASM-PFI-002"]
+    status: "active"
+    fact_level: "VERIFIED"
+    task_ids: ["S5-P2-T4"]
+    formula_version: "pfi-v0.2.5-taxonomy-tag-policy-v1"
+    effective_from: "2026-07-15"
+    formula_hash: "sha256:af21e5447bdd9f3d5528c328be4a9fcee236dfc99fb96a7f9f645740be1a2906"
+    expression: "L1<=12, L2 per L1<=5, total L2<=50, one primary category per record; default/custom tags preserve history and filter by all/any"
+    variables:
+      - name: "taxonomy_and_tag_contract"
+        data_type: "registered governance objects"
+        unit: "counts and policy decisions"
+        input_domain: "v0.2.2 compatible taxonomy, tags, history and view filter"
+    constraints: ["Exactly one primary category.", "Inactive tag history retained but no new assignment."]
+    missing_policy: "Missing category or duplicate primary assignment fails validation."
+    output_range: "pass/fail validation with category and tag counts."
+    code_refs: ["PFI/src/pfi_os/application/metrics/financial_models.py"]
+    test_refs: ["PFI/tests/test_v025_stage5_dual_consumption.py"]
+    evidence_refs: ["PFI/reports/pfi_v025/stage_5/phase_5_2/cashflow_taxonomy_contract.json", "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"]
+phase_contracts:
+  - iteration_id: "ITER-20260711-PFI-V025-S0-P02"
+    contract_id: "PFI-V025-STAGE0-PHASE02-ACTIVE-REQUIREMENTS"
+    acceptance_id: "ACC-PFI-V025-S0-P02-ACTIVE-CONTRACT"
+    fact_level: "EXTRACTED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/config/pfi_v025_active_requirements.json"
+      - "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+  - iteration_id: "ITER-20260713-PFI-V025-S1-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE1-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE1-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_1/STAGE_1_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_1/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    lifecycle: "candidate_pass_pending_postcommit_attestation"
+    stage_2_status: "not_started"
+  - iteration_id: "ITER-20260711-PFI-V025-S0-P03"
+    contract_id: "PFI-V025-STAGE0-PHASE03-GAP-EVIDENCE"
+    acceptance_id: "ACC-PFI-V025-S0-P03-GAP-EVIDENCE"
+    fact_level: "EXTRACTED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_0/finding_ledger.csv"
+      - "PFI/docs/pfi_v025/stage_0/gap_register.md"
+      - "PFI/reports/pfi_v025/stage_0/phase_0_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+  - iteration_id: "ITER-20260714-PFI-V025-S2-P22"
+    contract_id: "PFI-V025-STAGE2-PHASE22-TEMPORAL-FX-TRUTH"
+    acceptance_id: "ACC-PFI-V025-S2-P22-TEMPORAL-FX"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_2/temporal_truth.md"
+      - "PFI/reports/pfi_v025/stage_2/phase_2_2/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-002"
+    formula_ids_changed:
+      - "FORM-PFI-002"
+    parameter_ids_changed:
+      - "PARAM-PFI-024"
+      - "PARAM-PFI-025"
+      - "PARAM-PFI-026"
+      - "PARAM-PFI-027"
+  - iteration_id: "ITER-20260714-PFI-V025-S2-P23"
+    contract_id: "PFI-V025-STAGE2-PHASE23-SAFE-SANDBOX"
+    acceptance_id: "ACC-PFI-V025-S2-P23-SAFE-SANDBOX"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_2/sandbox_spec.md"
+      - "PFI/reports/pfi_v025/stage_2/phase_2_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Observed elapsed time and Python allocation are evidence samples, not formulas or parameters; no finance formula or parameter changes in Phase 2.3."
+  - iteration_id: "ITER-20260714-PFI-V025-S2-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE2-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE2-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/reports/pfi_v025/stage_2/whole_stage_review/final_evidence_index.json"
+      - "PFI/reports/pfi_v025/stage_2/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Stage acceptance preserves MOD-PFI-001/002, FORM-PFI-001/002 and PARAM-PFI-001..027 unchanged; source status and human acceptance are governance facts, not formulas."
+  - iteration_id: "ITER-20260714-PFI-V025-S3-P31"
+    contract_id: "PFI-V025-STAGE3-PHASE31-SOURCE-ACCOUNT"
+    acceptance_id: "ACC-PFI-V025-S3-P31-SOURCE-ACCOUNT"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_1_SOURCE_ACCOUNT_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_1/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-003"
+    formula_ids_changed:
+      - "FORM-PFI-003"
+    parameter_ids_changed:
+      - "PARAM-PFI-028"
+      - "PARAM-PFI-029"
+      - "PARAM-PFI-030"
+      - "PARAM-PFI-031"
+      - "PARAM-PFI-032"
+      - "PARAM-PFI-033"
+      - "PARAM-PFI-034"
+      - "PARAM-PFI-035"
+  - iteration_id: "ITER-20260714-PFI-V025-S3-P32"
+    contract_id: "PFI-V025-STAGE3-PHASE32-NORMALIZED-EVENT"
+    acceptance_id: "ACC-PFI-V025-S3-P32-NORMALIZED-EVENT"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_2_NORMALIZED_EVENT_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_2/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-004"
+    formula_ids_changed:
+      - "FORM-PFI-004"
+      - "FORM-PFI-005"
+    parameter_ids_changed:
+      - "PARAM-PFI-036"
+      - "PARAM-PFI-037"
+      - "PARAM-PFI-038"
+      - "PARAM-PFI-039"
+      - "PARAM-PFI-040"
+      - "PARAM-PFI-041"
+      - "PARAM-PFI-042"
+      - "PARAM-PFI-043"
+      - "PARAM-PFI-044"
+      - "PARAM-PFI-045"
+      - "PARAM-PFI-046"
+      - "PARAM-PFI-047"
+  - iteration_id: "ITER-20260714-PFI-V025-S3-P33"
+    contract_id: "PFI-V025-STAGE3-PHASE33-RECONCILIATION"
+    acceptance_id: "ACC-PFI-V025-S3-P33-RECONCILIATION"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_3/PHASE_3_3_RECONCILIATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_3/phase_3_3/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-005"
+    formula_ids_changed:
+      - "FORM-PFI-006"
+      - "FORM-PFI-007"
+    parameter_ids_changed:
+      - "PARAM-PFI-048"
+      - "PARAM-PFI-049"
+      - "PARAM-PFI-050"
+      - "PARAM-PFI-051"
+      - "PARAM-PFI-052"
+      - "PARAM-PFI-053"
+      - "PARAM-PFI-054"
+      - "PARAM-PFI-055"
+      - "PARAM-PFI-056"
+      - "PARAM-PFI-057"
+  - iteration_id: "ITER-20260714-PFI-V025-S4-P41"
+    contract_id: "PFI-V025-STAGE4-PHASE41-ACCOUNT-BALANCE"
+    acceptance_id: "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_1_ACCOUNT_BALANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_1/evidence.json"
+    model_ids_changed:
+      - "MOD-PFI-006"
+    formula_ids_changed:
+      - "FORM-PFI-008"
+    parameter_ids_changed:
+      - "PARAM-PFI-058"
+      - "PARAM-PFI-059"
+      - "PARAM-PFI-060"
+  - iteration_id: "ITER-20260714-PFI-V025-S4-P42"
+    contract_id: "PFI-V025-STAGE4-PHASE42-HOLDINGS-VALUATION"
+    acceptance_id: "ACC-PFI-V025-S4-P42-HOLDINGS-VALUATION"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_2_HOLDINGS_VALUATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_2/evidence.json"
+    model_ids_changed: ["MOD-PFI-007"]
+    formula_ids_changed: ["FORM-PFI-009", "FORM-PFI-010"]
+    parameter_ids_changed: ["PARAM-PFI-061", "PARAM-PFI-062", "PARAM-PFI-063", "PARAM-PFI-064", "PARAM-PFI-065", "PARAM-PFI-066", "PARAM-PFI-067"]
+  - iteration_id: "ITER-20260714-PFI-V025-S4-P43"
+    contract_id: "PFI-V025-STAGE4-PHASE43-METRIC-CONSISTENCY"
+    acceptance_id: "ACC-PFI-V025-S4-P43-METRIC-CONSISTENCY"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/PHASE_4_3_METRIC_CONSISTENCY_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json"
+    model_ids_changed: ["MOD-PFI-008"]
+    formula_ids_changed: ["FORM-PFI-011", "FORM-PFI-012", "FORM-PFI-013"]
+    parameter_ids_changed: ["PARAM-PFI-068", "PARAM-PFI-069", "PARAM-PFI-070", "PARAM-PFI-071", "PARAM-PFI-072"]
+    rationale: "Phase 4.3 registers exact source-only aggregation, dependency-complete net worth and deterministic shared-snapshot hashing; no absent financial value is coerced to zero."
+  - iteration_id: "ITER-20260714-PFI-V025-S4-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE4-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE4-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_4/STAGE_4_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_4/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Whole-stage review verifies existing formula contracts and not_loaded residuals without changing formula expressions or parameters."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-P51"
+    contract_id: "PFI-V025-STAGE5-PHASE51-FORMULA-PARAMETER-GOVERNANCE"
+    acceptance_id: "ACC-PFI-V025-STAGE5-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_1_FORMULA_PARAMETER_GOVERNANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_1/evidence.json"
+    model_ids_changed: ["MOD-PFI-009"]
+    formula_ids_changed: ["FORM-PFI-014"]
+    parameter_ids_changed: ["PARAM-PFI-073", "PARAM-PFI-074", "PARAM-PFI-075", "PARAM-PFI-076", "PARAM-PFI-077", "PARAM-PFI-078", "PARAM-PFI-079", "PARAM-PFI-080"]
+    rationale: "Phase 5.1 registers immutable versions for FORM-PFI-001..014, adds exact CNY/AUD unit conversion, synchronizes five parameter carriers and separates six confidence dimensions; Phase 5.2/5.3 remain not_started."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-P52"
+    contract_id: "PFI-V025-STAGE5-PHASE52-FINANCIAL-MODELS"
+    acceptance_id: "ACC-PFI-V025-S5-P52-FINANCIAL-MODELS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_2_FINANCIAL_MODELS_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"
+    model_ids_changed: ["MOD-PFI-010"]
+    formula_ids_changed: ["FORM-PFI-015", "FORM-PFI-016", "FORM-PFI-017", "FORM-PFI-018", "FORM-PFI-019", "FORM-PFI-020"]
+    parameter_ids_changed: ["PARAM-PFI-081", "PARAM-PFI-082", "PARAM-PFI-083", "PARAM-PFI-084", "PARAM-PFI-085", "PARAM-PFI-086", "PARAM-PFI-087", "PARAM-PFI-088", "PARAM-PFI-089", "PARAM-PFI-090", "PARAM-PFI-091", "PARAM-PFI-092"]
+    rationale: "Phase 5.2 registers deterministic dual-consumption, exact core invariants, investment return/XIRR, seven-window cashflow and taxonomy/tag formulas while real-data model validation remains blocked for Phase 5.3."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-P53"
+    contract_id: "PFI-V025-STAGE5-PHASE53-MODEL-VALIDATION"
+    acceptance_id: "ACC-PFI-V025-S5-P53-MODEL-VALIDATION"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/PHASE_5_3_MODEL_VALIDATION_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_3/model_validation_card.json"
+      - "PFI/reports/pfi_v025/stage_5/phase_5_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 5.3 preserves immutable FORM-PFI-015..020 definitions and records real-snapshot validation or blocked status in a separate model card."
+  - iteration_id: "ITER-20260715-PFI-V025-S5-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE5-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE5-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_5/STAGE_5_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_5/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Whole-stage review verifies same-source rendering and privacy without changing FORM-PFI-001..020 expressions, versions or parameter values."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-P61"
+    contract_id: "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS"
+    acceptance_id: "ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/PHASE_6_1_NAVIGATION_ALIAS_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_6/phase_6_1/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 6.1 verifies navigation and alias behavior only; FORM-PFI-001..020 expressions, versions and parameter values remain unchanged."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-P62"
+    contract_id: "PFI-V025-STAGE6-PHASE62-PAGE-CONTRACTS"
+    acceptance_id: "ACC-PFI-V025-S6-P62-PAGE-CONTRACTS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/PHASE_6_2_PAGE_CONTRACTS_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_6/phase_6_2/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 6.2 verifies page and route behavior only; FORM-PFI-001..020 expressions, versions and parameter values remain unchanged."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-P63"
+    contract_id: "PFI-V025-STAGE6-PHASE63-HISTORY-ACCEPTANCE"
+    acceptance_id: "ACC-PFI-V025-S6-P63-HISTORY-ACCEPTANCE"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/PHASE_6_3_BROWSER_HISTORY_ACCEPTANCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_6/phase_6_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 6.3 verifies browser history and accessibility behavior only; FORM-PFI-001..020 expressions, versions and parameter values remain unchanged."
+  - iteration_id: "ITER-20260715-PFI-V025-S6-WHOLE-REVIEW"
+    contract_id: "PFI-V025-STAGE6-WHOLE-REVIEW"
+    acceptance_id: "ACC-PFI-V025-STAGE6-WHOLE-REVIEW"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_6/STAGE_6_WHOLE_STAGE_REVIEW.md"
+      - "PFI/reports/pfi_v025/stage_6/whole_stage_review/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "The Stage 6 whole review verifies non-model navigation, page, history, no-JS and accessibility evidence; FORM-PFI-001..020 and PARAM-PFI-001..092 remain unchanged."
+  - iteration_id: "ITER-20260715-PFI-V025-S7-P71"
+    contract_id: "PFI-V025-STAGE7-PHASE71-IMPORT-REVIEW-LEDGER"
+    acceptance_id: "ACC-PFI-V025-S7-P71-IMPORT-REVIEW-LEDGER"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_7/PHASE_7_1_IMPORT_REVIEW_LEDGER_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_7/phase_7_1/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 7.1 verifies persistence and recovery behavior; FORM-PFI-001..020 expressions and PARAM-PFI-001..092 values remain unchanged."
+  - iteration_id: "ITER-20260715-PFI-V025-S7-P72"
+    contract_id: "PFI-V025-STAGE7-PHASE72-HOLDING-SETTINGS-PERSISTENCE"
+    acceptance_id: "ACC-PFI-V025-S7-P72-HOLDINGS-SETTINGS"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_7/PHASE_7_2_HOLDING_SETTINGS_PERSISTENCE_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_7/phase_7_2/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 7.2 verifies CRUD, projection-state and restart persistence without evaluating money; FORM-PFI-001..020 and PARAM-PFI-001..092 remain unchanged."
+  - iteration_id: "ITER-20260715-PFI-V025-S7-P73"
+    contract_id: "PFI-V025-STAGE7-PHASE73-METRIC-DRILLDOWN"
+    acceptance_id: "ACC-PFI-V025-S7-P73-METRIC-DRILLDOWN"
+    fact_level: "VERIFIED"
+    requirement_disposition: "ACTIVE"
+    evidence_refs:
+      - "PFI/docs/pfi_v025/stage_7/PHASE_7_3_METRIC_DRILLDOWN_IMPLEMENTATION_PLAN.md"
+      - "PFI/reports/pfi_v025/stage_7/phase_7_3/evidence.json"
+    model_ids_changed: []
+    formula_ids_changed: []
+    parameter_ids_changed: []
+    rationale: "Phase 7.3 verifies current FORM-PFI-001..020 and PARAM-PFI-001..092 lineage/hash display without changing expressions, parameter values, versions or financial outputs."

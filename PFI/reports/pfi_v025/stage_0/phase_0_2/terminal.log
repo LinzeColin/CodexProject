@@ -1,0 +1,21 @@
+PFI v0.2.5 Stage 0 Phase 0.2 command ledger
+PHASE_BASE: 82869ffdb37e4de22244d5423c9b7f71f4cb7076
+INITIAL_LIVE_MAIN: d90e82adc75a71f4d9b05dcee68d080d46331d9e
+[Task 1] exact-SHA object-only hydration and immutable ref/FETCH_HEAD/shallow comparison | exit_code=0 | hydration_performed=true
+[Task 1] merge-base plus PFI remote-side diff plus pinned source hashes plus ZIP integrity plus 8-new/12-existing scope plus protected metadata guard | exit_code=0
+[Task 2] active requirements identity/semantic/type gate | exit_code=0 | active_contract_semantic_gate=pass
+[Task 2] route and shell current-snapshot parity | exit_code=0 | task2_route_snapshot_green=pass
+[Task 3] policy existence/projection/source-hash parity | exit_code=0 | policies=3 conflicts=7 overrides=2
+[Task 3] independent review remediation and re-review | exit_code=0 | Critical=0 Important=0 Minor=0
+[Task 4] governance sync expected RED before companions | exit_code=1 | expected missing-companion set observed
+[Task 4] registry definition/value/count invariant via repository fallback YAML parser and CSV comparison | exit_code=0 | models=1 formulas=1 parameters=23 tasks=10 acceptances=10
+[Task 4] independent review | exit_code=0 | Critical=0 Important=0 Minor=0
+[Task 5.1] LC_ALL=C sorted exact changed-file ledger | exit_code=0 | paths=20
+[Task 5.2] isolated historical Phase 0.2 pytest with guarded cleanup | exit_code=0 | 3 passed in 0.11s
+[Environment] approved direct import-yaml comparison | exit_code=1 | ModuleNotFoundError baseline; no dependency installed; repository fallback parser used for equivalent assertions
+[Task 5.4] streamed Task Pack active/evidence schemas | exit_code=0 | schema_valid=2
+[Task 5.5] complete strong semantic and type gate | exit_code=0 | active_contract_semantic_gate=pass
+[Task 5.6] repository navigation/routes/shell current snapshot | exit_code=0 | current_route_snapshot_valid=true
+[Task 5.7] four-document projection/source/task parity | exit_code=0 | cross_document_parity=pass
+[Task 5.8] recorded sparse-aware selective governance preflight | exit_code=0 | project_governance errors=0 warnings=0; governance_sync errors=0 warnings=0
+PHASE_STATUS: candidate_pass_pending_postcommit_attestation

@@ -1,0 +1,39 @@
+PFI v0.2.5 Stage 7 Phase 7.3 command summary
+implementation_base=45d362c7ff95320aa2bbe0fcc841102abc48c146
+
+PASS  PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage7_metric_drilldown.py
+      5 passed
+PASS  PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_whole_review_remediation.py PFI/tests/test_v025_stage7_import_review_ledger.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage7_metric_drilldown.py
+      34 passed, 2 dependency deprecation warnings
+PASS  node PFI/web/tests/v025/stage1_cache_policy.test.mjs
+      8 passed
+PASS  node PFI/web/tests/v025/stage1_release_identity.test.mjs
+      20 passed
+PASS  node PFI/web/tests/v025/stage7_metric_drilldown.test.mjs
+      1 contract pass
+PASS  node --check routes.js shell.js stage7Lineage.js stage7_metric_drilldown_cdp.mjs
+PASS  PYTHONPATH=PFI/src PFI/.venv/bin/python PFI/web/tests/v025/stage7_metric_drilldown_browser.py
+      21/21 checks; no console, page, HTTP or external-network errors
+PASS  sanitized trace privacy rescan
+      absolute_path_hit_count=0; numeric_value_hit_count=0; contains_private_values=false
+PASS  PFI project governance on complete Git tree plus Phase overlay
+      PFI errors=0; PFI warnings=0
+INFO  root governance baseline outside PFI scope
+      37 pre-existing KMFA/EEI/ADP errors; not modified by this Phase
+DIAGNOSTIC  v0.2.5 broad regression excluding LaunchServices/Finder-adjacent isolated App suite
+      265 passed, 9 failed; 8 failures are superseded historical Stage 2/3 current-state assertions; 1 active-route expectation was remediated
+PASS  current-head Stage 6 active-route compatibility plus identity and Stage 7 regression
+      44 passed, 2 dependency deprecation warnings
+
+EXPECTED REMEDIATION
+- Initial combined regression: 33 passed, 1 failed because the exact frontend identity file-count test still expected 14 after adding stage7Lineage.js; updated current identity assertions to 15 and reran green.
+- Initial browser deep-link attempt found the new module absent from Streamlit inline assets and a query/path History helper defect; both were fixed and all formal browser checks reran green.
+- Initial raw Playwright trace captured upstream response values; it was deleted immediately. The runner now rewrites and fail-closed rescans the trace before persistence.
+
+NOT PERFORMED
+- Finder
+- external network
+- database writes or canonical source mutation
+- GitHub push
+- app install
+- Stage 7 whole-stage review or Stage 8

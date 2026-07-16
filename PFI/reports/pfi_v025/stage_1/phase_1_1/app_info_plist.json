@@ -1,0 +1,19 @@
+{
+  "schema": "PFIV025Stage1Phase11AppInfoPlistV1",
+  "bundle_ref": "PFI/macos/PFI.app",
+  "plist_ref": "PFI/macos/PFI.app/Contents/Info.plist",
+  "CFBundleIdentifier": "com.linze.pfi.launcher",
+  "CFBundleShortVersionString": "0.2.5",
+  "CFBundleVersion": "20260712.1",
+  "plist_sha256": "23ab4b10a1ef2d1d932f03974ff28ebfa26f4d3fc33925ddb7dac51ef060f84b",
+  "launcher_binary_sha256": "15a6666eab31a99f20b535043d3fd516ece4c36b6dd71d2dc83e42eb32fd4436",
+  "code_resources_sha256": "67b1a2d1bbf4776b7cd8a49530d2b2c02dc7db948cdb42c7da3f1e44b7bae925",
+  "codesign": {
+    "kind": "adhoc",
+    "identifier": "com.linze.pfi.launcher.binary",
+    "strict_verify": "pass"
+  },
+  "installed_bundle_checked": false,
+  "installed_bundle_check_deferred_to": "S1-P3-T1..T3",
+  "result": "pass_repository_template"
+}

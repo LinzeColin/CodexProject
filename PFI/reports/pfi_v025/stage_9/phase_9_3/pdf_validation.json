@@ -1,0 +1,16 @@
+{
+  "embedded_cjk_font": true,
+  "filename": "pfi_v025_decision_review.pdf",
+  "keywords": "PFI v0.2.5;sha256:59c05ea7de7cd86265b4d470dec8899ce0c20a6ea9e3097d74025923bbcd42a1;human-review-required;no-automatic-trading",
+  "page_count": 1,
+  "page_size": "A4",
+  "poppler_render_passed": true,
+  "render": "pdf_render.png",
+  "render_sha256": "sha256:e25b2f511f6f4e92c09909adea586897d4600fccba064cc140ba8c53612ff8ba",
+  "schema": "PFIV025Stage9Phase93PDFValidationV1",
+  "sha256": "sha256:de7f2c7ff94ecb95298a68d447525610d0753536fbff2ef91e55c632dff08dc0",
+  "status": "pass",
+  "subject": "sha256:59c05ea7de7cd86265b4d470dec8899ce0c20a6ea9e3097d74025923bbcd42a1",
+  "visual_inspection_ref": "verification_results.json#pdf_export_validation",
+  "visual_inspection_status": "pass"
+}

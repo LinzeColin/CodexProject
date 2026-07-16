@@ -1,0 +1,24 @@
+{
+  "actual_report_render_binding_completed": false,
+  "actual_ui_render_binding_completed": false,
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "open_requirement": "The real-snapshot consumer payload is validated, but tracked Web/report renderers do not yet consume all four components.",
+  "phase_id": "V025-S5-P5.3",
+  "real_snapshot_bound": true,
+  "same_payload_hash": true,
+  "schema": "PFIV025Stage5Phase53CrossSurfaceValidationV1",
+  "source_snapshot_hash": "sha256:2c95ffac770cd10a2261db793de9bf6678c28ea2e3d420c4ed9bcaa2de26483f",
+  "status": "contract_pass_render_binding_open",
+  "surface_ids": [
+    "homepage",
+    "consumption_page",
+    "report"
+  ],
+  "surface_payload_hashes": {
+    "consumption_page": "sha256:da69e519150e984742e616cb6673c6553680e64df8b0428ec8dacc0e0a924b09",
+    "homepage": "sha256:da69e519150e984742e616cb6673c6553680e64df8b0428ec8dacc0e0a924b09",
+    "report": "sha256:da69e519150e984742e616cb6673c6553680e64df8b0428ec8dacc0e0a924b09"
+  },
+  "version": "v0.2.5"
+}

@@ -1,0 +1,12 @@
+PFI v0.2.5 Stage 4 Phase 4.1 public-evidence privacy scan
+result=pass
+contains_private_values=false
+absolute_private_paths_emitted=0
+account_identifiers_emitted=0
+financial_rows_emitted=0
+financial_values_emitted=0
+credentials_emitted=0
+database_tables_emitted=0
+finder_used=false
+network_performed=false
+notes=Reports contain only aggregate source states, null metric values, hashes, counts, contracts and public repository paths.

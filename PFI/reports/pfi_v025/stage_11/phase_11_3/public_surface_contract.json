@@ -1,0 +1,44 @@
+{
+  "active_ui": false,
+  "application_route_count": 0,
+  "contains_private_values": false,
+  "context_field_exposure_count": 0,
+  "deployment_performed": false,
+  "dist_file_count": 4,
+  "manifest": {
+    "active_ui": false,
+    "application_routes_enabled": false,
+    "broker_connections_enabled": false,
+    "data_classification": "PUBLIC_SHARED_CANONICAL",
+    "data_sources": [],
+    "external_actions_enabled": false,
+    "financial_accounts_connected": false,
+    "local_runtime_connection": false,
+    "pfi_context_export_exposed": false,
+    "private_domains_readable": [],
+    "project_id": "pfi",
+    "schema_version": "cloudflare_public_surface.v2",
+    "surface_type": "static_boundary_notice",
+    "worker_runtime_enabled": false
+  },
+  "schema": "PFIV025Stage11PublicSurfaceContractV1",
+  "script_file_count": 0,
+  "source_asset_types": [
+    ".css",
+    ".html",
+    ".json"
+  ],
+  "source_file_count": 4,
+  "source_file_hashes": {
+    "404.html": "sha256:e34397bb805631152fb19f76617660915a1a7f73dd947fd99c4450274e0e02fa",
+    "index.html": "sha256:c78c2cdd895d7bc1543a3a64e440984ed988f45b9f527ddf361165f1fa2d1a86",
+    "public-surface.json": "sha256:d76b040df95eee4962281f6dfea1a56d5e05be1d8717c8e3d295ec567e1c89bb",
+    "styles.css": "sha256:23b0722789c37e4ba4c619a3cb0d589ed1f55e08952f41bdfe6da7c9d4aac9ba"
+  },
+  "status": "pass",
+  "wrangler": {
+    "asset_directory": "./dist",
+    "not_found_handling": "404-page",
+    "runtime_binding_count": 0
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "PFIV025Stage8Phase81RunContractV1",
+  "status": "candidate_pass",
+  "iteration_id": "ITER-20260715-PFI-V025-S8-P81",
+  "contract_id": "PFI-V025-STAGE8-PHASE81-DESIGN-SYSTEM",
+  "acceptance_id": "ACC-PFI-V025-STAGE8-WHOLE-REVIEW",
+  "implementation_base": "317b7f5c3d4e17ef49d3a1ed70f77ccb0a328add",
+  "task_ids": [
+    "S8-P1-T1",
+    "S8-P1-T2",
+    "S8-P1-T3",
+    "S8-P1-T4"
+  ],
+  "current_phase_only": true,
+  "phase_8_2_started": false,
+  "phase_8_3_started": false,
+  "stage_8_whole_stage_review_started": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "finder_used": false
+}

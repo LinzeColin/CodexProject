@@ -1,0 +1,153 @@
+{
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "pack_hash": "sha256:c3df8b878038bffdb28bfe4112d9a875e43e5d41cb910f86b6482768223a19e9",
+  "phase_id": "V025-S9-P9.2",
+  "schema": "PFIV025Stage9Phase92SourceReviewEvidenceV1",
+  "source_review_index": [
+    {
+      "action_label_zh": "复核交易来源覆盖与待复核队列",
+      "as_of": "2026-06-03",
+      "blocking_reason_zh": null,
+      "contains_private_values": false,
+      "coverage": {
+        "end": "2026-06-03",
+        "start": "2022-06-06"
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "支付宝交易流水（历史 Git object 只读来源）",
+      "record_count": 8815,
+      "resolution_task_ids": [],
+      "review_id": "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+      "review_route": "/data/sources",
+      "source_id": "SRC-TRANSACTIONS-ALIPAY",
+      "status": "ready"
+    },
+    {
+      "action_label_zh": "挂接并复核账户余额快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "账户余额与期初/期末快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P1-T1",
+        "S4-P1-T2"
+      ],
+      "review_id": "REVIEW-SRC-ACCOUNT-BALANCES",
+      "review_route": "/accounts/reconcile",
+      "source_id": "SRC-ACCOUNT-BALANCES",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核负债余额快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "负债余额快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P1-T1",
+        "S4-P1-T2"
+      ],
+      "review_id": "REVIEW-SRC-LIABILITIES",
+      "review_route": "/accounts/reconcile",
+      "source_id": "SRC-LIABILITIES",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核真实持仓快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "真实持仓快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P2-T1",
+        "S4-P2-T3",
+        "S4-P2-T4"
+      ],
+      "review_id": "REVIEW-SRC-HOLDINGS",
+      "review_route": "/investment/holdings",
+      "source_id": "SRC-HOLDINGS",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核估值价格快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "持仓估值价格快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P2-T3",
+        "S4-P2-T4"
+      ],
+      "review_id": "REVIEW-SRC-MARKET-PRICES",
+      "review_route": "/investment/holdings",
+      "source_id": "SRC-MARKET-PRICES",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核生产 FX snapshot",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "生产 FX snapshot",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S2-P2-T2",
+        "S2-P2-T3"
+      ],
+      "review_id": "REVIEW-SRC-FX-SNAPSHOT",
+      "review_route": "/settings/data-system",
+      "source_id": "SRC-FX-SNAPSHOT",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "复核 Economic Event 映射与缺失 lineage",
+      "as_of": null,
+      "blocking_reason_zh": "lineage complete=0、missing=1571；未完整前不能生成确定性财务结论。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "lineage_dependency",
+      "label_zh": "Economic Event lineage",
+      "record_count": 0,
+      "resolution_task_ids": [
+        "S9-P2-T4"
+      ],
+      "review_id": "REVIEW-ECONOMIC-EVENT-ADAPTER",
+      "review_route": "/data/interconnection",
+      "source_id": "economic_event_adapter",
+      "status": "blocked"
+    }
+  ]
+}

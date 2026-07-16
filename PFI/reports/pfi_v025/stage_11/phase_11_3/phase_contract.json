@@ -1,0 +1,29 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE11-WHOLE-REVIEW",
+  "allowed_files_obeyed": false,
+  "app_install_performed": false,
+  "canonical_private_database_used": false,
+  "current_phase_only": true,
+  "deployment_performed": false,
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "implementation_base": "599c64eb00d2c725a4817deb050312a91462774e",
+  "launchservices_used": false,
+  "network_scope": "official_documentation_research_only",
+  "phase_id": "V025-S11-P11.3",
+  "product_commit": "890d38a759b9689a65152aa20527bde7ba04b52e",
+  "product_runtime_external_network_calls": 0,
+  "push_performed": false,
+  "real_financial_rows_read": false,
+  "risk_tier": "T2_PRIVACY_DISTRIBUTION_CONTEXT_RELEASE_IDENTITY",
+  "schema": "PFIV025Stage11Phase113ContractV1",
+  "scope_override_authorized": true,
+  "stage_12_started": false,
+  "task_ids": [
+    "S11-P3-T1",
+    "S11-P3-T2",
+    "S11-P3-T3",
+    "S11-P3-T4"
+  ],
+  "whole_stage_review_started": false
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "PFIV025Stage1ReleaseManifestSchemaValidationV1",
+  "task_pack_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2",
+  "schema_entry": "PFI_v0.2.5_TaskPack/schemas/release_manifest.schema.json",
+  "schema_sha256": "5fdfa06d0d72580c5b497a62882e8f31a0e4d3b878902c90cb7901ee65d67a7f",
+  "validator": "jsonschema.Draft202012Validator + FormatChecker",
+  "manifest_ref": "PFI/config/release_manifest.json",
+  "manifest_sha256": "ddc7db859efff04bff0513f9a3dda5c23c472e102d112c69366b4a49b55769c0",
+  "validation_errors": [],
+  "additional_properties": [],
+  "result": "pass"
+}

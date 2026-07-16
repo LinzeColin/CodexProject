@@ -1,0 +1,24 @@
+{
+  "product": "PFI",
+  "version": "v0.2.5",
+  "build_id": "pfi-v025-stage2-whole-review",
+  "git_commit": "431ddb30c483f6451c29dfb6890c4bee5690c57c",
+  "stage": 2,
+  "evidence_index_hash": "sha256:6e2e55bbf1cc1a0a105ab38791bd690751e2931dbe8afc2d9bdfe7a963f720e4",
+  "accepted_scope": [
+    "canonical private data root is $PFI_DATA_HOME with explicit aliases and no migration",
+    "transaction source scope is 8815 records covering 2022-06-06 through 2026-06-03",
+    "all five current finance metrics remain blocked/null until listed dependencies are satisfied",
+    "production FX remains not_loaded/null and ordinary runtime remains offline",
+    "real-data validation is read-only, redacted and has no financial fixture fallback"
+  ],
+  "known_defects": [
+    "canonical private root mode 0755 and operational SQLite mode 0644 remain a local permission risk",
+    "production FX balance liability holding and market-price sources remain not_loaded",
+    "seven temporal fields beyond transaction_time remain not_verified",
+    "performance observations are not a production SLA"
+  ],
+  "accepted_at": "2026-07-14T19:27:14+10:00",
+  "acceptance_statement": "User blanket interim authorization is applied specifically to the reviewed Stage 2 canonical root, data scope, blocked metric dependencies, offline FX and read-only no-fake boundaries.",
+  "user_confirmation_reference": "conversation_user_blanket_interim_authorization_before_final_acceptance"
+}

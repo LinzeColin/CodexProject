@@ -1,0 +1,184 @@
+{
+  "app_install_performed": false,
+  "browser_check_count": 22,
+  "canonical_private_database_used": false,
+  "commands": [
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/web/tests/v025/stage10_jobs_browser.py --output-dir PFI/reports/pfi_v025/stage_10/whole_stage_review",
+      "command_id": "current_content_browser",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_current_content_browser.log",
+      "output_sha256": "sha256:96ca8eb5e90df5702f6847716aebcf3c8475d1b6e5ea26c987f9d4e19499e21c",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/web/tests/v025/stage10_jobs_browser.py --output-dir PFI/reports/pfi_v025/stage_10/whole_stage_review"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/web/tests/v025/stage10_whole_review_evidence.py",
+      "command_id": "build_core_evidence",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_build_core_evidence.log",
+      "output_sha256": "sha256:42cfe23c0f149de01e769d4772297f76d12b19cd7480410e8534502b78fd815d",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/web/tests/v025/stage10_whole_review_evidence.py"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage10_job_lifecycle.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_job_observability.py PFI/tests/test_v025_stage10_runtime_supervisor.py PFI/tests/test_v025_stage10_runtime_jobs_api.py PFI/tests/test_v025_stage10_runtime_job_ui.py PFI/tests/test_v025_stage10_crash_recovery.py PFI/tests/test_v025_stage10_whole_review.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_cache_policy.py",
+      "command_id": "focused_stage10",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_focused_stage10.log",
+      "output_sha256": "sha256:6225e1377403eeca9531ed34880a606f658e93712fd458f2232fa6f1b60df067",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage10_job_lifecycle.py PFI/tests/test_v025_stage10_runtime_diff.py PFI/tests/test_v025_stage10_job_observability.py PFI/tests/test_v025_stage10_runtime_supervisor.py PFI/tests/test_v025_stage10_runtime_jobs_api.py PFI/tests/test_v025_stage10_runtime_job_ui.py PFI/tests/test_v025_stage10_crash_recovery.py PFI/tests/test_v025_stage10_whole_review.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage1_cache_policy.py"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_report_consistency.py PFI/tests/test_v025_stage9_whole_review.py",
+      "command_id": "selected_upstream_regression",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_selected_upstream_regression.log",
+      "output_sha256": "sha256:6ca48d082a4007f63245726199d559863edf13826d917ceff796d9d3b74bec91",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py PFI/tests/test_v025_stage9_report_consistency.py PFI/tests/test_v025_stage9_whole_review.py"
+      ]
+    },
+    {
+      "command": "node --check PFI/web/app/jobs/runtimeJobs.js && node --check PFI/web/app/components/jobTimeline.js && node --check PFI/web/app/shell.js && node --check PFI/web/tests/v025/stage10_jobs_cdp.mjs && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m py_compile PFI/src/pfi_os/application/supervisor/runtime_jobs.py PFI/web/tests/v025/stage10_jobs_browser.py PFI/web/tests/v025/stage10_whole_review_evidence.py PFI/web/tests/v025/stage10_whole_review_verify.py PFI/web/tests/v025/stage10_whole_review_finalize.py && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json && git diff --check",
+      "command_id": "syntax_release_and_diff",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_syntax_release_and_diff.log",
+      "output_sha256": "sha256:bd4a429a175fdd2e7ee0dfd09bf7b25956c70c52a22764a4672359811e2df432",
+      "subcommands": [
+        "node --check PFI/web/app/jobs/runtimeJobs.js",
+        "node --check PFI/web/app/components/jobTimeline.js",
+        "node --check PFI/web/app/shell.js",
+        "node --check PFI/web/tests/v025/stage10_jobs_cdp.mjs",
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m py_compile PFI/src/pfi_os/application/supervisor/runtime_jobs.py PFI/web/tests/v025/stage10_jobs_browser.py PFI/web/tests/v025/stage10_whole_review_evidence.py PFI/web/tests/v025/stage10_whole_review_verify.py PFI/web/tests/v025/stage10_whole_review_finalize.py",
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/scripts/v025/release_cache_contract.py --project-root PFI --isolated-candidate --policy-json",
+        "git diff --check"
+      ]
+    },
+    {
+      "command": "git archive HEAD into an isolated complete root && overlay exact current non-evidence Stage 10 files && $PYTHON scripts/validate_project_governance.py --project PFI && $PYTHON scripts/lean_governance.py check-render --project PFI && /usr/bin/python3 scripts/lean_governance.py check-render --project PFI",
+      "command_id": "changed_scope_governance",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_10/whole_stage_review/verification_changed_scope_governance.log",
+      "output_sha256": "sha256:2f0ad15ef4adce55a334e715638858176a9b61e496b90dfb260aa89aa8a6e111",
+      "subcommands": [
+        "git archive HEAD into an isolated complete root",
+        "overlay exact current non-evidence Stage 10 files",
+        "$PYTHON scripts/validate_project_governance.py --project PFI",
+        "$PYTHON scripts/lean_governance.py check-render --project PFI",
+        "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI"
+      ],
+      "validation_scope": "complete_git_archive_plus_exact_current_stage10_overlay"
+    }
+  ],
+  "contains_private_values": false,
+  "external_network_performed": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "generated_at": "2026-07-16T00:30:42+10:00",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "overlay_stable_during_verification": true,
+  "production_accepted": false,
+  "project_task_progress": "132/156 (84.62%)",
+  "push_performed": false,
+  "real_financial_rows_read": false,
+  "schema": "PFIV025Stage10FinalVerificationResultsV1",
+  "stage_11_started": false,
+  "stage_task_count": 12,
+  "status": "pass",
+  "verified_overlay": {
+    "base_commit": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+    "content_manifest_sha256": "sha256:8b3ccb6d2db4fcbc14c55710d1cf53eb7def2688c891786c22b3bbee49aa8d93",
+    "file_count": 20,
+    "files": [
+      {
+        "path": "PFI/HANDOFF.md",
+        "sha256": "sha256:73d2daf8e56c4da3e2233a7f75c22740cc9c582998951f3e50783d2c269c8d1a"
+      },
+      {
+        "path": "PFI/README.md",
+        "sha256": "sha256:a9cf9f66adbd5dbd4b4da330fe3d6c00cdd1974d9376c6415d1ed5d38cc23236"
+      },
+      {
+        "path": "PFI/docs/governance/ASSURANCE_STATUS.yaml",
+        "sha256": "sha256:f9ca35b5a81f488792133990891f23026409c74e18e8156a6de2db7bf90a011c"
+      },
+      {
+        "path": "PFI/docs/governance/DELIVERY_PLAN.md",
+        "sha256": "sha256:f8f64ffd89c6c09ba44aac6968b15b54df66c68328db72224955fa40cca2bc19"
+      },
+      {
+        "path": "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+        "sha256": "sha256:b6d72824c7e4c4c6888f41d385e811d1e061da5c426981b395374db2b0593f85"
+      },
+      {
+        "path": "PFI/docs/governance/OWNER_STATUS.md",
+        "sha256": "sha256:94be64e03679884ce5a3004f2745e049b4b39e02ca0a426beab02092518515db"
+      },
+      {
+        "path": "PFI/docs/governance/STATUS.md",
+        "sha256": "sha256:a7b12ae6c89361ac1c0ec51871134e911f50e1f49c65eb384d11c13e4d385177"
+      },
+      {
+        "path": "PFI/docs/governance/VERSION_MATRIX.yaml",
+        "sha256": "sha256:31fb939477894328fec3db732d173a60e1751bea8b491cbf49e64c8f3462362c"
+      },
+      {
+        "path": "PFI/docs/governance/delivery_tasks.yaml",
+        "sha256": "sha256:baea6f0a6b08b65020b513bac3db711fa801301821c3d761e6eb62b3bf991245"
+      },
+      {
+        "path": "PFI/docs/governance/development_events.jsonl",
+        "sha256": "sha256:9de4ca624da210237e96db45d8518cf749328e6ce2c42780ce7a2c8537a9e239"
+      },
+      {
+        "path": "PFI/docs/governance/project.yaml",
+        "sha256": "sha256:9764a53587e755a4b75fbbcabb8b11dc8b4a935811b58f329e844f2b80e68fd5"
+      },
+      {
+        "path": "PFI/docs/governance/roadmap.yaml",
+        "sha256": "sha256:9ce4373576da0a8c3f13df90024cb6c17e543a75b1f8ac3d7d8f9a3ab31263e7"
+      },
+      {
+        "path": "PFI/docs/pfi_v025/stage_10/STAGE_10_WHOLE_STAGE_REVIEW.md",
+        "sha256": "sha256:f7c25bdaf56a94ae3dd6e4fe3396349e86ba67e963b071be52feb20e314d7853"
+      },
+      {
+        "path": "PFI/tests/test_v025_stage10_whole_review.py",
+        "sha256": "sha256:0ea85169ba9b8e0e97e096792a2f006ca0abbe6609a3eb5cff4052cfbcbe6696"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage10_whole_review_evidence.py",
+        "sha256": "sha256:d6dd2473cdb9f562f25cfb4194a5b10636602cd42721544f702ad4ac7158dac8"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage10_whole_review_finalize.py",
+        "sha256": "sha256:8089a3ce4742bf43f1fe2c0179aa4abf026e73f1f5c416ddeca114b821ed3e0b"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage10_whole_review_verify.py",
+        "sha256": "sha256:4ea1fbbb439e8b1a4e0ec23147407f22d11307f8d4c111ae53aff283999e5491"
+      },
+      {
+        "path": "PFI/功能清单.md",
+        "sha256": "sha256:1d82144bed8fb0de455321ee83ec701ae6244783f555a7b44472e18adef23435"
+      },
+      {
+        "path": "PFI/开发记录.md",
+        "sha256": "sha256:7a6d121d89f832cc16265537ec814af4f37ba68d5f635acb990305a2fa22ad48"
+      },
+      {
+        "path": "PFI/模型参数文件.md",
+        "sha256": "sha256:8a35acdbe5cc30577af30d5832a78b7ab0540f0c05a7670f43bd9c815041c4e2"
+      }
+    ],
+    "schema": "PFIV025Stage10ReviewedWorktreeOverlayV1",
+    "status": "frozen",
+    "whole_review_output_excluded_from_manifest": true
+  }
+}

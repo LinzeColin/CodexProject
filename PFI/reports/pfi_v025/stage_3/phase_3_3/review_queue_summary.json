@@ -1,0 +1,17 @@
+{
+  "all_items_have_opaque_record_reference": true,
+  "financial_values_emitted": 0,
+  "phase_id": "V025-S3-P3.3",
+  "private_identifiers_emitted": 0,
+  "reason_counts": {
+    "refund_offset_missing": 249,
+    "transfer_role_or_link_missing": 1250,
+    "upstream_review_required": 406,
+    "zero_amount": 31
+  },
+  "review_queue_persistence_changed": false,
+  "review_queue_record_count": 1936,
+  "schema": "PFIV025Stage3Phase33ReviewQueueSummaryV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

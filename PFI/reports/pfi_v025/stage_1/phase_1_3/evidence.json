@@ -1,0 +1,207 @@
+{
+  "schema": "PFIV025Stage1Phase13EvidenceV1",
+  "version": "v0.2.5",
+  "stage": 1,
+  "phase": "1.3",
+  "status": "candidate_pass",
+  "iteration_id": "ITER-20260712-PFI-V025-S1-P13",
+  "acceptance_id": "ACC-PFI-V025-S1-P13-ISOLATED-APP-ACCEPTANCE",
+  "contract_id": "PFI-V025-STAGE1-PHASE13-ISOLATED-APP-ACCEPTANCE",
+  "task_ids": [
+    "S1-P3-T1",
+    "S1-P3-T2",
+    "S1-P3-T3",
+    "S1-P3-T4"
+  ],
+  "git_commit": "128c6b889c91f5d7f64c7cd9635466fa2caf0275",
+  "git_commit_semantics": "isolated_app_release_content_commit_before_binding_commit",
+  "release_content_commit": "128c6b889c91f5d7f64c7cd9635466fa2caf0275",
+  "isolated_app_binding_commit": "PENDING_POSTCOMMIT_ATTESTATION",
+  "allowed_files_obeyed": true,
+  "allowed_files_interpretation": "Stage 1 Phase 1.3 content paths, the direct binding surfaces, eight mandatory governance companions and Phase-local evidence only",
+  "commands": [
+    {
+      "command": "focused Python release, cache and isolated-App suite",
+      "exit_code": 0,
+      "summary": "71 passed with 2 upstream dependency deprecation warnings"
+    },
+    {
+      "command": "Node Stage 1 release and cache suite",
+      "exit_code": 0,
+      "summary": "24 passed and 0 failed"
+    },
+    {
+      "command": "Computer Use Finder double-click of disposable candidate",
+      "exit_code": 0,
+      "summary": "real temporary PFI.app selected and opened with sidebar, path bar and status bar hidden"
+    },
+    {
+      "command": "stage1_phase13_candidate.py inspect",
+      "exit_code": 0,
+      "summary": "Finder marker, three-member process group and exact two-endpoint set verified"
+    },
+    {
+      "command": "cached Playwright browser_validate_stage1_phase13.mjs",
+      "exit_code": 0,
+      "summary": "25 checks passed with only the candidate App port requested and all error counts zero"
+    },
+    {
+      "command": "stage1_phase13_candidate.py finalize",
+      "exit_code": 0,
+      "summary": "candidate group stopped, ports released, canonical and Git state unchanged, LaunchServices absent and temporary root deleted"
+    },
+    {
+      "command": "strict report and decompressed trace privacy scan",
+      "exit_code": 0,
+      "summary": "13 report surfaces passed with no private path, credential, financial row or raw process identifier"
+    },
+    {
+      "command": "independent Task 6 evidence and privacy review",
+      "exit_code": 0,
+      "summary": "APPROVED C0 I0 M0"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B PFI/scripts/v025/verify_stage1_phase13.py",
+      "exit_code": 0,
+      "summary": "worktree verification PASS before direct binding commit"
+    },
+    {
+      "command": "temporary full-tree shadow project and semantic governance validation",
+      "exit_code": 0,
+      "summary": "project 0 errors 0 warnings and semantic sync 0 errors 0 warnings; temporary worktree removed"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/StartPFI.command",
+    "PFI/config/release_manifest.json",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/pfi_v025/stage_1/PHASE_1_3_ISOLATED_APP_ACCEPTANCE_IMPLEMENTATION_PLAN.md",
+    "PFI/macos/PFI_launcher.c",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/browser_candidate.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/candidate_app.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/entry_matrix.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/evidence.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/finder_launch.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/launchservices_cleanup.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/playwright_trace.zip",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/protected_metadata.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/terminal.log",
+    "PFI/scripts/pfiReleaseIdentity.sh",
+    "PFI/scripts/pfiRuntime.sh",
+    "PFI/scripts/v025/browser_validate_stage1_phase13.mjs",
+    "PFI/scripts/v025/release_cache_contract.py",
+    "PFI/scripts/v025/run_streamlit_with_release_cache.py",
+    "PFI/scripts/v025/stage1_phase13_candidate.py",
+    "PFI/scripts/v025/stage1_phase13_candidate_env.sh",
+    "PFI/scripts/v025/verify_stage1_phase13.py",
+    "PFI/src/pfi_os/app/isolated_candidate_app.py",
+    "PFI/tests/test_v025_stage1_isolated_app_acceptance.py",
+    "PFI/web/app/version.js",
+    "PFI/web/index.html",
+    "PFI/web/tests/v025/stage1_release_identity.test.mjs"
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/candidate_app.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/entry_matrix.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/finder_launch.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/browser_candidate.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/playwright_trace.zip",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/launchservices_cleanup.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/protected_metadata.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/terminal.log",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/privacy_scan.txt"
+  ],
+  "artifact_hashes": {
+    "PFI/config/release_manifest.json": "8e330ead52ad473fcfcd75f64fcb8d92c97ea81f6d8d21383f432375c98d386c",
+    "PFI/docs/pfi_v025/stage_1/PHASE_1_3_ISOLATED_APP_ACCEPTANCE_IMPLEMENTATION_PLAN.md": "e00f0e338d57df7216e05ad2b755404532c49ab18a3d2e7c1525fa5d461acca7",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/browser_candidate.png": "f38774bf14241937b9df14ee11d8d7997f7ae5e2d4dd94adef19a8a3c4ce0871",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/browser_validation.json": "2c3299bf1a09321bb4dc554298d377759bd9dfbc1463c6b0a3951c0e2bcda7c2",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/candidate_app.json": "44634a7484b6a1a2a3d2e6e34f3beaa9cddc57c995fb5db48a05cd8609911e7f",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/entry_matrix.json": "7a0621502c5c85e53a8c1b8239c863c4c5084cadba56ef3292edfff1f47530a4",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/finder_launch.png": "6e414a2f971cb64573931680baaa1f9e8a5122300215ad2ac4844a11ae206e84",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/launchservices_cleanup.json": "3c374dc7da21d727de852fd61a9ed430a98a29fcb3397e4457297fc325a42884",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/playwright_trace.zip": "c5f727f8989d35d1d2cc73a514a9d44855a18d677c2ea7819a57831407e82f39",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/privacy_scan.txt": "b0d23717b0c3c40a3c633ccf9c9174fa214c7eb8a2ea8e8102dab4bd2b648f0a",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/protected_metadata.json": "ca8ea8682d802df560c1d3f973d85ff998b4798c701cc3372336123835897496",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/risk_and_rollback.md": "3306e4494bd1aaf638c44c36fa3551784c27495d408ba98a1679ca3756911823",
+    "PFI/reports/pfi_v025/stage_1/phase_1_3/terminal.log": "1ed6c396132aaea2392d9afc7b9de81a8c6437cfa0aad3ed2504faf2464e9775",
+    "PFI/scripts/v025/browser_validate_stage1_phase13.mjs": "349d1a57790077639889911849b79a770f7b941f5f2203ef8bb2475259ab017f",
+    "PFI/scripts/v025/release_cache_contract.py": "e1d69071008cdc494ebd8bbc992f819b45b73832cad1912a7c34d3ba9252efbe",
+    "PFI/scripts/v025/run_streamlit_with_release_cache.py": "7ced8f6002cf29ea11f8570608201234b1333bdb04132f6cb3c123f30b2036e7",
+    "PFI/scripts/v025/stage1_phase13_candidate.py": "0292dc2c3563204445b70931ad9b870189ef3a44b7bbce05288a1c9f9a745a03",
+    "PFI/scripts/v025/stage1_phase13_candidate_env.sh": "9bcd3212d9f14f9a9a6248041847b76d91606d8942f591f122e21b0b8acc5430",
+    "PFI/scripts/v025/verify_stage1_phase13.py": "d57713c80aa61dbe27ccea7f982e62639923e23e9c35a0719315895fe0e0244a",
+    "PFI/src/pfi_os/app/isolated_candidate_app.py": "b2ac35ce09685ace0c458ae39ba475c75079824a13507dbfa1cfc820c98138ef"
+  },
+  "release_identity": {
+    "version": "v0.2.5",
+    "build_id": "pfi-v025-s1p1-20260712.1",
+    "git_commit": "128c6b889c91f5d7f64c7cd9635466fa2caf0275",
+    "manifest_sha256": "8e330ead52ad473fcfcd75f64fcb8d92c97ea81f6d8d21383f432375c98d386c",
+    "frontend_bundle_hash": "cba63620e17836f0d8b8b1fb7b5764a24d12980895e15433f11acbeb4b4d0147",
+    "backend_build_hash": "5d7285852c21b5d09064c1829c6378c9bde6862120194b790c4af5d8d623f632",
+    "streamlit_cache_key_sha256": "13b9ebef0ae17eb9030415e384aeed27cb1ada3a488cb177dc272461b357f3c1"
+  },
+  "candidate_runtime": {
+    "candidate_mode": true,
+    "process_group_member_count": 3,
+    "listener_endpoint_count": 2,
+    "browser_requested_port_count": 1,
+    "pageshow_observation_count": 6,
+    "websocket_count": 6,
+    "real_persisted_observed": false,
+    "error_count": 0
+  },
+  "canonical_entries_observed_short_version": "0.2.3",
+  "canonical_install_gate": "S12-P2-T1",
+  "requires_final_stage12_human_acceptance": true,
+  "dependency_install_performed": false,
+  "runtime_behavior_changed": true,
+  "explicitly_not_done": [
+    "canonical App install was not performed and remains gated at S12-P2-T1",
+    "canonical Finder acceptance was not performed",
+    "final installed runtime proof was not performed",
+    "Stage 1 whole-stage review was not performed",
+    "Stage 2 was not started",
+    "GitHub push was not performed",
+    "live ports 8501 and 8502 were not accessed or changed",
+    "financial data and SQLite were not read or changed",
+    "model, formula and parameter semantics were not changed",
+    "dependency install was not performed",
+    "final Stage 12 human acceptance was not performed"
+  ],
+  "risks": [
+    "actual Streamlit 1.35.0 differs from the 1.54.0 lock and requires Stage 12 rebuilt-runtime revalidation",
+    "real pageshow persisted observation was false and is not a bfcache-hit claim",
+    "the binding commit cannot self-record in tracked evidence and requires external post-commit attestation"
+  ],
+  "rollback": "Revert only the Phase 1.3 direct binding successor and then release-content commit 128c6b889c91f5d7f64c7cd9635466fa2caf0275 with path-limited compensating commits; do not alter canonical Apps, user data, SQLite, live 8501/8502 services or remote refs.",
+  "requires_user_acceptance": true,
+  "contains_private_values": false,
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "canonical_app_install": false,
+  "app_install_performed": false,
+  "push_performed": false,
+  "live_ports_8501_8502_accessed": false,
+  "financial_data_or_database_changed": false,
+  "model_formula_parameter_behavior_changed": false,
+  "isolated_candidate_finder_launch": true,
+  "canonical_entries_unchanged": true,
+  "candidate_cleanup_complete": true,
+  "stage_1_status": "in_progress",
+  "stage_2_status": "not_started"
+}

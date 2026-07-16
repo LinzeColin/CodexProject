@@ -1,0 +1,21 @@
+{
+  "behavior_tag_count": 1,
+  "blocked_state_field_count": 6,
+  "canonical_private_database_used": false,
+  "consumer": "Alpha",
+  "contains_financial_values": false,
+  "contains_path": false,
+  "context_byte_size": 545,
+  "context_content_sha256": "8041f7b71eec1c0b8a66edd9dc85947973f9a93cfa817c1e6f4c39a4a77e45cd",
+  "directory_mode": "0700",
+  "extra_field_rejected": true,
+  "file_mode": "0600",
+  "not_loaded_field_count": 1,
+  "numeric_financial_field_count": 0,
+  "overwrite_rejected": true,
+  "overwrote_existing_file": false,
+  "public_distribution_path_rejected": true,
+  "schema": "PFIV025Stage11ContextExportRehearsalV1",
+  "schema_version": "pfi_context.v1",
+  "status": "pass"
+}

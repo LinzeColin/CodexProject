@@ -1,0 +1,29 @@
+{
+  "schema": "PFIV025FinalCLIReinstallResultV1",
+  "status": "pass",
+  "observed_at": "2026-07-16T00:27:09Z",
+  "version": "0.2.5",
+  "build": "20260712.1",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "release_freeze_commit": "1e9b6aa8c8271c881edffdf7f7ab564fae343c05",
+  "installation_mode": "cli_atomic_replace",
+  "install_performed_this_invocation": true,
+  "before_bundle_tree_sha256": "sha256:a41a7386253ac1b69d4f2ec09894e3e4daaa74103fbb0ed7d33993279a6eb443",
+  "after_bundle_tree_sha256": "sha256:a41a7386253ac1b69d4f2ec09894e3e4daaa74103fbb0ed7d33993279a6eb443",
+  "after_executable_sha256": "sha256:a5d87915df40b55e1333d939b6cf1f28c9a9f333867fd70eb864c27744ca922b",
+  "checks": {
+    "version_exact": true,
+    "build_exact": true,
+    "codesign_valid": true,
+    "project_binding_exact": true,
+    "deterministic_bundle_tree_exact": true,
+    "rollback_not_used": true,
+    "temporary_backup_removed_after_success": true
+  },
+  "canonical_private_database_mutated": false,
+  "finder_used": false,
+  "launchservices_used": false,
+  "open_command_used": false,
+  "gui_file_operations_used": false,
+  "contains_private_values": false
+}

@@ -1,0 +1,33 @@
+{
+  "checksum_drift_rejected": true,
+  "checksum_sha256": "7ebd5f4de7664b2ef909c0faa16d0c6a4752f9e635157f32692e605aa7d9f8b6",
+  "failed_registry_entry_count": 0,
+  "first_apply": {
+    "applied_at": "2026-07-15T15:20:23+00:00",
+    "checksum_sha256": "7ebd5f4de7664b2ef909c0faa16d0c6a4752f9e635157f32692e605aa7d9f8b6",
+    "lifecycle": [
+      "planned",
+      "applying",
+      "applied"
+    ],
+    "migration_id": "v025_stage11_evidence_probe_v1",
+    "sqlite_version": "3.50.4",
+    "status": "applied"
+  },
+  "forced_failure_type": "OperationalError",
+  "migration_id": "v025_stage11_evidence_probe_v1",
+  "replay": {
+    "applied_at": "2026-07-15T15:20:23+00:00",
+    "checksum_sha256": "7ebd5f4de7664b2ef909c0faa16d0c6a4752f9e635157f32692e605aa7d9f8b6",
+    "lifecycle": [
+      "planned",
+      "verified",
+      "already_applied"
+    ],
+    "migration_id": "v025_stage11_evidence_probe_v1",
+    "sqlite_version": "3.50.4",
+    "status": "already_applied"
+  },
+  "rolled_back_table_count": 0,
+  "status": "pass"
+}

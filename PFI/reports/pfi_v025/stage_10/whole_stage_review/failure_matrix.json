@@ -1,0 +1,38 @@
+{
+  "cases": [
+    {
+      "attempt_count": 1,
+      "heartbeat": true,
+      "result": "pass",
+      "scenario": "healthy_job_over_ten_seconds"
+    },
+    {
+      "database_state": "failed",
+      "result": "pass",
+      "scenario": "explicit_formal_ui_failure",
+      "ui_state": "failed"
+    },
+    {
+      "evidence_ref": "crash_recovery.json",
+      "result": "pass",
+      "scenario": "actual_process_sigkill_and_restart"
+    },
+    {
+      "evidence_ref": "PFI/tests/test_v025_stage10_runtime_supervisor.py",
+      "result": "pass",
+      "scenario": "offline_cache_refresh"
+    },
+    {
+      "evidence_ref": "PFI/tests/test_v025_stage10_runtime_supervisor.py",
+      "result": "pass",
+      "scenario": "bounded_local_timeout"
+    },
+    {
+      "evidence_ref": "browser_validation.json",
+      "result": "pass",
+      "scenario": "external_network_claim_fail_closed"
+    }
+  ],
+  "schema": "PFIV025Stage10WholeReviewFailureMatrixV1",
+  "status": "pass"
+}

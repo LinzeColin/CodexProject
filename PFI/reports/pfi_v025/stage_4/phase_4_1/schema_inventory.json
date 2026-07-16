@@ -1,0 +1,25 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT",
+  "contains_private_values": false,
+  "observed_at": "2026-07-14T11:49:30Z",
+  "phase": "4.1",
+  "schema": "PFIV025Stage4Phase41SchemaInventoryV1",
+  "schemas": [
+    {
+      "draft": "2020-12",
+      "path": "PFI/docs/pfi_v025/stage_4/account_snapshot.schema.json",
+      "sha256": "28e6308ae876c981e8bb4e1fc219249bce21b98b914ae85fa43f29e8bec93c59",
+      "title": "PFI v0.2.5 Account or Liability Snapshot"
+    },
+    {
+      "draft": "2020-12",
+      "path": "PFI/docs/pfi_v025/stage_4/metric_state.schema.json",
+      "sha256": "5bd2a82582676cbb629fd9a2d2867fed8a409143f42d19e3d990a4b63d210287",
+      "source": "canonical Task Pack schema copied without semantic changes",
+      "title": "PFI Metric State"
+    }
+  ],
+  "stage": 4,
+  "status": "pass",
+  "version": "v0.2.5"
+}

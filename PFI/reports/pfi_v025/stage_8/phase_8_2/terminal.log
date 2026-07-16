@@ -1,0 +1,22 @@
+Phase 8.2 RED: 7 tests run, 7 expected failures.
+JavaScript syntax: motion, haptics, job timeline, shell and browser harness pass.
+Phase 8.2 implementation contract before evidence closeout: 6/7 pass; evidence gate pending.
+Actual formal-shell Playwright: 17/17 checks pass.
+Feedback budget: 100/300/1000/10000ms; 300ms skeleton observed only while real request pending.
+Motion: normal duration <=220ms; View Transition progressive enhancement; reduced-motion duration 0ms and active animations 0.
+Haptics/sound: both default off; supported explicit opt-in emitted vibration; unsupported context silently degraded to visual_only.
+Haptics fail closed without active user activation; no capability or activation path raises an exception.
+Long job: 11s durable marker, route persistence pass, no-units progress null, actual 2/4 progress pass.
+Progress persistence preserves null as null; absent units cannot be coerced into synthetic zero progress.
+CSS and View Transition motion are bounded to 180ms and transform/opacity; reduced-motion CSS and runtime durations are 0ms.
+Browser errors: console/page/HTTP/external requests = 0/0/0/0.
+Sanitized trace: 3 entries; absolute paths/runtime tokens/private values = 0/0/0.
+Phase 8.1 plus legacy Stage 6 feedback compatibility: 16/16 pass.
+Release identity, official candidate and focused Stage 7 compatibility: 56/56 pass; two third-party deprecation warnings only.
+Canonical frontend sources embedded in official candidate: 19/19 exact match.
+Governance render: 0 drift and 0 reference issues.
+Governance required changed-scope coverage: model/formula/parameter registries record no-change provenance; the correction event covers the complete diff file list.
+Governance semantic residual: 2 inherited Cloudflare sparse-path references and 28 unavailable-root sparse-worktree environment errors remain explicitly separated from this phase result.
+Finder/LaunchServices/GUI file operations: not used.
+Financial data/database/model/formula/parameter changes: none.
+Push/install/production/final acceptance: not performed.

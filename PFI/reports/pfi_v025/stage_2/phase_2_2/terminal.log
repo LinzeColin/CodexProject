@@ -1,0 +1,98 @@
+ledger_schema=PFIV025Phase22TerminalLedgerV1
+ledger_recorded_at=2026-07-14T18:39:44+10:00
+timestamp_semantics=ledger_aggregation_time_not_command_execution_time
+command_execution_times=not_individually_recorded
+ledger_state=finalized
+
+record_id=RED-TEMPORAL-01
+command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_temporal_truth.py -q
+exit_code=2
+summary=expected RED: Phase 2.2 implementation module missing
+
+record_id=RED-FX-01
+command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_fx_policy.py -q
+exit_code=2
+summary=expected RED: Phase 2.2 implementation module missing
+
+record_id=GREEN-TEMPORAL-PARTIAL-01
+command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_temporal_truth.py -q
+exit_code=1
+summary=intermediate temporal contract: 4 passed and 1 expected missing-document failure
+
+record_id=GREEN-FX-PARTIAL-01
+command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_fx_policy.py -q
+exit_code=1
+summary=intermediate FX contract: 12 passed and 3 artifact-or-audit failures
+
+record_id=GREEN-P21-COMPAT-01
+command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_source_manifest.py -q
+exit_code=0
+summary=Phase 2.1 compatibility after generic public scanner refactor: 27 passed
+
+record_id=DIAGNOSTIC-COMBINED-01
+command=PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage2_temporal_truth.py PFI/tests/test_v025_stage2_fx_policy.py PFI/tests/test_v025_stage2_source_manifest.py -q
+exit_code=1
+summary=pre-evidence combined run: 46 passed and 1 expected missing-privacy-artifact failure
+
+record_id=GREEN-RENDER-WRITE-01
+command=python3 -B scripts/lean_governance.py render --project PFI --write
+exit_code=0
+summary=three complete Chinese human entry files rendered from canonical facts
+
+record_id=DIAGNOSTIC-CURRENT-SCOPE-01
+command=combined Phase 2.2 and Phase 2.1 focused pytest after renderer
+exit_code=1
+summary=46 passed and 1 stale Phase 2.1 current-human-scope expectation failed; expectation updated to Phase 2.2 canonical truth
+
+record_id=GREEN-COMBINED-01
+command=combined Phase 2.2 and Phase 2.1 focused pytest
+exit_code=0
+summary=47 passed
+
+record_id=GREEN-P22-FINAL-01
+command=Phase 2.2 temporal and FX focused pytest
+exit_code=0
+summary=20 passed
+
+record_id=GREEN-P21-FINAL-01
+command=Phase 2.1 source manifest compatibility pytest
+exit_code=0
+summary=27 passed
+
+record_id=DIAGNOSTIC-LEGACY-01
+command=legacy FX parameter and Stage 2 compatibility selection
+exit_code=1
+summary=current tree 8 failed and 22 passed; baseline HEAD independently reproduced the exact same 8 failures and 22 passes
+
+record_id=GREEN-GOVERNANCE-FULL-01
+command=full Git worktree project governance validation
+exit_code=0
+summary=errors 0 and warnings 0
+
+record_id=GREEN-SYNC-FULL-01
+command=full Git worktree changed-only semantic governance sync
+exit_code=0
+summary=errors 0 and warnings 0
+
+record_id=GREEN-RENDER-CHECK-01
+command=python3 -B scripts/lean_governance.py check-render --project PFI
+exit_code=0
+summary=drift 0 and reference issues 0
+
+record_id=GREEN-FORMAT-01
+command=YAML CSV JSONL and in-memory Python format checks
+exit_code=0
+summary=7 YAML documents 27 parameter rows 29 event lines and 4 Python files valid
+
+record_id=GREEN-SCOPE-01
+command=exact staged changed-files comparison and git diff check
+exit_code=0
+summary=exact 37-file Phase 2.2 scope and whitespace clean
+
+finder_used=false
+network_refresh_performed=false
+source_mutation_performed=false
+push_performed=false
+app_install_performed=false
+production_accepted=false
+final_human_acceptance=false

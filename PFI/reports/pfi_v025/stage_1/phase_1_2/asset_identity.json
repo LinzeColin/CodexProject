@@ -1,0 +1,16 @@
+{
+  "schema": "PFIV025Stage1Phase12AssetIdentityV1",
+  "release_content_commit": "b3885f15cd2e983c0839be6a20d7e4a9391c6324",
+  "frontend_bundle_hash": "3c1f3a71bd2f5a22bd98cd520c1b8b41707387984028ea0eefe346ac492c10a0",
+  "manifest_frontend_bundle_hash": "3c1f3a71bd2f5a22bd98cd520c1b8b41707387984028ea0eefe346ac492c10a0",
+  "backend_build_hash": "5d7285852c21b5d09064c1829c6378c9bde6862120194b790c4af5d8d623f632",
+  "manifest_backend_build_hash": "5d7285852c21b5d09064c1829c6378c9bde6862120194b790c4af5d8d623f632",
+  "running_backend_hash": "5d7285852c21b5d09064c1829c6378c9bde6862120194b790c4af5d8d623f632",
+  "frontend_file_count": 14,
+  "frontend_valid": true,
+  "disk_backend_valid": true,
+  "running_backend_valid": true,
+  "valid": true,
+  "pfi_asset_transport": "inline_srcdoc_no_independent_http_cache_entry",
+  "url_addressable_immutable_scope": "streamlit_framework_hash_named_assets_only"
+}

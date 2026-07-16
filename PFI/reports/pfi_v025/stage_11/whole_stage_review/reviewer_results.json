@@ -1,0 +1,78 @@
+{
+  "contains_private_values": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "review_execution_truth": "three isolated deterministic review passes; no external human, Finder operation or subagent reviewer is claimed",
+  "reviewers": [
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 0,
+        "important": 2,
+        "minor": 0
+      },
+      "result_sha256": "sha256:268456da706df9f36a4572fb48e7ad002928c3fef0c602e898a582405d2d6867",
+      "result_text": "最终代码与安全复审确认当前 SQLite 3.50.4 的 WAL 请求继续 fail closed；真实源使用 URI mode=ro 且源文件、目录与锁均零变化，CLI 无绝对路径，隔离原子恢复和故障自动回滚通过。",
+      "review_base": "9c450ea483cd2040636e375c9f7d84e5127e44cf",
+      "review_mode": "deterministic_isolated_rereview_pass",
+      "reviewed_evidence_file_count": 20,
+      "reviewed_evidence_sha256": "sha256:a6251f14cf860b08764f8e13c805d6e41931e9cf7cb54a1eb6f5eb904616cc34",
+      "reviewed_overlay_file_count": 21,
+      "reviewed_overlay_sha256": "sha256:9bc51c45cbab91f23aa3992ae911b206b39ac4d8d3221c4219c371d3583c72f0",
+      "reviewer_id": "isolated_code_security_pass"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "result_sha256": "sha256:f6385cb00e42365cf63f8c5f18a7192b35cf507fe4f68cf94cb4953071cfe13a",
+      "result_text": "最终治理与 renderer 复审确认 12 个 Roadmap tasks、三条 Phase product/evidence commit 链与 87 个 artifact hash 全部绑定，TaskPack hash、release identity、完整归档治理和双 parser renderer 零漂移。",
+      "review_base": "9c450ea483cd2040636e375c9f7d84e5127e44cf",
+      "review_mode": "deterministic_isolated_rereview_pass",
+      "reviewed_evidence_file_count": 20,
+      "reviewed_evidence_sha256": "sha256:a6251f14cf860b08764f8e13c805d6e41931e9cf7cb54a1eb6f5eb904616cc34",
+      "reviewed_overlay_file_count": 21,
+      "reviewed_overlay_sha256": "sha256:9bc51c45cbab91f23aa3992ae911b206b39ac4d8d3221c4219c371d3583c72f0",
+      "reviewer_id": "isolated_governance_renderer_pass"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 0,
+        "important": 2,
+        "minor": 0
+      },
+      "result_sha256": "sha256:5a31677ddebe8260b1dc87657923dba479642a7d6e80b9d70de2ad93259608f4",
+      "result_text": "最终验收证据复审确认真实 canonical 只读备份到隔离恢复/回滚、23 项公共边界浏览器检查、DOM/AX/截图/脱敏 trace、分发零发现和 Alpha-only 最小只读 Context 均通过。",
+      "review_base": "9c450ea483cd2040636e375c9f7d84e5127e44cf",
+      "review_mode": "deterministic_isolated_rereview_pass",
+      "reviewed_evidence_file_count": 20,
+      "reviewed_evidence_sha256": "sha256:a6251f14cf860b08764f8e13c805d6e41931e9cf7cb54a1eb6f5eb904616cc34",
+      "reviewed_overlay_file_count": 21,
+      "reviewed_overlay_sha256": "sha256:9bc51c45cbab91f23aa3992ae911b206b39ac4d8d3221c4219c371d3583c72f0",
+      "reviewer_id": "isolated_acceptance_evidence_pass"
+    }
+  ],
+  "schema": "PFIV025Stage11IsolatedReviewerResultsV1",
+  "status": "pass"
+}

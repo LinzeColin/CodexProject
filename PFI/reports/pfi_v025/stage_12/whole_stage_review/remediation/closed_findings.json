@@ -1,0 +1,42 @@
+{
+  "candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "closed_finding_count": 3,
+  "final_human_acceptance": false,
+  "finding_count": 3,
+  "findings": [
+    {
+      "evidence_ref": "remediation/release_identity.json",
+      "finding_id": "S12-WR-I01-RELEASE-COMMIT-DRIFT",
+      "release_source_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+      "result": "runtime payload is exactly anchored to the Phase 12.2 source commit; only canonical identity carriers changed afterward",
+      "severity": "P1",
+      "status": "closed_pending_independent_rereview"
+    },
+    {
+      "candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+      "evidence_index_sha256": "sha256:ebd03b8abf92238aac0e3f972461e35de6ce4b3be27c3662ab24f6af7b342344",
+      "evidence_ref": "remediation/exact_binding.json",
+      "finding_id": "S12-WR-I02-EXACT-ACCEPTANCE-BINDING",
+      "result": "index, request, state and Phase evidence bind the exact immutable remediation anchor with no SELF sentinel",
+      "severity": "P1",
+      "status": "closed_pending_independent_rereview"
+    },
+    {
+      "evidence_ref": "remediation/entry_audit.json",
+      "finding_id": "S12-WR-I03-NONCANONICAL-OLD-APP",
+      "noncanonical_entry_mismatch_count": 0,
+      "result": "the reviewed old Downloads App was atomically moved to private quarantine; entry mismatch count is zero",
+      "severity": "P1",
+      "status": "closed_pending_independent_rereview"
+    }
+  ],
+  "initial_open_p0_count": 0,
+  "initial_open_p1_count": 3,
+  "production_accepted": false,
+  "remediation_open_p0_count": 0,
+  "remediation_open_p1_count": 0,
+  "rereview_status": "not_started",
+  "schema": "PFIV025Stage12ReviewRemediationClosedFindingsV1",
+  "stage_12_accepted": false,
+  "status": "remediation_complete_waiting_independent_rereview"
+}

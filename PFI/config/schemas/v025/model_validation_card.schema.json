@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pfi.local/schemas/v025/model_validation_card.schema.json",
+  "title": "PFI v0.2.5 Stage 5.3 Model Validation Card",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "stage",
+    "phase",
+    "phase_id",
+    "validation_version",
+    "model_id",
+    "model_version",
+    "status",
+    "input_snapshot",
+    "coverage_dimensions",
+    "formula_validation",
+    "validation_tests",
+    "historical_out_of_sample_validation",
+    "consumer_binding",
+    "limitations",
+    "counter_evidence",
+    "contains_private_values",
+    "financial_values_emitted",
+    "production_accepted",
+    "final_human_acceptance"
+  ],
+  "properties": {
+    "schema": {"const": "PFIV025Stage5Phase53ModelValidationCardV1"},
+    "version": {"const": "v0.2.5"},
+    "stage": {"const": 5},
+    "phase": {"const": "5.3"},
+    "phase_id": {"const": "V025-S5-P5.3"},
+    "validation_version": {"const": "pfi-v0.2.5-model-validation-v1"},
+    "model_id": {"const": "MOD-PFI-010"},
+    "model_version": {"const": "pfi-v0.2.5-financial-models-v1"},
+    "status": {"const": "partial_validated_with_blocked_components"},
+    "input_snapshot": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "resolved_commit",
+        "transactions_blob_oid",
+        "input_content_hash",
+        "input_record_count",
+        "published_record_count",
+        "review_queue_record_count",
+        "coverage_start",
+        "coverage_end",
+        "currencies"
+      ],
+      "properties": {
+        "input_record_count": {"type": "integer", "minimum": 1},
+        "published_record_count": {"type": "integer", "minimum": 1},
+        "review_queue_record_count": {"type": "integer", "minimum": 0},
+        "currencies": {"const": ["CNY"]}
+      },
+      "additionalProperties": true
+    },
+    "coverage_dimensions": {
+      "type": "object",
+      "required": [
+        "classification_confidence",
+        "source_coverage",
+        "reconciliation_coverage",
+        "valuation_coverage",
+        "model_validation",
+        "report_completeness"
+      ],
+      "additionalProperties": {"type": "string"}
+    },
+    "formula_validation": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["formula_id", "formula_version", "formula_hash", "status", "limitation"],
+        "properties": {
+          "formula_id": {"pattern": "^FORM-PFI-0(15|16|17|18|19|20)$"},
+          "formula_hash": {"pattern": "^sha256:[0-9a-f]{64}$"},
+          "status": {
+            "enum": [
+              "validated_real_snapshot",
+              "validated_structure_only",
+              "blocked_missing_required_sources",
+              "blocked_insufficient_chain"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "validation_tests": {"type": "object"},
+    "historical_out_of_sample_validation": {
+      "type": "object",
+      "required": ["status", "reason"],
+      "properties": {
+        "status": {"const": "blocked_insufficient_ground_truth"}
+      }
+    },
+    "consumer_binding": {
+      "type": "object",
+      "required": [
+        "surface_ids",
+        "same_payload_contract_validated",
+        "actual_ui_render_binding_completed",
+        "actual_report_render_binding_completed",
+        "status"
+      ],
+      "properties": {
+        "same_payload_contract_validated": {"const": true},
+        "actual_ui_render_binding_completed": {"const": false},
+        "actual_report_render_binding_completed": {"const": false},
+        "status": {"const": "contract_only_render_binding_open"}
+      }
+    },
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "counter_evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "contains_private_values": {"const": false},
+    "financial_values_emitted": {"const": 0},
+    "production_accepted": {"const": false},
+    "final_human_acceptance": {"const": false}
+  },
+  "additionalProperties": false
+}

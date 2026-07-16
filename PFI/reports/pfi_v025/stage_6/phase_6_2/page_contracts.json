@@ -1,0 +1,3241 @@
+{
+  "acceptanceId": "ACC-PFI-V025-S6-P62-PAGE-CONTRACTS",
+  "historicalRouteTargets": {
+    "/accounts?tab=list": "/accounts/list",
+    "/accounts?tab=overview": "/accounts/overview",
+    "/accounts?tab=reconcile": "/accounts/reconcile",
+    "/accounts?tab=trend": "/accounts/trend",
+    "/consumption?tab=anomaly": "/consumption/anomaly",
+    "/consumption?tab=budget": "/consumption/budget",
+    "/consumption?tab=category": "/consumption/category",
+    "/consumption?tab=overview": "/consumption/overview",
+    "/consumption?tab=subscription": "/consumption/subscription",
+    "/home?tab=actions": "/overview/actions",
+    "/home?tab=reports": "/overview/reports",
+    "/home?tab=status": "/overview/status",
+    "/home?tab=todo": "/overview/todo",
+    "/investment?tab=holdings": "/investment/holdings",
+    "/investment?tab=overview": "/investment/overview",
+    "/investment?tab=returns": "/investment/returns",
+    "/investment?tab=trades": "/investment/trades",
+    "/ledger?tab=export": "/ledger/export",
+    "/ledger?tab=filter": "/ledger/filter",
+    "/ledger?tab=list": "/ledger/list",
+    "/ledger?tab=review": "/ledger/review",
+    "/market-research?tab=company": "/market-research/company",
+    "/market-research?tab=fund": "/market-research/fund",
+    "/market-research?tab=market": "/market-research/market",
+    "/market-research?tab=research": "/market-research/research",
+    "/market-research?tab=strategy-lab": "/market-research/strategy-lab",
+    "/reports?tab=custom": "/reports/custom",
+    "/reports?tab=export": "/reports/export",
+    "/reports?tab=monthly": "/reports/monthly",
+    "/reports?tab=quarterly": "/reports/quarterly",
+    "/reports?tab=yearly": "/reports/yearly",
+    "/review?tab=decision": "/review/decision",
+    "/review?tab=detail": "/review/detail",
+    "/review?tab=history": "/review/history",
+    "/review?tab=list": "/review/list",
+    "/settings?tab=account": "/settings/account",
+    "/settings?tab=backup": "/settings/backup",
+    "/settings?tab=data-system": "/settings/data-system",
+    "/settings?tab=feedback": "/settings/feedback",
+    "/settings?tab=privacy": "/settings/privacy",
+    "/sources-upload?tab=history": "/data/history",
+    "/sources-upload?tab=import": "/data/import",
+    "/sources-upload?tab=review": "/data/review",
+    "/sources-upload?tab=sources": "/data/sources",
+    "/sources-upload?tab=upload": "/data/upload"
+  },
+  "pageByRoute": {
+    "/accounts/list": {
+      "breadcrumb": [
+        "账户与资产",
+        "账户清单"
+      ],
+      "dataObject": "账户余额清单",
+      "dataSource": "账户余额清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "筛选账户并查看余额、来源和数据状态。",
+      "layoutKind": "accounts-balance-table",
+      "legacyRouteAlias": "/accounts?tab=list",
+      "noJsFallback": {
+        "routeAlias": "/accounts/list",
+        "task": "筛选账户并查看余额、来源和数据状态。",
+        "title": "账户清单"
+      },
+      "pageLabel": "账户清单",
+      "primaryAction": "打开账户明细",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "账户清单",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/list",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:list",
+      "states": {
+        "empty": "尚无可用的账户余额清单；保留页面结构并说明下一步。",
+        "error": "无法读取账户余额清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户余额清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-balance-table:list",
+      "title": "账户与资产 · 账户清单",
+      "workspace": "accounts"
+    },
+    "/accounts/overview": {
+      "breadcrumb": [
+        "账户与资产",
+        "账户地图"
+      ],
+      "dataObject": "账户来源地图",
+      "dataSource": "账户来源地图 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认账户、来源、币种与更新时间的覆盖关系。",
+      "layoutKind": "accounts-source-map",
+      "legacyRouteAlias": "/accounts?tab=overview",
+      "noJsFallback": {
+        "routeAlias": "/accounts/overview",
+        "task": "确认账户、来源、币种与更新时间的覆盖关系。",
+        "title": "账户地图"
+      },
+      "pageLabel": "账户地图",
+      "primaryAction": "核对账户来源",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "账户地图",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/overview",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:overview",
+      "states": {
+        "empty": "尚无可用的账户来源地图；保留页面结构并说明下一步。",
+        "error": "无法读取账户来源地图；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户来源地图，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-source-map:overview",
+      "title": "账户与资产 · 账户地图",
+      "workspace": "accounts"
+    },
+    "/accounts/reconcile": {
+      "breadcrumb": [
+        "账户与资产",
+        "账户对账"
+      ],
+      "dataObject": "账户对账差异",
+      "dataSource": "账户对账差异 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较平台快照与本机账本并处理差异。",
+      "layoutKind": "accounts-reconciliation-matrix",
+      "legacyRouteAlias": "/accounts?tab=reconcile",
+      "noJsFallback": {
+        "routeAlias": "/accounts/reconcile",
+        "task": "比较平台快照与本机账本并处理差异。",
+        "title": "账户对账"
+      },
+      "pageLabel": "账户对账",
+      "primaryAction": "处理对账差异",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "账户对账",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/reconcile",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:reconcile",
+      "states": {
+        "empty": "尚无可用的账户对账差异；保留页面结构并说明下一步。",
+        "error": "无法读取账户对账差异；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户对账差异，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-reconciliation-matrix:reconcile",
+      "title": "账户与资产 · 账户对账",
+      "workspace": "accounts"
+    },
+    "/accounts/trend": {
+      "breadcrumb": [
+        "账户与资产",
+        "资产趋势"
+      ],
+      "dataObject": "资产趋势序列",
+      "dataSource": "资产趋势序列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "检查资产时间序列的覆盖范围与缺口。",
+      "layoutKind": "accounts-asset-timeseries",
+      "legacyRouteAlias": "/accounts?tab=trend",
+      "noJsFallback": {
+        "routeAlias": "/accounts/trend",
+        "task": "检查资产时间序列的覆盖范围与缺口。",
+        "title": "资产趋势"
+      },
+      "pageLabel": "资产趋势",
+      "primaryAction": "查看趋势缺口",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "资产趋势",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/trend",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:trend",
+      "states": {
+        "empty": "尚无可用的资产趋势序列；保留页面结构并说明下一步。",
+        "error": "无法读取资产趋势序列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取资产趋势序列，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-asset-timeseries:trend",
+      "title": "账户与资产 · 资产趋势",
+      "workspace": "accounts"
+    },
+    "/consumption/anomaly": {
+      "breadcrumb": [
+        "消费管理",
+        "异常消费"
+      ],
+      "dataObject": "异常消费队列",
+      "dataSource": "异常消费队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "复核大额、重复或异常时段消费。",
+      "layoutKind": "consumption-anomaly-review",
+      "legacyRouteAlias": "/consumption?tab=anomaly",
+      "noJsFallback": {
+        "routeAlias": "/consumption/anomaly",
+        "task": "复核大额、重复或异常时段消费。",
+        "title": "异常消费"
+      },
+      "pageLabel": "异常消费",
+      "primaryAction": "处理消费异常",
+      "primaryLabel": "消费管理",
+      "primaryObject": "异常消费",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/anomaly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:anomaly",
+      "states": {
+        "empty": "尚无可用的异常消费队列；保留页面结构并说明下一步。",
+        "error": "无法读取异常消费队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取异常消费队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-anomaly-review:anomaly",
+      "title": "消费管理 · 异常消费",
+      "workspace": "consumption"
+    },
+    "/consumption/budget": {
+      "breadcrumb": [
+        "消费管理",
+        "预算"
+      ],
+      "dataObject": "预算执行状态",
+      "dataSource": "预算执行状态 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较预算与真实支出并处理超支项。",
+      "layoutKind": "consumption-budget-control",
+      "legacyRouteAlias": "/consumption?tab=budget",
+      "noJsFallback": {
+        "routeAlias": "/consumption/budget",
+        "task": "比较预算与真实支出并处理超支项。",
+        "title": "预算"
+      },
+      "pageLabel": "预算",
+      "primaryAction": "维护预算边界",
+      "primaryLabel": "消费管理",
+      "primaryObject": "预算",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/budget",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:budget",
+      "states": {
+        "empty": "尚无可用的预算执行状态；保留页面结构并说明下一步。",
+        "error": "无法读取预算执行状态；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取预算执行状态，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-budget-control:budget",
+      "title": "消费管理 · 预算",
+      "workspace": "consumption"
+    },
+    "/consumption/category": {
+      "breadcrumb": [
+        "消费管理",
+        "分类分析"
+      ],
+      "dataObject": "消费分类明细",
+      "dataSource": "消费分类明细 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "从分类汇总下钻到真实流水与证据。",
+      "layoutKind": "consumption-category-drilldown",
+      "legacyRouteAlias": "/consumption?tab=category",
+      "noJsFallback": {
+        "routeAlias": "/consumption/category",
+        "task": "从分类汇总下钻到真实流水与证据。",
+        "title": "分类分析"
+      },
+      "pageLabel": "分类分析",
+      "primaryAction": "下钻消费分类",
+      "primaryLabel": "消费管理",
+      "primaryObject": "分类分析",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/category",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:category",
+      "states": {
+        "empty": "尚无可用的消费分类明细；保留页面结构并说明下一步。",
+        "error": "无法读取消费分类明细；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取消费分类明细，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-category-drilldown:category",
+      "title": "消费管理 · 分类分析",
+      "workspace": "consumption"
+    },
+    "/consumption/overview": {
+      "breadcrumb": [
+        "消费管理",
+        "消费总览"
+      ],
+      "dataObject": "消费双口径汇总",
+      "dataSource": "消费双口径汇总 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "对照现金流与行为口径理解消费结构。",
+      "layoutKind": "consumption-dual-metric-overview",
+      "legacyRouteAlias": "/consumption?tab=overview",
+      "noJsFallback": {
+        "routeAlias": "/consumption/overview",
+        "task": "对照现金流与行为口径理解消费结构。",
+        "title": "消费总览"
+      },
+      "pageLabel": "消费总览",
+      "primaryAction": "检查消费口径",
+      "primaryLabel": "消费管理",
+      "primaryObject": "消费总览",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/overview",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:overview",
+      "states": {
+        "empty": "尚无可用的消费双口径汇总；保留页面结构并说明下一步。",
+        "error": "无法读取消费双口径汇总；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取消费双口径汇总，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-dual-metric-overview:overview",
+      "title": "消费管理 · 消费总览",
+      "workspace": "consumption"
+    },
+    "/consumption/subscription": {
+      "breadcrumb": [
+        "消费管理",
+        "订阅"
+      ],
+      "dataObject": "周期扣费清单",
+      "dataSource": "周期扣费清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "识别周期扣费并复核订阅状态。",
+      "layoutKind": "consumption-subscription-register",
+      "legacyRouteAlias": "/consumption?tab=subscription",
+      "noJsFallback": {
+        "routeAlias": "/consumption/subscription",
+        "task": "识别周期扣费并复核订阅状态。",
+        "title": "订阅"
+      },
+      "pageLabel": "订阅",
+      "primaryAction": "复核订阅项目",
+      "primaryLabel": "消费管理",
+      "primaryObject": "订阅",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/subscription",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:subscription",
+      "states": {
+        "empty": "尚无可用的周期扣费清单；保留页面结构并说明下一步。",
+        "error": "无法读取周期扣费清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取周期扣费清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-subscription-register:subscription",
+      "title": "消费管理 · 订阅",
+      "workspace": "consumption"
+    },
+    "/data/history": {
+      "breadcrumb": [
+        "数据源与上传",
+        "导入历史"
+      ],
+      "dataObject": "导入历史记录",
+      "dataSource": "导入历史记录 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "追踪导入批次、结果、版本与证据。",
+      "layoutKind": "data-import-timeline",
+      "legacyRouteAlias": "/sources-upload?tab=history",
+      "noJsFallback": {
+        "routeAlias": "/data/history",
+        "task": "追踪导入批次、结果、版本与证据。",
+        "title": "导入历史"
+      },
+      "pageLabel": "导入历史",
+      "primaryAction": "打开导入证据",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "导入历史",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/history",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:history",
+      "states": {
+        "empty": "尚无可用的导入历史记录；保留页面结构并说明下一步。",
+        "error": "无法读取导入历史记录；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取导入历史记录，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-import-timeline:history",
+      "title": "数据源与上传 · 导入历史",
+      "workspace": "sync"
+    },
+    "/data/import": {
+      "breadcrumb": [
+        "数据源与上传",
+        "导入中心"
+      ],
+      "dataObject": "导入批次状态",
+      "dataSource": "导入批次状态 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "查看批次解析、映射、失败和待复核状态。",
+      "layoutKind": "data-import-pipeline",
+      "legacyRouteAlias": "/sources-upload?tab=import",
+      "noJsFallback": {
+        "routeAlias": "/data/import",
+        "task": "查看批次解析、映射、失败和待复核状态。",
+        "title": "导入中心"
+      },
+      "pageLabel": "导入中心",
+      "primaryAction": "启动受控导入",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "导入中心",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/import",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:import",
+      "states": {
+        "empty": "尚无可用的导入批次状态；保留页面结构并说明下一步。",
+        "error": "无法读取导入批次状态；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取导入批次状态，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-import-pipeline:import",
+      "title": "数据源与上传 · 导入中心",
+      "workspace": "sync"
+    },
+    "/data/review": {
+      "breadcrumb": [
+        "数据源与上传",
+        "待复核"
+      ],
+      "dataObject": "数据质量复核队列",
+      "dataSource": "数据质量复核队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "处理解析、映射与质量门禁产生的复核项。",
+      "layoutKind": "data-quality-review",
+      "legacyRouteAlias": "/sources-upload?tab=review",
+      "noJsFallback": {
+        "routeAlias": "/data/review",
+        "task": "处理解析、映射与质量门禁产生的复核项。",
+        "title": "待复核"
+      },
+      "pageLabel": "待复核",
+      "primaryAction": "处理数据复核",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "待复核",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/review",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:review",
+      "states": {
+        "empty": "尚无可用的数据质量复核队列；保留页面结构并说明下一步。",
+        "error": "无法读取数据质量复核队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取数据质量复核队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-quality-review:review",
+      "title": "数据源与上传 · 待复核",
+      "workspace": "sync"
+    },
+    "/data/sources": {
+      "breadcrumb": [
+        "数据源与上传",
+        "数据源管理"
+      ],
+      "dataObject": "数据源注册表",
+      "dataSource": "数据源注册表 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对来源、账户映射、格式与更新时间。",
+      "layoutKind": "data-source-registry",
+      "legacyRouteAlias": "/sources-upload?tab=sources",
+      "noJsFallback": {
+        "routeAlias": "/data/sources",
+        "task": "核对来源、账户映射、格式与更新时间。",
+        "title": "数据源管理"
+      },
+      "pageLabel": "数据源管理",
+      "primaryAction": "维护数据源",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "数据源管理",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/sources",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:sources",
+      "states": {
+        "empty": "尚无可用的数据源注册表；保留页面结构并说明下一步。",
+        "error": "无法读取数据源注册表；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取数据源注册表，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-source-registry:sources",
+      "title": "数据源与上传 · 数据源管理",
+      "workspace": "sync"
+    },
+    "/data/upload": {
+      "breadcrumb": [
+        "数据源与上传",
+        "上传中心"
+      ],
+      "dataObject": "待上传文件队列",
+      "dataSource": "待上传文件队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "选择文件并在解析前确认格式与隐私边界。",
+      "layoutKind": "data-upload-dropzone",
+      "legacyRouteAlias": "/sources-upload?tab=upload",
+      "noJsFallback": {
+        "routeAlias": "/data/upload",
+        "task": "选择文件并在解析前确认格式与隐私边界。",
+        "title": "上传中心"
+      },
+      "pageLabel": "上传中心",
+      "primaryAction": "选择本机文件",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "上传中心",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/upload",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:upload",
+      "states": {
+        "empty": "尚无可用的待上传文件队列；保留页面结构并说明下一步。",
+        "error": "无法读取待上传文件队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取待上传文件队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-upload-dropzone:upload",
+      "title": "数据源与上传 · 上传中心",
+      "workspace": "sync"
+    },
+    "/investment/holdings": {
+      "breadcrumb": [
+        "投资管理",
+        "持仓"
+      ],
+      "dataObject": "真实持仓快照",
+      "dataSource": "真实持仓快照 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "查看或维护持仓，并保留持久化状态。",
+      "layoutKind": "investment-holdings-editor",
+      "legacyRouteAlias": "/investment?tab=holdings",
+      "noJsFallback": {
+        "routeAlias": "/investment/holdings",
+        "task": "查看或维护持仓，并保留持久化状态。",
+        "title": "持仓"
+      },
+      "pageLabel": "持仓",
+      "primaryAction": "编辑持仓快照",
+      "primaryLabel": "投资管理",
+      "primaryObject": "持仓",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/holdings",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:holdings",
+      "states": {
+        "empty": "尚无可用的真实持仓快照；保留页面结构并说明下一步。",
+        "error": "无法读取真实持仓快照；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取真实持仓快照，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-holdings-editor:holdings",
+      "title": "投资管理 · 持仓",
+      "workspace": "investment"
+    },
+    "/investment/overview": {
+      "breadcrumb": [
+        "投资管理",
+        "投资总览"
+      ],
+      "dataObject": "投资配置快照",
+      "dataSource": "投资配置快照 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对投资市值、现金仓位与配置集中度。",
+      "layoutKind": "investment-allocation-overview",
+      "legacyRouteAlias": "/investment?tab=overview",
+      "noJsFallback": {
+        "routeAlias": "/investment/overview",
+        "task": "核对投资市值、现金仓位与配置集中度。",
+        "title": "投资总览"
+      },
+      "pageLabel": "投资总览",
+      "primaryAction": "查看资产配置",
+      "primaryLabel": "投资管理",
+      "primaryObject": "投资总览",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/overview",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:overview",
+      "states": {
+        "empty": "尚无可用的投资配置快照；保留页面结构并说明下一步。",
+        "error": "无法读取投资配置快照；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取投资配置快照，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-allocation-overview:overview",
+      "title": "投资管理 · 投资总览",
+      "workspace": "investment"
+    },
+    "/investment/returns": {
+      "breadcrumb": [
+        "投资管理",
+        "收益分析"
+      ],
+      "dataObject": "投资收益归因",
+      "dataSource": "投资收益归因 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "基于持仓与交易证据解释收益和风险。",
+      "layoutKind": "investment-attribution-analysis",
+      "legacyRouteAlias": "/investment?tab=returns",
+      "noJsFallback": {
+        "routeAlias": "/investment/returns",
+        "task": "基于持仓与交易证据解释收益和风险。",
+        "title": "收益分析"
+      },
+      "pageLabel": "收益分析",
+      "primaryAction": "检查收益归因",
+      "primaryLabel": "投资管理",
+      "primaryObject": "收益分析",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/returns",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:returns",
+      "states": {
+        "empty": "尚无可用的投资收益归因；保留页面结构并说明下一步。",
+        "error": "无法读取投资收益归因；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取投资收益归因，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-attribution-analysis:returns",
+      "title": "投资管理 · 收益分析",
+      "workspace": "investment"
+    },
+    "/investment/trades": {
+      "breadcrumb": [
+        "投资管理",
+        "交易记录"
+      ],
+      "dataObject": "投资交易记录",
+      "dataSource": "投资交易记录 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对买卖、费用、税费与汇率证据。",
+      "layoutKind": "investment-trade-ledger",
+      "legacyRouteAlias": "/investment?tab=trades",
+      "noJsFallback": {
+        "routeAlias": "/investment/trades",
+        "task": "核对买卖、费用、税费与汇率证据。",
+        "title": "交易记录"
+      },
+      "pageLabel": "交易记录",
+      "primaryAction": "核对交易证据",
+      "primaryLabel": "投资管理",
+      "primaryObject": "交易记录",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/trades",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:trades",
+      "states": {
+        "empty": "尚无可用的投资交易记录；保留页面结构并说明下一步。",
+        "error": "无法读取投资交易记录；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取投资交易记录，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-trade-ledger:trades",
+      "title": "投资管理 · 交易记录",
+      "workspace": "investment"
+    },
+    "/ledger/export": {
+      "breadcrumb": [
+        "账本流水",
+        "导出流水"
+      ],
+      "dataObject": "流水导出范围",
+      "dataSource": "流水导出范围 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认范围与格式后导出当前真实结果。",
+      "layoutKind": "ledger-export-scope",
+      "legacyRouteAlias": "/ledger?tab=export",
+      "noJsFallback": {
+        "routeAlias": "/ledger/export",
+        "task": "确认范围与格式后导出当前真实结果。",
+        "title": "导出流水"
+      },
+      "pageLabel": "导出流水",
+      "primaryAction": "生成导出文件",
+      "primaryLabel": "账本流水",
+      "primaryObject": "导出流水",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/export",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:export",
+      "states": {
+        "empty": "尚无可用的流水导出范围；保留页面结构并说明下一步。",
+        "error": "无法读取流水导出范围；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取流水导出范围，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-export-scope:export",
+      "title": "账本流水 · 导出流水",
+      "workspace": "ledger"
+    },
+    "/ledger/filter": {
+      "breadcrumb": [
+        "账本流水",
+        "筛选搜索"
+      ],
+      "dataObject": "流水筛选结果",
+      "dataSource": "流水筛选结果 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "组合条件定位需要核验的真实流水。",
+      "layoutKind": "ledger-query-builder",
+      "legacyRouteAlias": "/ledger?tab=filter",
+      "noJsFallback": {
+        "routeAlias": "/ledger/filter",
+        "task": "组合条件定位需要核验的真实流水。",
+        "title": "筛选搜索"
+      },
+      "pageLabel": "筛选搜索",
+      "primaryAction": "保存筛选条件",
+      "primaryLabel": "账本流水",
+      "primaryObject": "筛选搜索",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/filter",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:filter",
+      "states": {
+        "empty": "尚无可用的流水筛选结果；保留页面结构并说明下一步。",
+        "error": "无法读取流水筛选结果；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取流水筛选结果，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-query-builder:filter",
+      "title": "账本流水 · 筛选搜索",
+      "workspace": "ledger"
+    },
+    "/ledger/list": {
+      "breadcrumb": [
+        "账本流水",
+        "流水列表"
+      ],
+      "dataObject": "标准化流水记录",
+      "dataSource": "标准化流水记录 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "逐笔查看流水、来源批次与证据链。",
+      "layoutKind": "ledger-evidence-table",
+      "legacyRouteAlias": "/ledger?tab=list",
+      "noJsFallback": {
+        "routeAlias": "/ledger/list",
+        "task": "逐笔查看流水、来源批次与证据链。",
+        "title": "流水列表"
+      },
+      "pageLabel": "流水列表",
+      "primaryAction": "打开流水证据",
+      "primaryLabel": "账本流水",
+      "primaryObject": "流水列表",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/list",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:list",
+      "states": {
+        "empty": "尚无可用的标准化流水记录；保留页面结构并说明下一步。",
+        "error": "无法读取标准化流水记录；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取标准化流水记录，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-evidence-table:list",
+      "title": "账本流水 · 流水列表",
+      "workspace": "ledger"
+    },
+    "/ledger/review": {
+      "breadcrumb": [
+        "账本流水",
+        "分类复核"
+      ],
+      "dataObject": "低置信度复核队列",
+      "dataSource": "低置信度复核队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "复核低置信度分类并记录决策理由。",
+      "layoutKind": "ledger-review-workbench",
+      "legacyRouteAlias": "/ledger?tab=review",
+      "noJsFallback": {
+        "routeAlias": "/ledger/review",
+        "task": "复核低置信度分类并记录决策理由。",
+        "title": "分类复核"
+      },
+      "pageLabel": "分类复核",
+      "primaryAction": "保存分类复核",
+      "primaryLabel": "账本流水",
+      "primaryObject": "分类复核",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/review",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:review",
+      "states": {
+        "empty": "尚无可用的低置信度复核队列；保留页面结构并说明下一步。",
+        "error": "无法读取低置信度复核队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取低置信度复核队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-review-workbench:review",
+      "title": "账本流水 · 分类复核",
+      "workspace": "ledger"
+    },
+    "/market-research/company": {
+      "breadcrumb": [
+        "市场与研究",
+        "公司研究"
+      ],
+      "dataObject": "公司研究档案",
+      "dataSource": "公司研究档案 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对公司资料、关键假设、证据与风险。",
+      "layoutKind": "research-company-dossier",
+      "legacyRouteAlias": "/market-research?tab=company",
+      "noJsFallback": {
+        "routeAlias": "/market-research/company",
+        "task": "核对公司资料、关键假设、证据与风险。",
+        "title": "公司研究"
+      },
+      "pageLabel": "公司研究",
+      "primaryAction": "打开公司档案",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "公司研究",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/company",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:company",
+      "states": {
+        "empty": "尚无可用的公司研究档案；保留页面结构并说明下一步。",
+        "error": "无法读取公司研究档案；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取公司研究档案，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-company-dossier:company",
+      "title": "市场与研究 · 公司研究",
+      "workspace": "market_research"
+    },
+    "/market-research/fund": {
+      "breadcrumb": [
+        "市场与研究",
+        "基金研究"
+      ],
+      "dataObject": "基金研究资料",
+      "dataSource": "基金研究资料 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "检查基金持仓、费用、风格与披露来源。",
+      "layoutKind": "research-fund-exposure",
+      "legacyRouteAlias": "/market-research?tab=fund",
+      "noJsFallback": {
+        "routeAlias": "/market-research/fund",
+        "task": "检查基金持仓、费用、风格与披露来源。",
+        "title": "基金研究"
+      },
+      "pageLabel": "基金研究",
+      "primaryAction": "核对基金资料",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "基金研究",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/fund",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:fund",
+      "states": {
+        "empty": "尚无可用的基金研究资料；保留页面结构并说明下一步。",
+        "error": "无法读取基金研究资料；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取基金研究资料，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-fund-exposure:fund",
+      "title": "市场与研究 · 基金研究",
+      "workspace": "market_research"
+    },
+    "/market-research/market": {
+      "breadcrumb": [
+        "市场与研究",
+        "市场观察"
+      ],
+      "dataObject": "市场观察清单",
+      "dataSource": "市场观察清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "组织指数、ETF、主题与自选观察对象。",
+      "layoutKind": "research-market-watchlist",
+      "legacyRouteAlias": "/market-research?tab=market",
+      "noJsFallback": {
+        "routeAlias": "/market-research/market",
+        "task": "组织指数、ETF、主题与自选观察对象。",
+        "title": "市场观察"
+      },
+      "pageLabel": "市场观察",
+      "primaryAction": "打开观察清单",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "市场观察",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/market",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:market",
+      "states": {
+        "empty": "尚无可用的市场观察清单；保留页面结构并说明下一步。",
+        "error": "无法读取市场观察清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取市场观察清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-market-watchlist:market",
+      "title": "市场与研究 · 市场观察",
+      "workspace": "market_research"
+    },
+    "/market-research/research": {
+      "breadcrumb": [
+        "市场与研究",
+        "研究笔记"
+      ],
+      "dataObject": "研究证据笔记",
+      "dataSource": "研究证据笔记 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "按主题整理研究证据、引用与反方条件。",
+      "layoutKind": "research-citation-notebook",
+      "legacyRouteAlias": "/market-research?tab=research",
+      "noJsFallback": {
+        "routeAlias": "/market-research/research",
+        "task": "按主题整理研究证据、引用与反方条件。",
+        "title": "研究笔记"
+      },
+      "pageLabel": "研究笔记",
+      "primaryAction": "整理研究笔记",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "研究笔记",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/research",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:research",
+      "states": {
+        "empty": "尚无可用的研究证据笔记；保留页面结构并说明下一步。",
+        "error": "无法读取研究证据笔记；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取研究证据笔记，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-citation-notebook:research",
+      "title": "市场与研究 · 研究笔记",
+      "workspace": "market_research"
+    },
+    "/market-research/strategy-lab": {
+      "breadcrumb": [
+        "市场与研究",
+        "策略实验室"
+      ],
+      "dataObject": "策略实验定义",
+      "dataSource": "策略实验定义 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "配置研究实验并保留参数、结果与失效条件。",
+      "layoutKind": "research-strategy-experiment",
+      "legacyRouteAlias": "/market-research?tab=strategy-lab",
+      "noJsFallback": {
+        "routeAlias": "/market-research/strategy-lab",
+        "task": "配置研究实验并保留参数、结果与失效条件。",
+        "title": "策略实验室"
+      },
+      "pageLabel": "策略实验室",
+      "primaryAction": "进入策略实验",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "策略实验室",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/strategy-lab",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:strategy-lab",
+      "states": {
+        "empty": "尚无可用的策略实验定义；保留页面结构并说明下一步。",
+        "error": "无法读取策略实验定义；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取策略实验定义，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-strategy-experiment:strategy-lab",
+      "title": "市场与研究 · 策略实验室",
+      "workspace": "market_research"
+    },
+    "/overview/actions": {
+      "breadcrumb": [
+        "首页总览",
+        "快捷操作"
+      ],
+      "dataObject": "可执行动作注册表",
+      "dataSource": "可执行动作注册表 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "从已满足前置条件的动作中进入下一项工作。",
+      "layoutKind": "overview-action-launcher",
+      "legacyRouteAlias": "/home?tab=actions",
+      "noJsFallback": {
+        "routeAlias": "/overview/actions",
+        "task": "从已满足前置条件的动作中进入下一项工作。",
+        "title": "快捷操作"
+      },
+      "pageLabel": "快捷操作",
+      "primaryAction": "执行快捷操作",
+      "primaryLabel": "首页总览",
+      "primaryObject": "快捷操作",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/actions",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:actions",
+      "states": {
+        "empty": "尚无可用的可执行动作注册表；保留页面结构并说明下一步。",
+        "error": "无法读取可执行动作注册表；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取可执行动作注册表，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-action-launcher:actions",
+      "title": "首页总览 · 快捷操作",
+      "workspace": "home"
+    },
+    "/overview/reports": {
+      "breadcrumb": [
+        "首页总览",
+        "最近报告"
+      ],
+      "dataObject": "最近报告索引",
+      "dataSource": "最近报告索引 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对最近报告的数据范围、状态与证据。",
+      "layoutKind": "overview-report-timeline",
+      "legacyRouteAlias": "/home?tab=reports",
+      "noJsFallback": {
+        "routeAlias": "/overview/reports",
+        "task": "核对最近报告的数据范围、状态与证据。",
+        "title": "最近报告"
+      },
+      "pageLabel": "最近报告",
+      "primaryAction": "打开最近报告",
+      "primaryLabel": "首页总览",
+      "primaryObject": "最近报告",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/reports",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:reports",
+      "states": {
+        "empty": "尚无可用的最近报告索引；保留页面结构并说明下一步。",
+        "error": "无法读取最近报告索引；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取最近报告索引，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-report-timeline:reports",
+      "title": "首页总览 · 最近报告",
+      "workspace": "home"
+    },
+    "/overview/status": {
+      "breadcrumb": [
+        "首页总览",
+        "财务状态"
+      ],
+      "dataObject": "财务状态快照",
+      "dataSource": "财务状态快照 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认当前财务状态、数据新鲜度与阻断项。",
+      "layoutKind": "overview-status-command",
+      "legacyRouteAlias": "/home?tab=status",
+      "noJsFallback": {
+        "routeAlias": "/overview/status",
+        "task": "确认当前财务状态、数据新鲜度与阻断项。",
+        "title": "财务状态"
+      },
+      "pageLabel": "财务状态",
+      "primaryAction": "检查财务状态",
+      "primaryLabel": "首页总览",
+      "primaryObject": "财务状态",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/status",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:status",
+      "states": {
+        "empty": "尚无可用的财务状态快照；保留页面结构并说明下一步。",
+        "error": "无法读取财务状态快照；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取财务状态快照，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-status-command:status",
+      "title": "首页总览 · 财务状态",
+      "workspace": "home"
+    },
+    "/overview/todo": {
+      "breadcrumb": [
+        "首页总览",
+        "待办事项"
+      ],
+      "dataObject": "优先待办队列",
+      "dataSource": "优先待办队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "按影响与阻断程度处理财务工作待办。",
+      "layoutKind": "overview-priority-queue",
+      "legacyRouteAlias": "/home?tab=todo",
+      "noJsFallback": {
+        "routeAlias": "/overview/todo",
+        "task": "按影响与阻断程度处理财务工作待办。",
+        "title": "待办事项"
+      },
+      "pageLabel": "待办事项",
+      "primaryAction": "处理首页待办",
+      "primaryLabel": "首页总览",
+      "primaryObject": "待办事项",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/todo",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:todo",
+      "states": {
+        "empty": "尚无可用的优先待办队列；保留页面结构并说明下一步。",
+        "error": "无法读取优先待办队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取优先待办队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-priority-queue:todo",
+      "title": "首页总览 · 待办事项",
+      "workspace": "home"
+    },
+    "/reports/custom": {
+      "breadcrumb": [
+        "报告与洞察",
+        "自定义报告"
+      ],
+      "dataObject": "自定义报告查询",
+      "dataSource": "自定义报告查询 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "组合数据域与筛选条件构建受控报告。",
+      "layoutKind": "reports-scope-builder",
+      "legacyRouteAlias": "/reports?tab=custom",
+      "noJsFallback": {
+        "routeAlias": "/reports/custom",
+        "task": "组合数据域与筛选条件构建受控报告。",
+        "title": "自定义报告"
+      },
+      "pageLabel": "自定义报告",
+      "primaryAction": "配置报告范围",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "自定义报告",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/custom",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:custom",
+      "states": {
+        "empty": "尚无可用的自定义报告查询；保留页面结构并说明下一步。",
+        "error": "无法读取自定义报告查询；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取自定义报告查询，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-scope-builder:custom",
+      "title": "报告与洞察 · 自定义报告",
+      "workspace": "insights"
+    },
+    "/reports/export": {
+      "breadcrumb": [
+        "报告与洞察",
+        "报告导出"
+      ],
+      "dataObject": "报告导出清单",
+      "dataSource": "报告导出清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "在证据检查通过后选择格式与目标位置。",
+      "layoutKind": "reports-export-gate",
+      "legacyRouteAlias": "/reports?tab=export",
+      "noJsFallback": {
+        "routeAlias": "/reports/export",
+        "task": "在证据检查通过后选择格式与目标位置。",
+        "title": "报告导出"
+      },
+      "pageLabel": "报告导出",
+      "primaryAction": "导出报告文件",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "报告导出",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/export",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:export",
+      "states": {
+        "empty": "尚无可用的报告导出清单；保留页面结构并说明下一步。",
+        "error": "无法读取报告导出清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取报告导出清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-export-gate:export",
+      "title": "报告与洞察 · 报告导出",
+      "workspace": "insights"
+    },
+    "/reports/monthly": {
+      "breadcrumb": [
+        "报告与洞察",
+        "月报"
+      ],
+      "dataObject": "月度报告草稿",
+      "dataSource": "月度报告草稿 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "在月度数据门禁通过后生成可追溯草稿。",
+      "layoutKind": "reports-monthly-close",
+      "legacyRouteAlias": "/reports?tab=monthly",
+      "noJsFallback": {
+        "routeAlias": "/reports/monthly",
+        "task": "在月度数据门禁通过后生成可追溯草稿。",
+        "title": "月报"
+      },
+      "pageLabel": "月报",
+      "primaryAction": "生成月报草稿",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "月报",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/monthly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:monthly",
+      "states": {
+        "empty": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+        "error": "无法读取月度报告草稿；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取月度报告草稿，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-monthly-close:monthly",
+      "title": "报告与洞察 · 月报",
+      "workspace": "insights"
+    },
+    "/reports/quarterly": {
+      "breadcrumb": [
+        "报告与洞察",
+        "季报"
+      ],
+      "dataObject": "季度报告草稿",
+      "dataSource": "季度报告草稿 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较季度覆盖与变化并保留不可比项。",
+      "layoutKind": "reports-quarter-comparison",
+      "legacyRouteAlias": "/reports?tab=quarterly",
+      "noJsFallback": {
+        "routeAlias": "/reports/quarterly",
+        "task": "比较季度覆盖与变化并保留不可比项。",
+        "title": "季报"
+      },
+      "pageLabel": "季报",
+      "primaryAction": "生成季报草稿",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "季报",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/quarterly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:quarterly",
+      "states": {
+        "empty": "尚无可用的季度报告草稿；保留页面结构并说明下一步。",
+        "error": "无法读取季度报告草稿；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取季度报告草稿，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-quarter-comparison:quarterly",
+      "title": "报告与洞察 · 季报",
+      "workspace": "insights"
+    },
+    "/reports/yearly": {
+      "breadcrumb": [
+        "报告与洞察",
+        "年报"
+      ],
+      "dataObject": "年度报告草稿",
+      "dataSource": "年度报告草稿 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对全年覆盖与关闭状态后形成年度草稿。",
+      "layoutKind": "reports-year-close",
+      "legacyRouteAlias": "/reports?tab=yearly",
+      "noJsFallback": {
+        "routeAlias": "/reports/yearly",
+        "task": "核对全年覆盖与关闭状态后形成年度草稿。",
+        "title": "年报"
+      },
+      "pageLabel": "年报",
+      "primaryAction": "生成年报草稿",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "年报",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/yearly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:yearly",
+      "states": {
+        "empty": "尚无可用的年度报告草稿；保留页面结构并说明下一步。",
+        "error": "无法读取年度报告草稿；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取年度报告草稿，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-year-close:yearly",
+      "title": "报告与洞察 · 年报",
+      "workspace": "insights"
+    },
+    "/review/decision": {
+      "breadcrumb": [
+        "建议与复盘",
+        "决策记录"
+      ],
+      "dataObject": "建议决策日志",
+      "dataSource": "建议决策日志 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "记录接受、暂缓或忽略建议的理由。",
+      "layoutKind": "review-decision-journal",
+      "legacyRouteAlias": "/review?tab=decision",
+      "noJsFallback": {
+        "routeAlias": "/review/decision",
+        "task": "记录接受、暂缓或忽略建议的理由。",
+        "title": "决策记录"
+      },
+      "pageLabel": "决策记录",
+      "primaryAction": "记录建议决策",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "决策记录",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/decision",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:decision",
+      "states": {
+        "empty": "尚无可用的建议决策日志；保留页面结构并说明下一步。",
+        "error": "无法读取建议决策日志；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取建议决策日志，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-decision-journal:decision",
+      "title": "建议与复盘 · 决策记录",
+      "workspace": "recommendations"
+    },
+    "/review/detail": {
+      "breadcrumb": [
+        "建议与复盘",
+        "建议详情"
+      ],
+      "dataObject": "单项建议证据包",
+      "dataSource": "单项建议证据包 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对建议依据、代价、失效条件与行动。",
+      "layoutKind": "review-recommendation-case",
+      "legacyRouteAlias": "/review?tab=detail",
+      "noJsFallback": {
+        "routeAlias": "/review/detail",
+        "task": "核对建议依据、代价、失效条件与行动。",
+        "title": "建议详情"
+      },
+      "pageLabel": "建议详情",
+      "primaryAction": "复核建议详情",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "建议详情",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/detail",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:detail",
+      "states": {
+        "empty": "尚无可用的单项建议证据包；保留页面结构并说明下一步。",
+        "error": "无法读取单项建议证据包；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取单项建议证据包，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-recommendation-case:detail",
+      "title": "建议与复盘 · 建议详情",
+      "workspace": "recommendations"
+    },
+    "/review/history": {
+      "breadcrumb": [
+        "建议与复盘",
+        "复盘记录"
+      ],
+      "dataObject": "建议结果复盘",
+      "dataSource": "建议结果复盘 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较建议执行结果与原始预期并形成复盘。",
+      "layoutKind": "review-outcome-timeline",
+      "legacyRouteAlias": "/review?tab=history",
+      "noJsFallback": {
+        "routeAlias": "/review/history",
+        "task": "比较建议执行结果与原始预期并形成复盘。",
+        "title": "复盘记录"
+      },
+      "pageLabel": "复盘记录",
+      "primaryAction": "打开复盘记录",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "复盘记录",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/history",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:history",
+      "states": {
+        "empty": "尚无可用的建议结果复盘；保留页面结构并说明下一步。",
+        "error": "无法读取建议结果复盘；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取建议结果复盘，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-outcome-timeline:history",
+      "title": "建议与复盘 · 复盘记录",
+      "workspace": "recommendations"
+    },
+    "/review/list": {
+      "breadcrumb": [
+        "建议与复盘",
+        "建议列表"
+      ],
+      "dataObject": "证据化建议队列",
+      "dataSource": "证据化建议队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "按证据、影响与可执行性整理建议。",
+      "layoutKind": "review-evidence-inbox",
+      "legacyRouteAlias": "/review?tab=list",
+      "noJsFallback": {
+        "routeAlias": "/review/list",
+        "task": "按证据、影响与可执行性整理建议。",
+        "title": "建议列表"
+      },
+      "pageLabel": "建议列表",
+      "primaryAction": "整理建议优先级",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "建议列表",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/list",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:list",
+      "states": {
+        "empty": "尚无可用的证据化建议队列；保留页面结构并说明下一步。",
+        "error": "无法读取证据化建议队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取证据化建议队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-evidence-inbox:list",
+      "title": "建议与复盘 · 建议列表",
+      "workspace": "recommendations"
+    },
+    "/settings/account": {
+      "breadcrumb": [
+        "设置",
+        "账户偏好"
+      ],
+      "dataObject": "账户显示偏好",
+      "dataSource": "账户显示偏好 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "管理显示币种、默认账户与界面偏好。",
+      "layoutKind": "settings-account-preferences",
+      "legacyRouteAlias": "/settings?tab=account",
+      "noJsFallback": {
+        "routeAlias": "/settings/account",
+        "task": "管理显示币种、默认账户与界面偏好。",
+        "title": "账户偏好"
+      },
+      "pageLabel": "账户偏好",
+      "primaryAction": "保存账户偏好",
+      "primaryLabel": "设置",
+      "primaryObject": "账户偏好",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/account",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:account",
+      "states": {
+        "empty": "尚无可用的账户显示偏好；保留页面结构并说明下一步。",
+        "error": "无法读取账户显示偏好；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户显示偏好，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-account-preferences:account",
+      "title": "设置 · 账户偏好",
+      "workspace": "settings"
+    },
+    "/settings/backup": {
+      "breadcrumb": [
+        "设置",
+        "备份恢复"
+      ],
+      "dataObject": "备份恢复检查点",
+      "dataSource": "备份恢复检查点 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对备份完整性、恢复点与操作风险。",
+      "layoutKind": "settings-backup-recovery",
+      "legacyRouteAlias": "/settings?tab=backup",
+      "noJsFallback": {
+        "routeAlias": "/settings/backup",
+        "task": "核对备份完整性、恢复点与操作风险。",
+        "title": "备份恢复"
+      },
+      "pageLabel": "备份恢复",
+      "primaryAction": "检查备份恢复",
+      "primaryLabel": "设置",
+      "primaryObject": "备份恢复",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/backup",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:backup",
+      "states": {
+        "empty": "尚无可用的备份恢复检查点；保留页面结构并说明下一步。",
+        "error": "无法读取备份恢复检查点；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取备份恢复检查点，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-backup-recovery:backup",
+      "title": "设置 · 备份恢复",
+      "workspace": "settings"
+    },
+    "/settings/data-system": {
+      "breadcrumb": [
+        "设置",
+        "数据与系统"
+      ],
+      "dataObject": "数据系统状态",
+      "dataSource": "数据系统状态 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对本机数据路径、服务与质量状态。",
+      "layoutKind": "settings-system-health",
+      "legacyRouteAlias": "/settings?tab=data-system",
+      "noJsFallback": {
+        "routeAlias": "/settings/data-system",
+        "task": "核对本机数据路径、服务与质量状态。",
+        "title": "数据与系统"
+      },
+      "pageLabel": "数据与系统",
+      "primaryAction": "检查数据系统",
+      "primaryLabel": "设置",
+      "primaryObject": "数据与系统",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/data-system",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:data-system",
+      "states": {
+        "empty": "尚无可用的数据系统状态；保留页面结构并说明下一步。",
+        "error": "无法读取数据系统状态；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取数据系统状态，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-system-health:data-system",
+      "title": "设置 · 数据与系统",
+      "workspace": "settings"
+    },
+    "/settings/feedback": {
+      "breadcrumb": [
+        "设置",
+        "反馈偏好"
+      ],
+      "dataObject": "交互反馈偏好",
+      "dataSource": "交互反馈偏好 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "管理视觉、声音、触感与无障碍反馈。",
+      "layoutKind": "settings-feedback-controls",
+      "legacyRouteAlias": "/settings?tab=feedback",
+      "noJsFallback": {
+        "routeAlias": "/settings/feedback",
+        "task": "管理视觉、声音、触感与无障碍反馈。",
+        "title": "反馈偏好"
+      },
+      "pageLabel": "反馈偏好",
+      "primaryAction": "调整反馈偏好",
+      "primaryLabel": "设置",
+      "primaryObject": "反馈偏好",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/feedback",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:feedback",
+      "states": {
+        "empty": "尚无可用的交互反馈偏好；保留页面结构并说明下一步。",
+        "error": "无法读取交互反馈偏好；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取交互反馈偏好，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-feedback-controls:feedback",
+      "title": "设置 · 反馈偏好",
+      "workspace": "settings"
+    },
+    "/settings/privacy": {
+      "breadcrumb": [
+        "设置",
+        "隐私与本地存储"
+      ],
+      "dataObject": "本地隐私边界",
+      "dataSource": "本地隐私边界 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认本地存储、忽略规则与敏感数据边界。",
+      "layoutKind": "settings-privacy-boundary",
+      "legacyRouteAlias": "/settings?tab=privacy",
+      "noJsFallback": {
+        "routeAlias": "/settings/privacy",
+        "task": "确认本地存储、忽略规则与敏感数据边界。",
+        "title": "隐私与本地存储"
+      },
+      "pageLabel": "隐私与本地存储",
+      "primaryAction": "检查隐私边界",
+      "primaryLabel": "设置",
+      "primaryObject": "隐私与本地存储",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/privacy",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:privacy",
+      "states": {
+        "empty": "尚无可用的本地隐私边界；保留页面结构并说明下一步。",
+        "error": "无法读取本地隐私边界；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取本地隐私边界，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-privacy-boundary:privacy",
+      "title": "设置 · 隐私与本地存储",
+      "workspace": "settings"
+    }
+  },
+  "pageGroups": {
+    "accounts": [
+      {
+        "routeAlias": "/accounts/overview",
+        "title": "账户地图"
+      },
+      {
+        "routeAlias": "/accounts/list",
+        "title": "账户清单"
+      },
+      {
+        "routeAlias": "/accounts/trend",
+        "title": "资产趋势"
+      },
+      {
+        "routeAlias": "/accounts/reconcile",
+        "title": "账户对账"
+      }
+    ],
+    "consumption": [
+      {
+        "routeAlias": "/consumption/overview",
+        "title": "消费总览"
+      },
+      {
+        "routeAlias": "/consumption/category",
+        "title": "分类分析"
+      },
+      {
+        "routeAlias": "/consumption/budget",
+        "title": "预算"
+      },
+      {
+        "routeAlias": "/consumption/subscription",
+        "title": "订阅"
+      },
+      {
+        "routeAlias": "/consumption/anomaly",
+        "title": "异常消费"
+      }
+    ],
+    "home": [
+      {
+        "routeAlias": "/overview/status",
+        "title": "财务状态"
+      },
+      {
+        "routeAlias": "/overview/todo",
+        "title": "待办事项"
+      },
+      {
+        "routeAlias": "/overview/actions",
+        "title": "快捷操作"
+      },
+      {
+        "routeAlias": "/overview/reports",
+        "title": "最近报告"
+      }
+    ],
+    "insights": [
+      {
+        "routeAlias": "/reports/monthly",
+        "title": "月报"
+      },
+      {
+        "routeAlias": "/reports/quarterly",
+        "title": "季报"
+      },
+      {
+        "routeAlias": "/reports/yearly",
+        "title": "年报"
+      },
+      {
+        "routeAlias": "/reports/custom",
+        "title": "自定义报告"
+      },
+      {
+        "routeAlias": "/reports/export",
+        "title": "报告导出"
+      }
+    ],
+    "investment": [
+      {
+        "routeAlias": "/investment/overview",
+        "title": "投资总览"
+      },
+      {
+        "routeAlias": "/investment/holdings",
+        "title": "持仓"
+      },
+      {
+        "routeAlias": "/investment/trades",
+        "title": "交易记录"
+      },
+      {
+        "routeAlias": "/investment/returns",
+        "title": "收益分析"
+      }
+    ],
+    "ledger": [
+      {
+        "routeAlias": "/ledger/list",
+        "title": "流水列表"
+      },
+      {
+        "routeAlias": "/ledger/filter",
+        "title": "筛选搜索"
+      },
+      {
+        "routeAlias": "/ledger/review",
+        "title": "分类复核"
+      },
+      {
+        "routeAlias": "/ledger/export",
+        "title": "导出流水"
+      }
+    ],
+    "market_research": [
+      {
+        "routeAlias": "/market-research/market",
+        "title": "市场观察"
+      },
+      {
+        "routeAlias": "/market-research/research",
+        "title": "研究笔记"
+      },
+      {
+        "routeAlias": "/market-research/company",
+        "title": "公司研究"
+      },
+      {
+        "routeAlias": "/market-research/fund",
+        "title": "基金研究"
+      },
+      {
+        "routeAlias": "/market-research/strategy-lab",
+        "title": "策略实验室"
+      }
+    ],
+    "recommendations": [
+      {
+        "routeAlias": "/review/list",
+        "title": "建议列表"
+      },
+      {
+        "routeAlias": "/review/detail",
+        "title": "建议详情"
+      },
+      {
+        "routeAlias": "/review/decision",
+        "title": "决策记录"
+      },
+      {
+        "routeAlias": "/review/history",
+        "title": "复盘记录"
+      }
+    ],
+    "settings": [
+      {
+        "routeAlias": "/settings/account",
+        "title": "账户偏好"
+      },
+      {
+        "routeAlias": "/settings/data-system",
+        "title": "数据与系统"
+      },
+      {
+        "routeAlias": "/settings/privacy",
+        "title": "隐私与本地存储"
+      },
+      {
+        "routeAlias": "/settings/feedback",
+        "title": "反馈偏好"
+      },
+      {
+        "routeAlias": "/settings/backup",
+        "title": "备份恢复"
+      }
+    ],
+    "sync": [
+      {
+        "routeAlias": "/data/upload",
+        "title": "上传中心"
+      },
+      {
+        "routeAlias": "/data/import",
+        "title": "导入中心"
+      },
+      {
+        "routeAlias": "/data/sources",
+        "title": "数据源管理"
+      },
+      {
+        "routeAlias": "/data/review",
+        "title": "待复核"
+      },
+      {
+        "routeAlias": "/data/history",
+        "title": "导入历史"
+      }
+    ]
+  },
+  "pages": [
+    {
+      "breadcrumb": [
+        "首页总览",
+        "财务状态"
+      ],
+      "dataObject": "财务状态快照",
+      "dataSource": "财务状态快照 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认当前财务状态、数据新鲜度与阻断项。",
+      "layoutKind": "overview-status-command",
+      "legacyRouteAlias": "/home?tab=status",
+      "noJsFallback": {
+        "routeAlias": "/overview/status",
+        "task": "确认当前财务状态、数据新鲜度与阻断项。",
+        "title": "财务状态"
+      },
+      "pageLabel": "财务状态",
+      "primaryAction": "检查财务状态",
+      "primaryLabel": "首页总览",
+      "primaryObject": "财务状态",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/status",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:status",
+      "states": {
+        "empty": "尚无可用的财务状态快照；保留页面结构并说明下一步。",
+        "error": "无法读取财务状态快照；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取财务状态快照，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-status-command:status",
+      "title": "首页总览 · 财务状态",
+      "workspace": "home"
+    },
+    {
+      "breadcrumb": [
+        "首页总览",
+        "待办事项"
+      ],
+      "dataObject": "优先待办队列",
+      "dataSource": "优先待办队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "按影响与阻断程度处理财务工作待办。",
+      "layoutKind": "overview-priority-queue",
+      "legacyRouteAlias": "/home?tab=todo",
+      "noJsFallback": {
+        "routeAlias": "/overview/todo",
+        "task": "按影响与阻断程度处理财务工作待办。",
+        "title": "待办事项"
+      },
+      "pageLabel": "待办事项",
+      "primaryAction": "处理首页待办",
+      "primaryLabel": "首页总览",
+      "primaryObject": "待办事项",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/todo",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:todo",
+      "states": {
+        "empty": "尚无可用的优先待办队列；保留页面结构并说明下一步。",
+        "error": "无法读取优先待办队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取优先待办队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-priority-queue:todo",
+      "title": "首页总览 · 待办事项",
+      "workspace": "home"
+    },
+    {
+      "breadcrumb": [
+        "首页总览",
+        "快捷操作"
+      ],
+      "dataObject": "可执行动作注册表",
+      "dataSource": "可执行动作注册表 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "从已满足前置条件的动作中进入下一项工作。",
+      "layoutKind": "overview-action-launcher",
+      "legacyRouteAlias": "/home?tab=actions",
+      "noJsFallback": {
+        "routeAlias": "/overview/actions",
+        "task": "从已满足前置条件的动作中进入下一项工作。",
+        "title": "快捷操作"
+      },
+      "pageLabel": "快捷操作",
+      "primaryAction": "执行快捷操作",
+      "primaryLabel": "首页总览",
+      "primaryObject": "快捷操作",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/actions",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:actions",
+      "states": {
+        "empty": "尚无可用的可执行动作注册表；保留页面结构并说明下一步。",
+        "error": "无法读取可执行动作注册表；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取可执行动作注册表，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-action-launcher:actions",
+      "title": "首页总览 · 快捷操作",
+      "workspace": "home"
+    },
+    {
+      "breadcrumb": [
+        "首页总览",
+        "最近报告"
+      ],
+      "dataObject": "最近报告索引",
+      "dataSource": "最近报告索引 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对最近报告的数据范围、状态与证据。",
+      "layoutKind": "overview-report-timeline",
+      "legacyRouteAlias": "/home?tab=reports",
+      "noJsFallback": {
+        "routeAlias": "/overview/reports",
+        "task": "核对最近报告的数据范围、状态与证据。",
+        "title": "最近报告"
+      },
+      "pageLabel": "最近报告",
+      "primaryAction": "打开最近报告",
+      "primaryLabel": "首页总览",
+      "primaryObject": "最近报告",
+      "primaryRouteAlias": "/overview",
+      "routeAlias": "/overview/reports",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "home:reports",
+      "states": {
+        "empty": "尚无可用的最近报告索引；保留页面结构并说明下一步。",
+        "error": "无法读取最近报告索引；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取最近报告索引，页面操作暂不可用。"
+      },
+      "structuralSignature": "overview-report-timeline:reports",
+      "title": "首页总览 · 最近报告",
+      "workspace": "home"
+    },
+    {
+      "breadcrumb": [
+        "账户与资产",
+        "账户地图"
+      ],
+      "dataObject": "账户来源地图",
+      "dataSource": "账户来源地图 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认账户、来源、币种与更新时间的覆盖关系。",
+      "layoutKind": "accounts-source-map",
+      "legacyRouteAlias": "/accounts?tab=overview",
+      "noJsFallback": {
+        "routeAlias": "/accounts/overview",
+        "task": "确认账户、来源、币种与更新时间的覆盖关系。",
+        "title": "账户地图"
+      },
+      "pageLabel": "账户地图",
+      "primaryAction": "核对账户来源",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "账户地图",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/overview",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:overview",
+      "states": {
+        "empty": "尚无可用的账户来源地图；保留页面结构并说明下一步。",
+        "error": "无法读取账户来源地图；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户来源地图，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-source-map:overview",
+      "title": "账户与资产 · 账户地图",
+      "workspace": "accounts"
+    },
+    {
+      "breadcrumb": [
+        "账户与资产",
+        "账户清单"
+      ],
+      "dataObject": "账户余额清单",
+      "dataSource": "账户余额清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "筛选账户并查看余额、来源和数据状态。",
+      "layoutKind": "accounts-balance-table",
+      "legacyRouteAlias": "/accounts?tab=list",
+      "noJsFallback": {
+        "routeAlias": "/accounts/list",
+        "task": "筛选账户并查看余额、来源和数据状态。",
+        "title": "账户清单"
+      },
+      "pageLabel": "账户清单",
+      "primaryAction": "打开账户明细",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "账户清单",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/list",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:list",
+      "states": {
+        "empty": "尚无可用的账户余额清单；保留页面结构并说明下一步。",
+        "error": "无法读取账户余额清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户余额清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-balance-table:list",
+      "title": "账户与资产 · 账户清单",
+      "workspace": "accounts"
+    },
+    {
+      "breadcrumb": [
+        "账户与资产",
+        "资产趋势"
+      ],
+      "dataObject": "资产趋势序列",
+      "dataSource": "资产趋势序列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "检查资产时间序列的覆盖范围与缺口。",
+      "layoutKind": "accounts-asset-timeseries",
+      "legacyRouteAlias": "/accounts?tab=trend",
+      "noJsFallback": {
+        "routeAlias": "/accounts/trend",
+        "task": "检查资产时间序列的覆盖范围与缺口。",
+        "title": "资产趋势"
+      },
+      "pageLabel": "资产趋势",
+      "primaryAction": "查看趋势缺口",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "资产趋势",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/trend",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:trend",
+      "states": {
+        "empty": "尚无可用的资产趋势序列；保留页面结构并说明下一步。",
+        "error": "无法读取资产趋势序列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取资产趋势序列，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-asset-timeseries:trend",
+      "title": "账户与资产 · 资产趋势",
+      "workspace": "accounts"
+    },
+    {
+      "breadcrumb": [
+        "账户与资产",
+        "账户对账"
+      ],
+      "dataObject": "账户对账差异",
+      "dataSource": "账户对账差异 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较平台快照与本机账本并处理差异。",
+      "layoutKind": "accounts-reconciliation-matrix",
+      "legacyRouteAlias": "/accounts?tab=reconcile",
+      "noJsFallback": {
+        "routeAlias": "/accounts/reconcile",
+        "task": "比较平台快照与本机账本并处理差异。",
+        "title": "账户对账"
+      },
+      "pageLabel": "账户对账",
+      "primaryAction": "处理对账差异",
+      "primaryLabel": "账户与资产",
+      "primaryObject": "账户对账",
+      "primaryRouteAlias": "/accounts",
+      "routeAlias": "/accounts/reconcile",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "accounts:reconcile",
+      "states": {
+        "empty": "尚无可用的账户对账差异；保留页面结构并说明下一步。",
+        "error": "无法读取账户对账差异；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户对账差异，页面操作暂不可用。"
+      },
+      "structuralSignature": "accounts-reconciliation-matrix:reconcile",
+      "title": "账户与资产 · 账户对账",
+      "workspace": "accounts"
+    },
+    {
+      "breadcrumb": [
+        "账本流水",
+        "流水列表"
+      ],
+      "dataObject": "标准化流水记录",
+      "dataSource": "标准化流水记录 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "逐笔查看流水、来源批次与证据链。",
+      "layoutKind": "ledger-evidence-table",
+      "legacyRouteAlias": "/ledger?tab=list",
+      "noJsFallback": {
+        "routeAlias": "/ledger/list",
+        "task": "逐笔查看流水、来源批次与证据链。",
+        "title": "流水列表"
+      },
+      "pageLabel": "流水列表",
+      "primaryAction": "打开流水证据",
+      "primaryLabel": "账本流水",
+      "primaryObject": "流水列表",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/list",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:list",
+      "states": {
+        "empty": "尚无可用的标准化流水记录；保留页面结构并说明下一步。",
+        "error": "无法读取标准化流水记录；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取标准化流水记录，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-evidence-table:list",
+      "title": "账本流水 · 流水列表",
+      "workspace": "ledger"
+    },
+    {
+      "breadcrumb": [
+        "账本流水",
+        "筛选搜索"
+      ],
+      "dataObject": "流水筛选结果",
+      "dataSource": "流水筛选结果 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "组合条件定位需要核验的真实流水。",
+      "layoutKind": "ledger-query-builder",
+      "legacyRouteAlias": "/ledger?tab=filter",
+      "noJsFallback": {
+        "routeAlias": "/ledger/filter",
+        "task": "组合条件定位需要核验的真实流水。",
+        "title": "筛选搜索"
+      },
+      "pageLabel": "筛选搜索",
+      "primaryAction": "保存筛选条件",
+      "primaryLabel": "账本流水",
+      "primaryObject": "筛选搜索",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/filter",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:filter",
+      "states": {
+        "empty": "尚无可用的流水筛选结果；保留页面结构并说明下一步。",
+        "error": "无法读取流水筛选结果；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取流水筛选结果，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-query-builder:filter",
+      "title": "账本流水 · 筛选搜索",
+      "workspace": "ledger"
+    },
+    {
+      "breadcrumb": [
+        "账本流水",
+        "分类复核"
+      ],
+      "dataObject": "低置信度复核队列",
+      "dataSource": "低置信度复核队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "复核低置信度分类并记录决策理由。",
+      "layoutKind": "ledger-review-workbench",
+      "legacyRouteAlias": "/ledger?tab=review",
+      "noJsFallback": {
+        "routeAlias": "/ledger/review",
+        "task": "复核低置信度分类并记录决策理由。",
+        "title": "分类复核"
+      },
+      "pageLabel": "分类复核",
+      "primaryAction": "保存分类复核",
+      "primaryLabel": "账本流水",
+      "primaryObject": "分类复核",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/review",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:review",
+      "states": {
+        "empty": "尚无可用的低置信度复核队列；保留页面结构并说明下一步。",
+        "error": "无法读取低置信度复核队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取低置信度复核队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-review-workbench:review",
+      "title": "账本流水 · 分类复核",
+      "workspace": "ledger"
+    },
+    {
+      "breadcrumb": [
+        "账本流水",
+        "导出流水"
+      ],
+      "dataObject": "流水导出范围",
+      "dataSource": "流水导出范围 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认范围与格式后导出当前真实结果。",
+      "layoutKind": "ledger-export-scope",
+      "legacyRouteAlias": "/ledger?tab=export",
+      "noJsFallback": {
+        "routeAlias": "/ledger/export",
+        "task": "确认范围与格式后导出当前真实结果。",
+        "title": "导出流水"
+      },
+      "pageLabel": "导出流水",
+      "primaryAction": "生成导出文件",
+      "primaryLabel": "账本流水",
+      "primaryObject": "导出流水",
+      "primaryRouteAlias": "/ledger",
+      "routeAlias": "/ledger/export",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "ledger:export",
+      "states": {
+        "empty": "尚无可用的流水导出范围；保留页面结构并说明下一步。",
+        "error": "无法读取流水导出范围；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取流水导出范围，页面操作暂不可用。"
+      },
+      "structuralSignature": "ledger-export-scope:export",
+      "title": "账本流水 · 导出流水",
+      "workspace": "ledger"
+    },
+    {
+      "breadcrumb": [
+        "投资管理",
+        "投资总览"
+      ],
+      "dataObject": "投资配置快照",
+      "dataSource": "投资配置快照 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对投资市值、现金仓位与配置集中度。",
+      "layoutKind": "investment-allocation-overview",
+      "legacyRouteAlias": "/investment?tab=overview",
+      "noJsFallback": {
+        "routeAlias": "/investment/overview",
+        "task": "核对投资市值、现金仓位与配置集中度。",
+        "title": "投资总览"
+      },
+      "pageLabel": "投资总览",
+      "primaryAction": "查看资产配置",
+      "primaryLabel": "投资管理",
+      "primaryObject": "投资总览",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/overview",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:overview",
+      "states": {
+        "empty": "尚无可用的投资配置快照；保留页面结构并说明下一步。",
+        "error": "无法读取投资配置快照；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取投资配置快照，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-allocation-overview:overview",
+      "title": "投资管理 · 投资总览",
+      "workspace": "investment"
+    },
+    {
+      "breadcrumb": [
+        "投资管理",
+        "持仓"
+      ],
+      "dataObject": "真实持仓快照",
+      "dataSource": "真实持仓快照 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "查看或维护持仓，并保留持久化状态。",
+      "layoutKind": "investment-holdings-editor",
+      "legacyRouteAlias": "/investment?tab=holdings",
+      "noJsFallback": {
+        "routeAlias": "/investment/holdings",
+        "task": "查看或维护持仓，并保留持久化状态。",
+        "title": "持仓"
+      },
+      "pageLabel": "持仓",
+      "primaryAction": "编辑持仓快照",
+      "primaryLabel": "投资管理",
+      "primaryObject": "持仓",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/holdings",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:holdings",
+      "states": {
+        "empty": "尚无可用的真实持仓快照；保留页面结构并说明下一步。",
+        "error": "无法读取真实持仓快照；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取真实持仓快照，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-holdings-editor:holdings",
+      "title": "投资管理 · 持仓",
+      "workspace": "investment"
+    },
+    {
+      "breadcrumb": [
+        "投资管理",
+        "交易记录"
+      ],
+      "dataObject": "投资交易记录",
+      "dataSource": "投资交易记录 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对买卖、费用、税费与汇率证据。",
+      "layoutKind": "investment-trade-ledger",
+      "legacyRouteAlias": "/investment?tab=trades",
+      "noJsFallback": {
+        "routeAlias": "/investment/trades",
+        "task": "核对买卖、费用、税费与汇率证据。",
+        "title": "交易记录"
+      },
+      "pageLabel": "交易记录",
+      "primaryAction": "核对交易证据",
+      "primaryLabel": "投资管理",
+      "primaryObject": "交易记录",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/trades",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:trades",
+      "states": {
+        "empty": "尚无可用的投资交易记录；保留页面结构并说明下一步。",
+        "error": "无法读取投资交易记录；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取投资交易记录，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-trade-ledger:trades",
+      "title": "投资管理 · 交易记录",
+      "workspace": "investment"
+    },
+    {
+      "breadcrumb": [
+        "投资管理",
+        "收益分析"
+      ],
+      "dataObject": "投资收益归因",
+      "dataSource": "投资收益归因 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "基于持仓与交易证据解释收益和风险。",
+      "layoutKind": "investment-attribution-analysis",
+      "legacyRouteAlias": "/investment?tab=returns",
+      "noJsFallback": {
+        "routeAlias": "/investment/returns",
+        "task": "基于持仓与交易证据解释收益和风险。",
+        "title": "收益分析"
+      },
+      "pageLabel": "收益分析",
+      "primaryAction": "检查收益归因",
+      "primaryLabel": "投资管理",
+      "primaryObject": "收益分析",
+      "primaryRouteAlias": "/investment",
+      "routeAlias": "/investment/returns",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "investment:returns",
+      "states": {
+        "empty": "尚无可用的投资收益归因；保留页面结构并说明下一步。",
+        "error": "无法读取投资收益归因；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取投资收益归因，页面操作暂不可用。"
+      },
+      "structuralSignature": "investment-attribution-analysis:returns",
+      "title": "投资管理 · 收益分析",
+      "workspace": "investment"
+    },
+    {
+      "breadcrumb": [
+        "消费管理",
+        "消费总览"
+      ],
+      "dataObject": "消费双口径汇总",
+      "dataSource": "消费双口径汇总 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "对照现金流与行为口径理解消费结构。",
+      "layoutKind": "consumption-dual-metric-overview",
+      "legacyRouteAlias": "/consumption?tab=overview",
+      "noJsFallback": {
+        "routeAlias": "/consumption/overview",
+        "task": "对照现金流与行为口径理解消费结构。",
+        "title": "消费总览"
+      },
+      "pageLabel": "消费总览",
+      "primaryAction": "检查消费口径",
+      "primaryLabel": "消费管理",
+      "primaryObject": "消费总览",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/overview",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:overview",
+      "states": {
+        "empty": "尚无可用的消费双口径汇总；保留页面结构并说明下一步。",
+        "error": "无法读取消费双口径汇总；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取消费双口径汇总，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-dual-metric-overview:overview",
+      "title": "消费管理 · 消费总览",
+      "workspace": "consumption"
+    },
+    {
+      "breadcrumb": [
+        "消费管理",
+        "分类分析"
+      ],
+      "dataObject": "消费分类明细",
+      "dataSource": "消费分类明细 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "从分类汇总下钻到真实流水与证据。",
+      "layoutKind": "consumption-category-drilldown",
+      "legacyRouteAlias": "/consumption?tab=category",
+      "noJsFallback": {
+        "routeAlias": "/consumption/category",
+        "task": "从分类汇总下钻到真实流水与证据。",
+        "title": "分类分析"
+      },
+      "pageLabel": "分类分析",
+      "primaryAction": "下钻消费分类",
+      "primaryLabel": "消费管理",
+      "primaryObject": "分类分析",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/category",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:category",
+      "states": {
+        "empty": "尚无可用的消费分类明细；保留页面结构并说明下一步。",
+        "error": "无法读取消费分类明细；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取消费分类明细，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-category-drilldown:category",
+      "title": "消费管理 · 分类分析",
+      "workspace": "consumption"
+    },
+    {
+      "breadcrumb": [
+        "消费管理",
+        "预算"
+      ],
+      "dataObject": "预算执行状态",
+      "dataSource": "预算执行状态 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较预算与真实支出并处理超支项。",
+      "layoutKind": "consumption-budget-control",
+      "legacyRouteAlias": "/consumption?tab=budget",
+      "noJsFallback": {
+        "routeAlias": "/consumption/budget",
+        "task": "比较预算与真实支出并处理超支项。",
+        "title": "预算"
+      },
+      "pageLabel": "预算",
+      "primaryAction": "维护预算边界",
+      "primaryLabel": "消费管理",
+      "primaryObject": "预算",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/budget",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:budget",
+      "states": {
+        "empty": "尚无可用的预算执行状态；保留页面结构并说明下一步。",
+        "error": "无法读取预算执行状态；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取预算执行状态，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-budget-control:budget",
+      "title": "消费管理 · 预算",
+      "workspace": "consumption"
+    },
+    {
+      "breadcrumb": [
+        "消费管理",
+        "订阅"
+      ],
+      "dataObject": "周期扣费清单",
+      "dataSource": "周期扣费清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "识别周期扣费并复核订阅状态。",
+      "layoutKind": "consumption-subscription-register",
+      "legacyRouteAlias": "/consumption?tab=subscription",
+      "noJsFallback": {
+        "routeAlias": "/consumption/subscription",
+        "task": "识别周期扣费并复核订阅状态。",
+        "title": "订阅"
+      },
+      "pageLabel": "订阅",
+      "primaryAction": "复核订阅项目",
+      "primaryLabel": "消费管理",
+      "primaryObject": "订阅",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/subscription",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:subscription",
+      "states": {
+        "empty": "尚无可用的周期扣费清单；保留页面结构并说明下一步。",
+        "error": "无法读取周期扣费清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取周期扣费清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-subscription-register:subscription",
+      "title": "消费管理 · 订阅",
+      "workspace": "consumption"
+    },
+    {
+      "breadcrumb": [
+        "消费管理",
+        "异常消费"
+      ],
+      "dataObject": "异常消费队列",
+      "dataSource": "异常消费队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "复核大额、重复或异常时段消费。",
+      "layoutKind": "consumption-anomaly-review",
+      "legacyRouteAlias": "/consumption?tab=anomaly",
+      "noJsFallback": {
+        "routeAlias": "/consumption/anomaly",
+        "task": "复核大额、重复或异常时段消费。",
+        "title": "异常消费"
+      },
+      "pageLabel": "异常消费",
+      "primaryAction": "处理消费异常",
+      "primaryLabel": "消费管理",
+      "primaryObject": "异常消费",
+      "primaryRouteAlias": "/consumption",
+      "routeAlias": "/consumption/anomaly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "consumption:anomaly",
+      "states": {
+        "empty": "尚无可用的异常消费队列；保留页面结构并说明下一步。",
+        "error": "无法读取异常消费队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取异常消费队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "consumption-anomaly-review:anomaly",
+      "title": "消费管理 · 异常消费",
+      "workspace": "consumption"
+    },
+    {
+      "breadcrumb": [
+        "数据源与上传",
+        "上传中心"
+      ],
+      "dataObject": "待上传文件队列",
+      "dataSource": "待上传文件队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "选择文件并在解析前确认格式与隐私边界。",
+      "layoutKind": "data-upload-dropzone",
+      "legacyRouteAlias": "/sources-upload?tab=upload",
+      "noJsFallback": {
+        "routeAlias": "/data/upload",
+        "task": "选择文件并在解析前确认格式与隐私边界。",
+        "title": "上传中心"
+      },
+      "pageLabel": "上传中心",
+      "primaryAction": "选择本机文件",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "上传中心",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/upload",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:upload",
+      "states": {
+        "empty": "尚无可用的待上传文件队列；保留页面结构并说明下一步。",
+        "error": "无法读取待上传文件队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取待上传文件队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-upload-dropzone:upload",
+      "title": "数据源与上传 · 上传中心",
+      "workspace": "sync"
+    },
+    {
+      "breadcrumb": [
+        "数据源与上传",
+        "导入中心"
+      ],
+      "dataObject": "导入批次状态",
+      "dataSource": "导入批次状态 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "查看批次解析、映射、失败和待复核状态。",
+      "layoutKind": "data-import-pipeline",
+      "legacyRouteAlias": "/sources-upload?tab=import",
+      "noJsFallback": {
+        "routeAlias": "/data/import",
+        "task": "查看批次解析、映射、失败和待复核状态。",
+        "title": "导入中心"
+      },
+      "pageLabel": "导入中心",
+      "primaryAction": "启动受控导入",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "导入中心",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/import",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:import",
+      "states": {
+        "empty": "尚无可用的导入批次状态；保留页面结构并说明下一步。",
+        "error": "无法读取导入批次状态；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取导入批次状态，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-import-pipeline:import",
+      "title": "数据源与上传 · 导入中心",
+      "workspace": "sync"
+    },
+    {
+      "breadcrumb": [
+        "数据源与上传",
+        "数据源管理"
+      ],
+      "dataObject": "数据源注册表",
+      "dataSource": "数据源注册表 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对来源、账户映射、格式与更新时间。",
+      "layoutKind": "data-source-registry",
+      "legacyRouteAlias": "/sources-upload?tab=sources",
+      "noJsFallback": {
+        "routeAlias": "/data/sources",
+        "task": "核对来源、账户映射、格式与更新时间。",
+        "title": "数据源管理"
+      },
+      "pageLabel": "数据源管理",
+      "primaryAction": "维护数据源",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "数据源管理",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/sources",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:sources",
+      "states": {
+        "empty": "尚无可用的数据源注册表；保留页面结构并说明下一步。",
+        "error": "无法读取数据源注册表；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取数据源注册表，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-source-registry:sources",
+      "title": "数据源与上传 · 数据源管理",
+      "workspace": "sync"
+    },
+    {
+      "breadcrumb": [
+        "数据源与上传",
+        "待复核"
+      ],
+      "dataObject": "数据质量复核队列",
+      "dataSource": "数据质量复核队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "处理解析、映射与质量门禁产生的复核项。",
+      "layoutKind": "data-quality-review",
+      "legacyRouteAlias": "/sources-upload?tab=review",
+      "noJsFallback": {
+        "routeAlias": "/data/review",
+        "task": "处理解析、映射与质量门禁产生的复核项。",
+        "title": "待复核"
+      },
+      "pageLabel": "待复核",
+      "primaryAction": "处理数据复核",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "待复核",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/review",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:review",
+      "states": {
+        "empty": "尚无可用的数据质量复核队列；保留页面结构并说明下一步。",
+        "error": "无法读取数据质量复核队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取数据质量复核队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-quality-review:review",
+      "title": "数据源与上传 · 待复核",
+      "workspace": "sync"
+    },
+    {
+      "breadcrumb": [
+        "数据源与上传",
+        "导入历史"
+      ],
+      "dataObject": "导入历史记录",
+      "dataSource": "导入历史记录 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "追踪导入批次、结果、版本与证据。",
+      "layoutKind": "data-import-timeline",
+      "legacyRouteAlias": "/sources-upload?tab=history",
+      "noJsFallback": {
+        "routeAlias": "/data/history",
+        "task": "追踪导入批次、结果、版本与证据。",
+        "title": "导入历史"
+      },
+      "pageLabel": "导入历史",
+      "primaryAction": "打开导入证据",
+      "primaryLabel": "数据源与上传",
+      "primaryObject": "导入历史",
+      "primaryRouteAlias": "/data",
+      "routeAlias": "/data/history",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "sync:history",
+      "states": {
+        "empty": "尚无可用的导入历史记录；保留页面结构并说明下一步。",
+        "error": "无法读取导入历史记录；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取导入历史记录，页面操作暂不可用。"
+      },
+      "structuralSignature": "data-import-timeline:history",
+      "title": "数据源与上传 · 导入历史",
+      "workspace": "sync"
+    },
+    {
+      "breadcrumb": [
+        "建议与复盘",
+        "建议列表"
+      ],
+      "dataObject": "证据化建议队列",
+      "dataSource": "证据化建议队列 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "按证据、影响与可执行性整理建议。",
+      "layoutKind": "review-evidence-inbox",
+      "legacyRouteAlias": "/review?tab=list",
+      "noJsFallback": {
+        "routeAlias": "/review/list",
+        "task": "按证据、影响与可执行性整理建议。",
+        "title": "建议列表"
+      },
+      "pageLabel": "建议列表",
+      "primaryAction": "整理建议优先级",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "建议列表",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/list",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:list",
+      "states": {
+        "empty": "尚无可用的证据化建议队列；保留页面结构并说明下一步。",
+        "error": "无法读取证据化建议队列；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取证据化建议队列，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-evidence-inbox:list",
+      "title": "建议与复盘 · 建议列表",
+      "workspace": "recommendations"
+    },
+    {
+      "breadcrumb": [
+        "建议与复盘",
+        "建议详情"
+      ],
+      "dataObject": "单项建议证据包",
+      "dataSource": "单项建议证据包 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对建议依据、代价、失效条件与行动。",
+      "layoutKind": "review-recommendation-case",
+      "legacyRouteAlias": "/review?tab=detail",
+      "noJsFallback": {
+        "routeAlias": "/review/detail",
+        "task": "核对建议依据、代价、失效条件与行动。",
+        "title": "建议详情"
+      },
+      "pageLabel": "建议详情",
+      "primaryAction": "复核建议详情",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "建议详情",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/detail",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:detail",
+      "states": {
+        "empty": "尚无可用的单项建议证据包；保留页面结构并说明下一步。",
+        "error": "无法读取单项建议证据包；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取单项建议证据包，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-recommendation-case:detail",
+      "title": "建议与复盘 · 建议详情",
+      "workspace": "recommendations"
+    },
+    {
+      "breadcrumb": [
+        "建议与复盘",
+        "决策记录"
+      ],
+      "dataObject": "建议决策日志",
+      "dataSource": "建议决策日志 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "记录接受、暂缓或忽略建议的理由。",
+      "layoutKind": "review-decision-journal",
+      "legacyRouteAlias": "/review?tab=decision",
+      "noJsFallback": {
+        "routeAlias": "/review/decision",
+        "task": "记录接受、暂缓或忽略建议的理由。",
+        "title": "决策记录"
+      },
+      "pageLabel": "决策记录",
+      "primaryAction": "记录建议决策",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "决策记录",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/decision",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:decision",
+      "states": {
+        "empty": "尚无可用的建议决策日志；保留页面结构并说明下一步。",
+        "error": "无法读取建议决策日志；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取建议决策日志，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-decision-journal:decision",
+      "title": "建议与复盘 · 决策记录",
+      "workspace": "recommendations"
+    },
+    {
+      "breadcrumb": [
+        "建议与复盘",
+        "复盘记录"
+      ],
+      "dataObject": "建议结果复盘",
+      "dataSource": "建议结果复盘 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较建议执行结果与原始预期并形成复盘。",
+      "layoutKind": "review-outcome-timeline",
+      "legacyRouteAlias": "/review?tab=history",
+      "noJsFallback": {
+        "routeAlias": "/review/history",
+        "task": "比较建议执行结果与原始预期并形成复盘。",
+        "title": "复盘记录"
+      },
+      "pageLabel": "复盘记录",
+      "primaryAction": "打开复盘记录",
+      "primaryLabel": "建议与复盘",
+      "primaryObject": "复盘记录",
+      "primaryRouteAlias": "/review",
+      "routeAlias": "/review/history",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "recommendations:history",
+      "states": {
+        "empty": "尚无可用的建议结果复盘；保留页面结构并说明下一步。",
+        "error": "无法读取建议结果复盘；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取建议结果复盘，页面操作暂不可用。"
+      },
+      "structuralSignature": "review-outcome-timeline:history",
+      "title": "建议与复盘 · 复盘记录",
+      "workspace": "recommendations"
+    },
+    {
+      "breadcrumb": [
+        "报告与洞察",
+        "月报"
+      ],
+      "dataObject": "月度报告草稿",
+      "dataSource": "月度报告草稿 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "在月度数据门禁通过后生成可追溯草稿。",
+      "layoutKind": "reports-monthly-close",
+      "legacyRouteAlias": "/reports?tab=monthly",
+      "noJsFallback": {
+        "routeAlias": "/reports/monthly",
+        "task": "在月度数据门禁通过后生成可追溯草稿。",
+        "title": "月报"
+      },
+      "pageLabel": "月报",
+      "primaryAction": "生成月报草稿",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "月报",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/monthly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:monthly",
+      "states": {
+        "empty": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+        "error": "无法读取月度报告草稿；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取月度报告草稿，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-monthly-close:monthly",
+      "title": "报告与洞察 · 月报",
+      "workspace": "insights"
+    },
+    {
+      "breadcrumb": [
+        "报告与洞察",
+        "季报"
+      ],
+      "dataObject": "季度报告草稿",
+      "dataSource": "季度报告草稿 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "比较季度覆盖与变化并保留不可比项。",
+      "layoutKind": "reports-quarter-comparison",
+      "legacyRouteAlias": "/reports?tab=quarterly",
+      "noJsFallback": {
+        "routeAlias": "/reports/quarterly",
+        "task": "比较季度覆盖与变化并保留不可比项。",
+        "title": "季报"
+      },
+      "pageLabel": "季报",
+      "primaryAction": "生成季报草稿",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "季报",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/quarterly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:quarterly",
+      "states": {
+        "empty": "尚无可用的季度报告草稿；保留页面结构并说明下一步。",
+        "error": "无法读取季度报告草稿；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取季度报告草稿，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-quarter-comparison:quarterly",
+      "title": "报告与洞察 · 季报",
+      "workspace": "insights"
+    },
+    {
+      "breadcrumb": [
+        "报告与洞察",
+        "年报"
+      ],
+      "dataObject": "年度报告草稿",
+      "dataSource": "年度报告草稿 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对全年覆盖与关闭状态后形成年度草稿。",
+      "layoutKind": "reports-year-close",
+      "legacyRouteAlias": "/reports?tab=yearly",
+      "noJsFallback": {
+        "routeAlias": "/reports/yearly",
+        "task": "核对全年覆盖与关闭状态后形成年度草稿。",
+        "title": "年报"
+      },
+      "pageLabel": "年报",
+      "primaryAction": "生成年报草稿",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "年报",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/yearly",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:yearly",
+      "states": {
+        "empty": "尚无可用的年度报告草稿；保留页面结构并说明下一步。",
+        "error": "无法读取年度报告草稿；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取年度报告草稿，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-year-close:yearly",
+      "title": "报告与洞察 · 年报",
+      "workspace": "insights"
+    },
+    {
+      "breadcrumb": [
+        "报告与洞察",
+        "自定义报告"
+      ],
+      "dataObject": "自定义报告查询",
+      "dataSource": "自定义报告查询 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "组合数据域与筛选条件构建受控报告。",
+      "layoutKind": "reports-scope-builder",
+      "legacyRouteAlias": "/reports?tab=custom",
+      "noJsFallback": {
+        "routeAlias": "/reports/custom",
+        "task": "组合数据域与筛选条件构建受控报告。",
+        "title": "自定义报告"
+      },
+      "pageLabel": "自定义报告",
+      "primaryAction": "配置报告范围",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "自定义报告",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/custom",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:custom",
+      "states": {
+        "empty": "尚无可用的自定义报告查询；保留页面结构并说明下一步。",
+        "error": "无法读取自定义报告查询；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取自定义报告查询，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-scope-builder:custom",
+      "title": "报告与洞察 · 自定义报告",
+      "workspace": "insights"
+    },
+    {
+      "breadcrumb": [
+        "报告与洞察",
+        "报告导出"
+      ],
+      "dataObject": "报告导出清单",
+      "dataSource": "报告导出清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "在证据检查通过后选择格式与目标位置。",
+      "layoutKind": "reports-export-gate",
+      "legacyRouteAlias": "/reports?tab=export",
+      "noJsFallback": {
+        "routeAlias": "/reports/export",
+        "task": "在证据检查通过后选择格式与目标位置。",
+        "title": "报告导出"
+      },
+      "pageLabel": "报告导出",
+      "primaryAction": "导出报告文件",
+      "primaryLabel": "报告与洞察",
+      "primaryObject": "报告导出",
+      "primaryRouteAlias": "/reports",
+      "routeAlias": "/reports/export",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "insights:export",
+      "states": {
+        "empty": "尚无可用的报告导出清单；保留页面结构并说明下一步。",
+        "error": "无法读取报告导出清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取报告导出清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "reports-export-gate:export",
+      "title": "报告与洞察 · 报告导出",
+      "workspace": "insights"
+    },
+    {
+      "breadcrumb": [
+        "市场与研究",
+        "市场观察"
+      ],
+      "dataObject": "市场观察清单",
+      "dataSource": "市场观察清单 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "组织指数、ETF、主题与自选观察对象。",
+      "layoutKind": "research-market-watchlist",
+      "legacyRouteAlias": "/market-research?tab=market",
+      "noJsFallback": {
+        "routeAlias": "/market-research/market",
+        "task": "组织指数、ETF、主题与自选观察对象。",
+        "title": "市场观察"
+      },
+      "pageLabel": "市场观察",
+      "primaryAction": "打开观察清单",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "市场观察",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/market",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:market",
+      "states": {
+        "empty": "尚无可用的市场观察清单；保留页面结构并说明下一步。",
+        "error": "无法读取市场观察清单；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取市场观察清单，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-market-watchlist:market",
+      "title": "市场与研究 · 市场观察",
+      "workspace": "market_research"
+    },
+    {
+      "breadcrumb": [
+        "市场与研究",
+        "研究笔记"
+      ],
+      "dataObject": "研究证据笔记",
+      "dataSource": "研究证据笔记 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "按主题整理研究证据、引用与反方条件。",
+      "layoutKind": "research-citation-notebook",
+      "legacyRouteAlias": "/market-research?tab=research",
+      "noJsFallback": {
+        "routeAlias": "/market-research/research",
+        "task": "按主题整理研究证据、引用与反方条件。",
+        "title": "研究笔记"
+      },
+      "pageLabel": "研究笔记",
+      "primaryAction": "整理研究笔记",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "研究笔记",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/research",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:research",
+      "states": {
+        "empty": "尚无可用的研究证据笔记；保留页面结构并说明下一步。",
+        "error": "无法读取研究证据笔记；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取研究证据笔记，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-citation-notebook:research",
+      "title": "市场与研究 · 研究笔记",
+      "workspace": "market_research"
+    },
+    {
+      "breadcrumb": [
+        "市场与研究",
+        "公司研究"
+      ],
+      "dataObject": "公司研究档案",
+      "dataSource": "公司研究档案 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对公司资料、关键假设、证据与风险。",
+      "layoutKind": "research-company-dossier",
+      "legacyRouteAlias": "/market-research?tab=company",
+      "noJsFallback": {
+        "routeAlias": "/market-research/company",
+        "task": "核对公司资料、关键假设、证据与风险。",
+        "title": "公司研究"
+      },
+      "pageLabel": "公司研究",
+      "primaryAction": "打开公司档案",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "公司研究",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/company",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:company",
+      "states": {
+        "empty": "尚无可用的公司研究档案；保留页面结构并说明下一步。",
+        "error": "无法读取公司研究档案；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取公司研究档案，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-company-dossier:company",
+      "title": "市场与研究 · 公司研究",
+      "workspace": "market_research"
+    },
+    {
+      "breadcrumb": [
+        "市场与研究",
+        "基金研究"
+      ],
+      "dataObject": "基金研究资料",
+      "dataSource": "基金研究资料 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "检查基金持仓、费用、风格与披露来源。",
+      "layoutKind": "research-fund-exposure",
+      "legacyRouteAlias": "/market-research?tab=fund",
+      "noJsFallback": {
+        "routeAlias": "/market-research/fund",
+        "task": "检查基金持仓、费用、风格与披露来源。",
+        "title": "基金研究"
+      },
+      "pageLabel": "基金研究",
+      "primaryAction": "核对基金资料",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "基金研究",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/fund",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:fund",
+      "states": {
+        "empty": "尚无可用的基金研究资料；保留页面结构并说明下一步。",
+        "error": "无法读取基金研究资料；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取基金研究资料，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-fund-exposure:fund",
+      "title": "市场与研究 · 基金研究",
+      "workspace": "market_research"
+    },
+    {
+      "breadcrumb": [
+        "市场与研究",
+        "策略实验室"
+      ],
+      "dataObject": "策略实验定义",
+      "dataSource": "策略实验定义 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "配置研究实验并保留参数、结果与失效条件。",
+      "layoutKind": "research-strategy-experiment",
+      "legacyRouteAlias": "/market-research?tab=strategy-lab",
+      "noJsFallback": {
+        "routeAlias": "/market-research/strategy-lab",
+        "task": "配置研究实验并保留参数、结果与失效条件。",
+        "title": "策略实验室"
+      },
+      "pageLabel": "策略实验室",
+      "primaryAction": "进入策略实验",
+      "primaryLabel": "市场与研究",
+      "primaryObject": "策略实验室",
+      "primaryRouteAlias": "/market-research",
+      "routeAlias": "/market-research/strategy-lab",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "market_research:strategy-lab",
+      "states": {
+        "empty": "尚无可用的策略实验定义；保留页面结构并说明下一步。",
+        "error": "无法读取策略实验定义；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取策略实验定义，页面操作暂不可用。"
+      },
+      "structuralSignature": "research-strategy-experiment:strategy-lab",
+      "title": "市场与研究 · 策略实验室",
+      "workspace": "market_research"
+    },
+    {
+      "breadcrumb": [
+        "设置",
+        "账户偏好"
+      ],
+      "dataObject": "账户显示偏好",
+      "dataSource": "账户显示偏好 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "管理显示币种、默认账户与界面偏好。",
+      "layoutKind": "settings-account-preferences",
+      "legacyRouteAlias": "/settings?tab=account",
+      "noJsFallback": {
+        "routeAlias": "/settings/account",
+        "task": "管理显示币种、默认账户与界面偏好。",
+        "title": "账户偏好"
+      },
+      "pageLabel": "账户偏好",
+      "primaryAction": "保存账户偏好",
+      "primaryLabel": "设置",
+      "primaryObject": "账户偏好",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/account",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:account",
+      "states": {
+        "empty": "尚无可用的账户显示偏好；保留页面结构并说明下一步。",
+        "error": "无法读取账户显示偏好；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取账户显示偏好，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-account-preferences:account",
+      "title": "设置 · 账户偏好",
+      "workspace": "settings"
+    },
+    {
+      "breadcrumb": [
+        "设置",
+        "数据与系统"
+      ],
+      "dataObject": "数据系统状态",
+      "dataSource": "数据系统状态 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对本机数据路径、服务与质量状态。",
+      "layoutKind": "settings-system-health",
+      "legacyRouteAlias": "/settings?tab=data-system",
+      "noJsFallback": {
+        "routeAlias": "/settings/data-system",
+        "task": "核对本机数据路径、服务与质量状态。",
+        "title": "数据与系统"
+      },
+      "pageLabel": "数据与系统",
+      "primaryAction": "检查数据系统",
+      "primaryLabel": "设置",
+      "primaryObject": "数据与系统",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/data-system",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:data-system",
+      "states": {
+        "empty": "尚无可用的数据系统状态；保留页面结构并说明下一步。",
+        "error": "无法读取数据系统状态；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取数据系统状态，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-system-health:data-system",
+      "title": "设置 · 数据与系统",
+      "workspace": "settings"
+    },
+    {
+      "breadcrumb": [
+        "设置",
+        "隐私与本地存储"
+      ],
+      "dataObject": "本地隐私边界",
+      "dataSource": "本地隐私边界 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "确认本地存储、忽略规则与敏感数据边界。",
+      "layoutKind": "settings-privacy-boundary",
+      "legacyRouteAlias": "/settings?tab=privacy",
+      "noJsFallback": {
+        "routeAlias": "/settings/privacy",
+        "task": "确认本地存储、忽略规则与敏感数据边界。",
+        "title": "隐私与本地存储"
+      },
+      "pageLabel": "隐私与本地存储",
+      "primaryAction": "检查隐私边界",
+      "primaryLabel": "设置",
+      "primaryObject": "隐私与本地存储",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/privacy",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:privacy",
+      "states": {
+        "empty": "尚无可用的本地隐私边界；保留页面结构并说明下一步。",
+        "error": "无法读取本地隐私边界；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取本地隐私边界，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-privacy-boundary:privacy",
+      "title": "设置 · 隐私与本地存储",
+      "workspace": "settings"
+    },
+    {
+      "breadcrumb": [
+        "设置",
+        "反馈偏好"
+      ],
+      "dataObject": "交互反馈偏好",
+      "dataSource": "交互反馈偏好 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "管理视觉、声音、触感与无障碍反馈。",
+      "layoutKind": "settings-feedback-controls",
+      "legacyRouteAlias": "/settings?tab=feedback",
+      "noJsFallback": {
+        "routeAlias": "/settings/feedback",
+        "task": "管理视觉、声音、触感与无障碍反馈。",
+        "title": "反馈偏好"
+      },
+      "pageLabel": "反馈偏好",
+      "primaryAction": "调整反馈偏好",
+      "primaryLabel": "设置",
+      "primaryObject": "反馈偏好",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/feedback",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:feedback",
+      "states": {
+        "empty": "尚无可用的交互反馈偏好；保留页面结构并说明下一步。",
+        "error": "无法读取交互反馈偏好；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取交互反馈偏好，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-feedback-controls:feedback",
+      "title": "设置 · 反馈偏好",
+      "workspace": "settings"
+    },
+    {
+      "breadcrumb": [
+        "设置",
+        "备份恢复"
+      ],
+      "dataObject": "备份恢复检查点",
+      "dataSource": "备份恢复检查点 / 本机 read-model",
+      "focusTarget": "page_heading",
+      "jobToBeDone": "核对备份完整性、恢复点与操作风险。",
+      "layoutKind": "settings-backup-recovery",
+      "legacyRouteAlias": "/settings?tab=backup",
+      "noJsFallback": {
+        "routeAlias": "/settings/backup",
+        "task": "核对备份完整性、恢复点与操作风险。",
+        "title": "备份恢复"
+      },
+      "pageLabel": "备份恢复",
+      "primaryAction": "检查备份恢复",
+      "primaryLabel": "设置",
+      "primaryObject": "备份恢复",
+      "primaryRouteAlias": "/settings",
+      "routeAlias": "/settings/backup",
+      "scrollPolicy": "restore_per_canonical_route",
+      "stateKey": "settings:backup",
+      "states": {
+        "empty": "尚无可用的备份恢复检查点；保留页面结构并说明下一步。",
+        "error": "无法读取备份恢复检查点；请检查本机来源、权限与证据状态。",
+        "loading": "正在读取备份恢复检查点，页面操作暂不可用。"
+      },
+      "structuralSignature": "settings-backup-recovery:backup",
+      "title": "设置 · 备份恢复",
+      "workspace": "settings"
+    }
+  ],
+  "phase62CandidateComplete": true,
+  "phase63Complete": false,
+  "phaseId": "6.2",
+  "phaseName": "独立二级页面合同",
+  "schema": "PFIV025Stage6Phase62PageContractsV1",
+  "stage": "Stage 6",
+  "stage6Complete": false,
+  "taskIds": [
+    "S6-P2-T1",
+    "S6-P2-T2",
+    "S6-P2-T3",
+    "S6-P2-T4"
+  ],
+  "totalPageCount": 45,
+  "version": "v0.2.5"
+}

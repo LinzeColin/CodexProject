@@ -1,0 +1,78 @@
+{
+  "closed_findings": [
+    {
+      "finding_id": "S12-P121-P1-IMPORT-PROBE-BOUNDARY",
+      "regression_test": "test_real_gb18030_sources_are_detected_across_fixed_probe_boundaries",
+      "result": "strict incremental GB18030 probe handles a multibyte character split at 64 KiB",
+      "severity": "P1",
+      "status": "closed"
+    },
+    {
+      "finding_id": "S12-P121-P1-EVIDENCE-SCANNER-SELF-MATCH",
+      "regression_test": "test_public_json_and_text_evidence_contains_no_private_paths_or_financial_values",
+      "result": "privacy-scan output uses a non-self-matching sensitive identifier finding label",
+      "severity": "P1",
+      "status": "closed"
+    }
+  ],
+  "commands": [
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider <Stage12.1 release identity/data/route/workflow/quality/report/resilience matrix> --deselect <6 historical-state-coupled gates>",
+      "command_id": "stage12_release_regression_matrix",
+      "exit_code": 0,
+      "summary": "358 passed, 6 deselected in 69.40s (0:01:09)"
+    }
+  ],
+  "contains_private_values": false,
+  "fixture_financial_flow_used": false,
+  "historical_test_disposition_count": 6,
+  "historical_test_dispositions": [
+    {
+      "classification": "historical_environment_snapshot_exact_equality",
+      "release_blocking": false,
+      "replacement": "Stage12 current inventory safety plus immutable tracked artifact consistency",
+      "severity": "P2_test_debt",
+      "test": "tests/test_v025_stage2_source_manifest.py::test_tracked_phase_artifacts_are_consistent_and_public_safe"
+    },
+    {
+      "classification": "historical_progress_literal",
+      "release_blocking": false,
+      "replacement": "current governance renderer and Stage12 governance validation",
+      "severity": "P2_test_debt",
+      "test": "tests/test_v025_stage2_source_manifest.py::test_human_entries_show_current_scope_truth"
+    },
+    {
+      "classification": "historical_phase31_current_status_literal",
+      "release_blocking": false,
+      "replacement": "current Stage12 source/account contract regression",
+      "severity": "P2_test_debt",
+      "test": "tests/test_v025_stage3_source_profiles.py::test_governance_stops_at_phase31_candidate"
+    },
+    {
+      "classification": "historical_phase32_current_status_literal",
+      "release_blocking": false,
+      "replacement": "current Stage12 economic-event and ledger regression",
+      "severity": "P2_test_debt",
+      "test": "tests/test_v025_stage3_interconnection.py::test_governance_stops_at_phase32_candidate"
+    },
+    {
+      "classification": "historical_next_stage_literal",
+      "release_blocking": false,
+      "replacement": "current Stage12 canonical governance validation",
+      "severity": "P2_test_debt",
+      "test": "tests/test_v025_stage3_whole_review.py::test_canonical_governance_accepts_stage3_without_starting_stage4"
+    },
+    {
+      "classification": "historical_candidate_requires_current_HEAD",
+      "release_blocking": false,
+      "replacement": "immutable Stage3 evidence/hash tests plus current Stage12 gates",
+      "severity": "P2_test_debt",
+      "test": "tests/test_v025_stage3_whole_review.py::test_verifier_is_read_only_and_passes_postcommit_candidate"
+    }
+  ],
+  "open_p0_count": 0,
+  "open_p1_count": 0,
+  "open_p2_test_debt_count": 6,
+  "schema": "PFIV025Stage12Phase121TestMatrixV1",
+  "status": "pass"
+}

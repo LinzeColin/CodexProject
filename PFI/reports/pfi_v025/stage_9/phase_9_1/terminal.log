@@ -1,0 +1,21 @@
+PFI v0.2.5 Stage 9 Phase 9.1 verification log
+observed_at=2026-07-15T15:18:58+10:00
+
+[phase91_target]
+command=PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage9_report_schema.py
+result=exit 0; 7 passed
+
+[upstream_regression]
+command=PFI/.venv/bin/python -m pytest -q selected Stage 1 release identity, Stage 4 read models, Stage 5 models, Stage 8 UI contracts, and six immutable Stage 7 artifact/schema tests
+result=exit 0; 98 passed
+diagnostic=The historical Stage 7 current-HEAD frozen-overlay assertion is outside this current Phase gate because a legitimate Stage 9 overlay changes the current tree; six Stage 7 artifact, schema, immutability and acceptance-binding tests passed.
+
+[syntax_schema_diff]
+command=PFI/.venv/bin/python inline AST plus JSON and Draft 2020-12 schema validation; git diff --check
+result=exit 0; python_ast=pass; json_parse=pass; json_schema=pass; diff_check=pass
+
+[changed_scope_governance]
+command=Build a complete HEAD checkout under /tmp, overlay the current changed and untracked files, then run scripts/validate_project_governance.py --project PFI and scripts/lean_governance.py check-render --project PFI
+result=exit 0; governance errors=0; warnings=0; renderer drift=0; reference_issues=0
+
+safety=No Finder, LaunchServices or GUI; no external network, push or install; no database or real financial-row read/write; no model, formula or parameter value change.

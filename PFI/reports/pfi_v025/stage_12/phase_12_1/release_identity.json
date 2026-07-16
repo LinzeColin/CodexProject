@@ -1,0 +1,23 @@
+{
+  "app_install_performed": false,
+  "backend_build_hash": "a8dc01757182fc5ea1ef90b348ca46e8ed69fb28b529a533112f2c94f19f1132",
+  "backend_file_count": 46,
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "disk_backend_valid": true,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "frontend_bundle_hash": "e76e38dfc2ef7bf4042cb6b07e21b2be96253433aa21ff9e1a756e31dca4ae67",
+  "frontend_file_count": 25,
+  "frontend_valid": true,
+  "git_commit": "0b2aa6677a61a600eb2596bd8b5d39ca32522084",
+  "manifest_backend_build_hash": "a8dc01757182fc5ea1ef90b348ca46e8ed69fb28b529a533112f2c94f19f1132",
+  "manifest_frontend_bundle_hash": "e76e38dfc2ef7bf4042cb6b07e21b2be96253433aa21ff9e1a756e31dca4ae67",
+  "phase_12_2_started": false,
+  "production_accepted": false,
+  "push_performed": false,
+  "release_freeze_performed": false,
+  "running_backend_valid": true,
+  "schema": "PFIV025Stage12Phase121ReleaseIdentityV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

@@ -1,0 +1,38 @@
+{
+  "back_forward_restores_route": true,
+  "canonical_path_history": true,
+  "contract": {
+    "acceptanceId": "ACC-PFI-V025-S6-P63-HISTORY-ACCEPTANCE",
+    "accessibilityPrimaryEntryCount": 10,
+    "canonicalRouteCount": 55,
+    "historyEvents": [
+      "pushState",
+      "replaceState",
+      "popstate"
+    ],
+    "historyMode": "canonical_path_with_hash_compatibility_fallback",
+    "invalidRouteRecovery": "/overview",
+    "invalidRouteStatus": "actionable_not_found",
+    "phase63CandidateComplete": true,
+    "phaseId": "6.3",
+    "reloadPolicy": "canonical_deep_link_restores_same_page",
+    "repeatedClickPolicy": "replace_current_state_without_new_history_entry",
+    "schema": "PFIV025Stage6Phase63HistoryContractV1",
+    "stage": "Stage 6",
+    "stage6Complete": false,
+    "stage6WholeReviewComplete": false,
+    "strategyLabCanonicalRoute": "/market-research/strategy-lab",
+    "taskIds": [
+      "S6-P3-T1",
+      "S6-P3-T2",
+      "S6-P3-T3",
+      "S6-P3-T4"
+    ],
+    "version": "v0.2.5"
+  },
+  "deep_link_and_reload": true,
+  "history_state_matches_url": true,
+  "schema": "PFIV025Stage6Phase63RouteRuntimeV1",
+  "scroll_restoration": true,
+  "status": "pass"
+}

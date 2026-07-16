@@ -1,0 +1,7 @@
+PFI/reports/pfi_v025/stage_0/phase_0_1/changed_files.txt
+PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json
+PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json
+PFI/reports/pfi_v025/stage_0/phase_0_1/git_state.txt
+PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json
+PFI/reports/pfi_v025/stage_0/phase_0_1/risk_and_rollback.md
+PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log

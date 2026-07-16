@@ -1,0 +1,51 @@
+{
+  "schema": "PFIV025Stage1LaunchServicesOpenCaptureV1",
+  "tool": "/usr/bin/open",
+  "action": "launch_new_instance",
+  "arguments_symbolic": [
+    "-n",
+    "-a",
+    "${ISOLATED_ROOT}/PFI.app"
+  ],
+  "command_record": {
+    "tool": "/usr/bin/open",
+    "arguments_symbolic": [
+      "-n",
+      "-a",
+      "${ISOLATED_ROOT}/PFI.app"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "command_record_sha256": "e4ad046d8bc89da85073e3ac1fb8aa1837b1a5b7bdd6766adb1eb00147164d03",
+  "checkout_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+  "candidate_path_symbolic": "${ISOLATED_ROOT}/PFI.app",
+  "candidate_app_path_sha256": "d4d3ba967a8b8d574a5f8fdfc1c3fccf7332c885e72e12754c478608c7139487",
+  "candidate_app_json_sha256": "27aed70b3ec320ebe47df324dc0e971778057413560faeed750be39f0d9ccd79",
+  "candidate_app_binding": {
+    "candidate_app_path_sha256": "d4d3ba967a8b8d574a5f8fdfc1c3fccf7332c885e72e12754c478608c7139487",
+    "candidate_app_tree_sha256": "03ec8326e7713200d0d702edd946a479555780c1986668a8312c0054546afab4",
+    "candidate_bundle_sha256": "2ab820b171e4e762145ad13ebcddab3aa69a2f20f83a64a3fbd4a905c96b13fe",
+    "candidate_executable_sha256": "de483721dd6248c3fdc06a02707712b7286107ad7fa5ba6395759047b202f4ec",
+    "source_app_tree_sha256": "ee03e938cdfc3f8c6d256e7c749a457b9898e2b2755773114322ad24bebfa716",
+    "copied_app_tree_sha256": "ea547a16988d1ba97f7df3f352f28a46bd3b71486234c814edd3c77a9271bfc8"
+  },
+  "candidate_inspection": {
+    "runtime_api_ready": true,
+    "process_group_verified": true,
+    "streamlit_listener_set_verified": true,
+    "listener_endpoint_set_verified": true,
+    "process_group_identity_sha256": "9ba503ccaee950ef8f629b446a4aa5bb8d893d3cf0846a6a0f6108552dac274a",
+    "listener_endpoint_set_sha256": "11787e052d1f49e66851f3739ba6eb6f82beadc115e0c9d16d40219d720dae4f",
+    "launcher_identity_sha256": "708c9e2e4f6e9ed2523e3a9c9f097bf30df9e91e3a390ccecbd777fc1bad72c8"
+  },
+  "launchservices_registration_verified": true,
+  "ui_automation_used": false,
+  "finder_used": false,
+  "privacy": {
+    "absolute_candidate_path_persisted": false,
+    "command_output_persisted": false,
+    "contains_private_paths": false
+  }
+}

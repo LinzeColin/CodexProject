@@ -1,0 +1,18 @@
+{
+  "schema": "PFIV025Stage8Phase83RunContractV1",
+  "status": "candidate_pass",
+  "iteration_id": "ITER-20260715-PFI-V025-S8-P83",
+  "contract_id": "PFI-V025-STAGE8-PHASE83-ACCESSIBILITY-HUMAN-QUALITY",
+  "acceptance_id": "ACC-PFI-V025-STAGE8-WHOLE-REVIEW",
+  "implementation_base": "6e35f880ff4211f88125506b30c5a964f976e129",
+  "task_ids": ["S8-P3-T1", "S8-P3-T2", "S8-P3-T3", "S8-P3-T4"],
+  "current_phase_only": true,
+  "stage_8_whole_stage_review_started": false,
+  "stage_8_user_acceptance_recorded": false,
+  "stage_9_started": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "finder_used": false,
+  "launchservices_used": true,
+  "launchservices_scope": "one unintended lsregister dump spawned by an aborted historical regression test; no GUI file operation"
+}

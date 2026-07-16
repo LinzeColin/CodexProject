@@ -1,0 +1,203 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE7-WHOLE-REVIEW",
+  "app_install_performed": false,
+  "browser_check_count": 68,
+  "contains_private_values": false,
+  "current_head": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+  "database_changed": true,
+  "database_scope": "isolated_/tmp_only",
+  "external_network_performed": false,
+  "finder_used": false,
+  "fresh_artifact_hashes": {
+    "holding_browser_validation": "sha256:4ebc172f1847151dc4387dc263e502a7af5008ba76549b487ab08cebdb4c3cf7",
+    "holding_restart_sanitized_trace": "sha256:9c43b6dd65eba3f8250231194495dbeaef4470122dc4247893f0c87c398a7e49",
+    "holding_sanitized_trace": "sha256:786f0a7ec088dae0f5bbd2151e3a62e30b08467eade05ebfeb76993f7e83daac",
+    "import_browser_validation": "sha256:1a4123eb36519aa372bf081e62c77b9dd0eed4db277ef2b34a7af89f37d6eeef",
+    "import_sanitized_trace": "sha256:e89d8bfbd82580aa19956f42f1dfc35c342738eb7c3515aec63741f33e02b740",
+    "metric_browser_validation": "sha256:96792b5641d5f863a08205a09db91a1bc85e7ec3d930e9477e88c91565539173",
+    "metric_sanitized_trace": "sha256:1a73d234d4e83f1a207f61d0a227ac0e9de30f9078f17abadb762642ec327498"
+  },
+  "method": "three_actual_formal_shell_workflows_cached_playwright_local_chrome_ephemeral_loopback",
+  "network_performed": true,
+  "network_scope": "ephemeral_local_loopback_only",
+  "persisted_trace_hashes": {
+    "holding_browser_trace_sanitized.zip": "sha256:786f0a7ec088dae0f5bbd2151e3a62e30b08467eade05ebfeb76993f7e83daac",
+    "holding_restart_browser_trace_sanitized.zip": "sha256:9c43b6dd65eba3f8250231194495dbeaef4470122dc4247893f0c87c398a7e49",
+    "import_browser_trace_sanitized.zip": "sha256:e89d8bfbd82580aa19956f42f1dfc35c342738eb7c3515aec63741f33e02b740",
+    "metric_browser_trace_sanitized.zip": "sha256:1a73d234d4e83f1a207f61d0a227ac0e9de30f9078f17abadb762642ec327498"
+  },
+  "phase_evidence_overwritten": false,
+  "push_performed": false,
+  "real_financial_source_mutated": false,
+  "real_financial_source_read": true,
+  "reviewed_worktree_overlay": {
+    "base_commit": "fc2c7db7e5906f4d1a0902a2907eb3155bfa89bf",
+    "content_manifest_sha256": "sha256:344ef405c9f680f7e7440eaa41c91738597fa5a0417bf17947c61d467c1c2e4a",
+    "evidence_ref": "PFI/reports/pfi_v025/stage_7/whole_stage_review/reviewed_worktree_overlay.json",
+    "file_count": 60,
+    "post_run_rescan_identical": true
+  },
+  "schema": "PFIV025Stage7WholeReviewWorkflowValidationV1",
+  "status": "pass",
+  "workflow_status": {
+    "holding_settings": true,
+    "import_review_ledger": true,
+    "metric_lineage": true
+  },
+  "workflows": {
+    "holding_settings": {
+      "browser_check_count": 27,
+      "browser_storage_used_for_formal_settings": false,
+      "restart_persistence": {
+        "browser_reopened": true,
+        "holding_revision_after_restart": 2,
+        "projection_hash_stable_across_restart": true,
+        "runtime_api_port_changed": true,
+        "runtime_service_restarted": true,
+        "schema": "PFIV025Stage7Phase72RestartPersistenceV1",
+        "settings_revision_after_restart": 1,
+        "status": "pass"
+      },
+      "settings_persistence": {
+        "browser_storage_used_for_formal_settings": false,
+        "revision_after_reset": 2,
+        "revision_after_restart": 1,
+        "revision_before_restart": 1,
+        "schema": "PFIV025Stage7Phase72SettingsPersistenceV1",
+        "settings_surface_scope": "settings_only",
+        "status": "pass"
+      },
+      "sqlite_before_after": {
+        "after_service_restart": {
+          "foreign_key_check": "pass",
+          "foreign_key_issue_count": 0,
+          "holding_revisions": [
+            3
+          ],
+          "integrity_check": "ok",
+          "migration_count": 1,
+          "operation_counts": {
+            "create": 1,
+            "delete": 1,
+            "update": 1
+          },
+          "record_counts": {
+            "active": 0,
+            "deleted": 1
+          },
+          "settings_revisions": [
+            2
+          ],
+          "table_counts": {
+            "v025_holding_change_sets": 3,
+            "v025_holding_events": 3,
+            "v025_holding_records": 1,
+            "v025_settings_events": 2,
+            "v025_settings_preferences": 1
+          }
+        },
+        "before_service_restart": {
+          "foreign_key_check": "pass",
+          "foreign_key_issue_count": 0,
+          "holding_revisions": [
+            2
+          ],
+          "integrity_check": "ok",
+          "migration_count": 1,
+          "operation_counts": {
+            "create": 1,
+            "update": 1
+          },
+          "record_counts": {
+            "active": 1,
+            "deleted": 0
+          },
+          "settings_revisions": [
+            1
+          ],
+          "table_counts": {
+            "v025_holding_change_sets": 2,
+            "v025_holding_events": 2,
+            "v025_holding_records": 1,
+            "v025_settings_events": 1,
+            "v025_settings_preferences": 1
+          }
+        },
+        "schema": "PFIV025Stage7Phase72DatabaseIntegrityV1",
+        "status": "pass"
+      }
+    },
+    "import_review_ledger": {
+      "browser_check_count": 20,
+      "confirmed_ledger_count": 1571,
+      "duplicate_ledger_count": 1571,
+      "preview_ledger_count": 0,
+      "reconfirmed_ledger_count": 1571,
+      "review_count": 137,
+      "rolled_back_ledger_count": 0,
+      "source_content_sha256": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342",
+      "sqlite_foreign_key_check": "pass",
+      "sqlite_integrity": "ok",
+      "transaction_count": 1571
+    },
+    "metric_lineage": {
+      "browser_check_count": 21,
+      "financial_values_persisted": 0,
+      "formal_routes": [
+        "/settings/parameters",
+        "/data/interconnection",
+        "/reports/metric-drilldown"
+      ],
+      "interconnection_map": {
+        "data_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+        "edge_count": 6,
+        "lineage_complete_count": 0,
+        "lineage_missing_count": 1571,
+        "node_count": 7,
+        "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+        "status": "blocked"
+      },
+      "metric_drilldown": {
+        "all_required_fields_present": true,
+        "drilldown_hashes": [
+          "sha256:89eafe3b257372dd89e48572a21c3669208b79ba7fc684479a99ce4831c330b1",
+          "sha256:53b27bae56016bc41299a7ac548e3ce0a87e37aa8d9d3864b4f92d4998fb0abb",
+          "sha256:52399bf9930dc7ae59267ec662134dc5440890a074c7aca7af4db7f013a62bf5",
+          "sha256:3b6b395944d78e4f1863796682069f64277b206521b9dcbe78bbb781f6c615a0",
+          "sha256:2dc2cfb24f0fc47b923eec8eb45f4cb43dbfbd03cf8db062fb5897b55b84ee3e",
+          "sha256:aac13c25b8cc20677613c780df99d08af87265e3b8cee305afe9a7edbf0828bc",
+          "sha256:b1f3238e7a6a1df5df642b9d330c1c594d71da9a53ed805cfccc8fac8d341f7f",
+          "sha256:b68e43729302dd60cc79580bc11a01160e54232b169aeb7e0e70dea4f9a27d59",
+          "sha256:4ced2500a34b839a752293c8503b724c9859b4473f5b67206aa81fbf3fa9a5c6",
+          "sha256:847210e0f64655f518372c76b9c6813663e952c30a89b111ce26147ec14fb7a9",
+          "sha256:11cd21e195fdc24f48154f0a7271f7f8288621a19ab62e2fde690635715b45de"
+        ],
+        "metric_count": 11,
+        "metric_ids": [
+          "net_worth_cny",
+          "account_assets_cny",
+          "cash_balance_cny",
+          "liabilities_cny",
+          "investment_market_value_cny",
+          "investment_cost_basis_cny",
+          "investment_unrealized_pnl_cny",
+          "total_consumption_outflow_cny",
+          "living_consumption_cny",
+          "investment_funding_outflow_cny",
+          "investment_allocation_amount_cny"
+        ],
+        "non_ready_false_zero_count": 0,
+        "required_field_values_valid": true,
+        "status": "blocked"
+      },
+      "parameter_center": {
+        "domain_count": 15,
+        "formula_count": 20,
+        "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+        "parameter_count": 96,
+        "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+        "status": "ready"
+      }
+    }
+  }
+}

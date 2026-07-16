@@ -1,0 +1,30 @@
+{
+  "accepted_for_stage_5_transition": false,
+  "completed_task_count": 12,
+  "contains_private_values": false,
+  "independent_review_done": false,
+  "next_gate": "ACC-PFI-V025-STAGE4-WHOLE-REVIEW",
+  "phase_acceptance_ids": {
+    "4.1": "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT",
+    "4.2": "ACC-PFI-V025-S4-P42-HOLDINGS-VALUATION",
+    "4.3": "ACC-PFI-V025-S4-P43-METRIC-CONSISTENCY"
+  },
+  "phase_evidence_refs": {
+    "4.1": "PFI/reports/pfi_v025/stage_4/phase_4_1/evidence.json",
+    "4.2": "PFI/reports/pfi_v025/stage_4/phase_4_2/evidence.json",
+    "4.3": "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json"
+  },
+  "phase_statuses": {
+    "4.1": "candidate_pass",
+    "4.2": "candidate_pass",
+    "4.3": "candidate_pass"
+  },
+  "phase_tasks_status": "candidate_complete",
+  "remediation_done": false,
+  "rereview_done": false,
+  "schema": "PFIV025Stage4PhaseTaskEvidenceIndexV1",
+  "stage": 4,
+  "total_task_count": 12,
+  "version": "v0.2.5",
+  "whole_stage_review_status": "not_started"
+}

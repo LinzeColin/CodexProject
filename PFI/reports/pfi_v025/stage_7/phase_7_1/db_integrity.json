@@ -1,0 +1,15 @@
+{
+  "foreign_key_check": "pass",
+  "foreign_key_issue_count": 0,
+  "integrity_check": "ok",
+  "schema": "PFIV025Stage7Phase71DatabaseIntegrityV1",
+  "status": "pass",
+  "table_counts": {
+    "import_audit_events": 8,
+    "import_batches": 2,
+    "import_files": 2,
+    "import_review_queue": 74,
+    "import_staged_transactions": 1571,
+    "ledger_entries": 1571
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "acceptance_criteria": [
+    {
+      "criterion": "formula_registry_consistency_and_required_stage5_formula_coverage",
+      "evidence": [
+        "PFI/config/formula_registry.yaml",
+        "PFI/reports/pfi_v025/stage_5/phase_5_1/evidence.json",
+        "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json"
+      ],
+      "status": "pass"
+    },
+    {
+      "criterion": "all_four_components_use_cny_and_fx_contract_is_explicit",
+      "evidence": [
+        "PFI/reports/pfi_v025/stage_5/phase_5_1/formula_coverage.json",
+        "PFI/reports/pfi_v025/stage_5/phase_5_2/registry_coverage.json"
+      ],
+      "status": "pass"
+    },
+    {
+      "criterion": "homepage_consumption_page_and_report_render_the_same_real_four_component_payload",
+      "evidence": [
+        "PFI/reports/pfi_v025/stage_5/whole_stage_review/browser_validation.json",
+        "PFI/reports/pfi_v025/stage_5/whole_stage_review/homepage_redacted.png",
+        "PFI/reports/pfi_v025/stage_5/whole_stage_review/consumption_page_redacted.png",
+        "PFI/reports/pfi_v025/stage_5/whole_stage_review/report_redacted.png"
+      ],
+      "status": "pass"
+    },
+    {
+      "criterion": "activity_semantics_and_component_reconciliation_prevent_silent_loss_or_double_count",
+      "evidence": [
+        "PFI/reports/pfi_v025/stage_5/phase_5_3/dual_metric_real_snapshot.json",
+        "PFI/reports/pfi_v025/stage_5/whole_stage_review/private_runtime_attestation.json"
+      ],
+      "status": "pass"
+    },
+    {
+      "criterion": "source_coverage_and_confidence_are_reported_separately",
+      "evidence": [
+        "PFI/reports/pfi_v025/stage_5/phase_5_3/dual_metric_real_snapshot.json",
+        "PFI/reports/pfi_v025/stage_5/phase_5_3/model_validation_index.json"
+      ],
+      "status": "pass"
+    },
+    {
+      "criterion": "v022_default_weights_and_behavior_are_regression_locked",
+      "evidence": [
+        "PFI/config/parameters.yaml",
+        "PFI/tests/test_v022_default_weights_behavior.py"
+      ],
+      "status": "pass"
+    },
+    {
+      "criterion": "seven_windows_and_investment_models_are_real_validated_or_explicitly_blocked",
+      "evidence": [
+        "PFI/reports/pfi_v025/stage_5/phase_5_3/model_validation_index.json",
+        "PFI/reports/pfi_v025/stage_5/phase_5_3/model_real_validation.json"
+      ],
+      "status": "pass"
+    }
+  ],
+  "acceptance_id": "ACC-PFI-V025-STAGE5-WHOLE-REVIEW",
+  "actual_report_render_binding_completed": true,
+  "actual_ui_render_binding_completed": true,
+  "accepted_at": "2026-07-14T16:09:38Z",
+  "pass_gate_result": "pass_with_explicit_blocked_models",
+  "phase_commits": {
+    "5.1": "73a3186d0e64b65d77555aeb6f882c8e237790ae",
+    "5.2": "61a14d9366c68a8c849c0c056a107116d5b377d1",
+    "5.3": "ec3e3af020cc37f5bddd39dba2e445895e015f9e"
+  },
+  "review_base": "ec3e3af020cc37f5bddd39dba2e445895e015f9e",
+  "schema": "PFIV025Stage5FinalEvidenceIndexV1",
+  "stage": 5,
+  "stage_6_entry_authorized": true,
+  "stage_6_status": "not_started",
+  "status": "accepted_for_transition",
+  "stop_conditions": [
+    {
+      "condition": "missing_parameters_or_incomplete_evidence_chain_blocks_model_output",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "review_queue_records_are_not_silently_promoted_or_dropped",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "private_financial_values_must_not_enter_tracked_evidence",
+      "status": "safety_stop_active"
+    },
+    {
+      "condition": "stage6_production_push_and_app_install_are_out_of_scope",
+      "status": "safety_stop_active"
+    }
+  ],
+  "task_disposition": {
+    "S5-P1-T1": "pass",
+    "S5-P1-T2": "pass",
+    "S5-P1-T3": "pass",
+    "S5-P1-T4": "pass",
+    "S5-P2-T1": "pass",
+    "S5-P2-T2": "pass",
+    "S5-P2-T3": "pass",
+    "S5-P2-T4": "pass",
+    "S5-P3-T1": "pass",
+    "S5-P3-T2": "pass",
+    "S5-P3-T3": "pass",
+    "S5-P3-T4": "pass"
+  },
+  "version": "v0.2.5"
+}

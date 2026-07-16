@@ -1,0 +1,19 @@
+{
+  "ax_evidence": "quality_browser/accessibility_tree.json",
+  "axe_core_available": false,
+  "axe_pass_claimed": false,
+  "contains_private_values": false,
+  "deterministic_wcag_substitute_status": "pass",
+  "keyboard_evidence": "quality_browser/keyboard_flow.json",
+  "real_e2e_accessibility": {
+    "duplicate_primary_label_count": 0,
+    "expected_primary_navigation_count": 10,
+    "found_primary_navigation_count": 10,
+    "legacy_alias_primary_navigation_count": 0,
+    "non_ignored_node_count": 1187,
+    "source": "Chrome_DevTools_Protocol_Accessibility.getFullAXTree"
+  },
+  "schema": "PFIV025Stage12Phase121AccessibilitySummaryV1",
+  "status": "pass",
+  "wcag_evidence": "quality_browser/wcag_audit.json"
+}

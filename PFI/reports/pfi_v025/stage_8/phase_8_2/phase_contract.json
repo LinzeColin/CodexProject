@@ -1,0 +1,15 @@
+{
+  "schema": "PFIV025Stage8Phase82RunContractV1",
+  "status": "candidate_pass",
+  "iteration_id": "ITER-20260715-PFI-V025-S8-P82",
+  "contract_id": "PFI-V025-STAGE8-PHASE82-MOTION-FEEDBACK",
+  "acceptance_id": "ACC-PFI-V025-STAGE8-WHOLE-REVIEW",
+  "implementation_base": "c47906c3cc7e50bebd0d06b942103cee62d5e7d7",
+  "task_ids": ["S8-P2-T1", "S8-P2-T2", "S8-P2-T3", "S8-P2-T4"],
+  "current_phase_only": true,
+  "phase_8_3_started": false,
+  "stage_8_whole_stage_review_started": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "finder_used": false
+}

@@ -1,0 +1,712 @@
+{
+  "schema": "PFIV025Stage11PublicBoundaryAccessibilityTreeV1",
+  "status": "pass",
+  "source": "Accessibility.getFullAXTree",
+  "nodeCount": 117,
+  "nodes": [
+    {
+      "ignored": false,
+      "role": "RootWebArea",
+      "name": "PFI — Public boundary notice",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "link",
+      "name": "Skip to content",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "banner",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "main",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "contentinfo",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Skip to content",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "link",
+      "name": "PFI public boundary notice",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "STATIC PUBLIC DESCRIPTION",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "region",
+      "name": "A description of PFI, not PFI itself.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "region",
+      "name": "Evidence before action.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "region",
+      "name": "This public surface has no financial runtime.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "PFI · static public boundary",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "link",
+      "name": "Back to top",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Skip to content",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Personal Financial Intelligence",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "STATIC PUBLIC DESCRIPTION",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "paragraph",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "heading",
+      "name": "A description of PFI, not PFI itself.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "paragraph",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "generic",
+      "name": "Public project links",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "paragraph",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "heading",
+      "name": "Evidence before action.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "article",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "article",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "article",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "paragraph",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "heading",
+      "name": "This public surface has no financial runtime.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "list",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "PFI · static public boundary",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Back to top",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Personal Financial Intelligence",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "PUBLIC BOUNDARY NOTICE",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "A description of PFI,",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "LineBreak",
+      "name": "\n",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "not PFI itself.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "PFI is a local-first workspace for organizing financial evidence, review, and decisions. This page describes that purpose without providing an application, workspace, account connection, data view, or interactive product route.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "link",
+      "name": "HomeHub",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "link",
+      "name": "Public source",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "link",
+      "name": "Read the boundary",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "PURPOSE",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Evidence before action.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "heading",
+      "name": "Organize",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "paragraph",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "heading",
+      "name": "Explain",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "paragraph",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "heading",
+      "name": "Review",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "paragraph",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "DISTRIBUTION BOUNDARY",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "This public surface has no financial runtime.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "listitem",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "listitem",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "listitem",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "listitem",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "listitem",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Back to top",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "PUBLIC BOUNDARY NOTICE",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "A description of PFI,",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "\n",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "not PFI itself.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "PFI is a local-first workspace for organizing financial evidence, review, and decisions. ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "This page describes that purpose without providing an application, workspace, ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "account connection, data view, or interactive product route.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "HomeHub",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Public source",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Read the boundary",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "PURPOSE",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Evidence before action.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Organize",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Bring source lineage, review status, and decision context into one coherent local workflow.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Explain",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Keep assumptions, formulas, limitations, and evidence visible to the person making a decision.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Review",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Keep consequential financial actions behind explicit human review and separate authorization.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "DISTRIBUTION BOUNDARY",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "This public surface ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "has no financial ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "runtime.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "strong",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Nothing here connects to an institution or identity.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "strong",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Nothing here loads balances, holdings, transactions, or documents.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "strong",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Nothing here connects to the local PFI application or its databases.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "strong",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "Nothing here can submit an order, payment, automation, or writeback.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "strong",
+      "name": "",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "The minimized read-only integration contract is not published here.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "HomeHub",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Public source",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Read the boundary",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Organize",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Bring source lineage, review status, and ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "decision context into one coherent local ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "workflow.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Explain",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Keep assumptions, formulas, limitations, and ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "evidence visible to the person making a ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "decision.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Review",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Keep consequential financial actions behind ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "explicit human review and separate ",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "authorization.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "No accounts or credentials",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Nothing here connects to an institution or identity.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "No records or reports",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Nothing here loads balances, holdings, transactions, or documents.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "No local connection",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Nothing here connects to the local PFI application or its databases.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "No external execution",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "Nothing here can submit an order, payment, automation, or writeback.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "StaticText",
+      "name": "No exported context",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "The minimized read-only integration contract is not published here.",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "No accounts or credentials",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "No records or reports",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "No local connection",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "No external execution",
+      "description": ""
+    },
+    {
+      "ignored": false,
+      "role": "InlineTextBox",
+      "name": "No exported context",
+      "description": ""
+    }
+  ],
+  "containsPrivateValues": false,
+  "containsAbsolutePaths": false
+}

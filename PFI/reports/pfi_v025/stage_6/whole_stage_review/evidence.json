@@ -1,0 +1,110 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE6-WHOLE-REVIEW",
+  "allowed_files_obeyed": true,
+  "app_install_performed": false,
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v025_stage6_whole_review.py",
+    "PFI/tests/test_v025_stage6_whole_review.py",
+    "PFI/scripts/v025/build_stage6_whole_review.py",
+    "PFI/web/tests/v025/stage6_whole_review_browser.py",
+    "PFI/web/tests/v025/stage6_whole_review_cdp.mjs",
+    "PFI/docs/pfi_v025/stage_6/STAGE_6_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/phase_contract.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/phase_commit_binding.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/review_audit.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/accessibility_tree.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/playwright_result.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/browser_trace.zip",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/desktop_navigation.png",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/mobile_navigation.png",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/nojs_navigation.png",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/invalid_route.png",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/legacy_test_disposition.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/final_evidence_index.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/human_acceptance.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/terminal.log",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/changed_files.txt"
+  ],
+  "commands": [
+    {
+      "command": "pytest PFI/tests/test_v025_stage6_*.py -q",
+      "exit_code": 0,
+      "summary": "Stage 6 focused and whole-review tests pass"
+    },
+    {
+      "command": "python PFI/web/tests/v025/stage6_whole_review_browser.py",
+      "exit_code": 0,
+      "summary": "14/14 current-HEAD browser checks pass"
+    },
+    {
+      "command": "node --check Stage 6 route/browser JavaScript",
+      "exit_code": 0,
+      "summary": "JavaScript syntax passes"
+    },
+    {
+      "command": "CodexProject render and changed-scope governance validation",
+      "exit_code": 0,
+      "summary": "recorded after final validation in terminal.log"
+    }
+  ],
+  "contains_private_values": false,
+  "contract_id": "PFI-V025-STAGE6-WHOLE-REVIEW",
+  "database_changed": false,
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/phase_commit_binding.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/review_audit.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/accessibility_tree.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/legacy_test_disposition.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/final_evidence_index.json",
+    "PFI/reports/pfi_v025/stage_6/whole_stage_review/human_acceptance.json"
+  ],
+  "explicitly_not_done": [
+    "Stage 7 implementation",
+    "GitHub push",
+    "canonical PFI.app installation",
+    "real financial data or database operation",
+    "production acceptance or final human acceptance"
+  ],
+  "external_network_performed": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "generated_at": "2026-07-15T04:43:40+10:00",
+  "git_commit": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431",
+  "initial_review_counts": {
+    "critical": 0,
+    "important": 4,
+    "minor": 1
+  },
+  "network_scope": "ephemeral_local_loopback_only",
+  "phase": "whole_stage_review",
+  "production_accepted": false,
+  "push_performed": false,
+  "real_financial_data_mutated": false,
+  "real_financial_data_read": false,
+  "requires_user_acceptance": true,
+  "rereview_counts": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "review_base": "8c18cbf56d3952f1d7e7d74fa424f3fb8889b431",
+  "risks": [
+    "Installed App/runtime parity is not claimed until the Stage 12 release transaction.",
+    "Legacy version-specific diagnostics retain four classified superseded expectations."
+  ],
+  "rollback": "Revert the single local Stage 6 whole-review commit; preserve immutable Phase commits and do not touch data, remote main, or installed App.",
+  "schema": "PFIV025Stage6WholeReviewEvidenceV1",
+  "stage": 6,
+  "stage_6_phase_task_completed_count": 12,
+  "stage_6_phase_task_count": 12,
+  "stage_6_status": "accepted_for_transition",
+  "stage_7_entry_authorized": true,
+  "stage_7_work_performed": false,
+  "status": "candidate_pass",
+  "version": "v0.2.5"
+}

@@ -1,0 +1,6 @@
+status: pass
+text_file_count: 36
+zip_member_count: 3
+private_marker_match_count: 0
+contains_private_values: false
+contains_absolute_local_paths: false

@@ -1,0 +1,11 @@
+{
+  "backend_build_hash": "254dbc0403147d939ea72c9080ae87a252e0864de6646af192fd0e8adb8bd99b",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "configured_git_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+  "data_schema_version": "PFIV025Stage7MetricLineageV1",
+  "frontend_bundle_hash": "9a7765db1cb944b1929c28aac90975e24140fb3e4aa30b31a8ae7b2791bcef47",
+  "manifest_sha256": "56061160f3600e0cb6a433ac00cd257bec6f639677ac700741df630858c19129",
+  "schema": "PFIV025Stage7Phase73ReleaseIdentityBindingV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

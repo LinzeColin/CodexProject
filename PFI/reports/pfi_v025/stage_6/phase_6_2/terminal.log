@@ -1,0 +1,35 @@
+PFI v0.2.5 Stage 6 Phase 6.2 validation log
+timestamp: 2026-07-15T03:48:45+10:00
+implementation_base: 6b96bcb655b1c11d91b23dd10cf25b33e37f0242
+
+EXPECTED RED
+- PFI/.venv/bin/python -B -m pytest -p no:cacheprovider -q PFI/tests/test_v025_stage6_page_contracts.py
+- result: 4 failed; Phase 6.2 page contract, route registry, Shell behavior and no-JS fallback were absent.
+
+FOCUSED AND REGRESSION
+- Phase 6.2 focused: 4 passed.
+- Phase 6.2 + Phase 6.1 + Stage 5 page regression: 19 passed.
+- Stage 1 Python release identity/cache: 24 passed, 2 dependency deprecation warnings.
+- Stage 1 Node release identity/cache: 28 passed.
+- node --check navigation.js/routes.js/shell.js: pass.
+
+BROWSER
+- Isolated desktop deep link /accounts/reconcile: pass.
+- Isolated mobile deep link /market-research/strategy-lab: pass.
+- Ten workspace representative pages: pass; distinct signatures/data/actions=10/10/10.
+- Canonical page registry: 45 pages; URL/state/title/breadcrumb/focus/scroll/states: pass.
+- JavaScript-disabled fallback: 10 primary entries and 45 readable page contracts; pass.
+- browser_trace.zip integrity: pass.
+
+RELEASE IDENTITY
+- frontend bundle hash: 70cbc136567db2c3f4ec57001294cdc59c1ac317d3c006d0215d79961886b6d1
+- backend build hash: 43b918f761e80bbc4c6e2de54a32c714703cc4d9a60f67b7a180e1cea222ddbb
+- configured/embedded manifest equality: pass.
+- Stage 1 git-commit binding semantics preserved until final Stage 12 release transaction.
+
+BOUNDARY
+- Finder: not used.
+- External network: not used; browser network was ephemeral localhost only.
+- Real financial data/database: not read and not mutated.
+- GitHub push/App install: not performed.
+- Phase 6.3 and Stage 6 whole-stage review: not started.

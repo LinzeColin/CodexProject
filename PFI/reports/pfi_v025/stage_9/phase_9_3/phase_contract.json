@@ -1,0 +1,50 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE9-WHOLE-REVIEW",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "app_install_performed": false,
+  "automatic_trading_allowed": false,
+  "current_phase_only": true,
+  "database_changed": false,
+  "database_read": false,
+  "deterministic_financial_advice_allowed": false,
+  "export_formats": [
+    "html",
+    "pdf",
+    "csv",
+    "markdown"
+  ],
+  "external_network_performed": false,
+  "financial_fixture_acceptance_allowed": false,
+  "finder_used": false,
+  "formula_values_changed": false,
+  "human_review_required": true,
+  "launchservices_used": false,
+  "model_values_changed": false,
+  "parameter_values_changed": false,
+  "phase": "9.3",
+  "phase_9_2_candidate_required": true,
+  "phase_id": "V025-S9-P9.3",
+  "phase_name": "建议、复盘与导出",
+  "push_performed": false,
+  "real_financial_rows_read": false,
+  "review_outcomes": [
+    "accepted",
+    "rejected",
+    "deferred",
+    "invalidated"
+  ],
+  "risk_tier": "T3_FINANCIAL_DECISION_REVIEW_EXPORT",
+  "same_snapshot_export_required": true,
+  "schema": "PFIV025Stage9Phase93ContractV1",
+  "stage": 9,
+  "stage_10_started": false,
+  "stage_9_whole_stage_review_done": false,
+  "task_ids": [
+    "S9-P3-T1",
+    "S9-P3-T2",
+    "S9-P3-T3",
+    "S9-P3-T4"
+  ],
+  "trade_execution_available": false,
+  "version": "v0.2.5"
+}

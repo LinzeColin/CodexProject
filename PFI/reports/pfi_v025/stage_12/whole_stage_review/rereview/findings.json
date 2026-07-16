@@ -1,0 +1,50 @@
+{
+  "checks": {
+    "all_three_independently_recalculated": true,
+    "exact_expected_finding_set": true,
+    "new_p0_count_zero": true,
+    "new_p1_count_zero": true,
+    "remediation_report_closed_three": true
+  },
+  "external_human_reviewer_claimed": false,
+  "failed_checks": [],
+  "final_human_acceptance": false,
+  "findings": [
+    {
+      "finding_id": "S12-WR-I01-RELEASE-COMMIT-DRIFT",
+      "independent_recalculation_passed": true,
+      "prior_status": "closed_pending_independent_rereview",
+      "rereview_status": "closed_verified",
+      "severity": "P1"
+    },
+    {
+      "finding_id": "S12-WR-I02-EXACT-ACCEPTANCE-BINDING",
+      "independent_recalculation_passed": true,
+      "prior_status": "closed_pending_independent_rereview",
+      "rereview_status": "closed_verified",
+      "severity": "P1"
+    },
+    {
+      "finding_id": "S12-WR-I03-NONCANONICAL-OLD-APP",
+      "independent_recalculation_passed": true,
+      "prior_status": "closed_pending_independent_rereview",
+      "rereview_status": "closed_verified",
+      "severity": "P1"
+    }
+  ],
+  "initial_open_p0_count": 0,
+  "initial_open_p1_count": 3,
+  "new_findings": [],
+  "product_candidate_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "production_accepted": false,
+  "rereview_minor_count": 0,
+  "rereview_open_p0_count": 0,
+  "rereview_open_p1_count": 0,
+  "review_method": "independent_deterministic_local_rereview",
+  "reviewed_closure_commit": "559cf190ccfd97aabcf37a5edf2bf1e9abe300fc",
+  "schema": "PFIV025Stage12WholeReviewRereviewFindingsV1",
+  "stage_12_accepted": false,
+  "status": "pass",
+  "subagent_reviewer_claimed": false,
+  "verified_closed_p1_count": 3
+}

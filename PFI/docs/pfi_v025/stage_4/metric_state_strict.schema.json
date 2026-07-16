@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PFI v0.2.5 Strict Metric State Extension",
+  "type": "object",
+  "required": [
+    "metric_contract_version",
+    "metric_id",
+    "value",
+    "currency",
+    "status",
+    "source_ids",
+    "record_count",
+    "coverage_start",
+    "coverage_end",
+    "data_as_of",
+    "formula_id",
+    "formula_version",
+    "formula_hash",
+    "parameter_hash",
+    "data_hash",
+    "read_model_hash",
+    "dependency_hashes",
+    "dependency_set_hash",
+    "classification_confidence",
+    "source_coverage",
+    "reconciliation_coverage",
+    "valuation_coverage",
+    "model_validation",
+    "report_completeness",
+    "blocking_reason_zh",
+    "calculation_state"
+  ],
+  "properties": {
+    "metric_contract_version": {
+      "const": "PFIV025MetricStateStrictV1"
+    },
+    "metric_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "value": {
+      "type": ["number", "null"]
+    },
+    "currency": {
+      "type": ["string", "null"]
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "confirmed_zero",
+        "partial_coverage",
+        "not_loaded",
+        "source_missing",
+        "path_error",
+        "parse_failed",
+        "outdated_snapshot",
+        "permission_denied",
+        "calculation_failed",
+        "reconciliation_failed",
+        "valuation_missing",
+        "filtered_empty"
+      ]
+    },
+    "source_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "record_count": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "coverage_start": {
+      "type": ["string", "null"]
+    },
+    "coverage_end": {
+      "type": ["string", "null"]
+    },
+    "data_as_of": {
+      "type": ["string", "null"]
+    },
+    "valued_at": {
+      "type": ["string", "null"]
+    },
+    "fx_snapshot_id": {
+      "type": ["string", "null"]
+    },
+    "formula_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "formula_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "formula_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "parameter_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "data_hash": {
+      "oneOf": [
+        {"$ref": "#/$defs/sha256"},
+        {"type": "null"}
+      ]
+    },
+    "read_model_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "dependency_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "dependency_set_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "classification_confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "source_coverage": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "reconciliation_coverage": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "valuation_coverage": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "model_validation": {
+      "enum": ["validated", "partial", "blocked", "not_applicable", null]
+    },
+    "report_completeness": {
+      "enum": ["complete", "partial", "blocked", null]
+    },
+    "blocking_reason_zh": {
+      "type": ["string", "null"]
+    },
+    "calculation_state": {
+      "type": ["string", "null"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "not": {
+              "enum": ["ready", "confirmed_zero"]
+            }
+          }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "value": {"type": "null"},
+          "blocking_reason_zh": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "ready"}
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "not": {"const": 0}
+          },
+          "data_hash": {"$ref": "#/$defs/sha256"},
+          "model_validation": {"const": "validated"},
+          "report_completeness": {"const": "complete"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "confirmed_zero"}
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "value": {"const": 0},
+          "record_count": {"type": "integer", "minimum": 0},
+          "coverage_start": {"type": "string", "minLength": 1},
+          "coverage_end": {"type": "string", "minLength": 1},
+          "data_as_of": {"type": "string", "minLength": 1},
+          "data_hash": {"$ref": "#/$defs/sha256"},
+          "classification_confidence": {"type": "number"},
+          "source_coverage": {"type": "number"},
+          "reconciliation_coverage": {"type": "number"},
+          "valuation_coverage": {"type": "number"},
+          "model_validation": {"const": "validated"},
+          "report_completeness": {"const": "complete"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

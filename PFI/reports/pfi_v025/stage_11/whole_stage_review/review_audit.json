@@ -1,0 +1,46 @@
+{
+  "app_install_performed": false,
+  "canonical_private_database_mutated": false,
+  "canonical_private_database_used": true,
+  "final_human_acceptance": false,
+  "finalizer_hardening": {
+    "actual_private_data_exposed": false,
+    "final_result": "pass",
+    "initial_result": "fail_closed_on_browser_probe_marker_literals",
+    "remediation": "redact the two synthetic browser privacy-probe marker literals from the sanitized Playwright trace"
+  },
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "initial_review": {
+    "counts": {
+      "critical": 0,
+      "important": 4,
+      "minor": 0
+    },
+    "result": "remediation_required"
+  },
+  "launchservices_used": false,
+  "post_remediation_rereview": {
+    "counts": {
+      "critical": 0,
+      "important": 0,
+      "minor": 0
+    },
+    "result": "accept_for_stage_transition_only",
+    "reviewer_result_sha256": "sha256:47e2b5dd5e28323e39dc35664e73e08874ed40298f7d7a1bb99c74e6e44aaeb7"
+  },
+  "privacy": {
+    "matches": [],
+    "private_marker_match_count": 0,
+    "status": "pass",
+    "text_file_count": 36,
+    "zip_member_count": 3
+  },
+  "production_accepted": false,
+  "push_performed": false,
+  "remediation_commit": "9c450ea483cd2040636e375c9f7d84e5127e44cf",
+  "schema": "PFIV025Stage11WholeReviewAuditV1",
+  "source_review_base": "f49e10f47a2f9996e4de0e66402686ae502ce16c",
+  "stage_12_started": false,
+  "status": "pass"
+}

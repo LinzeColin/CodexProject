@@ -1,0 +1,305 @@
+{
+  "schema": "PFIV025Stage10WholeReviewAccessibilityTreeV1",
+  "nodes": [
+    {
+      "role": "region",
+      "name": "后台任务时间线",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "正在使用 08:45 的缓存快照；来源时钟恢复后可重试。",
+      "ignored": false
+    },
+    {
+      "role": "button",
+      "name": "重试",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "刷新失败 · 已切换到缓存兜底",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "刷新失败 · 已切换到缓存兜底",
+      "ignored": false
+    },
+    {
+      "role": "term",
+      "name": "错误状态",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "正在使用 08:45 的缓存快照；来源时钟恢复后可重试。",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "重试",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "失败",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "刷新失败 · 已切换到缓存兜底",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "刷新失败 · 已切换到缓存兜底",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "错误状态",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "标记未加载、过期、路径错误和待复核状态。",
+      "ignored": false
+    },
+    {
+      "role": "heading",
+      "name": "读取失败",
+      "ignored": false
+    },
+    {
+      "role": "button",
+      "name": "重试财务状态",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "后台任务时间线",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "失败",
+      "ignored": false
+    },
+    {
+      "role": "progressbar",
+      "name": "缓存切片刷新真实工作量",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "死信",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "等待重试",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "重试",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "失败",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "错误状态",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标记未加载、过期、路径错误和待复核状态。",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "读取失败",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "重试财务状态",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "刷新失败 · local cache refresh failed validation",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "后台任务 job-a4c97700256163899d7d23b7e6cae0736acbc65f24619b1d009290a212cf777d · SQLite revision 2",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "后台任务时间线",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "失败",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "SQLite revision 2 · trace 377e19dc09f9e73e5b130a78a0fc15a0 · 重试 0 次",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "错误 CACHE_REFRESH_ERROR · local cache refresh failed validation",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "SQLite revision 15 · trace 68fa4a39652514c7627e1c4b11c9505b · 重试 0 次",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "结果入口 artifact://runtime-cache/1335a315d97564b65eaee1fc1b73ca402a2e735d4022053592ebae368fe463e0",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "死信",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "SQLite revision 2 · trace 2c980f130b1744387fcff6729e9665e0 · 重试 0 次",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待重试",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "SQLite revision 2 · trace 6298eebaced40c8cbf277d1ec4e4f8e9 · 重试 1 次",
+      "ignored": false
+    },
+    {
+      "role": "StaticText",
+      "name": "错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "读取失败",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "重试财务状态",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "刷新失败 · local cache refresh failed validation",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "后台任务 job-",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "SQLite revision 2 · trace 377e19dc09f9e73e5b130a78a0fc15a0 · 重试 0 次",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "错误 CACHE_REFRESH_ERROR · local cache refresh failed validation",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "SQLite revision 15 · trace 68fa4a39652514c7627e1c4b11c9505b · 重试 0 次",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "结果入口 artifact://runtime-",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "SQLite revision 2 · trace 2c980f130b1744387fcff6729e9665e0 · 重试 0 次",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "缓存切片刷新",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "SQLite revision 2 · trace 6298eebaced40c8cbf277d1ec4e4f8e9 · 重试 1 次",
+      "ignored": false
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "错误 LEASE_EXPIRED · worker lease expired before a terminal result",
+      "ignored": false
+    }
+  ]
+}

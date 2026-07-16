@@ -1,0 +1,8 @@
+{
+  "troubleshooting": [
+    {"symptom": "页面显示来源未加载", "cause": "余额、负债、持仓、价格或汇率快照缺失", "fix": "从来源中心登记真实来源；不要手填零值绕过。"},
+    {"symptom": "发布身份冲突", "cause": "App、manifest、前后端 hash 或运行响应不一致", "fix": "停止运行并重新构建同一候选；不要在最终验收时临时补丁。"},
+    {"symptom": "数据库恢复被拒绝", "cause": "目标 hash、sidecar、权限、文件系统或备份校验不满足", "fix": "先在隔离目标验证，保留原库并重新取得一致备份。"},
+    {"symptom": "历史真实源在当前树中不存在", "cause": "上游已迁移顶层 MetaDatabase", "fix": "使用 v0.2.5 immutable source lock 读取已复核 Git 对象；不得恢复旧目录。"}
+  ]
+}

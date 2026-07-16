@@ -1,0 +1,16 @@
+{
+  "calculation_context": "deterministic_contract_examples_not_financial_acceptance",
+  "formula_id": "FORM-PFI-016",
+  "invariants": [
+    "net_worth = cash + investment_market_value + other_assets - liabilities",
+    "closing_cash = opening_cash + external_inflows - external_outflows + adjustments",
+    "life_cash_after + investment_assets_after = life_cash_before + investment_assets_before - explicit_fee"
+  ],
+  "non_zero_discrepancy_policy": "failed_closed_and_value_null",
+  "passing_example_count": 1,
+  "real_data_validation": "not_run_pending_phase_5_3",
+  "schema": "PFIV025Stage5Phase52InvariantCapabilityEvidenceV1",
+  "status": "capability_pass_real_data_not_run",
+  "violation_example_count": 1,
+  "violation_failed_closed": true
+}

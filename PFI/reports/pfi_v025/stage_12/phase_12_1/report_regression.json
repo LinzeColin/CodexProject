@@ -1,0 +1,25 @@
+{
+  "contains_private_values": false,
+  "external_network_performed": false,
+  "financial_values_emitted": 0,
+  "finder_used": false,
+  "holding_source_status": "not_loaded",
+  "manifest_validation_status": "pass",
+  "not_loaded_source_count": 5,
+  "operational_database_unchanged": true,
+  "partial_source_count": 1,
+  "ready_source_count": 1,
+  "registered_source_count": 7,
+  "report_manifest_hash": "sha256:7ff6ab4fdb6e3229a4cfe932eaa745b0d67ae86dce3cc1590d820f8f65e333aa",
+  "report_statuses": {
+    "cash": "blocked",
+    "cashflow": "partial",
+    "consumption": "partial",
+    "data_quality": "complete",
+    "investment": "blocked",
+    "net_worth": "blocked"
+  },
+  "schema": "PFIV025Stage12Phase121ReportRegressionV1",
+  "status": "pass",
+  "transaction_record_count": 8815
+}

@@ -1,0 +1,1750 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S0-P03-GAP-EVIDENCE",
+  "allowed_files_obeyed": true,
+  "artifact_hashes": {
+    ".git/codex-review/pfi-v025/stage_0/phase_0_2/7433be0d70bdae42959c1b71753d93f8737db60d.attempt.id9uiuo8/phase_0_2_attestation.json": "8b579f727c9fdbe55fe8e9455ec28a4d7c6c45b4caf47fb7dbe1d6226859c60a",
+    "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_Roadmap.md": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2",
+    "PFI/config/pfi_v025_active_requirements.json": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+    "PFI/docs/pfi_v025/stage_0/PHASE_0_1_DESIGN.md": "aa9356eb6a27ee4e00c5249cd134af117c90a9538ed1aeaac508dcb09c7382b5",
+    "PFI/docs/pfi_v025/stage_0/PHASE_0_1_IMPLEMENTATION_PLAN.md": "8b76bcc7485f8f2f7532235422272f222f22095c428eff2750264ead4cf37840",
+    "PFI/docs/pfi_v025/stage_0/PHASE_0_2_DESIGN.md": "cc9a451558ab36ccb2a06724c628b874952d579efe5b5b95f1eb3d9d10a51deb",
+    "PFI/docs/pfi_v025/stage_0/PHASE_0_2_IMPLEMENTATION_PLAN.md": "c1de0092253c1e545ae17ab2d1b3f135545e2a5ee4854e4b55fe27f7662fe8e8",
+    "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+    "PFI/docs/pfi_v025/stage_0/PHASE_0_3_IMPLEMENTATION_PLAN.md": "8baf3517a0835bb2e3e7a242fd21d7673d9b7e730535ce6ba11dc6e5e8732472",
+    "PFI/docs/pfi_v025/stage_0/finding_ledger.csv": "899d2c3c545e1e64e40b143ae9a7011761a29610514f738eb003c20d5aab8aaf",
+    "PFI/docs/pfi_v025/stage_0/gap_register.md": "f5e637eb90441f63a219844fded890dcae8540029afeb6d44f5cd16c00da5210",
+    "PFI/docs/pfi_v025/stage_0/history_deprecation.md": "3a677e2ab5cd10134707b0dec1a4f819ececee9ecf4c33132a00692a6a459cce",
+    "PFI/docs/pfi_v025/stage_0/run_contract.md": "baba74d09185aaa9178ecca88b9a9a2bfa4954c14cbe771221d7a2386904503b",
+    "PFI/docs/pfi_v025/stage_0/scope_boundary.md": "8572207f82def846575fb03b1c3f3c84f86c739d579d855b35800ad3e2de6075",
+    "PFI/reports/pfi_v025/stage_0/baseline.json": "b103f6510537dc6fcfbaee4356b2a98faf00214b24fd7000e95c2fbfd1accdc6",
+    "PFI/reports/pfi_v025/stage_0/current_state_matrix.md": "59e8711ffc2bf246632ab9f39ba69a5edc051299beb534fa99b55f5c9f24b717",
+    "PFI/reports/pfi_v025/stage_0/data_root_inventory.json": "9221cbaeefb264fc6ca061df7ed5b3a03595e7e39bd44bc836dc5e3fb8701cba",
+    "PFI/reports/pfi_v025/stage_0/git_state.txt": "44cb3ebaa0050168c17ef4ec660f2a9c09a0e790f55c89a39cb01e37fe368925",
+    "PFI/reports/pfi_v025/stage_0/history_deprecation.md": "c3a5e773423138c00364cdef9e21018e970d1b0437023523c80720d4f59a4c7d",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/changed_files.txt": "e7afe3ae9e1949253846e236e8327d1d8d13e6654a831c3bea56b0ba3aa708ab",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/git_state.txt": "59599effc6a48a4a7c3ca60bcc79ae6881271d46aa456cbd98c9d26e424ee1cd",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json": "9553723e64d2bef0c54b5bd7ed1a2b97abc8211387e0e23fe3c7e73d56f735c1",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/risk_and_rollback.md": "68c2e0ef77d608cfcb2fbf392821fd79f90d52fd7a82b7a10756e4fb92405bfd",
+    "PFI/reports/pfi_v025/stage_0/phase_0_1/terminal.log": "106a8607eba4817fae22c908d8a3ee59720ed7616b472143c421b34ff593ef73",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/changed_files.txt": "9791c81ea59bae4d3c2658f39be1c22e391070e737616a0b5cf2de3382e1106e",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/risk_and_rollback.md": "94f9cf7f7afe1143f3ea6b0c3c855b5bbff139b429affa876833f76c28f653bd",
+    "PFI/reports/pfi_v025/stage_0/phase_0_2/terminal.log": "c3bba482adfc230a013f9ba53a0a30a07fd66078700a333743d8026d026056c5",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/changed_files.txt": "37ebb0c55b90fdd43310edf087966b1dc4845c43547c76b5d7a8ddbb8886bd2a",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/risk_and_rollback.md": "6c448830f13553e8ebf9b61a13ee03924284ae010e0b33159749fb82b1a06889",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log": "6a3e4cbe5170e7f88f4cd2098530a8f1b3c230f5422f3ea4f9eedd1e185d815f",
+    "PFI/reports/pfi_v025/stage_0/terminal.log": "d33a5a3280f3cae5da44e87f7cc9bad6f6ef4e46be58a3cc2b874f8bf4266408"
+  },
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/MODEL_SPEC.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/governance/formula_registry.yaml",
+    "PFI/docs/governance/model_registry.yaml",
+    "PFI/docs/governance/parameter_registry.csv",
+    "PFI/docs/pfi_v025/stage_0/acceptance_request.md",
+    "PFI/docs/pfi_v025/stage_0/finding_ledger.csv",
+    "PFI/docs/pfi_v025/stage_0/gap_register.md",
+    "PFI/reports/pfi_v025/stage_0/baseline.json",
+    "PFI/reports/pfi_v025/stage_0/current_state_matrix.md",
+    "PFI/reports/pfi_v025/stage_0/data_root_inventory.json",
+    "PFI/reports/pfi_v025/stage_0/git_state.txt",
+    "PFI/reports/pfi_v025/stage_0/history_deprecation.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/evidence.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log",
+    "PFI/reports/pfi_v025/stage_0/terminal.log"
+  ],
+  "compensation_changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/MODEL_SPEC.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/pfi_v025/stage_0/acceptance_request.md",
+    "PFI/docs/pfi_v025/stage_0/finding_ledger.csv",
+    "PFI/docs/pfi_v025/stage_0/gap_register.md",
+    "PFI/reports/pfi_v025/stage_0/baseline.json",
+    "PFI/reports/pfi_v025/stage_0/current_state_matrix.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/evidence.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log",
+    "PFI/reports/pfi_v025/stage_0/terminal.log"
+  ],
+  "compensations": [
+    {
+      "compensating_commit_binding": "external_compensation_attestation_required",
+      "corrected_evidence_outcome": "superseded_or_non_applicable",
+      "corrected_finding_status": "N/A",
+      "correction_evidence_ref": "P03_CORRECTION",
+      "correction_id": "PFI-V025-S0-P03-COMP-FND030",
+      "finding_id": "PFI-V025-FND-030",
+      "historical_evidence_outcome": "new_current_fact",
+      "historical_outcome_superseded": true,
+      "observed_at": "2026-07-12T04:32:58+10:00",
+      "original_attestation_ref": ".git/codex-review/pfi-v025/stage_0/phase_0_3/31368570082c34eca50c72c7d7b2ef46b0e6854d.attempt.8wrysajf/phase_0_3_attestation.json",
+      "original_attestation_sha256": "b439444de5a110f07f48fe0fa1d566624183a38e4d7270d0f0bc6fb2e6d696d6",
+      "original_phase_commit": "31368570082c34eca50c72c7d7b2ef46b0e6854d",
+      "removed_gap_id": "GAP-P1-04",
+      "stage_0_whole_review_status": "not_started",
+      "stage_1_status": "not_started",
+      "supersedes_registry_outcome": "P03_TERM.outcomes.PFI-V025-FND-030"
+    }
+  ],
+  "commands": [
+    {
+      "command": "Phase 0.3 guarded preflight and pinned identity verification",
+      "command_id": "PRE-001",
+      "exit_code": 0,
+      "summary": "preflight_complete"
+    },
+    {
+      "command": "Stream pinned TaskPack members and recompute canonical source selectors",
+      "command_id": "SRC-001",
+      "exit_code": 0,
+      "summary": "source_registry_verified"
+    },
+    {
+      "command": "Read-only Git, owner, web, release, and route fact collection",
+      "command_id": "CUR-001",
+      "exit_code": 0,
+      "summary": "current_facts_collected"
+    },
+    {
+      "command": "Read-only App metadata, strict codesign, and runtime-listener probe",
+      "command_id": "APP-001",
+      "exit_code": 0,
+      "proof_id": "app_runtime_probe",
+      "proof_sha256": "9baaa99287d27c672e8112b0cf22cd6b2689029b445c9ea58ac102aff238797a",
+      "summary": "app_runtime_probe_bound"
+    },
+    {
+      "command": "Read-only Git-object raw-source and read-model aggregate probe",
+      "command_id": "DATA-001",
+      "exit_code": 0,
+      "proof_id": "raw_data_probe",
+      "proof_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f",
+      "summary": "raw_data_probe_bound"
+    },
+    {
+      "command": "SQLite URI mode=ro&immutable=1 query-only aggregate probe",
+      "command_id": "DB-001",
+      "exit_code": 0,
+      "proof_id": "db_probe",
+      "proof_sha256": "d5fa62da8edaa3395134fd64bf4756c878ad0a1753d5c13c1f54fd06726ad198",
+      "summary": "database_probe_bound"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_pfi_parameters_consistency.py -q",
+      "command_id": "TEST-001",
+      "exit_code": 1,
+      "expected_diagnostic": {
+        "failed": 5,
+        "passed": 3
+      },
+      "summary": "expected_3_pass_5_fail"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B -m pytest -p no:cacheprovider --collect-only PFI/tests -q",
+      "command_id": "TEST-002",
+      "exit_code": 0,
+      "summary": "795_tests_collected"
+    },
+    {
+      "command": "Task 3 bounded Layer 0/1 structural validation",
+      "command_id": "STRUCT-001",
+      "exit_code": 0,
+      "summary": "structure_verified"
+    },
+    {
+      "command": "Task 4 bounded governance companion baseline validation",
+      "command_id": "GOV-001",
+      "exit_code": 0,
+      "summary": "governance_verified"
+    }
+  ],
+  "contains_private_values": false,
+  "contract_id": "PFI-V025-STAGE0-PHASE03-GAP-EVIDENCE",
+  "design_identity": {
+    "path": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+    "sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46"
+  },
+  "evidence_files": [
+    "PFI/docs/pfi_v025/stage_0/finding_ledger.csv",
+    "PFI/docs/pfi_v025/stage_0/gap_register.md",
+    "PFI/reports/pfi_v025/stage_0/baseline.json",
+    "PFI/reports/pfi_v025/stage_0/current_state_matrix.md",
+    "PFI/reports/pfi_v025/stage_0/data_root_inventory.json",
+    "PFI/reports/pfi_v025/stage_0/git_state.txt",
+    "PFI/reports/pfi_v025/stage_0/history_deprecation.md",
+    "PFI/reports/pfi_v025/stage_0/terminal.log",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/evidence.json",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log"
+  ],
+  "evidence_registry": {
+    "CURRENT_OWNER": {
+      "artifact_ref": "collection:CURRENT_OWNER",
+      "artifact_sha256": "537c0153f134c25b770bdefd9945a2c15c87b74ea99ddd4d1614ec59f414a2ac",
+      "fact_level": "VERIFIED",
+      "member_hashes": {
+        "PFI/HANDOFF.md": "da751e93c2a4ecf0c1eddc5cc24cfec45410c250db64ef1bbb64a2da548e25f7",
+        "PFI/README.md": "d0bba098485f3c4729b86abed116db8f2f4b94102612a3c3099af68170e53ad0",
+        "PFI/VERSION": "f4b37e15efe4f9c11dde64e2f52cf27452a51118767e1d2b8b3f2b24ebeccc88",
+        "PFI/功能清单.md": "df6005b53c452bb8e242f6b2ee85521975dfe30b44f8ce473426471b54a71c23",
+        "PFI/开发记录.md": "804ce4a30741ff76a5fe603149aa576f215cc4bf6b19eeae71e58f1a142e46c0",
+        "PFI/模型参数文件.md": "fe34db3c7c2f6bf8b5ebf52f5097c3f8389c06a83ac9d5d76be1d51d6cf3c0dc"
+      },
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "ordered_members",
+      "selector_type": "collection",
+      "source_text_sha256": "537c0153f134c25b770bdefd9945a2c15c87b74ea99ddd4d1614ec59f414a2ac"
+    },
+    "CURRENT_RUNTIME_APP": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log",
+      "artifact_sha256": "6a3e4cbe5170e7f88f4cd2098530a8f1b3c230f5422f3ea4f9eedd1e185d815f",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "\"record_id\":\"APP-001\"",
+      "selector_type": "line_contains",
+      "source_text_sha256": "f15466521bb674357d75b43a3a26b8ce426f0694dca6a3ad5a9c758f99941017"
+    },
+    "CURRENT_WEB": {
+      "artifact_ref": "collection:CURRENT_WEB",
+      "artifact_sha256": "eb8516e5ec13d19dab977daba8f2e5eae1c1e8713c7b20b064ef6e3331691264",
+      "fact_level": "VERIFIED",
+      "member_hashes": {
+        "PFI/web/app/routes.js": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf",
+        "PFI/web/app/shell.js": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821",
+        "PFI/web/app/version.js": "fae29ef265c841139c5309dd0175d7ad82ba739d92db1841f58e3221e77e65db",
+        "PFI/web/index.html": "79d526eea341b805b976794bf6de5c7f62f9cf6267f986ffa93cfc0fd443320f"
+      },
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "ordered_members",
+      "selector_type": "collection",
+      "source_text_sha256": "eb8516e5ec13d19dab977daba8f2e5eae1c1e8713c7b20b064ef6e3331691264"
+    },
+    "P01_ENTRY": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "artifact_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199"
+    },
+    "P01_EVID": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35"
+    },
+    "P01_REPO": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/repository_inventory.json",
+      "artifact_sha256": "9553723e64d2bef0c54b5bd7ed1a2b97abc8211387e0e23fe3c7e73d56f735c1",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "9553723e64d2bef0c54b5bd7ed1a2b97abc8211387e0e23fe3c7e73d56f735c1"
+    },
+    "P01_RISK": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/risk_and_rollback.md",
+      "artifact_sha256": "68c2e0ef77d608cfcb2fbf392821fd79f90d52fd7a82b7a10756e4fb92405bfd",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "68c2e0ef77d608cfcb2fbf392821fd79f90d52fd7a82b7a10756e4fb92405bfd"
+    },
+    "P02_ACTIVE": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37"
+    },
+    "P02_ATTEST": {
+      "artifact_ref": ".git/codex-review/pfi-v025/stage_0/phase_0_2/7433be0d70bdae42959c1b71753d93f8737db60d.attempt.id9uiuo8/phase_0_2_attestation.json",
+      "artifact_sha256": "8b579f727c9fdbe55fe8e9455ec28a4d7c6c45b4caf47fb7dbe1d6226859c60a",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:05:36.224481+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "8b579f727c9fdbe55fe8e9455ec28a4d7c6c45b4caf47fb7dbe1d6226859c60a"
+    },
+    "P02_EVID": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "artifact_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8"
+    },
+    "P03_CORRECTION": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log",
+      "artifact_sha256": "6a3e4cbe5170e7f88f4cd2098530a8f1b3c230f5422f3ea4f9eedd1e185d815f",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-12T04:32:58+10:00",
+      "selector": "\"correction_id\":\"PFI-V025-S0-P03-COMP-FND030\"",
+      "selector_type": "line_contains",
+      "source_proof": {
+        "formal_home_source": {
+          "artifact_ref": "PFI/web/app/pages/home.js",
+          "artifact_sha256": "a13136d5be1d77b814432884bcdcb03d83e4afba7a245a284e56cdba990a37af",
+          "selector": "whole_file",
+          "selector_type": "whole_file",
+          "source_text_sha256": "a13136d5be1d77b814432884bcdcb03d83e4afba7a245a284e56cdba990a37af"
+        },
+        "streamlit_loader": {
+          "artifact_ref": "PFI/src/pfi_os/app/streamlit_app.py",
+          "artifact_sha256": "8f27cba05d71b6c2cf8dcb5b6a77863970a75fc9fa43a7077ce1f7e77405d1a5",
+          "selectors": [
+            {
+              "selector": "home_page_path = ROOT / \"web\" / \"app\" / \"pages\" / \"home.js\"",
+              "selector_type": "line_contains",
+              "source_text_sha256": "3f8c9dfd58cef109584d7a60ef5ec00110bbe0faf089a0b8373b90c35c5764f0"
+            },
+            {
+              "selector": "home_page_js = home_page_path.read_text(encoding=\"utf-8\")",
+              "selector_type": "line_contains",
+              "source_text_sha256": "36cc39c40b5b808d62b59a950952e2059f57331b67f0fb5a3629d9be78bedf4d"
+            },
+            {
+              "selector": "<script src=\"./app/pages/home.js\"></script>",
+              "selector_type": "line_contains",
+              "source_text_sha256": "2eef8d62c4b0158868510dca96b0cc53635c39e233e0a8a2c61a7456f1bf6bad"
+            },
+            {
+              "selector": "data-pfi-source=\"web/app/pages/home.js\"",
+              "selector_type": "line_contains",
+              "source_text_sha256": "d638193e70c3874e4fe52f1872e4a1f938f8a92e74b8c85b1fc0404205106f8b"
+            }
+          ]
+        },
+        "web_loaders": [
+          {
+            "artifact_ref": "PFI/web/index.html",
+            "artifact_sha256": "79d526eea341b805b976794bf6de5c7f62f9cf6267f986ffa93cfc0fd443320f",
+            "selector": "<script src=\"./app/pages/home.js\"></script>",
+            "selector_type": "line_contains",
+            "source_text_sha256": "69900d511681db96f3ca585a760c697be969201044e9d8f0ccca117d574bab8f"
+          },
+          {
+            "artifact_ref": "PFI/web/app/shell.js",
+            "artifact_sha256": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821",
+            "selector": "script.src = \"./app/pages/home.js\";",
+            "selector_type": "line_contains",
+            "source_text_sha256": "b6d858032e3ae62b588b9abc196ac618426a04ac9be8c79472840ad56bc299e9"
+          }
+        ]
+      },
+      "source_text_sha256": "1df97a56147347bf2fd7d2cb76d47169d8aaccaa4033d78e029e3c654b60ff72"
+    },
+    "P03_TERM": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log",
+      "artifact_sha256": "6a3e4cbe5170e7f88f4cd2098530a8f1b3c230f5422f3ea4f9eedd1e185d815f",
+      "compensation": {
+        "corrected_outcome": "superseded_or_non_applicable",
+        "correction_ref": "P03_CORRECTION",
+        "finding_id": "PFI-V025-FND-030",
+        "historical_outcome": "new_current_fact",
+        "historical_outcome_superseded": true
+      },
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "outcomes": {
+        "PFI-V025-FND-002": "reproduced",
+        "PFI-V025-FND-003": "reproduced",
+        "PFI-V025-FND-005": "new_current_fact",
+        "PFI-V025-FND-006": "new_current_fact",
+        "PFI-V025-FND-007": "new_current_fact",
+        "PFI-V025-FND-008": "reproduced",
+        "PFI-V025-FND-011": "not_run_by_phase_contract",
+        "PFI-V025-FND-012": "reproduced",
+        "PFI-V025-FND-013": "reproduced",
+        "PFI-V025-FND-014": "not_run_by_phase_contract",
+        "PFI-V025-FND-015": "fixed_within_static_source_scope",
+        "PFI-V025-FND-016": "not_run_by_phase_contract",
+        "PFI-V025-FND-017": "reproduced",
+        "PFI-V025-FND-018": "not_run_by_phase_contract",
+        "PFI-V025-FND-019": "reproduced",
+        "PFI-V025-FND-020": "reproduced",
+        "PFI-V025-FND-021": "fixed_within_static_structure_scope",
+        "PFI-V025-FND-022": "reproduced",
+        "PFI-V025-FND-023": "not_run_by_phase_contract",
+        "PFI-V025-FND-024": "not_run_by_phase_contract",
+        "PFI-V025-FND-025": "not_run_by_phase_contract",
+        "PFI-V025-FND-026": "fixed_within_stage0_evidence_scope",
+        "PFI-V025-FND-027": "reproduced",
+        "PFI-V025-FND-029": "not_run_by_phase_contract",
+        "PFI-V025-FND-030": "new_current_fact",
+        "PFI-V025-FND-031": "new_current_fact",
+        "PFI-V025-FND-032": "fixed_within_syntax_scope",
+        "PFI-V025-FND-035": "reproduced"
+      },
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "6a3e4cbe5170e7f88f4cd2098530a8f1b3c230f5422f3ea4f9eedd1e185d815f"
+    },
+    "PFI/docs/pfi_v025/stage_0/scope_boundary.md": {
+      "artifact_ref": "PFI/docs/pfi_v025/stage_0/scope_boundary.md",
+      "artifact_sha256": "8572207f82def846575fb03b1c3f3c84f86c739d579d855b35800ad3e2de6075",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "8572207f82def846575fb03b1c3f3c84f86c739d579d855b35800ad3e2de6075"
+    },
+    "PFI/src/pfi_os/application/read_model_status.py": {
+      "artifact_ref": "PFI/src/pfi_os/application/read_model_status.py",
+      "artifact_sha256": "0e5556eb09637fb4b4898a333f6fde8253f2d2a068e95696e78caaa979e6c847",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-10T23:49:40+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "0e5556eb09637fb4b4898a333f6fde8253f2d2a068e95696e78caaa979e6c847"
+    },
+    "PFI/web/app/pages/reports.js": {
+      "artifact_ref": "PFI/web/app/pages/reports.js",
+      "artifact_sha256": "b8e6f05baae61f1eec6a4e679a7c920b6c9d677d8be61507eeadadac39b037eb",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-01T14:00:03+10:00",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "b8e6f05baae61f1eec6a4e679a7c920b6c9d677d8be61507eeadadac39b037eb"
+    }
+  },
+  "explicitly_not_done": [
+    "Phase 0.3 compensating commit and external compensation attestation",
+    "Stage 0 whole-stage independent review and user acceptance",
+    "Stage 1 work",
+    "Full test execution",
+    "Browser regression and human UAT",
+    "Canonical App install or reinstall",
+    "Git push or merge",
+    "Data or database mutation"
+  ],
+  "finding_summary": {
+    "blocks_phase_0_3_candidate_count": 0,
+    "blocks_v025_production_acceptance_count": 27,
+    "eligible_open_p0_p1_findings": 27,
+    "fact_level_counts": {
+      "EXTRACTED": 13,
+      "VERIFIED": 25
+    },
+    "finding_count": 38,
+    "finding_ids": [
+      "PFI-V025-FND-001",
+      "PFI-V025-FND-002",
+      "PFI-V025-FND-003",
+      "PFI-V025-FND-004",
+      "PFI-V025-FND-005",
+      "PFI-V025-FND-006",
+      "PFI-V025-FND-007",
+      "PFI-V025-FND-008",
+      "PFI-V025-FND-009",
+      "PFI-V025-FND-010",
+      "PFI-V025-FND-011",
+      "PFI-V025-FND-012",
+      "PFI-V025-FND-013",
+      "PFI-V025-FND-014",
+      "PFI-V025-FND-015",
+      "PFI-V025-FND-016",
+      "PFI-V025-FND-017",
+      "PFI-V025-FND-018",
+      "PFI-V025-FND-019",
+      "PFI-V025-FND-020",
+      "PFI-V025-FND-021",
+      "PFI-V025-FND-022",
+      "PFI-V025-FND-023",
+      "PFI-V025-FND-024",
+      "PFI-V025-FND-025",
+      "PFI-V025-FND-026",
+      "PFI-V025-FND-027",
+      "PFI-V025-FND-028",
+      "PFI-V025-FND-029",
+      "PFI-V025-FND-030",
+      "PFI-V025-FND-031",
+      "PFI-V025-FND-032",
+      "PFI-V025-FND-033",
+      "PFI-V025-FND-034",
+      "PFI-V025-FND-035",
+      "PFI-V025-FND-036",
+      "PFI-V025-FND-037",
+      "PFI-V025-FND-038"
+    ],
+    "non_gap_findings": 11,
+    "open_priority_counts": {
+      "P0": 22,
+      "P1": 5,
+      "P2": 0
+    },
+    "priority_counts": {
+      "P0": 26,
+      "P1": 10,
+      "P2": 2
+    },
+    "status_counts": {
+      "Fixed": 7,
+      "N/A": 4,
+      "New": 4,
+      "Regressed": 0,
+      "StillPresent": 23
+    }
+  },
+  "gap_summary": {
+    "eligible_finding_count": 27,
+    "gap_ids": [
+      "GAP-P0-01",
+      "GAP-P0-02",
+      "GAP-P0-03",
+      "GAP-P0-04",
+      "GAP-P0-05",
+      "GAP-P0-06",
+      "GAP-P0-07",
+      "GAP-P0-08",
+      "GAP-P0-09",
+      "GAP-P1-01",
+      "GAP-P1-02",
+      "GAP-P1-03"
+    ],
+    "gap_mapping": {
+      "GAP-P0-01": [
+        "PFI-V025-FND-001",
+        "PFI-V025-FND-002",
+        "PFI-V025-FND-027",
+        "PFI-V025-FND-035"
+      ],
+      "GAP-P0-02": [
+        "PFI-V025-FND-003",
+        "PFI-V025-FND-004",
+        "PFI-V025-FND-005",
+        "PFI-V025-FND-006",
+        "PFI-V025-FND-007"
+      ],
+      "GAP-P0-03": [
+        "PFI-V025-FND-008"
+      ],
+      "GAP-P0-04": [
+        "PFI-V025-FND-009",
+        "PFI-V025-FND-010"
+      ],
+      "GAP-P0-05": [
+        "PFI-V025-FND-012",
+        "PFI-V025-FND-014"
+      ],
+      "GAP-P0-06": [
+        "PFI-V025-FND-016",
+        "PFI-V025-FND-017",
+        "PFI-V025-FND-018",
+        "PFI-V025-FND-019"
+      ],
+      "GAP-P0-07": [
+        "PFI-V025-FND-020"
+      ],
+      "GAP-P0-08": [
+        "PFI-V025-FND-023",
+        "PFI-V025-FND-024"
+      ],
+      "GAP-P0-09": [
+        "PFI-V025-FND-029"
+      ],
+      "GAP-P1-01": [
+        "PFI-V025-FND-011",
+        "PFI-V025-FND-013",
+        "PFI-V025-FND-031"
+      ],
+      "GAP-P1-02": [
+        "PFI-V025-FND-022"
+      ],
+      "GAP-P1-03": [
+        "PFI-V025-FND-025"
+      ]
+    },
+    "non_gap_count": 11,
+    "non_gap_finding_ids": [
+      "PFI-V025-FND-015",
+      "PFI-V025-FND-021",
+      "PFI-V025-FND-026",
+      "PFI-V025-FND-028",
+      "PFI-V025-FND-030",
+      "PFI-V025-FND-032",
+      "PFI-V025-FND-033",
+      "PFI-V025-FND-034",
+      "PFI-V025-FND-036",
+      "PFI-V025-FND-037",
+      "PFI-V025-FND-038"
+    ],
+    "open_gap_count": 12,
+    "primary_gap_count": 12
+  },
+  "git_commit": "31368570082c34eca50c72c7d7b2ef46b0e6854d",
+  "git_commit_semantics": "compensation_base_before_compensating_commit",
+  "governance_override_id": "PFI-V025-S0-P03-GOVERNANCE-COMPANIONS",
+  "governance_override_state": "approved_pending_compensation_postcommit_attestation",
+  "guard_proof_bindings": {
+    "app_runtime_probe_sha256": "9baaa99287d27c672e8112b0cf22cd6b2689029b445c9ea58ac102aff238797a",
+    "contains_private_values": false,
+    "db_probe_sha256": "d5fa62da8edaa3395134fd64bf4756c878ad0a1753d5c13c1f54fd06726ad198",
+    "observed_at": "2026-07-12T01:09:30.659834+10:00",
+    "raw_data_probe_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f"
+  },
+  "implementation_base": "ede905cd96c7b6682cf38971de54f4544f46251b",
+  "implementation_plan_identity": {
+    "path": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_IMPLEMENTATION_PLAN.md",
+    "sha256": "8baf3517a0835bb2e3e7a242fd21d7673d9b7e730535ce6ba11dc6e5e8732472"
+  },
+  "initial_live_main": "a65f30c19241b14c4a895bc68dd4422b5a1e4a5c",
+  "initial_remote_base": "3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb",
+  "initial_remote_object_hydration_performed": false,
+  "initial_remote_pfi_diff": "none",
+  "iteration_id": "ITER-20260711-PFI-V025-S0-P03",
+  "no_side_effects_observed": {
+    "app_install": false,
+    "app_mutation": false,
+    "data_write": false,
+    "database_write": false,
+    "git_push": false,
+    "runtime_mutation": false
+  },
+  "p2_disposition": {
+    "deferred_v025_backlog_created": false,
+    "effective_scope_control": "PFI-V025-FND-028",
+    "executable_p2_count": 0,
+    "non_applicable_diagnostics": [
+      "PFI-V025-FND-036",
+      "PFI-V025-FND-037"
+    ]
+  },
+  "phase": "0.3",
+  "preliminary_gates": [
+    {
+      "exit_code": 0,
+      "gate_id": "PROVISIONAL-SCOPE",
+      "summary": "second_remediation_exact_24_paths_protected_0"
+    },
+    {
+      "exit_code": 0,
+      "gate_id": "PROVISIONAL-SEMANTIC",
+      "summary": "second_remediation_corrected_crosswalk_exact24_draft_lifecycle_pass"
+    },
+    {
+      "exit_code": 0,
+      "gate_id": "TASKPACK-EVIDENCE-SCHEMA",
+      "summary": "draft_2020_12_schema_pass"
+    },
+    {
+      "exit_code": 0,
+      "gate_id": "JSON-NODE-DIFF",
+      "summary": "json_3_node_2_diff_check_pass"
+    },
+    {
+      "exit_code": 1,
+      "expected_diagnostic": {
+        "failed": 5,
+        "passed": 3
+      },
+      "gate_id": "PARAMETER-BASELINE",
+      "summary": "expected_diagnostic_failure"
+    },
+    {
+      "exit_code": 0,
+      "gate_id": "PRIVACY",
+      "summary": "files_24_findings_0"
+    },
+    {
+      "exit_code": 0,
+      "gate_id": "PROVISIONAL-PROJECT-GOVERNANCE",
+      "summary": "detached_shadow_request_stub_only_errors_0_warnings_0"
+    },
+    {
+      "exit_code": 0,
+      "gate_id": "PROVISIONAL-GOVERNANCE-SYNC",
+      "summary": "detached_shadow_request_stub_only_errors_0_warnings_0"
+    }
+  ],
+  "priority_registry": {
+    "AUDIT-P0-APP": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "真实 App 重装与四方版本 identity。",
+      "selector_type": "line_contains",
+      "source_text_sha256": "0869229abe135c362a55892e9e2f52037da3ccc9165ef3c838da8254580006c1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUDIT-P0-DATA": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "真实数据根目录与账户/持仓 Read Model。",
+      "selector_type": "line_contains",
+      "source_text_sha256": "3101979140a18950180a34e128ba5db2ba302a06d937a7e220ed4c3075ea7a6f",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUDIT-P0-METRIC": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "非假零、真实财务指标和 SQLite 持久化。",
+      "selector_type": "line_contains",
+      "source_text_sha256": "5ba42279c74e3b223b25c636e77bde01306f3e48c2ca69142420ebf9859f1d48",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUDIT-P0-OWNER": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "状态真相统一。",
+      "selector_type": "line_contains",
+      "source_text_sha256": "cd4000f77c77e03a7058450c32bdcc2747c7f9fd9416a0ccb8c7590ff3de0541",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUDIT-P0-PRODUCTION": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "whole_file",
+      "selector_type": "whole_file",
+      "source_text_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUDIT-P0-ROUTE": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "真实路由、差异化页面、三个核心工作流。",
+      "selector_type": "line_contains",
+      "source_text_sha256": "2edf6233b25628dd11ed4cc8db5480e216d7eb132b5a1345debbd554671ac639",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUDIT-P1-FORMULA": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P1",
+      "selector": "公式注册表、双消费、FX、Interconnection、模型验证和报告同源。",
+      "selector_type": "line_contains",
+      "source_text_sha256": "c23e649ee7cc4e5cb6ea45d79081ae99849cc5811a16e086337933ca28675eda",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "DIAGNOSTIC-P2": {
+      "artifact_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+      "artifact_sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:53:26+10:00",
+      "priority": "P2",
+      "selector": "FND-036",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "00ca03a02de0463b59170ba4b10b26419a244763e1dc3687326c7438ff270ffb"
+    },
+    "PHASE-GATE-P0": {
+      "artifact_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+      "artifact_sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:53:26+10:00",
+      "priority": "P0",
+      "selector": "FND-034",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "67cac6fe7a5a8a660de0ea34f354bbee9892630db485e34fea4f0c69f2c00493"
+    },
+    "PHASE-GATE-P1": {
+      "artifact_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+      "artifact_sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:53:26+10:00",
+      "priority": "P1",
+      "selector": "FND-033",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "3459d99ac53f09e35285cbdc5c37f941533b49161f2b556cef08dcabde3de220"
+    },
+    "R-01": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-01",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "48200da5971dfd84715ce8207a625a175599a2c093c68c52822f05099572c840",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-02": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-02",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "1b91073d50ba60af8ec4e83eb91bec44d5b1b060370673519193ffa508957c72",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-03": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-03",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "4ce53cb767e5b8b84b8aa76571eb78447b9000cce6205d0a409bb2e7c17dcbd1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-04": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-04",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "c680d8077f09c605f901d649c51b79ac75f48fbd54072cdfca81db349bdf08f1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-05": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-05",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "19ce72da154a5a8d37a06e3cc7d8e19e841ab144fb2444f13e0f71f1e86dbb98",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-06": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-06",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "6a7a88b0d742c77758ae6c66c91a58498fdbc87e375982ebddfaa30bf033073a",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-07": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-07",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "f2bfaf5e09feeab6fa072827367ad3beca054bc1832ae4cc5e33d9d0fd03ef9e",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-08": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P1",
+      "selector": "R-08",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "914718636e4c9ffcbd3d87a98bd944933dd1d8d0d57aab9f664767f6d550d7e4",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-09": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-09",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "63bbffcff206f4f95bccba1ce3ad20f7cda58f5b8ee80cbf39e10df9e34d5b37",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-10": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-10",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "eca8402826621ced1b56991a20898e78d29fb0e789baf2346deea44f7b79e00a",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-11": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P1",
+      "selector": "R-11",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "7931e95abcbd377fd9a515d0cae7f44a741969d137ff0dcf0989f88fc9af331e",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-12": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-12",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "f8927c83f77659e2e60be18de2104e45516c3598d88d5135cce0d755a30bd811",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-13": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-13",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "7740b38e89a28fe3103a6aacd3b47675dfb3b37c11c6258ec1e079531bd48f78",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-14": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P0",
+      "selector": "R-14",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "d78d2cba6de16aeed3e96c8ca2e33626ee8ee445bf73bef55e268e301e184bdb",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-15": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "priority": "P1",
+      "selector": "R-15",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "38b88d9ead854de7fb94f99d5a6b2e2ca4e970b00bcb7f42aae3d495273475a1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "SUBFINDING-FND-003-P1": {
+      "artifact_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+      "artifact_sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:53:26+10:00",
+      "priority": "P1",
+      "selector": "FND-030",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "7989cc9cdd85435ccda595bb4640d9d17da2e7c56da9b6352771d3a992715581"
+    },
+    "SUBFINDING-FND-029-P1": {
+      "artifact_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+      "artifact_sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:53:26+10:00",
+      "priority": "P1",
+      "selector": "FND-032",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "8279962d4729d8970446a95b19df7cf37423602d33eb1af46429103f714830a3"
+    }
+  },
+  "privacy": {
+    "absolute_private_paths_emitted": 0,
+    "contains_private_values": false,
+    "credentials_emitted": 0,
+    "financial_values_emitted": 0,
+    "raw_filenames_emitted": 0,
+    "raw_rows_emitted": 0
+  },
+  "requires_user_acceptance": true,
+  "risks": [
+    "Open P0/P1 findings remain production-acceptance blockers until their Roadmap resolution tasks and evidence gates close.",
+    "Owner, release, App, runtime, data-root, and production-proof truth remains intentionally fail-closed.",
+    "The parameter-owner diagnostic remains the expected 3-pass/5-fail baseline and is not a Phase gate pass.",
+    "The original Phase commit and attestation remain immutable; any compensation-scope byte change invalidates the compensation hash graph and requires revalidation."
+  ],
+  "rollback": "Preserve original Phase commit 31368570082c34eca50c72c7d7b2ef46b0e6854d and its immutable attestation; before the compensating commit remove only the exact 15-path compensation diff, and after commit use only another append-only-safe correction without rewriting prior evidence or attestations.",
+  "source_hashes": {
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "task_pack_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+  },
+  "source_registry": {
+    "AUD-01": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:1",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "c9131f72a8ef2bf3cab23d04481863b0c62b33886f976d84169ace11bf65476a",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-02": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:2",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "46a1cc90f22a2b85e5f1ca505551c6dd2a75390cd14db23920d461c1449bb96b",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-03": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:3",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "bcfced0da063da1707bea46985cfc47fffcab56d4577ad053e3c81fcf486e686",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-04": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:4",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "fe133f3862c00df0a1d16c1fa329def8ea87c3649ff969f5c4f75fbd0cfe7f29",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-05": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:5",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "ec37d20cc3a4519c694f1f120b0a5ea2aa2589f9c6e02cdf83427355e2e85b6a",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-06": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:6",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "341f53e06033dc9a31b68d7c0d53939a3bbbc67503ce04f91054e1761b637a19",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-07": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:7",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "b119c8dddcce69d680f0141d826c8fcfaea9710338a8e43041bfdf4613f02e63",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-08": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:8",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "b752eaae4ca0c1a081e1cbcecf20fed12ca136130522c61553d19702bf3c6720",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-09": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:9",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "c3664904d567996253ca442bd8ce2b3a21df45be5ad78e61e1d264adeedc2267",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-10": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:10",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "d1743340cf1b84f4bcbd5ea53b2e33043eef8c3a48383e4213183abbba0e4ca1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-11": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:11",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "016bf8548fdb56438b93eba8c2038038be7a2158f2fbc96aa76b39c9d6962c6b",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-12": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:12",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "a9146a644d6e856f3f2d93a194a62469ed20219f15d295f8eb2791d26f757b39",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-13": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:13",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "00cea19b2ee21587212236b129824e257abd71378d1a95e18e0d480c9e3743c8",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-14": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:14",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "182b99fcc8b2926b5560bc8d75624ac853c8a9d9e15a559799011ed3945af883",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "AUD-15": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "e2739d9c77f7098ab5c6aba7ca8fb4a1ff1420e63a614a4ad35bd221cd728626",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "facts_matrix:15",
+      "selector_type": "markdown_table_row",
+      "source_text_sha256": "2972c2cdc9781723efb43350033df13ec76bc42c251d8bff6813b77fe3452036",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/CURRENT_GITHUB_AUDIT_2026-07-10.md"
+    },
+    "P01-CONFLICT:APP_CODESIGN_EXIT_CODES_PARTIALLY_UNAVAILABLE": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "artifact_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/conflicts/4",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "909feabfedc78b9bfd8ca3904209398744012a9546dda1cc1aeeec2db6b76e8d"
+    },
+    "P01-CONFLICT:APP_EXECUTABLE_HASH_MISMATCH": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "artifact_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/conflicts/3",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "497612651ebfd167bafb3de571bb56215a7a47da12b042b431013d2281ac568b"
+    },
+    "P01-CONFLICT:FORMAL_UI_HOME_SOURCE_MISSING": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "artifact_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/conflicts/1",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "44acc53d5976c3e9c630712db36c564c8f410b7ffa69b8f46ab9915ea3ea57a5"
+    },
+    "P01-CONFLICT:MULTIPLE_CANONICAL_RUNTIME_SERVICES": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "artifact_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/conflicts/5",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "191c5e1f114c7fa100a1752f3cfd33a4b777ecbb92afa86930e4c3e4ed9c7641"
+    },
+    "P01-CONFLICT:RELEASE_IDENTITY_MIXED_VERSIONS": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "artifact_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/conflicts/0",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "5735cd3694f8776d21eb89cc36733c35cb5fba5f4748422f984cea54e5062e77"
+    },
+    "P01-CONFLICT:REPOSITORY_APP_CODESIGN_FAILED": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/entry_inventory.json",
+      "artifact_sha256": "3e06443abfa65234b0735350e44de656dcd921fd5ddc05c401c11a4777013199",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/conflicts/2",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "9d899d3f90305959f2faf5c0d6bccd476f595e31fe0bd555e2c7d3284ca36d62"
+    },
+    "P01-RISK-01": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/0",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "91449bc2f4f6a9664c301d56d17ab02b3b6a5b8a238e97c466acf4598b02a696"
+    },
+    "P01-RISK-02": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/1",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "1fd9d42aed1e2053260074b5841849f7e7c2e829c67ab68b7418c16a5a507e90"
+    },
+    "P01-RISK-03": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/2",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "82acc2809049d3362e868f1b74e25999ad70730b4b3edd134cea0f5797352827"
+    },
+    "P01-RISK-04": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/3",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "c3e6058f9df823999a29a43c277f0a5b17cd4dfdca32a4fc0772617e3ff6ba30"
+    },
+    "P01-RISK-05": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/4",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "83a2d4aae30a004fdfc842ca49dce8be84b2a71b10dbd1b46bcb1498da680226"
+    },
+    "P01-RISK-06": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/5",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "a0ad4cef377c2be350a70f5909aea85d62ba783dd2884521bacd2c16326f25bf"
+    },
+    "P01-RISK-07": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/6",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "e007acc709cde433af3a448ea437f535ded8346c5fec75a5839d052212d91746"
+    },
+    "P01-RISK-08": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/7",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "a1e00b8c597f2a9bba6c70fb3638a3a31e69a738b6b1b294090aacc2a584f38a"
+    },
+    "P01-RISK-09": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/8",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "6a12baf33f61b567dfc8166d95a9b45e601cb0c187989f11cf25853952b35666"
+    },
+    "P01-RISK-10": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "artifact_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T08:52:55+10:00",
+      "selector": "/risks/9",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "abd16a8117393d561e90ba55f8349402832a1cd10580bc4cecb28569245224f7"
+    },
+    "P02-LIFECYCLE-COMPARISON": {
+      "artifact_ref": "composite:P02-LIFECYCLE-COMPARISON",
+      "artifact_sha256": "11b406287d0be8bf62f8c2f668f6ec9cd86a83985f7dab7f0d5a44aa56a45cef",
+      "component_artifacts": [
+        {
+          "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+          "artifact_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8"
+        },
+        {
+          "artifact_ref": ".git/codex-review/pfi-v025/stage_0/phase_0_2/7433be0d70bdae42959c1b71753d93f8737db60d.attempt.id9uiuo8/phase_0_2_attestation.json",
+          "artifact_sha256": "8b579f727c9fdbe55fe8e9455ec28a4d7c6c45b4caf47fb7dbe1d6226859c60a"
+        }
+      ],
+      "component_selectors": [
+        {
+          "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+          "json_pointer": "/governance_override_state"
+        },
+        {
+          "artifact_ref": ".git/codex-review/pfi-v025/stage_0/phase_0_2/7433be0d70bdae42959c1b71753d93f8737db60d.attempt.id9uiuo8/phase_0_2_attestation.json",
+          "json_pointer": "/status"
+        },
+        {
+          "artifact_ref": ".git/codex-review/pfi-v025/stage_0/phase_0_2/7433be0d70bdae42959c1b71753d93f8737db60d.attempt.id9uiuo8/phase_0_2_attestation.json",
+          "json_pointer": "/blocks_phase_0_2_candidate"
+        }
+      ],
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:05:36.224481+10:00",
+      "selector": "phase_0_2_lifecycle",
+      "selector_type": "composite",
+      "source_text_sha256": "c88ac6a2682bd884bec19223cf30cdf10318c6fb55cd46d5879c03cdeb903472"
+    },
+    "P02-RISK-01": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "artifact_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/risks/0",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "8754541f5e85ce96fd2a15da0d678dec8c633cd32b4cb26860b77b08d8f36622"
+    },
+    "P02-RISK-02": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "artifact_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/risks/1",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "77c982c44dc8f20b9c558e9bad5640c51ae6f3e9f593d23f710d32ed2187c193"
+    },
+    "P02-RISK-03": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "artifact_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/risks/2",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "ae9a11a225321bb55c11d099e2f98034370ed78e99f676d5a9afce694a6be979"
+    },
+    "P02-RISK-04": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "artifact_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/risks/3",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "88ffb02515c6c0ede659dd470ad5e1a305e2ef46b9acf6e0ffc6342306ab9531"
+    },
+    "P02-RISK-05": {
+      "artifact_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "artifact_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/risks/4",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "75db9f2d2c2af44b0d1fda4df9dea9f53ca0bffe2bedb6ebae358ca60c34079f"
+    },
+    "PFI-V025-CONFLICT-APP-IDENTITY": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/blocking_conflicts/items/2",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "1d6e349b160a1f0990ce547d04d02992c10f3464a451f5a48f2295b86b9515b1"
+    },
+    "PFI-V025-CONFLICT-GOVERNANCE-SCOPE": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/blocking_conflicts/items/6",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "71d9b85417f169b689f5c8aef0ff1d40302b43c5a7c7aeb341ff111f8b436c1c"
+    },
+    "PFI-V025-CONFLICT-OWNER-VIEWS": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/blocking_conflicts/items/0",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "93f9554ad4574321eea89d0acf5f2ceb32b4be4c26230199e284f4453c22843c"
+    },
+    "PFI-V025-CONFLICT-RELEASE-IDENTITY": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/blocking_conflicts/items/1",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "9145144f6993886f7674a1efb88e4bc3513cadcc9c2d566f27eea7f40731fbb8"
+    },
+    "PFI-V025-CONFLICT-ROUTE-TARGET-GAP": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/blocking_conflicts/items/5",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "8eaad0f898069de9b4cdb15b8f8d9360e1d57f6bbf7b27830ccb4060f6473022"
+    },
+    "PFI-V025-CONFLICT-RUNTIME-LISTENERS": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/blocking_conflicts/items/3",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "467a3096ef14d7ce6548dcfe24fd3071832866d9fc911a5cfae37d4448d3cda8"
+    },
+    "PFI-V025-CONFLICT-STALE-ROUTE-MARKERS": {
+      "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+      "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+      "fact_level": "VERIFIED",
+      "observed_at": "2026-07-11T22:04:51+10:00",
+      "selector": "/blocking_conflicts/items/4",
+      "selector_type": "json_pointer",
+      "source_text_sha256": "2f7063603c02f173281b1100e96b74faf340b2cfed26c1f18d43411c4d9e51a7"
+    },
+    "R-01": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-01",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "48200da5971dfd84715ce8207a625a175599a2c093c68c52822f05099572c840",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-02": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-02",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "1b91073d50ba60af8ec4e83eb91bec44d5b1b060370673519193ffa508957c72",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-03": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-03",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "4ce53cb767e5b8b84b8aa76571eb78447b9000cce6205d0a409bb2e7c17dcbd1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-04": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-04",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "c680d8077f09c605f901d649c51b79ac75f48fbd54072cdfca81db349bdf08f1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-05": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-05",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "19ce72da154a5a8d37a06e3cc7d8e19e841ab144fb2444f13e0f71f1e86dbb98",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-06": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-06",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "6a7a88b0d742c77758ae6c66c91a58498fdbc87e375982ebddfaa30bf033073a",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-07": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-07",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "f2bfaf5e09feeab6fa072827367ad3beca054bc1832ae4cc5e33d9d0fd03ef9e",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-08": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-08",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "914718636e4c9ffcbd3d87a98bd944933dd1d8d0d57aab9f664767f6d550d7e4",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-09": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-09",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "63bbffcff206f4f95bccba1ce3ad20f7cda58f5b8ee80cbf39e10df9e34d5b37",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-10": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-10",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "eca8402826621ced1b56991a20898e78d29fb0e789baf2346deea44f7b79e00a",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-11": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-11",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "7931e95abcbd377fd9a515d0cae7f44a741969d137ff0dcf0989f88fc9af331e",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-12": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-12",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "f8927c83f77659e2e60be18de2104e45516c3598d88d5135cce0d755a30bd811",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-13": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-13",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "7740b38e89a28fe3103a6aacd3b47675dfb3b37c11c6258ec1e079531bd48f78",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-14": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-14",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "d78d2cba6de16aeed3e96c8ca2e33626ee8ee445bf73bef55e268e301e184bdb",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "R-15": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "450c39e8b9a56d24b9a5a02f017a6a10aba76fbda352e74706aa9dc7664ec03c",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "R-15",
+      "selector_type": "markdown_table_id",
+      "source_text_sha256": "38b88d9ead854de7fb94f99d5a6b2e2ca4e970b00bcb7f42aae3d495273475a1",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/RISK_REGISTER.md"
+    },
+    "SUR-01": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:1",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "adade5004000c9d0d2a2f1c79af1070f87ab5d258b9c327b0175cda17502fe62",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-02": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:2",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "fb7c4764808e835130618bc8288d269de25e35ed3f7fe77f87b7d633174d8772",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-03": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:3",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "6a56b09fcdc84bb54ea131c0dce954970402dad25a8dd7181bed4da218b999fc",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-04": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:4",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "fa99d372da2c2f3abd9d6a0b932506748a11c5e658637f7cbd89c4fa1cffd588",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-05": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:5",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "d654735e4dff86b892fa6b5ef8ad7576b42b96db9ca4e4cb08a459838f65e99c",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-06": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:6",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "92686ff85122d7a312df804491110cadaaa56c7922f1a17a8bd3da77f0435a21",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-07": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:7",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "e96ff43664e130ebe94149bcb0f8a3c6c3201799bc4476b528c822a8268c3ad9",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-08": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:8",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "ac5e2da2732c8829940c34a838a1c46b209f28ed80f35c37c4b7160c39a4d81e",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-09": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:9",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "a6bbd5e2fc2f6ad34be8f7e41eb128eabaa459f72c08dd358724c12ef316868d",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-10": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:10",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "acd725683dbb0d5e4076d692e0619a37a3ddb835e3740798cbad5b52d9723dec",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-11": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:11",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "7d4cb4b36421571c416a06c60c08d35dea9bc36f13a41a84e4f10969b52c3d77",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    },
+    "SUR-12": {
+      "artifact_ref": "/Users/linzezhang/Downloads/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "artifact_sha256": "b64edf32506b2590b22f81eded952756edd9ff515036bb697972972c87f79e95",
+      "fact_level": "EXTRACTED",
+      "observed_at": "2026-07-12T01:09:30.659834+10:00",
+      "selector": "section:12",
+      "selector_type": "markdown_section",
+      "source_text_sha256": "0d0bc07e19fb1b39ff451ab7281cacc26a2d7e9bf71bdd23fe86a4a590583a27",
+      "zip_member": "PFI_v0.2.5_TaskPack/docs/SURPRISE_FINDINGS_AND_DESIGN_DECISIONS.md"
+    }
+  },
+  "stage": 0,
+  "stage_0_whole_review_status": "not_started",
+  "stage_1_status": "not_started",
+  "status": "candidate_pass",
+  "tasks": [
+    {
+      "artifacts": [
+        "PFI/docs/pfi_v025/stage_0/finding_ledger.csv",
+        "PFI/reports/pfi_v025/stage_0/current_state_matrix.md",
+        "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log"
+      ],
+      "status": "candidate_pass",
+      "task_id": "S0-P3-T1"
+    },
+    {
+      "artifacts": [
+        "PFI/docs/pfi_v025/stage_0/gap_register.md"
+      ],
+      "status": "candidate_pass",
+      "task_id": "S0-P3-T2"
+    },
+    {
+      "artifacts": [
+        "PFI/reports/pfi_v025/stage_0/baseline.json",
+        "PFI/reports/pfi_v025/stage_0/data_root_inventory.json",
+        "PFI/reports/pfi_v025/stage_0/git_state.txt",
+        "PFI/reports/pfi_v025/stage_0/history_deprecation.md",
+        "PFI/reports/pfi_v025/stage_0/terminal.log"
+      ],
+      "status": "candidate_pass",
+      "task_id": "S0-P3-T3"
+    },
+    {
+      "artifacts": [
+        "PFI/reports/pfi_v025/stage_0/phase_0_3/changed_files.txt",
+        "PFI/reports/pfi_v025/stage_0/phase_0_3/evidence.json",
+        "PFI/reports/pfi_v025/stage_0/phase_0_3/risk_and_rollback.md",
+        "PFI/reports/pfi_v025/stage_0/phase_0_3/terminal.log"
+      ],
+      "status": "candidate_pass",
+      "task_id": "S0-P3-T4"
+    }
+  ],
+  "version": "v0.2.5"
+}

@@ -1,0 +1,14 @@
+PASS
+observed_at=2026-07-14T10:53:39Z
+input_count=8
+absolute_private_paths=0
+raw_financial_rows=0
+financial_row_values=0
+account_identifiers=0
+transaction_descriptions=0
+link_references=0
+credentials=0
+source_mutations=0
+database_writes=0
+finder_operations=0
+financial_fixture_fallback=0

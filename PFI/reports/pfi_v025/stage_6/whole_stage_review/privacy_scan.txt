@@ -1,0 +1,12 @@
+status=pass
+contains_private_values=false
+text_scan_matches=0
+trace_scan_matches=0
+tracked_screenshots_redacted=true
+trace_dom_resource_snapshots_enabled=false
+real_financial_data_read=false
+database_changed=false
+finder_used=false
+external_network_performed=false
+push_performed=false
+app_install_performed=false

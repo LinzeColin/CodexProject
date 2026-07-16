@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "anomalies": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "evidence_refs": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "warning",
+              "blocking"
+            ]
+          },
+          "statement_zh": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "statement_zh",
+          "evidence_refs"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "completeness": {
+      "additionalProperties": false,
+      "properties": {
+        "conclusion_policy": {
+          "enum": [
+            "data_quality_only",
+            "scoped_partial_only",
+            "financial_conclusion_allowed",
+            "financial_conclusion_forbidden"
+          ]
+        },
+        "critical_dependency_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "gap_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ready_dependency_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "rule_id": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "critical_dependency_count",
+        "ready_dependency_count",
+        "gap_count",
+        "conclusion_policy"
+      ],
+      "type": "object"
+    },
+    "conclusions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "evidence_refs": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "scope": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "statement_zh": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "scope",
+          "statement_zh",
+          "evidence_refs"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "contains_private_values": {
+      "const": false
+    },
+    "coverage": {
+      "additionalProperties": true,
+      "type": "object"
+    },
+    "data_range": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "start": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "type": "object"
+    },
+    "dependencies": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "blocking_reason_zh": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "critical": {
+            "type": "boolean"
+          },
+          "dependency_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "partial",
+              "blocked",
+              "not_loaded"
+            ]
+          }
+        },
+        "required": [
+          "dependency_id",
+          "status",
+          "critical",
+          "blocking_reason_zh"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "financial_values_emitted": {
+      "const": 0
+    },
+    "gaps": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "dependency_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "review_route": {
+            "pattern": "^/",
+            "type": "string"
+          },
+          "statement_zh": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "dependency_id",
+          "statement_zh",
+          "review_route"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "hashes": {
+      "additionalProperties": false,
+      "properties": {
+        "data_manifest_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "formula_registry_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "input_bundle_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "parameter_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "read_model_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "report_builder_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "report_contract_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "stage4_read_model_artifact_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "stage7_workflow_artifact_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data_manifest_hash",
+        "read_model_hash",
+        "formula_registry_hash",
+        "parameter_hash",
+        "report_contract_hash",
+        "report_builder_hash",
+        "stage4_read_model_artifact_hash",
+        "stage7_workflow_artifact_hash",
+        "input_bundle_hash"
+      ],
+      "type": "object"
+    },
+    "immutable": {
+      "const": true
+    },
+    "limitations": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "report_as_of": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "report_id": {
+      "pattern": "^[a-z0-9][a-z0-9._-]+$",
+      "type": "string"
+    },
+    "report_type": {
+      "enum": [
+        "data_quality",
+        "net_worth",
+        "cash",
+        "investment",
+        "consumption",
+        "cashflow"
+      ]
+    },
+    "review_links": {
+      "items": {
+        "pattern": "^/",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "sample_counts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "type": "object"
+    },
+    "schema": {
+      "const": "PFIV025ReportSnapshotV1"
+    },
+    "snapshot_hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial",
+        "blocked"
+      ]
+    },
+    "version": {
+      "const": "v0.2.5"
+    }
+  },
+  "required": [
+    "schema",
+    "report_id",
+    "report_type",
+    "status",
+    "version",
+    "generated_at",
+    "report_as_of",
+    "data_range",
+    "sample_counts",
+    "coverage",
+    "hashes",
+    "dependencies",
+    "completeness",
+    "conclusions",
+    "anomalies",
+    "gaps",
+    "limitations",
+    "review_links",
+    "financial_values_emitted",
+    "contains_private_values",
+    "immutable",
+    "snapshot_hash"
+  ],
+  "title": "PFI v0.2.5 Report Snapshot",
+  "type": "object"
+}

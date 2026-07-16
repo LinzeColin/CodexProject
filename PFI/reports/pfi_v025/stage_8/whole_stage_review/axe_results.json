@@ -1,0 +1,11 @@
+{
+  "accessibility_tree_ref": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/accessibility_tree.json",
+  "axe_core_available": false,
+  "axe_pass_claimed": false,
+  "disposition": "engine_unavailable; no synthetic axe result; deterministic WCAG 2.2 AA plus Chrome CDP AX substitute is bound",
+  "schema": "PFIV025Stage8WholeReviewAxeDispositionV1",
+  "status": "not_run",
+  "substitute_engine": "local_deterministic_wcag22aa_contrast_ax_keyboard",
+  "substitute_status": "pass",
+  "wcag_result_ref": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/wcag_audit.json"
+}

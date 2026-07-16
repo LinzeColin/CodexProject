@@ -1,0 +1,54 @@
+{
+  "browser_close_service_healthy": true,
+  "contains_private_values": false,
+  "finder_used": false,
+  "first_stop": {
+    "owned_group_signaled": true,
+    "port_released": true,
+    "process_group_empty": true,
+    "status": "pass",
+    "unowned_process_signaled": false
+  },
+  "gui_file_operations_used": false,
+  "initial_start_healthy": true,
+  "isolated_runtime_deleted_after_run": true,
+  "launcher_mode": "direct_canonical_bundle_executable",
+  "launchservices_used": false,
+  "offline_recovery": {
+    "browser_offline_performed": true,
+    "offline_failure_observed": true,
+    "online_recovery_observed": true
+  },
+  "open_command_used": false,
+  "repeated_start": {
+    "existing_service_reused": true,
+    "health_preserved": true,
+    "launch_count": 3,
+    "single_runtime_preserved": true
+  },
+  "restart_created_new_runtime": true,
+  "restart_healthy": true,
+  "restart_persistence_verified": true,
+  "schema": "PFIV025Stage12Phase122TargetMacLifecycleV1",
+  "second_stop": {
+    "owned_group_signaled": true,
+    "port_released": true,
+    "process_group_empty": true,
+    "status": "pass",
+    "unowned_process_signaled": false
+  },
+  "status": "pass",
+  "suspend_resume": {
+    "actual_os_sleep_performed": false,
+    "actual_os_wake_performed": false,
+    "health_recovered": true,
+    "limitation": "This is a deterministic service suspension proxy and is not represented as a kernel sleep/wake cycle.",
+    "member_count_after": 3,
+    "member_count_before": 3,
+    "probe": "owned_process_group_sigstop_sigcont",
+    "service_suspend_resume_proxy_performed": true,
+    "status": "pass",
+    "unavailable_while_suspended": true
+  },
+  "target_platform": "current_macos_host"
+}

@@ -1,0 +1,59 @@
+{
+  "actual_formal_shell": true,
+  "actual_report_render_binding_completed": true,
+  "actual_ui_render_binding_completed": true,
+  "console_errors": [],
+  "external_network_performed": false,
+  "finder_used": false,
+  "method": "actual_formal_shell_private_runtime_then_in_browser_redaction",
+  "network_performed": true,
+  "network_scope": "ephemeral_local_loopback_only",
+  "private_numeric_value_count_verified_before_redaction": 4,
+  "private_payload_persisted": false,
+  "redacted_visible_financial_value_count": 4,
+  "release_identity_ready_surfaces": {
+    "consumption_page": {
+      "app_shell_hidden": false,
+      "conflict_hidden": true,
+      "release_identity_state": "ready"
+    },
+    "homepage": {
+      "app_shell_hidden": false,
+      "conflict_hidden": true,
+      "release_identity_state": "ready"
+    },
+    "report": {
+      "app_shell_hidden": false,
+      "conflict_hidden": true,
+      "release_identity_state": "ready"
+    }
+  },
+  "review_harness_seams": [
+    "ephemeral_loopback_static_release_source",
+    "empty_service_worker_and_cache_adapters_for_isolated_profile",
+    "post_assertion_private_value_redaction"
+  ],
+  "schema": "PFIV025Stage5WholeReviewBrowserValidationV1",
+  "screenshot_bytes": {
+    "consumption_page": 470686,
+    "homepage": 471963,
+    "report": 469034
+  },
+  "screenshots": [
+    "PFI/reports/pfi_v025/stage_5/whole_stage_review/homepage_redacted.png",
+    "PFI/reports/pfi_v025/stage_5/whole_stage_review/consumption_page_redacted.png",
+    "PFI/reports/pfi_v025/stage_5/whole_stage_review/report_redacted.png"
+  ],
+  "status": "pass",
+  "surface_ids": [
+    "homepage",
+    "consumption_page",
+    "report"
+  ],
+  "surface_payload_hash_count": 1,
+  "visible_component_label_counts": {
+    "consumption_page": 4,
+    "homepage": 4,
+    "report": 4
+  }
+}

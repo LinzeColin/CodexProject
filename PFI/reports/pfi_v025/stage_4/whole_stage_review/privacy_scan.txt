@@ -1,0 +1,12 @@
+scanner=pfi-v025-stage4-whole-review-public-artifact-scan-v1
+observed_at=2026-07-14T13:46:08Z
+scope=Stage 4 whole-review public evidence and current-truth governance
+contains_private_values=false
+absolute_private_paths=0
+financial_row_values=0
+account_identifiers=0
+source_mutation=false
+database_changed=false
+finder_used=false
+network_performed=false
+result=pass

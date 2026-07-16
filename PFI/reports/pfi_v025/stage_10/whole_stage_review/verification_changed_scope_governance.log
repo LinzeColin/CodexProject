@@ -1,0 +1,16 @@
+complete root assembled; overlay files=20
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI
+CodexProject governance validation
+root: checked
+projects checked: PFI
+errors: 0
+warnings: 0
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+
+$ /usr/bin/python3 scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}

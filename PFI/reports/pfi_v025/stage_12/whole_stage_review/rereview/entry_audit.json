@@ -1,0 +1,44 @@
+{
+  "canonical_app": {
+    "build_version": "20260712.1",
+    "bundle_identifier": "com.linze.pfi.launcher",
+    "bundle_tree_sha256": "sha256:a41a7386253ac1b69d4f2ec09894e3e4daaa74103fbb0ed7d33993279a6eb443",
+    "codesign_valid": true,
+    "executable_sha256": "sha256:a5d87915df40b55e1333d939b6cf1f28c9a9f333867fd70eb864c27744ca922b",
+    "kind": "app_bundle",
+    "project_binding_matches": true,
+    "project_binding_present": true,
+    "project_binding_sha256": "sha256:88dfdbcd8549cfb09c24264106a8d9090a350839bf3ed708a57ecd23de2b4c2b",
+    "short_version": "0.2.5"
+  },
+  "canonical_app_modified": false,
+  "checks": {
+    "canonical_app_unmodified": true,
+    "finder_not_used": true,
+    "gui_file_operations_not_used": true,
+    "launchservices_not_used": true,
+    "noncanonical_entry_mismatch_zero": true,
+    "recalculated_entry_audit_pass": true
+  },
+  "contains_private_values": false,
+  "failed_checks": [],
+  "finder_used": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "noncanonical_entry_mismatch_count": 0,
+  "open_command_used": false,
+  "quarantined_app": {
+    "build_version": "20260629.1",
+    "bundle_identifier": "com.linze.pfi.launcher",
+    "bundle_tree_sha256": "sha256:0dee2fea455d8467fd55e1bf006ee0756a716a0a5af6bf5b7acfff9596b575fb",
+    "codesign_valid": true,
+    "executable_sha256": "sha256:0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d",
+    "kind": "app_bundle",
+    "project_binding_matches": true,
+    "project_binding_present": true,
+    "project_binding_sha256": "sha256:88dfdbcd8549cfb09c24264106a8d9090a350839bf3ed708a57ecd23de2b4c2b",
+    "short_version": "0.2.3"
+  },
+  "schema": "PFIV025Stage12WholeReviewRereviewEntryV1",
+  "status": "pass"
+}

@@ -11,6 +11,12 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Iterator
 
+from pfi_os.infrastructure.operational_store_runtime import (
+    ensure_operational_migration_registry,
+    execute_sql_statements,
+    operational_transaction,
+)
+
 
 class DataDomain(str, Enum):
     PUBLIC_SHARED_RAW = "PUBLIC_SHARED_RAW"
@@ -139,20 +145,15 @@ class OperationalStore:
 
     def initialize(self) -> Path:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.connect() as conn:
-            conn.executescript(SCHEMA_SQL)
+        with self.connect(immediate=True) as conn:
+            execute_sql_statements(conn, SCHEMA_SQL)
+            ensure_operational_migration_registry(conn)
         return self.db_path
 
     @contextmanager
-    def connect(self) -> Iterator[sqlite3.Connection]:
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA foreign_keys = ON")
-        try:
+    def connect(self, *, immediate: bool = False) -> Iterator[sqlite3.Connection]:
+        with operational_transaction(self.db_path, immediate=immediate) as conn:
             yield conn
-            conn.commit()
-        finally:
-            conn.close()
 
     def upsert_source(self, record: SourceRecord) -> SourceRecord:
         self._require_record(record.source_id, "source_id")

@@ -1,0 +1,120 @@
+{
+  "schema": "PFIV025Stage8Phase83ErrorPreventionAuditV1",
+  "status": "pass",
+  "financial_data_loaded": false,
+  "database_changed": false,
+  "import_confirm_disabled_before_preview": true,
+  "described_control_count": 5,
+  "missing_markers": [],
+  "all_descriptors_resolve": true,
+  "snapshots": [
+    {
+      "route": "/data/upload",
+      "bindings": [
+        {
+          "marker": "import-preview-before-commit",
+          "describedBy": "pfi-stage8-import-preview-before-commit-description",
+          "descriptorExists": true,
+          "disabled": true
+        },
+        {
+          "marker": "holding-review-before-save",
+          "describedBy": "pfi-stage8-holding-review-before-save-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "holding-reset-state",
+          "describedBy": "pfi-stage8-holding-reset-state-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "settings-review-before-save",
+          "describedBy": "pfi-stage8-settings-review-before-save-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "settings-reset-state",
+          "describedBy": "pfi-stage8-settings-reset-state-description",
+          "descriptorExists": true,
+          "disabled": false
+        }
+      ],
+      "importConfirmDisabledBeforePreview": true
+    },
+    {
+      "route": "/investment/holdings",
+      "bindings": [
+        {
+          "marker": "import-preview-before-commit",
+          "describedBy": "pfi-stage8-import-preview-before-commit-description",
+          "descriptorExists": true,
+          "disabled": true
+        },
+        {
+          "marker": "holding-review-before-save",
+          "describedBy": "pfi-stage8-holding-review-before-save-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "holding-reset-state",
+          "describedBy": "pfi-stage8-holding-reset-state-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "settings-review-before-save",
+          "describedBy": "pfi-stage8-settings-review-before-save-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "settings-reset-state",
+          "describedBy": "pfi-stage8-settings-reset-state-description",
+          "descriptorExists": true,
+          "disabled": false
+        }
+      ],
+      "importConfirmDisabledBeforePreview": true
+    },
+    {
+      "route": "/settings/account",
+      "bindings": [
+        {
+          "marker": "import-preview-before-commit",
+          "describedBy": "pfi-stage8-import-preview-before-commit-description",
+          "descriptorExists": true,
+          "disabled": true
+        },
+        {
+          "marker": "holding-review-before-save",
+          "describedBy": "pfi-stage8-holding-review-before-save-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "holding-reset-state",
+          "describedBy": "pfi-stage8-holding-reset-state-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "settings-review-before-save",
+          "describedBy": "pfi-stage8-settings-review-before-save-description",
+          "descriptorExists": true,
+          "disabled": false
+        },
+        {
+          "marker": "settings-reset-state",
+          "describedBy": "pfi-stage8-settings-reset-state-description",
+          "descriptorExists": true,
+          "disabled": false
+        }
+      ],
+      "importConfirmDisabledBeforePreview": true
+    }
+  ]
+}

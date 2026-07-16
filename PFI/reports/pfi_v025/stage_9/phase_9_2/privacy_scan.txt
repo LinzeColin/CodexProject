@@ -1,0 +1,5 @@
+forbidden_hits=0
+absolute_local_paths=0
+financial_amounts=0
+contains_private_values=false
+financial_values_emitted=0

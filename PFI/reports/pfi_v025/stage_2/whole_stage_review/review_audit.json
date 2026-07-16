@@ -1,0 +1,64 @@
+{
+  "schema": "PFIV025Stage2WholeReviewAuditV1",
+  "version": "v0.2.5",
+  "stage": 2,
+  "acceptance_id": "ACC-PFI-V025-STAGE2-WHOLE-REVIEW",
+  "review_base": "431ddb30c483f6451c29dfb6890c4bee5690c57c",
+  "initial_review": {
+    "reviewed_at": "2026-07-14T19:27:14+10:00",
+    "counts": {"critical": 0, "important": 3, "minor": 1},
+    "findings": [
+      {
+        "finding_id": "S2-WR-I01",
+        "severity": "important",
+        "summary": "Stage 2 had no dedicated whole-stage verifier or closeout Evidence Pack.",
+        "status": "fixed",
+        "remediation_ref": "PFI/scripts/v025/verify_stage2_whole_review.py"
+      },
+      {
+        "finding_id": "S2-WR-I02",
+        "severity": "important",
+        "summary": "The Phase 2.3 index was only ready_for_whole_stage_review and self-excluded the current Phase hash.",
+        "status": "fixed",
+        "remediation_ref": "PFI/reports/pfi_v025/stage_2/whole_stage_review/final_evidence_index.json"
+      },
+      {
+        "finding_id": "S2-WR-I03",
+        "severity": "important",
+        "summary": "No Stage 2 human acceptance artifact bound the accepted data scope to the reviewed evidence index.",
+        "status": "fixed",
+        "remediation_ref": "PFI/reports/pfi_v025/stage_2/whole_stage_review/human_acceptance.json"
+      },
+      {
+        "finding_id": "S2-WR-M01",
+        "severity": "minor",
+        "summary": "Canonical governance and current source disposition still represented the pre-review Phase candidate state.",
+        "status": "fixed",
+        "remediation_ref": "PFI/reports/pfi_v025/stage_2/whole_stage_review/source_disposition.json"
+      }
+    ]
+  },
+  "remediation_scope": [
+    "dedicated read-only verifier and focused regression contract",
+    "final Stage 2 evidence index with immutable Phase commit bindings",
+    "specific Stage 2 human acceptance binding based on prior blanket interim authorization",
+    "current source disposition and canonical governance transition"
+  ],
+  "independent_review_tracks": {
+    "requirements_evidence": "pass",
+    "code_security_privacy": "pass",
+    "governance_renderer": "pass"
+  },
+  "post_remediation_review": {
+    "reviewed_at": "2026-07-14T19:27:14+10:00",
+    "counts": {"critical": 0, "important": 0, "minor": 0},
+    "result": "pass",
+    "acceptance_recommendation": "accepted_for_transition"
+  },
+  "finder_used": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "stage_3_work_performed": false,
+  "production_accepted": false,
+  "final_human_acceptance": false
+}

@@ -1,0 +1,60 @@
+{
+  "check_count": 21,
+  "checks": {
+    "api_operational_metric_fail_closed": true,
+    "blocked_hash_contract_visible": true,
+    "blocked_metric_no_false_zero": true,
+    "blocked_metric_selected": true,
+    "blocked_reason_visible": true,
+    "canonical_runtime_status_fail_closed": true,
+    "deep_link_reload_restored": true,
+    "interconnection_hashes_visible": true,
+    "interconnection_nodes_visible": true,
+    "interconnection_route_formal_and_clickable": true,
+    "no_console_error": true,
+    "no_external_request": true,
+    "no_http_error": true,
+    "no_page_error": true,
+    "operational_event_lineage_not_fabricated": true,
+    "operational_four_hashes_visible": true,
+    "operational_metric_fail_closed": true,
+    "operational_metric_selected": true,
+    "parameter_center_chinese_readable": true,
+    "parameter_hashes_visible": true,
+    "parameter_route_formal": true
+  },
+  "contains_private_values": false,
+  "external_network_used": false,
+  "financial_values_persisted": 0,
+  "finder_used": false,
+  "formal_routes": [
+    "/settings/parameters",
+    "/data/interconnection",
+    "/reports/metric-drilldown"
+  ],
+  "interconnection_map_screenshot": "interconnection_map.png",
+  "parameter_center_screenshot": "parameter_center.png",
+  "passed_check_count": 21,
+  "schema": "PFIV025Stage7Phase73BrowserEvidenceV1",
+  "status": "pass",
+  "trace": "browser_trace_sanitized.zip",
+  "trace_privacy_scan": {
+    "actual_playwright_trace": true,
+    "contains_absolute_local_path": false,
+    "contains_private_values": false,
+    "contains_runtime_token": false,
+    "replacements": {
+      "absolute_paths": 1,
+      "auth_tokens": 0,
+      "financial_text": 0,
+      "image_entries_removed": 0,
+      "private_payloads": 7,
+      "resource_entries_removed": 0,
+      "sensitive_fields": 29
+    },
+    "resource_bodies_removed": true,
+    "retained_entry_count": 3,
+    "status": "pass",
+    "trace": "browser_trace_sanitized.zip"
+  }
+}

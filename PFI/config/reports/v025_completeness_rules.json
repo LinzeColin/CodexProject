@@ -1,0 +1,121 @@
+{
+  "report_dependencies": {
+    "cash": {
+      "critical": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-LIABILITIES",
+        "economic_event_adapter",
+        "financial_analysis_implementation"
+      ],
+      "review_links": [
+        "/accounts",
+        "/data/interconnection",
+        "/reports/metric-drilldown"
+      ]
+    },
+    "cashflow": {
+      "critical": [
+        "SRC-TRANSACTIONS-ALIPAY",
+        "economic_event_adapter",
+        "financial_analysis_implementation"
+      ],
+      "partial_scopes": [
+        {
+          "dependencies": [
+            "SRC-TRANSACTIONS-ALIPAY"
+          ],
+          "scope_id": "transaction_source_coverage_only"
+        }
+      ],
+      "review_links": [
+        "/ledger",
+        "/data/interconnection",
+        "/reports/metric-drilldown"
+      ]
+    },
+    "consumption": {
+      "critical": [
+        "SRC-TRANSACTIONS-ALIPAY",
+        "economic_event_adapter",
+        "financial_analysis_implementation"
+      ],
+      "partial_scopes": [
+        {
+          "dependencies": [
+            "SRC-TRANSACTIONS-ALIPAY"
+          ],
+          "scope_id": "transaction_source_coverage_only"
+        }
+      ],
+      "review_links": [
+        "/consumption",
+        "/data/interconnection",
+        "/reports/metric-drilldown"
+      ]
+    },
+    "data_quality": {
+      "critical": [],
+      "review_links": [
+        "/sync",
+        "/data/interconnection",
+        "/reports/metric-drilldown",
+        "/settings/parameters"
+      ]
+    },
+    "investment": {
+      "critical": [
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT",
+        "economic_event_adapter",
+        "financial_analysis_implementation"
+      ],
+      "review_links": [
+        "/investment/holdings",
+        "/data/interconnection",
+        "/reports/metric-drilldown"
+      ]
+    },
+    "net_worth": {
+      "critical": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-LIABILITIES",
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT",
+        "economic_event_adapter",
+        "financial_analysis_implementation"
+      ],
+      "review_links": [
+        "/accounts",
+        "/investment/holdings",
+        "/data/interconnection",
+        "/reports/metric-drilldown"
+      ]
+    }
+  },
+  "schema": "PFIV025Stage9Phase91CompletenessRulesV1",
+  "status_rules": {
+    "blocked": {
+      "condition": "one_or_more_critical_dependencies_not_ready_and_no_independently_calculable_scope",
+      "conclusion_policy": "financial_conclusion_forbidden",
+      "requires_explicit_gaps": true
+    },
+    "complete": {
+      "condition": "all_critical_dependencies_ready_and_hashes_consistent",
+      "conclusion_policy": "financial_conclusion_allowed",
+      "requires_explicit_gaps": false
+    },
+    "data_quality": {
+      "condition": "always_generatable_from_dependency_states_without_financial_values",
+      "conclusion_policy": "data_quality_only",
+      "status": "complete"
+    },
+    "partial": {
+      "condition": "at_least_one_independently_calculable_scope_ready_with_all_its_dependencies_ready",
+      "conclusion_policy": "scoped_partial_only",
+      "requires_explicit_gaps": true
+    }
+  },
+  "version": "v0.2.5"
+}

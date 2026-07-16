@@ -1,0 +1,43 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE11-WHOLE-REVIEW",
+  "current_phase_only": true,
+  "phase_11_2_started": false,
+  "phase_11_3_started": false,
+  "phase_id": "V025-S11-P11.1",
+  "product_commit": "ad16901505f7e6f23653aa8b1e03945211dc4e93",
+  "product_commits": [
+    "b07709d0453d3d2c6d36a10375d823dbb0870c53",
+    "ad16901505f7e6f23653aa8b1e03945211dc4e93"
+  ],
+  "risk_tier": "T2_SQLITE_RUNTIME_CONCURRENCY_MIGRATION",
+  "safety_boundary": {
+    "app_install_performed": false,
+    "canonical_private_database_used": false,
+    "external_network_performed": true,
+    "financial_values_emitted": 0,
+    "finder_used": false,
+    "gui_file_operations_used": false,
+    "launchservices_used": false,
+    "network_performed": true,
+    "network_scope": "official_documentation_research_only",
+    "official_research_domains": [
+      "sqlite.org"
+    ],
+    "product_runtime_external_network_calls": 0,
+    "product_runtime_network_performed": false,
+    "push_performed": false
+  },
+  "schema": "PFIV025Stage11Phase111ContractV1",
+  "scope_override": {
+    "authorized": true,
+    "path": "PFI/src/pfi_os/application/operational_store.py",
+    "reason": "active base OperationalStore must consume the infrastructure gate"
+  },
+  "task_ids": [
+    "S11-P1-T1",
+    "S11-P1-T2",
+    "S11-P1-T3",
+    "S11-P1-T4"
+  ],
+  "whole_stage_review_started": false
+}

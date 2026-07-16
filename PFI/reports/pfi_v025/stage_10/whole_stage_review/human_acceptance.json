@@ -1,0 +1,19 @@
+{
+  "acceptance_statement": "用户站立授权接受 Stage 10 仅用于阶段过渡，并仅授权后续独立 run 进入 Stage 11；不构成生产或最终验收。",
+  "accepted_at": "2026-07-16T00:30:53+10:00",
+  "accepted_scope": [
+    "Stage 10 durable lifecycle, dependency diff/cache, observability, recovery and formal job workflow transition gate",
+    "authorization for a later independent run to enter Stage 11; Stage 11 remains not_started in this run"
+  ],
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:34b075b7205dc1fe97b6db374cac1b6121218648a63fcc8eb4f5adfa2d148f58",
+  "git_commit": "92579cfdd01e298d0121733375a2be8f1dbc5035",
+  "known_defects": [
+    "SQLite runtime 3.50.4 remains below the TaskPack WAL-safe gate, so WAL stays disabled and Stage 11 must re-evaluate runtime safety",
+    "GitHub push, canonical PFI.app installation, production acceptance and final human acceptance remain reserved for Stage 12"
+  ],
+  "product": "PFI",
+  "stage": 10,
+  "user_confirmation_reference": "在最终验收前我全部都同意授权，不允许block；确认 不允许再有任何block",
+  "version": "v0.2.5"
+}

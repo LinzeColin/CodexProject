@@ -1,0 +1,75 @@
+{
+  "commands": [
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage10_job_lifecycle.py -q",
+      "exit_code": 0,
+      "result": "7 passed",
+      "verification_id": "phase_10_1_target"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py PFI/tests/test_v025_stage7_holding_persistence.py -q",
+      "exit_code": 0,
+      "result": "19 passed",
+      "verification_id": "historical_stage10_and_sqlite_regression"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage10_job_lifecycle.py PFI/tests/test_v023_stage10_e2e_acceptance.py PFI/tests/test_v025_stage7_holding_persistence.py -q",
+      "exit_code": 0,
+      "result": "26 passed",
+      "verification_id": "combined_phase_and_regression"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage1_release_identity.py -q",
+      "exit_code": 0,
+      "result": "10 passed",
+      "verification_id": "release_identity"
+    },
+    {
+      "command": "isolated temporary SQLite lifecycle probe",
+      "exit_code": 0,
+      "result": "7 jobs, 20 events, all seven required statuses, DELETE journal, integrity/FK pass, no raw lease token, stale worker rejected, temporary DB removed",
+      "verification_id": "database_before_after"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B -m pytest PFI/tests/test_v025_stage10_job_lifecycle.py PFI/tests/test_v023_stage10_e2e_acceptance.py PFI/tests/test_v025_stage7_holding_persistence.py PFI/tests/test_v025_stage1_release_identity.py -q",
+      "exit_code": 0,
+      "result": "36 passed",
+      "verification_id": "final_combined_tests"
+    },
+    {
+      "command": "Task Pack Draft 2020-12 evidence schema plus changed-files, artifact hashes, runtime contract and DB-probe assertions",
+      "exit_code": 0,
+      "result": "schema pass; 33 changed files; 10 artifact hashes; phase contract exact; DB probe pass",
+      "verification_id": "evidence_contract"
+    },
+    {
+      "command": "complete origin/main checkout plus HEAD PFI and current worktree overlay: validate_project_governance.py --project PFI",
+      "exit_code": 0,
+      "result": "errors=0; warnings=0",
+      "verification_id": "complete_checkout_governance"
+    },
+    {
+      "command": "PFI/.venv/bin/python -B scripts/lean_governance.py check-render --project PFI",
+      "exit_code": 0,
+      "result": "drift=0; reference_issue_count=0",
+      "verification_id": "current_worktree_renderer"
+    },
+    {
+      "command": "phase document and evidence privacy pattern scan",
+      "exit_code": 0,
+      "result": "actual username, absolute home, private key, email and raw lease token fixture counts all zero",
+      "verification_id": "privacy_scan"
+    },
+    {
+      "command": "isolated 40-job/8-worker completion stress plus same-revision dual-heartbeat CAS race",
+      "exit_code": 0,
+      "result": "40 unique jobs completed exactly once; one heartbeat won and one stale write was rejected; 41 jobs/163 events; integrity and FK pass; DELETE journal",
+      "verification_id": "concurrency_stress"
+    }
+  ],
+  "phase_id": "V025-S10-P10.1",
+  "product_commit": "b97827f0b90f7e72de9fec64f88f702658a823bf",
+  "schema": "PFIV025Stage10Phase101VerificationResultsV1",
+  "status": "pass",
+  "verification_group_count": 11
+}

@@ -1,0 +1,24 @@
+{
+  "browser_check_count": 23,
+  "canonical_private_database_mutated": false,
+  "canonical_private_database_used": true,
+  "core_statuses": {
+    "browser": "pass",
+    "phase_commit_binding": "pass",
+    "public_distribution": "pass",
+    "real_backup_restore": "pass",
+    "release_identity": "pass",
+    "taskpack_binding": "pass"
+  },
+  "external_network_performed": false,
+  "finder_used": false,
+  "generated_at": "2026-07-16T03:45:51+10:00",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "private_values_emitted": false,
+  "remediation_commit": "9c450ea483cd2040636e375c9f7d84e5127e44cf",
+  "review_base": "f49e10f47a2f9996e4de0e66402686ae502ce16c",
+  "schema": "PFIV025Stage11WholeReviewCoreEvidenceV1",
+  "stage_12_started": false,
+  "status": "pass"
+}

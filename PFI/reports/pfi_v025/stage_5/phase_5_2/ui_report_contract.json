@@ -1,0 +1,15 @@
+{
+  "labels_zh": {
+    "investment_allocation_amount": "投资域内配置金额",
+    "investment_funding_outflow": "投资资金流出金额",
+    "living_consumption": "生活消费金额",
+    "total_consumption_outflow": "消费总流出金额（用户定义活动口径）"
+  },
+  "model_version": "pfi-v0.2.5-financial-models-v1",
+  "real_report_binding_completed": false,
+  "real_ui_binding_completed": false,
+  "same_payload_contract_required": true,
+  "schema": "PFIV025Stage5Phase52UIReportParameterEvidenceV1",
+  "surface_ids": ["homepage", "consumption_page", "report"],
+  "treatment": "formal consumer contract only; Web/UI source is outside Phase 5.2 Allowed Files"
+}

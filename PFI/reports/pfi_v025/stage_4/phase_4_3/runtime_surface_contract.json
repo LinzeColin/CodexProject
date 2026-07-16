@@ -1,0 +1,23 @@
+{
+  "contains_private_values": false,
+  "cross_page_difference_count": 0,
+  "frontend_contract": "PFIV025Stage4SurfaceStateViewsV1",
+  "legacy_surface_aliases": {
+    "home": "homepage",
+    "insights": "report"
+  },
+  "metric_contract": "PFIV025MetricStateStrictV1",
+  "phase": "4.3",
+  "primary_surface_ids": [
+    "homepage",
+    "accounts",
+    "investment",
+    "consumption",
+    "report"
+  ],
+  "runtime_endpoint": "/api/read-model-status",
+  "schema": "PFIV025Stage4Phase43RuntimeSurfaceContractV1",
+  "stage": 4,
+  "status": "pass",
+  "version": "v0.2.5"
+}

@@ -1,0 +1,204 @@
+{
+  "app_install_performed": false,
+  "blocked_report_count": 3,
+  "browser_check_count": 16,
+  "commands": [
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage9_report_schema.py PFI/tests/test_v025_stage9_report_consistency.py PFI/tests/test_v025_stage9_model_validation.py PFI/tests/test_v025_stage9_decision_review.py PFI/tests/test_v025_stage9_export_consistency.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage1_release_identity.py",
+      "command_id": "focused_stage9",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_focused_stage9.log",
+      "output_sha256": "sha256:3a09ae5e2a3d86cc2a8112a020fdb1386263d621df2c2d1e5a4b1b23e7b3dfde",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage9_report_schema.py PFI/tests/test_v025_stage9_report_consistency.py PFI/tests/test_v025_stage9_model_validation.py PFI/tests/test_v025_stage9_decision_review.py PFI/tests/test_v025_stage9_export_consistency.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage1_release_identity.py"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py",
+      "command_id": "selected_upstream_regression",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_selected_upstream_regression.log",
+      "output_sha256": "sha256:f284f7caf49246efc5e60250f10d75907f26cec2e50b7e33c97ffd757981b305",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/web/tests/v025/stage9_whole_review_browser.py",
+      "command_id": "current_content_browser",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_current_content_browser.log",
+      "output_sha256": "sha256:cc3564fd86063833d84a598adbe7e2064a6c3ef8ab82d495b4c210956016b9ad",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python PFI/web/tests/v025/stage9_whole_review_browser.py"
+      ]
+    },
+    {
+      "command": "node PFI/web/tests/v025/stage7_metric_drilldown.test.mjs && node PFI/web/tests/v025/stage9_reports.test.mjs && node PFI/web/tests/v025/stage9_decision_review.test.mjs && node --check PFI/web/app/shell.js && node --check PFI/web/app/pages/reports/stage9Analysis.js && node --check PFI/web/app/pages/reports/stage9DecisionReview.js && $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -c 'import ast,pathlib; paths=('\"'\"'PFI/web/tests/v025/stage9_whole_review_browser.py'\"'\"','\"'\"'PFI/web/tests/v025/stage9_whole_review_evidence.py'\"'\"','\"'\"'PFI/web/tests/v025/stage9_whole_review_verify.py'\"'\"','\"'\"'PFI/web/tests/v025/stage9_whole_review_finalize.py'\"'\"'); [ast.parse(pathlib.Path(p).read_text(encoding='\"'\"'utf-8'\"'\"'),filename=p) for p in paths]' && git diff --check",
+      "command_id": "node_syntax_and_diff",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_node_syntax_and_diff.log",
+      "output_sha256": "sha256:c6140f63afeb274487393d60bcc0328006e80ba1a0f75beadab95c5b39022303",
+      "subcommands": [
+        "node PFI/web/tests/v025/stage7_metric_drilldown.test.mjs",
+        "node PFI/web/tests/v025/stage9_reports.test.mjs",
+        "node PFI/web/tests/v025/stage9_decision_review.test.mjs",
+        "node --check PFI/web/app/shell.js",
+        "node --check PFI/web/app/pages/reports/stage9Analysis.js",
+        "node --check PFI/web/app/pages/reports/stage9DecisionReview.js",
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -c 'import ast,pathlib; paths=('\"'\"'PFI/web/tests/v025/stage9_whole_review_browser.py'\"'\"','\"'\"'PFI/web/tests/v025/stage9_whole_review_evidence.py'\"'\"','\"'\"'PFI/web/tests/v025/stage9_whole_review_verify.py'\"'\"','\"'\"'PFI/web/tests/v025/stage9_whole_review_finalize.py'\"'\"'); [ast.parse(pathlib.Path(p).read_text(encoding='\"'\"'utf-8'\"'\"'),filename=p) for p in paths]'",
+        "git diff --check"
+      ]
+    },
+    {
+      "command": "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -c 'import json,pathlib; from pypdf import PdfReader; d=pathlib.Path('\"'\"'PFI/reports/pfi_v025/stage_9/whole_stage_review'\"'\"'); p=json.loads((d/'\"'\"'pdf_validation.json'\"'\"').read_text()); q=json.loads((d/'\"'\"'privacy_scan.txt'\"'\"').read_text() if False else '\"'\"'{}'\"'\"'); b=json.loads((d/'\"'\"'browser_validation.json'\"'\"').read_text()); r=PdfReader(d/'\"'\"'exports/pfi_v025_decision_review.pdf'\"'\"'); assert p['\"'\"'status'\"'\"']=='\"'\"'pass'\"'\"' and p['\"'\"'visual_inspection_status'\"'\"'].startswith('\"'\"'pass_'\"'\"'); assert p['\"'\"'unencrypted'\"'\"'] and not p['\"'\"'javascript_or_open_action_detected'\"'\"']; assert len(r.pages)==1 and b['\"'\"'status'\"'\"']=='\"'\"'pass'\"'\"' and b['\"'\"'passed_check_count'\"'\"']==b['\"'\"'check_count'\"'\"']==16; assert '\"'\"'/Users/'\"'\"' not in (d/'\"'\"'privacy_scan.txt'\"'\"').read_text(); print('\"'\"'pdf/privacy/browser evidence pass'\"'\"')'",
+      "command_id": "pdf_privacy_and_evidence",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_pdf_privacy_and_evidence.log",
+      "output_sha256": "sha256:e1ddcf6ff3fba0acdf39f84edbab3c20951670c82f167e2e1130510dd2fccc46",
+      "subcommands": [
+        "$HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -c 'import json,pathlib; from pypdf import PdfReader; d=pathlib.Path('\"'\"'PFI/reports/pfi_v025/stage_9/whole_stage_review'\"'\"'); p=json.loads((d/'\"'\"'pdf_validation.json'\"'\"').read_text()); q=json.loads((d/'\"'\"'privacy_scan.txt'\"'\"').read_text() if False else '\"'\"'{}'\"'\"'); b=json.loads((d/'\"'\"'browser_validation.json'\"'\"').read_text()); r=PdfReader(d/'\"'\"'exports/pfi_v025_decision_review.pdf'\"'\"'); assert p['\"'\"'status'\"'\"']=='\"'\"'pass'\"'\"' and p['\"'\"'visual_inspection_status'\"'\"'].startswith('\"'\"'pass_'\"'\"'); assert p['\"'\"'unencrypted'\"'\"'] and not p['\"'\"'javascript_or_open_action_detected'\"'\"']; assert len(r.pages)==1 and b['\"'\"'status'\"'\"']=='\"'\"'pass'\"'\"' and b['\"'\"'passed_check_count'\"'\"']==b['\"'\"'check_count'\"'\"']==16; assert '\"'\"'/Users/'\"'\"' not in (d/'\"'\"'privacy_scan.txt'\"'\"').read_text(); print('\"'\"'pdf/privacy/browser evidence pass'\"'\"')'"
+      ]
+    },
+    {
+      "command": "git archive --format=tar HEAD -> $ISOLATED_COMPLETE_ROOT && overlay current Stage 9 worktree changes -> $ISOLATED_COMPLETE_ROOT && $PYTHON scripts/validate_project_governance.py --project PFI (cwd=$ISOLATED_COMPLETE_ROOT) && $PYTHON scripts/lean_governance.py check-render --project PFI (cwd=$ISOLATED_COMPLETE_ROOT) && $PYTHON scripts/lean_governance.py check-render --project PFI (fallback parser without PyYAML) && /usr/bin/python3 scripts/lean_governance.py check-render --project PFI (PyYAML parser)",
+      "command_id": "changed_scope_governance",
+      "exit_code": 0,
+      "output_ref": "PFI/reports/pfi_v025/stage_9/whole_stage_review/verification_changed_scope_governance.log",
+      "output_sha256": "sha256:ad0fec38f67e7dd0e93d0e6ee1975cdddc58889902a51366a7818ab205376a7c",
+      "subcommands": [
+        "git archive --format=tar HEAD -> $ISOLATED_COMPLETE_ROOT",
+        "overlay current Stage 9 worktree changes -> $ISOLATED_COMPLETE_ROOT",
+        "$PYTHON scripts/validate_project_governance.py --project PFI (cwd=$ISOLATED_COMPLETE_ROOT)",
+        "$PYTHON scripts/lean_governance.py check-render --project PFI (cwd=$ISOLATED_COMPLETE_ROOT)",
+        "$PYTHON scripts/lean_governance.py check-render --project PFI (fallback parser without PyYAML)",
+        "/usr/bin/python3 scripts/lean_governance.py check-render --project PFI (PyYAML parser)"
+      ],
+      "validation_scope": "complete_git_archive_plus_exact_current_stage9_overlay"
+    }
+  ],
+  "contains_private_values": false,
+  "database_changed": false,
+  "dual_consumption_component_count": 4,
+  "external_network_performed": false,
+  "final_human_acceptance": false,
+  "financial_values_emitted": 0,
+  "finder_used": false,
+  "generated_at": "2026-07-15T19:18:39+10:00",
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "overlay_stable_during_verification": true,
+  "partial_report_count": 2,
+  "production_accepted": false,
+  "push_performed": false,
+  "real_financial_rows_read": false,
+  "report_count": 5,
+  "schema": "PFIV025Stage9FinalVerificationResultsV1",
+  "status": "pass",
+  "verified_overlay": {
+    "base_commit": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+    "content_manifest_sha256": "sha256:67e49cdf90ad8d8c0663b0066e216457216b3ab5908d9475b2f4328779c42303",
+    "file_count": 24,
+    "files": [
+      {
+        "path": "PFI/CHANGELOG.md",
+        "sha256": "sha256:4461c58c6630c47403a8a33690381b76d53b611ce2869cffe3051393e2e5fe04"
+      },
+      {
+        "path": "PFI/HANDOFF.md",
+        "sha256": "sha256:b9f237be684099ba4d8ab1889d331816c706184456ed669c2d59c663c9363124"
+      },
+      {
+        "path": "PFI/README.md",
+        "sha256": "sha256:4fb21edfd53e139a1097f00ddf7642b680abb7fe64f0139e0235751df62ce125"
+      },
+      {
+        "path": "PFI/docs/governance/ASSURANCE_STATUS.yaml",
+        "sha256": "sha256:1b622ce76d1b8091c44ef0b8ec96a80c918be71a13cdd2e1c7be3ddf54dc321d"
+      },
+      {
+        "path": "PFI/docs/governance/DELIVERY_PLAN.md",
+        "sha256": "sha256:a7fe1f77ff923169ec52ff81191abb0634eb4361428080e8e51a6132c0e244ea"
+      },
+      {
+        "path": "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+        "sha256": "sha256:74dcac4d3440399bb465796caf5662bd15b60a4f7057c1409a8e91870eb1e5da"
+      },
+      {
+        "path": "PFI/docs/governance/MODEL_SPEC.md",
+        "sha256": "sha256:54c730f1f950a08f9ce561ffeda8cca9289bb49042a48321a1ad057954ddc17a"
+      },
+      {
+        "path": "PFI/docs/governance/OWNER_STATUS.md",
+        "sha256": "sha256:4bc5cc7bd5f5af47455e242bc759de42260b6792df53aac1b4eaf1120e76aa5c"
+      },
+      {
+        "path": "PFI/docs/governance/STATUS.md",
+        "sha256": "sha256:cdef82dba8707f8636c39b91033df6adc5e7ebfbcf7bff0532d8327a1d893971"
+      },
+      {
+        "path": "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+        "sha256": "sha256:70e07f0ac6d668c8a191d86d96c71cc2b64ce29a0552f7360aad4cb9eb1015b4"
+      },
+      {
+        "path": "PFI/docs/governance/VERSION_MATRIX.yaml",
+        "sha256": "sha256:54b63d6058d310a54585734d75606a560fa13bc1d87c67d8dc52e1e8cd0a17b0"
+      },
+      {
+        "path": "PFI/docs/governance/delivery_tasks.yaml",
+        "sha256": "sha256:3cfe32f787658c1895d8d3ce30fde9e6c93e2e494d313876a3744cb80cfcfeeb"
+      },
+      {
+        "path": "PFI/docs/governance/development_events.jsonl",
+        "sha256": "sha256:45053475921e659afe78cae3dfdcd86f8e6d9f1d1b03e6e7ae0ca4eac6e63095"
+      },
+      {
+        "path": "PFI/docs/governance/project.yaml",
+        "sha256": "sha256:591cbf45e7ef9b7e631422146ad47427092226c175726a6e66b4c650d01a4703"
+      },
+      {
+        "path": "PFI/docs/governance/roadmap.yaml",
+        "sha256": "sha256:943f3339da80457ee4ddf3a1c41023f10b823e26f10a576a510ac05d803533cc"
+      },
+      {
+        "path": "PFI/docs/pfi_v025/stage_9/STAGE_9_WHOLE_STAGE_REVIEW.md",
+        "sha256": "sha256:f9b6cfe3f2ae6bef9cd62963012f6704b7341d0bd5ca3e86bce23a2828d7d9c9"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage9_whole_review_browser.py",
+        "sha256": "sha256:e763cf3934eec711a418e3f0b6cbc04b7cb75b23c0f4ede52ffb133267fee281"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage9_whole_review_cdp.mjs",
+        "sha256": "sha256:5134da8e1bea6bb606a37bd319a4a7ff1106bc059a31d00689869f32d298f725"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage9_whole_review_evidence.py",
+        "sha256": "sha256:3562bd3a9e7119d692b7f24e41ef8c634b1de7e65a1aef7a099ee63ce22628be"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage9_whole_review_finalize.py",
+        "sha256": "sha256:1e42bbe69f71a41b27fabdcdf07f218645f9098d00b49ad7f11ea48180fbeeba"
+      },
+      {
+        "path": "PFI/web/tests/v025/stage9_whole_review_verify.py",
+        "sha256": "sha256:4d07e6e91ab5ee240a11869495749248f961f0bde054a6e95c8187d2fa8c4cc7"
+      },
+      {
+        "path": "PFI/功能清单.md",
+        "sha256": "sha256:aa84011a82ac856458bb3d3e088bafff04aca8b7f0638caf0b8b301058793509"
+      },
+      {
+        "path": "PFI/开发记录.md",
+        "sha256": "sha256:b532c30cdbaae04ebbe6b14326bb3526a0bdd28f82e56bf7d342684671a03edc"
+      },
+      {
+        "path": "PFI/模型参数文件.md",
+        "sha256": "sha256:4e82d23aa6025ed1b6702e81be80f110b8e7cd381dd56a01226725f3ca963f43"
+      }
+    ],
+    "schema": "PFIV025Stage9ReviewedWorktreeOverlayV1",
+    "status": "frozen",
+    "whole_review_output_excluded_from_manifest": true
+  }
+}

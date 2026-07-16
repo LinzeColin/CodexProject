@@ -1,0 +1,281 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS",
+  "actual_formal_shell": true,
+  "contract_id": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+  "desktop": {
+    "checks": {
+      "aliases_non_primary": true,
+      "aliases_resolve": true,
+      "console_errors": true,
+      "input_alias_normalized": true,
+      "one_shared_primary_tree": true,
+      "primary_clicks": true,
+      "primary_order": true,
+      "registry_contract": true,
+      "release_identity_ready": true,
+      "single_active_entry": true,
+      "strategy_lab_single_canonical": true,
+      "tracked_screenshot_redaction": true
+    },
+    "console_errors": [],
+    "expected_initial_route": "/overview",
+    "input_route": "/home",
+    "result": {
+      "activePrimaryCount": 1,
+      "aliasPrimaryNodeCount": 0,
+      "aliasResults": [
+        {
+          "inputRouteAlias": "/home",
+          "primaryRouteAlias": "/overview",
+          "redirectedFrom": "/home",
+          "routeAlias": "/overview",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "home"
+        },
+        {
+          "inputRouteAlias": "/market",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/market",
+          "routeAlias": "/market-research/market",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/research",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/research",
+          "routeAlias": "/market-research/research",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/holdings",
+          "primaryRouteAlias": "/investment",
+          "redirectedFrom": "/holdings",
+          "routeAlias": "/investment/holdings",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "investment"
+        },
+        {
+          "inputRouteAlias": "/strategy-lab",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/strategy-lab",
+          "routeAlias": "/market-research/strategy-lab",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/investment/strategy-lab",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/investment/strategy-lab",
+          "routeAlias": "/market-research/strategy-lab",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/data-system",
+          "primaryRouteAlias": "/settings",
+          "redirectedFrom": "/data-system",
+          "routeAlias": "/settings/data-system",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "settings"
+        }
+      ],
+      "appShellVisible": true,
+      "bottomPrimaryTreeCount": 0,
+      "clickedRoutes": [
+        "/overview",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/data",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "conflictHidden": true,
+      "contractVersion": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+      "evidenceRedacted": true,
+      "initialNormalizedHash": "/overview",
+      "mobileOnlyPrimaryCount": 0,
+      "mobilePrimaryCount": 10,
+      "primaryRoutes": [
+        "/overview",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/data",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "registrySchema": "PFIV025Stage6Phase61NavigationContractV1",
+      "releaseIdentityState": "ready",
+      "uniquePrimaryNodeCount": 10
+    },
+    "screenshot": "PFI/reports/pfi_v025/stage_6/phase_6_1/desktop_navigation.png",
+    "screenshot_bytes": 457947,
+    "status": "pass",
+    "window_size": "1440,1100"
+  },
+  "external_network_performed": false,
+  "financial_data_loaded": false,
+  "finder_used": false,
+  "method": "actual_formal_shell_ephemeral_loopback_isolated_chrome",
+  "mobile": {
+    "checks": {
+      "aliases_non_primary": true,
+      "aliases_resolve": true,
+      "console_errors": true,
+      "input_alias_normalized": true,
+      "one_shared_primary_tree": true,
+      "primary_clicks": true,
+      "primary_order": true,
+      "registry_contract": true,
+      "release_identity_ready": true,
+      "single_active_entry": true,
+      "strategy_lab_single_canonical": true,
+      "tracked_screenshot_redaction": true
+    },
+    "console_errors": [],
+    "expected_initial_route": "/settings/data-system",
+    "input_route": "/data-system",
+    "result": {
+      "activePrimaryCount": 1,
+      "aliasPrimaryNodeCount": 0,
+      "aliasResults": [
+        {
+          "inputRouteAlias": "/home",
+          "primaryRouteAlias": "/overview",
+          "redirectedFrom": "/home",
+          "routeAlias": "/overview",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "home"
+        },
+        {
+          "inputRouteAlias": "/market",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/market",
+          "routeAlias": "/market-research/market",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/research",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/research",
+          "routeAlias": "/market-research/research",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/holdings",
+          "primaryRouteAlias": "/investment",
+          "redirectedFrom": "/holdings",
+          "routeAlias": "/investment/holdings",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "investment"
+        },
+        {
+          "inputRouteAlias": "/strategy-lab",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/strategy-lab",
+          "routeAlias": "/market-research/strategy-lab",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/investment/strategy-lab",
+          "primaryRouteAlias": "/market-research",
+          "redirectedFrom": "/investment/strategy-lab",
+          "routeAlias": "/market-research/strategy-lab",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "market_research"
+        },
+        {
+          "inputRouteAlias": "/data-system",
+          "primaryRouteAlias": "/settings",
+          "redirectedFrom": "/data-system",
+          "routeAlias": "/settings/data-system",
+          "routeType": "legacy_redirect",
+          "status": "resolved",
+          "tab": "",
+          "workspace": "settings"
+        }
+      ],
+      "appShellVisible": true,
+      "bottomPrimaryTreeCount": 0,
+      "clickedRoutes": [
+        "/overview",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/data",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "conflictHidden": true,
+      "contractVersion": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+      "evidenceRedacted": true,
+      "initialNormalizedHash": "/settings/data-system",
+      "mobileOnlyPrimaryCount": 0,
+      "mobilePrimaryCount": 10,
+      "primaryRoutes": [
+        "/overview",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/data",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "registrySchema": "PFIV025Stage6Phase61NavigationContractV1",
+      "releaseIdentityState": "ready",
+      "uniquePrimaryNodeCount": 10
+    },
+    "screenshot": "PFI/reports/pfi_v025/stage_6/phase_6_1/mobile_navigation.png",
+    "screenshot_bytes": 135977,
+    "status": "pass",
+    "window_size": "390,844"
+  },
+  "network_performed": true,
+  "network_scope": "ephemeral_local_loopback_only",
+  "schema": "PFIV025Stage6Phase61BrowserValidationV1",
+  "status": "pass"
+}

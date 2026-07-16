@@ -1,0 +1,19 @@
+{
+  "acceptance_request_commit_exact": false,
+  "acceptance_request_git_commit": "SELF",
+  "acceptance_request_hash_matches": true,
+  "all_index_files_match_at_candidate": true,
+  "candidate_commit": "9a7245acf984a4eb98f93c4aab7bb4d02095294f",
+  "detached_hash_matches": true,
+  "final_human_acceptance": false,
+  "human_acceptance_artifact_exists": false,
+  "index_file_count": 89,
+  "index_match_count": 89,
+  "index_sha256": "sha256:6058894be70a2c53212063375de0169c2f0c4bea6909c95050bd53a2621a4da3",
+  "schema": "PFIV025Stage12InitialReviewFinalIndexAuditV1",
+  "state_ahead_exact": false,
+  "state_head_exact": false,
+  "state_observed_ahead": 117,
+  "state_observed_head": "665ee5aa89e55fe36a8fbc4e35df8069a6dd6647",
+  "status": "fail_exact_candidate_binding_required"
+}

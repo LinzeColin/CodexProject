@@ -1,0 +1,3 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage9_report_schema.py PFI/tests/test_v025_stage9_report_consistency.py PFI/tests/test_v025_stage9_model_validation.py PFI/tests/test_v025_stage9_decision_review.py PFI/tests/test_v025_stage9_export_consistency.py PFI/tests/test_v025_stage9_whole_review.py PFI/tests/test_v025_stage1_release_identity.py
+.......................................                                  [100%]
+39 passed in 2.35s

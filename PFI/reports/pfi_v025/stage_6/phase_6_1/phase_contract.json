@@ -1,0 +1,22 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S6-P61-NAVIGATION-ALIAS",
+  "allowed_tasks": [
+    "S6-P1-T1",
+    "S6-P1-T2",
+    "S6-P1-T3",
+    "S6-P1-T4"
+  ],
+  "contract_id": "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+  "external_network_allowed": false,
+  "final_human_acceptance": false,
+  "finder_allowed": false,
+  "next_task_id": "S6-P2-T1",
+  "phase_6_2_started": false,
+  "phase_6_3_started": false,
+  "production_acceptance": false,
+  "push_allowed": false,
+  "schema": "PFIV025Stage6Phase61RunContractV1",
+  "stage_6_whole_review_started": false,
+  "stop_condition": "Stop immediately after Phase 6.1 candidate evidence and governance closure.",
+  "task_group": "S6-P1-T1..T4"
+}

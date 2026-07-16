@@ -1,0 +1,24 @@
+{
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "phase": "4.2",
+  "phase_43_all_surface_consistency_done": false,
+  "read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+  "schema": "PFIV025InvestmentAPIContractV1",
+  "stage": 4,
+  "status": "not_loaded",
+  "surface_ids": ["investment"],
+  "surfaces": {
+    "investment": {
+      "metric_count": 3,
+      "metric_ids": [
+        "investment_market_value_cny",
+        "investment_cost_basis_cny",
+        "investment_unrealized_pnl_cny"
+      ],
+      "read_model_hash": "sha256:19f56a86f7152bfdea70c8c0f4688b444f3b78dd6d624018a991fe232746b6e3",
+      "status": "not_loaded"
+    }
+  },
+  "version": "v0.2.5"
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "PFIV025Stage4WholeReviewMetricDispositionV1",
+  "source": "PFI/reports/pfi_v025/stage_4/phase_4_3/core_metric_states.json",
+  "metric_count": 7,
+  "metric_ids": ["net_worth_cny", "account_assets_cny", "cash_balance_cny", "liabilities_cny", "investment_market_value_cny", "investment_cost_basis_cny", "investment_unrealized_pnl_cny"],
+  "statuses": {"not_loaded": 7},
+  "non_null_value_count": 0,
+  "confirmed_zero_count": 0,
+  "false_zero_count": 0,
+  "financial_values_emitted": 0,
+  "transaction_balance_or_holding_inference_used": false,
+  "production_cost_basis_selected": false,
+  "production_valuation_performed": false,
+  "source_statuses": {
+    "SRC-ACCOUNT-BALANCES": "not_loaded",
+    "SRC-LIABILITIES": "not_loaded",
+    "SRC-HOLDINGS": "not_loaded",
+    "SRC-MARKET-PRICES": "not_loaded",
+    "SRC-FX-SNAPSHOT": "not_loaded"
+  },
+  "surface_count": 5,
+  "surface_ids": ["homepage", "accounts", "investment", "consumption", "report"],
+  "surface_hash_count": 1,
+  "read_model_hash": "sha256:56527147cd3bb48cd3262696a6289e0396208e4de751022368497dcce94d779e",
+  "dependency_set_hash": "sha256:a2935460555475dd2d6477ce54377daa0d4f9d7595c19c8cac7a3d72d4e459db",
+  "interpretation": "当前真实 aggregate 输入对这些财务指标不充分；not_loaded/null 是可解释且 fail-closed 的正确结果，不是财务零，也不表示生产数据完整。"
+}

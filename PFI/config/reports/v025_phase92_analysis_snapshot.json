@@ -1,0 +1,1714 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE9-WHOLE-REVIEW",
+  "acceptance_id_origin": "project_governance_assigned_not_source_roadmap",
+  "analysis_implementation_status": "ready",
+  "automatic_trading_allowed": false,
+  "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+  "contains_private_values": false,
+  "database_changed": false,
+  "database_read": false,
+  "financial_values_emitted": 0,
+  "formula_drilldowns": [
+    {
+      "boundaries_zh": [
+        "同一 source record 和同一 economic event/type 各只计一次。",
+        "投资入金与域内配置是不同活动阶段，必须拆分展示并显式解释。",
+        "退款必须唯一链接原事件，冲突或超额时失败关闭。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "消费总流出按版本化广义活动口径汇总生活消费、投资入金、投资域内配置与金融费用，并按已关联退款抵消；各组件同源展示且不得解释为净资产损失。",
+      "dependencies": [
+        "FORM-PFI-004",
+        "FORM-PFI-007",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:10b45da2fac5aa066aaf2ebc47d8615d6d144dbce6c09dd9bdbb2896ff3e57f2",
+      "formula_id": "FORM-PFI-015",
+      "formula_version": "pfi-v0.2.5-dual-consumption-v1",
+      "inputs": [
+        "financial_event_set",
+        "source_record_id",
+        "economic_event_id",
+        "interconnection_group_id",
+        "offset_economic_event_id"
+      ],
+      "label_zh": "双消费与投资活动组件",
+      "limitation": "Published real events validate living consumption and investment allocation; unresolved transfer/refund pools prevent full funding/refund coverage.",
+      "outputs": [
+        "total_consumption_outflow_cny",
+        "living_consumption_cny",
+        "investment_funding_outflow_cny",
+        "investment_allocation_amount_cny",
+        "financial_fee_outflow_cny",
+        "refund_offset_cny"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-082",
+        "PARAM-PFI-083",
+        "PARAM-PFI-084",
+        "PARAM-PFI-085"
+      ],
+      "report_types": [
+        "consumption",
+        "cashflow"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-015",
+      "sensitivity_ids": [
+        "SENS-MONEY-QUANTUM"
+      ],
+      "unit": "CNY",
+      "validation_status": "validated_real_snapshot"
+    },
+    {
+      "boundaries_zh": [
+        "任一差异非精确零时失败关闭且不发布财务值。",
+        "投资入金或买入本身不是净资产损失。",
+        "Phase 5.2 只证明能力，真实数据不变量留给 Phase 5.3。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "净资产等于现金、投资市值与其他资产之和减负债；现金按期初加流入减流出加调整滚动；投资重配置除显式费用外不得改变资产总额。",
+      "dependencies": [
+        "FORM-PFI-008",
+        "FORM-PFI-012",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:d09de306632fd79988c735abc49e9e94730f5c7b5505f133d8f1f9715232a755",
+      "formula_id": "FORM-PFI-016",
+      "formula_version": "pfi-v0.2.5-core-financial-invariants-v1",
+      "inputs": [
+        "core_financial_snapshot",
+        "cash_rollforward",
+        "investment_reallocation"
+      ],
+      "label_zh": "净资产、现金与投资重配置不变量",
+      "limitation": "Account balance, liability, holding, price and FX snapshots are not loaded.",
+      "outputs": [
+        "net_worth_cny",
+        "net_worth_discrepancy_cny",
+        "cash_rollforward_discrepancy_cny",
+        "investment_reallocation_discrepancy_cny",
+        "ledger_conserved"
+      ],
+      "parameters": [
+        "PARAM-PFI-081"
+      ],
+      "report_types": [
+        "net_worth",
+        "cash"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-016",
+      "sensitivity_ids": [
+        "SENS-MONEY-QUANTUM"
+      ],
+      "unit": "CNY and invariant status",
+      "validation_status": "blocked_missing_required_sources"
+    },
+    {
+      "boundaries_zh": [
+        "费用和税费只扣一次。",
+        "分母为零时拖累率为 null，不伪造零。",
+        "生产结果必须绑定持仓、价格、成本、FX 和交易 lineage。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "已实现净收益等于卖出收入减分摊成本、费用和税费；总净收益叠加未实现收益、分红和利息并扣持有成本，同时分别计算费用、税费、汇率与闲置现金拖累。",
+      "dependencies": [
+        "FORM-PFI-009",
+        "FORM-PFI-010",
+        "FORM-PFI-014",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:27843944f347cb6729fdb0b5abcf4c5e72d70067c2a78d8c84b7b52af5dbece8",
+      "formula_id": "FORM-PFI-017",
+      "formula_version": "pfi-v0.2.5-investment-return-cost-drag-v1",
+      "inputs": [
+        "market_value_cny",
+        "remaining_cost_cny",
+        "sell_proceeds_cny",
+        "allocated_cost_cny",
+        "fees_cny",
+        "taxes_cny",
+        "income_cny",
+        "fx_exposure",
+        "idle_cash_cny"
+      ],
+      "label_zh": "投资收益、成本与拖累",
+      "limitation": "Holdings, cost basis, point-in-time price, fee, tax and FX lineage are incomplete.",
+      "outputs": [
+        "unrealized_pnl_cny",
+        "realized_pnl_net_cny",
+        "total_return_net_cny",
+        "fee_drag_rate",
+        "tax_drag_rate",
+        "fx_drag_cny",
+        "idle_cash_drag_cny"
+      ],
+      "parameters": [
+        "PARAM-PFI-081"
+      ],
+      "report_types": [
+        "investment"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-017",
+      "sensitivity_ids": [
+        "SENS-MONEY-QUANTUM"
+      ],
+      "unit": "CNY and decimal rate",
+      "validation_status": "blocked_missing_required_sources"
+    },
+    {
+      "boundaries_zh": [
+        "至少一个负流和一个正流且日期不少于两个。",
+        "多次符号变化导致潜在多根时标记 blocked，不选择任意根。",
+        "无法括根或不收敛时失败关闭。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "按实际日期和 365 日基准求解使投资现金流净现值为零的年化收益率；投资入金为负，回流、分红、利息和终值为正。",
+      "dependencies": [
+        "FORM-PFI-017",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:14b8695fadf9dd361f462e060120b879dba7a136268f568d07a14f7ce73f69cf",
+      "formula_id": "FORM-PFI-018",
+      "formula_version": "pfi-v0.2.5-xirr-v1",
+      "inputs": [
+        "dated_investment_cashflows"
+      ],
+      "label_zh": "日期感知投资 XIRR",
+      "limitation": "No complete dated funding/return/terminal-value chain is available for real XIRR.",
+      "outputs": [
+        "xirr",
+        "residual_abs",
+        "iterations",
+        "sign_change_count"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-089",
+        "PARAM-PFI-090",
+        "PARAM-PFI-091",
+        "PARAM-PFI-092"
+      ],
+      "report_types": [
+        "investment"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-018",
+      "sensitivity_ids": [
+        "SENS-XIRR-POLICY"
+      ],
+      "unit": "annual decimal rate",
+      "validation_status": "blocked_insufficient_chain"
+    },
+    {
+      "boundaries_zh": [
+        "窗口固定为 7/21/30/60/90/180/360。",
+        "无事件窗口返回 filtered_empty/null，不显示假零。",
+        "内部转账不改变体系外净现金流。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "按 as_of 对去重经济事件计算 7、21、30、60、90、180、360 日外部流入、外部流出和净现金流，内部转账单列且不进入净现金流。",
+      "dependencies": [
+        "FORM-PFI-004",
+        "FORM-PFI-007",
+        "FORM-PFI-015",
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:e886fe19fce26640578da1c2e6d8ab45c83581b185e57120a13b23675cb94e30",
+      "formula_id": "FORM-PFI-019",
+      "formula_version": "pfi-v0.2.5-seven-window-cashflow-v1",
+      "inputs": [
+        "financial_event_set",
+        "as_of"
+      ],
+      "label_zh": "七窗口外部现金流",
+      "limitation": "Seven real lookback windows and empty-window false-zero boundaries pass; date precision remains daily.",
+      "outputs": [
+        "external_inflow_cny",
+        "external_outflow_cny",
+        "internal_transfer_cny",
+        "net_cashflow_cny"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-086"
+      ],
+      "report_types": [
+        "cash",
+        "cashflow"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-019",
+      "sensitivity_ids": [
+        "SENS-CASHFLOW-WINDOW"
+      ],
+      "unit": "CNY by day window",
+      "validation_status": "validated_real_snapshot"
+    },
+    {
+      "boundaries_zh": [
+        "L1 不超过 12、单个 L1 的 L2 不超过 5、总 L2 不超过 50。",
+        "每笔记录恰有一个主分类，多维维度使用标签。",
+        "停用标签保留历史但不得用于新分配。"
+      ],
+      "contains_private_values": false,
+      "definition_zh": "分类保持 L1、L2 上限且每笔交易仅一个主分类；多维分析使用默认或自定义标签，保留停用历史并支持 all/any 视图筛选。",
+      "dependencies": [
+        "MOD-PFI-010"
+      ],
+      "financial_values_emitted": 0,
+      "formula_hash": "sha256:af21e5447bdd9f3d5528c328be4a9fcee236dfc99fb96a7f9f645740be1a2906",
+      "formula_id": "FORM-PFI-020",
+      "formula_version": "pfi-v0.2.5-taxonomy-tag-policy-v1",
+      "inputs": [
+        "taxonomy",
+        "primary_category_assignments",
+        "tag_definitions",
+        "tag_history",
+        "view_filter"
+      ],
+      "label_zh": "分类与标签治理规则",
+      "limitation": "Taxonomy structure passes, but classification accuracy lacks labels and out-of-sample ground truth.",
+      "outputs": [
+        "taxonomy_validation",
+        "primary_category_validation",
+        "tag_policy_validation"
+      ],
+      "parameters": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-087",
+        "PARAM-PFI-088"
+      ],
+      "report_types": [
+        "consumption"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-020",
+      "sensitivity_ids": [
+        "SENS-CLASSIFICATION-THRESHOLD"
+      ],
+      "unit": "governance decision",
+      "validation_status": "validated_structure_only"
+    }
+  ],
+  "formula_values_changed": false,
+  "hashes": {
+    "analysis_builder_hash": "sha256:79dc26cea1c811787a0e1b18ded9fea6b3da2f07bba8df34ac3a988cf0d42bec",
+    "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+    "data_manifest_hash": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+    "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+    "input_bundle_hash": "sha256:e441309c77c823bdfdac90064b223c9184ff573d375b443aeef7060653552664",
+    "invariant_results_hash": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+    "metamorphic_results_hash": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+    "model_validation_card_hash": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+    "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+    "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+    "report_builder_hash": "sha256:d9ac58b4449828beddf30c16bdaa02df49b08454c3dbc79a6ccb61784f9445c9",
+    "report_contract_hash": "sha256:1782174b0cb14bd520b22adf50fb8c545c8874243fe6ba5c2c409a964d37de96",
+    "sensitivity_results_hash": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+    "stage4_read_model_artifact_hash": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+    "stage7_workflow_artifact_hash": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+  },
+  "model_validation_cards": [
+    {
+      "automatic_trading_allowed": false,
+      "contains_private_values": false,
+      "counter_evidence": [
+        "FORM-PFI-016..018 must remain blocked instead of inheriting the passing transaction-only evidence.",
+        "Taxonomy constraints do not prove classification accuracy without labels.",
+        "Consumer payload equality is not evidence of actual rendered UI/report parity."
+      ],
+      "coverage_dimensions": {
+        "classification_confidence": "unverified_missing_scores_and_labels",
+        "model_validation": "partial_validated_with_blocked_components",
+        "reconciliation_coverage": "partition_complete_with_review_queue",
+        "report_completeness": "contract_only_actual_render_binding_open",
+        "source_coverage": "partial_6879_published_1936_review",
+        "valuation_coverage": "blocked_missing_holdings_prices_fx"
+      },
+      "financial_values_emitted": 0,
+      "formal_ui_contract_embedded": true,
+      "formula_validation": [
+        {
+          "formula_hash": "sha256:10b45da2fac5aa066aaf2ebc47d8615d6d144dbce6c09dd9bdbb2896ff3e57f2",
+          "formula_id": "FORM-PFI-015",
+          "formula_version": "pfi-v0.2.5-dual-consumption-v1",
+          "limitation": "Published real events validate living consumption and investment allocation; unresolved transfer/refund pools prevent full funding/refund coverage.",
+          "status": "validated_real_snapshot"
+        },
+        {
+          "formula_hash": "sha256:d09de306632fd79988c735abc49e9e94730f5c7b5505f133d8f1f9715232a755",
+          "formula_id": "FORM-PFI-016",
+          "formula_version": "pfi-v0.2.5-core-financial-invariants-v1",
+          "limitation": "Account balance, liability, holding, price and FX snapshots are not loaded.",
+          "status": "blocked_missing_required_sources"
+        },
+        {
+          "formula_hash": "sha256:27843944f347cb6729fdb0b5abcf4c5e72d70067c2a78d8c84b7b52af5dbece8",
+          "formula_id": "FORM-PFI-017",
+          "formula_version": "pfi-v0.2.5-investment-return-cost-drag-v1",
+          "limitation": "Holdings, cost basis, point-in-time price, fee, tax and FX lineage are incomplete.",
+          "status": "blocked_missing_required_sources"
+        },
+        {
+          "formula_hash": "sha256:14b8695fadf9dd361f462e060120b879dba7a136268f568d07a14f7ce73f69cf",
+          "formula_id": "FORM-PFI-018",
+          "formula_version": "pfi-v0.2.5-xirr-v1",
+          "limitation": "No complete dated funding/return/terminal-value chain is available for real XIRR.",
+          "status": "blocked_insufficient_chain"
+        },
+        {
+          "formula_hash": "sha256:e886fe19fce26640578da1c2e6d8ab45c83581b185e57120a13b23675cb94e30",
+          "formula_id": "FORM-PFI-019",
+          "formula_version": "pfi-v0.2.5-seven-window-cashflow-v1",
+          "limitation": "Seven real lookback windows and empty-window false-zero boundaries pass; date precision remains daily.",
+          "status": "validated_real_snapshot"
+        },
+        {
+          "formula_hash": "sha256:af21e5447bdd9f3d5528c328be4a9fcee236dfc99fb96a7f9f645740be1a2906",
+          "formula_id": "FORM-PFI-020",
+          "formula_version": "pfi-v0.2.5-taxonomy-tag-policy-v1",
+          "limitation": "Taxonomy structure passes, but classification accuracy lacks labels and out-of-sample ground truth.",
+          "status": "validated_structure_only"
+        }
+      ],
+      "historical_out_of_sample_validation": {
+        "reason": "No complete target, labels and pre-specified split are available for a defensible historical or out-of-sample claim.",
+        "status": "blocked_insufficient_ground_truth"
+      },
+      "invariant_status": "partial_pass_with_blocked_components",
+      "limitations": [
+        "1,936 source rows remain fail-closed in review and are excluded from published metrics.",
+        "The unresolved transfer pool prevents real validation of investment-funding activity.",
+        "Unlinked refunds cannot offset living consumption until explicit lineage exists.",
+        "Balance, liability, holding, price, fee, tax and FX sources required by core and investment formulas are not loaded.",
+        "Source time precision is daily; intraday ordering is not claimed.",
+        "Tracked Web/report renderers do not yet consume all four real-snapshot dual-metric components."
+      ],
+      "metamorphic_status": "pass",
+      "model_id": "MOD-PFI-010",
+      "model_version": "pfi-v0.2.5-financial-models-v1",
+      "production_accepted": false,
+      "report_types": [
+        "net_worth",
+        "cash",
+        "investment",
+        "consumption",
+        "cashflow"
+      ],
+      "schema": "PFIV025Stage9Phase92ModelValidationCardV1",
+      "status": "partial_validated_with_blocked_components"
+    }
+  ],
+  "model_values_changed": false,
+  "observed_at": "2026-07-15T16:00:00+10:00",
+  "pack_hash": "sha256:c3df8b878038bffdb28bfe4112d9a875e43e5d41cb910f86b6482768223a19e9",
+  "parameter_values_changed": false,
+  "phase": "9.2",
+  "phase_9_3_started": false,
+  "phase_id": "V025-S9-P9.2",
+  "real_financial_rows_read": false,
+  "report_set": [
+    {
+      "analysis_implementation_status": "ready",
+      "analysis_version": "pfi-v025-stage9-phase92-analysis-v1",
+      "anomaly_ids": [
+        "REVIEW-SRC-ACCOUNT-BALANCES",
+        "REVIEW-SRC-LIABILITIES",
+        "REVIEW-SRC-HOLDINGS",
+        "REVIEW-SRC-MARKET-PRICES",
+        "REVIEW-SRC-FX-SNAPSHOT",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "base_snapshot_hash": "sha256:61f8a2da4a57d4cd90f813bdf06be917c187dd09341e23267abc8419be8f6fff",
+      "calculable_components": [],
+      "component_metric_ids": [
+        "net_worth_cny",
+        "cash_balance_cny",
+        "investment_market_value_cny",
+        "liabilities_cny"
+      ],
+      "conclusions": [],
+      "contains_private_values": false,
+      "counter_evidence": [
+        "FORM-PFI-016..018 must remain blocked instead of inheriting the passing transaction-only evidence.",
+        "Taxonomy constraints do not prove classification accuracy without labels.",
+        "Consumer payload equality is not evidence of actual rendered UI/report parity."
+      ],
+      "coverage": {
+        "all_required_metric_fields_present": true,
+        "lineage_status": "blocked",
+        "metric_status": "blocked",
+        "non_ready_false_zero_count": 0,
+        "required_metric_field_values_valid": true,
+        "source_status_counts": {
+          "not_loaded": 5,
+          "partial": 1,
+          "ready": 1
+        }
+      },
+      "data_range": {
+        "end": "2026-06-03",
+        "start": "2022-06-06"
+      },
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-016"
+      ],
+      "generated_at": "2026-07-15T16:00:00+10:00",
+      "hashes": {
+        "analysis_builder_hash": "sha256:79dc26cea1c811787a0e1b18ded9fea6b3da2f07bba8df34ac3a988cf0d42bec",
+        "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+        "data_manifest_hash": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+        "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+        "input_bundle_hash": "sha256:e441309c77c823bdfdac90064b223c9184ff573d375b443aeef7060653552664",
+        "invariant_results_hash": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+        "metamorphic_results_hash": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+        "model_validation_card_hash": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+        "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+        "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+        "report_builder_hash": "sha256:d9ac58b4449828beddf30c16bdaa02df49b08454c3dbc79a6ccb61784f9445c9",
+        "report_contract_hash": "sha256:1782174b0cb14bd520b22adf50fb8c545c8874243fe6ba5c2c409a964d37de96",
+        "sensitivity_results_hash": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+        "stage4_read_model_artifact_hash": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+        "stage7_workflow_artifact_hash": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+      },
+      "immutable": true,
+      "limitations": [
+        "本 Phase 只建立报告合同、完整度和数据质量报告，不实现 Phase 9.2 财务分析。",
+        "报告仅包含 aggregate metadata 与 hash，不含账户标识、原始行或财务数值。",
+        "blocked/partial 状态不得解释为模型有效或完整财务结论。",
+        "Phase 9.2 不生成建议、交易动作或 Phase 9.3 导出。",
+        "公开 Evidence 不保存财务金额；本机私有运行时金额仍受同一 hash 与完整度门禁。"
+      ],
+      "model_validation_status": "partial_validated_with_blocked_components",
+      "parameter_ids": [
+        "PARAM-PFI-081"
+      ],
+      "partial_scope": null,
+      "report_as_of": "2026-06-03",
+      "report_id": "pfi-v025-net-worth",
+      "report_type": "net_worth",
+      "review_entry_ids": [
+        "REVIEW-SRC-ACCOUNT-BALANCES",
+        "REVIEW-SRC-LIABILITIES",
+        "REVIEW-SRC-HOLDINGS",
+        "REVIEW-SRC-MARKET-PRICES",
+        "REVIEW-SRC-FX-SNAPSHOT",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "sample_counts": {
+        "lineage_complete_count": 0,
+        "lineage_missing_count": 1571,
+        "metric_count": 11,
+        "not_loaded_source_count": 5,
+        "operational_event_count": 1571,
+        "partial_source_count": 1,
+        "ready_source_count": 1,
+        "registered_source_count": 7,
+        "transaction_record_count": 8815
+      },
+      "schema": "PFIV025Stage9Phase92FinancialReportV1",
+      "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+      "snapshot_hash": "sha256:9500548d803ed1588574c27aa6221e17ef00ea9794840fdf40c1829e90304d44",
+      "status": "blocked",
+      "status_statement_zh": "关键真实输入未 ready；只展示公式、限制与复核入口。",
+      "title_zh": "净资产报告",
+      "version": "v0.2.5"
+    },
+    {
+      "analysis_implementation_status": "ready",
+      "analysis_version": "pfi-v025-stage9-phase92-analysis-v1",
+      "anomaly_ids": [
+        "REVIEW-SRC-ACCOUNT-BALANCES",
+        "REVIEW-SRC-LIABILITIES",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "base_snapshot_hash": "sha256:e58d0a6851c2efeaa7528d72b88f10bafaeb87dcb41bad6b40cab2475813ffff",
+      "calculable_components": [],
+      "component_metric_ids": [
+        "cash_balance_cny",
+        "liabilities_cny"
+      ],
+      "conclusions": [],
+      "contains_private_values": false,
+      "counter_evidence": [
+        "FORM-PFI-016..018 must remain blocked instead of inheriting the passing transaction-only evidence.",
+        "Taxonomy constraints do not prove classification accuracy without labels.",
+        "Consumer payload equality is not evidence of actual rendered UI/report parity."
+      ],
+      "coverage": {
+        "all_required_metric_fields_present": true,
+        "lineage_status": "blocked",
+        "metric_status": "blocked",
+        "non_ready_false_zero_count": 0,
+        "required_metric_field_values_valid": true,
+        "source_status_counts": {
+          "not_loaded": 5,
+          "partial": 1,
+          "ready": 1
+        }
+      },
+      "data_range": {
+        "end": "2026-06-03",
+        "start": "2022-06-06"
+      },
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-016",
+        "FORM-PFI-019"
+      ],
+      "generated_at": "2026-07-15T16:00:00+10:00",
+      "hashes": {
+        "analysis_builder_hash": "sha256:79dc26cea1c811787a0e1b18ded9fea6b3da2f07bba8df34ac3a988cf0d42bec",
+        "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+        "data_manifest_hash": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+        "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+        "input_bundle_hash": "sha256:e441309c77c823bdfdac90064b223c9184ff573d375b443aeef7060653552664",
+        "invariant_results_hash": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+        "metamorphic_results_hash": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+        "model_validation_card_hash": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+        "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+        "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+        "report_builder_hash": "sha256:d9ac58b4449828beddf30c16bdaa02df49b08454c3dbc79a6ccb61784f9445c9",
+        "report_contract_hash": "sha256:1782174b0cb14bd520b22adf50fb8c545c8874243fe6ba5c2c409a964d37de96",
+        "sensitivity_results_hash": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+        "stage4_read_model_artifact_hash": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+        "stage7_workflow_artifact_hash": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+      },
+      "immutable": true,
+      "limitations": [
+        "本 Phase 只建立报告合同、完整度和数据质量报告，不实现 Phase 9.2 财务分析。",
+        "报告仅包含 aggregate metadata 与 hash，不含账户标识、原始行或财务数值。",
+        "blocked/partial 状态不得解释为模型有效或完整财务结论。",
+        "Phase 9.2 不生成建议、交易动作或 Phase 9.3 导出。",
+        "公开 Evidence 不保存财务金额；本机私有运行时金额仍受同一 hash 与完整度门禁。"
+      ],
+      "model_validation_status": "partial_validated_with_blocked_components",
+      "parameter_ids": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-086"
+      ],
+      "partial_scope": null,
+      "report_as_of": "2026-06-03",
+      "report_id": "pfi-v025-cash",
+      "report_type": "cash",
+      "review_entry_ids": [
+        "REVIEW-SRC-ACCOUNT-BALANCES",
+        "REVIEW-SRC-LIABILITIES",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "sample_counts": {
+        "lineage_complete_count": 0,
+        "lineage_missing_count": 1571,
+        "metric_count": 11,
+        "not_loaded_source_count": 5,
+        "operational_event_count": 1571,
+        "partial_source_count": 1,
+        "ready_source_count": 1,
+        "registered_source_count": 7,
+        "transaction_record_count": 8815
+      },
+      "schema": "PFIV025Stage9Phase92FinancialReportV1",
+      "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+      "snapshot_hash": "sha256:98f9d5ad26191b1c525c9a4b6d62f36ff95e3c8abd7bc16150568c1c48e0942e",
+      "status": "blocked",
+      "status_statement_zh": "关键真实输入未 ready；只展示公式、限制与复核入口。",
+      "title_zh": "现金报告",
+      "version": "v0.2.5"
+    },
+    {
+      "analysis_implementation_status": "ready",
+      "analysis_version": "pfi-v025-stage9-phase92-analysis-v1",
+      "anomaly_ids": [
+        "REVIEW-SRC-HOLDINGS",
+        "REVIEW-SRC-MARKET-PRICES",
+        "REVIEW-SRC-FX-SNAPSHOT",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "base_snapshot_hash": "sha256:e3a15acc293a42129dee99d080c71d310262b97f00e189e42b9b9ad15fda94bc",
+      "calculable_components": [],
+      "component_metric_ids": [
+        "investment_market_value_cny",
+        "investment_cost_basis_cny",
+        "investment_unrealized_pnl_cny"
+      ],
+      "conclusions": [],
+      "contains_private_values": false,
+      "counter_evidence": [
+        "FORM-PFI-016..018 must remain blocked instead of inheriting the passing transaction-only evidence.",
+        "Taxonomy constraints do not prove classification accuracy without labels.",
+        "Consumer payload equality is not evidence of actual rendered UI/report parity."
+      ],
+      "coverage": {
+        "all_required_metric_fields_present": true,
+        "lineage_status": "blocked",
+        "metric_status": "blocked",
+        "non_ready_false_zero_count": 0,
+        "required_metric_field_values_valid": true,
+        "source_status_counts": {
+          "not_loaded": 5,
+          "partial": 1,
+          "ready": 1
+        }
+      },
+      "data_range": {
+        "end": "2026-06-03",
+        "start": "2022-06-06"
+      },
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-017",
+        "FORM-PFI-018"
+      ],
+      "generated_at": "2026-07-15T16:00:00+10:00",
+      "hashes": {
+        "analysis_builder_hash": "sha256:79dc26cea1c811787a0e1b18ded9fea6b3da2f07bba8df34ac3a988cf0d42bec",
+        "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+        "data_manifest_hash": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+        "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+        "input_bundle_hash": "sha256:e441309c77c823bdfdac90064b223c9184ff573d375b443aeef7060653552664",
+        "invariant_results_hash": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+        "metamorphic_results_hash": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+        "model_validation_card_hash": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+        "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+        "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+        "report_builder_hash": "sha256:d9ac58b4449828beddf30c16bdaa02df49b08454c3dbc79a6ccb61784f9445c9",
+        "report_contract_hash": "sha256:1782174b0cb14bd520b22adf50fb8c545c8874243fe6ba5c2c409a964d37de96",
+        "sensitivity_results_hash": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+        "stage4_read_model_artifact_hash": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+        "stage7_workflow_artifact_hash": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+      },
+      "immutable": true,
+      "limitations": [
+        "本 Phase 只建立报告合同、完整度和数据质量报告，不实现 Phase 9.2 财务分析。",
+        "报告仅包含 aggregate metadata 与 hash，不含账户标识、原始行或财务数值。",
+        "blocked/partial 状态不得解释为模型有效或完整财务结论。",
+        "Phase 9.2 不生成建议、交易动作或 Phase 9.3 导出。",
+        "公开 Evidence 不保存财务金额；本机私有运行时金额仍受同一 hash 与完整度门禁。"
+      ],
+      "model_validation_status": "partial_validated_with_blocked_components",
+      "parameter_ids": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-089",
+        "PARAM-PFI-090",
+        "PARAM-PFI-091",
+        "PARAM-PFI-092"
+      ],
+      "partial_scope": null,
+      "report_as_of": "2026-06-03",
+      "report_id": "pfi-v025-investment",
+      "report_type": "investment",
+      "review_entry_ids": [
+        "REVIEW-SRC-HOLDINGS",
+        "REVIEW-SRC-MARKET-PRICES",
+        "REVIEW-SRC-FX-SNAPSHOT",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "sample_counts": {
+        "lineage_complete_count": 0,
+        "lineage_missing_count": 1571,
+        "metric_count": 11,
+        "not_loaded_source_count": 5,
+        "operational_event_count": 1571,
+        "partial_source_count": 1,
+        "ready_source_count": 1,
+        "registered_source_count": 7,
+        "transaction_record_count": 8815
+      },
+      "schema": "PFIV025Stage9Phase92FinancialReportV1",
+      "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+      "snapshot_hash": "sha256:7abd708c7a8897d3d1e6779416e98fba4b492266691263c435d35845bbf79916",
+      "status": "blocked",
+      "status_statement_zh": "关键真实输入未 ready；只展示公式、限制与复核入口。",
+      "title_zh": "投资报告",
+      "version": "v0.2.5"
+    },
+    {
+      "analysis_implementation_status": "ready",
+      "analysis_version": "pfi-v025-stage9-phase92-analysis-v1",
+      "anomaly_ids": [
+        "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "base_snapshot_hash": "sha256:96ef8a5b9ef29b4ca131843ca4dd750503e618a5fc69ed2c15caf7bb8cea4873",
+      "calculable_components": [
+        {
+          "component_id": "real_source_partition",
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2022-06-06",
+          "input_record_count": 8815,
+          "published_record_count": 6879,
+          "review_queue_record_count": 1936,
+          "silent_drop_count": 0,
+          "status": "partial"
+        }
+      ],
+      "component_metric_ids": [
+        "total_consumption_outflow_cny",
+        "living_consumption_cny",
+        "investment_funding_outflow_cny",
+        "investment_allocation_amount_cny"
+      ],
+      "conclusions": [
+        {
+          "evidence_refs": [
+            "PFI/reports/pfi_v025/stage_5/phase_5_3/model_validation_card.json",
+            "PFI/reports/pfi_v025/stage_5/phase_5_3/sensitivity_results.json"
+          ],
+          "scope": "source_coverage_only",
+          "statement_zh": "当前只确认真实交易来源覆盖、发布/待复核分区或窗口记录变化；lineage 未完整，因此不生成金额或确定性财务结论。"
+        }
+      ],
+      "contains_private_values": false,
+      "counter_evidence": [
+        "FORM-PFI-016..018 must remain blocked instead of inheriting the passing transaction-only evidence.",
+        "Taxonomy constraints do not prove classification accuracy without labels.",
+        "Consumer payload equality is not evidence of actual rendered UI/report parity."
+      ],
+      "coverage": {
+        "all_required_metric_fields_present": true,
+        "lineage_status": "blocked",
+        "metric_status": "blocked",
+        "non_ready_false_zero_count": 0,
+        "required_metric_field_values_valid": true,
+        "source_status_counts": {
+          "not_loaded": 5,
+          "partial": 1,
+          "ready": 1
+        }
+      },
+      "data_range": {
+        "end": "2026-06-03",
+        "start": "2022-06-06"
+      },
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-015",
+        "FORM-PFI-020"
+      ],
+      "generated_at": "2026-07-15T16:00:00+10:00",
+      "hashes": {
+        "analysis_builder_hash": "sha256:79dc26cea1c811787a0e1b18ded9fea6b3da2f07bba8df34ac3a988cf0d42bec",
+        "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+        "data_manifest_hash": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+        "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+        "input_bundle_hash": "sha256:e441309c77c823bdfdac90064b223c9184ff573d375b443aeef7060653552664",
+        "invariant_results_hash": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+        "metamorphic_results_hash": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+        "model_validation_card_hash": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+        "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+        "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+        "report_builder_hash": "sha256:d9ac58b4449828beddf30c16bdaa02df49b08454c3dbc79a6ccb61784f9445c9",
+        "report_contract_hash": "sha256:1782174b0cb14bd520b22adf50fb8c545c8874243fe6ba5c2c409a964d37de96",
+        "sensitivity_results_hash": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+        "stage4_read_model_artifact_hash": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+        "stage7_workflow_artifact_hash": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+      },
+      "immutable": true,
+      "limitations": [
+        "本 Phase 只建立报告合同、完整度和数据质量报告，不实现 Phase 9.2 财务分析。",
+        "报告仅包含 aggregate metadata 与 hash，不含账户标识、原始行或财务数值。",
+        "blocked/partial 状态不得解释为模型有效或完整财务结论。",
+        "Phase 9.2 不生成建议、交易动作或 Phase 9.3 导出。",
+        "公开 Evidence 不保存财务金额；本机私有运行时金额仍受同一 hash 与完整度门禁。"
+      ],
+      "model_validation_status": "partial_validated_with_blocked_components",
+      "parameter_ids": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-082",
+        "PARAM-PFI-083",
+        "PARAM-PFI-084",
+        "PARAM-PFI-085",
+        "PARAM-PFI-087",
+        "PARAM-PFI-088"
+      ],
+      "partial_scope": "transaction_source_coverage_only",
+      "report_as_of": "2026-06-03",
+      "report_id": "pfi-v025-consumption",
+      "report_type": "consumption",
+      "review_entry_ids": [
+        "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "sample_counts": {
+        "lineage_complete_count": 0,
+        "lineage_missing_count": 1571,
+        "metric_count": 11,
+        "not_loaded_source_count": 5,
+        "operational_event_count": 1571,
+        "partial_source_count": 1,
+        "ready_source_count": 1,
+        "registered_source_count": 7,
+        "transaction_record_count": 8815
+      },
+      "schema": "PFIV025Stage9Phase92FinancialReportV1",
+      "scope_explanation_zh": "消费总流出是用户定义的 gross activity 口径；生活消费、投资资金流出与投资域内配置必须拆分展示，投资活动不等于净资产损失。",
+      "snapshot_hash": "sha256:0ca9eb2865f9fd4b08a3dabaab2233781faf8b3e4038db40ff1a749a2736c62a",
+      "status": "partial",
+      "status_statement_zh": "部分可算：只展示真实来源覆盖与非金额敏感性。",
+      "title_zh": "消费报告",
+      "version": "v0.2.5"
+    },
+    {
+      "analysis_implementation_status": "ready",
+      "analysis_version": "pfi-v025-stage9-phase92-analysis-v1",
+      "anomaly_ids": [
+        "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "base_snapshot_hash": "sha256:84071150c3da7f3b45e26686a1bd3a4e2655170795d8e09e3edfe76491ad7d57",
+      "calculable_components": [
+        {
+          "component_id": "seven_window_coverage",
+          "status": "partial",
+          "windows": [
+            {
+              "coverage_end": "2026-06-03",
+              "coverage_start": "2026-05-28",
+              "financial_fingerprint": "sha256:e3846ddb78ab992050692cb48324baf22b2f72fa710d09cde6ab27f816202804",
+              "incremental_record_count": 80,
+              "record_count": 80,
+              "window_days": 7
+            },
+            {
+              "coverage_end": "2026-06-03",
+              "coverage_start": "2026-05-14",
+              "financial_fingerprint": "sha256:1a59b2095755a18200f78e1e43b86b3214942c474f0fdfc264240203dd2869a2",
+              "incremental_record_count": 112,
+              "record_count": 192,
+              "window_days": 21
+            },
+            {
+              "coverage_end": "2026-06-03",
+              "coverage_start": "2026-05-05",
+              "financial_fingerprint": "sha256:65c805672776c094f75486092be5c83f0c95e3452694f602c4ebf9c2cb2acbe1",
+              "incremental_record_count": 66,
+              "record_count": 258,
+              "window_days": 30
+            },
+            {
+              "coverage_end": "2026-06-03",
+              "coverage_start": "2026-04-05",
+              "financial_fingerprint": "sha256:6355303acccabf9ee84e4256589fc3be0c2eec92460d7f0cc81998db8d3d09a6",
+              "incremental_record_count": 210,
+              "record_count": 468,
+              "window_days": 60
+            },
+            {
+              "coverage_end": "2026-06-03",
+              "coverage_start": "2026-03-06",
+              "financial_fingerprint": "sha256:1fb6f87280e839c93114a748244ec6d262998b6803180fea2eb85bcdd24534d1",
+              "incremental_record_count": 261,
+              "record_count": 729,
+              "window_days": 90
+            },
+            {
+              "coverage_end": "2026-06-03",
+              "coverage_start": "2025-12-06",
+              "financial_fingerprint": "sha256:36448d931415328809874e214a597242eec21b142f6fe9803cdcb8b639adf42e",
+              "incremental_record_count": 689,
+              "record_count": 1418,
+              "window_days": 180
+            },
+            {
+              "coverage_end": "2026-06-03",
+              "coverage_start": "2025-06-09",
+              "financial_fingerprint": "sha256:e8a886fef406d1ba844242f33f5e07bd573460fdb0816832d84e81675943d585",
+              "incremental_record_count": 1817,
+              "record_count": 3235,
+              "window_days": 360
+            }
+          ]
+        }
+      ],
+      "component_metric_ids": [
+        "external_inflow_cny",
+        "external_outflow_cny",
+        "net_cashflow_cny"
+      ],
+      "conclusions": [
+        {
+          "evidence_refs": [
+            "PFI/reports/pfi_v025/stage_5/phase_5_3/model_validation_card.json",
+            "PFI/reports/pfi_v025/stage_5/phase_5_3/sensitivity_results.json"
+          ],
+          "scope": "source_coverage_only",
+          "statement_zh": "当前只确认真实交易来源覆盖、发布/待复核分区或窗口记录变化；lineage 未完整，因此不生成金额或确定性财务结论。"
+        }
+      ],
+      "contains_private_values": false,
+      "counter_evidence": [
+        "FORM-PFI-016..018 must remain blocked instead of inheriting the passing transaction-only evidence.",
+        "Taxonomy constraints do not prove classification accuracy without labels.",
+        "Consumer payload equality is not evidence of actual rendered UI/report parity."
+      ],
+      "coverage": {
+        "all_required_metric_fields_present": true,
+        "lineage_status": "blocked",
+        "metric_status": "blocked",
+        "non_ready_false_zero_count": 0,
+        "required_metric_field_values_valid": true,
+        "source_status_counts": {
+          "not_loaded": 5,
+          "partial": 1,
+          "ready": 1
+        }
+      },
+      "data_range": {
+        "end": "2026-06-03",
+        "start": "2022-06-06"
+      },
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-019",
+        "FORM-PFI-015"
+      ],
+      "generated_at": "2026-07-15T16:00:00+10:00",
+      "hashes": {
+        "analysis_builder_hash": "sha256:79dc26cea1c811787a0e1b18ded9fea6b3da2f07bba8df34ac3a988cf0d42bec",
+        "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+        "data_manifest_hash": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+        "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+        "input_bundle_hash": "sha256:e441309c77c823bdfdac90064b223c9184ff573d375b443aeef7060653552664",
+        "invariant_results_hash": "sha256:a4cd596679806c85a8ba2bee7beddccdcd4a621168f262df3cd448c252dc261c",
+        "metamorphic_results_hash": "sha256:4927cdbabcef2eb2ad3cfbd57a2ac51023d93b91853b4beb9412b98e21f1a54d",
+        "model_validation_card_hash": "sha256:6471eb47d07045c09d76bee2003d5fcbd808a65f44198782f8c7cc3516224354",
+        "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+        "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6",
+        "report_builder_hash": "sha256:d9ac58b4449828beddf30c16bdaa02df49b08454c3dbc79a6ccb61784f9445c9",
+        "report_contract_hash": "sha256:1782174b0cb14bd520b22adf50fb8c545c8874243fe6ba5c2c409a964d37de96",
+        "sensitivity_results_hash": "sha256:a614ea5f6c65807eba64840be2e3294a2e1789d66f93941f5a22b4b6db308856",
+        "stage4_read_model_artifact_hash": "sha256:089ea18f9a1d2fb7396503dea70c878e8f736727c314b6fc58ce6942c27c9ea8",
+        "stage7_workflow_artifact_hash": "sha256:a890e3b68c24bbe4028164e15dfb4d9dfd5808d7983d0846c0b0c54738ba06ca"
+      },
+      "immutable": true,
+      "limitations": [
+        "本 Phase 只建立报告合同、完整度和数据质量报告，不实现 Phase 9.2 财务分析。",
+        "报告仅包含 aggregate metadata 与 hash，不含账户标识、原始行或财务数值。",
+        "blocked/partial 状态不得解释为模型有效或完整财务结论。",
+        "Phase 9.2 不生成建议、交易动作或 Phase 9.3 导出。",
+        "公开 Evidence 不保存财务金额；本机私有运行时金额仍受同一 hash 与完整度门禁。"
+      ],
+      "model_validation_status": "partial_validated_with_blocked_components",
+      "parameter_ids": [
+        "PARAM-PFI-081",
+        "PARAM-PFI-082",
+        "PARAM-PFI-083",
+        "PARAM-PFI-084",
+        "PARAM-PFI-085",
+        "PARAM-PFI-086"
+      ],
+      "partial_scope": "transaction_source_coverage_only",
+      "report_as_of": "2026-06-03",
+      "report_id": "pfi-v025-cashflow",
+      "report_type": "cashflow",
+      "review_entry_ids": [
+        "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+        "REVIEW-ECONOMIC-EVENT-ADAPTER"
+      ],
+      "sample_counts": {
+        "lineage_complete_count": 0,
+        "lineage_missing_count": 1571,
+        "metric_count": 11,
+        "not_loaded_source_count": 5,
+        "operational_event_count": 1571,
+        "partial_source_count": 1,
+        "ready_source_count": 1,
+        "registered_source_count": 7,
+        "transaction_record_count": 8815
+      },
+      "schema": "PFIV025Stage9Phase92FinancialReportV1",
+      "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+      "snapshot_hash": "sha256:67b50f1b388aaaf1d41549da6496a5ebdcd160a279274fc8a3fd85585ac23e0b",
+      "status": "partial",
+      "status_statement_zh": "部分可算：只展示真实来源覆盖与非金额敏感性。",
+      "title_zh": "现金流报告",
+      "version": "v0.2.5"
+    }
+  ],
+  "risk_tier": "T3_FINANCIAL_MODEL_VALIDATION_UI",
+  "schema": "PFIV025Stage9Phase92AnalysisPackV1",
+  "sensitivity_previews": [
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-019"
+      ],
+      "impact_summary_zh": "窗口增大时覆盖记录数单调不减；可比较覆盖变化与指纹。",
+      "impact_visible": true,
+      "limitation_zh": "金额影响不在公开证据中输出；窗口结果只证明覆盖与计算指纹变化。",
+      "observations": [
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-05-28",
+          "financial_fingerprint": "sha256:e3846ddb78ab992050692cb48324baf22b2f72fa710d09cde6ab27f816202804",
+          "incremental_record_count": 80,
+          "record_count": 80,
+          "window_days": 7
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-05-14",
+          "financial_fingerprint": "sha256:1a59b2095755a18200f78e1e43b86b3214942c474f0fdfc264240203dd2869a2",
+          "incremental_record_count": 112,
+          "record_count": 192,
+          "window_days": 21
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-05-05",
+          "financial_fingerprint": "sha256:65c805672776c094f75486092be5c83f0c95e3452694f602c4ebf9c2cb2acbe1",
+          "incremental_record_count": 66,
+          "record_count": 258,
+          "window_days": 30
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-04-05",
+          "financial_fingerprint": "sha256:6355303acccabf9ee84e4256589fc3be0c2eec92460d7f0cc81998db8d3d09a6",
+          "incremental_record_count": 210,
+          "record_count": 468,
+          "window_days": 60
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2026-03-06",
+          "financial_fingerprint": "sha256:1fb6f87280e839c93114a748244ec6d262998b6803180fea2eb85bcdd24534d1",
+          "incremental_record_count": 261,
+          "record_count": 729,
+          "window_days": 90
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2025-12-06",
+          "financial_fingerprint": "sha256:36448d931415328809874e214a597242eec21b142f6fe9803cdcb8b639adf42e",
+          "incremental_record_count": 689,
+          "record_count": 1418,
+          "window_days": 180
+        },
+        {
+          "coverage_end": "2026-06-03",
+          "coverage_start": "2025-06-09",
+          "financial_fingerprint": "sha256:e8a886fef406d1ba844242f33f5e07bd573460fdb0816832d84e81675943d585",
+          "incremental_record_count": 1817,
+          "record_count": 3235,
+          "window_days": 360
+        }
+      ],
+      "parameter_ids": [
+        "PARAM-PFI-086"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-019",
+      "sensitivity_id": "SENS-CASHFLOW-WINDOW",
+      "status": "partial_ready_nonfinancial_impact",
+      "title_zh": "现金流窗口敏感性"
+    },
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-020"
+      ],
+      "impact_summary_zh": "缺少逐笔 score vector 与 ground-truth labels，调整影响不可验证。",
+      "impact_visible": false,
+      "limitation_zh": "The immutable ledger has no per-record classification score vector or ground truth labels.",
+      "observations": [],
+      "parameter_ids": [
+        "PARAM-PFI-087"
+      ],
+      "review_route": "/settings/parameters?parameter=PARAM-PFI-087",
+      "sensitivity_id": "SENS-CLASSIFICATION-THRESHOLD",
+      "status": "blocked_missing_scores",
+      "title_zh": "分类阈值敏感性"
+    },
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-018"
+      ],
+      "impact_summary_zh": "缺完整 dated funding/return/terminal-value chain，不预演 XIRR 数值。",
+      "impact_visible": false,
+      "limitation_zh": "No complete dated funding/return/terminal-value chain exists in the accepted real snapshot.",
+      "observations": [],
+      "parameter_ids": [
+        "PARAM-PFI-089",
+        "PARAM-PFI-090",
+        "PARAM-PFI-091",
+        "PARAM-PFI-092"
+      ],
+      "review_route": "/reports/metric-drilldown?formula=FORM-PFI-018",
+      "sensitivity_id": "SENS-XIRR-POLICY",
+      "status": "blocked_insufficient_chain",
+      "title_zh": "XIRR 参数敏感性"
+    },
+    {
+      "contains_private_values": false,
+      "financial_values_emitted": 0,
+      "formula_ids": [
+        "FORM-PFI-015",
+        "FORM-PFI-016",
+        "FORM-PFI-017"
+      ],
+      "impact_summary_zh": "余额、持仓、价格与 FX 未加载，不生成金额精度调整影响。",
+      "impact_visible": false,
+      "limitation_zh": "当前只保留 Decimal/no-float contract；真实数值影响等待来源 ready。",
+      "observations": [],
+      "parameter_ids": [
+        "PARAM-PFI-081"
+      ],
+      "review_route": "/settings/parameters?parameter=PARAM-PFI-081",
+      "sensitivity_id": "SENS-MONEY-QUANTUM",
+      "status": "blocked_missing_required_sources",
+      "title_zh": "金额精度与核心财务边界"
+    }
+  ],
+  "source_review_index": [
+    {
+      "action_label_zh": "复核交易来源覆盖与待复核队列",
+      "as_of": "2026-06-03",
+      "blocking_reason_zh": null,
+      "contains_private_values": false,
+      "coverage": {
+        "end": "2026-06-03",
+        "start": "2022-06-06"
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "支付宝交易流水（历史 Git object 只读来源）",
+      "record_count": 8815,
+      "resolution_task_ids": [],
+      "review_id": "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+      "review_route": "/data/sources",
+      "source_id": "SRC-TRANSACTIONS-ALIPAY",
+      "status": "ready"
+    },
+    {
+      "action_label_zh": "挂接并复核账户余额快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "账户余额与期初/期末快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P1-T1",
+        "S4-P1-T2"
+      ],
+      "review_id": "REVIEW-SRC-ACCOUNT-BALANCES",
+      "review_route": "/accounts/reconcile",
+      "source_id": "SRC-ACCOUNT-BALANCES",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核负债余额快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "负债余额快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P1-T1",
+        "S4-P1-T2"
+      ],
+      "review_id": "REVIEW-SRC-LIABILITIES",
+      "review_route": "/accounts/reconcile",
+      "source_id": "SRC-LIABILITIES",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核真实持仓快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "真实持仓快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P2-T1",
+        "S4-P2-T3",
+        "S4-P2-T4"
+      ],
+      "review_id": "REVIEW-SRC-HOLDINGS",
+      "review_route": "/investment/holdings",
+      "source_id": "SRC-HOLDINGS",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核估值价格快照",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "持仓估值价格快照",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P2-T3",
+        "S4-P2-T4"
+      ],
+      "review_id": "REVIEW-SRC-MARKET-PRICES",
+      "review_route": "/investment/holdings",
+      "source_id": "SRC-MARKET-PRICES",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "挂接并复核生产 FX snapshot",
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "source_dependency",
+      "label_zh": "生产 FX snapshot",
+      "record_count": null,
+      "resolution_task_ids": [
+        "S2-P2-T2",
+        "S2-P2-T3"
+      ],
+      "review_id": "REVIEW-SRC-FX-SNAPSHOT",
+      "review_route": "/settings/data-system",
+      "source_id": "SRC-FX-SNAPSHOT",
+      "status": "not_loaded"
+    },
+    {
+      "action_label_zh": "复核 Economic Event 映射与缺失 lineage",
+      "as_of": null,
+      "blocking_reason_zh": "lineage complete=0、missing=1571；未完整前不能生成确定性财务结论。",
+      "contains_private_values": false,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "issue_type": "lineage_dependency",
+      "label_zh": "Economic Event lineage",
+      "record_count": 0,
+      "resolution_task_ids": [
+        "S9-P2-T4"
+      ],
+      "review_id": "REVIEW-ECONOMIC-EVENT-ADAPTER",
+      "review_route": "/data/interconnection",
+      "source_id": "economic_event_adapter",
+      "status": "blocked"
+    }
+  ],
+  "stage": 9,
+  "stage_9_whole_stage_review_done": false,
+  "status": "candidate_pass",
+  "task_ids": [
+    "S9-P2-T1",
+    "S9-P2-T2",
+    "S9-P2-T3",
+    "S9-P2-T4"
+  ],
+  "ui_contract": {
+    "automatic_trading_allowed": false,
+    "contains_private_values": false,
+    "financial_values_emitted": 0,
+    "formula_cards": [
+      {
+        "formula_id": "FORM-PFI-015",
+        "label_zh": "双消费与投资活动组件",
+        "limitation": "Published real events validate living consumption and investment allocation; unresolved transfer/refund pools prevent full funding/refund coverage.",
+        "parameters": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-082",
+          "PARAM-PFI-083",
+          "PARAM-PFI-084",
+          "PARAM-PFI-085"
+        ],
+        "report_types": [
+          "consumption",
+          "cashflow"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-015",
+        "validation_status": "validated_real_snapshot"
+      },
+      {
+        "formula_id": "FORM-PFI-016",
+        "label_zh": "净资产、现金与投资重配置不变量",
+        "limitation": "Account balance, liability, holding, price and FX snapshots are not loaded.",
+        "parameters": [
+          "PARAM-PFI-081"
+        ],
+        "report_types": [
+          "net_worth",
+          "cash"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-016",
+        "validation_status": "blocked_missing_required_sources"
+      },
+      {
+        "formula_id": "FORM-PFI-017",
+        "label_zh": "投资收益、成本与拖累",
+        "limitation": "Holdings, cost basis, point-in-time price, fee, tax and FX lineage are incomplete.",
+        "parameters": [
+          "PARAM-PFI-081"
+        ],
+        "report_types": [
+          "investment"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-017",
+        "validation_status": "blocked_missing_required_sources"
+      },
+      {
+        "formula_id": "FORM-PFI-018",
+        "label_zh": "日期感知投资 XIRR",
+        "limitation": "No complete dated funding/return/terminal-value chain is available for real XIRR.",
+        "parameters": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-089",
+          "PARAM-PFI-090",
+          "PARAM-PFI-091",
+          "PARAM-PFI-092"
+        ],
+        "report_types": [
+          "investment"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-018",
+        "validation_status": "blocked_insufficient_chain"
+      },
+      {
+        "formula_id": "FORM-PFI-019",
+        "label_zh": "七窗口外部现金流",
+        "limitation": "Seven real lookback windows and empty-window false-zero boundaries pass; date precision remains daily.",
+        "parameters": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-086"
+        ],
+        "report_types": [
+          "cash",
+          "cashflow"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-019",
+        "validation_status": "validated_real_snapshot"
+      },
+      {
+        "formula_id": "FORM-PFI-020",
+        "label_zh": "分类与标签治理规则",
+        "limitation": "Taxonomy structure passes, but classification accuracy lacks labels and out-of-sample ground truth.",
+        "parameters": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-087",
+          "PARAM-PFI-088"
+        ],
+        "report_types": [
+          "consumption"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-020",
+        "validation_status": "validated_structure_only"
+      }
+    ],
+    "hashes": {
+      "base_report_manifest_hash": "sha256:ad0208b30a895e902c86b226a1186840a5a8c1f2747062f406f4debea48dabf4",
+      "data_manifest_hash": "sha256:f960dc36a23ce8e283eef7e76a8098164718410415ed54374bf18bf34309f658",
+      "formula_registry_hash": "sha256:65098b8f10602070639c3e42a128c0fed8bcabddb3b9400cf1436c0f2f85d8cd",
+      "parameter_hash": "sha256:d6aacff83da3e7c4945b1376d62da72f7f1edd88999972645eba9488f90db433",
+      "read_model_hash": "sha256:f1962e376536611ab43f60a95c9789510b52ee11f627de7037046dc71b73e4b6"
+    },
+    "model_cards": [
+      {
+        "counter_evidence_count": 3,
+        "historical_out_of_sample_status": "blocked_insufficient_ground_truth",
+        "invariant_status": "partial_pass_with_blocked_components",
+        "limitation_count": 6,
+        "metamorphic_status": "pass",
+        "model_id": "MOD-PFI-010",
+        "model_version": "pfi-v0.2.5-financial-models-v1",
+        "status": "partial_validated_with_blocked_components"
+      }
+    ],
+    "phase_9_3_started": false,
+    "phase_id": "V025-S9-P9.2",
+    "report_cards": [
+      {
+        "data_range": {
+          "end": "2026-06-03",
+          "start": "2022-06-06"
+        },
+        "financial_values_emitted": 0,
+        "formula_ids": [
+          "FORM-PFI-016"
+        ],
+        "parameter_ids": [
+          "PARAM-PFI-081"
+        ],
+        "primary_review_route": "/accounts/reconcile",
+        "report_id": "pfi-v025-net-worth",
+        "report_type": "net_worth",
+        "review_entry_ids": [
+          "REVIEW-SRC-ACCOUNT-BALANCES",
+          "REVIEW-SRC-LIABILITIES",
+          "REVIEW-SRC-HOLDINGS",
+          "REVIEW-SRC-MARKET-PRICES",
+          "REVIEW-SRC-FX-SNAPSHOT",
+          "REVIEW-ECONOMIC-EVENT-ADAPTER"
+        ],
+        "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "status": "blocked",
+        "status_statement_zh": "关键真实输入未 ready；只展示公式、限制与复核入口。",
+        "status_zh": "已阻断",
+        "title_zh": "净资产报告",
+        "transaction_record_count": 8815
+      },
+      {
+        "data_range": {
+          "end": "2026-06-03",
+          "start": "2022-06-06"
+        },
+        "financial_values_emitted": 0,
+        "formula_ids": [
+          "FORM-PFI-016",
+          "FORM-PFI-019"
+        ],
+        "parameter_ids": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-086"
+        ],
+        "primary_review_route": "/accounts/reconcile",
+        "report_id": "pfi-v025-cash",
+        "report_type": "cash",
+        "review_entry_ids": [
+          "REVIEW-SRC-ACCOUNT-BALANCES",
+          "REVIEW-SRC-LIABILITIES",
+          "REVIEW-ECONOMIC-EVENT-ADAPTER"
+        ],
+        "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "status": "blocked",
+        "status_statement_zh": "关键真实输入未 ready；只展示公式、限制与复核入口。",
+        "status_zh": "已阻断",
+        "title_zh": "现金报告",
+        "transaction_record_count": 8815
+      },
+      {
+        "data_range": {
+          "end": "2026-06-03",
+          "start": "2022-06-06"
+        },
+        "financial_values_emitted": 0,
+        "formula_ids": [
+          "FORM-PFI-017",
+          "FORM-PFI-018"
+        ],
+        "parameter_ids": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-089",
+          "PARAM-PFI-090",
+          "PARAM-PFI-091",
+          "PARAM-PFI-092"
+        ],
+        "primary_review_route": "/investment/holdings",
+        "report_id": "pfi-v025-investment",
+        "report_type": "investment",
+        "review_entry_ids": [
+          "REVIEW-SRC-HOLDINGS",
+          "REVIEW-SRC-MARKET-PRICES",
+          "REVIEW-SRC-FX-SNAPSHOT",
+          "REVIEW-ECONOMIC-EVENT-ADAPTER"
+        ],
+        "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "status": "blocked",
+        "status_statement_zh": "关键真实输入未 ready；只展示公式、限制与复核入口。",
+        "status_zh": "已阻断",
+        "title_zh": "投资报告",
+        "transaction_record_count": 8815
+      },
+      {
+        "data_range": {
+          "end": "2026-06-03",
+          "start": "2022-06-06"
+        },
+        "financial_values_emitted": 0,
+        "formula_ids": [
+          "FORM-PFI-015",
+          "FORM-PFI-020"
+        ],
+        "parameter_ids": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-082",
+          "PARAM-PFI-083",
+          "PARAM-PFI-084",
+          "PARAM-PFI-085",
+          "PARAM-PFI-087",
+          "PARAM-PFI-088"
+        ],
+        "primary_review_route": "/data/sources",
+        "report_id": "pfi-v025-consumption",
+        "report_type": "consumption",
+        "review_entry_ids": [
+          "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+          "REVIEW-ECONOMIC-EVENT-ADAPTER"
+        ],
+        "scope_explanation_zh": "消费总流出是用户定义的 gross activity 口径；生活消费、投资资金流出与投资域内配置必须拆分展示，投资活动不等于净资产损失。",
+        "status": "partial",
+        "status_statement_zh": "部分可算：只展示真实来源覆盖与非金额敏感性。",
+        "status_zh": "部分可算",
+        "title_zh": "消费报告",
+        "transaction_record_count": 8815
+      },
+      {
+        "data_range": {
+          "end": "2026-06-03",
+          "start": "2022-06-06"
+        },
+        "financial_values_emitted": 0,
+        "formula_ids": [
+          "FORM-PFI-019",
+          "FORM-PFI-015"
+        ],
+        "parameter_ids": [
+          "PARAM-PFI-081",
+          "PARAM-PFI-082",
+          "PARAM-PFI-083",
+          "PARAM-PFI-084",
+          "PARAM-PFI-085",
+          "PARAM-PFI-086"
+        ],
+        "primary_review_route": "/data/sources",
+        "report_id": "pfi-v025-cashflow",
+        "report_type": "cashflow",
+        "review_entry_ids": [
+          "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+          "REVIEW-ECONOMIC-EVENT-ADAPTER"
+        ],
+        "scope_explanation_zh": "当前报告只使用已验证的真实来源覆盖，不把缺失输入解释为零。",
+        "status": "partial",
+        "status_statement_zh": "部分可算：只展示真实来源覆盖与非金额敏感性。",
+        "status_zh": "部分可算",
+        "title_zh": "现金流报告",
+        "transaction_record_count": 8815
+      }
+    ],
+    "report_count": 5,
+    "review_cards": [
+      {
+        "action_label_zh": "复核交易来源覆盖与待复核队列",
+        "label_zh": "支付宝交易流水（历史 Git object 只读来源）",
+        "review_id": "REVIEW-SRC-TRANSACTIONS-ALIPAY",
+        "review_route": "/data/sources",
+        "status": "ready"
+      },
+      {
+        "action_label_zh": "挂接并复核账户余额快照",
+        "label_zh": "账户余额与期初/期末快照",
+        "review_id": "REVIEW-SRC-ACCOUNT-BALANCES",
+        "review_route": "/accounts/reconcile",
+        "status": "not_loaded"
+      },
+      {
+        "action_label_zh": "挂接并复核负债余额快照",
+        "label_zh": "负债余额快照",
+        "review_id": "REVIEW-SRC-LIABILITIES",
+        "review_route": "/accounts/reconcile",
+        "status": "not_loaded"
+      },
+      {
+        "action_label_zh": "挂接并复核真实持仓快照",
+        "label_zh": "真实持仓快照",
+        "review_id": "REVIEW-SRC-HOLDINGS",
+        "review_route": "/investment/holdings",
+        "status": "not_loaded"
+      },
+      {
+        "action_label_zh": "挂接并复核估值价格快照",
+        "label_zh": "持仓估值价格快照",
+        "review_id": "REVIEW-SRC-MARKET-PRICES",
+        "review_route": "/investment/holdings",
+        "status": "not_loaded"
+      },
+      {
+        "action_label_zh": "挂接并复核生产 FX snapshot",
+        "label_zh": "生产 FX snapshot",
+        "review_id": "REVIEW-SRC-FX-SNAPSHOT",
+        "review_route": "/settings/data-system",
+        "status": "not_loaded"
+      },
+      {
+        "action_label_zh": "复核 Economic Event 映射与缺失 lineage",
+        "label_zh": "Economic Event lineage",
+        "review_id": "REVIEW-ECONOMIC-EVENT-ADAPTER",
+        "review_route": "/data/interconnection",
+        "status": "blocked"
+      }
+    ],
+    "schema": "PFIV025Stage9Phase92UIContractV1",
+    "sensitivity_cards": [
+      {
+        "impact_summary_zh": "窗口增大时覆盖记录数单调不减；可比较覆盖变化与指纹。",
+        "impact_visible": true,
+        "observation_count": 7,
+        "parameter_ids": [
+          "PARAM-PFI-086"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-019",
+        "sensitivity_id": "SENS-CASHFLOW-WINDOW",
+        "status": "partial_ready_nonfinancial_impact",
+        "title_zh": "现金流窗口敏感性"
+      },
+      {
+        "impact_summary_zh": "缺少逐笔 score vector 与 ground-truth labels，调整影响不可验证。",
+        "impact_visible": false,
+        "observation_count": 0,
+        "parameter_ids": [
+          "PARAM-PFI-087"
+        ],
+        "review_route": "/settings/parameters?parameter=PARAM-PFI-087",
+        "sensitivity_id": "SENS-CLASSIFICATION-THRESHOLD",
+        "status": "blocked_missing_scores",
+        "title_zh": "分类阈值敏感性"
+      },
+      {
+        "impact_summary_zh": "缺完整 dated funding/return/terminal-value chain，不预演 XIRR 数值。",
+        "impact_visible": false,
+        "observation_count": 0,
+        "parameter_ids": [
+          "PARAM-PFI-089",
+          "PARAM-PFI-090",
+          "PARAM-PFI-091",
+          "PARAM-PFI-092"
+        ],
+        "review_route": "/reports/metric-drilldown?formula=FORM-PFI-018",
+        "sensitivity_id": "SENS-XIRR-POLICY",
+        "status": "blocked_insufficient_chain",
+        "title_zh": "XIRR 参数敏感性"
+      },
+      {
+        "impact_summary_zh": "余额、持仓、价格与 FX 未加载，不生成金额精度调整影响。",
+        "impact_visible": false,
+        "observation_count": 0,
+        "parameter_ids": [
+          "PARAM-PFI-081"
+        ],
+        "review_route": "/settings/parameters?parameter=PARAM-PFI-081",
+        "sensitivity_id": "SENS-MONEY-QUANTUM",
+        "status": "blocked_missing_required_sources",
+        "title_zh": "金额精度与核心财务边界"
+      }
+    ],
+    "subtitle_zh": "只展示当前可计算内容；公式、参数影响、模型限制与来源复核入口保持可见。",
+    "title_zh": "财务分析与模型验证",
+    "version": "v0.2.5"
+  },
+  "version": "v0.2.5"
+}

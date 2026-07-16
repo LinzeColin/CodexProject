@@ -230,3 +230,238 @@
     resolveRouteAlias,
   });
 });
+
+(function attachPFIV025Stage6Routes(root, factory) {
+  const v024Compatibility = root?.PFI_V024_STAGE3_ROUTES
+    || (typeof module !== "undefined" && module.exports ? module.exports : Object.freeze({}));
+  const pageContracts = root?.PFI_V025_STAGE6_PAGE_CONTRACTS
+    || (typeof require === "function" ? require("./navigation.js").v025PageContracts : Object.freeze({}));
+  const stage7Lineage = root?.PFI_V025_STAGE7_LINEAGE
+    || (typeof require === "function" ? require("./pages/stage7Lineage.js") : Object.freeze({}));
+  const api = factory(v024Compatibility, pageContracts, stage7Lineage.pageContracts || Object.freeze({}));
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  if (root) {
+    root.PFI_V025_STAGE6_NAVIGATION = api;
+    root.PFI_V025_STAGE6_ROUTES = api;
+  }
+})(typeof window !== "undefined" ? window : globalThis, function buildPFIV025Stage6Routes(v024Compatibility, pageContracts, stage7PageContracts) {
+  const canonicalStrategyLabRoute = "/market-research/strategy-lab";
+  const officialPrimaryEntries = Object.freeze([
+    Object.freeze({ index: 1, label: "首页总览", workspace: "home", routeAlias: "/overview", icon: "⌂" }),
+    Object.freeze({ index: 2, label: "账户与资产", workspace: "accounts", routeAlias: "/accounts", icon: "◫" }),
+    Object.freeze({ index: 3, label: "账本流水", workspace: "ledger", routeAlias: "/ledger", icon: "≋" }),
+    Object.freeze({ index: 4, label: "投资管理", workspace: "investment", routeAlias: "/investment", icon: "↗" }),
+    Object.freeze({ index: 5, label: "消费管理", workspace: "consumption", routeAlias: "/consumption", icon: "◌" }),
+    Object.freeze({ index: 6, label: "数据源与上传", workspace: "sync", routeAlias: "/data", icon: "⇄" }),
+    Object.freeze({ index: 7, label: "建议与复盘", workspace: "recommendations", routeAlias: "/review", icon: "✦" }),
+    Object.freeze({ index: 8, label: "报告与洞察", workspace: "insights", routeAlias: "/reports", icon: "▣" }),
+    Object.freeze({ index: 9, label: "市场与研究", workspace: "market_research", routeAlias: "/market-research", icon: "⌁" }),
+    Object.freeze({ index: 10, label: "设置", workspace: "settings", routeAlias: "/settings", icon: "⚙" }),
+  ]);
+
+  const aliasMatrix = Object.freeze([
+    Object.freeze({ label: "首页", routeAlias: "/home", resolvedRouteAlias: "/overview", targetWorkspace: "home", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ label: "市场", routeAlias: "/market", resolvedRouteAlias: "/market-research/market", targetWorkspace: "market_research", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ label: "研究", routeAlias: "/research", resolvedRouteAlias: "/market-research/research", targetWorkspace: "market_research", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ label: "持仓", routeAlias: "/holdings", resolvedRouteAlias: "/investment/holdings", targetWorkspace: "investment", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ label: "策略实验室", routeAlias: "/strategy-lab", resolvedRouteAlias: canonicalStrategyLabRoute, targetWorkspace: "market_research", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ label: "策略实验室", routeAlias: "/investment/strategy-lab", resolvedRouteAlias: canonicalStrategyLabRoute, targetWorkspace: "market_research", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+    Object.freeze({ label: "数据与系统", routeAlias: "/data-system", resolvedRouteAlias: "/settings/data-system", targetWorkspace: "settings", aliasClass: "command_or_compatibility_alias", primaryEntryAllowed: false }),
+  ]);
+  const aliasRouteTargets = Object.freeze(Object.fromEntries(
+    aliasMatrix.map((entry) => [entry.routeAlias, entry.resolvedRouteAlias])
+  ));
+  const legacyAliasEntries = Object.freeze(aliasMatrix.filter((entry) => entry.routeAlias !== "/investment/strategy-lab"));
+  const primaryRouteMap = Object.freeze(Object.fromEntries(
+    officialPrimaryEntries.map((entry) => [entry.routeAlias, entry])
+  ));
+  const canonicalSecondaryRoutes = Object.freeze((pageContracts.pages || []).map((page) => Object.freeze({
+    title: page.pageLabel,
+    workspace: page.workspace,
+    routeAlias: page.routeAlias,
+    primaryRouteAlias: page.primaryRouteAlias,
+    stateKey: page.stateKey,
+  })));
+  const phase73SecondaryRoutes = Object.freeze((stage7PageContracts.pages || []).map((page) => Object.freeze({
+    title: page.pageLabel,
+    workspace: page.workspace,
+    routeAlias: page.routeAlias,
+    primaryRouteAlias: page.primaryRouteAlias,
+    stateKey: page.stateKey,
+  })));
+  const activeSecondaryRoutes = Object.freeze([...canonicalSecondaryRoutes, ...phase73SecondaryRoutes]);
+  const canonicalSecondaryRouteMap = Object.freeze(Object.fromEntries(
+    activeSecondaryRoutes.map((entry) => [entry.routeAlias, entry])
+  ));
+  const activePageGroups = Object.freeze(Object.fromEntries(
+    [...new Set([
+      ...Object.keys(pageContracts.pageGroups || {}),
+      ...Object.keys(stage7PageContracts.pageGroups || {}),
+    ])].map((workspace) => [
+      workspace,
+      Object.freeze([
+        ...((pageContracts.pageGroups || {})[workspace] || []),
+        ...((stage7PageContracts.pageGroups || {})[workspace] || []),
+      ]),
+    ])
+  ));
+  const activePageContracts = Object.freeze({
+    ...pageContracts,
+    schema: "PFIV025ActivePageContractsV1",
+    pages: Object.freeze([...(pageContracts.pages || []), ...(stage7PageContracts.pages || [])]),
+    pageGroups: activePageGroups,
+    stage6PageCount: (pageContracts.pages || []).length,
+    stage7Phase73PageCount: (stage7PageContracts.pages || []).length,
+  });
+  const historicalAliasRouteTargets = Object.freeze({
+    "/": "/overview",
+    "/home/today": "/overview",
+    "/market/watch": "/market-research/market",
+    "/market/research": "/market-research/research",
+    "/market/lab": canonicalStrategyLabRoute,
+    "/settings/data": "/settings/data-system",
+    "/sources-upload": "/data",
+    ...(pageContracts.historicalRouteTargets || {}),
+  });
+
+  function sanitizeRouteAlias(routeAlias) {
+    const clean = String(routeAlias || "").trim();
+    if (!clean) return "";
+    return clean.startsWith("#") ? clean.slice(1) : clean;
+  }
+
+  function normalizeHistoricalDynamicAlias(routeAlias) {
+    const clean = sanitizeRouteAlias(routeAlias);
+    if (historicalAliasRouteTargets[clean]) return historicalAliasRouteTargets[clean];
+    if (clean.startsWith("/home?")) return `/overview?${clean.split("?", 2)[1]}`;
+    if (clean.startsWith("/sources-upload?")) return `/data?${clean.split("?", 2)[1]}`;
+    if (clean === "/market-research?tab=market") return "/market-research/market";
+    if (clean === "/market-research?tab=research") return "/market-research/research";
+    if (clean === "/investment?tab=holdings") return "/investment/holdings";
+    if (clean === "/settings?tab=data-system") return "/settings/data-system";
+    return historicalAliasRouteTargets[clean] || clean;
+  }
+
+  function matchCanonicalRoute(routeAlias) {
+    const exactPrimary = primaryRouteMap[routeAlias];
+    if (exactPrimary) return { ...exactPrimary, routeType: "primary", primaryRouteAlias: exactPrimary.routeAlias };
+    const exactSecondary = canonicalSecondaryRouteMap[routeAlias];
+    if (exactSecondary) return { ...exactSecondary, routeType: "secondary" };
+    const routePath = routeAlias.split("?", 1)[0];
+    const queriedSecondary = canonicalSecondaryRouteMap[routePath];
+    if (queriedSecondary) return { ...queriedSecondary, routeType: "secondary" };
+    const queryPrimary = officialPrimaryEntries.find((entry) => routeAlias.startsWith(`${entry.routeAlias}?`));
+    if (queryPrimary) return { ...queryPrimary, routeType: "secondary", primaryRouteAlias: queryPrimary.routeAlias };
+    return null;
+  }
+
+  function resolveRouteAlias(routeAlias) {
+    const rawInputRouteAlias = String(routeAlias || "").trim();
+    const inputRouteAlias = sanitizeRouteAlias(routeAlias);
+    if (!inputRouteAlias) return Object.freeze({ status: "unmatched", inputRouteAlias: "" });
+    const hashCompatibilityInput = rawInputRouteAlias.startsWith("#");
+    const directAliasTarget = aliasRouteTargets[inputRouteAlias] || inputRouteAlias;
+    const normalized = normalizeHistoricalDynamicAlias(directAliasTarget);
+    const matched = matchCanonicalRoute(normalized);
+    if (!matched) return Object.freeze({
+      status: "unmatched",
+      inputRouteAlias,
+      routeType: "invalid",
+      reason: "route_not_registered",
+      recoveryRouteAlias: "/overview",
+    });
+    const redirected = hashCompatibilityInput || normalized !== inputRouteAlias;
+    return Object.freeze({
+      status: "resolved",
+      routeType: redirected ? "legacy_redirect" : matched.routeType,
+      inputRouteAlias,
+      routeAlias: normalized,
+      redirectedFrom: redirected ? inputRouteAlias : "",
+      workspace: matched.workspace,
+      primaryRouteAlias: matched.primaryRouteAlias,
+      tab: matched.tab || "",
+    });
+  }
+
+  const phase62RouteRegistry = Object.freeze({
+    schema: "PFIV025Stage6Phase62RouteRegistryV1",
+    version: "v0.2.5",
+    stage: "Stage 6",
+    phaseId: "6.2",
+    acceptanceId: "ACC-PFI-V025-S6-P62-PAGE-CONTRACTS",
+    taskIds: Object.freeze(["S6-P2-T1", "S6-P2-T2", "S6-P2-T3", "S6-P2-T4"]),
+    canonicalSecondaryRoutes,
+    historicalRouteTargets: historicalAliasRouteTargets,
+    phase62CandidateComplete: true,
+    phase63Complete: false,
+    stage6Complete: false,
+  });
+
+  const phase63HistoryContract = Object.freeze({
+    schema: "PFIV025Stage6Phase63HistoryContractV1",
+    version: "v0.2.5",
+    stage: "Stage 6",
+    phaseId: "6.3",
+    acceptanceId: "ACC-PFI-V025-S6-P63-HISTORY-ACCEPTANCE",
+    taskIds: Object.freeze(["S6-P3-T1", "S6-P3-T2", "S6-P3-T3", "S6-P3-T4"]),
+    canonicalRouteCount: officialPrimaryEntries.length + canonicalSecondaryRoutes.length,
+    historyMode: "canonical_path_with_hash_compatibility_fallback",
+    historyEvents: Object.freeze(["pushState", "replaceState", "popstate"]),
+    repeatedClickPolicy: "replace_current_state_without_new_history_entry",
+    reloadPolicy: "canonical_deep_link_restores_same_page",
+    invalidRouteStatus: "actionable_not_found",
+    invalidRouteRecovery: "/overview",
+    accessibilityPrimaryEntryCount: 10,
+    strategyLabCanonicalRoute: canonicalStrategyLabRoute,
+    phase63CandidateComplete: true,
+    stage6WholeReviewComplete: false,
+    stage6Complete: false,
+  });
+
+  const phase73RouteRegistry = Object.freeze({
+    schema: "PFIV025Stage7Phase73RouteRegistryV1",
+    version: "v0.2.5",
+    stage: 7,
+    phase: "7.3",
+    acceptanceId: "ACC-PFI-V025-S7-P73-METRIC-DRILLDOWN",
+    canonicalSecondaryRoutes: phase73SecondaryRoutes,
+    sidecarHtmlUsed: false,
+    wholeStageReviewStarted: false,
+  });
+
+  return Object.freeze({
+    schema: "PFIV025Stage6Phase61NavigationContractV1",
+    version: "v0.2.5",
+    stage: "Stage 6",
+    phaseId: "6.1",
+    phaseName: "导航与 alias",
+    navigationContractVersion: "PFI-V025-STAGE6-PHASE61-NAVIGATION-ALIAS",
+    taskIds: Object.freeze(["S6-P1-T1", "S6-P1-T2", "S6-P1-T3", "S6-P1-T4"]),
+    officialPrimaryEntries,
+    primaryRoutes: officialPrimaryEntries,
+    aliasMatrix,
+    legacyAliasEntries,
+    aliasRouteTargets,
+    canonicalSecondaryRoutes: activeSecondaryRoutes,
+    phase62RouteRegistry,
+    phase63HistoryContract,
+    phase73RouteRegistry,
+    pageContracts: activePageContracts,
+    canonicalStrategyLabRoute,
+    resolveLegacyRouteAlias: (routeAlias) => aliasRouteTargets[sanitizeRouteAlias(routeAlias)] || sanitizeRouteAlias(routeAlias),
+    resolveRouteAlias,
+    sharedResponsivePrimaryTreeRequired: true,
+    primaryEntryCount: 10,
+    legacyAliasPrimaryEntryAllowed: false,
+    phase61CandidateComplete: true,
+    phase62CandidateComplete: true,
+    phase63CandidateComplete: true,
+    phase62Complete: false,
+    phase63Complete: false,
+    stage6Complete: false,
+    v024Phase32RouteContract: v024Compatibility.v024Phase32RouteContract || v024Compatibility,
+    v024Compatibility,
+  });
+});

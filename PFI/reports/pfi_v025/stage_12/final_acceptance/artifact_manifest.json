@@ -1,0 +1,15 @@
+{
+  "contains_private_values": false,
+  "file_count": 7,
+  "files": {
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/evidence.json": "sha256:f3c255598ef96f20980d9f7642d2cc4d9daa57578f580f09d4f2d53a263da734",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/human_acceptance.json": "sha256:c46038f0f2ea6e04ea6997f4ecc83d0d05cdbf1e03daf66219aecb49edea01c2",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/phase_contract.json": "sha256:25180b11dc30a6f562ddb758db18d88aafccfa111d058b72340773396499bb14",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/release_freeze.json": "sha256:d01a3363c82a3b83b329ee4d5a2da0a34bbb246524d4bbb6833ff3bf6fa9a4b4",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/release_gate.json": "sha256:13c83a25580b86e202da79d29819d56164f9ece410d15c8de15d49dc76006366",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/risk_and_rollback.md": "sha256:917493a2cbbfebc93cba1523919b4454d7c624abfb333bc219f6b4afcb15ef6b",
+    "PFI/reports/pfi_v025/stage_12/final_acceptance/terminal.log": "sha256:d4ec12e684d20e61ceabc6b7451f45bcc0f22909680cedbb35d5eb6af9ad7b2c"
+  },
+  "schema": "PFIV025Stage12FinalAcceptanceArtifactManifestV1",
+  "status": "pass"
+}

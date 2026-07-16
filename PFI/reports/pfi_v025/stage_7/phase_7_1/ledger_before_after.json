@@ -1,0 +1,12 @@
+{
+  "confirmed_ledger_count": 1571,
+  "duplicate_ledger_count": 1571,
+  "pending_after_review": 73,
+  "pending_after_undo": 74,
+  "pending_before_review": 74,
+  "preview_ledger_count": 0,
+  "reconfirmed_ledger_count": 1571,
+  "rolled_back_ledger_count": 0,
+  "schema": "PFIV025Stage7Phase71LedgerBeforeAfterV1",
+  "status": "pass"
+}

@@ -1,0 +1,12 @@
+{
+  "app_install_performed": false,
+  "backend_build_hash": "43b918f761e80bbc4c6e2de54a32c714703cc4d9a60f67b7a180e1cea222ddbb",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "embedded_manifest_matches_configured_manifest": true,
+  "frontend_bundle_hash": "37a74d635cac8e0640b8dce357a0698c56a8a5b157517ec5f19c54208ab74d65",
+  "git_commit_semantics": "preserved_stage1_binding_until_final_stage12_release_transaction",
+  "push_performed": false,
+  "schema": "PFIV025Stage6Phase61ReleaseIdentityBindingV1",
+  "status": "pass",
+  "version": "v0.2.5"
+}

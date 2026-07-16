@@ -1,0 +1,12 @@
+status=pass
+trace_entry_count=3
+absolute_user_path_count=0
+private_var_path_count=0
+tmp_path_count=0
+runtime_token_count=0
+runtime_token_header_count=0
+private_financial_value_count=0
+resource_bodies_removed=true
+contains_private_values=false
+external_network_performed=false
+finder_used=false

@@ -1,0 +1,26 @@
+{
+  "schema": "PFIV025Stage8Phase82ArtifactHashesV1",
+  "generated_at": "2026-07-15T02:31:41Z",
+  "algorithm": "sha256",
+  "artifacts": {
+    "PFI/config/release_manifest.json": "628317f3f867ee23b67c6b1790d3a2035113183ff3a6e42be49c652be1e433e6",
+    "PFI/docs/governance/development_events.jsonl": "ee608ed98f9741a7215b07548e154fef81b19a238b9d453678c5dd2c0123f04c",
+    "PFI/docs/governance/formula_registry.yaml": "30281e1c50c264f4e8f677c80ea5cb6a087ea321889c7ac381a17c3731fd024e",
+    "PFI/docs/governance/model_registry.yaml": "983b7e9dd293621a0ec5471f090ae6bb26b970839e95925eadd9171127df9e9e",
+    "PFI/docs/governance/parameter_registry.csv": "d11f9f48414ae6201410a98d0230162bc2c80e7c9e934ffb9da5fe89e11be9f7",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/browser_trace.zip": "1a5d09bd492bc155b9b35308df52a5d6c445d753818fe98278303167f8f4fd7b",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/browser_validation.json": "1d400364d5e55e84f9d3e0b52c17d5ea739ca151ed3bc51ea05866cc4352275d",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/phase82_motion_feedback.png": "e794b3937327dae5ae864c7a45f27ac3a9a8b2cf4d86f3c9e0687473ec41dba7",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/evidence.json": "338f97181ac02ec46ccd77694044307bf6eca0bdd1c26e8ef950e5830fba0271",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/phase_contract.json": "80ae16299e2fd15eb21e58852eba857a813bd04218cc58230ff3bb68c2643662",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/privacy_scan.txt": "407b8d77d02cd771032f960db854f6161825f4e4ae5f05331d98fe1b1e697067",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/changed_files.txt": "78f2ba307c6bfd0e1cb18f85e6716b391dac9549126e2589fec7383c1ed901dd",
+    "PFI/reports/pfi_v025/stage_8/phase_8_2/terminal.log": "01e4a06eee5c0d53eb2b2f0b0e66dc5f193e6d7dcd31eeb36863fe7edc6327f9",
+    "PFI/tests/test_v025_stage8_phase82_motion_feedback.py": "99b23af451d12e8fc696b90e40662179feaf50dd3570c8609225aae1e0d7af2c"
+  },
+  "release_identity": {
+    "version": "v0.2.5",
+    "frontend_bundle_hash": "33ef94e054dfc45bda699a5c44dee209868816eb27e107c3b73a3dae80e7be98",
+    "backend_build_hash": "499096a4762a7f1117395a209eba1ee08035180fd07ed78038e95effcbf2e65e"
+  }
+}

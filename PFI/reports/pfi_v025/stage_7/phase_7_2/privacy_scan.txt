@@ -1,0 +1,14 @@
+Phase 7.2 privacy and scope scan
+status=pass
+finder_used=false
+external_network_performed=false
+real_financial_data_read=false
+real_financial_data_mutated=false
+financial_sentinel_counts_as_real_acceptance=false
+financial_values_emitted=0
+raw_playwright_trace_persisted=false
+screenshots_redacted_before_persistence=true
+private_values_persisted_in_evidence=false
+database_scope=isolated_/tmp_only
+push_performed=false
+app_install_performed=false

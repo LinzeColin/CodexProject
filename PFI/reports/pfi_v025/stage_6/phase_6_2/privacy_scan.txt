@@ -1,0 +1,12 @@
+PFI v0.2.5 Stage 6 Phase 6.2 privacy scan
+status: PASS
+timestamp: 2026-07-15T03:48:45+10:00
+
+- JSON/Markdown/TXT/LOG scan for absolute user paths, username, email-like identifiers, long numeric identifiers and unredacted CNY/AUD amounts: no matches.
+- browser_trace.zip integrity: PASS; members browser_validation.json and trace_metadata.json.
+- Decompressed trace scan for the same private-value patterns: no matches.
+- Desktop screenshot visual review: PASS; formal shell uses redacted/not-loaded finance placeholders.
+- Mobile screenshot visual review: PASS; formal shell uses redacted/not-loaded finance placeholders.
+- no-JS screenshot visual review: PASS; only the public page directory, jobs and canonical routes are visible.
+- Browser harness reports financial_data_loaded=false and external_network_performed=false.
+- Finder was not used.

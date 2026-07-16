@@ -1,0 +1,25 @@
+{
+  "schema": "PFIV025Stage3Phase32RedactedLineageV1",
+  "version": "v0.2.5",
+  "phase_id": "V025-S3-P3.2",
+  "status": "pass",
+  "lineage_order": [
+    "raw_record_id_hash",
+    "normalized_transaction_id",
+    "interconnection_group_id",
+    "economic_event_id",
+    "ledger_event_id",
+    "idempotency_key"
+  ],
+  "redacted_sample": {
+    "raw_record_id_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "normalized_transaction_id": "normalized_transaction_redacted",
+    "interconnection_group_id": "interconnection_group_redacted",
+    "economic_event_id": "economic_event_redacted",
+    "ledger_event_id": "ledger_event_redacted",
+    "idempotency_key": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "financial_values_emitted": 0,
+  "private_identifiers_emitted": 0,
+  "real_financial_data_read": false
+}

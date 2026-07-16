@@ -1,0 +1,64 @@
+{
+  "app_install_performed": false,
+  "automatic_trading_allowed": false,
+  "commands": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage9_report_schema.py PFI/tests/test_v025_stage9_report_consistency.py PFI/tests/test_v025_stage9_model_validation.py PFI/tests/test_v025_stage9_decision_review.py PFI/tests/test_v025_stage9_export_consistency.py",
+      "command_id": "phase93_target",
+      "exit_code": 0,
+      "summary": "25 passed; Stage 9 report contract, Phase 9.2 analysis, Phase 9.3 decision lifecycle, tamper rejection and four-format consistency all passed."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage7_metric_drilldown.py PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py",
+      "command_id": "upstream_regression",
+      "exit_code": 0,
+      "summary": "68 passed; selected Stage 4, 5, 7 and 8 upstream behavior remained green."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python PFI/web/tests/v025/stage9_decision_review_browser.py",
+      "command_id": "formal_browser",
+      "exit_code": 0,
+      "summary": "16/16 passed in headless Chrome over ephemeral loopback; human review persisted across reload, SHA-256 event chain passed, all four downloads matched their manifest hashes, and external requests were zero."
+    },
+    {
+      "command": "pypdf metadata and content checks; pdfinfo; bundled pdftoppm 144-DPI physical raster; direct visual inspection of the rendered first page",
+      "command_id": "pdf_export_validation",
+      "exit_code": 0,
+      "summary": "The one-page A4 PDF is unencrypted and script-free, binds the shared snapshot hash, embeds a readable CJK font, and renders without blank output, clipping, overlap or black boxes."
+    },
+    {
+      "command": "PFI/.venv/bin/python -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py; three Stage 7/9 Node contracts; node --check decision-review data/UI and shell; git diff --check",
+      "command_id": "release_identity_and_static",
+      "exit_code": 0,
+      "summary": "10 release-identity tests passed; three Node contracts and JavaScript/Python syntax passed; frontend bundle, product commit and static artifact bindings matched."
+    },
+    {
+      "command": "complete origin/main plus HEAD union checkout with current worktree overlay: python3 scripts/validate_project_governance.py --project PFI; current PFI venv scripts/lean_governance.py check-render --project PFI",
+      "command_id": "changed_scope_governance",
+      "exit_code": 0,
+      "summary": "Full-checkout PFI governance returned errors=0 and warnings=0; renderer returned drift=0 and reference_issue_count=0."
+    }
+  ],
+  "contains_private_values": false,
+  "database_changed": false,
+  "database_read": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "formula_values_changed": false,
+  "gui_file_operations_used": false,
+  "launchservices_used": false,
+  "model_values_changed": false,
+  "network_performed": true,
+  "network_scope": "ephemeral_local_loopback_only",
+  "observed_at": "2026-07-15T07:05:29Z",
+  "parameter_values_changed": false,
+  "pdf_sha256": "sha256:de7f2c7ff94ecb95298a68d447525610d0753536fbff2ef91e55c632dff08dc0",
+  "pdf_visual_inspection_passed": true,
+  "push_performed": false,
+  "schema": "PFIV025Stage9Phase93VerificationResultsV1",
+  "stage_10_started": false,
+  "stage_9_whole_stage_review_started": false,
+  "status": "pass",
+  "trade_execution_available": false,
+  "verified_product_commit": "168666305c874d91ab8fd45e9f925e49928e7e63"
+}

@@ -1,0 +1,50 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE10-WHOLE-REVIEW",
+  "cache_contract": {
+    "composite_data_dimension": "dependency_snapshot_hash",
+    "frontend_key_equals_streamlit_key": true,
+    "persistent": false,
+    "ttl_seconds": 30
+  },
+  "current_phase_only": true,
+  "dependency_domains": [
+    "raw",
+    "source",
+    "ledger",
+    "interconnection",
+    "parameter",
+    "formula",
+    "fx",
+    "read_model",
+    "report"
+  ],
+  "diff_contract": {
+    "impact_policy": "changed_domain_explicit_metrics_only",
+    "no_diff_codex_allowed": false,
+    "no_diff_llm_allowed": false,
+    "no_diff_network_allowed": false,
+    "no_diff_recompute_scope": "none"
+  },
+  "phase_10_3_started": false,
+  "phase_id": "V025-S10-P10.2",
+  "product_commit": "a64f3b51576ebe507bd65b3f5b54c5b2a3b74c41",
+  "safety_boundary": {
+    "contains_private_values": false,
+    "external_network_allowed": false,
+    "financial_values_emitted": 0,
+    "finder_used": false,
+    "formula_values_changed": false,
+    "model_values_changed": false,
+    "parameter_values_changed": false,
+    "real_financial_database_used_by_phase_acceptance": false
+  },
+  "schema": "PFIV025Stage10Phase102ContractV1",
+  "stage_10_whole_review_status": "not_started",
+  "status": "implementation_contract",
+  "task_ids": [
+    "S10-P2-T1",
+    "S10-P2-T2",
+    "S10-P2-T3",
+    "S10-P2-T4"
+  ]
+}

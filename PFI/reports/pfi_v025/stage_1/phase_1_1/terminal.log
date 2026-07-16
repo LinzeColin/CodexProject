@@ -1,0 +1,237 @@
+PFI_V025_STAGE1_PHASE11_EXECUTION_LEDGER_V1
+iteration=ITER-20260712-PFI-V025-S1-P11
+acceptance=ACC-PFI-V025-S1-P11-RELEASE-IDENTITY
+phase_base=9380fdf4a500f48a2b15859044ab7926b4924391
+release_content_commit=a9592b8ce457492fd0e6817f74388f146ca657c6
+identity_binding_commit=PENDING_POSTCOMMIT_ATTESTATION
+
+COMMAND_ID=BASELINE-001
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider selected version-entry compatibility tests -q
+EXIT_CODE=1
+OUTCOME=pre_existing_diagnostic_failure
+SUMMARY=33 passed, 1 failed; existing v0.2.1 development-record string expectation; not introduced by Phase 1.1
+
+COMMAND_ID=PYTHON_RED
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py -q
+EXIT_CODE=1
+OUTCOME=expected_tdd_red
+SUMMARY=1 passed, 6 failed; missing release manifest, embedded manifest, launcher binding, runtime endpoint and Chinese gate
+
+COMMAND_ID=NODE_RED_INVALID_SETUP
+COMMAND=node --test PFI/web/tests/v025/stage1_release_identity.test.mjs
+EXIT_CODE=1
+OUTCOME=rejected_invalid_red_then_corrected
+SUMMARY=test root initially resolved one directory too high and produced ENOENT; path corrected before accepting RED
+
+COMMAND_ID=NODE_RED
+COMMAND=node --test PFI/web/tests/v025/stage1_release_identity.test.mjs
+EXIT_CODE=1
+OUTCOME=expected_tdd_red
+SUMMARY=tests 7, pass 0, fail 7; every failure asserted missing PFI_RELEASE_IDENTITY interface
+
+COMMAND_ID=MECHANICS-001
+COMMAND=node --test PFI/web/tests/v025/stage1_release_identity.test.mjs
+EXIT_CODE=0
+SUMMARY=tests 7, pass 7, fail 0; match, mismatch, partial query, backend unavailable, static opt-out and shell visibility covered
+
+COMMAND_ID=MECHANICS-002
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py -q
+EXIT_CODE=1
+OUTCOME=expected_pre_binding_state
+SUMMARY=3 passed, 5 failed; generic mechanics and native dry-runs passed, only final manifest binding remained
+
+RESULT_RECORD_ID=CONTENT-001
+RECORD_TYPE=GIT_COMMIT
+RESULT=release_content_commit 65fe4633373cb56d816923ccb0414b6deb6a36fb; message feat(PFI): add v0.2.5 release identity mechanics
+
+COMMAND_ID=PYTHON_GREEN
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py -q
+EXIT_CODE=0
+SUMMARY=8 passed in 1.13s
+
+COMMAND_ID=NODE_GREEN
+COMMAND=node --test PFI/web/tests/v025/stage1_release_identity.test.mjs
+EXIT_CODE=0
+SUMMARY=tests 7, pass 7, fail 0
+
+COMMAND_ID=REMEDIATION_RED_PYTHON
+COMMAND=temporary worktree at fc2630bed3ab7c2f4dc649cb303b11f310e0e46b with only new remediation tests overlaid; focused Python test
+EXIT_CODE=1
+OUTCOME=expected_tdd_red
+SUMMARY=7 passed, 2 failed; response lacked X-PFI-Release-Manifest-SHA256 and missing manifest exposed an absolute local path
+
+COMMAND_ID=REMEDIATION_RED_NODE
+COMMAND=temporary worktree at fc2630bed3ab7c2f4dc649cb303b11f310e0e46b with only new remediation tests overlaid; focused Node test
+EXIT_CODE=1
+OUTCOME=expected_tdd_red
+SUMMARY=tests 10, pass 8, fail 2; launcher manifest hash mismatch was not blocked and stale v0.2.4 runtime metadata was not synchronously normalized
+
+RESULT_RECORD_ID=CONTENT-REMEDIATION-001
+RECORD_TYPE=GIT_COMMIT
+RESULT=intermediate release_content_commit 71147c43daf9481551ac351ac4a9c03b49637752; supersedes initial pair 65fe4633373cb56d816923ccb0414b6deb6a36fb/fc2630bed3ab7c2f4dc649cb303b11f310e0e46b; message fix(PFI): harden v0.2.5 release identity runtime
+
+COMMAND_ID=REMEDIATION_GREEN_PYTHON
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py -q
+EXIT_CODE=0
+OUTCOME=REMEDIATION_GREEN
+SUMMARY=9 passed in 1.13s
+
+COMMAND_ID=REMEDIATION_GREEN_NODE
+COMMAND=node --test PFI/web/tests/v025/stage1_release_identity.test.mjs
+EXIT_CODE=0
+OUTCOME=REMEDIATION_GREEN
+SUMMARY=tests 10, pass 10, fail 0
+
+COMMAND_ID=INDEPENDENT-REVIEW-9CC8E0F6
+COMMAND=three-way independent core, evidence, and Roadmap acceptance review of exact range PHASE_BASE..9cc8e0f6d71b4b25ffb1cce19a7b7c658b2f8df9
+EXIT_CODE=1
+OUTCOME=review_findings_require_remediation
+SUMMARY=core verdict Critical 1 Important 2 Minor 0; acceptance independently confirmed iframe launcher-query loss; evidence-only review found no additional evidence defects
+
+COMMAND_ID=VISIBLE_ERROR_REMEDIATION_RED
+COMMAND=focused Python test after adding Finder-visible error negative test and before implementation
+EXIT_CODE=1
+OUTCOME=expected_tdd_red
+SUMMARY=9 passed, 1 failed; helper and launch command lacked a visible Chinese recovery dialog
+
+COMMAND_ID=IFRAME_REMEDIATION_RED
+COMMAND=focused Node test after adding Streamlit srcdoc, source-conflict, and static-invalid negative tests and before implementation
+EXIT_CODE=1
+OUTCOME=expected_tdd_red
+SUMMARY=tests 15, pass 10, fail 5; parent/referrer identity was ignored, conflicting sources passed, and invalid static manifest revealed the shell
+
+RESULT_RECORD_ID=CONTENT-POST-REVIEW-REMEDIATION-001
+RECORD_TYPE=GIT_COMMIT
+RESULT=final release_content_commit a9592b8ce457492fd0e6817f74388f146ca657c6; supersedes intermediate binding 9cc8e0f6d71b4b25ffb1cce19a7b7c658b2f8df9; message fix(PFI): enforce release identity in Streamlit launcher topology
+
+COMMAND_ID=POST_REVIEW_REMEDIATION_GREEN_PYTHON
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v025_stage1_release_identity.py -q
+EXIT_CODE=0
+OUTCOME=POST_REVIEW_REMEDIATION_GREEN
+SUMMARY=10 passed in 1.36s
+
+COMMAND_ID=POST_REVIEW_REMEDIATION_GREEN_NODE
+COMMAND=node --test PFI/web/tests/v025/stage1_release_identity.test.mjs
+EXIT_CODE=0
+OUTCOME=POST_REVIEW_REMEDIATION_GREEN
+SUMMARY=tests 15, pass 15, fail 0
+
+COMMAND_ID=NATIVE-REBUILD-POST-REVIEW-001
+COMMAND=clang -Wall -Wextra -Werror -O2 native launcher rebuild; ad-hoc codesign; strict deep verification
+EXIT_CODE=0
+SUMMARY=arm64 launcher rebuilt; repository App template valid on disk and satisfies designated requirement; no installed App touched
+
+COMMAND_ID=EVIDENCE-REREVIEW-4CA28530
+COMMAND=fresh independent evidence review of exact range PHASE_BASE..4ca285302612e209a5c0ff999f6285dba93eae2f
+EXIT_CODE=1
+OUTCOME=review_finding_requires_binding_evidence_correction
+SUMMARY=Critical 0 Important 1 Minor 0; app_info_plist launcher_binary_sha256 was stale after native rebuild while evidence artifact hash held the current binary
+
+COMMAND_ID=APP-INFO-EVIDENCE-REMEDIATION-001
+COMMAND=update app_info launcher binary SHA and add commit-object verifier assertions for plist, binary, CodeResources, codesign, install boundary, and result
+EXIT_CODE=0
+SUMMARY=app_info now binds launcher binary sha256 15a6666eab31a99f20b535043d3fd516ece4c36b6dd71d2dc83e42eb32fd4436; final binding commit will be amended before any attestation or push
+
+COMMAND_ID=STATIC-001
+COMMAND=node --check PFI/web/app/version.js; zsh -n launcher scripts; clang -Wall -Wextra -Werror -fsyntax-only PFI/macos/PFI_launcher.c; plutil -lint Info.plist; codesign --verify --strict PFI.app
+EXIT_CODE=0
+SUMMARY=JavaScript, zsh, C, plist and strict ad-hoc code-sign validation passed
+
+COMMAND_ID=STATIC-REMEDIATION-001
+COMMAND=post-remediation Node syntax, zsh launcher scripts, clang -Wall -Wextra -Werror syntax-only, plist lint and strict codesign checks
+EXIT_CODE=0
+SUMMARY=all post-remediation static checks passed; App valid on disk and satisfies its designated requirement
+
+COMMAND_ID=STRUCTURED-INVALID-001
+COMMAND=jq JSON/JSONL parse plus Ruby YAML safe_load without requiring Date
+EXIT_CODE=1
+OUTCOME=rejected_invalid_validator_invocation_then_corrected
+SUMMARY=JSON and JSONL passed; Ruby stopped on uninitialized constant Date before a YAML result was accepted
+
+COMMAND_ID=STRUCTURED-001
+COMMAND=jq JSON/JSONL parse plus Ruby YAML safe_load with yaml and date required
+EXIT_CODE=0
+SUMMARY=all changed JSON, JSONL and YAML files parsed successfully
+
+COMMAND_ID=SCHEMA-001
+COMMAND=Draft202012Validator plus FormatChecker against pinned Task Pack release_manifest.schema.json
+EXIT_CODE=0
+SUMMARY=schema sha256 5fdfa06d0d72580c5b497a62882e8f31a0e4d3b878902c90cb7901ee65d67a7f; validation errors 0
+
+COMMAND_ID=BROWSER-001
+COMMAND=isolated headless Chrome file-source partial-launcher-query screenshot with temporary profile
+EXIT_CODE=0
+SUMMARY=1440x900 PNG; title 版本冲突; restart/reinstall/cache actions visible; old shell hidden; no PFI live port connection; temporary profile removed
+
+COMMAND_ID=BROWSER-REMEDIATION-001
+COMMAND=post-remediation isolated headless Chrome partial-launcher-query screenshot with temporary profile
+EXIT_CODE=0
+SUMMARY=1440x900 PNG, 246436 bytes, sha256 130812bdbc0d1e7b18872647cf79deb4987139c08ab38255d4a3ff6ad6f43a59; visually inspected title 版本冲突, recovery actions visible, old shell hidden; profile removed after process interruption following completed capture
+
+COMMAND_ID=BROWSER-POST-REVIEW-REMEDIATION-001
+COMMAND=fresh isolated headless Chrome partial-launcher-query screenshot after iframe/static/Finder remediation
+EXIT_CODE=0
+SUMMARY=1440x900 PNG remained deterministic at 246436 bytes and sha256 130812bdbc0d1e7b18872647cf79deb4987139c08ab38255d4a3ff6ad6f43a59; Chinese conflict surface and hidden old shell preserved; no live PFI port connection
+
+COMMAND_ID=PRIVACY-001
+COMMAND=Phase added-line high-risk pattern scan
+EXIT_CODE=0
+SUMMARY=PRIVACY_SCAN=PASS; private values 0; credentials 0; absolute home paths 0; raw rows 0
+
+COMMAND_ID=GOV-SPARSE-001
+COMMAND=python3 -B scripts/validate_project_governance.py --project PFI; python3 -B scripts/validate_governance_sync.py --changed-only --base-ref PHASE_BASE --semantic
+EXIT_CODE=1
+OUTCOME=expected_sparse_workspace_diagnostic
+SUMMARY=project validator 35 errors included missing non-sparse root/project paths plus an initially introduced 11-task count; sync validator 2 missing Cloudflare test refs. The extra canonical task entry was removed; sparse-path diagnostics were not misreported as product failures.
+
+COMMAND_ID=GOV-SHADOW-INVALID-001
+COMMAND=temporary full-tree shadow overlay and governance validation
+EXIT_CODE=127
+OUTCOME=rejected_invalid_shadow_setup
+SUMMARY=zsh special variable path overwrote PATH; no validator result accepted; trap removed temporary worktree
+
+COMMAND_ID=GOV-SHADOW-001
+COMMAND=temporary detached worktree; disable sparse checkout; overlay exact Phase paths; validate_project_governance --project PFI; validate_governance_sync --changed-only --base-ref PHASE_BASE --semantic; remove worktree
+EXIT_CODE=0
+SUMMARY=full-tree shadow project governance errors 0 warnings 0; governance sync errors 0 warnings 0; temporary worktree removed
+
+COMMAND_ID=GOV-SHADOW-REMEDIATION-001
+COMMAND=fresh temporary detached worktree at final remediation content commit; disable sparse checkout; overlay exact 37 Phase paths; run project and semantic sync validators; remove worktree
+EXIT_CODE=0
+SUMMARY=post-remediation full-tree shadow project governance errors 0 warnings 0; governance sync errors 0 warnings 0; temporary worktree removed
+
+COMMAND_ID=GOV-SHADOW-POST-REVIEW-REMEDIATION-001
+COMMAND=fresh temporary detached worktree at a9592b8c; disable sparse checkout; overlay exact 37 post-review Phase paths; run project and semantic sync validators; remove worktree
+EXIT_CODE=0
+SUMMARY=post-review full-tree shadow project governance errors 0 warnings 0; governance sync errors 0 warnings 0; temporary worktree removed
+
+COMMAND_ID=VERIFIER-WT-001
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B PFI/scripts/v025/verify_stage1_phase11.py
+EXIT_CODE=0
+SUMMARY=working-tree PASS; exact paths 37; frontend files 14; endpoint/native launcher/privacy/schema/evidence bindings pass; no attestation required before commit
+
+COMMAND_ID=VERIFIER-WT-REMEDIATION-001
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B PFI/scripts/v025/verify_stage1_phase11.py after final remediation binding and fresh full-tree shadow validation
+EXIT_CODE=0
+SUMMARY=PASS; exact paths 37; frontend files 14; manifest sha256 3ffde38432ae54e65e671ea7a8ab1f4016a88aefacb5ac67fdb8979bb5da69c9; evidence sha256 da29b4198426e20a26b98c58aea4e08814dd575621acc720dec09f5ea9c02814; privacy added lines 2745; no attestation required before binding commit
+
+COMMAND_ID=VERIFIER-WT-POST-REVIEW-REMEDIATION-001
+COMMAND=PYTHONDONTWRITEBYTECODE=1 PFI/.venv/bin/python -B PFI/scripts/v025/verify_stage1_phase11.py after final post-review content binding
+EXIT_CODE=0
+SUMMARY=PASS; exact paths 37; frontend files 14; manifest sha256 ddc7db859efff04bff0513f9a3dda5c23c472e102d112c69366b4a49b55769c0; evidence sha256 90d7251dd3a0c3f8a1af54ae63014d8d22c6f3f0031b65c421b9b4d654b4d9f1; privacy added lines 3137; no attestation required before final binding commit
+
+COMMAND_ID=COMPAT-POST-001
+COMMAND=selected version-entry compatibility tests after v0.2.5 identity transition
+EXIT_CODE=1
+OUTCOME=expected_historical_contract_supersession
+SUMMARY=26 passed, 8 failed; one pre-existing v0.2.1 owner-record failure plus seven old tests hard-coded to 0.2.3/v0.2.4; retirement/redirection routed to S12-P1-T1 and remains final-release-blocking
+
+BOUNDARY_RECORD_ID=BOUNDARY-001
+RECORD_TYPE=SIDE_EFFECT_BOUNDARY
+RESULT=NO_PUSH_NO_INSTALL_NO_DATA_DB_MUTATION; no fetch/merge/rebase; no live 8501/8502 mutation; no canonical App install
+
+PHASE_STATUS=candidate_pass_pending_identity_binding_commit_attestation_and_independent_review
+STAGE_1_STATUS=in_progress
+STAGE_2_STATUS=not_started
+PRODUCTION_ACCEPTED=false
+FINAL_HUMAN_ACCEPTANCE=false

@@ -1,0 +1,260 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S2-P21-DATA-ROOT-SOURCE-MANIFEST",
+  "metric_values_computed_in_phase_2_1": false,
+  "metrics": [
+    {
+      "available_source_ids": [
+        "SRC-TRANSACTIONS-ALIPAY"
+      ],
+      "blocking_reason_zh": "交易 source input 已可用，但标准化、关联组、经济事件、幂等账本与对账合同尚未完成。",
+      "computability": "blocked_missing_dependencies",
+      "currency": null,
+      "label": "消费分类输入",
+      "metric_id": "consumption_classification",
+      "missing_contract_task_ids": [
+        "S3-P2-T1",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2"
+      ],
+      "missing_source_ids": [],
+      "no_false_zero": true,
+      "required_contract_task_ids": [
+        "S3-P2-T1",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2"
+      ],
+      "required_source_ids": [
+        "SRC-TRANSACTIONS-ALIPAY"
+      ],
+      "satisfied_contract_task_ids": [],
+      "source_inputs_available": true,
+      "value": null
+    },
+    {
+      "available_source_ids": [
+        "SRC-TRANSACTIONS-ALIPAY"
+      ],
+      "blocking_reason_zh": "交易已存在，但 CNY 口径仍需 Phase 2.2 的生产 FX snapshot 与时间真相。",
+      "computability": "blocked_missing_dependencies",
+      "currency": "CNY",
+      "label": "消费总流出金额（CNY）",
+      "metric_id": "consumption_outflow_cny",
+      "missing_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T1",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S5-P1-T1",
+        "S5-P1-T2",
+        "S5-P1-T3",
+        "S5-P2-T1"
+      ],
+      "missing_source_ids": [
+        "SRC-FX-SNAPSHOT"
+      ],
+      "no_false_zero": true,
+      "required_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T1",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S5-P1-T1",
+        "S5-P1-T2",
+        "S5-P1-T3",
+        "S5-P2-T1"
+      ],
+      "required_source_ids": [
+        "SRC-TRANSACTIONS-ALIPAY",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "satisfied_contract_task_ids": [],
+      "source_inputs_available": false,
+      "value": null
+    },
+    {
+      "available_source_ids": [
+        "SRC-TRANSACTIONS-ALIPAY"
+      ],
+      "blocking_reason_zh": "缺少期初/期末账户余额、转账对账与生产 FX；流水不能证明现金余额。",
+      "computability": "blocked_missing_dependencies",
+      "currency": "CNY",
+      "label": "现金余额",
+      "metric_id": "cash_balance_cny",
+      "missing_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S4-P1-T1",
+        "S4-P1-T2",
+        "S4-P1-T3",
+        "S4-P3-T1",
+        "S4-P3-T2",
+        "S5-P2-T2"
+      ],
+      "missing_source_ids": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "no_false_zero": true,
+      "required_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S4-P1-T1",
+        "S4-P1-T2",
+        "S4-P1-T3",
+        "S4-P3-T1",
+        "S4-P3-T2",
+        "S5-P2-T2"
+      ],
+      "required_source_ids": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-TRANSACTIONS-ALIPAY",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "satisfied_contract_task_ids": [],
+      "source_inputs_available": false,
+      "value": null
+    },
+    {
+      "available_source_ids": [],
+      "blocking_reason_zh": "缺少真实持仓、价格与生产 FX；流水不能证明持仓或市值。",
+      "computability": "blocked_missing_dependencies",
+      "currency": "CNY",
+      "label": "投资市值",
+      "metric_id": "investment_market_value_cny",
+      "missing_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S4-P2-T1",
+        "S4-P2-T2",
+        "S4-P2-T3",
+        "S4-P2-T4",
+        "S4-P3-T1",
+        "S4-P3-T2",
+        "S5-P2-T3"
+      ],
+      "missing_source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "no_false_zero": true,
+      "required_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S4-P2-T1",
+        "S4-P2-T2",
+        "S4-P2-T3",
+        "S4-P2-T4",
+        "S4-P3-T1",
+        "S4-P3-T2",
+        "S5-P2-T3"
+      ],
+      "required_source_ids": [
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "satisfied_contract_task_ids": [],
+      "source_inputs_available": false,
+      "value": null
+    },
+    {
+      "available_source_ids": [],
+      "blocking_reason_zh": "缺少余额、负债、持仓、价格与生产 FX；8815 条交易流水不等于净资产输入。",
+      "computability": "blocked_missing_dependencies",
+      "currency": "CNY",
+      "label": "净资产",
+      "metric_id": "net_worth_cny",
+      "missing_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S4-P1-T1",
+        "S4-P1-T2",
+        "S4-P1-T3",
+        "S4-P2-T1",
+        "S4-P2-T2",
+        "S4-P2-T3",
+        "S4-P2-T4",
+        "S4-P3-T1",
+        "S4-P3-T2",
+        "S5-P2-T2"
+      ],
+      "missing_source_ids": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-LIABILITIES",
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "no_false_zero": true,
+      "required_contract_task_ids": [
+        "S2-P2-T1",
+        "S2-P2-T2",
+        "S2-P2-T3",
+        "S3-P2-T2",
+        "S3-P2-T3",
+        "S3-P2-T4",
+        "S3-P3-T2",
+        "S4-P1-T1",
+        "S4-P1-T2",
+        "S4-P1-T3",
+        "S4-P2-T1",
+        "S4-P2-T2",
+        "S4-P2-T3",
+        "S4-P2-T4",
+        "S4-P3-T1",
+        "S4-P3-T2",
+        "S5-P2-T2"
+      ],
+      "required_source_ids": [
+        "SRC-ACCOUNT-BALANCES",
+        "SRC-LIABILITIES",
+        "SRC-HOLDINGS",
+        "SRC-MARKET-PRICES",
+        "SRC-FX-SNAPSHOT"
+      ],
+      "satisfied_contract_task_ids": [],
+      "source_inputs_available": false,
+      "value": null
+    }
+  ],
+  "phase": "2.1",
+  "schema": "PFIV025MetricComputabilityMatrixV1",
+  "source_manifest_observed_at": "2026-07-14T06:36:09Z",
+  "stage": 2,
+  "transactions_available_is_not_balance_or_holdings_proof": true,
+  "version": "v0.2.5"
+}

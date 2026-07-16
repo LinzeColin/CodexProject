@@ -1,0 +1,84 @@
+{
+  "all_normalized_evidence_schema_valid": true,
+  "binding_semantics": "immutable_phase_commits_plus_normalized_whole_review_copies",
+  "original_schema_gap_disclosed": true,
+  "overlay_manifest_sha256": "sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180",
+  "phase_evidence": [
+    {
+      "allowed_files_obeyed": true,
+      "commit": "c47906c3cc7e50bebd0d06b942103cee62d5e7d7",
+      "immutable_original_preserved": true,
+      "normalized_path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_evidence/phase_8_1.json",
+      "normalized_schema_errors": [],
+      "normalized_schema_valid": true,
+      "normalized_sha256": "sha256:b5924ef7e45f8c7a0a136cef0e4b6ef8db7c8b84f58fbf00ea01ec784480df52",
+      "original_schema_errors": [
+        "'allowed_files_obeyed' is a required property",
+        "'changed_files' is a required property",
+        "'commands' is a required property",
+        "'explicitly_not_done' is a required property",
+        "'git_commit' is a required property",
+        "'phase' is a required property",
+        "'requires_user_acceptance' is a required property",
+        "'risks' is a required property",
+        "'rollback' is a required property",
+        "'stage' is a required property",
+        "'version' is a required property"
+      ],
+      "original_schema_valid": false,
+      "phase": "8.1"
+    },
+    {
+      "allowed_files_obeyed": false,
+      "commit": "6e35f880ff4211f88125506b30c5a964f976e129",
+      "immutable_original_preserved": true,
+      "normalized_path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_evidence/phase_8_2.json",
+      "normalized_schema_errors": [],
+      "normalized_schema_valid": true,
+      "normalized_sha256": "sha256:0818d419ee2affe1889f405ea251396fbcfd65f27ecb86a3dac3fdf7417f39f0",
+      "original_schema_errors": [
+        "'allowed_files_obeyed' is a required property",
+        "'changed_files' is a required property",
+        "'commands' is a required property",
+        "'explicitly_not_done' is a required property",
+        "'git_commit' is a required property",
+        "'phase' is a required property",
+        "'requires_user_acceptance' is a required property",
+        "'risks' is a required property",
+        "'rollback' is a required property",
+        "'stage' is a required property",
+        "'version' is a required property"
+      ],
+      "original_schema_valid": false,
+      "phase": "8.2"
+    },
+    {
+      "allowed_files_obeyed": true,
+      "commit": "684a359d0cad79baaaf780b6ce733ce26c3e8117",
+      "immutable_original_preserved": true,
+      "normalized_path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_evidence/phase_8_3.json",
+      "normalized_schema_errors": [],
+      "normalized_schema_valid": true,
+      "normalized_sha256": "sha256:f05a4e25ea3f52519adee73a2fdca8b0c3311aa2a40b422e96c42f3c29c2486c",
+      "original_schema_errors": [
+        "'allowed_files_obeyed' is a required property",
+        "'changed_files' is a required property",
+        "'commands' is a required property",
+        "'explicitly_not_done' is a required property",
+        "'git_commit' is a required property",
+        "'phase' is a required property",
+        "'requires_user_acceptance' is a required property",
+        "'risks' is a required property",
+        "'rollback' is a required property",
+        "'stage' is a required property",
+        "'version' is a required property"
+      ],
+      "original_schema_valid": false,
+      "phase": "8.3"
+    }
+  ],
+  "review_base": "2c7b25efd2916c909027333283b499a119d088e0",
+  "schema": "PFIV025Stage8PhaseEvidenceAmendmentBindingV1",
+  "status": "pass",
+  "taskpack_schema_sha256": "sha256:87ea45ff47fd19d84b9b7885b62f08dac473a6215ab81b25befb86a82fb7e5ca"
+}

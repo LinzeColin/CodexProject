@@ -1,0 +1,48 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P41-ACCOUNT-SNAPSHOT",
+  "contains_private_values": false,
+  "financial_rows_read": 0,
+  "observed_at": "2026-07-14T11:49:30Z",
+  "phase": "4.1",
+  "schema": "PFIV025AccountSourceStatusV1",
+  "sources": [
+    {
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "content_hash": null,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P1-T1",
+        "S4-P1-T2"
+      ],
+      "source_id": "SRC-ACCOUNT-BALANCES",
+      "source_type": "account_balance_snapshot",
+      "status": "not_loaded"
+    },
+    {
+      "as_of": null,
+      "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+      "content_hash": null,
+      "coverage": {
+        "end": null,
+        "start": null
+      },
+      "record_count": null,
+      "resolution_task_ids": [
+        "S4-P1-T1",
+        "S4-P1-T2"
+      ],
+      "source_id": "SRC-LIABILITIES",
+      "source_type": "liability_snapshot",
+      "status": "not_loaded"
+    }
+  ],
+  "stage": 4,
+  "transaction_source_status": "ready",
+  "transactions_available_is_not_balance_proof": true,
+  "version": "v0.2.5"
+}

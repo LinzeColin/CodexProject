@@ -1,0 +1,29 @@
+{
+  "date_normalization": "utc_start_of_source_date_no_time_precision_claim",
+  "exact_transaction_time_claimed": false,
+  "financial_values_emitted": 0,
+  "input_partition_complete": true,
+  "input_record_count": 8815,
+  "investment_chain_status": "pass",
+  "phase_id": "V025-S3-P3.3",
+  "private_identifiers_emitted": 0,
+  "published_event_type_counts": {
+    "fund_subscription": 21,
+    "income": 146,
+    "investment_purchase": 12,
+    "investment_sale": 3133,
+    "living_consumption": 3567
+  },
+  "published_investment_event_count": 3166,
+  "published_record_count": 6879,
+  "published_refund_without_offset_count": 0,
+  "published_transfer_without_explicit_link_or_role_count": 0,
+  "refund_chain_status": "pass_fail_closed_to_review",
+  "review_queue_record_count": 1936,
+  "schema": "PFIV025Stage3Phase33ReconciliationSummaryV1",
+  "silent_drop_count": 0,
+  "source_temporal_granularity": "date",
+  "status": "pass_with_review_queue",
+  "transfer_chain_status": "pass_fail_closed_to_review",
+  "version": "v0.2.5"
+}

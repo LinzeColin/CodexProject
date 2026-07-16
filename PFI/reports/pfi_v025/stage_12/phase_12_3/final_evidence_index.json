@@ -1,0 +1,543 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE12-WHOLE-REVIEW-REMEDIATION",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "candidate_git_commit": "c8ce63aac785ae1f119cfe1ff993c4e81436bf97",
+  "candidate_git_commit_semantics": "exact remediation anchor commit; later evidence/governance commits may only add non-runtime review material",
+  "contains_private_values": false,
+  "coverage": {
+    "final_human_acceptance": false,
+    "stage_0_through_11_whole_stage_evidence_present": true,
+    "stage_12_initial_whole_stage_review_present": true,
+    "stage_12_phase_12_1_candidate_present": true,
+    "stage_12_phase_12_2_candidate_present": true,
+    "stage_12_phase_12_3_tasks_complete": "3/4",
+    "stage_12_review_remediation_anchor_present": true,
+    "stage_12_whole_stage_review_status": "remediation_complete_waiting_independent_rereview"
+  },
+  "file_count": 98,
+  "files": [
+    {
+      "bytes": 7,
+      "path": "PFI/VERSION",
+      "sha256": "sha256:35461307fe187b0161fb7e73804548d3ada9521b08115141e6ec461a4ff5d1a9"
+    },
+    {
+      "bytes": 566,
+      "path": "PFI/config/release_manifest.json",
+      "sha256": "sha256:c36449b43a1047c50f78d68cd14d4b353cbaacb9393ce699888bbc99b61128fb"
+    },
+    {
+      "bytes": 1741,
+      "path": "PFI/config/sources/v025_immutable_real_source_lock.json",
+      "sha256": "sha256:4fbdf115c60e355880797d6d333ccdf3d35b83343ed7c996c43686d0c0491df9"
+    },
+    {
+      "bytes": 11658,
+      "path": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "sha256": "sha256:2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35"
+    },
+    {
+      "bytes": 12139,
+      "path": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "sha256": "sha256:d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8"
+    },
+    {
+      "bytes": 86446,
+      "path": "PFI/reports/pfi_v025/stage_0/phase_0_3/evidence.json",
+      "sha256": "sha256:06201b1ed07c85970a2af1f91f4c8da72161d8cc04755f02c2e5741e7e8aa864"
+    },
+    {
+      "bytes": 18146,
+      "path": "PFI/reports/pfi_v025/stage_0/whole_stage_review/evidence.json",
+      "sha256": "sha256:f30cab259f84660ef18749288251198f3964720fc2af61e71d198f48fe92954a"
+    },
+    {
+      "bytes": 13600,
+      "path": "PFI/reports/pfi_v025/stage_1/phase_1_1/evidence.json",
+      "sha256": "sha256:b70e5f37fd2028335b5c71f2787169f3fb1d9fd77f90e67ab7ba4b52814fb133"
+    },
+    {
+      "bytes": 11175,
+      "path": "PFI/reports/pfi_v025/stage_1/phase_1_2/evidence.json",
+      "sha256": "sha256:b06ff710c3a95722de1b4c4292f4434ecb7f1b4ac1fb795ca344c6e49d2b957e"
+    },
+    {
+      "bytes": 11149,
+      "path": "PFI/reports/pfi_v025/stage_1/phase_1_3/evidence.json",
+      "sha256": "sha256:77b549fc506d4e60492f8b1097487934f1537e413a000aa0a3c10598d9673de9"
+    },
+    {
+      "bytes": 24773,
+      "path": "PFI/reports/pfi_v025/stage_1/whole_stage_review/evidence.json",
+      "sha256": "sha256:0d5afc12b5d9444e6bbb8335e9df37e8051b702a108613312e95cad485fd56ef"
+    },
+    {
+      "bytes": 11786,
+      "path": "PFI/reports/pfi_v025/stage_10/phase_10_1/evidence.json",
+      "sha256": "sha256:4d6cb96e144ae432f81009a061b419bc62be8999af1cf1ea1139355a0ffc001f"
+    },
+    {
+      "bytes": 13991,
+      "path": "PFI/reports/pfi_v025/stage_10/phase_10_2/evidence.json",
+      "sha256": "sha256:2789181f136c83dc9d22b2cd47a1798807ccb0880f3c64d8f817d4d1da54b213"
+    },
+    {
+      "bytes": 9265,
+      "path": "PFI/reports/pfi_v025/stage_10/phase_10_3/evidence.json",
+      "sha256": "sha256:a8c8b03cf619ad84e46141291690a18484ea305bf759400dabe7c8a705095ede"
+    },
+    {
+      "bytes": 12372,
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/evidence.json",
+      "sha256": "sha256:a5b494bb9bfa9408655bceac589a928f68a2abcd241479c8d03c2fa4e1079b28"
+    },
+    {
+      "bytes": 1853,
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:fd198e94e0889e1107f9acf5a6e585a5f0648c852b258c55ec4d756791b04373"
+    },
+    {
+      "bytes": 1159,
+      "path": "PFI/reports/pfi_v025/stage_10/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:0552a0093b2c9beec4131ba3ceeaf8a462e42b1aef0c340dffd829938aef541f"
+    },
+    {
+      "bytes": 9105,
+      "path": "PFI/reports/pfi_v025/stage_11/phase_11_1/evidence.json",
+      "sha256": "sha256:4b7771a6ebbb6135240ee055db564f04f68ede5d60640de177698ea26f1bed10"
+    },
+    {
+      "bytes": 9118,
+      "path": "PFI/reports/pfi_v025/stage_11/phase_11_2/evidence.json",
+      "sha256": "sha256:da77d0116aa6835b7d05f269e2faef93624f2c604b8b37e012ed3815252de204"
+    },
+    {
+      "bytes": 11814,
+      "path": "PFI/reports/pfi_v025/stage_11/phase_11_3/evidence.json",
+      "sha256": "sha256:2bbadc30eb89cc7b0d148a2a258bc89a58fab90293b161208c40346b664e933c"
+    },
+    {
+      "bytes": 12800,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/evidence.json",
+      "sha256": "sha256:d9356475dfb4aff51cdfdac7d20c5f2d79a759c6953b4de91da338939398cdde"
+    },
+    {
+      "bytes": 1935,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:4716a25d2de453e7770610ddb792222e19d3f771625e4d2d1835f86cd49e7e62"
+    },
+    {
+      "bytes": 1325,
+      "path": "PFI/reports/pfi_v025/stage_11/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:3bc37227a74faddc285216634af39ac5ce0a483caaabf50190d4e303534e64d5"
+    },
+    {
+      "bytes": 719,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/accessibility.json",
+      "sha256": "sha256:b0e8c48410d82aea3d1285bc40c3b40511ae6fc77849e4bb447cfb3858e8dc96"
+    },
+    {
+      "bytes": 11803,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/artifact_manifest.json",
+      "sha256": "sha256:cfa7be54f0aa08b229b215b6c5d3230e935eefff5694ad97c9683d5223bc9ba0"
+    },
+    {
+      "bytes": 2070,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/browser_validation.json",
+      "sha256": "sha256:8ef5ebc538906a48d5db9e893ffb4b65bf092a3a4da9dc93d75fba39b29a35cb"
+    },
+    {
+      "bytes": 14139,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/evidence.json",
+      "sha256": "sha256:6872a14c89bd0c69f817c725e314f87f3bb6fca5ea9b356ef066ab314c2619a0"
+    },
+    {
+      "bytes": 382,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/performance.json",
+      "sha256": "sha256:c12e316eb8f45a57a18b057386755504a3095121f41917a0b032160c7d8f2f85"
+    },
+    {
+      "bytes": 355,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/privacy_scan.txt",
+      "sha256": "sha256:955187e17a1f82744e5bffe7ab8a481b3e1891cc8aed26e5a30d5b6df1a57ed1"
+    },
+    {
+      "bytes": 959,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/release_identity.json",
+      "sha256": "sha256:5c40253ad7bcbe68045ce5153ac259ff12e53a5ddcadfce1df760ebc3923f1a4"
+    },
+    {
+      "bytes": 3397,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_1/test_matrix.json",
+      "sha256": "sha256:4b3a5b383c74bad805cf4c51d2d1f11ad5819367ae34898994224f0404a7d190"
+    },
+    {
+      "bytes": 3967,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/artifact_manifest.json",
+      "sha256": "sha256:864395f901c15bfc9389e8002c08464e9830467118230dd1631a5316e9c0f881"
+    },
+    {
+      "bytes": 1552,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/backup_restore_result.json",
+      "sha256": "sha256:2149d5d69599b6f0540d56a9aff4de729b828b3b69e971673c4658308844d973"
+    },
+    {
+      "bytes": 1039,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/defect_register.json",
+      "sha256": "sha256:349f499594813727e6d1feeeb21dd5d75acfc2c035f392f317f29f60c2089a80"
+    },
+    {
+      "bytes": 755,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/disk_pressure_result.json",
+      "sha256": "sha256:4c40ebb63bcda0fd3318a22d5e0e428c4d9c0ce509aeab5e1bbc8aa4fc3c619f"
+    },
+    {
+      "bytes": 7535,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/evidence.json",
+      "sha256": "sha256:678b84f98e20f6cd86cf63e74ef3fea7ffd62e26d24b76639dcc1ab639b58487"
+    },
+    {
+      "bytes": 1287,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/human_task_uat.json",
+      "sha256": "sha256:9b2bc97393b1ddef84c9de92d9eb79cc29dc5fe08b0dc3bd02abd955c46368b7"
+    },
+    {
+      "bytes": 280,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/privacy_scan.txt",
+      "sha256": "sha256:9e790404a1240b63cfb6ffd9c779a7c9a9e899378d4a3eab9ae1e82a7dea8b49"
+    },
+    {
+      "bytes": 680,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/release_identity.json",
+      "sha256": "sha256:0dec43f4914651cdbffc327063b54763c9c668e7bc461dcdba289b8deb348c8e"
+    },
+    {
+      "bytes": 4712,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/target_mac_browser.json",
+      "sha256": "sha256:3f5b8138f0c38456f716aaac8f22fe2578c3ac93c47e61e33983b6625e4201df"
+    },
+    {
+      "bytes": 1702,
+      "path": "PFI/reports/pfi_v025/stage_12/phase_12_2/target_mac_lifecycle.json",
+      "sha256": "sha256:133f34738141e9bbaecd29f61028d345ea718a5212b1f981d4a6d17e68c02f52"
+    },
+    {
+      "bytes": 3718,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/artifact_manifest.json",
+      "sha256": "sha256:d05295e2c7df61546d26848102b6364941626e177d2850b44cee6fdd02158945"
+    },
+    {
+      "bytes": 445,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/entry_audit.json",
+      "sha256": "sha256:eea2aeb0d49ab642bccd06b42f16f96dbbb170e03e757498dc1a88fd962cc9e1"
+    },
+    {
+      "bytes": 9182,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/evidence.json",
+      "sha256": "sha256:dce37bc0473e147729d28efa5d4b993da0cfdcfa169a51778a7a822f2e166b31"
+    },
+    {
+      "bytes": 776,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/final_index_audit.json",
+      "sha256": "sha256:3ff3828768ee340c6246893a6e7c85cbdb8e5b21bbffd3f0988daa553572cd8f"
+    },
+    {
+      "bytes": 3717,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/initial_review_findings.json",
+      "sha256": "sha256:b65951aef69e60a079838c1577dc0637de10a895fea0790eddf7cb39d661eac4"
+    },
+    {
+      "bytes": 41940,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/phase_commit_binding.json",
+      "sha256": "sha256:cf36bdafa7a7f2a44e676b5939cc84388f8a1d3a9d1c2650e94ae503bbda433a"
+    },
+    {
+      "bytes": 3099,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/release_identity_audit.json",
+      "sha256": "sha256:dd4b45ae7d28dfaa181c4e6f2ac2600b68d410ceb59ebb7770f8fe7fa4e6f431"
+    },
+    {
+      "bytes": 2255,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/remediation/entry_quarantine.json",
+      "sha256": "sha256:3300ffe3234e002ab2e25ed384e3f4d7f2cdae1504a9cc49dd00c33333032fc4"
+    },
+    {
+      "bytes": 3489,
+      "path": "PFI/reports/pfi_v025/stage_12/whole_stage_review/requirement_matrix.json",
+      "sha256": "sha256:9f8d3d5145fe5b0bdc52e26138f4ebfd148ec3bf1411275720295f415f0e9720"
+    },
+    {
+      "bytes": 15530,
+      "path": "PFI/reports/pfi_v025/stage_2/phase_2_1/evidence.json",
+      "sha256": "sha256:81fb9fb6b1f4fef1974474622c08b1b08510f1692014bc896f689d3de14723db"
+    },
+    {
+      "bytes": 6388,
+      "path": "PFI/reports/pfi_v025/stage_2/phase_2_2/evidence.json",
+      "sha256": "sha256:dcefd989c4c82dadbcee03037318bff978cadf1158b1d160c9ed703316dc15f7"
+    },
+    {
+      "bytes": 7845,
+      "path": "PFI/reports/pfi_v025/stage_2/phase_2_3/evidence.json",
+      "sha256": "sha256:b1cd5ed64fd0af3433547c5c142f0f26263e5b0d94df0c294f41bb5f32f2ecfc"
+    },
+    {
+      "bytes": 7650,
+      "path": "PFI/reports/pfi_v025/stage_2/whole_stage_review/evidence.json",
+      "sha256": "sha256:336c257208eedbaafa011a9e9d9e109a2caa075014db10a85a8ae9f739f34a92"
+    },
+    {
+      "bytes": 3305,
+      "path": "PFI/reports/pfi_v025/stage_2/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:6e2e55bbf1cc1a0a105ab38791bd690751e2931dbe8afc2d9bdfe7a963f720e4"
+    },
+    {
+      "bytes": 1459,
+      "path": "PFI/reports/pfi_v025/stage_2/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:eadac4b27ee24db82f593e0d358f98521d13ebd29fc267d5307e9676609494a7"
+    },
+    {
+      "bytes": 9891,
+      "path": "PFI/reports/pfi_v025/stage_3/phase_3_1/evidence.json",
+      "sha256": "sha256:e73fc62cfd58b0a6dc04372ab4a5420d3bb81e078fed4b0b83287d93205c84d7"
+    },
+    {
+      "bytes": 10664,
+      "path": "PFI/reports/pfi_v025/stage_3/phase_3_2/evidence.json",
+      "sha256": "sha256:884e73071d9afd7658e86ab79b58ac120c0a37deaafa6c8867c750315d839fcd"
+    },
+    {
+      "bytes": 11628,
+      "path": "PFI/reports/pfi_v025/stage_3/phase_3_3/evidence.json",
+      "sha256": "sha256:c9195e92f84123a528ef650cd8bfbaf999d5092a19501eec01b32e95d930cf6f"
+    },
+    {
+      "bytes": 9385,
+      "path": "PFI/reports/pfi_v025/stage_3/whole_stage_review/evidence.json",
+      "sha256": "sha256:6005cdbc0699d5270bc44aef46f2cbc513dd91fc88b2b457e605713025947d3d"
+    },
+    {
+      "bytes": 4155,
+      "path": "PFI/reports/pfi_v025/stage_3/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:6c82b7c410c6cd5e282179e1756f56530372caeff49dbdfc6a7856539680854b"
+    },
+    {
+      "bytes": 1685,
+      "path": "PFI/reports/pfi_v025/stage_3/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:5ebc454b2c80e2b922a6680cc7a5777d58486207f8f5b5a3be8518face1d2ff7"
+    },
+    {
+      "bytes": 10853,
+      "path": "PFI/reports/pfi_v025/stage_4/phase_4_1/evidence.json",
+      "sha256": "sha256:c43892376f33294cc137579fb3ac0015ba27a7d1e1ee08874306fbde0a50dcd5"
+    },
+    {
+      "bytes": 1508,
+      "path": "PFI/reports/pfi_v025/stage_4/phase_4_2/evidence.json",
+      "sha256": "sha256:b848f363bc983d7c6399963dffec36cd40b33efecd2169844c464de13e9e22c4"
+    },
+    {
+      "bytes": 2684,
+      "path": "PFI/reports/pfi_v025/stage_4/phase_4_3/evidence.json",
+      "sha256": "sha256:12218a5aa0eb9f389856a042c1f4e0d4a97e86c1f55d940eaafd4b4233a17bb2"
+    },
+    {
+      "bytes": 10055,
+      "path": "PFI/reports/pfi_v025/stage_4/whole_stage_review/evidence.json",
+      "sha256": "sha256:fbf4ee895b0d53e1953ce008e6e1f5a12070413a4107a1e77af33ba51fd97a5e"
+    },
+    {
+      "bytes": 2742,
+      "path": "PFI/reports/pfi_v025/stage_4/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:f39281f2497a9630416d6ea27efd97f3170017c134b66471beff7061c7746ee5"
+    },
+    {
+      "bytes": 1567,
+      "path": "PFI/reports/pfi_v025/stage_4/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:8f31e1dd689bae60cdcdfa69de75da6c09771b4edbca0ecf8dfd67c48a17e3a6"
+    },
+    {
+      "bytes": 3990,
+      "path": "PFI/reports/pfi_v025/stage_5/phase_5_1/evidence.json",
+      "sha256": "sha256:192c38f0b39392a2d983cf87d8688226a9cb73794dd40a12056db5489db7fe31"
+    },
+    {
+      "bytes": 2830,
+      "path": "PFI/reports/pfi_v025/stage_5/phase_5_2/evidence.json",
+      "sha256": "sha256:82adb495d81a4bf2691f57909864439e097f55b1315698d778682d06d502af33"
+    },
+    {
+      "bytes": 8706,
+      "path": "PFI/reports/pfi_v025/stage_5/phase_5_3/evidence.json",
+      "sha256": "sha256:a5e8225145ec482e3df3a4d9a4d50b26daaf7fa2d5d6ca67494b01371b2ed03e"
+    },
+    {
+      "bytes": 7237,
+      "path": "PFI/reports/pfi_v025/stage_5/whole_stage_review/evidence.json",
+      "sha256": "sha256:da71f21b9f1973c691fb67cd330c15d67c70919731d7627c987bf96502f59841"
+    },
+    {
+      "bytes": 3912,
+      "path": "PFI/reports/pfi_v025/stage_5/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:e11493265658ed4a491e164e45f71a9ec8aa70886d6209fd2c27f428a7be68c3"
+    },
+    {
+      "bytes": 1399,
+      "path": "PFI/reports/pfi_v025/stage_5/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:bcb8e339ad615f0e32518b5817874889e41e036008edd54d441cac75a289b453"
+    },
+    {
+      "bytes": 10601,
+      "path": "PFI/reports/pfi_v025/stage_6/phase_6_1/evidence.json",
+      "sha256": "sha256:d7d983ece39a9d2080321968c2256c09a2151f32dd96e7f4dc148369a3deaa41"
+    },
+    {
+      "bytes": 9130,
+      "path": "PFI/reports/pfi_v025/stage_6/phase_6_2/evidence.json",
+      "sha256": "sha256:5474e34370c2693736efb046e72e1454488280311e7160f15f78569bb625b997"
+    },
+    {
+      "bytes": 9453,
+      "path": "PFI/reports/pfi_v025/stage_6/phase_6_3/evidence.json",
+      "sha256": "sha256:c5d7b36d1933c80ff14f9da8de99daba5f1455c730cb0cb7f71aa406e38c6bd1"
+    },
+    {
+      "bytes": 4879,
+      "path": "PFI/reports/pfi_v025/stage_6/whole_stage_review/evidence.json",
+      "sha256": "sha256:a7adcca2b0ab5e3ea0188de28f584e28af883e8d3035fa2485d80e63b8037343"
+    },
+    {
+      "bytes": 3001,
+      "path": "PFI/reports/pfi_v025/stage_6/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:236477d251384e6350be8a13ec4d6a28ab3855634604b755b612cfdf41e04d7b"
+    },
+    {
+      "bytes": 1141,
+      "path": "PFI/reports/pfi_v025/stage_6/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:462792cfa808d38bf1e32342a100aaaf9db27595bafc2cad3fbfd73fb75dd8ae"
+    },
+    {
+      "bytes": 10583,
+      "path": "PFI/reports/pfi_v025/stage_7/phase_7_1/evidence.json",
+      "sha256": "sha256:185534e6f75e6fc60f022ec33ad4e7b231710d2b9358c4ce722ebe1324d0226b"
+    },
+    {
+      "bytes": 10351,
+      "path": "PFI/reports/pfi_v025/stage_7/phase_7_2/evidence.json",
+      "sha256": "sha256:8bbf80c9d65f504b5d2607949b0d2f2174274c1ca00d5fe67193d6d0806293ca"
+    },
+    {
+      "bytes": 10621,
+      "path": "PFI/reports/pfi_v025/stage_7/phase_7_3/evidence.json",
+      "sha256": "sha256:63267ae07b19fadb5720ebefba69ef1c9fb4788ebe17ce489d33e699986d9f0f"
+    },
+    {
+      "bytes": 16376,
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/evidence.json",
+      "sha256": "sha256:fa59f4423b8e706b650e930b4eca97e80ab7471d565f46a5b5c71eca1833e5ba"
+    },
+    {
+      "bytes": 5874,
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:65e3e744255e7e96f992e227b07c95f5c1bcd952cbd83af21176b4fb93da3c28"
+    },
+    {
+      "bytes": 954,
+      "path": "PFI/reports/pfi_v025/stage_7/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:3261fa902f60690e50a73a09c79e7591e8c0973fafed3bbb17234cd5380a9113"
+    },
+    {
+      "bytes": 3418,
+      "path": "PFI/reports/pfi_v025/stage_8/phase_8_1/evidence.json",
+      "sha256": "sha256:b8b2a3c6527abc37b0e5b22d98f5d0f37a25c78249ac9e17eea99332054dd001"
+    },
+    {
+      "bytes": 3720,
+      "path": "PFI/reports/pfi_v025/stage_8/phase_8_2/evidence.json",
+      "sha256": "sha256:338f97181ac02ec46ccd77694044307bf6eca0bdd1c26e8ef950e5830fba0271"
+    },
+    {
+      "bytes": 4062,
+      "path": "PFI/reports/pfi_v025/stage_8/phase_8_3/evidence.json",
+      "sha256": "sha256:071790180fa41748373fcf206de10984e607481fd03645e04c33e2504675535b"
+    },
+    {
+      "bytes": 18953,
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/evidence.json",
+      "sha256": "sha256:2167077dc9cc4d95bfe19692effbe84858afd17d28107781ab90f6895a31d7b5"
+    },
+    {
+      "bytes": 27630,
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:8d1a825dd4605d20fddaff1d0762bc1907e1de618bcb8f61c16d8e408fa25412"
+    },
+    {
+      "bytes": 1473,
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:38c074931dbf8413763bfd77302a87516b3760c48a8a2d951b93c40cdb632d0c"
+    },
+    {
+      "bytes": 6659,
+      "path": "PFI/reports/pfi_v025/stage_9/phase_9_1/evidence.json",
+      "sha256": "sha256:1b18c825765223bb4bd5a488df1ed613d044c94742b5d24456abf7760566f6f8"
+    },
+    {
+      "bytes": 11917,
+      "path": "PFI/reports/pfi_v025/stage_9/phase_9_2/evidence.json",
+      "sha256": "sha256:ad97bed8e29c4535ce1a0a940185eb12033cb99f6536bc46810b53e42a76b716"
+    },
+    {
+      "bytes": 12360,
+      "path": "PFI/reports/pfi_v025/stage_9/phase_9_3/evidence.json",
+      "sha256": "sha256:ba8f34f94556093a074f65dd9cf0a05279fe9eb8968c09069c000144c7502d9d"
+    },
+    {
+      "bytes": 14846,
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/evidence.json",
+      "sha256": "sha256:582e7b4bfcba60917a8c87dbcae59a3e2b5d08527551ad02c200dd2b661eca1c"
+    },
+    {
+      "bytes": 14458,
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/final_evidence_index.json",
+      "sha256": "sha256:6fa43f870a146c60ce4142b7488472a7824ebaea038f763fdf58a22b5f6bee67"
+    },
+    {
+      "bytes": 1090,
+      "path": "PFI/reports/pfi_v025/stage_9/whole_stage_review/human_acceptance.json",
+      "sha256": "sha256:a0aaf0541c01ef3bf66e1e5445c6e4965f20f202e4d5e9c35bc85d9b6f31eda7"
+    }
+  ],
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "generated_at": "2026-07-15T21:45:47Z",
+  "index_excludes": [
+    "itself and its detached SHA-256 file",
+    "Phase 12.3 acceptance request and evidence to prevent circular hashing",
+    "remediation closure evidence written after this index to prevent circular hashing",
+    "future Stage 12 independent rereview and final human acceptance artifacts"
+  ],
+  "product": "PFI",
+  "production_accepted": false,
+  "push_performed": false,
+  "release_manifest_git_commit": "78375ec98fc1265abd03ef10087cc05beccab8b4",
+  "schema": "PFIV025Stage12Phase123FinalEvidenceIndexV1",
+  "source_roadmap_sha256": "sha256:fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+  "source_taskpack_sha256": "sha256:591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2",
+  "stage_file_counts": {
+    "0": 4,
+    "1": 4,
+    "10": 6,
+    "11": 6,
+    "12": 27,
+    "2": 6,
+    "3": 6,
+    "4": 6,
+    "5": 6,
+    "6": 6,
+    "7": 6,
+    "8": 6,
+    "9": 6
+  },
+  "status": "remediation_candidate_ready_for_independent_rereview",
+  "version": "v0.2.5"
+}

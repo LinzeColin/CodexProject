@@ -1,0 +1,29 @@
+{
+  "acceptance_basis": "standing_transition_authorization_before_final_acceptance",
+  "acceptance_id": "ACC-PFI-V025-STAGE8-WHOLE-REVIEW",
+  "acceptance_statement": "用户确认明亮、专业、有质感，操作反馈自然，整体不再像 AI 机械堆叠。",
+  "accepted_at": "2026-07-15T14:46:58+10:00",
+  "accepted_scope": [
+    "Stage 8 design, motion, feedback, haptics, accessibility and human-quality transition gate",
+    "authorization to enter Stage 9 only; Stage 9 remains not_started in this run"
+  ],
+  "evidence_index_hash": "sha256:8d1a825dd4605d20fddaff1d0762bc1907e1de618bcb8f61c16d8e408fa25412",
+  "explicitly_not_accepted": [
+    "production acceptance",
+    "final human acceptance",
+    "installed-app parity",
+    "GitHub main parity",
+    "Stage 9 implementation"
+  ],
+  "product": "PFI",
+  "review_base": "2c7b25efd2916c909027333283b499a119d088e0",
+  "reviewed_evidence_file_count": 114,
+  "reviewed_evidence_sha256": "sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095",
+  "reviewed_overlay_sha256": "sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180",
+  "schema": "PFIV025Stage8TransitionHumanAcceptanceV1",
+  "stage": 8,
+  "status": "accepted_via_standing_transition_authorization",
+  "user_confirmation_reference": "在最终验收前我全部都同意授权，不允许block",
+  "user_finder_instruction": "不要再进行任何的finder操作，纯粹浪费时间！",
+  "version": "v0.2.5"
+}

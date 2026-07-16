@@ -1,0 +1,27 @@
+{
+  "schema": "PFIV025Stage1Phase11AssetHashesV1",
+  "algorithm": "sha256(sorted(repo_relative_path + NUL + payload_sha256 + LF))",
+  "index_canonicalization": "replace pfi-release-manifest script contents with {}",
+  "frontend_bundle_hash": "3c45901b88e24b579c3ef522afae50b430382b42909726c72db98ad66690ef2b",
+  "frontend_file_count": 14,
+  "frontend_files": {
+    "PFI/web/app/data_state.js": "d7a921d9c3f1a5c1cb7e628943ace44f1b2185c9ecf8d7b138b78be137f8adc6",
+    "PFI/web/app/entry_audit.js": "395fcd584407113e4e87177c470bf6133aefce4045b3fd90d5f118cc68684e39",
+    "PFI/web/app/navigation.js": "163d74a1a0b9e533e712386341024e842b506a113c10a8de87b91d68628859e9",
+    "PFI/web/app/pages/home.js": "a13136d5be1d77b814432884bcdcb03d83e4afba7a245a284e56cdba990a37af",
+    "PFI/web/app/pages/reports.js": "b8e6f05baae61f1eec6a4e679a7c920b6c9d677d8be61507eeadadac39b037eb",
+    "PFI/web/app/pages/stage4Subpages.js": "0e059e68c8d9f5624f70c6156af7093a955bb19531f0cb6b3a076ab4584d6983",
+    "PFI/web/app/pages/stage5Subpages.js": "d92b38ec3f4d4c858b2f2025d29169e96356abc7935bcdce84ae161e6df2e12e",
+    "PFI/web/app/routes.js": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf",
+    "PFI/web/app/shell.js": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821",
+    "PFI/web/app/ux_state.js": "275694009d1c37f24fc23ef525b4c35f8b77de7a6d05d991ba0053dfc8a223f8",
+    "PFI/web/app/version.js": "d87c1e9bccf78d0c2e18dec65ee359abb41d6264dd46825cee73db3686273ce6",
+    "PFI/web/index.html": "057decd2e2e214bdf1d7317b0b1c0db901a56acd9af817d90261e47ab110298b",
+    "PFI/web/styles.css": "018c2dd26172694f947c205b59eb089e15bf1b1530a93fd5925cab0b8bc4e239",
+    "PFI/web/styles/tokens.css": "9c11b1d903d4e17639859289a76903837622360ec585f838fae07a8ab61cb7c4"
+  },
+  "backend_ref": "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+  "backend_build_hash": "056c3fd4fa3fa9205b34aa03a72e3b34d468a26c3bc42af1f1087c3b883efcff",
+  "manifest_excluded_from_payload_hashes": true,
+  "result": "pass"
+}

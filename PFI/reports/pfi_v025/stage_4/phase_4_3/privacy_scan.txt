@@ -1,0 +1,13 @@
+PFI v0.2.5 Stage 4 Phase 4.3 privacy scan
+scope=new diff and Phase 4.3 Evidence Pack
+absolute_private_paths_added=0
+private_identifiers_added=0
+credentials_added=0
+financial_rows_added=0
+financial_values_emitted=0
+contains_private_values=false
+real_financial_data_read=false
+real_financial_data_mutated=false
+database_changed=false
+finder_used=false
+external_network_performed=false

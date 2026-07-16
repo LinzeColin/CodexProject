@@ -1,0 +1,50 @@
+{
+  "elapsed_ms": {
+    "max": 127.156,
+    "median": 123.182,
+    "min": 117.636
+  },
+  "field_count": 12,
+  "financial_fixture_fallback_used": false,
+  "financial_values_emitted": 0,
+  "finder_used": false,
+  "input_bytes": 2387686,
+  "isolation_mode": "immutable_git_object_snapshot",
+  "iterations": 3,
+  "manifest_record_count": 8815,
+  "parser": "python_csv_utf8_sig_in_memory_read_only_v1",
+  "peak_python_alloc_bytes": {
+    "max": 14492499,
+    "median": 14491986,
+    "min": 14491986
+  },
+  "phase": "2.3",
+  "private_values_included": false,
+  "raw_rows_emitted": 0,
+  "real_input_status": "ready",
+  "record_count": 8815,
+  "record_count_matches_manifest": true,
+  "resolved_commit": "7875e006aa913a6afbc59e146ab28fc5dae94bc6",
+  "schema": "PFIV025Phase23PerformanceBaselineV1",
+  "source_id": "SRC-TRANSACTIONS-ALIPAY",
+  "source_identity_after": {
+    "input_bytes": 2387686,
+    "manifest_blob_oid": "8abdddac5bc228e571c7dd3138b531972dd5b121",
+    "resolved_commit": "7875e006aa913a6afbc59e146ab28fc5dae94bc6",
+    "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba",
+    "tree_oid": "19e8f9b3345074881fa063afe76e40cb846c93de"
+  },
+  "source_identity_before": {
+    "input_bytes": 2387686,
+    "manifest_blob_oid": "8abdddac5bc228e571c7dd3138b531972dd5b121",
+    "resolved_commit": "7875e006aa913a6afbc59e146ab28fc5dae94bc6",
+    "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba",
+    "tree_oid": "19e8f9b3345074881fa063afe76e40cb846c93de"
+  },
+  "source_mutation_performed": false,
+  "stage": 2,
+  "status": "pass",
+  "transactions_blob_oid": "4038bbe1e6ebb19c46f28e550e3951afcfd5a1ba",
+  "tree_oid": "19e8f9b3345074881fa063afe76e40cb846c93de",
+  "version": "v0.2.5"
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "PFIV025Stage8Phase83HumanAcceptanceRequestV1",
+  "status": "pending_whole_stage_review_and_user_confirmation",
+  "version": "v0.2.5",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "git_commit": "SELF",
+  "evidence_sha256": "071790180fa41748373fcf206de10984e607481fd03645e04c33e2504675535b",
+  "scope": "Stage 8 Phase 8.3 candidate only; whole-stage review and user confirmation are not complete",
+  "known_defects": [],
+  "accepted": false,
+  "accepted_at": null,
+  "acceptance_statement": "用户确认明亮、专业、有质感，操作反馈自然，整体不再像 AI 机械堆叠。",
+  "user_confirmation_reference": null,
+  "finder_or_app_entry_uat": "deferred_to_stage_12_canonical_reinstall_and_final_acceptance_by_user_instruction"
+}

@@ -706,6 +706,40 @@ body[data-pfi-target-version="v0.2.4"] .brand-mark {
   box-shadow: 0 10px 22px rgba(39, 100, 232, 0.18);
 }
 
+/* PFI v0.2.5 Stage 6 Phase 6.3 route-state recovery */
+#main-workspace[data-stage6-route-state="invalid"] > :not([data-stage6-invalid-route]) {
+  display: none !important;
+}
+
+.stage6-invalid-route {
+  box-sizing: border-box;
+  max-width: 760px;
+  margin: clamp(24px, 8vh, 80px) auto;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid color-mix(in srgb, var(--pfi-red, #c24130) 42%, var(--pfi-border, #d9e5ee));
+  border-radius: var(--pfi-v024-radius-card, 12px);
+  background: color-mix(in srgb, var(--pfi-v024-surface, #fff) 92%, #fff1ed);
+  box-shadow: var(--pfi-v024-shadow-panel, 0 18px 44px rgba(39, 100, 232, 0.09));
+}
+
+.stage6-invalid-route h1 {
+  margin: 6px 0 12px;
+  color: var(--pfi-v024-text, #1d2733);
+}
+
+.stage6-invalid-route p {
+  color: var(--pfi-v024-muted, #617083);
+}
+
+.stage6-invalid-route-requested code {
+  overflow-wrap: anywhere;
+}
+
+.stage6-invalid-route button {
+  min-height: 44px;
+  margin-top: 12px;
+}
+
 body[data-pfi-target-version="v0.2.4"] .workspace-header,
 body[data-pfi-target-version="v0.2.4"] .page-tabs-panel,
 body[data-pfi-target-version="v0.2.4"] .home-question-grid,
@@ -1086,4 +1120,216 @@ body[data-pfi-target-version="v0.2.4"] .report-progress-step[data-progress-state
     animation: none !important;
     transform: none !important;
   }
+}
+/* v0.2.5 Stage 7.3 formal parameter, interconnection and metric pages */
+.stage7-lineage-surface {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.stage7-lineage-summary,
+.stage7-lineage-message,
+.stage7-parameter-detail,
+.stage7-formula-register,
+.stage7-map-detail,
+.stage7-event-types,
+.stage7-metric-headline,
+.stage7-metric-trace,
+.stage7-metric-event-lineage {
+  border: 1px solid var(--line, #dfe5ec);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface, #fff) 94%, #eaf2ff 6%);
+  box-shadow: 0 10px 28px rgba(35, 54, 86, 0.07);
+  padding: 18px;
+}
+
+.stage7-lineage-loading { border-color: #a9c7f7; }
+.stage7-lineage-error { border-color: #e3a7a7; background: #fff8f7; }
+.stage7-lineage-empty { border-style: dashed; }
+
+.stage7-hash-grid,
+.stage7-metric-trace,
+.stage7-metric-event-lineage dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+  margin: 12px 0 0;
+}
+
+.stage7-hash-grid > div,
+.stage7-metric-trace > div,
+.stage7-metric-event-lineage dl > div {
+  min-width: 0;
+  border-radius: 12px;
+  background: rgba(235, 241, 249, 0.72);
+  padding: 10px 12px;
+}
+
+.stage7-hash-grid dt,
+.stage7-metric-trace dt,
+.stage7-metric-event-lineage dt {
+  color: var(--muted, #687487);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stage7-hash-grid dd,
+.stage7-metric-trace dd,
+.stage7-metric-event-lineage dd {
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.stage7-hash-row dd,
+.stage7-formula-card code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.stage7-parameter-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.28fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.stage7-domain-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.stage7-domain-button,
+.stage7-map-node {
+  border: 1px solid var(--line, #dfe5ec);
+  border-radius: 13px;
+  background: var(--surface, #fff);
+  color: var(--text, #152033);
+  cursor: pointer;
+  padding: 11px 13px;
+  text-align: left;
+}
+
+.stage7-domain-button:hover,
+.stage7-domain-button:focus-visible,
+.stage7-map-node:hover,
+.stage7-map-node:focus-visible,
+.stage7-domain-button.is-active,
+.stage7-map-node.is-active {
+  border-color: var(--pfi-blue, #2f6fed);
+  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.12);
+}
+
+.stage7-parameter-entry-grid,
+.stage7-formula-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stage7-parameter-card,
+.stage7-formula-card {
+  border: 1px solid var(--line, #dfe5ec);
+  border-radius: 14px;
+  background: var(--surface, #fff);
+  padding: 14px;
+}
+
+.stage7-parameter-card pre {
+  margin: 8px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.stage7-lineage-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #eaf2ff;
+  color: #25529d;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 9px;
+}
+
+.stage7-interconnection-graph {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 3px 12px;
+}
+
+.stage7-map-node {
+  display: grid;
+  flex: 0 0 min(168px, 38vw);
+  gap: 7px;
+  min-height: 82px;
+}
+
+.stage7-map-node span { color: var(--muted, #687487); }
+.stage7-map-arrow { align-self: center; color: var(--muted, #687487); font-size: 20px; }
+
+.stage7-event-types table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.stage7-event-types th,
+.stage7-event-types td {
+  border-bottom: 1px solid var(--line, #dfe5ec);
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.stage7-metric-picker {
+  display: grid;
+  gap: 7px;
+  max-width: 520px;
+}
+
+.stage7-metric-picker span { font-weight: 700; }
+.stage7-metric-picker select {
+  border: 1px solid var(--line, #dfe5ec);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  color: var(--text, #152033);
+  min-height: 44px;
+  padding: 8px 11px;
+}
+
+.stage7-metric-headline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  align-items: center;
+}
+
+.stage7-metric-headline > strong { font-size: clamp(22px, 3vw, 34px); }
+.stage7-metric-headline > p { grid-column: 1 / -1; margin-bottom: 0; }
+.stage7-metric-source_missing,
+.stage7-metric-not_loaded,
+.stage7-metric-valuation_missing { background: #fff2d8; color: #7a5200; }
+.stage7-metric-ready,
+.stage7-metric-confirmed_zero { background: #e4f6ea; color: #24683b; }
+
+@media (max-width: 800px) {
+  .stage7-parameter-layout,
+  .stage7-hash-grid,
+  .stage7-metric-trace,
+  .stage7-metric-event-lineage dl,
+  .stage7-parameter-entry-grid,
+  .stage7-formula-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stage7-domain-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stage7-metric-headline { grid-template-columns: 1fr; }
+  .stage7-metric-headline > p { grid-column: auto; }
 }

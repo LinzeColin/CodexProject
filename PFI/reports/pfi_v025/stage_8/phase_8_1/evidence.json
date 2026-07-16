@@ -1,0 +1,96 @@
+{
+  "schema": "PFIV025Stage8Phase81EvidenceV1",
+  "status": "candidate_pass",
+  "generated_at": "2026-07-15T11:24:15+10:00",
+  "iteration_id": "ITER-20260715-PFI-V025-S8-P81",
+  "contract_id": "PFI-V025-STAGE8-PHASE81-DESIGN-SYSTEM",
+  "acceptance_id": "ACC-PFI-V025-STAGE8-WHOLE-REVIEW",
+  "implementation_base": "317b7f5c3d4e17ef49d3a1ed70f77ccb0a328add",
+  "task_ids": [
+    "S8-P1-T1",
+    "S8-P1-T2",
+    "S8-P1-T3",
+    "S8-P1-T4"
+  ],
+  "task_result": {
+    "completed": 4,
+    "total": 4,
+    "stage_completed": 4,
+    "stage_total": 12,
+    "v025_completed": 100,
+    "v025_total": 156
+  },
+  "actual_changed_file_count": 56,
+  "verification": {
+    "phase_8_1_contract": "5/5 pass",
+    "release_identity_and_stage6_stage7_compatibility": "39 passed",
+    "node_and_python_syntax": "pass",
+    "renderer": "drift 0 / reference issues 0",
+    "stage7_frozen_current_overlay_diagnostic": "9 pass / 2 expected superseded because Stage 8 legitimately changes the current worktree",
+    "changed_scope_governance": "two pre-existing sparse Cloudflare test_ref omissions only; referenced file exists in implementation-base Git tree"
+  },
+  "phase_8_1_complete": true,
+  "phase_8_2_started": false,
+  "phase_8_3_started": false,
+  "stage_8_status": "in_progress",
+  "stage_8_whole_review_complete": false,
+  "stage_8_user_acceptance_complete": false,
+  "design_contract": {
+    "default_color_scheme": "light",
+    "forced_os_dark_still_light": true,
+    "token_families": 10,
+    "semantic_page_archetypes": 10,
+    "chart_states": [
+      "empty",
+      "error",
+      "stale",
+      "ready"
+    ],
+    "false_chart_line_count": 0,
+    "desktop_mobile_formal_layouts": true,
+    "device_mockup_count": 0
+  },
+  "browser_validation": {
+    "status": "pass",
+    "actual_formal_shell": true,
+    "route_count": 10,
+    "viewport_count": 20,
+    "passed_viewports": 20,
+    "console_error_count": 0,
+    "page_error_count": 0,
+    "http_error_count": 0,
+    "external_request_count": 0,
+    "decoded_png_count": 20,
+    "black_pixel_file_count": 0,
+    "trace_sha256": "9dd4ceb4e9a98084782fbe3802a3d4da3886aeee6090fec7948a4e18c9f9e533"
+  },
+  "release_identity": {
+    "version": "v0.2.5",
+    "frontend_bundle_hash": "50e715a6b2e5c5162b32592c15d1661cba430ead3c2ed7a0a36d4634e38333f4",
+    "backend_build_hash": "83dbc65036a8921b4d45048eb736af4a526afb39a4d3fd6b7cb8d222165f8467",
+    "backend_source_changed": false
+  },
+  "model_ids_changed": [],
+  "formula_ids_changed": [],
+  "parameter_ids_changed": [],
+  "financial_data_loaded": false,
+  "financial_data_mutated": false,
+  "database_changed": false,
+  "contains_private_values": false,
+  "external_network_performed": false,
+  "github_main_uploaded": false,
+  "app_bundle_reinstall_executed": false,
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "finder_used": false,
+  "next_task_id": "S8-P2-T1",
+  "evidence_refs": [
+    "PFI/docs/pfi_v025/stage_8/PHASE_8_1_DESIGN_SYSTEM_VISUALIZATION_IMPLEMENTATION_PLAN.md",
+    "PFI/reports/pfi_v025/stage_8/phase_8_1/design_tokens.json",
+    "PFI/reports/pfi_v025/stage_8/phase_8_1/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_8/phase_8_1/visual_artifact_validation.json",
+    "PFI/reports/pfi_v025/stage_8/phase_8_1/release_identity_binding.json",
+    "PFI/reports/pfi_v025/stage_8/phase_8_1/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_8/phase_8_1/artifact_hashes.json"
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "PFIV025Stage1WholeReviewAuditV1",
+  "acceptance_id": "ACC-PFI-V025-STAGE1-WHOLE-REVIEW",
+  "whole_review_base": "96305405dcf7eb56246d2cede2f5b50b2b1be101",
+  "remediation_content_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+  "initial_findings": {
+    "critical": 1,
+    "important": 3,
+    "minor": 0
+  },
+  "verifier_review_findings_before_remediation": {
+    "critical": 2,
+    "important": 4,
+    "minor": 2
+  },
+  "content_rereview_findings_before_remediation": {
+    "critical": 1,
+    "important": 2,
+    "minor": 0
+  },
+  "c4_rereview_findings_before_remediation": {
+    "critical": 1,
+    "important": 0,
+    "minor": 0
+  },
+  "post_remediation_counts": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "stale_shadow_worktree_cleanup": {
+    "symbolic_path": "${PRIVATE_TMP}/pfi-v025-s1p1-shadow.M7gIWF",
+    "removed": true,
+    "git_worktree_registration_absent": true,
+    "process_count": 0,
+    "open_handle_count": 0,
+    "launchservices_record_count": 0
+  },
+  "prebinding_reviewable_payload_sha256": "6e90e66023c4c02e28fff15370035b74668abb3176d3ec992882bd73c9031074",
+  "prebinding_review_excluded_paths": [
+    "PFI/docs/pfi_v025/stage_1/stage_1_transition_authorization.json",
+    "PFI/reports/pfi_v025/stage_1/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v025/stage_1/whole_stage_review/review_audit.json"
+  ],
+  "fresh_independent_rereviews": [
+    {
+      "reviewed_content_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+      "reviewed_binding_state": "working_tree_prebinding",
+      "reviewed_binding_paths_sha256": "cb13271243a865aa4cb888b8d22ca2f45074d97b10b5ad8d9562085f8b04297e",
+      "reviewed_payload_sha256": "6e90e66023c4c02e28fff15370035b74668abb3176d3ec992882bd73c9031074",
+      "inspected_png_sha256": {
+        "browser_official_ui": "53e3224882222b40789e45dae3003f6037c2f071180b997af3a87bf2380040a7",
+        "browser_release_identity": "1278bc3a1cae56c767bebb316defdbe65ace52b257675ebb8ca6b6ece5003045"
+      },
+      "png_visual_privacy_findings": 0,
+      "verdict": "PASS",
+      "critical": 0,
+      "important": 0,
+      "minor": 0,
+      "reviewer": "codex-core-implementation-c20-20260713-a",
+      "lane": "core_implementation",
+      "report_ref": "codex-review/pfi-v025/stage_1/whole_stage_review/prebinding/04390bcf17c18de107eb2f1b4ce051c83638f98c/reviews/core_implementation.json",
+      "report_sha256": "8d153af7ecd64c06d6dbd15f20e9c6fafe7ecd310b763a1acb245bf994ca8d33"
+    },
+    {
+      "reviewed_content_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+      "reviewed_binding_state": "working_tree_prebinding",
+      "reviewed_binding_paths_sha256": "cb13271243a865aa4cb888b8d22ca2f45074d97b10b5ad8d9562085f8b04297e",
+      "reviewed_payload_sha256": "6e90e66023c4c02e28fff15370035b74668abb3176d3ec992882bd73c9031074",
+      "inspected_png_sha256": {
+        "browser_official_ui": "53e3224882222b40789e45dae3003f6037c2f071180b997af3a87bf2380040a7",
+        "browser_release_identity": "1278bc3a1cae56c767bebb316defdbe65ace52b257675ebb8ca6b6ece5003045"
+      },
+      "png_visual_privacy_findings": 0,
+      "verdict": "PASS",
+      "critical": 0,
+      "important": 0,
+      "minor": 0,
+      "reviewer": "codex-roadmap-acceptance-c20-04390bcf",
+      "lane": "roadmap_acceptance",
+      "report_ref": "codex-review/pfi-v025/stage_1/whole_stage_review/prebinding/04390bcf17c18de107eb2f1b4ce051c83638f98c/reviews/roadmap_acceptance.json",
+      "report_sha256": "505202cfe8475ec12ced37227c318743a8531416e03c7c59b43a9257dabeedc6"
+    },
+    {
+      "reviewed_content_commit": "04390bcf17c18de107eb2f1b4ce051c83638f98c",
+      "reviewed_binding_state": "working_tree_prebinding",
+      "reviewed_binding_paths_sha256": "cb13271243a865aa4cb888b8d22ca2f45074d97b10b5ad8d9562085f8b04297e",
+      "reviewed_payload_sha256": "6e90e66023c4c02e28fff15370035b74668abb3176d3ec992882bd73c9031074",
+      "inspected_png_sha256": {
+        "browser_official_ui": "53e3224882222b40789e45dae3003f6037c2f071180b997af3a87bf2380040a7",
+        "browser_release_identity": "1278bc3a1cae56c767bebb316defdbe65ace52b257675ebb8ca6b6ece5003045"
+      },
+      "png_visual_privacy_findings": 0,
+      "verdict": "PASS",
+      "critical": 0,
+      "important": 0,
+      "minor": 0,
+      "reviewer": "codex-reviewer-evidence-governance-privacy-04390bcf-r3",
+      "lane": "evidence_governance_privacy",
+      "report_ref": "codex-review/pfi-v025/stage_1/whole_stage_review/prebinding/04390bcf17c18de107eb2f1b4ce051c83638f98c/reviews/evidence_governance_privacy.json",
+      "report_sha256": "1db1a705eb646393729c26e0a11f1f240dc71041361fcc2dc96ba9a2fa5a72c9"
+    }
+  ]
+}

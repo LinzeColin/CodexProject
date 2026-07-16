@@ -1,0 +1,19 @@
+PFI v0.2.5 Stage 1 Phase 1.3 privacy scan
+scope=all 13 Phase 1.3 tracked reports, decompressed trace members, Finder/browser screenshots and binding text surfaces
+absolute_home_path_findings=0
+private_value_findings=0
+credential_findings=0
+financial_row_findings=0
+pid_findings=0
+candidate_root_findings=0
+evidence_root_findings=0
+finder_png_crc=PASS
+finder_png_private_metadata=ABSENT
+browser_png_crc=PASS
+browser_png_private_metadata=ABSENT
+zip_integrity_scan=PASS
+zip_decompressed_member_scan=PASS
+zip_resource_member_findings=0
+binary_strings_scan=PASS
+contains_private_values=false
+result=PASS

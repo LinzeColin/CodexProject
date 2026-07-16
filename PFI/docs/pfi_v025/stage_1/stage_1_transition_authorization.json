@@ -1,0 +1,48 @@
+{
+  "schema": "PFIV025Stage1TransitionAuthorizationV1",
+  "acceptance_id": "ACC-PFI-V025-STAGE1-WHOLE-REVIEW",
+  "authorization_id": "PFI-V025-INTERIM-STAGE-TRANSITION-AUTH-20260712",
+  "remediation_scope_override_id": "PFI-V025-STAGE1-WHOLE-REVIEW-REMEDIATION-SCOPE-20260713",
+  "stage_1_task_ids": [
+    "S1-P1-T1",
+    "S1-P1-T2",
+    "S1-P1-T3",
+    "S1-P1-T4",
+    "S1-P2-T1",
+    "S1-P2-T2",
+    "S1-P2-T3",
+    "S1-P2-T4",
+    "S1-P3-T1",
+    "S1-P3-T2",
+    "S1-P3-T3",
+    "S1-P3-T4"
+  ],
+  "acceptance_criteria_ids": [
+    "S1-AC-01",
+    "S1-AC-02",
+    "S1-AC-03",
+    "S1-AC-04",
+    "S1-AC-05",
+    "S1-AC-06"
+  ],
+  "stop_condition_ids": [
+    "S1-STOP-01-SOURCE-DIRECTORY-UNKNOWN",
+    "S1-STOP-02-UNKNOWN-USER-FILE-OVERWRITE",
+    "S1-STOP-03-FOUR-WAY-IDENTITY-MISMATCH",
+    "S1-STOP-04-MANUAL-HISTORY-CLEAR-REQUIRED"
+  ],
+  "stop_conditions_clear": true,
+  "evidence_sha256": "0d5afc12b5d9444e6bbb8335e9df37e8051b702a108613312e95cad485fd56ef",
+  "stage_1_codex_candidate_verdict": "PASS_PENDING_POSTCOMMIT_ATTESTATION",
+  "stage_1_status": "candidate_pass_pending_postcommit_attestation",
+  "stage_2_entry_authorized": false,
+  "stage_2_entry_authorized_after_activation": true,
+  "activation_condition": "matching_external_postcommit_attestation_and_C0_I0_M0",
+  "stage_2_status": "not_started",
+  "final_human_acceptance": false,
+  "human_acceptance_json_created": false,
+  "production_accepted": false,
+  "push_performed": false,
+  "app_install_performed": false,
+  "canonical_install_gate": "S12-P2-T1"
+}

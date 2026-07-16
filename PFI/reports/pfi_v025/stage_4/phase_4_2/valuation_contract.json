@@ -1,0 +1,20 @@
+{
+  "cny_identity_fx_rate": "1",
+  "financial_values_in_report": 0,
+  "future_fx_snapshot_allowed": false,
+  "future_price_snapshot_allowed": false,
+  "legacy_fx_reference_used": false,
+  "ordinary_runtime_network_used": false,
+  "parameter_hash": "sha256:ffdfccc6c15c879404f868ac57bda447b76e8bfa6da5be1d488df8014032978e",
+  "phase": "4.2",
+  "pit_rule": "quantity_as_of, price_as_of and fx_effective_at must not be after valuation_as_of",
+  "production_calculation_state": "not_run",
+  "production_fx_status": "not_loaded",
+  "production_holding_status": "not_loaded",
+  "production_price_status": "not_loaded",
+  "rounding_mode": "none_exact_decimal",
+  "valuation_formula_hash": "sha256:5ae1ad7dcb0ac9594be33ae30ee0128723677106337add0a29559fcb323494d1",
+  "valuation_formula_id": "FORM-PFI-010",
+  "valuation_formula_version": "pfi-v0.2.5-point-in-time-valuation-v1",
+  "version": "v0.2.5"
+}

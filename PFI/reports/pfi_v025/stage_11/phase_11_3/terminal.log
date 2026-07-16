@@ -1,0 +1,30 @@
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B -m pytest -q -p no:cacheprovider PFI/tests/test_v025_stage11_distribution_boundary.py PFI/tests/test_v025_stage11_backup_restore.py PFI/tests/test_v025_stage11_migration_lifecycle.py PFI/tests/test_v025_stage11_sqlite_concurrency.py PFI/tests/test_stage5_advice_report_alpha.py PFI/tests/test_stage6_e2e_stabilization.py PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v024_stage1_phase13_validation_closeout.py
+........................................................................ [ 93%]
+.....                                                                    [100%]
+77 passed in 6.26s
+$ npm run build
+> @pfi/cloudflare-public@1.0.0 build
+> node ../../../scripts/cloudflare/build_static_surface.mjs --source public --output dist
+
+PASS: static surface built public -> dist
+$ npm run validate
+> @pfi/cloudflare-public@1.0.0 validate
+> python3 ../../../scripts/cloudflare/scan_public_dist.py --path public
+
+PASS: public distribution scan (1 paths)
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/cloudflare/scan_public_dist.py --path PFI/web/cloudflare-public/dist
+PASS: public distribution scan (1 paths)
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python -B PFI/scripts/v025/scan_stage11_distribution_boundaries.py --public-dist PFI/web/cloudflare-public/dist
+{"alpha_context_read_only": true, "alpha_context_writeback_allowed": false, "contains_absolute_paths": false, "contains_private_values": false, "finding_count": 0, "findings": [], "public_active_ui": false, "public_context_fields_exposed": 0, "public_dist_scanned": true, "public_runtime_bindings": 0, "public_source_scanned": true, "ralpha_active_dependency_count": 0, "scanned_file_count": 13, "schema": "PFIV025Stage11DistributionBoundaryScanV1", "serenity_alipay_active_dependency_count": 0, "status": "pass"}
+$ build_v025_release_asset_identity(PFI)
+frontend/backend machine and embedded identity match
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/validate_project_governance.py --project PFI
+CodexProject governance validation
+root: checked
+projects checked: PFI
+errors: 0
+warnings: 0
+$ $HOME/Documents/Codex/main_worktree/CodexProject/pfi/PFI/.venv/bin/python scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}
+$ /usr/bin/python3 scripts/lean_governance.py check-render --project PFI
+{"command":"check-render","drift":[],"drift_count":0,"path":"PFI","project_id":"PFI","reference_issue_count":0,"reference_issues":[],"schema_version":1,"view":"all","write":false}

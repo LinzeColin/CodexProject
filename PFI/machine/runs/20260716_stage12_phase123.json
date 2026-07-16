@@ -1,0 +1,6 @@
+{
+  "run_id": "PFI-V025-STAGE12-PHASE123-RELEASE-FREEZE-CANDIDATE",
+  "action": "统一状态、锁定证据索引并生成最终验收请求",
+  "result": "S12-P3-T1 至 T3 候选完成；T4 等待整阶段审查后的最终明确验收",
+  "ts": "2026-07-16"
+}

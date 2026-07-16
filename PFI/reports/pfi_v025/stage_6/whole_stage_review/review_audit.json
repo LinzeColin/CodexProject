@@ -1,0 +1,57 @@
+{
+  "acceptance_id": "ACC-PFI-V025-STAGE6-WHOLE-REVIEW",
+  "initial_review": {
+    "counts": {
+      "critical": 0,
+      "important": 4,
+      "minor": 1
+    },
+    "findings": [
+      {
+        "finding_id": "S6-WR-I1",
+        "remediation": "新增 fail-closed whole-review contract、线性 commit/evidence binding 与 final task disposition。",
+        "severity": "important",
+        "status": "fixed",
+        "summary": "缺少 Stage 6 整阶段合同、三 Phase commit binding 与 12-task disposition。"
+      },
+      {
+        "finding_id": "S6-WR-I2",
+        "remediation": "在当前 HEAD 使用正式 Shell、cached Playwright、本机 Chrome 和隔离 loopback 完成 14 项联审。",
+        "severity": "important",
+        "status": "fixed",
+        "summary": "Phase 局部浏览器证据不能证明当前 HEAD 跨 Phase 无回归。"
+      },
+      {
+        "finding_id": "S6-WR-I3",
+        "remediation": "保留 immutable phase-commit 原件并为当前 HEAD 副本补齐统一 schema 字段。",
+        "severity": "important",
+        "status": "fixed",
+        "summary": "三个 Phase evidence pack 均缺 Task Pack schema 的 11 个必填字段。"
+      },
+      {
+        "finding_id": "S6-WR-I4",
+        "remediation": "生成 final_evidence_index.json，并将用户阶段授权精确绑定其 SHA-256。",
+        "severity": "important",
+        "status": "fixed",
+        "summary": "缺少最终证据索引及其 hash 绑定的人类验收。"
+      },
+      {
+        "finding_id": "S6-WR-M1",
+        "remediation": "新增 legacy_test_disposition.json；不篡改旧测试，也不误判为 v0.2.5 产品失败。",
+        "severity": "minor",
+        "status": "fixed",
+        "summary": "旧版本诊断测试的四项已替代预期缺少机器可读 disposition。"
+      }
+    ]
+  },
+  "post_remediation_review": {
+    "counts": {
+      "critical": 0,
+      "important": 0,
+      "minor": 0
+    },
+    "status": "pass"
+  },
+  "schema": "PFIV025Stage6WholeReviewAuditV1",
+  "status": "pass"
+}

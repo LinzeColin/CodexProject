@@ -1,0 +1,12 @@
+PASS
+scanner=pfi-v025-stage12-phase122-public-evidence-scan-v1
+input_count=14
+absolute_private_paths=0
+financial_values=0
+credentials=0
+raw_process_ids=0
+contains_private_values=false
+finder_operations=0
+launchservices_operations=0
+open_command_operations=0
+gui_file_operations=0

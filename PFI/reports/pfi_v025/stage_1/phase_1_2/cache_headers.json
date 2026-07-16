@@ -1,0 +1,28 @@
+{
+  "schema": "PFIV025Stage1CacheHeadersEvidenceV1",
+  "runtime": "isolated_minimal_streamlit_same_process_wrapper",
+  "live_ports_8501_8502_accessed": false,
+  "html": {
+    "status": 200,
+    "cache_control": "no-cache, private",
+    "etag_present": true,
+    "last_modified_present": true,
+    "conditional_if_none_match_status": 304
+  },
+  "hashed_asset": {
+    "path_pattern": "static/(js|css)/<name>.<content-hash>.(js|css)",
+    "status": 200,
+    "cache_control": "public, max-age=31536000, immutable"
+  },
+  "unhashed_asset": {
+    "path": "favicon.png",
+    "status": 200,
+    "cache_control": "no-cache, private"
+  },
+  "checks": {
+    "html_private_revalidation": true,
+    "conditional_304": true,
+    "hashed_immutable": true,
+    "unhashed_private_revalidation": true
+  }
+}

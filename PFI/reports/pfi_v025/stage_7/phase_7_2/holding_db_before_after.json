@@ -1,0 +1,61 @@
+{
+  "after_delete_and_settings_reset": {
+    "foreign_key_check": "pass",
+    "foreign_key_issue_count": 0,
+    "holding_revisions": [
+      3
+    ],
+    "integrity_check": "ok",
+    "migration_count": 1,
+    "operation_counts": {
+      "create": 1,
+      "delete": 1,
+      "update": 1
+    },
+    "record_counts": {
+      "active": 0,
+      "deleted": 1
+    },
+    "settings_revisions": [
+      2
+    ],
+    "table_counts": {
+      "v025_holding_change_sets": 3,
+      "v025_holding_events": 3,
+      "v025_holding_records": 1,
+      "v025_settings_events": 2,
+      "v025_settings_preferences": 1
+    }
+  },
+  "before_service_restart": {
+    "foreign_key_check": "pass",
+    "foreign_key_issue_count": 0,
+    "holding_revisions": [
+      2
+    ],
+    "integrity_check": "ok",
+    "migration_count": 1,
+    "operation_counts": {
+      "create": 1,
+      "update": 1
+    },
+    "record_counts": {
+      "active": 1,
+      "deleted": 0
+    },
+    "settings_revisions": [
+      1
+    ],
+    "table_counts": {
+      "v025_holding_change_sets": 2,
+      "v025_holding_events": 2,
+      "v025_holding_records": 1,
+      "v025_settings_events": 1,
+      "v025_settings_preferences": 1
+    }
+  },
+  "financial_values_persisted_in_evidence": false,
+  "schema": "PFIV025Stage7Phase72HoldingDatabaseBeforeAfterV1",
+  "sentinel_identity_persisted_in_evidence": false,
+  "status": "pass"
+}

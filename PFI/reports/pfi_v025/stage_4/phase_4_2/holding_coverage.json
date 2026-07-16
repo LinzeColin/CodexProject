@@ -1,0 +1,15 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S4-P42-HOLDINGS-VALUATION",
+  "holding_snapshot_count": null,
+  "linked_transaction_event_count": null,
+  "phase": "4.2",
+  "quantity_as_of": null,
+  "quantity_traceability": "blocked_not_loaded",
+  "record_count": null,
+  "source_content_hash": null,
+  "source_id": "SRC-HOLDINGS",
+  "status": "not_loaded",
+  "transaction_holding_inference_used": false,
+  "transactions_available_is_not_holding_proof": true,
+  "version": "v0.2.5"
+}

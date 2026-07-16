@@ -1,0 +1,42 @@
+{
+  "schema": "PFIV025Stage9Phase91VerificationResultsV1",
+  "status": "pass",
+  "observed_at": "2026-07-15T15:18:58+10:00",
+  "commands": [
+    {
+      "command_id": "phase91_target",
+      "command": "PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage9_report_schema.py",
+      "exit_code": 0,
+      "summary": "7 Phase 9.1 contract, schema, status, hash, tamper and evidence tests passed"
+    },
+    {
+      "command_id": "upstream_regression",
+      "command": "PFI/.venv/bin/python -m pytest -q PFI/tests/test_v025_stage1_release_identity.py PFI/tests/test_v025_stage4_accounts_read_model.py PFI/tests/test_v025_stage4_cross_page_consistency.py PFI/tests/test_v025_stage4_holdings_valuation.py PFI/tests/test_v025_stage4_metric_states.py PFI/tests/test_v025_stage5_dual_consumption.py PFI/tests/test_v025_stage5_financial_invariants.py PFI/tests/test_v025_stage5_formula_registry.py PFI/tests/test_v025_stage5_model_validation.py PFI/tests/test_v025_stage8_phase81_design_system.py PFI/tests/test_v025_stage8_phase82_motion_feedback.py PFI/tests/test_v025_stage8_phase83_accessibility_uat.py plus six selected immutable Stage 7 artifact/schema tests",
+      "exit_code": 0,
+      "summary": "98 selected upstream tests passed"
+    },
+    {
+      "command_id": "syntax_schema_diff",
+      "command": "PFI/.venv/bin/python inline AST plus JSON and Draft 2020-12 schema validation; git diff --check",
+      "exit_code": 0,
+      "summary": "Python AST, JSON parsing, JSON Schema meta-validation and diff check passed"
+    },
+    {
+      "command_id": "changed_scope_governance",
+      "command": "Build a complete HEAD checkout under /tmp, overlay the current changed and untracked files, then run scripts/validate_project_governance.py --project PFI and scripts/lean_governance.py check-render --project PFI",
+      "exit_code": 0,
+      "summary": "complete-checkout governance errors 0, warnings 0; renderer drift 0 and reference issues 0"
+    }
+  ],
+  "contains_private_values": false,
+  "database_read": false,
+  "database_changed": false,
+  "model_values_changed": false,
+  "formula_values_changed": false,
+  "parameter_values_changed": false,
+  "finder_used": false,
+  "launchservices_used": false,
+  "external_network_performed": false,
+  "push_performed": false,
+  "app_install_performed": false
+}

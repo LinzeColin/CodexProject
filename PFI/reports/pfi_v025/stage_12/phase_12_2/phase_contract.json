@@ -1,0 +1,20 @@
+{
+  "acceptance_id": "ACC-PFI-V025-S12-P122-TARGET-MAC-CLI-UAT",
+  "actual_os_sleep_proxy_disclosed": true,
+  "entry_mode": "cli_atomic_install_and_direct_bundle_executable",
+  "final_human_acceptance": false,
+  "finder_prohibited_by_current_user_instruction": true,
+  "phase": "12.2",
+  "phase_12_3_started": false,
+  "phase_id": "V025-S12-P12.2",
+  "push_performed": false,
+  "schema": "PFIV025Stage12Phase122ContractV1",
+  "stage": 12,
+  "task_ids": [
+    "S12-P2-T1",
+    "S12-P2-T2",
+    "S12-P2-T3",
+    "S12-P2-T4"
+  ],
+  "version": "v0.2.5"
+}

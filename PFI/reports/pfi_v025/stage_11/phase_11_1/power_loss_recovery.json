@@ -1,0 +1,8 @@
+{
+  "foreign_key_issue_count_after_reopen": 0,
+  "integrity_check_after_reopen": "ok",
+  "mechanism": "actual multiprocessing.Process.kill (SIGKILL)",
+  "status": "pass",
+  "uncommitted_row_count_after_reopen": 0,
+  "victim_exit_code": -9
+}

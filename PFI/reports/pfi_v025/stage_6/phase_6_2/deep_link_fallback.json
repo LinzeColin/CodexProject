@@ -1,0 +1,11 @@
+{
+  "canonical_secondary_route_count": 45,
+  "desktop_deep_link": "/accounts/reconcile",
+  "historical_secondary_redirect_count": 45,
+  "mobile_deep_link": "/market-research/strategy-lab",
+  "nojs_fallback_directory_nonblank": true,
+  "nojs_secondary_page_count": 45,
+  "schema": "PFIV025Stage6Phase62DeepLinkFallbackV1",
+  "status": "pass",
+  "strategy_lab_canonical_route": "/market-research/strategy-lab"
+}

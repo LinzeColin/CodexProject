@@ -1,0 +1,473 @@
+{
+  "content_manifest_sha256": "sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095",
+  "excluded_mutable_or_self_bound_files": [
+    "evidence.json",
+    "final_evidence_index.json",
+    "human_acceptance.json",
+    "review_audit.json",
+    "reviewed_evidence_overlay.json",
+    "reviewer_results.json"
+  ],
+  "file_count": 114,
+  "files": [
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/axe_results.json",
+      "sha256": "sha256:7d99b66cf4e9029776652e27f3b059f2dde564911d878ae76cdaaeefb89e78d6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/contrast_results.json",
+      "sha256": "sha256:a58f44aa982c18bca1212ea99a41bf1f4d8bccb68b2e6f690c7967839a6efaf9"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/design_tokens.json",
+      "sha256": "sha256:312730f78e7f6b435478eee16198f4a2b017de1623a714d0e83881d5ae5d7805"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/accessibility_tree.json",
+      "sha256": "sha256:68ea53935bf8a6c4d8c7a2e015ac0f4ad4f99169bcbf0fb91fe057be53926659"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/browser_trace.zip",
+      "sha256": "sha256:4477b723f75425c09ecad5c979121e42b25e94971aa6ced49416f709669f383e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/browser_validation.json",
+      "sha256": "sha256:8e6dac3084253dcf81221bb8466af64000ec8d17d13fdfe318fdc2047c79bbcd"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/accounts.png",
+      "sha256": "sha256:f484aba704e3ae4b76fc5b1c2e1ac5dd013bc9a547bfde42219abbe8b5d2702c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/consumption.png",
+      "sha256": "sha256:703ac9a21e346dcd54ba51ff7e7d8a9f2707aca22bf19ae8ca67289bc39acc4d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/home.png",
+      "sha256": "sha256:c7ca43111fdecb47ad325cd85e10c10e0ac620409923c84a8689cfcb7e46f4a0"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/insights.png",
+      "sha256": "sha256:0161d52e58f729099de4cc2dc94f73bb35962398e5fcf6e7fa08ab5db9b1f031"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/investment.png",
+      "sha256": "sha256:017d968fefd41386ec8e9b2bc50269869e8067201ffe85dc0d2d37de11eeb68a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/ledger.png",
+      "sha256": "sha256:64bc9219cebc000fa5f93eb5e6cf57762a7d3067972f64d7495a43486900a7b2"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/market_research.png",
+      "sha256": "sha256:1ba7caa9fdc773e450a6204a66c7096d968264a3bd0ea365f5a02f4f73718c3c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/recommendations.png",
+      "sha256": "sha256:a6f10a07439b2821daf7837f68366b347a49a9bf761e58b7e0ca3041a7d9ef8f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/settings.png",
+      "sha256": "sha256:dcf68522379a2df1d5c06df998fb656b00861528cb63c766073e351abdd1a868"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_pages/sync.png",
+      "sha256": "sha256:686a7c74eb338e2c887cacab8e1b2c8530a97744efda7aecac84139217b828a0"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/accounts_reconcile.png",
+      "sha256": "sha256:b8b0621a38980f9dac4c5e16cc54954a20214edae1c0725e73714307c78b4f66"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/consumption_budget.png",
+      "sha256": "sha256:5d1ce34db158a8b17c70dc74d44b3c65cd3aa840ef9e1f533c3a51a37d15ad91"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/home_status.png",
+      "sha256": "sha256:02010b9ca8627f2ff42ec85b15bf106a27e6fa777349613850f391f01600a8c6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/insights_custom.png",
+      "sha256": "sha256:c90aca387bf5f0aac2023c3fff525baae88aa12f29d50b8e81b4ebcac87121fe"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/investment_holdings.png",
+      "sha256": "sha256:d8feb05ecefa042137d8965f36ef9602eef8d3e28b82ba1815684b56a0c73570"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/ledger_review.png",
+      "sha256": "sha256:3f0f79eb0e83c9f4b7c8c49fc5d18b44a4a54caa708358ba11b5e02207719d9d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/market_strategy_lab.png",
+      "sha256": "sha256:eb60bb096c517e4a5eed4c8626e907d867cbeb84f75939a30fc34fcbc160d4dc"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/recommendations_detail.png",
+      "sha256": "sha256:7c52c8012d4e1d7f0cd33bac3feca685bd7dc86eea7fe37bf615f8d1e5214333"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/settings_feedback.png",
+      "sha256": "sha256:09d598bd5f80081975ce60ca23d8be7c993c42c00a829ae015e1f62d47788e7b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/desktop_secondary/sync_sources.png",
+      "sha256": "sha256:5161260e4c39440a638c6ef6da90522b52b28f802d1f154c078ffba60b981df9"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/error_prevention_audit.json",
+      "sha256": "sha256:c2a4109ae9271b978929081ec88f1080a7e71eecc53ca69745082e04643868c3"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/keyboard_flow.json",
+      "sha256": "sha256:fab8b7ceff2a6b68e1d25d9a45074ef322ba51eb4a603fced47fac2b70de56d0"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/accounts.png",
+      "sha256": "sha256:09b58abd094708c674ba3dd6113474c5ca99bea179d710da1b8befd8c536936a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/consumption.png",
+      "sha256": "sha256:28558d22e12fe8327f99faa2cdefd7b868f7dbae72d91ba9452ff8d33918fa73"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/home.png",
+      "sha256": "sha256:9df2b8a2b4038462c43e5d4262c0883c53cdd9fbd3bcf74c20666589c8bd2b98"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/insights.png",
+      "sha256": "sha256:7e56981adbe3246af4be2ea618b4b887ac7e1b50c731efa614f9d93e87120f8f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/investment.png",
+      "sha256": "sha256:91fee8f71c880dc2b0873b10dfe8dadcdde8f37e3f293172cfcc2159f4150b6e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/ledger.png",
+      "sha256": "sha256:f1ba19a512219622eeb2c107e16ad5f8a2d1501cf3d794c6acd7f2a80d0d2f1c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/market_research.png",
+      "sha256": "sha256:547ddb64af769e534fa2e75d58a1f333d1d927bd9ed2b655880b21caec5936f9"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/recommendations.png",
+      "sha256": "sha256:0e4c3489f9b7de3867b053585a5fea9d7d990e4f161ed335210a49f4d5be0141"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/settings.png",
+      "sha256": "sha256:74bd5ee5d7b301786e0b75e4c3243e036cadbb84892ce136e3a3fd999468abab"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_pages/sync.png",
+      "sha256": "sha256:ef5dc0f8e518baadf69e9fe7b4a3613143698be91aea4abfa391825e9822d2f5"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/accounts_reconcile.png",
+      "sha256": "sha256:26908dc1b75c27be654d592dea3f6f6b309171d49f255d02fa1c9f05d1a13159"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/consumption_budget.png",
+      "sha256": "sha256:976c62370bd7d39bc1e3665f834e6c69202ad0275fe74a7f50393612a5da4b2e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/home_status.png",
+      "sha256": "sha256:9df2b8a2b4038462c43e5d4262c0883c53cdd9fbd3bcf74c20666589c8bd2b98"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/insights_custom.png",
+      "sha256": "sha256:fe9883cb09e417ce8978e0805503ce263cfe57ecdc126804743db8c59c77728c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/investment_holdings.png",
+      "sha256": "sha256:dd271f2b308147627916aab0725d5ba931a8ec567223f27b1941aaa06e1378b6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/ledger_review.png",
+      "sha256": "sha256:6df60c9aa1a8b30828cf5b585f9cc32694b9207f916500c08cfaaad5d53c9495"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/market_strategy_lab.png",
+      "sha256": "sha256:ae7222f05ac91d6f71caabe8c1df3809c855d9f054fe4fe1074be5829be300a1"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/recommendations_detail.png",
+      "sha256": "sha256:04b250c77e66c1945c551270f9af0cddc71d94806336a7e5dc70348116001a48"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/settings_feedback.png",
+      "sha256": "sha256:88d5eb931f102a27e3670119831900ff9d85880ebb70535fadb8bb86efdf0465"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/mobile_secondary/sync_sources.png",
+      "sha256": "sha256:639cb1f05481277e311bd6dccae6c4f84c84f3d902d2b4b6dfa88534f2a84123"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/visual_regression.json",
+      "sha256": "sha256:472ddc84aeba593b400b65ac3850683f60032ab54570d8973c6248d10ef7d786"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/final_browser/wcag_audit.json",
+      "sha256": "sha256:5a3b7827dad617534f6394b144cb8fb379bf66ca15a1196d2191a257d0158c9d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/initial_review_findings.json",
+      "sha256": "sha256:467fd01d2f16c0921a3094d9b77ed52d9b0c1edc5c7d7f5539361b36437a689a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/keyboard_flow.json",
+      "sha256": "sha256:2f505f6f71a4aa552e9cbb93def3779b84eb792fe760f4c793ed5f65f3ad67bd"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/motion_feedback/browser_trace.zip",
+      "sha256": "sha256:616093155f0086a67d6aafd69180ddd546461506d34ea2eb9e3bf6b3ee7d7a09"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/motion_feedback/browser_validation.json",
+      "sha256": "sha256:53de754c601eb285c6ec9428a76ba0d730f05293fc1dc63e6d396c5dc198291b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/motion_feedback/phase82_motion_feedback.png",
+      "sha256": "sha256:3ec4fe973198367c9a6f40e2856d9de7c6474e8ea519c18f08ded928c6d2f11e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_commit_binding.json",
+      "sha256": "sha256:0a53de648964499787a0f90461fb9b8f383d1739bf99808d12bacc1ec4915046"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_contract.json",
+      "sha256": "sha256:0793775d069e713a4c1732f043ac06c190c5c40de8c74cf1f19d2dad119cccce"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_evidence/phase_8_1.json",
+      "sha256": "sha256:b5924ef7e45f8c7a0a136cef0e4b6ef8db7c8b84f58fbf00ea01ec784480df52"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_evidence/phase_8_2.json",
+      "sha256": "sha256:0818d419ee2affe1889f405ea251396fbcfd65f27ecb86a3dac3fdf7417f39f0"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_evidence/phase_8_3.json",
+      "sha256": "sha256:f05a4e25ea3f52519adee73a2fdca8b0c3311aa2a40b422e96c42f3c29c2486c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/phase_evidence_amendment_binding.json",
+      "sha256": "sha256:658c79a03162087c9e2583fb088077d7ce7af2012d1e2a06a91bce01d7ca3834"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/privacy_scan.txt",
+      "sha256": "sha256:0c5c0562f42c6c67055538e3e891547c825aaa01500ef2fb466e3fab21c87fee"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/reduced_motion.json",
+      "sha256": "sha256:1d2cbf18581047f3ee73fc18ac96689096469284902eeaf4a0c6ee242c720f1e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/release_identity_binding.json",
+      "sha256": "sha256:ba923f14992f68d44031b473ed4bff3181a1043e9f6bea3213968f91a3a678a3"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/browser_trace.zip",
+      "sha256": "sha256:657b1e447f33ab5b74bf21e89c69c30e55f43871577398fa7086fee33bddf5f3"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/browser_validation.json",
+      "sha256": "sha256:987c8f66bf780bed9a56135e5083a0a99e76b32c9d2d94b2c7b810f02d4c852c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/accounts.png",
+      "sha256": "sha256:f484aba704e3ae4b76fc5b1c2e1ac5dd013bc9a547bfde42219abbe8b5d2702c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/consumption.png",
+      "sha256": "sha256:703ac9a21e346dcd54ba51ff7e7d8a9f2707aca22bf19ae8ca67289bc39acc4d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/home.png",
+      "sha256": "sha256:02010b9ca8627f2ff42ec85b15bf106a27e6fa777349613850f391f01600a8c6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/insights.png",
+      "sha256": "sha256:f4dbc0866feccd84daadd3e1c9f402f02d2ff40d593e763eeb634115c51a9212"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/investment.png",
+      "sha256": "sha256:017d968fefd41386ec8e9b2bc50269869e8067201ffe85dc0d2d37de11eeb68a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/ledger.png",
+      "sha256": "sha256:f656925aece069b37eccd8ef858cd5d348f260e80ab8dea424250cbfc81573c8"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/market_research.png",
+      "sha256": "sha256:1ba7caa9fdc773e450a6204a66c7096d968264a3bd0ea365f5a02f4f73718c3c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/recommendations.png",
+      "sha256": "sha256:a6f10a07439b2821daf7837f68366b347a49a9bf761e58b7e0ca3041a7d9ef8f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/settings.png",
+      "sha256": "sha256:dcf68522379a2df1d5c06df998fb656b00861528cb63c766073e351abdd1a868"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_pages/sync.png",
+      "sha256": "sha256:a7ccee2a99f87c56c97c89cd968bbbbbfa87f833b5a13291ef4ea3026bfa13ce"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/accounts_reconcile.png",
+      "sha256": "sha256:3729612825a6e20c7e53c8cb3b1c140995914051c0a5cb3048842cb79cfeb50b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/consumption_budget.png",
+      "sha256": "sha256:14f0e330bbbc9f56f0f7b23cf76f4d6f1def31793dd36d26f3d48fc3917d99b6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/home_status.png",
+      "sha256": "sha256:02010b9ca8627f2ff42ec85b15bf106a27e6fa777349613850f391f01600a8c6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/insights_custom.png",
+      "sha256": "sha256:149acc2772187bb30683edf3bb55bf197c74d7ebf466f03835dccf73a6f36b47"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/investment_holdings.png",
+      "sha256": "sha256:d8feb05ecefa042137d8965f36ef9602eef8d3e28b82ba1815684b56a0c73570"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/ledger_review.png",
+      "sha256": "sha256:3f0f79eb0e83c9f4b7c8c49fc5d18b44a4a54caa708358ba11b5e02207719d9d"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/market_strategy_lab.png",
+      "sha256": "sha256:eb60bb096c517e4a5eed4c8626e907d867cbeb84f75939a30fc34fcbc160d4dc"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/recommendations_detail.png",
+      "sha256": "sha256:41f22f9350bb835df8b025cda4d2b02bbd3b2ab38e0b3a54643e5cbc8cfb3b5a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/settings_feedback.png",
+      "sha256": "sha256:09d598bd5f80081975ce60ca23d8be7c993c42c00a829ae015e1f62d47788e7b"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/desktop_secondary/sync_sources.png",
+      "sha256": "sha256:5161260e4c39440a638c6ef6da90522b52b28f802d1f154c078ffba60b981df9"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/accounts.png",
+      "sha256": "sha256:09b58abd094708c674ba3dd6113474c5ca99bea179d710da1b8befd8c536936a"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/consumption.png",
+      "sha256": "sha256:28558d22e12fe8327f99faa2cdefd7b868f7dbae72d91ba9452ff8d33918fa73"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/home.png",
+      "sha256": "sha256:9df2b8a2b4038462c43e5d4262c0883c53cdd9fbd3bcf74c20666589c8bd2b98"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/insights.png",
+      "sha256": "sha256:7e56981adbe3246af4be2ea618b4b887ac7e1b50c731efa614f9d93e87120f8f"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/investment.png",
+      "sha256": "sha256:91fee8f71c880dc2b0873b10dfe8dadcdde8f37e3f293172cfcc2159f4150b6e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/ledger.png",
+      "sha256": "sha256:f1ba19a512219622eeb2c107e16ad5f8a2d1501cf3d794c6acd7f2a80d0d2f1c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/market_research.png",
+      "sha256": "sha256:547ddb64af769e534fa2e75d58a1f333d1d927bd9ed2b655880b21caec5936f9"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/recommendations.png",
+      "sha256": "sha256:0e4c3489f9b7de3867b053585a5fea9d7d990e4f161ed335210a49f4d5be0141"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/settings.png",
+      "sha256": "sha256:74bd5ee5d7b301786e0b75e4c3243e036cadbb84892ce136e3a3fd999468abab"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_pages/sync.png",
+      "sha256": "sha256:ef5dc0f8e518baadf69e9fe7b4a3613143698be91aea4abfa391825e9822d2f5"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/accounts_reconcile.png",
+      "sha256": "sha256:26908dc1b75c27be654d592dea3f6f6b309171d49f255d02fa1c9f05d1a13159"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/consumption_budget.png",
+      "sha256": "sha256:976c62370bd7d39bc1e3665f834e6c69202ad0275fe74a7f50393612a5da4b2e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/home_status.png",
+      "sha256": "sha256:9df2b8a2b4038462c43e5d4262c0883c53cdd9fbd3bcf74c20666589c8bd2b98"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/insights_custom.png",
+      "sha256": "sha256:fe9883cb09e417ce8978e0805503ce263cfe57ecdc126804743db8c59c77728c"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/investment_holdings.png",
+      "sha256": "sha256:dd271f2b308147627916aab0725d5ba931a8ec567223f27b1941aaa06e1378b6"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/ledger_review.png",
+      "sha256": "sha256:6df60c9aa1a8b30828cf5b585f9cc32694b9207f916500c08cfaaad5d53c9495"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/market_strategy_lab.png",
+      "sha256": "sha256:ae7222f05ac91d6f71caabe8c1df3809c855d9f054fe4fe1074be5829be300a1"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/recommendations_detail.png",
+      "sha256": "sha256:04b250c77e66c1945c551270f9af0cddc71d94806336a7e5dc70348116001a48"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/settings_feedback.png",
+      "sha256": "sha256:88d5eb931f102a27e3670119831900ff9d85880ebb70535fadb8bb86efdf0465"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/repaired_baseline/mobile_secondary/sync_sources.png",
+      "sha256": "sha256:639cb1f05481277e311bd6dccae6c4f84c84f3d902d2b4b6dfa88534f2a84123"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/reviewed_worktree_overlay.json",
+      "sha256": "sha256:147c6d6ae2cb5436a3b62082b66e7853bf6ecfc7403abada844550e95c18eb49"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/risk_and_rollback.md",
+      "sha256": "sha256:f6b0894c6c521446fe7ff291403b91464ad2f2c3de90d777558fda00fa7137f5"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/scope_override.json",
+      "sha256": "sha256:61a2997bf5d6da772902ce7ff0ea894d9c71b20cd5b5f0a13fa8a486cbfe5d21"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/verification_changed_scope_governance.log",
+      "sha256": "sha256:f28976d973e76c350358218acb568f7539969c44a12efa326efc468d8f32a75e"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/verification_focused_stage8.log",
+      "sha256": "sha256:6910ba93aafaac3288a1cfe8ef2c16c530673802bb95948632bedd923cec95b7"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/verification_results.json",
+      "sha256": "sha256:0ca800e3e2e618318247238c71bb79ae6c4beb632620a2503af20d60d22a1ce2"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/verification_syntax_and_diff.log",
+      "sha256": "sha256:790a4e789edcc66ba5730efabfd4230316324eb5e349709a68d77a07d1818166"
+    },
+    {
+      "path": "PFI/reports/pfi_v025/stage_8/whole_stage_review/visual_acceptance.json",
+      "sha256": "sha256:ba7e5bce114155bf4128e59a18d257edfdbdb0835810ebfd3f8e8a36f5068716"
+    }
+  ],
+  "review_base": "2c7b25efd2916c909027333283b499a119d088e0",
+  "schema": "PFIV025Stage8ReviewedEvidenceOverlayV1",
+  "status": "frozen"
+}

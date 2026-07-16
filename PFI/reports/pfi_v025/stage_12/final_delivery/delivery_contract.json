@@ -1,0 +1,26 @@
+{
+  "schema": "PFIV025FinalDeliveryContractV1",
+  "status": "app_reinstalled_waiting_single_main_upload",
+  "version": "v0.2.5",
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "release_freeze_commit": "1e9b6aa8c8271c881edffdf7f7ab564fae343c05",
+  "remote_main_preflight": "d2399d9162609197ad3665688f763597ff1779f9",
+  "commit_topology": "single_parent_curated_snapshot_on_latest_live_main",
+  "delivery_tree_policy": "live origin/main outside PFI plus approved root governance scripts; accepted PFI tree from the delivery commit; migrated top-level projects remain absent",
+  "approved_root_overlay_paths": [
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py"
+  ],
+  "app_reinstall_performed": true,
+  "push_performed": false,
+  "single_actual_push_remaining": 1,
+  "prior_remote_rejection_without_ref_update": true,
+  "transport_adaptation_ref": "PFI/reports/pfi_v025/stage_12/final_delivery/transport_adaptation.json",
+  "production_accepted": false,
+  "completion_condition": "the curated commit becomes remote main and post-push remote/tree/App parity passes read-only checks",
+  "finder_used": false,
+  "launchservices_used": false,
+  "open_command_used": false,
+  "gui_file_operations_used": false,
+  "contains_private_values": false
+}

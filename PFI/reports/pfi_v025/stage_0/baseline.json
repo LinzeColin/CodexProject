@@ -1,0 +1,117 @@
+{
+  "schema": "PFIV025Stage0BaselineV1",
+  "version": "v0.2.5",
+  "stage": 0,
+  "phase": "0.3",
+  "observed_at": "2026-07-12T01:09:30.659834+10:00",
+  "authority_order": [
+    "latest_explicit_user_decision",
+    "pinned_v025_task_pack_and_roadmap",
+    "verified_current_repository_runtime_app_database_test_evidence",
+    "non_conflicting_classified_history",
+    "historical_completion_claims_have_no_independent_authority"
+  ],
+  "source_hashes": {
+    "roadmap_sha256": "fc2f406eef45d9a09f852aad1a2234b2c37547f8ae9c002d6230c54f7ca1071b",
+    "task_pack_sha256": "591c839992963a631e079498ec98f6e83a5686ead4ce4ea2c8aea39ab3346dd2"
+  },
+  "phase_identities": {
+    "phase_0_1": {
+      "status": "candidate_pass",
+      "acceptance_id": "ACC-PFI-V025-S0-P01-BASELINE",
+      "implementation_base": "3bc8e4e5780fd19594161b574763a9b2e65b7d30",
+      "phase_commit": "332953e002162bce1b28aa616b24ddaa936f1935",
+      "evidence_ref": "PFI/reports/pfi_v025/stage_0/phase_0_1/evidence.json",
+      "evidence_sha256": "2f45b6b9774b24a0bc990d9476e13448604cdd9169e82e37f0c14c7c8daddf35"
+    },
+    "phase_0_2": {
+      "evidence_status": "candidate_pass",
+      "acceptance_id": "ACC-PFI-V025-S0-P02-ACTIVE-CONTRACT",
+      "implementation_base": "82869ffdb37e4de22244d5423c9b7f71f4cb7076",
+      "phase_commit": "7433be0d70bdae42959c1b71753d93f8737db60d",
+      "evidence_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json",
+      "evidence_sha256": "d0e7e3c4413404c0dee91b1173b8d3e270c50faa6f06c3fc4cdd24ff90b6a1f8",
+      "external_attestation": {
+        "ref": ".git/codex-review/pfi-v025/stage_0/phase_0_2/7433be0d70bdae42959c1b71753d93f8737db60d.attempt.id9uiuo8/phase_0_2_attestation.json",
+        "sha256": "8b579f727c9fdbe55fe8e9455ec28a4d7c6c45b4caf47fb7dbe1d6226859c60a",
+        "status": "resolved_by_approved_override",
+        "blocks_phase_0_2_candidate": false,
+        "contains_private_values": false
+      }
+    },
+    "phase_0_3": {
+      "status": "candidate_pass_pending_compensation_attestation",
+      "acceptance_id": "ACC-PFI-V025-S0-P03-GAP-EVIDENCE",
+      "implementation_base": "ede905cd96c7b6682cf38971de54f4544f46251b",
+      "phase_commit": "31368570082c34eca50c72c7d7b2ef46b0e6854d",
+      "design_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_DESIGN.md",
+      "design_sha256": "d4032c262ade0177dd17822ff01ee2af251fa421f22afb3a65682b20e536da46",
+      "implementation_plan_ref": "PFI/docs/pfi_v025/stage_0/PHASE_0_3_IMPLEMENTATION_PLAN.md",
+      "implementation_plan_sha256": "8baf3517a0835bb2e3e7a242fd21d7673d9b7e730535ce6ba11dc6e5e8732472",
+      "original_external_attestation": {
+        "ref": ".git/codex-review/pfi-v025/stage_0/phase_0_3/31368570082c34eca50c72c7d7b2ef46b0e6854d.attempt.8wrysajf/phase_0_3_attestation.json",
+        "sha256": "b439444de5a110f07f48fe0fa1d566624183a38e4d7270d0f0bc6fb2e6d696d6",
+        "status": "preserved_historical_attestation"
+      },
+      "compensation": {
+        "correction_id": "PFI-V025-S0-P03-COMP-FND030",
+        "status": "pending_external_compensation_attestation",
+        "finding_id": "PFI-V025-FND-030",
+        "removed_gap_id": "GAP-P1-04"
+      }
+    }
+  },
+  "git_snapshot": {
+    "phase_base": "ede905cd96c7b6682cf38971de54f4544f46251b",
+    "initial_live_main": "a65f30c19241b14c4a895bc68dd4422b5a1e4a5c",
+    "initial_remote_base": "3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb",
+    "merge_base": "3c7626008c25aeb6b71ddccc0eb9b999e5d3aedb",
+    "initial_remote_object_hydration_performed": false,
+    "remote_only_pfi_diff": "none"
+  },
+  "active_contract": {
+    "contract_id": "PFI-V025-STAGE0-PHASE02-ACTIVE-REQUIREMENTS",
+    "artifact_ref": "PFI/config/pfi_v025_active_requirements.json",
+    "artifact_sha256": "b77e1ac78e8842d9a58d76d07a491f80e7a010b3cc91fb4ca7cf24ba10457d37",
+    "projection_ref": "PFI/reports/pfi_v025/stage_0/phase_0_2/evidence.json#active_contract_projection",
+    "projection_sha256": "1154f15e1824bcd6ce8826c6bf3b0a76389152e63a06aef7a8cafe8c4f9e23bf"
+  },
+  "external_guard": {
+    "run_state_ref": "guard:run_state.json",
+    "status": "baseline_complete",
+    "before_sha256": "e969f2aa915298d614265f5be8cfccf85ff3f4e9a484eceb58922996c980e2d7",
+    "git_state_before_sha256": "5f23046d99279c33021096a95682d4040e141708e07336deb15e57749c1019d9",
+    "governance_baseline_sha256": "2dfc938f65612c7861f1edbd5101da97c40c6b22902e48045876ff39b72aad5d",
+    "raw_data_probe_sha256": "9b2dbfe4709b0ca58c174514478215d5b36f4bcbc498e18b7ae360cd932a929f",
+    "database_probe_sha256": "d5fa62da8edaa3395134fd64bf4756c878ad0a1753d5c13c1f54fd06726ad198",
+    "app_runtime_probe_sha256": "9baaa99287d27c672e8112b0cf22cd6b2689029b445c9ea58ac102aff238797a"
+  },
+  "frozen_classification": {
+    "finding_count": 38,
+    "status_counts": {
+      "StillPresent": 23,
+      "Fixed": 7,
+      "Regressed": 0,
+      "N/A": 4,
+      "New": 4
+    },
+    "priority_counts": {
+      "P0": 26,
+      "P1": 10,
+      "P2": 2
+    },
+    "eligible_open_findings": 27,
+    "non_gap_findings": 11,
+    "primary_gap_count": 12,
+    "executable_p2_count": 0
+  },
+  "privacy": {
+    "contains_private_values": false,
+    "raw_filenames_emitted": 0,
+    "raw_rows_emitted": 0,
+    "financial_values_emitted": 0,
+    "credentials_emitted": 0,
+    "absolute_private_paths_emitted": 0,
+    "boundary": "Only redacted identifiers, aggregate metadata, hashes, statuses, dates, counts, and permission classes are retained."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "acceptance_statement": "用户在最终验收前的统一授权接受 Stage 9 transition，并仅授权后续独立 run 进入 Stage 10；不接受生产或最终验收。",
+  "accepted_at": "2026-07-15T19:30:59+10:00",
+  "accepted_scope": [
+    "Stage 9 report, model-validation, human-decision and same-source export transition gate",
+    "authorization to enter Stage 10 only; Stage 10 implementation remains not_started in this run"
+  ],
+  "build_id": "pfi-v025-s1p1-20260712.1",
+  "evidence_index_hash": "sha256:6fa43f870a146c60ce4142b7488472a7824ebaea038f763fdf58a22b5f6bee67",
+  "git_commit": "45653bd4d57d3a4a8d6f025b5f624fed5f155d1e",
+  "known_defects": [
+    "net worth, cash and investment reports remain blocked because required production inputs are absent",
+    "consumption and cashflow remain partial coverage analyses",
+    "historical and out-of-sample model validation remains blocked without ground truth"
+  ],
+  "product": "PFI",
+  "stage": 9,
+  "user_confirmation_reference": "在最终验收前我全部都同意授权，不允许block",
+  "version": "v0.2.5"
+}

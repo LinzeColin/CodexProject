@@ -1,0 +1,104 @@
+{
+  "as_of": "2026-06-03",
+  "cashflow_window_days": [
+    7,
+    21,
+    30,
+    60,
+    90,
+    180,
+    360
+  ],
+  "cashflow_window_sensitivity": [
+    {
+      "coverage_end": "2026-06-03",
+      "coverage_start": "2026-05-28",
+      "financial_value_fingerprint": "sha256:e3846ddb78ab992050692cb48324baf22b2f72fa710d09cde6ab27f816202804",
+      "incremental_record_count": 80,
+      "record_count": 80,
+      "status": "ready",
+      "window_days": 7
+    },
+    {
+      "coverage_end": "2026-06-03",
+      "coverage_start": "2026-05-14",
+      "financial_value_fingerprint": "sha256:1a59b2095755a18200f78e1e43b86b3214942c474f0fdfc264240203dd2869a2",
+      "incremental_record_count": 112,
+      "record_count": 192,
+      "status": "ready",
+      "window_days": 21
+    },
+    {
+      "coverage_end": "2026-06-03",
+      "coverage_start": "2026-05-05",
+      "financial_value_fingerprint": "sha256:65c805672776c094f75486092be5c83f0c95e3452694f602c4ebf9c2cb2acbe1",
+      "incremental_record_count": 66,
+      "record_count": 258,
+      "status": "ready",
+      "window_days": 30
+    },
+    {
+      "coverage_end": "2026-06-03",
+      "coverage_start": "2026-04-05",
+      "financial_value_fingerprint": "sha256:6355303acccabf9ee84e4256589fc3be0c2eec92460d7f0cc81998db8d3d09a6",
+      "incremental_record_count": 210,
+      "record_count": 468,
+      "status": "ready",
+      "window_days": 60
+    },
+    {
+      "coverage_end": "2026-06-03",
+      "coverage_start": "2026-03-06",
+      "financial_value_fingerprint": "sha256:1fb6f87280e839c93114a748244ec6d262998b6803180fea2eb85bcdd24534d1",
+      "incremental_record_count": 261,
+      "record_count": 729,
+      "status": "ready",
+      "window_days": 90
+    },
+    {
+      "coverage_end": "2026-06-03",
+      "coverage_start": "2025-12-06",
+      "financial_value_fingerprint": "sha256:36448d931415328809874e214a597242eec21b142f6fe9803cdcb8b639adf42e",
+      "incremental_record_count": 689,
+      "record_count": 1418,
+      "status": "ready",
+      "window_days": 180
+    },
+    {
+      "coverage_end": "2026-06-03",
+      "coverage_start": "2025-06-09",
+      "financial_value_fingerprint": "sha256:e8a886fef406d1ba844242f33f5e07bd573460fdb0816832d84e81675943d585",
+      "incremental_record_count": 1817,
+      "record_count": 3235,
+      "status": "ready",
+      "window_days": 360
+    }
+  ],
+  "classification_threshold_sensitivity": {
+    "configured_threshold": 70,
+    "reason": "The immutable ledger has no per-record classification score vector or ground truth labels.",
+    "status": "blocked_missing_scores"
+  },
+  "contains_private_values": false,
+  "empty_window_boundary": {
+    "as_of": "2022-06-05",
+    "financial_values_are_null": true,
+    "status": "filtered_empty"
+  },
+  "financial_values_emitted": 0,
+  "historical_out_of_sample_sensitivity": {
+    "reason": "No pre-specified split, labels or complete valuation target exists; a retrospective split would overstate validity.",
+    "status": "blocked_insufficient_ground_truth"
+  },
+  "phase_id": "V025-S5-P5.3",
+  "schema": "PFIV025Stage5Phase53SensitivityResultsV1",
+  "status": "partial_pass_with_blocked_parameters",
+  "version": "v0.2.5",
+  "xirr_parameter_sensitivity": {
+    "configured_day_count_basis": 365,
+    "configured_max_iterations": 256,
+    "configured_tolerance": "0.0000000001",
+    "reason": "No complete dated funding/return/terminal-value chain exists in the accepted real snapshot.",
+    "status": "blocked_insufficient_chain"
+  }
+}

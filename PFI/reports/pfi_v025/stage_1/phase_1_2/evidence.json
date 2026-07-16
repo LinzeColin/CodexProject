@@ -1,0 +1,218 @@
+{
+  "schema": "PFIV025Stage1Phase12EvidenceV1",
+  "version": "v0.2.5",
+  "stage": 1,
+  "phase": "1.2",
+  "status": "candidate_pass",
+  "iteration_id": "ITER-20260712-PFI-V025-S1-P12",
+  "acceptance_id": "ACC-PFI-V025-S1-P12-CACHE-GOVERNANCE",
+  "task_ids": [
+    "S1-P2-T1",
+    "S1-P2-T2",
+    "S1-P2-T3",
+    "S1-P2-T4"
+  ],
+  "git_commit": "b3885f15cd2e983c0839be6a20d7e4a9391c6324",
+  "git_commit_semantics": "final_post_review_remediation_release_cache_content_commit_before_binding_commit",
+  "release_content_commit": "b3885f15cd2e983c0839be6a20d7e4a9391c6324",
+  "cache_binding_commit": "PENDING_POSTCOMMIT_ATTESTATION",
+  "allowed_files_obeyed": true,
+  "allowed_files_interpretation": "Stage 1 product paths plus mandatory root-governance companions and Phase-local evidence only; no business page, model, formula, parameter, data or database source changed",
+  "commands": [
+    {
+      "command": "Python Phase 1.2 RED suite",
+      "exit_code": 1,
+      "summary": "9 failed only on missing Phase 1.2 cache contracts; collection and syntax succeeded"
+    },
+    {
+      "command": "Node Phase 1.2 RED suite",
+      "exit_code": 1,
+      "summary": "8 failed only on missing Service Worker, cache-policy, pageshow and epoch contracts"
+    },
+    {
+      "command": "pytest test_v025_stage1_cache_policy.py test_v025_stage1_release_identity.py",
+      "exit_code": 0,
+      "summary": "22 passed, 2 upstream deprecation warnings after review remediation"
+    },
+    {
+      "command": "node --test stage1_cache_policy.test.mjs stage1_release_identity.test.mjs",
+      "exit_code": 0,
+      "summary": "23 passed, 0 failed"
+    },
+    {
+      "command": "release_cache_contract.py --policy-json",
+      "exit_code": 0,
+      "summary": "valid=true, asset_identity_valid=true, TTL=30, privacy-safe hashes/status only"
+    },
+    {
+      "command": "isolated same-process Streamlit HTTP validation",
+      "exit_code": 0,
+      "summary": "4/4 checks: HTML private revalidation, validators/304, hashed immutable, unhashed private"
+    },
+    {
+      "command": "isolated Playwright Chromium cache governance validation",
+      "exit_code": 0,
+      "summary": "10/10 checks, console/page errors 0/0, existing live ports not accessed"
+    },
+    {
+      "command": "node --check, py_compile, zsh -n and git diff --check",
+      "exit_code": 0,
+      "summary": "syntax and whitespace checks passed"
+    },
+    {
+      "command": "temporary detached full-tree shadow project governance and semantic governance sync",
+      "exit_code": 0,
+      "summary": "project 0 errors 0 warnings; sync 0 errors 0 warnings; temporary worktree removed"
+    },
+    {
+      "command": "initial binding three-way independent review",
+      "exit_code": 1,
+      "summary": "C0/I4/M0; initial 5edd3788/df7e2add pair rejected and superseded without attestation"
+    },
+    {
+      "command": "review-remediation RED then focused GREEN",
+      "exit_code": 0,
+      "summary": "valid RED reproduced all four findings; final Python 22/22 and Node 23/23 passed"
+    },
+    {
+      "command": "trace ZIP integrity and decompressed-member privacy scan",
+      "exit_code": 0,
+      "summary": "22 members readable; absolute home findings 0"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/StartPFI.command",
+    "PFI/config/release_manifest.json",
+    "PFI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/docs/governance/OWNER_STATUS.md",
+    "PFI/docs/governance/STATUS.md",
+    "PFI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/docs/governance/delivery_tasks.yaml",
+    "PFI/docs/governance/development_events.jsonl",
+    "PFI/docs/pfi_v025/stage_1/PHASE_1_2_CACHE_GOVERNANCE_IMPLEMENTATION_PLAN.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/asset_identity.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/bfcache_mismatch.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/cache_audit.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/cache_headers.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/changed_files.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/evidence.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/playwright_trace.zip",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/service_worker_audit.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/streamlit_cache_policy.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/terminal.log",
+    "PFI/scripts/pfiReleaseIdentity.sh",
+    "PFI/scripts/startPFI.sh",
+    "PFI/scripts/v025/browser_validate_stage1_phase12.mjs",
+    "PFI/scripts/v025/release_cache_contract.py",
+    "PFI/scripts/v025/run_streamlit_with_release_cache.py",
+    "PFI/scripts/v025/verify_stage1_phase12.py",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+    "PFI/tests/test_v025_stage1_cache_policy.py",
+    "PFI/web/app/version.js",
+    "PFI/web/index.html",
+    "PFI/web/tests/v025/stage1_cache_policy.test.mjs",
+    "PFI/web/tests/v025/stage1_release_identity.test.mjs"
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/asset_identity.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/cache_audit.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/cache_headers.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/service_worker_audit.md",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/streamlit_cache_policy.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/browser_validation.json",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/bfcache_mismatch.png",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/playwright_trace.zip",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/terminal.log",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/privacy_scan.txt",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/risk_and_rollback.md"
+  ],
+  "artifact_hashes": {
+    "PFI/config/release_manifest.json": "c4e72470a74cac29f5e4e0e507af751a8f4e0359f3c2b40c12f94b6d48976ebc",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py": "5d7285852c21b5d09064c1829c6378c9bde6862120194b790c4af5d8d623f632",
+    "PFI/web/app/version.js": "ebbb48b0ebbccd70111a74dc59791099c43e10ac56da5bd6013da6c9baa6badd",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/asset_identity.json": "136ea19f065c7255c3a74e1227fa3d40e4382077b532e7a055dd95fb626b6881",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/cache_headers.json": "4b25010b8555dad3c030b343fa43589a4412283ecf6c2ecd58d51d4f9358b716",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/browser_validation.json": "60801ed05e68226e65e3736b05b4dc3773b385810a5d70816164fb17d380ba69",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/bfcache_mismatch.png": "60ebf9edb06ece2fce53b70f33cba2f6912a177d7ea50f2a4161fa29d940ac87",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/playwright_trace.zip": "03d7c54976d7870894aa912b4b8f511ed1a245cb3f4af212cfe5acb0e24c8e62",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/streamlit_cache_policy.json": "0e5be97a5762de84942556dac35cc0e5112d94f5aef58f6ea303f6cc23ce5646",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/cache_audit.md": "529d8092186a8cd4f04606d12420e3642e9d20bdbb97bd47bfd315f1fbc55857",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/service_worker_audit.md": "1c1d417c3e47fc303186d3d8b28f7345525885808be352247967bed033a7e55c",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/risk_and_rollback.md": "4f455ec8cbef8bf823e2ab97d3a2acb03ac58394106806bf7698370b88162819",
+    "PFI/reports/pfi_v025/stage_1/phase_1_2/terminal.log": "ca35f43f4d8df88810ee8b81b8105e80c63498cf2f74df8f688b209f1f897eda",
+    "PFI/scripts/v025/browser_validate_stage1_phase12.mjs": "8a6c6ab3bac2d979f7de2f2bc0a1e2aca0f6d6079009f074ef016af9c27180c7",
+    "PFI/scripts/v025/release_cache_contract.py": "2d0dbbede5a1ed1e0a4b3d18a702b1ff12088483b3906a4f127b7367557b75bc",
+    "PFI/scripts/v025/run_streamlit_with_release_cache.py": "31a6d29b3762d69fa300cb1af423505ea5ef8c7f58889b307b130fca99e792eb",
+    "PFI/scripts/v025/verify_stage1_phase12.py": "f0a74a19635cbd025091487fe1c811775842ff1576804ae84a3b17deb85f376c"
+  },
+  "release_identity": {
+    "version": "v0.2.5",
+    "build_id": "pfi-v025-s1p1-20260712.1",
+    "git_commit": "b3885f15cd2e983c0839be6a20d7e4a9391c6324",
+    "frontend_bundle_hash": "3c1f3a71bd2f5a22bd98cd520c1b8b41707387984028ea0eefe346ac492c10a0",
+    "backend_build_hash": "5d7285852c21b5d09064c1829c6378c9bde6862120194b790c4af5d8d623f632"
+  },
+  "cache_contract": {
+    "streamlit_cache_key": "5ac651d6dc5798b2e4d775a708a7be930777cb106a77ff1895aac39f07d6cb95",
+    "ttl_seconds": 30,
+    "persistent": false,
+    "streamlit_version": "1.35.0",
+    "requirements_declared_streamlit_version": "1.54.0",
+    "real_bfcache_persisted_observed": false,
+    "synthetic_persisted_event_claimed_as_real": false
+  },
+  "superseded_pair": {
+    "release_content_commit": "5edd378828bc7795cd2920a73be19657a3f749b7",
+    "cache_binding_commit": "df7e2add249f3547d1f6c37438c0b8085dc3480d",
+    "review_findings": {
+      "critical": 0,
+      "important": 4,
+      "minor": 0
+    },
+    "attestation_created": false
+  },
+  "review_findings_before_remediation": {
+    "critical": 0,
+    "important": 4,
+    "minor": 0
+  },
+  "review_status": "remediation_complete_pending_fresh_external_postcommit_independent_review",
+  "explicitly_not_done": [
+    "Phase 1.3 canonical App install, Finder launch, new browser profile and App-copy matrix",
+    "whole Stage 1 acceptance",
+    "Stage 2 entry",
+    "GitHub push, fetch, merge or rebase",
+    "existing live 8501/8502 service stop, restart or browser validation",
+    "financial data or SQLite mutation",
+    "model, formula or parameter semantics change",
+    "production acceptance",
+    "final Stage 12 human acceptance"
+  ],
+  "risks": [
+    "actual runtime Streamlit 1.35.0 differs from requirements.lock 1.54.0 and must be revalidated after Phase 1.3 canonical install",
+    "real headless browser back_forward navigation observed persisted=false; deterministic persisted event tests prove the handler path but are not a real bfcache-hit claim",
+    "a surviving legacy Service Worker controller requires a reload before the new page can become ready",
+    "cache-binding commit cannot self-record in tracked evidence and requires an external post-commit attestation"
+  ],
+  "rollback": "Revert the final Phase 1.2 binding/evidence commit, then remediation content commit b3885f15cd2e983c0839be6a20d7e4a9391c6324; preserve the superseded pair as rejected history and do not touch user data, installed Apps, live services or remote refs.",
+  "requires_user_acceptance": true,
+  "requires_final_stage12_human_acceptance": true,
+  "contains_private_values": false,
+  "private_data_status_hash_read_only": true,
+  "financial_values_emitted": false,
+  "production_accepted": false,
+  "final_human_acceptance": false,
+  "stage_1_status": "in_progress",
+  "phase_1_3_status": "not_started",
+  "stage_2_status": "not_started",
+  "push_performed": false,
+  "app_install_performed": false,
+  "live_ports_mutated": false,
+  "live_ports_8501_8502_accessed_for_validation": false,
+  "financial_data_or_database_mutated": false
+}

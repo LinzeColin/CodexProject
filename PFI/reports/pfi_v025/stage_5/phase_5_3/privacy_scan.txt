@@ -1,0 +1,8 @@
+PFI v0.2.5 Stage 5 Phase 5.3 public-evidence privacy scan
+scope=PFI/reports/pfi_v025/stage_5/phase_5_3
+forbidden_absolute_user_paths=0
+forbidden_private_row_field_names=0
+numeric_financial_amount_fields=0
+financial_values_emitted=0
+contains_private_values=false
+result=pass

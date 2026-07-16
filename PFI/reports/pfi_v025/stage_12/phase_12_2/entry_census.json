@@ -1,0 +1,28 @@
+{
+  "contains_private_values": false,
+  "entries": {
+    "applications": {
+      "build_version": "20260712.1",
+      "kind": "app_bundle",
+      "same_bundle_as_canonical": true,
+      "short_version": "0.2.5"
+    },
+    "desktop": {
+      "kind": "symlink",
+      "short_version": "0.2.5",
+      "targets_canonical": true
+    },
+    "downloads": {
+      "build_version": "20260629.1",
+      "kind": "app_bundle",
+      "same_bundle_as_canonical": false,
+      "short_version": "0.2.3"
+    }
+  },
+  "finder_used": false,
+  "launchservices_used": false,
+  "noncanonical_copies_modified": false,
+  "noncanonical_copy_mismatch_count": 1,
+  "schema": "PFIV025Stage12Phase122CLIEntryCensusV1",
+  "status": "pass"
+}

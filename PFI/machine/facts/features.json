@@ -1,32 +1,80 @@
 [
   {
     "id": "FEAT-PFI-001",
-    "name": "PFI V0.2 产品根",
+    "name": "本机私有数据源登记与来源清单",
     "status": "active",
     "evidence": "extracted"
   },
   {
-    "id": "FEAT-PFI-CF-L2-001",
-    "name": "Cloudflare 安全 L2 脱敏财务产品壳",
+    "id": "FEAT-PFI-002",
+    "name": "交易导入、预览、确认与幂等账本",
     "status": "active",
     "evidence": "extracted"
   },
   {
-    "id": "FEAT-PFI-V024-OVERALL",
-    "name": "v0.2.4 overall project",
-    "status": "completed",
-    "evidence": "extracted"
-  },
-  {
-    "id": "FEAT-PFI-V024-REREVIEW",
-    "name": "v0.2.4 overall re",
-    "status": "completed",
-    "evidence": "extracted"
-  },
-  {
-    "id": "FEAT-PFI-V024-FINAL-DELIVERY",
-    "name": "v0.2.4 final delivery",
+    "id": "FEAT-PFI-003",
+    "name": "账户、负债与现金状态",
     "status": "active",
-    "evidence": "declared"
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-004",
+    "name": "持仓、价格、汇率与估值状态",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-005",
+    "name": "消费、现金流与投资活动口径",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-006",
+    "name": "来源、公式、参数与互联下钻",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-007",
+    "name": "同源报告、导出与人工决策记录",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-008",
+    "name": "持久任务、故障恢复与可观测记录",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-009",
+    "name": "数据库备份、恢复与安全迁移",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-010",
+    "name": "私有运行面与公共静态边界",
+    "status": "active",
+    "evidence": "extracted"
+  },
+  {
+    "id": "FEAT-PFI-V025-S12-WR-INITIAL",
+    "name": "Stage 12 独立整阶段初审与整改门",
+    "status": "initial_review_complete",
+    "evidence": "PFI/reports/pfi_v025/stage_12/whole_stage_review/evidence.json"
+  },
+  {
+    "id": "FEAT-PFI-V025-S12-WR-REMEDIATION",
+    "name": "Stage 12 初审三项问题整改",
+    "status": "remediation_rereview_verified",
+    "evidence": "PFI/reports/pfi_v025/stage_12/whole_stage_review/remediation/evidence.json"
+  },
+  {
+    "id": "FEAT-PFI-V025-S12-FINAL-ACCEPTANCE",
+    "name": "Stage 12 精确最终验收与发布冻结",
+    "status": "accepted_and_frozen_waiting_delivery",
+    "evidence": "PFI/reports/pfi_v025/stage_12/final_acceptance/evidence.json"
   }
 ]

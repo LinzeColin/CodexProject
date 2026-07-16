@@ -1,0 +1,7095 @@
+{
+  "schema": "PFIV025Stage9WholeReviewPhase93AccessibilityTreeV1",
+  "source": "Accessibility.getFullAXTree",
+  "status": "pass",
+  "node_count": 1180,
+  "unnamed_interactive_node_count": 0,
+  "component_labels_present": {
+    "消费总流出": true,
+    "生活消费": true,
+    "投资资金流出": true,
+    "投资域内配置": true
+  },
+  "nodes": [
+    {
+      "role": "RootWebArea",
+      "name": "报告与洞察 · 月报 · PFI",
+      "description": "",
+      "backend_dom_node_id": 3792
+    },
+    {
+      "role": "link",
+      "name": "跳到内容",
+      "description": "",
+      "backend_dom_node_id": 3812
+    },
+    {
+      "role": "banner",
+      "name": "PFI 顶部栏",
+      "description": "",
+      "backend_dom_node_id": 3814
+    },
+    {
+      "role": "navigation",
+      "name": "一级工作区",
+      "description": "",
+      "backend_dom_node_id": 3917
+    },
+    {
+      "role": "main",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 3928
+    },
+    {
+      "role": "status",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6127
+    },
+    {
+      "role": "StaticText",
+      "name": "跳到内容",
+      "description": "",
+      "backend_dom_node_id": 3776
+    },
+    {
+      "role": "generic",
+      "name": "PFI",
+      "description": "",
+      "backend_dom_node_id": 3815
+    },
+    {
+      "role": "generic",
+      "name": "入口版本",
+      "description": "",
+      "backend_dom_node_id": 3818
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3845
+    },
+    {
+      "role": "form",
+      "name": "全局上下文",
+      "description": "",
+      "backend_dom_node_id": 3854
+    },
+    {
+      "role": "generic",
+      "name": "工作台操作",
+      "description": "",
+      "backend_dom_node_id": 3903
+    },
+    {
+      "role": "button",
+      "name": "⌂ 首页总览 净资产 · 现金流 · 数据健康",
+      "description": "",
+      "backend_dom_node_id": 3918
+    },
+    {
+      "role": "button",
+      "name": "◫ 账户与资产 账户地图 · 对账 · 跨币种",
+      "description": "",
+      "backend_dom_node_id": 3919
+    },
+    {
+      "role": "button",
+      "name": "≋ 账本流水 标准流水 · A/B/C/D 复核",
+      "description": "",
+      "backend_dom_node_id": 3920
+    },
+    {
+      "role": "button",
+      "name": "↗ 投资管理 持仓 · 归因 · 策略回测",
+      "description": "",
+      "backend_dom_node_id": 3921
+    },
+    {
+      "role": "button",
+      "name": "◌ 消费管理 预算 · 分类 · 异常 · 订阅",
+      "description": "",
+      "backend_dom_node_id": 3922
+    },
+    {
+      "role": "button",
+      "name": "⇄ 数据源与上传 上传 · 解析 · 对账 · 队列",
+      "description": "",
+      "backend_dom_node_id": 3923
+    },
+    {
+      "role": "button",
+      "name": "✦ 建议与复盘 证据 · 决策 · 生命周期",
+      "description": "",
+      "backend_dom_node_id": 3924
+    },
+    {
+      "role": "button",
+      "name": "▣ 报告与洞察 月报 · 导出 · 本机快照",
+      "description": "",
+      "backend_dom_node_id": 3925
+    },
+    {
+      "role": "button",
+      "name": "⌁ 市场与研究 市场 · 研究 · 策略实验室",
+      "description": "",
+      "backend_dom_node_id": 3926
+    },
+    {
+      "role": "button",
+      "name": "⚙ 设置 反馈 · 参数 · 数据管理",
+      "description": "",
+      "backend_dom_node_id": 3927
+    },
+    {
+      "role": "region",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 3936
+    },
+    {
+      "role": "region",
+      "name": "工作区摘要",
+      "description": "",
+      "backend_dom_node_id": 3945
+    },
+    {
+      "role": "region",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 3970
+    },
+    {
+      "role": "region",
+      "name": "页面导航",
+      "description": "",
+      "backend_dom_node_id": 4003
+    },
+    {
+      "role": "region",
+      "name": "二级页面差异化内容",
+      "description": "",
+      "backend_dom_node_id": 4672
+    },
+    {
+      "role": "region",
+      "name": "常用任务",
+      "description": "",
+      "backend_dom_node_id": 4013
+    },
+    {
+      "role": "region",
+      "name": "反方证据、失效条件与复核结果",
+      "description": "",
+      "backend_dom_node_id": 6548
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4215
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4395
+    },
+    {
+      "role": "StaticText",
+      "name": "已打开报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 6131
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "跳到内容",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "PFI",
+      "description": "",
+      "backend_dom_node_id": 3613
+    },
+    {
+      "role": "StaticText",
+      "name": "PFI v0.2.5",
+      "description": "",
+      "backend_dom_node_id": 5144
+    },
+    {
+      "role": "StaticText",
+      "name": "pfi-v025-s1p1-20260712.1",
+      "description": "",
+      "backend_dom_node_id": 5145
+    },
+    {
+      "role": "StaticText",
+      "name": "bundle 4801728042bc3ad1",
+      "description": "",
+      "backend_dom_node_id": 5146
+    },
+    {
+      "role": "StaticText",
+      "name": "PFI-V025-RELEASE-IDENTITY",
+      "description": "",
+      "backend_dom_node_id": 5147
+    },
+    {
+      "role": "group",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3823
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3846
+    },
+    {
+      "role": "combobox",
+      "name": "全局搜索",
+      "description": "",
+      "backend_dom_node_id": 3847
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3855
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3876
+    },
+    {
+      "role": "LabelText",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3880
+    },
+    {
+      "role": "StaticText",
+      "name": "AUD/CNY=4.69（2026/06/28 06:00）",
+      "description": "",
+      "backend_dom_node_id": 5148
+    },
+    {
+      "role": "button",
+      "name": "打开命令面板",
+      "description": "命令面板",
+      "backend_dom_node_id": 3905
+    },
+    {
+      "role": "button",
+      "name": "打开待办清单",
+      "description": "待办清单",
+      "backend_dom_node_id": 3908
+    },
+    {
+      "role": "button",
+      "name": "打开页面说明",
+      "description": "页面说明",
+      "backend_dom_node_id": 3911
+    },
+    {
+      "role": "button",
+      "name": "打开系统设置",
+      "description": "设置",
+      "backend_dom_node_id": 3914
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "⌂",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌂",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "首页总览",
+      "description": "",
+      "backend_dom_node_id": 3637
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3638
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "◫",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◫",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "账户与资产",
+      "description": "",
+      "backend_dom_node_id": 3640
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3641
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "≋",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "≋",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "账本流水",
+      "description": "",
+      "backend_dom_node_id": 3643
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3644
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "↗",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "↗",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "投资管理",
+      "description": "",
+      "backend_dom_node_id": 3646
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3647
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "◌",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◌",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "消费管理",
+      "description": "",
+      "backend_dom_node_id": 3649
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3650
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "⇄",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⇄",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "数据源与上传",
+      "description": "",
+      "backend_dom_node_id": 3652
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3653
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "✦",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "✦",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "建议与复盘",
+      "description": "",
+      "backend_dom_node_id": 3655
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3656
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "▣",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "▣",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "报告与洞察",
+      "description": "",
+      "backend_dom_node_id": 3658
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3659
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "⌁",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌁",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "市场与研究",
+      "description": "",
+      "backend_dom_node_id": 3661
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3662
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "⚙",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⚙",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "设置",
+      "description": "",
+      "backend_dom_node_id": 3664
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3665
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3938
+    },
+    {
+      "role": "heading",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 3939
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3940
+    },
+    {
+      "role": "status",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3941
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3946
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3950
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3954
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3958
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3973
+    },
+    {
+      "role": "heading",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 3974
+    },
+    {
+      "role": "StaticText",
+      "name": "等待真实数据",
+      "description": "",
+      "backend_dom_node_id": 6582
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6156
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6160
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6164
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6168
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4006
+    },
+    {
+      "role": "heading",
+      "name": "页面导航",
+      "description": "",
+      "backend_dom_node_id": 4007
+    },
+    {
+      "role": "generic",
+      "name": "页面二级入口",
+      "description": "",
+      "backend_dom_node_id": 4008
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6230
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4016
+    },
+    {
+      "role": "heading",
+      "name": "常用任务",
+      "description": "",
+      "backend_dom_node_id": 4017
+    },
+    {
+      "role": "StaticText",
+      "name": "Phase 9.3：人工建议复核、反方证据、失效条件与四格式同源导出",
+      "description": "",
+      "backend_dom_node_id": 6637
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4019
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6503
+    },
+    {
+      "role": "heading",
+      "name": "反方证据、失效条件与复核结果",
+      "description": "",
+      "backend_dom_node_id": 6504
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6505
+    },
+    {
+      "role": "StaticText",
+      "name": "Phase candidate · Stage 9 整阶段审查尚未开始",
+      "description": "",
+      "backend_dom_node_id": 6740
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6522
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6539
+    },
+    {
+      "role": "heading",
+      "name": "HTML / PDF / CSV / Markdown 同源导出",
+      "description": "",
+      "backend_dom_node_id": 6545
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6546
+    },
+    {
+      "role": "button",
+      "name": "下载 HTML",
+      "description": "",
+      "backend_dom_node_id": 6541
+    },
+    {
+      "role": "button",
+      "name": "下载 PDF",
+      "description": "",
+      "backend_dom_node_id": 6542
+    },
+    {
+      "role": "button",
+      "name": "下载 CSV",
+      "description": "",
+      "backend_dom_node_id": 6543
+    },
+    {
+      "role": "button",
+      "name": "下载 MARKDOWN",
+      "description": "",
+      "backend_dom_node_id": 6544
+    },
+    {
+      "role": "article",
+      "name": "今日待处理",
+      "description": "",
+      "backend_dom_node_id": 4216
+    },
+    {
+      "role": "complementary",
+      "name": "当前待处理",
+      "description": "",
+      "backend_dom_node_id": 4270
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已打开报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI v0.2.5",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "pfi-v025-s1p1-20260712.1",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "bundle 4801728042bc3ad1",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI-V025-RELEASE-IDENTITY",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "DisclosureTriangle",
+      "name": "发布身份详情",
+      "description": "",
+      "backend_dom_node_id": 3828
+    },
+    {
+      "role": "StaticText",
+      "name": "全局搜索",
+      "description": "",
+      "backend_dom_node_id": 3621
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3851
+    },
+    {
+      "role": "StaticText",
+      "name": "数据源",
+      "description": "",
+      "backend_dom_node_id": 3631
+    },
+    {
+      "role": "combobox",
+      "name": "市场",
+      "description": "",
+      "backend_dom_node_id": 3857
+    },
+    {
+      "role": "StaticText",
+      "name": "账户",
+      "description": "",
+      "backend_dom_node_id": 3633
+    },
+    {
+      "role": "textbox",
+      "name": "账户",
+      "description": "",
+      "backend_dom_node_id": 3878
+    },
+    {
+      "role": "StaticText",
+      "name": "视图",
+      "description": "",
+      "backend_dom_node_id": 3635
+    },
+    {
+      "role": "combobox",
+      "name": "组合",
+      "description": "",
+      "backend_dom_node_id": 3882
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "AUD/CNY=4.69（2026/06/28 06:00）",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "搜索",
+      "description": "",
+      "backend_dom_node_id": 3624
+    },
+    {
+      "role": "StaticText",
+      "name": "待办",
+      "description": "",
+      "backend_dom_node_id": 3626
+    },
+    {
+      "role": "StaticText",
+      "name": "说明",
+      "description": "",
+      "backend_dom_node_id": 3628
+    },
+    {
+      "role": "StaticText",
+      "name": "设置",
+      "description": "",
+      "backend_dom_node_id": 3630
+    },
+    {
+      "role": "StaticText",
+      "name": "⌂",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌂",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "首页总览",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产 · 现金流 · 数据健康",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产 · 现金流 · 数据健康",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产 · 现金流 · 数据",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "…",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "◫",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◫",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户与资产",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "账户地图 · 对账 · 跨币种",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户地图 · 对账 · 跨币种",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "≋",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "≋",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账本流水",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "标准流水 · A/B/C/D 复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标准流水 · A/B/C/D 复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "↗",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "↗",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资管理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "持仓 · 归因 · 策略回测",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "持仓 · 归因 · 策略回测",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "◌",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◌",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "消费管理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "⇄",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⇄",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据源与上传",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "上传 · 解析 · 对账 · 队列",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "上传 · 解析 · 对账 · 队列",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "✦",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "✦",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "建议与复盘",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "证据 · 决策 · 生命周期",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "证据 · 决策 · 生命周期",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "▣",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "▣",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告与洞察",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "月报 · 导出 · 本机快照",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报 · 导出 · 本机快照",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "⌁",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌁",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "市场与研究",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "市场 · 研究 · 策略实验室",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "市场 · 研究 · 策略实验室",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "⚙",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⚙",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "设置",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "反馈 · 参数 · 数据管理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "反馈 · 参数 · 数据管理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6563
+    },
+    {
+      "role": "StaticText",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 6564
+    },
+    {
+      "role": "StaticText",
+      "name": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "description": "",
+      "backend_dom_node_id": 6565
+    },
+    {
+      "role": "StaticText",
+      "name": "财务数据暂不可用；请先检查本机数据源和读取状态。",
+      "description": "",
+      "backend_dom_node_id": 6828
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3944
+    },
+    {
+      "role": "StaticText",
+      "name": "消费总流出",
+      "description": "",
+      "backend_dom_node_id": 6568
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3948
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3949
+    },
+    {
+      "role": "StaticText",
+      "name": "生活消费",
+      "description": "",
+      "backend_dom_node_id": 6571
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3952
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3953
+    },
+    {
+      "role": "StaticText",
+      "name": "投资资金流出",
+      "description": "",
+      "backend_dom_node_id": 6574
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3956
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3957
+    },
+    {
+      "role": "StaticText",
+      "name": "投资域内配置",
+      "description": "",
+      "backend_dom_node_id": 6577
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3960
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3961
+    },
+    {
+      "role": "StaticText",
+      "name": "报告资料库",
+      "description": "",
+      "backend_dom_node_id": 6580
+    },
+    {
+      "role": "StaticText",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 6581
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待真实数据",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "time",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6153
+    },
+    {
+      "role": "heading",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6154
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6155
+    },
+    {
+      "role": "time",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6157
+    },
+    {
+      "role": "heading",
+      "name": "季报",
+      "description": "",
+      "backend_dom_node_id": 6158
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6159
+    },
+    {
+      "role": "time",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6161
+    },
+    {
+      "role": "heading",
+      "name": "年报",
+      "description": "",
+      "backend_dom_node_id": 6162
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6163
+    },
+    {
+      "role": "time",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6165
+    },
+    {
+      "role": "heading",
+      "name": "自定义",
+      "description": "",
+      "backend_dom_node_id": 6166
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6167
+    },
+    {
+      "role": "StaticText",
+      "name": "二级入口",
+      "description": "",
+      "backend_dom_node_id": 3716
+    },
+    {
+      "role": "StaticText",
+      "name": "页面导航",
+      "description": "",
+      "backend_dom_node_id": 3717
+    },
+    {
+      "role": "button",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6170
+    },
+    {
+      "role": "button",
+      "name": "季报",
+      "description": "",
+      "backend_dom_node_id": 6171
+    },
+    {
+      "role": "button",
+      "name": "年报",
+      "description": "",
+      "backend_dom_node_id": 6172
+    },
+    {
+      "role": "button",
+      "name": "自定义报告",
+      "description": "",
+      "backend_dom_node_id": 6173
+    },
+    {
+      "role": "button",
+      "name": "报告导出",
+      "description": "",
+      "backend_dom_node_id": 6174
+    },
+    {
+      "role": "button",
+      "name": "指标下钻",
+      "description": "",
+      "backend_dom_node_id": 6175
+    },
+    {
+      "role": "navigation",
+      "name": "二级页面路径",
+      "description": "",
+      "backend_dom_node_id": 6209
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6179
+    },
+    {
+      "role": "heading",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 6180
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6181
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6182
+    },
+    {
+      "role": "button",
+      "name": "生成月报草稿",
+      "description": "",
+      "backend_dom_node_id": 6184
+    },
+    {
+      "role": "DescriptionList",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6211
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6199
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6202
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6205
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6208
+    },
+    {
+      "role": "region",
+      "name": "页面交互状态",
+      "description": "",
+      "backend_dom_node_id": 6229
+    },
+    {
+      "role": "StaticText",
+      "name": "快捷操作",
+      "description": "",
+      "backend_dom_node_id": 3722
+    },
+    {
+      "role": "StaticText",
+      "name": "常用任务",
+      "description": "",
+      "backend_dom_node_id": 3723
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "Phase 9.3：人工建议复核、反方证据、失效条件与四格式同源导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "article",
+      "name": "活动组件 · 消费总流出，本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6236
+    },
+    {
+      "role": "article",
+      "name": "活动组件 · 生活消费，本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6242
+    },
+    {
+      "role": "article",
+      "name": "活动组件 · 投资资金流出，本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6248
+    },
+    {
+      "role": "article",
+      "name": "活动组件 · 投资域内配置，本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6254
+    },
+    {
+      "role": "article",
+      "name": "净资产报告，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6260
+    },
+    {
+      "role": "article",
+      "name": "现金报告，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6266
+    },
+    {
+      "role": "article",
+      "name": "投资报告，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6272
+    },
+    {
+      "role": "article",
+      "name": "消费报告，部分可算",
+      "description": "",
+      "backend_dom_node_id": 6278
+    },
+    {
+      "role": "article",
+      "name": "现金流报告，部分可算",
+      "description": "",
+      "backend_dom_node_id": 6284
+    },
+    {
+      "role": "article",
+      "name": "双消费与投资活动组件 · FORM-PFI-015，已验证",
+      "description": "",
+      "backend_dom_node_id": 6290
+    },
+    {
+      "role": "article",
+      "name": "净资产、现金与投资重配置不变量 · FORM-PFI-016，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6296
+    },
+    {
+      "role": "article",
+      "name": "投资收益、成本与拖累 · FORM-PFI-017，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6302
+    },
+    {
+      "role": "article",
+      "name": "日期感知投资 XIRR · FORM-PFI-018，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6308
+    },
+    {
+      "role": "article",
+      "name": "七窗口外部现金流 · FORM-PFI-019，已验证",
+      "description": "",
+      "backend_dom_node_id": 6314
+    },
+    {
+      "role": "article",
+      "name": "分类与标签治理规则 · FORM-PFI-020，已验证",
+      "description": "",
+      "backend_dom_node_id": 6320
+    },
+    {
+      "role": "article",
+      "name": "现金流窗口敏感性，待复核",
+      "description": "",
+      "backend_dom_node_id": 6326
+    },
+    {
+      "role": "article",
+      "name": "分类阈值敏感性，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6332
+    },
+    {
+      "role": "article",
+      "name": "XIRR 参数敏感性，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6338
+    },
+    {
+      "role": "article",
+      "name": "金额精度与核心财务边界，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6344
+    },
+    {
+      "role": "article",
+      "name": "模型验证卡 · MOD-PFI-010，已验证",
+      "description": "",
+      "backend_dom_node_id": 6350
+    },
+    {
+      "role": "article",
+      "name": "来源复核 · 支付宝交易流水（历史 Git object 只读来源），待复核",
+      "description": "",
+      "backend_dom_node_id": 6356
+    },
+    {
+      "role": "article",
+      "name": "来源复核 · 账户余额与期初/期末快照，待复核",
+      "description": "",
+      "backend_dom_node_id": 6362
+    },
+    {
+      "role": "article",
+      "name": "来源复核 · 负债余额快照，待复核",
+      "description": "",
+      "backend_dom_node_id": 6368
+    },
+    {
+      "role": "article",
+      "name": "来源复核 · 真实持仓快照，待复核",
+      "description": "",
+      "backend_dom_node_id": 6374
+    },
+    {
+      "role": "article",
+      "name": "来源复核 · 持仓估值价格快照，待复核",
+      "description": "",
+      "backend_dom_node_id": 6380
+    },
+    {
+      "role": "article",
+      "name": "来源复核 · 生产 FX snapshot，待复核",
+      "description": "",
+      "backend_dom_node_id": 6386
+    },
+    {
+      "role": "article",
+      "name": "来源复核 · 来源，已阻断",
+      "description": "",
+      "backend_dom_node_id": 6392
+    },
+    {
+      "role": "article",
+      "name": "人工复核 · 人工复核待复核交易分类，已接受复核",
+      "description": "",
+      "backend_dom_node_id": 6398
+    },
+    {
+      "role": "article",
+      "name": "人工复核 · 补齐并复核关键财务来源，等待人工复核",
+      "description": "",
+      "backend_dom_node_id": 6404
+    },
+    {
+      "role": "article",
+      "name": "同源导出 · HTML，已校验",
+      "description": "",
+      "backend_dom_node_id": 6410
+    },
+    {
+      "role": "article",
+      "name": "同源导出 · PDF，已校验",
+      "description": "",
+      "backend_dom_node_id": 6416
+    },
+    {
+      "role": "article",
+      "name": "同源导出 · CSV，已校验",
+      "description": "",
+      "backend_dom_node_id": 6422
+    },
+    {
+      "role": "article",
+      "name": "同源导出 · MARKDOWN，已校验",
+      "description": "",
+      "backend_dom_node_id": 6428
+    },
+    {
+      "role": "StaticText",
+      "name": "人工判断与导出",
+      "description": "",
+      "backend_dom_node_id": 6737
+    },
+    {
+      "role": "StaticText",
+      "name": "反方证据、失效条件与复核结果",
+      "description": "",
+      "backend_dom_node_id": 6738
+    },
+    {
+      "role": "StaticText",
+      "name": "接受只记录人工复核结果，不触发交易；报告仍保持 3 blocked / 2 partial。",
+      "description": "",
+      "backend_dom_node_id": 6739
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "Phase candidate · Stage 9 整阶段审查尚未开始",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "heading",
+      "name": "人工复核待复核交易分类",
+      "description": "",
+      "backend_dom_node_id": 6514
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6515
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6516
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6517
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6518
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6519
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6520
+    },
+    {
+      "role": "button",
+      "name": "标记失效",
+      "description": "",
+      "backend_dom_node_id": 6513
+    },
+    {
+      "role": "heading",
+      "name": "补齐并复核关键财务来源",
+      "description": "",
+      "backend_dom_node_id": 6531
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6532
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6533
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6534
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6535
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6536
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6537
+    },
+    {
+      "role": "button",
+      "name": "接受",
+      "description": "",
+      "backend_dom_node_id": 6527
+    },
+    {
+      "role": "button",
+      "name": "拒绝",
+      "description": "",
+      "backend_dom_node_id": 6528
+    },
+    {
+      "role": "button",
+      "name": "延后",
+      "description": "",
+      "backend_dom_node_id": 6529
+    },
+    {
+      "role": "button",
+      "name": "标记失效",
+      "description": "",
+      "backend_dom_node_id": 6530
+    },
+    {
+      "role": "StaticText",
+      "name": "HTML / PDF / CSV / Markdown 同源导出",
+      "description": "",
+      "backend_dom_node_id": 6764
+    },
+    {
+      "role": "StaticText",
+      "name": "同一 snapshot：sha256:b12e2796b89d…b05a9760；下载前逐文件核对 manifest。",
+      "description": "",
+      "backend_dom_node_id": 6765
+    },
+    {
+      "role": "StaticText",
+      "name": "下载 HTML",
+      "description": "",
+      "backend_dom_node_id": 6766
+    },
+    {
+      "role": "StaticText",
+      "name": "下载 PDF",
+      "description": "",
+      "backend_dom_node_id": 6767
+    },
+    {
+      "role": "StaticText",
+      "name": "下载 CSV",
+      "description": "",
+      "backend_dom_node_id": 6768
+    },
+    {
+      "role": "StaticText",
+      "name": "下载 MARKDOWN",
+      "description": "",
+      "backend_dom_node_id": 6769
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4219
+    },
+    {
+      "role": "heading",
+      "name": "今日待处理",
+      "description": "",
+      "backend_dom_node_id": 4220
+    },
+    {
+      "role": "button",
+      "name": "刷新本机状态",
+      "description": "",
+      "backend_dom_node_id": 4221
+    },
+    {
+      "role": "generic",
+      "name": "报告与洞察 · 统一趋势，暂无真实趋势数据，不绘制曲线",
+      "description": "",
+      "backend_dom_node_id": 4222
+    },
+    {
+      "role": "generic",
+      "name": "表格控制",
+      "description": "",
+      "backend_dom_node_id": 4231
+    },
+    {
+      "role": "table",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4240
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4273
+    },
+    {
+      "role": "heading",
+      "name": "当前待处理",
+      "description": "",
+      "backend_dom_node_id": 4274
+    },
+    {
+      "role": "button",
+      "name": "关闭待办清单",
+      "description": "",
+      "backend_dom_node_id": 4275
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4276
+    },
+    {
+      "role": "region",
+      "name": "后台任务时间线",
+      "description": "",
+      "backend_dom_node_id": 4636
+    },
+    {
+      "role": "StaticText",
+      "name": "发布身份详情",
+      "description": "",
+      "backend_dom_node_id": 3619
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "全局搜索",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "MenuListPopup",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3860
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3879
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "视图",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "MenuListPopup",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 3885
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "搜索",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待办",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "设置",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌂",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产 · 现金流 · 数据健康",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产 · 现金流 · 数据",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "…",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◫",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户地图 · 对账 · 跨币种",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "≋",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标准流水 · A/B/C/D 复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "↗",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "持仓 · 归因 · 策略回测",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "◌",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "预算 · 分类 · 异常 · 订阅",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⇄",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "上传 · 解析 · 对账 · 队列",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "✦",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "证据 · 决策 · 生命周期",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "▣",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报 · 导出 · 本机快照",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⌁",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "市场 · 研究 · 策略实验室",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "⚙",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "反馈 · 参数 · 数据管理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "财务数据暂不可用；请先检查本机数据源和读取状态。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "等待财务数据状态",
+      "description": "",
+      "backend_dom_node_id": 6829
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "消费总流出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6569
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-015 · gross activity 口径，不等于净资产损失。",
+      "description": "",
+      "backend_dom_node_id": 6570
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "生活消费",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6572
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-015 · 独立活动组件；与其他组件分开展示和复核。",
+      "description": "",
+      "backend_dom_node_id": 6573
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资资金流出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6575
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-015 · 独立活动组件；与其他组件分开展示和复核。",
+      "description": "",
+      "backend_dom_node_id": 6576
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资域内配置",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": 6578
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-015 · 独立活动组件；与其他组件分开展示和复核。",
+      "description": "",
+      "backend_dom_node_id": 6579
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告资料库",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": 6585
+    },
+    {
+      "role": "StaticText",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6583
+    },
+    {
+      "role": "StaticText",
+      "name": "数据门禁通过后生成草稿",
+      "description": "",
+      "backend_dom_node_id": 6584
+    },
+    {
+      "role": "StaticText",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": 6588
+    },
+    {
+      "role": "StaticText",
+      "name": "季报",
+      "description": "",
+      "backend_dom_node_id": 6586
+    },
+    {
+      "role": "StaticText",
+      "name": "不可比范围保持显式",
+      "description": "",
+      "backend_dom_node_id": 6587
+    },
+    {
+      "role": "StaticText",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": 6591
+    },
+    {
+      "role": "StaticText",
+      "name": "年报",
+      "description": "",
+      "backend_dom_node_id": 6589
+    },
+    {
+      "role": "StaticText",
+      "name": "覆盖和关闭状态通过后生成",
+      "description": "",
+      "backend_dom_node_id": 6590
+    },
+    {
+      "role": "StaticText",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": 6594
+    },
+    {
+      "role": "StaticText",
+      "name": "自定义",
+      "description": "",
+      "backend_dom_node_id": 6592
+    },
+    {
+      "role": "StaticText",
+      "name": "按受控数据域组合",
+      "description": "",
+      "backend_dom_node_id": 6593
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "二级入口",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "页面导航",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6595
+    },
+    {
+      "role": "StaticText",
+      "name": "季报",
+      "description": "",
+      "backend_dom_node_id": 6596
+    },
+    {
+      "role": "StaticText",
+      "name": "年报",
+      "description": "",
+      "backend_dom_node_id": 6597
+    },
+    {
+      "role": "StaticText",
+      "name": "自定义报告",
+      "description": "",
+      "backend_dom_node_id": 6598
+    },
+    {
+      "role": "StaticText",
+      "name": "报告导出",
+      "description": "",
+      "backend_dom_node_id": 6599
+    },
+    {
+      "role": "StaticText",
+      "name": "指标下钻",
+      "description": "",
+      "backend_dom_node_id": 6600
+    },
+    {
+      "role": "StaticText",
+      "name": "报告与洞察",
+      "description": "",
+      "backend_dom_node_id": 6601
+    },
+    {
+      "role": "StaticText",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6603
+    },
+    {
+      "role": "StaticText",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6604
+    },
+    {
+      "role": "StaticText",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": 6605
+    },
+    {
+      "role": "StaticText",
+      "name": "在月度数据门禁通过后生成可追溯草稿。",
+      "description": "",
+      "backend_dom_node_id": 6606
+    },
+    {
+      "role": "StaticText",
+      "name": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "description": "",
+      "backend_dom_node_id": 6607
+    },
+    {
+      "role": "StaticText",
+      "name": "生成月报草稿",
+      "description": "",
+      "backend_dom_node_id": 6608
+    },
+    {
+      "role": "term",
+      "name": "主对象",
+      "description": "",
+      "backend_dom_node_id": 6185
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6186
+    },
+    {
+      "role": "term",
+      "name": "数据来源",
+      "description": "",
+      "backend_dom_node_id": 6188
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6189
+    },
+    {
+      "role": "term",
+      "name": "空状态",
+      "description": "",
+      "backend_dom_node_id": 6191
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6192
+    },
+    {
+      "role": "term",
+      "name": "错误状态",
+      "description": "",
+      "backend_dom_node_id": 6194
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6195
+    },
+    {
+      "role": "heading",
+      "name": "报告期间",
+      "description": "",
+      "backend_dom_node_id": 6197
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6198
+    },
+    {
+      "role": "heading",
+      "name": "月度发现",
+      "description": "",
+      "backend_dom_node_id": 6200
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6201
+    },
+    {
+      "role": "heading",
+      "name": "数据门禁",
+      "description": "",
+      "backend_dom_node_id": 6203
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6204
+    },
+    {
+      "role": "heading",
+      "name": "月报动作",
+      "description": "",
+      "backend_dom_node_id": 6206
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6207
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6216
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6220
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6224
+    },
+    {
+      "role": "article",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6228
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "快捷操作",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "常用任务",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6231
+    },
+    {
+      "role": "button",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6232
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6233
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6237
+    },
+    {
+      "role": "button",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6238
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6239
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6243
+    },
+    {
+      "role": "button",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6244
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6245
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6249
+    },
+    {
+      "role": "button",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6250
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6251
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6255
+    },
+    {
+      "role": "button",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6256
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6257
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6261
+    },
+    {
+      "role": "button",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6262
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6263
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6267
+    },
+    {
+      "role": "button",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6268
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6269
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6273
+    },
+    {
+      "role": "button",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6274
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6275
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6279
+    },
+    {
+      "role": "button",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6280
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6281
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6285
+    },
+    {
+      "role": "button",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6286
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6287
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6291
+    },
+    {
+      "role": "button",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6292
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6293
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6297
+    },
+    {
+      "role": "button",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6298
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6299
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6303
+    },
+    {
+      "role": "button",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6304
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6305
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6309
+    },
+    {
+      "role": "button",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6310
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6311
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6315
+    },
+    {
+      "role": "button",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6316
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6317
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6321
+    },
+    {
+      "role": "button",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6322
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6323
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6327
+    },
+    {
+      "role": "button",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6328
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6329
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6333
+    },
+    {
+      "role": "button",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6334
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6335
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6339
+    },
+    {
+      "role": "button",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6340
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6341
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6345
+    },
+    {
+      "role": "button",
+      "name": "查看模型",
+      "description": "",
+      "backend_dom_node_id": 6346
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6347
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6351
+    },
+    {
+      "role": "button",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6352
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6353
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6357
+    },
+    {
+      "role": "button",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6358
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6359
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6363
+    },
+    {
+      "role": "button",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6364
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6365
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6369
+    },
+    {
+      "role": "button",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6370
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6371
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6375
+    },
+    {
+      "role": "button",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6376
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6377
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6381
+    },
+    {
+      "role": "button",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6382
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6383
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6387
+    },
+    {
+      "role": "button",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6388
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6389
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6393
+    },
+    {
+      "role": "button",
+      "name": "人工复核",
+      "description": "",
+      "backend_dom_node_id": 6394
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6395
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6399
+    },
+    {
+      "role": "button",
+      "name": "人工复核",
+      "description": "",
+      "backend_dom_node_id": 6400
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6401
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6405
+    },
+    {
+      "role": "button",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6406
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6407
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6411
+    },
+    {
+      "role": "button",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6412
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6413
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6417
+    },
+    {
+      "role": "button",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6418
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6419
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6423
+    },
+    {
+      "role": "button",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6424
+    },
+    {
+      "role": "button",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6425
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "人工判断与导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "反方证据、失效条件与复核结果",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "接受只记录人工复核结果，不触发交易；报告仍保持 3 blocked / 2 partial。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "人工复核待复核交易分类",
+      "description": "",
+      "backend_dom_node_id": 6741
+    },
+    {
+      "role": "StaticText",
+      "name": "已接受复核 · 2 条历史事件",
+      "description": "",
+      "backend_dom_node_id": 6750
+    },
+    {
+      "role": "StaticText",
+      "name": "当前有 1,936 条记录仍在待复核队列；先人工核对分类与退款/转账边界，再解释消费结构。",
+      "description": "",
+      "backend_dom_node_id": 6742
+    },
+    {
+      "role": "StaticText",
+      "name": "反方证据",
+      "description": "",
+      "backend_dom_node_id": 6743
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6509
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6510
+    },
+    {
+      "role": "StaticText",
+      "name": "失效条件",
+      "description": "",
+      "backend_dom_node_id": 6746
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6511
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6512
+    },
+    {
+      "role": "StaticText",
+      "name": "标记失效",
+      "description": "",
+      "backend_dom_node_id": 6749
+    },
+    {
+      "role": "StaticText",
+      "name": "补齐并复核关键财务来源",
+      "description": "",
+      "backend_dom_node_id": 6751
+    },
+    {
+      "role": "StaticText",
+      "name": "等待人工复核 · 1 条历史事件",
+      "description": "",
+      "backend_dom_node_id": 6763
+    },
+    {
+      "role": "StaticText",
+      "name": "账户余额、负债、持仓、价格、FX 与 Economic Event lineage 未全部 ready；先补齐来源，再解释净资产、现金或投资结果。",
+      "description": "",
+      "backend_dom_node_id": 6752
+    },
+    {
+      "role": "StaticText",
+      "name": "反方证据",
+      "description": "",
+      "backend_dom_node_id": 6753
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6523
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6524
+    },
+    {
+      "role": "StaticText",
+      "name": "失效条件",
+      "description": "",
+      "backend_dom_node_id": 6756
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6525
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6526
+    },
+    {
+      "role": "StaticText",
+      "name": "接受",
+      "description": "",
+      "backend_dom_node_id": 6759
+    },
+    {
+      "role": "StaticText",
+      "name": "拒绝",
+      "description": "",
+      "backend_dom_node_id": 6760
+    },
+    {
+      "role": "StaticText",
+      "name": "延后",
+      "description": "",
+      "backend_dom_node_id": 6761
+    },
+    {
+      "role": "StaticText",
+      "name": "标记失效",
+      "description": "",
+      "backend_dom_node_id": 6762
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "HTML / PDF / CSV / Markdown 同源导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "同一 snapshot：sha256:b12e2796b89d…b05a9760；下载前逐文件核对 manifest。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下载 HTML",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下载 PDF",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下载 CSV",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下载 ",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "MARKDOWN",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "待办列表",
+      "description": "",
+      "backend_dom_node_id": 3740
+    },
+    {
+      "role": "StaticText",
+      "name": "今日待处理",
+      "description": "",
+      "backend_dom_node_id": 3741
+    },
+    {
+      "role": "StaticText",
+      "name": "刷新本机状态",
+      "description": "",
+      "backend_dom_node_id": 3742
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4225
+    },
+    {
+      "role": "heading",
+      "name": "状态趋势",
+      "description": "",
+      "backend_dom_node_id": 4226
+    },
+    {
+      "role": "StaticText",
+      "name": "CNY 基准",
+      "description": "",
+      "backend_dom_node_id": 6772
+    },
+    {
+      "role": "generic",
+      "name": "趋势图例",
+      "description": "",
+      "backend_dom_node_id": 4229
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4230
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6095
+    },
+    {
+      "role": "searchbox",
+      "name": "筛选表格",
+      "description": "",
+      "backend_dom_node_id": 4232
+    },
+    {
+      "role": "button",
+      "name": "排序",
+      "description": "",
+      "backend_dom_node_id": 4238
+    },
+    {
+      "role": "button",
+      "name": "导出",
+      "description": "",
+      "backend_dom_node_id": 4239
+    },
+    {
+      "role": "rowgroup",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4241
+    },
+    {
+      "role": "rowgroup",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4248
+    },
+    {
+      "role": "StaticText",
+      "name": "待办清单",
+      "description": "",
+      "backend_dom_node_id": 3764
+    },
+    {
+      "role": "StaticText",
+      "name": "当前待处理",
+      "description": "",
+      "backend_dom_node_id": 3765
+    },
+    {
+      "role": "StaticText",
+      "name": "×",
+      "description": "",
+      "backend_dom_node_id": 3766
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6487
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6490
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6493
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6496
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6499
+    },
+    {
+      "role": "listitem",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6502
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4631
+    },
+    {
+      "role": "StaticText",
+      "name": "离开当前页面后仍可查看",
+      "description": "",
+      "backend_dom_node_id": 5410
+    },
+    {
+      "role": "status",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4634
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4635
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "发布身份详情",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "option",
+      "name": "支付宝",
+      "description": "",
+      "backend_dom_node_id": 3864
+    },
+    {
+      "role": "option",
+      "name": "微信",
+      "description": "",
+      "backend_dom_node_id": 3867
+    },
+    {
+      "role": "option",
+      "name": "CBA",
+      "description": "",
+      "backend_dom_node_id": 3870
+    },
+    {
+      "role": "option",
+      "name": "Moomoo",
+      "description": "",
+      "backend_dom_node_id": 3873
+    },
+    {
+      "role": "StaticText",
+      "name": "主账户",
+      "description": "",
+      "backend_dom_node_id": 3634
+    },
+    {
+      "role": "option",
+      "name": "个人财务",
+      "description": "",
+      "backend_dom_node_id": 3889
+    },
+    {
+      "role": "option",
+      "name": "投资复盘",
+      "description": "",
+      "backend_dom_node_id": 3892
+    },
+    {
+      "role": "option",
+      "name": "消费复盘",
+      "description": "",
+      "backend_dom_node_id": 3895
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待财务数据状态",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-015 · gross activity 口径，不等于净资产损失。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-015 · 独立活动组件；与其他组件分开展示和复核。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-015 · 独立活动组件；与其他组件分开展示和复核。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "本机真实快照已验证",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-015 · 独立活动组件；与其他组件分开展示和复核。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据门禁通过后生成草稿",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "季报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "不可比范围保持显式",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "年报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "覆盖和关闭状态通过后生成",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "未生成",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "自定义",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "按受控数据域组合",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "季报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "年报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "自定义报告",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "指标下钻",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告与洞察",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告与洞察 · 月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "在月度数据门禁通过后生成可追溯草稿。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "生成月报草稿",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "主对象",
+      "description": "",
+      "backend_dom_node_id": 6609
+    },
+    {
+      "role": "StaticText",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": 6610
+    },
+    {
+      "role": "StaticText",
+      "name": "数据来源",
+      "description": "",
+      "backend_dom_node_id": 6611
+    },
+    {
+      "role": "StaticText",
+      "name": "月度报告草稿 / 本机 read-model",
+      "description": "",
+      "backend_dom_node_id": 6612
+    },
+    {
+      "role": "StaticText",
+      "name": "空状态",
+      "description": "",
+      "backend_dom_node_id": 6613
+    },
+    {
+      "role": "StaticText",
+      "name": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "description": "",
+      "backend_dom_node_id": 6614
+    },
+    {
+      "role": "StaticText",
+      "name": "错误状态",
+      "description": "",
+      "backend_dom_node_id": 6615
+    },
+    {
+      "role": "StaticText",
+      "name": "无法读取月度报告草稿；请检查本机来源、权限与证据状态。",
+      "description": "",
+      "backend_dom_node_id": 6616
+    },
+    {
+      "role": "StaticText",
+      "name": "报告期间",
+      "description": "",
+      "backend_dom_node_id": 6617
+    },
+    {
+      "role": "StaticText",
+      "name": "显示月份、数据覆盖天数和缺失来源。",
+      "description": "",
+      "backend_dom_node_id": 6618
+    },
+    {
+      "role": "StaticText",
+      "name": "月度发现",
+      "description": "",
+      "backend_dom_node_id": 6619
+    },
+    {
+      "role": "StaticText",
+      "name": "只呈现已通过门禁的数据项和待复核项。",
+      "description": "",
+      "backend_dom_node_id": 6620
+    },
+    {
+      "role": "StaticText",
+      "name": "数据门禁",
+      "description": "",
+      "backend_dom_node_id": 6621
+    },
+    {
+      "role": "StaticText",
+      "name": "关键数据未齐时阻断报告结论生成。",
+      "description": "",
+      "backend_dom_node_id": 6622
+    },
+    {
+      "role": "StaticText",
+      "name": "月报动作",
+      "description": "",
+      "backend_dom_node_id": 6623
+    },
+    {
+      "role": "StaticText",
+      "name": "生成草稿、补齐数据或导出证据。",
+      "description": "",
+      "backend_dom_node_id": 6624
+    },
+    {
+      "role": "heading",
+      "name": "加载中",
+      "description": "",
+      "backend_dom_node_id": 6213
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6214
+    },
+    {
+      "role": "button",
+      "name": "查看月报",
+      "description": "",
+      "backend_dom_node_id": 6215
+    },
+    {
+      "role": "heading",
+      "name": "已就绪",
+      "description": "",
+      "backend_dom_node_id": 6217
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6218
+    },
+    {
+      "role": "button",
+      "name": "生成月报草稿",
+      "description": "",
+      "backend_dom_node_id": 6219
+    },
+    {
+      "role": "heading",
+      "name": "读取失败",
+      "description": "",
+      "backend_dom_node_id": 6221
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6222
+    },
+    {
+      "role": "button",
+      "name": "重试月报",
+      "description": "",
+      "backend_dom_node_id": 6223
+    },
+    {
+      "role": "heading",
+      "name": "暂无数据",
+      "description": "",
+      "backend_dom_node_id": 6225
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6226
+    },
+    {
+      "role": "button",
+      "name": "打开月报处理",
+      "description": "",
+      "backend_dom_node_id": 6227
+    },
+    {
+      "role": "StaticText",
+      "name": "活动组件 · 消费总流出",
+      "description": "",
+      "backend_dom_node_id": 6638
+    },
+    {
+      "role": "StaticText",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6639
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6640
+    },
+    {
+      "role": "StaticText",
+      "name": "活动组件 · 生活消费",
+      "description": "",
+      "backend_dom_node_id": 6641
+    },
+    {
+      "role": "StaticText",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6642
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6643
+    },
+    {
+      "role": "StaticText",
+      "name": "活动组件 · 投资资金流出",
+      "description": "",
+      "backend_dom_node_id": 6644
+    },
+    {
+      "role": "StaticText",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6645
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6646
+    },
+    {
+      "role": "StaticText",
+      "name": "活动组件 · 投资域内配置",
+      "description": "",
+      "backend_dom_node_id": 6647
+    },
+    {
+      "role": "StaticText",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": 6648
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6649
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产报告",
+      "description": "",
+      "backend_dom_node_id": 6650
+    },
+    {
+      "role": "StaticText",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6651
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6652
+    },
+    {
+      "role": "StaticText",
+      "name": "现金报告",
+      "description": "",
+      "backend_dom_node_id": 6653
+    },
+    {
+      "role": "StaticText",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6654
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6655
+    },
+    {
+      "role": "StaticText",
+      "name": "投资报告",
+      "description": "",
+      "backend_dom_node_id": 6656
+    },
+    {
+      "role": "StaticText",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6657
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6658
+    },
+    {
+      "role": "StaticText",
+      "name": "消费报告",
+      "description": "",
+      "backend_dom_node_id": 6659
+    },
+    {
+      "role": "StaticText",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6660
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6661
+    },
+    {
+      "role": "StaticText",
+      "name": "现金流报告",
+      "description": "",
+      "backend_dom_node_id": 6662
+    },
+    {
+      "role": "StaticText",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": 6663
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6664
+    },
+    {
+      "role": "StaticText",
+      "name": "双消费与投资活动组件 · FORM-PFI-015",
+      "description": "",
+      "backend_dom_node_id": 6665
+    },
+    {
+      "role": "StaticText",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6666
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6667
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产、现金与投资重配置不变量 · FORM-PFI-016",
+      "description": "",
+      "backend_dom_node_id": 6668
+    },
+    {
+      "role": "StaticText",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6669
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6670
+    },
+    {
+      "role": "StaticText",
+      "name": "投资收益、成本与拖累 · FORM-PFI-017",
+      "description": "",
+      "backend_dom_node_id": 6671
+    },
+    {
+      "role": "StaticText",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6672
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6673
+    },
+    {
+      "role": "StaticText",
+      "name": "日期感知投资 XIRR · FORM-PFI-018",
+      "description": "",
+      "backend_dom_node_id": 6674
+    },
+    {
+      "role": "StaticText",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6675
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6676
+    },
+    {
+      "role": "StaticText",
+      "name": "七窗口外部现金流 · FORM-PFI-019",
+      "description": "",
+      "backend_dom_node_id": 6677
+    },
+    {
+      "role": "StaticText",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6678
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6679
+    },
+    {
+      "role": "StaticText",
+      "name": "分类与标签治理规则 · FORM-PFI-020",
+      "description": "",
+      "backend_dom_node_id": 6680
+    },
+    {
+      "role": "StaticText",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": 6681
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6682
+    },
+    {
+      "role": "StaticText",
+      "name": "现金流窗口敏感性",
+      "description": "",
+      "backend_dom_node_id": 6683
+    },
+    {
+      "role": "StaticText",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6684
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6685
+    },
+    {
+      "role": "StaticText",
+      "name": "分类阈值敏感性",
+      "description": "",
+      "backend_dom_node_id": 6686
+    },
+    {
+      "role": "StaticText",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6687
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6688
+    },
+    {
+      "role": "StaticText",
+      "name": "XIRR 参数敏感性",
+      "description": "",
+      "backend_dom_node_id": 6689
+    },
+    {
+      "role": "StaticText",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6690
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6691
+    },
+    {
+      "role": "StaticText",
+      "name": "金额精度与核心财务边界",
+      "description": "",
+      "backend_dom_node_id": 6692
+    },
+    {
+      "role": "StaticText",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": 6693
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6694
+    },
+    {
+      "role": "StaticText",
+      "name": "模型验证卡 · MOD-PFI-010",
+      "description": "",
+      "backend_dom_node_id": 6695
+    },
+    {
+      "role": "StaticText",
+      "name": "查看模型",
+      "description": "",
+      "backend_dom_node_id": 6696
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6697
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核 · 支付宝交易流水（历史 Git object 只读来源）",
+      "description": "",
+      "backend_dom_node_id": 6698
+    },
+    {
+      "role": "StaticText",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6699
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6700
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核 · 账户余额与期初/期末快照",
+      "description": "",
+      "backend_dom_node_id": 6701
+    },
+    {
+      "role": "StaticText",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6702
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6703
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核 · 负债余额快照",
+      "description": "",
+      "backend_dom_node_id": 6704
+    },
+    {
+      "role": "StaticText",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6705
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6706
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核 · 真实持仓快照",
+      "description": "",
+      "backend_dom_node_id": 6707
+    },
+    {
+      "role": "StaticText",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6708
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6709
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核 · 持仓估值价格快照",
+      "description": "",
+      "backend_dom_node_id": 6710
+    },
+    {
+      "role": "StaticText",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6711
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6712
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核 · 生产 FX snapshot",
+      "description": "",
+      "backend_dom_node_id": 6713
+    },
+    {
+      "role": "StaticText",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6714
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6715
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核 · 来源",
+      "description": "",
+      "backend_dom_node_id": 6716
+    },
+    {
+      "role": "StaticText",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": 6717
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6718
+    },
+    {
+      "role": "StaticText",
+      "name": "人工复核 · 人工复核待复核交易分类",
+      "description": "",
+      "backend_dom_node_id": 6719
+    },
+    {
+      "role": "StaticText",
+      "name": "人工复核",
+      "description": "",
+      "backend_dom_node_id": 6720
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6721
+    },
+    {
+      "role": "StaticText",
+      "name": "人工复核 · 补齐并复核关键财务来源",
+      "description": "",
+      "backend_dom_node_id": 6722
+    },
+    {
+      "role": "StaticText",
+      "name": "人工复核",
+      "description": "",
+      "backend_dom_node_id": 6723
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6724
+    },
+    {
+      "role": "StaticText",
+      "name": "同源导出 · HTML",
+      "description": "",
+      "backend_dom_node_id": 6725
+    },
+    {
+      "role": "StaticText",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6726
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6727
+    },
+    {
+      "role": "StaticText",
+      "name": "同源导出 · PDF",
+      "description": "",
+      "backend_dom_node_id": 6728
+    },
+    {
+      "role": "StaticText",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6729
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6730
+    },
+    {
+      "role": "StaticText",
+      "name": "同源导出 · CSV",
+      "description": "",
+      "backend_dom_node_id": 6731
+    },
+    {
+      "role": "StaticText",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6732
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6733
+    },
+    {
+      "role": "StaticText",
+      "name": "同源导出 · MARKDOWN",
+      "description": "",
+      "backend_dom_node_id": 6734
+    },
+    {
+      "role": "StaticText",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": 6735
+    },
+    {
+      "role": "StaticText",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": 6736
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "人工复核待复核交易分类",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已接受复核 · 2 条历史事件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "当前有 1,936 条记录仍在待复核队列；先人工核对分类与退款/转账边界，再解释消费",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "结构。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "反方证据",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6549
+    },
+    {
+      "role": "StaticText",
+      "name": "队列数量不能证明分类准确性，且未标注 ground truth 时不能声明模型有效率。",
+      "description": "",
+      "backend_dom_node_id": 6744
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6550
+    },
+    {
+      "role": "StaticText",
+      "name": "新导入、退款识别或人工重分类会改变当前队列与覆盖结论。",
+      "description": "",
+      "backend_dom_node_id": 6745
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "失效条件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6551
+    },
+    {
+      "role": "StaticText",
+      "name": "待复核队列归零 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": 6747
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6552
+    },
+    {
+      "role": "StaticText",
+      "name": "分析快照 hash 发生变化 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": 6748
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标记失效",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "补齐并复核关键财务来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待人工复核 · 1 条历史事件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户余额、负债、持仓、价格、FX 与 Economic Event lineage 未全部 ready；先补齐",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源，再解释净资产、现金或投资结果。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "反方证据",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6553
+    },
+    {
+      "role": "StaticText",
+      "name": "交易来源已有真实覆盖，因此消费与现金流仍可保留 partial 的覆盖结论。",
+      "description": "",
+      "backend_dom_node_id": 6754
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6554
+    },
+    {
+      "role": "StaticText",
+      "name": "来源状态可能在新快照中改变，当前建议不得跨 snapshot 延用。",
+      "description": "",
+      "backend_dom_node_id": 6755
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "失效条件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6555
+    },
+    {
+      "role": "StaticText",
+      "name": "所有关键来源与 lineage 已就绪 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": 6757
+    },
+    {
+      "role": "ListMarker",
+      "name": "• ",
+      "description": "",
+      "backend_dom_node_id": 6556
+    },
+    {
+      "role": "StaticText",
+      "name": "分析快照 hash 发生变化 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": 6758
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "接受",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "拒绝",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "延后",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "标记失效",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待办列表",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "今日待处理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "刷新本机状态",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "报告与洞察 · 统一趋势",
+      "description": "",
+      "backend_dom_node_id": 6770
+    },
+    {
+      "role": "StaticText",
+      "name": "状态趋势",
+      "description": "",
+      "backend_dom_node_id": 6771
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "CNY 基准",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "趋势数据需要先接入真实数据，当前不显示伪造曲线。",
+      "description": "",
+      "backend_dom_node_id": 6773
+    },
+    {
+      "role": "StaticText",
+      "name": "暂无真实趋势数据，不绘制曲线",
+      "description": "",
+      "backend_dom_node_id": 6130
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4236
+    },
+    {
+      "role": "StaticText",
+      "name": "排序",
+      "description": "",
+      "backend_dom_node_id": 3747
+    },
+    {
+      "role": "StaticText",
+      "name": "导出",
+      "description": "",
+      "backend_dom_node_id": 3748
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 4242
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6435
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6442
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6449
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6456
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6463
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6470
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6477
+    },
+    {
+      "role": "row",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6484
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待办清单",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "当前待处理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "×",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "ListMarker",
+      "name": "1. ",
+      "description": "",
+      "backend_dom_node_id": 6557
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6485
+    },
+    {
+      "role": "StaticText",
+      "name": "4 项分别可见；投资活动不等于净资产损失",
+      "description": "",
+      "backend_dom_node_id": 6810
+    },
+    {
+      "role": "ListMarker",
+      "name": "2. ",
+      "description": "",
+      "backend_dom_node_id": 6558
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6488
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6489
+    },
+    {
+      "role": "ListMarker",
+      "name": "3. ",
+      "description": "",
+      "backend_dom_node_id": 6559
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6491
+    },
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6492
+    },
+    {
+      "role": "ListMarker",
+      "name": "4. ",
+      "description": "",
+      "backend_dom_node_id": 6560
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6494
+    },
+    {
+      "role": "StaticText",
+      "name": "4 组；不可证明结果保持阻断",
+      "description": "",
+      "backend_dom_node_id": 6816
+    },
+    {
+      "role": "ListMarker",
+      "name": "5. ",
+      "description": "",
+      "backend_dom_node_id": 6561
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6497
+    },
+    {
+      "role": "StaticText",
+      "name": "1 张；历史/样本外限制明确",
+      "description": "",
+      "backend_dom_node_id": 6818
+    },
+    {
+      "role": "ListMarker",
+      "name": "6. ",
+      "description": "",
+      "backend_dom_node_id": 6562
+    },
+    {
+      "role": "strong",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6500
+    },
+    {
+      "role": "StaticText",
+      "name": "7 个可执行入口",
+      "description": "",
+      "backend_dom_node_id": 6820
+    },
+    {
+      "role": "StaticText",
+      "name": "后台任务时间线",
+      "description": "",
+      "backend_dom_node_id": 5409
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "离开当前页面后仍可查看",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "当前没有后台任务。",
+      "description": "",
+      "backend_dom_node_id": 5411
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "主账户",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "主对象",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月度报告草稿 / 本机 read-model",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "空状态",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "尚无可用的月度报告草稿；保留页面结",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "构并说明下一步。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "错误状态",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "无法读取月度报告草稿；请检查本机来",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "源、权限与证据状态。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告期间",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "显示月份、数据覆盖天数和缺失来源。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月度发现",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "只呈现已通过门禁的数据项和待复核项。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "数据门禁",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "关键数据未齐时阻断报告结论生成。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报动作",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "生成草稿、补齐数据或导出证据。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "加载中",
+      "description": "",
+      "backend_dom_node_id": 6625
+    },
+    {
+      "role": "StaticText",
+      "name": "正在加载月报，保持当前页面路径与返回栈。",
+      "description": "",
+      "backend_dom_node_id": 6627
+    },
+    {
+      "role": "StaticText",
+      "name": "查看月报",
+      "description": "",
+      "backend_dom_node_id": 6626
+    },
+    {
+      "role": "StaticText",
+      "name": "已就绪",
+      "description": "",
+      "backend_dom_node_id": 6628
+    },
+    {
+      "role": "StaticText",
+      "name": "月报已按当前页面状态准备完成。",
+      "description": "",
+      "backend_dom_node_id": 6630
+    },
+    {
+      "role": "StaticText",
+      "name": "生成月报草稿",
+      "description": "",
+      "backend_dom_node_id": 6629
+    },
+    {
+      "role": "StaticText",
+      "name": "读取失败",
+      "description": "",
+      "backend_dom_node_id": 6631
+    },
+    {
+      "role": "StaticText",
+      "name": "无法读取月度报告草稿；请检查本机来源、权限与证据状态。",
+      "description": "",
+      "backend_dom_node_id": 6633
+    },
+    {
+      "role": "StaticText",
+      "name": "重试月报",
+      "description": "",
+      "backend_dom_node_id": 6632
+    },
+    {
+      "role": "StaticText",
+      "name": "暂无数据",
+      "description": "",
+      "backend_dom_node_id": 6634
+    },
+    {
+      "role": "StaticText",
+      "name": "尚无可用的月度报告草稿；保留页面结构并说明下一步。",
+      "description": "",
+      "backend_dom_node_id": 6636
+    },
+    {
+      "role": "StaticText",
+      "name": "打开月报处理",
+      "description": "",
+      "backend_dom_node_id": 6635
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "活动组件 · 消费总流出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "活动组件 · 生活消费",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "活动组件 · 投资资金流出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "活动组件 · 投资域内配置",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核组件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产报告",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "现金报告",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资报告",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "消费报告",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "现金流报告",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "双消费与投资活动组件 · ",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-015",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产、现金与投资重配置不变",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "量 · FORM-PFI-016",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资收益、成本与拖累 · ",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-017",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "日期感知投资 XIRR · FORM-",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI-018",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "七窗口外部现金流 · FORM-",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI-019",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "分类与标签治理规则 · FORM-",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI-020",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "下钻公式",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "现金流窗口敏感性",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "分类阈值敏感性",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "XIRR 参数敏感性",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "金额精度与核心财务边界",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看敏感性",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "模型验证卡 · MOD-PFI-010",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看模型",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核 · 支付宝交易流水（历",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "史 Git object 只读来源）",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核 · 账户余额与期初/期",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "末快照",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核 · 负债余额快照",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核 · 真实持仓快照",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核 · 持仓估值价格快照",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核 · 生产 FX snapshot",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核 · 来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "进入复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "人工复核 · 人工复核待复核交易",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "分类",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "人工复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "人工复核 · 补齐并复核关键财务",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "人工复核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "同源导出 · HTML",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "同源导出 · PDF",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "同源导出 · CSV",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "同源导出 · MARKDOWN",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看说明",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "队列数量不能证明分类准确性，且未标注 ground truth 时不能声明模型有效率。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "新导入、退款识别或人工重分类会改变当前队列与覆盖结论。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "待复核队列归零 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "分析快照 hash 发生变化 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "交易来源已有真实覆盖，因此消费与现金流仍可保留 partial 的覆盖结论。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源状态可能在新快照中改变，当前建议不得跨 snapshot 延用。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "所有关键来源与 lineage 已就绪 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "分析快照 hash 发生变化 · 当前未满足",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "报告与洞察 · 统一趋势",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "状态趋势",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "趋势数据需要先接入真实数据，当前不显示伪造曲线。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "暂无真实趋势数据，不绘制曲线",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "排序",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "导出",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "columnheader",
+      "name": "优先级",
+      "description": "",
+      "backend_dom_node_id": 4243
+    },
+    {
+      "role": "columnheader",
+      "name": "对象",
+      "description": "",
+      "backend_dom_node_id": 4244
+    },
+    {
+      "role": "columnheader",
+      "name": "依据",
+      "description": "",
+      "backend_dom_node_id": 4245
+    },
+    {
+      "role": "columnheader",
+      "name": "动作",
+      "description": "",
+      "backend_dom_node_id": 4246
+    },
+    {
+      "role": "columnheader",
+      "name": "状态",
+      "description": "",
+      "backend_dom_node_id": 4247
+    },
+    {
+      "role": "cell",
+      "name": "P1",
+      "description": "",
+      "backend_dom_node_id": 6429
+    },
+    {
+      "role": "cell",
+      "name": "FORM-PFI-015",
+      "description": "",
+      "backend_dom_node_id": 6430
+    },
+    {
+      "role": "cell",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6431
+    },
+    {
+      "role": "cell",
+      "name": "双消费与投资活动组件 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6432
+    },
+    {
+      "role": "cell",
+      "name": "已验证",
+      "description": "",
+      "backend_dom_node_id": 6434
+    },
+    {
+      "role": "cell",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6436
+    },
+    {
+      "role": "cell",
+      "name": "FORM-PFI-016",
+      "description": "",
+      "backend_dom_node_id": 6437
+    },
+    {
+      "role": "cell",
+      "name": "参数 PARAM-PFI-081",
+      "description": "",
+      "backend_dom_node_id": 6438
+    },
+    {
+      "role": "cell",
+      "name": "净资产、现金与投资重配置不变量 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6439
+    },
+    {
+      "role": "cell",
+      "name": "已阻断",
+      "description": "",
+      "backend_dom_node_id": 6441
+    },
+    {
+      "role": "cell",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6443
+    },
+    {
+      "role": "cell",
+      "name": "FORM-PFI-017",
+      "description": "",
+      "backend_dom_node_id": 6444
+    },
+    {
+      "role": "cell",
+      "name": "参数 PARAM-PFI-081",
+      "description": "",
+      "backend_dom_node_id": 6445
+    },
+    {
+      "role": "cell",
+      "name": "投资收益、成本与拖累 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6446
+    },
+    {
+      "role": "cell",
+      "name": "已阻断",
+      "description": "",
+      "backend_dom_node_id": 6448
+    },
+    {
+      "role": "cell",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6450
+    },
+    {
+      "role": "cell",
+      "name": "FORM-PFI-018",
+      "description": "",
+      "backend_dom_node_id": 6451
+    },
+    {
+      "role": "cell",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6452
+    },
+    {
+      "role": "cell",
+      "name": "日期感知投资 XIRR · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6453
+    },
+    {
+      "role": "cell",
+      "name": "已阻断",
+      "description": "",
+      "backend_dom_node_id": 6455
+    },
+    {
+      "role": "cell",
+      "name": "P3",
+      "description": "",
+      "backend_dom_node_id": 6457
+    },
+    {
+      "role": "cell",
+      "name": "FORM-PFI-019",
+      "description": "",
+      "backend_dom_node_id": 6458
+    },
+    {
+      "role": "cell",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6459
+    },
+    {
+      "role": "cell",
+      "name": "七窗口外部现金流 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6460
+    },
+    {
+      "role": "cell",
+      "name": "已验证",
+      "description": "",
+      "backend_dom_node_id": 6462
+    },
+    {
+      "role": "cell",
+      "name": "P3",
+      "description": "",
+      "backend_dom_node_id": 6464
+    },
+    {
+      "role": "cell",
+      "name": "FORM-PFI-020",
+      "description": "",
+      "backend_dom_node_id": 6465
+    },
+    {
+      "role": "cell",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6466
+    },
+    {
+      "role": "cell",
+      "name": "分类与标签治理规则 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6467
+    },
+    {
+      "role": "cell",
+      "name": "已验证",
+      "description": "",
+      "backend_dom_node_id": 6469
+    },
+    {
+      "role": "cell",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6471
+    },
+    {
+      "role": "cell",
+      "name": "建议复核 · 人工复核待复核交易分类",
+      "description": "",
+      "backend_dom_node_id": 6472
+    },
+    {
+      "role": "cell",
+      "name": "accepted",
+      "description": "",
+      "backend_dom_node_id": 6473
+    },
+    {
+      "role": "cell",
+      "name": "当前有 1,936 条记录仍在待复核队列；先人工核对分类与退款/转账边界，再解释消费结构。 · 接受只记录人工结果，不执行交易。",
+      "description": "",
+      "backend_dom_node_id": 6474
+    },
+    {
+      "role": "cell",
+      "name": "已接受复核",
+      "description": "",
+      "backend_dom_node_id": 6476
+    },
+    {
+      "role": "cell",
+      "name": "P1",
+      "description": "",
+      "backend_dom_node_id": 6478
+    },
+    {
+      "role": "cell",
+      "name": "建议复核 · 补齐并复核关键财务来源",
+      "description": "",
+      "backend_dom_node_id": 6479
+    },
+    {
+      "role": "cell",
+      "name": "",
+      "description": "",
+      "backend_dom_node_id": 6480
+    },
+    {
+      "role": "cell",
+      "name": "账户余额、负债、持仓、价格、FX 与 Economic Event lineage 未全部 ready；先补齐来源，再解释净资产、现金或投资结果。 · 接受只记录人工结果，不执行交易。",
+      "description": "",
+      "backend_dom_node_id": 6481
+    },
+    {
+      "role": "cell",
+      "name": "等待人工复核",
+      "description": "",
+      "backend_dom_node_id": 6483
+    },
+    {
+      "role": "StaticText",
+      "name": "四项活动组件",
+      "description": "",
+      "backend_dom_node_id": 6809
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "4 项分别可见；投资活动不等于净资产损",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "失",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "五份财务报告",
+      "description": "",
+      "backend_dom_node_id": 6811
+    },
+    {
+      "role": "StaticText",
+      "name": "3 份阻断 · 2 份部分可算 · 缺失输入不解释为零",
+      "description": "",
+      "backend_dom_node_id": 6812
+    },
+    {
+      "role": "StaticText",
+      "name": "公式下钻",
+      "description": "",
+      "backend_dom_node_id": 6813
+    },
+    {
+      "role": "StaticText",
+      "name": "6 条公式及参数影响可见",
+      "description": "",
+      "backend_dom_node_id": 6814
+    },
+    {
+      "role": "StaticText",
+      "name": "敏感性预览",
+      "description": "",
+      "backend_dom_node_id": 6815
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "4 组；不可证明结果保持阻断",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "模型验证卡",
+      "description": "",
+      "backend_dom_node_id": 6817
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "1 张；历史/样本外限制明确",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "来源复核入口",
+      "description": "",
+      "backend_dom_node_id": 6819
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "7 个可执行入口",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "后台任务时间线",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "当前没有后台任务。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "加载中",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "正在加载月报，保持当前页面路径与返回",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "栈。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "查看月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已就绪",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "月报已按当前页面状态准备完成。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "生成月报草稿",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "读取失败",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "无法读取月度报告草稿；请检查本机来源、",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "权限与证据状态。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "重试月报",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "暂无数据",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "尚无可用的月度报告草稿；保留页面结构并",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "说明下一步。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "打开月报处理",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "StaticText",
+      "name": "优先级",
+      "description": "",
+      "backend_dom_node_id": 3607
+    },
+    {
+      "role": "StaticText",
+      "name": "对象",
+      "description": "",
+      "backend_dom_node_id": 3608
+    },
+    {
+      "role": "StaticText",
+      "name": "依据",
+      "description": "",
+      "backend_dom_node_id": 3609
+    },
+    {
+      "role": "StaticText",
+      "name": "动作",
+      "description": "",
+      "backend_dom_node_id": 3610
+    },
+    {
+      "role": "StaticText",
+      "name": "状态",
+      "description": "",
+      "backend_dom_node_id": 3611
+    },
+    {
+      "role": "StaticText",
+      "name": "P1",
+      "description": "",
+      "backend_dom_node_id": 6774
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-015",
+      "description": "",
+      "backend_dom_node_id": 6775
+    },
+    {
+      "role": "StaticText",
+      "name": "双消费与投资活动组件 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6776
+    },
+    {
+      "role": "StaticText",
+      "name": "已验证",
+      "description": "",
+      "backend_dom_node_id": 6777
+    },
+    {
+      "role": "StaticText",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6778
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-016",
+      "description": "",
+      "backend_dom_node_id": 6779
+    },
+    {
+      "role": "StaticText",
+      "name": "参数 PARAM-PFI-081",
+      "description": "",
+      "backend_dom_node_id": 6780
+    },
+    {
+      "role": "StaticText",
+      "name": "净资产、现金与投资重配置不变量 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6781
+    },
+    {
+      "role": "StaticText",
+      "name": "已阻断",
+      "description": "",
+      "backend_dom_node_id": 6782
+    },
+    {
+      "role": "StaticText",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6783
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-017",
+      "description": "",
+      "backend_dom_node_id": 6784
+    },
+    {
+      "role": "StaticText",
+      "name": "参数 PARAM-PFI-081",
+      "description": "",
+      "backend_dom_node_id": 6785
+    },
+    {
+      "role": "StaticText",
+      "name": "投资收益、成本与拖累 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6786
+    },
+    {
+      "role": "StaticText",
+      "name": "已阻断",
+      "description": "",
+      "backend_dom_node_id": 6787
+    },
+    {
+      "role": "StaticText",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6788
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-018",
+      "description": "",
+      "backend_dom_node_id": 6789
+    },
+    {
+      "role": "StaticText",
+      "name": "日期感知投资 XIRR · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6790
+    },
+    {
+      "role": "StaticText",
+      "name": "已阻断",
+      "description": "",
+      "backend_dom_node_id": 6791
+    },
+    {
+      "role": "StaticText",
+      "name": "P3",
+      "description": "",
+      "backend_dom_node_id": 6792
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-019",
+      "description": "",
+      "backend_dom_node_id": 6793
+    },
+    {
+      "role": "StaticText",
+      "name": "七窗口外部现金流 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6794
+    },
+    {
+      "role": "StaticText",
+      "name": "已验证",
+      "description": "",
+      "backend_dom_node_id": 6795
+    },
+    {
+      "role": "StaticText",
+      "name": "P3",
+      "description": "",
+      "backend_dom_node_id": 6796
+    },
+    {
+      "role": "StaticText",
+      "name": "FORM-PFI-020",
+      "description": "",
+      "backend_dom_node_id": 6797
+    },
+    {
+      "role": "StaticText",
+      "name": "分类与标签治理规则 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": 6798
+    },
+    {
+      "role": "StaticText",
+      "name": "已验证",
+      "description": "",
+      "backend_dom_node_id": 6799
+    },
+    {
+      "role": "StaticText",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": 6800
+    },
+    {
+      "role": "StaticText",
+      "name": "建议复核 · 人工复核待复核交易分类",
+      "description": "",
+      "backend_dom_node_id": 6801
+    },
+    {
+      "role": "StaticText",
+      "name": "accepted",
+      "description": "",
+      "backend_dom_node_id": 6802
+    },
+    {
+      "role": "StaticText",
+      "name": "当前有 1,936 条记录仍在待复核队列；先人工核对分类与退款/转账边界，再解释消费结构。 · 接受只记录人工结果，不执行交易。",
+      "description": "",
+      "backend_dom_node_id": 6803
+    },
+    {
+      "role": "StaticText",
+      "name": "已接受复核",
+      "description": "",
+      "backend_dom_node_id": 6804
+    },
+    {
+      "role": "StaticText",
+      "name": "P1",
+      "description": "",
+      "backend_dom_node_id": 6805
+    },
+    {
+      "role": "StaticText",
+      "name": "建议复核 · 补齐并复核关键财务来源",
+      "description": "",
+      "backend_dom_node_id": 6806
+    },
+    {
+      "role": "StaticText",
+      "name": "账户余额、负债、持仓、价格、FX 与 Economic Event lineage 未全部 ready；先补齐来源，再解释净资产、现金或投资结果。 · 接受只记录人工结果，不执行交易。",
+      "description": "",
+      "backend_dom_node_id": 6807
+    },
+    {
+      "role": "StaticText",
+      "name": "等待人工复核",
+      "description": "",
+      "backend_dom_node_id": 6808
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "四项活动组件",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "五份财务报告",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "3 份阻断 · 2 份部分可算 · 缺失输入不解释",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "为零",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "公式下钻",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "6 条公式及参数影响可见",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "敏感性预览",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "模型验证卡",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "来源复核入口",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "优先",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "级",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "对象",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "依据",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "动作",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "状态",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P1",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-015",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "双消费与投资活动组件 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已验",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "证",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-016",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "参数 PARAM-",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI-081",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "净资产、现金与投资重配置不变量 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已阻",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "断",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-017",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "参数 PARAM-",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "PFI-081",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "投资收益、成本与拖累 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已阻",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "断",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-018",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "日期感知投资 XIRR · 限制待补",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已阻",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "断",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P3",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-019",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "七窗口外部现金流 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已验",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "证",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P3",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "FORM-PFI-020",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "分类与标签治理规则 · 限制待补",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已验",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "证",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P0",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "建议复核 · 人工复",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "核待复核交易分类",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "accepted",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "当前有 1,936 条记录仍在待复核队列；先人工核对分类与退款/转账边",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "界，再解释消费结构。 · 接受只记录人工结果，不执行交易。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "已接",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "受复",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "核",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "P1",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "建议复核 · 补齐并",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核关键财务来源",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "账户余额、负债、持仓、价格、FX 与 Economic Event lineage 未全部 ",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "ready；先补齐来源，再解释净资产、现金或投资结果。 · 接受只记录人",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "工结果，不执行交易。",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "等待",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "人工",
+      "description": "",
+      "backend_dom_node_id": null
+    },
+    {
+      "role": "InlineTextBox",
+      "name": "复核",
+      "description": "",
+      "backend_dom_node_id": null
+    }
+  ]
+}

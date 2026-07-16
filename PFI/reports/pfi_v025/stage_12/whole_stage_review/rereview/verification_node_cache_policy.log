@@ -1,0 +1,17 @@
+$ node --test PFI/web/tests/v025/stage1_cache_policy.test.mjs
+✔ cache governance API exposes the Phase 1.2 primitives (2.498167ms)
+✔ legacy Service Workers and dedicated-origin caches are removed (1.897ms)
+✔ cleanup failure or a surviving controller fails closed before fetch (1.985958ms)
+✔ cache policy requires every dimension, matching process key, build, and running backend (0.921583ms)
+✔ dynamic boot uses no-store for manifest and cache policy before revealing shell (1.13425ms)
+✔ static source must opt out of manifest and cache policy together (1.684833ms)
+✔ pageshow persisted immediately hides and revalidates; non-persisted is a no-op (0.958333ms)
+✔ an older slow success cannot override a newer mismatch (0.941125ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 72.171

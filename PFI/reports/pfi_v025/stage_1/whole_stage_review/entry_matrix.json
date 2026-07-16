@@ -1,0 +1,82 @@
+{
+  "after": {
+    "applications": {
+      "codesign_valid": true,
+      "executable_sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d",
+      "kind": "bundle",
+      "plist_identity": {
+        "build_version": "20260629.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3"
+      },
+      "symbolic_path": "${APPLICATIONS}/PFI.app",
+      "tree_sha256": "64fba3980c8c82baf7a8b6354315582bf528af6a546bfe6b1117cdb6ec5ad8da"
+    },
+    "desktop": {
+      "codesign_valid": true,
+      "executable_sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d",
+      "kind": "symlink",
+      "plist_identity": {
+        "build_version": "20260629.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3"
+      },
+      "symbolic_path": "${HOME}/Desktop/PFI.app",
+      "symbolic_target": "${APPLICATIONS}/PFI.app",
+      "tree_sha256": "64fba3980c8c82baf7a8b6354315582bf528af6a546bfe6b1117cdb6ec5ad8da"
+    },
+    "downloads": {
+      "codesign_valid": true,
+      "executable_sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d",
+      "kind": "bundle",
+      "plist_identity": {
+        "build_version": "20260629.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3"
+      },
+      "symbolic_path": "${HOME}/Downloads/PFI.app",
+      "tree_sha256": "11d067c33b3811454cfa61e0412fc9860533106e616c3bde865cb9d678f4f1b9"
+    }
+  },
+  "before": {
+    "applications": {
+      "codesign_valid": true,
+      "executable_sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d",
+      "kind": "bundle",
+      "plist_identity": {
+        "build_version": "20260629.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3"
+      },
+      "symbolic_path": "${APPLICATIONS}/PFI.app",
+      "tree_sha256": "64fba3980c8c82baf7a8b6354315582bf528af6a546bfe6b1117cdb6ec5ad8da"
+    },
+    "desktop": {
+      "codesign_valid": true,
+      "executable_sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d",
+      "kind": "symlink",
+      "plist_identity": {
+        "build_version": "20260629.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3"
+      },
+      "symbolic_path": "${HOME}/Desktop/PFI.app",
+      "symbolic_target": "${APPLICATIONS}/PFI.app",
+      "tree_sha256": "64fba3980c8c82baf7a8b6354315582bf528af6a546bfe6b1117cdb6ec5ad8da"
+    },
+    "downloads": {
+      "codesign_valid": true,
+      "executable_sha256": "0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d",
+      "kind": "bundle",
+      "plist_identity": {
+        "build_version": "20260629.1",
+        "bundle_identifier": "com.linze.pfi.launcher",
+        "short_version": "0.2.3"
+      },
+      "symbolic_path": "${HOME}/Downloads/PFI.app",
+      "tree_sha256": "11d067c33b3811454cfa61e0412fc9860533106e616c3bde865cb9d678f4f1b9"
+    }
+  },
+  "canonical_unchanged": true,
+  "schema": "PFIV025Stage1Phase13CanonicalEntryMatrixV1"
+}

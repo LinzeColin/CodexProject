@@ -1,0 +1,19 @@
+{
+  "audited_module": "PFI/src/pfi_v02/stage_v025_safe_sandbox.py",
+  "baseline_accepts_external_financial_records": false,
+  "baseline_function": "run_git_object_read_parse_baseline",
+  "financial_fixture_fallback_used": false,
+  "finder_used": false,
+  "forbidden_injection_arguments": [],
+  "network_capability_present": false,
+  "network_import_roots": [],
+  "phase": "2.3",
+  "private_values_included": false,
+  "schema": "PFIV025Phase23NoFakeAuditV1",
+  "source_missing_behavior": "blocked_without_fallback",
+  "source_mutation_capability_present": false,
+  "stage": 2,
+  "status": "pass",
+  "temp_copy_write_is_ephemeral_destination_only": true,
+  "version": "v0.2.5"
+}

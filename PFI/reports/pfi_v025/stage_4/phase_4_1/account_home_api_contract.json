@@ -1,0 +1,207 @@
+{
+  "contains_private_values": false,
+  "financial_values_emitted": 0,
+  "phase": "4.1",
+  "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+  "same_source_hash": true,
+  "schema": "PFIV025AccountHomeAPIContractV1",
+  "stage": 4,
+  "status": "not_loaded",
+  "surface_ids": [
+    "homepage",
+    "accounts"
+  ],
+  "surface_read_model_hashes": {
+    "accounts": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+    "homepage": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931"
+  },
+  "surfaces": {
+    "accounts": {
+      "metrics": [
+        {
+          "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+          "calculation_state": "not_run",
+          "classification_confidence": null,
+          "coverage_end": null,
+          "coverage_start": null,
+          "currency": "CNY",
+          "data_as_of": null,
+          "data_hash": null,
+          "formula_hash": null,
+          "formula_id": "SOURCE-SNAPSHOT-SUM",
+          "formula_version": null,
+          "fx_snapshot_id": null,
+          "metric_id": "account_assets_cny",
+          "model_validation": "blocked",
+          "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+          "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+          "reconciliation_coverage": null,
+          "record_count": null,
+          "report_completeness": "blocked",
+          "source_coverage": 0,
+          "source_ids": [
+            "SRC-ACCOUNT-BALANCES"
+          ],
+          "status": "not_loaded",
+          "valuation_coverage": null,
+          "value": null,
+          "valued_at": null
+        },
+        {
+          "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+          "calculation_state": "not_run",
+          "classification_confidence": null,
+          "coverage_end": null,
+          "coverage_start": null,
+          "currency": "CNY",
+          "data_as_of": null,
+          "data_hash": null,
+          "formula_hash": "sha256:6b45bda48fca6409c71ad49b82276e1d0a73a9af0d8b26ea6eb210c93159a2e3",
+          "formula_id": "FORM-PFI-008",
+          "formula_version": "pfi-v0.2.5-cash-reconciliation-v1",
+          "fx_snapshot_id": null,
+          "metric_id": "cash_balance_cny",
+          "model_validation": "blocked",
+          "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+          "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+          "reconciliation_coverage": 0,
+          "record_count": null,
+          "report_completeness": "blocked",
+          "source_coverage": 0,
+          "source_ids": [
+            "SRC-ACCOUNT-BALANCES"
+          ],
+          "status": "not_loaded",
+          "valuation_coverage": null,
+          "value": null,
+          "valued_at": null
+        },
+        {
+          "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+          "calculation_state": "not_run",
+          "classification_confidence": null,
+          "coverage_end": null,
+          "coverage_start": null,
+          "currency": "CNY",
+          "data_as_of": null,
+          "data_hash": null,
+          "formula_hash": null,
+          "formula_id": "SOURCE-SNAPSHOT-SUM",
+          "formula_version": null,
+          "fx_snapshot_id": null,
+          "metric_id": "liabilities_cny",
+          "model_validation": "blocked",
+          "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+          "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+          "reconciliation_coverage": null,
+          "record_count": null,
+          "report_completeness": "blocked",
+          "source_coverage": 0,
+          "source_ids": [
+            "SRC-LIABILITIES"
+          ],
+          "status": "not_loaded",
+          "valuation_coverage": null,
+          "value": null,
+          "valued_at": null
+        }
+      ],
+      "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "status": "not_loaded"
+    },
+    "homepage": {
+      "metrics": [
+        {
+          "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+          "calculation_state": "not_run",
+          "classification_confidence": null,
+          "coverage_end": null,
+          "coverage_start": null,
+          "currency": "CNY",
+          "data_as_of": null,
+          "data_hash": null,
+          "formula_hash": null,
+          "formula_id": "SOURCE-SNAPSHOT-SUM",
+          "formula_version": null,
+          "fx_snapshot_id": null,
+          "metric_id": "account_assets_cny",
+          "model_validation": "blocked",
+          "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+          "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+          "reconciliation_coverage": null,
+          "record_count": null,
+          "report_completeness": "blocked",
+          "source_coverage": 0,
+          "source_ids": [
+            "SRC-ACCOUNT-BALANCES"
+          ],
+          "status": "not_loaded",
+          "valuation_coverage": null,
+          "value": null,
+          "valued_at": null
+        },
+        {
+          "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+          "calculation_state": "not_run",
+          "classification_confidence": null,
+          "coverage_end": null,
+          "coverage_start": null,
+          "currency": "CNY",
+          "data_as_of": null,
+          "data_hash": null,
+          "formula_hash": "sha256:6b45bda48fca6409c71ad49b82276e1d0a73a9af0d8b26ea6eb210c93159a2e3",
+          "formula_id": "FORM-PFI-008",
+          "formula_version": "pfi-v0.2.5-cash-reconciliation-v1",
+          "fx_snapshot_id": null,
+          "metric_id": "cash_balance_cny",
+          "model_validation": "blocked",
+          "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+          "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+          "reconciliation_coverage": 0,
+          "record_count": null,
+          "report_completeness": "blocked",
+          "source_coverage": 0,
+          "source_ids": [
+            "SRC-ACCOUNT-BALANCES"
+          ],
+          "status": "not_loaded",
+          "valuation_coverage": null,
+          "value": null,
+          "valued_at": null
+        },
+        {
+          "blocking_reason_zh": "Phase 2.1 未绑定可公开验证的 source-level aggregate metadata；不得宣称缺失、存在或财务零值。",
+          "calculation_state": "not_run",
+          "classification_confidence": null,
+          "coverage_end": null,
+          "coverage_start": null,
+          "currency": "CNY",
+          "data_as_of": null,
+          "data_hash": null,
+          "formula_hash": null,
+          "formula_id": "SOURCE-SNAPSHOT-SUM",
+          "formula_version": null,
+          "fx_snapshot_id": null,
+          "metric_id": "liabilities_cny",
+          "model_validation": "blocked",
+          "parameter_hash": "sha256:8c54b097f110db34db52b0a4692132bedb768f7ebfea2ddf3a2c5f6e62f26759",
+          "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+          "reconciliation_coverage": null,
+          "record_count": null,
+          "report_completeness": "blocked",
+          "source_coverage": 0,
+          "source_ids": [
+            "SRC-LIABILITIES"
+          ],
+          "status": "not_loaded",
+          "valuation_coverage": null,
+          "value": null,
+          "valued_at": null
+        }
+      ],
+      "read_model_hash": "sha256:0d3322d97c4536a5a4d6f398445e1047800e0d08988b36a1e4c91aeedeb18931",
+      "status": "not_loaded"
+    }
+  },
+  "version": "v0.2.5"
+}

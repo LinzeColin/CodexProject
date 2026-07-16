@@ -1,0 +1,21 @@
+{
+  "calculation_context": "deterministic_contract_example_not_financial_acceptance",
+  "component_labels_zh": [
+    "消费总流出金额（用户定义活动口径）",
+    "生活消费金额",
+    "投资资金流出金额",
+    "投资域内配置金额"
+  ],
+  "component_reconciliation_difference_cny": "0.00",
+  "conflicting_duplicate_gate": "pass",
+  "deduped_economic_event_type_count": 9,
+  "formula_id": "FORM-PFI-015",
+  "funding_and_allocation_explained_as_distinct_activity_stages": true,
+  "investment_activity_is_net_worth_loss": false,
+  "refund_linkage_gate": "pass",
+  "same_surface_payload_hash": true,
+  "schema": "PFIV025Stage5Phase52DualConsumptionEvidenceV1",
+  "source_record_example_count": 10,
+  "status": "capability_pass_real_data_not_run",
+  "surfaces": ["homepage", "consumption_page", "report"]
+}

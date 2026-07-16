@@ -1,0 +1,73 @@
+{
+  "contains_private_values": false,
+  "external_network_performed": false,
+  "finder_used": false,
+  "launchservices_used": false,
+  "reviewers": [
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 1,
+        "important": 4,
+        "minor": 1
+      },
+      "result_sha256": "sha256:ee700702c6f65c4debd9e6a2d8ba7ffd66622a1ef5c02ccde7631b35f3474ab3",
+      "result_text": "DECISION: ACCEPT；CRITICAL: 0；IMPORTANT: 0；MINOR: 0。只读复核确认 review_base=`2c7b25efd2916c909027333283b499a119d088e0`；source overlay 独立重算为 22 文件、`sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180`，evidence overlay 独立重算为 114 文件、`sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095`，均与冻结清单完全一致。Finalizer 对精确三项 verification command、固定日志引用与哈希、精确三名唯一 reviewer、初审计数、C0/I0/M0、result hash、安全标志及 source/evidence 双覆盖层绑定均 fail-closed，内存篡改探针被拒绝。验证证据为 45 tests passed、syntax/diff 全通过、governance 0 error/0 warning、renderer drift/reference issue 均为 0，三份日志哈希一致。产品安全回归确认无全局点击自动成功、延迟 503 保持 failure、持仓删除须显式确认且可取消、任务持久化仅保存不透明状态字段、44px 目标审计无失败。隐私扫描通过，运行证据仅使用本机 loopback；未加载或修改财务数据、数据库，未执行 push、安装或其他生产副作用。本复核未写文件，未使用 Finder、LaunchServices、GUI 或外网。",
+      "review_base": "2c7b25efd2916c909027333283b499a119d088e0",
+      "reviewed_evidence_file_count": 114,
+      "reviewed_evidence_sha256": "sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095",
+      "reviewed_overlay_file_count": 22,
+      "reviewed_overlay_sha256": "sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180",
+      "reviewer_id": "final_code_security_review"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 0,
+        "important": 8,
+        "minor": 0
+      },
+      "result_sha256": "sha256:f4c917ff4cb8788d5744905cfd46d663aabd05af57a47876215dade0caabf30e",
+      "result_text": "DECISION: ACCEPT | CRITICAL: 0 | IMPORTANT: 0 | MINOR: 0 | review_base=2c7b25efd2916c909027333283b499a119d088e0；source overlay=22 files / sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180；evidence overlay=114 files / sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095。原三项缺口均已关闭：verification 强制精确三项且空、重复、额外项均拒绝；reviewer rows 强制精确三位唯一对象且重复/垃圾项均拒绝；每位 reviewer 同时绑定 source 与 evidence overlay，evidence 漂移会被拒绝。独立只读复核确认 15 tests passed、三个 verification output hash 匹配、完整 PFI governance errors=0/warnings=0、renderer drift=0/reference issues=0；canonical/derived truth 一致为 Stage 8 accepted_for_transition、Stage 9 entry authorized but not_started、next=S9-P1-T1、production/final acceptance=false。复核进度 100%，未完成 0，剩余迭代 0，置信度高；全程未写文件，未使用 Finder、LaunchServices、GUI、外网、push 或 install。",
+      "review_base": "2c7b25efd2916c909027333283b499a119d088e0",
+      "reviewed_evidence_file_count": 114,
+      "reviewed_evidence_sha256": "sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095",
+      "reviewed_overlay_file_count": 22,
+      "reviewed_overlay_sha256": "sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180",
+      "reviewer_id": "final_governance_renderer_review"
+    },
+    {
+      "counts": {
+        "critical": 0,
+        "important": 0,
+        "minor": 0
+      },
+      "decision": "ACCEPT",
+      "initial_counts": {
+        "critical": 3,
+        "important": 2,
+        "minor": 1
+      },
+      "result_sha256": "sha256:f25df5b42cf254581c8389122c6e18dc104324e07fb6286684230c9cbb62adfe",
+      "result_text": "DECISION: ACCEPT; CRITICAL: 0; IMPORTANT: 0; MINOR: 0; REVIEW_PROGRESS: 100%; review_base=2c7b25efd2916c909027333283b499a119d088e0；独立重算确认 source overlay file_count=22、sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180，evidence overlay file_count=114、sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095，文件列表、逐文件 SHA-256、聚合 manifest hash 与冻结记录完全一致；对 evidence status、file_count、review_base、manifest hash、单文件 hash、文件遗漏以及 reviewer evidence count/hash 的内存篡改探针均 fail-closed；三组 verification logs 均 exit_code=0 且内容 hash 匹配，focused Stage 8 为 45 passed，syntax/diff 通过，changed-scope governance 为 errors=0、warnings=0、renderer drift=0、reference issues=0；final browser 覆盖 10 primary+10 distinct secondary、20 unique routes、40 screenshots，decode/dimension/regression failures 均为 0，release badge 全部匹配；WCAG 与 CDP AX 使用同一 20-route 集合，3646 text samples、13978 AX nodes，blocking/contrast/target/unnamed/duplicate failures 均为 0；axe-core 明确 unavailable，axe_results status=not_run、axe_pass_claimed=false，仅绑定 deterministic WCAG 2.2 AA 与 Chrome CDP AX substitute，未伪造 axe PASS；standing authorization 仅接受 Stage 8 transition 与 Stage 9 entry，Stage 9 仍 not_started，production_accepted=false、final_human_acceptance=false，真实财务数据/安装态最终交付验收保留至 Stage 12；privacy/supporting-evidence gates 通过，三份 trace network 均为空且无 resources；本复审未写文件、未使用 Finder、LaunchServices、GUI、外网、push 或 install，无残余项。",
+      "review_base": "2c7b25efd2916c909027333283b499a119d088e0",
+      "reviewed_evidence_file_count": 114,
+      "reviewed_evidence_sha256": "sha256:f52aecdf9bdab796dfde0f342d9a1e4645e94265d87a34c63592850c26faa095",
+      "reviewed_overlay_file_count": 22,
+      "reviewed_overlay_sha256": "sha256:1a6c05459f5c119f96572adbd5da8cda808f0c6c767f8c7de5c157cebf05a180",
+      "reviewer_id": "final_acceptance_evidence_review"
+    }
+  ],
+  "schema": "PFIV025Stage8IndependentReviewerResultsV1",
+  "status": "pass"
+}
