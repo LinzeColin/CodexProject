@@ -1,0 +1,13 @@
+extracted 5 statistical claims from the official release
+  国内生产总值=1349084亿元 | period=2024年 口径=同比 修订=初步核算 fact=True
+  规模以上工业增加值=5.8% | period=2024年 口径=同比 修订=初步核算 fact=True
+  社会消费品零售总额=487895亿元 | period=2024年 口径=比上年 修订=初步核算 fact=True
+  居民消费价格=0.2% | period=2024年 口径=比上年 修订=初步核算 fact=True
+  固定资产投资=514374亿元 | period=2024年 口径=比上年 修订=初步核算 fact=True
+all claims carry unit+period+revision: True
+
+facts from OFFICIAL: 5 | from MEDIA: 0 | from SEARCH: 0
+
+registry: ['ndrc-gov', 'stats-gov']
+
+ACCEPTANCE = PASS

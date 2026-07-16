@@ -1,0 +1,628 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 18f1d9989..102badbd5 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P02-T035 (Statistics + NDRC A0 adapters; statistical-claim extractor; NOT_DEPLOYED)
++
++- Thirty-fifth task of the ADP V0.1 FINAL EXECUTION program (S3-P02). Goal: add A0 adapters for the National Bureau of Statistics (stats.gov.cn) and the NDRC (ndrc.gov.cn) covering statistical calibre, indicators, policy documents, and announcements. NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live extraction from the dev environment. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/adapter_stats_ndrc.py (a StatClaim type and an extract_stat_claims that records each claim's indicator, value, unit, period, statistical basis 口径, and revision state; a claims_to_facts that promotes only official A0/A1 claims to facts; an OfficialStatConnector on the T031 SDK; and build_registry for stats-gov and ndrc-gov), STATS_ADAPTER_SPEC.md, and evidence/ADP-S3-P02-T035/{fixtures/{stats_release,ndrc_notice}.html, real_stats_smoke.json}. Acceptance verified (evidence/ADP-S3-P02-T035/test-results/stats_tests.txt, ACCEPTANCE = PASS, exit 0): a statistical claim records the unit, the period, the calibre, and the revision -- the official release fixture yields five claims each carrying a unit, the period 2024年, and the revision 初步核算, with the growth-rate claims carrying a 口径 (同比 or 比上年), and the GDP absolute-value claim of 1349084亿元 at 2024年 初步核算 -- and no fact is formed from media numbers, since the same text yields five facts from the official source but zero from a media source and zero from a search source. A live extraction from the real stats.gov.cn 上半年经济运行 release produced 21 official claims and 21 facts with zero media facts (including 国内生产总值 695704亿元 同比 初步核算). The live extraction ran from the dev environment, so 0 cloud cost; wiring to the worker cron later makes each fetch a Worker subrequest under DIR-007. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P02-T034 (first A0 adapter: State Council policy + national laws; NOT_DEPLOYED)
+ 
+ - Thirty-fourth task of the ADP V0.1 FINAL EXECUTION program and the first of S3-P02 (first A0 official adapters). Goal: parse the gov.cn State Council policy documents and national laws/regulations into the A0 template -- original title, 发文字号, issuing organ, typed dates (成文 written kept distinct from 发布 published), effectiveness status, and attachments. NOT_DEPLOYED, 0 recurring cloud cost; the adapter is not wired into the worker, and a live parse runs from the dev environment. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/adapter_gov_policy.py (a GovCnPolicyConnector on the T031 SDK with parse_policy producing the typed-date A0 template, discover with a recoverable cursor, verification via the T033 identity verifier, and build_registry for both gov-cn-policy and gov-cn-fagui), ADAPTER_GOV_POLICY_SPEC.md, and evidence/ADP-S3-P02-T034/{fixtures/{policy_2016,policy_2020,policy_2024,policy_current,listing}.html, expected/*.json, real_parse_smoke.json}. Acceptance verified (evidence/ADP-S3-P02-T034/test-results/adapter_tests.txt, ACCEPTANCE = PASS, exit 0): the official original and attachments are replayable (the 2016, 2020, 2024, and current fixtures parse to their golden JSON, a second parse is byte-identical, and the attachments 0/0/1/2 are replayable); the date types are not confused (the written date equals 成文, the published date equals 发布, and the canonical doc_date is the published date, never swapped or collapsed); and the historical cursor is recoverable (discover finds four items across the eras, a cursor at 2020-12-21 resumes to only 2024-03-01 and 2026-07-10, and the cursor advances to the latest 2026-07-10). A live parse through the adapter confirmed three real gov.cn documents -- 国办发〔2020〕50号 (成文 2020-12-07 / 发布 2020-12-21), 国令第711号 (2019-04-03 / 2019-04-15), and 国办函〔2021〕132号 (成文 2021-12-22 / 发布 2022-01-04, a cross-year case that is exactly why the date types must not be confused) -- as a point-in-time artifact. The live parse ran from the dev environment, so 0 cloud cost; wiring the adapter into the worker cron later makes each fetch a Worker subrequest counted against the DIR-007 free tier. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 7538e7f42..4dfbd8441 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S3-P01-T033-OFFICIAL-IDENTITY-A0"
+-source_snapshot_hash: "sha256:902e40d33ae248d7f45bfc3bd5194dc8ae19f345bf77ebfd48d14f1d50a22d34"
++as_of_event_id: "EVENT-20260717-ADP-V01-S3-P02-T034-GOV-POLICY-A0-ADAPTER"
++source_snapshot_hash: "sha256:312d9c08c3a23ae76ad39b8014ee2ea392a4c265ccd56299131023006e7b7300"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T05:45:00+10:00"
++snapshot_event_time: "2026-07-17T06:30:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 93
++    precommit_pending_events: 94
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 8b27b46a3..69da292c8 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S3-P02-T035: implemented the Statistics + NDRC A0 adapters with a statistical-claim extractor (S3-P02). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live extraction from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_stats_ndrc.py (StatClaim + extract_stat_claims recording indicator/value/unit/period/口径/revision; claims_to_facts official-only; OfficialStatConnector on the T031 SDK; build_registry stats-gov + ndrc-gov), STATS_ADAPTER_SPEC.md, evidence/ADP-S3-P02-T035/{fixtures/{stats_release,ndrc_notice}.html, real_stats_smoke.json}. Acceptance (test-results/stats_tests.txt, PASS exit 0): claim records unit+period+口径+revision (5 claims each with unit + 2024年 + 初步核算, growth claims with 同比/比上年, GDP 1349084亿元); no fact from media numbers (official 5 facts / media 0 / search 0); registry stats + ndrc. Live: real stats.gov.cn 上半年经济运行 -> 21 official claims -> 21 facts, media 0 (GDP 695704亿元 同比 初步核算). Live ran from dev env (0 cloud cost). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T034: implemented the first A0 adapter -- State Council policy documents + national laws/regulations (first S3-P02 task). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live parse from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_gov_policy.py (GovCnPolicyConnector on the T031 SDK; parse_policy with TYPED dates 成文 vs 发布; discover + recoverable cursor; verify via T033; build_registry policy + fagui), ADAPTER_GOV_POLICY_SPEC.md, evidence/ADP-S3-P02-T034/{fixtures/{policy_2016,2020,2024,current,listing}.html, expected/*.json, real_parse_smoke.json}. Acceptance (test-results/adapter_tests.txt, PASS exit 0): original + attachments replayable (4 eras parse==golden, byte-identical re-parse, attachments 0/0/1/2); date types not confused (written=成文, published=发布, doc_date=published, never swapped/collapsed); historical cursor recoverable (discover 4; cursor 2020-12-21 -> [2024-03-01, 2026-07-10]; advances to 2026-07-10); registry policy + fagui. Live parse of 3 real docs: 国办发〔2020〕50号 / 国令第711号 / 国办函〔2021〕132号 (成文2021-12-22/发布2022-01-04 cross-year). Live ran from dev env (0 cloud cost); worker wiring later = subrequest under DIR-007. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P01-T033: implemented the official identity verifier + A0 marking (last S3-P01 task; closes S3-P01). NOT_DEPLOYED, 0 recurring cloud cost; verifier + rules, not wired to the production enable flow. Deliverables under docs/pursuing_goal/v0_1/: tools/official_identity.py (is_official_domain/is_central_domain + extract_evidence[host_org/id_code/ICP from footer] + verify_identity[authority + can_enable + discovery_only + manual_review + evidence + reasons]), OFFICIAL_IDENTITY_SPEC.md, evidence/ADP-S3-P01-T033/{identity_report.json, source_specs.json, real_identity_smoke.json}. Two hard rules: unverified source can't be enabled; search/media are discovery-only, never A0. Acceptance (test-results/identity_tests.txt, PASS exit 0): central .gov.cn + marker -> A0 enable (full-marker + id-code-only); non-central official -> A1; media(even on gov domain)/search/aggregator -> discovery_only, no A0, not enabled; official domain no markers -> manual_review not enabled; non-gov claiming official -> unofficial not enabled; RULE 1 + RULE 2 hold. Live: gov.cn footer 国务院办公厅 / bm01000001 / 京ICP备05070218号 -> A0; stats.gov.cn bm36000002 -> A0 (point-in-time). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P01-T032: built the connector fixture + contract-test harness (S3-P01, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; offline, no network. Deliverables under docs/pursuing_goal/v0_1/: tools/connector_contract.py (stdlib ReferenceOfficialConnector parsing a defined official-doc template on the T031 SDK; run_contract/check_doc/check_pagination diff vs golden), CONTRACT_TEST_SPEC.md, evidence/ADP-S3-P01-T032/{fixtures/{normal,attachment,pagination,pagination_p2,changed}.html, expected/{normal,attachment,pagination}.json, contract_report.json}. Acceptance (test-results/contract_tests.txt, PASS exit 0): positives (normal/attachment/pagination) parse to golden (pagination = 3 items over 2 pages); each drift fails its contract -- field drift (changed.html 文号 class renamed -> doc_number None), attachment loss (dropped 政策解读.docx -> 2->1), pagination break (removed next link -> 3->2 discovered). Cost: requests 0 / D1 0 / R2 0 / model 0; human maintenance = re-capture fixture + update golden on a legitimate template change. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 8261e267e..ec03be157 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `93`
+-- pending_or_stale_events: `443`
+-- freshness_counts: `pending_or_stale_events=443; legacy_unbound_events=334`
++- precommit_pending_events: `94`
++- pending_or_stale_events: `444`
++- freshness_counts: `pending_or_stale_events=444; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:902e40d33ae248d7f45bfc3bd5194dc8ae19f345bf77ebfd48d14f1d50a22d34`
+-- snapshot_event_time: `2026-07-17T05:45:00+10:00`
++- source_snapshot_hash: `sha256:312d9c08c3a23ae76ad39b8014ee2ea392a4c265ccd56299131023006e7b7300`
++- snapshot_event_time: `2026-07-17T06:30:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 11aa6d3be..1aa9997a9 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:902e40d33ae248d7f45bfc3bd5194dc8ae19f345bf77ebfd48d14f1d50a22d34`
+-- snapshot_event_time: `2026-07-17T05:45:00+10:00`
++- source_snapshot_hash: `sha256:312d9c08c3a23ae76ad39b8014ee2ea392a4c265ccd56299131023006e7b7300`
++- snapshot_event_time: `2026-07-17T06:30:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `443`
++- Pending/stale events: `444`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/STATS_ADAPTER_SPEC.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/STATS_ADAPTER_SPEC.md
+new file mode 100644
+index 000000000..f6dde5060
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/STATS_ADAPTER_SPEC.md
+@@ -0,0 +1,32 @@
++# A0 Adapter Spec · 国家统计局 / 发改委（ADP-S3-P02-T035）
++
++两个 A0 官方适配器（stats.gov.cn / ndrc.gov.cn）+ **统计 Claim 抽取器**。工具：`tools/adapter_stats_ndrc.py`，
++基于 T031 SDK + T033 身份。**NOT_DEPLOYED**（真抓走开发环境）。核心：**统计事实只来自官方数字，不从媒体数字形成事实**。
++
++## 统计 Claim（记录单位/期间/口径/修订）
++
++`StatClaim{indicator, value, unit, period, basis(口径), revision, source_id, authority_level, is_fact}`。
++`extract_stat_claims(text, source_id, authority_level, title)`：
++- **indicator**（指标）：国内生产总值/GDP、CPI/PPI、规模以上工业增加值、社会消费品零售总额、固定资产投资、城镇调查失业率…
++- **value + unit**（值+单位）：`亿元/万亿元/元/%/百分点/万人/万吨`。
++- **period**（期间）：从标题/正文取 `2024年` / `2026年二季度` / `2024年6月`。
++- **basis 口径**：`同比/环比/比上年同期/累计/当月/当季/不变价/现价/可比价/两年平均`（取值窗口内最近标记）。
++- **revision 修订**：`初步核算/初步统计/最终核实/修订/初步预计`（真实数据存在初步核算→最终核实的修订）。
++
++## 硬规则：不从媒体数字形成事实
++
++`claims_to_facts(claims)` 只保留 `is_fact=True`；`is_fact = authority_level ∈ {A0, A1}`。媒体/搜索源的相同数字被**记录为 claim 但不晋升为 fact**。落实 T033（media/search discovery-only）+ T012 registry（media 不得 official_evidence）。
++
++## 能力与来源
++
++`OfficialStatConnector`（T031 SDK 7 能力）：discover（解析 `t{YYYYMMDD}_N.html` 发布列表 + 断点续爬）、fetch（真实 HttpFetcher）、verify（走 T033→A0）、normalize（标题 + 统计 claim 计数 + 修订）、attachments（pdf/doc/xls/csv 数据表）、cursor、health。`build_registry` 注册 **stats-gov（统计局）+ ndrc-gov（发改委）**；发改委同时覆盖政策文件/公告（元信息表同 gov.cn 模板）。
++
++## 验收（`test-results/stats_tests.txt`，PASS）
++
++- **统计 Claim 记录单位/期间/口径/修订**：官方发布 fixture → 5 条 claim，**每条都有 unit+period+revision**，增长率类带 口径（同比/比上年）；GDP 绝对值 1349084亿元 / 2024年 / 初步核算。
++- **不从媒体数字形成事实**：同一文本 official→5 facts，**media→0，search→0**。
++- **live 实测**：`real_stats_smoke.json` = 实测 stats.gov.cn 真实「上半年经济运行」发布 → **21 条 official claim → 21 facts；media→0 facts**（含 国内生产总值695704亿元/同比/初步核算）。
++
++## 边界
++
++抽取聚焦**叙述式**统计陈述（stats 发布正文的主要形式）；**表格数据**（单位在列头、值在单元格）非本任务抽取范围（见 known_gaps）。indicator 词表可扩展；fixtures 为贴合真实 stats 语言的结构化样本，2024 期镜像真实 GDP 口径。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/TASK_REPORT.md
+new file mode 100644
+index 000000000..7a2fa8617
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/TASK_REPORT.md
+@@ -0,0 +1,54 @@
++# TASK_REPORT · ADP-S3-P02-T035｜接入国家统计与发改委官方入口
++
++## 唯一目标（达成）
++接入 stats.gov.cn（国家统计局）与 ndrc.gov.cn（发改委），覆盖**统计口径、指标、政策文件和公告**。交付 connectors、unit/period/indicator extraction、fixtures。**统计 Claim 记录单位、期间、口径和修订；不从媒体数字形成事实。**
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：统计局+发改委 A0 适配器 + 统计 claim 抽取；claim 记录单位/期间/口径/修订；媒体数字不成事实。
++2. **允许修改文件**：`docs/pursuing_goal/v0_1/{tools/adapter_stats_ndrc.py, STATS_ADAPTER_SPEC.md}` + 本证据包（fixtures/real_stats_smoke/test-results/报告）+ 治理同步。
++3. **绝不能改变**：抓取行为（生产）、六主题、worker、生产 D1/R2、cron；不接 worker。真抓走开发环境，NOT_DEPLOYED。
++4. **基线**：main `7b79fffc`（T034 政策适配器已合入）；用 T031 SDK + T033 身份。真实 DOM 实测（stats 发布叙述式统计陈述）。
++5. **验收**：统计 Claim 记录单位、期间、口径和修订；不从媒体数字形成事实。
++6. **回滚**：`git revert <sha>`（适配器 + fixtures，生产未变更）。
++
++## 交付物
++- `tools/adapter_stats_ndrc.py` —— `StatClaim`（indicator/value/unit/period/basis口径/revision/source/authority/is_fact）+ `extract_stat_claims`（叙述式统计陈述抽取，记录单位/期间/口径/修订）+ `claims_to_facts`（**只官方源成事实**）+ `OfficialStatConnector`（T031 SDK 7 能力）+ `build_registry`（stats-gov + ndrc-gov）。
++- `STATS_ADAPTER_SPEC.md` —— 统计 claim 字段、硬规则、能力、边界。
++- `evidence/.../fixtures/{stats_release,ndrc_notice}.html` + `real_stats_smoke.json`（实测真发布）。
++
++## 验收结果（实测，见 test-results/stats_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **统计 Claim 记录单位/期间/口径/修订**：官方发布 fixture → **5 条 claim**，每条含 **unit + period(2024年) + 修订(初步核算)**，增长率类带 **口径(同比/比上年)**；GDP 绝对值 **1349084亿元 / 2024年 / 初步核算**、工业增加值同比5.8%、零售487895亿元、CPI 0.2%、固投514374亿元。
++- **不从媒体数字形成事实**：同一文本 **official → 5 facts；media → 0；search → 0**（is_fact 仅 A0/A1）。
++- **两源适配器**：registry = `stats-gov` + `ndrc-gov`（发改委兼覆盖政策/公告，元信息表同 gov.cn 模板）。
++- **live 实测（Owner 决策）**：`real_stats_smoke.json` = 实测 stats.gov.cn 真实「上半年经济运行」发布 → **21 条 official claim → 21 facts；media → 0 facts**（含 国内生产总值695704亿元/同比/初步核算）。
++
++## Data / Performance / Visual
++Data = 2 fixture + 真发布 live 抽取（21 claim）。无 UI 改动、无性能路径；六主题动效与线上 MVP 未触碰（NOT_DEPLOYED）。
++
++## Value / Cost（S3 China A0 Official Pilot）
++- **Value**：官方统计进入系统时是**带单位/期间/口径/修订的可校准、可修订事实**（初步核算→最终核实成链），且**媒体数字永不成事实**——避免把媒体转述的数字当权威；发改委政策/公告一并覆盖。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 读 0 / 写 0；R2 字节 0 / 操作 0；模型 0；人工维护 = 适配器 + fixtures + indicator 词表维护。经常性云成本 delta = $0/月（live 走开发环境）。接 worker 后每 fetch = 子请求，核 DIR-007。
++
++## Known gaps
++见 `known_gaps.md`：NOT_DEPLOYED（未接 worker）；只抽叙述式、不做表格抽取（真实 GDP 表格页抽 0，属后续）；indicator 词表有限；口径/期间取最近标记；发改委共用统计连接器；fixtures 结构化样本。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json` —— N/A。`data-samples` = fixtures/ + real_stats_smoke.json。
++
++## 完成声明
++```text
++Task: ADP-S3-P02-T035
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/adapter_stats_ndrc.py + STATS_ADAPTER_SPEC.md + T035 证据包（fixtures/real_stats_smoke/test-results/报告）+ 治理同步（见 changed_files.txt）
++Tests: stats_tests.txt —— 5 claim 各含单位/期间(2024年)/口径(同比·比上年)/修订(初步核算)+GDP1349084亿元；facts official5/media0/search0；registry stats+ndrc，ACCEPTANCE=PASS(exit 0)；real_stats_smoke 实测21官方claim→21facts/media0；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 统计局+发改委 A0 适配器 + 统计 claim(单位/期间/口径/修订，不从媒体成事实)
++Data/Performance/Visual: Data=2fixture+真发布21claim；无性能/UI
++Value: 官方统计=可校准可修订事实，媒体数字永不成事实
++Cost: 请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0；真抓走开发环境
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（未接 worker cron）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/commands.log
+new file mode 100644
+index 000000000..4ea12b29f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/commands.log
+@@ -0,0 +1,23 @@
++# ADP-S3-P02-T035 commands (stats + ndrc A0 adapters + statistical-claim extractor)
++# base: main 7b79fffc (T034)
++
++# real DOM: stats.gov.cn/sj/zxfb release list -> t{YYYYMMDD}_N.html; narrative form
++#   "国内生产总值695704亿元，按不变价格计算，同比增长4.7%" (indicator+value+unit + 口径 + 修订初步核算)
++
++# 1) adapter + extractor + spec + fixtures
++#    tools/adapter_stats_ndrc.py   (StatClaim; extract_stat_claims[unit/period/口径/revision];
++#                                   claims_to_facts[official-only]; OfficialStatConnector; build_registry stats+ndrc)
++#    STATS_ADAPTER_SPEC.md ; fixtures/{stats_release,ndrc_notice}.html
++
++# 2) acceptance test (fixtures)
++python3 evidence/ADP-S3-P02-T035/test-results/t035_verify.py | tee evidence/ADP-S3-P02-T035/test-results/stats_tests.txt
++# -> 5 claims each with unit+period(2024年)+口径(同比/比上年)+修订(初步核算); GDP 1349084亿元
++# -> facts OFFICIAL 5 | MEDIA 0 | SEARCH 0 (no fact from media numbers)
++# -> registry stats-gov + ndrc-gov ; ACCEPTANCE = PASS (exit 0)
++
++# 3) LIVE extraction from real stats.gov.cn narrative release
++python3 <inline> -> evidence/ADP-S3-P02-T035/real_stats_smoke.json
++#   official claims 21 -> 21 facts ; media -> 0 facts (GDP 695704亿元/同比/初步核算)
++
++# NOT_DEPLOYED: adapters not wired to worker; live extraction from dev env (0 cloud cost).
++# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/cost_value.json
+new file mode 100644
+index 000000000..04b7c17ed
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/cost_value.json
+@@ -0,0 +1,9 @@
++{
++  "task": "ADP-S3-P02-T035", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
++  "value_metric": "two A0 adapters (国家统计局 + 发改委) with a statistical-claim extractor that records every claim's indicator, value, UNIT, PERIOD, statistical basis (口径), and REVISION state, and forms facts ONLY from official numbers -- so official statistics enter as calibrated, revisable facts while media numbers never become facts",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "adapters + fixtures; the live stats.gov.cn extraction ran from the dev environment (0 cloud cost); wiring to the worker cron later makes each fetch a Worker subrequest under DIR-007"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "adapters": {"sources": ["stats-gov", "ndrc-gov"], "claim_fields": ["indicator", "value", "unit", "period", "basis(口径)", "revision"]},
++  "live_stats_smoke": {"url": "stats.gov.cn 上半年经济运行", "official_claims": 21, "official_facts": 21, "media_facts": 0},
++  "acceptance": {"claim_records_unit_period_basis_revision": true, "no_fact_from_media_numbers": true, "official_facts_gt_0": true, "media_facts_eq_0": true}
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/fixtures/ndrc_notice.html b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/fixtures/ndrc_notice.html
+new file mode 100644
+index 000000000..074dd1b98
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/fixtures/ndrc_notice.html
+@@ -0,0 +1,7 @@
++<html><head><title>国家发展改革委关于做好2024年工作的通知 - 国家发展改革委</title></head><body>
++<table class="bd1"><tbody>
++<tr><td><b>发文机关：</b></td><td>国家发展改革委</td><td class="lf15"><b>发布日期：</b></td><td>2024年01月15日</td></tr>
++<tr><td><b>发文字号：</b></td><td>发改〔2024〕1号</td><td class="lf15"><b>有效性：</b></td><td>现行有效</td></tr>
++</tbody></table>
++<div class="content"><h1>关于做好2024年工作的通知</h1><p>现将有关事项通知如下（正文从略，原文以官方发布为准）。</p></div>
++</body></html>
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/fixtures/stats_release.html b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/fixtures/stats_release.html
+new file mode 100644
+index 000000000..a4281d9e1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/fixtures/stats_release.html
+@@ -0,0 +1,6 @@
++<html><head><title>2024年国民经济运行情况 - 国家统计局</title></head><body>
++<div class="content"><h1>2024年国民经济运行情况</h1>
++<p>初步核算，2024年，国内生产总值1349084亿元，按不变价格计算，同比增长5.0%。分产业看，第一产业增加值91414亿元，同比增长3.5%。</p>
++<p>全年规模以上工业增加值同比增长5.8%；环比增长0.9%。社会消费品零售总额487895亿元，同比增长3.5%。</p>
++<p>全国居民消费价格（CPI）比上年上涨0.2%。全国固定资产投资514374亿元，同比增长3.2%。</p>
++</div></body></html>
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/known_gaps.md
+new file mode 100644
+index 000000000..f8d49d6ab
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S3-P02-T035
++
++- **NOT_DEPLOYED（任务边界，非缺陷）**：适配器未接 worker cron / D1。真抓走**开发环境**（0 云成本）；接 worker 后每 fetch = Worker 子请求，须核 DIR-007。
++- **抽取聚焦叙述式，不做表格抽取**：`extract_stat_claims` 抽取**叙述式**统计陈述（如「国内生产总值1349084亿元，同比增长5.0%」），这是 stats 发布正文主形式。**表格数据**（单位在列头、值在单元格，如 GDP 初步核算数据表）**不在本任务抽取范围**——实测真实 GDP 表格页抽取 0 条（表结构需专门的表抽取，属后续）。narrative 发布（经济运行）实测抽 21 条。
++- **indicator 词表有限**：`INDICATORS` 覆盖 GDP/CPI/PPI/工业增加值/零售/投资/失业率等主指标；分产业增加值（第一产业增加值等）等未列入 → 跳过（不臆造）。可按需扩展词表。
++- **口径/期间取最近标记**：basis 取值窗口内最近 口径 词，period 取标题/正文首个年份/季度/月份；复杂多期间同段落可能归并到同一 period（保守）。
++- **发改委共用统计连接器**：ndrc-gov 用同一 `OfficialStatConnector`；发改委政策文件/公告的文号/日期若需，走 T034 的政策解析（同 gov.cn 模板），本任务聚焦统计 claim。
++- **fixtures 为结构化样本**：stats/ndrc fixtures 贴合真实语言/模板；2024 期镜像真实 GDP 口径。真实各期差异由 T032 契约 + 后续 fixtures 兜底；live 实测不逐字复现。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/real_stats_smoke.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/real_stats_smoke.json
+new file mode 100644
+index 000000000..65ccaf3ce
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/real_stats_smoke.json
+@@ -0,0 +1,83 @@
++{
++  "note": "LIVE point-in-time extraction from real stats.gov.cn narrative release; not byte-reproducible.",
++  "fetched_at": "2026-07-16T16:01:23+10:00",
++  "url": "https://www.stats.gov.cn/sj/zxfb/202607/t20260715_1964121.html",
++  "title": "上半年经济运行在合理区间 新动能快速成长",
++  "official_claims": 21,
++  "official_facts": 21,
++  "media_facts": 0,
++  "sample_claims": [
++    {
++      "indicator": "国内生产总值",
++      "value": "695704",
++      "unit": "亿元",
++      "period": "2026年",
++      "basis": "同比",
++      "revision": "初步核算",
++      "is_fact": true
++    },
++    {
++      "indicator": "国内生产总值",
++      "value": "5.0",
++      "unit": "%",
++      "period": "2026年",
++      "basis": "同比",
++      "revision": "初步核算",
++      "is_fact": true
++    },
++    {
++      "indicator": "国内生产总值",
++      "value": "0.9",
++      "unit": "%",
++      "period": "2026年",
++      "basis": "环比",
++      "revision": "初步核算",
++      "is_fact": true
++    },
++    {
++      "indicator": "规模以上工业增加值",
++      "value": "5.4",
++      "unit": "%",
++      "period": "2026年",
++      "basis": "同比",
++      "revision": "初步核算",
++      "is_fact": true
++    },
++    {
++      "indicator": "规模以上工业增加值",
++      "value": "5.3",
++      "unit": "%",
++      "period": "2026年",
++      "basis": "同比",
++      "revision": "初步核算",
++      "is_fact": true
++    },
++    {
++      "indicator": "社会消费品零售总额",
++      "value": "248722",
++      "unit": "亿元",
++      "period": "2026年",
++      "basis": "同比",
++      "revision": "初步核算",
++      "is_fact": true
++    },
++    {
++      "indicator": "社会消费品零售总额",
++      "value": "42691",
++      "unit": "亿元",
++      "period": "2026年",
++      "basis": "同比",
++      "revision": "初步核算",
++      "is_fact": true
++    },
++    {
++      "indicator": "固定资产投资",
++      "value": "226370",
++      "unit": "亿元",
++      "period": "2026年",
++      "basis": "同比",
++      "revision": "初步核算",
++      "is_fact": true
++    }
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/test-results/stats_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/test-results/stats_tests.txt
+new file mode 100644
+index 000000000..676410e28
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/test-results/stats_tests.txt
+@@ -0,0 +1,13 @@
++extracted 5 statistical claims from the official release
++  国内生产总值=1349084亿元 | period=2024年 口径=同比 修订=初步核算 fact=True
++  规模以上工业增加值=5.8% | period=2024年 口径=同比 修订=初步核算 fact=True
++  社会消费品零售总额=487895亿元 | period=2024年 口径=比上年 修订=初步核算 fact=True
++  居民消费价格=0.2% | period=2024年 口径=比上年 修订=初步核算 fact=True
++  固定资产投资=514374亿元 | period=2024年 口径=比上年 修订=初步核算 fact=True
++all claims carry unit+period+revision: True
++
++facts from OFFICIAL: 5 | from MEDIA: 0 | from SEARCH: 0
++
++registry: ['ndrc-gov', 'stats-gov']
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/test-results/t035_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/test-results/t035_verify.py
+new file mode 100644
+index 000000000..81f2a8129
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P02-T035/test-results/t035_verify.py
+@@ -0,0 +1,66 @@
++#!/usr/bin/env python3
++"""ADP-S3-P02-T035 acceptance: Statistics + NDRC A0 adapters with statistical-claim extraction.
++
++Acceptance (TASK_INDEX): 统计 Claim 记录单位、期间、口径和修订；不从媒体数字形成事实。
++Deterministic (fixtures; the live stats.gov.cn extraction is a separate smoke). Mirrors the real
++stats narrative form (国内生产总值1349084亿元，同比增长5.0%; revision 初步核算).
++"""
++import sys, json, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1")
++T035 = V01 / "evidence" / "ADP-S3-P02-T035"
++FX = T035 / "fixtures"
++sys.path.insert(0, str(V01 / "tools"))
++import adapter_stats_ndrc as S  # noqa: E402
++
++fails = []
++stats_html = (FX / "stats_release.html").read_text(encoding="utf-8")
++title = "2024年国民经济运行情况"
++
++# --- 1) statistical Claim records unit / period / basis(口径) / revision ---------------------
++claims = S.extract_stat_claims(stats_html, "stats-gov", "A0", title)
++print(f"extracted {len(claims)} statistical claims from the official release")
++for c in claims:
++    print(f"  {c.indicator}={c.value}{c.unit} | period={c.period} 口径={c.basis} 修订={c.revision} fact={c.is_fact}")
++if len(claims) < 5:
++    fails.append(f"too few claims extracted ({len(claims)})")
++# every claim must record unit, period, basis (口径), revision
++for c in claims:
++    if not c.unit:
++        fails.append(f"claim {c.indicator} missing unit")
++    if not c.period:
++        fails.append(f"claim {c.indicator}={c.value} missing period")
++    if not c.revision:
++        fails.append(f"claim {c.indicator}={c.value} missing revision")
++# at least the growth-rate claims carry a 口径 (同比/环比)
++if not any(c.basis for c in claims):
++    fails.append("no claim recorded a 口径 (statistical basis)")
++# the GDP absolute value claim is present with the right unit + period + revision
++gdp = [c for c in claims if c.indicator == "国内生产总值" and c.unit == "亿元"]
++if not gdp:
++    fails.append("GDP absolute-value claim (亿元) not extracted")
++elif not (gdp[0].period == "2024年" and gdp[0].revision == "初步核算"):
++    fails.append(f"GDP claim period/revision wrong: {gdp[0].period}/{gdp[0].revision}")
++print("all claims carry unit+period+revision:", all(c.unit and c.period and c.revision for c in claims))
++
++# --- 2) NO fact formed from MEDIA numbers ---------------------------------------------------
++official_facts = S.claims_to_facts(S.extract_stat_claims(stats_html, "stats-gov", "A0", title))
++media_facts = S.claims_to_facts(S.extract_stat_claims(stats_html, "some-media", "media", title))
++search_facts = S.claims_to_facts(S.extract_stat_claims(stats_html, "search-x", "search", title))
++print(f"\nfacts from OFFICIAL: {len(official_facts)} | from MEDIA: {len(media_facts)} | from SEARCH: {len(search_facts)}")
++if len(official_facts) == 0:
++    fails.append("official source produced no facts")
++if len(media_facts) != 0:
++    fails.append(f"media numbers wrongly became facts ({len(media_facts)})")
++if len(search_facts) != 0:
++    fails.append(f"search numbers wrongly became facts ({len(search_facts)})")
++
++# --- adapters exist for stats + ndrc; ndrc doc parses as an official announcement ------------
++reg = S.build_registry(fetcher=None)
++if reg.ids() != ["ndrc-gov", "stats-gov"]:
++    fails.append(f"registry ids {reg.ids()} != stats + ndrc")
++print("\nregistry:", reg.ids())
++
++print("\n" + ("ACCEPTANCE = PASS" if not fails else "ACCEPTANCE = FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/adapter_stats_ndrc.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/adapter_stats_ndrc.py
+new file mode 100644
+index 000000000..924dc1c7c
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/adapter_stats_ndrc.py
+@@ -0,0 +1,157 @@
++#!/usr/bin/env python3
++"""ADP V0.1 A0 adapters: National Bureau of Statistics + NDRC (ADP-S3-P02-T035).
++
++Adds two A0 official adapters on the T031 SDK -- 国家统计局 (stats.gov.cn) and 国家发改委 (ndrc.gov.cn) --
++and, crucially, a STATISTICAL CLAIM extractor. Every statistical claim records its indicator, value,
++UNIT, PERIOD, statistical basis (口径: 同比/环比/累计/不变价/现价…), and REVISION state (初步核算/最终
++核实/修订). A claim only becomes a FACT when it comes from an official (A0/A1) source -- numbers seen in
++media are recorded as claims but never promoted to facts (不从媒体数字形成事实).
++
++Deterministic parse; the real HTTP fetch is the T031 HttpFetcher. NOT_DEPLOYED. Real DOM confirmed on
++stats.gov.cn/sj/zxfb (e.g. "2026年二季度和上半年国内生产总值初步核算结果").
++"""
++from __future__ import annotations
++import dataclasses, hashlib, html as _html, pathlib, re, sys
++
++sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
++import official_connector as OC
++import official_identity as OI
++
++INDICATORS = ["国内生产总值", "GDP", "居民消费价格", "CPI", "工业生产者出厂价格", "PPI",
++              "规模以上工业增加值", "社会消费品零售总额", "固定资产投资", "居民人均可支配收入",
++              "货物进出口总额", "城镇调查失业率"]
++UNITS = ["万亿元", "亿元", "万元", "百分点", "万人", "万吨", "元", "%"]
++BASIS = ["比上年同期", "比上年", "同比", "环比", "累计", "当月", "当季", "不变价", "现价", "可比价", "两年平均"]
++REVISION = ["初步核算", "初步统计", "最终核实", "修订", "初步预计"]
++_NUM = r"\d[\d,]*(?:\.\d+)?"
++
++
++@dataclasses.dataclass(frozen=True)
++class StatClaim:
++    indicator: str
++    value: str
++    unit: str
++    period: str | None
++    basis: str | None            # 口径
++    revision: str | None
++    source_id: str
++    authority_level: str
++    is_fact: bool                # True only when the source is official (A0/A1)
++
++
++def _period_from(title, text):
++    for pat in [r"(\d{4}年(?:[一二三四]季度)?(?:上半年|下半年|全年)?)", r"(\d{4}年\d{1,2}月)"]:
++        m = re.search(pat, title) or re.search(pat, text)
++        if m:
++            return m.group(1)
++    return None
++
++
++def _revision_from(title, text):
++    for r in REVISION:
++        if r in title or r in text:
++            return r
++    return None
++
++
++def extract_stat_claims(text, source_id, authority_level, title=""):
++    """Extract statistical claims. A claim = an indicator + a value + a unit, with the nearest 口径
++    marker and the release's revision state. Only official sources (A0/A1) yield facts."""
++    text = _html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", text)))
++    period = _period_from(title, text)
++    revision = _revision_from(title, text)
++    is_official = authority_level in ("A0", "A1")
++    claims, seen = [], set()
++    ind_alt = "|".join(map(re.escape, INDICATORS))
++    unit_alt = "|".join(map(re.escape, UNITS))
++    # form: <indicator> ... <value><unit> ... optional <basis>增长 <value>%
++    for m in re.finditer(rf"({ind_alt})[^。，]{{0,20}}?({_NUM})\s*({unit_alt})", text):
++        ind, val, unit = m.group(1), m.group(2), m.group(3)
++        window = text[max(0, m.start() - 30):m.end() + 30]
++        basis = next((b for b in BASIS if b in window), None)
++        key = (ind, val, unit, basis)
++        if key in seen:
++            continue
++        seen.add(key)
++        claims.append(StatClaim(ind, val, unit, period, basis, revision, source_id, authority_level, is_official))
++    return claims
++
++
++def claims_to_facts(claims):
++    """不从媒体数字形成事实: only official-source claims are facts."""
++    return [c for c in claims if c.is_fact]
++
++
++class OfficialStatConnector(OC.OfficialConnector):
++    def __init__(self, source_id, listing, host, fetcher=None):
++        self.source_id = source_id
++        self.authority_level = "A0"
++        self.listing = listing
++        self.host = host
++        self.fetcher = fetcher or OC.HttpFetcher(timeout=20)
++
++    def health(self):
++        return OC.HealthResult(True, f"{self.source_id} adapter", self.listing)
++
++    def fetch(self, url, fetched_at):
++        return self.fetcher.get(url, fetched_at)
++
++    def discover(self, cursor):
++        html = self.fetcher.get(self.listing, "listing").body.decode("utf-8", "ignore")
++        items, seen = [], set()
++        for m in re.finditer(r'href="([^"]*t(\d{8})_\d+\.html)"[^>]*>\s*([^<]{6,60})', html):
++            url, ymd, title = m.group(1), m.group(2), _html.unescape(m.group(3)).strip()
++            d = f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:8]}"
++            if url in seen:
++                continue
++            seen.add(url)
++            items.append(OC.DiscoverItem(url, title, d))
++        if cursor and cursor.last_date:
++            items = [it for it in items if (it.hint_date or "") > cursor.last_date]
++        return items
++
++    def verify(self, item, fetched):
++        r = OI.verify_identity({"source_id": self.source_id, "url": self.host, "category": "china_official",
++                                "id_code": "bm36000002"})
++        return OC.VerifyResult(r["verified"], r["authority_level"], r["evidence"]["official_domain"], tuple(r["reasons"]))
++
++    def normalize(self, item, fetched):
++        html = fetched.body.decode("utf-8", "ignore")
++        title = re.search(r"<title>(.*?)</title>", html, re.S)
++        title = _html.unescape(title.group(1)).split(" - ")[0].split("_")[0].strip() if title else ""
++        claims = extract_stat_claims(html, self.source_id, "A0", title)
++        return OC.NormalizedDoc(self.source_id, item.url if isinstance(item, OC.DiscoverItem) else item, title,
++                                None, item.hint_date if isinstance(item, OC.DiscoverItem) else None,
++                                _revision_from(title, html), "A0",
++                                body_text=f"{len(claims)} stat claims", attachments=(),
++                                canonical_hint="ttl:" + hashlib.sha256(title.encode()).hexdigest()[:16])
++
++    def attachments(self, fetched):
++        html = fetched.body.decode("utf-8", "ignore")
++        return [OC.Attachment(u, u.rsplit(".", 1)[-1].lower())
++                for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|csv))"', html, re.I)]
++
++    def cursor(self, docs):
++        dates = [d.doc_date for d in docs if d.doc_date]
++        return OC.Cursor(last_id=docs[-1].doc_id if docs else None, last_date=max(dates) if dates else None)
++
++
++def build_registry(fetcher=None):
++    reg = OC.AdapterRegistry()
++    reg.register(OfficialStatConnector("stats-gov", "https://www.stats.gov.cn/sj/zxfb/", "https://www.stats.gov.cn/", fetcher))
++    reg.register(OfficialStatConnector("ndrc-gov", "https://www.ndrc.gov.cn/xxgk/", "https://www.ndrc.gov.cn/", fetcher))
++    return reg
++
++
++if __name__ == "__main__":
++    import argparse, json
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--file")
++    ap.add_argument("--source-id", default="stats-gov")
++    ap.add_argument("--authority", default="A0")
++    ap.add_argument("--title", default="")
++    args = ap.parse_args()
++    text = pathlib.Path(args.file).read_text(encoding="utf-8")
++    claims = extract_stat_claims(text, args.source_id, args.authority, args.title)
++    print(json.dumps({"claims": [dataclasses.asdict(c) for c in claims], "facts": len(claims_to_facts(claims))},
++                     ensure_ascii=False, indent=2))

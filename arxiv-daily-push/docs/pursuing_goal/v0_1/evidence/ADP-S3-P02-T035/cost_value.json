@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S3-P02-T035", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "two A0 adapters (国家统计局 + 发改委) with a statistical-claim extractor that records every claim's indicator, value, UNIT, PERIOD, statistical basis (口径), and REVISION state, and forms facts ONLY from official numbers -- so official statistics enter as calibrated, revisable facts while media numbers never become facts",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "adapters + fixtures; the live stats.gov.cn extraction ran from the dev environment (0 cloud cost); wiring to the worker cron later makes each fetch a Worker subrequest under DIR-007"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "adapters": {"sources": ["stats-gov", "ndrc-gov"], "claim_fields": ["indicator", "value", "unit", "period", "basis(口径)", "revision"]},
+  "live_stats_smoke": {"url": "stats.gov.cn 上半年经济运行", "official_claims": 21, "official_facts": 21, "media_facts": 0},
+  "acceptance": {"claim_records_unit_period_basis_revision": true, "no_fact_from_media_numbers": true, "official_facts_gt_0": true, "media_facts_eq_0": true}
+}

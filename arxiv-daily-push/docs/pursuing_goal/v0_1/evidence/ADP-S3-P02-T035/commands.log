@@ -1,0 +1,23 @@
+# ADP-S3-P02-T035 commands (stats + ndrc A0 adapters + statistical-claim extractor)
+# base: main 7b79fffc (T034)
+
+# real DOM: stats.gov.cn/sj/zxfb release list -> t{YYYYMMDD}_N.html; narrative form
+#   "国内生产总值695704亿元，按不变价格计算，同比增长4.7%" (indicator+value+unit + 口径 + 修订初步核算)
+
+# 1) adapter + extractor + spec + fixtures
+#    tools/adapter_stats_ndrc.py   (StatClaim; extract_stat_claims[unit/period/口径/revision];
+#                                   claims_to_facts[official-only]; OfficialStatConnector; build_registry stats+ndrc)
+#    STATS_ADAPTER_SPEC.md ; fixtures/{stats_release,ndrc_notice}.html
+
+# 2) acceptance test (fixtures)
+python3 evidence/ADP-S3-P02-T035/test-results/t035_verify.py | tee evidence/ADP-S3-P02-T035/test-results/stats_tests.txt
+# -> 5 claims each with unit+period(2024年)+口径(同比/比上年)+修订(初步核算); GDP 1349084亿元
+# -> facts OFFICIAL 5 | MEDIA 0 | SEARCH 0 (no fact from media numbers)
+# -> registry stats-gov + ndrc-gov ; ACCEPTANCE = PASS (exit 0)
+
+# 3) LIVE extraction from real stats.gov.cn narrative release
+python3 <inline> -> evidence/ADP-S3-P02-T035/real_stats_smoke.json
+#   official claims 21 -> 21 facts ; media -> 0 facts (GDP 695704亿元/同比/初步核算)
+
+# NOT_DEPLOYED: adapters not wired to worker; live extraction from dev env (0 cloud cost).
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

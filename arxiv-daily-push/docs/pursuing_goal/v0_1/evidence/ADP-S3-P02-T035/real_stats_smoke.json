@@ -1,0 +1,83 @@
+{
+  "note": "LIVE point-in-time extraction from real stats.gov.cn narrative release; not byte-reproducible.",
+  "fetched_at": "2026-07-16T16:01:23+10:00",
+  "url": "https://www.stats.gov.cn/sj/zxfb/202607/t20260715_1964121.html",
+  "title": "上半年经济运行在合理区间 新动能快速成长",
+  "official_claims": 21,
+  "official_facts": 21,
+  "media_facts": 0,
+  "sample_claims": [
+    {
+      "indicator": "国内生产总值",
+      "value": "695704",
+      "unit": "亿元",
+      "period": "2026年",
+      "basis": "同比",
+      "revision": "初步核算",
+      "is_fact": true
+    },
+    {
+      "indicator": "国内生产总值",
+      "value": "5.0",
+      "unit": "%",
+      "period": "2026年",
+      "basis": "同比",
+      "revision": "初步核算",
+      "is_fact": true
+    },
+    {
+      "indicator": "国内生产总值",
+      "value": "0.9",
+      "unit": "%",
+      "period": "2026年",
+      "basis": "环比",
+      "revision": "初步核算",
+      "is_fact": true
+    },
+    {
+      "indicator": "规模以上工业增加值",
+      "value": "5.4",
+      "unit": "%",
+      "period": "2026年",
+      "basis": "同比",
+      "revision": "初步核算",
+      "is_fact": true
+    },
+    {
+      "indicator": "规模以上工业增加值",
+      "value": "5.3",
+      "unit": "%",
+      "period": "2026年",
+      "basis": "同比",
+      "revision": "初步核算",
+      "is_fact": true
+    },
+    {
+      "indicator": "社会消费品零售总额",
+      "value": "248722",
+      "unit": "亿元",
+      "period": "2026年",
+      "basis": "同比",
+      "revision": "初步核算",
+      "is_fact": true
+    },
+    {
+      "indicator": "社会消费品零售总额",
+      "value": "42691",
+      "unit": "亿元",
+      "period": "2026年",
+      "basis": "同比",
+      "revision": "初步核算",
+      "is_fact": true
+    },
+    {
+      "indicator": "固定资产投资",
+      "value": "226370",
+      "unit": "亿元",
+      "period": "2026年",
+      "basis": "同比",
+      "revision": "初步核算",
+      "is_fact": true
+    }
+  ]
+}
