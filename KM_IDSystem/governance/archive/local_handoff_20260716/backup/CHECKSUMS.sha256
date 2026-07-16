@@ -1,0 +1,13 @@
+2b64ea313a9050585ba2fd2261321ebd702a2ae2cd1185e88b013b32d295cb1b  ./KM_IDS-HEAD-e1679d24-project-snapshot.tar.gz
+947985fb14444c1f193b63a1e7fb854eb0c76f2d317c290c6682ea0d931b105c  ./KM_IDS-dirty-tracked.patch.gz
+d145eec8babc6c90f652cbb2556b106e4cbfc9f75bd740446546d7e94032423b  ./KM_IDS-local-commits-565babef-to-e1679d24.bundle
+e069929b206d7473e5e35e9a1f16086f3e9fbb1ae3224108902806dbdf66b42b  ./KM_IDS-local-commits.mbox.gz
+cf97c784441142d5086f4ba90f275554d2a11d4a57783757db2749ca9f877d4c  ./KM_IDS-main-integration-candidate.bundle
+b1a672de263a21feb86c216990b70984946a2435994775a29daff24f06456db9  ./KM_IDS-main-integration-candidate.mbox.gz
+708da7e0a84c04067c45339fdec6f5d71074ed6d333b465603b3a3404fffc306  ./KM_IDS-working-tree-overlay.tar.gz
+9b75167baff0899355723f7eee6528ec507633a553d0f410c19835476b12d5df  ./RESTORE.md
+71fb79d8e486e614254e95ae93315d291b06a17b05eaa724575cf2979265bc02  ./STAGE043-integration-candidate-check.json.txt
+ce44e509aa612c1777b75a8bc9d87065500e0887c7410df9f1a2365c3482a1e6  ./git-status-porcelain-v2.txt
+d3edf1730363c28fc8b84e0d29d30a51e712dd92723686e68b031774ae63af82  ./local-commit-chain.tsv
+0a0b5282486f58fa10ef89bb68a5c52405a1f77debe951a161aae42dcfa4b729  ./opme-system-files.sha256
+57bee433ec510d08593b3defd66cadec27082f21487b5d903f8baeef0ac4f403  ./opme-system-legacy-assets.tar.gz

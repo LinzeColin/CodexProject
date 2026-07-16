@@ -1,0 +1,9 @@
+# branch.oid e1679d247986eb03665d440185e04dd56223a364
+# branch.head codex/ids-v0-1-stages-001-010
+# branch.upstream origin/main
+# branch.ab +2552 -2572
+1 .M N... 100644 100644 100644 829719cd15da486ea7650ca914144e62c358af59 829719cd15da486ea7650ca914144e62c358af59 KM_IDSystem/backend/requirements.txt
+1 .M N... 100644 100644 100644 54b27d84cfbcd50b79edba1eb20db9e7303b1ed7 54b27d84cfbcd50b79edba1eb20db9e7303b1ed7 KM_IDSystem/frontend/package.json
+1 .M N... 100755 100755 100755 d06fabde63a93269ced06a41475c8b3db999956a d06fabde63a93269ced06a41475c8b3db999956a KM_IDSystem/scripts/run_local_services.sh
+? .DS_Store
+? KM_IDSystem/frontend/pnpm-workspace.yaml
