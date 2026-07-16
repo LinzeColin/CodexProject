@@ -335,6 +335,14 @@ jobs:
               close_delete(pr, expected_head, reason)
               raise SystemExit(0)
 
+          main_ref = api("git/ref/heads/main")
+          live_main_sha = str((main_ref.get("object") or {}).get("sha") or "")
+          if not re.fullmatch(r"[0-9a-f]{40}", live_main_sha):
+              raise RuntimeError("live main SHA is unavailable")
+          if live_main_sha != expected_base:
+              close_delete(pr, expected_head, "stale_tested_base")
+              raise SystemExit(0)
+
           print(f"SETTLEMENT=MERGE_DELETE pr={pr_number} head={expected_head}")
           if dry_run:
               raise SystemExit(0)

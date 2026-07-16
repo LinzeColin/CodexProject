@@ -1,0 +1,102 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0019",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0019"
+  ],
+  "iteration_id": "ST10-PHC-OPENAIDATABASE-PAM1-0019-003",
+  "generated_at": "2026-07-16T23:50:21Z",
+  "implementation_base_sha": "bed2c13bec7b62653d76ec6711ce3a5c990bd34f",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:232458b2353642123027fc9d37bac31407a89852b07c51ac174e19de86711f39",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the four non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "Task37 accepted-main clean-clone portability and exact-base Settlement race remediation",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
+  "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
+  "summary": "Close the two production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with the accepted public-main tree and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 0,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "required_governance_files": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "evidence_refs": [
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29542903124",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29542732909",
+    ".github/workflows/agent-loop-settlement.yml",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest -q tests.agent_loop.test_workflow_contract tests.governance.test_repository_hygiene",
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref bed2c13bec7b62653d76ec6711ce3a5c990bd34f"
+  ],
+  "test_results": [
+    {
+      "command": "focused workflow and hygiene regression",
+      "result": "PASS",
+      "observed": "9/9 tests passed. The contract requires a live main-ref comparison and the hygiene baseline must be a root tree reachable from HEAD history."
+    },
+    {
+      "command": "workflow security audit",
+      "result": "PASS",
+      "observed": "15 owned workflows; zero high-privilege, unpinned, permission, trigger, context or duplicate-role violations."
+    },
+    {
+      "command": "repository hygiene audit",
+      "result": "PASS",
+      "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; zero policy errors and zero violations."
+    }
+  ],
+  "stop_conditions": {
+    "live_main_differs_from_tested_base": true,
+    "hygiene_baseline_not_reachable_from_head_history": true,
+    "required_check_failure": true,
+    "agentdatabase_not_public": true,
+    "public_snapshot_contains_runtime_or_unsafe_records": true
+  },
+  "rollback": {
+    "action": "Revert this five-file remediation through a new governed transaction.",
+    "history_rewrite": false,
+    "canonical_or_raw_data_compensation": "none"
+  },
+  "unresolved_risks": [
+    "Remote required checks and published acceptance remain pending; do not tag or upload until all accepted-main gates succeed."
+  ],
+  "next_allowed_task": "Complete the same Task37 trusted Settlement, source tag, public Release and published acceptance."
+}
