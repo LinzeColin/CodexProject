@@ -168,6 +168,13 @@ stages:
   R6:
     gate: phone_access_full_system_via_tunnel_with_mirror_fallback
     status: completed_live_end_to_end
+    superseded_by: J5_cloud_native
+    superseded_note: >
+      隧道/Mac 镜像架构（Worker 反代 Cloudflare Tunnel → 本机 127.0.0.1:8787 + 镜像回落 +
+      本机 LaunchAgent 常驻）已退役；当前真相为 J5 云原生（整套系统跑 adp-cloud Worker + D1 + cron，
+      无隧道、无 Mac 镜像、无本机常驻）。本 R6 段为历史记录，非当前架构。当前状态见机器生成的
+      docs/pursuing_goal/v0_1/STATUS_GENERATED.md（由 tools/generate_status.py 生成，勿手改）。
+      ADP-S1-P01-T011 消除本文件同时声称 Cloud-native 与 Tunnel 的矛盾（DRIFT-FACT-007）。
     completed_at: "2026-07-15"
     owner_visible: >
       手机直接打开 https://adp.linzezhang.com（无钥匙；公开可读代价与 Access 私有化方案

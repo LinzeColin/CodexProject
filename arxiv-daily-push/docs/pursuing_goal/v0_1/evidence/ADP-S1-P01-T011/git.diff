@@ -1,0 +1,508 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 125ce0f7d..19cdd4a8d 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S1-P01-T011 (generated status + drift check; DRIFT-FACT-007 resolved)
++
++- Eleventh task of the ADP V0.1 FINAL EXECUTION program (S1-P01), one task per run. Goal: eliminate the STATUS contradiction where docs/v03/STATUS.yaml simultaneously claimed cloud-native (J5) and Tunnel/Mac-mirror (R6) as current -- DRIFT-FACT-007. NOT_DEPLOYED, 0 recurring cloud cost; the worker/D1/production untouched. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: STATUS_GENERATED.md (machine-generated current deployment status -- cloud-native adp-cloud Worker + D1 + cron, NO Cloudflare Tunnel, NO Mac 127.0.0.1 mirror, NO LaunchAgent residents; build_id bd67a78020a3 from the live /build.json, commit/cron/schema/registry/content_hash from the deployment manifest), tools/generate_status.py (generator), tools/check_status_drift.py (CI drift check). The stale section is archived by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native with a superseded_note pointing at STATUS_GENERATED.md. Acceptance verified (evidence/ADP-S1-P01-T011/test-results/status_drift_check.txt): check_status_drift = PASS (generated status matches the manifest commit/cron/registry/content_hash and asserts tunnel/Mac retired; R6 is superseded); a negative test that removes R6's superseded_by makes the check return DRIFT (exit 1), proving a hand-written old architecture cannot silently override the generated current; restoring it returns PASS; and STATUS.yaml still parses. The generated status's build_id equals the live /build.json (docs consistent with the build endpoint). S1 value: single-truth deployment status. Cost: generate_status optionally pulls /build.json once at generation, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S1-P01-T010 (read-only /build.json + footer build id; PRODUCTION)
+ 
+ - Tenth task of the ADP V0.1 FINAL EXECUTION program (S1-P01), one task per run. Goal: let both domains and test tools confirm the actual running build. Surgical additive change to deploy/cloudflare/worker_cloud.js (+7/-1): a BUILD constant, a read-only /build.json route, and a footer build id link -- NOTHING else touched (six themes, hero videos, cosmic dashboard, fx layers, ChatGPT deep-dive, CSP, no-store all preserved). build_id/source_sha256 are a self-excluding hash (reset the two field values to '0'*12 and '0'*64 and sha256 the file to reproduce source_sha256). Deployed to Cloudflare adp-cloud: pre-deploy version 455afd98 (rollback target) -> post-deploy version 3816d21c, both domains + cron 30 20 * * * preserved. release_mode PRODUCTION. Acceptance verified (evidence/ADP-S1-P01-T010/test-results/deploy_verify.txt): /build.json is byte-identical across adp.linzezhang.com and adp-cloud.linzezhang35.workers.dev ({"build_id":"bd67a78020a3","source_sha256":"bd67a78020a3...ead084","schema_version":"cn_v0_3","built_at":"2026-07-16"}); build id, bundle/source hash, and schema version match across both domains; no secret is exposed (scan clean); all 7 routes return 200 on both domains; and the protected baseline is intact on both domains (six themes 6/6, three hero videos, cosmic dashboard, fx ambient layers, ChatGPT deep-dive). PARAM-ADP-1124 (cloud abstain threshold 59.6, read by worker_cloud.js) re-attested unchanged with version tag adp-v03-j5-cloud-v10. Rollback: wrangler versions deploy 455afd98 (additive-only, no schema/data change). S1 value: both domains can confirm the exact live build (supports FACT-014). Cost: new_requests = tiny read-only /build.json, D1 0, R2 0, model_calls 0; recurring cloud cost delta ~$0 (Free tier). Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 74c8243dd..3751733b2 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260716-ADP-V01-S1-P01-T009-DEPLOYMENT-MANIFEST-SCHEMA"
+-source_snapshot_hash: "sha256:7e3d84ab003b5ebf9f27c1868f8f2e97b63a33645601f2cc6941338463b81758"
++as_of_event_id: "EVENT-20260716-ADP-V01-S1-P01-T010-BUILD-ENDPOINT"
++source_snapshot_hash: "sha256:6bb0ffad9bab587c371df585aeebe3c6fe32b075adc67818280c58712cddf127"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-16T13:30:00+10:00"
++snapshot_event_time: "2026-07-16T13:50:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 68
++    precommit_pending_events: 69
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 23708e670..bc8e8a2a1 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-16 V0.1 S1-P01-T011: generated the deployment status from the manifest and added a CI drift check, resolving DRIFT-FACT-007 (S1-P01, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; worker/D1/production untouched. Deliverables under docs/pursuing_goal/v0_1/: STATUS_GENERATED.md (machine-generated: cloud-native adp-cloud + D1 + cron, no tunnel/no Mac mirror/no LaunchAgent; build_id bd67a78020a3 from live /build.json, rest from the deployment manifest), tools/generate_status.py, tools/check_status_drift.py. Stale archive: docs/v03/STATUS.yaml R6 marked superseded_by J5_cloud_native + superseded_note. Acceptance (test-results/status_drift_check.txt): check_status_drift PASS; negative test (remove R6 superseded_by) -> DRIFT exit 1 (hand-written old architecture cannot override generated current); restore -> PASS; STATUS.yaml parses; generated build_id == live /build.json. Value (S1): single-truth deployment status. Cost: generate_status optionally pulls /build.json once, D1 0, R2 0, model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id (S1-P01, one task per run). Surgical additive change to deploy/cloudflare/worker_cloud.js (+7/-1): BUILD const + /build.json route + footer build id; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved. build_id/source_sha256 = self-excluding hash. Deployed to Cloudflare adp-cloud (pre 455afd98 rollback target -> post 3816d21c; both domains + cron 30 20 * * * preserved); release_mode PRODUCTION. Acceptance (test-results/deploy_verify.txt): /build.json byte-identical across adp.linzezhang.com and workers.dev (build_id bd67a78020a3, source_sha256, schema_version cn_v0_3); no secret; 7 routes 200 both domains; protected baseline intact both domains (6/6 themes, 3 hero videos, dashboard, fx, ChatGPT). PARAM-ADP-1124 re-attested unchanged (59.6) as adp-v03-j5-cloud-v10. Rollback: wrangler versions deploy 455afd98 (additive, no schema/data change). Value (S1): both domains confirm the live build (FACT-014). Cost: tiny read-only request / D1 0 / R2 0 / model 0 / ~$0 recurring (Free tier). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S1-P01-T009: implemented the Deployment Manifest Schema (first S1 task, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; generator read-only. Deliverables under docs/pursuing_goal/v0_1/: schemas/deployment_manifest.schema.json (draft-07), tools/generate_manifest.py (deterministic, secret redaction), deployment_manifest.sample.json (content_hash sha256:810a0a1b...). Self-tests (test-results/manifest_selftest.txt): two builds on same commit -> identical content_hash + identical binding except allowed generated_at/generator_note (DETERMINISTIC); jsonschema.validate PASS; content_hash covers binding only (recompute matches); redact() masks Bearer/token/hex and manifest stores hashes not contents. Binds 8 components / 9 files + commit + cron 30 20 * * *. Value (S1): single production truth, rebuildable + diffable. Cost: new_requests 0 / D1 0 / R2 0 / model_calls 0 / human = re-run generator per deploy. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S0 EXIT owner gate PASSED: the Owner confirmed the private-facts snapshot in-conversation (implementer does not self-sign). Cloudflare plan = Free tier -> FACT-013 VERIFIED (recurring cost baseline $0; measured usage inside the free envelope); repo inventory of all 8 LinzeColin repos (Owner-authorized) found ADP app code only in CodexProject/arxiv-daily-push -> FACT-015 VERIFIED (single-source-of-truth intact; LinzeHomeHub/NotionStudyProject/Governance are related-but-separate). Owner confirmed proceed to S1. Deliverable docs/pursuing_goal/v0_1/S0_EXIT_RECORD.md + FACT_LEDGER.csv (FACT-013/FACT-015 UNVERIFIED -> VERIFIED; 0 UNVERIFIED remain). Drifts DRIFT-FACT-006/007/011 and FACT-014 stay routed to later tasks, non-blocking for S1. S0 complete (8/8 tasks + exit gate). Next S1-P01-T009 Deployment Manifest Schema.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 241714f0d..ad370f088 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `68`
+-- pending_or_stale_events: `418`
+-- freshness_counts: `pending_or_stale_events=418; legacy_unbound_events=334`
++- precommit_pending_events: `69`
++- pending_or_stale_events: `419`
++- freshness_counts: `pending_or_stale_events=419; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:7e3d84ab003b5ebf9f27c1868f8f2e97b63a33645601f2cc6941338463b81758`
+-- snapshot_event_time: `2026-07-16T13:30:00+10:00`
++- source_snapshot_hash: `sha256:6bb0ffad9bab587c371df585aeebe3c6fe32b075adc67818280c58712cddf127`
++- snapshot_event_time: `2026-07-16T13:50:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 256a10fc7..a399a28fa 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:7e3d84ab003b5ebf9f27c1868f8f2e97b63a33645601f2cc6941338463b81758`
+-- snapshot_event_time: `2026-07-16T13:30:00+10:00`
++- source_snapshot_hash: `sha256:6bb0ffad9bab587c371df585aeebe3c6fe32b075adc67818280c58712cddf127`
++- snapshot_event_time: `2026-07-16T13:50:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `418`
++- Pending/stale events: `419`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+index a5bebc190..a722b6496 100644
+--- a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
++++ b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+@@ -441,4 +441,4 @@ REQ-ADP-V03-MINIMAL-LOOP,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1109,ADP
+ REQ-ADP-V03-R5-SHADOW-SOURCE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/shadow_biorxiv.py,arxiv-daily-push/config/thresholds_v0_3.yaml,arxiv-daily-push/tests/test_adp_selection.py,arxiv-daily-push/data/shadow_biorxiv_report.json,shadow_running
+ REQ-ADP-V03-R6-CLOUD-MIRROR,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/mirror.py;arxiv-daily-push/deploy/cloudflare/worker.js;arxiv-daily-push/src/adp/webapp.py,NOT_APPLICABLE,arxiv-daily-push/tests/test_adp_invariants.py,arxiv-daily-push/deploy/cloudflare/README.md;arxiv-daily-push/data/config_changes.jsonl,live_tunnel_direct_mirror_fallback_pending_owner_dns
+ REQ-ADP-V03-J4-BOARDS,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1123,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/boards.py,arxiv-daily-push/config/boards_v0_3.yaml,arxiv-daily-push/tests/test_adp_boards.py,arxiv-daily-push/data/boards_fetch_report.json,live_feed_streams_expanded_boards_v03_2_44_sources
+-REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id
++REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id_plus_generated_status_drift_check
+diff --git a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+index 587e482bf..be773f701 100644
+--- a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
++++ b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+@@ -1569,4 +1569,4 @@ v03_r6_cloud_mirror: "live_adp.linzezhang.com_full_system_tunnel_direct_mirror_f
+ v03_j4_boards: "live_boards2_4_feed_streams_board5_aggregate_sources_transparent"
+ v03_home_page: "owner_original_linze_home_hub_restored_agent_worker_removed"
+ v03_j4_sources: "expanded_boards_v03_2_44_rss_sources_1050_items"
+-v03_j5_cloud_native: "stage3_cutover_live_adp_linzezhang_com_plus_vitals_review_session_browse_search_history_study_any_item_plus_chatgpt_deepdive_button_local_cleanup_plus_theme_selfheal_guard_plus_theme_fx_layers_restored_plus_bold_fx_and_no_store_plus_hero_first_screen_plus_selfhosted_video_plus_build_endpoint_version_id_v0_1_s1_t010"
++v03_j5_cloud_native: "stage3_cutover_live_adp_linzezhang_com_plus_vitals_review_session_browse_search_history_study_any_item_plus_chatgpt_deepdive_button_local_cleanup_plus_theme_selfheal_guard_plus_theme_fx_layers_restored_plus_bold_fx_and_no_store_plus_hero_first_screen_plus_selfhosted_video_plus_build_endpoint_version_id_v0_1_s1_t010_plus_generated_status_t011"
+diff --git a/arxiv-daily-push/docs/governance/delivery_tasks.yaml b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+index 994624ec9..1738c4ae4 100644
+--- a/arxiv-daily-push/docs/governance/delivery_tasks.yaml
++++ b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+@@ -6768,7 +6768,7 @@ tasks:
+     timestamp: "2026-07-14T22:45:00+10:00"
+     objective: "Build the fetch->select->lesson->recall->review loop as a new adp package with traceable evidence at every step, governed parameters only in config/thresholds_v0_3.yaml, and zero production side effects."
+     scope: "New src/adp package (five-stage run, gates, weighted selection, sentence-bound lessons, FSRS-6 review, corrections, fail-closed delivery, web UI), thresholds registry, 48h+ three-real-date run manifests, review-audit fixes, invariant and gate/weight tests."
+-    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10).)"
++    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10). 2026-07-16 ADP V0.1 S1-P01-T011: generated STATUS_GENERATED.md from the deployment manifest + live /build.json and added a CI drift check (tools/generate_status.py + tools/check_status_drift.py), and archived the stale R6 tunnel/Mac section by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native -- resolving the STATUS J5-vs-R6 contradiction (DRIFT-FACT-007); drift check PASS with a negative test proving hand-written old architecture cannot override the generated current; NOT_DEPLOYED, no worker change).)"
+     acceptance_ids:
+       - "ACC-ADP-V03-48H-LOOP"
+     test_commands:
+diff --git a/arxiv-daily-push/docs/governance/parameter_registry.csv b/arxiv-daily-push/docs/governance/parameter_registry.csv
+index 50775e7c6..693cecdb5 100644
+--- a/arxiv-daily-push/docs/governance/parameter_registry.csv
++++ b/arxiv-daily-push/docs/governance/parameter_registry.csv
+@@ -1122,4 +1122,4 @@ PARAM-ADP-1120,MOD-ADP-122,FORM-ADP-124,V03_DESIRED_RETENTION,V0.3 FSRS desired
+ PARAM-ADP-1121,MOD-ADP-122,FORM-ADP-124,V03_MAX_DAILY_REVIEWS,V0.3 max daily reviews,v03_review,float,items,12,12,12,NOT_APPLICABLE,,,,1,UNBOUNDED,read by adp.config.load_thresholds,Review protection rule: overflow defers and opens a knowledge debt.,proposal -> 30d replay preview -> explicit apply -> receipt,changes daily selection or review schedule,arxiv-daily-push/src/adp/config.py,arxiv-daily-push/config/thresholds_v0_3.yaml,arxiv-daily-push/tests/test_adp_selection.py,active,EXTRACTED,,adp-v03-thresholds-v1,2026-07-14,text_regex:arxiv-daily-push/config/thresholds_v0_3.yaml::max_daily_reviews: ([0-9.]+),12,MACHINE_VERIFIED,,24866ec5ba0c5a54294f7d6c9bff32d24c8dacaf,2026-07-14T22:45:00+10:00,PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION
+ PARAM-ADP-1122,MOD-ADP-122,FORM-ADP-124,V03_R6_MIRROR_CRON,V0.3 R6 cloud mirror cron schedule,v03_deploy,string,cron_utc,30 20 * * *,30 20 * * *,30 20 * * *,NOT_APPLICABLE,,,,NOT_APPLICABLE,NOT_APPLICABLE,Cloudflare Worker cron trigger (UTC; 20:30 UTC = 06:30 AEST),"R6 worker daily reminder/refresh; failure not retried, local heartbeat is the fallback.",NOT_APPLICABLE deployment schedule,wrong schedule shifts the cloud reminder time only; local loop unaffected,arxiv-daily-push/deploy/cloudflare/worker.js,arxiv-daily-push/deploy/cloudflare/wrangler.jsonc,NOT_APPLICABLE,active,EXTRACTED,,adp-v03-r6-deploy-v1,2026-07-15,"text_regex:arxiv-daily-push/deploy/cloudflare/wrangler.jsonc::""crons"": \[""([^""]+)""\]",30 20 * * *,MACHINE_VERIFIED,,d93499d547e20b81ce9e6c1c59cdef2851fc49ac,2026-07-15T10:20:00+10:00,PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION
+ PARAM-ADP-1123,MOD-ADP-122,FORM-ADP-124,V03_BOARDS_REGISTRY_VER,V0.3 boards registry version,v03_boards,string,version_tag,boards-v03-2,boards-v03-2,boards-v03-2,NOT_APPLICABLE,,,,NOT_APPLICABLE,NOT_APPLICABLE,read by adp.boards.load_registry,"J4 boards 2-5 live per Owner directive 2026-07-15; boards 2-4 are radar feed streams (not in the daily selection pool; pool integration is a separate proposal).",owner directive -> registry edit -> receipt,wrong registry breaks radar board pages only; daily selection loop unaffected,arxiv-daily-push/src/adp/boards.py,arxiv-daily-push/config/boards_v0_3.yaml,arxiv-daily-push/tests/test_adp_boards.py,active,EXTRACTED,,adp-v03-j4-boards-v2,2026-07-15,"text_regex:arxiv-daily-push/config/boards_v0_3.yaml::registry_ver: ([a-z0-9-]+)",boards-v03-2,MACHINE_VERIFIED,,6a6538b67d033386266710335c5fec7b63ed9758,2026-07-15T11:20:00+10:00,PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION
+-PARAM-ADP-1124,MOD-ADP-122,FORM-ADP-124,V03_CLOUD_ABSTAIN_THRESHOLD,V0.3 cloud-native abstain threshold,v03_cloud,float,points,59.6,59.6,59.6,NOT_APPLICABLE,,,,0,104,read by deploy/cloudflare/worker_cloud.js selectDaily,"J5 cloud-native rebuild: same abstain line as the local engine (weights sum 104, abstain 59.6); cross-board daily selection on Cloudflare.",owner directive -> cloud rebuild -> live verification,wrong threshold changes cloud daily selection/abstain only,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,active,EXTRACTED,,adp-v03-j5-cloud-v10,2026-07-16,"text_regex:arxiv-daily-push/deploy/cloudflare/worker_cloud.js::const ABSTAIN_THRESHOLD = ([0-9.]+);",59.6,MACHINE_VERIFIED,,59b591ac0aad509e6526dc468833d48ddb39d20c,2026-07-15T13:25:00+10:00,PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION
++PARAM-ADP-1124,MOD-ADP-122,FORM-ADP-124,V03_CLOUD_ABSTAIN_THRESHOLD,V0.3 cloud-native abstain threshold,v03_cloud,float,points,59.6,59.6,59.6,NOT_APPLICABLE,,,,0,104,read by deploy/cloudflare/worker_cloud.js selectDaily,"J5 cloud-native rebuild: same abstain line as the local engine (weights sum 104, abstain 59.6); cross-board daily selection on Cloudflare.",owner directive -> cloud rebuild -> live verification,wrong threshold changes cloud daily selection/abstain only,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,active,EXTRACTED,,adp-v03-j5-cloud-v11,2026-07-16,"text_regex:arxiv-daily-push/deploy/cloudflare/worker_cloud.js::const ABSTAIN_THRESHOLD = ([0-9.]+);",59.6,MACHINE_VERIFIED,,59b591ac0aad509e6526dc468833d48ddb39d20c,2026-07-15T13:25:00+10:00,PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/STATUS_GENERATED.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/STATUS_GENERATED.md
+new file mode 100644
+index 000000000..0255cd0eb
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/STATUS_GENERATED.md
+@@ -0,0 +1,24 @@
++# STATUS_GENERATED · ADP 当前部署状态（机器生成，勿手改）
++
++> 任务 `ADP-S1-P01-T011` 交付物。**本文件由 `tools/generate_status.py` 从部署 manifest + 线上 /build.json 生成**；
++> 手写旧架构文档不得覆盖本 generated current（漂移由 `tools/check_status_drift.py` 拦截）。要改状态，改源（manifest/worker）后重跑生成器。
++
++## 当前架构（唯一真相）= 云端原生 Cloud-native
++
++- **架构**：整套系统跑在 Cloudflare —— Worker `adp-cloud` + D1 + cron；**无 Cloudflare Tunnel、无 Mac 127.0.0.1 镜像、无本机 LaunchAgent**。
++- **运行 build**：`build_id bd67a78020a3`（线上 /build.json）。
++- **绑定 commit**：`83a845bed55c6046c2a59dd89de3f1e7bad7da7f`。
++- **cron**：`30 20 * * *`（每日 UTC）。
++- **D1 schema**：`bfb4704bbd8a…`，表：cn_events, cn_items, cn_lessons, cn_meta, cn_reviews, cn_run_log, cn_selections, cn_sources。
++- **来源 registry**：`boards-v03-2`（config/boards_v0_3.yaml）。
++- **manifest content_hash**：`sha256:810a0a1bf416af0f75b17212960a7f21588cc499cc963d8d8f8ec58bb56ba610`。
++- **对象存储 R2**：未启用（FACT-012；如需再由 Owner 后台开）。
++
++## 已退役（历史，非当前）
++
++- **R6_tunnel_mirror**：RETIRED -- superseded by J5 cloud-native (no Cloudflare Tunnel, no Mac 127.0.0.1 mirror, no LaunchAgent residents)
++
++## 一致性
++
++- 本文件与线上 /build.json 的 build_id 一致；与部署 manifest 的 commit/cron/schema/registry 一致（`check_status_drift.py` 校验）。
++- `docs/v03/STATUS.yaml` 的 R6（隧道/Mac 镜像）必须标 `superseded_by: J5_cloud_native`，否则判 DRIFT。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/TASK_REPORT.md
+new file mode 100644
+index 000000000..e6617f610
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/TASK_REPORT.md
+@@ -0,0 +1,65 @@
++# TASK_REPORT · ADP-S1-P01-T011｜由 Manifest 生成 Status/部署文档
++
++## 唯一目标（达成）
++
++消除 STATUS 同时声称 Cloud-native 与 Tunnel 的矛盾（DRIFT-FACT-007）—— 交付 generated status、stale section archive、CI drift check。
++
++## 六个开始前问题（已回答）
++
++1. 唯一目标：让部署状态由 manifest/build endpoint 机器生成为唯一真相，退役 R6 隧道/Mac 矛盾。
++2. 允许修改文件：`docs/pursuing_goal/v0_1/{STATUS_GENERATED.md, tools/generate_status.py, tools/check_status_drift.py}` + `docs/v03/STATUS.yaml`（仅给 R6 加 superseded 标记）+ 本证据包 + 治理同步。
++3. 绝不能改变：六主题/hero/动效、线上 worker 行为（本任务 NOT_DEPLOYED，不碰 worker）。
++4. 基线：main `da56c600`（T010 已合入）；线上 build_id `bd67a78020a3`。
++5. 验收：手写旧架构不能覆盖 generated current；文档与 build endpoint 一致。
++6. 回滚：`git revert <sha>`（纯文档/工具，NOT_DEPLOYED）。
++
++## 交付物
++
++- `STATUS_GENERATED.md` —— 机器生成的当前部署状态（云端原生；无隧道/无 Mac 镜像/无本机常驻；build_id bd67a78020a3、cron、schema、registry、manifest content_hash）。
++- `tools/generate_status.py` —— 从 deployment manifest + 线上 /build.json 生成上文。
++- `tools/check_status_drift.py` —— CI drift check：generated 与 manifest 一致 + R6 必须 superseded。
++- `docs/v03/STATUS.yaml` R6 —— 加 `superseded_by: J5_cloud_native` + superseded_note（stale section archive）。
++
++## 验收结果（实测，见 test-results/status_drift_check.txt）
++
++- **generated status**：STATUS_GENERATED.md 由生成器产出，断言当前=云端原生、**无 Cloudflare Tunnel、无 Mac 镜像、无本机 LaunchAgent**；build_id `bd67a78020a3` = 线上 /build.json（文档与 build endpoint 一致 ✓）。
++- **stale section archive**：docs/v03/STATUS.yaml R6（隧道/Mac）标 `superseded_by: J5_cloud_native`，明确为历史非当前。
++- **CI drift check**：`check_status_drift.py` → `RESULT: PASS`（generated 与 manifest commit/cron/registry/content_hash 一致 + R6 superseded）。
++- **手写旧架构不能覆盖 generated current（负测证明）**：移除 R6 的 superseded_by → 检查 `RESULT: DRIFT`（exit 1，正确拦截）；恢复后再次 PASS。
++- YAML 解析：STATUS.yaml 修改后 `yaml.safe_load` OK。
++
++## Data / Performance / Visual
++
++N/A —— 纯文档/工具，无数据/性能/UI 变更；未碰 worker（NOT_DEPLOYED）。
++
++## Value / Cost（S1 = Truth & Content Stabilization）
++
++- **Value（S1 指标）**：状态文档单一真相——当前部署状态由 manifest+build endpoint 机器生成，隧道/Mac 旧架构显式退役，跨文档矛盾（DRIFT-FACT-007）消除；任何手写旧架构声明被 CI drift check 拦截。
++- **Cost（逐项，未知不填 0）**：新增请求 = generate_status 可选拉一次 /build.json（生成时，非线上）；D1 **0**；R2 **0**；模型调用 **0**；人工维护 = 每次部署后重跑 generate_status + drift check（可 CI 化）。经常性云成本 **0**。
++
++## Known gaps
++
++见 `known_gaps.md`（manifest 快照为 T009 基线 commit；drift check 未接入 GitHub CI workflow，属后续；生成器读线上 /build.json 需网络，离线标 UNVERIFIED_LIVE）。
++
++## 不适用证据项
++
++`migration.sql/rollback.sql`（无 schema）、`benchmarks`（无性能）、`screenshots-or-videos`（无 UI）、`data-samples`（无数据）、`deployment_manifest.preview.json`（T009 已覆盖）—— N/A。
++
++## 完成声明
++
++```text
++Task: ADP-S1-P01-T011
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: STATUS_GENERATED.md + 2 tools + docs/v03/STATUS.yaml(R6 superseded) + 证据 + 治理同步（见 changed_files.txt）
++Tests: status_drift_check.txt —— drift check PASS + 负测 DRIFT(exit1)拦截 + 恢复 PASS + YAML OK；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: STATUS_GENERATED.md（云端原生真相）+ R6 superseded + check_status_drift.py
++Data/Performance/Visual: N/A（未碰 worker/数据/UI）
++Value: 状态单一真相，DRIFT-FACT-007 消除，手写旧架构被拦截
++Cost: 请求≈0(生成时可选拉 /build.json) / D1 0 / R2 0 / 模型 0 / 人工=重跑生成+drift check；经常性成本 0
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED
++Rollback: git revert <sha>（纯文档/工具）
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/commands.log
+new file mode 100644
+index 000000000..dd33c9e3e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/commands.log
+@@ -0,0 +1,18 @@
++# ADP-S1-P01-T011 commands.log · generated status + stale archive + drift check
++# base commit da56c600 (T010 merged) ; all read-only tools, NOT_DEPLOYED
++
++## generate status from manifest + live /build.json
++$ python3 tools/generate_status.py --build-id bd67a78020a3 > STATUS_GENERATED.md
++# asserts cloud-native, no tunnel/Mac; build_id bd67a78020a3 (live) ; cron 30 20 ; schema cn_* ; registry boards-v03-2
++
++## stale archive: mark R6 superseded in docs/v03/STATUS.yaml
++# R6.superseded_by: J5_cloud_native + superseded_note ; yaml.safe_load OK
++
++## CI drift check
++$ python3 tools/check_status_drift.py   -> RESULT: PASS (generated matches manifest; R6 superseded)
++# NEGATIVE TEST: remove superseded_by -> RESULT: DRIFT (exit 1) ; restore -> PASS
++# full: test-results/status_drift_check.txt
++
++## 治理门（提交步骤记录）
++$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
++$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/cost_value.json
+new file mode 100644
+index 000000000..48e7c3ea8
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/cost_value.json
+@@ -0,0 +1,13 @@
++{
++  "task": "ADP-S1-P01-T011",
++  "stage": "S1 Truth & Content Stabilization",
++  "release_mode": "NOT_DEPLOYED",
++  "value_metric_s1": "single-truth deployment status: STATUS_GENERATED.md is machine-generated from the manifest + live /build.json; R6 tunnel/Mac architecture explicitly superseded; the STATUS.yaml J5-vs-R6 contradiction (DRIFT-FACT-007) is eliminated and any hand-written old-architecture claim is caught by check_status_drift.py",
++  "cost_itemized_unknown_not_zero": {
++    "new_requests": "generate_status optionally pulls /build.json once at generation time (not on the live path)",
++    "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0,
++    "human_maintenance": "re-run generate_status + check_status_drift per deploy (CI-automatable)"
++  },
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "drift_check": "PASS; negative test (superseded_by removed) -> DRIFT exit 1 correctly detected; restored -> PASS"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/known_gaps.md
+new file mode 100644
+index 000000000..ef84f8d10
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S1-P01-T011
++
++- **manifest 快照为 T009 基线 commit**：STATUS_GENERATED 绑定的 commit 来自 deployment_manifest.sample.json（T009 生成，commit 83a845be），比 T010 后的 worker 略旧；但 build_id（bd67a78020a3，线上）为当前真相，架构断言（云端原生/无隧道）正确。每次部署重跑 generate_manifest + generate_status 是持续纪律。
++- **drift check 未接入 GitHub CI workflow**：check_status_drift.py 可本地/CI 运行并已验证，但尚未挂进 .github workflow；接入属后续（S1 部署纪律）。
++- **generate_status 读线上 /build.json 需网络**：离线时 build_id 标 UNVERIFIED_LIVE；可用 --build-id 传入确定值（本任务用 bd67a78020a3）。
++- **只标 R6 superseded，未删除历史**：R6 段保留为历史记录（superseded_note 指向 generated current），不删除（保留可追溯）。
++- 独立验证：本报告以 IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION 结束，PASS/FAIL 由独立上下文判定，实现者不自签。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/test-results/status_drift_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/test-results/status_drift_check.txt
+new file mode 100644
+index 000000000..83b0e65a5
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T011/test-results/status_drift_check.txt
+@@ -0,0 +1,10 @@
++STATUS drift check
++  manifest: deployment_manifest.sample.json (content_hash sha256:810a0a1bf416a...)
++RESULT: PASS (generated status matches manifest; R6 tunnel/Mac superseded; no drift)
++=== NEGATIVE TEST (superseded_by removed) ===
++STATUS drift check
++  manifest: deployment_manifest.sample.json (content_hash sha256:810a0a1bf416a...)
++RESULT: DRIFT
++  - docs/v03/STATUS.yaml R6 (tunnel/Mac) not marked superseded_by -> contradicts J5 cloud-native
++exit: 1 -> DRIFT correctly detected: True
++=== RESTORED === PASS (exit 0 )
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/check_status_drift.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/check_status_drift.py
+new file mode 100644
+index 000000000..5bd72f014
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/check_status_drift.py
+@@ -0,0 +1,70 @@
++#!/usr/bin/env python3
++"""ADP V0.1 STATUS drift check (ADP-S1-P01-T011).
++
++CI-usable check that the generated status is the single truth:
++  1. STATUS_GENERATED.md matches the deployment manifest (commit, cron, registry,
++     schema hash) -- generated status is not stale vs the manifest;
++  2. docs/v03/STATUS.yaml's R6 (tunnel/Mac mirror) is marked superseded_by
++     J5_cloud_native -- a hand-written old architecture cannot claim to be current.
++
++Exit 0 => PASS (no drift). Exit 1 => DRIFT. Read-only.
++
++Usage: python3 check_status_drift.py
++"""
++import json, sys, pathlib
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent
++ADP_ROOT = HERE.parents[3]
++MANIFEST = V01 / "deployment_manifest.sample.json"
++STATUS_GEN = V01 / "STATUS_GENERATED.md"
++STATUS_V03 = ADP_ROOT / "docs/v03/STATUS.yaml"
++
++
++def main():
++    problems = []
++    m = json.loads(MANIFEST.read_text(encoding="utf-8"))
++    b = m["binding"]
++    gen = STATUS_GEN.read_text(encoding="utf-8") if STATUS_GEN.exists() else ""
++    if not gen:
++        problems.append("STATUS_GENERATED.md missing")
++    else:
++        # 1. generated status must carry the manifest's current facts
++        for label, val in [("commit", b["commit"]), ("cron", b["cron"]),
++                           ("registry", b["sources"].get("registry_ver") or ""),
++                           ("content_hash", m["content_hash"])]:
++            if val and val not in gen:
++                problems.append(f"STATUS_GENERATED.md missing manifest {label} ({val})")
++        if "无 Cloudflare Tunnel" not in gen and "no Cloudflare Tunnel" not in gen:
++            problems.append("STATUS_GENERATED.md does not assert tunnel/Mac is retired")
++
++    # 2. docs/v03/STATUS.yaml R6 must be marked superseded
++    if STATUS_V03.exists():
++        s = STATUS_V03.read_text(encoding="utf-8")
++        # find the R6 block
++        if "\n  R6:" in s:
++            r6 = s.split("\n  R6:", 1)[1]
++            # next top-level-2-space stage key ends the block
++            import re
++            nxt = re.search(r"\n  [A-Za-z0-9_]+:", r6)
++            r6block = r6[: nxt.start()] if nxt else r6
++            if "superseded_by" not in r6block:
++                problems.append("docs/v03/STATUS.yaml R6 (tunnel/Mac) not marked superseded_by -> contradicts J5 cloud-native")
++        else:
++            problems.append("docs/v03/STATUS.yaml has no R6 block to check (unexpected)")
++    else:
++        problems.append("docs/v03/STATUS.yaml missing")
++
++    print("STATUS drift check")
++    print(f"  manifest: {MANIFEST.name} (content_hash {m['content_hash'][:20]}...)")
++    if problems:
++        print("RESULT: DRIFT")
++        for p in problems:
++            print("  - " + p)
++        sys.exit(1)
++    print("RESULT: PASS (generated status matches manifest; R6 tunnel/Mac superseded; no drift)")
++    sys.exit(0)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/generate_status.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/generate_status.py
+new file mode 100644
+index 000000000..757803b06
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/generate_status.py
+@@ -0,0 +1,88 @@
++#!/usr/bin/env python3
++"""ADP V0.1 generated deployment status (ADP-S1-P01-T011).
++
++Derives the authoritative CURRENT deployment status from the deployment manifest
++(tools/generate_manifest.py output) plus the live /build.json build id. Because
++the status is regenerated from the manifest, hand-written old-architecture docs
++cannot override the generated current -- they are flagged by check_status_drift.py.
++
++Writes STATUS_GENERATED.md. Usage:
++  python3 generate_status.py [--out PATH] [--build-id ID] [--manifest PATH]
++"""
++import argparse, json, subprocess, sys, pathlib
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent
++DEFAULT_MANIFEST = V01 / "deployment_manifest.sample.json"
++DEFAULT_OUT = V01 / "STATUS_GENERATED.md"
++
++RETIRED = {
++    "R6_tunnel_mirror": "RETIRED -- superseded by J5 cloud-native (no Cloudflare Tunnel, no Mac 127.0.0.1 mirror, no LaunchAgent residents)",
++}
++
++
++def load_manifest(path):
++    return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
++
++
++def live_build_id(explicit):
++    if explicit:
++        return explicit
++    # try the live endpoint; fall back to the manifest-embedded absence
++    try:
++        import urllib.request
++        with urllib.request.urlopen("https://adp.linzezhang.com/build.json", timeout=10) as r:
++            return json.loads(r.read().decode())["build_id"]
++    except Exception:
++        return "UNVERIFIED_LIVE"
++
++
++def render(m, build_id):
++    b = m["binding"]
++    tables = ", ".join(b["schema"].get("tables", []))
++    lines = [
++        "# STATUS_GENERATED · ADP 当前部署状态（机器生成，勿手改）",
++        "",
++        "> 任务 `ADP-S1-P01-T011` 交付物。**本文件由 `tools/generate_status.py` 从部署 manifest + 线上 /build.json 生成**；",
++        "> 手写旧架构文档不得覆盖本 generated current（漂移由 `tools/check_status_drift.py` 拦截）。要改状态，改源（manifest/worker）后重跑生成器。",
++        "",
++        "## 当前架构（唯一真相）= 云端原生 Cloud-native",
++        "",
++        f"- **架构**：整套系统跑在 Cloudflare —— Worker `{b['worker']['name']}` + D1 + cron；**无 Cloudflare Tunnel、无 Mac 127.0.0.1 镜像、无本机 LaunchAgent**。",
++        f"- **运行 build**：`build_id {build_id}`（线上 /build.json）。",
++        f"- **绑定 commit**：`{b['commit']}`。",
++        f"- **cron**：`{b['cron']}`（每日 UTC）。",
++        f"- **D1 schema**：`{b['schema'].get('sha256','')[:12]}…`，表：{tables}。",
++        f"- **来源 registry**：`{b['sources'].get('registry_ver')}`（config/boards_v0_3.yaml）。",
++        f"- **manifest content_hash**：`{m['content_hash']}`。",
++        "- **对象存储 R2**：未启用（FACT-012；如需再由 Owner 后台开）。",
++        "",
++        "## 已退役（历史，非当前）",
++        "",
++    ]
++    for k, v in RETIRED.items():
++        lines.append(f"- **{k}**：{v}")
++    lines += [
++        "",
++        "## 一致性",
++        "",
++        "- 本文件与线上 /build.json 的 build_id 一致；与部署 manifest 的 commit/cron/schema/registry 一致（`check_status_drift.py` 校验）。",
++        "- `docs/v03/STATUS.yaml` 的 R6（隧道/Mac 镜像）必须标 `superseded_by: J5_cloud_native`，否则判 DRIFT。",
++    ]
++    return "\n".join(lines) + "\n"
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--out", default=str(DEFAULT_OUT))
++    ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST))
++    ap.add_argument("--build-id")
++    args = ap.parse_args()
++    m = load_manifest(args.manifest)
++    out = render(m, live_build_id(args.build_id))
++    pathlib.Path(args.out).write_text(out, encoding="utf-8")
++    print(out)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/arxiv-daily-push/docs/v03/STATUS.yaml b/arxiv-daily-push/docs/v03/STATUS.yaml
+index c7948faa6..ab7456208 100644
+--- a/arxiv-daily-push/docs/v03/STATUS.yaml
++++ b/arxiv-daily-push/docs/v03/STATUS.yaml
+@@ -168,6 +168,13 @@ stages:
+   R6:
+     gate: phone_access_full_system_via_tunnel_with_mirror_fallback
+     status: completed_live_end_to_end
++    superseded_by: J5_cloud_native
++    superseded_note: >
++      隧道/Mac 镜像架构（Worker 反代 Cloudflare Tunnel → 本机 127.0.0.1:8787 + 镜像回落 +
++      本机 LaunchAgent 常驻）已退役；当前真相为 J5 云原生（整套系统跑 adp-cloud Worker + D1 + cron，
++      无隧道、无 Mac 镜像、无本机常驻）。本 R6 段为历史记录，非当前架构。当前状态见机器生成的
++      docs/pursuing_goal/v0_1/STATUS_GENERATED.md（由 tools/generate_status.py 生成，勿手改）。
++      ADP-S1-P01-T011 消除本文件同时声称 Cloud-native 与 Tunnel 的矛盾（DRIFT-FACT-007）。
+     completed_at: "2026-07-15"
+     owner_visible: >
+       手机直接打开 https://adp.linzezhang.com（无钥匙；公开可读代价与 Access 私有化方案

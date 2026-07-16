@@ -1,0 +1,13 @@
+{
+  "task": "ADP-S1-P01-T011",
+  "stage": "S1 Truth & Content Stabilization",
+  "release_mode": "NOT_DEPLOYED",
+  "value_metric_s1": "single-truth deployment status: STATUS_GENERATED.md is machine-generated from the manifest + live /build.json; R6 tunnel/Mac architecture explicitly superseded; the STATUS.yaml J5-vs-R6 contradiction (DRIFT-FACT-007) is eliminated and any hand-written old-architecture claim is caught by check_status_drift.py",
+  "cost_itemized_unknown_not_zero": {
+    "new_requests": "generate_status optionally pulls /build.json once at generation time (not on the live path)",
+    "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0,
+    "human_maintenance": "re-run generate_status + check_status_drift per deploy (CI-automatable)"
+  },
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "drift_check": "PASS; negative test (superseded_by removed) -> DRIFT exit 1 correctly detected; restored -> PASS"
+}

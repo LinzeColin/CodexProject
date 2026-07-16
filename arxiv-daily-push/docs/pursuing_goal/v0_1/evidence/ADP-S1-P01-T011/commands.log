@@ -1,0 +1,18 @@
+# ADP-S1-P01-T011 commands.log · generated status + stale archive + drift check
+# base commit da56c600 (T010 merged) ; all read-only tools, NOT_DEPLOYED
+
+## generate status from manifest + live /build.json
+$ python3 tools/generate_status.py --build-id bd67a78020a3 > STATUS_GENERATED.md
+# asserts cloud-native, no tunnel/Mac; build_id bd67a78020a3 (live) ; cron 30 20 ; schema cn_* ; registry boards-v03-2
+
+## stale archive: mark R6 superseded in docs/v03/STATUS.yaml
+# R6.superseded_by: J5_cloud_native + superseded_note ; yaml.safe_load OK
+
+## CI drift check
+$ python3 tools/check_status_drift.py   -> RESULT: PASS (generated matches manifest; R6 superseded)
+# NEGATIVE TEST: remove superseded_by -> RESULT: DRIFT (exit 1) ; restore -> PASS
+# full: test-results/status_drift_check.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

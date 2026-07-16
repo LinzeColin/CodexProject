@@ -1,0 +1,10 @@
+STATUS drift check
+  manifest: deployment_manifest.sample.json (content_hash sha256:810a0a1bf416a...)
+RESULT: PASS (generated status matches manifest; R6 tunnel/Mac superseded; no drift)
+=== NEGATIVE TEST (superseded_by removed) ===
+STATUS drift check
+  manifest: deployment_manifest.sample.json (content_hash sha256:810a0a1bf416a...)
+RESULT: DRIFT
+  - docs/v03/STATUS.yaml R6 (tunnel/Mac) not marked superseded_by -> contradicts J5 cloud-native
+exit: 1 -> DRIFT correctly detected: True
+=== RESTORED === PASS (exit 0 )
