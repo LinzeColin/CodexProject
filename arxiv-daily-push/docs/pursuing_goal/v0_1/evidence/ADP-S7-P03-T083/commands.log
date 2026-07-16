@@ -1,0 +1,13 @@
+# ADP-S7-P03-T083 key commands (NOT_DEPLOYED; D1 indexes + deterministic total-order tie-breaker)
+# 1) schema_cloud.sql: +5 CREATE INDEX IF NOT EXISTS (recency expr index + id tie-breaker, board+recency+id,
+#    lessons(item_id), reviews(due_at), events(kind,at)). worker: +`, id DESC` on 8 recency display ORDER BYs
+#    (matches the prune query line 352). BUILD 0cb3acee6bf3 -> d1dfcb3b7447.
+node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js        # SYNTAX OK
+# 2) tool: tools/db_query_plan.py (pre/post SQLite w/ CROSS-FAMILY ties; EXPLAIN QUERY PLAN + p95 + scaling + determinism)
+# 3) acceptance verifier (re-derives; negative control pre-T083 full-scans; determinism on cross-family ties):
+python3 evidence/ADP-S7-P03-T083/test-results/t083_verify.py           # ACCEPTANCE = PASS, exit 0
+#    -> 5/5 SCAN+temp-sort -> index SEARCH no temp-btree (p95 3-200x); scaling O(N)->O(LIMIT); cross-family ties present;
+#       tie-breaker query deterministic (index==forced-scan) + OFFSET pages disjoint; six-theme contract byte-identical.
+# 4) realtime: live /build.json still b189d3cc0703 (schema not applied to prod; NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json
+# 5) independent adversarial skeptic (round 1 found the tie-break hole -> fixed; re-reviewed) -> adversarial_review.md

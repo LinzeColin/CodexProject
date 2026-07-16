@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '0cb3acee6bf3', source_sha256: '0cb3acee6bf31c4351071d9447523ec2f8d4a0a5531d6470212d6f09895edec8', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'd1dfcb3b7447', source_sha256: 'd1dfcb3b744711d4716ca1a8c6b2b856f9fa83f134eb1e05fd5d7e9fb181ee3a', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -386,7 +386,7 @@ async function selectDaily(env, asOfDate, counts) {
   const cutoff = new Date(Date.now() - CANDIDATE_WINDOW_DAYS * 864e5).toISOString();
   const { results: items } = await env.DB.prepare(
     `SELECT i.*, s.official FROM cn_items i LEFT JOIN cn_sources s ON s.id = i.source_id
-     WHERE COALESCE(i.published_at, i.fetched_at) >= ? ORDER BY COALESCE(i.published_at, i.fetched_at) DESC LIMIT 1200`
+     WHERE COALESCE(i.published_at, i.fetched_at) >= ? ORDER BY COALESCE(i.published_at, i.fetched_at) DESC, i.id DESC LIMIT 1200`
   ).bind(cutoff).all();
   counts.candidates = (items || []).length;
   // 近期板块分布（多样性上下文）
@@ -912,8 +912,8 @@ async function radarPage(env) {
     } else if (b.id === 'board5') body += `<p class="mt">聚合各板块，无独立来源。</p>`;
     const { results: items } = await env.DB.prepare(
       b.id === 'board5'
-        ? `SELECT id, title, url, board_id FROM cn_items ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT 8`
-        : `SELECT id, title, url, board_id FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT 6`
+        ? `SELECT id, title, url, board_id FROM cn_items ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC LIMIT 8`
+        : `SELECT id, title, url, board_id FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC LIMIT 6`
     ).bind(...(b.id === 'board5' ? [] : [b.id])).all();
     if ((items || []).length) body += `<h3>最新条目</h3><ul class="mt">${items.map(it =>
       `<li><a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 90))}</a></li>`).join('')}</ul>`;
@@ -1066,8 +1066,8 @@ async function boardPage(env, boardId, offset) {
   const name = board.name || BOARD_NAMES[boardId];
   const PAGE_SIZE = 50;
   const { results: items } = await (boardId === 'board5'
-    ? env.DB.prepare("SELECT * FROM cn_items ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT ? OFFSET ?").bind(PAGE_SIZE + 1, offset)
-    : env.DB.prepare("SELECT * FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT ? OFFSET ?").bind(boardId, PAGE_SIZE + 1, offset)).all();
+    ? env.DB.prepare("SELECT * FROM cn_items ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT ? OFFSET ?").bind(PAGE_SIZE + 1, offset)
+    : env.DB.prepare("SELECT * FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT ? OFFSET ?").bind(boardId, PAGE_SIZE + 1, offset)).all();
   const more = (items || []).length > PAGE_SIZE;
   const shown = (items || []).slice(0, PAGE_SIZE);
   let body = `<div class="card"><h1>${esc(name)}</h1><p class="mt"><a href="/radar">← 前沿雷达</a></p>
@@ -1084,7 +1084,7 @@ async function searchPage(env, q) {
   if (q) {
     const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';  // 先转义 \ 本身（ESCAPE 字符），再转义 % _
     const { results } = await env.DB.prepare(
-      "SELECT * FROM cn_items WHERE title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT 40").bind(like).all();
+      "SELECT * FROM cn_items WHERE title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 40").bind(like).all();
     body += `<p class="mt">「${esc(q)}」找到 ${(results || []).length} 条${(results || []).length === 40 ? '（仅显示前 40）' : ''}</p>
       <p style="margin:2px 0 6px"><a class="deep-btn ghost" href="${esc(chatgptHref(deepDiveTopicPrompt(q)))}" target="_blank" rel="noopener noreferrer">🔮 让 ChatGPT 全网深度检索这个主题</a></p>
       ${itemListHTML(results || [])}`;
@@ -1233,7 +1233,7 @@ export default {
           }
         } catch (e) { official = []; }
         const { results: b3media } = await env.DB.prepare(
-          "SELECT id,source_id,title,url FROM cn_items WHERE board_id='board3' ORDER BY COALESCE(published_at,fetched_at) DESC LIMIT 200").all();
+          "SELECT id,source_id,title,url FROM cn_items WHERE board_id='board3' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 200").all();
         const mediaDemoted = (b3media || []).filter(it => !a0Board3Eligible(it)).length;
         const officialEligible = official.filter(o => o.a0_eligible).length;
         return jsonResp({

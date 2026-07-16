@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260718-ADP-V01-S7-P03-T081-RUM-CWV"
-source_snapshot_hash: "sha256:0f3cb0b72898020b514730f0b6b2be4b60e1c44b1c1603b89a3c8e0ded953315"
+as_of_event_id: "EVENT-20260718-ADP-V01-S7-P03-T082-AMBIENT-MOTION-PERF"
+source_snapshot_hash: "sha256:02c7653234d1a80fbac707b656246e2b0d87c3e1d40a5e6c9ff4e64b87f63321"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-18T13:30:00+10:00"
+snapshot_event_time: "2026-07-18T14:30:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 141
+    precommit_pending_events: 142
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

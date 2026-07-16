@@ -1,0 +1,155 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P03-T083",
+  "method": "local SQLite (D1 kernel) from real schema pre-T083 (3 idx) vs T083 (5 idx incl id tie-breaker), same synthetic rows WITH cross-family ties; EXPLAIN QUERY PLAN + p95 + scaling + determinism + load-bearing.",
+  "per_query_20k_rows": {
+    "today_recency": {
+      "pre": {
+        "plan": {
+          "uses_index": false,
+          "temp_btree": true,
+          "full_scan": true,
+          "plan": "SCAN cn_items | USE TEMP B-TREE FOR ORDER BY"
+        },
+        "median_ms": 1.6329,
+        "p95_ms": 1.7169
+      },
+      "post": {
+        "plan": {
+          "uses_index": true,
+          "temp_btree": false,
+          "full_scan": false,
+          "plan": "SCAN cn_items USING INDEX idx_cn_items_recency"
+        },
+        "median_ms": 0.0071,
+        "p95_ms": 0.0074
+      },
+      "improved_plan": true
+    },
+    "board_recency": {
+      "pre": {
+        "plan": {
+          "uses_index": true,
+          "temp_btree": true,
+          "full_scan": false,
+          "plan": "SEARCH cn_items USING INDEX idx_cn_items_board (board_id=?) | USE TEMP B-TREE FOR ORDER BY"
+        },
+        "median_ms": 1.297,
+        "p95_ms": 1.399
+      },
+      "post": {
+        "plan": {
+          "uses_index": true,
+          "temp_btree": false,
+          "full_scan": false,
+          "plan": "SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?)"
+        },
+        "median_ms": 0.0381,
+        "p95_ms": 0.0406
+      },
+      "improved_plan": true
+    },
+    "lesson_latest": {
+      "pre": {
+        "plan": {
+          "uses_index": false,
+          "temp_btree": true,
+          "full_scan": true,
+          "plan": "SCAN cn_lessons | USE TEMP B-TREE FOR ORDER BY"
+        },
+        "median_ms": 0.795,
+        "p95_ms": 0.8492
+      },
+      "post": {
+        "plan": {
+          "uses_index": true,
+          "temp_btree": false,
+          "full_scan": false,
+          "plan": "SEARCH cn_lessons USING INDEX idx_cn_lessons_item (item_id=?)"
+        },
+        "median_ms": 0.0041,
+        "p95_ms": 0.0048
+      },
+      "improved_plan": true
+    },
+    "review_due": {
+      "pre": {
+        "plan": {
+          "uses_index": false,
+          "temp_btree": true,
+          "full_scan": true,
+          "plan": "SCAN cn_reviews | USE TEMP B-TREE FOR ORDER BY"
+        },
+        "median_ms": 1.3383,
+        "p95_ms": 1.3887
+      },
+      "post": {
+        "plan": {
+          "uses_index": true,
+          "temp_btree": false,
+          "full_scan": false,
+          "plan": "SEARCH cn_reviews USING INDEX idx_cn_reviews_due (due_at<?)"
+        },
+        "median_ms": 0.4172,
+        "p95_ms": 0.4451
+      },
+      "improved_plan": true
+    },
+    "grade_history": {
+      "pre": {
+        "plan": {
+          "uses_index": false,
+          "temp_btree": true,
+          "full_scan": true,
+          "plan": "SCAN cn_events | USE TEMP B-TREE FOR ORDER BY"
+        },
+        "median_ms": 1.8735,
+        "p95_ms": 1.9205
+      },
+      "post": {
+        "plan": {
+          "uses_index": true,
+          "temp_btree": false,
+          "full_scan": false,
+          "plan": "SEARCH cn_events USING COVERING INDEX idx_cn_events_kind_at (kind=?)"
+        },
+        "median_ms": 0.1025,
+        "p95_ms": 0.1069
+      },
+      "improved_plan": true
+    }
+  },
+  "recency_scaling": {
+    "5000": {
+      "pre_p95_ms": 0.4349,
+      "post_p95_ms": 0.0072
+    },
+    "20000": {
+      "pre_p95_ms": 1.9091,
+      "post_p95_ms": 0.0103
+    },
+    "50000": {
+      "pre_p95_ms": 4.521,
+      "post_p95_ms": 0.008
+    }
+  },
+  "determinism_cross_family_ties": {
+    "cross_family_ties_present": true,
+    "new_query_deterministic": true,
+    "offset_pages_disjoint": true,
+    "old_query_nondeterministic_example": true
+  },
+  "tie_breaker_load_bearing": {
+    "no_tiebreaker_schema_dependent": true,
+    "tiebreaker_schema_independent": true
+  },
+  "added_indexes": [
+    "idx_cn_items_recency (COALESCE(published_at,fetched_at) DESC, id DESC)",
+    "idx_cn_items_board_recency (board_id, COALESCE(published_at,fetched_at) DESC, id DESC)",
+    "idx_cn_lessons_item (item_id, created_at DESC)",
+    "idx_cn_reviews_due (due_at)",
+    "idx_cn_events_kind_at (kind, at DESC)"
+  ],
+  "conclusion": "hot queries SCAN+TEMP-B-TREE -> index SEARCH (no temp b-tree, p95 3-200x down); scaling O(N)->O(LIMIT); the tie-breaker is load-bearing (no-tiebreaker board query is schema/plan-dependent; with it, plan-independent + deterministic + OFFSET pages disjoint); six-theme visual/motion contract byte-identical.",
+  "determinism_oracle": "forced full scan via `NOT INDEXED` (genuine independent order source, not a flattened subquery)"
+}

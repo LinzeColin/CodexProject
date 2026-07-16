@@ -29,11 +29,6 @@ CREATE TABLE IF NOT EXISTS cn_items (
 CREATE INDEX IF NOT EXISTS idx_cn_items_board ON cn_items (board_id, fetched_at DESC);
 CREATE INDEX IF NOT EXISTS idx_cn_items_source ON cn_items (source_id);
 CREATE INDEX IF NOT EXISTS idx_cn_items_seen ON cn_items (first_seen_at DESC);
--- T083 性能索引：今天/雷达/浏览/往期都按 COALESCE(published_at,fetched_at) DESC, id DESC 排序取前 N。
--- 索引含 id DESC 尾键 → 与查询的确定性全序完全匹配：无表达式索引时 D1 全表扫 cn_items + 临时 B-tree 排序
--- （rows scanned = 全表）；有则走索引顺序扫、只取 LIMIT 行、且相同 recency 的并列项顺序确定（OFFSET 分页不跳/不重）。
-CREATE INDEX IF NOT EXISTS idx_cn_items_recency ON cn_items (COALESCE(published_at, fetched_at) DESC, id DESC);
-CREATE INDEX IF NOT EXISTS idx_cn_items_board_recency ON cn_items (board_id, COALESCE(published_at, fetched_at) DESC, id DESC);
 
 -- 每日精选（跨全部板块选 1）
 CREATE TABLE IF NOT EXISTS cn_selections (
@@ -49,8 +44,6 @@ CREATE TABLE IF NOT EXISTS cn_lessons (
   doc_title TEXT NOT NULL, url TEXT NOT NULL, sections_json TEXT NOT NULL,
   generator TEXT NOT NULL, template_ver TEXT NOT NULL, created_at TEXT NOT NULL
 );
--- T083 性能索引：today/item/review 每次都按 item_id 取最新讲义（WHERE item_id=? ORDER BY created_at DESC LIMIT 1）。
-CREATE INDEX IF NOT EXISTS idx_cn_lessons_item ON cn_lessons (item_id, created_at DESC);
 
 -- FSRS 复习卡（每条学习项一张）
 CREATE TABLE IF NOT EXISTS cn_reviews (
@@ -59,8 +52,6 @@ CREATE TABLE IF NOT EXISTS cn_reviews (
   lapses INTEGER NOT NULL DEFAULT 0, state INTEGER NOT NULL DEFAULT 0,
   last_review TEXT, last_grade INTEGER, evidence_state TEXT
 );
--- T083 性能索引：复习队列按 due_at 取最早到期（WHERE due_at<=? AND reps>0 ORDER BY due_at）。
-CREATE INDEX IF NOT EXISTS idx_cn_reviews_due ON cn_reviews (due_at);
 
 -- 事件流（追加写）：reveal / grade
 CREATE TABLE IF NOT EXISTS cn_events (
@@ -69,8 +60,6 @@ CREATE TABLE IF NOT EXISTS cn_events (
   at TEXT NOT NULL, dedup_key TEXT
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_cn_events_dedup ON cn_events (dedup_key) WHERE dedup_key IS NOT NULL;
--- T083 性能索引：知识体征的 7 点火花线读最近 grade 事件（WHERE kind='grade' ORDER BY at DESC LIMIT 400）。
-CREATE INDEX IF NOT EXISTS idx_cn_events_kind_at ON cn_events (kind, at DESC);
 
 -- 运行日志（每日流水线的五态 manifest）
 CREATE TABLE IF NOT EXISTS cn_run_log (

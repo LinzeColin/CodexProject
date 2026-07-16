@@ -1,0 +1,24 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P03-T083",
+  "release_mode": "NOT_DEPLOYED",
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost_usd": 0.0,
+    "readonly_get_realtime": 1,
+    "on_deploy": "5 indexes -> write amplification on cn_items/cn_events/cn_reviews/cn_lessons INSERT/UPDATE + storage; justified for a read-heavy app (reads O(N)->O(LIMIT); writes daily-cron batched). tie-breaker adds no cost.",
+    "human_maintenance": "index design + total-order tie-breaker + db_query_plan/determinism tool + verifier + adversarial review"
+  },
+  "value": {
+    "stage": "S7 UI/UX Motion & Performance (P03 data perf)",
+    "acceptance": "PASS (verifier re-derives; 5 hot queries full-scan+sort -> index SEARCH no temp-btree, rows scanned O(N)->O(LIMIT); the tie-breaker makes cross-family ties deterministic (index==forced-scan, OFFSET pages disjoint); six-theme visual/motion contract byte-identical)",
+    "user_value": "once deployed, the today/radar/browse/history/review pages + vitals sparkline stop full-scanning cn_items on every load (fast + stays fast as the corpus grows), and pagination/order is now deterministic (equal-recency items no longer shuffle across pages)",
+    "realized_on_deploy": "indexes + deterministic order are source-complete + provably serve the queries; real D1 p95 + CWV p75 land after deploy + field traffic (NOT_DEPLOYED now)"
+  },
+  "unknown_not_zero": "absolute D1 p95 (ms over the network) and CWV p75 are UNKNOWN until deployed + measured; the local-SQLite plan/determinism proof is representative of the planner behavior but not network latency. CWV 达标 NOT claimed."
+}

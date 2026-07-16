@@ -1,0 +1,8 @@
+D1 plans (20k): today_recency: SCAN/sort->index (no temp-btree) p95 1.7617->0.0075ms; board_recency: SCAN/sort->index (no temp-btree) p95 1.7235->0.0429ms; lesson_latest: SCAN/sort->index (no temp-btree) p95 0.8906->0.006ms; review_due: SCAN/sort->index (no temp-btree) p95 1.4185->0.436ms; grade_history: SCAN/sort->index (no temp-btree) p95 1.9654->0.1068ms
+rows-scanned scaling: pre 0.435->4.7755ms (grows with N); post flat ~0.0103ms (O(N) full-scan -> O(LIMIT) index)
+determinism: cross-family ties present=True; tie-breaker query is a deterministic total order (index==forced-scan), OFFSET pages disjoint; all 8 recency ORDER BYs carry `, id DESC`
+no layout-shift regression: server-rendered (no async -> no CLS); the six-theme visual/motion contract is byte-identical (query change is page-body, not hashed); recency order monotonic
+long lists bounded (growth-table ORDER BYs all LIMIT); 5 indexes idempotent+valid; recency index carries the id tie-breaker so the total order is fully index-served
+
+ACCEPTANCE = PASS
+NOTE: schema (5 indexes, incl. the id tie-breaker) + a total-order `, id DESC` on the recency display queries (matches the prune query) so page membership/order is deterministic and OFFSET pagination never skips/repeats. BUILD recomputed d1dfcb3b7447; NOT_DEPLOYED (indexes apply at deploy). CWV 达标 NOT claimed without field data (T081 rule).
