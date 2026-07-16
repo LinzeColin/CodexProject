@@ -1,0 +1,7 @@
+diff counts: {'add': 1, 'delete': 1, 'modify': 1} changed: True
+raw diff surfaces 6 noise lines; stripped diff surfaces 0 (discrimination OK)
+noise-class boundary: 发布于-content preserved; 来源/责任编辑 attribution treated as chrome (per T026)
+as-of battery: samples=288 future_leakage=0 oracle_disagreements=0
+leak battery catches a future resolver on 70 samples (discrimination OK)
+
+ACCEPTANCE = PASS

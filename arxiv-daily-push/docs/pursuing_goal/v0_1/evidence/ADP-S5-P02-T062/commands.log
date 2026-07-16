@@ -1,0 +1,25 @@
+# ADP-S5-P02-T062 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. inspect the two reused engines (T026 version_engine, T056 coverage_asof)
+python3 -c "import version_engine, coverage_asof"   # import sanity
+
+# 2. build fixtures + report (deterministic)
+python3 evidence/ADP-S5-P02-T062/build_version_asof.py
+#   -> timeline_substantive versions: 2 ; timeline_noise versions: 1
+#   -> diff_substantive counts: {'add':1,'delete':1,'modify':1} changed: True
+#   -> diff_noise_only changed: False
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S5-P02-T062/test-results/t062_verify.py | tee evidence/ADP-S5-P02-T062/test-results/version_asof_tests.txt
+#   diff counts: {'add':1,'delete':1,'modify':1} changed: True
+#   raw diff surfaces 6 noise lines; stripped diff surfaces 0 (discrimination OK)
+#   as-of battery: samples=288 future_leakage=0 oracle_disagreements=0
+#   leak battery catches a future resolver on 70 samples (discrimination OK)
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t062.py),
+#    lean_governance ci (expect decision SHIP, zero_tracked_write True), commit + push codex/adp-t062:main
