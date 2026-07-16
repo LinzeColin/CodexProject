@@ -1,0 +1,5 @@
+# ADP-S8-P02-T088 canary framework -- key commands (read-only over the worker; deploys nothing)
+python3 tools/canary_framework.py --out evidence/ADP-S8-P02-T088/canary_framework.json
+#   -> 4 flags independently rollback-able + kill switch + off-safe; DIR-007 auto-stop @0.9; FRAMEWORK_PASS=True
+python3 evidence/ADP-S8-P02-T088/test-results/t088_verify.py   # ACCEPTANCE=PASS exit 0 (3 negative controls)
+curl -s https://adp.linzezhang.com/build.json                  # build_id b189d3cc0703 (NOT_DEPLOYED)

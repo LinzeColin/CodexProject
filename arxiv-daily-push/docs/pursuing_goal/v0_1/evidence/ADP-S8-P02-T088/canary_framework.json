@@ -1,0 +1,91 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S8-P02-T088",
+  "flags": [
+    {
+      "flag": "BOARD3_A0_ONLY",
+      "kind": "bool",
+      "value": "false",
+      "gates": "Board 3 A0-only filter (media excluded as evidence)",
+      "independently_rollbackable": true,
+      "kill_switch": "set BOARD3_A0_ONLY=false",
+      "rollback_path": "set false / wrangler versions deploy b189d3cc0703 (T040)",
+      "off_is_safe_default": true
+    },
+    {
+      "flag": "RAW_DUALWRITE",
+      "kind": "bool",
+      "value": "true",
+      "gates": "R2 raw-artifact dual-write side path (bypass, in try/catch)",
+      "independently_rollbackable": true,
+      "kill_switch": "set RAW_DUALWRITE=false",
+      "rollback_path": "set false / wrangler versions deploy 657fe32a (T022 flag off)",
+      "off_is_safe_default": true
+    },
+    {
+      "flag": "RUM_ENABLED",
+      "kind": "bool",
+      "value": "true",
+      "gates": "RUM client-script injection + /api/rum ingest",
+      "independently_rollbackable": true,
+      "kill_switch": "set RUM_ENABLED=false",
+      "rollback_path": "set false (no injection; endpoint 202-ignores)",
+      "off_is_safe_default": true
+    },
+    {
+      "flag": "RUM_SAMPLE",
+      "kind": "dial",
+      "value": "1",
+      "gates": "RUM sample rate [0,1] -- the canary DIAL (throttle load / D1 writes)",
+      "independently_rollbackable": true,
+      "kill_switch": "set RUM_SAMPLE=0",
+      "rollback_path": "lower toward 0 (DIR-007 budget knob)",
+      "off_is_safe_default": true
+    }
+  ],
+  "error_budget_autostop": {
+    "budget_defined": true,
+    "guard_fraction": 0.9,
+    "fail_closed_autostop": true,
+    "mechanism": "R2 dual-write halts (over_budget) at >= guardFrac of the free-tier limit; the canary error-budget rule reuses each flag's kill switch as the auto-stop lever"
+  },
+  "canary_plan": {
+    "strategy": "open new paths incrementally behind independent flags, never big-bang",
+    "cohorts": [
+      "off (safe default)",
+      "shadow (flag on, no user-visible change / capped)",
+      "dial-up via RUM_SAMPLE or per-board/route slice",
+      "full"
+    ],
+    "monitoring": "RUM Core Web Vitals (LCP/CLS/INP) per theme/route/device (T081) + DIR-007 budget usage",
+    "kill_switches": {
+      "BOARD3_A0_ONLY": "set BOARD3_A0_ONLY=false",
+      "RAW_DUALWRITE": "set RAW_DUALWRITE=false",
+      "RUM_ENABLED": "set RUM_ENABLED=false",
+      "RUM_SAMPLE": "set RUM_SAMPLE=0"
+    },
+    "rollback_paths": {
+      "BOARD3_A0_ONLY": "set false / wrangler versions deploy b189d3cc0703 (T040)",
+      "RAW_DUALWRITE": "set false / wrangler versions deploy 657fe32a (T022 flag off)",
+      "RUM_ENABLED": "set false (no injection; endpoint 202-ignores)",
+      "RUM_SAMPLE": "lower toward 0 (DIR-007 budget knob)"
+    },
+    "error_budget_auto_stop": {
+      "cost": "DIR-007 fail-closed budget guard (live)",
+      "quality": "on a CWV error-budget breach (e.g. LCP/INP p75 regressing past threshold with min-samples), auto-disable the canary flag / lower RUM_SAMPLE (fail-closed)"
+    },
+    "held_capabilities_rollout": {
+      "A1/A2 subnational": "each cohort behind a source-enable flag; per-cohort Owner promotion gate",
+      "S5 depth / S6 models": "behind a NOT_DEPLOYED feature flag; promotion-gated, canary via cohort"
+    }
+  },
+  "live_build": "b189d3cc0703 (unchanged; framework verifies the existing mechanism, deploys nothing)",
+  "acceptance": {
+    "every_flag_independently_rollbackable": true,
+    "every_flag_has_kill_switch": true,
+    "every_flag_off_is_safe_default": true,
+    "error_budget_auto_stop_exists": true,
+    "not_independent": [],
+    "framework_pass": true
+  }
+}

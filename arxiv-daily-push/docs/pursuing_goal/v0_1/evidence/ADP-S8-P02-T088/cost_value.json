@@ -1,0 +1,6 @@
+{
+  "task": "ADP-S8-P02-T088", "release_mode": "NOT_DEPLOYED",
+  "production_cost": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "recurring_cloud_usd": 0, "note": "framework spec + verification over the existing worker; deploys nothing"},
+  "activity": {"readonly_get": 1, "human_maintenance": "canary framework tool + verifier + 3 load-bearing negative controls + canary plan + evidence + adversarial review"},
+  "value_metric": {"stage": "S8 Release/Soak/Handoff", "delivered": "a feature-flagged canary framework verified over the live worker: 4 canary levers (BOARD3_A0_ONLY/RAW_DUALWRITE/RUM_ENABLED + RUM_SAMPLE dial) each independently rollback-able with a kill switch + off-safe default; cohorts + monitoring + a fail-closed error-budget auto-stop (live DIR-007 guard@0.9). Enables incremental (non-big-bang) rollout of held capabilities."}
+}

@@ -1,0 +1,5 @@
+canary framework: 4 flags all independently rollback-able + kill switch + off-safe; DIR-007 fail-closed auto-stop @0.9; live b189d3cc0703 (NOT_DEPLOYED)
+NC1 (remove a gate) -> flag not independent; NC2 (couple two flags) -> both not independent; NC3 (break over_budget stop) -> no auto-stop: all controls load-bearing
+
+ACCEPTANCE = PASS
+NOTE: every worker feature flag (BOARD3_A0_ONLY/RAW_DUALWRITE/RUM_ENABLED + RUM_SAMPLE dial) is an independent, off-safe, kill-switchable canary lever; the live DIR-007 budget guard is a fail-closed error-budget auto-stop. Framework verified over the existing worker; deploys nothing; NOT_DEPLOYED (live b189d3cc0703). Actual canary EXECUTION of a held capability is a per-capability Owner-gated follow-on.
