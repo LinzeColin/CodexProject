@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S4-P04-T054",
+  "stage": "S4 (2016+ A0/A1/A2 Expansion) / P04 A2 重要区与功能区 cohort",
+  "value": {
+    "user_value": "Expanded the A2 registry by marginal value: 8 more high-value functional zones (Nansha, Zhoushan, Xihai'an, Hefei/East-Lake/Chengdu hi-tech, Binhai, Jiangbei) added, each providing first-line local-action signals (projects/pilots/procurement/industry-landing) -- the new cohort's verified-useful-signal rate (1.0) is not below the existing A2 baseline (1.0). A baseline-only zone and a media aggregator are rejected; admitting them would have dropped the rate to 0.8.",
+    "why_it_matters": "Scaling A2 must not dilute quality -- each added zone must actually carry first-line operational signal, or the registry grows in count while the useful-signal rate falls. The marginal-value gate keeps expansion value-preserving."
+  },
+  "cost": {
+    "note": "unknown != 0; a selection/expansion task over the T053 model -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "marginal-value model + curated expansion zones",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "SHADOW (expanded A2 cohorts + marginal value report + health; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

@@ -1,0 +1,15 @@
+# ADP-S4-P04-T054 commands (expand A2 registry by marginal value; SHADOW)
+
+# 1. tools/a2_registry.py -- builds on the T053 model (a2_pilot)
+#    baseline_from_t053 (existing A2 verified-useful rate) / evaluate (marginal first-line signals + official) /
+#    useful_signal_rate / expand (admit verified-useful only; new rate must be >= baseline)
+
+# 2. build the expansion (deterministic)
+python3 evidence/ADP-S4-P04-T054/build_expansion.py   # baseline 1.0, new_rate 1.0, meets_baseline, admitted 8 / rejected 2
+
+# 3. acceptance verifier (deterministic; rate>=baseline + first-line-official-only + negative control + deliverables)
+python3 evidence/ADP-S4-P04-T054/test-results/t054_verify.py   # ACCEPTANCE = PASS (exit 0)
+#    negative control: admitting the rejected candidates would drop the rate to 0.8 < baseline 1.0
+
+# 4. realtime no-regression (SHADOW)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

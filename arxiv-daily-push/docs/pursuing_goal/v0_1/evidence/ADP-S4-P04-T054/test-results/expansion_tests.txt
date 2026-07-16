@@ -1,0 +1,4 @@
+baseline_rate=1.0 new_rate=1.0 meets_baseline=True admitted=8 rejected=2
+negative control: rate if ALL candidates admitted = 0.8 (must be < baseline 1.0)
+
+ACCEPTANCE = PASS

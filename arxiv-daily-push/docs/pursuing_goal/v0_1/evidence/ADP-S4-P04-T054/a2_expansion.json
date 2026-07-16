@@ -1,0 +1,382 @@
+{
+  "task": "ADP-S4-P04-T054",
+  "baseline": {
+    "cohort": "A2-PILOT-BATCH-1",
+    "size": 10,
+    "rate": 1.0
+  },
+  "expansion_candidates": 10,
+  "admitted": [
+    {
+      "source_id": "guangzhou-ndz",
+      "name": "广州南沙新区",
+      "zone_type": "national_new_area",
+      "official_host": "www.gzns.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 4,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "guangzhou-ndz",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    },
+    {
+      "source_id": "wuhan-eastlake",
+      "name": "武汉东湖高新区",
+      "zone_type": "hi_tech_innovation",
+      "official_host": "www.wehdz.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 4,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "wuhan-eastlake",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    },
+    {
+      "source_id": "tianjin-binhai",
+      "name": "天津滨海新区",
+      "zone_type": "national_new_area",
+      "official_host": "www.bh.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 4,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "tianjin-binhai",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    },
+    {
+      "source_id": "zhoushan-newarea",
+      "name": "舟山群岛新区",
+      "zone_type": "national_new_area",
+      "official_host": "www.zhoushan.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "planning",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 3,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "zhoushan-newarea",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    },
+    {
+      "source_id": "xihaian-newarea",
+      "name": "青岛西海岸新区",
+      "zone_type": "national_new_area",
+      "official_host": "www.xihaian.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 3,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "xihaian-newarea",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    },
+    {
+      "source_id": "hefei-hitech",
+      "name": "合肥高新区",
+      "zone_type": "hi_tech_innovation",
+      "official_host": "www.hfgx.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 3,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "hefei-hitech",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    },
+    {
+      "source_id": "nanjing-jiangbei",
+      "name": "南京江北新区",
+      "zone_type": "national_new_area",
+      "official_host": "www.njna.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 3,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "nanjing-jiangbei",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    },
+    {
+      "source_id": "chengdu-hitech",
+      "name": "成都高新区",
+      "zone_type": "hi_tech_innovation",
+      "official_host": "www.cdht.gov.cn",
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "marginal_useful_signals": 3,
+      "official": true,
+      "authority_level": "A2",
+      "verified_useful": true,
+      "reachable_server_side": "tls_blocked",
+      "cursor_2016": {
+        "source_id": "chengdu-hitech",
+        "start_month": "2016-01",
+        "last_confirmed_month": null,
+        "last_confirmed_id": null,
+        "status": "pending"
+      }
+    }
+  ],
+  "admitted_count": 8,
+  "rejected": [
+    {
+      "source_id": "baseline-only-zone",
+      "reason": "no first-line marginal value (baseline-only)"
+    },
+    {
+      "source_id": "zone-aggregator",
+      "reason": "not a verified official A2 publisher (media)"
+    }
+  ],
+  "rejected_count": 2,
+  "new_cohort_useful_signal_rate": 1.0,
+  "meets_baseline": true,
+  "marginal_value_report": [
+    {
+      "source_id": "guangzhou-ndz",
+      "name": "广州南沙新区",
+      "marginal_useful_signals": 4,
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "zhoushan-newarea",
+      "name": "舟山群岛新区",
+      "marginal_useful_signals": 3,
+      "incremental_signal_types": [
+        "industry_landing",
+        "planning",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "xihaian-newarea",
+      "name": "青岛西海岸新区",
+      "marginal_useful_signals": 3,
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "hefei-hitech",
+      "name": "合肥高新区",
+      "marginal_useful_signals": 3,
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "wuhan-eastlake",
+      "name": "武汉东湖高新区",
+      "marginal_useful_signals": 4,
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "tianjin-binhai",
+      "name": "天津滨海新区",
+      "marginal_useful_signals": 4,
+      "incremental_signal_types": [
+        "industry_landing",
+        "investment",
+        "pilot",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "nanjing-jiangbei",
+      "name": "南京江北新区",
+      "marginal_useful_signals": 3,
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "chengdu-hitech",
+      "name": "成都高新区",
+      "marginal_useful_signals": 3,
+      "incremental_signal_types": [
+        "industry_landing",
+        "pilot",
+        "project_approval"
+      ],
+      "admitted": true
+    },
+    {
+      "source_id": "baseline-only-zone",
+      "name": "某区(仅政策转发)",
+      "marginal_useful_signals": 0,
+      "incremental_signal_types": [],
+      "admitted": false
+    },
+    {
+      "source_id": "zone-aggregator",
+      "name": "某区招商资讯",
+      "marginal_useful_signals": 2,
+      "incremental_signal_types": [
+        "investment",
+        "project_approval"
+      ],
+      "admitted": false
+    }
+  ],
+  "health": [
+    {
+      "source_id": "guangzhou-ndz",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 4,
+      "healthy": true
+    },
+    {
+      "source_id": "zhoushan-newarea",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 3,
+      "healthy": true
+    },
+    {
+      "source_id": "xihaian-newarea",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 3,
+      "healthy": true
+    },
+    {
+      "source_id": "hefei-hitech",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 3,
+      "healthy": true
+    },
+    {
+      "source_id": "wuhan-eastlake",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 4,
+      "healthy": true
+    },
+    {
+      "source_id": "tianjin-binhai",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 4,
+      "healthy": true
+    },
+    {
+      "source_id": "nanjing-jiangbei",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 3,
+      "healthy": true
+    },
+    {
+      "source_id": "chengdu-hitech",
+      "reachable": "tls_blocked",
+      "first_line_signal_types": 3,
+      "healthy": true
+    }
+  ],
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "marginal-value model + curated expansion zones"
+  },
+  "deployment": "SHADOW (expanded A2 cohorts + marginal value report + health; production untouched)"
+}

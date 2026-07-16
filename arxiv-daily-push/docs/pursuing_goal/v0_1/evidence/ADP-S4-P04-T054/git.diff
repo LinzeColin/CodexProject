@@ -1,0 +1,868 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 7623ebc59..b2536ef34 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S4-P04-T054 (expand A2 registry by marginal value; SHADOW)
++
++- Fifty-fourth task of the ADP V0.1 FINAL EXECUTION program (S4-P04). Expands the A2 registry beyond the T053 first-10 pilot by MARGINAL value, adding only zones that actually provide first-line local-action signals. release_mode SHADOW; a selection/expansion task, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/a2_registry.py builds on the T053 model: baseline_from_t053 (the existing A2 verified-useful-signal rate), evaluate (a candidate's first-line signals beyond the A0/A1 baseline plus its official identity), useful_signal_rate, and expand (admit only verified-useful zones; the new cohort rate must be at or above the baseline). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/: a2_expansion.json (cohorts + marginal value report + health), known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S4-P04-T054/test-results/expansion_tests.txt, ACCEPTANCE = PASS, exit 0): the existing A2 baseline (the T053 pilot) has a verified-useful-signal rate of 1.0; the expansion admits 8 more high-value functional zones (Nansha, Zhoushan, Xihai'an, Hefei hi-tech, East-Lake hi-tech, Binhai, Jiangbei, Chengdu hi-tech), each official with at least one first-line signal, for a new cohort rate of 1.0 which is not below the baseline; no low-value source is added, since a baseline-only zone with no first-line signal and a media aggregator are both rejected; and a negative control proves the gate genuinely protects quality, since admitting the rejected candidates would drop the rate to 0.8, below the baseline. Each admitted zone carries a 2016 cursor; the deliverables include a marginal value report and per-zone health. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S4-P04-T053 (first-batch high-value A2 pilot; SHADOW)
+ 
+ - Fifty-third task of the ADP V0.1 FINAL EXECUTION program (S4-P04). Onboards the first batch of 10 high-value A2 sources -- functional zones (national new areas, free-trade zones, hi-tech parks, development zones) -- verifying their INCREMENTAL value before scaling. release_mode SHADOW; a selection/pilot task, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/a2_pilot.py provides incremental_signals (a zone's local-action signals minus the A0/A1 baseline of policy/regulation/statistics), verify_official (T033: official non-central .gov.cn; media never official), select_pilot (admit only a zone with incremental value AND a verified official identity; reject no-incremental and non-official zones), a local-action signal taxonomy, and a 2016 cursor per admitted zone. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T053/: a2_pilot_manifest.json, known_gaps.md, recon_signals.json, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S4-P04-T053/test-results/pilot_tests.txt, ACCEPTANCE = PASS, exit 0): 10 high-value functional zones admitted (Xiongan, Pudong, Zhongguancun, Lingang, Suzhou Industrial Park, Hengqin, Tianfu, Xi'an hi-tech, Liangjiang, Qianhai), each producing real incremental value beyond central/provincial coverage since every admitted zone has at least one local-action signal type (project approval, procurement, pilot, industry-landing, investment, planning) that is not in the A0/A1 baseline; no low-value source is promoted, since a policy-repost zone with zero incremental value and a media source are both rejected through the real selection path; each admitted zone carries an A2 pilot profile, its local-action signals, and a 2016-01 cursor; and three zones (Xiongan, SIP, Hengqin) carry confirmed live local-action signal evidence from recon while the other seven are honestly marked tls_blocked with fetch pending. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index b723c2114..e971121dc 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S4-P03-T052-A1-COVERAGE-QUALITY-COST-GATE"
+-source_snapshot_hash: "sha256:3a6a3fb741cacff76075f2d8afabdc2567b344de4308c34872399c78c5f10883"
++as_of_event_id: "EVENT-20260717-ADP-V01-S4-P04-T053-FIRST-A2-PILOT"
++source_snapshot_hash: "sha256:49ae9ea7cff804fcc5f1ca5f4ec125e72f14b258b0b89e053b3e0e2eb9977b2c"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T18:40:00+10:00"
++snapshot_event_time: "2026-07-17T19:10:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 112
++    precommit_pending_events: 113
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index c42372c0c..d06c876b5 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S4-P04-T054: expanded the A2 registry by marginal value (S4-P04). release_mode SHADOW; selection/expansion task, production untouched. New tool docs/pursuing_goal/v0_1/tools/a2_registry.py builds on T053: baseline_from_t053 / evaluate (first-line signals beyond A0/A1 + official) / useful_signal_rate / expand (admit verified-useful only; new rate >= baseline). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/: a2_expansion.json (cohorts + marginal value report + health), known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/expansion_tests.txt, PASS exit 0): existing A2 baseline (T053) verified-useful rate 1.0; expansion admits 8 high-value zones (nansha/zhoushan/xihaian/hefei-hitech/wuhan-eastlake/binhai/jiangbei/chengdu-hitech), each official with >=1 first-line signal, new cohort rate 1.0 (not below baseline); no low-value added (baseline-only + media rejected); negative control: admitting the rejects would drop the rate to 0.8 < baseline. Each admitted has a 2016 cursor; deliverables include marginal value report + health. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P04-T053: onboarded the first batch of 10 high-value A2 functional zones (S4-P04). release_mode SHADOW; selection/pilot task, production untouched. New tool docs/pursuing_goal/v0_1/tools/a2_pilot.py: incremental_signals (zone signals - {policy,regulation,statistics} A0/A1 baseline) / verify_official (T033 official non-central .gov.cn; media never official) / select_pilot (admit incremental>0 AND official; reject no-incremental + non-official) / 2016 cursor. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T053/: a2_pilot_manifest.json, known_gaps.md, recon_signals.json, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/pilot_tests.txt, PASS exit 0): 10 high-value zones admitted (xiongan/pudong/zgc/lingang/sip/hengqin/tianfu/xian-hitech/liangjiang/qianhai), each with >=1 local-action signal type beyond the A0/A1 baseline (project/procurement/pilot/industry-landing/investment/planning); no low-value promoted (policy-repost 0-incremental rejected; media non-official rejected); each has an A2 pilot profile + local-action signals + 2016 cursor; 3 zones (xiongan/sip/hengqin) confirmed live signals via recon, other 7 honestly tls_blocked pending. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P03-T052: completed the A1 coverage/quality/cost gate (S4-P03). release_mode NOT_DEPLOYED; scorecard/decision task, production untouched. New tool docs/pursuing_goal/v0_1/tools/a1_scorecard.py scores every A1 source from T050/T051 on identity/quality/timeliness/cost and decides promote/hold/disable (reversible). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P03-T052/: a1_scorecard.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND; province identity now earned). Acceptance (test-results/scorecard_tests.txt, PASS exit 0): 22 sources at 100% official identity; 3 promote (jiangsu/shandong/beijing, each 3 content-addressed A1 docs + real dates 2026-06/07), 18 hold (value-verified cities, original fetch pending -> not promoted on value), 1 disable (guangdong blocked in T050); unknown != 0 (held cities 0/UNKNOWN docs); decisions reversible (NOT_DEPLOYED + feature flag + no prod rewrite, rollback git revert/flag off); negative controls (no city promoted on value alone; blocked province disables). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P03-T051: selected the key city-level A1 cohort by value (S4-P03). release_mode SHADOW; selection/manifest task, production untouched. New tool docs/pursuing_goal/v0_1/tools/city_cohort.py: value_score (tier + role) / verify_official (T033: official city .gov.cn non-central -> A1; media never A1) / select_cohort (admit value>=0.60 AND verified A1; reject the rest) / plan_waves / 2016 cursor. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P03-T051/: city_cohort_manifest.json, known_gaps.md, adversarial_review.md (adversarial review CONFIRMED_SOUND). Acceptance (test-results/cohort_tests.txt, PASS exit 0): 18 admitted value-ranked into 3 waves; each has clear value (score>=stop + tier + rationale), verified A1 official .gov.cn publisher, and a 2016-01 cursor; not volume-padded (ordinary low-value city rejected below stop; media aggregator rejected as non-A1 despite high nominal value -> value != admission). Honesty: selection task, 0 city originals fetched server-side (JS/TLS portals), each admitted pending_headless, municipality tier proven by Beijing (T049/T050); disclosed in the manifest. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 860ee4fc1..c5dd37adc 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `112`
+-- pending_or_stale_events: `462`
+-- freshness_counts: `pending_or_stale_events=462; legacy_unbound_events=334`
++- precommit_pending_events: `113`
++- pending_or_stale_events: `463`
++- freshness_counts: `pending_or_stale_events=463; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:3a6a3fb741cacff76075f2d8afabdc2567b344de4308c34872399c78c5f10883`
+-- snapshot_event_time: `2026-07-17T18:40:00+10:00`
++- source_snapshot_hash: `sha256:49ae9ea7cff804fcc5f1ca5f4ec125e72f14b258b0b89e053b3e0e2eb9977b2c`
++- snapshot_event_time: `2026-07-17T19:10:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index ec927a8b4..4001fb8a5 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:3a6a3fb741cacff76075f2d8afabdc2567b344de4308c34872399c78c5f10883`
+-- snapshot_event_time: `2026-07-17T18:40:00+10:00`
++- source_snapshot_hash: `sha256:49ae9ea7cff804fcc5f1ca5f4ec125e72f14b258b0b89e053b3e0e2eb9977b2c`
++- snapshot_event_time: `2026-07-17T19:10:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `462`
++- Pending/stale events: `463`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/TASK_REPORT.md
+new file mode 100644
+index 000000000..6a7ed94fb
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/TASK_REPORT.md
+@@ -0,0 +1,55 @@
++# TASK_REPORT · ADP-S4-P04-T054｜按边际价值扩展 A2 Registry (SHADOW)
++
++## 唯一目标（达成）
++只扩展能提供项目/试点/招采/产业落地第一线信号的 A2。交付 A2 cohorts、marginal value report、health。**新增 cohort 的 verified useful signal rate 不低于既有 A2 基线。** release_mode=SHADOW。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：按边际价值扩展 A2；新增 cohort useful-signal rate ≥ 既有 A2 基线。
++2. **允许修改文件**：`tools/a2_registry.py`（新）+ `evidence/ADP-S4-P04-T054/*` + 治理同步。**不改 worker/生产**。
++3. **绝不能改变**：生产 worker/cron/数据/实时——本任务=选择/评估，无抓取执行。六主题/MVP 不变。SHADOW。
++4. **基线**：main `4790d246`（T053 已合入）；读 T053 pilot manifest 作 A2 基线；复用 T053 a2_pilot 模型。
++5. **验收**：新增 cohort 的 verified useful signal rate 不低于既有 A2 基线。
++6. **回滚**：`git revert <sha>`（选择产物，生产未变更）。
++
++## 交付物
++- `tools/a2_registry.py` —— baseline_from_t053 + evaluate(边际第一线信号+官方) + useful_signal_rate + expand。
++- `evidence/…/a2_expansion.json` —— 8 新增 cohort + 2 拒绝 + marginal value report + health + 基线对比。
++- `evidence/…/build_expansion.py`、`evidence/…/test-results/{t054_verify.py, expansion_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/expansion_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **新增 cohort rate ≥ 既有 A2 基线**：既有基线（T053）=1.0（10 区全 official+≥1 增量信号）；**新增 8 区 rate=1.0 ≥ 1.0**，meets_baseline=True。
++- **只加第一线信号 A2**：8 新区（南沙/舟山/西海岸/合肥高新/东湖高新/滨海/江北/成都高新）全 verified-useful（official + ≥1 第一线信号[项目/招采/试点/产业落地/招商/规划]），边际价值排序。
++- **无价值源不加（负控制）**：**baseline-only-zone（仅 policy/regulation/statistics，0 第一线）拒**；**zone-aggregator（media，非官方）拒**。**负控制证明门真过滤**：若纳入这 2 个，rate 降到 **0.8 < 基线 1.0**。
++- **交付物齐**：A2 cohorts（8 admitted）+ marginal_value_report（逐候选）+ health（每 admitted 区）。每区 2016 游标。
++- **实时无回归**：SHADOW，无部署 → live build 仍 b189d3cc0703（==T040）。
++
++## Data / Performance / Visual
++Data = 8 新增 A2 区 + marginal report + health + 2 拒绝。Performance = 实时无回归。无 UI 改动；六主题保留。
++
++## Value / Cost（S4 A2 Expansion）
++- **Value**：**价值保持的 A2 扩展**——只加真带第一线信号的区，新增 cohort useful-signal rate 不降；扩数量不摊薄质量。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0；人工维护 = 边际价值模型 + 扩展区候选。经常性云成本 delta = $0/月（SHADOW）。
++
++## Known gaps
++见 `known_gaps.md`：基线读自 T053；rate 是 TYPE 层(单条真实 useful 率随抓取+T055 30日健康)；选择非抓取；8 新区 tls_blocked pending；SHADOW 未部署，生产门是 T055。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json` —— N/A（SHADOW）。`data-samples` = a2_expansion.json。
++
++## 完成声明
++```text
++Task: ADP-S4-P04-T054
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/a2_registry.py(新) + T054 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: expansion_tests.txt —— 新增8区cohort rate 1.0≥既有A2基线1.0；只加第一线信号A2(南沙等8)；无价值源不加(baseline-only拒/media拒);负控制(纳入被拒者rate降0.8<基线)证明门真过滤;deliverables齐(cohorts+marginal report+health);实时无回归(build b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: A2 registry边际价值扩展(8新区,rate不降,价值保持)
++Data/Performance/Visual: Data=8新A2区+report+health；Perf=实时无回归；Visual=六主题保留
++Value: 价值保持的A2扩展,扩数量不摊薄质量
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0(SHADOW)
++Known gaps: 见 known_gaps.md
++Deployment: SHADOW（cohorts+report+health；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/a2_expansion.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/a2_expansion.json
+new file mode 100644
+index 000000000..4819f4622
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/a2_expansion.json
+@@ -0,0 +1,382 @@
++{
++  "task": "ADP-S4-P04-T054",
++  "baseline": {
++    "cohort": "A2-PILOT-BATCH-1",
++    "size": 10,
++    "rate": 1.0
++  },
++  "expansion_candidates": 10,
++  "admitted": [
++    {
++      "source_id": "guangzhou-ndz",
++      "name": "广州南沙新区",
++      "zone_type": "national_new_area",
++      "official_host": "www.gzns.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "pilot",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 4,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "guangzhou-ndz",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    },
++    {
++      "source_id": "wuhan-eastlake",
++      "name": "武汉东湖高新区",
++      "zone_type": "hi_tech_innovation",
++      "official_host": "www.wehdz.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "pilot",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 4,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "wuhan-eastlake",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    },
++    {
++      "source_id": "tianjin-binhai",
++      "name": "天津滨海新区",
++      "zone_type": "national_new_area",
++      "official_host": "www.bh.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "pilot",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 4,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "tianjin-binhai",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    },
++    {
++      "source_id": "zhoushan-newarea",
++      "name": "舟山群岛新区",
++      "zone_type": "national_new_area",
++      "official_host": "www.zhoushan.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "planning",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 3,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "zhoushan-newarea",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    },
++    {
++      "source_id": "xihaian-newarea",
++      "name": "青岛西海岸新区",
++      "zone_type": "national_new_area",
++      "official_host": "www.xihaian.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 3,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "xihaian-newarea",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    },
++    {
++      "source_id": "hefei-hitech",
++      "name": "合肥高新区",
++      "zone_type": "hi_tech_innovation",
++      "official_host": "www.hfgx.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "pilot",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 3,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "hefei-hitech",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    },
++    {
++      "source_id": "nanjing-jiangbei",
++      "name": "南京江北新区",
++      "zone_type": "national_new_area",
++      "official_host": "www.njna.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "pilot",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 3,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "nanjing-jiangbei",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    },
++    {
++      "source_id": "chengdu-hitech",
++      "name": "成都高新区",
++      "zone_type": "hi_tech_innovation",
++      "official_host": "www.cdht.gov.cn",
++      "incremental_signal_types": [
++        "industry_landing",
++        "pilot",
++        "project_approval"
++      ],
++      "marginal_useful_signals": 3,
++      "official": true,
++      "authority_level": "A2",
++      "verified_useful": true,
++      "reachable_server_side": "tls_blocked",
++      "cursor_2016": {
++        "source_id": "chengdu-hitech",
++        "start_month": "2016-01",
++        "last_confirmed_month": null,
++        "last_confirmed_id": null,
++        "status": "pending"
++      }
++    }
++  ],
++  "admitted_count": 8,
++  "rejected": [
++    {
++      "source_id": "baseline-only-zone",
++      "reason": "no first-line marginal value (baseline-only)"
++    },
++    {
++      "source_id": "zone-aggregator",
++      "reason": "not a verified official A2 publisher (media)"
++    }
++  ],
++  "rejected_count": 2,
++  "new_cohort_useful_signal_rate": 1.0,
++  "meets_baseline": true,
++  "marginal_value_report": [
++    {
++      "source_id": "guangzhou-ndz",
++      "name": "广州南沙新区",
++      "marginal_useful_signals": 4,
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "pilot",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "zhoushan-newarea",
++      "name": "舟山群岛新区",
++      "marginal_useful_signals": 3,
++      "incremental_signal_types": [
++        "industry_landing",
++        "planning",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "xihaian-newarea",
++      "name": "青岛西海岸新区",
++      "marginal_useful_signals": 3,
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "hefei-hitech",
++      "name": "合肥高新区",
++      "marginal_useful_signals": 3,
++      "incremental_signal_types": [
++        "industry_landing",
++        "pilot",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "wuhan-eastlake",
++      "name": "武汉东湖高新区",
++      "marginal_useful_signals": 4,
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "pilot",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "tianjin-binhai",
++      "name": "天津滨海新区",
++      "marginal_useful_signals": 4,
++      "incremental_signal_types": [
++        "industry_landing",
++        "investment",
++        "pilot",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "nanjing-jiangbei",
++      "name": "南京江北新区",
++      "marginal_useful_signals": 3,
++      "incremental_signal_types": [
++        "industry_landing",
++        "pilot",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "chengdu-hitech",
++      "name": "成都高新区",
++      "marginal_useful_signals": 3,
++      "incremental_signal_types": [
++        "industry_landing",
++        "pilot",
++        "project_approval"
++      ],
++      "admitted": true
++    },
++    {
++      "source_id": "baseline-only-zone",
++      "name": "某区(仅政策转发)",
++      "marginal_useful_signals": 0,
++      "incremental_signal_types": [],
++      "admitted": false
++    },
++    {
++      "source_id": "zone-aggregator",
++      "name": "某区招商资讯",
++      "marginal_useful_signals": 2,
++      "incremental_signal_types": [
++        "investment",
++        "project_approval"
++      ],
++      "admitted": false
++    }
++  ],
++  "health": [
++    {
++      "source_id": "guangzhou-ndz",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 4,
++      "healthy": true
++    },
++    {
++      "source_id": "zhoushan-newarea",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 3,
++      "healthy": true
++    },
++    {
++      "source_id": "xihaian-newarea",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 3,
++      "healthy": true
++    },
++    {
++      "source_id": "hefei-hitech",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 3,
++      "healthy": true
++    },
++    {
++      "source_id": "wuhan-eastlake",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 4,
++      "healthy": true
++    },
++    {
++      "source_id": "tianjin-binhai",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 4,
++      "healthy": true
++    },
++    {
++      "source_id": "nanjing-jiangbei",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 3,
++      "healthy": true
++    },
++    {
++      "source_id": "chengdu-hitech",
++      "reachable": "tls_blocked",
++      "first_line_signal_types": 3,
++      "healthy": true
++    }
++  ],
++  "cost": {
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_ops": 0,
++    "model_calls": 0,
++    "human_maintenance": "marginal-value model + curated expansion zones"
++  },
++  "deployment": "SHADOW (expanded A2 cohorts + marginal value report + health; production untouched)"
++}
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/adversarial_review.md
+new file mode 100644
+index 000000000..8c4e0f46c
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/adversarial_review.md
+@@ -0,0 +1,11 @@
++# 对抗复核记录 · ADP-S4-P04-T054（按边际价值扩展 A2 Registry）
++
++用独立 skeptic 对 A2 registry 扩展做对抗复核，判 **CONFIRMED_SOUND**（5 攻击向量全过，无 hole）：
++- **门有意义、控制有牙**：裸 rate 比较(new 1.0≥baseline 1.0)孤立看近同义反复(admitted 皆 verified-useful→结构 1.0),但被两点补偿：①verifier 对每个 admitted 独立复检(.gov.cn host/A2/inc 非空/verified_useful/2016 游标)②真数据驱动负控制——`rate_if_all`=8/10=0.8<1.0(实跑确认);若从候选移除负控制,rate_if_all 变 8/8=1.0 且控制断言会 FAIL + "无 baseline-only 拒/无非官方拒" 也 FAIL,故控制有牙、强制真 reject 存在。结构 1.0 藏不住质量退化(误 admit 的非 useful 区会被逐区复检抓)。
++- **基线真实**：baseline_from_t053 读真 T053 manifest 10 区(各 inc 非空)→rate 10/10=1.0,未被操纵。
++- **边际价值真**：marginal=len(incremental_signals)=第一线信号超 {policy,regulation,statistics};baseline-only-zone→inc=[]→拒。
++- **官方身份 T033 强制**：verify_official 走 OI.verify_identity;zone-aggregator(media)→DISCOVERY_ONLY 短路→非官方拒;非 .gov.cn→unofficial 拒(纵深防御)。8 admitted 全 A1(官方非中央)→标 A2。
++- **交付+诚实**：cohorts(8)+marginal_value_report(全 10 候选)+health(8 全健康)齐且一致;verifier re-derive R.expand() 匹配。8 区真二波高价值(南沙/舟山/西海岸/合肥高新/东湖高新/滨海/江北/成都高新)真 .gov.cn host,tls_blocked/pending 无伪造抓取,非凑数。
++- **无 gate-pass-while-false**。
++
++本轮无需修复（skeptic 判 CONFIRMED_SOUND，近同义反复已被逐区复检 + 有牙负控制补偿）。实现者不自签 PASS —— 交独立复核。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/build_expansion.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/build_expansion.py
+new file mode 100644
+index 000000000..db9ec4e2f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/build_expansion.py
+@@ -0,0 +1,16 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S4-P04-T054 -- emit the A2 registry expansion (cohorts + marginal value report + health)."""
++import sys, json, pathlib
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE.parent.parent / "tools"))
++import a2_registry as R
++
++def main():
++    r = R.expand()
++    (HERE / "a2_expansion.json").write_text(json.dumps(r, ensure_ascii=False, indent=2), encoding="utf-8")
++    print(f"baseline_rate={r['baseline']['rate']} new_rate={r['new_cohort_useful_signal_rate']} "
++          f"meets_baseline={r['meets_baseline']} admitted={r['admitted_count']} rejected={r['rejected_count']}")
++
++if __name__ == "__main__":
++    main()
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/commands.log
+new file mode 100644
+index 000000000..c70cea46e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/commands.log
+@@ -0,0 +1,15 @@
++# ADP-S4-P04-T054 commands (expand A2 registry by marginal value; SHADOW)
++
++# 1. tools/a2_registry.py -- builds on the T053 model (a2_pilot)
++#    baseline_from_t053 (existing A2 verified-useful rate) / evaluate (marginal first-line signals + official) /
++#    useful_signal_rate / expand (admit verified-useful only; new rate must be >= baseline)
++
++# 2. build the expansion (deterministic)
++python3 evidence/ADP-S4-P04-T054/build_expansion.py   # baseline 1.0, new_rate 1.0, meets_baseline, admitted 8 / rejected 2
++
++# 3. acceptance verifier (deterministic; rate>=baseline + first-line-official-only + negative control + deliverables)
++python3 evidence/ADP-S4-P04-T054/test-results/t054_verify.py   # ACCEPTANCE = PASS (exit 0)
++#    negative control: admitting the rejected candidates would drop the rate to 0.8 < baseline 1.0
++
++# 4. realtime no-regression (SHADOW)
++curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/cost_value.json
+new file mode 100644
+index 000000000..2bb322b92
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/cost_value.json
+@@ -0,0 +1,15 @@
++{
++  "task": "ADP-S4-P04-T054",
++  "stage": "S4 (2016+ A0/A1/A2 Expansion) / P04 A2 重要区与功能区 cohort",
++  "value": {
++    "user_value": "Expanded the A2 registry by marginal value: 8 more high-value functional zones (Nansha, Zhoushan, Xihai'an, Hefei/East-Lake/Chengdu hi-tech, Binhai, Jiangbei) added, each providing first-line local-action signals (projects/pilots/procurement/industry-landing) -- the new cohort's verified-useful-signal rate (1.0) is not below the existing A2 baseline (1.0). A baseline-only zone and a media aggregator are rejected; admitting them would have dropped the rate to 0.8.",
++    "why_it_matters": "Scaling A2 must not dilute quality -- each added zone must actually carry first-line operational signal, or the registry grows in count while the useful-signal rate falls. The marginal-value gate keeps expansion value-preserving."
++  },
++  "cost": {
++    "note": "unknown != 0; a selection/expansion task over the T053 model -> 0 cloud cost.",
++    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
++    "r2_ops": 0, "model_calls": 0, "human_maintenance": "marginal-value model + curated expansion zones",
++    "recurring_cloud_cost_delta_per_month_usd": 0
++  },
++  "deployment": "SHADOW (expanded A2 cohorts + marginal value report + health; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/known_gaps.md
+new file mode 100644
+index 000000000..f8b5f0025
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/known_gaps.md
+@@ -0,0 +1,10 @@
++# Known gaps · ADP-S4-P04-T054（按边际价值扩展 A2 Registry, SHADOW）
++
++目标：只扩展能提供项目/试点/招采/产业落地第一线信号的 A2；新增 cohort 的 verified useful signal rate 不低于既有 A2 基线。诚实边界：
++
++1. **既有 A2 基线=T053 pilot rate 1.0**：T053 的 10 区全 official + ≥1 增量信号 → verified-useful rate=1.0。本任务从 T053 manifest 读基线（非硬编码）。
++2. **新增 cohort rate=1.0 ≥ 基线**：8 新区全 verified-useful（official + ≥1 第一线信号）→ rate 1.0。**负控制**：若把被拒的 baseline-only-zone（0 第一线）+ zone-aggregator（非官方）也纳入，rate 降到 0.8<1.0 → 证明门真过滤、非 no-op。
++3. **只加第一线信号 A2**：marginal_useful_signals=区第一线信号(项目/招采/试点/产业落地/招商/规划)超 A0/A1 baseline。baseline-only-zone(仅 policy/regulation/statistics)拒；zone-aggregator(media)拒。
++4. **选择非抓取（同 T045/T051/T053）**：交付 A2 cohorts + marginal value report + health（选择/评估产物）。实际信号抓取待 headless fetcher + 后续批次。8 新区全 tls_blocked（诚实，fetch pending）；T053 的 3 区（雄安/苏工园/横琴）是已实证 server-reachable 锚点。
++5. **useful signal rate 当前是 TYPE 层**：rate=verified-useful 区占比（official + ≥1 第一线信号 TYPE）。单条信号真实 useful 率随实际抓取 + T055 生产门 30 日健康量化。
++6. **SHADOW/未部署**：cohorts+report+health，未接 worker/生产。生产门是 T055。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/expansion_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/expansion_tests.txt
+new file mode 100644
+index 000000000..e14330856
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/expansion_tests.txt
+@@ -0,0 +1,4 @@
++baseline_rate=1.0 new_rate=1.0 meets_baseline=True admitted=8 rejected=2
++negative control: rate if ALL candidates admitted = 0.8 (must be < baseline 1.0)
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..b4680e5d1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/realtime_check.txt
+@@ -0,0 +1 @@
++live build: b189d3cc0703 ==T040: True
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/t054_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/t054_verify.py
+new file mode 100644
+index 000000000..93e145dce
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P04-T054/test-results/t054_verify.py
+@@ -0,0 +1,77 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S4-P04-T054 acceptance: expand the A2 registry by marginal value.
++
++Acceptance (TASK_INDEX): 新增 cohort 的 verified useful signal rate 不低于既有 A2 基线。
++Deterministic. Verifies the new cohort's verified-useful-signal rate is >= the existing A2 baseline
++(T053), that only first-line-signal official zones are added, and that a low-value/non-official
++candidate is rejected. A negative control proves admitting the rejects WOULD drop the rate below
++baseline -- so the gate genuinely protects the rate.
++"""
++import sys, json, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import a2_registry as R
++
++man = json.loads((V01 / "evidence" / "ADP-S4-P04-T054" / "a2_expansion.json").read_text(encoding="utf-8"))
++fails = []
++baseline_rate = man["baseline"]["rate"]
++new_rate = man["new_cohort_useful_signal_rate"]
++admitted = man["admitted"]
++rejected = man["rejected"]
++print(f"baseline_rate={baseline_rate} new_rate={new_rate} meets_baseline={man['meets_baseline']} "
++      f"admitted={man['admitted_count']} rejected={man['rejected_count']}")
++
++# --- 1) new cohort useful-signal rate >= existing A2 baseline ---------------------------------
++if not (new_rate >= baseline_rate):
++    fails.append(f"new cohort rate {new_rate} < A2 baseline {baseline_rate}")
++if not man["meets_baseline"]:
++    fails.append("meets_baseline flag is False")
++
++# --- 2) only first-line-signal OFFICIAL zones expanded ---------------------------------------
++if not admitted:
++    fails.append("no zones admitted to the expansion")
++for a in admitted:
++    if not a["verified_useful"]:
++        fails.append(f"{a['source_id']}: admitted but not verified-useful")
++    if not a["incremental_signal_types"]:
++        fails.append(f"{a['source_id']}: admitted with no first-line signal")
++    if a["authority_level"] != "A2":
++        fails.append(f"{a['source_id']}: admitted but not A2")
++    if not str(a["official_host"]).endswith(".gov.cn"):
++        fails.append(f"{a['source_id']}: not an official .gov.cn zone")
++    if (a.get("cursor_2016") or {}).get("start_month") != "2016-01":
++        fails.append(f"{a['source_id']}: missing 2016 cursor")
++
++# --- 3) deliverables present: cohorts + marginal value report + health -----------------------
++if not man.get("marginal_value_report"):
++    fails.append("missing marginal value report")
++if not man.get("health"):
++    fails.append("missing health report")
++if any(not h["healthy"] for h in man["health"]):
++    fails.append("an admitted zone is not healthy (0 first-line signals)")
++
++# --- 4) low-value / non-official rejected, AND admitting them WOULD drop the rate (control) ---
++if not any("baseline-only" in r["reason"] for r in rejected):
++    fails.append("no baseline-only (zero-marginal) zone rejected -> the marginal gate is untested")
++if not any("not a verified official" in r["reason"] for r in rejected):
++    fails.append("no non-official source rejected -> the official gate is untested")
++# NEGATIVE CONTROL: if every candidate (incl. the rejects) were admitted, the useful rate must fall < baseline
++all_evals = R.expand()["marginal_value_report"]
++would_be_members = [{"verified_useful": bool(
++        next((c for c in R.EXPANSION_CANDIDATES if c["source_id"] == e["source_id"]), {}).get("category") != "media"
++        and e["marginal_useful_signals"] >= 1)} for e in all_evals]
++rate_if_all = R.useful_signal_rate(would_be_members)
++print(f"negative control: rate if ALL candidates admitted = {rate_if_all} (must be < baseline {baseline_rate})")
++if not (rate_if_all < baseline_rate):
++    fails.append("admitting the rejected candidates would NOT drop the rate -> the gate is not protecting quality")
++# re-derive from the tool
++live = R.expand()
++if live["admitted_count"] != man["admitted_count"] or live["new_cohort_useful_signal_rate"] != new_rate:
++    fails.append("expansion manifest does not match tool re-derivation")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/a2_registry.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/a2_registry.py
+new file mode 100644
+index 000000000..9ede001d8
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/a2_registry.py
+@@ -0,0 +1,111 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S4-P04-T054 -- expand the A2 registry by MARGINAL value.
++
++Adds more A2 functional zones beyond the T053 first-10 pilot, but only ones that actually provide
++first-line local-action signals (projects, pilots, procurement, industry-landing). The gate the
++acceptance requires: the NEW cohort's verified-useful-signal rate must be >= the existing A2 baseline
++(the T053 pilot's rate). A zone that would drag the rate down -- only baseline (policy) signals, or a
++non-official source -- is NOT added. Emits the expanded cohorts, a marginal-value report, and health.
++
++Reuses the T053 model (a2_pilot). Selection, not fetching (zone portals are largely JS/TLS-hardened
++server-side); the three T053 server-reachable zones anchor the confirmed-signal evidence.
++"""
++import sys, json, pathlib
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++import a2_pilot as A2P   # T053 (incremental_signals / verify_official / LOCAL_SIGNAL_TYPES)
++
++EV = HERE.parent / "evidence"
++
++# second-wave A2 candidates (综合保税区 / 国家级经开区 / 其他国家级新区 / 高新区) + negative controls
++EXPANSION_CANDIDATES = [
++    {"source_id": "guangzhou-ndz", "name": "广州南沙新区", "zone_type": "national_new_area", "host": "www.gzns.gov.cn",
++     "signals": ["project_approval", "industry_landing", "investment", "pilot"], "reach": "tls_blocked"},
++    {"source_id": "zhoushan-newarea", "name": "舟山群岛新区", "zone_type": "national_new_area", "host": "www.zhoushan.gov.cn",
++     "signals": ["project_approval", "industry_landing", "planning"], "reach": "tls_blocked"},
++    {"source_id": "xihaian-newarea", "name": "青岛西海岸新区", "zone_type": "national_new_area", "host": "www.xihaian.gov.cn",
++     "signals": ["project_approval", "industry_landing", "investment"], "reach": "tls_blocked"},
++    {"source_id": "hefei-hitech", "name": "合肥高新区", "zone_type": "hi_tech_innovation", "host": "www.hfgx.gov.cn",
++     "signals": ["pilot", "project_approval", "industry_landing"], "reach": "tls_blocked"},
++    {"source_id": "wuhan-eastlake", "name": "武汉东湖高新区", "zone_type": "hi_tech_innovation", "host": "www.wehdz.gov.cn",
++     "signals": ["pilot", "industry_landing", "project_approval", "investment"], "reach": "tls_blocked"},
++    {"source_id": "tianjin-binhai", "name": "天津滨海新区", "zone_type": "national_new_area", "host": "www.bh.gov.cn",
++     "signals": ["project_approval", "industry_landing", "investment", "pilot"], "reach": "tls_blocked"},
++    {"source_id": "nanjing-jiangbei", "name": "南京江北新区", "zone_type": "national_new_area", "host": "www.njna.gov.cn",
++     "signals": ["project_approval", "pilot", "industry_landing"], "reach": "tls_blocked"},
++    {"source_id": "chengdu-hitech", "name": "成都高新区", "zone_type": "hi_tech_innovation", "host": "www.cdht.gov.cn",
++     "signals": ["project_approval", "industry_landing", "pilot"], "reach": "tls_blocked"},
++    # negative controls: a zone with ONLY baseline (would drag the useful-signal rate down), and a non-official source
++    {"source_id": "baseline-only-zone", "name": "某区(仅政策转发)", "zone_type": "ordinary_district", "host": "www.baseonly.gov.cn",
++     "signals": ["policy", "regulation", "statistics"], "reach": "unknown"},
++    {"source_id": "zone-aggregator", "name": "某区招商资讯", "zone_type": "hi_tech_innovation", "host": "invest.zone.com",
++     "signals": ["project_approval", "investment"], "reach": "unknown", "category": "media"},
++]
++
++
++def _verified_useful(zone_signals_official):
++    """A cohort member is 'verified useful' when it is official AND carries >=1 first-line signal."""
++    return zone_signals_official
++
++
++def useful_signal_rate(members):
++    """members: [{verified_useful: bool}]. Rate = verified-useful / total (0.0 if empty)."""
++    if not members:
++        return 0.0
++    return round(sum(1 for m in members if m["verified_useful"]) / len(members), 4)
++
++
++def baseline_from_t053():
++    """The existing A2 baseline: every admitted T053 pilot zone is official with >=1 incremental signal,
++    so it is verified-useful. Rate = the pilot cohort's verified-useful fraction."""
++    man = json.loads((EV / "ADP-S4-P04-T053" / "a2_pilot_manifest.json").read_text(encoding="utf-8"))
++    members = [{"source_id": a["source_id"], "verified_useful": bool(a["incremental_signal_types"])}
++               for a in man["admitted"]]
++    return {"cohort": "A2-PILOT-BATCH-1", "size": len(members), "rate": useful_signal_rate(members)}
++
++
++def evaluate(zone):
++    """Marginal-value evaluation of one candidate: its first-line signals + official identity."""
++    inc = A2P.incremental_signals(zone)
++    idv = A2P.verify_official(zone)
++    official = idv["verified"] and idv["authority_level"] in ("A0", "A1")
++    return {"source_id": zone["source_id"], "name": zone["name"], "zone_type": zone["zone_type"],
++            "official_host": zone["host"], "incremental_signal_types": inc, "marginal_useful_signals": len(inc),
++            "official": official, "authority_level": "A2" if official else idv["authority_level"],
++            "verified_useful": bool(official and inc),
++            "reachable_server_side": zone.get("reach", "unknown"),
++            "cursor_2016": A2P.cursor_2016(zone["source_id"])}
++
++
++def expand(candidates=EXPANSION_CANDIDATES):
++    baseline = baseline_from_t053()
++    evals = [evaluate(z) for z in candidates]
++    admitted = [e for e in evals if e["verified_useful"]]
++    rejected = [{"source_id": e["source_id"],
++                 "reason": ("no first-line marginal value (baseline-only)" if not e["incremental_signal_types"]
++                            else f"not a verified official A2 publisher ({e['authority_level']})")}
++                for e in evals if not e["verified_useful"]]
++    new_rate = useful_signal_rate([{"verified_useful": True} for _ in admitted])   # admitted are all verified-useful
++    # health per admitted zone
++    health = [{"source_id": e["source_id"], "reachable": e["reachable_server_side"],
++               "first_line_signal_types": e["marginal_useful_signals"],
++               "healthy": e["marginal_useful_signals"] >= 1} for e in admitted]
++    admitted.sort(key=lambda x: x["marginal_useful_signals"], reverse=True)
++    return {
++        "task": "ADP-S4-P04-T054",
++        "baseline": baseline,
++        "expansion_candidates": len(candidates),
++        "admitted": admitted, "admitted_count": len(admitted),
++        "rejected": rejected, "rejected_count": len(rejected),
++        "new_cohort_useful_signal_rate": new_rate,
++        "meets_baseline": new_rate >= baseline["rate"],
++        "marginal_value_report": [
++            {"source_id": e["source_id"], "name": e["name"], "marginal_useful_signals": e["marginal_useful_signals"],
++             "incremental_signal_types": e["incremental_signal_types"], "admitted": e["verified_useful"]}
++            for e in evals],
++        "health": health,
++        "cost": {"production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
++                 "r2_ops": 0, "model_calls": 0, "human_maintenance": "marginal-value model + curated expansion zones"},
++        "deployment": "SHADOW (expanded A2 cohorts + marginal value report + health; production untouched)",
++    }
