@@ -1,0 +1,8 @@
+n_windows: 3 manifest: bt:06d6397caf6b3ab4
+no time crossing: every window has train observed<=origin < val observed, train leak-proof
+crossing control: a post-origin train sample and a pre-origin val sample both trip the guard
+reproducible: two runs identical (manifest bt:06d6397caf6b3ab4); changed horizon -> different manifest
+robustness: manifest reflects min_history; T070 leak guard catches a future train sample; calendar-invalid date excluded (no crash)
+time-order: train_n grows [9, 12, 15]; seasonality Brier improves across windows [0.013889, 0.008889, 0.006173]
+
+ACCEPTANCE = PASS

@@ -1,0 +1,31 @@
+{
+  "target": "G1",
+  "n_windows": 3,
+  "manifest": "bt:06d6397caf6b3ab4",
+  "windows": [
+    {
+      "origin": "2019-01-01",
+      "val_end": "2020-01-01",
+      "train_n": 9,
+      "val_n": 3,
+      "freq_brier": 0.222222,
+      "seas_brier": 0.013889
+    },
+    {
+      "origin": "2020-01-01",
+      "val_end": "2020-12-31",
+      "train_n": 12,
+      "val_n": 3,
+      "freq_brier": 0.222222,
+      "seas_brier": 0.008889
+    },
+    {
+      "origin": "2021-01-01",
+      "val_end": "2022-01-01",
+      "train_n": 15,
+      "val_n": 3,
+      "freq_brier": 0.222222,
+      "seas_brier": 0.006173
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "ADP-S6-P02-T072",
+  "title": "实现 2016+ Rolling-origin Backtest",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S6",
+  "phase": "S6-P02",
+  "reuses_model": "T071 baselines (MODEL_baselines.md); this is a backtest harness, not a new model; operational MODEL_SPEC untouched",
+  "value": {
+    "user_value": "真实时间顺序的诚实回测：滚动起点验证泛化与领先时间;训练只见起点前的历史(T070防泄漏)、验证只在未来窗口、二者时间不交叉;结果可重跑带 run manifest 可审计。",
+    "value_metric_stage": "S6 滚动回测、校准与 Ledger:为 T073+ 校准/Ledger 与『复杂模型必须打败基线』提供无泄漏、时间正确的回测框架。",
+    "measured": {
+      "three_windows": "3滚动窗口(起点2019/2020/2021)每窗口非空train/val(train_n 9/12/15 val_n 3/3/3)",
+      "no_time_crossing": "每窗口train观测<=origin<val观测∈(origin,val_end];无样本同属train/val;每train集T070泄漏guard;crossing负控制(起点后train/起点前val)均raise",
+      "reproducible": "两次run_backtest结果+manifest一致(bt:06d6397caf6b3ab4);改horizon365→180 manifest不同",
+      "time_order_generalization": "train_n增9→12→15;季节性Brier随更多三月历史递减0.0139→0.0089→0.0062"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读回测库、本地确定性统计无 LLM,生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "回测 harness + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更）"
+}

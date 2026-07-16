@@ -1,0 +1,26 @@
+# ADP-S6-P02-T072 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity (reuses T070 dataset_snapshot, T071 baselines, T056 coverage_asof)
+python3 -c "import sys; sys.path.insert(0,'tools'); import rolling_backtest, dataset_snapshot, baselines, coverage_asof"
+
+# 2. build 2016-2022 outcome time series + 3 rolling origins + report (deterministic)
+python3 evidence/ADP-S6-P02-T072/build_rolling_backtest.py
+#   -> n_windows: 3  manifest: bt:06d6397caf6b3ab4
+#   -> origin 2019-01-01 -> val_end 2020-01-01: train_n=9  val_n=3  freq_brier=0.222222 seas_brier=0.013889
+#   -> origin 2020-01-01 -> val_end 2020-12-31: train_n=12 val_n=3  freq_brier=0.222222 seas_brier=0.008889
+#   -> origin 2021-01-01 -> val_end 2022-01-01: train_n=15 val_n=3  freq_brier=0.222222 seas_brier=0.006173
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S6-P02-T072/test-results/t072_verify.py | tee evidence/ADP-S6-P02-T072/test-results/rolling_backtest_tests.txt
+#   no time crossing: every window has train observed<=origin < val observed, train leak-proof
+#   crossing control: a post-origin train sample and a pre-origin val sample both trip the guard
+#   reproducible: two runs identical (manifest bt:06d6397caf6b3ab4); changed horizon -> different manifest
+#   time-order: train_n grows [9, 12, 15]; seasonality Brier improves across windows [0.013889, 0.008889, 0.006173]
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t072.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
