@@ -1,0 +1,35 @@
+{
+  "task_id": "ADP-S5-P04-T068",
+  "title": "实现 Knowledge Validity 与 131 项收益对齐回归",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S5",
+  "phase": "S5-P04",
+  "value": {
+    "user_value": "知识长期有效 + 竞品收益全覆盖无盲区：知识绑定其来源的 T026 实质版本，源实质变化时自动标失效/重开重学（不留过期结论）；131 项竞品用户收益每项有明确状态与具名 owner，无『未知/无人负责』黑洞。收尾 S5-P04 与整个 Stage S5。",
+    "value_metric_stage": "S5 多板块深度收尾：资料与知识有效性——旧知识自动失效/重学 + 竞品收益 131 项状态全明确。",
+    "measured": {
+      "validity_clock": "源未变valid/噪声valid无churn/实质变needs_review自动重开/删invalid/revalidate重学(重绑T026新哈希)",
+      "parity_131_no_unknown": "恰131项; 0 unknown status; 0 no-owner; 0 delivered/partial缺证据; clean=True",
+      "by_status": "delivered 94 / partial 19 / planned 15 / not_applicable 3",
+      "honesty": "delivered引真实T057-T068证据; similarity/seed-map/topic-timeline等substrate存在未完全构建诚实降级partial; planned指未来阶段; not_applicable带原因",
+      "gate_discrimination": "注入unknown+no-owner+空白owner+未定义token全被gate抓clean=False"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、validity 比较源哈希不读时钟，生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "validity 引擎 + 131 项 parity registry + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更）"
+}

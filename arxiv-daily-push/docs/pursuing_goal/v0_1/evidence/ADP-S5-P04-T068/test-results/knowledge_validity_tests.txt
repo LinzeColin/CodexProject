@@ -1,0 +1,6 @@
+validity: unchanged=valid, noise-only=valid (no churn), changed->needs_review, removed->invalid, re-learn->valid
+parity: 131 items, by_status={'delivered': 92, 'partial': 21, 'planned': 15, 'not_applicable': 3}, clean=True
+gate control: injected unknown-status + no-owner + blank owner + bad token + note-less planned all caught (clean=False)
+emitted registry == re-derived build_registry() (no stale artifact)
+
+ACCEPTANCE = PASS

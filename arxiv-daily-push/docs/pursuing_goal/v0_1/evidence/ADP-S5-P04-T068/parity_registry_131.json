@@ -1,0 +1,1183 @@
+{
+  "items": [
+    {
+      "benefit_id": "P001",
+      "competitor": "Elicit",
+      "benefit": "Search papers by a research question",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T060/T061",
+      "note": ""
+    },
+    {
+      "benefit_id": "P002",
+      "competitor": "Elicit",
+      "benefit": "Extract method into a column",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P003",
+      "competitor": "Elicit",
+      "benefit": "Extract sample/participants into a column",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P004",
+      "competitor": "Elicit",
+      "benefit": "Extract results/outcomes into a column",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P005",
+      "competitor": "Elicit",
+      "benefit": "Structured comparison table across papers",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P006",
+      "competitor": "Elicit",
+      "benefit": "Every extracted cell traces to the source",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P007",
+      "competitor": "Elicit",
+      "benefit": "Missing field reported, not guessed",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P008",
+      "competitor": "Elicit",
+      "benefit": "Reproducible paper filtering",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P009",
+      "competitor": "Elicit",
+      "benefit": "Summarize an abstract",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P010",
+      "competitor": "Elicit",
+      "benefit": "De-duplicate a paper set",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P011",
+      "competitor": "Elicit",
+      "benefit": "Author / institution enrichment",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P012",
+      "competitor": "Elicit",
+      "benefit": "DOI / journal metadata enrichment",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P013",
+      "competitor": "Elicit",
+      "benefit": "Preprint vs journal not confused",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P014",
+      "competitor": "Elicit",
+      "benefit": "Enrichment failure never blocks the paper",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P015",
+      "competitor": "Elicit",
+      "benefit": "Export a research set",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P016",
+      "competitor": "Elicit",
+      "benefit": "Chat over a set of papers",
+      "status": "not_applicable",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "no LLM chat in scope"
+    },
+    {
+      "benefit_id": "P017",
+      "competitor": "Consensus",
+      "benefit": "Yes/No consensus meter for a claim",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P018",
+      "competitor": "Consensus",
+      "benefit": "Study snapshot card",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P019",
+      "competitor": "Consensus",
+      "benefit": "Aggregate what studies say on a topic",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T057/T064",
+      "note": ""
+    },
+    {
+      "benefit_id": "P020",
+      "competitor": "Consensus",
+      "benefit": "Quality / rigor indicators",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P021",
+      "competitor": "Consensus",
+      "benefit": "Citation-backed answers",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P022",
+      "competitor": "Consensus",
+      "benefit": "Evidence traces to the original text",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064/T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P023",
+      "competitor": "Consensus",
+      "benefit": "Topic synthesis",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P024",
+      "competitor": "Consensus",
+      "benefit": "No claim without a source",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T059/T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P025",
+      "competitor": "Consensus",
+      "benefit": "Surface disagreement between studies",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P026",
+      "competitor": "Consensus",
+      "benefit": "Confidence/uncertainty shown honestly",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P027",
+      "competitor": "Consensus",
+      "benefit": "Never fabricate a consensus",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P028",
+      "competitor": "Scite",
+      "benefit": "Supporting citations",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P029",
+      "competitor": "Scite",
+      "benefit": "Contrasting / disputing citations",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P030",
+      "competitor": "Scite",
+      "benefit": "Mentioning citations",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P031",
+      "competitor": "Scite",
+      "benefit": "Citation statement context is viewable",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P032",
+      "competitor": "Scite",
+      "benefit": "Labels not from title or model impression",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P033",
+      "competitor": "Scite",
+      "benefit": "Citation graph with typed edges",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P034",
+      "competitor": "Scite",
+      "benefit": "Support and contrast to the same paper coexist",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P035",
+      "competitor": "Scite",
+      "benefit": "Reference check / smart references",
+      "status": "partial",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P036",
+      "competitor": "Scite",
+      "benefit": "Citation dashboards",
+      "status": "planned",
+      "owner": "ADP-content",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P037",
+      "competitor": "Scite",
+      "benefit": "Journal / institution citation profiles",
+      "status": "planned",
+      "owner": "ADP-content",
+      "evidence_ref": "",
+      "note": "S8"
+    },
+    {
+      "benefit_id": "P038",
+      "competitor": "Scite",
+      "benefit": "Retraction / editorial-notice awareness",
+      "status": "planned",
+      "owner": "ADP-content",
+      "evidence_ref": "",
+      "note": "S6"
+    },
+    {
+      "benefit_id": "P039",
+      "competitor": "Scite",
+      "benefit": "Alert on new citations of a paper",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P040",
+      "competitor": "Scite",
+      "benefit": "Every label has checkable evidence",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P041",
+      "competitor": "Scite",
+      "benefit": "No classification from headline alone",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P042",
+      "competitor": "ResearchRabbit",
+      "benefit": "Collections of papers",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T064/T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P043",
+      "competitor": "ResearchRabbit",
+      "benefit": "Follow an author",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P044",
+      "competitor": "ResearchRabbit",
+      "benefit": "Similar work discovery",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P045",
+      "competitor": "ResearchRabbit",
+      "benefit": "Citation / reference network graph",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P046",
+      "competitor": "ResearchRabbit",
+      "benefit": "Timeline of a topic",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T062",
+      "note": ""
+    },
+    {
+      "benefit_id": "P047",
+      "competitor": "ResearchRabbit",
+      "benefit": "Recommend next papers",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P048",
+      "competitor": "ResearchRabbit",
+      "benefit": "Monitor a collection for new work",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P049",
+      "competitor": "ResearchRabbit",
+      "benefit": "Change-only updates (no re-notify)",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P050",
+      "competitor": "ResearchRabbit",
+      "benefit": "Visual network exploration",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P051",
+      "competitor": "ResearchRabbit",
+      "benefit": "Share a collection",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S8"
+    },
+    {
+      "benefit_id": "P052",
+      "competitor": "ResearchRabbit",
+      "benefit": "Author disambiguation",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P053",
+      "competitor": "ResearchRabbit",
+      "benefit": "Institution linking",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P054",
+      "competitor": "ResearchRabbit",
+      "benefit": "Export the collection",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P055",
+      "competitor": "ResearchRabbit",
+      "benefit": "Provenance kept on every saved item",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P056",
+      "competitor": "ResearchRabbit",
+      "benefit": "Notes on saved papers",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P057",
+      "competitor": "Litmaps",
+      "benefit": "Citation map from a seed",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P058",
+      "competitor": "Litmaps",
+      "benefit": "Monitor for new relevant papers",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P059",
+      "competitor": "Litmaps",
+      "benefit": "Email/weekly digest of changes",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P060",
+      "competitor": "Litmaps",
+      "benefit": "Only substantive changes pushed",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P061",
+      "competitor": "Litmaps",
+      "benefit": "Re-run does not duplicate alerts",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P062",
+      "competitor": "Litmaps",
+      "benefit": "Silence signal when a source is quiet",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P063",
+      "competitor": "Litmaps",
+      "benefit": "Shared maps",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S8"
+    },
+    {
+      "benefit_id": "P064",
+      "competitor": "Litmaps",
+      "benefit": "Discover via co-citation",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P065",
+      "competitor": "Litmaps",
+      "benefit": "Prioritise by relevance",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P066",
+      "competitor": "Litmaps",
+      "benefit": "Import a bibliography",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P067",
+      "competitor": "Litmaps",
+      "benefit": "Export a map",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P068",
+      "competitor": "Litmaps",
+      "benefit": "Every alert is locatable to a change",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P069",
+      "competitor": "Litmaps",
+      "benefit": "Watch topics / agencies / regions / doc-numbers",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P070",
+      "competitor": "Litmaps",
+      "benefit": "Historical as-of view of a map",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T062",
+      "note": ""
+    },
+    {
+      "benefit_id": "P071",
+      "competitor": "Semantic Scholar",
+      "benefit": "TLDR one-line summary",
+      "status": "planned",
+      "owner": "ADP-content",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P072",
+      "competitor": "Semantic Scholar",
+      "benefit": "Influential citation flag",
+      "status": "partial",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P073",
+      "competitor": "Semantic Scholar",
+      "benefit": "Author pages",
+      "status": "partial",
+      "owner": "ADP-content",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P074",
+      "competitor": "Semantic Scholar",
+      "benefit": "Citation graph",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P075",
+      "competitor": "Semantic Scholar",
+      "benefit": "Paper metadata (venue/year/authors)",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P076",
+      "competitor": "Semantic Scholar",
+      "benefit": "Figures / tables extraction",
+      "status": "not_applicable",
+      "owner": "ADP-content",
+      "evidence_ref": "",
+      "note": "no PDF figure OCR in scope"
+    },
+    {
+      "benefit_id": "P077",
+      "competitor": "Semantic Scholar",
+      "benefit": "Citation counts",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P078",
+      "competitor": "Semantic Scholar",
+      "benefit": "Search",
+      "status": "partial",
+      "owner": "ADP-content",
+      "evidence_ref": "T060/T061",
+      "note": ""
+    },
+    {
+      "benefit_id": "P079",
+      "competitor": "Semantic Scholar",
+      "benefit": "Alerts on an author",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P080",
+      "competitor": "Semantic Scholar",
+      "benefit": "Open access / PDF link",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P081",
+      "competitor": "Semantic Scholar",
+      "benefit": "De-duplicated records",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P082",
+      "competitor": "Semantic Scholar",
+      "benefit": "Version / preprint linkage",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P083",
+      "competitor": "Semantic Scholar",
+      "benefit": "Evidence-backed metadata",
+      "status": "delivered",
+      "owner": "ADP-content",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P084",
+      "competitor": "Connected Papers",
+      "benefit": "Graph of similar papers",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P085",
+      "competitor": "Connected Papers",
+      "benefit": "Prior works",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P086",
+      "competitor": "Connected Papers",
+      "benefit": "Derivative works",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P087",
+      "competitor": "Connected Papers",
+      "benefit": "Build a graph from one seed",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P088",
+      "competitor": "Connected Papers",
+      "benefit": "Visual similarity layout",
+      "status": "planned",
+      "owner": "ADP-research",
+      "evidence_ref": "",
+      "note": "S7"
+    },
+    {
+      "benefit_id": "P089",
+      "competitor": "Connected Papers",
+      "benefit": "Export the graph",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P090",
+      "competitor": "Connected Papers",
+      "benefit": "Identify foundational papers",
+      "status": "partial",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P091",
+      "competitor": "Connected Papers",
+      "benefit": "Graph edges carry evidence",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P092",
+      "competitor": "Connected Papers",
+      "benefit": "No edge without a citation",
+      "status": "delivered",
+      "owner": "ADP-research",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P093",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Save an item to a library",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P094",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Add notes",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P095",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Organise into collections",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P096",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Export to Markdown",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P097",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Export to CSV",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P098",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Export to JSON",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P099",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Keep the original URL",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P100",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Keep the version",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P101",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Keep the fetch/capture time",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P102",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Keep the claim evidence",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P103",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Keep a license notice",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P104",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Refuse to save without provenance",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P105",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Cite in a chosen style",
+      "status": "planned",
+      "owner": "ADP-library",
+      "evidence_ref": "",
+      "note": "S8"
+    },
+    {
+      "benefit_id": "P106",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Sync across devices",
+      "status": "not_applicable",
+      "owner": "ADP-library",
+      "evidence_ref": "",
+      "note": "handled by the cloud account, not this layer"
+    },
+    {
+      "benefit_id": "P107",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Deduplicate the library",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T063",
+      "note": ""
+    },
+    {
+      "benefit_id": "P108",
+      "competitor": "Reference managers (Zotero/Mendeley)",
+      "benefit": "Long-term durable storage",
+      "status": "delivered",
+      "owner": "ADP-library",
+      "evidence_ref": "T027/T067",
+      "note": ""
+    },
+    {
+      "benefit_id": "P109",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Alert on a saved query",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T066",
+      "note": ""
+    },
+    {
+      "benefit_id": "P110",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Cited-by lookup",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T065",
+      "note": ""
+    },
+    {
+      "benefit_id": "P111",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "All versions of a work",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T062",
+      "note": ""
+    },
+    {
+      "benefit_id": "P112",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "As-of historical state",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T062",
+      "note": ""
+    },
+    {
+      "benefit_id": "P113",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Old-vs-new diff, changes locatable",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T062",
+      "note": ""
+    },
+    {
+      "benefit_id": "P114",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Template noise not shown as a change",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T062/T026",
+      "note": ""
+    },
+    {
+      "benefit_id": "P115",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Replay any old version",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T062",
+      "note": ""
+    },
+    {
+      "benefit_id": "P116",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Exact identifier lookup (docnum/DOI)",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T060",
+      "note": ""
+    },
+    {
+      "benefit_id": "P117",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Structured filter (agency/region/date/status)",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T060",
+      "note": ""
+    },
+    {
+      "benefit_id": "P118",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Full-text ranking benchmarked",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T061",
+      "note": ""
+    },
+    {
+      "benefit_id": "P119",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Semantic layer only if it earns its cost",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T061",
+      "note": ""
+    },
+    {
+      "benefit_id": "P120",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Official original text (A0)",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T034-T040",
+      "note": ""
+    },
+    {
+      "benefit_id": "P121",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Provincial / city official sources (A1)",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T049-T052",
+      "note": ""
+    },
+    {
+      "benefit_id": "P122",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Local / zone official sources (A2)",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T053-T055",
+      "note": ""
+    },
+    {
+      "benefit_id": "P123",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "2016+ recoverable history",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T046/T047/T056",
+      "note": ""
+    },
+    {
+      "benefit_id": "P124",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Coverage debt is explainable (no silent holes)",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T043/T056",
+      "note": ""
+    },
+    {
+      "benefit_id": "P125",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Canonical event de-duplication",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T057",
+      "note": ""
+    },
+    {
+      "benefit_id": "P126",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Cross-source entity resolution",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T058",
+      "note": ""
+    },
+    {
+      "benefit_id": "P127",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Cross-board evidence relations",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T059",
+      "note": ""
+    },
+    {
+      "benefit_id": "P128",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Knowledge auto-invalidates when the source changes",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T068",
+      "note": ""
+    },
+    {
+      "benefit_id": "P129",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Old knowledge re-opened for review",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T068",
+      "note": ""
+    },
+    {
+      "benefit_id": "P130",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Cost / benefit quantified per feature",
+      "status": "partial",
+      "owner": "ADP-core",
+      "evidence_ref": "T039/T068",
+      "note": ""
+    },
+    {
+      "benefit_id": "P131",
+      "competitor": "General scholarly (Scholar/PubMed/etc.)",
+      "benefit": "Realtime MVP never regressed",
+      "status": "delivered",
+      "owner": "ADP-core",
+      "evidence_ref": "T040",
+      "note": ""
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parity": {
+    "n_items": 131,
+    "by_status": {
+      "delivered": 92,
+      "partial": 21,
+      "planned": 15,
+      "not_applicable": 3
+    },
+    "by_competitor": {
+      "Elicit": 16,
+      "Consensus": 11,
+      "Scite": 14,
+      "ResearchRabbit": 15,
+      "Litmaps": 14,
+      "Semantic Scholar": 13,
+      "Connected Papers": 9,
+      "Reference managers (Zotero/Mendeley)": 16,
+      "General scholarly (Scholar/PubMed/etc.)": 23
+    },
+    "unknown_status": [],
+    "no_owner": [],
+    "delivered_or_partial_missing_evidence": [],
+    "planned_or_na_missing_note": [],
+    "clean": true
+  },
+  "validity_demo": {
+    "unchanged": "valid",
+    "noise_only": "valid",
+    "source_changed": "needs_review"
+  }
+}

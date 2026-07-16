@@ -1,0 +1,25 @@
+# ADP-S5-P04-T068 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity (reuses T026 version_engine)
+python3 -c "import sys; sys.path.insert(0,'tools'); import knowledge_validity, version_engine"
+
+# 2. build validity fixtures + 131-item parity registry + report (deterministic)
+python3 evidence/ADP-S5-P04-T068/build_knowledge_validity.py
+#   -> parity n_items: 131  clean: True
+#   -> by_status: {'delivered': 94, 'partial': 19, 'planned': 15, 'not_applicable': 3}
+#   -> validity: unchanged=valid  noise=valid  changed=needs_review
+#   -> writes parity_registry_131.json + knowledge_validity_report.json
+
+# 3. run deterministic acceptance verifier (re-derives from tool + build_registry, not the emitted JSON)
+python3 evidence/ADP-S5-P04-T068/test-results/t068_verify.py | tee evidence/ADP-S5-P04-T068/test-results/knowledge_validity_tests.txt
+#   validity: unchanged=valid, noise-only=valid (no churn), changed->needs_review, removed->invalid, re-learn->valid
+#   parity: 131 items, by_status={...}, clean=True
+#   gate control: injected unknown-status + no-owner (and blank owner + bad token) all caught (clean=False)
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t068.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
