@@ -1,0 +1,15 @@
+# ADP-S0-P02-T007 commands.log · Verified/Unknown/Assumption drift synthesis
+# baseline commit a4a9954b (T006 merged)
+
+## FACT_LEDGER.csv 解析 + 分类分布 + 未知分配
+$ python3 -c "import csv; rows=list(csv.DictReader(open('FACT_LEDGER.csv',...))); ..."
+rows: 20 cols: ['fact_id','classification','statement','evidence_or_source','as_of','verification_status','assigned_task_or_gate']
+by classification: VERIFIED_PUBLIC 4 | DRIFT 5 | OWNER_DIRECTIVE 3 | VERIFIED_PRIVATE 3 | UNVERIFIED_PRIVATE 2 | PARTIAL 1 | STALE 1 | ASSUMPTION_NOT_REQUIREMENT 1
+UNVERIFIED assigned: FACT-013 -> S0_EXIT_owner ; FACT-015 -> S0_EXIT_owner   # P0 未知全部具名
+
+## 源：T004/T005/T006 已在库
+# T004 route_status.json/headers.txt/fingerprints.json ; T005 facts.json ; T006 private_baseline.json/d1_*.txt/r2.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

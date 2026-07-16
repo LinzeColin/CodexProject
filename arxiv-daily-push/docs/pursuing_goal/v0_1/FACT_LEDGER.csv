@@ -1,0 +1,21 @@
+fact_id,classification,statement,evidence_or_source,as_of,verification_status,assigned_task_or_gate
+FACT-001,VERIFIED_PUBLIC,"ADP Worker 域名可访问，Today/Review/Radar/System 与六主题在页面可见。","T004 route_status.json 12/12 200 + fingerprints.json 六主题键",2026-07-16,VERIFIED,none
+FACT-002,VERIFIED_PUBLIC,"Today 人话版仍直接展示英文摘要，机制/证据存在重复和模板化。","线上 Today HTML（原 03 ledger，S0 未重审内容质量）",2026-07-15,CARRIED,later_content_quality_task
+FACT-003,VERIFIED_PUBLIC,"Radar 板块三显示中国新闻网/人民网/新浪，含非政策内容。","线上 Radar + T005 worker_cloud.js 硬编码（见 DRIFT-FACT-006）",2026-07-16,VERIFIED,see_DRIFT-FACT-006
+FACT-004,VERIFIED_PUBLIC,"System 页面声明整套系统跑 Cloudflare，并显示每日运行日志。","T004 /system 200",2026-07-16,VERIFIED,none
+FACT-005,STALE,"旧记录称 GitHub ADP 最新公开提交为 242c7e3；现已过期。","T005 git：main 现为 a4a9954b（V0.1 程序推进后）",2026-07-16,STALE_UPDATED,none
+FACT-006,DRIFT,"boards_v0_3.yaml board3 定义 Google News/RSSHub，worker_cloud.js 硬编码人民网/中新网/新浪。","T005 facts.json DRIFT-FACT-006",2026-07-16,VERIFIED_DRIFT,later_source_truth_task_S1_S2
+FACT-007,DRIFT,"STATUS.yaml 同时保留 J5 cloud-native 与旧 R6 Tunnel/Mac，状态文档矛盾。","T005 DRIFT-FACT-007 + T006 D1 遗留 mirror 表",2026-07-16,VERIFIED_DRIFT,later_governance_consistency_task
+FACT-008,OWNER_DIRECTIVE,"本轮只解决内容质量和事实漂移；不处理公开入口安全/多租户/TAM/价格。","OWNER_DIRECTIVES.yaml DIR-001",2026-07-16,OWNER,none
+FACT-009,OWNER_DIRECTIVE,"中国来源只保留 A0/A1/A2，覆盖中央/省级/重点城市/重要区。","OWNER_DIRECTIVES.yaml DIR-002",2026-07-16,OWNER,none
+FACT-010,OWNER_DIRECTIVE,"必须保留现有六主题和高级动效，不接受替代式 UI。","OWNER_DIRECTIVES.yaml DIR-003 + T004 视觉核对",2026-07-16,OWNER,S7_baseline
+FACT-011,VERIFIED_PRIVATE,"生产 D1 adp-mirror：14 表(8 cn_*+6 遗留)/1.05MB/逐表计数/24h 指标。","T006 private_baseline.json + d1_info.txt（read-only）",2026-07-16,VERIFIED,see_DRIFT-FACT-011
+FACT-012,VERIFIED_PRIVATE,"R2 未启用（wrangler r2 bucket list -> code 10042）。","T006 r2.txt（read-only；未代开）",2026-07-16,VERIFIED_NOT_ENABLED,owner_if_object_storage_needed
+FACT-013,UNVERIFIED_PRIVATE,"Cloudflare 套餐、账单、Workers AI/Queues/Workflows 实际用量。","CLI 不暴露；仅 Owner 后台可见",2026-07-16,UNVERIFIED,S0_EXIT_owner
+FACT-014,PARTIAL,"自定义域名与 Worker 域名是否每次部署恒为同一 build。","T006 live 版本 455afd98 + T004 公开面相似 0.9973；严格逐 host 未单独证实",2026-07-16,PARTIAL,later_deploy_discipline_S1
+FACT-015,UNVERIFIED_PRIVATE,"是否存在私有分支/未提交代码/未纳入公开仓库的实现或配置。","需 Owner/仓库只读盘点",2026-07-16,UNVERIFIED,S0_EXIT_owner
+FACT-016,ASSUMPTION_NOT_REQUIREMENT,"10M 文档/30M 版本/20TB 是容量压测包络，非当前需求或采购量。","上一版架构包，经本轮纠偏；T006 实测 D1 仅 1.05MB",2026-07-16,ASSUMPTION,none
+FACT-017,VERIFIED_PRIVATE,"云端数据处早期：cn_items 682/cn_sources 33，但 cn_selections=cn_lessons=1/cn_meta=0。","T006 d1_counts.txt（read-only）",2026-07-16,VERIFIED,informs_capacity_cost
+DRIFT-FACT-006,DRIFT,"来源真相漂移：board3 config(Google News 按部委+RSSHub) ≠ worker 硬编码(含人民网/中新网/新浪)。","T005 facts.json",2026-07-16,VERIFIED_DRIFT,later_source_truth_task_S1_S2
+DRIFT-FACT-007,DRIFT,"状态文档矛盾：STATUS.yaml J5 云原生与 R6 隧道/Mac 并存，R6 未标 superseded。","T005 facts.json + T006 遗留 mirror 表",2026-07-16,VERIFIED_DRIFT,later_governance_consistency_task
+DRIFT-FACT-011,DRIFT,"线上 D1 含 6 张 R6 时代遗留表(events_inbox/*_mirror)，超出 schema_cloud.sql 的 8 张 cn_*。","T006 private_baseline.json",2026-07-16,VERIFIED_DRIFT,later_d1_cleanup_task_with_rollback

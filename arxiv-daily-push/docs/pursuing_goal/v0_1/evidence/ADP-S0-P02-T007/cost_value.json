@@ -1,0 +1,11 @@
+{
+  "task": "ADP-S0-P02-T007",
+  "release_mode": "NOT_DEPLOYED",
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "one_time_cost": "docs-only synthesis of T004/T005/T006; no deploy, no D1/R2 op, no API call",
+  "value": "turn hallucination risk into an auditable gap: 20-row classified FACT_LEDGER (verified/owner/private/unknown/assumption/drift/stale/partial) + drift report + blocking list; every P0 unknown (FACT-013, FACT-015) assigned to the S0 Exit Owner gate; no requirement may be derived from UNKNOWN",
+  "cost_unknowns_not_zero": [
+    "FACT-013 Cloudflare plan/billing (assigned S0 Exit Owner) - blocks S8 value-cost, not S1",
+    "FACT-015 private branches / uncommitted code (assigned S0 Exit Owner)"
+  ]
+}
