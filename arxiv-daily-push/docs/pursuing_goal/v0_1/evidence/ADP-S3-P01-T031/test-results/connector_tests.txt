@@ -1,0 +1,8 @@
+registry ids: ['mock-a0']
+chain: health.ok True | discovered 2 | docs 2 | cursor_after Cursor(last_id='https://mock.gov.cn/doc/2', last_date='2026-02-10')
+  doc https://mock.gov.cn/doc/1: A=A0 num=国发〔2026〕1号 date=2026-01-05 status=现行有效 atts=1
+  doc https://mock.gov.cn/doc/2: A=A0 num=None date=2026-02-10 status=现行有效 atts=0
+
+HttpFetcher real GET: status=200 ok=True bytes=41 sha=cf6f67670131
+
+ACCEPTANCE = PASS

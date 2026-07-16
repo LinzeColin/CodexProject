@@ -1,0 +1,17 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/CONNECTOR_SDK_SPEC.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/known_gaps.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/real_fetch_smoke.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/test-results/connector_tests.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P01-T031/test-results/t031_verify.py
+arxiv-daily-push/docs/pursuing_goal/v0_1/tools/official_connector.py

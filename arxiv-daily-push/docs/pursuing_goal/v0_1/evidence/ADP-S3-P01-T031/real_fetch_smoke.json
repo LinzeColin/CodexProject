@@ -1,0 +1,29 @@
+{
+  "note": "LIVE point-in-time fetch via SDK HttpFetcher; NOT byte-reproducible (site changes). Contract tests run on the mock + loopback; this proves the kernel does real HTTP GET.",
+  "schema_version": "adp.official_connector.v0_1",
+  "user_agent": "ADP-A0-connector/0.1 (+research; single-GET; respects robots)",
+  "fetches": [
+    {
+      "url": "https://www.gov.cn/",
+      "official_domain": true,
+      "domain": "www.gov.cn",
+      "status": 200,
+      "ok": true,
+      "bytes": 67662,
+      "sha256": "f54e330521f3a8ffed38bc4d7dec86d4f70bee5d5f4f128cc7d4da7aaa524b6e",
+      "fetched_at": "2026-07-16T15:22:25+10:00",
+      "title_excerpt": "中国政府网_中央人民政府门户网站"
+    },
+    {
+      "url": "https://www.gov.cn/zhengce/",
+      "official_domain": true,
+      "domain": "www.gov.cn",
+      "status": 200,
+      "ok": true,
+      "bytes": 39811,
+      "sha256": "9d96a88cb252e39e8aff8393eaa04dbed7e97c56641c3c2ae79c405895469a03",
+      "fetched_at": "2026-07-16T15:22:25+10:00",
+      "title_excerpt": "政策_中国政府网"
+    }
+  ]
+}

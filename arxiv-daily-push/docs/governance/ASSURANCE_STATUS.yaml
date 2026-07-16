@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260717-ADP-V01-S2-P03-T029-RESTORE-LIFECYCLE-DRILL"
-source_snapshot_hash: "sha256:4b4adc89741aecb0654579c7721dd1a3f1a9eca6a8f01f4f06811bf7b36c3c3b"
+as_of_event_id: "EVENT-20260717-ADP-V01-S2-P03-T030-ORCHESTRATION-COST-DECISION"
+source_snapshot_hash: "sha256:b330ed43f45295c9668d65a32bc215a45ef1decd0c4dfececdb71d3a32278e7f"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-17T02:40:00+10:00"
+snapshot_event_time: "2026-07-17T03:30:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 89
+    precommit_pending_events: 90
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

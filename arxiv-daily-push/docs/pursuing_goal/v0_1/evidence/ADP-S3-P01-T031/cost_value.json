@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S3-P01-T031", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "a minimal, dependency-free Official Connector Interface (discover/fetch/verify/normalize/attachments/cursor/health) + typed contract + adapter registry that every A0 government adapter (T034+) plugs into -- the plumbing for replacing Board-3 news noise with A0 official original text, with real HTTP fetch wired into the kernel from the start",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "SDK only; not wired to worker/D1; the live gov.cn smoke ran from the dev environment (not the worker), so 0 cloud cost. Once A0 adapters are wired to the worker cron (T034+), each fetch is a Worker subrequest and must be counted against the DIR-007 free tier."},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "live_fetch_smoke": {"note": "point-in-time, not byte-reproducible", "gov.cn": {"status": 200, "bytes": 67662, "official_domain": true, "title": "中国政府网_中央人民政府门户网站"}, "gov.cn/zhengce": {"status": 200, "bytes": 39811, "official_domain": true, "title": "政策_中国政府网"}},
+  "acceptance": {"mock_full_chain_passes": true, "no_ui_graph_or_platform_coupling": true, "stdlib_only": true, "real_http_get_in_kernel": true, "registry_rejects_duplicates": true}
+}

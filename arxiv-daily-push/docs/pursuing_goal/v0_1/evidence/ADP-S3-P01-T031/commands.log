@@ -1,0 +1,27 @@
+# ADP-S3-P01-T031 commands (connector SDK; mock full-chain deterministic; live gov.cn smoke separate)
+# base: main 1e3b33e4 (T030, closes S2)
+
+# connectivity probe (single GET each, research UA) -- all 200 with real content except nda.gov.cn (193B JS shell)
+#   gov.cn 200/67KB | stats.gov.cn 200/141KB | ndrc.gov.cn 200/88KB | cac.gov.cn 200/71KB | nda.gov.cn 200/193B
+
+# 1) SDK authored (stdlib only; no requests/flask/graph/new platform)
+#    tools/official_connector.py   (7-capability OfficialConnector ABC + typed dataclasses + HttpFetcher[real GET]
+#                                   + AdapterRegistry + run_chain full-chain driver)
+#    CONNECTOR_SDK_SPEC.md
+
+# 2) contract test (deterministic, CI-safe): mock full chain + HttpFetcher real GET vs LOCAL loopback server
+python3 evidence/ADP-S3-P01-T031/test-results/t031_verify.py | tee evidence/ADP-S3-P01-T031/test-results/connector_tests.txt
+# -> chain: health.ok True | discovered 2 | docs 2 | cursor_after last_date 2026-02-10
+# ->   doc1 A0 num=国发〔2026〕1号 date=2026-01-05 status=现行有效 atts=1 ; doc2 A0 date=2026-02-10
+# -> HttpFetcher real GET (loopback): status 200 ok True exact payload + sha256 match
+# -> registry rejects duplicate source_id ; SDK stdlib-only (no platform coupling)
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) LIVE real fetch smoke (Owner: real fetch at the kernel stage) -- via the SDK HttpFetcher, from the dev env
+python3 <scratchpad>/t031_real_fetch.py
+# -> https://www.gov.cn/ -> 200 / 67662B / official=True / title 中国政府网_中央人民政府门户网站
+# -> https://www.gov.cn/zhengce/ -> 200 / 39811B / official=True / title 政策_中国政府网
+# -> wrote evidence/ADP-S3-P01-T031/real_fetch_smoke.json  (LIVE point-in-time; NOT byte-reproducible)
+
+# NOT_DEPLOYED: SDK only; no worker/D1 wiring; live smoke ran from dev env (0 cloud cost).
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
