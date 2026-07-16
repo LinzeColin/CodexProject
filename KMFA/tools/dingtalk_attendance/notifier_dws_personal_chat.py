@@ -16,10 +16,9 @@ from KMFA.tools.dingtalk_attendance.notification_template import (
     notification_context_from_output_status,
     official_report_parity_failure_reason,
 )
-from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
+from KMFA.tools.dingtalk_attendance.secrets_loader import ROOT, merged_runtime_env
 
 
-ROOT = Path(__file__).resolve().parents[2]
 PRIVATE_RUNTIME_DIR = ROOT / "metadata" / "dingtalk_attendance" / "private_runtime"
 RESOLVED_CHANNEL_PATH = PRIVATE_RUNTIME_DIR / "notification_channel_resolved.json"
 

@@ -87,6 +87,16 @@ def validate_policy(policy: dict[str, Any], *, root: Path = ROOT) -> list[str]:
             errors.append(f"retained_objects[{index}].kinds must contain large and/or archive")
         if rule.get("change_policy") != "baseline_oid_only":
             errors.append(f"retained_objects[{index}].change_policy must be baseline_oid_only")
+        reviewed_oids = rule.get("reviewed_oids", [])
+        if not isinstance(reviewed_oids, list) or any(
+            not isinstance(oid, str) or re.fullmatch(r"[0-9a-f]{40}", oid) is None
+            for oid in reviewed_oids
+        ):
+            errors.append(
+                f"retained_objects[{index}].reviewed_oids must contain only 40-character Git blob OIDs"
+            )
+        elif len(reviewed_oids) != len(set(reviewed_oids)):
+            errors.append(f"retained_objects[{index}].reviewed_oids must be unique")
         if not isinstance(rule.get("max_bytes"), int) or int(rule.get("max_bytes") or 0) <= 0:
             errors.append(f"retained_objects[{index}].max_bytes must be positive")
 
@@ -282,12 +292,13 @@ def audit_repository(
             )
         baseline_record = baseline.get(path)
         current_oid = _blob_oid(root, path, record)
-        if baseline_record is None or current_oid != baseline_record["oid"]:
+        reviewed_oids = set(rule.get("reviewed_oids", []))
+        if (baseline_record is None or current_oid != baseline_record["oid"]) and current_oid not in reviewed_oids:
             violations.append(
                 {
                     "code": f"{kind}_new_or_modified",
                     "path": path,
-                    "detail": "retained objects are baseline-OID-only; add a reviewed migration instead",
+                    "detail": "retained objects require the baseline OID or an exact reviewed migration OID",
                 }
             )
 

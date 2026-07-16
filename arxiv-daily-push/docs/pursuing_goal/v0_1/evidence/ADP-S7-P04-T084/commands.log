@@ -1,0 +1,16 @@
+# ADP-S7-P04-T084 key commands (NOT_DEPLOYED; a11y + evidence/inference + reduced-motion polish)
+# 1) worker (page-body): PROVENANCE_NOTE + lessonHTML prepends it (evidence/inference marker); todayPage inline
+#    lesson -> lessonHTML (DRY + marker); reveal button aria-controls + moves focus into #revealBox + tabindex.
+#    BUILD d1dfcb3b7447 -> 452f7c5de919.
+node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js        # SYNTAX OK
+# 2) tool: tools/a11y_content_audit.py (native-focusable / named buttons / 44px+focus-visible / provenance /
+#    reduced-motion content-preserve / reveal disclosure / contract byte-identical)
+# 3) in-app browser: provenance marker renders; reveal moves focus; grade buttons focusable; reduced-motion
+#    CSSOM rule restores .fr/.bw (browser_measurements.json)
+# 4) acceptance verifier (re-derives; negative controls: pre-fix lacks marker/reveal-a11y; removing the
+#    reduced-motion restore fails the preserve check):
+python3 evidence/ADP-S7-P04-T084/test-results/t084_verify.py          # ACCEPTANCE = PASS, exit 0
+# 5) realtime: live /build.json still b189d3cc0703 (NOT deployed); source 452f7c5de919
+curl -s https://adp.linzezhang.com/build.json
+# 6) contract: detect_regression = 0 specific (polish is page-body, six-theme contract byte-identical)
+# 7) independent adversarial skeptic -> verdict in adversarial_review.md

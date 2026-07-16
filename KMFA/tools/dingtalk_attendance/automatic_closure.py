@@ -140,10 +140,27 @@ def attendance_runtime_fingerprint(
 
 
 def current_runtime_identity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
-    tracked_clean = subprocess.run(
-        ["git", "diff", "--quiet", "HEAD", "--"], cwd=repo_root, check=False
-    ).returncode == 0
+    diagnostic_repo = Path(os.environ.get("KMFA_ATTENDANCE_DIAGNOSTIC_REPO_ROOT") or Path.cwd())
+    try:
+        commit = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=diagnostic_repo,
+            text=True,
+            timeout=5,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        commit = "UNAVAILABLE"
+    try:
+        tracked_clean = subprocess.run(
+            ["git", "diff", "--quiet", "HEAD", "--"],
+            cwd=diagnostic_repo,
+            check=False,
+            timeout=5,
+            capture_output=True,
+        ).returncode == 0
+    except (OSError, subprocess.TimeoutExpired):
+        tracked_clean = False
     identity: dict[str, Any] = {
         "git_commit": commit,
         "tracked_tree_state": "CLEAN" if tracked_clean else "DIRTY",
@@ -162,16 +179,37 @@ def current_runtime_identity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         live_prompts[slot] = live_prompt
         identity[f"{slot}_prompt_sha256"] = _sha256_text(live_prompt)
     identity["prompt_mirrors_match"] = mirrors_match
-    attendance_status = subprocess.check_output(
-        ["git", "status", "--porcelain", "--", *(path.as_posix() for path in ATTENDANCE_RUNTIME_SCOPE_PATHS)],
-        cwd=repo_root,
-        text=True,
-    )
-    identity["attendance_runtime_tree_state"] = "CLEAN" if not attendance_status.strip() else "DIRTY"
-    identity["attendance_runtime_fingerprint"] = attendance_runtime_fingerprint(
-        repo_root=repo_root,
-        live_prompts=live_prompts,
-    )
+    production_fingerprint = os.environ.get("KMFA_ATTENDANCE_PRODUCTION_FINGERPRINT", "").strip()
+    if production_fingerprint:
+        identity["attendance_runtime_tree_state"] = "IMMUTABLE_RELEASE"
+        identity["attendance_runtime_fingerprint"] = production_fingerprint
+        identity["production_release_source_commit"] = os.environ.get(
+            "KMFA_ATTENDANCE_PRODUCTION_SOURCE_COMMIT", "UNKNOWN"
+        )
+        identity["repository_state_blocks_attendance"] = False
+    else:
+        try:
+            attendance_status = subprocess.check_output(
+                [
+                    "git",
+                    "status",
+                    "--porcelain",
+                    "--",
+                    *(path.as_posix() for path in ATTENDANCE_RUNTIME_SCOPE_PATHS),
+                ],
+                cwd=diagnostic_repo,
+                text=True,
+                timeout=5,
+                stderr=subprocess.DEVNULL,
+            )
+        except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            attendance_status = "UNAVAILABLE"
+        identity["attendance_runtime_tree_state"] = "CLEAN" if not attendance_status.strip() else "DIRTY"
+        identity["attendance_runtime_fingerprint"] = attendance_runtime_fingerprint(
+            repo_root=repo_root,
+            live_prompts=live_prompts,
+        )
+        identity["repository_state_blocks_attendance"] = False
     return identity
 
 
@@ -695,7 +733,7 @@ class R6Coordinator:
         return bool(
             record_fingerprint
             and isinstance(record_identity, Mapping)
-            and record_identity.get("attendance_runtime_tree_state") == "CLEAN"
+            and record_identity.get("attendance_runtime_tree_state") in {"CLEAN", "IMMUTABLE_RELEASE"}
             and record_identity.get("prompt_mirrors_match") is True
             and isinstance(evidence, Mapping)
             and evidence.get("verified") is True

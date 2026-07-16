@@ -66,6 +66,11 @@ class RepositoryHygieneTests(unittest.TestCase):
             self.assertEqual(baseline["status"], "PASS", baseline)
 
             (root / "existing.bin").write_bytes(b"z" * 256)
+            changed_oid = self._git(root, "hash-object", "existing.bin").stdout.strip()
+            policy["retained_objects"][0]["reviewed_oids"] = [changed_oid]
+            reviewed = hygiene.audit_repository(root=root, policy=policy)
+            self.assertEqual(reviewed["status"], "PASS", reviewed)
+            policy["retained_objects"][0]["reviewed_oids"] = []
             (root / "new.bin").write_bytes(b"y" * 256)
             (root / "backup.tar.gz").write_bytes(b"archive")
             (root / ".DS_Store").write_bytes(b"noise")

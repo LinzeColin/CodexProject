@@ -1,0 +1,11 @@
+# ADP-S8-P01-T085 full-chain rehearsal -- key commands (deterministic, isolated)
+# stage the committed reproducibility fixtures (public feed metadata, scanned: 0 PII/secret)
+cp scratchpad/t020/items_500.json evidence/ADP-S8-P01-T085/data-samples/items_500.json
+cp scratchpad/t020/fs_500.json    evidence/ADP-S8-P01-T085/data-samples/fs_500.json
+# run the rehearsal (8 stages, isolated tmp work_dir, compares to committed anchors)
+python3 tools/full_chain_rehearsal.py --work-dir <tmp> --out evidence/ADP-S8-P01-T085/rehearsal_manifest.json --live-build b189d3cc0703
+#   -> ALL_MATCH=True NO_UNEXPLAINED_LOSS=True PROD_UNTOUCHED=True
+# acceptance verifier (re-derives + 3 load-bearing negative controls, emits diff_report.json)
+python3 evidence/ADP-S8-P01-T085/test-results/t085_verify.py   # ACCEPTANCE=PASS exit 0
+# realtime NOT_DEPLOYED check
+curl -s https://adp.linzezhang.com/build.json   # build_id b189d3cc0703 == T040

@@ -1,0 +1,189 @@
+{
+  "task": "ADP-S8-P01-T085",
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "input_items_sha16": "b4211b720dae325e",
+  "per_stage": [
+    {
+      "stage": "1-source_registry",
+      "tool": "compile_registry.py",
+      "in": 33,
+      "out": 33,
+      "replayed_key_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+      "matches_committed": true,
+      "deterministic": true
+    },
+    {
+      "stage": "2-factsheet",
+      "tool": "extract_factsheet.py",
+      "in": 500,
+      "out": 500,
+      "replayed_key_hash": "909a07fd74f3d4e6",
+      "matches_committed": true,
+      "deterministic": true
+    },
+    {
+      "stage": "3-content_render",
+      "tool": "build_render_payload.py",
+      "in": 500,
+      "out": 500,
+      "replayed_key_hash": "7508f6546f877400",
+      "matches_committed": true,
+      "deterministic": true
+    },
+    {
+      "stage": "4-canonical",
+      "tool": "canonicalize.py",
+      "in": 500,
+      "out": 498,
+      "replayed_key_hash": "bb458c45303ddee0",
+      "matches_committed": true,
+      "deterministic": true
+    },
+    {
+      "stage": "5-version_chain",
+      "tool": "version_engine.py",
+      "in": 498,
+      "out": 500,
+      "replayed_key_hash": "18c3fde7241c9a31",
+      "matches_committed": true,
+      "deterministic": true
+    },
+    {
+      "stage": "6-snapshot",
+      "tool": "snapshot_writer.py",
+      "in": 998,
+      "out": 998,
+      "replayed_key_hash": "sha256:61de7073ca96fd7d733bd5e46b425b7bfb501ce962df123e968f7d6be5ece644",
+      "matches_committed": true,
+      "deterministic": true
+    },
+    {
+      "stage": "7-restore",
+      "tool": "restore_drill.py",
+      "in": 500,
+      "out": 329,
+      "replayed_key_hash": "19c3cdc042d62cfa",
+      "matches_committed": true,
+      "deterministic": true
+    },
+    {
+      "stage": "8-prediction",
+      "tool": "baselines.py",
+      "in": 3,
+      "out": 2,
+      "replayed_key_hash": "b51e710cc68721e3",
+      "matches_committed": true,
+      "deterministic": true
+    }
+  ],
+  "committed_anchors": {
+    "registry_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+    "canonical_summary": {
+      "items_in": 500,
+      "canonical_documents": 498,
+      "reposts_merged": 0,
+      "duplicate_items_collapsed": 2,
+      "collisions": 0
+    },
+    "snapshot_id": "sha256:61de7073ca96fd7d733bd5e46b425b7bfb501ce962df123e968f7d6be5ece644",
+    "snapshot_totals": {
+      "cn_documents": 498,
+      "cn_document_versions": 500,
+      "months": [
+        "2016-01",
+        "2016-05",
+        "2017-05",
+        "2017-07",
+        "2017-12",
+        "2018-09",
+        "2018-11",
+        "2018-12",
+        "2019-01",
+        "2019-07",
+        "2019-10",
+        "2019-11",
+        "2020-01",
+        "2020-07",
+        "2020-12",
+        "2021-06",
+        "2021-08",
+        "2022-09",
+        "2022-10",
+        "2023-06",
+        "2023-08",
+        "2023-12",
+        "2024-01",
+        "2024-02",
+        "2024-03",
+        "2024-06",
+        "2024-08",
+        "2024-10",
+        "2024-11",
+        "2025-01",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "partitions": 92
+    },
+    "restore_counts_consistent": true
+  },
+  "row_ledger": [
+    {
+      "from": "items",
+      "to": "canonical_documents",
+      "from_n": 500,
+      "to_n": 498,
+      "delta": -2,
+      "reason": "duplicate_items_collapsed=2, reposts_merged=0, collisions=0 (T024 identity)"
+    },
+    {
+      "from": "canonical_documents",
+      "to": "document_versions",
+      "from_n": 498,
+      "to_n": 500,
+      "delta": 2,
+      "reason": "multi-item docs each add a 2nd substantive version; noise-only/replay renders skipped (T026 idempotent)"
+    },
+    {
+      "from": "canonical_documents",
+      "to": "snapshot_document_rows",
+      "from_n": 498,
+      "to_n": 498,
+      "delta": 0,
+      "preserved": true,
+      "reason": "repartition by first_seen_month; no row loss"
+    },
+    {
+      "from": "document_versions",
+      "to": "snapshot_version_rows",
+      "from_n": 500,
+      "to_n": 500,
+      "delta": 0,
+      "preserved": true,
+      "reason": "repartition by month; no row loss"
+    }
+  ],
+  "all_stages_match_committed": true,
+  "no_unexplained_data_loss": true,
+  "evidence_files_immutable_across_replay": true,
+  "negative_controls": {
+    "drop_item_breaks_canonical": true,
+    "drop_item_breaks_snapshot": true,
+    "bogus_live_build_flips_prod_untouched": true,
+    "poisoned_ledger_caught": true
+  }
+}

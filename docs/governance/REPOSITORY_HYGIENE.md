@@ -13,8 +13,8 @@ the baseline tree and compare exact blob OIDs.
 
 The policy-bound candidate audit reports:
 
-- tracked objects: 14,293
-- objects over 1 MiB: 65 / 465,742,985 bytes
+- tracked objects: 14,326
+- objects over 1 MiB: 65 / 465,759,983 bytes
 - archive-shaped objects: 36
 - tracked runtime noise: 0
 - executable backup producers: 0
@@ -39,13 +39,18 @@ historical objects.
 - Reviewed existing PFI reports/traces, the v0.2.5 source TaskPack, and arxiv
   pursuing-goal evidence into baseline-OID-only rules. Their byte ceilings match
   the largest accepted baseline object; any new path or byte change still fails.
+- Reconciled GitHub `main` at `a56143103ba2e8fc8291826c43831a63e6f6db7a`
+  with zero candidate-path overlap. Three updated arxiv canonical ledgers over
+  1 MiB are admitted only by their exact reviewed blob OIDs; the path and byte
+  ceilings remain unchanged.
 - Kept the global regular-file ceiling at 1,048,576 bytes.
 
 ## Fail-closed behavior
 
 1. A regular tracked blob over 1 MiB needs exactly one reviewed `large` rule.
 2. Every archive needs exactly one reviewed `archive` rule.
-3. Retained paths must match their baseline Git blob OID and per-rule size cap.
+3. Retained paths must match their baseline Git blob OID or an exact reviewed
+   migration OID, plus the per-rule size cap.
 4. Bundle/WAL/SHM/cache/build/coverage/temp/backup outputs fail.
 5. Executable source that creates whole-repository bundles or mirror clones fails.
 6. No history rewrite or force update is authorized by this task.
@@ -67,7 +72,7 @@ python3 -B scripts/repository_hygiene_audit.py --root . --tree-ish "$tree"
 | arxiv pursuing-goal evidence maximum | 1,556,045 |
 | runtime-noise tolerance | 0 |
 | executable backup-producer tolerance | 0 |
-| new/modified retained-object tolerance | 0 |
+| unreviewed new/modified retained-object tolerance | 0 |
 
 These are deterministic repository controls, not probabilistic model settings.
 LFS, Release upload, remote publication, force-push, and history rewriting are

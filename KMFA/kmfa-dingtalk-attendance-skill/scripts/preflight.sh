@@ -14,6 +14,13 @@ import json, os, subprocess, sys
 repo, onedrive, runtime, required_branch, target_month, out_json = sys.argv[1:7]
 failures = []
 warnings = []
+repository_diagnostics = {
+    "blocks_attendance": False,
+    "branch": "UNAVAILABLE",
+    "head": "UNAVAILABLE",
+    "origin_head": "UNAVAILABLE",
+    "dirty": None,
+}
 
 def run(cmd, cwd=None):
     return subprocess.run(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -22,24 +29,25 @@ def exists_cmd(name):
     return run(["bash", "-lc", f"command -v {name}"]).returncode == 0
 
 if not os.path.isdir(repo):
-    failures.append(f"repo_root_missing:{repo}")
+    repository_diagnostics["availability"] = f"repo_root_missing:{repo}"
 else:
     inside = run(["git", "rev-parse", "--is-inside-work-tree"], cwd=repo)
     if inside.returncode != 0:
-        failures.append(f"not_git_repo:{repo}")
+        repository_diagnostics["availability"] = f"not_git_repo:{repo}"
     else:
         branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=repo).stdout.strip()
-        if branch != required_branch:
-            warnings.append(f"branch_is_{branch}_expected_{required_branch}")
-        if run(["git", "diff", "--quiet"], cwd=repo).returncode != 0 or run(["git", "diff", "--cached", "--quiet"], cwd=repo).returncode != 0:
-            warnings.append("working_tree_has_changes")
+        repository_diagnostics["branch"] = branch
+        repository_diagnostics["dirty"] = (
+            run(["git", "diff", "--quiet"], cwd=repo).returncode != 0
+            or run(["git", "diff", "--cached", "--quiet"], cwd=repo).returncode != 0
+        )
+        repository_diagnostics["head"] = run(["git", "rev-parse", "HEAD"], cwd=repo).stdout.strip()
         if run(["git", "rev-parse", "--verify", f"origin/{required_branch}"], cwd=repo).returncode == 0:
-            head = run(["git", "rev-parse", "HEAD"], cwd=repo).stdout.strip()
-            remote = run(["git", "rev-parse", f"origin/{required_branch}"], cwd=repo).stdout.strip()
-            if head != remote:
-                warnings.append(f"HEAD_differs_from_origin_{required_branch}")
+            repository_diagnostics["origin_head"] = run(
+                ["git", "rev-parse", f"origin/{required_branch}"], cwd=repo
+            ).stdout.strip()
         else:
-            warnings.append(f"origin_{required_branch}_not_available")
+            repository_diagnostics["origin_head"] = "UNAVAILABLE"
 
 if not os.path.isdir(onedrive):
     failures.append(f"onedrive_root_missing:{onedrive}")
@@ -68,6 +76,7 @@ result = {
     "target_month": target_month,
     "failures": failures,
     "warnings": warnings,
+    "repository_diagnostics": repository_diagnostics,
 }
 with open(out_json, "w", encoding="utf-8") as f:
     json.dump(result, f, ensure_ascii=False, indent=2, sort_keys=True)

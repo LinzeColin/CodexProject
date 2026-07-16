@@ -66,6 +66,8 @@ REQUIRED_TOOL_FILES = (
     "secrets_loader.py",
     "validate_no_sensitive_git.py",
     "identity.py",
+    "production_entry.py",
+    "production_release.py",
     "check_dingtalk_attendance.py",
 )
 ALLOWED_PRIVATE_RUNTIME_FILES = {
@@ -85,7 +87,7 @@ TRACKED_PRIVATE_RUNTIME_FILES = [".gitkeep", "README.md"]
 PROMPT_CONTRACT_NEEDLES = {
     "calls_skill": ("$kmfa-dingtalk-attendance-skill",),
     "uses_beijing_time": ("Asia/Shanghai",),
-    "preserves_github_sync": ("origin/main", "GitHub `main`"),
+    "uses_immutable_production_release": ("attendance-production/current", "production_entry.py"),
     "fails_closed_for_dws": ("DWS_AUTH_REQUIRED", "Do not fabricate data"),
     "protects_private_runtime": (".env.local", "SQLite", "raw JSON", "report bodies"),
 }
@@ -106,7 +108,7 @@ def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any],
     aggregate = {
         "all_prompts_call_skill": True,
         "all_prompts_use_beijing_time": True,
-        "all_prompts_preserve_github_sync": True,
+        "all_prompts_use_immutable_production_release": True,
         "all_prompts_fail_closed_for_dws": True,
         "all_prompts_protect_private_runtime": True,
         "temporary_prompts_use_realtime_integrity": True,
@@ -117,7 +119,7 @@ def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any],
     aggregate_key_by_contract = {
         "calls_skill": "all_prompts_call_skill",
         "uses_beijing_time": "all_prompts_use_beijing_time",
-        "preserves_github_sync": "all_prompts_preserve_github_sync",
+        "uses_immutable_production_release": "all_prompts_use_immutable_production_release",
         "fails_closed_for_dws": "all_prompts_fail_closed_for_dws",
         "protects_private_runtime": "all_prompts_protect_private_runtime",
     }

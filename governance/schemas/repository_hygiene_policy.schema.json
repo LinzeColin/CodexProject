@@ -202,6 +202,14 @@
           "type": "string",
           "const": "baseline_oid_only"
         },
+        "reviewed_oids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "uniqueItems": true
+        },
         "max_bytes": {
           "type": "integer",
           "minimum": 1

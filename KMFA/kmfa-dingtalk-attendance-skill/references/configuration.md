@@ -50,6 +50,10 @@ DWS_BIN
 KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS
 KMFA_DINGTALK_ATTENDANCE_DWS_BROWSER_POLICY_PATH
 KMFA_DINGTALK_ATTENDANCE_REMINDER_COLLECTION_DEADLINE_SECONDS
+KMFA_ATTENDANCE_PRODUCTION_FINGERPRINT
+KMFA_ATTENDANCE_PRODUCTION_SOURCE_COMMIT
+KMFA_ATTENDANCE_PRODUCTION_RELEASE_ROOT
+KMFA_ATTENDANCE_LOCAL_KMFA_ROOT
 KMFA_WORK_DATE_OVERRIDE
 KMFA_TODAY_OVERRIDE
 ```
@@ -63,6 +67,14 @@ KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS=0
 Only set it to `1` for a user-authorized live run after healthcheck and process checks.
 
 The full morning/evening reminder collection has one wall-clock deadline. Its default is 330 seconds: the slowest successful 2026-07-15 natural collection took 285 seconds, so the default preserves 45 seconds of headroom while stopping before the outer automation ceiling. An authorized machine-local override may use `KMFA_DINGTALK_ATTENDANCE_REMINDER_COLLECTION_DEADLINE_SECONDS`; it must be positive. Deadline expiry is terminal for that work date and slot, kills the active DWS process group, records `ABORTED_TIMEOUT / NOT_SENT`, and forbids recovery or late sending.
+
+Production release location:
+
+```text
+$HOME/Library/Application Support/Codex/KMFA/attendance-production/current
+```
+
+The three `KMFA_ATTENDANCE_PRODUCTION_*` keys and `KMFA_ATTENDANCE_LOCAL_KMFA_ROOT` are set only by the verified production entry after manifest, fingerprint, and live-prompt readback succeed. The local-root key keeps secrets, state, and SQLite in the owner checkout rather than copying them into the immutable release. They are not user configuration and must not bypass release verification. Repository branch, HEAD, origin HEAD, and dirty paths are recorded privately as diagnostics only.
 
 ## Notification Targets
 

@@ -8,9 +8,9 @@ Create one stable operating contract for KMFA DingTalk attendance so any agent o
 
 | Invariant | Requirement |
 |---|---|
-| Repo identity | Work from `/Users/linzezhang/CodexProject/KMFA` unless user overrides. |
-| Branch | Default branch is `main`; automation must not invent a branch strategy. |
-| Worktree | Use the configured automation worktree mode. For stage-2, prefer isolated worktree or clean local checkout. |
+| Repo identity | `/Users/linzezhang/CodexProject` is the configured cwd and private-state location; repo state is diagnostic only. |
+| Production release | Natural attendance runs only the verified immutable `attendance-production/current` release. |
+| Repository diagnostics | Branch, HEAD, origin HEAD, and dirty paths are recorded but never block attendance. |
 | Target month | Stage-2 target month is always the previous natural month when local date is day 1-5. |
 | Timezone | Attendance month boundary defaults to `Asia/Shanghai` unless repo config overrides. |
 | Morning run | No stage-2 acceptance. |
@@ -56,7 +56,7 @@ preflight
 Stop and report if any of these occurs:
 
 1. Target month cannot be resolved.
-2. Repo status prevents deterministic run.
+2. Production release is incomplete, its fingerprint fails, or the live prompt does not match.
 3. DWS/API acquisition returns partial data without a complete retry/audit marker.
 4. Required employees cannot be mapped.
 5. Required location/detail fields are missing beyond configured thresholds.
