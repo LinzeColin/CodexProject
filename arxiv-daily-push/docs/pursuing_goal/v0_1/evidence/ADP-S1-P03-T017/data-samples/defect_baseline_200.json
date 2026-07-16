@@ -1,0 +1,1940 @@
+{
+  "before_report": {
+    "build_id": "bd67a78020a3",
+    "baseline_status": "provisional_machine",
+    "sample_count": 200,
+    "defect_counts": {
+      "english_direct_output": 113,
+      "empty_section": 1,
+      "templating": 6,
+      "board_pollution": 44
+    },
+    "items_with_any_defect": 160
+  },
+  "rows": [
+    {
+      "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+      "document_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+      "document_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+      "document_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+      "document_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+      "document_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+      "document_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+      "document_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+      "document_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+      "document_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+      "document_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+      "document_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+      "document_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+      "document_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+      "document_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+      "document_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+      "document_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+      "document_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+      "document_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+      "document_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+      "document_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:1b10ac0760a385a14a1cb8c7a38a63ba1bbafcae",
+      "document_id": "feed:1b10ac0760a385a14a1cb8c7a38a63ba1bbafcae",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "empty_section",
+        "templating"
+      ]
+    },
+    {
+      "item_id": "feed:6a56aaf178f6bcca9ce03d24e0774f5984894f4b",
+      "document_id": "feed:6a56aaf178f6bcca9ce03d24e0774f5984894f4b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:e38e16bcce9ecced7a469c126a5c7c2ca7a68a81",
+      "document_id": "feed:e38e16bcce9ecced7a469c126a5c7c2ca7a68a81",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:c1d002380bc4c1a2a5c05afff74b47f92d0f5994",
+      "document_id": "feed:c1d002380bc4c1a2a5c05afff74b47f92d0f5994",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:fc538dc61e248e422fdde0e627d7e3eac75f0b98",
+      "document_id": "feed:fc538dc61e248e422fdde0e627d7e3eac75f0b98",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f6fe3c7792e0f8e7b561d85aefca9d2d4f1c2c11",
+      "document_id": "feed:f6fe3c7792e0f8e7b561d85aefca9d2d4f1c2c11",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:b7ccd7cfa94b824398e5f613f89f22d040a13372",
+      "document_id": "feed:b7ccd7cfa94b824398e5f613f89f22d040a13372",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:a7b3a303d03d206f24b3a978cff32405e9c443fa",
+      "document_id": "feed:a7b3a303d03d206f24b3a978cff32405e9c443fa",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:822ecd39375c664ef04270f379eea723ed4c5b97",
+      "document_id": "feed:822ecd39375c664ef04270f379eea723ed4c5b97",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:9569181ce2ff5dcf58afb99e8d56480f64ac354c",
+      "document_id": "feed:9569181ce2ff5dcf58afb99e8d56480f64ac354c",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:552cb0750ff4c02fa55c8168f804c8d7c7a872b2",
+      "document_id": "feed:552cb0750ff4c02fa55c8168f804c8d7c7a872b2",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:fc87e69479abb1c9c42a28d2323236b610f090a3",
+      "document_id": "feed:fc87e69479abb1c9c42a28d2323236b610f090a3",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:6f8fd6805b811d9dab801ec855831729b2f0d109",
+      "document_id": "feed:6f8fd6805b811d9dab801ec855831729b2f0d109",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:aae16ffcba71492b051a2dce1190be140f58eb10",
+      "document_id": "feed:aae16ffcba71492b051a2dce1190be140f58eb10",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:0aa4782d1033729d03b455586ff8e85394914450",
+      "document_id": "feed:0aa4782d1033729d03b455586ff8e85394914450",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:65548e16ec2b37be5d2844b3fefc49cb37456778",
+      "document_id": "feed:65548e16ec2b37be5d2844b3fefc49cb37456778",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:15bd53bac5b20e029702fb55ece3af147579223d",
+      "document_id": "feed:15bd53bac5b20e029702fb55ece3af147579223d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:78c98e95cbcb1c1ba74bf77c120f4b6320679ed0",
+      "document_id": "feed:78c98e95cbcb1c1ba74bf77c120f4b6320679ed0",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:ada129e2ae3700f70968358c92f460aee89d2ff0",
+      "document_id": "feed:ada129e2ae3700f70968358c92f460aee89d2ff0",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f395992800d30136add6796f5f5735661d8fb0b2",
+      "document_id": "feed:f395992800d30136add6796f5f5735661d8fb0b2",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:43899fe917659fe744ad5f754ca891099c7f2a55",
+      "document_id": "feed:43899fe917659fe744ad5f754ca891099c7f2a55",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:4a8d5bb7ad6f78d80fbcd107ca29098ca7d33a29",
+      "document_id": "feed:4a8d5bb7ad6f78d80fbcd107ca29098ca7d33a29",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:00a8d3d9ea5858b79c7992081e650223326a51a4",
+      "document_id": "feed:00a8d3d9ea5858b79c7992081e650223326a51a4",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:8a564a1e34d3efdd4c20964c8fb80807444b2bab",
+      "document_id": "feed:8a564a1e34d3efdd4c20964c8fb80807444b2bab",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:04a66ec3b84a8fe704c33e8a1882d08451831ad2",
+      "document_id": "feed:04a66ec3b84a8fe704c33e8a1882d08451831ad2",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:8ad85f362de616d635370b38348d1283b7764944",
+      "document_id": "feed:8ad85f362de616d635370b38348d1283b7764944",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:6306647a5a9e5b818b4c270008d5a4d125c9db5a",
+      "document_id": "feed:6306647a5a9e5b818b4c270008d5a4d125c9db5a",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:35a24bbce26903d3ad0e56b9d2de67b75c8a8ca9",
+      "document_id": "feed:35a24bbce26903d3ad0e56b9d2de67b75c8a8ca9",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:02f297737af8d0c378f82b538225045eadc25e9d",
+      "document_id": "feed:02f297737af8d0c378f82b538225045eadc25e9d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:6f96b3d8bdb1f88ebffb74995a2282f00645173d",
+      "document_id": "feed:6f96b3d8bdb1f88ebffb74995a2282f00645173d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:be0d48e805fbd81a83b9a4e4cc729a2d3de73acd",
+      "document_id": "feed:be0d48e805fbd81a83b9a4e4cc729a2d3de73acd",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:404635f1935a1e074ae441f6cf182d899999a811",
+      "document_id": "feed:404635f1935a1e074ae441f6cf182d899999a811",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:c4d64f00360d8725f75a4aef64127e0d1c245a44",
+      "document_id": "feed:c4d64f00360d8725f75a4aef64127e0d1c245a44",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:60ab2f8dcb6a223581f5e630db6891ae889a6d5b",
+      "document_id": "feed:60ab2f8dcb6a223581f5e630db6891ae889a6d5b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:3c0a1f385866cd2df71ed67459e67de246c81da7",
+      "document_id": "feed:3c0a1f385866cd2df71ed67459e67de246c81da7",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:51eb5d5f9566cf599547b90048a244fb76e5c2ac",
+      "document_id": "feed:51eb5d5f9566cf599547b90048a244fb76e5c2ac",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:36dc39bf48d591afbf200f725bdc2f5046b2c862",
+      "document_id": "feed:36dc39bf48d591afbf200f725bdc2f5046b2c862",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:e69530f25c654baf6ce1ca3dba8dda1f0f117d67",
+      "document_id": "feed:e69530f25c654baf6ce1ca3dba8dda1f0f117d67",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:243acdb914264d94ea97c5e6f46722f720d8a38e",
+      "document_id": "feed:243acdb914264d94ea97c5e6f46722f720d8a38e",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:a74e2f827727d60b5e90337665dda8a3b8c5f0f2",
+      "document_id": "feed:a74e2f827727d60b5e90337665dda8a3b8c5f0f2",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:b09d69260d73ae68de5d5ecd0ea3860790a6b90b",
+      "document_id": "feed:b09d69260d73ae68de5d5ecd0ea3860790a6b90b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:c827c09d5b06499b8ed14f8c968e6e9d6a675602",
+      "document_id": "feed:c827c09d5b06499b8ed14f8c968e6e9d6a675602",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": []
+    },
+    {
+      "item_id": "feed:88be181143a66dd834f82ce7703c6d3bd65f233b",
+      "document_id": "feed:88be181143a66dd834f82ce7703c6d3bd65f233b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:4d1fedece9faf628639a2050469a49f88926ad6e",
+      "document_id": "feed:4d1fedece9faf628639a2050469a49f88926ad6e",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:b53ece7c8e757540fb752d1ae3802d715e015a4b",
+      "document_id": "feed:b53ece7c8e757540fb752d1ae3802d715e015a4b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:bbbe6d1c0d0ac2dc93b8266b3baa44988c9c035d",
+      "document_id": "feed:bbbe6d1c0d0ac2dc93b8266b3baa44988c9c035d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:e55374ffeb7a743874f9168e71e1fa750e3474bf",
+      "document_id": "feed:e55374ffeb7a743874f9168e71e1fa750e3474bf",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:64c6250da1bf0a3da355cf6ed226a1e46bf46c80",
+      "document_id": "feed:64c6250da1bf0a3da355cf6ed226a1e46bf46c80",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:99cd1850109adcec1ba6ddc236c1573f39676e44",
+      "document_id": "feed:99cd1850109adcec1ba6ddc236c1573f39676e44",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:99b0d8b622fcc8f73ea3a2d104ca81b95bce0636",
+      "document_id": "feed:99b0d8b622fcc8f73ea3a2d104ca81b95bce0636",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:0b6975327c06702082e5b254f845c9a2b8b10532",
+      "document_id": "feed:0b6975327c06702082e5b254f845c9a2b8b10532",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:d935e7c3a9f0f18ada1897f699b98e630b3f01d6",
+      "document_id": "feed:d935e7c3a9f0f18ada1897f699b98e630b3f01d6",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:570d7b03645446cfc620e0d1fe0aa51c9a6a0c3d",
+      "document_id": "feed:570d7b03645446cfc620e0d1fe0aa51c9a6a0c3d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:88ea68d42d151d1b2276ffbe78e4b846ea0edd62",
+      "document_id": "feed:88ea68d42d151d1b2276ffbe78e4b846ea0edd62",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:9f3aebbf45892abcbfe9bf5f9359a976e4ba7b61",
+      "document_id": "feed:9f3aebbf45892abcbfe9bf5f9359a976e4ba7b61",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:b2a12f9bb291159a278dd2e35dc75c8f207b6d41",
+      "document_id": "feed:b2a12f9bb291159a278dd2e35dc75c8f207b6d41",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution",
+        "templating"
+      ]
+    },
+    {
+      "item_id": "feed:d80115c0ea0a79232f7e0ca9496ef88242c19a1b",
+      "document_id": "feed:d80115c0ea0a79232f7e0ca9496ef88242c19a1b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:2c1b5bdd8532640d6ba65eddcda2684dd9ad902c",
+      "document_id": "feed:2c1b5bdd8532640d6ba65eddcda2684dd9ad902c",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:3544e0caeca9a6b99b5ae4e2c1eb5e786219b07c",
+      "document_id": "feed:3544e0caeca9a6b99b5ae4e2c1eb5e786219b07c",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:2288bff95d7180e01f81c9d562d097c9ba5e3b39",
+      "document_id": "feed:2288bff95d7180e01f81c9d562d097c9ba5e3b39",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:9885056f08698a5f5c30f3c92124c3777d145aee",
+      "document_id": "feed:9885056f08698a5f5c30f3c92124c3777d145aee",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:566e8f770fa5f95c9535605267d996342834953a",
+      "document_id": "feed:566e8f770fa5f95c9535605267d996342834953a",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:2946bc3f70a0460fdf5a7d77b37d54faa04f3869",
+      "document_id": "feed:2946bc3f70a0460fdf5a7d77b37d54faa04f3869",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:b910b4c2648e7eedbe76e86883b2919cdf8ee481",
+      "document_id": "feed:b910b4c2648e7eedbe76e86883b2919cdf8ee481",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f19a19a4b63dfd81e3f522448d4dfedcc7f8f83c",
+      "document_id": "feed:f19a19a4b63dfd81e3f522448d4dfedcc7f8f83c",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:9ad82228e605fa5a358382645797a8a4dcaa8bcc",
+      "document_id": "feed:9ad82228e605fa5a358382645797a8a4dcaa8bcc",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:5decab589c86a5a8b000e0299d5ff67c83ee43ae",
+      "document_id": "feed:5decab589c86a5a8b000e0299d5ff67c83ee43ae",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:86c8b3f82ec8292125bc8bd69741cf60ebdff935",
+      "document_id": "feed:86c8b3f82ec8292125bc8bd69741cf60ebdff935",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:87c391b7a29de4c0fa61f1a881e0eb3418f66105",
+      "document_id": "feed:87c391b7a29de4c0fa61f1a881e0eb3418f66105",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:994878e849a4f5ec033ed36ad941bdc19b981302",
+      "document_id": "feed:994878e849a4f5ec033ed36ad941bdc19b981302",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:6dd8c2c839ae21f3d3a9a8cf20329aef9aa8cb72",
+      "document_id": "feed:6dd8c2c839ae21f3d3a9a8cf20329aef9aa8cb72",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:45917d187ca2c1003016d89cae6d04e0f5cb3738",
+      "document_id": "feed:45917d187ca2c1003016d89cae6d04e0f5cb3738",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:1cc0d4533fdce31ca6130e6364da91863727bc16",
+      "document_id": "feed:1cc0d4533fdce31ca6130e6364da91863727bc16",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:1d90f3b0424e06fc1b9b8cc6de97d13be9e7aa3e",
+      "document_id": "feed:1d90f3b0424e06fc1b9b8cc6de97d13be9e7aa3e",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:a16321c2a35fb27d29fbd2da86a3dfee0320032f",
+      "document_id": "feed:a16321c2a35fb27d29fbd2da86a3dfee0320032f",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f1d9e87f4c84fdde826566bb2989ab24bbff8366",
+      "document_id": "feed:f1d9e87f4c84fdde826566bb2989ab24bbff8366",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f74c57f59f3a2b506489868364b642f763f52c7f",
+      "document_id": "feed:f74c57f59f3a2b506489868364b642f763f52c7f",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:1fbd1768d6c66fa184c5bea6ca42a3eda97fea1b",
+      "document_id": "feed:1fbd1768d6c66fa184c5bea6ca42a3eda97fea1b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:455096add728f1e78da16a2c199f88e1e69c63eb",
+      "document_id": "feed:455096add728f1e78da16a2c199f88e1e69c63eb",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:5035cc3d14740cc2380c83f90f7dc1b1eece391a",
+      "document_id": "feed:5035cc3d14740cc2380c83f90f7dc1b1eece391a",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:fd2b20a9622903b290c8ff718b64de3439929e4d",
+      "document_id": "feed:fd2b20a9622903b290c8ff718b64de3439929e4d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:0ab2a26bbf7ebdaf2260e0c442904c7aa5c0f75f",
+      "document_id": "feed:0ab2a26bbf7ebdaf2260e0c442904c7aa5c0f75f",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:b5a9df41363c92749a8799a5c823de15b588f100",
+      "document_id": "feed:b5a9df41363c92749a8799a5c823de15b588f100",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:35ae84eb6f9f79e36f8464d46f06709548cb13d4",
+      "document_id": "feed:35ae84eb6f9f79e36f8464d46f06709548cb13d4",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:1e6e31b653da8642f7c38669c90c8056d1d9a2d5",
+      "document_id": "feed:1e6e31b653da8642f7c38669c90c8056d1d9a2d5",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:7c0ae55a8541123cccf31063af8fc7c750dfe2c6",
+      "document_id": "feed:7c0ae55a8541123cccf31063af8fc7c750dfe2c6",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:140f9a88d7b29ff2dd045e4bb2316cf1d7d4f7c9",
+      "document_id": "feed:140f9a88d7b29ff2dd045e4bb2316cf1d7d4f7c9",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:3ca806f477ecdba2cc1bf6759d33191fcb06d5c4",
+      "document_id": "feed:3ca806f477ecdba2cc1bf6759d33191fcb06d5c4",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:d4742f765f02339815e43e89f930bac953fb1556",
+      "document_id": "feed:d4742f765f02339815e43e89f930bac953fb1556",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:da0b6093d4596e64e9b55b7013a1a83cbf4127a4",
+      "document_id": "feed:da0b6093d4596e64e9b55b7013a1a83cbf4127a4",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:bff98ff7bb950125e6b1ec700c44045622892843",
+      "document_id": "feed:bff98ff7bb950125e6b1ec700c44045622892843",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:4bede185471cf798799bf65cce7db479041f77c9",
+      "document_id": "feed:4bede185471cf798799bf65cce7db479041f77c9",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:affecbdb2a5d5b180b19c69fe90a787c5debbb79",
+      "document_id": "feed:affecbdb2a5d5b180b19c69fe90a787c5debbb79",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:1d28f3ec3873819c31ffc280d5ba458febb13883",
+      "document_id": "feed:1d28f3ec3873819c31ffc280d5ba458febb13883",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:28a510c2bc2db67dcb1c74b7962775b04f53263c",
+      "document_id": "feed:28a510c2bc2db67dcb1c74b7962775b04f53263c",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:d59f5a17f5abea6c7a42012db9a6b114f7bd59d2",
+      "document_id": "feed:d59f5a17f5abea6c7a42012db9a6b114f7bd59d2",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "defects": []
+    },
+    {
+      "item_id": "feed:58cef4ee87fb61e9fa56da08fb4352bf4d947d66",
+      "document_id": "feed:58cef4ee87fb61e9fa56da08fb4352bf4d947d66",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:21f1f5075e54eccccb5bac04347cd4f3762d24d7",
+      "document_id": "feed:21f1f5075e54eccccb5bac04347cd4f3762d24d7",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:32d3d91e972088f45a4f3cfb0391fd33edca88c5",
+      "document_id": "feed:32d3d91e972088f45a4f3cfb0391fd33edca88c5",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:c81868f64f137b2e6c1fdc27de27caf627a4c092",
+      "document_id": "feed:c81868f64f137b2e6c1fdc27de27caf627a4c092",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:57771ef58425724622d2b4b3d319d68b3bc6db54",
+      "document_id": "feed:57771ef58425724622d2b4b3d319d68b3bc6db54",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:a3dd7eb3b1b1590fbdabb3c766611ae50cabbb7f",
+      "document_id": "feed:a3dd7eb3b1b1590fbdabb3c766611ae50cabbb7f",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:1f27ba9a1e3cce6510c1bf4671e9b042805b297a",
+      "document_id": "feed:1f27ba9a1e3cce6510c1bf4671e9b042805b297a",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:75a5a188e457be564ad25af60a90f7d1d0f62885",
+      "document_id": "feed:75a5a188e457be564ad25af60a90f7d1d0f62885",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:a80b923e977286beeef178b6bc93871ecd8cd1c0",
+      "document_id": "feed:a80b923e977286beeef178b6bc93871ecd8cd1c0",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:6af108f4e1623df1b18a0933d059420f25f6f13b",
+      "document_id": "feed:6af108f4e1623df1b18a0933d059420f25f6f13b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:7c11237993cf48e491c932a187473e69dc0ef718",
+      "document_id": "feed:7c11237993cf48e491c932a187473e69dc0ef718",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:0155c5c874269623f510f1aa43d97d9913722054",
+      "document_id": "feed:0155c5c874269623f510f1aa43d97d9913722054",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:4254bccf2a4deff4f5d2b61eb1c4894e2fac56a5",
+      "document_id": "feed:4254bccf2a4deff4f5d2b61eb1c4894e2fac56a5",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:55eae2c6c62f046695242140960d3113135c30bb",
+      "document_id": "feed:55eae2c6c62f046695242140960d3113135c30bb",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:4e1f8b957f716bc73308c844dd71e928355d57c3",
+      "document_id": "feed:4e1f8b957f716bc73308c844dd71e928355d57c3",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:f409c34f48d547bfe8f19c8874ab375138354138",
+      "document_id": "feed:f409c34f48d547bfe8f19c8874ab375138354138",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:78375468aa57fd990e8e135352bfd554a8b8af87",
+      "document_id": "feed:78375468aa57fd990e8e135352bfd554a8b8af87",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:e3e0aab5ced32b16d7630a50df047bb2eebe73d9",
+      "document_id": "feed:e3e0aab5ced32b16d7630a50df047bb2eebe73d9",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": [
+        "board_pollution",
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:02401987f2e04d7acdafc0798c545d16f874b846",
+      "document_id": "feed:02401987f2e04d7acdafc0798c545d16f874b846",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:5ad5e49f05aa88484d8e7fc85f9f3e2c8e72b8af",
+      "document_id": "feed:5ad5e49f05aa88484d8e7fc85f9f3e2c8e72b8af",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "defects": []
+    },
+    {
+      "item_id": "feed:559167547a3479949f8172e47f72b033c18ffced",
+      "document_id": "feed:559167547a3479949f8172e47f72b033c18ffced",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:b0ca81b9a9bf15f40a2d36d57063e08f6cd30c2d",
+      "document_id": "feed:b0ca81b9a9bf15f40a2d36d57063e08f6cd30c2d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:f1792900f2acf0a7a6011c3ee5fc719a6dd524e3",
+      "document_id": "feed:f1792900f2acf0a7a6011c3ee5fc719a6dd524e3",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:0e19d55403281dd6e9db049517828d53d1a40499",
+      "document_id": "feed:0e19d55403281dd6e9db049517828d53d1a40499",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:c33dcb9e90affce805a6d9977768c7d0f4a87cde",
+      "document_id": "feed:c33dcb9e90affce805a6d9977768c7d0f4a87cde",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "templating"
+      ]
+    },
+    {
+      "item_id": "feed:1a4a11f34f5cb8bbfcb1581fa528cb14e19f3098",
+      "document_id": "feed:1a4a11f34f5cb8bbfcb1581fa528cb14e19f3098",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:d93e934084c0b2e0c1ccaa6218a9eef75cef8d41",
+      "document_id": "feed:d93e934084c0b2e0c1ccaa6218a9eef75cef8d41",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:54660e770d645c639bb7d54b8968f719f3fae94d",
+      "document_id": "feed:54660e770d645c639bb7d54b8968f719f3fae94d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:ba981c9b78587485b425a85ffbb53427136768b9",
+      "document_id": "feed:ba981c9b78587485b425a85ffbb53427136768b9",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:39584d5e37ad2d3892cc5b02723415375731f546",
+      "document_id": "feed:39584d5e37ad2d3892cc5b02723415375731f546",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:5508c1a8f50ecd3427f7fb35cbfb52f5dbeb42dd",
+      "document_id": "feed:5508c1a8f50ecd3427f7fb35cbfb52f5dbeb42dd",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:055610c3156f77c06fc6c0ad599d017713f795ad",
+      "document_id": "feed:055610c3156f77c06fc6c0ad599d017713f795ad",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:914f9a95fef5afb658eaf8c138f548721953fbf3",
+      "document_id": "feed:914f9a95fef5afb658eaf8c138f548721953fbf3",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:84fec1568ea2126d9d8b0d046a0d0516e16f75e9",
+      "document_id": "feed:84fec1568ea2126d9d8b0d046a0d0516e16f75e9",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:0baa6e62994895b6f99bb44692054e35901ae2d2",
+      "document_id": "feed:0baa6e62994895b6f99bb44692054e35901ae2d2",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "templating"
+      ]
+    },
+    {
+      "item_id": "feed:e261ded04eafcb2a6f7609f4361c60fabea13052",
+      "document_id": "feed:e261ded04eafcb2a6f7609f4361c60fabea13052",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:bd0a757d92cc8cfd17116e37d4c8a04150ad25ff",
+      "document_id": "feed:bd0a757d92cc8cfd17116e37d4c8a04150ad25ff",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:702a260521eb3de2e2c594b593d414a8ebaccef7",
+      "document_id": "feed:702a260521eb3de2e2c594b593d414a8ebaccef7",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": []
+    },
+    {
+      "item_id": "feed:5f45fc7bd610981332dff583246de2d8525e876d",
+      "document_id": "feed:5f45fc7bd610981332dff583246de2d8525e876d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution",
+        "templating"
+      ]
+    },
+    {
+      "item_id": "feed:f444b80f66ab2a87eee4233c51e9565d08fae0ab",
+      "document_id": "feed:f444b80f66ab2a87eee4233c51e9565d08fae0ab",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:8452429db60142fecb0d8c663f75f6d641bfae14",
+      "document_id": "feed:8452429db60142fecb0d8c663f75f6d641bfae14",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:129bbeef5cb924f66e292a8fa64a82aa5364e791",
+      "document_id": "feed:129bbeef5cb924f66e292a8fa64a82aa5364e791",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": []
+    },
+    {
+      "item_id": "feed:cbb2493361c2b2ea8aa597189952bff1fa93eb56",
+      "document_id": "feed:cbb2493361c2b2ea8aa597189952bff1fa93eb56",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:5122be506c16a0a96350c61cf3016b4320b5621c",
+      "document_id": "feed:5122be506c16a0a96350c61cf3016b4320b5621c",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:a898a2a5af0003258133d185718136c3894a0b18",
+      "document_id": "feed:a898a2a5af0003258133d185718136c3894a0b18",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": []
+    },
+    {
+      "item_id": "feed:c4b42ac3593e206bc1ed785c4961a2088c33bfe5",
+      "document_id": "feed:c4b42ac3593e206bc1ed785c4961a2088c33bfe5",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:b540684f464ea28b66f629da7f1cfa74da3b3c92",
+      "document_id": "feed:b540684f464ea28b66f629da7f1cfa74da3b3c92",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:30cc54a916d733061dfbee19ebe6aafc19342e68",
+      "document_id": "feed:30cc54a916d733061dfbee19ebe6aafc19342e68",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:391c64f31886ab5b640916acd4b8b093cd2f8baa",
+      "document_id": "feed:391c64f31886ab5b640916acd4b8b093cd2f8baa",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:15a50f2f4adc45c1d429b0154139570686129b42",
+      "document_id": "feed:15a50f2f4adc45c1d429b0154139570686129b42",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": []
+    },
+    {
+      "item_id": "feed:c5eec90b1ee5863e79301f08c1ac7e23b5b3b9ba",
+      "document_id": "feed:c5eec90b1ee5863e79301f08c1ac7e23b5b3b9ba",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": []
+    },
+    {
+      "item_id": "feed:5873c6e55cbef43445a5811a1a2e5bcc305a3026",
+      "document_id": "feed:5873c6e55cbef43445a5811a1a2e5bcc305a3026",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:98c648495970c28f05079dc5e970fda224879349",
+      "document_id": "feed:98c648495970c28f05079dc5e970fda224879349",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:956cb52fcd42eae648816ce14f244fd53c48a26f",
+      "document_id": "feed:956cb52fcd42eae648816ce14f244fd53c48a26f",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:45e14f6ed4c84272a08021a2ca817a647b0593de",
+      "document_id": "feed:45e14f6ed4c84272a08021a2ca817a647b0593de",
+      "build_id": "bd67a78020a3",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "defects": [
+        "board_pollution"
+      ]
+    },
+    {
+      "item_id": "feed:008735ccfb2cbb3c28c6d6098ed18bc5bec669e7",
+      "document_id": "feed:008735ccfb2cbb3c28c6d6098ed18bc5bec669e7",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:36ca710b419a15440d5a8acea10a00b347827520",
+      "document_id": "feed:36ca710b419a15440d5a8acea10a00b347827520",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:22228e1f575132599b7434666bf4cc8a1ce1131b",
+      "document_id": "feed:22228e1f575132599b7434666bf4cc8a1ce1131b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:376b3edc31bb64616a5bf8aaf5bf859f4e0a73e9",
+      "document_id": "feed:376b3edc31bb64616a5bf8aaf5bf859f4e0a73e9",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:9da4981b30189432b5f977a497b66fa47175852d",
+      "document_id": "feed:9da4981b30189432b5f977a497b66fa47175852d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f5d54e8c6d787df5849d6cd76fac9683735b1b73",
+      "document_id": "feed:f5d54e8c6d787df5849d6cd76fac9683735b1b73",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "templating"
+      ]
+    },
+    {
+      "item_id": "feed:d5d1dbb2f1d7eb69f0770cfb473b55cc7861f913",
+      "document_id": "feed:d5d1dbb2f1d7eb69f0770cfb473b55cc7861f913",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:0269e3b4f9308ed1fef2506c12f2c5fe4c81e8d6",
+      "document_id": "feed:0269e3b4f9308ed1fef2506c12f2c5fe4c81e8d6",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:50149d6bd0953e83b64ca0e5ac08e641060653c0",
+      "document_id": "feed:50149d6bd0953e83b64ca0e5ac08e641060653c0",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:6f05bf9060406b437638acfeb92974d234842024",
+      "document_id": "feed:6f05bf9060406b437638acfeb92974d234842024",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:17bcf523f300d15f11d1e6877be40197ada8fbf8",
+      "document_id": "feed:17bcf523f300d15f11d1e6877be40197ada8fbf8",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:9e9a6afaae5d780e1b2e67918733f3e85d237a97",
+      "document_id": "feed:9e9a6afaae5d780e1b2e67918733f3e85d237a97",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:426bf46edf30da116b4b5fedef7e12be78dc615a",
+      "document_id": "feed:426bf46edf30da116b4b5fedef7e12be78dc615a",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:dd188cb3f68e3ace445d7601243d7bdebd27e373",
+      "document_id": "feed:dd188cb3f68e3ace445d7601243d7bdebd27e373",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:230aaa9a4594d8249ccbd7b748359c4d0ec45e87",
+      "document_id": "feed:230aaa9a4594d8249ccbd7b748359c4d0ec45e87",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:6b0e3cd97a3bf1b3712891858183c135788c4d85",
+      "document_id": "feed:6b0e3cd97a3bf1b3712891858183c135788c4d85",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:7705de1e1b03700a865f67b8d5d53568572b44ea",
+      "document_id": "feed:7705de1e1b03700a865f67b8d5d53568572b44ea",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:524ad69e326631bb986b8600367eebaeb903a041",
+      "document_id": "feed:524ad69e326631bb986b8600367eebaeb903a041",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:013cc035253b4b17e6f2aacac5f429a735a5b3b4",
+      "document_id": "feed:013cc035253b4b17e6f2aacac5f429a735a5b3b4",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:d8b11a9d179b7630e43dabe46670bdf724014818",
+      "document_id": "feed:d8b11a9d179b7630e43dabe46670bdf724014818",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f2f8258169c0ab95b245685490cbe8df2a4f79f7",
+      "document_id": "feed:f2f8258169c0ab95b245685490cbe8df2a4f79f7",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:213b513557518c9204848e04654b1eac46f88819",
+      "document_id": "feed:213b513557518c9204848e04654b1eac46f88819",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:3b1f131042de92bd12e81bf8b6ecc58168732f9e",
+      "document_id": "feed:3b1f131042de92bd12e81bf8b6ecc58168732f9e",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:63c6e8b0612f3503508442f07cc72ffd9a83974b",
+      "document_id": "feed:63c6e8b0612f3503508442f07cc72ffd9a83974b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:2bf47d1b69f6a94bd8d8b660359abb6fa5c62a47",
+      "document_id": "feed:2bf47d1b69f6a94bd8d8b660359abb6fa5c62a47",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:b7bb9eb3752c18ead168c73b99ca16789d84d0cb",
+      "document_id": "feed:b7bb9eb3752c18ead168c73b99ca16789d84d0cb",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:946a40f7ec5b10b0c502c62e3d75f757dde925fd",
+      "document_id": "feed:946a40f7ec5b10b0c502c62e3d75f757dde925fd",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:f5e24dac70e3d3c305b7e9bf3a73884c3a533480",
+      "document_id": "feed:f5e24dac70e3d3c305b7e9bf3a73884c3a533480",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    },
+    {
+      "item_id": "feed:e5084073dead986bb31a254ef1a872e040261c22",
+      "document_id": "feed:e5084073dead986bb31a254ef1a872e040261c22",
+      "build_id": "bd67a78020a3",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "defects": [
+        "english_direct_output"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/defect_baseline_200.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/data-samples/defect_baseline_200.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/known_gaps.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P03-T017/test-results/defect_tests.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/tools/scan_defects.py

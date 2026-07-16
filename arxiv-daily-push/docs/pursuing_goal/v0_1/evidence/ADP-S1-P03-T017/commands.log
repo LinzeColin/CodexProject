@@ -1,0 +1,11 @@
+# ADP-S1-P03-T017 commands.log · content defect baseline (200 samples)
+# base commit d0a5beef (T016 merged) ; reuses T016 read-only sample, NOT_DEPLOYED
+
+$ python3 tools/scan_defects.py --items items_200.json --factsheets factsheet_baseline_200.json --build-id bd67a78020a3 --out defect_baseline_200.json
+# before report: english_direct_output 113/200 ; board_pollution 44/200 ; templating 6 ; empty_section 1 ; no_evidence 0 ; items_with_any_defect 160/200
+# every row has item_id+document_id+build_id(bd67a78020a3): True ; deterministic re-scan byte-identical: True
+# full: test-results/defect_tests.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

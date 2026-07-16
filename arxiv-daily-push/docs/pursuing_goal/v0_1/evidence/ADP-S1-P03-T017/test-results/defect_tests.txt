@@ -1,0 +1,9 @@
+### before report:
+{"build_id": "bd67a78020a3", "baseline_status": "provisional_machine", "sample_count": 200, "defect_counts": {"english_direct_output": 113, "empty_section": 1, "templating": 6, "board_pollution": 44}, "items_with_any_defect": 160}
+every row has item_id+document_id+build_id: True
+items with >=1 defect: 160 / 200
+sample labeled rows (first 3):
+   feed:6da886bab91d5c5db2557a99822206003a4 board2 ['english_direct_output']
+   feed:8379c5792467800aaa381b4ebcff3b9544d board2 ['english_direct_output']
+   feed:3757ed9c6be473a82d1c1911c9fa12167eb board2 ['english_direct_output']
+deterministic re-scan byte-identical: True
