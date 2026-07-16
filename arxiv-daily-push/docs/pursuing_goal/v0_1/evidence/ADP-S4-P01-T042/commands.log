@@ -1,0 +1,17 @@
+# ADP-S4-P01-T042 commands (Realtime/Catchup/Backfill three-lane scheduler + auto-pause)
+# base: main 20c94431 (T041)
+
+# 1) scheduler + spec
+#    tools/three_lane_scheduler.py   (schedule[priority realtime>catchup>backfill + quotas + backpressure + kill switch];
+#                                    project_p95; stress_test)
+#    THREE_LANE_SPEC.md
+
+# 2) acceptance test (stress scenarios)
+python3 evidence/ADP-S4-P01-T042/test-results/t042_verify.py | tee evidence/ADP-S4-P01-T042/test-results/scheduler_tests.txt
+# -> realtime P95 <= baseline+20% (12.0) in ALL scenarios; realtime always fully served
+# -> healthy bf 3->3 (runs); backfill_pressure 8->2 (throttled); heavy_realtime_burst 6->0 (AUTO-PAUSED); kill_switch 5->0
+# -> backfill grant monotonic [3,2,0] under rising pressure ; priority+quotas+backpressure+kill switch present
+# -> ACCEPTANCE = PASS (exit 0)
+
+# NOT_DEPLOYED: scheduler logic; not wired to the production cron.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

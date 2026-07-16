@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S4-P01-T042", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "a three-lane scheduler (realtime > catchup > backfill) with backpressure that keeps realtime freshness P95 within baseline+20% under every load and auto-pauses the 2016+ backfill when a realtime burst would breach it -- so history backfill can never starve the live front-line data",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "scheduler + backpressure model; not wired to the production cron; the freshness inflation is a structural model to be calibrated against the real Worker baseline when wired"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "stress_test": {"baseline": 10.0, "ceiling": 12.0, "scenarios": {"healthy": {"backfill": "3->3", "p95": 11.9, "paused": false}, "backfill_pressure": {"backfill": "8->2", "p95": 11.8, "paused": false}, "heavy_realtime_burst": {"backfill": "6->0", "p95": 11.6, "paused": true}, "kill_switch": {"backfill": "5->0", "p95": 10.8, "paused": true}}, "realtime_always_within_ceiling": true, "realtime_always_fully_served": true},
+  "acceptance": {"realtime_p95_within_baseline_plus_20pct": true, "backfill_autopauses_over_threshold": true, "kill_switch": true, "priority_and_quotas_and_backpressure": true}
+}

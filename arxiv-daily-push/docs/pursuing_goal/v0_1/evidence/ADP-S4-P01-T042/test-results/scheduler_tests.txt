@@ -1,0 +1,9 @@
+healthy_low_demand: bf 3->3 rt_full=True p95=11.9<= 12.0 within=True bf_paused=False
+backfill_pressure: bf 8->2 rt_full=True p95=11.8<= 12.0 within=True bf_paused=False
+heavy_realtime_burst: bf 6->0 rt_full=True p95=11.6<= 12.0 within=True bf_paused=True
+kill_switch: bf 5->0 rt_full=True p95=10.8<= 12.0 within=True bf_paused=True
+
+backfill grant under rising realtime pressure: [3, 2, 0] (monotonic non-increasing)
+priority realtime>catchup>backfill; per-lane quotas + backpressure + kill switch present
+
+ACCEPTANCE = PASS

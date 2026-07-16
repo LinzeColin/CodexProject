@@ -1,0 +1,78 @@
+[
+  {
+    "scenario": "healthy_low_demand",
+    "demand": {
+      "realtime": 2,
+      "catchup": 1,
+      "backfill": 3
+    },
+    "alloc": {
+      "realtime": 2,
+      "catchup": 1,
+      "backfill": 3
+    },
+    "realtime_p95": 11.9,
+    "ceiling": 12.0,
+    "within_ceiling": true,
+    "realtime_fully_served": true,
+    "backfill_paused": false,
+    "reason": "healthy: all lanes served within the freshness ceiling"
+  },
+  {
+    "scenario": "backfill_pressure",
+    "demand": {
+      "realtime": 4,
+      "catchup": 2,
+      "backfill": 8
+    },
+    "alloc": {
+      "realtime": 4,
+      "catchup": 2,
+      "backfill": 2
+    },
+    "realtime_p95": 11.8,
+    "ceiling": 12.0,
+    "within_ceiling": true,
+    "realtime_fully_served": true,
+    "backfill_paused": false,
+    "reason": "backpressure: backfill throttled to keep realtime P95 within baseline+20%"
+  },
+  {
+    "scenario": "heavy_realtime_burst",
+    "demand": {
+      "realtime": 8,
+      "catchup": 4,
+      "backfill": 6
+    },
+    "alloc": {
+      "realtime": 8,
+      "catchup": 4,
+      "backfill": 0
+    },
+    "realtime_p95": 11.6,
+    "ceiling": 12.0,
+    "within_ceiling": true,
+    "realtime_fully_served": true,
+    "backfill_paused": true,
+    "reason": "backpressure: realtime P95 would exceed baseline+20% -> backfill auto-paused"
+  },
+  {
+    "scenario": "kill_switch",
+    "demand": {
+      "realtime": 4,
+      "catchup": 2,
+      "backfill": 5
+    },
+    "alloc": {
+      "realtime": 4,
+      "catchup": 2,
+      "backfill": 0
+    },
+    "realtime_p95": 10.8,
+    "ceiling": 12.0,
+    "within_ceiling": true,
+    "realtime_fully_served": true,
+    "backfill_paused": true,
+    "reason": "kill switch: backfill paused"
+  }
+]

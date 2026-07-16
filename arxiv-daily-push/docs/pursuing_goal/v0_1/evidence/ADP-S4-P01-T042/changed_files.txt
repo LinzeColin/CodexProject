@@ -1,0 +1,17 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/THREE_LANE_SPEC.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/known_gaps.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/stress_test_report.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/test-results/scheduler_tests.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T042/test-results/t042_verify.py
+arxiv-daily-push/docs/pursuing_goal/v0_1/tools/three_lane_scheduler.py
