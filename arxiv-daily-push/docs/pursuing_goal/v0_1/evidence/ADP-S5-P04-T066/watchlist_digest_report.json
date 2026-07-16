@@ -1,0 +1,45 @@
+{
+  "day1_notifications": [
+    [
+      "W1",
+      "doc-1"
+    ],
+    [
+      "W2",
+      "doc-2"
+    ],
+    [
+      "W3",
+      "doc-2"
+    ],
+    [
+      "W4",
+      "doc-1"
+    ]
+  ],
+  "day1_silence": [
+    "W5"
+  ],
+  "day2_notifications": [
+    [
+      "W1",
+      "doc-3"
+    ],
+    [
+      "W2",
+      "doc-2"
+    ],
+    [
+      "W3",
+      "doc-2"
+    ],
+    [
+      "W4",
+      "doc-3"
+    ]
+  ],
+  "day2_rerun_notifications": [],
+  "day2_silence": [
+    "W5"
+  ]
+}

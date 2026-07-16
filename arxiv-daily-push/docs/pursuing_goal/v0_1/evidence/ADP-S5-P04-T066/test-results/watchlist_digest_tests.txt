@@ -1,0 +1,9 @@
+day1: [('W1', 'doc-1'), ('W2', 'doc-2'), ('W3', 'doc-2'), ('W4', 'doc-1')]
+day2: [('W1', 'doc-3'), ('W2', 'doc-2'), ('W3', 'doc-2'), ('W4', 'doc-3')]
+rerun: 0 new (expect 0); stateless (no memory) re-emits 6 (dedup non-trivial)
+no-change: doc-1 noise-only hash equal=True -> suppressed; doc-2 changed hash differ=True; unchanged corpus -> 0 new
+locatable: all 8 notifications carry a locator resolving to the changed item
+locatable control: a wrong-version hash and a missing canonical_id are both rejected (not a stub)
+silence: day1=['W5'], day2=['W5']
+
+ACCEPTANCE = PASS

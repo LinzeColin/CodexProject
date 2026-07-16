@@ -1,0 +1,26 @@
+# ADP-S5-P04-T066 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity (reuses T026 version_engine)
+python3 -c "import sys; sys.path.insert(0,'tools'); import watchlist_digest, version_engine"
+
+# 2. build two-period Golden scenario + report (deterministic)
+python3 evidence/ADP-S5-P04-T066/build_watchlist_digest.py
+#   -> day1 notifications: [(W1,doc-1),(W2,doc-2),(W3,doc-2),(W4,doc-1)]; day1 silence: [W5]
+#   -> day2 notifications: [(W1,doc-3),(W2,doc-2),(W3,doc-2),(W4,doc-3)]   (doc-1 noise-only + doc-9 unwatched -> none)
+#   -> day2 RERUN notifications: []   (dedup)
+#   -> day2 silence: [W5]
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S5-P04-T066/test-results/t066_verify.py | tee evidence/ADP-S5-P04-T066/test-results/watchlist_digest_tests.txt
+#   rerun: 0 new (expect 0); stateless (no memory) re-emits 6 (dedup non-trivial)
+#   no-change: doc-1 noise-only hash equal=True -> suppressed; doc-2 changed hash differ=True; unchanged corpus -> 0 new
+#   locatable: all 8 notifications carry a locator resolving to the changed item
+#   silence: day1=[W5], day2=[W5]
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t066.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main

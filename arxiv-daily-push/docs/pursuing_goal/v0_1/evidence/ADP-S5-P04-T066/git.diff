@@ -1,0 +1,661 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 03cfe42f4..d2fe511a9 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P04-T066 (Watchlist + Change-only Digest; NOT_DEPLOYED)
++
++- Sixty-sixth task of the ADP V0.1 FINAL EXECUTION program (opens S5-P04). Watches topics/agencies/regions/entities/doc-numbers and pushes ONLY substantive changes: a re-run never duplicates a notification, an unchanged corpus never disturbs the user, and every notification is locatable back to the exact item and version that changed. release_mode NOT_DEPLOYED; a read-only library, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/watchlist_digest.py: make_watch/matches (facets topic/agency/region/entity/doc_number, exact, multi-valued for entity/topic), run_digest (substantive change decided by T026 content_hash over body/attachments/status so a noise-only re-render is not a change; notification key (watch_id, canonical_id, content_hash) deduped against state.seen; caller state never mutated in place), a source silence signal for a watched source with no change, a daily/weekly digest (period passed in, no clock read), and notification_is_locatable. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/: watchlist_digest_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P04-T066/test-results/watchlist_digest_tests.txt, ACCEPTANCE = PASS, exit 0): re-run does not duplicate -- day-2 emits 4 notifications and a state-carrying re-run emits 0, while a stateless (no-memory) digest re-emits 6 (dedup is non-trivial); no change means no disturbance -- a noise-only re-render (doc-1) shares its day-1 content_hash and is suppressed, a genuine change (doc-2) has a different hash and notifies, and an unchanged corpus emits 0; every notification carries a locator resolving to the actual changed item; and a quiet watched source raises a silence signal. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P03-T065 (citation support/counter/mention evidence + graph; NOT_DEPLOYED)
+ 
+ - Sixty-fifth task of the ADP V0.1 FINAL EXECUTION program (closes S5-P03). Aligns the evidence/relationship benefit of Scite/ResearchRabbit/Litmaps: for each citation, capture the citation CONTEXT and label it support/counter/mention -- but the label is derived ONLY from explicit cue phrases found IN THAT CONTEXT, never from the citing paper's title or a model's impression. release_mode NOT_DEPLOYED; a read-only library with NO model call, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/citation_evidence.py: classify_citation (takes ONLY the context; assigns support/counter/mention from the earliest cue found in the context, byte-exact located; no cue -> mention, never guessed; ASCII cues match on word boundaries so 'unlike' does not match inside 'unlikely'), build_citation_graph (feeds only the context to the classifier; citing_title is stored display-only, never classified), query_graph, and label_has_viewable_context. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/: citation_evidence_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P03-T065/test-results/citation_evidence_tests.txt, ACCEPTANCE = PASS, exit 0): every one of the 6 labels is backed by a cue byte-exact in its context (quote == context[offset:offset+length]); the label is not from the title -- classify_citation takes only the context, two conflict cases whose titles read as support (English 'supports and confirms' and Chinese 一致) are labeled counter because the context contradicts, a supportive-titled no-cue citation is labeled mention, and a naive title-based classifier disagrees on 5 cases; cue precision holds ('unlikely' is not counter, 'inconsistent with' stays counter, a genuine 'unlike ' is counter, the stem 'corroborate' is support); and the graph keeps support and counter edges to the same cited paper distinct. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 702fd8185..c01fbdd2f 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P03-T064-RESEARCH-SET-COMPARE-FILTER"
+-source_snapshot_hash: "sha256:f1af5d4e438036c0d7c2771d55c4ddd074330e25c115700ffa462a954665a804"
++as_of_event_id: "EVENT-20260717-ADP-V01-S5-P03-T065-CITATION-EVIDENCE-GRAPH"
++source_snapshot_hash: "sha256:25bb2c52271eb6804249b68df0811a7100bac6608b56af91a55e1c4cc8fab28d"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T01:05:00+10:00"
++snapshot_event_time: "2026-07-18T01:40:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 124
++    precommit_pending_events: 125
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index a2740d6d6..e2e39b791 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S5-P04-T066: implemented the Watchlist + Change-only Digest (opens S5-P04). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/watchlist_digest.py: make_watch/matches (facets topic/agency/region/entity/doc_number) / run_digest (substantive change via T026 content_hash over body/attachments/status; notification key (watch_id,canonical_id,content_hash) deduped against state.seen; caller state never mutated) / source silence signal / daily-weekly digest (period passed in, no clock) / notification_is_locatable. Reuses T026 version_engine. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/: watchlist_digest_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/watchlist_digest_tests.txt, PASS exit 0): re-run no duplicates (day-2 emits 4, state-carrying re-run 0, stateless re-emits 6 -> dedup non-trivial); no-change no-disturb (noise-only doc-1 shares day-1 hash -> suppressed, genuine doc-2 differs -> notifies, unchanged corpus -> 0); every notification locatable to the changed item; quiet source raises silence signal. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T065: implemented citation support/counter/mention evidence + graph (closes S5-P03). release_mode NOT_DEPLOYED; read-only library, NO model call, production untouched. New tool docs/pursuing_goal/v0_1/tools/citation_evidence.py: classify_citation (context-only; support/counter/mention from the earliest cue byte-exact in the context; no cue -> mention; ASCII cues word-boundary matched so 'unlike' != 'unlikely') / build_citation_graph (only context fed to classifier; citing_title display-only, never classified) / query_graph / label_has_viewable_context. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T065/: citation_evidence_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/citation_evidence_tests.txt, PASS exit 0): all 6 labels backed by a cue byte-exact in context; not from title -- classify_citation takes only context, two support-titled conflict cases (EN 'supports and confirms', CN 一致) labeled counter because context contradicts, a supportive-titled no-cue citation labeled mention, naive title classifier disagrees on 5 cases; cue precision ('unlikely' not counter, 'inconsistent with' counter, 'unlike ' counter, 'corroborate' support); graph keeps support/counter edges to the same cited paper distinct. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T064: implemented the Research Set + structured comparison + filtering (S5-P03). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/research_set.py: extract_fields (label/statistic-driven method/sample/result; every value a byte-exact source span with an evidence locator; no marker -> {value:None, status:'missing'} 缺失不猜) / make_set (Research Set, deterministic order) / comparison_table (rows x method/sample/result, cell value+evidence or missing) / filter_set (reproducible has-field/keyword, deterministic order) / traces_to_source. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T064/: research_set_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/research_set_tests.txt, PASS exit 0): 10 present Golden-Set fields all trace byte-for-byte to source (value == text[offset:offset+length], quote == value) and match the hand label; 5 absent fields reported missing, none fabricated; a hallucinated value and a guess-a-default extractor both rejected by traceability (non-vacuous); has-field filter identical across 3 runs, deterministic + non-trivial subset (P001/P002/P005), keyword filter differs (P001/P003). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P03-T063: integrated DOI/Crossref/OpenAlex research metadata enhancement (opens S5-P03). release_mode NOT_DEPLOYED; read-only enhancement library, production untouched. New tool docs/pursuing_goal/v0_1/tools/research_metadata.py: make_crossref_adapter / make_openalex_adapter (fixture-backed; enhancement | None | raise AdapterError) / enhance (additive source-tagged enhancements; original paper deepcopied as immutable evidence anchor; adapter gets a throwaway copy; ANY adapter exception -> failed, never blocks) / run_pipeline (degraded fallback) / link_works (preprint->journal linked ONLY on Crossref has_preprint_arxiv_id == this arxiv_id; versions stay distinct in type+evidence, preprint never relabeled, unconfirmed DOI never links) / resolve_authors (reuses T058 entity_resolver). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P03-T063/: research_metadata_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/research_metadata_tests.txt, PASS exit 0): preprint/journal not confused (confirmed publication -> preprint[arXiv] + journal[Crossref DOI] distinct+linked, preprint never relabeled; unconfirmed DOI adds no journal, confirming it WOULD -> gate load-bearing; same-title not merged); enhancement failure does not block (5 in/5 out blocked 0, original byte-identical + never mutated, failures recorded failed, KeyError adapter keeps all, mutating adapter cannot corrupt, drop-on-failure would keep 2/5); authors unified across sources without confusing distinct people. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index f83de7cb4..32d92eb48 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `124`
+-- pending_or_stale_events: `474`
+-- freshness_counts: `pending_or_stale_events=474; legacy_unbound_events=334`
++- precommit_pending_events: `125`
++- pending_or_stale_events: `475`
++- freshness_counts: `pending_or_stale_events=475; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:f1af5d4e438036c0d7c2771d55c4ddd074330e25c115700ffa462a954665a804`
+-- snapshot_event_time: `2026-07-18T01:05:00+10:00`
++- source_snapshot_hash: `sha256:25bb2c52271eb6804249b68df0811a7100bac6608b56af91a55e1c4cc8fab28d`
++- snapshot_event_time: `2026-07-18T01:40:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 33cbca10c..5fd6bd7f1 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:f1af5d4e438036c0d7c2771d55c4ddd074330e25c115700ffa462a954665a804`
+-- snapshot_event_time: `2026-07-18T01:05:00+10:00`
++- source_snapshot_hash: `sha256:25bb2c52271eb6804249b68df0811a7100bac6608b56af91a55e1c4cc8fab28d`
++- snapshot_event_time: `2026-07-18T01:40:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `474`
++- Pending/stale events: `475`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/TASK_REPORT.md
+new file mode 100644
+index 000000000..2167c22b5
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/TASK_REPORT.md
+@@ -0,0 +1,55 @@
++# TASK_REPORT · ADP-S5-P04-T066｜实现 Watchlist 与 Change-only Digest
++
++## 唯一目标（达成）
++持续监测主题/机构/地区/实体/文号，**只推送实质变化**：重跑不重复通知、无变化不打扰、每条变化可定位。交付 rules、dedup notifications、daily/weekly digest、source silence signal。release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：Watchlist（5 facet 规则）+ Change-only Digest（实质变化=T026 content_hash）+ dedup（重跑不重复）+ silence signal；无变化不打扰、每条可定位。
++2. **允许修改文件**：`tools/watchlist_digest.py`（新）+ `evidence/ADP-S5-P04-T066/*` + 治理同步。**不改 worker/生产/registry/VERSION**。复用 T026 `version_engine.content_hash`。
++3. **绝不能改变**：生产 worker/cron/数据/实时；六主题/MVP；NOT_DEPLOYED。库层只读、period 由调用方传入（不读时钟）。
++4. **基线**：main `00b3f253`（T065 已合入）；两周期 Golden 场景（含 noise-only 再渲染、真变、新条目、无关条目）。
++5. **验收**：重跑不重复（stateful rerun 0；stateless 非平凡 re-emit 负控制）；无变化不打扰（noise-only 同 content_hash→抑制、真变异 hash 不同→触发）；每条变化可定位（locator 解析到真实变更条目）。
++6. **回滚**：`git revert <sha>`（只读库，生产未变更）。
++
++## 交付物
++- `tools/watchlist_digest.py` —— `make_watch/matches`（facet ∈ {topic,agency,region,entity,doc_number} 精确匹配，entity/topic 支持多值）+ `run_digest`（实质变化由 **T026 content_hash**[body/attachments/status，噪声不敏感] 判；通知键=(watch_id,canonical_id,content_hash)，`state.seen` 去重；**不原地改调用方 state**，返回新 state）+ silence signal（被监测源本周期无变化）+ daily/weekly digest（by_watch 聚合）+ `notification_is_locatable`。
++- `evidence/…/build_watchlist_digest.py`（day1 基线 + day2：noise-only 再渲染/真新版本/新条目/无关条目；rerun 场景）+ `watchlist_digest_report.json` + `test-results/{t066_verify.py, watchlist_digest_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/watchlist_digest_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **① 重跑不重复通知**：day2 出 4 通知（doc-2 新版本×2 watch + doc-3 新条目×2 watch）；**携 state 重跑 day2 → 0 新通知**。**负控制（判别力）**：**无记忆的 stateless digest 对同 day2 re-emit 6**（含 doc-1）→ 证明去重非平凡真起作用。
++- **② 无变化不打扰**：day2 的 doc-1 是**纯 noise-only 再渲染**（正文+页脚/版权噪声）→ **content_hash 与 day1 相等（实测 True）→ 不通知**；而 doc-2 真变异 → **content_hash 不同（实测 True）→ 通知**（判别）；**再喂未变语料（day1 again）→ 0 新通知**。
++- **③ 每条变化可定位**：8 条通知全带 `locator{canonical_id,content_hash,matched_facet,matched_value}`，且 `notification_is_locatable` 解析到**真实变更条目且当前 hash 相符**。
++- **source silence signal**：W5（entity=国家统计局，无匹配）两周期均**发静默信号**；有变化的 watch 不发。
++- **不原地改 state**：run_digest 返回新 state，调用方 state.seen 不被改。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live `build_id=b189d3cc0703`（==T040）。
++
++## Data / Performance / Visual
++Data = 5 watch 规则 + 两周期 6 条目（noise/真变/新/无关）。Performance = 实时无回归。无 UI 改动；六主题保留（digest 为库层，供通知/Digest 视图消费）。
++
++## Value / Cost（S5 多板块深度）
++- **Value**：**只推实质变化的持续监测**——重跑幂等不刷屏、无变化不打扰、每条变化可回溯到源条目与版本、源静默亦成信号；对齐竞品 Watchlist/Change-only Digest 收益，复用 T026 单一"实质变化"定义不另立标准。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0；人工维护 = 规则/去重/digest + Golden + 验证编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：实质变化=T026 content_hash（body/attachments/status，含状态与附件变更；**排除纯 facet/日期元数据重分类**，与"只推实质变化"一致，单一事实源不分叉）；state 持久化由部署阶段提供（本任务用内存 state 证明幂等）；daily/weekly 由 period 参数区分（不读时钟）。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED，库层）。`data-samples` = watchlist_digest_report.json。`benchmarks` = N/A。
++
++## 完成声明
++```text
++Task: ADP-S5-P04-T066
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/watchlist_digest.py(新) + T066 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: watchlist_digest_tests.txt —— 重跑0新(stateless re-emit 6判别);noise-only同hash抑制+真变异不同hash触发+未变语料0新;8通知全可定位到真实变更条目;W5静默信号;不原地改state;实时无回归(build_id b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: Watchlist规则 + Change-only Digest(T026实质变化) + dedup + silence signal
++Data/Performance/Visual: Data=5规则+两周期6条目；Perf=实时无回归；Visual=六主题保留
++Value: 只推实质变化,重跑幂等不刷屏,无变化不打扰,每条可定位,源静默成信号
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（只读库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/adversarial_review.md
+new file mode 100644
+index 000000000..ea0f10e2b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/adversarial_review.md
+@@ -0,0 +1,22 @@
++# Adversarial review · ADP-S5-P04-T066｜Watchlist + Change-only Digest
++
++独立对抗复核（general-purpose skeptic），职责是**证伪**验收（找空洞/作弊/误导），非确认。
++
++## 攻击向量
++(a) 去重/重跑（键是否足以防重复、跨周期同内容、A→B→A 回退、两 watch 同条目、state 是否原地改）；(b) 无变化不打扰（是否真由 T026 content_hash 驱动、自造 noise-only 再渲染是否 0 通知、facet-only 变更是否被漏报）；(c) 可定位（locator 是否解析到真实变更版本、错版本/缺条目是否被拒、是否 stub）；(d) silence（有变化不发/无变化才发）；(e) 非空跑/负控制（每条款有判别控制、verifier 从工具而非 report 现推）；NOT_DEPLOYED（无网络/写/时钟/随机）。
++
++## 复核结论：CONFIRMED_SOUND（hole=null, severity=none）
++- **(a) 去重/重跑**：跨周期同内容→0 新（键不含 period，正确）；state 复制非原地改；两 watch 同条目→**独立键各自通知**；**A→B→A 回退**→回到旧 hash 键已 seen→抑制（完整性 gap，非验收违反）。
++- **(b) 无变化不打扰**：复核者自造 footer/share/engagement/相对时间/utm+spm 追踪参数等 noise-only 再渲染→**全 0 通知**，content_hash 稳定，**真由 T026 驱动**；facet-only 变更（body 同、agency/doc_number 改）→hash 同→不通知（完整性 gap，非验收违反）。
++- **(c) 可定位**：`notification_is_locatable` 对同条目 True、**改版本 False、缺条目 False**——**真判别非 stub**。
++- **(d) silence**：匹配但全已见→no_change 静默（准确）；匹配无→静默；均正确。
++- **(e)**：verifier 从**工具+fixture 现推**（不读 report JSON）；每条款判别控制齐（stateless re-emit 6 vs 去重 0；noise-only h1==h2 vs 真变 g1!=g2；locator 错版本 False）。确定性、无网络/时钟/随机/写。
++- **判定**：三验收条款（重跑不重复 / 无变化不打扰 / 每条可定位）**均单向成立、有 load-bearing 判别控制、非空跑/作弊/错**。验收为单向（"无变化→不通知"、"通知→可定位"），**不声称"每变化→必通知"**，故漏报回退/facet-only 不违反验收。列 3 项**非致命 latent**。
++
++## latent 的主动闭合（3 项）
++1. **content_hash 键漏报 A→B→A 回退 + facet-only 变更**：与内容态去重设计一致——**已在 known_gaps 诚实披露**（"通知去重键"条 + "实质变化定义"条：回退/纯 facet 元数据重分类不触发，复用 T026 单一定义不分叉；若需另计属 T026 契约范围）。
++2. **可定位控制只喂同周期、无法抓 stub 的 always-True**：**已加显式 always-False 负控制**——错版本 hash（sha256:deadbeef）与缺 canonical_id 均须被 `notification_is_locatable` 拒（实测双拒），证明第 3 条款控制**非 stub**。
++3. **daily/weekly 共享 seen-set 会使 weekly 重跑变空**：**已在 known_gaps 披露**——daily 与 weekly 应各用独立 seen-set（或 weekly=daily 通知 rollup），分 cadence 落地由部署阶段负责；本任务单 seen-set 仅证幂等。
++
++## 结论
++复核 **CONFIRMED_SOUND**；三验收条款有判别负控制、非空跑，verifier 从工具现推。3 项非致命 latent 主动闭合（回退/facet 漏报披露、可定位 always-False 负控制、daily/weekly 分 cadence 披露）。复用 T026 单一"实质变化"定义不分叉。确定性、零副作用、不读时钟。实时无回归（live build_id b189d3cc0703 == T040）。**开启 S5-P04**。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/build_watchlist_digest.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/build_watchlist_digest.py
+new file mode 100644
+index 000000000..e65990967
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/build_watchlist_digest.py
+@@ -0,0 +1,76 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Deterministic fixtures + report for ADP-S5-P04-T066 (Watchlist + Change-only Digest).
++
++Two periods exercise every acceptance path: day-1 baseline emits notifications; day-2 has a NOISE-ONLY
++re-render (must NOT notify), a genuine new VERSION (must notify), a brand-new ITEM (must notify), and an
++unwatched item (must not). Re-running day-2 with the returned state must emit ZERO new notifications. A
++watch whose source is quiet raises a silence signal. Fixtures are literals so the verifier re-derives.
++"""
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent.parent
++sys.path.insert(0, str(V01 / "tools"))
++import watchlist_digest as WD
++
++WATCHES = [
++    WD.make_watch("W1", "agency", "国务院办公厅"),
++    WD.make_watch("W2", "region", "江苏"),
++    WD.make_watch("W3", "doc_number", "苏政办函〔2026〕39号"),
++    WD.make_watch("W4", "topic", "数据共享"),
++    WD.make_watch("W5", "entity", "国家统计局"),   # matches nothing -> silence signal
++]
++
++# ---- day 1 baseline ----------------------------------------------------------------------------
++DAY1 = [
++    {"canonical_id": "doc-1", "agency": "国务院办公厅", "topic": ["数据共享"], "doc_number": "国办发〔2026〕1号",
++     "title": "关于推进政务数据共享的意见", "url": "https://gov/doc-1", "body": "第一条 建立数据共享机制。", "status": "published"},
++    {"canonical_id": "doc-2", "region": "江苏", "doc_number": "苏政办函〔2026〕39号",
++     "title": "江苏省数据管理办法", "url": "https://js/doc-2", "body": "第一条 省级数据平台上线。", "status": "published"},
++]
++
++# ---- day 2: noise-only re-render + genuine new version + new item + unwatched ------------------
++DAY2 = [
++    # doc-1 re-rendered with template NOISE only -> same substantive hash -> NO notification
++    {"canonical_id": "doc-1", "agency": "国务院办公厅", "topic": ["数据共享"], "doc_number": "国办发〔2026〕1号",
++     "title": "关于推进政务数据共享的意见", "url": "https://gov/doc-1",
++     "body": "第一条 建立数据共享机制。\n责任编辑：张三\n版权所有 © 2026", "status": "published"},
++    # doc-2 substantive change -> new content_hash -> notification (W2, W3)
++    {"canonical_id": "doc-2", "region": "江苏", "doc_number": "苏政办函〔2026〕39号",
++     "title": "江苏省数据管理办法", "url": "https://js/doc-2", "body": "第一条 省级数据平台上线。第二条 新增考核。", "status": "published"},
++    # doc-3 brand-new item -> notification (W1, W4)
++    {"canonical_id": "doc-3", "agency": "国务院办公厅", "topic": ["数据共享"], "doc_number": "国办发〔2026〕2号",
++     "title": "数据共享考核办法", "url": "https://gov/doc-3", "body": "第一条 建立考核制度。", "status": "published"},
++    # unwatched item -> matches no watch -> no notification
++    {"canonical_id": "doc-9", "agency": "某市政府", "region": "某市", "doc_number": "某〔2026〕9号",
++     "title": "某市通知", "url": "https://x/doc-9", "body": "无关内容。", "status": "published"},
++]
++
++
++def main():
++    st = WD.new_state()
++    r1 = WD.run_digest(st, DAY1, WATCHES, "2026-W28-day1")
++    r2 = WD.run_digest(r1["state"], DAY2, WATCHES, "2026-W28-day2")
++    r2_rerun = WD.run_digest(r2["state"], DAY2, WATCHES, "2026-W28-day2")   # dedup: expect 0 new
++    report = {
++        "day1_notifications": [(n["watch_id"], n["canonical_id"]) for n in r1["notifications"]],
++        "day1_silence": [s["watch_id"] for s in r1["silence_signals"]],
++        "day2_notifications": [(n["watch_id"], n["canonical_id"]) for n in r2["notifications"]],
++        "day2_rerun_notifications": [(n["watch_id"], n["canonical_id"]) for n in r2_rerun["notifications"]],
++        "day2_silence": [s["watch_id"] for s in r2["silence_signals"]],
++    }
++    (HERE / "watchlist_digest_report.json").write_text(
++        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print("day1 notifications:", report["day1_notifications"])
++    print("day1 silence:", report["day1_silence"])
++    print("day2 notifications:", report["day2_notifications"])
++    print("day2 RERUN notifications (expect []):", report["day2_rerun_notifications"])
++    print("day2 silence:", report["day2_silence"])
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/commands.log
+new file mode 100644
+index 000000000..49322c0df
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/commands.log
+@@ -0,0 +1,26 @@
++# ADP-S5-P04-T066 commands (deterministic, no network except the read-only realtime build check)
++
++# 1. import sanity (reuses T026 version_engine)
++python3 -c "import sys; sys.path.insert(0,'tools'); import watchlist_digest, version_engine"
++
++# 2. build two-period Golden scenario + report (deterministic)
++python3 evidence/ADP-S5-P04-T066/build_watchlist_digest.py
++#   -> day1 notifications: [(W1,doc-1),(W2,doc-2),(W3,doc-2),(W4,doc-1)]; day1 silence: [W5]
++#   -> day2 notifications: [(W1,doc-3),(W2,doc-2),(W3,doc-2),(W4,doc-3)]   (doc-1 noise-only + doc-9 unwatched -> none)
++#   -> day2 RERUN notifications: []   (dedup)
++#   -> day2 silence: [W5]
++
++# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
++python3 evidence/ADP-S5-P04-T066/test-results/t066_verify.py | tee evidence/ADP-S5-P04-T066/test-results/watchlist_digest_tests.txt
++#   rerun: 0 new (expect 0); stateless (no memory) re-emits 6 (dedup non-trivial)
++#   no-change: doc-1 noise-only hash equal=True -> suppressed; doc-2 changed hash differ=True; unchanged corpus -> 0 new
++#   locatable: all 8 notifications carry a locator resolving to the changed item
++#   silence: day1=[W5], day2=[W5]
++#   ACCEPTANCE = PASS (exit 0)
++
++# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
++curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
++#   -> b189d3cc0703  (== T040; realtime not regressed)
++
++# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t066.py),
++#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/cost_value.json
+new file mode 100644
+index 000000000..341db251a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/cost_value.json
+@@ -0,0 +1,34 @@
++{
++  "task_id": "ADP-S5-P04-T066",
++  "title": "实现 Watchlist 与 Change-only Digest",
++  "release_mode": "NOT_DEPLOYED",
++  "stage": "S5",
++  "phase": "S5-P04",
++  "value": {
++    "user_value": "只推实质变化的持续监测：watch 主题/机构/地区/实体/文号，仅在监测对象发生 T026 实质变化时通知；重跑幂等不刷屏、无变化不打扰、每条变化可回溯到源条目与版本，源静默亦成信号。",
++    "value_metric_stage": "S5 多板块深度：对齐竞品 Watchlist/Change-only Digest 收益，复用 T026 单一实质变化定义不另立标准；开启 S5-P04 资料与知识有效性。",
++    "measured": {
++      "rerun_no_duplicate": "day2 携 state 重跑 = 0 新通知; 无记忆 stateless digest re-emit 6 (dedup 非平凡)",
++      "no_change_no_disturb": "doc-1 noise-only content_hash 与 day1 相等→抑制; doc-2 真变异 hash 不同→通知; 未变语料 0 新",
++      "locatable": "8 通知全带 locator 且 notification_is_locatable 解析到真实变更条目当前 hash 相符",
++      "silence": "W5(无匹配)两周期发静默信号; 有变化 watch 不发"
++    }
++  },
++  "cost": {
++    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、period 参数传入不读时钟，生产零副作用。",
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "human_maintenance": "规则/去重/digest + Golden + 验证编写（一次性）",
++    "recurring_cloud_cost_usd_per_month": 0
++  },
++  "realtime_regression": {
++    "live_build_id": "b189d3cc0703",
++    "equals_T040": true,
++    "regressed": false
++  },
++  "rollback": "git revert <sha>（只读库；生产数据未变更）"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/known_gaps.md
+new file mode 100644
+index 000000000..5c2b51c7c
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S5-P04-T066
++
++- **实质变化定义 = T026 content_hash（单一事实源，不分叉）**：`run_digest` 用 T026 `version_engine.content_hash`（覆盖**正文 + 附件集 + 状态**的 substantive signature，噪声不敏感）判断是否实质变化。因此**状态变更（如 published→revoked）与附件变更 DO 触发通知**（content_hash 含 status/attachments）；而**纯 facet/元数据重分类**（agency/region/topic/entity/doc_number 或纯日期 reflow）在正文/附件/状态不变时**不触发**——这与「只推实质变化」一致，且**复用 T026 对"实质变化"的唯一定义、不在本任务另立标准**。若 Owner 要求把文号/生效日期变更也视作实质变化，属扩展 substantive signature（T026 契约范围），须走其门、不在本任务静默决定。
++- **通知去重键 = (watch_id, canonical_id, content_hash)**：重跑幂等靠 `state.seen`。**A→B→A 回退**：回到旧 content_hash 时该键已在 seen → 不再通知（视作"回到已知状态"）；若需把"回退"也当新变化，可在键中并入序号/时间戳（本任务确定性、不读时钟，故未并）。两个 watch 匹配同一条目 → **独立键各自通知**（正确，不折叠）。
++- **state 持久化**：本任务用**内存 state** 证明"重跑不重复"（run_digest 不原地改调用方 state、返回新 state）。真实持久化（D1/KV 存 seen 键）由部署阶段提供；本任务出确定性契约与幂等证明。
++- **period 由调用方传入**：daily/weekly 由 `period` 参数区分，**不读时钟**（确定性、可重放）。真实调度的周期边界由部署阶段的 cron 提供。**daily 与 weekly 应各用独立 seen-set（或 weekly = daily 通知的 rollup）**——若二者共用同一 seen-set，daily 先跑会让 weekly 重跑变空。本任务用单一 seen-set 证明幂等；分 cadence 的 seen-set 由部署阶段落地。
++- **silence 语义**：被监测 watch 本周期无**新**实质变化 → 静默信号（源可能沉默/失效，本身是信号）；含匹配但全为已见（无新变化）亦静默，符合"本周期无变化"。
++- **NOT_DEPLOYED**：不接 worker/cron/D1/R2，不改生产数据。实时无回归（live build_id b189d3cc0703 == T040）。开启 **S5-P04（Watchlist、资料与知识有效性）**；后继 T067/T068 在此监测底座上扩展。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..60e505976
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/realtime_check.txt
+@@ -0,0 +1,2 @@
++build_id: b189d3cc0703
++MATCH (b189d3cc0703 == T040, realtime NOT regressed)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/t066_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/t066_verify.py
+new file mode 100644
+index 000000000..a53197340
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/t066_verify.py
+@@ -0,0 +1,115 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P04-T066 acceptance: Watchlist + Change-only Digest.
++
++Acceptance (TASK_INDEX row 66): 重跑不重复通知；无变化不打扰；每条变化可定位。
++  (a re-run does not duplicate notifications; no change means no disturbance; every change is locatable.)
++
++Deterministic. Re-derives from the TOOL (watchlist_digest) + fixtures -- never trusts the report.
++Negative controls prove discrimination: a stateless digest WOULD re-notify (so dedup is non-trivial);
++the suppressed noise-only re-render genuinely has the SAME substantive hash (so 'no change' is real);
++and a change with no locatable item would fail the locator check.
++"""
++import importlib.util
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import watchlist_digest as WD
++import version_engine as VE
++
++T066 = V01 / "evidence" / "ADP-S5-P04-T066"
++spec = importlib.util.spec_from_file_location("bwd", str(T066 / "build_watchlist_digest.py"))
++bwd = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(bwd)
++
++fails = []
++st = WD.new_state()
++r1 = WD.run_digest(st, bwd.DAY1, bwd.WATCHES, "day1")
++r2 = WD.run_digest(r1["state"], bwd.DAY2, bwd.WATCHES, "day2")
++
++d1 = sorted((n["watch_id"], n["canonical_id"]) for n in r1["notifications"])
++d2 = sorted((n["watch_id"], n["canonical_id"]) for n in r2["notifications"])
++print("day1:", d1)
++print("day2:", d2)
++
++# ---- correctness of the change-only selection -------------------------------------------------
++if d1 != [("W1", "doc-1"), ("W2", "doc-2"), ("W3", "doc-2"), ("W4", "doc-1")]:
++    fails.append(f"day1 notifications wrong: {d1}")
++if d2 != [("W1", "doc-3"), ("W2", "doc-2"), ("W3", "doc-2"), ("W4", "doc-3")]:
++    fails.append(f"day2 notifications wrong: {d2}")
++
++# =============================================================== 1) 重跑不重复通知 (rerun no duplicates)
++rerun = WD.run_digest(r2["state"], bwd.DAY2, bwd.WATCHES, "day2")
++if rerun["notifications"]:
++    fails.append(f"re-run produced duplicate notifications: {[n['canonical_id'] for n in rerun['notifications']]}")
++# NEGATIVE CONTROL: dedup is non-trivial -- a STATELESS digest (fresh state, no dedup memory) re-emits
++# every watch match, while the state-carrying re-run emits none.
++stateless = WD.run_digest(WD.new_state(), bwd.DAY2, bwd.WATCHES, "day2")
++if not stateless["notifications"]:
++    fails.append("stateless digest emitted nothing -> dedup test is vacuous")
++if len(stateless["notifications"]) <= len(rerun["notifications"]):
++    fails.append("a stateless digest did not emit more than the deduped re-run -> dedup is not doing anything")
++print(f"rerun: {len(rerun['notifications'])} new (expect 0); stateless (no memory) re-emits "
++      f"{len(stateless['notifications'])} (dedup non-trivial)")
++
++# =============================================================== 2) 无变化不打扰 (no change no notify)
++# doc-1 on day2 is a NOISE-ONLY re-render -> it must NOT appear in day2 notifications
++if any(n["canonical_id"] == "doc-1" for n in r2["notifications"]):
++    fails.append("a noise-only re-render (doc-1) produced a notification (无变化不打扰 violated)")
++# and the suppression is meaningful: doc-1's day1 and day2 substantive hashes are EQUAL (真 noise-only)
++h1 = VE.content_hash(next(i for i in bwd.DAY1 if i["canonical_id"] == "doc-1"))
++h2 = VE.content_hash(next(i for i in bwd.DAY2 if i["canonical_id"] == "doc-1"))
++if h1 != h2:
++    fails.append("control broken: doc-1 day2 is not actually a noise-only re-render (hashes differ)")
++# while the genuine change (doc-2) DOES differ, proving discrimination
++g1 = VE.content_hash(next(i for i in bwd.DAY1 if i["canonical_id"] == "doc-2"))
++g2 = VE.content_hash(next(i for i in bwd.DAY2 if i["canonical_id"] == "doc-2"))
++if g1 == g2:
++    fails.append("control broken: doc-2 was supposed to change substantively but its hash is unchanged")
++# feeding an UNCHANGED corpus (day1 again) after day1 -> zero new notifications
++noop = WD.run_digest(r1["state"], bwd.DAY1, bwd.WATCHES, "day1b")
++if noop["notifications"]:
++    fails.append(f"an unchanged corpus produced notifications: {[n['canonical_id'] for n in noop['notifications']]}")
++print(f"no-change: doc-1 noise-only hash equal={h1==h2} -> suppressed; doc-2 changed hash differ={g1!=g2}; unchanged corpus -> 0 new")
++
++# =============================================================== 3) 每条变化可定位 (every change locatable)
++for n in r1["notifications"] + r2["notifications"]:
++    loc = n.get("locator") or {}
++    if not all(k in loc for k in ("canonical_id", "content_hash", "matched_facet", "matched_value")):
++        fails.append(f"notification missing locator fields: {n}")
++    src = bwd.DAY1 if n["period"] == "day1" else bwd.DAY2
++    if not WD.notification_is_locatable(n, src):
++        fails.append(f"notification not locatable to a real changed item: {n['watch_id']}/{n['canonical_id']}")
++print(f"locatable: all {len(r1['notifications'])+len(r2['notifications'])} notifications carry a locator resolving to the changed item")
++
++# NEGATIVE CONTROL: the locatability check genuinely discriminates (is not a stub). A notification whose
++# content_hash no longer matches the item, or whose item is absent, must be reported NOT locatable.
++sample = r2["notifications"][0]
++stale = {**sample, "locator": {**sample["locator"], "content_hash": "sha256:deadbeef"}}
++if WD.notification_is_locatable(stale, bwd.DAY2):
++    fails.append("a stale/wrong-version locator was accepted -> locatability check is a stub")
++missing = {**sample, "locator": {**sample["locator"], "canonical_id": "doc-does-not-exist"}}
++if WD.notification_is_locatable(missing, bwd.DAY2):
++    fails.append("a locator to a missing item was accepted -> locatability check is a stub")
++print("locatable control: a wrong-version hash and a missing canonical_id are both rejected (not a stub)")
++
++# =============================================================== 4) source silence signal
++if [s["watch_id"] for s in r1["silence_signals"]] != ["W5"]:
++    fails.append(f"day1 silence should be [W5], got {[s['watch_id'] for s in r1['silence_signals']]}")
++if "W5" not in [s["watch_id"] for s in r2["silence_signals"]]:
++    fails.append("day2 silence should include W5 (its watched source is quiet)")
++print(f"silence: day1={[s['watch_id'] for s in r1['silence_signals']]}, day2={[s['watch_id'] for s in r2['silence_signals']]}")
++
++# caller state must not be mutated in place (run_digest returns a fresh state)
++before = set(r1["state"]["seen"])
++_ = WD.run_digest(r1["state"], bwd.DAY2, bwd.WATCHES, "dayX")
++if set(r1["state"]["seen"]) != before:
++    fails.append("run_digest mutated the caller's state in place")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/watchlist_digest_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/watchlist_digest_tests.txt
+new file mode 100644
+index 000000000..2e6d8187d
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/test-results/watchlist_digest_tests.txt
+@@ -0,0 +1,9 @@
++day1: [('W1', 'doc-1'), ('W2', 'doc-2'), ('W3', 'doc-2'), ('W4', 'doc-1')]
++day2: [('W1', 'doc-3'), ('W2', 'doc-2'), ('W3', 'doc-2'), ('W4', 'doc-3')]
++rerun: 0 new (expect 0); stateless (no memory) re-emits 6 (dedup non-trivial)
++no-change: doc-1 noise-only hash equal=True -> suppressed; doc-2 changed hash differ=True; unchanged corpus -> 0 new
++locatable: all 8 notifications carry a locator resolving to the changed item
++locatable control: a wrong-version hash and a missing canonical_id are both rejected (not a stub)
++silence: day1=['W5'], day2=['W5']
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/watchlist_digest_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/watchlist_digest_report.json
+new file mode 100644
+index 000000000..d77093a09
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P04-T066/watchlist_digest_report.json
+@@ -0,0 +1,45 @@
++{
++  "day1_notifications": [
++    [
++      "W1",
++      "doc-1"
++    ],
++    [
++      "W2",
++      "doc-2"
++    ],
++    [
++      "W3",
++      "doc-2"
++    ],
++    [
++      "W4",
++      "doc-1"
++    ]
++  ],
++  "day1_silence": [
++    "W5"
++  ],
++  "day2_notifications": [
++    [
++      "W1",
++      "doc-3"
++    ],
++    [
++      "W2",
++      "doc-2"
++    ],
++    [
++      "W3",
++      "doc-2"
++    ],
++    [
++      "W4",
++      "doc-3"
++    ]
++  ],
++  "day2_rerun_notifications": [],
++  "day2_silence": [
++    "W5"
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/watchlist_digest.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/watchlist_digest.py
+new file mode 100644
+index 000000000..43bdbfac4
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/watchlist_digest.py
+@@ -0,0 +1,99 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P04-T066 -- Watchlist + Change-only Digest.
++
++Continuously watches topics / agencies / regions / entities / doc-numbers and pushes ONLY substantive
++changes -- so a re-run never duplicates a notification, an unchanged corpus never disturbs the user,
++and every notification is locatable back to the exact item and version that changed.
++
++  * WatchRule {watch_id, facet, value} -- facet in {topic, agency, region, entity, doc_number}.
++    matches(item, rule) is exact on the item's facet field(s).
++  * run_digest(state, items, watches, period) -- for each watched item, decide a SUBSTANTIVE change by
++    T026 content_hash (a new canonical item, or a changed substantive hash; a noise-only re-render is
++    NOT a change). Emit a notification ONLY for a (watch, canonical_id, content_hash) key not already in
++    `state.seen`; then record it. Returns notifications (new only), the period digest, source silence
++    signals, and the updated state. Re-running with the returned state yields ZERO new notifications.
++  * A silence signal is raised for a watched source that produced no change in the period.
++
++Deterministic; no network, no clock, no randomness, no production side effects. `period` is supplied by
++the caller (no wall-clock read).
++"""
++import copy
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++import version_engine as VE   # T026: content_hash over the substantive signature (noise-insensitive)
++
++FACETS = ("topic", "agency", "region", "entity", "doc_number")
++
++
++def new_state():
++    """Persisted digest state: the set of notification keys already emitted (for dedup on re-run)."""
++    return {"seen": set()}
++
++
++def make_watch(watch_id, facet, value):
++    assert facet in FACETS, f"unknown facet {facet}"
++    return {"watch_id": watch_id, "facet": facet, "value": value}
++
++
++def matches(item, rule):
++    """Exact match of the item's facet field to the rule value. entity/topic may be multi-valued."""
++    f, v = rule["facet"], rule["value"]
++    field = item.get(f)
++    if isinstance(field, (list, tuple, set)):
++        return v in field
++    return field == v
++
++
++def _notif_key(watch_id, canonical_id, content_hash):
++    return f"{watch_id}|{canonical_id}|{content_hash}"
++
++
++def run_digest(state, items, watches, period):
++    """Match items to watches, emit notifications only for NEW substantive-change keys, raise silence
++    signals for watched sources with no change. Never mutates the caller's state (returns a new one)."""
++    state = {"seen": set(state.get("seen", set()))}          # copy: no in-place mutation of caller state
++    notifications = []
++    watched_sources = {w["watch_id"]: set() for w in watches}   # watch_id -> set of changed canonical_ids
++
++    for it in items:
++        ch = VE.content_hash(it)                              # substantive hash (noise-insensitive, T026)
++        cid = it["canonical_id"]
++        for w in watches:
++            if not matches(it, w):
++                continue
++            key = _notif_key(w["watch_id"], cid, ch)
++            watched_sources.setdefault(w["watch_id"], set())
++            if key in state["seen"]:
++                continue                                     # already notified -> no duplicate (re-run safe)
++            state["seen"].add(key)
++            watched_sources[w["watch_id"]].add(cid)
++            notifications.append({
++                "watch_id": w["watch_id"], "facet": w["facet"], "value": w["value"],
++                "canonical_id": cid, "content_hash": ch,
++                "title": it.get("title"), "url": it.get("url"),
++                "locator": {"canonical_id": cid, "content_hash": ch,
++                            "matched_facet": w["facet"], "matched_value": w["value"]},
++                "period": period,
++            })
++    notifications.sort(key=lambda n: (n["watch_id"], n["canonical_id"]))
++    silence = [{"watch_id": wid, "period": period, "signal": "no_change"}
++               for wid, changed in sorted(watched_sources.items()) if not changed]
++    digest = {
++        "period": period, "n_notifications": len(notifications),
++        "by_watch": {wid: sorted(cids) for wid, cids in sorted(watched_sources.items()) if cids},
++    }
++    return {"notifications": notifications, "digest": digest,
++            "silence_signals": silence, "state": state}
++
++
++def notification_is_locatable(n, items):
++    """True iff the notification points to a real item whose current substantive hash matches."""
++    by_id = {it["canonical_id"]: it for it in items}
++    it = by_id.get(n["locator"]["canonical_id"])
++    if it is None:
++        return False
++    return VE.content_hash(it) == n["locator"]["content_hash"]
