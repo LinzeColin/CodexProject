@@ -11,7 +11,7 @@
 | `cn_documents` | `first_seen_month` | canonical_id, title_norm, sources_json, item_count, version_count, first_seen_month |
 | `cn_document_versions` | `month` | version_id, canonical_id, version_no, content_hash, status, doc_date, month |
 
-分区文件名：`data/{table}__{YYYY-MM}.{parquet|ndjson}`。真实 500 抽样 → 498 docs / 500 versions / **46 个月（2016-01…2025-10）** / 92 分区。
+分区文件名：`data/{table}__{YYYY-MM}.{parquet|ndjson}`。真实 500 抽样 → 498 docs / 500 versions / **46 个月（2016-01…2026-07）** / 92 分区。
 
 ## 2. 物理格式（Parquet，带确定性回退）
 

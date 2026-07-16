@@ -3,7 +3,7 @@
   "value_metric": "an open, monthly-partitioned columnar snapshot (real Apache Parquet) of the canonical documents and their version chains, reproducible from a format-independent logical hash and consistent with the D1 sample -- the substrate for large-scale 2016+ historical analysis, recovery, and backtestable prediction",
   "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "offline snapshot builder only; NOT wired to production D1/R2; real monthly snapshots would target R2 under DIR-007 budget in a later task", "dev_dependency_added": "pyarrow==17.0.0 installed into the user's Python 3.9 user-site to emit real Parquet; the writer degrades to deterministic NDJSON with the identical logical_hash when pyarrow is absent"},
   "recurring_cloud_cost_delta_usd_month": 0,
-  "snapshot_over_real_500_sample": {"cn_documents": 498, "cn_document_versions": 500, "months": 46, "month_range": "2016-01..2025-10", "partitions": 92, "format": "parquet", "engine": "pyarrow 17.0.0"},
+  "snapshot_over_real_500_sample": {"cn_documents": 498, "cn_document_versions": 500, "months": 46, "month_range": "2016-01..2026-07", "partitions": 92, "format": "parquet", "engine": "pyarrow 17.0.0"},
   "acceptance": {"reproducible_snapshot_id": true, "reproducible_logical_hash": true, "physical_bytes_stable_in_env": true, "d1_sample_vs_parquet_rows_match": true, "relationship_zero_orphans": true, "month_partition_correct": true, "schema_evolution_backward_compatible": true},
   "committed_evidence_self_verifiable": "evidence logical_snapshot/*.jsonl recomputes all 92 manifest logical_hashes offline without pyarrow or the raw D1 sample"
 }

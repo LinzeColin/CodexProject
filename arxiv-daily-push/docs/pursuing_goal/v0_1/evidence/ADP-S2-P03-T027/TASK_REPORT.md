@@ -17,7 +17,7 @@
 - `evidence/.../snapshot_manifest.json`（92 分区，logical+physical 哈希）+ `logical_snapshot/*.jsonl`（498+500 行，可离线重算全部 logical_hash）+ `sample_partitions/*.parquet`（2 个真实样例，PAR1）。
 
 ## 验收结果（实测，见 test-results/snapshot_tests.txt，ACCEPTANCE = PASS，exit 0）
-- **规模（真实 500 抽样）**：**498 canonical docs / 500 versions / 46 个月（2016-01…2025-10）/ 92 分区**（2 表 × 46 月）；format=parquet，engine=pyarrow 17.0.0。
+- **规模（真实 500 抽样）**：**498 canonical docs / 500 versions / 46 个月（2016-01…2026-07）/ 92 分区**（2 表 × 46 月）；format=parquet，engine=pyarrow 17.0.0。（注：本行月份范围末尾曾误写为 2025-10，由 T028 DuckDB 独立校验发现并更正为真实的 2026-07；46 个月计数与全部哈希/数据一向正确。）
 - **同一 logical snapshot 可重复生成**：连两次生成 → `snapshot_id` 相等、每分区 `logical_hash` 相等、同环境 `physical_sha256` 亦相等。
 - **D1 抽样 ↔ Parquet 行/关系一致**：回读全部 Parquet 分区 → cn_documents 行 **498 == 抽样派生 498**、cn_document_versions 行 **500 == 抽样派生 500**、每个 version.canonical_id **全部** ∈ documents.canonical_id（**孤儿 0**）、每行落在正确月分区。
 - **Schema 演进向后兼容**：v1→v2 追加可空列 `authority` → 旧 v1 分区在 v2 schema 下可读（新列 **null 填充**）、v1 分区 `logical_hash` **稳定不变**。

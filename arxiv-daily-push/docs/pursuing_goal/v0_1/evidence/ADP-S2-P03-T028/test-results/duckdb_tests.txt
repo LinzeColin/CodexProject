@@ -1,0 +1,9 @@
+materialized partitions: 92 | format: parquet
+engine: duckdb 1.1.3 | local Parquet via read_parquet() -- NO R2 SQL, NO R2 Data Catalog, NO Cloudflare
+rebuilt: docs 498 | versions 500 | months 46 | range 2016-01 -> 2026-07 | orphans 0
+signals: repost_multi_source 1 | multi_version_docs 1 | status {'active': 500}
+
+cross-check vs T027 manifest+logical: docs/versions/events/signals/months/2016+ all consistent = True
+recovery path: reads local open Parquet only, no R2 SQL / no R2 Data Catalog / no Cloudflare Beta
+
+ACCEPTANCE = PASS

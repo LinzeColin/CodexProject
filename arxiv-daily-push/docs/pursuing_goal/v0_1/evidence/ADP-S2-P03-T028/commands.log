@@ -1,0 +1,30 @@
+# ADP-S2-P03-T028 commands (offline independent verification via DuckDB; NO Cloudflare / NO production)
+# base: main deac8a48 (T027)
+
+# 0) independent open engine (offline evidence only; different engine from the pyarrow writer)
+python3 -m pip install "duckdb==1.1.3"    # user Python 3.9 user-site; runtime/worker do NOT use it
+
+# 1) tool authored
+#    tools/duckdb_verify.py   (read_parquet over local T027 snapshot; SQL rebuild of key
+#                              document/version/event/signal counts; NO R2 SQL / NO R2 Data Catalog)
+
+# 2) acceptance test: materialize the FULL snapshot from committed T027 logical_snapshot/*.jsonl,
+#    then independently rebuild with DuckDB and cross-check against the committed T027 manifest.
+python3 evidence/ADP-S2-P03-T028/test-results/t028_verify.py | tee evidence/ADP-S2-P03-T028/test-results/duckdb_tests.txt
+# -> materialized 92 parquet partitions ; engine duckdb 1.1.3 ; reads local Parquet, no Cloudflare
+# -> rebuilt: docs 498 | versions 500 | months 46 | range 2016-01 -> 2026-07 | orphans 0
+# -> signals: repost_multi_source 1 | multi_version_docs 1 | status {active:500}
+# -> cross-check vs T027 manifest+logical: docs/versions/events/signals/months/2016+ all consistent = True
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) committed evidence
+python3 tools/duckdb_verify.py --snapshot-dir <t028_snap> --out evidence/ADP-S2-P03-T028/rebuild_report.json --sql-out evidence/ADP-S2-P03-T028/sample_queries.sql
+# rebuild_report.json = DuckDB rebuilt counts ; sample_queries.sql = the portable SQL (any DuckDB/Trino/Spark).
+
+# 4) errata surfaced by this independent check: T027 wrote the month-range end as 2025-10; the true
+#    max month is 2026-07 (46-month count + all data/hashes were always correct). Corrected the T027
+#    evidence/spec docs + the T027 CHANGELOG line in this commit; the append-only T027 event stays immutable.
+
+# NOT_DEPLOYED: no wrangler / no D1 / no R2 / no worker.
+# governance sync (fullwt @ origin/main), generate dashboard, lean_governance ci --changed-only == SHIP,
+# commit + push to LinzeColin/CodexProject main, poll CI double-green.
