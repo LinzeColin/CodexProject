@@ -1,0 +1,349 @@
+name: Agent Loop Settlement
+
+on:
+  workflow_run:
+    workflows: ["Project Governance"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Trusted operation
+        required: true
+        default: settle
+        type: choice
+        options: [settle, janitor]
+      pr_number:
+        description: PR number for manual settlement
+        required: false
+        type: string
+      expected_head_sha:
+        description: Exact tested head SHA for manual settlement
+        required: false
+        type: string
+      expected_base_sha:
+        description: Exact tested main SHA for manual settlement
+        required: false
+        type: string
+      governance_run_id:
+        description: Exact successful Project Governance run for manual settlement
+        required: false
+        type: string
+      dry_run:
+        description: Evaluate without GitHub mutation
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: automation-c-${{ github.event.workflow_run.head_sha || inputs.pr_number || 'janitor' }}
+  cancel-in-progress: false
+
+jobs:
+  settlement:
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request') ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'settle')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      AUTHORIZED_ACTORS: ${{ vars.AUTOMATION_C_AUTHORIZED_ACTORS || github.repository_owner }}
+      MANUAL_PR_NUMBER: ${{ inputs.pr_number || '' }}
+      MANUAL_EXPECTED_HEAD_SHA: ${{ inputs.expected_head_sha || '' }}
+      MANUAL_EXPECTED_BASE_SHA: ${{ inputs.expected_base_sha || '' }}
+      MANUAL_GOVERNANCE_RUN_ID: ${{ inputs.governance_run_id || '' }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+    steps:
+      - name: Settle from trusted default-branch definition using live APIs only
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import time
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          api_root = os.environ["GITHUB_API_URL"]
+          repository = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GH_TOKEN"]
+          dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
+          authorized = {
+              item.strip().casefold()
+              for item in os.environ["AUTHORIZED_ACTORS"].split(",")
+              if item.strip()
+          }
+          if not authorized:
+              raise RuntimeError("publisher allowlist must not be empty")
+
+          def api(path, method="GET", data=None, missing_ok=False):
+              request = urllib.request.Request(
+                  f"{api_root}/repos/{repository}/{path}",
+                  data=None if data is None else json.dumps(data).encode("utf-8"),
+                  method=method,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = response.read()
+              except urllib.error.HTTPError as exc:
+                  if missing_ok and exc.code == 404:
+                      return None
+                  raise RuntimeError(
+                      f"GitHub API {method} {path} failed with HTTP {exc.code}"
+                  ) from exc
+              return json.loads(payload) if payload else {}
+
+          marker_re = re.compile(
+              r"<!-- AUTOMATION_C_TRANSACTION_V1\s+"
+              r"task_id=(?P<task>\S+)\s+acceptance_id=(?P<acceptance>\S+)\s+"
+              r"head_sha=(?P<head>[0-9a-f]{40})\s+base_sha=(?P<base>[0-9a-f]{40})\s+"
+              r"END_AUTOMATION_C_TRANSACTION_V1 -->"
+          )
+          v2_task_re = re.compile(
+              r"^TSK\.(?P<project>[A-Z][A-Za-z0-9]*)\."
+              r"(?P<program>[A-Z][A-Za-z0-9]*)\.(?P<sequence>[0-9]{4})$"
+          )
+          v2_acceptance_re = re.compile(
+              r"^ACC\.(?P<project>[A-Z][A-Za-z0-9]*)\."
+              r"(?P<program>[A-Z][A-Za-z0-9]*)\.(?P<sequence>[0-9]{4})$"
+          )
+          legacy_re = re.compile(r"^(?!(?:TSK|ACC|AC|PG)\.)[A-Za-z0-9][A-Za-z0-9_.-]{1,127}$")
+
+          def marker(payload):
+              matches = list(marker_re.finditer(payload.get("body") or ""))
+              if len(matches) != 1:
+                  return None
+              match = matches[0]
+              task_v2 = v2_task_re.fullmatch(match.group("task"))
+              acceptance_v2 = v2_acceptance_re.fullmatch(match.group("acceptance"))
+              if task_v2 or acceptance_v2:
+                  if not task_v2 or not acceptance_v2:
+                      return None
+                  task_suffix = (
+                      task_v2.group("project"),
+                      task_v2.group("program"),
+                      task_v2.group("sequence"),
+                  )
+                  acceptance_suffix = (
+                      acceptance_v2.group("project"),
+                      acceptance_v2.group("program"),
+                      acceptance_v2.group("sequence"),
+                  )
+                  return match if task_suffix == acceptance_suffix else None
+              if not legacy_re.fullmatch(match.group("task")):
+                  return None
+              if not legacy_re.fullmatch(match.group("acceptance")):
+                  return None
+              return match
+
+          def head_repo(pr):
+              return ((pr.get("head") or {}).get("repo") or {}).get("full_name")
+
+          def head_ref(pr):
+              return str((pr.get("head") or {}).get("ref") or "")
+
+          def actor(pr):
+              return str((pr.get("user") or {}).get("login") or "").casefold()
+
+          def close_only(pr, reason):
+              print(f"SETTLEMENT=CLOSE_ONLY reason={reason} pr={pr['number']}")
+              if not dry_run and pr["state"] == "open":
+                  api(f"pulls/{pr['number']}", method="PATCH", data={"state": "closed"})
+
+          def exact_delete(pr, expected_head):
+              ref = head_ref(pr)
+              if head_repo(pr) != repository or not ref.startswith("automation-c/"):
+                  raise RuntimeError("reserved ref deletion boundary failed")
+              encoded = urllib.parse.quote(f"heads/{ref}", safe="/")
+              live = api(f"git/ref/{encoded}", missing_ok=True)
+              if live is None:
+                  print(f"SETTLEMENT=REF_ALREADY_ABSENT branch={ref}")
+                  return
+              if live["object"]["sha"] != expected_head:
+                  raise RuntimeError("branch tip drifted; exact deletion refused")
+              if dry_run:
+                  print(f"DRY_RUN delete {ref} at {expected_head}")
+              else:
+                  api(f"git/refs/{encoded}", method="DELETE")
+
+          def close_delete(pr, expected_head, reason):
+              print(f"SETTLEMENT=CLOSE_DELETE reason={reason} pr={pr['number']}")
+              if not dry_run and pr["state"] == "open":
+                  api(f"pulls/{pr['number']}", method="PATCH", data={"state": "closed"})
+              exact_delete(pr, expected_head)
+
+          def close_matching_issues(transaction):
+              expected = transaction.groupdict()
+              for issue in api("issues?state=open&per_page=100"):
+                  if "pull_request" in issue:
+                      continue
+                  issue_marker = marker(issue)
+                  issue_actor = str((issue.get("user") or {}).get("login") or "").casefold()
+                  if issue_marker is None or issue_actor not in authorized:
+                      continue
+                  if issue_marker.groupdict() != expected:
+                      continue
+                  print(f"SETTLEMENT=CLOSE_ACCIDENTAL_ISSUE issue={issue['number']}")
+                  if not dry_run:
+                      api(f"issues/{issue['number']}", method="PATCH", data={"state": "closed"})
+
+          event = json.load(open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8"))
+          event_name = os.environ["GITHUB_EVENT_NAME"]
+          expected_base = None
+          if event_name == "workflow_run":
+              run = event["workflow_run"]
+              if run.get("name") != "Project Governance" or run.get("event") != "pull_request":
+                  print("SETTLEMENT=NOOP reason=not_governance_pull_request")
+                  raise SystemExit(0)
+              expected_head = run.get("head_sha")
+              conclusion = run.get("conclusion") or "unknown"
+              run_id = int(run["id"])
+              pointers = run.get("pull_requests") or []
+              if len(pointers) == 1:
+                  pr_number = int(pointers[0]["number"])
+                  expected_base = (pointers[0].get("base") or {}).get("sha")
+              elif not pointers:
+                  candidates = [
+                      item
+                      for item in api("pulls?state=open&per_page=100")
+                      if (item.get("head") or {}).get("sha") == expected_head
+                  ]
+                  if len(candidates) != 1:
+                      print("SETTLEMENT=NOOP reason=pr_pointer_not_unique")
+                      raise SystemExit(0)
+                  pr_number = int(candidates[0]["number"])
+              else:
+                  print("SETTLEMENT=NOOP reason=multiple_pr_pointers")
+                  raise SystemExit(0)
+          else:
+              pr_raw = os.environ["MANUAL_PR_NUMBER"]
+              run_raw = os.environ["MANUAL_GOVERNANCE_RUN_ID"]
+              if not pr_raw.isdigit() or int(pr_raw) < 1:
+                  raise RuntimeError("manual settlement requires a positive PR number")
+              if not run_raw.isdigit() or int(run_raw) < 1:
+                  raise RuntimeError("manual settlement requires an exact governance run ID")
+              pr_number = int(pr_raw)
+              run_id = int(run_raw)
+              expected_head = os.environ["MANUAL_EXPECTED_HEAD_SHA"]
+              expected_base = os.environ["MANUAL_EXPECTED_BASE_SHA"]
+              conclusion = "success"
+
+          if not re.fullmatch(r"[0-9a-f]{40}", expected_head or ""):
+              raise RuntimeError("exact tested head SHA is required")
+          pr = api(f"pulls/{pr_number}")
+          transaction = marker(pr)
+          if transaction is None:
+              print("SETTLEMENT=NOOP reason=non_transaction_pr")
+              raise SystemExit(0)
+          if pr["state"] != "open":
+              print("SETTLEMENT=NOOP reason=already_settled")
+              raise SystemExit(0)
+
+          if head_repo(pr) != repository:
+              close_only(pr, "fork")
+              raise SystemExit(0)
+          if actor(pr) not in authorized:
+              close_only(pr, "unauthorized_actor")
+              raise SystemExit(0)
+          if not head_ref(pr).startswith("automation-c/"):
+              close_only(pr, "unreserved_transaction_ref")
+              raise SystemExit(0)
+          if pr["head"]["sha"] != expected_head or transaction.group("head") != expected_head:
+              close_only(pr, "stale_head")
+              raise SystemExit(0)
+
+          marker_base = transaction.group("base")
+          expected_base = expected_base or marker_base
+          if not re.fullmatch(r"[0-9a-f]{40}", expected_base or ""):
+              raise RuntimeError("exact tested base SHA is required")
+          close_matching_issues(transaction)
+
+          reason = None
+          if pr["draft"]:
+              reason = "draft"
+          elif pr["base"]["ref"] != "main":
+              reason = "wrong_base"
+          elif pr["base"]["sha"] != expected_base or marker_base != expected_base:
+              reason = "stale_tested_base"
+
+          for _ in range(3):
+              if pr.get("mergeable") is not None:
+                  break
+              time.sleep(2)
+              pr = api(f"pulls/{pr_number}")
+          if reason is None and pr.get("mergeable") is not True:
+              reason = "conflict_or_unknown"
+
+          checks = []
+          current_checks = []
+          for attempt in range(5):
+              checks = api(f"commits/{expected_head}/check-runs?per_page=100").get(
+                  "check_runs", []
+              )
+              governance_checks = [item for item in checks if item.get("name") == "governance"]
+              current_checks = [
+                  item
+                  for item in governance_checks
+                  if f"/actions/runs/{run_id}/" in (item.get("details_url") or "")
+              ]
+              if current_checks or attempt == 4:
+                  break
+              time.sleep(3)
+
+          other_live_or_success = [
+              item
+              for item in checks
+              if item.get("name") == "governance"
+              and item not in current_checks
+              and (
+                  item.get("status") != "completed"
+                  or item.get("conclusion") == "success"
+              )
+          ]
+          if conclusion != "success" and other_live_or_success:
+              print("SETTLEMENT=WAIT reason=newer_governance_check")
+              raise SystemExit(0)
+          if conclusion != "success" and reason is None:
+              reason = f"workflow_{conclusion}"
+
+          required_check_pass = any(
+              item.get("status") == "completed" and item.get("conclusion") == "success"
+              for item in current_checks
+          )
+          if conclusion == "success" and not current_checks:
+              print("SETTLEMENT=WAIT reason=required_check_not_observable")
+              raise SystemExit(0)
+          if conclusion == "success" and not required_check_pass and reason is None:
+              reason = "required_check_failure"
+
+          if reason:
+              close_delete(pr, expected_head, reason)
+              raise SystemExit(0)
+
+          print(f"SETTLEMENT=MERGE_DELETE pr={pr_number} head={expected_head}")
+          if dry_run:
+              raise SystemExit(0)
+          merged = api(
+              f"pulls/{pr_number}/merge",
+              method="PUT",
+              data={"merge_method": "squash", "sha": expected_head},
+          )
+          if not merged.get("merged"):
+              close_delete(pr, expected_head, "merge_api_rejected")
+              raise SystemExit(0)
+          exact_delete(pr, expected_head)
+          PY
+
