@@ -1,0 +1,16 @@
+# ADP-S4-P01-T043 commands (Source-Year-Month gap detector)
+# base: main 7a4e39d7 (T042)
+
+# 1) detector + spec + coverage input
+#    tools/gap_detector.py   (build_coverage; classify[exhaustive gap reasons]; detect[grid + reasons + alerts];
+#                            infer_source_windows; month_range)
+#    GAP_DETECTOR_SPEC.md ; evidence/.../coverage_items.json (real 500 sample: source_id + month)
+
+# 2) acceptance test (real 500 coverage: 20 sources x 127 months)
+python3 evidence/ADP-S4-P01-T043/test-results/t043_verify.py | tee evidence/ADP-S4-P01-T043/test-results/gap_tests.txt
+# -> 2540 cells: covered 75 / not_backfilled 203 / source_not_yet_active 2262 ; unexplained 0 ; every cell has count-or-reason
+# -> injected ghost-source (no window) -> 127 unexplained -> 127 alerts (detector catches silent holes)
+# -> ACCEPTANCE = PASS (exit 0)
+
+# NOT_DEPLOYED: detector logic; not wired to production; backfilled/failed sets from real backfill state when wired.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

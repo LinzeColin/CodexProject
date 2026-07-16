@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S4-P01-T043", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "comprehensiveness becomes a visible time-coverage grid instead of a source count: every enabled source x year-month cell has an item count or an explicit gap reason (source not yet active / not backfilled / no publications / fetch failed), with zero silently-unexplained holes and an alert on any hole that cannot be explained",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "gap detector over the coverage grid; not wired to production; backfilled/failed month sets come from the real T041/T042 backfill state when wired"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "coverage_grid": {"sources": 20, "months": 127, "cells": 2540, "covered": 75, "not_backfilled": 203, "source_not_yet_active": 2262, "unexplained": 0},
+  "acceptance": {"every_cell_has_count_or_reason": true, "zero_silently_unexplained_holes": true, "alerts_on_unexplained_hole": true}
+}

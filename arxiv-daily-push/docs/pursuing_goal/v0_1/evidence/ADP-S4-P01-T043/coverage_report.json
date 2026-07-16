@@ -1,0 +1,47 @@
+{
+  "cells": 2540,
+  "sources": 20,
+  "months": 127,
+  "reason_counts": {
+    "covered": 75,
+    "not_backfilled": 203,
+    "source_not_yet_active": 2262
+  },
+  "explained": 2540,
+  "unexplained": 0,
+  "every_cell_has_count_or_reason": true,
+  "alerts": [],
+  "alert_count": 0,
+  "grid_sample": [
+    {
+      "source_id": "arxiv-all",
+      "month": "2016-01",
+      "count": 1,
+      "status": "covered"
+    },
+    {
+      "source_id": "arxiv-all",
+      "month": "2016-02",
+      "count": 0,
+      "status": "not_backfilled"
+    },
+    {
+      "source_id": "arxiv-all",
+      "month": "2016-03",
+      "count": 0,
+      "status": "not_backfilled"
+    },
+    {
+      "source_id": "arxiv-all",
+      "month": "2016-04",
+      "count": 0,
+      "status": "not_backfilled"
+    },
+    {
+      "source_id": "arxiv-all",
+      "month": "2016-05",
+      "count": 1,
+      "status": "covered"
+    }
+  ]
+}

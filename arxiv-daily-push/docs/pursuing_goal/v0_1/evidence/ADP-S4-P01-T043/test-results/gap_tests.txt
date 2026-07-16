@@ -1,0 +1,8 @@
+coverage grid: 20 sources x 127 months = 2540 cells
+reason counts: {'covered': 75, 'not_backfilled': 203, 'source_not_yet_active': 2262}
+unexplained: 0 | every_cell_has_count_or_reason: True
+coverage table: 75 covered cells; deliverable = coverage table + gap reasons + alerts
+
+injected ghost-source (no window): unexplained=127 alert_count=127
+
+ACCEPTANCE = PASS
