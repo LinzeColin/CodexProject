@@ -1,0 +1,25 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P02-T080",
+  "release_mode": "NOT_DEPLOYED",
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost_usd": 0.0,
+    "readonly_get_realtime": 1,
+    "in_app_browser_renders": 1,
+    "node_tests": 1,
+    "human_maintenance": "component-state CSS matrix + two grade() undo-window rewrites + run error handling + audit tool + Node behavioural test + browser test + verifier + adversarial review"
+  },
+  "value": {
+    "stage": "S7 UI/UX Motion & Performance",
+    "acceptance": "PASS (verifier re-derives; Node behavioural test proves undo writes nothing; in-app browser proves theme switch preserves scroll/answers/filters/expand across all six themes)",
+    "user_value": "every click gets instant visual feedback (pressed/loading/disabled/success/error); a mis-clicked recall grade can be undone within 4s with NO data written; switching among the six themes never loses the user's reading position, revealed answers, typed filters, or expanded sections",
+    "realized_on_deploy": "lands when the fixed worker (40a46aa2baee) deploys; committed to source now (NOT_DEPLOYED), live still b189d3cc0703"
+  },
+  "unknown_not_zero": "real per-device interaction timing on phones is unknown until deploy; the deferred-write undo window trades a 4s write delay (grade lost if the tab is closed mid-window) for zero-write undo (disclosed in known_gaps)."
+}

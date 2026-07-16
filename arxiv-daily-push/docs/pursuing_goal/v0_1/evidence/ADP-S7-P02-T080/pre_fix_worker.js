@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '40a46aa2baee', source_sha256: '40a46aa2baeea8a2c74fbab70de6dd372e62bfe3fa4eb151bf53f4f865bf0287', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '9690390a9fc8', source_sha256: '9690390a9fc8c3ff3236971ea0be56eb3b38ff96786e193b989140edaabdfde5', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -637,15 +637,6 @@ td,th{padding:7px 8px;border-bottom:1px solid var(--hairline);text-align:left;ve
 /* T079 移动端溢出防线（360/390/430 宽）：媒体不溢出 + 数据密集表格局部横滚（不产生全页横向滚动；不动主题/动效层） */
 main img,main svg,main video{max-width:100%}
 @media(max-width:520px){table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}}
-/* T080 组件状态矩阵（按下/禁用/加载/成功/错误/聚焦/撤销）：点击即时反馈——:active 于 pointerdown 触发（<16ms），
-   transition 仅 80ms，反馈在 100ms 内可见；不新增 @keyframes、不动主题/动效层。 */
-button{transition:transform .08s ease,background .15s ease,border-color .15s ease,opacity .15s ease}
-button:active{transform:translateY(1px)}
-button:disabled,button[aria-disabled="true"]{opacity:.5;cursor:not-allowed;transform:none}
-button[aria-busy="true"]{opacity:.7;cursor:progress;pointer-events:none}
-button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-button.undo{border-color:var(--warn);color:var(--warn)}
-[data-state="ok"]{color:var(--ok)}[data-state="err"]{color:var(--warn)}
 select#theme{min-height:38px;border-radius:var(--pill);border:1px solid var(--bd);background:var(--glass-bg);color:var(--tx);padding:6px 12px;font-size:13.5px;margin-left:auto}
 /* 页头 */
 header.top{position:relative;z-index:30;display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--hairline);background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));flex-wrap:wrap}
@@ -874,20 +865,12 @@ async function todayPage(env) {
       <div class="gradeRow">${[[1,'忘了'],[2,'困难'],[3,'良好'],[4,'轻松']].map(([g,l]) =>
         `<button onclick="grade(${g},this)">${l}</button>`).join('')}</div>
       <p id="r" class="mt"></p>
-      <script>var _grading=false,_pend=null;
-        function grade(g,btn){if(_grading)return;_grading=true;var row=document.querySelectorAll('.gradeRow button'),r=document.getElementById('r');
-          row.forEach(function(b){b.classList.remove('picked');b.disabled=true;});btn.classList.add('picked');r.removeAttribute('data-state');var left=4;
-          function draw(){r.innerHTML='已选「'+btn.textContent+'」，<b>'+left+'</b>s 后记录　<button type="button" class="btn-sm undo" onclick="gradeUndo()">撤销</button>';}
-          draw();_pend=setInterval(function(){left--;if(left<=0){clearInterval(_pend);_pend=null;gradeCommit(g,btn);}else draw();},1000);}
-        function gradeUndo(){if(_pend){clearInterval(_pend);_pend=null;}document.querySelectorAll('.gradeRow button').forEach(function(b){b.classList.remove('picked');b.disabled=false;});
-          var r=document.getElementById('r');r.setAttribute('data-state','');r.textContent='已撤销，未记录。';_grading=false;}
-        async function gradeCommit(g,btn){var r=document.getElementById('r');btn.setAttribute('aria-busy','true');r.textContent='记录中…';
-          try{var res=await fetch('/api/grade/'+encodeURIComponent(${jsStr(sel.item_id)})+'/'+g,{method:'POST'});if(!res.ok)throw new Error(res.status);var j=await res.json();
-            btn.removeAttribute('aria-busy');r.setAttribute('data-state','ok');
-            r.textContent=j.duplicate?('今天已评过（事件 #'+j.id+'），未重复计。'):('已记录 → 下次复习 '+j.due_at+'（间隔 '+j.interval+' 天，证据态：'+j.evidence_state+'）');
-          }catch(e){btn.removeAttribute('aria-busy');r.setAttribute('data-state','err');r.textContent='记录失败，请重试。';
-            document.querySelectorAll('.gradeRow button').forEach(function(b){b.disabled=false;});_grading=false;}}
-      </script></div>`;
+      <script>var _grading=false;async function grade(g,btn){if(_grading)return;_grading=true;
+        document.querySelectorAll('.gradeRow button').forEach(b=>{b.classList.remove('picked');b.disabled=true});btn.classList.add('picked');
+        const res=await fetch('/api/grade/'+encodeURIComponent(${jsStr(sel.item_id)})+'/'+g,{method:'POST'});
+        const j=await res.json();
+        document.getElementById('r').textContent=j.duplicate?('今天已评过（事件 #'+j.id+'），未重复计。'):('已记录 → 下次复习 '+j.due_at+'（间隔 '+j.interval+' 天，证据态：'+j.evidence_state+'）');
+      }</script></div>`;
   }
   return PAGE('/', body, { hero });
 }
@@ -935,10 +918,9 @@ async function systemPage(env) {
     <p class="mt">整套系统跑在 Cloudflare（Workers + D1 + 每日 cron），不依赖任何本机。当前候选库 ${total ? total.n : 0} 条。</p>
     <table><tr><th>日期</th><th>结果</th><th>抓取/候选</th><th>说明</th></tr>${rows || '<tr><td colspan=4>尚无运行</td></tr>'}</table>
     <p style="margin-top:14px"><button onclick="run(this)">立即运行一次每日流水线</button> <span id="rr" class="mt"></span></p>
-    <script>async function run(b){b.disabled=true;b.setAttribute('aria-busy','true');var rr=document.getElementById('rr');rr.removeAttribute('data-state');rr.textContent='运行中…（抓取全网可能需十几秒）';
-      try{const res=await fetch('/api/run',{method:'POST'});if(!res.ok)throw new Error(res.status);const j=await res.json();
-        b.removeAttribute('aria-busy');rr.setAttribute('data-state','ok');rr.textContent='结果：'+j.result+'（'+JSON.stringify(j.counts)+'）';setTimeout(()=>location.reload(),1200);
-      }catch(e){b.removeAttribute('aria-busy');b.disabled=false;rr.setAttribute('data-state','err');rr.textContent='运行失败，请重试。';}}</script></div>`);
+    <script>async function run(b){b.disabled=true;document.getElementById('rr').textContent='运行中…（抓取全网可能需十几秒）';
+      const res=await fetch('/api/run',{method:'POST'});const j=await res.json();
+      document.getElementById('rr').textContent='结果：'+j.result+'（'+JSON.stringify(j.counts)+'）';setTimeout(()=>location.reload(),1200);}</script></div>`);
 }
 
 // ───────────────────────── 学习数据 / 复用组件 ─────────────────────────
@@ -1018,20 +1000,11 @@ function graderHTML(itemId, revealInner, nextHref) {
     <div class="gradeRow">${[[1, '忘了'], [2, '困难'], [3, '良好'], [4, '轻松']].map(([g, l]) =>
       `<button onclick="grade(${g},this)" aria-label="评分：${l}">${l}</button>`).join('')}</div>
     <p id="r" class="mt" role="status"></p>
-    <script>var _grading=false,_pend=null;
-      function grade(g,btn){if(_grading)return;_grading=true;var row=document.querySelectorAll('.gradeRow button'),r=document.getElementById('r');
-        row.forEach(function(b){b.classList.remove('picked');b.disabled=true;});btn.classList.add('picked');r.removeAttribute('data-state');var left=4;
-        function draw(){r.innerHTML='已选「'+btn.textContent+'」，<b>'+left+'</b>s 后记录　<button type="button" class="btn-sm undo" onclick="gradeUndo()">撤销</button>';}
-        draw();_pend=setInterval(function(){left--;if(left<=0){clearInterval(_pend);_pend=null;gradeCommit(g,btn);}else draw();},1000);}
-      function gradeUndo(){if(_pend){clearInterval(_pend);_pend=null;}document.querySelectorAll('.gradeRow button').forEach(function(b){b.classList.remove('picked');b.disabled=false;});
-        var r=document.getElementById('r');r.setAttribute('data-state','');r.textContent='已撤销，未记录。';_grading=false;}
-      async function gradeCommit(g,btn){var r=document.getElementById('r');btn.setAttribute('aria-busy','true');r.textContent='记录中…';
-        try{var res=await fetch('/api/grade/'+encodeURIComponent(${jsStr(itemId)})+'/'+g,{method:'POST'});if(!res.ok)throw new Error(res.status);var j=await res.json();
-          btn.removeAttribute('aria-busy');r.setAttribute('data-state','ok');
-          r.textContent=j.duplicate?('今天已评过（事件 #'+j.id+'），未重复计。'):('已记录 → 下次复习 '+j.due_at+'（间隔 '+j.interval+' 天，证据态：'+j.evidence_state+'）');
-          ${nextHref ? `setTimeout(function(){location.href=${jsStr(nextHref)}},900);` : ''}}catch(e){btn.removeAttribute('aria-busy');r.setAttribute('data-state','err');r.textContent='记录失败，请重试。';
-          document.querySelectorAll('.gradeRow button').forEach(function(b){b.disabled=false;});_grading=false;}}
-    </script></div>`;
+    <script>var _grading=false;async function grade(g,btn){if(_grading)return;_grading=true;
+      document.querySelectorAll('.gradeRow button').forEach(b=>{b.classList.remove('picked');b.disabled=true});btn.classList.add('picked');
+      var res=await fetch('/api/grade/'+encodeURIComponent(${jsStr(itemId)})+'/'+g,{method:'POST'});var j=await res.json();
+      document.getElementById('r').textContent=j.duplicate?('今天已评过（事件 #'+j.id+'），未重复计。'):('已记录 → 下次复习 '+j.due_at+'（间隔 '+j.interval+' 天，证据态：'+j.evidence_state+'）');
+      ${nextHref ? `setTimeout(function(){location.href=${jsStr(nextHref)}},900);` : ''}}</script></div>`;
 }
 
 // ───────────────────────── 复习会话 /review ─────────────────────────

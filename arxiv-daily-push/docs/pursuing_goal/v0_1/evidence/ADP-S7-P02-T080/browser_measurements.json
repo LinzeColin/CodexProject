@@ -1,0 +1,38 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P02-T080",
+  "method": "in-app browser (Chromium) rendered persist_harness.html (real worker base+HERO CSS, build 40a46aa2baee).",
+  "persistence_test": {
+    "before": {
+      "scrollY": 600,
+      "revealShown": true,
+      "filterVal": "量子纠错",
+      "detailsOpen": true,
+      "focused": "filter"
+    },
+    "theme_switches": 6,
+    "themes": [
+      "minimal",
+      "fresh",
+      "techno",
+      "cosmos",
+      "forest",
+      "warm"
+    ],
+    "all_state_preserved_every_theme": true,
+    "note": "switching data-theme (exactly what applyTheme does; the audit confirms applyTheme does only setAttribute+sync, no reload/navigate/innerHTML) preserves scroll / revealed answer / typed filter / details[open] across all six themes."
+  },
+  "state_css_computed": {
+    "success_state_colored": true,
+    "loading_dims_and_blocks": true,
+    "disabled_dims": true,
+    "active_rule_in_cssom": true,
+    "transform_transition_in_cssom": true
+  },
+  "undo_behavior_node_test": {
+    "file": "test-results/undo_behavior_test.js",
+    "result": "PASS (11/11)",
+    "note": "real extracted grade client code: click -> synchronous feedback + 0 writes; undo -> 0 writes ever; window elapse -> exactly 1 /api/grade write."
+  },
+  "conclusion": "Acceptance (1) 100ms feedback: :active is native (<16ms) + transform transition 80ms + the picked/undo controls appear synchronously on click (Node test). (2) theme switch preserves reading position/answers/filters/expand: PROVEN across all six themes."
+}

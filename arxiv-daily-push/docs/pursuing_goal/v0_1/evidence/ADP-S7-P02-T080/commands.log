@@ -1,0 +1,15 @@
+# ADP-S7-P02-T080 key commands (NOT_DEPLOYED; component states + Undo + cross-theme persistence)
+# 1) worker edits: base-CSS component-state matrix (:active/:disabled/[aria-busy]/:focus-visible/[data-state]/button.undo
+#    + button transition:transform .08s); two grade() flows -> optimistic Undo window (deferred write, cancelable,
+#    undo writes nothing) + aria-busy loading + try/catch [data-state=err]; run() try/catch + aria-busy + error.
+#    BUILD self-hash recomputed 9690390a9fc8 -> 40a46aa2baee.
+node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js        # SYNTAX OK
+# 2) tool: tools/component_state_audit.py (7-state matrix + undo-defer + applyTheme-persist audits, discriminating)
+# 3) behavioural test on the REAL extracted grade client code (stub DOM/fetch/timer):
+node evidence/ADP-S7-P02-T080/test-results/undo_behavior_test.js       # RESULT = PASS (11/11)
+# 4) in-app browser (real CSS): 6 theme switches preserve scroll/reveal/filter/details; state CSS computes
+# 5) acceptance verifier (re-derives from tool + worker + T079 baseline; load-bearing negative controls):
+python3 evidence/ADP-S7-P02-T080/test-results/t080_verify.py           # ACCEPTANCE = PASS, exit 0
+# 6) realtime: live /build.json still b189d3cc0703 (NOT deployed); source 40a46aa2baee
+curl -s https://adp.linzezhang.com/build.json
+# 7) independent adversarial skeptic -> verdict recorded in adversarial_review.md

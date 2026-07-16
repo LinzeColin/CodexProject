@@ -1,0 +1,9 @@
+state matrix: 7/7 present; feedback within 100ms (:active native + transform transition 0.08s)
+negative control: pre-fix CSS scores 0/7 states (must be 0)
+undo: click defers write, undo writes nothing (pre-fix scored 0/5); Node behavioural test = PASS
+persistence: applyTheme swaps attributes only (no reload/navigate/rebuild); poisoned-reload control detected
+browser proof: state preserved across 6 theme switches; all state CSS computes
+advanced visual preserved: specific change = ['base_css']; 6 themes + every motion byte-identical; gate BLOCKs without approval, PASS_APPROVED with one
+
+ACCEPTANCE = PASS
+NOTE: source build_id after the fix is 40a46aa2baee; NOT_DEPLOYED (live still serves the previous build). Empirical proofs: browser_measurements.json + test-results/undo_behavior_test.js.
