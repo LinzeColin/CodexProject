@@ -1,0 +1,13 @@
+A->B (noise only): {'body_changed': False, 'attachments_changed': False, 'status_changed': False, 'substantive': False, 'noise_only': True}
+B->C (body): {'body_changed': True, 'attachments_changed': False, 'status_changed': False, 'substantive': True, 'noise_only': False}
+C->D (attachment): {'body_changed': False, 'attachments_changed': True, 'status_changed': False, 'substantive': True, 'noise_only': False}
+D->E (status): {'body_changed': False, 'attachments_changed': False, 'status_changed': True, 'substantive': True, 'noise_only': False}
+over-strip guard: real '发布于…：' kept, timestamps stripped: True
+
+actions: ['created_v1', 'skipped_no_change', 'new_version', 'new_version', 'new_version', 'skipped_no_change']
+version chain: [(1, 'sha256:a2324e3', 'active'), (2, 'sha256:a25f16c', 'active'), (3, 'sha256:65be44a', 'active'), (4, 'sha256:7f0aea1', 'withdrawn')]
+
+replay: {'replays': 3, 'identical': True, 'fingerprint_sha': '2ea5241151d26560383cd00e5ae692b30f4a0b9d651f0806167faf2b486453d1'}
+re-ingest current tip (E x3) -> versions: 4 (idempotent)
+
+ACCEPTANCE = PASS

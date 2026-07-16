@@ -1,0 +1,29 @@
+# ADP-S2-P02-T026 commands (deterministic; no network/D1/R2/worker touched)
+# base: main e69a0559 (T025)
+
+# 1) tool + docs authored
+#    tools/version_engine.py         (strip_noise + substantive_signature + content_hash + diff + ingest + replay + CLI)
+#    VERSION_ENGINE_SPEC.md          (version-trigger signature, diff, append-only, replay idempotency, CLI)
+#    NOISE_RULES.md                  (conservative template-noise ruleset; the CJK-\b pitfall + fix documented)
+
+# 2) acceptance test (imports the tool under test)
+python3 evidence/ADP-S2-P02-T026/test-results/t026_verify.py | tee evidence/ADP-S2-P02-T026/test-results/version_tests.txt
+# -> A->B (noise only): noise_only=True, substantive=False        # footer/nav/share/counts/relative-time/copyright/ICP stripped
+# -> B->C (body):       body_changed=True, substantive=True
+# -> C->D (attachment): attachments_changed=True, body_changed=False
+# -> D->E (status):     status_changed=True, body_changed=False, attachments_changed=False
+# -> actions: ['created_v1','skipped_no_change','new_version','new_version','new_version','skipped_no_change']
+# -> version chain: v1..v4 (clean append-only), 4 distinct content_hashes
+# -> replay(3x) identical=True ; re-ingest current tip (E x3) -> versions stay 4 (idempotent)
+# -> ACCEPTANCE = PASS (exit 0)
+
+# 3) CLI over the fixtures -> data-sample report + determinism
+python3 tools/version_engine.py --items evidence/ADP-S2-P02-T026/fixtures.json --replays 3 --out evidence/ADP-S2-P02-T026/version_report.json
+# -> summary: items_in 6 / canonical_documents 1 / versions_total 4 / new_versions 3 / skipped_no_change 2 / replay_deterministic True
+python3 tools/version_engine.py --items evidence/ADP-S2-P02-T026/fixtures.json --out /tmp/r1.json
+python3 tools/version_engine.py --items evidence/ADP-S2-P02-T026/fixtures.json --out /tmp/r2.json
+diff /tmp/r1.json /tmp/r2.json   # -> byte-identical (deterministic)
+
+# NOT_DEPLOYED: no wrangler / no D1 write / no worker deploy. rules-only.
+# governance sync (fullwt @ origin/main), generate dashboard, lean_governance ci --changed-only == SHIP,
+# commit + push to LinzeColin/CodexProject main, poll CI double-green. (see changed_files.txt / git.diff)

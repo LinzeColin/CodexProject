@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S2-P02-T026", "stage": "S2 Durable Evidence & Versioning", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "only substantive changes (body / attachment set / status) create a DocumentVersion; template noise (footer, nav, share widgets, engagement counts, relative timestamps, cookie banners, ads, copyright, ICP) never inflates the version chain; ingestion is idempotent so any task can be safely replayed -- keeping the recoverable history clean and truthful",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "extend NOISE_RULES + fixtures when a new site's boilerplate appears; the engine is rules-only, not wired into the worker/D1 write path yet"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "fixture_result": {"items_in": 6, "canonical_documents": 1, "versions_total": 4, "new_versions": 3, "skipped_no_change": 2, "replay_deterministic": true},
+  "acceptance": {"body_change_adds_version": true, "attachment_change_adds_version": true, "status_change_adds_version": true, "footer_nav_change_no_version": true, "three_replays_identical": true}
+}

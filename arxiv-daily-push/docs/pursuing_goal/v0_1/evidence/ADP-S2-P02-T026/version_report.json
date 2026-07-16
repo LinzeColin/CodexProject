@@ -1,0 +1,95 @@
+{
+  "documents": {
+    "doi:10.5555/abc": [
+      {
+        "version_no": 1,
+        "content_hash": "sha256:a2324e34e556dcf44ad0910a8ee22a00f459437603e40e74b6fd3fc8ca0cd94f",
+        "status": "active",
+        "doc_date": "2026-03-01",
+        "attachment_keys": [
+          "h1"
+        ]
+      },
+      {
+        "version_no": 2,
+        "content_hash": "sha256:a25f16cf6d8eb830a905f4e5235aa1cdde1163c31c20344ff7aa1134a927449d",
+        "status": "active",
+        "doc_date": "2026-04-01",
+        "attachment_keys": [
+          "h1"
+        ]
+      },
+      {
+        "version_no": 3,
+        "content_hash": "sha256:65be44a7b04b1f1255aec4f8db6eb9a73b8a49712d3df35cd92a3b0ff31c31bd",
+        "status": "active",
+        "doc_date": "2026-04-01",
+        "attachment_keys": [
+          "h1",
+          "h2"
+        ]
+      },
+      {
+        "version_no": 4,
+        "content_hash": "sha256:7f0aea1c2db72f5ab621d1580959b7ace32047357ffc70a9ab847e2a28f1a943",
+        "status": "withdrawn",
+        "doc_date": "2026-04-01",
+        "attachment_keys": [
+          "h1",
+          "h2"
+        ]
+      }
+    ]
+  },
+  "actions": [
+    {
+      "canonical_id": "doi:10.5555/abc",
+      "action": "created_v1",
+      "version_no": 1,
+      "content_hash": "sha256:a2324e34e556dcf44ad0910a8ee22a00f459437603e40e74b6fd3fc8ca0cd94f"
+    },
+    {
+      "canonical_id": "doi:10.5555/abc",
+      "action": "skipped_no_change",
+      "version_no": 1,
+      "content_hash": "sha256:a2324e34e556dcf44ad0910a8ee22a00f459437603e40e74b6fd3fc8ca0cd94f"
+    },
+    {
+      "canonical_id": "doi:10.5555/abc",
+      "action": "new_version",
+      "version_no": 2,
+      "content_hash": "sha256:a25f16cf6d8eb830a905f4e5235aa1cdde1163c31c20344ff7aa1134a927449d"
+    },
+    {
+      "canonical_id": "doi:10.5555/abc",
+      "action": "new_version",
+      "version_no": 3,
+      "content_hash": "sha256:65be44a7b04b1f1255aec4f8db6eb9a73b8a49712d3df35cd92a3b0ff31c31bd"
+    },
+    {
+      "canonical_id": "doi:10.5555/abc",
+      "action": "new_version",
+      "version_no": 4,
+      "content_hash": "sha256:7f0aea1c2db72f5ab621d1580959b7ace32047357ffc70a9ab847e2a28f1a943"
+    },
+    {
+      "canonical_id": "doi:10.5555/abc",
+      "action": "skipped_no_change",
+      "version_no": 4,
+      "content_hash": "sha256:7f0aea1c2db72f5ab621d1580959b7ace32047357ffc70a9ab847e2a28f1a943"
+    }
+  ],
+  "replay": {
+    "replays": 3,
+    "identical": true,
+    "fingerprint_sha": "2ea5241151d26560383cd00e5ae692b30f4a0b9d651f0806167faf2b486453d1"
+  },
+  "summary": {
+    "items_in": 6,
+    "canonical_documents": 1,
+    "versions_total": 4,
+    "new_versions": 3,
+    "skipped_no_change": 2,
+    "replay_deterministic": true
+  }
+}

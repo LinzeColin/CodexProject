@@ -1,0 +1,8 @@
+[
+  {"canonical_id": "doi:10.5555/abc", "body": "研究发现 X 导致 Y。样本量 1000。", "status": "active", "attachments": [{"name": "paper.pdf", "sha256": "h1"}], "doc_date": "2026-03-01", "_note": "v1 baseline"},
+  {"canonical_id": "doi:10.5555/abc", "body": "研究发现 X 导致 Y。样本量 1000。\n责任编辑：李四\n阅读 12345\n分享到微信\n发布于 3 分钟前\n版权所有 © 2026 某网\n京ICP备12345号", "status": "active", "attachments": [{"name": "paper.pdf", "sha256": "h1"}], "doc_date": "2026-03-01", "_note": "NOISE ONLY: footer/nav/share/counts/relative-time/copyright/ICP -> must NOT add a version"},
+  {"canonical_id": "doi:10.5555/abc", "body": "研究发现 X 导致 Y。样本量已更正为 2000。\n责任编辑：李四\n阅读 999", "status": "active", "attachments": [{"name": "paper.pdf", "sha256": "h1"}], "doc_date": "2026-04-01", "_note": "SUBSTANTIVE body correction -> +version (noise still stripped)"},
+  {"canonical_id": "doi:10.5555/abc", "body": "研究发现 X 导致 Y。样本量已更正为 2000。\n责任编辑：李四\n阅读 999", "status": "active", "attachments": [{"name": "paper.pdf", "sha256": "h1"}, {"name": "supp.pdf", "sha256": "h2"}], "doc_date": "2026-04-01", "_note": "SUBSTANTIVE attachment added -> +version (body unchanged)"},
+  {"canonical_id": "doi:10.5555/abc", "body": "研究发现 X 导致 Y。样本量已更正为 2000。\n责任编辑：李四\n阅读 999", "status": "withdrawn", "attachments": [{"name": "paper.pdf", "sha256": "h1"}, {"name": "supp.pdf", "sha256": "h2"}], "doc_date": "2026-04-01", "_note": "SUBSTANTIVE status change active->withdrawn -> +version"},
+  {"canonical_id": "doi:10.5555/abc", "body": "研究发现 X 导致 Y。样本量已更正为 2000。\n责任编辑：李四\n阅读 999", "status": "withdrawn", "attachments": [{"name": "paper.pdf", "sha256": "h1"}, {"name": "supp.pdf", "sha256": "h2"}], "doc_date": "2026-04-01", "_note": "exact REPLAY of the tip -> idempotent, no new version"}
+]
