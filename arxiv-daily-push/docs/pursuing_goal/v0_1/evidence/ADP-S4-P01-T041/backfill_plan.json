@@ -1,0 +1,1151 @@
+{
+  "schema_version": "adp.backfill.v0_1",
+  "start": "2016-01",
+  "end": "2026-07",
+  "shard_count": 127,
+  "shards": [
+    {
+      "shard_id": "backfill/2016-01",
+      "year": 2016,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-02",
+      "year": 2016,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-03",
+      "year": 2016,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-04",
+      "year": 2016,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-05",
+      "year": 2016,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-06",
+      "year": 2016,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-07",
+      "year": 2016,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-08",
+      "year": 2016,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-09",
+      "year": 2016,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-10",
+      "year": 2016,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-11",
+      "year": 2016,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2016-12",
+      "year": 2016,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-01",
+      "year": 2017,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-02",
+      "year": 2017,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-03",
+      "year": 2017,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-04",
+      "year": 2017,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-05",
+      "year": 2017,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-06",
+      "year": 2017,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-07",
+      "year": 2017,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-08",
+      "year": 2017,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-09",
+      "year": 2017,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-10",
+      "year": 2017,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-11",
+      "year": 2017,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2017-12",
+      "year": 2017,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-01",
+      "year": 2018,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-02",
+      "year": 2018,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-03",
+      "year": 2018,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-04",
+      "year": 2018,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-05",
+      "year": 2018,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-06",
+      "year": 2018,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-07",
+      "year": 2018,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-08",
+      "year": 2018,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-09",
+      "year": 2018,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-10",
+      "year": 2018,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-11",
+      "year": 2018,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2018-12",
+      "year": 2018,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-01",
+      "year": 2019,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-02",
+      "year": 2019,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-03",
+      "year": 2019,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-04",
+      "year": 2019,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-05",
+      "year": 2019,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-06",
+      "year": 2019,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-07",
+      "year": 2019,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-08",
+      "year": 2019,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-09",
+      "year": 2019,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-10",
+      "year": 2019,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-11",
+      "year": 2019,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2019-12",
+      "year": 2019,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-01",
+      "year": 2020,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-02",
+      "year": 2020,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-03",
+      "year": 2020,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-04",
+      "year": 2020,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-05",
+      "year": 2020,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-06",
+      "year": 2020,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-07",
+      "year": 2020,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-08",
+      "year": 2020,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-09",
+      "year": 2020,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-10",
+      "year": 2020,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-11",
+      "year": 2020,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2020-12",
+      "year": 2020,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-01",
+      "year": 2021,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-02",
+      "year": 2021,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-03",
+      "year": 2021,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-04",
+      "year": 2021,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-05",
+      "year": 2021,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-06",
+      "year": 2021,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-07",
+      "year": 2021,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-08",
+      "year": 2021,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-09",
+      "year": 2021,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-10",
+      "year": 2021,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-11",
+      "year": 2021,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2021-12",
+      "year": 2021,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-01",
+      "year": 2022,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-02",
+      "year": 2022,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-03",
+      "year": 2022,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-04",
+      "year": 2022,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-05",
+      "year": 2022,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-06",
+      "year": 2022,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-07",
+      "year": 2022,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-08",
+      "year": 2022,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-09",
+      "year": 2022,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-10",
+      "year": 2022,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-11",
+      "year": 2022,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2022-12",
+      "year": 2022,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-01",
+      "year": 2023,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-02",
+      "year": 2023,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-03",
+      "year": 2023,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-04",
+      "year": 2023,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-05",
+      "year": 2023,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-06",
+      "year": 2023,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-07",
+      "year": 2023,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-08",
+      "year": 2023,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-09",
+      "year": 2023,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-10",
+      "year": 2023,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-11",
+      "year": 2023,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2023-12",
+      "year": 2023,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-01",
+      "year": 2024,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-02",
+      "year": 2024,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-03",
+      "year": 2024,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-04",
+      "year": 2024,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-05",
+      "year": 2024,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-06",
+      "year": 2024,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-07",
+      "year": 2024,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-08",
+      "year": 2024,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-09",
+      "year": 2024,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-10",
+      "year": 2024,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-11",
+      "year": 2024,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2024-12",
+      "year": 2024,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-01",
+      "year": 2025,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-02",
+      "year": 2025,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-03",
+      "year": 2025,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-04",
+      "year": 2025,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-05",
+      "year": 2025,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-06",
+      "year": 2025,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-07",
+      "year": 2025,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-08",
+      "year": 2025,
+      "month": 8,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-09",
+      "year": 2025,
+      "month": 9,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-10",
+      "year": 2025,
+      "month": 10,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-11",
+      "year": 2025,
+      "month": 11,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2025-12",
+      "year": 2025,
+      "month": 12,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2026-01",
+      "year": 2026,
+      "month": 1,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2026-02",
+      "year": 2026,
+      "month": 2,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2026-03",
+      "year": 2026,
+      "month": 3,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2026-04",
+      "year": 2026,
+      "month": 4,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2026-05",
+      "year": 2026,
+      "month": 5,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2026-06",
+      "year": 2026,
+      "month": 6,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    },
+    {
+      "shard_id": "backfill/2026-07",
+      "year": 2026,
+      "month": 7,
+      "status": "pending",
+      "last_confirmed_id": null,
+      "processed": 0,
+      "total": 0
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260717-ADP-V01-S3-P03-T039-A0-14DAY-SHADOW"
-source_snapshot_hash: "sha256:73e705543c040b98d9d020449ac6cdf2f700eeafff0f737e6e65f6ee0fe0c01f"
+as_of_event_id: "EVENT-20260717-ADP-V01-S3-P03-T040-BOARD3-A0-CANARY-SWITCH"
+source_snapshot_hash: "sha256:46d46ff043cb4483877fb9b6e96ca5dda43cb21dee7c52b1cb1403b108f7fa70"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-17T09:55:00+10:00"
+snapshot_event_time: "2026-07-17T10:40:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 99
+    precommit_pending_events: 100
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

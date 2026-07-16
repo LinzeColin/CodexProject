@@ -1,0 +1,11 @@
+planned 127 monthly shards: backfill/2016-01 .. backfill/2026-07
+run 1: status=done cursor_processed=10 newly_applied=10 | total_applied=10
+run 2: status=done cursor_processed=0 newly_applied=0 | total_applied=10
+run 3: status=done cursor_processed=0 newly_applied=0 | total_applied=10
+
+interrupted: applied 4 status=in_progress checkpoint=sha256:7883a679eeaa6...
+resumed: applied 6 more status=done total_applied=10 processed=10
+
+checkpoint schema: cn_backfill_shards with last_confirmed_id + status index; resume() path present
+
+ACCEPTANCE = PASS

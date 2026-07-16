@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S4-P01-T041", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "the 2016+ history backfill is split into 127 small monthly shards that are retryable, resumable, and idempotent -- running a shard any number of times produces no duplicates and an interrupted shard resumes exactly from its last confirmed checkpoint -- so recovering a decade of history can never double-count or lose work",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "planner + cursor semantics + checkpoint schema; not wired to real backfill fetching (that is the adapters + T042 three-lane engine + cloud wiring)"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "plan": {"start": "2016-01", "end": "2026-07", "monthly_shards": 127},
+  "acceptance": {"same_shard_3x_no_duplicates": true, "resume_from_last_checkpoint": true, "idempotent_by_content_id": true, "checkpoint_schema_present": true}
+}

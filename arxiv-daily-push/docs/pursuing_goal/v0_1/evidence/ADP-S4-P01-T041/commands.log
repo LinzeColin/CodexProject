@@ -1,0 +1,18 @@
+# ADP-S4-P01-T041 commands (resumable 2016+ backfill planner + cursor)
+# base: main 8b77d403 (T040)
+
+# 1) planner + cursor + checkpoint schema + resume CLI
+#    tools/backfill_planner.py   (plan_shards[monthly]; ShardCursor; process_shard[resume/idempotent/checkpoint];
+#                                 resume; CHECKPOINT_SCHEMA cn_backfill_shards; CLI)
+#    schemas/backfill_checkpoint.sql ; BACKFILL_PLANNER_SPEC.md
+#    evidence/.../backfill_plan.json (127 monthly shards 2016-01..2026-07)
+
+# 2) acceptance test
+python3 evidence/ADP-S4-P01-T041/test-results/t041_verify.py | tee evidence/ADP-S4-P01-T041/test-results/backfill_tests.txt
+# -> 127 monthly shards backfill/2016-01..backfill/2026-07
+# -> same shard 3x: run1 applies 10, runs 2/3 apply 0 -> applied 10 unique, NO duplicates
+# -> interrupt after 4 (status in_progress + checkpoint) -> resume applies exactly 6 more -> done, total 10, no redo/skip/dup
+# -> ACCEPTANCE = PASS (exit 0)
+
+# NOT_DEPLOYED: planner + cursor semantics; not wired to real backfill fetching.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
