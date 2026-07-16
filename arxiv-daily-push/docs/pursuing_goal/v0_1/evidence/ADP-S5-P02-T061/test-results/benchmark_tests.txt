@@ -1,0 +1,6 @@
+corpus=24 fts_baseline={'mrr': 1.0, 'recall@5': 0.875}
+synonym: {'mrr': 1.0, 'recall@5': 0.9167} rf=True adopt=True
+identity: {'mrr': 1.0, 'recall@5': 0.875} rf=True adopt=False
+bypass: {'mrr': 1.0, 'recall@5': 0.875} rf=False adopt=False
+
+ACCEPTANCE = PASS

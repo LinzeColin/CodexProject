@@ -1,0 +1,14 @@
+# ADP-S5-P02-T061 commands (FTS + semantic benchmark + adopt/reject ADR; NOT_DEPLOYED)
+
+# 1. tools/fts_benchmark.py -- build_fts / fts_search (IDF-weighted overlap) / mrr / recall_at_k /
+#    decide_adopt (adopt iff improves AND respects filters)
+
+# 2. build the benchmark: FTS baseline + 3 semantic experiments + ADR (deterministic)
+python3 evidence/ADP-S5-P02-T061/build_benchmark.py
+#    -> fts recall@5=0.875; synonym adopt=True (0.917 + respects filters); identity/bypass adopt=False
+
+# 3. acceptance verifier (ADR = improves AND respects filters; negative controls; re-derive from tool)
+python3 evidence/ADP-S5-P02-T061/test-results/t061_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

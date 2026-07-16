@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S5-P02-T061",
+  "stage": "S5 (Multi-board Depth & Benefit Parity) / P02 精确、结构化、全文与历史检索",
+  "value": {
+    "user_value": "An FTS benchmark + semantic-rerank experiment + adopt/reject ADR. On a fixed query set, FTS (deterministic, 0 external infra) is measured (MRR/recall), and three candidate semantic rerankers are benchmarked: a synonym-aware one that genuinely improves recall (0.875 -> 0.917) is ADOPTED; a non-improving one and a structured-filter-bypassing one are both REJECTED. Semantic/vector infrastructure is introduced only when it earns its cost -- never prematurely.",
+    "why_it_matters": "Competitors reach for semantic/vector search first and pay in cost, latency, and lost exactness. The discipline here -- adopt semantic ONLY if it beats FTS on a fixed set AND still respects structured filters -- is what keeps retrieval both deep and deterministic."
+  },
+  "cost": {
+    "note": "unknown != 0; FTS is in-process term-overlap with 0 external infra; a semantic layer would add index/query/latency/infra cost, justified only by the ADR rule.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "benchmark + ADR authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (FTS benchmark + semantic experiment + ADR; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

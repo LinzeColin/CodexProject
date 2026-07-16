@@ -1,0 +1,81 @@
+{
+  "task": "ADP-S5-P02-T061",
+  "corpus_docs": 24,
+  "queries": 6,
+  "fts_baseline": {
+    "mrr": 1.0,
+    "recall@5": 0.875
+  },
+  "experiments": {
+    "synonym_semantic": {
+      "metrics": {
+        "mrr": 1.0,
+        "recall@5": 0.9167
+      },
+      "respects_filters": true,
+      "decision": {
+        "adopt": true,
+        "improved": true,
+        "respects_filters": true,
+        "reasons": [
+          "semantic improves the fixed query set AND respects structured filters -> adopt"
+        ]
+      }
+    },
+    "identity_semantic": {
+      "metrics": {
+        "mrr": 1.0,
+        "recall@5": 0.875
+      },
+      "respects_filters": true,
+      "decision": {
+        "adopt": false,
+        "improved": false,
+        "respects_filters": true,
+        "reasons": [
+          "semantic did not improve the fixed query set -> not adopted"
+        ]
+      }
+    },
+    "bypass_semantic": {
+      "metrics": {
+        "mrr": 1.0,
+        "recall@5": 0.875
+      },
+      "respects_filters": false,
+      "decision": {
+        "adopt": false,
+        "improved": false,
+        "respects_filters": false,
+        "reasons": [
+          "semantic did not improve the fixed query set -> not adopted",
+          "semantic bypasses structured filters -> not adopted"
+        ]
+      }
+    }
+  },
+  "adr": {
+    "rule": "adopt a semantic layer ONLY if it improves the fixed query set AND respects structured filters",
+    "decision": {
+      "synonym_semantic": true,
+      "identity_semantic": false,
+      "bypass_semantic": false
+    },
+    "adopted": [
+      "synonym_semantic"
+    ]
+  },
+  "cost_latency_quality": {
+    "note": "FTS is O(corpus) term-overlap, in-process, 0 external infra; a semantic/vector layer would add index build + query cost + latency + infra -- justified ONLY by the ADR rule.",
+    "fts_external_infra": false,
+    "semantic_external_infra_if_adopted": true,
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "benchmark + ADR authoring"
+  },
+  "deployment": "NOT_DEPLOYED"
+}
