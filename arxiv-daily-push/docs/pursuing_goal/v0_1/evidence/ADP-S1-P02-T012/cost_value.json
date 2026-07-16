@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S1-P02-T012",
+  "stage": "S1 Truth & Content Stabilization",
+  "release_mode": "NOT_DEPLOYED",
+  "value_metric_s1": "single-source-of-truth schema base for sources: authority enum (China A0/A1/A2 only for official; media/search/aggregator can never be official_evidence), source identity uniqueness, enable/health/cursor fields; machine-enforced, groundwork for DRIFT-FACT-006 resolution",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "one registry row per new source, must pass validate_source_registry"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "acceptance_tests": "valid sample VALID; china_official A3 INVALID; china_official missing level INVALID; media official_evidence=true INVALID; duplicate source_id INVALID"
+}

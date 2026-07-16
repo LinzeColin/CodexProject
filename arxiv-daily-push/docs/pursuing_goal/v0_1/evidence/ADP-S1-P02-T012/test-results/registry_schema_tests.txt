@@ -1,0 +1,31 @@
+### POSITIVE valid sample
+registry: /var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/tmp2nmjqd72.json (7 sources)
+RESULT: VALID
+exit 0 -> VALID: True
+
+### NEGATIVE china_official level A3
+registry: /var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/tmpwzsoyxo6.json (7 sources)
+RESULT: INVALID
+  - schema violation: 'A3' is not one of ['A0', 'A1', 'A2']
+  - cn-gov-central: china_official authority_level 'A3' not in A0/A1/A2
+exit 1 -> INVALID: True
+
+### NEGATIVE media official_evidence=true
+registry: /var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/tmp01xxpyrv.json (7 sources)
+RESULT: INVALID
+  - schema violation: False was expected
+  - us-tech-finance-media: media source must not be official_evidence=true
+exit 1 -> INVALID: True
+
+### NEGATIVE duplicate source_id
+registry: /var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/tmpzomnsf2t.json (7 sources)
+RESULT: INVALID
+  - duplicate source_id(s): ['arxiv-all']
+exit 1 -> INVALID: True
+
+### NEGATIVE china_official missing level
+registry: /var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/tmphao7fbci.json (7 sources)
+RESULT: INVALID
+  - schema violation: 'authority_level' is a required property
+  - cn-gov-central: china_official authority_level None not in A0/A1/A2
+exit 1 -> INVALID: True

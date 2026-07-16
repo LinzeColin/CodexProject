@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "adp.source_registry.v0_1",
+  "title": "ADP V0.1 Unified Source Registry",
+  "description": "Single source of truth for all ADP sources across the five boards. Distinguishes official evidence from discovery. China official sources are restricted to authority levels A0/A1/A2; media/search/aggregator sources may never be marked as official evidence.",
+  "type": "object",
+  "required": ["registry_version", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "registry_version": {"type": "string"},
+    "generated_at": {"type": ["string", "null"]},
+    "sources": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/source"}
+    }
+  },
+  "definitions": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "name", "board", "authority_kind", "official_evidence", "enabled", "health_status"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$", "description": "unique identity across the whole registry"},
+        "name": {"type": "string"},
+        "board": {"type": "string", "enum": ["board1", "board2", "board3", "board4", "board5"]},
+        "platform": {"type": "string"},
+        "website": {"type": "string"},
+        "feed_url": {"type": "string"},
+        "method": {"type": "string", "enum": ["arxiv", "rss", "oai", "api", "html", "discovery"]},
+        "authority_kind": {"type": "string", "enum": ["china_official", "intl_official", "journal", "preprint", "media", "search", "aggregator"]},
+        "authority_level": {"type": "string", "enum": ["A0", "A1", "A2"], "description": "only for china_official: A0 national-central, A1 provincial, A2 key-city/important-district"},
+        "official_evidence": {"type": "boolean", "description": "true only for primary official/journal/preprint sources; media/search/aggregator MUST be false"},
+        "enabled": {"type": "boolean"},
+        "health_status": {"type": "string", "enum": ["healthy", "degraded", "down", "paused", "unknown"]},
+        "cursor": {"type": ["string", "null"], "description": "last-fetched marker for incremental pulls"},
+        "cadence": {"type": "string"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"authority_kind": {"const": "china_official"}}, "required": ["authority_kind"]},
+          "then": {"required": ["authority_level"], "properties": {"authority_level": {"enum": ["A0", "A1", "A2"]}}}
+        },
+        {
+          "if": {"properties": {"authority_kind": {"enum": ["media", "search", "aggregator"]}}, "required": ["authority_kind"]},
+          "then": {"properties": {"official_evidence": {"const": false}}}
+        }
+      ]
+    }
+  }
+}

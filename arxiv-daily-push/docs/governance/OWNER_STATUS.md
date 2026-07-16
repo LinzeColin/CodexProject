@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 - tree_bound_events: `17`
 - commit_bound_events: `13`
 - legacy_unbound_events: `334`
-- precommit_pending_events: `69`
-- pending_or_stale_events: `419`
-- freshness_counts: `pending_or_stale_events=419; legacy_unbound_events=334`
+- precommit_pending_events: `70`
+- pending_or_stale_events: `420`
+- freshness_counts: `pending_or_stale_events=420; legacy_unbound_events=334`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:6bb0ffad9bab587c371df585aeebe3c6fe32b075adc67818280c58712cddf127`
-- snapshot_event_time: `2026-07-16T13:50:00+10:00`
+- source_snapshot_hash: `sha256:08154fdff9f69707a4760e5708dd6a2dc53eee9fbef13892aad910d2ffd0e3d1`
+- snapshot_event_time: `2026-07-16T14:20:00+10:00`
 - generator_version: `4.0.1`
 - version: `0.23.1`
 - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`

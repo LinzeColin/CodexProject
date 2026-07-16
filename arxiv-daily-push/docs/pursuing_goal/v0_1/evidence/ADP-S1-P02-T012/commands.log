@@ -1,0 +1,14 @@
+# ADP-S1-P02-T012 commands.log · unified Source Registry schema
+# base commit 00c855a5 (T011 merged) ; schema/validator read-only, NOT_DEPLOYED
+
+## acceptance tests (positive + 4 negatives)
+$ python3 tools/validate_source_registry.py source_registry.sample.json  -> RESULT: VALID (exit 0)
+# china_official level A3        -> INVALID (schema enum + hard rule)
+# china_official missing level   -> INVALID (required + hard rule)
+# media official_evidence=true   -> INVALID (schema const false + hard rule)
+# duplicate source_id            -> INVALID (uniqueness)
+# full: test-results/registry_schema_tests.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

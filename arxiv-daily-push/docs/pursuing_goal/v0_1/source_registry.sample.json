@@ -1,0 +1,13 @@
+{
+  "registry_version": "adp.source_registry.sample.v0_1",
+  "generated_at": null,
+  "sources": [
+    {"source_id": "arxiv-all", "name": "arXiv 全站", "board": "board1", "platform": "arXiv OAI-PMH", "website": "https://arxiv.org", "feed_url": "http://export.arxiv.org/oai2", "method": "arxiv", "authority_kind": "preprint", "official_evidence": true, "enabled": true, "health_status": "healthy", "cursor": null, "cadence": "daily"},
+    {"source_id": "nature", "name": "Nature 本刊", "board": "board2", "platform": "nature.com 官方 RSS", "website": "https://www.nature.com", "feed_url": "https://www.nature.com/nature.rss", "method": "rss", "authority_kind": "journal", "official_evidence": true, "enabled": true, "health_status": "healthy", "cursor": null, "cadence": "daily"},
+    {"source_id": "cn-gov-central", "name": "国务院政策文件（国家中央）", "board": "board3", "platform": "gov.cn", "website": "https://www.gov.cn/zhengce/", "feed_url": "https://www.gov.cn/zhengce/zuixin/", "method": "html", "authority_kind": "china_official", "authority_level": "A0", "official_evidence": true, "enabled": true, "health_status": "healthy", "cursor": null, "cadence": "daily"},
+    {"source_id": "cn-prov-example", "name": "某省人民政府（省级）", "board": "board3", "platform": "省级门户", "website": "https://example.gov.cn", "feed_url": "https://example.gov.cn/rss", "method": "html", "authority_kind": "china_official", "authority_level": "A1", "official_evidence": true, "enabled": false, "health_status": "unknown", "cursor": null, "cadence": "daily"},
+    {"source_id": "cn-city-example", "name": "某重点城市政府（重点城市/重要区）", "board": "board3", "platform": "市级门户", "website": "https://city.example.gov.cn", "feed_url": "https://city.example.gov.cn/rss", "method": "html", "authority_kind": "china_official", "authority_level": "A2", "official_evidence": true, "enabled": false, "health_status": "unknown", "cursor": null, "cadence": "daily"},
+    {"source_id": "gnews-cn-policy", "name": "政策要闻（Google News 聚合，仅 discovery）", "board": "board3", "platform": "Google News RSS", "website": "https://news.google.com", "feed_url": "https://news.google.com/rss/search?q=policy", "method": "discovery", "authority_kind": "aggregator", "official_evidence": false, "enabled": true, "health_status": "healthy", "cursor": null, "cadence": "daily"},
+    {"source_id": "us-tech-finance-media", "name": "美国科技金融媒体（仅 discovery）", "board": "board4", "platform": "media RSS", "website": "https://example.com", "feed_url": "https://example.com/rss", "method": "rss", "authority_kind": "media", "official_evidence": false, "enabled": true, "health_status": "healthy", "cursor": null, "cadence": "daily"}
+  ]
+}
