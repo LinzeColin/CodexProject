@@ -1,0 +1,44 @@
+### check_dag.py
+TASK_INDEX: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/TASK_INDEX.csv
+unique task_ids: 90
+total dependency edges: 123
+RESULT: PASS (unique ids, count matches, no dangling deps, acyclic)
+exit=0
+
+### validate_evidence.py ADP-S0-P02-T007 (complete -> READY)
+task_id: ADP-S0-P02-T007
+evidence root: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence
+STATUS: READY_FOR_INDEPENDENT_VERIFICATION
+  (validator does NOT issue PASS; PASS/FAIL is an independent reviewer's decision)
+exit=0
+
+### validate_evidence.py ADP-S1-P01-T009 (no bundle -> INCOMPLETE)
+task_id: ADP-S1-P01-T009
+evidence root: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence
+STATUS: INCOMPLETE
+  - evidence bundle not found: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009
+exit=1
+
+### task_runner.py ADP-S0-P02-T007 (deps done -> READY)
+task_id: ADP-S0-P02-T007
+stage/phase: S0/S0-P02  size=S  release_mode=NOT_DEPLOYED
+title: 生成 Verified/Unknown/Assumption Drift Report
+dependencies (3): ['ADP-S0-P02-T004', 'ADP-S0-P02-T005', 'ADP-S0-P02-T006']
+STATUS: READY_FOR_INDEPENDENT_VERIFICATION
+  one task, one result; dependencies satisfied; evidence complete.
+  NOTE: this runner never issues PASS -- an independent context must judge PASS/FAIL.
+exit=0
+
+### task_runner.py ADP-S1-P01-T009 (dep T008 not ready -> BLOCKED)
+task_id: ADP-S1-P01-T009
+stage/phase: S1/S1-P01  size=S  release_mode=NOT_DEPLOYED
+title: 实现 Deployment Manifest Schema
+dependencies (1): ['ADP-S0-P03-T008']
+STATUS: BLOCKED_BY_DEPS
+  - dependency not READY: ADP-S0-P03-T008
+exit=1
+
+### task_runner.py BOGUS-ID (unknown)
+task_id: BOGUS-ID
+STATUS: UNKNOWN_TASK (not in TASK_INDEX.csv)
+exit=2

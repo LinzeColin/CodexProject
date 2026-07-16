@@ -1,0 +1,24 @@
+# ADP-S0-P03-T008 commands.log · task execution + independent-verification framework
+# baseline commit d2399d91 (T007 merged) ; all tools read-only
+
+## install machine roadmap
+# TASK_INDEX.csv <- package 06_TASK_INDEX.csv (90 rows, BOM stripped)
+
+## DAG check (acceptance: 90 unique, acyclic)
+$ python3 tools/check_dag.py
+# RESULT: PASS ; unique task_ids 90 ; dependency edges 123 ; no dangling ; acyclic ; exit 0
+
+## evidence validator (acceptance: missing evidence != PASS; never self-PASS)
+$ python3 tools/validate_evidence.py ADP-S0-P02-T007   -> READY_FOR_INDEPENDENT_VERIFICATION (exit 0)
+$ python3 tools/validate_evidence.py ADP-S1-P01-T009   -> INCOMPLETE (no bundle; exit 1)
+
+## task runner (one task, dependency gate, never PASS)
+$ python3 tools/task_runner.py ADP-S0-P02-T007   -> READY_FOR_INDEPENDENT_VERIFICATION (deps satisfied; exit 0)
+$ python3 tools/task_runner.py ADP-S1-P01-T009   -> BLOCKED_BY_DEPS (dep ADP-S0-P03-T008 not READY; exit 1)
+$ python3 tools/task_runner.py BOGUS-ID          -> UNKNOWN_TASK (exit 2)
+
+# full raw output: test-results/tool_selftest.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

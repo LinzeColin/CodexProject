@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260716-ADP-V01-S0-P02-T006-CLOUDFLARE-PRIVATE-BASELINE"
-source_snapshot_hash: "sha256:cb1220bf1aacd79eb3317162c3768a0208e2491c62abe37d6422da7d6d2e647f"
+as_of_event_id: "EVENT-20260716-ADP-V01-S0-P02-T007-DRIFT-REPORT"
+source_snapshot_hash: "sha256:9b6a4e7959f691d17dca0294343cbfee10f62c13663c624376856a61057b19d0"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-16T12:10:00+10:00"
+snapshot_event_time: "2026-07-16T12:30:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 64
+    precommit_pending_events: 65
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

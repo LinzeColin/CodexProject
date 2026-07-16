@@ -1,0 +1,11 @@
+{
+  "task": "ADP-S0-P03-T008",
+  "release_mode": "NOT_DEPLOYED",
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "one_time_cost": "CI/local compute only; no deploy, no D1/R2 op, no API call",
+  "value": "install the task-level anti-black-hole framework: 90-task machine index (unique + acyclic, verified by check_dag), evidence schema validator (missing evidence -> INCOMPLETE, never PASS), dependency-aware task_runner (BLOCKED_BY_DEPS gate), and evidence template; enforces one-task-one-result, machine-acceptance, and no implementer self-signed PASS",
+  "cost_unknowns_not_zero": [
+    "FACT-013 Cloudflare plan/billing (S0 Exit Owner)",
+    "FACT-015 private branches (S0 Exit Owner)"
+  ]
+}

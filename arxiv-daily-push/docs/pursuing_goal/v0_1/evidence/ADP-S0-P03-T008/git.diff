@@ -1,0 +1,825 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 58be6f2d6..6a48dbb98 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S0-P03-T008 (task/evidence/independent-review framework; S0 tooling)
++
++- Eighth task of the ADP V0.1 FINAL EXECUTION program (S0-P03), one task per run. Goal: guarantee one task = one result, rollbackable, machine-acceptable, and judged by an independent context. NOT_DEPLOYED, 0 recurring cloud cost; all tools are read-only and touch nothing in the worker/D1/production. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: TASK_INDEX.csv (the 90-task machine index from the package 06_TASK_INDEX.csv) and tools/ -- check_dag.py (dependency DAG checker), validate_evidence.py (evidence schema validator), task_runner.py (one-task-one-result + dependency gate), EVIDENCE_TEMPLATE.md, README.md. Verified by tool self-tests (evidence test-results/tool_selftest.txt): check_dag = PASS (90 unique task_ids, 123 dependency edges, no dangling deps, acyclic); validate_evidence returns INCOMPLETE when evidence is missing and only ever the strongest status READY_FOR_INDEPENDENT_VERIFICATION (never PASS); task_runner returns BLOCKED_BY_DEPS when a dependency is not yet READY, READY when deps+evidence are complete, UNKNOWN_TASK for a bad id; and the validator flags implementer self-signed Stage-Gate PASS. Acceptance met: 90 task IDs unique and acyclic; missing evidence cannot be PASS; the implementer cannot self-sign a Stage Gate. This completes Stage S0's tooling; the remaining S0 step is the S0 Exit Owner gate (confirm the private-facts snapshot has no critical omission, incl. FACT-013 plan/billing and FACT-015 private branches). Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-16 Australia/Sydney - ADP V0.1 task ADP-S0-P02-T007 (Verified/Unknown/Assumption drift report)
+ 
+ - Seventh task of the ADP V0.1 FINAL EXECUTION program (last of S0-P02), one task per run. Goal: separate public facts, Owner directives, inferences, unknowns, and stale facts. Docs-only synthesis of T004/T005/T006; release_mode NOT_DEPLOYED, 0 recurring cloud cost; no drift fixed (only classified). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: FACT_LEDGER.csv (20 rows classified VERIFIED_PUBLIC/OWNER_DIRECTIVE/VERIFIED_PRIVATE/UNVERIFIED_PRIVATE/ASSUMPTION_NOT_REQUIREMENT/DRIFT/STALE/PARTIAL, each with verification_status + assigned_task_or_gate), DRIFT_REPORT.md (Verified/Unknown/Assumption/Stale/Drift sections), and BLOCKING_LIST.md (A blocking items -> S0 Exit Owner, B drifts -> named later tasks, C not-blocking, D hard rules). Acceptance: CSV parses to 20 rows; the only two UNVERIFIED facts (FACT-013 plan/billing, FACT-015 private branches) are both assigned to the S0 Exit Owner gate; no requirement may be derived from UNKNOWN and UNKNOWN != 0. Three drifts (DRIFT-FACT-006 source-truth, DRIFT-FACT-007 status-doc, DRIFT-FACT-011 D1 legacy tables) are routed to named later tasks, not fixed here. FACT-016's 20TB envelope is explicitly rebutted by the measured 1.05MB D1. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION. This completes S0-P02; next is S0-P03-T008 then the S0 Exit Owner gate.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index b91ad85de..e247d8a90 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260716-ADP-V01-S0-P02-T006-CLOUDFLARE-PRIVATE-BASELINE"
+-source_snapshot_hash: "sha256:cb1220bf1aacd79eb3317162c3768a0208e2491c62abe37d6422da7d6d2e647f"
++as_of_event_id: "EVENT-20260716-ADP-V01-S0-P02-T007-DRIFT-REPORT"
++source_snapshot_hash: "sha256:9b6a4e7959f691d17dca0294343cbfee10f62c13663c624376856a61057b19d0"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-16T12:10:00+10:00"
++snapshot_event_time: "2026-07-16T12:30:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 64
++    precommit_pending_events: 65
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 671130f10..e3bf27e98 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-16 V0.1 S0-P03-T008: installed the task/evidence/independent-review framework (S0-P03, one task per run). NOT_DEPLOYED, 0 recurring cloud cost; all tools read-only. Deliverables under docs/pursuing_goal/v0_1/: TASK_INDEX.csv (90-task machine index) + tools/ (check_dag.py, validate_evidence.py, task_runner.py, EVIDENCE_TEMPLATE.md, README.md). Self-tests (test-results/tool_selftest.txt): check_dag PASS (90 unique task_ids, 123 edges, no dangling, acyclic); validate_evidence -> INCOMPLETE on missing evidence, only ever READY_FOR_INDEPENDENT_VERIFICATION otherwise (never PASS); task_runner -> BLOCKED_BY_DEPS / READY / UNKNOWN_TASK; validator flags implementer self-signed PASS. Acceptance: 90 IDs unique + acyclic; missing evidence cannot be PASS; implementer cannot self-sign a Stage Gate. Completes S0 tooling; remaining S0 step is the S0 Exit Owner gate (FACT-013 plan/billing + FACT-015 private branches). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S0-P02-T007: produced the Verified/Unknown/Assumption drift report (last S0-P02 task, one task per run). Docs-only synthesis of T004/T005/T006; release_mode NOT_DEPLOYED, 0 recurring cloud cost; no drift fixed (only classified). Deliverables under docs/pursuing_goal/v0_1/: FACT_LEDGER.csv (20 rows classified, each with verification_status + assigned_task_or_gate), DRIFT_REPORT.md, BLOCKING_LIST.md. CSV parses to 20 rows; the two UNVERIFIED facts FACT-013 (plan/billing) and FACT-015 (private branches) are both assigned to the S0 Exit Owner gate; no requirement may be derived from UNKNOWN, UNKNOWN != 0. Three drifts (DRIFT-FACT-006 source-truth, DRIFT-FACT-007 status-doc, DRIFT-FACT-011 D1 legacy tables) routed to named later tasks. FACT-016 20TB envelope rebutted by measured 1.05MB D1. Completes S0-P02; next S0-P03-T008 then S0 Exit Owner gate. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-16 V0.1 S0-P02-T006: read-only-exported the Cloudflare/D1/R2/cron private baseline (third S0-P02 task, one task per run). Read-only wrangler, release_mode NOT_DEPLOYED, 0 resources created, changed_db=false on all D1 reads, no settings changed, no secret recorded; captured 2026-07-16T00:31Z. Deliverable docs/pursuing_goal/v0_1/baselines/T006_CLOUDFLARE_PRIVATE_BASELINE.md + evidence/ADP-S0-P02-T006/private_baseline.json + raw outputs. Worker adp-cloud live version 455afd98 (2026-07-15T09:39Z), cron 30 20 * * *; D1 adp-mirror 1.05 MB, 14 tables (8 cloud cn_* + 6 legacy mirror/inbox), region OC/BNE, replication disabled, 24h read 3,503/write 3,864 queries, rows_read 221,565/written 13,426; counts cn_items 682/cn_sources 33/cn_selections 1/cn_lessons 1/cn_meta 0. R2 NOT_ENABLED (code 10042; not enabled by agent). Plan/billing UNVERIFIED_PRIVATE. Drift: DRIFT-FACT-011 (6 legacy tables beyond schema_cloud.sql) + DATA-EARLY-STAGE. FACT-011 VERIFIED, FACT-012 VERIFIED NOT_ENABLED, FACT-013 UNVERIFIED, FACT-014 PARTIAL, FACT-015 Owner. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION; FACT-013/FACT-015 to S0 Exit Owner gate.
+ - 2026-07-16 V0.1 S0-P02-T005: pinned the git/config/doc facts and listed the drift candidates (second S0-P02 task, one task per run). Read-only, release_mode NOT_DEPLOYED, 0 recurring cloud cost; nothing changed, no drift fixed (only recorded); captured 2026-07-16T00:20Z. Deliverable docs/pursuing_goal/v0_1/baselines/T005_GIT_CONFIG_DOC_FACTS.md + evidence/ADP-S0-P02-T005/facts.json. main 662a26df; Worker adp-cloud/worker_cloud.js/compat 2026-07-01/D1 DB->adp-mirror/cron 30 20 * * *; schema_cloud.sql 8 cn_* tables; boards_v0_3.yaml registry boards-v03-2 (5 boards, 41 sources); five key-file git blobs recorded and re-queryable. Drift candidates (recorded not fixed): DRIFT-FACT-006 source-truth (board3 config Google News/RSSHub vs worker hardcoded 人民网/中新网/新浪) and DRIFT-FACT-007 STATUS.yaml J5-cloud-native vs R6-tunnel/Mac coexistence. Live D1/R2/plan facts stay UNVERIFIED_PRIVATE (FACT-011..015, T006). NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index a73ec4dec..c542734fb 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `64`
+-- pending_or_stale_events: `414`
+-- freshness_counts: `pending_or_stale_events=414; legacy_unbound_events=334`
++- precommit_pending_events: `65`
++- pending_or_stale_events: `415`
++- freshness_counts: `pending_or_stale_events=415; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:cb1220bf1aacd79eb3317162c3768a0208e2491c62abe37d6422da7d6d2e647f`
+-- snapshot_event_time: `2026-07-16T12:10:00+10:00`
++- source_snapshot_hash: `sha256:9b6a4e7959f691d17dca0294343cbfee10f62c13663c624376856a61057b19d0`
++- snapshot_event_time: `2026-07-16T12:30:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 059e1e2ca..f164ca490 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:cb1220bf1aacd79eb3317162c3768a0208e2491c62abe37d6422da7d6d2e647f`
+-- snapshot_event_time: `2026-07-16T12:10:00+10:00`
++- source_snapshot_hash: `sha256:9b6a4e7959f691d17dca0294343cbfee10f62c13663c624376856a61057b19d0`
++- snapshot_event_time: `2026-07-16T12:30:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `414`
++- Pending/stale events: `415`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/TASK_INDEX.csv b/arxiv-daily-push/docs/pursuing_goal/v0_1/TASK_INDEX.csv
+new file mode 100644
+index 000000000..ac1c6b8ce
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/TASK_INDEX.csv
+@@ -0,0 +1,91 @@
++seq,task_id,stage_id,stage_name,phase_id,phase_name,priority,size,title,objective,dependencies,deliverables,acceptance,value_metric,cost_metric,rollback,release_mode,status
++1,ADP-S0-P01-T001,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P01,Owner 意图与权威顺序,P0,S,冻结 Owner 最新指令与权威顺序,把本轮最新要求写成唯一可执行的范围和优先级。,,CURRENT_SCOPE.md、OWNER_DIRECTIVES.yaml、precedence 规则。,所有冲突材料均可按权威顺序自动裁决；0 个 P0 指令缺失。,减少后续偏航和返工次数。,0 经常性云成本。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++2,ADP-S0-P01-T002,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P01,Owner 意图与权威顺序,P0,S,归档旧方向并建立冲突账本,保留全部历史细节但阻止旧 UI、A3+、多租户、TAM 等重新成为当前需求。,ADP-S0-P01-T001,ARCHIVED_NOT_CANONICAL.md、CONFLICT_LEDGER.csv。,每个被覆盖方向包含来源、旧结论、新裁决和理由。,旧材料可查但不会污染执行。,0 经常性云成本。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++3,ADP-S0-P01-T003,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P01,Owner 意图与权威顺序,P0,S,落库一句话 Pursuing Goal 与机器合同,让每个 Codex/Claude/ChatGPT 任务先读取同一目标和硬约束。,ADP-S0-P01-T001;ADP-S0-P01-T002,PURSUING_GOAL.txt、MACHINE_CONTRACT.yaml、hash。,一句话严格为单行；机器合同 YAML 可解析；后续任务均引用合同 hash。,跨线程/代理目标一致。,0 经常性云成本。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++4,ADP-S0-P02-T004,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P02,生产事实与未知项快照,P0,S,采集两个线上域名与核心路由基线,记录 Today、Radar、Review、System、Search、History 的实际响应和视觉状态。,ADP-S0-P01-T003,headers、HTML 摘要、路由状态、截图/录屏、采集时间。,不可访问项标 UNVERIFIED；不得把抓取失败写成站点失败。,得到真实用户面基线。,只读请求量。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++5,ADP-S0-P02-T005,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P02,生产事实与未知项快照,P0,S,采集 Git、配置和文档事实,固定当前 ADP commit、Worker 入口、source arrays、schema、cron 和互相矛盾文档。,ADP-S0-P01-T003,git_sha、file hashes、drift candidates、公开证据链接。,最新 commit 与关键文件 hash 可重查；文档冲突均列出。,避免按过期 README 开发。,0 经常性云成本。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++6,ADP-S0-P02-T006,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P02,生产事实与未知项快照,P0,S,采集 Cloudflare/D1/R2/Cron/费用私有基线,只读导出生产部署、数据库、对象存储、计划任务和近 31 天用量。,ADP-S0-P01-T003,deployment export、D1 schema/count/metrics、R2 usage、plan/billing snapshot、cron。,所有数值含时间范围和单位；无法访问项标 UNVERIFIED；不泄露 secret。,为容量、成本和迁移决策提供真实起点。,只读 API；0 资源创建。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++7,ADP-S0-P02-T007,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P02,生产事实与未知项快照,P0,S,生成 Verified/Unknown/Assumption Drift Report,把公开事实、Owner 指令、推断、未知和过期事实分开。,ADP-S0-P02-T004;ADP-S0-P02-T005;ADP-S0-P02-T006,FACT_LEDGER.csv、DRIFT_REPORT.md、阻断清单。,任何需求不得由 UNKNOWN 直接推导；P0 未知项分配到明确任务。,将幻觉风险变成可审计缺口。,0 经常性云成本。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++8,ADP-S0-P03-T008,S0,Canonical Baseline｜事实、范围与执行护栏,S0-P03,任务执行与独立验证工具,P0,M,安装小任务证据、验证和独立复核框架,确保一个任务一个结果、可回滚、可机器验收且由独立上下文复核。,ADP-S0-P02-T007,task runner、schema validator、evidence template、dependency DAG checker。,90 个任务 ID 唯一、依赖无环；缺证据时状态不能 PASS；实现者不能自签 Stage Gate。,防止大包开发和虚假完成。,仅 CI/本地计算。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++9,ADP-S1-P01-T009,S1,Truth & Content Stabilization｜真相与内容止血,S1-P01,Deployment Manifest 单一生产事实,P0,S,实现 Deployment Manifest Schema,把 commit、Worker、schema、source、parser、prompt、model 和 cron 绑定为一个可重建 manifest。,ADP-S0-P03-T008,schema、生成器、示例 manifest、secret redaction。,同 commit 干净构建两次除允许字段外 hash 一致。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++10,ADP-S1-P01-T010,S1,Truth & Content Stabilization｜真相与内容止血,S1-P01,Deployment Manifest 单一生产事实,P0,S,发布只读 Build Endpoint 与低干扰版本标识,让两个域名和测试工具能确认实际运行 build。,ADP-S1-P01-T009,/build.json 或等价端点、页脚 build id。,两个域名 build id、bundle hash、source hash、schema version 一致；不暴露 secret。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,CANARY,NOT_STARTED
++11,ADP-S1-P01-T011,S1,Truth & Content Stabilization｜真相与内容止血,S1-P01,Deployment Manifest 单一生产事实,P0,S,由 Manifest 生成 Status/部署文档,消除 STATUS 同时声称 Cloud-native 与 Tunnel 的矛盾。,ADP-S1-P01-T009;ADP-S1-P01-T010,generated status、stale section archive、CI drift check。,手写旧架构不能覆盖 generated current；文档与 build endpoint 一致。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++12,ADP-S1-P02-T012,S1,Truth & Content Stabilization｜真相与内容止血,S1-P02,Source Registry 单一来源事实,P0,S,定义统一 Source Registry Schema,覆盖现有五板块与中国 A0–A2，并区分 official evidence 与 discovery。,ADP-S0-P03-T008,schema、authority enum、source identity、enable/health/cursor fields。,A0/A1/A2 以外的中国官方等级验证失败；媒体不得标为官方证据。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++13,ADP-S1-P02-T013,S1,Truth & Content Stabilization｜真相与内容止血,S1-P02,Source Registry 单一来源事实,P0,S,迁移现有全部来源到 Registry,不改变现有抓取行为，先消除 YAML、Worker、D1 和 UI 多份来源真相。,ADP-S1-P02-T012,migration mapping、registry rows、legacy exception list。,迁移前后 fixture 输出相同；每个线上 source_id 在 Registry 唯一。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++14,ADP-S1-P02-T014,S1,Truth & Content Stabilization｜真相与内容止血,S1-P02,Source Registry 单一来源事实,P0,S,实现 Registry 编译器与确定性输出,由一个源生成 runtime、UI labels、D1 seed、health 和 backfill plan。,ADP-S1-P02-T013,compiler、validator、runtime JSON、UI JSON、seed SQL、registry hash。,连续两次编译字节一致；duplicate ID、非法 enabled、未知 authority 均失败。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++15,ADP-S1-P02-T015,S1,Truth & Content Stabilization｜真相与内容止血,S1-P02,Source Registry 单一来源事实,P0,S,加入 Source Drift CI,阻断新手写 source array、UI 标签漂移和 D1 未注册来源。,ADP-S1-P02-T014,repo scanner、runtime/D1 comparison、approved exception file。,注入一个第二来源数组或错误标签会使 CI 失败；正常 build 无误报。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++16,ADP-S1-P03-T016,S1,Truth & Content Stabilization｜真相与内容止血,S1-P03,Factsheet、人话版与质量门,P0,M,建立五板块 Factsheet Schema 与确定性抽取,先抽取稳定事实，再生成文字。,ADP-S1-P02-T014,common + board extensions、日期/文号/DOI/单位抽取器。,缺失字段为 null；200 个样本 P0 字段有人工基准。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++17,ADP-S1-P03-T017,S1,Truth & Content Stabilization｜真相与内容止血,S1-P03,Factsheet、人话版与质量门,P0,S,建立当前 200 样本内容缺陷基线,量化英文直出、重复、模板、无证据、空栏目和板块污染。,ADP-S1-P03-T016,baseline dataset、defect labels、before report。,每条缺陷可回到 item_id/document_id/build_id；不以主观描述代替样本。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++18,ADP-S1-P03-T018,S1,Truth & Content Stabilization｜真相与内容止血,S1-P03,Factsheet、人话版与质量门,P0,M,实现 L0–L3 分层人话内容与 Evidence Locator,输出 15 秒、2 分钟、深度和原始证据四层，并区分事实/解释/推断。,ADP-S1-P03-T016;ADP-S1-P03-T017,content contract、board prompts、claim locators、render payload。,中文 UI 无未解释大段英文；关键数字/日期/结果 100% 可定位证据。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++19,ADP-S1-P03-T019,S1,Truth & Content Stabilization｜真相与内容止血,S1-P03,Factsheet、人话版与质量门,P0,S,实现确定性 QA、单次重试与 Factsheet 回退,生成失败时宁可少讲，也不发布模板垃圾。,ADP-S1-P03-T018,language/empty/duplicate/unsupported/template checks、quarantine/fallback。,故意注入模型超时、重复和缺字段时最多重试一次，之后只发事实卡/原文。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++20,ADP-S1-P03-T020,S1,Truth & Content Stabilization｜真相与内容止血,S1-P03,Factsheet、人话版与质量门,P0,L,建立 500 条 Golden Set 与内容 Release Gate,将内容质量变成持续可验收的发布门。,ADP-S1-P03-T019,500 sample index、human rubric、CI gate、before/after report。,关键声明证据 100%；空章节/模板泄漏 0；P0 事实准确率 >=99%；失败只阻断内容 bundle。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++21,ADP-S2-P01-T021,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P01,R2 不可变原始证据双写,P0,S,定义 R2 RawArtifact Key、Hash、压缩与元数据,为不可变原始 HTML/PDF/附件建立稳定对象合同。,ADP-S1-P02-T015;ADP-S1-P03-T020,object key spec、sha256、mime、response metadata、compression policy。,同字节同 hash；不同 source/version 不覆盖；路径不含 secret/PII。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++22,ADP-S2-P01-T022,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P01,R2 不可变原始证据双写,P0,S,实现 Feature-flagged RawArtifact Dual-write,现有抓取成功后旁路保存原始字节，不改变发布主链。,ADP-S2-P01-T021,R2 writer、D1 artifact row、feature flag、retry/idempotency。,关闭 flag 时行为与基线相同；重试不产生重复对象。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++23,ADP-S2-P01-T023,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P01,R2 不可变原始证据双写,P0,M,运行 7 日/1000 Artifact Shadow 与成本性能报告,在扩历史前测量保存完整率、延迟和真实外推成本。,ADP-S2-P01-T022,shadow report、missing/hash report、p95 delta、cost extrapolation。,保存/hash/readback 100%；p95 增量在批准预算内；未通过不得进入版本迁移。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++24,ADP-S2-P02-T024,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P02,Canonical Document 与版本链,P0,S,定义 CanonicalDocument 身份、转载归并和去重规则,区分同一文档、转载、附件、修订和完全不同事件。,ADP-S2-P01-T023,identity spec、canonicalization fixtures、collision report。,同文重跑不增 document；转载归并但 artifact 保留；碰撞可解释。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++25,ADP-S2-P02-T025,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P02,Canonical Document 与版本链,P0,M,实施 DocumentVersion Schema、迁移与回滚,不覆盖历史，记录内容、附件、状态和日期变化。,ADP-S2-P02-T024,migration.sql、rollback.sql、indexes、schema version。,迁移前后行数/关系校验；回滚在隔离副本成功。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++26,ADP-S2-P02-T026,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P02,Canonical Document 与版本链,P0,S,实现版本 Diff、模板噪声过滤与 Replay 幂等,只对实质变化生成版本，任何任务可重放。,ADP-S2-P02-T025,diff engine、noise rules、replay CLI、fixtures。,正文/附件/状态实质变化增版本；页脚/导航变化不增；三次重放结果一致。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++27,ADP-S2-P03-T027,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P03,开放快照、恢复和编排成本,P0,M,生成 Monthly Parquet Snapshot 与 Manifest,为大规模历史分析、恢复和预测提供开放格式。,ADP-S2-P02-T026,partition writer、schema evolution、snapshot manifest、hash。,同一 logical snapshot 可重复生成；D1 抽样和 Parquet 行/关系一致。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++28,ADP-S2-P03-T028,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P03,开放快照、恢复和编排成本,P0,S,用 DuckDB 独立验证开放历史,避免恢复路径被单一 Cloudflare Beta 能力锁死。,ADP-S2-P03-T027,DuckDB checks、sample queries、rebuild report。,无 R2 SQL/Data Catalog 也能重建关键文档、版本、事件和信号计数。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++29,ADP-S2-P03-T029,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P03,开放快照、恢复和编排成本,P0,M,执行备份恢复与生命周期演练,证明 2016 月份、2020 月份和当前月份可恢复，明确永久与可再生数据。,ADP-S2-P03-T027;ADP-S2-P03-T028,restore runbook、isolation restore、retention matrix、result hashes。,随机正文、附件、关系、计数一致；原始官方证据和发布版本不得删除。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++30,ADP-S2-P03-T030,S2,Durable Evidence & Versioning｜原始证据、版本与恢复,S2-P03,开放快照、恢复和编排成本,P0,M,Queue/Workflows 编排与成本决策实验,先比较 Cron+Queue 与 Workflows，再决定是否引入新增复杂度。,ADP-S2-P01-T023;ADP-S2-P02-T026,at-least-once envelope、DLQ、idempotency test、step/operation cost benchmark、ADR。,Workflows 只有在可靠性收益高于新增步骤费用和维护复杂度时采用；否则保持简单路径。,减少任务丢失和人工恢复，同时避免架构过度。,实际 Queue operations、Workflow steps/storage 和维护工作量。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++31,ADP-S3-P01-T031,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P01,极简官方源 Connector Kernel,P0,S,实现最小 Official Connector Interface,只保留 discover/fetch/verify/normalize/attachments/cursor/health 必需能力。,ADP-S2-P03-T030,connector SDK、typed contract、adapter registry。,无业务 UI、图谱或新平台耦合；一个 mock connector 全链路通过。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++32,ADP-S3-P01-T032,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P01,极简官方源 Connector Kernel,P0,S,建立 Fixture 与 Contract Test Harness,网站模板变化时在 CI 发现，而不是上线后静默错抓。,ADP-S3-P01-T031,normal/attachment/pagination/changed fixtures、expected normalized JSON。,任一字段漂移、附件丢失或分页断裂会使相应 connector test 失败。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++33,ADP-S3-P01-T033,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P01,极简官方源 Connector Kernel,P0,S,实现官方身份验证与 A0 标记,使用官方域、主办单位、目录和可取得的网站标识码验证源。,ADP-S3-P01-T031,identity verifier、evidence fields、manual review state。,未验证 source 不能 enabled；搜索/媒体只能作为 discovery，不得获得 A0。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++34,ADP-S3-P02-T034,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P02,首批 A0 官方适配器,P0,M,接入国务院政策文件与国家法律法规入口,建立政策/法规原文、文号、日期、状态和附件的 A0 样板。,ADP-S3-P01-T032;ADP-S3-P01-T033,connectors、2016/2020/2024/current fixtures、cursor。,官方原文和附件可回放；日期类型不混淆；历史游标可恢复。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++35,ADP-S3-P02-T035,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P02,首批 A0 官方适配器,P0,M,接入国家统计与发改委官方入口,覆盖统计口径、指标、政策文件和公告。,ADP-S3-P01-T032;ADP-S3-P01-T033,connectors、unit/period/indicator extraction、fixtures。,统计 Claim 记录单位、期间、口径和修订；不从媒体数字形成事实。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++36,ADP-S3-P02-T036,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P02,首批 A0 官方适配器,P0,M,接入网信办与国家数据局官方入口,覆盖 AI、网络、数据治理和国家数据政策第一线内容。,ADP-S3-P01-T032;ADP-S3-P01-T033,connectors、attachments、consultation/status fixtures。,征求意见、正式文件、解读和新闻可区分；官方原文为 primary。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++37,ADP-S3-P03-T037,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P03,Board 3 准入、Shadow 与切换,P0,S,实现 Board 3 官方文档准入、类型和效力日期,在排序前排除新闻噪声并识别成文/发布/施行/失效。,ADP-S3-P02-T034;ADP-S3-P02-T035;ADP-S3-P02-T036,eligibility gate、document classifier、date/status extractors。,政策视图抽样 200 条污染率 <1%；关键日期准确率 >=99%。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++38,ADP-S3-P03-T038,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P03,Board 3 准入、Shadow 与切换,P0,S,实现媒体发现到官方原文解析与事件去重,允许媒体发现线索，但必须回到发布机关原文并合并转载。,ADP-S3-P03-T037,resolver、canonical event grouping、abstain path。,50 个媒体线索中有原文则绑定原文，无原文则 UNKNOWN/ABSTAIN；不冒充官方。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++39,ADP-S3-P03-T039,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P03,Board 3 准入、Shadow 与切换,P0,M,运行 A0 14 日 Shadow 与价值成本对比,对比现有媒体流和 A0 官方流的权威率、污染、及时、覆盖与成本。,ADP-S3-P03-T038,daily report、miss/false-positive analysis、cost per accepted item。,至少 14 个完整周期；不以单日样本决策；未达门槛继续 Shadow。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++40,ADP-S3-P03-T040,S3,China A0 Official Pilot｜中国中央国家级官方源小规模替换,S3-P03,Board 3 准入、Shadow 与切换,P0,M,Board 3 官方视图 Canary 与可回滚切换,通过 Gate 后将媒体降为 discovery，官方原文成为默认证据。,ADP-S3-P03-T039,feature flag、canary cohort、rollback、manifest update。,切换后官方证据率 100%；出现 P0 解析/延迟回归可在一个部署内回滚。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,CANARY,NOT_STARTED
++41,ADP-S4-P01-T041,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P01,可暂停可恢复的 Backfill Engine,P1,S,实现年度/月度分片 Backfill Planner 与 Cursor,将 2016+ 回填拆成小分片、可重试、可恢复的任务。,ADP-S3-P03-T040,planner、cursor schema、checkpoint、resume CLI。,同分片执行三次无重复；中断后从最后确认点恢复。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++42,ADP-S4-P01-T042,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P01,可暂停可恢复的 Backfill Engine,P1,S,建立 Realtime/Catchup/Backfill 三车道与自动暂停,保证历史回填永远不能拖垮当前第一线数据。,ADP-S4-P01-T041,priority rules、queue quotas、backpressure、kill switch。,压力测试时 realtime freshness P95 <=基线+20%；超阈值自动暂停 backfill。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++43,ADP-S4-P01-T043,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P01,可暂停可恢复的 Backfill Engine,P1,S,实现 Source-Year-Month Gap Detector,把全面性从来源数量变为可见的时间覆盖和缺口。,ADP-S4-P01-T041,coverage table、gap reasons、alerts。,每个 enabled source/year/month 有 count 或解释；0 个静默未解释空洞。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++44,ADP-S4-P01-T044,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P01,可暂停可恢复的 Backfill Engine,P1,S,建立 Source-Year 单位成本与维护看板,在扩每个 cohort 前知道抓取、存储、AI、失败和人工维护成本。,ADP-S4-P01-T042;ADP-S4-P01-T043,cost facts、throughput、failure/manual intervention metrics。,未知成本不得用 0；可计算每千 artifact 和每个 accepted material event 成本。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++45,ADP-S4-P02-T045,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P02,A0 2016+ 历史 cohort,P1,S,按用户价值选择 A0 回填 Cohort,先覆盖高价值中央/国家级领域，不按 Registry 顺序盲目全开。,ADP-S4-P01-T044,priority model、cohort manifest、expected benefit。,每个 source 有权威角色、历史起点、预期文档类型和停止规则。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++46,ADP-S4-P02-T046,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P02,A0 2016+ 历史 cohort,P1,L,执行 A0 2016+ Wave 1,回填第一批已证明稳定的 A0 来源。,ADP-S4-P02-T045,backfill manifests、raw/version counts、gap/cost report。,实时无回归；幂等、附件、版本和月份覆盖通过。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++47,ADP-S4-P02-T047,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P02,A0 2016+ 历史 cohort,P1,L,执行 A0 2016+ Wave 2,只在 Wave 1 价值成本 Gate 通过后扩大中央/国家级覆盖。,ADP-S4-P02-T046,second cohort data、comparison report。,相对 Wave 1 无质量退化；单位成本在批准区间；失败源隔离。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++48,ADP-S4-P02-T048,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P02,A0 2016+ 历史 cohort,P1,S,完成 A0 历史附件、修订和效力 QA Gate,验证历史不只是有 URL，而是有原文、附件、版本和状态。,ADP-S4-P02-T047,A0 acceptance pack、random readback、status/version samples。,100 个附件可读；修订链和 as-of 样本正确；0 个未解释 P0 缺口。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++49,ADP-S4-P03-T049,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P03,A1 省级与重点城市 cohort,P1,M,实现省级政府门户通用 Adapter Family,用少量模板族覆盖 A1，而不是为每省复制一套业务代码。,ADP-S4-P02-T048,adapter family、site profiles、override hooks、fixtures。,至少 3 种不同省级站点模板通过；特殊逻辑限制在 profile。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++50,ADP-S4-P03-T050,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P03,A1 省级与重点城市 cohort,P1,L,分批回填 31 个省级行政区,按 cohort 扩展省级政策、统计和专业主管部门数据。,ADP-S4-P03-T049,province cohorts、coverage/cost/health reports。,每批通过后才进入下一批；失败省隔离不阻塞全局。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++51,ADP-S4-P03-T051,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P03,A1 省级与重点城市 cohort,P1,L,分批接入重点城市级 A1,覆盖省会、副省级、计划单列及关键创新制造金融外贸城市。,ADP-S4-P03-T049;ADP-S4-P03-T050,city cohort manifests、official identity、2016 cursors。,每个城市有明确价值和官方原文；不为凑数量启用低价值源。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++52,ADP-S4-P03-T052,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P03,A1 省级与重点城市 cohort,P1,S,完成 A1 Coverage/Quality/Cost Gate,决定哪些省市进入持续生产，哪些降频或保持隔离。,ADP-S4-P03-T050;ADP-S4-P03-T051,A1 scorecard、promote/hold/disable decisions。,官方身份 100%；质量/及时/成本均有实际证据；决定可回滚。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++53,ADP-S4-P04-T053,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P04,A2 重要区与功能区 cohort,P1,M,接入首批 10 个高价值 A2,先验证重要区、新区、自贸片区和高新区的增量价值。,ADP-S4-P03-T052,A2 pilot profiles、2016+ cursors、local action signals。,每个 A2 产生中央/省级之外的实质增量；无价值源不晋级。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++54,ADP-S4-P04-T054,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P04,A2 重要区与功能区 cohort,P1,L,按边际价值扩展 A2 Registry,只扩展能提供项目、试点、招采、产业落地等第一线信号的 A2。,ADP-S4-P04-T053,A2 cohorts、marginal value report、health。,新增 cohort 的 verified useful signal rate 不低于既有 A2 基线。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++55,ADP-S4-P04-T055,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P04,A2 重要区与功能区 cohort,P1,S,完成 A2 Production Gate,把稳定高价值 A2 晋级，其他保持 disabled/低频。,ADP-S4-P04-T054,promotion ledger、cost/quality evidence、rollback。,0 个仅因数量目标晋级；每个晋级 source 有实际 30 日健康证据。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++56,ADP-S4-P05-T056,S4,2016+ A0/A1/A2 Expansion｜历史回填与地域扩展,S4-P05,Coverage Debt 与 As-of,P1,M,上线 Coverage Debt 与 As-of 历史查询底座,展示 2016+ 哪些地域/年份/类型完整，并支持截至某日恢复当时已知版本。,ADP-S4-P02-T048;ADP-S4-P03-T052;ADP-S4-P04-T055,coverage API、as-of query、historical manifest resolver。,100 个修订样本查询不同日期不使用未来版本；覆盖空洞可解释。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++57,ADP-S5-P01-T057,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P01,事件、实体和跨板块关系,P1,S,实现 Canonical Event 聚合,把同一政策/研究/事件的原文、解读、转载和反应聚成一个事件。,ADP-S4-P05-T056,event identity、primary selection、member links。,20 个同事件页面只产生 1 个提醒；所有证据仍可展开。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++58,ADP-S5-P01-T058,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P01,事件、实体和跨板块关系,P1,S,实现跨来源实体解析,统一机关、机构、作者、公司、地区、主题和标准等实体。,ADP-S5-P01-T057,entity schema、aliases、provenance、merge/split audit。,错误合并可撤销；实体来源和置信边界可追溯。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++59,ADP-S5-P01-T059,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P01,事件、实体和跨板块关系,P1,S,建立跨板块 Evidence Relation,连接政策、论文、标准、专利、统计、试点和招采，而不建无边界大图谱。,ADP-S5-P01-T058,relation types、evidence rules、query examples。,每条关系有文档/片段依据；无证据推断明确标记或不保存。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++60,ADP-S5-P02-T060,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P02,精确、结构化、全文与历史检索,P1,S,实现文号/DOI/机构/地域/日期/状态精确检索,先达到专业用户的确定性检索收益。,ADP-S5-P01-T058,exact index、structured filters、test corpus。,100 条精确标识第一结果命中率 100%；过滤结果与 SQL 基准一致。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++61,ADP-S5-P02-T061,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P02,精确、结构化、全文与历史检索,P1,S,基准测试全文与语义重排,只有精确/结构化不足时才引入语义层，避免过早向量基础设施。,ADP-S5-P02-T060,FTS benchmark、semantic experiment、cost/latency/quality ADR。,语义层必须提升固定查询集且不绕过结构化过滤；否则不采用。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++62,ADP-S5-P02-T062,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P02,精确、结构化、全文与历史检索,P1,S,实现版本、As-of 与新旧对照 API/视图,让用户看到真正变化、历史状态和原文位置。,ADP-S5-P02-T060;ADP-S4-P05-T056,version timeline、diff payload、as-of UX integration。,增删改可定位；模板噪声不显示；旧版可回放。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++63,ADP-S5-P03-T063,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P03,研究集合、证据与反证,P1,S,接入 DOI/Crossref/OpenAlex 等研究元数据增强,完善论文身份、作者、机构、版本和引用图，同时保持原始论文为证据。,ADP-S5-P01-T059,metadata adapters、dedup rules、degraded fallback。,预印本/期刊不混淆；增强失败不阻塞原始论文。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++64,ADP-S5-P03-T064,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P03,研究集合、证据与反证,P1,S,实现 Research Set、筛选与结构化比较,对齐 Elicit/Consensus 的研究集合收益。,ADP-S5-P03-T063,collection model、method/sample/result fields、comparison table。,Golden Set 中字段可回到原文；缺失不猜；筛选可重复。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++65,ADP-S5-P03-T065,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P03,研究集合、证据与反证,P1,S,实现引用支持、反驳与关系证据,对齐 Scite/ResearchRabbit/Litmaps 的证据和关系收益。,ADP-S5-P03-T064,citation context、support/counter/mention labels、graph view API。,标签有可查看上下文；不由标题或模型印象直接分类。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++66,ADP-S5-P04-T066,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P04,Watchlist、资料与知识有效性,P1,S,实现 Watchlist 与 Change-only Digest,持续监测主题、机构、地区、实体和文号，只推送实质变化。,ADP-S5-P01-T057;ADP-S5-P02-T062,rules、dedup notifications、daily/weekly digest、source silence signal。,重跑不重复通知；无变化不打扰；每条变化可定位。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++67,ADP-S5-P04-T067,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P04,Watchlist、资料与知识有效性,P1,S,实现 Library、笔记和 Provenance 导出,让阅读和证据成为长期资产，而不是只存在 Today。,ADP-S5-P02-T062,save/note/collection、Markdown/CSV/JSON export。,导出包含原始 URL、版本、抓取时间、claim evidence 和许可提示。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++68,ADP-S5-P04-T068,S5,Multi-board Depth & Benefit Parity｜多板块深度与竞品收益对齐,S5-P04,Watchlist、资料与知识有效性,P1,M,实现 Knowledge Validity 与 131 项收益对齐回归,当事实变化时重开旧知识，并确认竞品用户收益均有明确状态。,ADP-S5-P03-T065;ADP-S5-P04-T066;ADP-S5-P04-T067,validity clock、review invalidation、parity regression report。,旧知识因源变化自动标失效/重学；131 项无‘未知/无人负责’状态。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++69,ADP-S6-P01-T069,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P01,预测标签、快照和基线,P1,S,定义预测目标、Outcome Rule 与事件标签,先定义什么算发生，再训练任何模型。,ADP-S4-P05-T056;ADP-S5-P01-T059,target catalog、horizon、label SQL、settlement rules。,每个目标可由未来官方证据结算；模糊目标不得进入回测。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++70,ADP-S6-P01-T070,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P01,预测标签、快照和基线,P1,S,建立 Dataset Snapshot 与 observed_at 泄漏防线,确保 2026 回填的旧文件不会假装在历史时点已知。,ADP-S6-P01-T069,snapshot IDs、observed_at filters、leakage tests。,注入未来文档会使测试失败；任何预测可重建其当时数据集。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++71,ADP-S6-P01-T071,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P01,预测标签、快照和基线,P1,S,建立历史频率、季节性和简单统计基线,复杂模型必须先打败便宜可解释基线。,ADP-S6-P01-T070,baseline models、metrics、benchmark report。,每个目标至少有一个可重跑基线；无基线不得开发高级模型。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++72,ADP-S6-P02-T072,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P02,滚动回测、校准与 Ledger,P1,M,实现 2016+ Rolling-origin Backtest,用真实时间顺序验证泛化和领先时间。,ADP-S6-P01-T071,split generator、run manifests、results。,至少三个滚动窗口；训练/验证时间不交叉；结果可重跑。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++73,ADP-S6-P02-T073,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P02,滚动回测、校准与 Ledger,P1,S,实现校准、技能分数与 Forecast Ledger,长期保存成功和失败，不只展示漂亮案例。,ADP-S6-P02-T072,Brier/logloss/calibration/skill、ledger schema、reliability plots。,任何用户可见概率有历史校准；失败记录不可删除。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++74,ADP-S6-P03-T074,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P03,窄目标预测 Shadow,P1,S,Shadow 来源静默预测,预测官方源异常静默或采集故障，并区分两者。,ADP-S6-P02-T073,model/baseline、alerts、outcomes。,优于简单发布周期基线；误报和人工价值可量化。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++75,ADP-S6-P03-T075,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P03,窄目标预测 Shadow,P1,M,Shadow 主题加速与中央—地方扩散预测,利用 2016+ 事件链预测研究加速和 A0→A1→A2 扩散。,ADP-S6-P02-T073,two pilot targets、support/counter signals、lead-time report。,三个窗口优于基线；目标和 horizon 预定义；无确定语气。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++76,ADP-S6-P03-T076,S6,Prediction & Backtest｜预测、校准与失败历史,S6-P03,窄目标预测 Shadow,P1,S,完成完整 Horizon Shadow 与上线/停止决策,只有跨完整期限持续有技能的预测才能显示给用户。,ADP-S6-P03-T074;ADP-S6-P03-T075,shadow closeout、release decision、rollback/disable flag。,Brier skill 为正且稳定、校准可接受、用户领先价值明确；否则停止。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,SHADOW,NOT_STARTED
++77,ADP-S7-P01-T077,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P01,六主题与高级动效不可破坏基线,P1,S,冻结六主题视觉与关键动效录屏基线,把最新恢复的主题和氛围层作为不可删除合同。,ADP-S0-P02-T004,6 themes × routes × 5 viewports screenshots、interaction recordings、asset hashes。,Owner 确认基线；reduced-motion 单独记录。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++78,ADP-S7-P01-T078,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P01,六主题与高级动效不可破坏基线,P1,S,建立 Visual/Motion Regression CI,每个 UI PR 自动发现主题、动效和品牌语义损失。,ADP-S7-P01-T077,visual diff thresholds、recording checks、approved-change process。,删除任一主题/氛围层的模拟 PR 会被阻断；允许的像素差有说明。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++79,ADP-S7-P02-T079,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P02,移动端、组件状态与状态保持,P1,S,修复移动端溢出与数据密集布局,在 360/390/430 宽度下处理长 URL、文号、表格、关系和 diff。,ADP-S7-P01-T078,responsive fixes、test matrix、screenshots。,无全页横向滚动；局部表格横滚受控；现有高级视觉保持。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++80,ADP-S7-P02-T080,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P02,移动端、组件状态与状态保持,P1,S,补齐组件状态、Undo 与跨主题状态保持,让每个操作有即时反馈并避免切换主题丢失任务状态。,ADP-S7-P01-T078,state matrix、pressed/loading/error/success/disabled/undo、persistence tests。,点击 100ms 内反馈；切主题不丢阅读位置、答案、筛选和展开状态。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++81,ADP-S7-P03-T081,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P03,RUM、CWV、动效与数据性能,P1,S,接入按主题/路由/设备分段的 RUM 与 CWV,先知道哪里慢，再优化。,ADP-S7-P02-T079;ADP-S7-P02-T080,RUM events、dashboard、baseline p75。,LCP/INP/CLS 可按主题、路由、设备和网络查询；无数据不声称达标。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++82,ADP-S7-P03-T082,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P03,RUM、CWV、动效与数据性能,P1,S,优化环境动效而不改变视觉语义,暂停离屏/后台、懒加载、粒子自适应、合成器动画和长任务。,ADP-S7-P03-T081,before/after traces、FPS、visual recordings。,中位 >=55 FPS；低端设备自动降级环境层但前景反馈不消失。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++83,ADP-S7-P03-T083,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P03,RUM、CWV、动效与数据性能,P1,M,优化 Bundle、D1 查询、流式布局和长列表,降低首屏、交互、搜索和历史视图等待。,ADP-S7-P03-T081,bundle diff、query plans/indexes、virtualization、skeleton stability。,CWV 达标；D1 rows scanned 和 p95 查询下降；无布局跳动回归。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++84,ADP-S7-P04-T084,S7,"UI/UX, Motion & Performance｜保留高级感的细节和性能打磨",S7-P04,证据、历史和数据密集视图精修,P1,M,精修证据、内容层级、Diff、可访问性与 Reduced Motion,在不替换设计的前提下，让专业信息更清楚、更可操作。,ADP-S7-P02-T080;ADP-S7-P03-T082;ADP-S7-P03-T083,component polish、focus/keyboard/semantics、content hierarchy report。,关键任务键盘/触屏完成；证据/推断区分清晰；reduced-motion 不丢功能。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++85,ADP-S8-P01-T085,S8,"Release, Soak & Final Handoff｜发布、浸泡与最终验收",S8-P01,集成、迁移、回滚和恢复演练,P1,L,执行全链路迁移与数据一致性彩排,在隔离环境重放从 source registry 到发布/历史/预测的全链路。,ADP-S1-P03-T020;ADP-S2-P03-T029;ADP-S3-P03-T040;ADP-S4-P05-T056;ADP-S5-P04-T068;ADP-S6-P03-T076;ADP-S7-P04-T084,rehearsal manifest、row/hash counts、diff report。,关键计数/关系一致；无未解释数据丢失；不碰生产。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++86,ADP-S8-P01-T086,S8,"Release, Soak & Final Handoff｜发布、浸泡与最终验收",S8-P01,集成、迁移、回滚和恢复演练,P1,M,执行生产回滚与灾难恢复演练,证明 Worker、D1、R2、Registry、内容 bundle 和预测均可回到已知点。,ADP-S8-P01-T085,rollback drill、restore drill、RTO/RPO actuals、evidence hashes。,隔离演练完成且结果一致；任何不可恢复项成为 release blocker。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++87,ADP-S8-P01-T087,S8,"Release, Soak & Final Handoff｜发布、浸泡与最终验收",S8-P01,集成、迁移、回滚和恢复演练,P1,S,召开最终 Value-Cost Gate,使用实际数据决定哪些来源、功能、模型和历史规模值得持续。,ADP-S8-P01-T085;ADP-S8-P01-T086,scorecard、keep/scale/hold/stop decisions、budget guardrails。,所有 recurring cost 有价值指标；没有证据的组件保持关闭；Owner 签署。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,NOT_DEPLOYED,NOT_STARTED
++88,ADP-S8-P02-T088,S8,"Release, Soak & Final Handoff｜发布、浸泡与最终验收",S8-P02,Canary、浸泡与停线演练,P1,M,执行 Feature-flagged Canary,逐项打开新路径而不是大爆炸切换。,ADP-S8-P01-T087,canary plan、cohorts、kill switches、monitoring。,每个 flag 可独立回滚；错误预算触发自动停止。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,CANARY,NOT_STARTED
++89,ADP-S8-P02-T089,S8,"Release, Soak & Final Handoff｜发布、浸泡与最终验收",S8-P02,Canary、浸泡与停线演练,P1,L,完成 14 次连续日运行浸泡与停线演练,验证长期稳定、来源静默、回填压力、模型降级和恢复。,ADP-S8-P02-T088,daily manifests、incident drills、SLA/quality/cost trends。,14 次真实日运行无 Sev-1/2；所有 stop-the-line trigger 至少演练一次。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,PRODUCTION,NOT_STARTED
++90,ADP-S8-P03-T090,S8,"Release, Soak & Final Handoff｜发布、浸泡与最终验收",S8-P03,最终追溯、验收和交接,P1,M,关闭 100% 追溯并交付最终运行包,把需求、任务、测试、证据、commit、build、成本、Known Gaps 和下一版边界闭环。,ADP-S8-P02-T089,final manifest、acceptance report、operations runbook、known gaps、next version backlog。,90/90 任务有终态；所有 P0 requirement 有 PASS 证据或明确 Owner waiver；ZIP/hash 可复验。,完成前后必须报告对应 Stage 的用户价值指标。,报告新增请求、D1 行读写、R2 字节/操作、模型调用、人工维护量；未知不得填 0。,恢复到任务前 commit/feature flag；不得改写既有生产数据。,PRODUCTION,NOT_STARTED
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/TASK_REPORT.md
+new file mode 100644
+index 000000000..e63cc9474
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/TASK_REPORT.md
+@@ -0,0 +1,70 @@
++# TASK_REPORT · ADP-S0-P03-T008｜安装小任务证据、验证和独立复核框架
++
++## 唯一目标（达成）
++
++确保一个任务一个结果、可回滚、可机器验收且由独立上下文复核 —— 交付 task runner、schema validator、evidence template、dependency DAG checker。
++
++## 六个开始前问题（已回答，方允许编码）
++
++1. 唯一目标：安装任务级证据/验证/独立复核工具，机器可验收且不允许自签 PASS。
++2. 允许修改文件：仅 `docs/pursuing_goal/v0_1/TASK_INDEX.csv` + `docs/pursuing_goal/v0_1/tools/*`（check_dag.py、validate_evidence.py、task_runner.py、EVIDENCE_TEMPLATE.md、README.md）+ 本证据包 + 治理同步文件；无 worker/schema/生产代码。
++3. 绝不能改变：已上线 MVP、六主题、高级动效、实时稳定；工具**只读**，不修改仓库/生产。NOT_DEPLOYED。
++4. 基线：main `d2399d91`（= origin/main，T007 已合入）；90 任务索引源自最终包 06_TASK_INDEX.csv。
++5. 验收：90 个 task ID 唯一、依赖无环；缺证据时状态不能 PASS；实现者不能自签 Stage Gate。
++6. 回滚：`git revert <sha>`；纯工具/文档新增，NOT_DEPLOYED，无生产影响。
++
++## 交付物
++
++- `docs/pursuing_goal/v0_1/TASK_INDEX.csv` —— 90 任务机器索引（task_id/stage/phase/priority/size/dependencies/release_mode/…）。
++- `tools/check_dag.py` —— 依赖 DAG 检查（唯一/存在/无环）。
++- `tools/validate_evidence.py` —— 证据 schema 校验（必需文件/完成标记/未自签 PASS/cost 可解析）。
++- `tools/task_runner.py` —— 一任务一结果 + 依赖门 + 证据校验。
++- `tools/EVIDENCE_TEMPLATE.md` —— 每任务证据包模板。
++- `tools/README.md` —— 用法与硬规则。
++
++## 验收结果（实测，见 test-results/tool_selftest.txt）
++
++- **90 唯一 + 无环**：`check_dag.py` → `RESULT: PASS`（unique task_ids 90，dependency edges 123，无 dangling，无环），exit 0。
++- **缺证据不能 PASS**：`validate_evidence.py ADP-S1-P01-T009`（无 bundle）→ `STATUS: INCOMPLETE`，exit 1。
++- **完整证据也只到 READY（不 PASS）**：`validate_evidence.py ADP-S0-P02-T007` → `READY_FOR_INDEPENDENT_VERIFICATION`（显式声明不发 PASS），exit 0。
++- **依赖门**：`task_runner.py ADP-S1-P01-T009`（依赖 T008 未就绪）→ `BLOCKED_BY_DEPS`，exit 1；`ADP-S0-P02-T007`（依赖已就绪）→ READY，exit 0。
++- **未知任务**：`task_runner.py BOGUS-ID` → `UNKNOWN_TASK`，exit 2。
++- **实现者不能自签**：validator 检测 TASK_REPORT 中的 `Verifier: PASS / gate: pass` 等自签模式并判 INCOMPLETE；所有工具最强只到 READY。
++
++## Data / Performance / Visual
++
++- Data：无写入（工具只读）。
++- Performance：本地/CI 计算，毫秒级。
++- Visual：无变更。
++
++## Value / Cost
++
++- Value：防止大包开发和虚假完成 —— 每任务须过 DAG + 证据 + 依赖门，且 PASS 只能由独立上下文判定。
++- Cost：**仅 CI/本地计算**，0 经常性云成本。
++
++## Known gaps
++
++见 `known_gaps.md`（工具为静态校验；运行时/内容质量不在其内；status 字段不自动回写）。
++
++## 不适用证据项
++
++`migration.sql/rollback.sql`（无 schema）、`benchmarks`（无性能压测）、`screenshots-or-videos`（无 UI）、`data-samples`（无数据）、`deployment_manifest.preview.json`（NOT_DEPLOYED）—— 均 N/A。
++
++## 完成声明
++
++```text
++Task: ADP-S0-P03-T008
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: TASK_INDEX.csv + 5 tools/* + 证据（含 test-results）+ 治理同步（见 changed_files.txt）
++Tests: tool_selftest.txt —— check_dag PASS / validate READY|INCOMPLETE / runner READY|BLOCKED|UNKNOWN（exit 码符合预期）；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: check_dag 90 唯一无环；validator 缺证据=INCOMPLETE 且从不发 PASS；runner 依赖门 + 一任务一结果
++Data/Performance/Visual: N/A（工具只读）
++Value: 防大包/防虚假完成；PASS 仅独立复核可判
++Cost: 0 经常性云成本（仅 CI/本地计算）
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED
++Rollback: git revert <sha>（纯工具/文档新增）
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/commands.log
+new file mode 100644
+index 000000000..689a9ea90
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/commands.log
+@@ -0,0 +1,24 @@
++# ADP-S0-P03-T008 commands.log · task execution + independent-verification framework
++# baseline commit d2399d91 (T007 merged) ; all tools read-only
++
++## install machine roadmap
++# TASK_INDEX.csv <- package 06_TASK_INDEX.csv (90 rows, BOM stripped)
++
++## DAG check (acceptance: 90 unique, acyclic)
++$ python3 tools/check_dag.py
++# RESULT: PASS ; unique task_ids 90 ; dependency edges 123 ; no dangling ; acyclic ; exit 0
++
++## evidence validator (acceptance: missing evidence != PASS; never self-PASS)
++$ python3 tools/validate_evidence.py ADP-S0-P02-T007   -> READY_FOR_INDEPENDENT_VERIFICATION (exit 0)
++$ python3 tools/validate_evidence.py ADP-S1-P01-T009   -> INCOMPLETE (no bundle; exit 1)
++
++## task runner (one task, dependency gate, never PASS)
++$ python3 tools/task_runner.py ADP-S0-P02-T007   -> READY_FOR_INDEPENDENT_VERIFICATION (deps satisfied; exit 0)
++$ python3 tools/task_runner.py ADP-S1-P01-T009   -> BLOCKED_BY_DEPS (dep ADP-S0-P03-T008 not READY; exit 1)
++$ python3 tools/task_runner.py BOGUS-ID          -> UNKNOWN_TASK (exit 2)
++
++# full raw output: test-results/tool_selftest.txt
++
++## 治理门（提交步骤记录）
++$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
++$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/cost_value.json
+new file mode 100644
+index 000000000..a61f4cff2
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/cost_value.json
+@@ -0,0 +1,11 @@
++{
++  "task": "ADP-S0-P03-T008",
++  "release_mode": "NOT_DEPLOYED",
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "one_time_cost": "CI/local compute only; no deploy, no D1/R2 op, no API call",
++  "value": "install the task-level anti-black-hole framework: 90-task machine index (unique + acyclic, verified by check_dag), evidence schema validator (missing evidence -> INCOMPLETE, never PASS), dependency-aware task_runner (BLOCKED_BY_DEPS gate), and evidence template; enforces one-task-one-result, machine-acceptance, and no implementer self-signed PASS",
++  "cost_unknowns_not_zero": [
++    "FACT-013 Cloudflare plan/billing (S0 Exit Owner)",
++    "FACT-015 private branches (S0 Exit Owner)"
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/known_gaps.md
+new file mode 100644
+index 000000000..ff9ddab95
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S0-P03-T008
++
++- **静态校验，非语义校验**：工具校验证据**结构/依赖/DAG**，不判断业务内容是否正确 —— 这正是「实现者不自签、由独立上下文判 PASS/FAIL」的设计意图。
++- **status 不自动回写**：TASK_INDEX.csv 的 `status` 列不由工具自动更新；任务完成状态以 development_events.jsonl + git 历史为准，工具只做就绪校验。
++- **依赖就绪 = 证据 READY**：task_runner 以「依赖有通过 validate_evidence 的证据包」判定依赖就绪，不校验依赖是否已被独立复核 PASS（独立复核发生在框架之外）。
++- **validate_evidence 的自签检测是启发式**：匹配常见自签模式（`Verifier: PASS` 等）；刻意规避的措辞可能漏检 —— 独立复核仍是最终防线。
++- FACT-013 / FACT-015 仍 UNVERIFIED，交 S0 Exit Owner；本任务未涉及。
++- 独立验证：本报告以 `IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION` 结束，PASS/FAIL 由独立上下文判定，实现者不自签。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/test-results/tool_selftest.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/test-results/tool_selftest.txt
+new file mode 100644
+index 000000000..852bee5e2
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S0-P03-T008/test-results/tool_selftest.txt
+@@ -0,0 +1,44 @@
++### check_dag.py
++TASK_INDEX: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/TASK_INDEX.csv
++unique task_ids: 90
++total dependency edges: 123
++RESULT: PASS (unique ids, count matches, no dangling deps, acyclic)
++exit=0
++
++### validate_evidence.py ADP-S0-P02-T007 (complete -> READY)
++task_id: ADP-S0-P02-T007
++evidence root: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence
++STATUS: READY_FOR_INDEPENDENT_VERIFICATION
++  (validator does NOT issue PASS; PASS/FAIL is an independent reviewer's decision)
++exit=0
++
++### validate_evidence.py ADP-S1-P01-T009 (no bundle -> INCOMPLETE)
++task_id: ADP-S1-P01-T009
++evidence root: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence
++STATUS: INCOMPLETE
++  - evidence bundle not found: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P01-T009
++exit=1
++
++### task_runner.py ADP-S0-P02-T007 (deps done -> READY)
++task_id: ADP-S0-P02-T007
++stage/phase: S0/S0-P02  size=S  release_mode=NOT_DEPLOYED
++title: 生成 Verified/Unknown/Assumption Drift Report
++dependencies (3): ['ADP-S0-P02-T004', 'ADP-S0-P02-T005', 'ADP-S0-P02-T006']
++STATUS: READY_FOR_INDEPENDENT_VERIFICATION
++  one task, one result; dependencies satisfied; evidence complete.
++  NOTE: this runner never issues PASS -- an independent context must judge PASS/FAIL.
++exit=0
++
++### task_runner.py ADP-S1-P01-T009 (dep T008 not ready -> BLOCKED)
++task_id: ADP-S1-P01-T009
++stage/phase: S1/S1-P01  size=S  release_mode=NOT_DEPLOYED
++title: 实现 Deployment Manifest Schema
++dependencies (1): ['ADP-S0-P03-T008']
++STATUS: BLOCKED_BY_DEPS
++  - dependency not READY: ADP-S0-P03-T008
++exit=1
++
++### task_runner.py BOGUS-ID (unknown)
++task_id: BOGUS-ID
++STATUS: UNKNOWN_TASK (not in TASK_INDEX.csv)
++exit=2
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/EVIDENCE_TEMPLATE.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/EVIDENCE_TEMPLATE.md
+new file mode 100644
+index 000000000..7a658ba6f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/EVIDENCE_TEMPLATE.md
+@@ -0,0 +1,70 @@
++# 证据包模板 · ADP V0.1 每任务
++
++> 复制此结构到 `docs/pursuing_goal/v0_1/evidence/<TASK_ID>/`。**缺任何适用项，状态只能是 INCOMPLETE。**
++> 每任务开工前先答 6 个问题；完成以 `IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION` 结束；**实现者不自签 Stage Gate PASS**。
++
++## 目录结构
++
++```text
++evidence/<TASK_ID>/
++  TASK_REPORT.md              # 必需：见下方骨架
++  changed_files.txt           # 必需：非空；与 git diff --name-only 逐字一致
++  commands.log                # 必需：可复现验收命令与结果
++  cost_value.json             # 必需：含 release_mode + recurring_cloud_cost_delta_usd_month（UNKNOWN≠0）
++  known_gaps.md               # 必需：未解决项 + 派工
++  git.diff                    # 适用：改动补丁
++  test-results/               # 适用：代码任务
++  benchmarks/before.json+after.json   # 适用：性能任务
++  screenshots-or-videos/      # 适用：UI 任务（二进制不入仓时以文字+指纹替代并说明）
++  data-samples/               # 适用：数据任务
++  migration.sql + rollback.sql# 适用：schema 任务
++  deployment_manifest.preview.json    # 适用：部署任务（NOT_DEPLOYED 标 N/A）
++```
++
++## TASK_REPORT.md 骨架
++
++```markdown
++# TASK_REPORT · <TASK_ID>｜<标题>
++
++## 唯一目标（达成）
++<一句话>
++
++## 六个开始前问题（已回答）
++1. 唯一目标；2. 允许修改文件；3. 绝不能改变的行为；4. 基线 build+data；5. 验收命令+业务验证；6. 回滚。
++
++## 交付物
++<列出并指向文件>
++
++## 验收结果（实测）
++<逐条对照 acceptance>
++
++## Data / Performance / Visual
++<before → after 或 N/A>
++
++## Value / Cost
++- Value：<measured>
++- Cost：<measured；UNKNOWN≠0>
++
++## Known gaps
++见 known_gaps.md
++
++## 不适用证据项
++<列出 N/A 项及原因>
++
++## 完成声明
++​```text
++Task / Commit / Files changed / Tests / Business evidence /
++Data-Performance-Visual / Value / Cost / Known gaps /
++Deployment / Rollback / Verifier: 待独立上下文复核（实现者不自签 PASS）
++​```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
++```
++
++## 自检（提交前）
++
++```bash
++python3 tools/check_dag.py                       # 90 唯一 + 无环
++python3 tools/validate_evidence.py <TASK_ID>     # READY 或 INCOMPLETE（不会给 PASS）
++python3 tools/task_runner.py <TASK_ID>           # 依赖就绪 + 证据完整（不会给 PASS）
++```
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/README.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/README.md
+new file mode 100644
+index 000000000..79191593a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/README.md
+@@ -0,0 +1,34 @@
++# ADP V0.1 · 任务执行与独立验证工具（S0-P03-T008）
++
++> 目标：**一个任务一个结果、可回滚、可机器验收、由独立上下文复核**。防止大包开发和虚假完成。
++
++## 组件
++
++| 文件 | 作用 |
++|---|---|
++| `../TASK_INDEX.csv` | 90 任务机器索引（task_id / stage / phase / priority / size / dependencies / release_mode / …），源自最终包 `06_TASK_INDEX.csv`。 |
++| `check_dag.py` | **依赖 DAG 检查**：90 个 task_id 唯一、依赖引用存在、无环（拓扑）。 |
++| `validate_evidence.py` | **证据 schema 校验**：必需文件齐全、含完成标记、未自签 PASS、cost_value 可解析。缺证据→INCOMPLETE。 |
++| `task_runner.py` | **一任务一结果**：查 TASK_INDEX、校验依赖已 READY、校验本任务证据。输出单一状态。 |
++| `EVIDENCE_TEMPLATE.md` | 每任务证据包模板 + TASK_REPORT 骨架 + 提交前自检。 |
++
++## 用法
++
++```bash
++cd docs/pursuing_goal/v0_1
++python3 tools/check_dag.py                     # 期望 RESULT: PASS（90 唯一 / 无环）
++python3 tools/validate_evidence.py <TASK_ID>   # READY_FOR_INDEPENDENT_VERIFICATION 或 INCOMPLETE
++python3 tools/task_runner.py <TASK_ID>         # BLOCKED_BY_DEPS / INCOMPLETE / READY_FOR_INDEPENDENT_VERIFICATION
++```
++
++## 硬规则（反黑洞）
++
++- **绝不 PASS**：所有工具最强只到 `READY_FOR_INDEPENDENT_VERIFICATION`；PASS/FAIL 由独立上下文判定，实现者不自签。
++- **缺证据 = INCOMPLETE**：任一必需证据缺失即 INCOMPLETE，不得声明完成。
++- **依赖门**：task_runner 校验每个依赖已至少 READY，未就绪→BLOCKED_BY_DEPS。
++- **一任务一结果**：runner 只处理单个 task_id。
++- **只读**：三个工具都不修改任何仓库/生产文件。
++
++## 与治理门的关系
++
++这些工具是**任务级**自检（证据/依赖/DAG）；仓库级发布仍走 `scripts/lean_governance.py ci --changed-only`（治理同步门）与 GitHub CI。两者叠加：任务 READY + 治理门 SHIP + CI 双绿 + 独立复核 PASS 才算真正完成。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/check_dag.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/check_dag.py
+new file mode 100644
+index 000000000..b21c487c3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/check_dag.py
+@@ -0,0 +1,116 @@
++#!/usr/bin/env python3
++"""ADP V0.1 dependency DAG checker.
++
++Validates TASK_INDEX.csv:
++  1. every task_id is unique;
++  2. expected task count (default 90);
++  3. every dependency references an existing task_id;
++  4. the dependency graph is acyclic (topological sort succeeds).
++
++Exit 0 only when all checks pass. Never mutates anything.
++
++Usage:
++  python3 check_dag.py [--index PATH] [--expect N]
++"""
++import argparse, csv, sys, pathlib
++
++HERE = pathlib.Path(__file__).resolve().parent
++DEFAULT_INDEX = HERE.parent / "TASK_INDEX.csv"
++
++
++def load(index_path):
++    with open(index_path, newline="", encoding="utf-8-sig") as f:
++        rows = list(csv.DictReader(f))
++    tasks = {}
++    order = []
++    for r in rows:
++        tid = (r.get("task_id") or "").strip()
++        deps_raw = (r.get("dependencies") or "").strip()
++        deps = [d.strip() for d in deps_raw.replace(",", ";").split(";") if d.strip()]
++        tasks.setdefault(tid, []) if tid not in tasks else None
++        if tid in tasks and order.count(tid):
++            pass
++        tasks[tid] = deps
++        order.append(tid)
++    return rows, tasks, order
++
++
++def find_cycle(tasks):
++    """Return a cycle path if one exists, else None. Iterative DFS with colors."""
++    WHITE, GRAY, BLACK = 0, 1, 2
++    color = {t: WHITE for t in tasks}
++    parent = {}
++    for start in tasks:
++        if color[start] != WHITE:
++            continue
++        stack = [(start, iter(tasks.get(start, [])))]
++        color[start] = GRAY
++        while stack:
++            node, it = stack[-1]
++            advanced = False
++            for dep in it:
++                if dep not in tasks:
++                    continue  # dangling dep handled separately
++                if color[dep] == GRAY:
++                    # back edge -> cycle; reconstruct
++                    cycle = [dep, node]
++                    p = parent.get(node)
++                    while p is not None and p != dep:
++                        cycle.append(p); p = parent.get(p)
++                    cycle.append(dep)
++                    return list(reversed(cycle))
++                if color[dep] == WHITE:
++                    color[dep] = GRAY
++                    parent[dep] = node
++                    stack.append((dep, iter(tasks.get(dep, []))))
++                    advanced = True
++                    break
++            if not advanced:
++                color[node] = BLACK
++                stack.pop()
++    return None
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--index", default=str(DEFAULT_INDEX))
++    ap.add_argument("--expect", type=int, default=90)
++    args = ap.parse_args()
++
++    rows, tasks, order = load(args.index)
++    problems = []
++
++    # 1. duplicate ids
++    dupes = sorted({t for t in order if order.count(t) > 1})
++    if dupes:
++        problems.append(f"duplicate task_id(s): {dupes}")
++
++    # 2. count
++    unique_ids = list(tasks.keys())
++    if len(unique_ids) != args.expect:
++        problems.append(f"expected {args.expect} unique task_ids, found {len(unique_ids)}")
++
++    # 3. dangling deps
++    dangling = sorted({d for deps in tasks.values() for d in deps if d not in tasks})
++    if dangling:
++        problems.append(f"dependencies referencing unknown task_id(s): {dangling}")
++
++    # 4. cycle
++    cycle = find_cycle(tasks)
++    if cycle:
++        problems.append("dependency cycle: " + " -> ".join(cycle))
++
++    print(f"TASK_INDEX: {args.index}")
++    print(f"unique task_ids: {len(unique_ids)}")
++    print(f"total dependency edges: {sum(len(v) for v in tasks.values())}")
++    if problems:
++        print("RESULT: FAIL")
++        for p in problems:
++            print("  - " + p)
++        sys.exit(1)
++    print("RESULT: PASS (unique ids, count matches, no dangling deps, acyclic)")
++    sys.exit(0)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/task_runner.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/task_runner.py
+new file mode 100644
+index 000000000..cb1b26269
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/task_runner.py
+@@ -0,0 +1,91 @@
++#!/usr/bin/env python3
++"""ADP V0.1 task runner -- one task, one result, dependency-aware, never self-PASS.
++
++Given a task_id, it:
++  1. looks the task up in TASK_INDEX.csv (must exist, exactly one);
++  2. lists its declared dependencies and checks each dependency has an evidence
++     bundle that passes validate_evidence (i.e. dependency is at least
++     READY_FOR_INDEPENDENT_VERIFICATION);
++  3. validates the task's own evidence bundle;
++  4. prints a single status for the single task.
++
++Statuses: BLOCKED_BY_DEPS / INCOMPLETE / READY_FOR_INDEPENDENT_VERIFICATION.
++It NEVER prints PASS -- PASS/FAIL is an independent reviewer's decision. It does
++not mutate anything.
++
++Usage:
++  python3 task_runner.py <task_id>
++"""
++import argparse, csv, sys, pathlib
++
++HERE = pathlib.Path(__file__).resolve().parent
++INDEX = HERE.parent / "TASK_INDEX.csv"
++EVID = HERE.parent / "evidence"
++
++sys.path.insert(0, str(HERE))
++import validate_evidence as ve  # noqa: E402
++
++
++def load_index():
++    with open(INDEX, newline="", encoding="utf-8-sig") as f:
++        rows = list(csv.DictReader(f))
++    by_id = {}
++    for r in rows:
++        by_id[(r.get("task_id") or "").strip()] = r
++    return by_id
++
++
++def deps_of(row):
++    raw = (row.get("dependencies") or "").strip()
++    return [d.strip() for d in raw.replace(",", ";").split(";") if d.strip()]
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("task_id")
++    args = ap.parse_args()
++
++    by_id = load_index()
++    if args.task_id not in by_id:
++        print(f"task_id: {args.task_id}")
++        print("STATUS: UNKNOWN_TASK (not in TASK_INDEX.csv)")
++        sys.exit(2)
++
++    row = by_id[args.task_id]
++    deps = deps_of(row)
++    print(f"task_id: {args.task_id}")
++    print(f"stage/phase: {row.get('stage_id')}/{row.get('phase_id')}  size={row.get('size')}  release_mode={row.get('release_mode')}")
++    print(f"title: {row.get('title')}")
++    print(f"dependencies ({len(deps)}): {deps or '(none)'}")
++
++    # 1. dependency readiness
++    unmet = []
++    for d in deps:
++        if d not in by_id:
++            unmet.append(f"{d} (not in index)")
++            continue
++        probs = ve.validate(d, str(EVID))
++        if probs:
++            unmet.append(d)
++    if unmet:
++        print("STATUS: BLOCKED_BY_DEPS")
++        for d in unmet:
++            print(f"  - dependency not READY: {d}")
++        sys.exit(1)
++
++    # 2. this task's own evidence
++    probs = ve.validate(args.task_id, str(EVID))
++    if probs:
++        print("STATUS: INCOMPLETE")
++        for p in probs:
++            print("  - " + p)
++        sys.exit(1)
++
++    print("STATUS: READY_FOR_INDEPENDENT_VERIFICATION")
++    print("  one task, one result; dependencies satisfied; evidence complete.")
++    print("  NOTE: this runner never issues PASS -- an independent context must judge PASS/FAIL.")
++    sys.exit(0)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/validate_evidence.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/validate_evidence.py
+new file mode 100644
+index 000000000..a372e7a35
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/validate_evidence.py
+@@ -0,0 +1,96 @@
++#!/usr/bin/env python3
++"""ADP V0.1 evidence-bundle schema validator.
++
++Checks that a task's evidence bundle at evidence/<task_id>/ is complete and
++machine-acceptable. Enforces the anti-black-hole rules:
++  - missing any required evidence  -> status can only be INCOMPLETE (never PASS);
++  - the implementer may NOT self-sign a Stage Gate PASS. This validator therefore
++    NEVER prints PASS; the strongest status it can emit is
++    READY_FOR_INDEPENDENT_VERIFICATION.
++
++Required evidence files (per the task package template):
++  TASK_REPORT.md, changed_files.txt, commands.log, cost_value.json, known_gaps.md
++
++Semantic checks:
++  - TASK_REPORT.md must contain the completion marker
++    IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION;
++  - TASK_REPORT.md must NOT contain an implementer-issued Stage Gate PASS;
++  - cost_value.json must parse and carry release_mode +
++    recurring_cloud_cost_delta_usd_month (UNKNOWN != 0 is a documentation rule);
++  - changed_files.txt must be non-empty.
++
++Exit 0 => READY_FOR_INDEPENDENT_VERIFICATION; exit 1 => INCOMPLETE.
++
++Usage:
++  python3 validate_evidence.py <task_id> [--root EVIDENCE_DIR]
++"""
++import argparse, json, sys, pathlib
++
++HERE = pathlib.Path(__file__).resolve().parent
++DEFAULT_ROOT = HERE.parent / "evidence"
++REQUIRED = ["TASK_REPORT.md", "changed_files.txt", "commands.log", "cost_value.json", "known_gaps.md"]
++MARKER = "IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION"
++# an implementer self-signing a gate PASS looks like a Verifier line asserting PASS
++SELF_SIGN_PATTERNS = ["verifier: pass", "verdict: pass", "stage gate: pass", "gate=pass", "gate: pass"]
++
++
++def validate(task_id, root):
++    bundle = pathlib.Path(root) / task_id
++    problems = []
++    if not bundle.is_dir():
++        return [f"evidence bundle not found: {bundle}"]
++
++    present = {p.name for p in bundle.iterdir() if p.is_file()}
++    for req in REQUIRED:
++        if req not in present:
++            problems.append(f"missing required evidence: {req}")
++
++    report = bundle / "TASK_REPORT.md"
++    if report.exists():
++        text = report.read_text(encoding="utf-8")
++        if MARKER not in text:
++            problems.append(f"TASK_REPORT.md missing completion marker {MARKER}")
++        low = text.lower()
++        for pat in SELF_SIGN_PATTERNS:
++            if pat in low:
++                problems.append(f"TASK_REPORT.md appears to self-sign a Stage Gate PASS ('{pat}') -- implementer must not self-sign")
++
++    cost = bundle / "cost_value.json"
++    if cost.exists():
++        try:
++            obj = json.loads(cost.read_text(encoding="utf-8"))
++            if "release_mode" not in obj:
++                problems.append("cost_value.json missing release_mode")
++            if "recurring_cloud_cost_delta_usd_month" not in obj:
++                problems.append("cost_value.json missing recurring_cloud_cost_delta_usd_month")
++        except Exception as e:
++            problems.append(f"cost_value.json does not parse: {e}")
++
++    cf = bundle / "changed_files.txt"
++    if cf.exists() and not cf.read_text(encoding="utf-8").strip():
++        problems.append("changed_files.txt is empty")
++
++    return problems
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("task_id")
++    ap.add_argument("--root", default=str(DEFAULT_ROOT))
++    args = ap.parse_args()
++
++    problems = validate(args.task_id, args.root)
++    print(f"task_id: {args.task_id}")
++    print(f"evidence root: {args.root}")
++    if problems:
++        print("STATUS: INCOMPLETE")
++        for p in problems:
++            print("  - " + p)
++        sys.exit(1)
++    print("STATUS: READY_FOR_INDEPENDENT_VERIFICATION")
++    print("  (validator does NOT issue PASS; PASS/FAIL is an independent reviewer's decision)")
++    sys.exit(0)
++
++
++if __name__ == "__main__":
++    main()
