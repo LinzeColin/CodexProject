@@ -1,0 +1,31 @@
+{
+  "wave1_gate": "PASS",
+  "wave2_sources_attempted": [
+    "gov-cn-fagui",
+    "stats-gov",
+    "ndrc-gov",
+    "cac-gov"
+  ],
+  "wave2_docs": 11,
+  "per_source": {
+    "gov-cn-fagui": 6,
+    "stats-gov": 5
+  },
+  "months_covered": [
+    "2019-04",
+    "2020-12",
+    "2021-09",
+    "2021-10",
+    "2022-01",
+    "2026-07"
+  ],
+  "failed_sources_isolated": [],
+  "comparison_vs_wave1": {
+    "wave1_docs": 7,
+    "wave1_months": 6,
+    "wave2_docs": 11,
+    "wave2_months": 6,
+    "quality_no_regression": true,
+    "idempotent_same_pipeline": true
+  }
+}

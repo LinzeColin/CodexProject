@@ -1,0 +1,100 @@
+[
+  {
+    "source_id": "gov-cn-fagui",
+    "url": "https://www.gov.cn/zhengce/content/2019-04/15/content_5382991.htm",
+    "month": "2019-04",
+    "canonical_id": "ttl:cc498decfffd318b",
+    "attachments": 0,
+    "doc_number": "国令第711号"
+  },
+  {
+    "source_id": "gov-cn-fagui",
+    "url": "https://www.gov.cn/zhengce/content/2020-12/21/content_5571847.htm",
+    "month": "2020-12",
+    "canonical_id": "ttl:f956c5f77a1ab09a",
+    "attachments": 0,
+    "doc_number": "国办发〔2020〕50号"
+  },
+  {
+    "source_id": "gov-cn-fagui",
+    "url": "https://www.gov.cn/zhengce/content/2020-12/01/content_5566168.htm",
+    "month": "2020-12",
+    "canonical_id": "ttl:5460f8cc9467b636",
+    "attachments": 0,
+    "doc_number": "国办函〔2020〕109号"
+  },
+  {
+    "source_id": "gov-cn-fagui",
+    "url": "https://www.gov.cn/zhengce/content/2022-01/04/content_5666340.htm",
+    "month": "2022-01",
+    "canonical_id": "ttl:9f3299b3e8d5312f",
+    "attachments": 0,
+    "doc_number": "国办函〔2021〕132号"
+  },
+  {
+    "source_id": "gov-cn-fagui",
+    "url": "https://www.gov.cn/zhengce/content/2021-10/29/content_5647246.htm",
+    "month": "2021-10",
+    "canonical_id": "ttl:e5163e82c9713ca0",
+    "attachments": 0,
+    "doc_number": "国办公开办函〔2021〕33号"
+  },
+  {
+    "source_id": "gov-cn-fagui",
+    "url": "https://www.gov.cn/zhengce/content/2021-09/29/content_5639620.htm",
+    "month": "2021-09",
+    "canonical_id": "ttl:9683432bf99072b6",
+    "attachments": 0,
+    "doc_number": "国办公开办函〔2021〕30号"
+  },
+  {
+    "source_id": "stats-gov",
+    "url": "https://www.stats.gov.cn/sj/zxfb/202607/t20260716_1964142.html",
+    "month": "2026-07",
+    "canonical_id": "ttl:10d8632091028929",
+    "stat_claims": 0,
+    "attachments": 0
+  },
+  {
+    "source_id": "stats-gov",
+    "url": "https://www.stats.gov.cn/sj/zxfb/202607/t20260715_1964121.html",
+    "month": "2026-07",
+    "canonical_id": "ttl:00e940d0a5344ccf",
+    "stat_claims": 21,
+    "attachments": 0
+  },
+  {
+    "source_id": "stats-gov",
+    "url": "https://www.stats.gov.cn/sj/zxfb/202607/t20260715_1964123.html",
+    "month": "2026-07",
+    "canonical_id": "ttl:7c3bfda25598e67c",
+    "stat_claims": 4,
+    "attachments": 0
+  },
+  {
+    "source_id": "stats-gov",
+    "url": "https://www.stats.gov.cn/sj/zxfb/202607/t20260715_1964124.html",
+    "month": "2026-07",
+    "canonical_id": "ttl:ab0ce6bf2d877087",
+    "stat_claims": 6,
+    "attachments": 0
+  },
+  {
+    "source_id": "stats-gov",
+    "url": "https://www.stats.gov.cn/sj/zxfb/202607/t20260715_1964126.html",
+    "month": "2026-07",
+    "canonical_id": "ttl:ff3cffd7cc6eba25",
+    "stat_claims": 0,
+    "attachments": 0
+  },
+  {
+    "source_id": "ndrc-gov",
+    "listing_docs_found": 4,
+    "note": "links discovered; full parse per adapter deferred"
+  },
+  {
+    "source_id": "cac-gov",
+    "listing_docs_found": 4,
+    "note": "links discovered; full parse per adapter deferred"
+  }
+]

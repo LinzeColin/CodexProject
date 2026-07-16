@@ -1,0 +1,7 @@
+Wave 1 gate: PASS | Wave 2 docs: 11 across 6 months
+per source: {'gov-cn-fagui': 6, 'stats-gov': 5} | failed/isolated: []
+idempotent (Wave 2 re-apply): first 11, re-apply 0 (0 new)
+expansion: Wave 2 added sources ['gov-cn-fagui', 'stats-gov'] beyond Wave 1 (gov-cn-policy)
+months covered (>=2016-01): ['2019-04', '2020-12', '2021-09', '2021-10', '2022-01', '2026-07']
+
+ACCEPTANCE = PASS

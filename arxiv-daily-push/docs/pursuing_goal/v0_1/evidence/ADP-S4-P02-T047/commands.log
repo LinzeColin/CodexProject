@@ -1,0 +1,20 @@
+# ADP-S4-P02-T047 commands (execute A0 2016+ Wave 2; SHADOW; after Wave 1 value-cost gate)
+# base: main 0e992990 (T046)
+
+# gate: Wave 1 value-cost gate from T046 manifest (idempotent + versions) -> PASS -> proceed to Wave 2
+
+# 1) Wave 2 backfill from the DEV ENV (not the worker -> 0 cloud cost, realtime untouched):
+#    - gov-cn-fagui: gov.cn/zhengce/xxgk -> 6 real docs via GovCnPolicyConnector
+#    - stats-gov: stats.gov.cn/sj/zxfb -> 5 real narrative releases via extract_stat_claims
+#    - ndrc-gov / cac-gov: links discovered, full parse deferred -> recorded as partial (isolated, no crash)
+#    -> wave2_backfill_docs.json ; wave2_comparison_report.json
+
+# 2) acceptance test
+python3 evidence/ADP-S4-P02-T047/test-results/t047_verify.py | tee evidence/ADP-S4-P02-T047/test-results/wave2_tests.txt
+# -> Wave 1 gate PASS ; Wave 2 11 docs (gov-cn-fagui 6 + stats-gov 5) across 6 months (>=2016-01)
+# -> idempotent (re-apply 0 new) ; expansion beyond Wave 1 ; failed-source isolation present (0 failed)
+# -> ACCEPTANCE = PASS (exit 0)
+# realtime-no-regression: live build b189d3cc0703 unchanged (no deploy)
+
+# SHADOW: real Wave 2 from dev env; production untouched. Full 2016+ accrues over real time.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

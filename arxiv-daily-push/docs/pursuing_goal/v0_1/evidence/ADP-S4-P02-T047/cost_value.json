@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S4-P02-T047", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "SHADOW",
+  "value_metric": "A0 2016+ Wave 2 expands the SCALE-approved cohort beyond Wave 1 only after the Wave 1 value-cost gate passed: 11 real A0 originals from gov-cn-fagui and stats-gov across 6 months, through the same content-addressed identity/version pipeline with no quality regression, unit cost in the approved range (dev-env, 0 cloud), and failed/partial sources isolated -- so central coverage grows without regression or cost blowup",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "Wave-2 backfill from the dev environment (real gov.cn/fagui + stats.gov.cn fetches); production worker/cron NOT touched -> 0 cloud cost, DIR-007 unaffected; full 2016+ accrues over real time once wired to the worker"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "wave2": {"gate_wave1": "PASS", "sources": {"gov-cn-fagui": 6, "stats-gov": 5}, "partial_sources": ["ndrc-gov", "cac-gov"], "docs": 11, "months": ["2019-04", "2020-12", "2021-09", "2021-10", "2022-01", "2026-07"], "idempotent": true, "failed_sources": []},
+  "comparison_vs_wave1": {"wave1_docs": 7, "wave2_docs": 11, "quality_no_regression": true, "unit_cost_in_range": true, "failed_sources_isolated": true},
+  "acceptance": {"no_quality_regression_vs_wave1": true, "unit_cost_in_approved_range": true, "failed_sources_isolated": true, "realtime_no_regression": true}
+}
