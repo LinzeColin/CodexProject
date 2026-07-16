@@ -1,0 +1,33 @@
+{
+  "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+  "build_id": "bd67a78020a3",
+  "board_id": "board2",
+  "baseline_status": "provisional_machine",
+  "layers": {
+    "L0_15s": {
+      "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+      "claims": [
+        {
+          "label": "来源",
+          "value": "nejm",
+          "claim_type": "fact",
+          "locator": {
+            "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+            "field": "source_id"
+          }
+        },
+        {
+          "label": "板块",
+          "value": "顶级期刊",
+          "claim_type": "fact",
+          "locator": {
+            "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+            "field": "board_id"
+          }
+        },
+        {
+          "label": "日期",
+          "value": "2026-07-08",
+          "claim_type": "fact",
+          "locator": {
+            "item_id": "fe

@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "adp.content_contract.v0_1",
+  "title": "ADP V0.1 L0-L3 人话版 Content Contract",
+  "description": "Four-layer 人话版 render payload: L0 15-second, L1 2-minute, L2 deep, L3 raw evidence. Fact/interpretation/inference are distinguished. Key numbers/dates/results carry an evidence locator. Raw English is only allowed in L3, explicitly labeled, never as unexplained content in L0/L1.",
+  "type": "object",
+  "required": ["item_id", "build_id", "layers"],
+  "additionalProperties": false,
+  "properties": {
+    "item_id": {"type": "string"},
+    "build_id": {"type": "string"},
+    "board_id": {"type": "string"},
+    "baseline_status": {"type": "string", "enum": ["provisional_machine", "human_verified"]},
+    "layers": {
+      "type": "object",
+      "required": ["L0_15s", "L1_2min", "L2_deep", "L3_evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "L0_15s": {
+          "type": "object",
+          "required": ["text", "claims"],
+          "properties": {
+            "text": {"type": "string", "description": "one-line Chinese fact summary; no raw English abstract"},
+            "claims": {"type": "array", "items": {"$ref": "#/definitions/claim"}}
+          }
+        },
+        "L1_2min": {
+          "type": "object",
+          "required": ["facts"],
+          "properties": {"facts": {"type": "array", "items": {"$ref": "#/definitions/claim"}}}
+        },
+        "L2_deep": {
+          "type": "object",
+          "required": ["status"],
+          "properties": {
+            "status": {"type": "string", "enum": ["provisional_pending_model", "generated"]},
+            "prompt_ref": {"type": "string"},
+            "text": {"type": ["string", "null"]},
+            "claim_types_required": {"type": "array", "items": {"enum": ["fact", "interpretation", "inference"]}}
+          }
+        },
+        "L3_evidence": {
+          "type": "object",
+          "required": ["label", "raw_title", "raw_abstract", "url"],
+          "properties": {
+            "label": {"type": "string", "description": "explicit '原始证据（未加工）' label"},
+            "raw_title": {"type": ["string", "null"]},
+            "raw_abstract": {"type": ["string", "null"], "description": "raw source text (may be English) -- allowed ONLY here, labeled"},
+            "url": {"type": ["string", "null"]},
+            "doi": {"type": ["string", "null"]}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "claim": {
+      "type": "object",
+      "required": ["label", "value", "claim_type", "locator"],
+      "properties": {
+        "label": {"type": "string"},
+        "value": {"type": ["string", "null"]},
+        "claim_type": {"type": "string", "enum": ["fact", "interpretation", "inference"]},
+        "locator": {
+          "type": "object",
+          "required": ["item_id", "field"],
+          "properties": {"item_id": {"type": "string"}, "field": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

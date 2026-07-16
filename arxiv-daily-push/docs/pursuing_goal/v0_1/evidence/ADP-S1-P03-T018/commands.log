@@ -1,0 +1,14 @@
+# ADP-S1-P03-T018 commands.log · L0-L3 人话版 content contract + evidence locator
+# base commit 80d9e11c (T017 merged) ; reuses T016/T017 sample, NOT_DEPLOYED
+
+$ python3 tools/build_render_payload.py --items items_200.json --factsheets factsheet_baseline_200.json --build-id bd67a78020a3 --out render_payload_sample.json
+# schema validate(200) PASS
+# L0/L1 large English blocks (excl title) = 0 ; English abstract leaking into L0/L1 = 0 (English routed to labeled L3)
+# all 1479 L0/L1 claims have evidence locator ; key facts (date/DOI/units/doc_number) 479/479 located
+# deterministic re-build byte-identical: True
+# NOTE: 1 'summary in L0/L1' case is a Chinese board3 item (title==summary, Chinese) -> not English, acceptance satisfied
+# full: test-results/content_tests.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

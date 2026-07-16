@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S1-P03-T018", "stage": "S1 Truth & Content Stabilization", "release_mode": "NOT_DEPLOYED",
+  "owner_decision": "L2 deep layer requires a model; kept provisional_pending_model per Owner directive 2026-07-16 (not generated, not fabricated)",
+  "value_metric_s1": "English direct-output (113/200 in T017) fixed at the contract level: L0/L1 are Chinese fact layers, raw English only in a labeled L3; key numbers/dates/results 100% carry an evidence locator; fact/interpretation/inference distinguished (FACT-002 / v1.1)",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "generate L2 via board prompts + Owner review when a model is wired in"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "acceptance": "schema validate 200 PASS; English abstract leaking into L0/L1 = 0; key facts (date/DOI/units/doc_number) located 479/479; all 1479 L0/L1 claims have locators; deterministic re-build byte-identical"
+}
