@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S4-P05-T056",
+  "stage": "S4 (2016+ A0/A1/A2 Expansion) / P05 Coverage Debt 与 As-of",
+  "value": {
+    "user_value": "A Coverage-Debt + As-of history query base over the 2016+ backfilled corpus (A0 waves + A1 provinces): a coverage API that shows which (source, month) cells are complete vs the concrete debt (169 explained holes, 0 unexplained), an as-of query that returns the version known as of any date with 0 future-version leakage across 693 samples, and a historical manifest resolver that never returns a future month's manifest.",
+    "why_it_matters": "This is the ground-truth completeness + point-in-time layer the T048 gap gate deferred to. It is what lets the system honestly answer 'is 2016+ complete here?' and 'what did we know as of that date?' without leaking hindsight -- the base for a deep, long-term-stable historical view."
+  },
+  "cost": {
+    "note": "unknown != 0; a deterministic query base over cached corpus -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "coverage-debt + as-of base authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (coverage API + as-of query + historical manifest resolver; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

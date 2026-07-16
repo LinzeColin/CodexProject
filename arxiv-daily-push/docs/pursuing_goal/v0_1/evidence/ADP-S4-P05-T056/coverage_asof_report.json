@@ -1,0 +1,120 @@
+{
+  "task": "ADP-S4-P05-T056",
+  "corpus_docs": 27,
+  "coverage_debt": {
+    "sources": 5,
+    "months": 36,
+    "cells": 180,
+    "covered": 11,
+    "debt_cells": 169,
+    "reasons": {
+      "source_not_yet_active": 139,
+      "covered": 11,
+      "not_backfilled": 30
+    },
+    "unexplained": 0,
+    "every_hole_explained": true,
+    "debt_sample": [
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-04",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-05",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-06",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-07",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-08",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-09",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-10",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-11",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2019-12",
+        "count": 0,
+        "status": "source_not_yet_active"
+      },
+      {
+        "source_id": "beijing-gov",
+        "month": "2020-01",
+        "count": 0,
+        "status": "source_not_yet_active"
+      }
+    ]
+  },
+  "as_of": {
+    "samples": 693,
+    "future_leakage": 0,
+    "oracle_disagreements": 0,
+    "target": 100,
+    "meets_target": true,
+    "leak_detail": []
+  },
+  "historical_manifest_resolutions": [
+    {
+      "query_date": "2015-01-01",
+      "manifest_month": null
+    },
+    {
+      "query_date": "2019-12-31",
+      "manifest_month": "2019-12"
+    },
+    {
+      "query_date": "2020-06-15",
+      "manifest_month": "2019-12"
+    },
+    {
+      "query_date": "2022-01-15",
+      "manifest_month": "2022-01"
+    },
+    {
+      "query_date": "2099-01-01",
+      "manifest_month": "2026-07"
+    }
+  ],
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "coverage-debt + as-of base authoring"
+  },
+  "deployment": "NOT_DEPLOYED"
+}

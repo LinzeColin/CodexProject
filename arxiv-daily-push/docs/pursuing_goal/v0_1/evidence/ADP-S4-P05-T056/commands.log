@@ -1,0 +1,15 @@
+# ADP-S4-P05-T056 commands (Coverage Debt + As-of history query base; NOT_DEPLOYED)
+
+# 1. tools/coverage_asof.py -- over A0 (T046/T047) + A1 (T050) corpus, reusing T043 gap detector + T048 as-of resolver
+#    coverage_debt (full 2016+ window grid; classify; debt list; 0 UNEXPLAINED) /
+#    as_of_query (parsed-date resolver; no future-version leak) + _oracle_as_of (independent cross-check) /
+#    build_revision_chains / asof_samples / historical_manifest_resolver (point-in-time manifest)
+
+# 2. build the base report (deterministic)
+python3 evidence/ADP-S4-P05-T056/build_base.py   # coverage 180 cells/0 unexplained; as_of 693 samples/0 leakage
+
+# 3. acceptance verifier (>=100 samples 0-leak + oracle-agree + coverage-explained + non-vacuity controls)
+python3 evidence/ADP-S4-P05-T056/test-results/t056_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)
