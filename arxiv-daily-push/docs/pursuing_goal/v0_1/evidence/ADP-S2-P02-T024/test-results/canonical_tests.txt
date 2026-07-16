@@ -1,0 +1,5 @@
+### same doc re-run -> 1 canonical document: True (collapsed 1 )
+### repost merged: True | sources ['nature', 'chinanews'] | artifacts preserved (both items): True
+### revision same-doc: 1 doc | revisions ['v2']
+### different events -> 2 documents: True
+### collisions on real 500: see summary

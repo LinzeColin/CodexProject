@@ -1,0 +1,7 @@
+{
+  "task": "ADP-S2-P02-T024", "stage": "S2 Immutable Raw Evidence", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "single-truth document identity: same-doc dedup, repost merge (raw artifacts preserved, never merged away), revision chaining, and explainable collisions; groundwork for the version chain (T025/T026) and open snapshots",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "update spec+tool for new identity rules"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "real_500_result": {"items_in": 500, "canonical_documents": 498, "duplicate_items_collapsed": 2, "reposts_merged": 0, "collisions": 0}
+}

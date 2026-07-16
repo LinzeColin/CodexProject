@@ -1,0 +1,13 @@
+# ADP-S2-P02-T024 commands.log · CanonicalDocument identity + repost merge + dedup
+# base commit 66d13ffe (S2-P01 complete) ; rules-only, NOT_DEPLOYED
+
+$ python3 tools/canonicalize.py --items items_500.json --factsheets fs_500.json --out canonical_doc_index_500.json
+# real 500: 498 canonical documents ; 2 duplicate items collapsed ; 0 reposts ; 0 collisions
+
+## fixtures (test-results/canonical_tests.txt)
+# same doc re-run -> 1 document (dedup) ; repost (same DOI diff source) -> merged, both artifacts preserved
+# revision (DOI vN) -> 1 document, revisions[v2] ; different events -> 2 documents ; collision explainable (reason+resolution)
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

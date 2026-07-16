@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "adp.canonical_document.v0_1",
+  "title": "ADP V0.1 CanonicalDocument",
+  "type": "object",
+  "required": ["canonical_id", "sources", "items", "artifact_keys", "is_repost_merged", "item_count"],
+  "properties": {
+    "canonical_id": {"type": "string", "pattern": "^(doi:|ttl:)"},
+    "title_norm": {"type": "string"},
+    "sources": {"type": "array", "items": {"type": "string"}},
+    "items": {"type": "array", "items": {"type": "string"}},
+    "revisions": {"type": "array", "items": {"type": "string"}},
+    "artifact_keys": {"type": "array", "items": {"type": "string"}, "description": "one per contributing item; raw artifacts preserved, never merged away"},
+    "is_repost_merged": {"type": "boolean"},
+    "item_count": {"type": "integer", "minimum": 1}
+  }
+}
