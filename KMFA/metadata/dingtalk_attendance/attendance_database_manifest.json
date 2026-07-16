@@ -89,6 +89,20 @@
     "timeout_recovery_allowed": false,
     "read_only_probe_mode": "collection_probe_only"
   },
+  "production_release": {
+    "root": "$HOME/Library/Application Support/Codex/KMFA/attendance-production",
+    "active_pointer": "current",
+    "immutable": true,
+    "atomic_switch": true,
+    "repository_state_is_diagnostic_only": true,
+    "required_gates": [
+      "release_fingerprint",
+      "live_prompt_match",
+      "dws_ready",
+      "realtime_integrity",
+      "work_date_slot_duplicate_guard"
+    ]
+  },
   "private_runtime_sqlite": true,
   "project_id": "KMFA",
   "public_repo_safety": {

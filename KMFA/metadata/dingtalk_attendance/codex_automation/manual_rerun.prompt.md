@@ -11,10 +11,10 @@ KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 手动补跑时只允许选择 `morning` 或 `evening`，所有业务日期和 run slot 都按北京时间 `Asia/Shanghai`。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
 
 运行约束：
-1. 确认 cwd 是 KMFA 所在的 `LinzeColin/CodexProject` checkout，branch 为 `main`，且 `HEAD == origin/main`。
+1. cwd 只作为私有状态位置；branch、HEAD、origin HEAD 和 dirty paths 仅作诊断，不得阻断。不得为补跑执行 stash、reset、checkout、clean 或覆盖 owner 开发内容。
 2. 确认 `KMFA/kmfa-dingtalk-attendance-skill/SKILL.md` 存在。
 3. 设置 `TZ=Asia/Shanghai`，并按补跑目标设置 `KMFA_RUN_SLOT=morning` 或 `KMFA_RUN_SLOT=evening`。
-4. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/preflight.sh`。
+4. 只从已验证的 immutable production release 运行；固定入口为 `$HOME/Library/Application Support/Codex/KMFA/attendance-production/current` 下的 `KMFA/tools/dingtalk_attendance/production_entry.py`。repo preflight 只记录诊断，不得要求与 `origin/main` 同步或 clean。
 5. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`。
 6. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`。
 7. 运行 `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`。
@@ -25,7 +25,8 @@ KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 12. 如果本次 run 修改 skill、automation prompt、metadata、validator 或相关配置，必须完成验证、commit，并 push 到 GitHub `main` 后再报告完成。
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/run_attendance.py --run-type morning --timezone Asia/Shanghai
+release_root="$HOME/Library/Application Support/Codex/KMFA/attendance-production/current"
+TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$release_root" python3 "$release_root/KMFA/tools/dingtalk_attendance/production_entry.py" --run-slot morning --trigger-source manual --automation-id kmfa --allow-dws-commands
 ```
 
 硬边界：

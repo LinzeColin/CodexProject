@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R7 / natural evening group delivery verification
+roadmap_progress: R7 / immutable attendance production release
 
-status: R7_FIX_VALIDATION_IN_PROGRESS
+status: READY_FOR_IMMUTABLE_RELEASE_BUILD
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -16,9 +16,15 @@ production_acceptance: NOT_EVALUATED
 
 owner_usability_status: NOT_ACCEPTED
 
-current_availability: GROUP_DELIVERY_ENABLED_AWAITING_2026_07_16_EVENING_EVIDENCE
+current_availability: GROUP_DELIVERY_ENABLED_AWAITING_NEXT_NATURAL_RUN
 
 ## R7 2026-07-16
+
+- 2026-07-16 evening 已重新登记为 `NOT_RUN_FALSE_REPOSITORY_SYNC_GATE`。自然 task 创建成功，但错误的 HEAD/origin/dirty preflight 在 runner 前停止；它不是 attendance runtime failure，不进入成功或失败统计。
+- Owner checkout 的 branch、HEAD、origin HEAD 和 dirty paths 永久降级为非阻断诊断；不得通过 stash/reset/checkout/clean 或覆盖 owner 开发内容来满足考勤运行。
+- 后续 morning/evening 只运行本机私有 immutable production release。release 只含批准的 attendance runtime、规则、公开配置和两个 prompt；manifest fingerprint 校验与 live prompt readback 是正式入口前置门禁。
+- attendance runtime 更新采用 candidate build、完整离线验证和原子 `current` symlink 切换；任何失败继续保留旧 release。
+- 正式运行只保留 release fingerprint、live prompt、DWS、当次实时完整性和同日期/slot duplicate 五类门禁；repo 同步或 clean 不再参与。
 
 - 2026-07-16 morning 的原始 automation session 两次阻塞后已被人工中断；私有状态固定为 `ABORTED_TIMEOUT / NOT_SENT`，未发现 `SEND_STARTED` 或 dispatch receipt，sender/message/target call 均为 0。
 - 该 morning slot 是不可恢复终态：禁止 artifact probe、恢复、补发或迟发。
@@ -26,7 +32,7 @@ current_availability: GROUP_DELIVERY_ENABLED_AWAITING_2026_07_16_EVENING_EVIDENC
 - reminder collection 现在有 330 秒总截止时间，依据 2026-07-15 最慢成功自然采集 285 秒加 45 秒余量；活动 DWS 命令在独立进程组中运行，timeout/interrupt 会终止整个组。
 - timeout 结果明确保留 `failed_operation=reminder_collection`、`REMINDER_COLLECTION_TIMEOUT`、实际耗时和零发送统计；协调器不得再把它降级成笼统 `DWS_UNAVAILABLE` 或遗留 `RUNNING`。
 - duplicate guard 仅扫描同工作日期+slot 回执，避免读取整月云盘回执导致发送前挂起。
-- 代码、离线回归、唯一一次无发送只读 DWS probe、自然 20:05 evening 与群内可见证据尚待依次完成。
+- 超时修复、离线回归和唯一一次无发送只读 DWS probe 已完成；群内实际发送仍等待新 immutable release 的下一次自然 morning/evening。
 
 ## R6 自动闭环
 

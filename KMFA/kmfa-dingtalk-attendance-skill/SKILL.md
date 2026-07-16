@@ -39,13 +39,15 @@ Before acting, read:
 
 ## Current Attendance Rules
 
-- Current operating status is `SCHEDULED_GROUP_DELIVERY_ENABLED`; owner usability remains `NOT_ACCEPTED` until a natural send is observed.
+- Current operating status is `R7_IMMUTABLE_PRODUCTION_RELEASE`; owner usability remains `NOT_ACCEPTED` until a natural send is observed.
 - The official daily export has 49 columns, but `部门` is optional display-only. It never participates in person matching, anomaly classification, monthly rollups, notifications, or official attendance acceptance. The other 48 columns are required; an unreliable primary department is recorded as `UNVERIFIED` and never guessed.
-- R4 official data reconstruction is `PASS` for the frozen 2026-07-09 and 2026-07-10 evidence. A real 2026-07-10 evening no-send run and certificate-bound final reconciliation have also passed; delivery remains owner-disabled.
+- R4 official data reconstruction is `PASS` for the frozen 2026-07-09 and 2026-07-10 evidence. A real 2026-07-10 evening no-send run and certificate-bound final reconciliation have also passed.
 - Morning and evening outputs are `TEMPORARY_REMINDER` snapshots, not final daily conclusions.
 - A completed prior work date becomes final only after a fresh exact-parity official report read writes an `OFFICIAL_FINAL_RECONCILIATION` archive and aggregate-only one-page result.
 - New monthly notification rollups read only canonical `final` archives with a valid official reconciliation certificate. Unbound historical final, legacy, morning, and evening archives are audit-only and never enter the new monthly cumulative values.
 - Morning/evening automation delivery is enabled only for the existing group target after exact real-time reminder integrity PASS. Failures make zero sender calls. Manual/latest-report resend remains disabled.
+- Natural automations execute only the verified immutable release at `$HOME/Library/Application Support/Codex/KMFA/attendance-production/current`. Local branch, HEAD, origin HEAD, and dirty paths are diagnostics only and never gate attendance.
+- A genuine attendance runtime update builds and verifies a new fingerprint before atomically switching `current`; a failed candidate leaves the previous release active.
 - Automation name: `每日早晚钉钉考勤检查`.
 - Business-date timezone: `Asia/Shanghai`; this is not a scheduler timezone field.
 - Owner-authorized local automation plan: morning 10:35 and evening 20:05, with no scheduler timezone field.

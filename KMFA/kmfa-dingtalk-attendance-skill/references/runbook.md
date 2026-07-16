@@ -10,11 +10,12 @@ Canonical GitHub destination:
 - Attendance module: `KMFA/tools/dingtalk_attendance/`
 - Public metadata: `KMFA/metadata/dingtalk_attendance/`
 
-Default branch policy:
+Development publication policy:
 
 - Work on `main`.
 - Do not create PRs, issues, branches, or worktrees unless the user explicitly asks.
-- Before changing files, confirm `git branch --show-current` is `main` and `HEAD == origin/main`.
+- Build approved changes from the latest GitHub `main` snapshot in isolated staging; do not mutate the owner's checkout to make it match.
+- Natural production runs never require local `HEAD == origin/main`, a clean attendance scope, or a clean repository. Branch, HEAD, origin HEAD, and dirty paths are diagnostics only.
 
 ## 2. First Files To Read
 
@@ -76,6 +77,8 @@ Source of truth is the current code and tests, but the expected rules are:
 - Morning and evening outputs are temporary reminders. The later official final reconciliation is the only daily result eligible for new monthly notification rollups.
 - Legacy, morning, and evening archives remain audit-only for monthly notification values.
 - Scheduled morning/evening group delivery is owner-enabled only after exact real-time integrity PASS and is protected by work-date/run-slot deduplication. Manual/latest-report resend remains owner-disabled.
+- Scheduled runs execute only `$HOME/Library/Application Support/Codex/KMFA/attendance-production/current`. The production entry verifies the immutable manifest/fingerprint and live prompt before DWS begins.
+- A new attendance runtime is built as a candidate, fully validated, and atomically activated. Candidate failure leaves the previous `current` release unchanged.
 
 ## 5. Safe Offline Commands
 
@@ -169,7 +172,7 @@ Do not claim completion without:
 - validation commands and outcomes
 - git commit hash
 - push result
-- post-push `HEAD == origin/main`
+- post-push GitHub `main` contains the intended commit; local checkout parity is diagnostic only
 
 ## 10. Reminder Collection Timeout
 

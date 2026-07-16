@@ -4,6 +4,8 @@ The KMFA 钉钉考勤 skill provides the public-safe structure for `每日早晚
 
 Current owner usability status is `AWAITING_NATURAL_GROUP_DELIVERY_EVIDENCE`. Morning and evening results remain temporary reminders. Scheduled delivery uses the frozen template and existing group target only after exact real-time integrity PASS, with zero sender calls on failure and a work-date/run-slot duplicate guard. Manual/latest-report resend remains disabled. A completed work date receives a separate official final reconciliation, and new monthly notification rollups use only canonical final archives.
 
+Natural automations execute `$HOME/Library/Application Support/Codex/KMFA/attendance-production/current`. Local branch, HEAD, origin HEAD, and dirty paths are recorded as diagnostics only. They never block attendance and never change the active immutable release fingerprint.
+
 The module is live-only and uses the local `dws` CLI as its current DingTalk attendance backend. It does not create sample employees, sample punches, or fixture attendance records. When DWS is unavailable, scripts return `DWS_UNAVAILABLE`.
 
 The live DWS backend uses DingTalk attendance-group membership as the reporting scope. Morning/evening temporary reminders query every scoped member through current `dws attendance record get` and `dws attendance summary` data for the exact Beijing business date. Successful empty punch data remains complete coverage; a query failure, missed member, wrong date, or parse failure stops the reminder.

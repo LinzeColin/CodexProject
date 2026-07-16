@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(os.environ.get("KMFA_ATTENDANCE_LOCAL_KMFA_ROOT") or Path(__file__).resolve().parents[2])
 DEFAULT_RUNTIME_ENV_PATH = ROOT / "metadata" / "dingtalk_attendance" / "private_runtime" / ".env.local"
 
 

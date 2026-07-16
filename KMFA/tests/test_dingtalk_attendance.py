@@ -950,6 +950,143 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual(calls, ["evening", "morning"])
             self.assertTrue((root / "运行状态.md").is_file())
 
+    def test_production_release_is_immutable_verified_and_atomically_activated(self) -> None:
+        production_release = importlib.import_module(
+            "KMFA.tools.dingtalk_attendance.production_release"
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            source = root / "source"
+            releases = root / "releases"
+            tool = source / "KMFA/tools/dingtalk_attendance/runtime.py"
+            morning = source / "KMFA/automation/morning.prompt.md"
+            evening = source / "KMFA/automation/evening.prompt.md"
+            for path, text in ((tool, "runtime-v1"), (morning, "morning-v1"), (evening, "evening-v1")):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+            with patch.object(
+                production_release,
+                "STATIC_RELEASE_PATHS",
+                (Path("KMFA/automation/morning.prompt.md"), Path("KMFA/automation/evening.prompt.md")),
+            ):
+                first = production_release.build_release(
+                    source_root=source,
+                    source_commit="a" * 40,
+                    release_root=releases,
+                    activate=True,
+                )
+                current_before = (releases / "current").resolve()
+                verified = production_release.verify_release(releases / "current")
+                morning.unlink()
+                with self.assertRaises(production_release.ProductionReleaseError):
+                    production_release.build_release(
+                        source_root=source,
+                        source_commit="b" * 40,
+                        release_root=releases,
+                        activate=True,
+                    )
+
+            self.assertTrue(first["activated"])
+            self.assertEqual(verified["attendance_runtime_fingerprint"], first["attendance_runtime_fingerprint"])
+            self.assertEqual((releases / "current").resolve(), current_before)
+            self.assertEqual((current_before / "KMFA/tools/dingtalk_attendance/runtime.py").stat().st_mode & 0o222, 0)
+            for path in sorted(current_before.rglob("*"), key=lambda item: len(item.parts), reverse=True):
+                path.chmod(0o700 if path.is_dir() else 0o600)
+            current_before.chmod(0o700)
+
+    def test_production_release_verification_rejects_tampering(self) -> None:
+        production_release = importlib.import_module(
+            "KMFA.tools.dingtalk_attendance.production_release"
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            source = root / "source"
+            releases = root / "releases"
+            tool = source / "KMFA/tools/dingtalk_attendance/runtime.py"
+            prompt = source / "KMFA/automation/prompt.md"
+            for path, text in ((tool, "runtime"), (prompt, "prompt")):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+            with patch.object(
+                production_release,
+                "STATIC_RELEASE_PATHS",
+                (Path("KMFA/automation/prompt.md"),),
+            ):
+                built = production_release.build_release(
+                    source_root=source,
+                    source_commit="c" * 40,
+                    release_root=releases,
+                )
+            release_dir = Path(built["release_dir"])
+            released_tool = release_dir / "KMFA/tools/dingtalk_attendance/runtime.py"
+            released_tool.chmod(0o600)
+            released_tool.write_text("tampered", encoding="utf-8")
+
+            with self.assertRaises(production_release.ProductionReleaseError):
+                production_release.verify_release(release_dir)
+            for path in sorted(release_dir.rglob("*"), key=lambda item: len(item.parts), reverse=True):
+                path.chmod(0o700 if path.is_dir() else 0o600)
+            release_dir.chmod(0o700)
+
+    def test_production_entry_requires_exact_live_prompt(self) -> None:
+        production_entry = importlib.import_module(
+            "KMFA.tools.dingtalk_attendance.production_entry"
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            release = root / "release"
+            home = root / "home"
+            prompt_path = release / "KMFA/kmfa-dingtalk-attendance-skill/automation/evening_prompt.md"
+            config_path = home / ".codex/automations/kmfa-3/automation.toml"
+            prompt_path.parent.mkdir(parents=True, exist_ok=True)
+            config_path.parent.mkdir(parents=True, exist_ok=True)
+            prompt_path.write_text("release prompt\n", encoding="utf-8")
+            config_path.write_text('prompt = "different live prompt"\n', encoding="utf-8")
+
+            with self.assertRaises(production_entry.ProductionReleaseError):
+                production_entry.verify_live_prompt(
+                    release_root=release,
+                    run_slot="evening",
+                    automation_id="kmfa-3",
+                    home=home,
+                )
+
+    def test_runtime_identity_uses_release_fingerprint_and_repo_state_is_diagnostic_only(self) -> None:
+        automatic_closure = importlib.import_module("KMFA.tools.dingtalk_attendance.automatic_closure")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            home = root / "home"
+            prompts = {
+                "morning": "immutable morning prompt",
+                "evening": "immutable evening prompt",
+            }
+            for slot, prompt in prompts.items():
+                repo_prompt = root / automatic_closure.PROMPT_RELATIVE_PATHS[slot]
+                repo_prompt.parent.mkdir(parents=True, exist_ok=True)
+                repo_prompt.write_text(prompt, encoding="utf-8")
+                automation_id = automatic_closure.AUTOMATION_IDS[slot]
+                config = home / ".codex/automations" / automation_id / "automation.toml"
+                config.parent.mkdir(parents=True, exist_ok=True)
+                config.write_text(json.dumps({"prompt": prompt}).replace("{", "").replace("}", "").replace(":", " =", 1), encoding="utf-8")
+            with (
+                patch.object(automatic_closure.Path, "home", return_value=home),
+                patch.dict(
+                    "os.environ",
+                    {
+                        "KMFA_ATTENDANCE_PRODUCTION_FINGERPRINT": "f" * 64,
+                        "KMFA_ATTENDANCE_PRODUCTION_SOURCE_COMMIT": "d" * 40,
+                        "KMFA_ATTENDANCE_DIAGNOSTIC_REPO_ROOT": str(root),
+                    },
+                    clear=False,
+                ),
+            ):
+                identity = automatic_closure.current_runtime_identity(repo_root=root)
+
+        self.assertEqual(identity["attendance_runtime_tree_state"], "IMMUTABLE_RELEASE")
+        self.assertEqual(identity["attendance_runtime_fingerprint"], "f" * 64)
+        self.assertFalse(identity["repository_state_blocks_attendance"])
+        self.assertTrue(identity["prompt_mirrors_match"])
+
     def test_r6_aborted_timeout_is_terminal_and_cannot_recover_or_late_send(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
 
@@ -2475,7 +2612,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["private_runtime_tracked_files"], [".gitkeep", "README.md"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_call_skill"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_beijing_time"])
-        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_preserve_github_sync"])
+        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_immutable_production_release"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_fail_closed_for_dws"])
         self.assertTrue(result["automation_prompt_contracts"]["temporary_prompts_use_realtime_integrity"])
         self.assertTrue(result["automation_prompt_contracts"]["temporary_prompts_reject_final_parity_gate"])

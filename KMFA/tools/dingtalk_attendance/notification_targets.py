@@ -31,10 +31,9 @@ from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
     send_dws_group_message,
     send_text_with_resolved_channel,
 )
-from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
+from KMFA.tools.dingtalk_attendance.secrets_loader import ROOT, merged_runtime_env
 
 
-ROOT = Path(__file__).resolve().parents[2]
 TARGETS_CONFIG_PATH = PRIVATE_RUNTIME_DIR / "notification_targets.local.json"
 TARGETS_RESOLVED_PATH = PRIVATE_RUNTIME_DIR / "notification_targets_resolved.json"
 PUBLIC_TARGETS_MANIFEST_PATH = ROOT / "metadata" / "dingtalk_attendance" / "notification_targets_manifest.json"
