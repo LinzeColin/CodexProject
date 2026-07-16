@@ -1,0 +1,13 @@
+# ADP-S5-P01-T059 commands (cross-board Evidence Relation; NOT_DEPLOYED)
+
+# 1. tools/evidence_relation.py -- RELATION_TYPES (bounded vocab) / add_relation (refuse off-vocab/unknown kind;
+#    save only with doc+fragment evidence; else inferred_unsaved) / build_graph / query
+
+# 2. build the relation graph (deterministic)
+python3 evidence/ADP-S5-P01-T059/build_relations.py   # 7 assertions -> 4 saved / 2 refused / 1 inferred_unsaved
+
+# 3. acceptance verifier (every-saved-has-evidence + evidence-free-marked-not-saved + bounded + negative control)
+python3 evidence/ADP-S5-P01-T059/test-results/t059_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)

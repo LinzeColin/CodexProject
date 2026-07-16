@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S5-P01-T059",
+  "stage": "S5 (Multi-board Depth & Benefit Parity) / P01 事件、实体和跨板块关系",
+  "value": {
+    "user_value": "Cross-board evidence relations connect policy/papers/standards/patents/statistics/pilots/procurement, but only along a bounded, evidence-backed vocabulary. Every saved relation carries the source document id and the quoted fragment that supports it; an assertion without evidence is explicitly marked inferred_unsaved and never stored as a fact; off-vocabulary relations and unknown board kinds are refused. No boundless knowledge graph, no unfounded edges.",
+    "why_it_matters": "Cross-board depth is where a knowledge system either becomes authoritative or becomes a hallucinated graph. Requiring document/fragment evidence for every edge, and refusing anything off-vocabulary, keeps the relation layer trustworthy rather than speculative."
+  },
+  "cost": {
+    "note": "unknown != 0; a deterministic relation layer over curated assertions -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "relation-layer authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (relation types + evidence rules + query examples; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

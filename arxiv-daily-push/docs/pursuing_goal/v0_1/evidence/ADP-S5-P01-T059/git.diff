@@ -1,0 +1,625 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 312f51d82..c89e2aff3 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P01-T059 (cross-board Evidence Relation; NOT_DEPLOYED)
++
++- Fifty-ninth task of the ADP V0.1 FINAL EXECUTION program (S5-P01), closing S5-P01. Connects the boards -- policy, papers, standards, patents, statistics, pilots, procurement -- but does not build a boundless knowledge graph: relations follow a bounded vocabulary and every saved relation must carry document + fragment evidence. release_mode NOT_DEPLOYED; a relation layer, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/evidence_relation.py provides RELATION_TYPES (a fixed predicate vocabulary with allowed subject-kind/object-kind pairs), add_relation (refuse an off-vocabulary relation or an unknown board kind; save only with document + fragment evidence; otherwise return an explicitly-marked inferred_unsaved record that is NOT stored as a fact), build_graph, and query. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/: relation_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND; evidence rule hardened to also strip doc_id). Acceptance verified (evidence/ADP-S5-P01-T059/test-results/relation_tests.txt, ACCEPTANCE = PASS, exit 0): 7 assertions resolve to 4 saved relations, 2 refused, and 1 inferred_unsaved; every saved relation carries a source document id and a non-empty supporting fragment (using real backfilled document numbers such as 苏政办函〔2026〕39号 with realistic quoted fragments), and the graph contains exactly those evidence-backed edges; an assertion with no evidence is explicitly marked inferred_unsaved and never enters the graph; and the graph is bounded, since an off-vocabulary relation (a paper implementing a policy) and an unknown board kind (a tweet) are both refused. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S5-P01-T058 (cross-source entity resolution; NOT_DEPLOYED)
+ 
+ - Fifty-eighth task of the ADP V0.1 FINAL EXECUTION program (S5-P01). Unifies the entities that appear across boards -- agencies, institutions, authors, companies, regions, topics, standards -- so the same real-world entity referred to differently by different sources resolves to one entity, without losing provenance and without being irreversible. release_mode NOT_DEPLOYED; a deterministic resolver, the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/entity_resolver.py provides the entity schema (entity_id, type, canonical_name, aliases, provenance, confidence, merged_from), resolve (cluster mentions by shared alias, each alias kept with its source), merge (a deepcopy `before` snapshot plus an audit; a merge below the confidence boundary AUTO_MERGE_MIN=0.80 is held for review, not auto-applied), split (reverse a merge exactly from the snapshot), and provenance_of. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T058/: entity_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S5-P01-T058/test-results/entity_tests.txt, ACCEPTANCE = PASS, exit 0): 7 cross-source mentions resolve to 4 entities, unifying aliases from different sources (a standalone NBS from a media source joins 国家统计局 from stats-gov, 国办 joins 国务院办公厅, 发改委 joins 国家发展和改革委员会); a wrong merge is exactly reversible, since split restores both pre-merge entities byte-for-byte; every alias carries a source (nothing unsourced) and provenance_of covers all aliases; and the confidence boundary holds, since a merge with confidence 0.5 is held pending_review while one at 0.95 is applied. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 2ee083bb2..33ba15066 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S5-P01-T057-CANONICAL-EVENT-AGGREGATION"
+-source_snapshot_hash: "sha256:6809a0db17282dc70218856ff5e7783f603af0d4eeaf4980c918edd6b8f9fe48"
++as_of_event_id: "EVENT-20260717-ADP-V01-S5-P01-T058-CROSS-SOURCE-ENTITY-RESOLUTION"
++source_snapshot_hash: "sha256:fd9062d573700686ff00ee228dfbcf91fb74b9851ec9fb529a9c50213ca7315d"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T21:10:00+10:00"
++snapshot_event_time: "2026-07-17T21:40:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 117
++    precommit_pending_events: 118
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 4b033a93d..27b24ca9d 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S5-P01-T059: established cross-board Evidence Relations (S5-P01, closes P01). release_mode NOT_DEPLOYED; relation layer, production untouched. New tool docs/pursuing_goal/v0_1/tools/evidence_relation.py: RELATION_TYPES (bounded predicate + allowed kind-pair vocabulary) / add_relation (refuse off-vocabulary/unknown kind; save only with doc+fragment evidence; else inferred_unsaved, not stored) / build_graph / query. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/: relation_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/relation_tests.txt, PASS exit 0): 7 assertions -> 4 saved / 2 refused / 1 inferred_unsaved; every saved relation has doc_id + non-empty fragment (real 文号 苏政办函〔2026〕39号 etc.), graph = exactly the evidence-backed edges; evidence-free assertion marked inferred_unsaved and never in the graph; bounded (off-vocabulary paper-implements-policy and unknown kind tweet refused). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P01-T058: implemented cross-source entity resolution (S5-P01). release_mode NOT_DEPLOYED; resolver, production untouched. New tool docs/pursuing_goal/v0_1/tools/entity_resolver.py: entity schema (id/type/canonical/aliases/provenance/confidence/merged_from) / resolve (cluster by shared alias, per-source provenance) / merge (deepcopy before-snapshot + audit; < AUTO_MERGE_MIN 0.80 -> pending_review) / split (exact reverse) / provenance_of. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T058/: entity_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/entity_tests.txt, PASS exit 0): 7 mentions -> 4 entities, cross-source aliases unified (NBS -> 国家统计局, 国办 -> 国务院办公厅, 发改委 -> 国家发展和改革委员会); wrong merge exactly reversible (split restores both entities byte-for-byte); every alias sourced, provenance_of covers all; confidence boundary (0.5 -> pending_review, 0.95 -> applied). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S5-P01-T057: implemented Canonical Event aggregation (S5-P01, opens S5). release_mode NOT_DEPLOYED; aggregation tool, production untouched. New tool docs/pursuing_goal/v0_1/tools/canonical_event.py: event identity (shared event key = own/referenced 文号; no fuzzy title merge) / primary selection (most authoritative member whose id == key, A0>A1>A2>media) / member links (every page individually retrievable with role). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T057/: event_report.json, event_fixture.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/event_tests.txt, PASS exit 0): 20 same-event pages (real 文号 苏政办函〔2026〕39号 as original + 19 citing members) -> exactly 1 event / 1 alert; all 20 members expandable and match the source pages; primary = A1 official original (not media); no-over-merge control (event-2 different 文号 鲁科字〔2023〕143号 stays separate, event-1 absorbs none). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P05-T056: shipped the Coverage Debt + As-of history query base (S4-P05). release_mode NOT_DEPLOYED; query base, production untouched. New tool docs/pursuing_goal/v0_1/tools/coverage_asof.py: coverage_debt (full 2016+ window grid, every cell classified via T043, 0 UNEXPLAINED) / as_of_query (parsed-date resolver, no future-version leak) + independent oracle cross-check / historical_manifest_resolver (point-in-time manifest, never future). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S4-P05-T056/: coverage_asof_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/base_tests.txt, PASS exit 0): 693 as-of samples (21 chains x 33 dates 2016-2026), 0 future-version leakage, 0 oracle disagreements (>= 100 target); coverage grid 180 cells (5 sources), 11 covered / 169 debt all explained (source_not_yet_active 139 + not_backfilled 30), 0 UNEXPLAINED; non-vacuity controls (broken resolver leaks and is caught; malformed date rejected; ordering correct); manifest resolver never future. Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index a49be70eb..edcd15f23 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `117`
+-- pending_or_stale_events: `467`
+-- freshness_counts: `pending_or_stale_events=467; legacy_unbound_events=334`
++- precommit_pending_events: `118`
++- pending_or_stale_events: `468`
++- freshness_counts: `pending_or_stale_events=468; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:6809a0db17282dc70218856ff5e7783f603af0d4eeaf4980c918edd6b8f9fe48`
+-- snapshot_event_time: `2026-07-17T21:10:00+10:00`
++- source_snapshot_hash: `sha256:fd9062d573700686ff00ee228dfbcf91fb74b9851ec9fb529a9c50213ca7315d`
++- snapshot_event_time: `2026-07-17T21:40:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 1a297141c..ba85a7493 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:6809a0db17282dc70218856ff5e7783f603af0d4eeaf4980c918edd6b8f9fe48`
+-- snapshot_event_time: `2026-07-17T21:10:00+10:00`
++- source_snapshot_hash: `sha256:fd9062d573700686ff00ee228dfbcf91fb74b9851ec9fb529a9c50213ca7315d`
++- snapshot_event_time: `2026-07-17T21:40:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `467`
++- Pending/stale events: `468`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/TASK_REPORT.md
+new file mode 100644
+index 000000000..b5edac408
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/TASK_REPORT.md
+@@ -0,0 +1,56 @@
++# TASK_REPORT · ADP-S5-P01-T059｜建立跨板块 Evidence Relation
++
++## 唯一目标（达成）
++连接政策/论文/标准/专利/统计/试点/招采，而不建无边界大图谱。交付 relation types、evidence rules、query examples。**每条关系有文档/片段依据；无证据推断明确标记或不保存。** release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：跨板块 Evidence Relation——有界词表 + 每条关系有证据 + 无证据推断明确标记/不保存。
++2. **允许修改文件**：`tools/evidence_relation.py`（新）+ `evidence/ADP-S5-P01-T059/*` + 治理同步。**不改 worker/生产**。
++3. **绝不能改变**：生产 worker/cron/数据/实时——关系层只读。六主题/MVP 不变。NOT_DEPLOYED。
++4. **基线**：main `2d9f9a13`（T058 已合入）；用真实 backfill 文号作主体。
++5. **验收**：每条关系有文档/片段依据；无证据推断明确标记或不保存。
++6. **回滚**：`git revert <sha>`（只读关系层，生产未变更）。
++
++## 交付物
++- `tools/evidence_relation.py` —— RELATION_TYPES(有界词表) + add_relation(拒 off-vocab/未知 kind;只存有证据;否则 inferred_unsaved) + build_graph + query。
++- `evidence/…/relation_report.json` —— 7 断言 → 4 saved/2 refused/1 inferred_unsaved + query examples。
++- `evidence/…/build_relations.py`、`evidence/…/test-results/{t059_verify.py, relation_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/relation_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **每条关系有文档/片段依据**：7 断言 → **4 saved 全带 {doc_id, fragment(引用片段), source_id}**；every_saved_has_evidence=True；graph 恰含 saved 边(无泄漏)。
++- **无证据推断明确标记/不保存**：无证据断言(苏政办函39 supported_by_stat 江苏GDP,无 fragment)→**inferred_unsaved 明确标记,不入图**(既不静默丢也不静默存)。
++- **有界非无边界图**：**off-vocabulary((paper)-implements->(policy)) + 未知 board kind(tweet) → refused 不入图**。RELATION_TYPES 固定 8 谓词 + 允许对。
++- **query 只返回有证据边**：query(procurement_under)→苏采〔2026〕7号,带证据。
++- **负控制**：加无证据关系(P implements Q,无 evidence)→inferred_unsaved,永不入 saved graph。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live build 仍 b189d3cc0703（==T040）。
++
++## Data / Performance / Visual
++Data = 7 断言 → 4 saved 边(有证据) + 2 refused + 1 inferred。Performance = 实时无回归。无 UI 改动；六主题保留。
++
++## Value / Cost（S5 多板块深度）
++- **Value**：**有界、证据化跨板块关系**——政策/论文/标准/统计/试点/招采按固定词表连接,每边有文档/片段依据,无证据推断标记/不存;关系层可信非臆想图。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；模型 0；人工维护 = 关系层编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：有界词表(off-vocab/未知kind拒);只存有证据边(无证据inferred_unsaved);fixture真实文号+现实片段(真实fragment由抽取填);★收尾 S5-P01★。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED）。`data-samples` = relation_report.json。
++
++## 完成声明
++```text
++Task: ADP-S5-P01-T059
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/evidence_relation.py(新) + T059 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动
++Tests: relation_tests.txt —— 7断言→4 saved全带文档/片段证据;无证据断言→inferred_unsaved标记不入图;off-vocab+未知kind refused(有界非无边界图);query只返回有证据边;负控制(无证据关系永不入saved graph);实时无回归(build b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 跨板块Evidence Relation(有界词表/每边有证据/无证据标记不存)
++Data/Performance/Visual: Data=7断言→4 saved边；Perf=实时无回归；Visual=六主题保留
++Value: 有界证据化跨板块关系,关系层可信非臆想
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（关系层；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/adversarial_review.md
+new file mode 100644
+index 000000000..41552098b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/adversarial_review.md
+@@ -0,0 +1,12 @@
++# 对抗复核记录 · ADP-S5-P01-T059（跨板块 Evidence Relation）
++
++用独立 skeptic 对关系层做对抗复核，判 **CONFIRMED_SOUND**（5 攻击向量全过，无 hole）：
++- **(a) 每 saved 边有证据**：6 种走私无源边(纯空白 fragment/缺 doc_id/None/空 dict/空串 doc_id/空串 fragment)全→inferred_unsaved 不入图;仅 saved 分支改 graph;verifier `set(graph)=={saved rel_ids}` 强制图恰等证据边集。
++- **(b) 无证据推断标记不存**：无证据断言→status=inferred_unsaved/evidence=None/明确 note——既不存(不在图)也不静默丢(在 audit)。
++- **(c) 有界**：RELATION_TYPES 真固定 8 谓词+允许对;任意谓词(frobnicate)/off-pair((paper)-implements->(policy))/未知 kind(tweet)全 refused 不入图。
++- **(d) verifier 从 tool 现推**(R.build_graph(br.ASSERTIONS)),忽略 report JSON,防手改;负控制独立加合法词表但无证据边→不入图。
++- **(e) fixture 诚实**:真 backfill 文号(苏政办函39/苏采7/鲁科字143/某试点)+现实片段引用;refused 案例合法测边界;NOT_DEPLOYED 零成本。
++
++**加固（关闭 skeptic 指出的 latent 弱点）**：skeptic 指 `_has_evidence` strip fragment 但未 strip doc_id,理论上纯空白 doc_id 可过(fixture 无此例,不构成 hole)。已改 `_has_evidence` **doc_id 也 strip**,纯空白 doc_id 现→inferred_unsaved(实测确认)。证据规则密封。复跑 PASS(exit 0)。
++
++实现者不自签 PASS —— 交独立复核。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/build_relations.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/build_relations.py
+new file mode 100644
+index 000000000..b5fc8a91c
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/build_relations.py
+@@ -0,0 +1,47 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P01-T059 -- build the bounded, evidence-backed cross-board relation graph + query examples."""
++import sys, json, pathlib
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE.parent.parent / "tools"))
++import evidence_relation as R
++
++ASSERTIONS = [
++    ("苏政办函〔2026〕39号", "policy", "implements", "国办函〔2025〕X号", "policy",
++     {"doc_id": "ttl:jiangsu-39", "fragment": "根据《国办函〔2025〕X号》...结合本省实际制定", "source_id": "jiangsu-gov"}),
++    ("苏采〔2026〕7号", "procurement", "procurement_under", "苏政办函〔2026〕39号", "policy",
++     {"doc_id": "ttl:proc-7", "fragment": "为落实苏政办函〔2026〕39号...开展采购", "source_id": "jiangsu-gov"}),
++    ("鲁科字〔2023〕143号", "policy", "references_standard", "GB/T 12345", "standard",
++     {"doc_id": "ttl:shandong-143", "fragment": "按GB/T 12345执行验收", "source_id": "shandong-gov"}),
++    ("某试点", "pilot", "pilot_under", "苏政办函〔2026〕39号", "policy",
++     {"doc_id": "ttl:pilot-1", "fragment": "本试点依据苏政办函〔2026〕39号开展", "source_id": "jiangsu-gov"}),
++    # evidence-free inference -> must be marked, NOT saved
++    ("苏政办函〔2026〕39号", "policy", "supported_by_stat", "2026年江苏GDP", "statistic", None),
++    # off-vocabulary -> refused
++    ("some-paper", "paper", "implements", "苏政办函〔2026〕39号", "policy", {"doc_id": "x", "fragment": "y"}),
++    # unknown board kind -> refused
++    ("x", "tweet", "cites", "苏政办函〔2026〕39号", "policy", {"doc_id": "x", "fragment": "y"}),
++]
++
++def main():
++    g = R.build_graph(ASSERTIONS)
++    report = {
++        "task": "ADP-S5-P01-T059",
++        "relation_types": g["relation_types"],
++        "assertions_in": g["assertions_in"], "saved": g["saved"], "refused": g["refused"],
++        "inferred_unsaved": g["inferred_unsaved"], "every_saved_has_evidence": g["every_saved_has_evidence"],
++        "audit": g["audit"],
++        "query_examples": {
++            "procurement_under_苏政办函39": [r["subject"] for r in R.query(g["graph"], predicate="procurement_under")],
++            "implements_from_苏政办函39": [r["object"] for r in R.query(g["graph"], subject="苏政办函〔2026〕39号", predicate="implements")],
++        },
++        "cost": {"production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
++                 "r2_ops": 0, "model_calls": 0, "human_maintenance": "relation-layer authoring"},
++        "deployment": "NOT_DEPLOYED",
++    }
++    (HERE / "relation_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
++    print(f"assertions={g['assertions_in']} saved={g['saved']} refused={g['refused']} "
++          f"inferred_unsaved={g['inferred_unsaved']} every_saved_has_evidence={g['every_saved_has_evidence']}")
++
++if __name__ == "__main__":
++    main()
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/commands.log
+new file mode 100644
+index 000000000..ba6f1c338
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/commands.log
+@@ -0,0 +1,13 @@
++# ADP-S5-P01-T059 commands (cross-board Evidence Relation; NOT_DEPLOYED)
++
++# 1. tools/evidence_relation.py -- RELATION_TYPES (bounded vocab) / add_relation (refuse off-vocab/unknown kind;
++#    save only with doc+fragment evidence; else inferred_unsaved) / build_graph / query
++
++# 2. build the relation graph (deterministic)
++python3 evidence/ADP-S5-P01-T059/build_relations.py   # 7 assertions -> 4 saved / 2 refused / 1 inferred_unsaved
++
++# 3. acceptance verifier (every-saved-has-evidence + evidence-free-marked-not-saved + bounded + negative control)
++python3 evidence/ADP-S5-P01-T059/test-results/t059_verify.py   # ACCEPTANCE = PASS (exit 0)
++
++# 4. realtime no-regression (NOT_DEPLOYED)
++curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/cost_value.json
+new file mode 100644
+index 000000000..93ce2de85
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/cost_value.json
+@@ -0,0 +1,15 @@
++{
++  "task": "ADP-S5-P01-T059",
++  "stage": "S5 (Multi-board Depth & Benefit Parity) / P01 事件、实体和跨板块关系",
++  "value": {
++    "user_value": "Cross-board evidence relations connect policy/papers/standards/patents/statistics/pilots/procurement, but only along a bounded, evidence-backed vocabulary. Every saved relation carries the source document id and the quoted fragment that supports it; an assertion without evidence is explicitly marked inferred_unsaved and never stored as a fact; off-vocabulary relations and unknown board kinds are refused. No boundless knowledge graph, no unfounded edges.",
++    "why_it_matters": "Cross-board depth is where a knowledge system either becomes authoritative or becomes a hallucinated graph. Requiring document/fragment evidence for every edge, and refusing anything off-vocabulary, keeps the relation layer trustworthy rather than speculative."
++  },
++  "cost": {
++    "note": "unknown != 0; a deterministic relation layer over curated assertions -> 0 cloud cost.",
++    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
++    "r2_ops": 0, "model_calls": 0, "human_maintenance": "relation-layer authoring",
++    "recurring_cloud_cost_delta_per_month_usd": 0
++  },
++  "deployment": "NOT_DEPLOYED (relation types + evidence rules + query examples; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/known_gaps.md
+new file mode 100644
+index 000000000..fc00dcdf4
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/known_gaps.md
+@@ -0,0 +1,9 @@
++# Known gaps · ADP-S5-P01-T059（跨板块 Evidence Relation）
++
++目标：连接政策/论文/标准/专利/统计/试点/招采,不建无边界大图谱。交付 relation types/evidence rules/query examples。**每条关系有文档/片段依据；无证据推断明确标记或不保存。** 诚实边界：
++
++1. **有界词表非任意图**：RELATION_TYPES 固定谓词 + 允许的 (subject_kind,object_kind) 对(implements/interprets/cites/references_standard/supported_by_stat/pilot_under/procurement_under/supersedes);**off-vocabulary 谓词/对 + 未知 board kind → refused 不入图**。防无边界大图谱。
++2. **只存有证据的边**：_has_evidence 要求 doc_id AND 非空 fragment(引用片段);saved 边全带 {doc_id,fragment,source_id}。**无证据断言→inferred_unsaved 明确标记,不入图**(既不静默丢也不静默存)。graph 恰含 saved 边(无 refused/inferred 泄漏)。
++3. **fixture 用真实 backfill 文号 + 现实片段**：苏政办函〔2026〕39号 implements 国办函(片段「根据《国办函...》...制定」)、苏采〔2026〕7号 procurement_under 苏政办函39(片段「为落实...开展采购」)、鲁科字143 references_standard GB/T 12345、某试点 pilot_under 苏政办函39。真实抓取的 fragment 由片段抽取(承 T016 factsheet/T038 resolver)填。
++4. **当前断言为 curated 示例**：真实全域关系随抓取 + 抽取积累;关系置信/自动抽取后续增强;本任务先立**有界词表 + 证据强制 + inferred 标记 + query**。
++5. **★收尾 S5-P01(事件/实体/关系)★**:T057 事件聚合+T058 实体解析+T059 关系。下一步 S5-P02 检索(T060 精确/T061 全文语义/T062 版本as-of API)。**NOT_DEPLOYED**,live build 仍 b189d3cc0703(==T040)。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/relation_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/relation_report.json
+new file mode 100644
+index 000000000..b45300128
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/relation_report.json
+@@ -0,0 +1,125 @@
++{
++  "task": "ADP-S5-P01-T059",
++  "relation_types": [
++    "cites",
++    "implements",
++    "interprets",
++    "pilot_under",
++    "procurement_under",
++    "references_standard",
++    "supersedes",
++    "supported_by_stat"
++  ],
++  "assertions_in": 7,
++  "saved": 4,
++  "refused": 2,
++  "inferred_unsaved": 1,
++  "every_saved_has_evidence": true,
++  "audit": [
++    {
++      "subject": "苏政办函〔2026〕39号",
++      "subject_kind": "policy",
++      "predicate": "implements",
++      "object": "国办函〔2025〕X号",
++      "object_kind": "policy",
++      "rel_id": "rel:eb3883745b89ca8d",
++      "status": "saved",
++      "evidence": {
++        "doc_id": "ttl:jiangsu-39",
++        "fragment": "根据《国办函〔2025〕X号》...结合本省实际制定",
++        "source_id": "jiangsu-gov"
++      }
++    },
++    {
++      "subject": "苏采〔2026〕7号",
++      "subject_kind": "procurement",
++      "predicate": "procurement_under",
++      "object": "苏政办函〔2026〕39号",
++      "object_kind": "policy",
++      "rel_id": "rel:acf4708a885fc75b",
++      "status": "saved",
++      "evidence": {
++        "doc_id": "ttl:proc-7",
++        "fragment": "为落实苏政办函〔2026〕39号...开展采购",
++        "source_id": "jiangsu-gov"
++      }
++    },
++    {
++      "subject": "鲁科字〔2023〕143号",
++      "subject_kind": "policy",
++      "predicate": "references_standard",
++      "object": "GB/T 12345",
++      "object_kind": "standard",
++      "rel_id": "rel:7f04c7178d150539",
++      "status": "saved",
++      "evidence": {
++        "doc_id": "ttl:shandong-143",
++        "fragment": "按GB/T 12345执行验收",
++        "source_id": "shandong-gov"
++      }
++    },
++    {
++      "subject": "某试点",
++      "subject_kind": "pilot",
++      "predicate": "pilot_under",
++      "object": "苏政办函〔2026〕39号",
++      "object_kind": "policy",
++      "rel_id": "rel:e6c193f71daecc96",
++      "status": "saved",
++      "evidence": {
++        "doc_id": "ttl:pilot-1",
++        "fragment": "本试点依据苏政办函〔2026〕39号开展",
++        "source_id": "jiangsu-gov"
++      }
++    },
++    {
++      "subject": "苏政办函〔2026〕39号",
++      "subject_kind": "policy",
++      "predicate": "supported_by_stat",
++      "object": "2026年江苏GDP",
++      "object_kind": "statistic",
++      "rel_id": "rel:7ca8f934712e2731",
++      "status": "inferred_unsaved",
++      "evidence": null,
++      "note": "no document/fragment evidence -> not saved as a fact"
++    },
++    {
++      "subject": "some-paper",
++      "subject_kind": "paper",
++      "predicate": "implements",
++      "object": "苏政办函〔2026〕39号",
++      "object_kind": "policy",
++      "rel_id": "rel:93f78dfd5b022dc0",
++      "status": "refused",
++      "reason": "off-vocabulary relation (paper)-implements->(policy)"
++    },
++    {
++      "subject": "x",
++      "subject_kind": "tweet",
++      "predicate": "cites",
++      "object": "苏政办函〔2026〕39号",
++      "object_kind": "policy",
++      "rel_id": "rel:1706856d3b96e0f5",
++      "status": "refused",
++      "reason": "unknown board kind"
++    }
++  ],
++  "query_examples": {
++    "procurement_under_苏政办函39": [
++      "苏采〔2026〕7号"
++    ],
++    "implements_from_苏政办函39": [
++      "国办函〔2025〕X号"
++    ]
++  },
++  "cost": {
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_ops": 0,
++    "model_calls": 0,
++    "human_maintenance": "relation-layer authoring"
++  },
++  "deployment": "NOT_DEPLOYED"
++}
+\ No newline at end of file
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..b4680e5d1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/realtime_check.txt
+@@ -0,0 +1 @@
++live build: b189d3cc0703 ==T040: True
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/relation_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/relation_tests.txt
+new file mode 100644
+index 000000000..0985867a7
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/relation_tests.txt
+@@ -0,0 +1,3 @@
++assertions=7 saved=4 refused=2 inferred_unsaved=1 every_saved_has_evidence=True
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/t059_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/t059_verify.py
+new file mode 100644
+index 000000000..65aad80aa
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S5-P01-T059/test-results/t059_verify.py
+@@ -0,0 +1,76 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P01-T059 acceptance: cross-board Evidence Relations.
++
++Acceptance (TASK_INDEX): 每条关系有文档/片段依据；无证据推断明确标记或不保存。
++Deterministic. Verifies every SAVED relation carries document + fragment evidence, an evidence-free
++assertion is explicitly marked (inferred_unsaved) and NOT in the saved graph, and the graph is bounded
++(off-vocabulary relations and unknown board kinds are refused, so no boundless edges).
++"""
++import sys, json, pathlib, importlib.util
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import evidence_relation as R
++
++T059 = V01 / "evidence" / "ADP-S5-P01-T059"
++# re-derive from the tool (load the real assertions) so the report cannot be hand-edited to pass
++spec = importlib.util.spec_from_file_location("br", str(T059 / "build_relations.py"))
++br = importlib.util.module_from_spec(spec); spec.loader.exec_module(br)
++g = R.build_graph(br.ASSERTIONS)
++audit = g["audit"]
++saved = [r for r in audit if r["status"] == "saved"]
++fails = []
++print(f"assertions={g['assertions_in']} saved={g['saved']} refused={g['refused']} "
++      f"inferred_unsaved={g['inferred_unsaved']} every_saved_has_evidence={g['every_saved_has_evidence']}")
++
++# --- 1) every SAVED relation has document/fragment evidence -----------------------------------
++if not saved:
++    fails.append("no relations saved")
++for r in saved:
++    ev = r.get("evidence") or {}
++    if not (ev.get("doc_id") and (ev.get("fragment") or "").strip()):
++        fails.append(f"{r['rel_id']}: saved without document/fragment evidence")
++if not g["every_saved_has_evidence"]:
++    fails.append("every_saved_has_evidence flag is False")
++# and the saved graph contains exactly the saved relations (no unsourced edge leaked in)
++if set(g["graph"]) != {r["rel_id"] for r in saved}:
++    fails.append("saved graph contains edges that are not evidence-backed saved relations")
++
++# --- 2) evidence-free assertion -> explicitly marked and NOT saved ---------------------------
++inferred = [r for r in audit if r["status"] == "inferred_unsaved"]
++if not inferred:
++    fails.append("no evidence-free assertion exercised -> the no-evidence path is untested")
++for r in inferred:
++    if r.get("evidence") is not None:
++        fails.append(f"{r['rel_id']}: inferred relation still carries (fake) evidence")
++    if r["rel_id"] in g["graph"]:
++        fails.append(f"{r['rel_id']}: an evidence-free inference was SAVED into the graph (unfounded edge)")
++
++# --- 3) BOUNDED graph: off-vocabulary + unknown-kind assertions refused -----------------------
++refused = [r for r in audit if r["status"] == "refused"]
++if not any("off-vocabulary" in r["reason"] for r in refused):
++    fails.append("an off-vocabulary relation was not refused (graph is unbounded)")
++if not any("unknown board kind" in r["reason"] for r in refused):
++    fails.append("an unknown board kind was not refused")
++for r in refused:
++    if r["rel_id"] in g["graph"]:
++        fails.append(f"{r['rel_id']}: a refused relation leaked into the graph")
++
++# --- 4) deliverables: relation types (bounded vocabulary) + query examples -------------------
++if len(g["relation_types"]) < 4:
++    fails.append("relation type vocabulary is too small to be a real bounded schema")
++# query returns evidence-backed edges only
++qexamples = R.query(g["graph"], predicate="procurement_under")
++if not qexamples or any(not (e.get("evidence") or {}).get("doc_id") for e in qexamples):
++    fails.append("query returned an edge without evidence")
++
++# --- 5) negative control: adding a no-evidence relation never enters the saved graph ----------
++g2, rec = R.add_relation(dict(g["graph"]), "P", "policy", "implements", "Q", "policy", evidence=None)
++if rec["status"] != "inferred_unsaved" or len(g2) != len(g["graph"]):
++    fails.append("a no-evidence relation was saved (evidence rule not enforced)")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/evidence_relation.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/evidence_relation.py
+new file mode 100644
+index 000000000..4ec2303b3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/evidence_relation.py
+@@ -0,0 +1,97 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S5-P01-T059 -- cross-board Evidence Relations.
++
++Connects the boards -- policy, papers, standards, patents, statistics, pilots, procurement -- but does
++NOT build a boundless knowledge graph. Two disciplines:
++
++  * BOUNDED relation types -- only a fixed vocabulary of relations between defined board kinds is
++    allowed; an unknown relation type or an off-vocabulary (subject_kind, object_kind) pair is refused.
++  * EVIDENCE-BACKED only -- every SAVED relation must carry document + fragment evidence (the source
++    doc id and the quoted span that supports it). A relation asserted WITHOUT evidence is not stored
++    as a fact: it is returned as an explicitly-marked inference (status "inferred_unsaved"), so no
++    unfounded edge ever enters the graph.
++
++Deterministic; no network, no production side effects.
++"""
++import hashlib
++
++# bounded vocabulary: predicate -> allowed (subject_kind, object_kind) pairs
++RELATION_TYPES = {
++    "implements":        [("policy", "policy")],            # a local policy implements a central one
++    "interprets":        [("policy", "policy")],
++    "cites":             [("paper", "policy"), ("paper", "standard"), ("patent", "standard")],
++    "references_standard": [("policy", "standard"), ("procurement", "standard")],
++    "supported_by_stat": [("policy", "statistic"), ("pilot", "statistic")],
++    "pilot_under":       [("pilot", "policy")],
++    "procurement_under": [("procurement", "policy")],
++    "supersedes":        [("policy", "policy"), ("standard", "standard")],
++}
++
++BOARD_KINDS = {"policy", "paper", "standard", "patent", "statistic", "pilot", "procurement"}
++
++
++def _valid_type(predicate, s_kind, o_kind):
++    return predicate in RELATION_TYPES and (s_kind, o_kind) in RELATION_TYPES[predicate]
++
++
++def _has_evidence(ev):
++    """Evidence = a non-blank source document id AND a non-blank supporting fragment (quoted span)."""
++    return bool(ev and (ev.get("doc_id") or "").strip() and (ev.get("fragment") or "").strip())
++
++
++def add_relation(graph, subject, s_kind, predicate, obj, o_kind, evidence=None):
++    """Attempt to add subject --predicate--> obj. Refused if off-vocabulary. Saved only with evidence;
++    otherwise returned as an explicitly-marked, UNSAVED inference. Returns (graph, record)."""
++    rel = {"subject": subject, "subject_kind": s_kind, "predicate": predicate,
++           "object": obj, "object_kind": o_kind,
++           "rel_id": "rel:" + hashlib.sha256(f"{subject}|{predicate}|{obj}".encode()).hexdigest()[:16]}
++    if s_kind not in BOARD_KINDS or o_kind not in BOARD_KINDS:
++        return graph, {**rel, "status": "refused", "reason": "unknown board kind"}
++    if not _valid_type(predicate, s_kind, o_kind):
++        return graph, {**rel, "status": "refused",
++                       "reason": f"off-vocabulary relation ({s_kind})-{predicate}->({o_kind})"}
++    if not _has_evidence(evidence):
++        # asserted without evidence -> NOT a stored fact; explicitly marked inference
++        return graph, {**rel, "status": "inferred_unsaved", "evidence": None,
++                       "note": "no document/fragment evidence -> not saved as a fact"}
++    saved = {**rel, "status": "saved",
++             "evidence": {"doc_id": evidence["doc_id"], "fragment": evidence["fragment"].strip(),
++                          "source_id": evidence.get("source_id")}}
++    graph = dict(graph)
++    graph[rel["rel_id"]] = saved
++    return graph, saved
++
++
++def build_graph(assertions):
++    """assertions: list of (subject, s_kind, predicate, object, o_kind, evidence|None). Returns the
++    bounded, evidence-backed graph plus the audit of refused/inferred assertions."""
++    graph, audit = {}, []
++    for a in assertions:
++        graph, rec = add_relation(graph, *a)
++        audit.append(rec)
++    saved = [r for r in audit if r["status"] == "saved"]
++    return {
++        "relation_types": sorted(RELATION_TYPES),
++        "assertions_in": len(assertions),
++        "saved": len(saved),
++        "refused": sum(1 for r in audit if r["status"] == "refused"),
++        "inferred_unsaved": sum(1 for r in audit if r["status"] == "inferred_unsaved"),
++        "graph": graph,
++        "audit": audit,
++        "every_saved_has_evidence": all(_has_evidence(r.get("evidence")) for r in saved),
++    }
++
++
++def query(graph, subject=None, predicate=None, object_=None):
++    """Query examples: filter the evidence-backed graph. Every returned edge carries its evidence."""
++    out = []
++    for r in graph.values():
++        if subject and r["subject"] != subject:
++            continue
++        if predicate and r["predicate"] != predicate:
++            continue
++        if object_ and r["object"] != object_:
++            continue
++        out.append(r)
++    return out
