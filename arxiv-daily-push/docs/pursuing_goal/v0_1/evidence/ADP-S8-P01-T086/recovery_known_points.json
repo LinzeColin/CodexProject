@@ -1,0 +1,22 @@
+{
+  "task": "ADP-S8-P01-T086",
+  "note": "Frozen known-good recovery points -- each component recovers to THESE committed values; re-derivation that diverges (code/input drift) => not recoverable => release blocker.",
+  "content_bundle_render_sha16": "b70fe73e088f782d",
+  "r2_object_key": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
+  "d1_restore_per_month": {
+    "2016-01": {
+      "versions": 1,
+      "month_documents": 1
+    },
+    "2020-07": {
+      "versions": 1,
+      "month_documents": 1
+    },
+    "2026-07": {
+      "versions": 327,
+      "month_documents": 326
+    }
+  },
+  "source_registry_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+  "worker_source_build_id": "452f7c5de919"
+}

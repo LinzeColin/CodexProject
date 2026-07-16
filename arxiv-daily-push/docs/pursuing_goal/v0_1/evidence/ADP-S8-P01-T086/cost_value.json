@@ -1,0 +1,6 @@
+{
+  "task": "ADP-S8-P01-T086", "release_mode": "NOT_DEPLOYED",
+  "production_cost": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "recurring_cloud_usd": 0, "note": "isolated DR drill in local tmp/in-memory; no live rollback, no production side effects"},
+  "activity": {"readonly_get": 1, "human_maintenance": "DR drill tool (6 components) + verifier + 2 load-bearing negative controls + evidence + adversarial review"},
+  "value_metric": {"stage": "S8 Release/Soak/Handoff", "delivered": "every production component (Worker/D1/R2/Registry/content/prediction) is provably recoverable to a consistent known point in isolation, with 0 release blockers and RTO/RPO actuals -- a disaster-recovery safety net gating release", "release_gate": "any non-recoverable component is a release blocker (drill found none)"}
+}

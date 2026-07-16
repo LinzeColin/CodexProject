@@ -1,0 +1,845 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 46f139213..c8ee71816 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-18 Australia/Sydney - ADP V0.1 task ADP-S8-P01-T086 (production rollback & disaster-recovery drill; NOT_DEPLOYED)
++
++- Eighty-sixth task (Stage S8, Release/Soak/Final Handoff) of the ADP V0.1 FINAL EXECUTION program. An ISOLATED production rollback & disaster-recovery drill across the six production components -- Worker, D1, R2, Source Registry, content bundle, prediction. For each, it identifies the recover-to KNOWN POINT and the recovery MECHANISM, PERFORMS the recovery in a throwaway sandbox (tmp dir / in-memory SQLite -- never issuing a live rollback or touching production D1/R2/network), measures RTO/RPO actuals + an evidence hash, and classifies any component that cannot be recovered to a consistent known state as a RELEASE BLOCKER. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/disaster_recovery_drill.py reuses the committed pipeline tools (T029 restore_drill, T021 r2_artifact_key, T014 compile_registry, T018 render, T071 baselines) + the T085 committed anchors. Result: 6/6 components recover to a consistent known point with ZERO release blockers -- worker BUILD self-hash reproduces 452f7c5de919 (so any committed version is identifiable + integrity-verifiable and wrangler versions deploy can roll back to the live b189d3cc0703 == T040; actual live rollback NOT executed), D1 restores from the T027 open monthly snapshot into isolated in-memory SQLite (counts_consistent, 0 orphans, 329 versions across 3 months), R2 raw artifacts are content-addressed + immutable (identical bytes re-derive the identical key), the source registry recompiles to registry_hash d63cf6bd, the content bundle re-renders to a committed known-good hash, and prediction re-benchmarks to the committed report (forecast ledger append-only). RTO is the isolated-compute wall-time actual; RPO is 0 for every component (permanent/append-only or regenerable-from-permanent). release_mode NOT_DEPLOYED (no worker/schema/source_registry change; live still serves b189d3cc0703). Deliverables under evidence/ADP-S8-P01-T086/: dr_drill_report.json, rto_rpo_actuals.json, known_gaps.md (discloses the isolation boundary -- real canary rollback is T088, 14-day soak is T089 -- and that Cloudflare D1 Time Travel is not claimed), adversarial_review.md. Acceptance verified (evidence/ADP-S8-P01-T086/test-results/dr_drill_tests.txt, ACCEPTANCE = PASS, exit 0): the isolated drill completes and is consistent across all 6 components, 0 release blockers. Every component's recoverable compares the re-derivation to a COMMITTED known point (recovery_known_points.json for content_bundle/r2/d1, plus the committed registry_hash / worker build_id / baselines report) -- never a same-run self-comparison -- so a code/input drift flips it to a release blocker; a 4-lens adversarial review caught and fixed an initial content/r2 self-comparison vacuity. 3 load-bearing negative controls fire (flipping one source's enabled makes the registry recompile diverge from d63cf6bd; a content-bundle input drift makes the render hash diverge from b70fe73e; a different R2 content makes the key diverge from the committed key -- each flips recoverable False and is classified a release blocker; also the worker + registry source files are byte-immutable across the drill). Realtime not regressed (NOT deployed; live build b189d3cc0703). Cost (unknown != 0): production 0 (NOT_DEPLOYED, all local tmp/in-memory); 1 read-only GET. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-18 Australia/Sydney - ADP V0.1 task ADP-S8-P01-T085 (full-chain migration & data-consistency rehearsal; NOT_DEPLOYED)
+ 
+ - Eighty-fifth task and the FIRST task of Stage S8 (Release, Soak & Final Handoff) of the ADP V0.1 FINAL EXECUTION program. Replays the ENTIRE derivation chain -- source registry -> factsheet -> content render -> canonical documents -> append-only version chain -> monthly snapshot -> restore -> prediction baseline -- in an ISOLATED throwaway tmp dir, starting from a committed raw input fixture, and proves every replayed stage reproduces the committed downstream anchor with no unexplained data loss and zero production touch. KEY GAP CLOSED: the raw 500-row cn_items origin input was previously scratchpad-only (uncommitted), and the committed golden_set_500 is only a P0-presence view, so the chain could NOT be replayed from the repo; this task commits the real 500-row items_500.json (+ fs_500.json, byte-identical to the committed factsheet re-derived from it) under evidence/ADP-S8-P01-T085/data-samples/ as a reproducibility anchor (scanned: public feed metadata only -- 0 email / 0 private path / 0 credential / 0 PII). New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/full_chain_rehearsal.py replays the 8 stages through the SAME committed pipeline tools (T014 compile_registry, T016 extract_factsheet, T018 build_render_payload, T024 canonicalize, T026 version_engine, T027 snapshot_writer, T029 restore_drill, T071 baselines) -- a black-box re-run, not a re-implementation -- and compares each stage to its committed anchor: registry_hash d63cf6bd (also byte-stable across two compiles), factsheet 909a07fd (re-derived from items == committed fs_500), canonical 500->498 (duplicate_items_collapsed=2, 0 collisions, canonical_id set identical), version 500, snapshot_id sha256:61de7073 (498 docs / 500 versions / 92 partitions + every per-partition logical_hash identical), restore (3 months, 329 versions, counts_consistent, 0 orphans, 0 permanent deletes), prediction (G1/G2 have a reproducible baseline; honestly disclosed as DECOUPLED -- baselines read embedded fixtures, not the snapshot). A row-ledger records every count delta with a coded reason (items->docs -2 dedup; docs->versions +2 multi-item second versions; snapshot rows preserved). release_mode NOT_DEPLOYED (no worker/schema/source_registry change; live still serves b189d3cc0703 == T040). Deliverables under evidence/ADP-S8-P01-T085/: rehearsal_manifest.json, diff_report.json, data-samples/{items_500,fs_500}.json, known_gaps.md (discloses the scratchpad->committed fixture provenance, the prediction decoupling, and that production rollback/DR is T086 and 14-day soak is T089), adversarial_review.md. Acceptance verified (evidence/ADP-S8-P01-T085/test-results/rehearsal_tests.txt, ACCEPTANCE = PASS, exit 0): all 8 stages reproduce the committed anchors; no unexplained data loss; the 5 committed source-of-truth anchor files are byte-immutable across the replay; 3 load-bearing negative controls fire (dropping one input item breaks the canonical AND snapshot reproduction; a bogus live build flips production_untouched; a poisoned row-ledger is caught). Realtime not regressed (NOT deployed; live build b189d3cc0703). Cost (unknown != 0): production 0 (NOT_DEPLOYED, all in local tmp); 1 read-only GET. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 46eeaea2a..be2785659 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260718-ADP-V01-S7-P04-T084-EVIDENCE-A11Y-REDUCED-MOTION"
+-source_snapshot_hash: "sha256:b53b59636ff99b9dd9701625d9e286cd024f6ce30fc9e76f4a481f1993798fdf"
++as_of_event_id: "EVENT-20260718-ADP-V01-S8-P01-T085-FULL-CHAIN-REHEARSAL"
++source_snapshot_hash: "sha256:fac3586de746df8db806c5e74e5c5bfa3a42cbc563517e31c919306a04ebe226"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T16:30:00+10:00"
++snapshot_event_time: "2026-07-18T18:00:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 144
++    precommit_pending_events: 145
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 105a702b5..a8f611fc0 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-18 V0.1 S8-P01-T086: production rollback & disaster-recovery drill. An ISOLATED drill across the 6 production components (Worker/D1/R2/Registry/content/prediction) that identifies each recover-to known point + mechanism, PERFORMS the recovery in a throwaway sandbox (tmp / in-memory SQLite -- no live rollback, no production D1/R2/network), measures RTO/RPO actuals + evidence hashes, and classifies any non-recoverable component as a RELEASE BLOCKER. New tool docs/pursuing_goal/v0_1/tools/disaster_recovery_drill.py (reuses T029/T021/T014/T018/T071 + T085 anchors). Result: 6/6 recover to a consistent known point, 0 blockers -- worker self-hash 452f7c5de919 (rollback target b189d3cc0703 == T040 identifiable; live rollback NOT executed), D1 restore counts_consistent (329 versions/0 orphans), R2 content-addressed immutable (committed key), registry recompile d63cf6bd, content re-render == committed known-good hash, prediction re-benchmark reproduced. Every recoverable compares to a COMMITTED known point (recovery_known_points.json), never a same-run self-comparison (a 4-lens review caught+fixed an initial content/r2 vacuity). RPO 0 per component. release_mode NOT_DEPLOYED (no worker/schema/source_registry change; live still b189d3cc0703; T077 baseline NOT re-frozen). Acceptance (test-results/dr_drill_tests.txt, PASS exit 0, verifier re-derives): isolated drill consistent across 6 components, 0 release blockers; 3 load-bearing negative controls fire (perturbed registry / content-bundle input drift / different R2 content each -> recoverable False -> release blocker; worker/registry byte-immutable across the drill). Realtime not regressed (not deployed, live b189d3cc0703 == T040). Cost: prod 0 (NOT_DEPLOYED, local tmp), 1 read-only GET. Note: real canary rollback is T088, 14-day soak is T089. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-18 V0.1 S8-P01-T085 (first S8 task): full-chain migration & data-consistency rehearsal. Replayed the ENTIRE derivation chain (source registry -> factsheet -> render -> canonical -> version -> snapshot -> restore -> prediction) in an isolated tmp dir from a committed raw input fixture, proving every stage reproduces its committed anchor with no unexplained data loss and zero production touch. Committed the real 500-row items_500.json (+ fs_500.json, byte-identical to the factsheet re-derived from it) under evidence/ADP-S8-P01-T085/data-samples/ to close the reproducibility gap (the origin input was previously scratchpad-only; golden_set_500 is only a P0 view). New tool docs/pursuing_goal/v0_1/tools/full_chain_rehearsal.py black-box re-runs the SAME committed pipeline tools and compares to anchors: registry_hash d63cf6bd, factsheet 909a07fd (==committed fs_500), canonical 500->498 (dup=2, 0 collisions, id set identical), version 500, snapshot_id sha256:61de7073 (498/500/92 + per-partition logical_hash identical), restore counts_consistent (0 orphans, 0 permanent deletes), prediction G1/G2 reproducible (DECOUPLED, disclosed). release_mode NOT_DEPLOYED (no worker/schema/source_registry change; live still b189d3cc0703; T077 baseline NOT re-frozen). Acceptance (test-results/rehearsal_tests.txt, PASS exit 0, verifier re-derives independently): all stages match committed anchors, no unexplained loss, committed evidence byte-immutable across the replay, 3 load-bearing negative controls fire (drop-item breaks canonical+snapshot; bogus live build flips prod-untouched; poisoned ledger caught). Realtime not regressed (not deployed, live b189d3cc0703 == T040). Cost: prod 0 (NOT_DEPLOYED, local tmp), 1 read-only GET. Note: production rollback/DR drill is T086, 14-day soak is T089 -- not done here. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-18 V0.1 S7-P04-T084 (last S7 task): polished evidence/inference + a11y + reduced-motion WITHOUT replacing the design. (1) Added a PROVENANCE_NOTE (讲义·推断 badge + sentence) prepended in the central lessonHTML so every lesson render is labelled as auto-generated inference, distinct from the 原文 (evidence) link; refactored the todayPage inline lesson render to lessonHTML (DRY + marker, output otherwise identical). (2) Reveal button gets aria-controls + moves focus INTO the revealed box (tabindex=-1); interactive handlers were already native named buttons/links, 44px, :focus-visible. (3) Verified the reduced-motion rule disables animation but restores the .fr/.bw content classes to opacity:1 (gauge/video jump to final state in JS) -> no content/function lost (only the decorative meteor stays hidden). Polish is page-body -> six-theme visual/motion contract BYTE-IDENTICAL. release_mode NOT_DEPLOYED; BUILD d1dfcb3b7447 -> 452f7c5de919, live still b189d3cc0703; MODEL_SPEC untouched; T077 baseline NOT re-frozen. New tool docs/pursuing_goal/v0_1/tools/a11y_content_audit.py. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S7-P04-T084/: browser_measurements.json, a11y_harness.html, pre_fix_worker.js, known_gaps.md (Diff view = S5-T062, not redone; reduced-motion via CSSOM+deterministic, real SR deferred), adversarial_review.md. Acceptance (test-results/a11y_content_tests.txt, PASS exit 0, verifier re-derives): keyboard/touch OK + focus moves into revealed content, evidence/inference distinguished (pre-fix had no marker), reduced-motion restores content (removing the restore fails -> load-bearing), six-theme contract byte-identical. Realtime not regressed (not deployed, live b189d3cc0703 == T040). Cost: prod 0 (NOT_DEPLOYED), 1 read-only GET + 1 in-app render. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-18 V0.1 S7-P03-T083: optimized the hot D1 queries by adding 5 indexes to schema_cloud.sql (CREATE INDEX IF NOT EXISTS: idx_cn_items_recency (COALESCE(published_at,fetched_at) DESC, id DESC), idx_cn_items_board_recency (board_id, COALESCE(...) DESC, id DESC), idx_cn_lessons_item (item_id, created_at DESC), idx_cn_reviews_due (due_at), idx_cn_events_kind_at (kind, at DESC)) so the recency-sorted pages go from full-table SCAN + temp B-tree sort to an index-ordered SEARCH (p95 down 3-200x; rows scanned O(N)->O(LIMIT)). An adversarial review of the schema-only cut found a real hole -- without a tie-breaker, cross-family ties (recency-via-published vs recency-via-fetched) changed board/browse page membership+order and OFFSET pagination could skip/repeat, and the verifier's data was blind (published 2016 / fetched 2026 disjoint). FIX: added a total-order `, id DESC` tie-breaker to all 8 recency display ORDER BYs in worker_cloud.js (matches the prune query) + the id key in the 2 recency indexes so it stays index-served (no temp b-tree); the verifier now has real cross-family ties + a determinism check (index==forced-scan, OFFSET pages disjoint). Queries changed -> BUILD recomputed 0cb3acee6bf3 -> d1dfcb3b7447; but the change is in page-body functions so the six-theme visual/motion contract is BYTE-IDENTICAL (no CLS, server-rendered); not a content regression (makes an undefined tie order deterministic). release_mode NOT_DEPLOYED; live still b189d3cc0703; MODEL_SPEC untouched; T077 baseline NOT re-frozen. CWV 达标 NOT claimed (no field data; T081 rule). New tool docs/pursuing_goal/v0_1/tools/db_query_plan.py. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S7-P03-T083/: query_plans.json, pre_fix_schema.sql, known_gaps.md (hole+fix + write-amplification + scoping), adversarial_review.md. Acceptance (test-results/query_plan_tests.txt, PASS exit 0, verifier re-derives): 5/5 hot queries SCAN+temp-sort -> index SEARCH no temp-btree, scaling O(N)->O(LIMIT), cross-family ties present + deterministic (index==forced-scan, pages disjoint), 8/8 recency ORDER BYs carry the tie-breaker, six-theme contract byte-identical. Realtime not regressed (not deployed, live b189d3cc0703 == T040). Cost: prod 0 (NOT_DEPLOYED), on deploy index write-amplification on cron writes, 1 read-only GET. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 1e00181c6..85c538a89 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `144`
+-- pending_or_stale_events: `494`
+-- freshness_counts: `pending_or_stale_events=494; legacy_unbound_events=334`
++- precommit_pending_events: `145`
++- pending_or_stale_events: `495`
++- freshness_counts: `pending_or_stale_events=495; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:b53b59636ff99b9dd9701625d9e286cd024f6ce30fc9e76f4a481f1993798fdf`
+-- snapshot_event_time: `2026-07-18T16:30:00+10:00`
++- source_snapshot_hash: `sha256:fac3586de746df8db806c5e74e5c5bfa3a42cbc563517e31c919306a04ebe226`
++- snapshot_event_time: `2026-07-18T18:00:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 472eab7e1..e1486ffc0 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:b53b59636ff99b9dd9701625d9e286cd024f6ce30fc9e76f4a481f1993798fdf`
+-- snapshot_event_time: `2026-07-18T16:30:00+10:00`
++- source_snapshot_hash: `sha256:fac3586de746df8db806c5e74e5c5bfa3a42cbc563517e31c919306a04ebe226`
++- snapshot_event_time: `2026-07-18T18:00:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `494`
++- Pending/stale events: `495`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/TASK_REPORT.md
+new file mode 100644
+index 000000000..4a3205f76
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/TASK_REPORT.md
+@@ -0,0 +1,50 @@
++# TASK_REPORT · ADP-S8-P01-T086｜生产回滚与灾难恢复演练
++
++- **Iteration**: ITER-20260716-ADP-V01-FINAL-EXECUTION
++- **Task**: ADP-S8-P01-T086（Stage S8 / S8-P01，size M；Release, Soak & Final Handoff）
++- **release_mode**: NOT_DEPLOYED（隔离演练 + 新工具/证据，不发起真实回滚、不碰生产；live 仍 `b189d3cc0703`）
++- **Depends**: ADP-S8-P01-T085
++
++## 6 个前置问题
++1. **唯一目标？** — 隔离演练**生产回滚 + 灾难恢复**：证 Worker/D1/R2/Registry/内容 bundle/预测 6 组件均可回到已知点；交付 rollback drill + restore drill + RTO/RPO actuals + evidence hashes；任何不可恢复项=release blocker。
++2. **允许改的文件？** — 仅新增：`tools/disaster_recovery_drill.py`、`evidence/ADP-S8-P01-T086/**`；治理走 gov 脚本。不改 worker/schema/source_registry/生产。
++3. **绝不能改的行为？** — live 仍 `b189d3cc0703`（NOT_DEPLOYED）；**不发起真实回滚**（演练隔离，证「可恢复性」而非执行 live rollback）；已提交证据只读；无生产 D1/R2 写；恢复进 tmp/内存。
++4. **基线 build+data？** — worker 自哈希 `452f7c5de919`(源)/live `b189d3cc0703`(T040 回滚目标)；D1 从 T027 快照恢复(498/500)；registry_hash `d63cf6bd`；R2 内容寻址不可变；retention matrix(T029) 3 PERMANENT + 3 REGENERABLE。
++5. **验收命令？** — `python3 test-results/t086_verify.py` → ACCEPTANCE=PASS，exit 0（6 组件隔离恢复至一致已知点、各 recovered_hash==known_point、报 RTO/RPO、0 release blocker；负控制:破坏恢复→recoverable False→release blocker）。
++6. **NOT_DEPLOYED？** — 纯 docs/tool 新增；rollback=revert commit；未部署、未碰生产数据。
++
++## 交付物
++- **工具** `tools/disaster_recovery_drill.py`：对 6 组件逐一在**隔离沙箱**（tmp/内存 SQLite）执行恢复、测 RTO/RPO + evidence hash、分类 release blocker。复用既有工具（T029 restore_drill / T021 r2_artifact_key / T014 compile_registry / T018 render / T071 baselines）+ T085 已提交锚点。
++- **dr_drill_report.json**（6 组件 rollback/restore drill + RTO/RPO + evidence hashes + retention class + is_release_blocker）。
++- **recovery_known_points.json**（冻结的已提交已知点:content_bundle render hash / r2 内容寻址 key / d1 per-month / registry hash / worker build_id——每组件恢复的比对基准，漂移即判不可恢复）。
++- **rto_rpo_actuals.json**（RTO 实测秒 + RPO 定性 + evidence hashes 汇总）。
++- **验证器** `test-results/t086_verify.py`（2 载重负控制）+ `dr_drill_tests.txt`（PASS）+ `realtime_check.txt`。
++
++## 6 组件恢复矩阵（隔离演练，全 recoverable，0 blocker）
++| 组件 | retention | 已知点 | 恢复机制 | RPO | recoverable |
++|---|---|---|---|---|---|
++| **worker** | REGENERABLE(git 无状态码) | 源 build_id `452f7c5de919`/live `b189d3cc0703`(T040) | `wrangler versions deploy <build_id>`；自哈希证完整性 | 0 | ✔(自哈希复现) |
++| **d1** | PERMANENT(append-only 版本)+REGENERABLE(镜像) | T027 开放月快照(498/500) | 从开放快照恢复到隔离内存 SQLite(T029) | 0(永久记录) | ✔(counts_consistent/0 孤儿/329 版本) |
++| **r2** | PERMANENT(内容寻址原文,永不删) | 内容寻址 object key | 相同字节再导出=相同 key(不可变) | 0(不可变) | ✔(key 确定+可区分) |
++| **source_registry** | REGENERABLE(git 编译) | registry_hash `d63cf6bd` | recompile source_registry(git revert 已知点) | 0(git) | ✔(recompile==d63cf6bd) |
++| **content_bundle** | REGENERABLE(L0-L3 从 raw+code) | 确定性 render hash | 从永久 raw items 重导出(T018) | 0(可再生) | ✔(两次导出同 hash) |
++| **prediction** | REGENERABLE(baselines)+PERMANENT(append-only 台账 T073) | 已提交 baselines 报告 | re-benchmark；forecast 台账 append-only | 0 | ✔(re-benchmark 复现) |
++
++## 验收（PASS，verifier 独立重放，exit 0）
++证据：`test-results/dr_drill_tests.txt`（ACCEPTANCE = PASS）。
++
++1. **隔离演练完成且结果一致** — 6/6 组件在隔离沙箱恢复至一致已知点（worker 自哈希 `452f7c5de919`、registry `d63cf6bd`、D1 counts_consistent 329 版本、R2 内容寻址、content/prediction 确定性）；worker/registry 源文件演练前后 sha256 字节不变（只读、无 live rollback）。
++2. **任何不可恢复项成为 release blocker** — `is_release_blocker = not recoverable`；真实 6 组件 **0 blocker**。**★每组件 recoverable 都比对 COMMITTED 已知点（非同run自比）★**:worker 自哈希==声明 build_id、registry recompile==`d63cf6bd`、prediction==已提交 baselines、**content_bundle==已提交 render hash `b70fe73e`（`recovery_known_points.json`）**、**r2==已提交内容寻址 key**、d1 per-month==已提交 T029。**3 载重负控制**:①翻转 source `enabled`→registry `c5db032a`≠`d63cf6bd`→blocker；②content 输入漂移→`129f0ab2`≠`b70fe73e`→blocker；③r2 不同内容→key≠已提交→blocker（分类载重、非空跑）。
++3. **RTO/RPO actuals + evidence hashes** — `rto_rpo_actuals.json` 逐组件 RTO 实测秒 + RPO 定性 + evidence hash。
++
++> **复核记录**：初版 content_bundle/r2 的 recoverable 是**同 run 自比**（h1==h2 确定性重言式），4-lens 对抗复核（blocker-classification lens）判 **HOLE_FOUND**（漂移不会被判 blocker，违验收②）。**已修**：新增 `recovery_known_points.json` 冻结各组件已知点，recoverable 改为比对**已提交锚点**→ 漂移即翻 False（NC2/NC3 证实）。
++
++## 实时未回归
++NOT_DEPLOYED：隔离演练，不发起真实回滚。live `/build.json`=`b189d3cc0703`（六主题+动效不变）。1 次只读 GET。
++
++## 成本（unknown 不填 0）
++生产 new_requests 0 / D1 行读写 0 / R2 字节·操作 0 / model_calls 0 / 经常性云 0（NOT_DEPLOYED，全本地 tmp/内存）。只读 GET 1；人工=DR 演练工具 + 验证器 + 负控制 + 证据。
++
++## 独立验证
++实现者**不自签 PASS**。交独立 Agent 复核（见 adversarial_review.md）。
++IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/adversarial_review.md
+new file mode 100644
+index 000000000..15ddb71d9
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/adversarial_review.md
+@@ -0,0 +1,31 @@
++# 独立对抗复核 · ADP-S8-P01-T086｜生产回滚与灾难恢复演练
++
++- **Iteration**: ITER-20260716-ADP-V01-FINAL-EXECUTION
++- **实现者不自签 PASS**：两轮独立复核。
++- **裁决**：**CONFIRMED_SOUND**（初版被 4-lens 对抗复核判 HOLE_FOUND，修复后经聚焦复核 CONFIRMED_SOUND）。
++
++## 第一轮：4-lens 透视多样对抗复核（workflow，4 独立 skeptic）
++四个 lens 各独立重算（scratch dir 只读仓库）：
++- **recovery-real**：SOUND——独立复现 worker 自哈希 452f7c5de919、registry d63cf6bd、d1 restore counts_consistent(329 版本)、r2 内容寻址、content 确定性、prediction re-benchmark。
++- **isolation/production-untouched**：SOUND——worker/registry 源 sha256 演练前后不变；全树只写 tmp/`:memory:`；无 wrangler deploy/无 D1/R2/网络写；自行只读 GET live=b189d3cc0703。
++- **honesty/RTO-RPO/completeness**：SOUND——worker「无 live rollback」诚实、RTO 隔离计算时间、RPO 逐组件成立、6 组件全覆盖、known_gaps 披露 T088/T089 与 D1 Time Travel 不声称。
++- **blocker-classification**：**HOLE_FOUND**——`drill_content`/`drill_r2` 的 recoverable 是**同 run 自比**（`h1==h2`/`k1==k2`，确定性重言式，永不为假）→ content_bundle/r2 **永不可能被判 release blocker**，即使真实代码/输入漂移；实证:扰动 item[0].summary 使 hash 变 129f0ab2 但 recoverable 仍 True。违验收②「任何不可恢复项成为 release blocker」。
++
++## 修复（诚实）
++根因：「可恢复性」检查比对了**同 run 的确定性输出**（恒真），而非独立冻结的 committed 已知点。
++- 新增 `recovery_known_points.json`（committed）冻结各组件已知点：content_bundle render hash `b70fe73e088f782d`、r2 内容寻址 key、d1 per-month（=已提交 T029）、registry hash、worker build_id。
++- `drill_content` → `ok = (h == KNOWN["content_bundle_render_sha16"])`；`drill_r2` → `ok = (k1 == KNOWN["r2_object_key"]) and (k1 != k_diff)`；`drill_d1` → 加 per-month == 已提交 T029 比对。每组件 recoverable 现比对 **committed 锚点**（DR.KNOWN 从 committed 文件加载，非 live 重算）。
++- 验证器加 **NC2（content 输入漂移→hash≠锚点→blocker）** + **NC3（r2 不同内容→key≠锚点→blocker）**，连同 NC1（registry）共 3 载重负控制。
++
++## 第二轮：聚焦复核（fixed 代码，独立 skeptic）
++四点全 PASS：
++1. **每组件比对 committed 锚点非同 run**：逐函数确认 content/r2/d1/worker/registry/prediction 均比 committed 值；无 `h1==h2`/`k1==k2` 作 recoverable 信号。
++2. **锚点真实（独立再导出）**：r2 key `raw/arxiv-all/v1/43/0f/430ffbdc…995817`、content `b70fe73e088f782d`、d1 `{2016-01:(1,1),2020-07:(1,1),2026-07:(327,326)}` 均与从 committed 输入独立再导出/committed T029 逐一相等——非反向拟合。
++3. **falsifiable**：扰动 content→recoverable False(hash a1ef3237≠锚)；drill_r2 不同内容→False(key 9d6f965a≠锚)；翻转 registry enabled→False(c5db032a≠d63cf6bd)。
++4. **无新空跑/回归**：CLI 6/6 recoverable、0 blocker；验证器 exit 0（NC1/2/3 全翻 blocker）；DR.KNOWN 从 committed `recovery_known_points.json` 加载非 live 重算；隔离(`:memory:`/mkdtemp/无生产写/worker+registry 字节不变)；自行只读 GET live=b189d3cc0703(≠源 build 452f7c5de919→NOT_DEPLOYED 成立)。
++- 次要 note（非 hole）：`rto_rpo_actuals.json` 的 `rto_seconds` 墙钟随 run 微变；确定性字段(evidence_hashes/all_recoverable/release_blockers)稳定，RTO 已注明 informational 不断言。
++
++## 结论
++4-lens 复核抓到真实空跑（同 run 自比→content/r2 永不判 blocker），已修为比对 committed 已知点并加 3 载重负控制，聚焦复核 **CONFIRMED_SOUND**。满足「实现者不自签 PASS」的独立复核门槛，可进入治理登记与合入。
++
++**★教训:「可恢复性/恢复」检查必须比对独立冻结的 committed 已知点,绝不能自比同 run 的确定性输出——后者恒真、永不触发 blocker,是隐蔽的验收空跑。透视多样(perspective-diverse)多 skeptic 复核比单一 skeptic 更能抓到此类单向验收空跑。★**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/commands.log
+new file mode 100644
+index 000000000..7013077c0
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/commands.log
+@@ -0,0 +1,5 @@
++# ADP-S8-P01-T086 rollback + disaster-recovery drill -- key commands (isolated, no live rollback)
++python3 tools/disaster_recovery_drill.py --out evidence/ADP-S8-P01-T086/dr_drill_report.json
++#   -> ALL_RECOVERABLE=True RELEASE_BLOCKERS=[]
++python3 evidence/ADP-S8-P01-T086/test-results/t086_verify.py   # ACCEPTANCE=PASS exit 0 (2 negative controls)
++curl -s https://adp.linzezhang.com/build.json                  # build_id b189d3cc0703 == T040 (NOT_DEPLOYED)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/cost_value.json
+new file mode 100644
+index 000000000..6119d2d97
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/cost_value.json
+@@ -0,0 +1,6 @@
++{
++  "task": "ADP-S8-P01-T086", "release_mode": "NOT_DEPLOYED",
++  "production_cost": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "recurring_cloud_usd": 0, "note": "isolated DR drill in local tmp/in-memory; no live rollback, no production side effects"},
++  "activity": {"readonly_get": 1, "human_maintenance": "DR drill tool (6 components) + verifier + 2 load-bearing negative controls + evidence + adversarial review"},
++  "value_metric": {"stage": "S8 Release/Soak/Handoff", "delivered": "every production component (Worker/D1/R2/Registry/content/prediction) is provably recoverable to a consistent known point in isolation, with 0 release blockers and RTO/RPO actuals -- a disaster-recovery safety net gating release", "release_gate": "any non-recoverable component is a release blocker (drill found none)"}
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/dr_drill_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/dr_drill_report.json
+new file mode 100644
+index 000000000..823acda7f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/dr_drill_report.json
+@@ -0,0 +1,131 @@
++{
++  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
++  "task": "ADP-S8-P01-T086",
++  "components": [
++    {
++      "component": "worker",
++      "retention_class": "REGENERABLE (stateless code in git)",
++      "known_point": "source build_id 452f7c5de919; live deployed b189d3cc0703 (T040, rollback target)",
++      "recovery_mechanism": "wrangler versions deploy <build_id> to a prior committed version; self-hash verifies integrity",
++      "rpo": "0 (stateless code; every version in git)",
++      "rto_seconds": 0.0003,
++      "known_hash": "452f7c5de919",
++      "recovered_hash": "452f7c5de919",
++      "recoverable": true,
++      "note": "actual live rollback NOT executed (would touch production); drill proves the target is identifiable + integrity-verifiable",
++      "is_release_blocker": false
++    },
++    {
++      "component": "d1",
++      "retention_class": "PERMANENT (published DocumentVersion, append-only) + REGENERABLE (mirror views)",
++      "known_point": "T027 open monthly snapshot (498 docs / 500 versions); published versions append-only",
++      "recovery_mechanism": "restore a month from the open snapshot into an isolated in-memory SQLite (T029)",
++      "rpo": "0 for the permanent append-only record; open-format monthly snapshot is the portable recovery point",
++      "rto_seconds": 0.031,
++      "known_hash": "counts_consistent + committed T029 per-month",
++      "recovered_hash": "19c3cdc042d62cfa",
++      "recoverable": true,
++      "detail": {
++        "counts_consistent": true,
++        "orphans": 0,
++        "permanent_deletes": 0,
++        "per_month_matches_committed_t029": true,
++        "restored_versions": 329
++      },
++      "note": "restored into a throwaway :memory: SQLite; per-month counts compared to the committed T029 restore report; production D1 untouched",
++      "is_release_blocker": false
++    },
++    {
++      "component": "r2",
++      "retention_class": "PERMANENT (raw content-addressed artifact, never deleted)",
++      "known_point": "committed content-addressed object key raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
++      "recovery_mechanism": "content-addressed immutable key; identical bytes re-derive the committed key",
++      "rpo": "0 (immutable content-addressed; addressable by content)",
++      "rto_seconds": 0.0001,
++      "known_hash": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
++      "recovered_hash": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
++      "recoverable": true,
++      "note": "no production R2 read/write; key derived locally and compared to the committed known point",
++      "is_release_blocker": false
++    },
++    {
++      "component": "source_registry",
++      "retention_class": "REGENERABLE (compiled from the committed registry in git)",
++      "known_point": "registry_hash sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
++      "recovery_mechanism": "recompile source_registry.json (git revert to a prior registry is the known point)",
++      "rpo": "0 (registry versioned in git)",
++      "rto_seconds": 0.1521,
++      "known_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
++      "recovered_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
++      "recoverable": true,
++      "is_release_blocker": false
++    },
++    {
++      "component": "content_bundle",
++      "retention_class": "REGENERABLE (L0-L3 render, deterministically rebuilt from raw + code)",
++      "known_point": "committed render bundle hash b70fe73e088f782d",
++      "recovery_mechanism": "re-derive the L0-L3 render payloads from the permanent raw items + code (T018); must reproduce the committed bundle",
++      "rpo": "0 (regenerable from permanent raw evidence)",
++      "rto_seconds": 0.1309,
++      "known_hash": "b70fe73e088f782d",
++      "recovered_hash": "b70fe73e088f782d",
++      "recoverable": true,
++      "is_release_blocker": false
++    },
++    {
++      "component": "prediction",
++      "retention_class": "REGENERABLE (baselines) + PERMANENT (append-only forecast ledger T073)",
++      "known_point": "committed baselines report (G1/G2 reproducible); append-only forecast ledger",
++      "recovery_mechanism": "re-benchmark baselines from the committed history/eval; the forecast ledger is append-only",
++      "rpo": "0 (regenerable baselines; append-only ledger)",
++      "rto_seconds": 0.0001,
++      "known_hash": "b51e710cc68721e3",
++      "recovered_hash": "b51e710cc68721e3",
++      "recoverable": true,
++      "is_release_blocker": false
++    }
++  ],
++  "all_recoverable": true,
++  "release_blockers": [],
++  "rto_rpo_actuals": [
++    {
++      "component": "worker",
++      "rto_seconds": 0.0003,
++      "rpo": "0 (stateless code; every version in git)"
++    },
++    {
++      "component": "d1",
++      "rto_seconds": 0.031,
++      "rpo": "0 for the permanent append-only record; open-format monthly snapshot is the portable recovery point"
++    },
++    {
++      "component": "r2",
++      "rto_seconds": 0.0001,
++      "rpo": "0 (immutable content-addressed; addressable by content)"
++    },
++    {
++      "component": "source_registry",
++      "rto_seconds": 0.1521,
++      "rpo": "0 (registry versioned in git)"
++    },
++    {
++      "component": "content_bundle",
++      "rto_seconds": 0.1309,
++      "rpo": "0 (regenerable from permanent raw evidence)"
++    },
++    {
++      "component": "prediction",
++      "rto_seconds": 0.0001,
++      "rpo": "0 (regenerable baselines; append-only ledger)"
++    }
++  ],
++  "evidence_hashes": {
++    "worker": "452f7c5de919",
++    "d1": "19c3cdc042d62cfa",
++    "r2": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
++    "source_registry": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
++    "content_bundle": "b70fe73e088f782d",
++    "prediction": "b51e710cc68721e3"
++  },
++  "isolation": "every recovery runs in an isolated tmp dir / in-memory SQLite; no live rollback; no production D1/R2/network write; live worker unchanged"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/known_gaps.md
+new file mode 100644
+index 000000000..f937d341e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/known_gaps.md
+@@ -0,0 +1,19 @@
++# Known gaps · ADP-S8-P01-T086｜生产回滚与灾难恢复演练
++
++诚实披露**范围**、**验证形式**与 NOT_DEPLOYED 语义。
++
++## 范围（诚实）
++- **隔离演练 ≠ 执行真实生产回滚**：本任务证「**可恢复性**」——每组件恢复到已知点在隔离沙箱（tmp/内存 SQLite）完成并一致；**不发起 `wrangler versions deploy`、不写生产 D1/R2**。真实 canary 回滚在部署侧属 **T088**；14 日浸泡里演练每个 stop-the-line trigger 属 **T089**。
++- **worker 组件**：演练证「回滚**目标可识别 + 完整性可验**」——源自哈希复现声明 build_id（`452f7c5de919`），故任一已提交 worker 版本可由 build_id 识别并 `wrangler versions deploy` 回滚（live 回滚目标=`b189d3cc0703`/T040）。**实际 live 回滚未执行**（会碰生产）。这是诚实边界，非缺陷。
++- **RTO 是本地隔离演练的实测秒**（perf_counter），代表**恢复计算**时间；**不含**生产部署/网络/D1 冷启动/DNS 传播的真实 RTO——真实生产 RTO 更大，留待部署侧（T088/T089）实测。故 RTO 作为 informational actual 上报，验证器**不**断言其精确值，只断言恢复完成且复现已知 hash。
++- **RPO 定性**：PERMANENT 类（R2 原文/append-only 版本/canonical 身份）RPO=0（不可变/append-only，永不丢）；REGENERABLE 类（factsheet/render/快照/镜像）数据 RPO=0（可从永久源重建）。Cloudflare D1 平台级 Time Travel（30 日 PITR）未在本演练声称/使用——本演练的**开放格式**恢复点是 T027 月快照 + append-only 版本记录，不依赖厂商 PITR。
++
++## 验证形式（如实）
++- **确定性恢复断言**：6 组件的 recoverable/hash 断言无 clock/network/randomness；逐组件 recovered_hash 比已知点（worker build_id / registry d63cf6bd / D1 counts_consistent / R2 内容寻址 key / content·prediction 确定性 hash）。
++- **★恢复比对 COMMITTED 已知点（非同 run 自比）★**：`recovery_known_points.json` 冻结各组件已知点（content_bundle render hash `b70fe73e`、r2 内容寻址 key、d1 per-month=已提交 T029、registry hash、worker build_id）；每组件 recoverable=re-derivation 是否复现该已提交锚点。漂移（代码或输入）即翻 False。
++- **载重负控制（3 个，全 falsifiable）**：①翻转一个 source 的 enabled → registry recompile≠d63cf6bd → blocker；②content 输入漂移 → render hash≠已提交锚点 → blocker；③r2 不同内容 → key≠已提交锚点 → blocker；外加 worker/registry 源文件演练前后 sha256 字节不变（只读、无 live rollback）。
++- **复核记录（诚实）**：初版 content_bundle/r2 的 recoverable 是**同 run 自比**（h1==h2 确定性重言式，永不为假）→ 4-lens 对抗复核判 HOLE_FOUND（漂移不判 blocker，违验收②）。已修为比对**已提交锚点**（recovery_known_points.json），NC2/NC3 证实现在 falsifiable。**教训:「可恢复性」检查必须比对独立冻结的 committed 已知点,不能自比同 run 的确定性输出——后者恒真、永不触发 blocker。**
++- **依赖 pyarrow==17.0.0/duckdb==1.1.3**（user-site，离线；D1 恢复走 T027 logical NDJSON，不强依赖）。
++
++## NOT_DEPLOYED
++- live 仍 `b189d3cc0703`（realtime_check.txt）；未改 worker/schema/source_registry；未发起真实回滚；未写生产 D1/R2。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/realtime_check.txt
+new file mode 100644
+index 000000000..610df29c1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/realtime_check.txt
+@@ -0,0 +1 @@
++live build_id = b189d3cc0703 | schema = cn_v0_3
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/recovery_known_points.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/recovery_known_points.json
+new file mode 100644
+index 000000000..1453404ef
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/recovery_known_points.json
+@@ -0,0 +1,22 @@
++{
++  "task": "ADP-S8-P01-T086",
++  "note": "Frozen known-good recovery points -- each component recovers to THESE committed values; re-derivation that diverges (code/input drift) => not recoverable => release blocker.",
++  "content_bundle_render_sha16": "b70fe73e088f782d",
++  "r2_object_key": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
++  "d1_restore_per_month": {
++    "2016-01": {
++      "versions": 1,
++      "month_documents": 1
++    },
++    "2020-07": {
++      "versions": 1,
++      "month_documents": 1
++    },
++    "2026-07": {
++      "versions": 327,
++      "month_documents": 326
++    }
++  },
++  "source_registry_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
++  "worker_source_build_id": "452f7c5de919"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/rto_rpo_actuals.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/rto_rpo_actuals.json
+new file mode 100644
+index 000000000..76e4a394a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/rto_rpo_actuals.json
+@@ -0,0 +1,45 @@
++{
++  "task": "ADP-S8-P01-T086",
++  "rto_rpo_actuals": [
++    {
++      "component": "worker",
++      "rto_seconds": 0.0003,
++      "rpo": "0 (stateless code; every version in git)"
++    },
++    {
++      "component": "d1",
++      "rto_seconds": 0.0323,
++      "rpo": "0 for the permanent append-only record; open-format monthly snapshot is the portable recovery point"
++    },
++    {
++      "component": "r2",
++      "rto_seconds": 0.0001,
++      "rpo": "0 (immutable content-addressed; addressable by content)"
++    },
++    {
++      "component": "source_registry",
++      "rto_seconds": 0.1495,
++      "rpo": "0 (registry versioned in git)"
++    },
++    {
++      "component": "content_bundle",
++      "rto_seconds": 0.1392,
++      "rpo": "0 (regenerable from permanent raw evidence)"
++    },
++    {
++      "component": "prediction",
++      "rto_seconds": 0.0001,
++      "rpo": "0 (regenerable baselines; append-only ledger)"
++    }
++  ],
++  "evidence_hashes": {
++    "worker": "452f7c5de919",
++    "d1": "19c3cdc042d62cfa",
++    "r2": "raw/arxiv-all/v1/43/0f/430ffbdca5fe08e230780f872a4ea83750b503fb6930b84fd7dd47fc20995817",
++    "source_registry": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
++    "content_bundle": "b70fe73e088f782d",
++    "prediction": "b51e710cc68721e3"
++  },
++  "all_recoverable": true,
++  "release_blockers": []
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/dr_drill_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/dr_drill_tests.txt
+new file mode 100644
+index 000000000..1fcb4f563
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/dr_drill_tests.txt
+@@ -0,0 +1,7 @@
++DR drill: 6/6 components recover to a consistent known point, 0 release blockers; worker self-hash 452f7c5de919, registry sha256:d63cf6bd4d72c, D1 counts_consistent (329 versions restored), R2 content-addressed, content+prediction deterministic; worker/registry byte-immutable across the drill
++NC1 (flip one source's enabled): recompiled hash sha256:c5db032a68b08 != committed -> recoverable=False, release_blocker=True (correctly)
++NC2 (content bundle drift): recovered_hash 129f0ab24140ec15 != committed b70fe73e088f782d -> recoverable=False, blocker=True
++NC3 (R2 different content): recovered key != committed anchor -> recoverable=False, blocker=True (both content & R2 recovery are now falsifiable, not same-run tautologies)
++
++ACCEPTANCE = PASS
++NOTE: isolated rollback/disaster-recovery drill across Worker/D1/R2/Registry/content/prediction; all recover to a consistent known point (0 release blockers); the drill issues no live rollback and no production D1/R2/network write; NOT_DEPLOYED (live b189d3cc0703 confirmed in realtime_check.txt).
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..610df29c1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/realtime_check.txt
+@@ -0,0 +1 @@
++live build_id = b189d3cc0703 | schema = cn_v0_3
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/t086_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/t086_verify.py
+new file mode 100644
+index 000000000..12c14c9f8
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S8-P01-T086/test-results/t086_verify.py
+@@ -0,0 +1,129 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S8-P01-T086 acceptance: production rollback & disaster-recovery drill.
++
++Acceptance (TASK_INDEX row 86): 隔离演练完成且结果一致；任何不可恢复项成为 release blocker.
++
++Deterministic for the recoverability/hash assertions (no network/clock/randomness there; RTO is an
++informational measured actual). Re-runs the DR drill and asserts every one of the six production
++components (Worker, D1, R2, Source Registry, content bundle, prediction) recovers to a consistent known
++point in isolation, with zero release blockers, and that the drill never mutates production source.
++
++Load-bearing negative controls:
++  1. RECOVERY IS REAL: perturbing the source registry (flip one source's `enabled`) makes its recompiled
++     hash diverge from the committed d63cf6bd, so `recoverable` flips False AND it is classified a release
++     blocker -- proving the recoverability check and the blocker classification are not vacuous constants.
++  2. PRODUCTION UNTOUCHED: the worker source and the source registry are byte-identical (sha256) before
++     and after the drill -- the drill reads the known points and never issues a live rollback or write.
++The live-unchanged (NOT_DEPLOYED) claim is proven separately in realtime_check.txt.
++"""
++import hashlib
++import json
++import pathlib
++import sys
++import tempfile
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import disaster_recovery_drill as DR
++import full_chain_rehearsal as FCR
++
++fails = []
++
++
++def _sha(p):
++    return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
++
++
++# ---- MAIN: run the DR drill; production source byte-immutable across it ----
++before = {"worker": _sha(DR.WORKER), "registry": _sha(FCR.REGISTRY)}
++rep = DR.run_dr_drill()
++after = {"worker": _sha(DR.WORKER), "registry": _sha(FCR.REGISTRY)}
++comp = {c["component"]: c for c in rep["components"]}
++
++if not rep["all_recoverable"]:
++    fails.append(f"a component is not recoverable: {[c['component'] for c in rep['components'] if not c['recoverable']]}")
++if rep["release_blockers"]:
++    fails.append(f"release blockers present (must be none): {rep['release_blockers']}")
++for c in rep["components"]:
++    if c["is_release_blocker"] != (not c["recoverable"]):
++        fails.append(f"{c['component']}: blocker classification inconsistent with recoverable")
++# per-component known-point re-derivation
++if comp["worker"]["recovered_hash"] != "452f7c5de919":
++    fails.append(f"worker self-hash did not reproduce the declared build_id: {comp['worker']['recovered_hash']}")
++if comp["source_registry"]["recovered_hash"] != FCR.COMMITTED_REGISTRY_HASH:
++    fails.append(f"registry recompile did not reproduce d63cf6bd: {comp['source_registry']['recovered_hash']}")
++if not comp["d1"]["detail"]["counts_consistent"] or comp["d1"]["detail"]["orphans"] != 0:
++    fails.append(f"D1 restore not counts-consistent: {comp['d1']['detail']}")
++if comp["prediction"]["recovered_hash"] != comp["prediction"]["known_hash"]:
++    fails.append("prediction re-benchmark did not reproduce the committed report")
++# every recoverable compares the re-derivation to a COMMITTED known point (not a same-run self-compare)
++if not (comp["r2"]["recoverable"] and comp["r2"]["recovered_hash"] == comp["r2"]["known_hash"] == DR.KNOWN["r2_object_key"]):
++    fails.append("R2 key did not recover to the committed known point")
++if not (comp["content_bundle"]["recovered_hash"] == comp["content_bundle"]["known_hash"] == DR.KNOWN["content_bundle_render_sha16"]):
++    fails.append("content bundle did not re-render to the committed known-good hash")
++if not comp["d1"]["detail"]["per_month_matches_committed_t029"]:
++    fails.append("D1 restored per-month counts do not match the committed T029 anchor")
++# RTO/RPO actuals present for every component
++if not all(isinstance(c["rto_seconds"], (int, float)) and c["rpo"] for c in rep["components"]):
++    fails.append("RTO/RPO actuals missing for a component")
++# production untouched
++if before != after:
++    fails.append(f"the drill mutated production source (worker/registry): {before} != {after}")
++print(f"DR drill: 6/6 components recover to a consistent known point, 0 release blockers; "
++      f"worker self-hash 452f7c5de919, registry {comp['source_registry']['recovered_hash'][:20]}, "
++      f"D1 counts_consistent ({comp['d1']['detail']['restored_versions']} versions restored), "
++      f"R2 content-addressed, content+prediction deterministic; worker/registry byte-immutable across the drill")
++
++# ---- NC1: perturb the registry -> recovery breaks -> release blocker ----
++reg = json.loads(pathlib.Path(FCR.REGISTRY).read_text("utf-8"))
++reg["sources"][0]["enabled"] = not reg["sources"][0]["enabled"]      # valid flip; changes the compiled hash
++pert = pathlib.Path(tempfile.mkdtemp(prefix="t086_pert_")) / "registry.json"
++pert.write_text(json.dumps(reg, ensure_ascii=False), encoding="utf-8")
++nc = DR.drill_registry(str(pert))
++nc["is_release_blocker"] = not nc["recoverable"]
++if nc["recoverable"]:
++    fails.append("control broken: a perturbed registry still 'recovers' to d63cf6bd -- the check is vacuous")
++if not nc["is_release_blocker"]:
++    fails.append("control broken: an unrecoverable component was not classified a release blocker")
++print(f"NC1 (flip one source's enabled): recompiled hash {nc['recovered_hash'][:20]} != committed "
++      f"-> recoverable={nc['recoverable']}, release_blocker={nc['is_release_blocker']} (correctly)")
++
++# ---- NC2: content bundle recovery is now anchored to a COMMITTED hash -> input/code drift breaks it ----
++items = json.loads((V01 / "evidence/ADP-S8-P01-T085/data-samples/items_500.json").read_text("utf-8"))
++items[0]["summary"] = (items[0].get("summary") or "") + " ***DRIFT***"
++pitems = pathlib.Path(tempfile.mkdtemp(prefix="t086_cdrift_")) / "items.json"
++pitems.write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
++c_nc = DR.drill_content(items_path=str(pitems))
++c_nc["is_release_blocker"] = not c_nc["recoverable"]
++if c_nc["recoverable"]:
++    fails.append("control broken: content bundle drift still 'recovers' -- the check compares to itself, not a committed anchor")
++if not c_nc["is_release_blocker"]:
++    fails.append("control broken: a drifted content bundle was not classified a release blocker")
++# ---- NC3: R2 key recovery anchored to a COMMITTED key -> different content breaks it ----
++r_nc = DR.drill_r2(content_override=b"drifted content bytes", source_override="arxiv-all")
++r_nc["is_release_blocker"] = not r_nc["recoverable"]
++if r_nc["recoverable"]:
++    fails.append("control broken: a different R2 content still 'recovers' to the committed key -- vacuous")
++if not r_nc["is_release_blocker"]:
++    fails.append("control broken: a non-matching R2 key was not classified a release blocker")
++print(f"NC2 (content bundle drift): recovered_hash {c_nc['recovered_hash']} != committed "
++      f"{DR.KNOWN['content_bundle_render_sha16']} -> recoverable={c_nc['recoverable']}, blocker={c_nc['is_release_blocker']}")
++print(f"NC3 (R2 different content): recovered key != committed anchor -> recoverable={r_nc['recoverable']}, "
++      f"blocker={r_nc['is_release_blocker']} (both content & R2 recovery are now falsifiable, not same-run tautologies)")
++
++# ---- emit the RTO/RPO actuals deliverable ----
++(V01 / "evidence/ADP-S8-P01-T086/rto_rpo_actuals.json").write_text(
++    json.dumps({"task": "ADP-S8-P01-T086", "rto_rpo_actuals": rep["rto_rpo_actuals"],
++                "evidence_hashes": rep["evidence_hashes"], "all_recoverable": rep["all_recoverable"],
++                "release_blockers": rep["release_blockers"]}, ensure_ascii=False, indent=2) + "\n",
++    encoding="utf-8")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++print("NOTE: isolated rollback/disaster-recovery drill across Worker/D1/R2/Registry/content/prediction; all "
++      "recover to a consistent known point (0 release blockers); the drill issues no live rollback and no "
++      "production D1/R2/network write; NOT_DEPLOYED (live b189d3cc0703 confirmed in realtime_check.txt).")
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/disaster_recovery_drill.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/disaster_recovery_drill.py
+new file mode 100644
+index 000000000..ca0b17330
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/disaster_recovery_drill.py
+@@ -0,0 +1,216 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S8-P01-T086 -- production rollback & disaster-recovery drill.
++
++For each of the SIX production components -- Worker, D1, R2, Source Registry, content bundle, prediction
++-- this drill identifies the recover-to KNOWN POINT and the recovery MECHANISM, PERFORMS the recovery in
++an ISOLATED throwaway sandbox (in-memory SQLite / tmp dir -- never touching production or issuing a live
++rollback), measures RTO/RPO actuals + an evidence hash, and classifies any component that cannot be
++recovered to a consistent known state as a RELEASE BLOCKER.
++
++Recovery mechanisms (all recover to an OPEN, committed, or content-addressed point -- no vendor lock-in):
++  - Worker:   BUILD self-hash reproduces the declared build_id => any committed worker version is
++              identifiable + integrity-verifiable, so `wrangler versions deploy <build_id>` can roll back
++              to a known point (live b189d3cc0703 == T040). Stateless code => RPO 0.
++  - D1:       restore a month from the T027 open monthly snapshot into an isolated in-memory SQLite
++              (T029 restore_drill). Published versions are append-only/permanent => permanent-record RPO 0.
++  - R2:       raw artifacts are content-addressed + immutable (T021); identical bytes re-derive the
++              identical object key => recoverable by content, RPO 0.
++  - Registry: recompile source_registry.json => registry_hash reproduces d63cf6bd (git is the known point).
++  - Content:  L0-L3 render bundle is deterministically regenerable from raw + code (T018) => RPO 0.
++  - Predict:  baselines re-benchmark reproduces the committed report; the forecast ledger is append-only
++              (T073) => RPO 0.
++
++Deterministic for the recoverability/hash assertions (no clock/network/randomness there). RTO is a
++measured wall-time actual (perf_counter) reported for information; it is NOT asserted for an exact value.
++"""
++import argparse
++import hashlib
++import json
++import pathlib
++import re
++import subprocess
++import sys
++import tempfile
++import time
++
++V01 = pathlib.Path(__file__).resolve().parent.parent
++TOOLS = V01 / "tools"
++EVID = V01 / "evidence"
++sys.path.insert(0, str(TOOLS))
++import full_chain_rehearsal as FCR   # noqa: E402  reuse committed anchors + LIVE_BUILD_T040
++import restore_drill as RD           # noqa: E402  T029 D1 restore
++import r2_artifact_key as RK         # noqa: E402  T021 content-addressed key
++
++WORKER = V01.parent.parent.parent / "deploy" / "cloudflare" / "worker_cloud.js"
++T027_LOGICAL = EVID / "ADP-S2-P03-T027" / "logical_snapshot"
++RESTORE_MONTHS = ["2016-01", "2020-07", "2026-07"]
++# Frozen COMMITTED known-good recovery points. Every component recovers to one of THESE committed values;
++# a re-derivation that diverges (code or input drift) is NOT recoverable => release blocker. This is what
++# makes recoverable falsifiable -- it is never a same-run self-comparison / determinism tautology.
++KNOWN = json.loads((EVID / "ADP-S8-P01-T086" / "recovery_known_points.json").read_text("utf-8"))
++COMMITTED_T029 = json.loads((EVID / "ADP-S2-P03-T029" / "restore_report.json").read_text("utf-8"))
++
++
++def _sha16(o):
++    return hashlib.sha256(json.dumps(o, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:16]
++
++
++def worker_self_build_id(src):
++    """Recompute the BUILD self-hash: blank build_id (12 zeros) + source_sha256 (64 zeros), sha256 the
++    whole file, build_id = hash[:12]. Reproducing the declared build_id proves the recover-to version is
++    identifiable and integrity-verifiable."""
++    reset = re.sub(r"build_id: '[0-9a-f]{12}'", "build_id: '" + "0" * 12 + "'", src, count=1)
++    reset = re.sub(r"source_sha256: '[0-9a-f]{64}'", "source_sha256: '" + "0" * 64 + "'", reset, count=1)
++    return hashlib.sha256(reset.encode("utf-8")).hexdigest()[:12]
++
++
++def _timed(fn):
++    t0 = time.perf_counter()
++    out = fn()
++    return out, round(time.perf_counter() - t0, 4)
++
++
++def drill_worker():
++    src = WORKER.read_text("utf-8")
++    declared = re.search(r"build_id: '([0-9a-f]{12})'", src).group(1)
++    (recovered, rto) = _timed(lambda: worker_self_build_id(src))
++    ok = recovered == declared
++    return {"component": "worker", "retention_class": "REGENERABLE (stateless code in git)",
++            "known_point": f"source build_id {declared}; live deployed b189d3cc0703 (T040, rollback target)",
++            "recovery_mechanism": "wrangler versions deploy <build_id> to a prior committed version; self-hash verifies integrity",
++            "rpo": "0 (stateless code; every version in git)", "rto_seconds": rto,
++            "known_hash": declared, "recovered_hash": recovered, "recoverable": ok,
++            "note": "actual live rollback NOT executed (would touch production); drill proves the target is identifiable + integrity-verifiable"}
++
++
++def drill_d1():
++    (rep, rto) = _timed(lambda: RD.drill(str(T027_LOGICAL), str(FCR.RAW_EVIDENCE), RESTORE_MONTHS))
++    known_pm = KNOWN["d1_restore_per_month"]
++    # anchor to the COMMITTED T029 per-month counts (not just same-run ground truth): a snapshot that
++    # lost/gained rows would restore a different month count and fail this.
++    per_month_match = all(rep["per_month"][m]["versions"] == known_pm[m]["versions"]
++                          and rep["per_month"][m]["month_documents"] == known_pm[m]["month_documents"]
++                          for m in RESTORE_MONTHS)
++    ok = rep["counts_consistent"] and rep["orphan_versions"] == 0 and per_month_match
++    ev = _sha16([rep["per_month"][m]["result_hash"] for m in RESTORE_MONTHS])
++    return {"component": "d1", "retention_class": "PERMANENT (published DocumentVersion, append-only) + REGENERABLE (mirror views)",
++            "known_point": "T027 open monthly snapshot (498 docs / 500 versions); published versions append-only",
++            "recovery_mechanism": "restore a month from the open snapshot into an isolated in-memory SQLite (T029)",
++            "rpo": "0 for the permanent append-only record; open-format monthly snapshot is the portable recovery point",
++            "rto_seconds": rto, "known_hash": "counts_consistent + committed T029 per-month", "recovered_hash": ev,
++            "recoverable": ok,
++            "detail": {"counts_consistent": rep["counts_consistent"], "orphans": rep["orphan_versions"],
++                       "permanent_deletes": rep["permanent_delete_count"],
++                       "per_month_matches_committed_t029": per_month_match,
++                       "restored_versions": sum(v["versions"] for v in rep["per_month"].values())},
++            "note": "restored into a throwaway :memory: SQLite; per-month counts compared to the committed T029 restore report; production D1 untouched"}
++
++
++def drill_r2(content_override=None, source_override=None):
++    raw = json.loads(FCR.RAW_EVIDENCE.read_text("utf-8"))
++    it = raw[0]
++    content = content_override if content_override is not None else \
++        (it.get("summary") or it.get("title") or str(it.get("id"))).encode("utf-8")
++    src_id = source_override or it.get("source_id") or "src"
++    (k1, rto) = _timed(lambda: RK.object_key(src_id, content)[0])
++    k_diff = RK.object_key(src_id, content + b" x")[0]   # different bytes => different key (addressing works)
++    known = KNOWN["r2_object_key"]
++    ok = (k1 == known) and (k1 != k_diff)   # recover to the COMMITTED content-addressed key, not a self-compare
++    return {"component": "r2", "retention_class": "PERMANENT (raw content-addressed artifact, never deleted)",
++            "known_point": f"committed content-addressed object key {known}",
++            "recovery_mechanism": "content-addressed immutable key; identical bytes re-derive the committed key",
++            "rpo": "0 (immutable content-addressed; addressable by content)", "rto_seconds": rto,
++            "known_hash": known, "recovered_hash": k1, "recoverable": ok,
++            "note": "no production R2 read/write; key derived locally and compared to the committed known point"}
++
++
++def drill_registry(registry_path=None):
++    reg = registry_path or str(FCR.REGISTRY)
++    work = pathlib.Path(tempfile.mkdtemp(prefix="t086_reg_"))
++    def _recompile():
++        subprocess.run(["python3", str(TOOLS / "compile_registry.py"), "--registry", reg, "--out-dir", str(work)],
++                       capture_output=True, text=True, check=True)
++        return (work / "registry_hash.txt").read_text("utf-8").strip()
++    (rh, rto) = _timed(_recompile)
++    ok = rh == FCR.COMMITTED_REGISTRY_HASH
++    return {"component": "source_registry", "retention_class": "REGENERABLE (compiled from the committed registry in git)",
++            "known_point": f"registry_hash {FCR.COMMITTED_REGISTRY_HASH}",
++            "recovery_mechanism": "recompile source_registry.json (git revert to a prior registry is the known point)",
++            "rpo": "0 (registry versioned in git)", "rto_seconds": rto,
++            "known_hash": FCR.COMMITTED_REGISTRY_HASH, "recovered_hash": rh, "recoverable": ok}
++
++
++def drill_content(items_path=None, fs_path=None):
++    items = items_path or str(EVID / "ADP-S8-P01-T085/data-samples/items_500.json")
++    fs = fs_path or str(EVID / "ADP-S8-P01-T085/data-samples/fs_500.json")
++    work = pathlib.Path(tempfile.mkdtemp(prefix="t086_content_"))
++    def _render():
++        out = work / "render.json"
++        subprocess.run(["python3", str(TOOLS / "build_render_payload.py"), "--items", items,
++                        "--factsheets", fs, "--build-id", "DR-DRILL", "--out", str(out)],
++                       capture_output=True, text=True, check=True)
++        return _sha16(json.loads(out.read_text("utf-8")))
++    (h, rto) = _timed(_render)
++    known = KNOWN["content_bundle_render_sha16"]
++    ok = h == known   # recover to the COMMITTED known-good bundle hash, not a same-run self-comparison
++    return {"component": "content_bundle", "retention_class": "REGENERABLE (L0-L3 render, deterministically rebuilt from raw + code)",
++            "known_point": f"committed render bundle hash {known}",
++            "recovery_mechanism": "re-derive the L0-L3 render payloads from the permanent raw items + code (T018); must reproduce the committed bundle",
++            "rpo": "0 (regenerable from permanent raw evidence)", "rto_seconds": rto,
++            "known_hash": known, "recovered_hash": h, "recoverable": ok}
++
++
++def drill_prediction():
++    sys.path.insert(0, str(FCR.BASELINES_DRIVER))
++    import build_baselines as BB   # noqa: E402
++    import baselines as BL         # noqa: E402
++    (report, rto) = _timed(lambda: BL.benchmark(BB.TARGETS, BB.HISTORY, BB.EVAL))
++    committed = json.loads((FCR.BASELINES_DRIVER / "baselines_report.json").read_text("utf-8"))["report"]
++    ok = _sha16(FCR._json_norm(report)) == _sha16(FCR._json_norm(committed)) \
++        and report["G1"]["has_reproducible_baseline"] and report["G2"]["has_reproducible_baseline"]
++    return {"component": "prediction", "retention_class": "REGENERABLE (baselines) + PERMANENT (append-only forecast ledger T073)",
++            "known_point": "committed baselines report (G1/G2 reproducible); append-only forecast ledger",
++            "recovery_mechanism": "re-benchmark baselines from the committed history/eval; the forecast ledger is append-only",
++            "rpo": "0 (regenerable baselines; append-only ledger)", "rto_seconds": rto,
++            "known_hash": _sha16(FCR._json_norm(committed)), "recovered_hash": _sha16(FCR._json_norm(report)),
++            "recoverable": ok}
++
++
++DRILLS = {"worker": drill_worker, "d1": drill_d1, "r2": drill_r2,
++          "source_registry": drill_registry, "content_bundle": drill_content, "prediction": drill_prediction}
++
++
++def run_dr_drill(components=None):
++    names = components or list(DRILLS)
++    results = [DRILLS[n]() for n in names]
++    for r in results:
++        r["is_release_blocker"] = not r["recoverable"]
++    blockers = [r["component"] for r in results if r["is_release_blocker"]]
++    return {
++        "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION", "task": "ADP-S8-P01-T086",
++        "components": results,
++        "all_recoverable": all(r["recoverable"] for r in results),
++        "release_blockers": blockers,
++        "rto_rpo_actuals": [{"component": r["component"], "rto_seconds": r["rto_seconds"], "rpo": r["rpo"]} for r in results],
++        "evidence_hashes": {r["component"]: r["recovered_hash"] for r in results},
++        "isolation": "every recovery runs in an isolated tmp dir / in-memory SQLite; no live rollback; no production D1/R2/network write; live worker unchanged",
++    }
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--out")
++    args = ap.parse_args()
++    rep = run_dr_drill()
++    if args.out:
++        pathlib.Path(args.out).write_text(json.dumps(rep, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    for r in rep["components"]:
++        print(f"  {r['component']:<16} recoverable={r['recoverable']} blocker={r['is_release_blocker']} "
++              f"rto={r['rto_seconds']}s rpo={r['rpo'][:32]!r} hash={str(r['recovered_hash'])[:16]}")
++    print(f"ALL_RECOVERABLE={rep['all_recoverable']} RELEASE_BLOCKERS={rep['release_blockers']}")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())

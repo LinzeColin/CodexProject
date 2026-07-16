@@ -1,0 +1,5 @@
+# ADP-S8-P01-T086 rollback + disaster-recovery drill -- key commands (isolated, no live rollback)
+python3 tools/disaster_recovery_drill.py --out evidence/ADP-S8-P01-T086/dr_drill_report.json
+#   -> ALL_RECOVERABLE=True RELEASE_BLOCKERS=[]
+python3 evidence/ADP-S8-P01-T086/test-results/t086_verify.py   # ACCEPTANCE=PASS exit 0 (2 negative controls)
+curl -s https://adp.linzezhang.com/build.json                  # build_id b189d3cc0703 == T040 (NOT_DEPLOYED)
