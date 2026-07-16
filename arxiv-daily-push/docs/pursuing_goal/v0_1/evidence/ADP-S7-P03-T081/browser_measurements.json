@@ -1,0 +1,25 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P03-T081",
+  "method": "in-app browser (Chromium) loaded rum_harness.html embedding the REAL extracted RUM_JS client; navigator.sendBeacon stubbed to capture payloads; a large <h1> triggers a real LCP; body click gives INP an event; page-hidden flush sends the beacons.",
+  "rum_client_test": {
+    "beacon_count": 3,
+    "metrics": [
+      "CLS",
+      "INP",
+      "LCP"
+    ],
+    "all_to_api_rum": true,
+    "lcp_captured_real": true,
+    "lcp_value_ms": 2128,
+    "segment_tags": {
+      "theme": "cosmos",
+      "device": "desktop",
+      "network": "4g",
+      "route": "rum_harness.html"
+    },
+    "payload_shape_ok": true,
+    "note": "the real client captures live Core Web Vitals and tags each beacon with theme/route/device/network, beaconing to /api/rum on visibilitychange->hidden / pagehide."
+  },
+  "conclusion": "Acceptance (query by theme/route/device/network) is served by the offline rum_cwv tool (segments p75 by all four dims, verified on synthetic data); the browser proves the client actually collects real CWV tagged with those four dimensions. (无数据不声称达标 is enforced by the tool's min-sample gate.)"
+}

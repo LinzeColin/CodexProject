@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh" data-theme="cosmos"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>rum harness</title></head>
+<body>
+<h1 style="font-size:40px">RUM 测试大图（用于触发 LCP）</h1>
+<p>占位内容。</p>
+<script>
+// stub sendBeacon BEFORE the RUM client runs; capture every beacon payload
+window.__beacons=[];
+navigator.sendBeacon=function(url,body){ window.__beacons.push({url:url,body:JSON.parse(body)}); return true; };
+</script>
+<script>(function(){try{if(!('PerformanceObserver' in window))return;
+var sent={},d={LCP:null,CLS:0,INP:0};
+function route(){var p=location.pathname;if(p==='/'||p==='/today')return'today';if(p==='/review'||p==='/queue')return'review';if(p.indexOf('/item/')===0)return'item';if(p.indexOf('/board/')===0)return'board';var s=p.replace('/','').split('/')[0];return s||'today';}
+function device(){var w=innerWidth||document.documentElement.clientWidth;return w<600?'mobile':(w<1024?'tablet':'desktop');}
+function net(){var c=navigator.connection;return(c&&c.effectiveType)||'unknown';}
+function obs(t,cb,thr){try{var o=new PerformanceObserver(function(l){l.getEntries().forEach(cb);});var opt={type:t,buffered:true};if(thr)opt.durationThreshold=thr;o.observe(opt);}catch(e){}}
+obs('largest-contentful-paint',function(e){d.LCP=e.renderTime||e.startTime;});
+obs('layout-shift',function(e){if(!e.hadRecentInput)d.CLS+=e.value;});
+obs('event',function(e){if(e.duration>d.INP)d.INP=e.duration;},40);
+function send(m,v){if(v==null||!isFinite(v)||sent[m])return;sent[m]=1;try{navigator.sendBeacon('/api/rum',JSON.stringify({metric:m,value:Math.round(v*1000)/1000,theme:document.documentElement.getAttribute('data-theme')||'warm',route:route(),device:device(),network:net()}));}catch(e){}}
+function flush(){send('LCP',d.LCP);send('CLS',d.CLS);send('INP',d.INP);}
+addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')flush();});
+addEventListener('pagehide',flush);
+}catch(e){}})();</script>
+</body></html>

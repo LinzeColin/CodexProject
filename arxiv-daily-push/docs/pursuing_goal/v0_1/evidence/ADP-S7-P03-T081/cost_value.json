@@ -1,0 +1,26 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S7-P03-T081",
+  "release_mode": "NOT_DEPLOYED",
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "recurring_cloud_cost_usd": 0.0,
+    "readonly_get_realtime": 1,
+    "in_app_browser_renders": 1,
+    "node_tests": 1,
+    "on_deploy_cost": "<=3 beacons -> <=3 D1 writes per page view; RUM_SAMPLE lever + RUM_ENABLED off to stay within DIR-007 free tier (D1 100k writes/day)",
+    "human_maintenance": "RUM client + /api/rum endpoint + rumIngest validator + rum_cwv query tool + Node/browser tests + verifier + adversarial review"
+  },
+  "value": {
+    "stage": "S7 UI/UX Motion & Performance (P03 RUM/CWV)",
+    "acceptance": "PASS (verifier re-derives; query tool segments LCP/INP/CLS p75 by theme/route/device/network; browser proves the real client captures live CWV tagged by all four dimensions; the min-sample gate refuses to claim compliance without data)",
+    "user_value": "once deployed, gives the Owner a way to SEE where the six-theme UI is slow (LCP/INP/CLS by theme, route, device and network) so the next perf work targets the real slow spots -- '先知道哪里慢，再优化'",
+    "realized_on_deploy": "the pipeline is complete and byte-safe for the visual contract; a real p75 baseline lands only after deploy + field traffic (NOT_DEPLOYED now)"
+  },
+  "unknown_not_zero": "there is NO real RUM baseline yet (NOT_DEPLOYED => no field data); the tool honestly returns insufficient_data rather than fabricate a 达标 claim. INP is a max-interaction-latency approximation, not spec INP (disclosed)."
+}

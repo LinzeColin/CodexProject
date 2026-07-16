@@ -1,0 +1,9 @@
+query: LCP/INP/CLS queryable by all of ['theme', 'route', 'device', 'network']; theme split minimal=good / cosmos=poor; 2 cross-segments
+无数据不声称达标: empty + thin datasets claim NO compliance (min_samples=30); gate is load-bearing
+ingest: rumIngest Node test = PASS (bad metric/value/payload/sample rejected before any D1 write)
+worker wiring: 6/6 (endpoint + cn_rum + rumIngest + client injection + beacon)
+browser proof: real client captured ['CLS', 'INP', 'LCP'] tagged by ['device', 'network', 'route', 'theme'], beaconed to /api/rum
+advanced visual preserved: the ENTIRE T077/T078 contract is byte-identical (RUM injected at router, no hashed element touched)
+
+ACCEPTANCE = PASS
+NOTE: source build_id after the change is 8c19387c846b; NOT_DEPLOYED (live unchanged). NO real RUM baseline exists yet -- the tool refuses to claim compliance without data; a real p75 baseline requires deploying + collecting field traffic.

@@ -1,0 +1,18 @@
+# ADP-S7-P03-T081 key commands (NOT_DEPLOYED; RUM/CWV by theme/route/device/network)
+# 1) worker: RUM_JS client (PerformanceObserver LCP/CLS/INP-approx, tag theme/route/device/network, sendBeacon
+#    on page-hide) injected at ROUTER level (htmlResp) -> touches NO contract hash; pure rumIngest() validator;
+#    POST /api/rum endpoint (validate+sample -> CREATE TABLE IF NOT EXISTS cn_rum -> bind INSERT).
+#    BUILD self-hash recomputed 40a46aa2baee -> 8c19387c846b.
+node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js       # SYNTAX OK
+# 2) query tool: tools/rum_cwv.py (p75 nearest-rank, rate vs Google CWV thresholds, query/query_multi by 4 dims,
+#    every assessment GATED on min_samples=30 -> insufficient_data below the gate -> 无数据不声称达标)
+# 3) Node test on the REAL extracted rumIngest (bad metric/value/payload/oversized/sampled-out all rejected):
+node evidence/ADP-S7-P03-T081/test-results/rum_ingest_test.js         # RESULT = PASS
+# 4) in-app browser: real RUM_JS captured live LCP(2128ms)+CLS+INP tagged theme=cosmos/device=desktop/network=4g,
+#    beaconed to /api/rum on page-hide (browser_measurements.json)
+# 5) acceptance verifier (re-derives; load-bearing negative controls: empty/thin data claims NO compliance):
+python3 evidence/ADP-S7-P03-T081/test-results/t081_verify.py          # ACCEPTANCE = PASS, exit 0
+# 6) realtime: live /build.json still b189d3cc0703 (NOT deployed); source 8c19387c846b
+curl -s https://adp.linzezhang.com/build.json
+# 7) contract invariance: detect_regression = 0 changes (router injection touched nothing hashed)
+# 8) independent adversarial skeptic -> verdict in adversarial_review.md

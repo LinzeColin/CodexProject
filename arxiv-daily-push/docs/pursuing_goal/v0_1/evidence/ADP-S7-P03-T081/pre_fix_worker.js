@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '8c19387c846b', source_sha256: '8c19387c846b3e5183cbf0cfb8233544bc0f8e248cfa2a1bf97a157ec579a58b', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '40a46aa2baee', source_sha256: '40a46aa2baeea8a2c74fbab70de6dd372e62bfe3fa4eb151bf53f4f865bf0287', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1144,45 +1144,7 @@ const SEC_HEADERS = {
   'referrer-policy': 'strict-origin-when-cross-origin',
   'content-security-policy': "default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
 };
-// ───────────────────────── T081 RUM / Core Web Vitals（按 theme/route/device/network 分段）─────────────────────────
-// NOT_DEPLOYED：客户端在 router 层注入（不改 PAGE 壳/主题/动效层的任何合同哈希）；端点写新表 cn_rum，不动既有生产数据。
-// 采集 LCP/CLS/INP（INP 用最大交互时延近似），随页面隐藏 sendBeacon。达标判定在离线查询工具里做，且无数据不声称达标。
-const RUM_ENABLED = true;              // 采集开关（部署后生效；关=不注入客户端脚本、端点 202 忽略）
-const RUM_SAMPLE = 1;                  // 采样率 [0,1]（DIR-007 预算：可下调以降 D1 写入）
-const RUM_METRICS = { LCP: [0, 120000], INP: [0, 60000], CLS: [0, 100] };   // 每指标合理量程（毫秒 / 无量纲）
-const RUM_THEMES = ['warm', 'minimal', 'fresh', 'techno', 'cosmos', 'forest'];
-const RUM_DEVICES = ['mobile', 'tablet', 'desktop'];
-const RUM_JS = `(function(){try{if(!('PerformanceObserver' in window))return;
-var sent={},d={LCP:null,CLS:0,INP:0};
-function route(){var p=location.pathname;if(p==='/'||p==='/today')return'today';if(p==='/review'||p==='/queue')return'review';if(p.indexOf('/item/')===0)return'item';if(p.indexOf('/board/')===0)return'board';var s=p.replace('/','').split('/')[0];return s||'today';}
-function device(){var w=innerWidth||document.documentElement.clientWidth;return w<600?'mobile':(w<1024?'tablet':'desktop');}
-function net(){var c=navigator.connection;return(c&&c.effectiveType)||'unknown';}
-function obs(t,cb,thr){try{var o=new PerformanceObserver(function(l){l.getEntries().forEach(cb);});var opt={type:t,buffered:true};if(thr)opt.durationThreshold=thr;o.observe(opt);}catch(e){}}
-obs('largest-contentful-paint',function(e){d.LCP=e.renderTime||e.startTime;});
-obs('layout-shift',function(e){if(!e.hadRecentInput)d.CLS+=e.value;});
-obs('event',function(e){if(e.duration>d.INP)d.INP=e.duration;},40);
-function send(m,v){if(v==null||!isFinite(v)||sent[m])return;sent[m]=1;try{navigator.sendBeacon('/api/rum',JSON.stringify({metric:m,value:Math.round(v*1000)/1000,theme:document.documentElement.getAttribute('data-theme')||'warm',route:route(),device:device(),network:net()}));}catch(e){}}
-function flush(){send('LCP',d.LCP);send('CLS',d.CLS);send('INP',d.INP);}
-addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')flush();});
-addEventListener('pagehide',flush);
-}catch(e){}})();`;
-// pure validate + sample (roll passed in so it is deterministic/testable; endpoint passes Math.random())
-function rumIngest(payload, roll) {
-  if (!RUM_ENABLED) return { ok: false, reason: 'disabled' };
-  if (!payload || typeof payload !== 'object') return { ok: false, reason: 'bad_payload' };
-  const rng = RUM_METRICS[payload.metric];
-  if (!rng) return { ok: false, reason: 'bad_metric' };
-  const v = Number(payload.value);
-  if (!isFinite(v) || v < rng[0] || v > rng[1]) return { ok: false, reason: 'bad_value' };
-  if (!(roll <= RUM_SAMPLE)) return { ok: false, reason: 'sampled_out' };
-  const theme = RUM_THEMES.indexOf(payload.theme) >= 0 ? payload.theme : 'other';
-  const device = RUM_DEVICES.indexOf(payload.device) >= 0 ? payload.device : 'other';
-  const route = (String(payload.route || 'other').slice(0, 32).replace(/[^a-zA-Z0-9_-]/g, '')) || 'other';
-  const network = (String(payload.network || 'unknown').slice(0, 16).replace(/[^a-zA-Z0-9_.-]/g, '')) || 'unknown';
-  return { ok: true, row: { metric: payload.metric, value: v, theme, device, route, network } };
-}
-
-const htmlResp = (html, status = 200) => new Response(RUM_ENABLED ? html.replace('</body>', '<script>' + RUM_JS + '</script></body>') : html, {
+const htmlResp = (html, status = 200) => new Response(html, {
   // no-store（不是 no-cache）：这些浏览器对 no-cache 仍会缓存并不重新校验，导致用户一直看到旧页面、拿不到新部署。
   // no-store 强制每次都重新拉取，保证改动即时生效。
   status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store, must-revalidate', ...SEC_HEADERS },
@@ -1258,16 +1220,6 @@ export default {
           return jsonResp({ first: a, second: b, idempotent: (b.deduped === true && a.key === b.key), budget_usage_month: u, budget_limits: { classA: R2_BUDGET.classAPerMonth, classB: R2_BUDGET.classBPerMonth, storageBytes: R2_BUDGET.storageBytes } });
         }
         if (p === '/api/run') return jsonResp(await runDaily(env, 'manual'));
-        if (p === '/api/rum') {
-          // T081 RUM/CWV 采集端点：验证+采样后写 cn_rum（新表，不动既有生产数据）。忽略即 202（beacon 无需重试）。
-          let payload = null; try { payload = await request.json(); } catch (e) { payload = null; }
-          const res = rumIngest(payload, Math.random());
-          if (!res.ok) return jsonResp({ ignored: res.reason }, ['bad_payload', 'bad_metric', 'bad_value'].includes(res.reason) ? 422 : 202);
-          await env.DB.prepare('CREATE TABLE IF NOT EXISTS cn_rum (id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, metric TEXT, value REAL, theme TEXT, route TEXT, device TEXT, network TEXT, build_id TEXT)').run();
-          await env.DB.prepare('INSERT INTO cn_rum (ts,metric,value,theme,route,device,network,build_id) VALUES (?,?,?,?,?,?,?,?)')
-            .bind(nowISO(), res.row.metric, res.row.value, res.row.theme, res.row.route, res.row.device, res.row.network, BUILD.build_id).run();
-          return jsonResp({ ok: true }, 202);
-        }
         return jsonResp({ error: 'not found' }, 404);
       }
 
