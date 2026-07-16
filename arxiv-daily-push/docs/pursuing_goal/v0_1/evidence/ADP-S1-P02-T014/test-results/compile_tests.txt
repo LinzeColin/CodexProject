@@ -1,0 +1,23 @@
+### DETERMINISM (two compiles of source_registry.json)
+  registry_hash: sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb
+compile1 exit 0 compile2 exit 0
+outputs byte-identical: True
+
+### NEGATIVE duplicate source_id
+COMPILE: FAIL
+  - duplicate source_id(s): ['arxiv-all']
+  - duplicate source_id(s): ['arxiv-all']
+exit 1 -> FAIL: True
+
+### NEGATIVE invalid enabled (string)
+COMPILE: FAIL
+  - schema violation: 'yes' is not of type 'boolean'
+  - arxiv-all: enabled must be boolean, got 'yes'
+exit 1 -> FAIL: True
+
+### NEGATIVE unknown authority_kind
+COMPILE: FAIL
+  - schema violation: 'propaganda' is not one of ['china_official', 'intl_official', 'journal', 'preprint', 'media', 'search', 'aggregator']
+  - arxiv-all: unknown authority_kind 'propaganda'
+exit 1 -> FAIL: True
+

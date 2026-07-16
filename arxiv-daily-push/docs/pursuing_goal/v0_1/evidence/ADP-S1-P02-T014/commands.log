@@ -1,0 +1,20 @@
+# ADP-S1-P02-T014 commands.log · Registry compiler + deterministic output
+# base commit 0b0e9422 (T013 merged) ; compiler read-only on Registry, NOT_DEPLOYED (seed not applied)
+
+## determinism (acceptance: two compiles byte-identical)
+$ python3 tools/compile_registry.py --registry source_registry.json --out-dir <tmp1>
+$ python3 tools/compile_registry.py --registry source_registry.json --out-dir <tmp2>
+# registry_hash sha256:d63cf6bd4d72...e7fb ; outputs byte-identical: True
+
+## negatives (acceptance: fail on dup id / illegal enabled / unknown authority)
+# duplicate source_id       -> COMPILE: FAIL (exit 1)
+# enabled="yes" (non-bool)  -> COMPILE: FAIL
+# authority_kind=propaganda -> COMPILE: FAIL
+# full: test-results/compile_tests.txt
+
+## committed outputs
+$ python3 tools/compile_registry.py  -> compiled/{runtime.json, ui_labels.json, seed.sql, registry_hash.txt}
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

@@ -1,0 +1,7 @@
+{
+  "task": "ADP-S1-P02-T014", "stage": "S1 Truth & Content Stabilization", "release_mode": "NOT_DEPLOYED",
+  "value_metric_s1": "runtime/UI/seed are deterministically compiled from ONE Registry (registry_hash sha256:d63cf6bd...); the mechanism to eliminate multiple source truths is in place (T013 recorded, T014 generates); the hash anchors T015 drift CI",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "re-run compiler after Registry edit (CI-automatable)"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "determinism": "two consecutive compiles byte-identical; fails on duplicate source_id / non-boolean enabled / unknown authority_kind"
+}

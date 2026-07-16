@@ -1,0 +1,236 @@
+{
+  "labels": [
+    {
+      "authority": "preprint",
+      "badge": "official",
+      "board": "board1",
+      "name": "arXiv 全站（所有领域）",
+      "source_id": "arxiv-all"
+    },
+    {
+      "authority": "preprint",
+      "badge": "official",
+      "board": "board1",
+      "name": "bioRxiv 生物预印本",
+      "source_id": "biorxiv"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "The BMJ",
+      "source_id": "bmj"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Cell 本刊",
+      "source_id": "cell"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Neuron",
+      "source_id": "cell-neuron"
+    },
+    {
+      "authority": "media",
+      "badge": "discovery",
+      "board": "board3",
+      "name": "中国新闻网 · 滚动新闻",
+      "source_id": "chinanews-scroll"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "eLife",
+      "source_id": "elife"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "美联储货币政策",
+      "source_id": "fed-monetary"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "美联储新闻稿",
+      "source_id": "fed-press"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "美联储讲话",
+      "source_id": "fed-speeches"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "FTC 新闻稿",
+      "source_id": "ftc-press"
+    },
+    {
+      "authority": "aggregator",
+      "badge": "discovery",
+      "board": "board4",
+      "name": "美国科技监管与反垄断",
+      "source_id": "gnews-us-tech"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "IEEE Spectrum",
+      "source_id": "ieee-spectrum"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "JAMA",
+      "source_id": "jama"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "The Lancet",
+      "source_id": "lancet"
+    },
+    {
+      "authority": "preprint",
+      "badge": "official",
+      "board": "board1",
+      "name": "medRxiv 医学预印本",
+      "source_id": "medrxiv"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Nature 本刊",
+      "source_id": "nature"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Nature Biotechnology",
+      "source_id": "nature-biotech"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Nature Communications",
+      "source_id": "nature-comms"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Nature Machine Intelligence",
+      "source_id": "nature-machine-intel"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Nature Medicine",
+      "source_id": "nature-medicine"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "NEJM",
+      "source_id": "nejm"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "NIST",
+      "source_id": "nist-news"
+    },
+    {
+      "authority": "media",
+      "badge": "discovery",
+      "board": "board3",
+      "name": "人民网 · 经济与财经政策",
+      "source_id": "people-finance"
+    },
+    {
+      "authority": "media",
+      "badge": "discovery",
+      "board": "board3",
+      "name": "人民网 · 时政（政策/政府）",
+      "source_id": "people-politics"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "PLOS Biology",
+      "source_id": "plos-biology"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "PNAS 最新",
+      "source_id": "pnas"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Science Advances",
+      "source_id": "science-advances"
+    },
+    {
+      "authority": "journal",
+      "badge": "official",
+      "board": "board2",
+      "name": "Science 新闻",
+      "source_id": "science-news"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "SEC 新闻稿",
+      "source_id": "sec-press"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "SEC 讲话与声明",
+      "source_id": "sec-speeches"
+    },
+    {
+      "authority": "media",
+      "badge": "discovery",
+      "board": "board3",
+      "name": "新浪 · 国内焦点",
+      "source_id": "sina-china-focus"
+    },
+    {
+      "authority": "intl_official",
+      "badge": "official",
+      "board": "board4",
+      "name": "白宫总统令",
+      "source_id": "whitehouse-actions"
+    }
+  ],
+  "registry_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb"
+}

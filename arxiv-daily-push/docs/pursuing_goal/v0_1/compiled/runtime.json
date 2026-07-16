@@ -1,0 +1,302 @@
+{
+  "registry_hash": "sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb",
+  "sources": [
+    {
+      "authority_kind": "preprint",
+      "board": "board1",
+      "enabled": true,
+      "feed_url": "",
+      "method": "arxiv",
+      "official_evidence": true,
+      "source_id": "arxiv-all"
+    },
+    {
+      "authority_kind": "preprint",
+      "board": "board1",
+      "enabled": true,
+      "feed_url": "",
+      "method": "api",
+      "official_evidence": true,
+      "source_id": "biorxiv"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.bmj.com/rss/recent.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "bmj"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.cell.com/cell/current.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "cell"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.cell.com/neuron/current.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "cell-neuron"
+    },
+    {
+      "authority_kind": "media",
+      "board": "board3",
+      "enabled": true,
+      "feed_url": "https://www.chinanews.com.cn/rss/scroll-news.xml",
+      "method": "rss",
+      "official_evidence": false,
+      "source_id": "chinanews-scroll"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://elifesciences.org/rss/recent.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "elife"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.federalreserve.gov/feeds/press_monetary.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "fed-monetary"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.federalreserve.gov/feeds/press_all.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "fed-press"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.federalreserve.gov/feeds/speeches.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "fed-speeches"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.ftc.gov/feeds/press-release.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "ftc-press"
+    },
+    {
+      "authority_kind": "aggregator",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://news.google.com/rss/search?q=US%20tech%20regulation%20OR%20antitrust%20FTC%20SEC&hl=en-US&gl=US&ceid=US:en",
+      "method": "rss",
+      "official_evidence": false,
+      "source_id": "gnews-us-tech"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://spectrum.ieee.org/feeds/feed.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "ieee-spectrum"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://jamanetwork.com/rss/site_3/67.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "jama"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.thelancet.com/rssfeed/lancet_current.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "lancet"
+    },
+    {
+      "authority_kind": "preprint",
+      "board": "board1",
+      "enabled": true,
+      "feed_url": "https://connect.medrxiv.org/medrxiv_xml.php?subject=all",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "medrxiv"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.nature.com/nature.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "nature"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.nature.com/nbt.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "nature-biotech"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.nature.com/ncomms.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "nature-comms"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.nature.com/natmachintell.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "nature-machine-intel"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.nature.com/nm.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "nature-medicine"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "nejm"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.nist.gov/news-events/news/rss.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "nist-news"
+    },
+    {
+      "authority_kind": "media",
+      "board": "board3",
+      "enabled": true,
+      "feed_url": "http://www.people.com.cn/rss/finance.xml",
+      "method": "rss",
+      "official_evidence": false,
+      "source_id": "people-finance"
+    },
+    {
+      "authority_kind": "media",
+      "board": "board3",
+      "enabled": true,
+      "feed_url": "http://www.people.com.cn/rss/politics.xml",
+      "method": "rss",
+      "official_evidence": false,
+      "source_id": "people-politics"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://journals.plos.org/plosbiology/feed/atom",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "plos-biology"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=pnas",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "pnas"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "science-advances"
+    },
+    {
+      "authority_kind": "journal",
+      "board": "board2",
+      "enabled": true,
+      "feed_url": "https://www.science.org/rss/news_current.xml",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "science-news"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.sec.gov/news/pressreleases.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "sec-press"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.sec.gov/news/statements.rss",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "sec-speeches"
+    },
+    {
+      "authority_kind": "media",
+      "board": "board3",
+      "enabled": true,
+      "feed_url": "https://rss.sina.com.cn/news/china/focus15.xml",
+      "method": "rss",
+      "official_evidence": false,
+      "source_id": "sina-china-focus"
+    },
+    {
+      "authority_kind": "intl_official",
+      "board": "board4",
+      "enabled": true,
+      "feed_url": "https://www.whitehouse.gov/presidential-actions/feed/",
+      "method": "rss",
+      "official_evidence": true,
+      "source_id": "whitehouse-actions"
+    }
+  ]
+}

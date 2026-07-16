@@ -1,0 +1,8 @@
+-- ADP-S1-P02-T014 rollback for compiled/seed.sql
+-- NOTE: T014 is NOT_DEPLOYED -- the seed is a compiled ARTIFACT and was NOT applied to production D1.
+-- If/when the seed is applied by a later deploy task, rollback = restore the prior cn_sources snapshot:
+--   BEGIN;
+--   DELETE FROM cn_sources;                 -- remove seeded rows
+--   -- then re-apply the pre-migration cn_sources snapshot (33 rows captured before apply)
+--   COMMIT;
+-- Since T014 applied nothing, no production rollback is required; git revert <sha> reverts the artifacts.
