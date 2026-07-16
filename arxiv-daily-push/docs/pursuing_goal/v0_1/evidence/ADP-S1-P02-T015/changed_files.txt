@@ -1,0 +1,15 @@
+arxiv-daily-push/CHANGELOG.md
+arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+arxiv-daily-push/docs/governance/OWNER_STATUS.md
+arxiv-daily-push/docs/governance/STATUS.md
+arxiv-daily-push/docs/governance/development_events.jsonl
+arxiv-daily-push/docs/pursuing_goal/v0_1/SOURCE_DRIFT_EXCEPTIONS.yaml
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T015/TASK_REPORT.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T015/changed_files.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T015/commands.log
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T015/cost_value.json
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T015/git.diff
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T015/known_gaps.md
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S1-P02-T015/test-results/drift_ci_tests.txt
+arxiv-daily-push/docs/pursuing_goal/v0_1/tools/check_source_drift.py

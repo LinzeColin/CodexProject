@@ -1,0 +1,7 @@
+{
+  "task": "ADP-S1-P02-T015", "stage": "S1 Truth & Content Stabilization", "release_mode": "NOT_DEPLOYED",
+  "value_metric_s1": "source single-truth guarded by CI: any new hand-written source array, unregistered live source, or UI label inconsistent with the registry fails CI; completes S1-P02 (schema -> migration -> compiler -> drift CI), preventing DRIFT-FACT-006-class drift from silently returning",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "register new sources (edit Registry + recompile) or add to exception file"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "acceptance": "real worker PASS (no false positive); inject second source array + unregistered id -> DRIFT; ui_labels registry_hash mismatch -> DRIFT; restored -> PASS"
+}

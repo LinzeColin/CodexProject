@@ -1,0 +1,14 @@
+# Approved source-drift exceptions (ADP-S1-P02-T015)
+# Anything listed here is a KNOWN, approved deviation and does NOT fail the source drift CI.
+# Adding a new source array or an unregistered live source requires either registering it
+# (source_registry.json + recompile) or explicitly approving it here with a reason.
+schema_version: adp.source_drift_exceptions.v0_1
+
+# The single approved live source-of-truth array in worker_cloud.js during S1-P02.
+# (T014 generates compiled/runtime.json from the Registry; the worker still reads REGISTRY
+#  until a later deploy task switches it to consume compiled/runtime.json.)
+approved_source_arrays:
+  - array: REGISTRY   # worker_cloud.js const REGISTRY -- the 33 live sources migrated in T013
+
+# Live worker source_ids intentionally not (yet) in the Registry, with reason.
+approved_unregistered_ids: []   # none: all 33 worker sources are registered (T013)

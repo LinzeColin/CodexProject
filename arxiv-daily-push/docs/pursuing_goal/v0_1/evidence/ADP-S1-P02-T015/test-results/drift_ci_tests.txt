@@ -1,0 +1,25 @@
+### POSITIVE (real worker)
+source drift check
+  worker source arrays: ['REGISTRY']
+  worker ids: 33 | runtime ids: 33 | registry_hash: sha256:d63cf6bd4d72cd840...
+RESULT: PASS (one approved source array; worker==runtime source set; ui regenerated from current registry)
+exit 0 -> PASS: True
+
+### NEGATIVE (inject second source array + unregistered id 'rogue-src')
+source drift check
+  worker source arrays: ['REGISTRY2', 'REGISTRY']
+  worker ids: 34 | runtime ids: 33 | registry_hash: sha256:d63cf6bd4d72cd840...
+RESULT: DRIFT
+  - unapproved source array(s) in worker: ['REGISTRY2'] (approved: ['REGISTRY'])
+  - live worker source(s) not in Registry: ['rogue-src']
+exit 1 -> DRIFT: True
+
+### NEGATIVE (ui_labels registry_hash mismatch = label drift)
+source drift check
+  worker source arrays: ['REGISTRY']
+  worker ids: 33 | runtime ids: 33 | registry_hash: sha256:d63cf6bd4d72cd840...
+RESULT: DRIFT
+  - ui_labels.json registry_hash sha256:deadbeef != compiled sha256:d63cf6bd4d72cd8400f67a4f5ad81be5648fe9ade2a9c1e83bc843bca145e7fb (labels not regenerated from current registry)
+exit 1 -> DRIFT: True
+
+### RESTORED -> PASS (exit 0 )

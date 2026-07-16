@@ -1,0 +1,13 @@
+# ADP-S1-P02-T015 commands.log · source drift CI
+# base commit 826624064 (T014 merged) ; read-only repo scan, NOT_DEPLOYED
+
+## acceptance (inject a second source array or wrong label -> CI fails; normal build no false positive)
+$ python3 tools/check_source_drift.py --worker <real worker>  -> RESULT: PASS (1 array REGISTRY; worker 33 == runtime 33; ui hash ok)
+# inject REGISTRY2 + unregistered id 'rogue-src' -> RESULT: DRIFT (unapproved array + live-not-in-registry) exit 1
+# mutate ui_labels registry_hash              -> RESULT: DRIFT (labels not regenerated) exit 1
+# restored -> PASS
+# full: test-results/drift_ci_tests.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
