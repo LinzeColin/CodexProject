@@ -1,0 +1,4 @@
+exact identifiers=100 first_result_hits=100 rate=1.0000
+structured queries=38 sql_baseline_mismatches=0
+
+ACCEPTANCE = PASS

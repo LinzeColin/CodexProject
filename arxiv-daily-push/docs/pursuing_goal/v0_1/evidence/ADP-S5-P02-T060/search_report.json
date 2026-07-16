@@ -1,0 +1,23 @@
+{
+  "task": "ADP-S5-P02-T060",
+  "corpus_docs": 120,
+  "exact_identifier_lookups": 100,
+  "first_result_hits": 100,
+  "first_result_hit_rate": 1.0,
+  "doi_lookups": 24,
+  "doi_hits": 24,
+  "facets": {
+    "agencies": 5,
+    "statuses": 3
+  },
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "exact-search + corpus authoring"
+  },
+  "deployment": "NOT_DEPLOYED"
+}

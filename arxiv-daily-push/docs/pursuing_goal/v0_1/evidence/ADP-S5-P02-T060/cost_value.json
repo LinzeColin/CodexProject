@@ -1,0 +1,15 @@
+{
+  "task": "ADP-S5-P02-T060",
+  "stage": "S5 (Multi-board Depth & Benefit Parity) / P02 精确、结构化、全文与历史检索",
+  "value": {
+    "user_value": "Exact + structured retrieval: a professional user can look up any document by its exact 文号/DOI and get it as the first result 100% of the time (100/100 on the test corpus), and filter by agency/region/date-range/status with results identical to a SQL baseline. Deterministic retrieval benefit delivered before any semantic layer.",
+    "why_it_matters": "For authoritative sources, the first retrieval benefit is exactness -- the right document number returns the right document, and structured filters behave like SQL, not like a fuzzy guess. This is the deterministic core competitors' semantic-first search often gets wrong."
+  },
+  "cost": {
+    "note": "unknown != 0; a deterministic index over a test corpus -> 0 cloud cost.",
+    "production_new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0,
+    "r2_ops": 0, "model_calls": 0, "human_maintenance": "exact-search + test corpus authoring",
+    "recurring_cloud_cost_delta_per_month_usd": 0
+  },
+  "deployment": "NOT_DEPLOYED (exact index + structured filters + test corpus; production worker/cron/data untouched, live build unchanged b189d3cc0703 == T040)"
+}

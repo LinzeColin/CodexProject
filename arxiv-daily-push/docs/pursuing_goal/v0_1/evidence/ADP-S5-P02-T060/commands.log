@@ -1,0 +1,13 @@
+# ADP-S5-P02-T060 commands (exact + structured retrieval; NOT_DEPLOYED)
+
+# 1. tools/exact_search.py -- _norm_id (trim/space/case-fold) / build_index (docnum+doi hash + facet indexes) /
+#    exact_lookup (first result for an exact 文号/DOI) / structured_filter (facet AND + date range)
+
+# 2. build the test corpus + exact-lookup report (deterministic)
+python3 evidence/ADP-S5-P02-T060/build_corpus.py   # 120 docs; 100 exact lookups -> 100 first-result hits; 24/24 DOI
+
+# 3. acceptance verifier (100% first-result + structured_filter == in-memory sqlite3 SQL baseline over 30 queries)
+python3 evidence/ADP-S5-P02-T060/test-results/t060_verify.py   # ACCEPTANCE = PASS (exit 0)
+
+# 4. realtime no-regression (NOT_DEPLOYED)
+curl -s https://adp.linzezhang.com/build.json    # b189d3cc0703 == T040 (unchanged, no deploy)
