@@ -1,0 +1,7 @@
+model: {'accuracy': 1.0, 'false_alarms': 0, 'false_alarm_rate': 0.0, 'correct_catches': 4, 'human_value': 4.0}
+baseline: {'accuracy': 0.666667, 'false_alarms': 1, 'false_alarm_rate': 0.5, 'correct_catches': 3, 'human_value': 3.0}
+quantified: model false_alarm_rate=0.0 human_value=4.0; baseline false_alarm_rate=0.5 human_value=3.0
+distinguish: collection_failure caught by model not baseline; variable source normal (model) vs false-alarm (baseline); real silence caught
+recall boundary: variable source flips normal->abnormal right at its variability threshold (65/66)
+
+ACCEPTANCE = PASS

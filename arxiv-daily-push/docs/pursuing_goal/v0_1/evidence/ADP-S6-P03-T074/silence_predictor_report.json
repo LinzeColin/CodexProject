@@ -1,0 +1,44 @@
+{
+  "n_cases": 6,
+  "model": {
+    "accuracy": 1.0,
+    "false_alarms": 0,
+    "false_alarm_rate": 0.0,
+    "correct_catches": 4,
+    "human_value": 4.0
+  },
+  "baseline": {
+    "accuracy": 0.666667,
+    "false_alarms": 1,
+    "false_alarm_rate": 0.5,
+    "correct_catches": 3,
+    "human_value": 3.0
+  },
+  "beats_baseline": true,
+  "classifications": [
+    [
+      "abnormal_silence",
+      "abnormal_silence"
+    ],
+    [
+      "normal",
+      "normal"
+    ],
+    [
+      "collection_failure",
+      "collection_failure"
+    ],
+    [
+      "normal",
+      "normal"
+    ],
+    [
+      "abnormal_silence",
+      "abnormal_silence"
+    ],
+    [
+      "abnormal_silence",
+      "abnormal_silence"
+    ]
+  ]
+}

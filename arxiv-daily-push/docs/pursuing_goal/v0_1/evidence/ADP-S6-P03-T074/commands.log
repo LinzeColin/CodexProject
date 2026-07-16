@@ -1,0 +1,23 @@
+# ADP-S6-P03-T074 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity
+python3 -c "import sys; sys.path.insert(0,'tools'); import silence_predictor"
+
+# 2. build labeled silence cases + report (deterministic)
+python3 evidence/ADP-S6-P03-T074/build_silence_predictor.py
+#   -> model:    accuracy 1.0    false_alarm_rate 0.0  correct_catches 4  human_value 4.0
+#   -> baseline: accuracy 0.6667 false_alarm_rate 0.5  correct_catches 3  human_value 3.0
+#   -> beats_baseline: True
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S6-P03-T074/test-results/t074_verify.py | tee evidence/ADP-S6-P03-T074/test-results/silence_predictor_tests.txt
+#   quantified: model false_alarm_rate=0.0 human_value=4.0; baseline false_alarm_rate=0.5 human_value=3.0
+#   distinguish: collection_failure caught by model not baseline; variable source normal (model) vs false-alarm (baseline); real silence caught
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; SHADOW so production/realtime must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed; SHADOW no prod deploy)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t074.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main

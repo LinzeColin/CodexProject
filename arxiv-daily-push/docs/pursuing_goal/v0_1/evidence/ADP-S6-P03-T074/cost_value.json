@@ -1,0 +1,34 @@
+{
+  "task_id": "ADP-S6-P03-T074",
+  "title": "Shadow 来源静默预测",
+  "release_mode": "SHADOW",
+  "stage": "S6",
+  "phase": "S6-P03",
+  "shadow_note": "dev/shadow 环境预测;0 云成本;生产 worker/cron/data 未触;实时 build b189d3cc0703 不变;DIR-007 不受影响",
+  "value": {
+    "user_value": "Shadow 源静默预警:鲁棒阈值(median+k·MAD)不误报自然变异源、区分『源真静默』与『我方采集故障』(不同处置);优于简单发布周期基线,误报与人工价值可量化。",
+    "value_metric_stage": "S6 窄目标预测 Shadow:为 T075/T076 完整 Horizon Shadow 与上线/停止决策提供 shadow 预测与 outcomes。",
+    "measured": {
+      "beats_baseline": "模型accuracy1.0>基线0.667;模型误报率0.0<基线0.5;人工价值4>=3",
+      "quantified": "false_alarm_rate/false_alarms/human_value 均源自outcomes数字(model与baseline)",
+      "distinguish": "collection_failure模型识别(fetch错误)基线不能(负控制);变异源正常模型不误报;变异真异常仍被模型抓到"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；SHADOW dev 环境、本地确定性统计无 LLM,生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "模型/基线 + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读库；生产数据未变更；SHADOW dev 环境）"
+}
