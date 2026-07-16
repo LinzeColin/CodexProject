@@ -1,0 +1,2126 @@
+{
+  "note": "first 20 of 500 render payloads (full set reproducible via build_render_payload on the 500 golden set); gate ran on all 500 = RELEASE",
+  "sample_count_full": 500,
+  "payloads_first20": [
+    {
+      "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Setmelanotide for the Treatment of Acquired Hypothalamic Obesity",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMoa2512275?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Setmelanotide for the Treatment of Acquired Hypothalamic Obesity",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 138-150, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2512275?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMoa2512275?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Ensartinib in Resected ALK-Positive Non–Small-Cell Lung Cancer",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMoa2518990?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Ensartinib in Resected ALK-Positive Non–Small-Cell Lung Cancer",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 151-161, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2518990?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMoa2518990?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-05-18。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-05-18",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Phase 3 Trials of Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-05-18",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMoa2501488?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Phase 3 Trials of Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 115-126, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2501488?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMoa2501488?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-03-11。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-03-11",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-03-11",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMoa2512911?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 127-137, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa2512911?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMoa2512911?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Nutrition Therapy in Critically Ill Adults",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMra2506111?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Nutrition Therapy in Critically Ill Adults",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 162-174, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMra2506111?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMra2506111?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "One Pivotal Trial for FDA Approval — Ending the Two-Trial Dogma",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMc2604063?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "One Pivotal Trial for FDA Approval — Ending the Two-Trial Dogma",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 207-208, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMc2604063?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMc2604063?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Immediate or Deferred Nonculprit-Lesion PCI",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMc2604396?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Immediate or Deferred Nonculprit-Lesion PCI",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 205-206, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMc2604396?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMc2604396?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Measles Inclusion-Body Encephalitis after Allogeneic Stem-Cell Transplantation",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMc2511896?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Measles Inclusion-Body Encephalitis after Allogeneic Stem-Cell Transplantation",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 203-205, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMc2511896?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMc2511896?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Trends and Prevalence of Chronic Kidney Disease in the United States",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMc2518565?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Trends and Prevalence of Chronic Kidney Disease in the United States",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 201-203, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMc2518565?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMc2518565?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Treating Acquired Hypothalamic Obesity",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMe2606217?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Treating Acquired Hypothalamic Obesity",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 190-193, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMe2606217?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMe2606217?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Contextualizing the Dead Donor Rule in an Era of Voluntary Euthanasia",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMms2601611?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Contextualizing the Dead Donor Rule in an Era of Voluntary Euthanasia",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 194-200, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMms2601611?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMms2601611?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Preserving Lung Function in Idiopathic Pulmonary Fibrosis",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMe2606821?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Preserving Lung Function in Idiopathic Pulmonary Fibrosis",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 189-190, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMe2606821?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMe2606821?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-06-15。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-06-15",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "The OMB and the Politicization of Science",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-06-15",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMe2608017?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "The OMB and the Politicization of Science",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 187-188, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMe2608017?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMe2608017?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Condyloma Acuminata of the Urethra",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMicm2603369?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Condyloma Acuminata of the Urethra",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 175-175, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMicm2603369?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMicm2603369?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-04。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Sparganosis",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMicm2603440?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Sparganosis",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMicm2603440?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMicm2603440?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "A Rash and Red Urine",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMimc2514359?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "A Rash and Red Urine",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMimc2514359?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMimc2514359?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-08。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Case 19-2026: A 68-Year-Old Man with Fatigue, Fever, and Hypoxemia",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-08",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMcpc2517856?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Case 19-2026: A 68-Year-Old Man with Fatigue, Fever, and Hypoxemia",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 176-185, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMcpc2517856?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMcpc2517856?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-04。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "For Those Left Behind",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMp2517154?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "For Those Left Behind",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 112-113, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMp2517154?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMp2517154?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-04。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Mandated State-Level Surveillance of Assisted Reproductive Technology — An Emerging Threat in the United States",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMp2602489?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Mandated State-Level Surveillance of Assisted Reproductive Technology — An Emerging Threat in the United States",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 110-112, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMp2602489?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMp2602489?af=R&rss=currentIssue"
+        }
+      }
+    },
+    {
+      "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+      "build_id": "bd67a78020a3",
+      "board_id": "board2",
+      "baseline_status": "provisional_machine",
+      "layers": {
+        "L0_15s": {
+          "text": "来源 nejm · 板块 顶级期刊 · 日期 2026-07-04。",
+          "claims": [
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "common.date"
+              }
+            }
+          ]
+        },
+        "L1_2min": {
+          "facts": [
+            {
+              "label": "标题",
+              "value": "Colliding Forces — The Aging of the Baby Boom Generation and Contracting Nursing-Home Supply",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "common.title"
+              }
+            },
+            {
+              "label": "来源",
+              "value": "nejm",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "source_id"
+              }
+            },
+            {
+              "label": "板块",
+              "value": "顶级期刊",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "board_id"
+              }
+            },
+            {
+              "label": "日期",
+              "value": "2026-07-04",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "common.date"
+              }
+            },
+            {
+              "label": "DOI",
+              "value": "10.1056/NEJMp2603593?af=R&rss=currentIssue",
+              "claim_type": "fact",
+              "locator": {
+                "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+                "field": "common.doi"
+              }
+            }
+          ]
+        },
+        "L2_deep": {
+          "status": "provisional_pending_model",
+          "prompt_ref": "BOARD_PROMPTS.md#board2",
+          "text": null,
+          "claim_types_required": [
+            "fact",
+            "interpretation",
+            "inference"
+          ]
+        },
+        "L3_evidence": {
+          "label": "原始证据（未加工原文，可能为英文）",
+          "raw_title": "Colliding Forces — The Aging of the Baby Boom Generation and Contracting Nursing-Home Supply",
+          "raw_abstract": "New England Journal of Medicine, Volume 395, Issue 2, Page 105-107, July 9, 2026.",
+          "url": "https://www.nejm.org/doi/full/10.1056/NEJMp2603593?af=R&rss=currentIssue",
+          "doi": "10.1056/NEJMp2603593?af=R&rss=currentIssue"
+        }
+      }
+    }
+  ]
+}

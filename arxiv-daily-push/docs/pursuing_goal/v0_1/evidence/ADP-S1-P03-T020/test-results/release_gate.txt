@@ -1,0 +1,18 @@
+{
+  "scope": "content_bundle",
+  "sample_count": 500,
+  "key_unlocated": 0,
+  "empty_or_template": 0,
+  "p0_fact_accuracy": 1.0,
+  "p0_threshold": 0.99,
+  "baseline_status": "provisional_machine",
+  "checks": {
+    "key_claim_evidence_100": true,
+    "empty_or_template_leak_0": true,
+    "p0_fact_accuracy_ok": true
+  }
+}
+RESULT: RELEASE
+### NEGATIVE injected empty L0 + unlocated key fact
+RESULT: BLOCK_CONTENT_BUNDLE
+exit 1 -> BLOCK_CONTENT_BUNDLE: True

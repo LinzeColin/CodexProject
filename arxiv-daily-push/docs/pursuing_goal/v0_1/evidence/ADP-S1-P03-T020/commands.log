@@ -1,0 +1,21 @@
+# ADP-S1-P03-T020 commands.log · 500 Golden Set + content Release Gate
+# base commit 18484c4a (T019 merged) ; read-only D1 500-sample, NOT_DEPLOYED
+
+## sample 500 (read-only) + factsheets + payloads
+$ npx wrangler@4 d1 execute adp-mirror --remote --json --command "SELECT ... FROM cn_items ORDER BY first_seen_at DESC LIMIT 500"  # 500 rows, changed_db False (board1 217/board2 148/board3 85/board4 50)
+$ python3 tools/extract_factsheet.py --items items_500.json --out fs_500.json
+$ python3 tools/build_render_payload.py --items items_500.json --factsheets fs_500.json --build-id bd67a78020a3 --out payloads_500.json
+
+## BEFORE (raw item defects)
+$ python3 tools/scan_defects.py --items items_500.json --factsheets fs_500.json --build-id bd67a78020a3
+# items_with_any_defect 460/500 ; english_direct_output 361 ; empty 53 ; templating 58 ; board_pollution 44
+
+## AFTER (content release gate)
+$ python3 tools/content_release_gate.py --payloads payloads_500.json --items items_500.json
+# key_unlocated 0 ; empty_or_template 0 ; p0_fact_accuracy 1.0 ; RESULT: RELEASE
+# NEGATIVE (inject empty L0 + unlocated key fact) -> BLOCK_CONTENT_BUNDLE (scope content_bundle, exit 1)
+# full: test-results/release_gate.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

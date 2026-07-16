@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260716-ADP-V01-S1-P03-T018-L0L3-CONTENT-EVIDENCE-LOCATOR"
-source_snapshot_hash: "sha256:81b9c3604440433963e1e6a8331a04e301470d6613d9c0129d330b249c6401bb"
+as_of_event_id: "EVENT-20260716-ADP-V01-S1-P03-T019-CONTENT-QA-FALLBACK"
+source_snapshot_hash: "sha256:7db750d70b32fce1f615881a4f7acbff0e7cfae8a8627ac16bf331e396de8385"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-16T16:55:00+10:00"
+snapshot_event_time: "2026-07-16T17:15:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 77
+    precommit_pending_events: 78
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

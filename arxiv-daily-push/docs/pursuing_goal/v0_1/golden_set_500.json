@@ -1,0 +1,6008 @@
+{
+  "golden_set_version": "adp.golden_set.v0_1",
+  "build_id": "bd67a78020a3",
+  "baseline_status": "provisional_machine",
+  "count": 500,
+  "items": [
+    {
+      "item_id": "feed:6da886bab91d5c5db2557a99822206003a4cf8cc",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Setmelanotide for the Treatment of Acquired Hypothalamic Obesity",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMoa2512275?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:8379c5792467800aaa381b4ebcff3b9544d24c95",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Ensartinib in Resected ALK-Positive Non–Small-Cell Lung Cancer",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMoa2518990?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:3757ed9c6be473a82d1c1911c9fa12167ebc3f69",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Phase 3 Trials of Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+        "date": "2026-05-18",
+        "doi": "10.1056/NEJMoa2501488?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0243ebef4be2b5a6fa8d0c4a82b032377a2a39d0",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Inhaled Treprostinil for Idiopathic Pulmonary Fibrosis",
+        "date": "2026-03-11",
+        "doi": "10.1056/NEJMoa2512911?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:85e74bf3f0c63a0e136b7033eef1d87fe3cc529d",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Nutrition Therapy in Critically Ill Adults",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMra2506111?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c357b5d5f811fc4f469492c306fc48dc2e4335c4",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "One Pivotal Trial for FDA Approval — Ending the Two-Trial Dogma",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMc2604063?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1f8567dbf58c4102c1e0675e41e1fe21011715af",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Immediate or Deferred Nonculprit-Lesion PCI",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMc2604396?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c4aa146ccaf4c088d63794c1f332c26e6a72323f",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Measles Inclusion-Body Encephalitis after Allogeneic Stem-Cell Transplantation",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMc2511896?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a6c63ca82dea1699afa4b6bea1f0daf165178510",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Trends and Prevalence of Chronic Kidney Disease in the United States",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMc2518565?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1d5354a5b1aff1021241736201c81021aebe3f7e",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Treating Acquired Hypothalamic Obesity",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMe2606217?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d690b787155176b5696e74a53de7e30aa24bf8ea",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Contextualizing the Dead Donor Rule in an Era of Voluntary Euthanasia",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMms2601611?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ad632093b8c0e59d8e98582f30c61b5c04b00bad",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Preserving Lung Function in Idiopathic Pulmonary Fibrosis",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMe2606821?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:30f65768e78014e3fb3532412e20a224005b16ce",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "The OMB and the Politicization of Science",
+        "date": "2026-06-15",
+        "doi": "10.1056/NEJMe2608017?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9d449a4e418b1a1fdd3fd440e820eaffac536e0b",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Condyloma Acuminata of the Urethra",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMicm2603369?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:89ff0ceebc6075bee919e937953392e0e548135b",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Sparganosis",
+        "date": "2026-07-04",
+        "doi": "10.1056/NEJMicm2603440?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:48ed7a0f93ef953fcdc351e32015e11d2de4f3fe",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "A Rash and Red Urine",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMimc2514359?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e843622f0301521b46ff0b6583f1433f498ecc5b",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Case 19-2026: A 68-Year-Old Man with Fatigue, Fever, and Hypoxemia",
+        "date": "2026-07-08",
+        "doi": "10.1056/NEJMcpc2517856?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:faa3cde43a456d29dda5769d63b961241b5d7d52",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "For Those Left Behind",
+        "date": "2026-07-04",
+        "doi": "10.1056/NEJMp2517154?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5a706db721342b7f9258feffd5140aa5832dc0d7",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Mandated State-Level Surveillance of Assisted Reproductive Technology — An Emerging Threat in the United States",
+        "date": "2026-07-04",
+        "doi": "10.1056/NEJMp2602489?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:54faf58aa29c6b6f9b648204c1f66cd2b70649fe",
+      "board_id": "board2",
+      "source_id": "nejm",
+      "p0": {
+        "title": "Colliding Forces — The Aging of the Baby Boom Generation and Contracting Nursing-Home Supply",
+        "date": "2026-07-04",
+        "doi": "10.1056/NEJMp2603593?af=R&rss=currentIssue",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1b10ac0760a385a14a1cb8c7a38a63ba1bbafcae",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "JAMA",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6a56aaf178f6bcca9ce03d24e0774f5984894f4b",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Audio Highlights June 18, 2026",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e38e16bcce9ecced7a469c126a5c7c2ca7a68a81",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "ACOG Releases Maternal Immunization Schedule, Breaking From CDC",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c1d002380bc4c1a2a5c05afff74b47f92d0f5994",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Postoperative Delirium May Predict Long-Term Cognitive Decline",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:fc538dc61e248e422fdde0e627d7e3eac75f0b98",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "About 1 in 5 US Youth Use AI Chatbots for Mental Health Advice",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f6fe3c7792e0f8e7b561d85aefca9d2d4f1c2c11",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "FDA Advises Against Over-the-Counter Skin Lightening Products",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b7ccd7cfa94b824398e5f613f89f22d040a13372",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Ultraprocessed Foods Linked to Cardiometabolic Risks",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a7b3a303d03d206f24b3a978cff32405e9c443fa",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "ACP, AMA Decry Executive Order to Change Childhood Vaccine Schedule",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:822ecd39375c664ef04270f379eea723ed4c5b97",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "New GLP-1 Drug Data Presented at ADA 2026",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9569181ce2ff5dcf58afb99e8d56480f64ac354c",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "In the GLP-1 Drug Era, Physical Activity Still Matters, Heart Group Says",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:552cb0750ff4c02fa55c8168f804c8d7c7a872b2",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Stopping Alzheimer Disease",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:fc87e69479abb1c9c42a28d2323236b610f090a3",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Low Back Pain: A Review",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6f8fd6805b811d9dab801ec855831729b2f0d109",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Audio Highlights June 12, 2026",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:aae16ffcba71492b051a2dce1190be140f58eb10",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Nursing Home Closures and Access to Long-Term Care",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0aa4782d1033729d03b455586ff8e85394914450",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "The Wizard of Oz in Medical AI",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:65548e16ec2b37be5d2844b3fefc49cb37456778",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Specialty and Geography of Medicare’s New Residency Positions",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:15bd53bac5b20e029702fb55ece3af147579223d",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Correction to Mortality Data in Perspective",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:78c98e95cbcb1c1ba74bf77c120f4b6320679ed0",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "The Leisure Corner: High Fidelity Recording",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ada129e2ae3700f70968358c92f460aee89d2ff0",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "Exocrine Pancreatic Insufficiency",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f395992800d30136add6796f5f5735661d8fb0b2",
+      "board_id": "board2",
+      "source_id": "jama",
+      "p0": {
+        "title": "HIV, Pregnancy, and Infant Feeding",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:43899fe917659fe744ad5f754ca891099c7f2a55",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "p0": {
+        "title": "Place based working and devolved decision making could be the right prescription for health and social care",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4a8d5bb7ad6f78d80fbcd107ca29098ca7d33a29",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "p0": {
+        "title": "Schools need to be retrofitted for future heatwaves",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:00a8d3d9ea5858b79c7992081e650223326a51a4",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "p0": {
+        "title": "Doctor with 14 Australian convictions is struck off after working in NHS for years",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:8a564a1e34d3efdd4c20964c8fb80807444b2bab",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "p0": {
+        "title": "Ebola vaccine: Oxford starts UK trial against Bundibugyo strain",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:04a66ec3b84a8fe704c33e8a1882d08451831ad2",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "p0": {
+        "title": "Sepsis: NHS to offer wearable tech to at-risk patients to reduce deaths",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:8ad85f362de616d635370b38348d1283b7764944",
+      "board_id": "board2",
+      "source_id": "bmj",
+      "p0": {
+        "title": "Gonorrhoea vaccine: Australian study suggests England&#x2019;s &#x201C;world first&#x201D; rollout may not work",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6306647a5a9e5b818b4c270008d5a4d125c9db5a",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Flight style and metabolism shape the tempo of genome evolution in birds",
+        "date": "2026-07-14",
+        "doi": "10.1371/journal.pbio.3003884",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:35a24bbce26903d3ad0e56b9d2de67b75c8a8ca9",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Dachsous-Fat signaling shapes the Drosophila wing through mechanical forces",
+        "date": "2026-07-14",
+        "doi": "10.1371/journal.pbio.3003883",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:02f297737af8d0c378f82b538225045eadc25e9d",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Realistic monkey body animation reveals an uncanny valley in macaque body perception",
+        "date": "2026-07-14",
+        "doi": "10.1371/journal.pbio.3003880",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6f96b3d8bdb1f88ebffb74995a2282f00645173d",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Positive early-life olfactory memory is rooted in the olfactory bulb and triggers large-scale changes beyond the olfactory system",
+        "date": "2026-07-14",
+        "doi": "10.1371/journal.pbio.3003845",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:be0d48e805fbd81a83b9a4e4cc729a2d3de73acd",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Meis1 isoform diversity orchestrates neural progenitor differentiation by regulating ATOH1 degradation at distinct subcellular compartments",
+        "date": "2026-07-13",
+        "doi": "10.1371/journal.pbio.3003897",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:404635f1935a1e074ae441f6cf182d899999a811",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Social learning dynamically shapes moral decision-making by biasing subjective valuation",
+        "date": "2026-07-10",
+        "doi": "10.1371/journal.pbio.3003889",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c4d64f00360d8725f75a4aef64127e0d1c245a44",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Wanting this, not that: The neural circuit that turns specific expectations into actions",
+        "date": "2026-07-10",
+        "doi": "10.1371/journal.pbio.3003859",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:60ab2f8dcb6a223581f5e630db6891ae889a6d5b",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Identity-specific reward expectations in orbitofrontal cortex guide goal-directed choices",
+        "date": "2026-07-09",
+        "doi": "10.1371/journal.pbio.3003829",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:3c0a1f385866cd2df71ed67459e67de246c81da7",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Dipteran flight diversity is shaped by aerodynamic constraints, scaling, and evolutionary trade-offs",
+        "date": "2026-07-09",
+        "doi": "10.1371/journal.pbio.3003473",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:51eb5d5f9566cf599547b90048a244fb76e5c2ac",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "GABA neurons in the sublaterodorsal tegmental nucleus suppress wakefulness in healthy and narcoleptic mice",
+        "date": "2026-07-08",
+        "doi": "10.1371/journal.pbio.3003303",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:36dc39bf48d591afbf200f725bdc2f5046b2c862",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "A developmental shift in glucocorticoid receptor expression preserves glucocorticoid sensitivity in the adult suprachiasmatic nucleus",
+        "date": "2026-07-07",
+        "doi": "10.1371/journal.pbio.3003870",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e69530f25c654baf6ce1ca3dba8dda1f0f117d67",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Sequential neural dynamics underlie unconscious integration and conscious perception of visual stimuli",
+        "date": "2026-07-06",
+        "doi": "10.1371/journal.pbio.3003894",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:243acdb914264d94ea97c5e6f46722f720d8a38e",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Shared memories of event details in the human brain are altered by misinformation and test expectations",
+        "date": "2026-07-06",
+        "doi": "10.1371/journal.pbio.3003886",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a74e2f827727d60b5e90337665dda8a3b8c5f0f2",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Engineering resilient gene drives for sustainable malaria control by predicting, testing and overcoming target site resistance in Anopheles gambiae",
+        "date": "2026-07-06",
+        "doi": "10.1371/journal.pbio.3003879",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b09d69260d73ae68de5d5ecd0ea3860790a6b90b",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Resistance potentiators: Evolutionary catalysts of antibiotic resistance",
+        "date": "2026-07-06",
+        "doi": "10.1371/journal.pbio.3003852",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c827c09d5b06499b8ed14f8c968e6e9d6a675602",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Correction: Cdc42 interacts with chaperone Ydj1 to enhance its stability and partitioning during asymmetric cell division and aging in yeast",
+        "date": "2026-07-02",
+        "doi": "10.1371/journal.pbio.3003891",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:88be181143a66dd834f82ce7703c6d3bd65f233b",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "The cell cloud: Adopting systems biology concepts in the era of single-cell immunology",
+        "date": "2026-07-02",
+        "doi": "10.1371/journal.pbio.3003853",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4d1fedece9faf628639a2050469a49f88926ad6e",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Disinhibitory signaling enables flexible coding of top-down information in cortical networks",
+        "date": "2026-07-02",
+        "doi": "10.1371/journal.pbio.3003831",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b53ece7c8e757540fb752d1ae3802d715e015a4b",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Towards globally equitable bioinformatics adoption",
+        "date": "2026-07-01",
+        "doi": "10.1371/journal.pbio.3003839",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:bbbe6d1c0d0ac2dc93b8266b3baa44988c9c035d",
+      "board_id": "board2",
+      "source_id": "plos-biology",
+      "p0": {
+        "title": "Unusual decay: Recombination loss leads to splicing errors in green algae",
+        "date": "2026-06-26",
+        "doi": "10.1371/journal.pbio.3003851",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e55374ffeb7a743874f9168e71e1fa750e3474bf",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "国台办：民进党当局制造恐慌升高两岸对立对抗 其行可恶，其心可诛",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:64c6250da1bf0a3da355cf6ed226a1e46bf46c80",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "（同心·大调研）聚焦未来产业发展 全国工商联开展2026年度重点考察调研",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:99cd1850109adcec1ba6ddc236c1573f39676e44",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "胡萝卜素是黄桃的22倍，钾含量媲美香蕉，这种低热量水果现在吃正好！",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:99b0d8b622fcc8f73ea3a2d104ca81b95bce0636",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "硬核驰援广西抗洪！这才是科技发展的意义",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0b6975327c06702082e5b254f845c9a2b8b10532",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "国台办驳斥美日韩外长涉台言论：台湾问题不容外人置喙",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d935e7c3a9f0f18ada1897f699b98e630b3f01d6",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "今年上半年中国GDP同比增长4.7%",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:570d7b03645446cfc620e0d1fe0aa51c9a6a0c3d",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "聚力向“未来” 多地政协助力未来产业发展",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:88ea68d42d151d1b2276ffbe78e4b846ea0edd62",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "国台办：民进党当局恶意炒作 阻挠破坏两岸交流和人员往来",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9f3aebbf45892abcbfe9bf5f9359a976e4ba7b61",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "6月份规模以上工业原油生产保持稳定，电力生产稳定增长",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b2a12f9bb291159a278dd2e35dc75c8f207b6d41",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "上半年经济运行在合理区间 新动能快速成长",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d80115c0ea0a79232f7e0ca9496ef88242c19a1b",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "In This Issue",
+        "date": "2026-07-07",
+        "doi": "10.1073/iti2726123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2c1b5bdd8532640d6ba65eddcda2684dd9ad902c",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Pierre Chambon, a pioneer of molecular biology and gene regulation in eukaryotes",
+        "date": "2026-07-01",
+        "doi": "10.1073/pnas.2618999123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:3544e0caeca9a6b99b5ae4e2c1eb5e786219b07c",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Assessing the foundations of forensic identification evidence: A critical examination of proficiency test design and results",
+        "date": "2026-06-26",
+        "doi": "10.1073/pnas.2528192123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2288bff95d7180e01f81c9d562d097c9ba5e3b39",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "A scalable, dividing cell model for the robust propagation and quantification of human sporadic Creutzfeldt–Jakob disease prions",
+        "date": "2026-06-30",
+        "doi": "10.1073/pnas.2600341123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9885056f08698a5f5c30f3c92124c3777d145aee",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Superstatistics approach to turbulent circulation fluctuations",
+        "date": "2026-07-01",
+        "doi": "10.1073/pnas.2612658123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:566e8f770fa5f95c9535605267d996342834953a",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Why environmental scientists need ethics training more than ever before",
+        "date": "2026-07-01",
+        "doi": "10.1073/pnas.2525403123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2946bc3f70a0460fdf5a7d77b37d54faa04f3869",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Biomolecular assemblies through weak noncovalent interactions: Higher-order transient structures and their condensate phase",
+        "date": "2026-07-02",
+        "doi": "10.1073/pnas.2531431123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b910b4c2648e7eedbe76e86883b2919cdf8ee481",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Deuterated water and the formation of the satellites of Uranus",
+        "date": "2026-06-22",
+        "doi": "10.1073/pnas.2519276123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f19a19a4b63dfd81e3f522448d4dfedcc7f8f83c",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Competing models of hominin body size evolution",
+        "date": "2026-06-22",
+        "doi": "10.1073/pnas.2521732123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9ad82228e605fa5a358382645797a8a4dcaa8bcc",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Reward prediction is encoded by orexin neuron activity during motivated behavior",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2520677123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5decab589c86a5a8b000e0299d5ff67c83ee43ae",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Evaluation of a proposed link between the SARS-CoV-2 furin cleavage site and mouse-adapted MERS-coronavirus MA30",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2601806123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:86c8b3f82ec8292125bc8bd69741cf60ebdff935",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Neural tissues and chondrostean traits in a Carboniferous actinopterygian",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2610438123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:87c391b7a29de4c0fa61f1a881e0eb3418f66105",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Observation-constrained sensitivities of Arctic methane emissions to warming",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2523274123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:994878e849a4f5ec033ed36ad941bdc19b981302",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Constructing a lower-bound estimate of the global number of insect species on a hyperdiverse empirical foundation",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2524283123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6dd8c2c839ae21f3d3a9a8cf20329aef9aa8cb72",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "BetaDescribe: Providing rich descriptions from protein sequences",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2537345123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:45917d187ca2c1003016d89cae6d04e0f5cb3738",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "The mechanism for ligand activation of the Smoothened G protein–coupled receptor",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2604658123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1cc0d4533fdce31ca6130e6364da91863727bc16",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "A general framework for predicting the ecological effects of range expansions in marine systems",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2600491123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1d90f3b0424e06fc1b9b8cc6de97d13be9e7aa3e",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "1D domino-like phase transformation enables material programming in 2D MoTe2",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2528037123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a16321c2a35fb27d29fbd2da86a3dfee0320032f",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Proteostasis and unfolded protein response dynamics in human neuron/mouse glia co-cultures reveal a cell-specific maturation response",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2521663123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f1d9e87f4c84fdde826566bb2989ab24bbff8366",
+      "board_id": "board2",
+      "source_id": "pnas",
+      "p0": {
+        "title": "Optimal interventions to curb urban conflagration",
+        "date": "2026-06-29",
+        "doi": "10.1073/pnas.2612835123?af=R",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f74c57f59f3a2b506489868364b642f763f52c7f",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "学习卡丨“人不负青山，青山定不负人”",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1fbd1768d6c66fa184c5bea6ca42a3eda97fea1b",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "镜观·足迹｜呵护千山万水 擘画永续发展",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:455096add728f1e78da16a2c199f88e1e69c63eb",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "学习手记 | “环境就是民生”",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5035cc3d14740cc2380c83f90f7dc1b1eece391a",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "刘国中在安徽调研时强调 全力以赴夺取夏粮丰收 全面打牢秋粮生产基础",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:fd2b20a9622903b290c8ff718b64de3439929e4d",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "韩正会见中美高级别二轨对话美方代表团",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0ab2a26bbf7ebdaf2260e0c442904c7aa5c0f75f",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "国务院印发《关于开展第四次全国农业普查的通知》",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b5a9df41363c92749a8799a5c823de15b588f100",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "中央军委主席习近平签署命令 发布《军事设施建设条例》",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:35ae84eb6f9f79e36f8464d46f06709548cb13d4",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "丁薛祥在山西调研时强调 守好公平公正“生命线” 确保实现“平安高考”目标",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1e6e31b653da8642f7c38669c90c8056d1d9a2d5",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "中共中央办公厅印发《党组讨论和决定党员处分事项工作程序规定》",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:7c0ae55a8541123cccf31063af8fc7c750dfe2c6",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "全国人大常委会启动节约能源法执法检查",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:140f9a88d7b29ff2dd045e4bb2316cf1d7d4f7c9",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "【文脉华章】非遗焕新 生生不息丨用太极招式来炒茶！西湖龙井如何“撩”动全世界的心？",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:3ca806f477ecdba2cc1bf6759d33191fcb06d5c4",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "天天学习丨中南海月刊（2025.05）",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d4742f765f02339815e43e89f930bac953fb1556",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "习语丨“人不负青山，青山定不负人”",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:da0b6093d4596e64e9b55b7013a1a83cbf4127a4",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "韩正将赴法国出席联合国海洋大会并访问西班牙",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:bff98ff7bb950125e6b1ec700c44045622892843",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "美丽中国我先行｜“植”此青绿",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4bede185471cf798799bf65cce7db479041f77c9",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "微视频｜共建清洁美丽世界",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:affecbdb2a5d5b180b19c69fe90a787c5debbb79",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "学习新语·中华文明丨泱泱中华的文明曙光",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1d28f3ec3873819c31ffc280d5ba458febb13883",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "多地升级信用修复服务 助力经营主体重塑良好信用",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:28a510c2bc2db67dcb1c74b7962775b04f53263c",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "河南卢氏：“小议事”撬动“大治理”",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d59f5a17f5abea6c7a42012db9a6b114f7bd59d2",
+      "board_id": "board3",
+      "source_id": "people-politics",
+      "p0": {
+        "title": "聚力为民解难题办实事",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:58cef4ee87fb61e9fa56da08fb4352bf4d947d66",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "首批全国38个零售业创新提升试点城市名单公布",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:21f1f5075e54eccccb5bac04347cd4f3762d24d7",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "中国人民银行将开展1万亿元买断式逆回购操作",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:32d3d91e972088f45a4f3cfb0391fd33edca88c5",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "层高不低于3米！新规范如何让住宅更“宜居”？",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c81868f64f137b2e6c1fdc27de27caf627a4c092",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "体育精神赋能 乳制品行业推动品质提升",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:57771ef58425724622d2b4b3d319d68b3bc6db54",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "商务部回应汽车行业“内卷”：配合相关部门加强综合整治与合规引导",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a3dd7eb3b1b1590fbdabb3c766611ae50cabbb7f",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "我国认证认可检验检测行业发展质量实现整体提升",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1f27ba9a1e3cce6510c1bf4671e9b042805b297a",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "滴滴程维：将持续发挥稳就业、促消费作用",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:75a5a188e457be564ad25af60a90f7d1d0f62885",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "数说生态美 共赏美丽中国新画卷",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a80b923e977286beeef178b6bc93871ecd8cd1c0",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "商务部：中方反对美301关税的立场是明确的、一贯的",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6af108f4e1623df1b18a0933d059420f25f6f13b",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "商务部回应美方提高钢铝关税：将严重扰乱全球产业链供应链稳定",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:7c11237993cf48e491c932a187473e69dc0ef718",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "防范自动驾驶技术风险 筑牢公共安全防护屏障",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0155c5c874269623f510f1aa43d97d9913722054",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "处置非法集资部际联席会议发布《关于加强防范非法集资宣传教育工作的意见》",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4254bccf2a4deff4f5d2b61eb1c4894e2fac56a5",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "最高人民法院关于审理非法集资刑事案件具体应用法律若干问题的解释",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:55eae2c6c62f046695242140960d3113135c30bb",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "防范和打击非法金融活动部际联席会议召开2025年全体（扩大）会议暨打击非法集资专项行动推进会议",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4e1f8b957f716bc73308c844dd71e928355d57c3",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "宣讲防非打非 增强防范意识",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f409c34f48d547bfe8f19c8874ab375138354138",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "山东广饶县开展防范非法集资宣传进养老机构活动",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:78375468aa57fd990e8e135352bfd554a8b8af87",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "防范非法金融活动的指南请您查收",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e3e0aab5ced32b16d7630a50df047bb2eebe73d9",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "2025年防范非法金融活动宣传月正式启动",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:02401987f2e04d7acdafc0798c545d16f874b846",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "完善大语言模型治理体系 守护数智时代网络安全",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5ad5e49f05aa88484d8e7fc85f9f3e2c8e72b8af",
+      "board_id": "board3",
+      "source_id": "people-finance",
+      "p0": {
+        "title": "把稳智能驾驶安全“方向盘” 筑牢物流配送无人车“生命线”",
+        "date": "2025-06-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:559167547a3479949f8172e47f72b033c18ffced",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "广西救灾一线最新直击：灯光渐次亮起，家园加快清理",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b0ca81b9a9bf15f40a2d36d57063e08f6cd30c2d",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "1.2万亿、2.6万亿、705亿！一组数据看科技金融“加速度”",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f1792900f2acf0a7a6011c3ee5fc719a6dd524e3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "广东拦洪8.75亿立方米 成功防御西江第2号洪水",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": "第2号"
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0e19d55403281dd6e9db049517828d53d1a40499",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "国台办批欧洲议会粗暴干涉中国内政",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c33dcb9e90affce805a6d9977768c7d0f4a87cde",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "进口纺织服装潜在化学危害物质或潜在未知化学危害物质筛查项目比选公告",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1a4a11f34f5cb8bbfcb1581fa528cb14e19f3098",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "首次登陆亚大区 坐式排球世锦赛在浙江杭州举行",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d93e934084c0b2e0c1ccaa6218a9eef75cef8d41",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "一场给全年龄段的“生命预演” 《前浪2》带人们重新理解“老年”",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:54660e770d645c639bb7d54b8968f719f3fae94d",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "国台办回应美国硅谷关注两岸局势",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ba981c9b78587485b425a85ffbb53427136768b9",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "重庆江北机场海关食堂餐饮综合服务项目中标公告",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:39584d5e37ad2d3892cc5b02723415375731f546",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "扩内需六大任务，促进服务消费排首位",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5508c1a8f50ecd3427f7fb35cbfb52f5dbeb42dd",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "输球后，法国总统马克龙发声",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:055610c3156f77c06fc6c0ad599d017713f795ad",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "各地各部门多措施应对台风“巴威”影响",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": "第9号"
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:914f9a95fef5afb658eaf8c138f548721953fbf3",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "圳好物：世界杯激战正酣，这些“深圳技术”活跃在赛场内外",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:84fec1568ea2126d9d8b0d046a0d0516e16f75e9",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "中国科协发布2026重大科技问题难题 太空计算中心构建等30个入选",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0baa6e62994895b6f99bb44692054e35901ae2d2",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "东兴海关综合技术服务中心试剂耗材定点供应商补充采购项目（GXGL2026M-G273-Z）公开招标公告",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e261ded04eafcb2a6f7609f4361c60fabea13052",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "《静生生物调查所二十二年》出版 揭示一段被遗忘的学术传奇",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:bd0a757d92cc8cfd17116e37d4c8a04150ad25ff",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "凭祥海关综合技术服务中心2026年实验室仪器设备采购项目（重）竞争性协商公告",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:702a260521eb3de2e2c594b593d414a8ebaccef7",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "郑丽文呼吁全面重启“小三通” 国台办回应",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5f45fc7bd610981332dff583246de2d8525e876d",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "把工作重心放在练好内功、做强自身上",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f444b80f66ab2a87eee4233c51e9565d08fae0ab",
+      "board_id": "board3",
+      "source_id": "chinanews-scroll",
+      "p0": {
+        "title": "2026年上半年我国外贸增势强劲、走势稳健",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:8452429db60142fecb0d8c663f75f6d641bfae14",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "“光纤之父”高锟离世 曾获诺贝尔物理学奖",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:129bbeef5cb924f66e292a8fa64a82aa5364e791",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "辱华节目主持人：在瑞典说侮辱中国人不会被查",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:cbb2493361c2b2ea8aa597189952bff1fa93eb56",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "00后香港铁路迷搭高铁到深圳北站:19分钟不够过瘾",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5122be506c16a0a96350c61cf3016b4320b5621c",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "这位市委书记香港请大师写“符文” 放枕下求保佑",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a898a2a5af0003258133d185718136c3894a0b18",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "让美国失望了 制裁难阻中国进口军备会引中俄反抗",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c4b42ac3593e206bc1ed785c4961a2088c33bfe5",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "董事长称蔡英文当局非推翻不可 这个绿媒要反？",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b540684f464ea28b66f629da7f1cfa74da3b3c92",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "广深港高铁开通 铁总：内地香港高铁实现互联互通",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:30cc54a916d733061dfbee19ebe6aafc19342e68",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "美得州入室行凶案致中国公民1死1伤 中领馆促破案",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:391c64f31886ab5b640916acd4b8b093cd2f8baa",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "俄工贸部长:俄方希望与中方寻找双边贸易新增长点",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:15a50f2f4adc45c1d429b0154139570686129b42",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "山东烟台市副市长聂作坤落马后 继任从东营调入",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c5eec90b1ee5863e79301f08c1ac7e23b5b3b9ba",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "曹俊明任广东海洋大学党委书记 曾任农科院副书记",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5873c6e55cbef43445a5811a1a2e5bcc305a3026",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "澎湃体验广深港高铁首发车:19分钟抵港十分钟通关",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:98c648495970c28f05079dc5e970fda224879349",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "蔡英文问了一个问题 结果被骂“假台湾人”",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:956cb52fcd42eae648816ce14f244fd53c48a26f",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "我驻多米尼加大使馆揭牌 列为我公民旅游目的地国",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:45e14f6ed4c84272a08021a2ca817a647b0593de",
+      "board_id": "board3",
+      "source_id": "sina-china-focus",
+      "p0": {
+        "title": "蔡英文宜兰上香问民众：有没有感觉我做很多事？",
+        "date": "2018-09-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:008735ccfb2cbb3c28c6d6098ed18bc5bec669e7",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC Secures Major Settlement with Caremark, Resolving Antitrust Case Against Second Drug Middleman",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:36ca710b419a15440d5a8acea10a00b347827520",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC Endorses Ohio Supreme Court Proposal to Weaken ABA’s Law School Accreditation Monopoly",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:22228e1f575132599b7434666bf4cc8a1ce1131b",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC Secures $12 Million in Penalties for Pre-Merger Reporting Act Violations",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:376b3edc31bb64616a5bf8aaf5bf859f4e0a73e9",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "RentGrow to Pay $2.25 Million to Settle FTC Allegations the Company Violated the Fair Credit Reporting Act and FTC Act",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9da4981b30189432b5f977a497b66fa47175852d",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC, States Secure Settlement with Deere & Company, Advancing Farmers’ Right to Repair",
+        "date": "2026-07-08",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f5d54e8c6d787df5849d6cd76fac9683735b1b73",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC Sends More Than $2.7 Million to Consumers Harmed by Handy Technologies",
+        "date": "2026-07-07",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d5d1dbb2f1d7eb69f0770cfb473b55cc7861f913",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC Warns Companies Making Questionable ‘Made in the USA’ Claims",
+        "date": "2026-07-06",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0269e3b4f9308ed1fef2506c12f2c5fe4c81e8d6",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC Approves Final Order Against Publishing.com, Settling Allegations It Misled Consumers",
+        "date": "2026-07-02",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:50149d6bd0953e83b64ca0e5ac08e641060653c0",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "FTC and DOJ Issue Fiscal Year 2025 Hart-Scott-Rodino Annual Report",
+        "date": "2026-07-02",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6f05bf9060406b437638acfeb92974d234842024",
+      "board_id": "board4",
+      "source_id": "ftc-press",
+      "p0": {
+        "title": "Travel App Hopper to Pay $35 Million to Settle FTC Allegations It Charged Fees Without Consent and Deceived Users About Fees and Benefits of Some Products",
+        "date": "2026-07-02",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:17bcf523f300d15f11d1e6877be40197ada8fbf8",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Receives New Patent for Microbe-Killing Water Heater",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9e9a6afaae5d780e1b2e67918733f3e85d237a97",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "New Fabric Test Material Could Help Strengthen Domestic Supply Chain for Textiles and Clothing",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:426bf46edf30da116b4b5fedef7e12be78dc615a",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "Arvind Raman Confirmed as the 18th NIST Director",
+        "date": "2026-07-06",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:dd188cb3f68e3ace445d7601243d7bdebd27e373",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Launches Center to Drive the Manufacture of Quantum Technologies",
+        "date": "2026-06-29",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:230aaa9a4594d8249ccbd7b748359c4d0ec45e87",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Releases Technical Findings on What Caused the 2021 Partial Collapse of Champlain Towers South",
+        "date": "2026-06-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6b0e3cd97a3bf1b3712891858183c135788c4d85",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Expands Its Library of ‘Chemical Fingerprints’ to Identify Unknown Substances",
+        "date": "2026-06-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:7705de1e1b03700a865f67b8d5d53568572b44ea",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Mathematical Proof Supports Transition to a Continuous-Monitor-and-Update Security Model for AI Systems",
+        "date": "2026-06-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:524ad69e326631bb986b8600367eebaeb903a041",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "New AI Model Shows How to Evacuate for Fires One Safe Step at a Time",
+        "date": "2026-06-04",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:013cc035253b4b17e6f2aacac5f429a735a5b3b4",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Researchers Discover a New Way to Whisk Alloys Together With Lasers",
+        "date": "2026-06-04",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d8b11a9d179b7630e43dabe46670bdf724014818",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Expands AI Consortium’s Scope, Calls for New Members",
+        "date": "2026-05-29",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f2f8258169c0ab95b245685490cbe8df2a4f79f7",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "Shooting for the Moon: Ultrastable Lasers in Dark Craters Could Enable Lunar Navigation, Precision Timekeeping, New Science",
+        "date": "2026-05-18",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:213b513557518c9204848e04654b1eac46f88819",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "Wear and Tear Changes Measurable PFAS Levels in Firefighter Hoods, Gloves and Wildland Gear",
+        "date": "2026-05-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:3b1f131042de92bd12e81bf8b6ecc58168732f9e",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Weighs In on the Mystery of the Gravitational Constant",
+        "date": "2026-04-16",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:63c6e8b0612f3503508442f07cc72ffd9a83974b",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "Any Color You Like: NIST Scientists Create ‘Any Wavelength’ Lasers in Tiny Circuits for Light",
+        "date": "2026-04-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2bf47d1b69f6a94bd8d8b660359abb6fa5c62a47",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Researchers Develop Photonic Chip Packaging That Can Withstand Extreme Environments",
+        "date": "2026-03-30",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b7bb9eb3752c18ead168c73b99ca16789d84d0cb",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Helps Fingerprint Examiners With New Data and Software Release",
+        "date": "2026-03-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:946a40f7ec5b10b0c502c62e3d75f757dde925fd",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Submits Annual Report to Congress Summarizing FY 2025 Progress on National Construction Safety Team Investigations",
+        "date": "2026-03-19",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f5e24dac70e3d3c305b7e9bf3a73884c3a533480",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "2 Health Care Organizations Will Receive 2025 Baldrige National Quality Awards",
+        "date": "2026-02-19",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e5084073dead986bb31a254ef1a872e040261c22",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "Announcing the &quot;AI Agent Standards Initiative&quot; for Interoperable and Secure Innovation",
+        "date": "2026-02-17",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:14565c6890466e19f5ba7ec597c3017ee7de8495",
+      "board_id": "board4",
+      "source_id": "nist-news",
+      "p0": {
+        "title": "NIST Releases New Forensic Genetic Reference Material to Help Crime Laboratories Analyze Challenging Cases",
+        "date": "2026-02-17",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:62bc91ec18150ab49f73af56cbafbb16de88d82b",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Nominations and Withdrawals Sent to the Senate",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:25e8fab08e429cce1984d458a2b28c40d46a2bb4",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Regulatory Relief for Certain Stationary Sources to Promote American Chemical Manufacturing Security",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b5fea4f79315ca41ed7ff900d3c01e56322dc127",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Modifying the Bears Ears National Monument",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b236338c26d3c0a00360db865132f7cdc5f91b4c",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Modifying the Grand Staircase-Escalante National Monument",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0445b571ad8fd005ef316c388fb5ce709d477962",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Nominations Sent to the Senate",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0a261960617dd664e90a47aa979f0998f1267452",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Death of Senator Lindsey Graham",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ea150f97b8be6ef5290a9ac1f3241a1670dbae48",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Adjusting Imports of Commercial Aircraft, Jet Engines, and Aircraft and Engine Parts into the United States",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:15dc57cf1b84281b3c042e06436a6b3370bb31f9",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "250th Anniversary of the Adoption of the Declaration of Independence",
+        "date": "2026-07-03",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a72ceaad14b6779fbc86f3ad4e7c89aa4b347e1d",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Declaration of Emergency and Authorization for Temporary Duty Free Importation of Phosphate Fertilizer Morocco",
+        "date": "2026-06-29",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0e8f4f6366536b686496b201738b6609521413e8",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Lowering the Cost of Living by Promoting the Freedom to Fix",
+        "date": "2026-06-29",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:cf73f8a3b36d2ede975db4ec0c188e36d071a560",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Advancing Regenerative Agriculture and Strengthening American Farm Resilience",
+        "date": "2026-06-25",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:108bcd3efcfce377498264f75332a8cfc0ec5926",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Nomination Sent to the Senate",
+        "date": "2026-06-24",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4b16df604580aedf3483d95026110fc400ff2c05",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Nominations Sent to the Senate",
+        "date": "2026-06-23",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5dd404fd733a8cd694f3360a21f1bbc3a6299653",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Ushering in the Next Frontier of Quantum Innovation",
+        "date": "2026-06-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:60dd437b204c8b96da234324fb1ebfae968a0dcd",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Securing the Nation Against Advanced Cryptographic Attacks",
+        "date": "2026-06-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:cca1f5278ce13e25ca3d23df11d55fe157b6359c",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Nominations Sent to the Senate",
+        "date": "2026-06-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c036ec43968fbdc5a1aa7b9385b9929a6722b127",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "National Homeownership Month, 2026",
+        "date": "2026-06-12",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:05a1728a7a4cf0683d5c27b9fc5f29cc74a1731e",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Flag Day and National Flag Week, 2026",
+        "date": "2026-06-12",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ee5cbeaf4fd7accfb99b708b51555fd58dcbc59b",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "National Security Presidential Memorandum/NSPM-12",
+        "date": "2026-06-12",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:de0268df5f2281d8d044db6cb71f19ba9631be35",
+      "board_id": "board4",
+      "source_id": "whitehouse-actions",
+      "p0": {
+        "title": "Nomination and Withdrawal Sent to the Senate",
+        "date": "2026-06-11",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:3f1873ad1687aade20912d5f86cc6d09779ddf03",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Cultural Adaptation and Linguistic Validation of a Community-Based Autism Screening Tools for Early Identification in Tanzania: A Mixed-Methods Study",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357871v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ee128127db5b34c8dccaeed2d9c6f23c45f03554",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Temporal dynamics of asymptomatic malaria in a high transmission community in Ghana",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.11.26357819v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d9b8fff14859589b46f9fa32ef4677e1f5431bde",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Two-Year Evolution of a Prospective Audit and Feedback of an Antimicrobial Stewardship Program in a quaternary Intensive Care Unit in Ghana",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.11.26357812v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e2a2cd06ebc579c7d73a36078c080cc493afff92",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Comparative analysis of discriminative and generative natural language processing pipelines for automated prostate magnetic resonance imaging reports",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357886v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:53295d2be453a14068fe7c0ac32fa5549b534302",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Geometry-Aware Reproducibility of Imputation Protocol (GRIP): diagnosing two failure modes of single imputation for heavy-tailed, collinear variables in biomedical data",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.14.26358017v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f6587b2817fe1e89a7444572c594b80298c02abc",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Beyond Intensity: Cross-Dataset Consistency of Temporal Facial Action-Unit Dynamics as Transferable Markers of Depression",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357331v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:927b173df3ad0c9d5817a299f55adc724c8cab65",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "JAK-STAT pathway inhibition modulates centrally sensitised default mode network hubs in rheumatoid arthritis pain",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26356929v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1eeea12fda6c81c41a3400edcdf2f6fb8a147303",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Diabetes as a Driver of Financial Toxicity Among U.S. Cancer Survivors: A Nationally Representative Analysis of NHIS 2021-2024",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357889v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ea02d26ae2bb488b004485f7c8cf974088b911b4",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Integrative analysis of circulating proteolytic biomarkers and genomic landscape in colorectal cancer",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.14.26357715v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:517d429c4445cc7d0f96592a089751cd0f356ede",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Comparing a trial of labour with planned caesarean after one previous caesarean delivery: a protocol for a population-based cohort study",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357849v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:02bd3c6d1c5cf7f5d6531946d14755df8eb6e5bf",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Closed-Loop rTMS Induces Frequency-Specific Cortical Network Reorganization Distinct from Open-Loop Stimulation in Healthy Humans",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.11.26357834v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:808d422edc076271206bfa5aa853b9d5a714744d",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Statistical Analysis Plan (SAP) - DREAM: an adaptive, randomised, placebo-controlled trial of duloxetine for reducing leg pain in people with chronic sciatica",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357883v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0345132d6faed111640324a0519e11b0d954fb5e",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Utilizing early-prediction of respiratory infections in Larissa, Thessaly, Greece: Incorporating daily school absenteeism as an early-warning indicator",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357892v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6e9583a4b8ee469ba796dca78b39b3c2c8709609",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Psychiatric morbidity among patients living with epilepsy at a tertiary referral hospital in western Kenya: A cross-sectional study",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.11.26357815v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1a9d9a8361850bf5d3f35332701bae4488e6bde8",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Genetic Correlation Between Brain Imaging Phenotypes and Externalizing Behavior: A Large-Scale LDSC Analysis of UK Biobank IDPs",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357891v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:8e3acbdf15a39f0c4ee2d5340ec2fe98e22b38a4",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Temporal trends and spatial variation in nontuberculous mycobacterial incidence among First Nations people in Queensland, Australia",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357887v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:8371980596e5a91cbe515f24b8ea07a7e0ffb268",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "A Mechanistic Framework for Modeling Insulin-Glucose-Glucagon Dynamics Under Malaria Co-Infection",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.11.26357811v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:814a6e9220c7632d0b9dff22b0d1aafab584046c",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Association of CYP11B2 T-344C polymorphism with hypertension and plasma aldosterone in a Ghanaian population",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.11.26357813v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b9479bc3a31cd67f2917aa6ffaa5b5a80f41dc9f",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Utilising Large Language Models for the Automated Mapping of Medical Research to Translational Stages",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357885v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0b2f8751b5e163e22f3e5466a15f79f198e0d68c",
+      "board_id": "board1",
+      "source_id": "medrxiv",
+      "p0": {
+        "title": "Explainable Longitudinal Machine Learning for Dementia Progression Using Cognitive and MRI Biomarkers",
+        "date": "2026-07-14",
+        "doi": "10.64898/2026.07.12.26357878v1?rss=1",
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:db5428fd90bc1194182d17dbbb39a3e02527bc93",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Bird flu H5N1 in Australia: protect Australian species from bird flu virus",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c75f03b2bec2e66fff654ae2c2a2f57cee52aac5",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Academia should recognize community partnerships as having societal impact",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a8c66133cf63e564c4027756aee2e8ffe802e464",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "The Enhanced Games and the normalization of doping: a public health concern",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a5eaf5f3c1e008a9dcf82f9376fed95f0c3dfbcf",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "AI models: one country’s fears become everyone’s constraint",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b0d4fe50e9069b404e0053569d27e13ae7360a15",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "How the calendar came to be",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:29918b96e27ed847def6ac9ab5efed0505618f35",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "‘Dark comet’ unmasked by its mysterious motions",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:a7b89aec051fca1bde062c41534f462f0948397d",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Seeking an industry role after your PhD? Make sure your CV reflects that",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4880d1126f356df0df670f50e7d50e2f82c66a04",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Africa’s response to this Ebola outbreak shows how to shape global health",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:ab5e9806c60996b8514fa63d0a5feea101b99410",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "DNA-shredding CRISPR enzyme takes aim at cancer cells",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6aa0bb8dac2a6f3680a03593f2d5b3ef70f879a2",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "My research on mice is causing me stress. How can I become more resilient?",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d0a7cccb3b7b1d9c37279c7a3a84b156c59e427a",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "The race to explore the deep ocean: four technologies transforming research",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1981ca01c3f692338cd2af535212ee265c07b2e1",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Could this mysterious disappearing organ hold the key to longevity?",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:49694a05191ce47541615832f9720b4995174820",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Mathematics formula found on Maya wall rivals insights of ancient masters",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2e00db0b40f4520750f7aa510e1f9ff772ea91b9",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "RNA molecules with different destinies are processed through overlapping pathways",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:7cebcaf0d345c532434d065172135a4af3a07012",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "‘Climate free fall’: why the biggest risk to our economies is yet to be recognized",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d8fbe977c8b7b4793c6000abe5f8ef2dc21d88de",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Perovskite–organic tandem solar cells with a photo-transformable stabilizer",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2778316e5757ec6645f8b8f2918b4ea92f7a1a22",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Author Correction: OR7A10 GPCR engineering boosts CAR-NK therapy against solid tumours",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1e7360c5b2ad663be96bf6e81a7179ea06942c81",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Tall and small trees are equally vulnerable to drought",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:76606f6adc4d08e681e7b800cf84c99b21b53f0e",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "Rights for rivers and ice cream for all: top reads for the summer holidays",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0b0e2281576315834b061bb2b06962bc865ac05f",
+      "board_id": "board2",
+      "source_id": "nature",
+      "p0": {
+        "title": "How voluntary work can boost your career in science",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:82ddfbb7a35fda99134a11a00aa82d64a2bb8808",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "Author Correction: The STARD-AI reporting guideline for diagnostic accuracy studies using artificial intelligence",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:58925a765ad79865be5c5b06653d506081678785",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "An anti-PMEL antibody−drug conjugate with a G q/1 1 inhibitor payload in GNAQ / GNA11 -mutant melanomas: a phase 1 trial",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:c2bb0d07c03d5906b052ffd9d72bf03b58ed29a8",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "Anti-LAG-3 with or without anti-PD-1 in recurrent glioblastoma: a phase 1 trial",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:da185adae2474bce361b3397c33f31ba94d8b6c2",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "Health system learning enables generalist neuroimaging models",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0fe57da41d93323620c85302102ec2d675423c23",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "A second chance for gene therapy to restore natural hearing",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:298d227444f59c277bba2384280b6c1e10176012",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "Challenges and future directions for multiple sclerosis after the 2024 McDonald diagnostic criteria",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:5d65463efd0683a3962cf66ccc0d8526f691153b",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "When the real world becomes the trial",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9f2e478c6e224e00972a7ff5a80cb6cccfaa490d",
+      "board_id": "board2",
+      "source_id": "nature-medicine",
+      "p0": {
+        "title": "KRAS-G12D inhibitor HRS-4642 plus chemotherapy in advanced KRAS G12D -mutant pancreatic cancer: a phase 1b/2 trial",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:3e314a935703c5785996ce137e31466d8f3142f9",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "High-resolution reconstruction of cell-type-specific transcriptional regulatory processes from bulk sequencing samples",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:91c3eeab68bf63d1f8bf5ddfb6135d4b9ae3930b",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "Engineered ADARs enable precision A-to-G base editing of DNA",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:970084c97a8ab01149ee7a05aa6df7c7eac50968",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "Efficient in vivo cytosine base editing using virus-like particles with uracil DNA glycosylase inhibition",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4a6265abbe5938c398b96569b377a22e21a79e3e",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "Biotech’s digital twin dilemma",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:f9395e3fbff9a83f8f780d84176ebc64a2e7da4d",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "High-quality phage assembly from metagenomes with PALACE",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9b3d1c7d5d46047ce2617471c1932cb21a97c668",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "An AAV vector for glial cells",
+        "date": "2026-07-08",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2daa15effa6efcf30f3ecad2403f10e374c61f42",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "Efficient targeting of human glial progenitor cells in vivo with engineered AAV vectors and glymphatic delivery",
+        "date": "2026-07-08",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:1225240602b8f959095ff63bc49313612c4de17e",
+      "board_id": "board2",
+      "source_id": "nature-biotech",
+      "p0": {
+        "title": "Frontier AI companies as biotech acquirers",
+        "date": "2026-07-07",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:aeca0f32825fac15c893364f20ac94b0245c2032",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "Realigning AI technology towards the Sustainable Development Goals",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:26cb4ee568042eae673df7142379c930b53cb760",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "A unifying framework from neural superposition to sparse interpretable codes",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:cf375e2d91b6ea2d18e47a12ef3716bb69ff24c8",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "The brain is a diverse place, why not computing?",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6f1a1f468e14a119cf34ce3bdb94d51a815337bf",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "Towards shared embodied intelligence in humanoid robots through optimization, development and testing of the human-aware ergoCub robot",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:9c7c86affdb69ca1b953921c40840ac8c7f8ed74",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "A manifesto for Sustainability Robotics",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4b0bca0970cc3c12fd0d0a00438661a2cd51fea5",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "Four questions for AI-ready biological data",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:61257e5b19e9b1bdeb4fa760a331a181209da4c3",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "Guiding generative models to uncover diverse and novel crystals via reinforcement learning",
+        "date": "2026-07-06",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:d9c980304f99ece0bc73430ef1a4c331587e3fb6",
+      "board_id": "board2",
+      "source_id": "nature-machine-intel",
+      "p0": {
+        "title": "Principled approaches for extending neural architectures to function spaces for operator learning",
+        "date": "2026-07-03",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2d37061c7280473ee335720444bca4bfa0db988e",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Exogenous creatine supplementation promotes tumor metastasis via megakaryocyte creatine kinase B-STAT5B signaling",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:310fdd9019cc38e388d281b9550ac8c80c88c25e",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Profiling the gut resistome to unlock antimicrobial resistance biology and inform clinical risk",
+        "date": "2026-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:8a88a11d4edfc06c075444af0e91b8e7d48f941a",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Author Correction: Species- and variant-specific ACE2 compatibility shapes SARS-CoV-2 spillover potential in North American cervids",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:de798b9433bd3c27ee1d4ffc6573f7a6b87dc7f1",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Author Correction: Cdo1-Camkk2-AMPK axis confers the protective effects of exercise against NAFLD in mice",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:0846b3b74c02def7716d78877bfe6cccd1cc253f",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Author Correction: The rhythmic coupling of Egr-1 and Cidea regulates age-related metabolic dysfunction in the liver of male mice",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2dee462b7f37f9af196cda730cb5e969054fc9e5",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Self-heating-induced blocking in nanopores enables neuromorphic ionic computing",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:017ce40065b1e8ffa1158b8ececbb0c61b8d7e0f",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Potential-mediated enol-keto equilibrium in phenol electro-hydrogenation on platinum",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:571a39f8b9c32fb0ffa0de05c9c8145a522acd1b",
+      "board_id": "board2",
+      "source_id": "nature-comms",
+      "p0": {
+        "title": "Origins of stomatal mechanics in grasses",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:6a2518effdbae34d1c177cde94c2dd15922a6e94",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "Bungee-jumping mice may reveal why astronauts skip on the Moon",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:b301fea8f3bdae39843529636b49fcbd63ae04cd",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "U.S. researchers outraged at proposed changes to federal grants",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:358d4da56386c7b5d4f021589ad7fd40d2ede38c",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "Astrónomo maya identificado por primera vez gracias a firma en un mural",
+        "date": "2026-07-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e35831e73c9305d2c2a41d202e3e5196eb75f1cb",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "Scrawled signature names a Maya astronomer for the first time",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:2e4522fd386bbede5209cdf56db7a71eae96dfaa",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "Plan to turn major monkey research facility into sanctuary may be dead",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:4701b826337e5533afa0b8fabc33d24453fa7489",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "As the Arctic warms, gray whale boom turns into a bust",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:51f402e4aff241beb94cefea73c1f8a5017a63d2",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "An AI can invent entirely new languages. But is it creative?",
+        "date": "2026-07-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:333e9f151d1e5905908ad404886031d340cd3398",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "New NSF policy would ban almost all collaborations with Chinese scientists",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:e63045557b582504e5294ee9f43bd1d276850e0d",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "Ancient DNA solves Medici murder mystery",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "feed:bd989de543c1f10c54a1b15fac8e3c94adca47b6",
+      "board_id": "board2",
+      "source_id": "science-news",
+      "p0": {
+        "title": "DNA could act like a famed gravity-defying pump",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1512.07060",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Stochastic simulators based optimization by Gaussian process metamodels -- Application to maintenance investments planning issues",
+        "date": "2016-05-03",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1601.05914",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Model Assisted Probability of Detection curves: New statistical tools and progressive methodology",
+        "date": "2016-01-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1701.02373",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Probabilistic risk bounds for the characterization of radiological contamination",
+        "date": "2017-05-27",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1704.00624",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Uncertainty and sensitivity analysis of functional risk curves based on Gaussian processes",
+        "date": "2017-07-25",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1705.09116",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Shortening binary complexes and commutativity of $K$-theory with infinite products",
+        "date": "2017-05-25",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1707.01334",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Shapley effects for sensitivity analysis with correlated inputs: comparisons with Sobol' indices, numerical estimation and applications",
+        "date": "2019-11-25",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1710.04935",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Equivariant coarse homotopy theory and coarse algebraic $\\boldsymbol{K}$-homology",
+        "date": "2018-09-21",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1712.06932",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Coarse homology theories and finite decomposition complexity",
+        "date": "2017-12-19",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1805.06175",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Algebraic K-theory of stable $\\infty$-categories via binary complexes",
+        "date": "2019-01-29",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1809.11079",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Injectivity results for coarse homology theories",
+        "date": "2020-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1811.04007",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Homotopy theory with marked additive categories",
+        "date": "2018-11-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1811.10954",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "$K_1$-groups via binary complexes of fixed length",
+        "date": "2019-07-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1811.11864",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Split injectivity of A-theoretic assembly maps",
+        "date": "2018-11-28",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1812.11335",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Advanced methodology for uncertainty propagation in computer experiments with large number of inputs",
+        "date": "2018-12-29",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1904.06520",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Costly Attention and Retirement",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:1910.09408",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Background Error Covariance Iterative Updating with Invariant Observation Measures for Data Assimilation",
+        "date": "2019-10-11",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2001.11860",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A graph clustering approach to localization for adaptive covariance tuning in data assimilation based on state-observation mapping",
+        "date": "2020-01-31",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2004.04663",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "The ICSCREAM methodology: Identification of penalizing configurations in computer experiments using screening and metamodel -- Applications in thermal-hydraulics",
+        "date": "2021-08-27",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2008.03060",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "An information geometry approach for robustness analysis in uncertainty quantification of computer codes",
+        "date": "2020-12-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2010.11673",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Understanding the Lithium Ion Transport in Concentrated Block-Copolymer Electrolytes on a Microscopic Level",
+        "date": "2025-12-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2103.13983",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On the finiteness property of hyperbolic simplicial actions: the right-angled Artin groups and their extension graphs",
+        "date": "2022-09-19",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2104.05748",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Observation of phase synchronization and alignment during free induction decay of quantum spins with Heisenberg interactions",
+        "date": "2021-06-24",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2111.06876",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "2d BF Theory Coupled to 1d Quantum Mechanics: The Phase Space and Its Quantization",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2201.01215",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Liftable automorphisms of right-angled Artin groups",
+        "date": "2023-12-02",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2202.02717",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Learning the random variables in Monte Carlo simulations with stochastic gradient descent: Machine learning for parametric PDEs and financial derivative pricing",
+        "date": "2023-06-08",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2202.06400",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Misspecification Analysis of High-Dimensional Random Effects Models for Estimation of Signal-to-Noise Ratios",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2204.11488",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Mining and searching association relation of scientific papers based on deep learning",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2204.12121",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Cross-media Scientific Research Achievements Query based on Ranking Learning",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2209.13343",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Semigroup intersection problems in the Heisenberg groups",
+        "date": "2022-10-27",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2211.00111",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Ruby: Unmasking Unsafe Rust in Stripped Binaries via Machine Learning",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2212.12958",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Non-commutative Barge-Ghys quasimorphisms: an erratum",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2306.05560",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Fusion Rings over Drinfeld Doubles",
+        "date": "2024-02-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2306.14504",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "ChatIDS: Explainable Cybersecurity Using Generative AI",
+        "date": "2023-06-26",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2306.17478",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Improving Precision of RCT-Based CATE Estimation using Data Borrowing with Double Calibration",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2307.10535",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "(Weak) Twisted post-groups, skew trusses and rings",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2308.03710",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Uniform difference between the length spectra of Out(F2) and the genus two handlebody group",
+        "date": "2023-08-07",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2309.06704",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A non-Archimedean Arens--Eells isometric embedding theorem on valued fields",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2309.12868",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Indirect Indication of the KCBS-Type Quantum Contextuality by the CHSH-Bell Test",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2311.00300",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Entity Alignment Method of Science and Technology Patent based on Graph Convolution Network and Information Fusion",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2311.02564",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Relation Extraction Model Based on Semantic Enhancement Mechanism",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2311.02566",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Topic model based on co-occurrence word networks for unbalanced short text datasets",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2311.16364",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "The Fermionic Axion Interferometer",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2312.02059",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On the One-Dimensional Contact Process with Enhancements",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2312.09076",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "ProSGNeRF: Progressive Dynamic Neural Scene Graph with Frequency Modulated Foundation Model in Urban Scenes",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2312.09084",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Language Modeling on a SpiNNaker 2 Neuromorphic Chip",
+        "date": "2024-01-24",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2312.13248",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Fibrations by Lagrangian tori for maximal Calabi-Yau degenerations and beyond",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2312.14613",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Absolute and convective instabilities in a liquid film over a substrate moving against gravity",
+        "date": "2024-08-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2401.04328",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Underdetermined Fourier Extensions for Surface Partial Differential Equations",
+        "date": "2025-09-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2401.05330",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Hierarchical Causal Models",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2402.00739",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "p-Adically convergent loci in varieties arising from periodic continued fractions",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2402.00814",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Optimal monotone conditional error functions",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2402.07518",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Efficient and Universal Watermarking for LLM-Generated Code Detection",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2403.05359",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Applying Non-negative Matrix Factorization with Covariates to the Longitudinal Data as Growth Curve Model",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2403.07387",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Combinatorics of generalized parking-function polytopes",
+        "date": "2024-03-12",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2403.14926",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Contrastive Learning on Multimodal Analysis of Electronic Health Records",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2404.05664",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "BFS versus DFS for fixed-level targets in ordered trees",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2404.15123",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Proving the Duffin-Schaeffer conjecture without GCD graphs",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2405.00914",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Accelerated Fully First-Order Methods for Bilevel and Minimax Optimization",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2405.03411",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Greedy Heuristics for Sampling-Based Motion Planning in High-Dimensional State Spaces",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2405.16361",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "LDPKiT: Superimposing Remote Queries for Privacy-Preserving Distillation",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2406.02734",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Mukai lifting of self-dual points in $\\mathbb{P}^6$",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2406.07554",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Lie 2-algebras of toral rank 3",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2406.08259",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A Tannakian framework for prismatic $F$-crystals",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2406.10676",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Variational Analysis in the Wasserstein Space",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2406.12264",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Projection Methods for Operator Learning and Universal Approximation",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2406.14110",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Multi-objective optimization of the magnetic wiping process in dip-coating",
+        "date": "2024-06-20",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2407.01513",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Pair Density Waves and Supercurrent Diode Effect in Altermagnets",
+        "date": "2025-07-07",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2407.08115",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Dirac Electrons in AC-Magnetic Fields: $π$-Landau Levels and Chiral Anomaly-Induced Homodyne Effect",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2407.10089",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "The inverse Kalman filter",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2407.17366",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Automorphisms of the DAHA of type $\\check{C_1}C_1$ and non-symmetric Askey-Wilson functions",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2407.19317",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Number of roots of the continuant over a finite local ring",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2407.21082",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Accelerating Large Language Model Inference with Self-Supervised Early Exits",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2408.01345",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On the sub-adjacent Hopf algebra of the universal enveloping algebra of a post-Lie algebra",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2408.01465",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Representations of Real Numbers by Alternating Perron Series and Their Geometry",
+        "date": "2024-10-04",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2408.06836",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Linear stability analysis of a vertical liquid film over a moving substrate",
+        "date": "2024-08-13",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2408.07893",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Chern-Simons theories with defects, Rogers-Ramanujan type functions and eta-products",
+        "date": "2025-07-26",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2408.08973",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Image class translation: visual inspection of class-specific hypotheticals and classification based on translation distance",
+        "date": "2026-06-04",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2408.12322",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Zero-shot 3D General Obstacle Detection via Multimodal Foundation Models and Geometry",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2409.05559",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "IFAR: Multi-Perspective and Multi-Level Causal Discovery with LLMs",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2409.11525",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Pairwise Target Rotation for Factor Models",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.02000",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Barycentric rational approximation for learning the index of a dynamical system from limited data",
+        "date": "2025-11-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.04136",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "The convergence of sequences in terms of positive and alternating Perron expansions",
+        "date": "2024-10-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.04336",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A Meshfree Method for Eigenvalues of Differential Operators on Surfaces, Including Steklov Problems",
+        "date": "2025-06-16",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.04677",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Holonomic étale sheaves are constructible",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.12619",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On the randomized Horn problem and the surface tension of hives",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.12907",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "The ring of Weyl invariant $E_8$ Jacobi forms",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.15276",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "The Pants Graph of a Free Group",
+        "date": "2026-04-17",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.16978",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Multi-Layer Gaussian Splatting for Immersive Anatomy Visualization",
+        "date": "2024-10-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.19327",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Galton-Watson processes in dynamical environments",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.21019",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Beyond Trade Openness: Network-Based Evidence on African Economic Integration",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.21998",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Optimal convergence rates in trace distance and relative entropy for the quantum central limit theorem",
+        "date": "2026-05-08",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2410.22227",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Reverse mathematics of regular countable second countable spaces",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.00638",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Multi-tunneling effect of nonreciprocal Landau-Zener tunneling: Insights from DC field responses",
+        "date": "2024-11-01",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.00658",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Problem of nonlinear conductivity within relaxation time approximation in noncentrosymmetric insulators",
+        "date": "2024-11-01",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.02612",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Eulerian orientations and Hadamard codes: A novel connection via counting",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.02650",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Neurophysiological Insights into Multimedia-based Education: A PRISMA-ScR Review of fNIRS in Game-Integrated Learning Systems",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.04067",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Log Calabi-Yau mirror symmetry and non-archimedean disks",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.06875",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "NGO Activism: Exposure vs. Influence",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.08131",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On some states minimizing uncertainty relations: A new look at these relations",
+        "date": "2026-04-11",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.11864",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Reducing the Large Set Threshold for Oertel's Conjecture on the Mixed-Integer Volume",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.12569",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "McCleary--Rubin reconstruction for simple forest-skein groups",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.17513",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Human Vision Constrained Super-Resolution",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.17840",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Basic Research, Lethal Effects: Military AI Research Funding as Enlistment",
+        "date": "2024-11-26",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.18580",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Periodic symplectic and Hamiltonian diffeomorphisms on irrational ruled surfaces",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2411.18790",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Fast Schulze Voting Using Quickselect",
+        "date": "2024-11-27",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2412.02983",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Prototypical Few-Shot Medical Image Semantic Segmentation with Background Fusion",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2412.03271",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Nonparametric Filtering, Estimation and Classification using Neural Jump ODEs",
+        "date": "2025-08-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2412.04410",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Spin distribution of fission fragments involving bending and wriggling modes",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2412.07751",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On Motion Blur and Deblurring in Visual Place Recognition",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2412.15817",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Imaging the transition from diffusive to Landauer resistivity dipoles",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.03591",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Metallisation of the Mott Insulator Ca$_{2}$RuO$_{4}$ using Electric Double-Layer Gating",
+        "date": "2025-01-07",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.04236",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "SHARE: Optimizing Secure Hub Allocation and Routing Efficiency in Payment Channel Networks",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.05596",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Testing MCAR via covariances: Extending the U-statistic framework to partially observed variables",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.11434",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "An Incremental Sampling and Segmentation-Based Approach for Motion Planning Infeasibility",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.11794",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "SPID-Chain: Verifiable Polar-Coded State Validation for Cross-Chain DAG Settlement",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.12293",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Improved Decoding of Tanner Codes",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.15642",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On winding numbers of almost embeddings of $K_4$ in the plane",
+        "date": "2025-05-06",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.15895",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Quantum Pattern Detection: Accurate State- and Circuit-based Analyses",
+        "date": "2025-01-27",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2501.18570",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On the intersection of pairs of trees",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.00138",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "JustAct: A Framework for Auditable Multi-Agent Systems Regulated by Inter-Organisational Policies",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.02097",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "VerteNet -- A Multi-Context Hybrid CNN Transformer for Accurate Vertebral Landmark Localization in Lateral Spine DXA Images",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.02763",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Looking Locally: Object-Centric Vision Transformers as Foundation Models for Efficient Segmentation",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.02843",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On Trimming Tensor-structured Measurements and Efficient Low-rank Tensor Recovery",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.07043",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Operation of a high-frequency, phase-slip qubit",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.08272",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Weighted Pseudorandom Generators for Read-Once Branching Programs via Weighted Pseudorandom Reductions",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.08711",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A Non-Relativistic Limit for Heterotic Supergravity and its Gauge Lagrangian",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.11317",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Temporal structures of the X-ray photoemission problem",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.12267",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "NeuroStrata: Harnessing Neurosymbolic Paradigms for Improved Design, Testability, and Verifiability of Autonomous CPS",
+        "date": "2025-06-01",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.12446",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Multi-Attribute Steering of Language Models via Targeted Intervention",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.16577",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "SUperman: Efficient Permanent Computation on GPUs",
+        "date": "2025-10-03",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.18497",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "LD-Leiden: Local Parallel Community Detection in Large Dynamic Networks",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2502.20336",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A posteriori certification of PDE approximations with particular application to neural networks",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.03319",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Loop vs. Bernoulli percolation on trees: strict inequality of critical values",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.03769",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Understanding entropy production via a thermal zero-player game",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.05647",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Phase estimation with partially randomized time evolution",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.05669",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On a certain inequality for the sum of norms and reverse uncertainty relations",
+        "date": "2026-05-27",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.06168",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Some Classes of Absolutely Norm Attaining Weighted Shift operators on Directed Graphs",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.07764",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Path-dependency and emergent computing under vectorial driving",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.14270",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Integral modelling and Reinforcement Learning control of 3D liquid metal coating on a moving substrate",
+        "date": "2026-02-08",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.14313",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Confidence Intervals Using Turing's Estimator: Simulations and Applications",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.21015",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Galaxy and Halo Root Systems: Fingerprints of Mass Assembly",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2503.21535",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Computing Isomorphisms between Products of Supersingular Elliptic Curves",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.00015",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Quantumly controlled measurement, Hermitian conjugation and normalization in matrix-manipulation algorithms",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.03129",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "GraphSeg: Segmented 3D Representations via Graph Edge Addition and Contraction",
+        "date": "2025-04-04",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.04069",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Computing cone-constrained singular values of matrices",
+        "date": "2026-05-26",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.07459",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Beyond LLMs: A Linguistic Approach to Causal Graph Generation from Narrative Texts",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.09462",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Arbitrary state creation via controlled measurement",
+        "date": "2025-04-30",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.15245",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Imprints of octupole collectivity in uranium-238 on relativistic heavy-ion flow observables",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.17459",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A representation of range decreasing group homomorphisms",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.18902",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Transformer-Empowered Actor-Critic Reinforcement Learning for Sequence-Aware Service Function Chain Partitioning",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.21351",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Amplitude mode in two-dimensional coherent spectroscopy of weak-coupling antiferromagnets",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2504.21761",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Is Stephen Curry really a guard? A new perspective on player typologies using functional data analysis",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.01310",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Holographic Conformal Anomaly and a-Theorem in 5D Scalar-Tensor Theories from Heterotic Strings",
+        "date": "2025-06-16",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.09517",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Transients and multiperiodic responses: a hierarchy of material bits",
+        "date": "2025-05-14",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.10091",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Accelerated snapping of slender beams under lateral forcing",
+        "date": "2025-05-15",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.14300",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Beyond Black-Box Obfuscation: Mechanistic Analysis and Defense of White-Box Monitors",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.20121",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "The Computability Path Order for Beta-Eta-Normal Higher-Order Rewriting (Full Version)",
+        "date": "2025-05-28",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.20781",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "STITCH-OPE: Trajectory Stitching with Guided Diffusion for Off-Policy Evaluation",
+        "date": "2025-05-27",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.22514",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Toward quantum scaling advantage in approximate optimization",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.24631",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Cascades on Networks with Functional Structure",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2505.24819",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Bi-Manual Joint Camera Calibration and Scene Representation",
+        "date": "2025-05-30",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.01692",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A Descriptive and Normative Theory of Human Beliefs in RLHF",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.04466",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Chern insulators in two and three dimensions: A global perspective",
+        "date": "2026-01-28",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.04856",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Central extensions and proper actions on products of hyperbolic spaces",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.05132",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Anomalous dimensions at small spins",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.07816",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Accelerating Constrained Sampling: A Large Deviations Approach",
+        "date": "2026-04-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.08097",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Composite Superconducting Orders and Magnetism in CeRh$_2$As$_2$",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.10915",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "M4V: Multimodal Mamba for Efficient Text-to-Video Generation",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.15886",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Higher-curvature corrections and the endpoint of black hole evaporation in gravitational effective field theory",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.17698",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Pushing the Complexity Boundaries of Fixed-Point Equations: Adaptation to Contraction and Controlled Expansion",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.22228",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Uncovering smooth structures in single-cell data with PCS-guided neighbor embeddings",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2506.22784",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Single-Frame Point-Pixel Registration via Supervised Cross-Modal Feature Matching",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.00600",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A Practical Guide to Interpretable Role-Based Clustering in Multi-Layer Financial Networks",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.01365",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Consumption Stimulus with Digital Coupons: Heterogeneity and Policy Design",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.05009",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Non-ergodic one-magnon magnetization dynamics of the kagome lattice antiferromagnet",
+        "date": "2025-08-25",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.05074",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Gaussian approximation for non-linearity parameter estimation in perturbed random fields on the sphere",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.08150",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "CLEAR: Calibrated Learning for Epistemic and Aleatoric Risk",
+        "date": "2026-07-05",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.12447",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Exclusivity Classes and Partitions of Loss Functions",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.12941",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Adaptive feature capture method for solving partial differential equations with near singular solutions",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.16566",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "On the uniform positivity of $F$-signature under reduction modulo $p$",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.17598",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Conjugacy in fibre products, distortion, and the geometry of cyclic subgroups",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.18043",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "GrAInS: Gradient-based Attribution for Inference-Time Steering of LLMs and VLMs",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.18313",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Regression-aware Continual Learning for Android Malware Detection",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.18582",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Variational Monte Carlo Optimization of Topological Chiral Superconductors",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.18720",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Cosmic homogeneity: the effect of redshift-space distortions and bias and cosmological constraints",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.19023",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Modulus of continuity for solutions of non-local heat equations",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2507.19731",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Predicting Entanglement Entropy from Particle Tunneling of Interacting Fermions Using Kolmogorov-Arnold Networks",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.00836",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Rxiv-Maker: an automated template engine for streamlined scientific publications",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.02989",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Scalable Varied-Density Clustering via Graph Propagation",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.05789",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "A free fermions in disguise model with claws",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.09244",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Cosmic structure formation in massive conformal gravity",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.10969",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Promotion digraphs",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.11594",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "It's not a FAD: first results in using Flows for unsupervised Anomaly Detection at 40 MHz at the Large Hadron Collider",
+        "date": "2025-11-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.12097",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Continuous-wave, high-resolution, ultra-broadband mid-infrared nonlinear spectroscopy with tunable plasmonic nanocavities",
+        "date": "2026-01-22",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.13166",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Graph-Based Deterministic Polynomial Framwork for NP Problems",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.14817",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "Evaluating Retrieval-Augmented Generation vs. Long-Context Input for Clinical Reasoning over EHRs",
+        "date": "2026-07-09",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    },
+    {
+      "item_id": "arxiv:2508.15806",
+      "board_id": "board1",
+      "source_id": "arxiv-all",
+      "p0": {
+        "title": "REAL: REtrieval-reAsoning and Logic-constructed Attention Behaviors for Long-Context KV Cache Compression",
+        "date": "2026-07-10",
+        "doi": null,
+        "doc_number": null
+      },
+      "baseline_status": "provisional_machine"
+    }
+  ]
+}
