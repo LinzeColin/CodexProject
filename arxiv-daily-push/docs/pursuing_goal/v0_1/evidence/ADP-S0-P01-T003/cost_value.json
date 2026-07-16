@@ -1,0 +1,14 @@
+{
+  "task": "ADP-S0-P01-T003",
+  "release_mode": "NOT_DEPLOYED",
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "one_time_cost": "docs-only; no deploy, no D1/R2 op, no API call",
+  "value": "single first-read entrypoint for every agent: one-line PURSUING_GOAL.txt + machine-readable MACHINE_CONTRACT.yaml + verifiable contract hash (d7451cb7...); keeps goal consistent across threads/agents and hash-detectable against tampering/drift",
+  "contract_hash_sha256": "d7451cb7bf8dd83d95f830aeb5279bdc58a1a479a8dbd153ad2acb3fa3b234e6",
+  "pursuing_goal_sha256": "eace98cb48e72357724d0cf26acfae574768f3d398c78781feea9851dc4dec2c",
+  "cost_unknowns_not_zero": [
+    "FACT-011 D1 real schema/rows/size/latency/growth (pending S0-P02-T006)",
+    "FACT-012 R2 enabled/usage/cost (pending)",
+    "FACT-013 Cloudflare plan/billing/Workers-AI/Queues/Workflows usage (pending)"
+  ]
+}

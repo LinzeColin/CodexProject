@@ -1,0 +1,27 @@
+# ADP-S0-P01-T003 commands.log
+
+## 基线
+$ git rev-parse HEAD
+76e80edf8942309b82f7abc84b0329d929f4f2cc   # = origin/main (ADP-S0-P01-T002 merged, CI double-green)
+
+## PURSUING_GOAL.txt 严格单行
+$ awk 'END{print NR}' PURSUING_GOAL.txt
+1
+$ python3 -c "s=open('PURSUING_GOAL.txt',encoding='utf-8').read(); b=s.rstrip('\n'); print('embedded_newlines',b.count(chr(10)),'single_line', '\n' not in b)"
+embedded_newlines 0 single_line True
+
+## MACHINE_CONTRACT.yaml 解析 + goal hash 交叉校验
+$ python3 -c "import yaml,hashlib; o=yaml.safe_load(open('MACHINE_CONTRACT.yaml',encoding='utf-8').read()); ..."
+YAML parse OK; top keys: 17 | pursuing_goal single_line in yaml: True
+pursuing_goal_sha256 match: True eace98cb48e72357724d0cf26acfae574768f3d398c78781feea9851dc4dec2c
+
+## 合同 hash 生成 + 校验
+$ python3 -c "import hashlib; print(hashlib.sha256(open('MACHINE_CONTRACT.yaml','rb').read()).hexdigest())"
+d7451cb7bf8dd83d95f830aeb5279bdc58a1a479a8dbd153ad2acb3fa3b234e6
+$ shasum -a 256 -c MACHINE_CONTRACT.sha256
+MACHINE_CONTRACT.yaml: OK
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
+# 期望 decision: SHIP —— 实际结果记于提交步骤

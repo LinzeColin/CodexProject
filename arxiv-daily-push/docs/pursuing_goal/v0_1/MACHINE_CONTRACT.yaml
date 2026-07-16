@@ -1,0 +1,78 @@
+# ADP V0.1 · MACHINE_CONTRACT —— 每个 Codex/Claude/ChatGPT 任务开工前必须先读的单一目标与硬约束
+# 任务 ADP-S0-P01-T003 交付物。本合同的完整性由同目录 MACHINE_CONTRACT.sha256 保证。
+# 后续任务必须：先读 PURSUING_GOAL.txt 与本合同 → 校验 pursuing_goal_sha256 与 MACHINE_CONTRACT.sha256
+#              → 按 authority_order 与 CONFLICT_LEDGER.csv 裁决冲突材料 → 方可编码。
+schema_version: adp.machine_contract.v0_1
+contract_id: ADP-V0.1-MACHINE-CONTRACT
+frozen_at: "2026-07-16T10:45:00+10:00"
+source_package: ADP_V0.1_FINAL_EXECUTION_TASK_PACKAGE_2026-07-15
+baseline_commit: 76e80edf8942309b82f7abc84b0329d929f4f2cc   # main after ADP-S0-P01-T002
+governance_iteration: ITER-20260716-ADP-V01-FINAL-EXECUTION
+
+# —— 单一目标（与 PURSUING_GOAL.txt 逐字一致；该文件严格单行）——
+pursuing_goal_file: docs/pursuing_goal/v0_1/PURSUING_GOAL.txt
+pursuing_goal_sha256: "eace98cb48e72357724d0cf26acfae574768f3d398c78781feea9851dc4dec2c"
+pursuing_goal_one_line: "在不破坏已上线 MVP、六主题高级动效与实时稳定运行的前提下，以单一事实源、A0–A2 官方原文、2016+ 可恢复历史、证据化人话内容、可回测预测和量化成本收益为硬约束，逐 Stage/Phase 将 ADP 建成多板块、全面、权威、及时、深度且长期稳定的前沿认知系统。"
+
+# —— 权威顺序（高 → 低；见 PRECEDENCE.md）——
+authority_order:
+  - owner_latest_directive
+  - live_and_cloudflare_private_readonly_facts
+  - git_commit_and_machine_manifest
+  - this_final_package_contracts
+  - reconciled_canonical_specs_2026_07_15
+  - historical_threads_and_old_handoffs_detail_only
+
+# —— 硬约束（见 OWNER_DIRECTIVES.yaml hard_constraints）——
+hard_constraints:
+  single_source_of_truth: true
+  china_sources_levels: [A0, A1, A2]
+  history_recoverable_from_year: 2016
+  content_must_be_evidence_backed: true
+  predictions_must_be_backtestable_no_leakage: true
+  cost_benefit_must_be_quantified: true
+  preserve_six_themes: true
+  preserve_advanced_motion: true            # hero 视频/仪表盘/氛围层/自愈/no-store
+  preserve_realtime_stability: true
+
+# —— 本轮范围（见 CURRENT_SCOPE.md）——
+out_of_scope:
+  - public_auth_and_login
+  - multitenancy
+  - pricing_TAM_commercial_tiers
+  - full_navigation_redesign
+  - replacement_visual_identity
+  - source_levels_A3_plus
+  - generic_saas_ia
+
+# —— Owner Gate（仅这些点需 Owner 参与）——
+owner_gates: [S0_EXIT, S3_EXIT, S4_COHORT, S6_EXIT, S7_BASELINE, S8_VALUE_COST]
+
+# —— 执行纪律（见 09_ANTI_BLACK_HOLE）——
+execution_protocol:
+  one_stage_active: true
+  one_task_per_run: true
+  default_max_files_per_task: 12
+  no_big_bang: true
+  two_failures_switch_path: true
+  implementer_must_not_self_sign_gate: true
+  answer_six_start_questions_before_coding: true
+  completion_marker: IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION
+
+# —— canonical 基线引用（同目录）——
+baseline_refs:
+  scope: docs/pursuing_goal/v0_1/CURRENT_SCOPE.md
+  directives: docs/pursuing_goal/v0_1/OWNER_DIRECTIVES.yaml     # DIR-001..006
+  precedence: docs/pursuing_goal/v0_1/PRECEDENCE.md
+  conflict_ledger: docs/pursuing_goal/v0_1/CONFLICT_LEDGER.csv  # CL-001..CL-014
+  archived_not_canonical: docs/pursuing_goal/v0_1/ARCHIVED_NOT_CANONICAL.md
+
+# —— 单一可执行事实源（治理）——
+canonical_governance:
+  - docs/governance/project.yaml
+  - docs/governance/roadmap.yaml
+  - docs/governance/events.jsonl
+  - VERSION
+  - CHANGELOG.md
+
+how_to_use: "每个 ADP V0.1 任务（Codex/Claude/ChatGPT）开工前必须先读 PURSUING_GOAL.txt 与本合同，校验 pursuing_goal_sha256 与 MACHINE_CONTRACT.sha256 中的合同 hash，再按 authority_order 与 CONFLICT_LEDGER.csv 裁决任何冲突材料，最后才允许编码；完成以 IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION 结束，实现者不自签 Stage Gate。"
