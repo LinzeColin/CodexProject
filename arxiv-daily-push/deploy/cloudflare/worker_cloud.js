@@ -9,10 +9,10 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'e377c9bd1e20', source_sha256: 'e377c9bd1e20755969a6b9b26667a01e059ae13eb13299d1fd234fa5d5faa0f0', schema_version: 'cn_v0_3', built_at: '2026-07-16' };
+const BUILD = { build_id: '9cd3d8a2fe68', source_sha256: '9cd3d8a2fe68c336fdd83cdc70c24ee81a7f7359fc271cf78fbb213aea8b28d0', schema_version: 'cn_v0_3', built_at: '2026-07-16' };
 
 // ── S2-P01-T022 不可变原始证据 R2 双写（SHADOW；feature flag 默认关=部署即基线；DIR-007 免费档硬预算内）──
-const RAW_DUALWRITE = false; // 默认关；开=抓取成功后旁路把原始字节写 R2（不改发布主链）
+const RAW_DUALWRITE = true;  // S2-P01-T023 SHADOW 开启：cron/run 抓取后旁路双写 R2（预算硬停内） // 默认关；开=抓取成功后旁路把原始字节写 R2（不改发布主链）
 // DIR-007 R2 免费档硬顶：Storage 10GB/月、Class A(写/list)1e6/月、Class B(读/head)1e7/月；写前预算硬停（guard 0.9）。
 const R2_BUDGET = { storageBytes: 10 * 1024 * 1024 * 1024, classAPerMonth: 1000000, classBPerMonth: 10000000, guardFrac: 0.9 };
 async function sha256Hex(bytes) { const d = await crypto.subtle.digest('SHA-256', bytes); return Array.from(new Uint8Array(d)).map(b => b.toString(16).padStart(2, '0')).join(''); }
@@ -22,15 +22,19 @@ function rawKey(sourceId, sha, mime) { if (!/^[a-z0-9][a-z0-9_-]*$/.test(sourceI
 function r2Month() { const d = new Date(); return `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}`; }
 async function r2Usage(env, mo) { const r = await env.DB.prepare('SELECT key,value FROM cn_meta WHERE key IN (?,?,?)').bind(`r2_${mo}_ca`, `r2_${mo}_cb`, `r2_${mo}_bytes`).all(); const u = { ca: 0, cb: 0, bytes: 0 }; for (const row of (r.results || [])) { if (row.key.endsWith('_ca')) u.ca = +row.value; else if (row.key.endsWith('_cb')) u.cb = +row.value; else if (row.key.endsWith('_bytes')) u.bytes = +row.value; } return u; }
 async function r2Bump(env, mo, dCa, dCb, dBytes) { const set = async (suf, dv) => { if (!dv) return; await env.DB.prepare('INSERT INTO cn_meta(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=CAST(value AS INTEGER)+?').bind(`r2_${mo}_${suf}`, String(dv), dv).run(); }; await set('ca', dCa); await set('cb', dCb); await set('bytes', dBytes); }
-// content-addressed 幂等写：HEAD 存在则跳过；预算硬停；idempotent D1 行。返回 {key,wrote,deduped,over_budget}。
+// 每次 run 的双写上限（T023 发现：naive per-feed 双写会超免费档 Worker 子请求上限~50/请求 -> 静默丢失；
+// 上限 + 单次 run 只读一次预算，控制子请求，7 日靠 cron 累积）。模块级状态每请求重置。
+let _rawWrites = 0; let _rawUsage = null; const RAW_MAX_PER_RUN = 3;
+// content-addressed 幂等写：HEAD 存在则跳过；预算硬停 + 每 run 上限；idempotent D1 行。返回 {key,wrote,deduped,over_budget,skipped}。
 async function dualWriteArtifact(env, sourceId, url, buf) {
+  if (_rawWrites >= RAW_MAX_PER_RUN) return { skipped: 'per_run_cap' };
   const bytes = new Uint8Array(buf); const mime = sniffMime(bytes); const sha = await sha256Hex(bytes); const key = rawKey(sourceId, sha, mime);
-  const mo = r2Month(); const u = await r2Usage(env, mo);
-  const head = await env.RAW.head(key); await r2Bump(env, mo, 0, 1, 0); // Class B
-  if (head) return { key, deduped: true, wrote: false };
-  if (u.ca + 1 > R2_BUDGET.classAPerMonth * R2_BUDGET.guardFrac || u.bytes + bytes.length > R2_BUDGET.storageBytes * R2_BUDGET.guardFrac) return { key, wrote: false, over_budget: true };
-  await env.RAW.put(key, buf, { httpMetadata: { contentType: mime } }); await r2Bump(env, mo, 1, 0, bytes.length); // Class A + bytes
+  const mo = r2Month(); if (!_rawUsage) _rawUsage = await r2Usage(env, mo); // 每 run 只读一次预算，省子请求
+  const head = await env.RAW.head(key); if (head) return { key, deduped: true, wrote: false }; // Class B
+  if (_rawUsage.ca + _rawWrites + 1 > R2_BUDGET.classAPerMonth * R2_BUDGET.guardFrac || _rawUsage.bytes + bytes.length > R2_BUDGET.storageBytes * R2_BUDGET.guardFrac) return { key, wrote: false, over_budget: true };
+  await env.RAW.put(key, buf, { httpMetadata: { contentType: mime } }); _rawWrites++;
   await env.DB.prepare('INSERT INTO cn_artifacts(object_key,sha256,source_id,url,mime,content_length,compression,content_version,created_at) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(object_key) DO NOTHING').bind(key, sha, sourceId, url, mime, bytes.length, 'none', 'v1', new Date().toISOString()).run();
+  await r2Bump(env, mo, 1, 1, bytes.length); // Class A(put) + Class B(head) + bytes
   return { key, wrote: true, deduped: false };
 }
 
@@ -512,6 +516,7 @@ async function gradeRecall(env, itemId, grade) {
 
 // ───────────────────────── 每日流水线 ─────────────────────────
 async function runDaily(env, trigger) {
+  _rawWrites = 0; _rawUsage = null; // T023：每次 run 重置双写上限/预算快照（模块级状态在暖 isolate 会跨请求残留）
   const asOfDate = dayISO();
   const runId = new Date().toISOString().replace(/[:.]/g, '').slice(0, 15) + '-' + trigger;
   const counts = { degraded: [] };
@@ -1129,6 +1134,7 @@ export default {
         if (p === '/api/raw-selftest') {
           // S2-P01-T022 验收：写同一测试字节两次 -> 第二次 deduped（幂等）；返回预算用量。不受 RAW_DUALWRITE 全局 flag 限制（显式管理端验证）。
           if (!env.RAW) return jsonResp({ error: 'R2 binding RAW missing' }, 503);
+          _rawWrites = 0; _rawUsage = null; // 每次 selftest 重置上限计数，保证验证可复现
           const bytes = new TextEncoder().encode('ADP-RAW-SELFTEST ' + '<html>immutable evidence dualwrite idempotency check</html>');
           const buf = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
           const a = await dualWriteArtifact(env, 'selftest', 'https://adp.linzezhang.com/api/raw-selftest', buf);

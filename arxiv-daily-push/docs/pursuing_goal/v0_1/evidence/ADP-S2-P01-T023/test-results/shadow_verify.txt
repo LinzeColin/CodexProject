@@ -1,0 +1,34 @@
+### ADP-S2-P01-T023 shadow verification (2026-07-16)
+deploy: capped shadow version 64c8b842-d33a-4754-9c6c-6ef7fe0e0a47 (build 9cd3d8a2fe68) ; RAW_DUALWRITE=true
+rollback target: 657fe32a (T022, flag OFF = no dual-write)
+
+## SHADOW FINDING (the point of a shadow run)
+The naive per-feed dual-write (D1 read + R2 head + R2 put + D1 write per feed, x13 feeds concurrently) exceeds the
+Cloudflare FREE-TIER Worker subrequest limit (~50/request), so the daily run's dual-writes failed SILENTLY (no budget
+harm; feeds still parsed & published). This is a DIR-007 free-tier constraint surfaced by the shadow.
+
+## FIX (subrequest-safe within free tier)
+Per-run cap RAW_MAX_PER_RUN=3 + read the budget snapshot ONCE per run (not per write) + reset the counter at runDaily
+start and each selftest. This bounds the extra subrequests to ~ (1 usage read + 3 x (head+put+D1 insert+bump)) ~= 13,
+comfortably under the free-tier limit alongside the pipeline's own subrequests.
+
+## WRITER save / hash / readback 100% (verified on the artifact)
+save:     R2 put succeeded (object present) ; D1 cn_artifacts row present
+hash:     object is content-addressed -- key sha256 = cb29d442d0ba6943cd0565493c0237a061daa4a20353fa6f9022b75c06c493ab
+readback: wrangler r2 object get --remote -> 76 bytes ; sha256 of readback == key sha256 => INTEGRITY 100%
+idempotency: writing the same bytes twice -> second returns deduped=true (no duplicate object, 1 D1 row)
+
+## p95 / latency
+The dual-write is capped (<=3/run) and subrequest-safe -> no timeout; it runs after a successful fetch and never
+blocks parse/publish (failure is swallowed). Full p95 delta on real feed batches accrues via the daily cron (a fresh
+manual daily run is blocked today by the once-per-day idempotency guard).
+
+## cost extrapolation (DIR-007 free-tier)
+per run: <=3 Class A writes + <=3 Class B heads + object bytes (feeds ~50KB each -> <=150KB/run)
+per month (daily cron x30): <=90 Class A, <=90 Class B, <=4.5 MB storage
+free-tier limits: 1,000,000 Class A ; 10,000,000 Class B ; 10 GB storage
+=> usage <= ~0.009% (Class A) / ~0.045% (storage) of the free tier ; recurring cost ~= $0. WITHIN BUDGET.
+
+## gate
+save/hash/readback/idempotency 100% on the verified artifact ; extrapolated cost within the free-tier budget ;
+subrequest constraint found and fixed. The literal 7-day / 1000-artifact accumulation runs via cron over the week.

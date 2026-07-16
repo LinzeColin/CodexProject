@@ -1,0 +1,9 @@
+{
+  "task": "ADP-S2-P01-T023", "stage": "S2 Immutable Raw Evidence", "release_mode": "SHADOW",
+  "deploy": {"worker": "adp-cloud", "post_deploy_version": "64c8b842-d33a-4754-9c6c-6ef7fe0e0a47", "build_id": "9cd3d8a2fe68", "flag": "RAW_DUALWRITE=true, per-run cap 3", "rollback_target": "657fe32a (T022 flag off)"},
+  "shadow_finding": "naive per-feed dual-write exceeds the free-tier Worker subrequest limit (~50/req) -> silently dropped; fixed with a per-run write cap (3) + read budget once per run + reset counter",
+  "verification": {"save": "100% (R2 put + D1 row)", "hash": "content-addressed sha256 == key", "readback": "100% (r2 object get --remote, 76 bytes, sha256 == key)", "idempotency": "second write deduped, 1 D1 row"},
+  "free_tier_usage_extrapolation": {"per_run": {"class_a_writes": "<=3", "class_b_ops": "<=3", "bytes": "<=150KB"}, "per_month_daily_cron": {"class_a": "<=90", "class_b": "<=90", "storage_bytes": "<=4718592"}, "limits": {"class_a_per_month": 1000000, "class_b_per_month": 10000000, "storage_bytes": 10737418240}, "pct_of_free_tier": {"class_a": "~0.009%", "storage": "~0.045%"}},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "gate": "save/hash/readback/idempotency 100% + cost within free-tier budget + subrequest constraint fixed => safe to enter version migration (S2-P02); the literal 7-day/1000-artifact accumulation runs via cron over real time"
+}

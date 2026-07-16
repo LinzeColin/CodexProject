@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260716-ADP-V01-DIR-007-FREE-TIER-BUDGET"
-source_snapshot_hash: "sha256:3620d2d41e796e85c16de4221b2f06344a7c4ada82f59324db8558c7d41274c9"
+as_of_event_id: "EVENT-20260716-ADP-V01-S2-P01-T022-R2-DUALWRITE"
+source_snapshot_hash: "sha256:46fa3983a85aa7ade2545b34abe205031983c42815a6ebdc62cb5ee3e14c8878"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-16T18:25:00+10:00"
+snapshot_event_time: "2026-07-16T18:55:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 81
+    precommit_pending_events: 82
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
