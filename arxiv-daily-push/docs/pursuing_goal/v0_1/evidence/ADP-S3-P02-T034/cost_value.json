@@ -1,0 +1,13 @@
+{
+  "task": "ADP-S3-P02-T034", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "the first real A0 official adapter: State Council policy documents + national laws/regulations from gov.cn parsed into the A0 template (original title, 发文字号, issuing organ, TYPED dates with 成文 written kept distinct from 发布 published, effectiveness status, attachments), replayable across 2016/2020/2024/current with a recoverable historical cursor -- the concrete first step of replacing Board-3 news noise with A0 official original text",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "adapter + era fixtures; the live gov.cn parse ran from the dev environment (not the worker), so 0 cloud cost. Wiring this adapter into the worker cron (later) makes each fetch a Worker subrequest counted against the DIR-007 free tier with a per-run cap."},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "adapter": {"sources": ["gov-cn-policy", "gov-cn-fagui"], "eras": ["2016", "2020", "2024", "current"], "date_types": ["written(成文)", "published(发布)"], "replayable": true, "cursor_recoverable": true},
+  "live_parse_smoke": [
+    {"doc": "content_5571847", "doc_number": "国办发〔2020〕50号", "written": "2020-12-07", "published": "2020-12-21", "distinct": true},
+    {"doc": "content_5382991", "doc_number": "国令第711号", "written": "2019-04-03", "published": "2019-04-15", "distinct": true},
+    {"doc": "content_5666340", "doc_number": "国办函〔2021〕132号", "written": "2021-12-22", "published": "2022-01-04", "distinct": true, "note": "cross-year written 2021 vs published 2022 -- exactly why date types must not be confused"}
+  ],
+  "acceptance": {"original_and_attachments_replayable": true, "date_types_not_confused": true, "historical_cursor_recoverable": true}
+}

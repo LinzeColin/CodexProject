@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260717-ADP-V01-S3-P01-T032-CONNECTOR-CONTRACT-HARNESS"
-source_snapshot_hash: "sha256:7c473e6510f771a2afffec5f7468204e59214d4541bba1f67b1c1ae1410d36f6"
+as_of_event_id: "EVENT-20260717-ADP-V01-S3-P01-T033-OFFICIAL-IDENTITY-A0"
+source_snapshot_hash: "sha256:902e40d33ae248d7f45bfc3bd5194dc8ae19f345bf77ebfd48d14f1d50a22d34"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-17T05:05:00+10:00"
+snapshot_event_time: "2026-07-17T05:45:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 92
+    precommit_pending_events: 93
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

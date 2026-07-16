@@ -1,0 +1,11 @@
+policy_2016.html: doc_number=国发〔2016〕18号 atts=0 replay==golden=True
+policy_2020.html: doc_number=国办发〔2020〕50号 atts=0 replay==golden=True
+policy_2024.html: doc_number=国办发〔2024〕12号 atts=1 replay==golden=True
+policy_current.html: doc_number=国发〔2026〕3号 atts=2 replay==golden=True
+date types not confused (written=成文, published=发布, doc_date=published): True
+
+discover (no cursor): 4 items -> ['2016-03-20', '2020-12-21', '2024-03-01', '2026-07-10']
+discover (cursor last_date=2020-12-21): 2 items -> ['2024-03-01', '2026-07-10']
+cursor advanced to latest: 2026-07-10
+
+ACCEPTANCE = PASS

@@ -1,0 +1,26 @@
+# ADP-S3-P02-T034 commands (first real A0 adapter; fixtures deterministic; live gov.cn parse separate)
+# base: main 0dbdb451 (T033, closes S3-P01)
+
+# real DOM confirmed: gov.cn policy page meta table <b>发文字号：</b></td> <td>国办发〔2020〕50号</td>
+#   ...<b>成文日期：</b> 2020年12月07日 ... <b>发布日期：</b> 2020年12月21日  (成文 != 发布)
+
+# 1) adapter + spec + era fixtures + golden authored
+#    tools/adapter_gov_policy.py   (GovCnPolicyConnector on the T031 SDK; parse_policy with TYPED dates;
+#                                   discover/cursor; verify via T033; build_registry policy + fagui)
+#    ADAPTER_GOV_POLICY_SPEC.md
+#    evidence/.../fixtures/{policy_2016,policy_2020,policy_2024,policy_current,listing}.html
+#    evidence/.../expected/{policy_2016,policy_2020,policy_2024,policy_current}.json (golden)
+
+# 2) acceptance test (fixtures, no network)
+python3 evidence/ADP-S3-P02-T034/test-results/t034_verify.py | tee evidence/ADP-S3-P02-T034/test-results/adapter_tests.txt
+# -> 4 eras: parse==golden, replay-identical, attachments 0/0/1/2 replayable
+# -> date types not confused (written=成文, published=发布, doc_date=published; never swapped/collapsed)
+# -> historical cursor: discover 4 items; cursor(2020-12-21) -> [2024-03-01, 2026-07-10]; advances to 2026-07-10
+# -> registry = gov-cn-policy + gov-cn-fagui ; ACCEPTANCE = PASS (exit 0)
+
+# 3) LIVE parse of real gov.cn docs via the adapter (Owner: real fetch)
+python3 <inline> -> evidence/ADP-S3-P02-T034/real_parse_smoke.json
+#   国办发〔2020〕50号 成文2020-12-07/发布2020-12-21 | 国令第711号 2019-04-03/2019-04-15 | 国办函〔2021〕132号 2021-12-22/2022-01-04 (跨年)
+
+# NOT_DEPLOYED: adapter not wired to worker/D1; live parse ran from dev env (0 cloud cost).
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

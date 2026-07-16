@@ -1,0 +1,42 @@
+{
+  "note": "LIVE point-in-time parse of real gov.cn policy docs via the adapter; not byte-reproducible.",
+  "fetched_at": "2026-07-16T15:51:19+10:00",
+  "docs": [
+    {
+      "url": "https://www.gov.cn/zhengce/content/2020-12/21/content_5571847.htm",
+      "title": "国务院办公厅关于印发《公共企事业单位信息公开规定制定办法》的通知",
+      "doc_number": "国办发〔2020〕50号",
+      "issuing_org": "国务院办公厅",
+      "dates": {
+        "written": "2020-12-07",
+        "published": "2020-12-21"
+      },
+      "date_types_distinct": true,
+      "attachments": 0
+    },
+    {
+      "url": "https://www.gov.cn/zhengce/content/2019-04/15/content_5382991.htm",
+      "title": "中华人民共和国政府信息公开条例",
+      "doc_number": "国令第711号",
+      "issuing_org": "国务院",
+      "dates": {
+        "written": "2019-04-03",
+        "published": "2019-04-15"
+      },
+      "date_types_distinct": true,
+      "attachments": 0
+    },
+    {
+      "url": "https://www.gov.cn/zhengce/content/2022-01/04/content_5666340.htm",
+      "title": "国务院办公厅转发司法部关于审理政府信息公开行政复议案件若干问题指导意见的通知",
+      "doc_number": "国办函〔2021〕132号",
+      "issuing_org": "国务院办公厅",
+      "dates": {
+        "written": "2021-12-22",
+        "published": "2022-01-04"
+      },
+      "date_types_distinct": true,
+      "attachments": 0
+    }
+  ]
+}
