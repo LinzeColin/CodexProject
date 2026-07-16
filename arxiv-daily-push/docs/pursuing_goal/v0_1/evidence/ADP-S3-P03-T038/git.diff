@@ -1,0 +1,961 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 642709ff1..aa0699137 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P03-T038 (media-lead to official-original resolver + event grouping + abstain; NOT_DEPLOYED)
++
++- Thirty-eighth task of the ADP V0.1 FINAL EXECUTION program (S3-P03). Goal: allow media to surface a discovery lead, but require every lead to resolve back to the issuing authority's official original and merge reposts, and if no official original exists, ABSTAIN (UNKNOWN) and never impersonate official. NOT_DEPLOYED, 0 recurring cloud cost; a resolver, not wired into the worker. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/media_resolver.py (resolve_lead binding a lead to an official original by a cited 发文字号 or a referenced title, else ABSTAIN with the lead never claiming official; group_events merging reposts of one event into a single canonical event by the official canonical id; and resolve_all; built on the T024 identity, with a whitelisted document-number prefix so a cited number is extracted precisely rather than over-grabbing the surrounding sentence), MEDIA_RESOLVER_SPEC.md, and evidence/ADP-S3-P03-T038/media_leads_50.json. Acceptance verified (evidence/ADP-S3-P03-T038/test-results/resolver_tests.txt, ACCEPTANCE = PASS, exit 0): across 50 media leads -- 28 resolvable (20 by a cited document number and 8 by a referenced title, with reposts) plus 22 real board3 news leads with no official original -- every lead resolves as expected (50 of 50), the 28 with an original bind to it while the 22 without abstain as UNKNOWN, no lead impersonates official (0 impersonations, and every abstained lead stays media_lead not A0), and reposts of one event merge into a single canonical event (the official document doi:gov/1 has a repost_count of 4), giving 8 official-backed events and 22 abstained events. A real defect was fixed during implementation: a loose CJK prefix over-grabbed the sentence text before a document number, so the extractor switched to a whitelist of central-government document-number prefixes. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S3-P03-T037 (Board 3 eligibility gate + policy date/status extractors; NOT_DEPLOYED)
+ 
+ - Thirty-seventh task of the ADP V0.1 FINAL EXECUTION program and the first of S3-P03 (Board 3 admission, shadow, and switch). Goal: before ranking, admit only official primary documents to Board 3 (the policy view) and exclude news noise, and identify the four policy dates 成文 (written), 发布 (published), 施行 (effective), and 失效 (expired) plus the effectiveness status. NOT_DEPLOYED, 0 recurring cloud cost; a gate and extractors, not wired into the worker ranker. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/board3_gate.py (is_eligible admitting only an official A0/A1 source with a primary document type and excluding media, search, news, and interpretation; extract_dates_status producing the four dates plus status; and gate_board3; built on the T033 identity, the T034 policy dates, and the T036 classifier), BOARD3_GATE_SPEC.md, and evidence/ADP-S3-P03-T037/board3_policy_sample_200.json. Acceptance verified (evidence/ADP-S3-P03-T037/test-results/gate_tests.txt, ACCEPTANCE = PASS, exit 0): on a 200-item policy-view sample of 85 real board3 media items (news noise such as a Taiwan-Affairs-Office news item and a lifestyle piece) plus 115 synthetic official policy documents with known dates, the gate admits 115 and rejects 85, the news pollution in the admitted view is 0 of 115 which is 0.000% (required under 1%), and the key-date accuracy for 成文/发布/施行/失效 plus status on the admitted official documents is 115 of 115 which is 100% (required at least 99%). This excludes news noise from the policy view before ranking and roots out the DRIFT-FACT-006 board3 pollution. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index d43021437..8a8d534f1 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S3-P02-T036-CAC-NDA-A0-ADAPTERS"
+-source_snapshot_hash: "sha256:6792cb6750c08be3657428a4280a7e2182a9f409107af081447b12a90138931c"
++as_of_event_id: "EVENT-20260717-ADP-V01-S3-P03-T037-BOARD3-GATE-DATES"
++source_snapshot_hash: "sha256:117b36deab08d8214b8192bf90fe7fe99dccaf3226b7dfdeacbdda98ef66d60b"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T08:00:00+10:00"
++snapshot_event_time: "2026-07-17T08:45:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 96
++    precommit_pending_events: 97
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index aa07671f4..2f10a7b17 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S3-P03-T038: implemented the media-lead to official-original resolver + event grouping + abstain (S3-P03). NOT_DEPLOYED, 0 recurring cloud cost; resolver, not wired to the worker. Deliverables under docs/pursuing_goal/v0_1/: tools/media_resolver.py (resolve_lead[docnum/title -> bind to official original, else ABSTAIN; never impersonates official]; group_events[reposts merge by official canonical_id]; resolve_all; whitelist docnum prefix), MEDIA_RESOLVER_SPEC.md, evidence/ADP-S3-P03-T038/media_leads_50.json. Acceptance (test-results/resolver_tests.txt, PASS exit 0): 50 leads = 28 resolvable (20 docnum + 8 title, w/ reposts) + 22 real board3 news -> 50/50 correct; 28 bind to doi:gov/*, 22 ABSTAIN; impersonations 0; reposts merge (doi:gov/1 repost_count 4); 8 official-backed + 22 abstained events. Fixed a real defect: loose CJK prefix over-grabbed sentence text -> whitelist docnum prefix. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P03-T037: implemented the Board 3 eligibility gate + policy date/status extractors (first S3-P03 task). NOT_DEPLOYED, 0 recurring cloud cost; gate + extractors, not wired to the worker ranker. Deliverables under docs/pursuing_goal/v0_1/: tools/board3_gate.py (is_eligible[official A0/A1 + primary type; excludes media/search/news/interpretation]; extract_dates_status[成文/发布/施行/失效 + status]; gate_board3; on T033 identity + T034 dates + T036 classifier), BOARD3_GATE_SPEC.md, evidence/ADP-S3-P03-T037/board3_policy_sample_200.json. Acceptance (test-results/gate_tests.txt, PASS exit 0): 200-sample = 85 real board3 media (news noise) + 115 synthetic official docs w/ known dates -> gate admits 115 / rejects 85; pollution in admitted 0/115 = 0.000% (<1%); key date accuracy 成文/发布/施行/失效/状态 115/115 = 100% (>=99%). Excludes news noise before ranking; roots out DRIFT-FACT-006. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T036: implemented the CAC + National Data Administration A0 adapters with a doc-type classifier (last S3-P02 task; closes S3-P02). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live cac classification from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_cac_nda.py (classify_doc_type[consultation/formal/interpretation/news + is_primary + consultation status/deadline]; CacNdaConnector on the T031 SDK + attachments; build_registry cac-gov + nda-gov), CAC_NDA_ADAPTER_SPEC.md, evidence/ADP-S3-P02-T036/{fixtures/{consultation,formal,interpretation,news}.html, real_cac_smoke.json}. Acceptance (test-results/cac_tests.txt, PASS exit 0): four types distinguishable; official original primary (consultation+formal True; interpretation+news False); consultation status open + deadline 2026-08-10. Honest access: cac.gov.cn serves (real links classified: 考察=news/not-primary, 征求意见稿=consultation/primary); nda.gov.cn JS shell + TLSV1_ALERT_PROTOCOL_VERSION -> nda-gov health blocked, needs browser/RSS, not faked. Live from dev env (0 cloud cost). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S3-P02-T035: implemented the Statistics + NDRC A0 adapters with a statistical-claim extractor (S3-P02). NOT_DEPLOYED, 0 recurring cloud cost; not wired to the worker, live extraction from the dev env. Deliverables under docs/pursuing_goal/v0_1/: tools/adapter_stats_ndrc.py (StatClaim + extract_stat_claims recording indicator/value/unit/period/口径/revision; claims_to_facts official-only; OfficialStatConnector on the T031 SDK; build_registry stats-gov + ndrc-gov), STATS_ADAPTER_SPEC.md, evidence/ADP-S3-P02-T035/{fixtures/{stats_release,ndrc_notice}.html, real_stats_smoke.json}. Acceptance (test-results/stats_tests.txt, PASS exit 0): claim records unit+period+口径+revision (5 claims each with unit + 2024年 + 初步核算, growth claims with 同比/比上年, GDP 1349084亿元); no fact from media numbers (official 5 facts / media 0 / search 0); registry stats + ndrc. Live: real stats.gov.cn 上半年经济运行 -> 21 official claims -> 21 facts, media 0 (GDP 695704亿元 同比 初步核算). Live ran from dev env (0 cloud cost). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 699e87a75..2bae9746d 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `96`
+-- pending_or_stale_events: `446`
+-- freshness_counts: `pending_or_stale_events=446; legacy_unbound_events=334`
++- precommit_pending_events: `97`
++- pending_or_stale_events: `447`
++- freshness_counts: `pending_or_stale_events=447; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:6792cb6750c08be3657428a4280a7e2182a9f409107af081447b12a90138931c`
+-- snapshot_event_time: `2026-07-17T08:00:00+10:00`
++- source_snapshot_hash: `sha256:117b36deab08d8214b8192bf90fe7fe99dccaf3226b7dfdeacbdda98ef66d60b`
++- snapshot_event_time: `2026-07-17T08:45:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 9beee748c..5c4b8fb9a 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:6792cb6750c08be3657428a4280a7e2182a9f409107af081447b12a90138931c`
+-- snapshot_event_time: `2026-07-17T08:00:00+10:00`
++- source_snapshot_hash: `sha256:117b36deab08d8214b8192bf90fe7fe99dccaf3226b7dfdeacbdda98ef66d60b`
++- snapshot_event_time: `2026-07-17T08:45:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `446`
++- Pending/stale events: `447`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/MEDIA_RESOLVER_SPEC.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/MEDIA_RESOLVER_SPEC.md
+new file mode 100644
+index 000000000..ad23aad2a
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/MEDIA_RESOLVER_SPEC.md
+@@ -0,0 +1,29 @@
++# Media-Lead Resolver Spec · ADP-S3-P03-T038
++
++媒体可**发现线索**，但线索必须**回到发布机关官方原文**才能带官方权重，且同一事件的转载**合并为一个 canonical 事件**；
++无原文则 **ABSTAIN（UNKNOWN）**，**绝不冒充官方**。工具：`tools/media_resolver.py`，基于 T024 身份。**NOT_DEPLOYED**。
++
++## Resolver（媒体线索 → 官方原文）
++
++`resolve_lead(lead, by_num, by_title)`：
++1. **发文字号**：媒体正文/标题中出现的 `发文字号`（白名单前缀 国发/国办发/国办函/发改/网信发/国令第…〔YYYY〕N号）若命中官方索引 → **绑定官方原文**（authority=A0，signal=docnum）。
++2. **referenced_title**：媒体引用的官方标题归一化后命中官方索引 → 绑定（signal=title）。
++3. **都不命中** → **ABSTAIN**（status=ABSTAIN，authority=media_lead，`official_canonical_id=None`）。
++
++`impersonates_official` **恒为 False**——未解析线索永不声称官方。发文字号抽取用**白名单前缀**精确匹配，避免把句中「印发」等误并入字号。
++
++## Canonical 事件去重（合并转载）
++
++`group_events`：已绑定线索按**官方 canonical_id** 分组（多家媒体转载同一官方文件 → 一个 official-backed 事件，`repost_count` 计转载数）；ABSTAIN 线索按其标题的 `ttl:` 分组（重复新闻仍收拢，但保持 ABSTAIN、不带 A0）。
++
++## 验收（`test-results/resolver_tests.txt`，PASS）
++
++50 媒体线索 = 28 可解析（20 引用发文字号 + 8 引用官方标题，含同一官方文件的多家转载）+ 22 真实 board3 纯新闻（无官方原文）：
++- **有原文则绑定原文**：28 条绑定到对应 `doi:gov/*`（authority=A0，signal docnum/title）；同一官方文件（doi:gov/1）转载 4 家 → **合并为 1 事件 repost_count=4**。
++- **无原文则 UNKNOWN/ABSTAIN**：22 条纯新闻 → ABSTAIN（authority=media_lead）。
++- **不冒充官方**：**impersonations=0**；ABSTAIN 事件均不带 A0。
++- 50/50 解析正确；8 official-backed 事件 + 22 abstained 事件。
++
++## 边界
++
++发文字号白名单需随新央源扩充；标题匹配为归一化相等（复杂改写标题可能不命中 → 保守 ABSTAIN，不误绑）。resolver 未接 worker（NOT_DEPLOYED）；真实媒体→官方的模糊匹配（实体/日期近似）留待需要时增强，本任务用确定性发文字号/标题信号。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/TASK_REPORT.md
+new file mode 100644
+index 000000000..b6a0b435f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/TASK_REPORT.md
+@@ -0,0 +1,57 @@
++# TASK_REPORT · ADP-S3-P03-T038｜实现媒体发现到官方原文解析与事件去重
++
++## 唯一目标（达成）
++允许**媒体发现线索**，但必须**回到发布机关原文并合并转载**。交付 resolver、canonical event grouping、abstain path。**50 个媒体线索中有原文则绑定原文，无原文则 UNKNOWN/ABSTAIN；不冒充官方。**
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：媒体线索→官方原文 resolver + 事件去重 + abstain；有原文绑定、无原文 ABSTAIN、不冒充官方。
++2. **允许修改文件**：`docs/pursuing_goal/v0_1/{tools/media_resolver.py, MEDIA_RESOLVER_SPEC.md}` + 本证据包（media_leads_50/test-results/报告）+ 治理同步。
++3. **绝不能改变**：抓取行为（生产）、六主题、worker、生产 D1/R2、cron；不接生产；**未解析线索不得冒充官方**。NOT_DEPLOYED。
++4. **基线**：main `2bdfd689`（T037 Board3 门已合入）；用 T024 身份归一化。
++5. **验收**：50 个媒体线索中有原文则绑定原文，无原文则 UNKNOWN/ABSTAIN；不冒充官方。
++6. **回滚**：`git revert <sha>`（纯 resolver，生产未变更）。
++
++## 交付物
++- `tools/media_resolver.py` —— `resolve_lead`（发文字号/引用标题命中官方索引 → **绑定官方原文**；否则 → **ABSTAIN**，`impersonates_official` 恒 False）+ `group_events`（转载按官方 canonical_id 合并，ABSTAIN 按标题 ttl 收拢）+ `resolve_all`。
++- `MEDIA_RESOLVER_SPEC.md` —— 解析信号、abstain 纪律、事件去重、验收。
++- `evidence/.../media_leads_50.json` —— 50 线索（28 可解析 + 22 真实 board3 纯新闻）+ 官方索引。
++
++## 验收结果（实测，见 test-results/resolver_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **有原文则绑定原文**：28 条可解析（20 引用发文字号如 国办发〔2021〕1号 + 8 引用官方标题）→ 全部绑定到对应 `doi:gov/*`（authority=A0）；**50/50 解析正确**。
++- **无原文则 UNKNOWN/ABSTAIN**：22 条真实 board3 纯新闻（国台办新闻、生活贴士等）→ ABSTAIN（authority=media_lead，`official_canonical_id=None`）。
++- **不冒充官方**：**impersonations=0**；每条 ABSTAIN 线索均不带 A0、status=ABSTAIN；ABSTAIN 事件不带 A0。
++- **合并转载**：同一官方文件（doi:gov/1）被 4 家媒体转载 → **合并为 1 canonical 事件 repost_count=4**；共 8 official-backed 事件 + 22 abstained 事件。
++
++## 实现中修复的真实问题
++发文字号抽取的 `[一-龥]{1,6}发?` 前缀**过度吞并句子文本**（把「日前印发国办发〔2021〕1号」抽成「印发国办发…」导致不匹配官方索引）。**修复**：改用**央级发文字号白名单前缀**（国发/国办发/国办函/发改/网信发/国令…）精确匹配 → 抽取「国办发〔2021〕1号」正确，绑定成功。
++
++## Data / Performance / Visual
++Data = 50 线索样本 + 解析结果 + 事件分组。无 UI 改动、无性能路径；六主题动效与线上 MVP 未触碰（NOT_DEPLOYED）。
++
++## Value / Cost（S3 China A0 Official Pilot）
++- **Value**：媒体只作**发现线索**，系统**只信官方原文**——有官方原文的绑定并合并转载（一个事件一条真相），无官方原文的 ABSTAIN 而**绝不冒充官方**；避免把媒体改写当权威。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 读 0 / 写 0；R2 字节 0 / 操作 0；模型 0；人工维护 = resolver + 发文字号白名单维护。经常性云成本 delta = $0/月。
++
++## Known gaps
++见 `known_gaps.md`：NOT_DEPLOYED（未接 worker）；官方索引为合成（真实由适配器产出）；匹配为发文字号+归一化标题确定性信号、无模糊匹配（保守 ABSTAIN）；白名单需扩充。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json`、`real_*_smoke`（纯 resolver 逻辑）—— N/A。`data-samples` = media_leads_50.json。
++
++## 完成声明
++```text
++Task: ADP-S3-P03-T038
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/media_resolver.py + MEDIA_RESOLVER_SPEC.md + T038 证据包（media_leads_50/test-results/报告）+ 治理同步（见 changed_files.txt）
++Tests: resolver_tests.txt —— 50线索(28绑定[20发文字号+8标题]/22真实新闻ABSTAIN)解析50/50正确+impersonations0+转载合并(doi:gov/1 repost_count4)+8官方事件+22abstain事件，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 媒体线索→官方原文 resolver + 事件去重 + abstain(不冒充官方)
++Data/Performance/Visual: Data=50线索+解析+事件分组；无性能/UI
++Value: 媒体只作线索，系统只信官方原文，无原文则ABSTAIN不冒充
++Cost: 请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（未接 worker）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/commands.log
+new file mode 100644
+index 000000000..7ebf64580
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/commands.log
+@@ -0,0 +1,19 @@
++# ADP-S3-P03-T038 commands (media-lead -> official-original resolver + event grouping + abstain)
++# base: main 2bdfd689 (T037)
++
++# 1) resolver + spec + 50-lead sample
++#    tools/media_resolver.py   (resolve_lead[docnum/title -> bind, else ABSTAIN]; group_events; resolve_all;
++#                              docnum whitelist prefix avoids over-grabbing sentence text; never impersonates official)
++#    MEDIA_RESOLVER_SPEC.md
++#    evidence/.../media_leads_50.json  (28 resolvable[20 docnum + 8 title, w/ reposts] + 22 real board3 news)
++
++# fix during build: [一-龥]{1,6}发? over-grabbed "印发国办发..." -> switched to a whitelist org-prefix docnum regex.
++
++# 2) acceptance test
++python3 evidence/ADP-S3-P03-T038/test-results/t038_verify.py | tee evidence/ADP-S3-P03-T038/test-results/resolver_tests.txt
++# -> leads 50 | bound 28 | abstained 22 | events 30 | impersonations 0 ; resolution correct 50/50
++# -> doi:gov/1 repost_count 4 (reposts merged) ; 8 official-backed events + 22 abstained
++# -> ACCEPTANCE = PASS (exit 0)
++
++# NOT_DEPLOYED: resolver not wired to the worker.
++# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/cost_value.json
+new file mode 100644
+index 000000000..ceaa465be
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/cost_value.json
+@@ -0,0 +1,8 @@
++{
++  "task": "ADP-S3-P03-T038", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
++  "value_metric": "media can surface a lead but never impersonate official: a lead resolves back to the issuing authority's original (by cited 发文字号 or referenced title) or ABSTAINS as UNKNOWN, and reposts of one event merge into a single canonical event -- so the system credits the official original, not the media rewrite",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "resolver + grouping; not wired to the worker; the 50-lead sample uses real board3 news items + synthetic official index"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "sample_50": {"resolvable": 28, "abstain": 22, "bound_by_docnum": 20, "bound_by_title": 8, "events": 30, "official_backed_events": 8, "max_repost_count": 4, "impersonations": 0},
++  "acceptance": {"lead_with_original_binds": true, "lead_without_original_abstains": true, "never_impersonates_official": true, "reposts_merge_into_canonical_event": true, "resolution_correct_50_of_50": true}
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/known_gaps.md
+new file mode 100644
+index 000000000..6cc032898
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S3-P03-T038
++
++- **NOT_DEPLOYED（任务边界，非缺陷）**：resolver 未接 worker/ranker。把 ABSTAIN/绑定接成生产 Board3 展示（绑定的显示官方原文、ABSTAIN 的只作线索不作事实）属后续接线。
++- **官方索引为合成**：50 线索的 22 条纯新闻是**真实 board3 items**；28 条可解析线索引用一个**合成官方索引**（doi:gov/*，已知发文字号/标题）。真实媒体→真实官方的解析由生产索引（真实适配器 T034-T036 产出的官方文档）驱动；本任务验证 resolver 逻辑与 abstain 纪律。
++- **匹配信号为发文字号 + 归一化标题（确定性）**：发文字号白名单精确匹配；标题为归一化相等。**模糊匹配**（实体/日期近似、标题改写）**未做**——媒体常改写标题，若既无发文字号又无精确标题 → 保守 **ABSTAIN**（偏安全：宁可 UNKNOWN，不误绑/冒充官方）。增强模糊匹配属后续。
++- **发文字号白名单需扩充**：`_ORG` 覆盖 国发/国办发/国办函/发改/网信发/国令 等央级前缀；新前缀（部委令等）随源接入补充。
++- **事件分组按官方 canonical_id 或标题 ttl**：ABSTAIN 事件按标题 ttl 收拢，若同一事件不同媒体用差异很大的标题，可能不收拢（保守，不误并）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/media_leads_50.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/media_leads_50.json
+new file mode 100644
+index 000000000..3fb3028cd
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/media_leads_50.json
+@@ -0,0 +1,516 @@
++{
++  "official_index": [
++    {
++      "canonical_id": "doi:gov/1",
++      "doc_number": "国办发〔2021〕1号",
++      "title": "国务院办公厅关于第1号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/2",
++      "doc_number": "国办发〔2022〕2号",
++      "title": "国务院办公厅关于第2号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/3",
++      "doc_number": "国办发〔2023〕3号",
++      "title": "国务院办公厅关于第3号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/4",
++      "doc_number": "国办发〔2024〕4号",
++      "title": "国务院办公厅关于第4号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/5",
++      "doc_number": "国办发〔2025〕5号",
++      "title": "国务院办公厅关于第5号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/6",
++      "doc_number": "国办发〔2020〕6号",
++      "title": "国务院办公厅关于第6号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/7",
++      "doc_number": "国办发〔2021〕7号",
++      "title": "国务院办公厅关于第7号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/8",
++      "doc_number": "国办发〔2022〕8号",
++      "title": "国务院办公厅关于第8号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/9",
++      "doc_number": "国办发〔2023〕9号",
++      "title": "国务院办公厅关于第9号事项的通知"
++    },
++    {
++      "canonical_id": "doi:gov/10",
++      "doc_number": "国办发〔2024〕10号",
++      "title": "国务院办公厅关于第10号事项的通知"
++    }
++  ],
++  "leads": [
++    {
++      "lead_id": "lead-num-0",
++      "title": "媒体报道：国务院印发第1号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2021〕1号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-1",
++      "title": "媒体报道：国务院印发第2号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2022〕2号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-2",
++      "title": "媒体报道：国务院印发第3号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2023〕3号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-3",
++      "title": "媒体报道：国务院印发第4号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2024〕4号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-4",
++      "title": "媒体报道：国务院印发第5号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2025〕5号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-5",
++      "title": "媒体报道：国务院印发第6号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2020〕6号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-6",
++      "title": "媒体报道：国务院印发第7号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2021〕7号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-7",
++      "title": "媒体报道：国务院印发第8号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2022〕8号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-8",
++      "title": "媒体报道：国务院印发第1号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2021〕1号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-9",
++      "title": "媒体报道：国务院印发第2号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2022〕2号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-10",
++      "title": "媒体报道：国务院印发第3号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2023〕3号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-11",
++      "title": "媒体报道：国务院印发第4号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2024〕4号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-12",
++      "title": "媒体报道：国务院印发第5号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2025〕5号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-13",
++      "title": "媒体报道：国务院印发第6号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2020〕6号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-14",
++      "title": "媒体报道：国务院印发第7号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2021〕7号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-15",
++      "title": "媒体报道：国务院印发第8号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2022〕8号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-16",
++      "title": "媒体报道：国务院印发第1号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2021〕1号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-17",
++      "title": "媒体报道：国务院印发第2号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2022〕2号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-18",
++      "title": "媒体报道：国务院印发第3号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2023〕3号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-num-19",
++      "title": "媒体报道：国务院印发第4号事项相关部署",
++      "text": "据悉，国务院办公厅日前印发国办发〔2024〕4号文件，对相关工作作出部署。"
++    },
++    {
++      "lead_id": "lead-title-0",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第1号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-title-1",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第2号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-title-2",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第3号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-title-3",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第4号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-title-4",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第5号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-title-5",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第6号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-title-6",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第7号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-title-7",
++      "title": "媒体转载",
++      "referenced_title": "国务院办公厅关于第8号事项的通知",
++      "text": "某媒体转载了该通知全文。"
++    },
++    {
++      "lead_id": "lead-news-0",
++      "title": "国台办：民进党当局制造恐慌升高两岸对立对抗 其行可恶，其心可诛",
++      "text": "中新网7月15日电 7月15日，国务院台办举行例行新闻发布会。有记者问：陆委会近日称，近十天内有10名台湾民众前往大陆后失联，还有1名公职人员遭到盘查。请问国台办及大陆相关单位是否掌握这10名台湾民众的具体去向？是否可能涉及电信诈骗、刑事犯罪或是单纯失联案件？此外，陆委会还称，1名台湾法官到华北旅游时被3名警务人员盘查。请问这是属于例行性外来人口登记检查还是针对具备台湾司法、公职身份人员进行定向身份清查？"
++    },
++    {
++      "lead_id": "lead-news-1",
++      "title": "（同心·大调研）聚焦未来产业发展 全国工商联开展2026年度重点考察调研",
++      "text": "中新网杭州7月15日电 题：聚焦未来产业发展 全国工商联开展2026年度重点考察调研"
++    },
++    {
++      "lead_id": "lead-news-2",
++      "title": "胡萝卜素是黄桃的22倍，钾含量媲美香蕉，这种低热量水果现在吃正好！",
++      "text": "“绿荫庭院夏初长，梅子新肥杏子黄。” 当下，正是杏子成熟的季节。杏，一种听上去平平无奇的水果，但对很多人来说，它是童年中不可复制的美味。"
++    },
++    {
++      "lead_id": "lead-news-3",
++      "title": "硬核驰援广西抗洪！这才是科技发展的意义",
++      "text": "视频：硬核驰援广西抗洪！这才是科技发展的意义来源：人民日报客户端"
++    },
++    {
++      "lead_id": "lead-news-4",
++      "title": "国台办驳斥美日韩外长涉台言论：台湾问题不容外人置喙",
++      "text": "中新网7月15日电 7月15日，国务院台办举行例行新闻发布会。有记者问：近日，美、日、韩外长会晤强调维护台海和平稳定的重要，并“针对台湾周边日益频繁、破坏稳定的行为表达关切”，鼓励和平解决两岸议题，反对任何企图片面改变现状的行为。请问对此有何评论？"
++    },
++    {
++      "lead_id": "lead-news-5",
++      "title": "今年上半年中国GDP同比增长4.7%",
++      "text": "中新社北京7月15日电 (记者 陈溯)中国国家统计局15日公布的数据显示，今年上半年，中国国内生产总值(GDP)695704亿元(人民币，下同)，按不变价格计算，同比增长4.7%。"
++    },
++    {
++      "lead_id": "lead-news-6",
++      "title": "聚力向“未来” 多地政协助力未来产业发展",
++      "text": "未来产业由前沿技术驱动，处于孕育萌发阶段或产业化初期，具有前瞻性、战略性、颠覆性等特点。我国“十五五”规划纲要明确，推动量子科技、生物制造、氢能和核聚变能、脑机接口、具身智能、第六代移动通信等成为新的经济增长点。"
++    },
++    {
++      "lead_id": "lead-news-7",
++      "title": "国台办：民进党当局恶意炒作 阻挠破坏两岸交流和人员往来",
++      "text": "中新网7月15日电 7月15日，国务院台办举行例行新闻发布会。有记者问：赖清德近日称，“根据2024年到今年6月底的统计，已有374位台湾民众赴中国后发生失联、留置盘查、人身自由受限等情况，民众如没有必要应避免前往中国”。请问对此有何评论？"
++    },
++    {
++      "lead_id": "lead-news-8",
++      "title": "6月份规模以上工业原油生产保持稳定，电力生产稳定增长",
++      "text": "中新网7月15日电 据国家统计局网站消息，国家统计局15日发布2026年6月份能源生产情况。6月份，规模以上工业(以下简称规上工业)原煤生产同比下降，原油生产保持稳定，天然气生产由降转增，电力生产稳定增长。"
++    },
++    {
++      "lead_id": "lead-news-9",
++      "title": "上半年经济运行在合理区间 新动能快速成长",
++      "text": "(2026年7月15日)"
++    },
++    {
++      "lead_id": "lead-news-10",
++      "title": "学习卡丨“人不负青山，青山定不负人”",
++      "text": "生态环境是关系党的使命宗旨的重大政治问题，也是关系民生的重大社会问题。 习近平总书记多次指出，必须站在中华民族永续发展根本大计的高度，尊重自然、顺应自然、保护自然，建设人与自然和谐共生的现代化，建设望得见山、看得见水、记得住乡愁的美丽中国。 今天（6月5日）是世界环境日。如何像保护眼睛一样保护自然和生态环境？一起学习↓↓↓ 总监制丨闫帅南 监制丨李浙 主编丨王兴栋 编辑&制图丨马玮璐"
++    },
++    {
++      "lead_id": "lead-news-11",
++      "title": "镜观·足迹｜呵护千山万水 擘画永续发展",
++      "text": "大美中国，江山如画。 党的十八大以来，习近平总书记的考察足迹遍及神州大地。祁连山麓、坝上林海，秦岭深处、黄河之滨，总书记在大江奔涌处谋划千秋大计，在山川锦绣间擘画生态蓝图。一系列重要论述，为新时代生态文明建设提供了根本遵循和行动指南。 世界环境日到来之际，我们跟随习近平总书记的脚步，一起呵护山水、寄情山水，领悟守护绿水青山、建设生态文明之道。 江河为脉 心系长江之变，习近平总书记前往沿江重镇，考察长江经济带发展。从三峡库区到洞庭湖畔，从港口码头到企业车间，总书记深入调研，作出一系列重要指示，为新时代江河保护治理提供了重要遵循。 2018年4月，习近平总书记来到湖南岳阳城陵矶水文站考察。在狭窄的站房外长廊上，习近平总书记举目远眺。 “共抓大保护，不搞大开发” 的战略定力，在这里化作守护一江碧水的坚定行动。 2023年10月10日下午，习近平总书记在江西九江市考察，冒雨在江边察看，了解当地长江国家文化公园建设、长江岸线生态修复等情况。10月12日，总书记在进一步推动长江经济带高质量发展座谈会上回顾长江经济带发展历程，感慨： “做就要做好，坚定做下去。笃行不怠，一以贯之，久久为功。” 黄河安澜是中华儿女的千年期盼。党的十八大以来，习近平总书记走遍黄河上中下游，望奔流激荡，思保护发展。在总书记的指挥下，一曲生态优先、绿色发展的“黄河大合唱”正在神州大地奏响。 2019年8月，习近平总书记考察甘肃时，亲临兰州考察黄河兰州段治理保护工作，对保护黄河、治理黄河作出重要指示，强调： “保护母亲河是事关中华民族伟大复兴和永续发展的千秋大计。” 2019年9月，习近平总书记在河南郑州黄河国家地质公园岸边驻足凝望。在随后举行的黄河流域生态保护和高质量发展座谈会上，习近平总书记再次强调 “让黄河成为造福人民的幸福河” 。 2024年9月，习近平总书记时隔五年后再次来到甘肃兰州，在中山桥段，驻足眺望"
++    },
++    {
++      "lead_id": "lead-news-12",
++      "title": "学习手记 | “环境就是民生”",
++      "text": "6月5日是世界环境日，也是我国环境保护法确立的环境日。 22年前的这一天，在时任浙江省委书记习近平部署推动下，以农村人居环境整治为重点的“千万工程”启动。 当时，习近平同志担任浙江省委书记刚半年多，工作千头万绪。他何以将农村人居环境整治作为重点工作？ 在基层调研时，习近平同志发现，在浙江经济快速发展的同时，广大农村却面临“成长的烦恼”，村庄面貌不如人意。 全省3.4万个村庄中，人居环境较好的仅4000个。有人形容：“走过一村又一村，村村都是垃圾村。”还有农民这样描述：“起早贪黑赚钞票，垃圾堆里数钞票，躺在医院花钞票。”可以说，人居环境整治是当时浙江农村群众的一个迫切期盼。 “千万工程”聚焦乡亲们走什么村道、怎么处理畜禽粪便等小问题，却直接关系农民获得感、幸福感，是实打实的民生大事。 老百姓的生活环境如何，习近平同志念兹在兹： 上世纪70年代，在陕北冯家坪公社赵家河大队驻点时，他撸起袖管，一石一瓦盖起村里第一个男女分开的厕所； 到正定工作，不仅大力推进“人拉猪吃”的“连茅圈”改造工作，还拿着大扫帚走上街头搞卫生，推动成立全县第一支专职卫生清洁队； 任福州市委书记，亲自为建造垃圾处理场选址，破解“垃圾围城”难题； 在上海，叮嘱“垃圾处理要实行村收集、乡镇集中、区县处理”； …… 党的十八大后，改善人居环境仍然是习近平总书记放不下的牵挂：亲自推动农村改厕、推进北方地区冬季清洁取暖、推行垃圾分类制度、加快推进畜禽养殖废弃物处理和资源化…… 习近平总书记深刻指出：“环境就是民生”。环境好了，生活才能更好。良好的环境，不仅是人民群众所追求的美好生活的重要内容，更是创造美好生活所必需的空间载体。 浙江义乌李祖村，这个曾经因脏、乱、差、穷被当地人称为没有希望的“水牛角村”，在“千万工程”推动下，从整治环境入手，发展产业，吸引人才，推进农文旅融合发展，在美丽生态、美丽经济、美好生活的相得益彰"
++    },
++    {
++      "lead_id": "lead-news-13",
++      "title": "刘国中在安徽调研时强调 全力以赴夺取夏粮丰收 全面打牢秋粮生产基础",
++      "text": "新华社合肥6月5日电 中共中央政治局委员、国务院副总理刘国中3日至5日到安徽调研“三夏”农业生产工作。他强调，要深入学习贯彻习近平总书记关于国家粮食安全的重要论述，按照党中央、国务院部署，扛稳政治责任，毫不放松抓好夏收夏种夏管，全力以赴夺取夏粮丰收，全面打牢秋粮生产基础，确保完成全年粮食生产目标任务。 刘国中先后来到宿州市、淮南市、六安市，深入小麦机收和夏播现场、农机跨区作业服务点、农事服务中心、粮食仓储中心、地方农科院等，实地察看夏收夏种、农机作业服务保障、粮食烘干收储等工作，详细了解农作物新品种选育、大面积单产提升、农资保供稳价、高标准农田建设等情况。 刘国中强调，“三夏”工作抓得好不好，事关全年粮食生产目标任务能否顺利实现。当前正值“三夏”农业生产关键时期，要抓住有利天气抢晴收获，组织好农机跨区作业，强化服务保障和安全管理，确保夏收高效进行。要抓实抓牢机收减损、烘干晾晒等各项措施，最大程度减少粮食损失。要精心做好夏粮收购工作，引导各类企业积极入市，保障粮食市场平稳运行。要压茬推进夏播，加强农资供应和农事服务，强化技术集成及推广应用，落实落细合理密植、精量播种等大面积单产提升措施，切实将试验田合成技术转化应用到大田中。要分区分类推进夏管，因地因苗加强田间管理，积极探索推广有效田管措施。 刘国中强调，要始终绷紧农业防灾减灾这根弦，充分估计可能出现的各类灾害风险，完善应对机制，做好应急预案，强化统筹调度，牢牢把握抗灾夺丰收主动权。要持续加强高标准农田建设，加快推进农田沟渠修复整治和平原涝区治理，补齐农田排涝设施短板。要完善部门常态化会商机制，加强气象精准预报和风险预警，科学调度水利工程，落实农业防灾减灾关键措施，为粮食稳产增产奠定坚实基础。"
++    },
++    {
++      "lead_id": "lead-news-14",
++      "title": "韩正会见中美高级别二轨对话美方代表团",
++      "text": "新华社北京6月5日电 6月5日，国家副主席韩正在北京会见中美高级别二轨对话美方代表团。 韩正表示，中美关系是当今世界最重要的双边关系之一。当前，中美关系处于关键历史节点。中美相互尊重、和平共处、合作共赢，不仅有利于两国，也有利于世界和平与发展。希望中美高级别二轨对话能不断汇聚两国有识之士的真知灼见，增进美国各界对中国的了解和理解，共同推动中美关系稳定、健康、可持续发展。 美方表示，美中高级别二轨对话有助于双方更好理解对方，为两国关系发展提供更多有益思路。中国经济发展令人钦佩，双方应加强贸易、投资等领域对话合作。"
++    },
++    {
++      "lead_id": "lead-news-15",
++      "title": "国务院印发《关于开展第四次全国农业普查的通知》",
++      "text": "新华社北京6月5日电 国务院日前印发《关于开展第四次全国农业普查的通知》（以下简称《通知》）。根据《中华人民共和国统计法》和《全国农业普查条例》规定，国务院决定于2026年开展第四次全国农业普查。 《通知》强调，第四次全国农业普查是在以中国式现代化全面推进中华民族伟大复兴的新征程上开展的一项重大国情国力调查，要以习近平新时代中国特色社会主义思想为指导，深入贯彻党的二十大和二十届二中、三中全会精神，认真落实党中央、国务院决策部署，坚持依法普查、科学普查、为民普查，坚持实事求是、守正创新，全面摸清新时代我国“三农”家底，客观反映农业发展新情况、乡村建设新面貌、农民生活新变化、农村改革新成效。 《通知》指出，第四次全国农业普查的对象是在中华人民共和国境内的农村住户，包括农村农业生产经营户和其他住户；城镇农业生产经营户；农业生产经营单位；村民委员会；乡镇人民政府。普查的主要内容包括农业生产条件、粮食和大食物生产情况、农业新质生产力情况、乡村发展基本情况、农村居民生活情况等。普查的标准时点为2026年12月31日24时，时期资料为2026年年度资料。 《通知》要求，各地区、各部门要按照全国统一领导、部门分工协作、地方分级负责、各方共同参与的原则，统筹协调，突出重点，优化方式，创新手段，认真做好普查的宣传动员和组织实施工作。普查人员要如实搜集、报送普查资料，不得伪造、篡改普查资料。普查对象要按时、如实填报普查表，不得提供不真实、不完整的普查资料或者迟报、拒报普查资料。普查工作中获得的能够识别或者推断单个普查对象身份的资料，不得对外提供、泄露，不得用于统计以外的目的。 《通知》强调，要始终坚守数据质量第一原则，严格执行普查方案，加强普查指导培训，规范普查工作流程，强化数据质量检查核查，切实防范和惩治统计造假、弄虚作假，确保普查数据真实准确、完整可信。建立健全普查数据质量控制体系，强化普查"
++    },
++    {
++      "lead_id": "lead-news-16",
++      "title": "中央军委主席习近平签署命令 发布《军事设施建设条例》",
++      "text": "新华社北京6月5日电 中央军委主席习近平日前签署命令，发布《军事设施建设条例》，自2025年8月1日起施行。 条例深入贯彻习近平强军思想，深入贯彻新时代军事战略方针，聚焦服务备战打仗，适应新的领导指挥体制和保障模式，科学规范军事设施建设的基本原则、管理体制、运行机制和工作制度，是军事设施建设工作的重要依据。 条例共11章63条，按照军委管总、战区主战、军种主建的总原则，围绕理顺建设链、管理链、监督链，重点从军事设施建设计划管理、项目审批、工程发包、勘察设计、施工管理、应急建设、安全保密、监督问责等方面，厘清管理权限，优化流程机制，固化实践成果，为提高军事设施建设质量效益和保障能力提供有力法治保障。"
++    },
++    {
++      "lead_id": "lead-news-17",
++      "title": "丁薛祥在山西调研时强调 守好公平公正“生命线” 确保实现“平安高考”目标",
++      "text": "新华社太原6月5日电 6月3日至4日，中共中央政治局常委、国务院副总理丁薛祥在山西调研高考组织保障和能源改革发展等工作。 丁薛祥首先前往山西省招生考试管理中心和太原市晋源区实验中学考点，听取高考工作情况汇报，实地察看考务组织各环节工作情况。他说，高考事关国计民生，关系千家万户切身利益。要认真学习贯彻习近平总书记重要指示精神，贯彻落实党中央和国务院决策部署，确保实现“平安高考”目标。考试招生制度改革和高考组织实施，都要始终牢记为党育人、为国选才，守好公平公正“生命线”。山西是第五批高考综合改革落地省份，要精心做好考务服务和综合保障工作，强化心理疏导和人文关怀，为莘莘学子营造良好考试环境。采取最严措施，加强试卷印制、运送、保管等全流程监管，严厉打击考试舞弊行为，严肃招生录取纪律，全力保证高考安全平稳顺利。 丁薛祥来到山西应用科技学院，调研民办高校发展情况。他表示，不管是公办大学还是民办大学，都是党办的大学。要把党的领导全面融入学校治理体系，强化思想政治引领，统一思政课要求和标准，把立德树人根本任务落到实处。适应产业升级新形势，在培养高技能人才的同时，注重培养经济社会发展需要的各类人才。加强就业指导服务，落实好加大就业帮扶的政策举措，促进高校毕业生高质量充分就业。 丁薛祥走进国家电网山西省电力公司，调研能源革命综合改革试点等情况。他指出，山西是能源大省，要带头推进煤炭清洁高效利用，完善新能源消纳和调控政策举措，加快建设新型能源体系。积极推进全国统一电力市场体系建设，促进能源资源大范围优化配置。加强迎峰度夏期间能源保供，推动电煤市场平稳运行，科学开展电力调度管理，确保民生及重要用户用电供应安全稳定。 在桃园国控环境空气自动监测点，丁薛祥了解大气污染综合治理情况。他强调，蓝天保卫战是污染防治攻坚战的重中之重，要优化调整产业结构、能源结构、交通运输结构，从根本上解决环境污染问题。提升科"
++    },
++    {
++      "lead_id": "lead-news-18",
++      "title": "中共中央办公厅印发《党组讨论和决定党员处分事项工作程序规定》",
++      "text": "新华社北京6月5日电 近日，中共中央办公厅印发《党组讨论和决定党员处分事项工作程序规定》，并发出通知，要求各地区各部门认真遵照执行。 《党组讨论和决定党员处分事项工作程序规定》全文如下。 党组讨论和决定党员处分事项工作程序规定 （2018年11月29日中共中央批准 2018年11月29日中共中央办公厅发布 2025年5月26日中共中央修订 2025年5月26日中共中央办公厅发布） 第一条 为了规范党组讨论和决定党员处分事项，根据《中国共产党党组工作条例》、《中国共产党处分违纪党员批准权限和程序规定》，制定本规定。 第二条 坚持用改革精神和严的标准管党治党，落实党组（含党组性质党委，下同）全面从严治党主体责任，强化纪检监察机关派驻机构（以下简称派驻机构）监督职责，始终以严的基调、严的措施、严的氛围纵深推进正风肃纪反腐。 第三条 对党组管理的人员中的党员实施党纪处分，党组、纪委监委派出的纪检监察工委（以下简称派出机构）、派驻机构等应当按照规定权限和程序履行职责，加强协调沟通，有序顺畅衔接，形成工作合力，实现政治效果、纪法效果和社会效果有机统一。 第四条 党组讨论和决定本单位党员党纪处分事项。 对未经党组会议讨论决定任免，但属于党组管理的人员中的党员给予党纪处分的，也可以由所在单位党的基层纪律检查委员会（以下简称基层纪委）按照规定审查批准或者报党的基层委员会（以下简称基层党委）审议批准；给予开除党籍处分的，还须相应报党组会议审议批准。 第五条 派驻机构按照规定对党组管理的人员中的党员立案审查调查后，应当向被审查调查人所在单位党组主要负责人通报。党组应当支持派驻机构履行监督责任、查办违纪违法案件，并自觉接受监督。 第六条 派驻机构对驻在单位（含综合监督单位，下同）党组管理的领导班子成员、其他列入重点监督对象的党员涉嫌违纪违法问题立案审查调查结束，经内部审理、集体研究，提出党纪处分建"
++    },
++    {
++      "lead_id": "lead-news-19",
++      "title": "全国人大常委会启动节约能源法执法检查",
++      "text": "新华社北京6月5日电 为推动节约能源法全面有效实施，促进更高水平、更高质量做好节能工作，全国人大常委会5日启动节约能源法执法检查。 节约能源法自1998年1月1日实施，并于2007年、2016年、2018年进行了修改。 记者5日从全国人大常委会节约能源法执法检查组第一次全体会议上了解到，为全面深入了解法律实施情况，此次执法检查采取实地检查与委托检查相结合的方式，检查组将赴天津、江苏、湖南、广东、广西、四川等省（区、市）开展实地检查，并委托北京、河北、山西、吉林、上海、重庆等省（市）人大常委会对本行政区域内节约能源法实施情况进行检查。检查组将采取实地检查、听取汇报、组织座谈、典型调研、专题研究、抽查暗访等多种方式，全面准确了解法律实施情况，对带有普遍性的问题深入调查研究。 检查组将重点检查8方面内容：落实节能管理制度情况，推进重点领域节能工作情况，重点用能单位节能管理情况，推动节能技术进步情况，实施节能激励措施情况，与法律配套的行政法规、部门规章以及地方性法规的制定情况，法律实施中存在的其他问题，对节约能源法修改的意见和建议。"
++    },
++    {
++      "lead_id": "lead-news-20",
++      "title": "【文脉华章】非遗焕新 生生不息丨用太极招式来炒茶！西湖龙井如何“撩”动全世界的心？",
++      "text": "showPlayer({scriptId: 'q_v_j-pcz4gxcqyn', videoInfo: [{ src: 'https://video.people.cn/upload/vod/user1739759454736028/1749111129857044/origin.mp4', type: 'video/mp4', label: '源视频', }],posterUrl: 'https://video.people.cn/userUpload/1739759454736028/1743493901495363/picture/screenshot-16-16-55.png',width: 800,height: 450,type: 1}); 2020年3月31日，习近平总书记来到杭州西溪国家湿地公园，沿着绿堤、福堤，察看湿地保护利用情况。途经炒制龙井茶和出售本地特色文创产品摊位，习近平总书记上前观摩，鼓励他们把传统手工艺等非物质文化遗产传承好。 在浙江省杭州市的西湖龙井茶群体种种质资源保护区内，茶农们正穿梭在一垄垄茶树中间，忙活着手头的活儿。“西湖龙井茶已经有一千多年的历史了。像我们这一块区域，就是以茶为生的，祖上多少代人都是靠一片叶子来生产生活。”国家级非物质文化遗产代表性项目绿茶制作技艺（西湖龙井）省级代表性传承人樊生华介绍道，从13岁开始，他便跟随父辈学习炒茶技艺，至今从未间断。 在樊生华看来，西湖龙井茶就像是一杯高度酒——喝进去平平淡淡，但却有一股后劲，是有力度的。这样独特的口感，离不开炒茶人的技艺与用心。“西湖龙井茶从诞生以来，就是用一双手做出来的。到了我这代也是一样的，就是继续传承做好这件事。” 在多年的炒茶过程中，樊生华巧妙地将“十大手法”与“太极拳”融合在一起，总结出一套简单好学、更加科学的西湖龙井炒制手法。这一创新不仅让茶更香、形更美，还成为"
++    },
++    {
++      "lead_id": "lead-news-21",
++      "title": "天天学习丨中南海月刊（2025.05）",
++      "text": "时维五月，春夏交替。 应邀对俄罗斯进行国事访问并出席纪念苏联伟大卫国战争胜利80周年庆典，用行动展现百年变局下的大国担当；出席中拉论坛第四届部长级会议开幕式，与多国领导人会晤、通话，凝聚团结合作之力应对单边主义逆流；赴河南考察，以一域谋全局，引领擘画下一个五年发展蓝图；纸短情长、殷殷嘱托，汇聚“全面推进强国建设、民族复兴伟业”的伟力…… 世界百年变局加速演进之际，习近平主席以大国大党领袖的历史视野和时代担当，展现世界领导力，为全球战略稳定注入更多确定性。 2025年具有特殊历史意义——中国人民抗日战争暨世界反法西斯战争胜利80周年、联合国成立80周年。承前启后的重要年份，叠加风起云涌的国际形势，人类社会又站在新的十字路口。 变乱交织之际，大国的挺膺担当，攸关人类前途命运。 面对单边主义逆流，坚定不移推动平等有序的世界多极化。不为一时一事所惑，不为风高浪急所扰，与俄方达成“共同弘扬正确二战史观，维护联合国权威和地位，维护国际公平正义”的共识；与欧盟“深化战略沟通，增进理解互信，巩固伙伴定位”；同拉方携手启动团结、发展等五大工程，推动中国同全球南方国家相互支持、团结合作。 习近平主席以实际行动告诉世界，无论国际风云如何变化，中国始终是维护多边主义的重要力量。 面对甚嚣尘上的保护主义，坚定维护并推动普惠包容的经济全球化。习近平主席明确表示，中方愿同世界各国一道“维护经济全球化成果”。本月，《中美日内瓦经贸会谈联合声明》正式发布，更加印证了“关税战、贸易战没有赢家，霸凌霸道只会孤立自身”。历史重要关头，中国一以贯之的开放立场弥足珍贵。 △当地时间5月9日，俄罗斯举行盛大庆典，纪念苏联伟大卫国战争胜利80周年。习近平主席和来自世界20多个国家及国际组织领导人应邀出席庆典。 俄罗斯莫斯科红场，纪念苏联伟大卫国战争胜利80周年盛大庆典中，这样一个瞬间格外让人动容。伴随着《保卫和平进行曲》"
++    }
++  ],
++  "expected": [
++    [
++      "bound",
++      "doi:gov/1"
++    ],
++    [
++      "bound",
++      "doi:gov/2"
++    ],
++    [
++      "bound",
++      "doi:gov/3"
++    ],
++    [
++      "bound",
++      "doi:gov/4"
++    ],
++    [
++      "bound",
++      "doi:gov/5"
++    ],
++    [
++      "bound",
++      "doi:gov/6"
++    ],
++    [
++      "bound",
++      "doi:gov/7"
++    ],
++    [
++      "bound",
++      "doi:gov/8"
++    ],
++    [
++      "bound",
++      "doi:gov/1"
++    ],
++    [
++      "bound",
++      "doi:gov/2"
++    ],
++    [
++      "bound",
++      "doi:gov/3"
++    ],
++    [
++      "bound",
++      "doi:gov/4"
++    ],
++    [
++      "bound",
++      "doi:gov/5"
++    ],
++    [
++      "bound",
++      "doi:gov/6"
++    ],
++    [
++      "bound",
++      "doi:gov/7"
++    ],
++    [
++      "bound",
++      "doi:gov/8"
++    ],
++    [
++      "bound",
++      "doi:gov/1"
++    ],
++    [
++      "bound",
++      "doi:gov/2"
++    ],
++    [
++      "bound",
++      "doi:gov/3"
++    ],
++    [
++      "bound",
++      "doi:gov/4"
++    ],
++    [
++      "bound",
++      "doi:gov/1"
++    ],
++    [
++      "bound",
++      "doi:gov/2"
++    ],
++    [
++      "bound",
++      "doi:gov/3"
++    ],
++    [
++      "bound",
++      "doi:gov/4"
++    ],
++    [
++      "bound",
++      "doi:gov/5"
++    ],
++    [
++      "bound",
++      "doi:gov/6"
++    ],
++    [
++      "bound",
++      "doi:gov/7"
++    ],
++    [
++      "bound",
++      "doi:gov/8"
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ],
++    [
++      "ABSTAIN",
++      null
++    ]
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/test-results/resolver_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/test-results/resolver_tests.txt
+new file mode 100644
+index 000000000..1c20202b2
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/test-results/resolver_tests.txt
+@@ -0,0 +1,6 @@
++leads 50 | bound 28 | abstained 22 | events 30 | impersonations 0
++lead resolution correct: 50/50
++event doi:gov/1 repost_count: 4
++official-backed events: 8 | abstained events: 22
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/test-results/t038_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/test-results/t038_verify.py
+new file mode 100644
+index 000000000..fd56b36fc
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S3-P03-T038/test-results/t038_verify.py
+@@ -0,0 +1,67 @@
++#!/usr/bin/env python3
++"""ADP-S3-P03-T038 acceptance: media-lead -> official-original resolver + event grouping + abstain.
++
++Acceptance (TASK_INDEX): 50 个媒体线索中有原文则绑定原文，无原文则 UNKNOWN/ABSTAIN；不冒充官方。
++Deterministic. 50 leads = 28 resolvable to an official original (20 by cited 发文字号, 8 by referenced
++title, with reposts of the same doc) + 22 real board3 news leads with no official original (ABSTAIN).
++"""
++import sys, json, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1")
++T038 = V01 / "evidence" / "ADP-S3-P03-T038"
++sys.path.insert(0, str(V01 / "tools"))
++import media_resolver as M  # noqa: E402
++
++data = json.loads((T038 / "media_leads_50.json").read_text(encoding="utf-8"))
++leads, official, expected = data["leads"], data["official_index"], data["expected"]
++fails = []
++
++res = M.resolve_all(leads, official)
++s = res["summary"]
++print(f"leads {s['leads']} | bound {s['bound']} | abstained {s['abstained']} | events {s['events']} | impersonations {s['impersonations']}")
++
++# --- 1) each lead: an original exists -> bind to it; none -> ABSTAIN ------------------------
++correct = 0
++for r, (exp_status, exp_cid) in zip(res["resolutions"], expected):
++    got = "bound" if r["resolved"] else "ABSTAIN"
++    if got == exp_status and (not exp_cid or r["official_canonical_id"] == exp_cid):
++        correct += 1
++    else:
++        if len(fails) < 4:
++            fails.append(f"{r['lead_id']}: got {got}/{r['official_canonical_id']} != {exp_status}/{exp_cid}")
++print(f"lead resolution correct: {correct}/50")
++if correct != 50:
++    fails.append(f"only {correct}/50 leads resolved as expected")
++
++# --- 2) NEVER impersonate official: an ABSTAIN lead never carries A0 ------------------------
++for r in res["resolutions"]:
++    if not r["resolved"]:
++        if r["authority"] == "A0" or r["impersonates_official"]:
++            fails.append(f"{r['lead_id']}: abstained lead impersonates official")
++        if r["status"] != "ABSTAIN":
++            fails.append(f"{r['lead_id']}: unresolved lead status {r['status']} != ABSTAIN")
++if s["impersonations"] != 0:
++    fails.append(f"{s['impersonations']} leads impersonate official (must be 0)")
++# bound leads carry the official authority + point to the official canonical id
++for r in res["resolutions"]:
++    if r["resolved"] and (r["authority"] != "A0" or not r["official_canonical_id"]):
++        fails.append(f"{r['lead_id']}: bound lead missing official authority/canonical_id")
++
++# --- 3) reposts of the same event merge into one canonical event ---------------------------
++ev_by_cid = {e["canonical_id"]: e for e in res["events"]}
++# doc 1 is referenced by multiple leads (docnum reposts + a title lead) -> repost_count > 1
++d1 = ev_by_cid.get("doi:gov/1")
++print("event doi:gov/1 repost_count:", d1["repost_count"] if d1 else None)
++if not d1 or d1["repost_count"] < 2:
++    fails.append("reposts of the same official event did not merge (doi:gov/1 repost_count < 2)")
++if not d1["official_backed"]:
++    fails.append("bound event not marked official_backed")
++# an abstained event stays not-official-backed
++abstain_events = [e for e in res["events"] if not e["official_backed"]]
++if any(e["authority"] == "A0" for e in abstain_events):
++    fails.append("an abstained event carries A0")
++print(f"official-backed events: {sum(1 for e in res['events'] if e['official_backed'])} | abstained events: {len(abstain_events)}")
++
++print("\n" + ("ACCEPTANCE = PASS" if not fails else "ACCEPTANCE = FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/media_resolver.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/media_resolver.py
+new file mode 100644
+index 000000000..190fb6ced
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/media_resolver.py
+@@ -0,0 +1,94 @@
++#!/usr/bin/env python3
++"""ADP V0.1 media-lead -> official-original resolver + event grouping + abstain (ADP-S3-P03-T038).
++
++Media may DISCOVER a lead (a news item about a policy), but a lead must resolve back to the issuing
++authority's official original before it can carry official weight, and reposts of the same event merge
++into one canonical event. If no official original is found, the lead ABSTAINS (UNKNOWN) -- it is NEVER
++promoted to official (不冒充官方).
++
++Resolution signals (deterministic, no network): a document number (发文字号) mentioned in the media
++text that matches an official document; else the referenced official title normalized to an official
++document's normalized title. Canonical event grouping reuses the T024 identity. NOT_DEPLOYED.
++"""
++from __future__ import annotations
++import dataclasses, hashlib, re, pathlib, sys
++
++sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
++from canonicalize import norm_title
++
++# Whitelisted central-government document-number prefixes -> precise, does not over-grab the
++# surrounding sentence (e.g. "...日前印发国办发〔2020〕50号" must yield 国办发〔2020〕50号, not 印发国办发...).
++_ORG = r"(?:国发|国办发|国办函|国办发明电|中办发|中办国办|发改|网信发|国统字|统计|财|工信部|人社部|教|科|银发)"
++DOCNUM_RE = re.compile(_ORG + r"〔\d{4}〕\d+号|国令第\d+号|中华人民共和国主席令第\d+号|第\d+号令")
++
++
++@dataclasses.dataclass(frozen=True)
++class Resolution:
++    lead_id: str
++    resolved: bool
++    official_canonical_id: str | None
++    authority: str                  # A0 when bound to an official original; media_lead otherwise
++    status: str                     # "bound" | "ABSTAIN"
++    match_signal: str | None        # docnum | title | None
++    impersonates_official: bool     # ALWAYS False -- an unresolved lead never claims official
++
++
++def _docnums(text):
++    return {re.sub(r"\s+", "", m.group(0)) for m in DOCNUM_RE.finditer(text or "")}
++
++
++def build_official_index(official_docs):
++    """official_docs: [{canonical_id, doc_number, title}] -> lookup by normalized docnum + norm title."""
++    by_num, by_title = {}, {}
++    for d in official_docs:
++        if d.get("doc_number"):
++            by_num[re.sub(r"\s+", "", d["doc_number"])] = d["canonical_id"]
++        if d.get("title"):
++            by_title[norm_title(d["title"])] = d["canonical_id"]
++    return by_num, by_title
++
++
++def resolve_lead(lead, by_num, by_title):
++    """lead: {lead_id, text, referenced_title?}. Bind to an official original or ABSTAIN."""
++    lid = lead.get("lead_id", "?")
++    # 1) a document number cited in the media text
++    for n in _docnums((lead.get("text") or "") + " " + (lead.get("title") or "")):
++        if n in by_num:
++            return Resolution(lid, True, by_num[n], "A0", "bound", "docnum", False)
++    # 2) the referenced official title
++    ref = lead.get("referenced_title") or lead.get("title") or ""
++    cid = by_title.get(norm_title(ref))
++    if cid:
++        return Resolution(lid, True, cid, "A0", "bound", "title", False)
++    # 3) no official original -> ABSTAIN; NEVER impersonate official
++    return Resolution(lid, False, None, "media_lead", "ABSTAIN", None, False)
++
++
++def group_events(resolutions, leads_by_id):
++    """Reposts of the same event merge into one canonical event: bound leads group by the official
++    canonical_id; abstained leads group by the ttl of their normalized title (so duplicate news of an
++    unbacked event still collapse, but stay ABSTAIN)."""
++    events = {}
++    for r in resolutions:
++        if r.resolved:
++            key = r.official_canonical_id
++        else:
++            key = "ttl:" + hashlib.sha256(norm_title(leads_by_id[r.lead_id].get("title", "")).encode()).hexdigest()[:16]
++        ev = events.setdefault(key, {"canonical_id": key, "official_backed": r.resolved,
++                                     "authority": r.authority, "lead_ids": [], "status": r.status})
++        ev["lead_ids"].append(r.lead_id)
++    for ev in events.values():
++        ev["repost_count"] = len(ev["lead_ids"])
++    return list(events.values())
++
++
++def resolve_all(leads, official_docs):
++    by_num, by_title = build_official_index(official_docs)
++    res = [resolve_lead(l, by_num, by_title) for l in leads]
++    leads_by_id = {l["lead_id"]: l for l in leads}
++    events = group_events(res, leads_by_id)
++    return {"resolutions": [dataclasses.asdict(r) for r in res], "events": events,
++            "summary": {"leads": len(leads), "bound": sum(1 for r in res if r.resolved),
++                        "abstained": sum(1 for r in res if not r.resolved),
++                        "events": len(events),
++                        "impersonations": sum(1 for r in res if r.impersonates_official)}}

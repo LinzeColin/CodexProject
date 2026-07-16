@@ -1,0 +1,6 @@
+leads 50 | bound 28 | abstained 22 | events 30 | impersonations 0
+lead resolution correct: 50/50
+event doi:gov/1 repost_count: 4
+official-backed events: 8 | abstained events: 22
+
+ACCEPTANCE = PASS

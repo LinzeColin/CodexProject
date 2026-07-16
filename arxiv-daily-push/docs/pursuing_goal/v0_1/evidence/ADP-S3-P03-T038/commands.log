@@ -1,0 +1,19 @@
+# ADP-S3-P03-T038 commands (media-lead -> official-original resolver + event grouping + abstain)
+# base: main 2bdfd689 (T037)
+
+# 1) resolver + spec + 50-lead sample
+#    tools/media_resolver.py   (resolve_lead[docnum/title -> bind, else ABSTAIN]; group_events; resolve_all;
+#                              docnum whitelist prefix avoids over-grabbing sentence text; never impersonates official)
+#    MEDIA_RESOLVER_SPEC.md
+#    evidence/.../media_leads_50.json  (28 resolvable[20 docnum + 8 title, w/ reposts] + 22 real board3 news)
+
+# fix during build: [一-龥]{1,6}发? over-grabbed "印发国办发..." -> switched to a whitelist org-prefix docnum regex.
+
+# 2) acceptance test
+python3 evidence/ADP-S3-P03-T038/test-results/t038_verify.py | tee evidence/ADP-S3-P03-T038/test-results/resolver_tests.txt
+# -> leads 50 | bound 28 | abstained 22 | events 30 | impersonations 0 ; resolution correct 50/50
+# -> doi:gov/1 repost_count 4 (reposts merged) ; 8 official-backed events + 22 abstained
+# -> ACCEPTANCE = PASS (exit 0)
+
+# NOT_DEPLOYED: resolver not wired to the worker.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

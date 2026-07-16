@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S3-P03-T038", "stage": "S3 China A0 Official Pilot", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "media can surface a lead but never impersonate official: a lead resolves back to the issuing authority's original (by cited 发文字号 or referenced title) or ABSTAINS as UNKNOWN, and reposts of one event merge into a single canonical event -- so the system credits the official original, not the media rewrite",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "resolver + grouping; not wired to the worker; the 50-lead sample uses real board3 news items + synthetic official index"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "sample_50": {"resolvable": 28, "abstain": 22, "bound_by_docnum": 20, "bound_by_title": 8, "events": 30, "official_backed_events": 8, "max_repost_count": 4, "impersonations": 0},
+  "acceptance": {"lead_with_original_binds": true, "lead_without_original_abstains": true, "never_impersonates_official": true, "reposts_merge_into_canonical_event": true, "resolution_correct_50_of_50": true}
+}
