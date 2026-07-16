@@ -1,0 +1,14 @@
+{
+  "task": "ADP-S0-P02-T006",
+  "release_mode": "NOT_DEPLOYED",
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "one_time_cost": "read-only wrangler API calls (whoami, d1 info, ~15 SELECT COUNT, deployments list, r2 bucket list); 0 resources created; a few thousand D1 rows_read counted against existing daily usage",
+  "value": "real capacity/cost starting point: D1 adp-mirror 1.05 MB / 14 tables (8 cloud cn_* + 6 legacy mirror) / cn_items 682 / cn_sources 33 / cn_selections 1 / cn_lessons 1; R2 NOT_ENABLED; live version 455afd98; replaces the 20TB envelope guess with verified small early-stage data",
+  "captured_at_utc": "2026-07-16T00:31Z",
+  "d1_size_bytes": 1052672,
+  "d1_metrics_24h": {"read_queries": 3503, "write_queries": 3864, "rows_read": 221565, "rows_written": 13426},
+  "cost_unknowns_not_zero": [
+    "FACT-013 Cloudflare plan tier + billing (CLI-inaccessible; usage within free-tier envelope but NOT a plan confirmation)",
+    "FACT-015 private branches / uncommitted code (needs Owner/repo readonly inventory)"
+  ]
+}

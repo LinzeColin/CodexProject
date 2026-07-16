@@ -1,0 +1,81 @@
+{
+  "task": "ADP-S0-P02-T006",
+  "captured_at_utc": "2026-07-16T00:31Z",
+  "method": "wrangler 4.111.0 read-only (whoami, d1 info, d1 execute SELECT --remote, deployments list, r2 bucket list); changed_db=false on all D1 reads; no resource created, no setting changed, no secret recorded",
+  "account": {
+    "name": "Linzezhang35@gmail.com's Account",
+    "account_id": "a8e86fa4be62ee3f9b5873b2aa934256",
+    "note": "account_id and database_id are identifiers already present in the committed wrangler config; OAuth token NOT recorded"
+  },
+  "deployment": {
+    "worker": "adp-cloud",
+    "current_live_version_id": "455afd98-027a-4ace-9619-736a464f9bd3",
+    "current_version_created_utc": "2026-07-15T09:39:45.247Z",
+    "author": "linzezhang35@gmail.com",
+    "cron": "30 20 * * * (daily 20:30 UTC; defined in wrangler_cloud.jsonc, deployed)",
+    "note": "multiple deployments on 2026-07-15; 455afd98 is the latest (100%) version"
+  },
+  "d1": {
+    "database_name": "adp-mirror",
+    "database_id": "d0a7fc44-6de5-4bf4-bd71-7df868a410a3",
+    "created_utc": "2026-07-14T22:00:46.363Z",
+    "region": "OC (served_by_colo BNE)",
+    "database_size": "1.05 MB (1,052,672 bytes)",
+    "read_replication": "disabled",
+    "num_tables": 14,
+    "metrics_24h": {
+      "window": "last 24h as of 2026-07-16T00:31Z",
+      "read_queries": 3503,
+      "write_queries": 3864,
+      "rows_read": 221565,
+      "rows_written": 13426
+    },
+    "tables_cloud_cn": {
+      "cn_sources": 33,
+      "cn_items": 682,
+      "cn_selections": 1,
+      "cn_lessons": 1,
+      "cn_reviews": 2,
+      "cn_events": 1,
+      "cn_run_log": 2,
+      "cn_meta": 0
+    },
+    "tables_legacy_mirror": {
+      "events_inbox": 1,
+      "lessons_mirror": 4,
+      "manifests_mirror": 5,
+      "mirror_meta": 3,
+      "review_mirror": 2,
+      "selections_mirror": 4
+    }
+  },
+  "r2": {
+    "status": "NOT_ENABLED",
+    "evidence": "wrangler r2 bucket list -> Cloudflare API code 10042 'Please enable R2 through the Cloudflare Dashboard'",
+    "action": "NOT enabled by agent; enabling R2 is a dashboard/billing/terms action the Owner declined to have done on their behalf"
+  },
+  "plan_billing": {
+    "status": "UNVERIFIED_PRIVATE",
+    "reason": "wrangler CLI does not expose plan tier or billing; Owner-dashboard-only",
+    "usage_within_free_tier_envelope": "informational only: D1 1.05MB storage, 24h rows_read 221565 / rows_written 13426 are within typical D1 free-tier daily limits (5GB / 5M reads / 100k writes); this does NOT confirm the account is on the free plan"
+  },
+  "drift_findings": [
+    {
+      "id": "DRIFT-FACT-011",
+      "kind": "d1_schema_drift",
+      "finding": "live D1 has 14 tables = 8 cloud cn_* (match schema_cloud.sql) + 6 legacy tables (events_inbox, lessons_mirror, manifests_mirror, mirror_meta, review_mirror, selections_mirror) from the retired R6 Mac-mirror/tunnel architecture; schema_cloud.sql defines only the 8 cn_* tables",
+      "ties_to": "DRIFT-FACT-007 (R6 retired but artifacts persist)"
+    },
+    {
+      "id": "DATA-EARLY-STAGE",
+      "kind": "data_volume",
+      "finding": "cloud data is early/small: cn_items 682, cn_sources 33, but cn_selections 1 / cn_lessons 1 / cn_meta 0 -> the cloud daily selection/lesson pipeline has persisted very few rows so far"
+    }
+  ],
+  "fact_status_updates": {
+    "FACT-011": "VERIFIED (D1 schema 14 tables, size 1.05MB, per-table counts, 24h metrics)",
+    "FACT-012": "VERIFIED: R2 NOT_ENABLED",
+    "FACT-013": "UNVERIFIED_PRIVATE (plan/billing CLI-inaccessible; usage within free-tier envelope, not a plan confirmation)",
+    "FACT-014": "PARTIAL: current live adp-cloud version 455afd98; public-surface parity 0.9973 (T004); strict per-hostname build equality not separately proven"
+  }
+}

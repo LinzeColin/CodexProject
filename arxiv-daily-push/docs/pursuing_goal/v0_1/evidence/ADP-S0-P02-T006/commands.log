@@ -1,0 +1,39 @@
+# ADP-S0-P02-T006 commands.log · read-only Cloudflare private baseline
+# captured_at_utc = 2026-07-16T00:31Z ; baseline commit a17e89de (T005 merged)
+# wrangler 4.111.0 ; OAuth in ~/Library/Preferences/.wrangler/config/default.toml (token NOT recorded)
+# ALL read-only: changed_db=false on every D1 read; 0 resources created; no settings changed.
+
+## account
+$ npx wrangler@4 whoami
+# account: Linzezhang35@gmail.com's Account  id a8e86fa4be62ee3f9b5873b2aa934256
+
+## D1 info
+$ npx wrangler@4 d1 info adp-mirror
+# num_tables 14 ; database_size 1.05 MB ; created 2026-07-14T22:00:46Z ; region OC ; replication disabled
+# 24h: read_queries 3,503 ; write_queries 3,864 ; rows_read 221,565 ; rows_written 13,426
+
+## D1 tables (read-only SELECT --remote)
+$ npx wrangler@4 d1 execute adp-mirror --remote --json --command "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' ORDER BY name"
+# 14: cn_events cn_items cn_lessons cn_meta cn_reviews cn_run_log cn_selections cn_sources
+#     events_inbox lessons_mirror manifests_mirror mirror_meta review_mirror selections_mirror
+# meta: changed_db false, served_by v3-prod OC/BNE
+
+## D1 per-table COUNT (read-only, per table to avoid compound-SELECT 7500 limit)
+$ for T in <14 tables>; do npx wrangler@4 d1 execute adp-mirror --remote --json --command "SELECT COUNT(*) n FROM $T"; done
+# cn_sources 33 | cn_items 682 | cn_selections 1 | cn_lessons 1 | cn_reviews 2 | cn_events 1 | cn_run_log 2 | cn_meta 0
+# events_inbox 1 | lessons_mirror 4 | manifests_mirror 5 | mirror_meta 3 | review_mirror 2 | selections_mirror 4
+
+## deployments
+$ npx wrangler@4 deployments list --name adp-cloud
+# current live version 455afd98-027a-4ace-9619-736a464f9bd3 (2026-07-15T09:39:45Z); cron 30 20 * * *
+
+## R2
+$ npx wrangler@4 r2 bucket list
+# ERROR code 10042: Please enable R2 through the Cloudflare Dashboard -> R2 NOT_ENABLED (not enabled by agent)
+
+## secret scan
+$ grep -rilE "oauth|refresh_token|api_token|bearer [A-Za-z0-9]" t006/  -> clean
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

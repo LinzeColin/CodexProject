@@ -1,0 +1,14 @@
+cn_sources           33
+cn_items             682
+cn_selections        1
+cn_lessons           1
+cn_reviews           2
+cn_events            1
+cn_run_log           2
+cn_meta              0
+events_inbox         1
+lessons_mirror       4
+manifests_mirror     5
+mirror_meta          3
+review_mirror        2
+selections_mirror    4
