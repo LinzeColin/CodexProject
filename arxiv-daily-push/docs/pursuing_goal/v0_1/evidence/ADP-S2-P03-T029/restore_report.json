@@ -1,0 +1,88 @@
+{
+  "months": [
+    "2016-01",
+    "2020-07",
+    "2026-07"
+  ],
+  "per_month": {
+    "2016-01": {
+      "versions": 1,
+      "month_documents": 1,
+      "documents_restored_with_closure": 1,
+      "result_hash": "sha256:36b251226e11c4c4327b38e0cf626a4eeec69c7528cb1754af213351bdabdb16"
+    },
+    "2020-07": {
+      "versions": 1,
+      "month_documents": 1,
+      "documents_restored_with_closure": 1,
+      "result_hash": "sha256:fcd2bbce29f78d69f952629ee9a8bd649b525c97f6559bdb73bfeaa983a6736f"
+    },
+    "2026-07": {
+      "versions": 327,
+      "month_documents": 326,
+      "documents_restored_with_closure": 327,
+      "result_hash": "sha256:8f06ed66b1898cad322f5e72f5f0260eb08156326ddbc36c364b1d1f0bf03e15"
+    }
+  },
+  "ground_truth": {
+    "2016-01": {
+      "documents": 1,
+      "versions": 1
+    },
+    "2020-07": {
+      "documents": 1,
+      "versions": 1
+    },
+    "2026-07": {
+      "documents": 326,
+      "versions": 327
+    }
+  },
+  "counts_consistent": true,
+  "orphan_versions": 0,
+  "random_body_consistent": true,
+  "random_attachment_consistent": true,
+  "body_samples": 7,
+  "attachment_samples": 7,
+  "retention_matrix": [
+    {
+      "data_class": "raw official artifact (R2 content-addressed A0-A2 original)",
+      "retention": "PERMANENT",
+      "delete_policy": "never",
+      "rationale": "the source of truth; cannot be regenerated if lost"
+    },
+    {
+      "data_class": "published DocumentVersion (append-only chain + content_hash)",
+      "retention": "PERMANENT",
+      "delete_policy": "never",
+      "rationale": "the immutable history; deleting rewrites the record"
+    },
+    {
+      "data_class": "canonical document identity (canonical_id, sources)",
+      "retention": "PERMANENT",
+      "delete_policy": "never",
+      "rationale": "stable identity across reposts/revisions"
+    },
+    {
+      "data_class": "factsheet / L0-L3 human render / defect scan",
+      "retention": "REGENERABLE",
+      "delete_policy": "safe-to-drop",
+      "rationale": "deterministically rebuilt from raw + code"
+    },
+    {
+      "data_class": "monthly Parquet snapshot / manifest",
+      "retention": "REGENERABLE",
+      "delete_policy": "safe-to-drop",
+      "rationale": "rebuilt from the version records (T027)"
+    },
+    {
+      "data_class": "derived indexes / dashboards / D1 mirror views",
+      "retention": "REGENERABLE",
+      "delete_policy": "safe-to-drop",
+      "rationale": "materialized from permanent sources"
+    }
+  ],
+  "permanent_stores_unchanged": true,
+  "permanent_delete_count": 0,
+  "isolation": "restored into an in-memory throwaway SQLite; production D1/R2 untouched"
+}

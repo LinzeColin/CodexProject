@@ -1,0 +1,30 @@
+# ADP-S2-P03-T029 commands (offline backup-restore drill into isolated SQLite; production untouched)
+# base: main e0a00054 (T028)
+
+# 1) tool + docs authored
+#    tools/restore_drill.py    (restore a month's docs+versions from the T027 open snapshot into an
+#                               ISOLATED in-memory SQLite [T025 schema], referentially closed; link raw
+#                               artifacts; verify body/attachment/relationship/counts; retention matrix;
+#                               permanent-store read-only + zero permanent deletes)
+#    RESTORE_RUNBOOK.md         (reproducible restore procedure + the cross-month closure design point)
+#    RETENTION_MATRIX.md        (PERMANENT [raw official artifact / published versions / identity] vs REGENERABLE)
+#    evidence/.../raw_evidence_sample.json  (7 real sampled items across the 3 target months = permanent raw evidence)
+
+# 2) acceptance test (self-contained from committed T027 logical snapshot + this task's raw sample)
+python3 evidence/ADP-S2-P03-T029/test-results/t029_verify.py | tee evidence/ADP-S2-P03-T029/test-results/restore_tests.txt
+# -> restored 2016-01: 1 doc / 1 ver ; 2020-07: 1 doc / 1 ver ; 2026-07: 326 month-docs / 327 ver / 327 docs-with-closure
+# -> random body 7/7 consistent | random attachment 7/7 consistent
+# -> retention: raw+versions PERMANENT/never | permanent stores unchanged | permanent deletes 0
+# -> orphan_versions 0 (after referential-closure fix) ; counts consistent
+# -> ACCEPTANCE = PASS (exit 0)
+
+# finding fixed mid-task: single-month isolated restore orphaned 1 version whose parent doc was first
+# seen in an earlier month -> made restore referentially closed (pull parent doc across partitions) -> 0 orphans.
+
+# 3) committed report
+python3 tools/restore_drill.py --logical-dir evidence/ADP-S2-P03-T027/logical_snapshot \
+  --raw evidence/ADP-S2-P03-T029/raw_evidence_sample.json --months 2016-01,2020-07,2026-07 \
+  --out evidence/ADP-S2-P03-T029/restore_report.json
+
+# NOT_DEPLOYED: no wrangler / no D1 / no R2 / no worker. isolated in-memory SQLite only.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.

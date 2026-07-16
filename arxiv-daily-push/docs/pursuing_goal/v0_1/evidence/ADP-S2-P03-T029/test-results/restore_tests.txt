@@ -1,0 +1,8 @@
+isolation: restored into an in-memory throwaway SQLite; production D1/R2 untouched
+restored 2016-01: month_documents=1 versions=1 docs_with_closure=1 result_hash=sha256:36b251226e11c4c
+restored 2020-07: month_documents=1 versions=1 docs_with_closure=1 result_hash=sha256:fcd2bbce29f78d6
+restored 2026-07: month_documents=326 versions=327 docs_with_closure=327 result_hash=sha256:8f06ed66b1898ca
+random checks: body 7 samples consistent=True | attachment 7 samples consistent=True
+retention: raw+versions PERMANENT/never = True | permanent stores unchanged = True | permanent deletes = 0
+
+ACCEPTANCE = PASS

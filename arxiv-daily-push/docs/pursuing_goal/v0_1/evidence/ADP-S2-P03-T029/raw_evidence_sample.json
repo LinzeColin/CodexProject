@@ -1,0 +1,65 @@
+[
+  {
+    "id": "arxiv:1601.05914",
+    "source_id": "arxiv-all",
+    "title": "Model Assisted Probability of Detection curves: New statistical tools and progressive methodology",
+    "summary": "The Probability Of Detection (POD) curve is a standard tool in several industries to evaluate the performance of Non Destructive Testing (NDT) procedures for the detection of harmful defects for the inspected structure. Due to new capabilities of NDT process numerical simulation , Model Assisted Probability of Detection (MAPOD) approaches have also been recently developed. In this paper, a generic and progressive MAPOD methodology is proposed. Limits and assumptions of the classical methods are enlightened, while new metamodel-based methods are proposed. They allow to access to relevant information based on sensitivity analysis of MAPOD inputs. Applications are performed on Eddy Current Non Destructive Examination numerical data.",
+    "url": "https://arxiv.org/abs/1601.05914",
+    "status": "active",
+    "published_at": "2016-01-22T00:00:00.000Z"
+  },
+  {
+    "id": "arxiv:1809.11079",
+    "source_id": "arxiv-all",
+    "title": "Injectivity results for coarse homology theories",
+    "summary": "We show injectivity results for assembly maps using equivariant coarse homology theories with transfers. Our method is based on the descent principle and applies to a large class of linear groups or, more general, groups with finite decomposition complexity.",
+    "url": "https://arxiv.org/abs/1809.11079",
+    "status": "active",
+    "published_at": "2020-07-15T00:00:00.000Z"
+  },
+  {
+    "id": "arxiv:1904.06520",
+    "source_id": "arxiv-all",
+    "title": "Costly Attention and Retirement",
+    "summary": "In UK data, I document the prevalence of misbeliefs regarding the State Pension eligibility age (SPA) and their predictivity for retirement. Exploiting policy variation, I estimate a lifecycle model of retirement in which, motivated by patterns in belief data, rationally inattentive households learning about uncertain pension policy endogenously generates misbeliefs. Misbeliefs explain 51% of the excessive (given financial incentives) drop in employment at SPA when constrained to replicate the belief data patterns and completely explain it when not. To achieve this, I develop a solution method for dynamic rational inattention models with persistent beliefs. Costly attention makes the SPA up to 15% less effective at increasing old-age employment. Hence, information letters improve welfare and increase employment.",
+    "url": "https://arxiv.org/abs/1904.06520",
+    "status": "active",
+    "published_at": "2026-07-10T00:00:00.000Z"
+  },
+  {
+    "id": "arxiv:2111.06876",
+    "source_id": "arxiv-all",
+    "title": "2d BF Theory Coupled to 1d Quantum Mechanics: The Phase Space and Its Quantization",
+    "summary": "We study the ring of functions on the (classical and quantized) phase space of 2-dimensional BF theory with the gauge group $\\mathrm{GL}_N$ coupled to a 1-dimensional quantum mechanics with global symmetry $\\mathrm{GL}_K$. These functions are gauge-invariant local observables of the coupled system. We first construct the classical phase space of this system and describe its ring of functions, as well as their large-$N$ limit. We next compute the Hilbert series of these algebras for finite $N$ and in the large-$N$ limit. We then study the quantization of this phase space and the deformation quantization of its ring of functions, elaborate its relation to the Yangian, and construct its coproduct. Finally, we identify these quantized algebras with the quantized Coulomb branch algebras of certain 3d $\\mathscr{N}=4$ quiver gauge theories.",
+    "url": "https://arxiv.org/abs/2111.06876",
+    "status": "active",
+    "published_at": "2026-07-09T00:00:00.000Z"
+  },
+  {
+    "id": "arxiv:2202.06400",
+    "source_id": "arxiv-all",
+    "title": "Misspecification Analysis of High-Dimensional Random Effects Models for Estimation of Signal-to-Noise Ratios",
+    "summary": "Estimation of signal-to-noise ratios and residual variances in high-dimensional linear models has various important applications, including heritability estimation in bioinformatics. One widely used estimator is the Gaussian random-effects maximum likelihood estimator (MLE), based on the likelihood of the homogeneous Gaussian random-effects model in which both the regression coefficients and the noise variables are assumed to be i.i.d. Gaussian. This paper studies the behavior of this likelihood estimator under model misspecification. For isotropic random designs with independent, symmetric, sub-Gaussian entries, we establish consistency and asymptotic normality of the SNR MLE for fixed dense coefficient vectors and independent, centered, heteroscedastic finite-moment noise, allowing moderately heavy-tailed errors. We also give parallel consistency and central limit results for correlated Gaussian noise as a benchmark. The asymptotic variance depends on the limiting aspect ratio, the true SNR, and a scalar noise-square fluctuation parameter. This explicit form yields feasible plug-in confidence intervals under independent noise in two cases where the fluctuation parameter can be es",
+    "url": "https://arxiv.org/abs/2202.06400",
+    "status": "active",
+    "published_at": "2026-07-10T00:00:00.000Z"
+  },
+  {
+    "id": "arxiv:2204.11488",
+    "source_id": "arxiv-all",
+    "title": "Mining and searching association relation of scientific papers based on deep learning",
+    "summary": "There is a complex correlation among the data of scientific papers. The phenomenon reveals the data characteristics, laws, and correlations contained in the data of scientific and technological papers in specific fields, which can realize the analysis of scientific and technological big data and help to design applications to serve scientific researchers. Therefore, the research on mining and searching the association relationship of scientific papers based on deep learning has far-reaching practical significance.",
+    "url": "https://arxiv.org/abs/2204.11488",
+    "status": "active",
+    "published_at": "2026-07-10T00:00:00.000Z"
+  },
+  {
+    "id": "arxiv:2204.12121",
+    "source_id": "arxiv-all",
+    "title": "Cross-media Scientific Research Achievements Query based on Ranking Learning",
+    "summary": "With the advent of the information age, the scale of data on the Internet is getting larger and larger, and it is full of text, images, videos, and other information. Different from social media data and news data, scientific research achievement information has the characteristics of many proper nouns and strong ambiguity. The traditional single-mode query method based on keywords can no longer meet the needs of scientific researchers and managers of the Ministry of Science and Technology. Scientific research project information and scientific research scholar information contain a large amount of valuable scientific research achievement information. Evaluating the output capability of scientific research projects and scientific research teams can effectively assist managers in decision-making. In view of the above background, this paper expounds on the research status from four aspects: characteristic learning of scientific research results, cross-media research results query, ranking learning of scientific research results, and cross-media scientific research achievement query systems.",
+    "url": "https://arxiv.org/abs/2204.12121",
+    "status": "active",
+    "published_at": "2026-07-10T00:00:00.000Z"
+  }
+]
