@@ -1,0 +1,95 @@
+{
+  "targets": [
+    "G1",
+    "G2",
+    "G0"
+  ],
+  "report": {
+    "G1": {
+      "n_history": 8,
+      "baselines": {
+        "frequency": {
+          "rate": 0.375,
+          "metrics": {
+            "brier": 0.265625,
+            "accuracy": 0.5,
+            "n": 4
+          }
+        },
+        "seasonality": {
+          "global_rate": 0.375,
+          "month_rates": {
+            "3": 0.84375,
+            "7": 0.1875,
+            "9": 0.1875,
+            "11": 0.1875,
+            "1": 0.125
+          },
+          "metrics": {
+            "brier": 0.08252,
+            "accuracy": 1.0,
+            "n": 4
+          }
+        }
+      },
+      "has_reproducible_baseline": true
+    },
+    "G2": {
+      "n_history": 5,
+      "baselines": {
+        "frequency": {
+          "rate": 0.2,
+          "metrics": {
+            "brier": 0.04,
+            "accuracy": 1.0,
+            "n": 2
+          }
+        },
+        "seasonality": {
+          "global_rate": 0.2,
+          "month_rates": {
+            "5": 0.1,
+            "6": 0.1,
+            "7": 0.6,
+            "8": 0.1,
+            "9": 0.1
+          },
+          "metrics": {
+            "brier": 0.2,
+            "accuracy": 0.5,
+            "n": 2
+          }
+        }
+      },
+      "has_reproducible_baseline": true
+    },
+    "G0": {
+      "n_history": 0,
+      "baselines": {
+        "frequency": {
+          "rate": 0.0,
+          "metrics": {
+            "brier": null,
+            "accuracy": null,
+            "n": 0
+          }
+        },
+        "seasonality": {
+          "global_rate": 0.0,
+          "month_rates": {},
+          "metrics": {
+            "brier": null,
+            "accuracy": null,
+            "n": 0
+          }
+        }
+      },
+      "has_reproducible_baseline": false
+    }
+  },
+  "may_develop": {
+    "G1": true,
+    "G0_no_history": false,
+    "G9_absent": false
+  }
+}

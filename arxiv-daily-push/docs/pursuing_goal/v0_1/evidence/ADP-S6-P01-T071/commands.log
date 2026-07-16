@@ -1,0 +1,27 @@
+# ADP-S6-P01-T071 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity
+python3 -c "import sys; sys.path.insert(0,'tools'); import baselines"
+
+# 2. build baseline fixtures + report (deterministic)
+python3 evidence/ADP-S6-P01-T071/build_baselines.py
+#   -> G1 freq_rate=0.375 freq_brier=0.265625 seas_brier=0.08252
+#   -> G2 freq_rate=0.2 freq_brier=0.04 seas_brier=0.2
+#   -> G0 freq_rate=0.0 freq_brier=None seas_brier=None   (no history)
+#   -> may_develop G1: True | G0(no history): False | G9(absent): False
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S6-P01-T071/test-results/t071_verify.py | tee evidence/ADP-S6-P01-T071/test-results/baselines_tests.txt
+#   baselines: every target has frequency+seasonality with in-range Brier; benchmark reproducible
+#   correctness: frequency == base rate (0.375); probabilities in [0,1]; unseen month -> smoothed global 0.375
+#   meaningful: seasonality beats base-rate on the seasonal target (a cheap baseline captures signal)
+#   gate: G1 (has baseline) may develop advanced; G0(no history) / G9(absent) / unknown / empty-baselines refused
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t071.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+#    NOTE: first statistical model; MODEL card in evidence; operational MODEL_SPEC untouched (NOT_DEPLOYED)

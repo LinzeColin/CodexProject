@@ -1,0 +1,37 @@
+{
+  "task_id": "ADP-S6-P01-T071",
+  "title": "建立历史频率、季节性和简单统计基线",
+  "release_mode": "NOT_DEPLOYED",
+  "stage": "S6",
+  "phase": "S6-P01",
+  "is_model": true,
+  "model_spec_ref": "evidence/ADP-S6-P01-T071/MODEL_baselines.md",
+  "operational_model_spec_touched": false,
+  "operational_registration_note": "v0_1认知系统S6回测层首个统计模型;运营 MODEL_SPEC.md/formula_registry.yaml 未改(跟踪已部署交付系统);本模型 NOT_DEPLOYED,正式规格记于 in-evidence MODEL card,运营注册门控于认知层 promotion,与 v0_1 全部工具惯例一致",
+  "value": {
+    "user_value": "诚实的模型门：每个可结算目标先有便宜可解释基线(频率/季节性)与可复现 Brier metrics,复杂模型必须先打败它;无历史无可重跑基线的目标明确不得开发高级模型。",
+    "value_metric_stage": "S6 预测、校准与失败历史:为 T072 Rolling-origin Backtest 提供必须打败的基准与门。",
+    "measured": {
+      "reproducible_baselines": "G1/G2各freq+seas可重跑Brier∈[0,1];benchmark两次逐字节一致;frequency==base rate(G1 0.375)",
+      "meaningful": "季节性目标G1上seasonality Brier0.083<frequency0.266(便宜基线捕获信号)",
+      "no_baseline_gate": "无历史G0 has_reproducible_baseline=False may_develop_advanced=False;G9/未知/空baselines拒"
+    }
+  },
+  "cost": {
+    "note": "未知不填 0；此为 NOT_DEPLOYED 只读模型库、本地确定性统计无 LLM/外部推理,生产零副作用。",
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "基线模型 + MODEL card + 验证编写（一次性）",
+    "recurring_cloud_cost_usd_per_month": 0
+  },
+  "realtime_regression": {
+    "live_build_id": "b189d3cc0703",
+    "equals_T040": true,
+    "regressed": false
+  },
+  "rollback": "git revert <sha>（只读模型库；生产数据未变更；运营 MODEL_SPEC 未改无 ID 回退）"
+}

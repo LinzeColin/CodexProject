@@ -1,0 +1,6 @@
+baselines: every target has frequency+seasonality with in-range Brier; benchmark reproducible
+correctness: frequency == base rate (0.375); probabilities in [0,1]; unseen month -> smoothed global 0.375
+meaningful: seasonality beats base-rate on the seasonal target (a cheap baseline captures signal)
+gate: G1 (has baseline) may develop advanced; G0(no history) / G9(absent) / unknown / empty-baselines refused
+
+ACCEPTANCE = PASS
