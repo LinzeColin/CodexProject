@@ -1,0 +1,24 @@
+# ADP-S6-P02-T073 commands (deterministic, no network except the read-only realtime build check)
+
+# 1. import sanity
+python3 -c "import sys; sys.path.insert(0,'tools'); import forecast_ledger"
+
+# 2. build calibration/skill/ledger fixtures + report (deterministic)
+python3 evidence/ADP-S6-P02-T073/build_forecast_ledger.py
+#   -> calibration bins (n>0): [(2,0.2,0.2,10),(5,0.5,0.5,10),(8,0.8,0.8,10),(9,0.9,0.9,10)]
+#   -> BSS: 0.636364  logloss: 0.504759
+#   -> ledger: {'n':3,'failures':['f2'],'successes':['f1','f3']}
+
+# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
+python3 evidence/ADP-S6-P02-T073/test-results/t073_verify.py | tee evidence/ADP-S6-P02-T073/test-results/forecast_ledger_tests.txt
+#   calibration: 4 populated bins, pred~obs; covered probs backed, uncovered (0.35) & None not
+#   ledger append-only: failure ['f2'] preserved; delete() raises; tamper (pop/mutate a failure) breaks verify_integrity
+#   skill: BSS(model)=0.636364>0, BSS(equal)=0, BSS(worse)=-0.363636<0 (honest); logloss=0.504759
+#   ACCEPTANCE = PASS (exit 0)
+
+# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
+curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
+#   -> b189d3cc0703  (== T040; realtime not regressed)
+
+# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t073.py),
+#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main

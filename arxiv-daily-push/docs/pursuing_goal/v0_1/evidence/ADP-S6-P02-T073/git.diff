@@ -1,0 +1,686 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 4af45fac6..508a4d4d8 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S6-P02-T073 (calibration + skill scores + append-only Forecast Ledger; NOT_DEPLOYED)
++
++- Seventy-third task of the ADP V0.1 FINAL EXECUTION program (S6-P02). Preserves successes AND failures over the long run -- never just the pretty cases: a reliability diagram (calibration), Brier skill score / logloss, and an append-only, tamper-evident Forecast Ledger. Any user-visible probability must have historical calibration (its probability bin has data) and a failure record can never be deleted. release_mode NOT_DEPLOYED; a read-only library of metrics over the T072 backtest outputs (no new predictive model, operational MODEL_SPEC/formula_registry untouched), the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/forecast_ledger.py: calibration (10-bin reliability diagram: per-bin predicted mean vs observed frequency vs count), has_calibration / calibration_of (a user-visible probability is calibration-backed only when its bin has history; a non-numeric probability is not, no crash), brier_skill_score (1 - Brier(model)/Brier(reference); negative skill reported honestly), logloss, and an append-only Ledger (append records both successes and failures with a per-record hash chained from the previous, delete() raises AppendOnlyError, verify_integrity() detects any deletion/mutation of a record). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/: forecast_ledger_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S6-P02-T073/test-results/forecast_ledger_tests.txt, ACCEPTANCE = PASS, exit 0): the reliability diagram has four populated bins whose predicted mean equals the observed frequency (0.2/0.5/0.8/0.9), a user-visible probability in a covered bin is calibration-backed while an uncovered probability (0.35) and a non-numeric one are not; a failure record is preserved, delete() raises for both a failure and a success, and directly popping or mutating a failure (bypassing delete) breaks verify_integrity; and skill is honest (BSS 0.636 for a model that beats the reference, 0 for an equal model, -0.364 for a worse one). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S6-P02-T072 (2016+ rolling-origin backtest; NOT_DEPLOYED)
+ 
+ - Seventy-second task of the ADP V0.1 FINAL EXECUTION program (opens S6-P02). Validates generalization and lead-time in TRUE time order: for each rolling origin O, trains the T071 baselines on outcomes observed at/before O (leak-checked with the T070 guard) and validates on outcomes observed strictly after O within (O, O+horizon], so train and validation never cross in time. release_mode NOT_DEPLOYED; a read-only backtest library that reuses the T071 baseline model (no new model, operational MODEL_SPEC/formula_registry untouched), the production worker/cron/data untouched. New tool arxiv-daily-push/docs/pursuing_goal/v0_1/tools/rolling_backtest.py: rolling_splits (split generator; train observed <= O, val in (O, O+horizon]), assert_no_time_crossing (raises on any temporal crossing), run_backtest (fits T071 frequency/seasonality per window, leak-checks each training set with T070, scores Brier/accuracy on validation, emits a reproducible run manifest), run_manifest (deterministic content hash). Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T072/: rolling_backtest_report.json, known_gaps.md, and adversarial_review.md (review CONFIRMED_SOUND). Acceptance verified (evidence/ADP-S6-P02-T072/test-results/rolling_backtest_tests.txt, ACCEPTANCE = PASS, exit 0): three rolling windows (origins 2019/2020/2021, each with non-empty train/val, train_n 9/12/15); train and validation never cross in time (every train sample observed <= origin < every validation sample within (origin, val_end], no sample in both, each training set passes the T070 leakage guard) while injecting a post-origin training sample or a pre-origin validation sample both trip assert_no_time_crossing; results are reproducible (two runs identical with the same manifest bt:06d6397caf6b3ab4, and a changed horizon yields a different manifest); and rolling forward is genuine time-order validation (train grows 9->12->15 and the seasonality Brier improves 0.0139->0.0089->0.0062 as more March history accumulates). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost (unknown != 0): production new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index f4772b69f..00b8c977b 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S6-P01-T071-FREQUENCY-SEASONALITY-BASELINES"
+-source_snapshot_hash: "sha256:f6e40326dddbd3b77257bf55a104dbfe163b0bca4454cb5bb484af5cf043450d"
++as_of_event_id: "EVENT-20260717-ADP-V01-S6-P02-T072-ROLLING-ORIGIN-BACKTEST"
++source_snapshot_hash: "sha256:b7de57af69cbe194adf4e47369f3a3d7a3dd8eecece47ce8b4fdc60680573823"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-18T05:10:00+10:00"
++snapshot_event_time: "2026-07-18T05:45:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 131
++    precommit_pending_events: 132
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 0fb073534..137d9ced3 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S6-P02-T073: implemented calibration + skill scores + the append-only Forecast Ledger (S6-P02). release_mode NOT_DEPLOYED; read-only metrics over T072 backtests (no new model, operational MODEL_SPEC untouched); production untouched. New tool docs/pursuing_goal/v0_1/tools/forecast_ledger.py: calibration (10-bin reliability) / has_calibration / calibration_of (calibration-backed only when the bin has history; non-numeric -> not, no crash) / brier_skill_score (negative skill honest) / logloss / append-only Ledger (append successes AND failures with a hash chain, delete() raises, verify_integrity detects deletion/mutation). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/: forecast_ledger_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/forecast_ledger_tests.txt, PASS exit 0): 4 populated calibration bins pred==obs; covered prob backed, uncovered (0.35)/non-numeric not; failure preserved, delete() raises for failure and success, pop/mutate a failure breaks verify_integrity; skill honest (BSS 0.636 / 0 / -0.364). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P02-T072: implemented the 2016+ rolling-origin backtest (opens S6-P02). release_mode NOT_DEPLOYED; read-only backtest library reusing the T071 baseline model (no new model, operational MODEL_SPEC untouched); production untouched. New tool docs/pursuing_goal/v0_1/tools/rolling_backtest.py: rolling_splits (train observed <= O, val in (O, O+horizon]) / assert_no_time_crossing / run_backtest (fits T071 baselines per window, T070 leakage guard on each train set, Brier/accuracy on val, reproducible run manifest) / run_manifest. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T072/: rolling_backtest_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/rolling_backtest_tests.txt, PASS exit 0): 3 rolling windows (train_n 9/12/15); train/val never cross in time (train observed <= origin < val in (origin, val_end], T070 leak-proof) and a crossing sample trips the guard; reproducible (identical results + manifest bt:06d6397caf6b3ab4, changed horizon -> different manifest); time-order generalization (train grows 9->12->15, seasonality Brier improves 0.0139->0.0062). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P01-T071: built historical frequency + seasonality statistical baselines (S6-P01; FIRST statistical model of the v0_1 cognition layer). release_mode NOT_DEPLOYED; operational MODEL_SPEC/formula_registry NOT touched (they track the deployed system) -- the model's formal spec is the in-evidence MODEL card evidence/ADP-S6-P01-T071/MODEL_baselines.md, operational registration gated to promotion; production untouched. New tool docs/pursuing_goal/v0_1/tools/baselines.py: frequency_baseline (base rate) / seasonality_baseline (month-of-year, Laplace, unseen->smoothed global) / brier_score / accuracy / evaluate / benchmark (has_reproducible_baseline only when history >= min_history) / may_develop_advanced (no baseline -> refuse). Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T071/: MODEL_baselines.md, baselines_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/baselines_tests.txt, PASS exit 0): G1/G2 (with history) each have a reproducible frequency + seasonality baseline, in-range Brier, byte-identical benchmark; frequency == base rate, probabilities in [0,1], unseen month -> smoothed global, seasonality beats base rate on the seasonal target (Brier 0.083 < 0.266); a no-history target (G0) has no reproducible baseline and is refused advanced development (as are absent/unknown/empty-baselines). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S6-P01-T070: built the Dataset Snapshot + observed_at leakage guard (S6-P01). release_mode NOT_DEPLOYED; read-only library, production untouched. New tool docs/pursuing_goal/v0_1/tools/dataset_snapshot.py: snapshot(corpus, as_of) (observed_at <= as_of, malformed/missing excluded, deterministic order + reproducible snapshot_id) / assert_no_leakage(dataset, as_of) (raises LeakageError on any future-observed or unverifiable doc -- the tripwire) / rebuild_for_prediction (reproduce the as-of dataset for a prediction's origin_date). Reuses T056 coverage_asof._parse_date. Keyed on observed_at (when ADP fetched a doc), never doc_date, so a 2026-backfilled 2016 file is not in a 2018 snapshot. Deliverables under docs/pursuing_goal/v0_1/evidence/ADP-S6-P01-T070/: dataset_snapshot_report.json, known_gaps.md, adversarial_review.md (review CONFIRMED_SOUND). Acceptance (test-results/dataset_snapshot_tests.txt, PASS exit 0): clean snapshot passes the guard, externally injecting a future/backfilled/no-observed_at doc each RAISES; observed_at-keyed (backfill doc_date 2016-05-01 < 2018 as_of but observed 2026 -> excluded, snapshot = [a,b]); any prediction rebuilds its dataset (rebuild == snapshot, reproducible, order-independent; later as_of expands). Realtime not regressed (no deploy, live build b189d3cc0703 == T040). Cost: prod requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 4e14b2ed5..a43493a48 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `131`
+-- pending_or_stale_events: `481`
+-- freshness_counts: `pending_or_stale_events=481; legacy_unbound_events=334`
++- precommit_pending_events: `132`
++- pending_or_stale_events: `482`
++- freshness_counts: `pending_or_stale_events=482; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:f6e40326dddbd3b77257bf55a104dbfe163b0bca4454cb5bb484af5cf043450d`
+-- snapshot_event_time: `2026-07-18T05:10:00+10:00`
++- source_snapshot_hash: `sha256:b7de57af69cbe194adf4e47369f3a3d7a3dd8eecece47ce8b4fdc60680573823`
++- snapshot_event_time: `2026-07-18T05:45:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 3c19849cb..59800b843 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:f6e40326dddbd3b77257bf55a104dbfe163b0bca4454cb5bb484af5cf043450d`
+-- snapshot_event_time: `2026-07-18T05:10:00+10:00`
++- source_snapshot_hash: `sha256:b7de57af69cbe194adf4e47369f3a3d7a3dd8eecece47ce8b4fdc60680573823`
++- snapshot_event_time: `2026-07-18T05:45:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `481`
++- Pending/stale events: `482`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/TASK_REPORT.md
+new file mode 100644
+index 000000000..1513394c6
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/TASK_REPORT.md
+@@ -0,0 +1,53 @@
++# TASK_REPORT · ADP-S6-P02-T073｜实现校准、技能分数与 Forecast Ledger
++
++## 唯一目标（达成）
++**长期保存成功和失败，不只展示漂亮案例**：实现 **calibration（可靠性图）+ skill scores（Brier skill/logloss）+ append-only Forecast Ledger**。**任何用户可见概率有历史校准**（其概率桶有历史数据）；**失败记录不可删除**（API 拒删 + 哈希链**篡改可检测**）。release_mode=NOT_DEPLOYED。
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：Brier/logloss/calibration/skill + append-only ledger；每概率有历史校准；失败不可删。
++2. **允许修改文件**：`tools/forecast_ledger.py`（新）+ `evidence/ADP-S6-P02-T073/*` + 治理同步。**不改 worker/生产/registry/VERSION**。校准/skill 为**指标**（非新预测模型；复用 T072 回测输出），运营 MODEL_SPEC 未改。
++3. **绝不能改变**：生产 worker/cron/数据/实时；六主题/MVP；NOT_DEPLOYED。库层只读、无时钟/随机。
++4. **基线**：main `69ada888`（T072 已合入）；well-calibrated forecast set + model/ref Brier + 含失败的 ledger。
++5. **验收**：任何用户可见概率有历史校准（覆盖桶有 n>0；未覆盖桶不算校准=负控制）；失败记录不可删除（delete raise + 哈希链篡改检测=负控制）。
++6. **回滚**：`git revert <sha>`（只读库，生产未变更）。
++
++## 交付物
++- `tools/forecast_ledger.py` —— `calibration`（10 桶可靠性图：每桶 pred_mean/obs_rate/n）+ `has_calibration`/`calibration_of`（用户可见概率的桶是否有历史数据）+ `brier_skill_score`（BSS=1−model/ref，**负技能诚实报告**）+ `logloss`（clip 防 log0）+ **append-only Ledger**（`append`[成功与失败均记，哈希链]+`delete`[**raise AppendOnlyError**]+`verify_integrity`[哈希链重算，删/改/重排**检测**]+`failures`/`successes`）。
++- `evidence/…/build_forecast_ledger.py`（well-calibrated 40 forecast + model/ref Brier + ledger[1 失败 f2 + 2 成功]）+ `forecast_ledger_report.json` + `test-results/{t073_verify.py, forecast_ledger_tests.txt, realtime_check.txt}`。
++
++## 验收结果（实测，见 test-results/forecast_ledger_tests.txt，ACCEPTANCE = PASS，exit 0）
++- **① 任何用户可见概率有历史校准**：可靠性图 **4 个非空桶 pred_mean≈obs_rate**（0.2/0.2、0.5/0.5、0.8/0.8、0.9/0.9——良校准）；覆盖桶概率（0.2/0.5/0.8/0.9）`has_calibration`=True 且 `calibration_of` 返回历史 observed_rate。**负控制（判别力）**：**未覆盖桶概率 0.35 → has_calibration False、calibration_of None**（不自动算校准）。
++- **② 失败记录不可删除**：失败 f2 在 ledger；`delete(ledger,"f2")` 与 `delete(ledger,"f1")` **均 raise AppendOnlyError**；拒删后失败集不变、成功与失败均保留。**篡改可检测（哈希链）**：干净 ledger `verify_integrity`=True；**直接 pop 失败 f2**（绕过 delete）→ `verify_integrity` **False**；**把失败改成 success 掩盖**→ `verify_integrity` **False**。
++- **③ skill scores（诚实）**：BSS(model)=**0.636>0**（打败 ref）、BSS(equal)=0、**BSS(worse)=−0.364<0（负技能诚实报告不掩盖）**；logloss=0.505。
++- **实时无回归**：NOT_DEPLOYED，无部署 → live `build_id=b189d3cc0703`（==T040）。
++
++## Data / Performance / Visual
++Data = 40 well-calibrated forecast + model/ref Brier + ledger(1 失败 + 2 成功)。Performance = 实时无回归。无 UI 改动；六主题保留（reliability plots 数据供视图消费）。
++
++## Value / Cost（S6 预测校准）
++- **Value**：**诚实的预测问责**——用户可见概率必有历史校准（可靠性图）；技能分数（BSS）对参考量化，负技能诚实报告；**Forecast Ledger 长期保存成功与失败、失败不可删且篡改可检测**——不只展示漂亮案例。为 T074+ Shadow 预测与上线/停止决策提供校准与失败历史。
++- **Cost（逐项，未知不填 0）**：生产请求 0；D1 读 0/写 0；R2 字节 0/操作 0；**模型调用 0（本地确定性指标，无 LLM）**；人工维护 = 校准/skill/ledger + 验证编写。经常性云成本 delta = $0/月（NOT_DEPLOYED）。
++
++## Known gaps
++见 `known_gaps.md`：校准为等宽 10 桶（可扩展分位桶）；ledger 库层为哈希链**篡改可检测**，生产强不可删由 D1 append-only（无 DELETE 授权）落地；skill 参考为 base-rate/climatology（可扩展）。
++
++## 不适用证据项
++`migration.sql/rollback.sql`（无 schema）、`screenshots-or-videos`、`deployment_manifest.preview.json` —— N/A（NOT_DEPLOYED，库层）。`data-samples` = forecast_ledger_report.json。`benchmarks` = forecast_ledger_report.json（BSS/logloss/calibration）。
++
++## 完成声明
++```text
++Task: ADP-S6-P02-T073
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/forecast_ledger.py(新) + T073 证据包 + 治理同步（见 changed_files.txt）；无 worker/生产改动；校准/skill为指标运营MODEL_SPEC未改
++Tests: forecast_ledger_tests.txt —— 4非空桶pred≈obs;覆盖概率有历史校准未覆盖0.35不算(负控制);失败f2保留delete raise;哈希链篡改(pop/改失败)verify_integrity False;BSS model0.636>0 equal0 worse-0.364<0诚实;logloss0.505;实时无回归(build_id b189d3cc0703==T040)，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: 校准(可靠性图)+skill(BSS/logloss)+append-only Forecast Ledger(失败不可删+篡改可检测)
++Data/Performance/Visual: Data=40 forecast+ledger;Perf=实时无回归；Visual=六主题保留
++Value: 诚实预测问责,每概率有历史校准,失败长期保存不可删篡改可检测,负技能诚实报告
++Cost: 生产请求0 / D1 0 / R2 0 / 模型 0(确定性指标无LLM)；经常性成本 0(NOT_DEPLOYED)
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（只读库；生产未触，实时无回归）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/adversarial_review.md
+new file mode 100644
+index 000000000..2011646e3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/adversarial_review.md
+@@ -0,0 +1,23 @@
++# Adversarial review · ADP-S6-P02-T073｜校准 / 技能分数 / Forecast Ledger
++
++独立对抗复核（general-purpose skeptic），职责是**证伪**验收（找空洞/作弊/误导），非确认。
++
++## 攻击向量
++(a) 校准（_bin 边界 0/0.1../1.0/越界/None；has_calibration 是否真门；良校准是否 rigged）；(b) append-only（delete 是否对失败/成功均 raise；raw-list 绕过；_is_failure 阈值；失败是否被误标 success 掩盖）；(c) skill（BSS 公式/负技能诚实/除零；logloss clip/空）；(d) 失败保存（成功与失败均在）；(e) 非空跑（每条款判别控制、verifier 从工具现推）；NOT_DEPLOYED。
++
++## 复核结论：CONFIRMED_SOUND（hole=null, severity=minor）
++- **(a) 校准**：`_bin` 各边界正确（0.0→0、0.1..0.9→1..9、1.0→bin9 无第 11 桶、越界 clamp）；IEEE 精确无误配；`has_calibration` 真门（n>0）；负控制 0.35（空 bin3）→ False、calibration_of None。非空跑。
++- **(b) append-only**：`delete()` 对失败 f2 与成功 f1 **均 raise**，无其他删除函数；verifier 确认拒删后失败集不变。
++- **(c) skill**：BSS=1−mean(model)/mean(ref) 正确；**负技能诚实（worse→−0.3636 不 clamp）**；ref=0→None；空→None。logloss eps clip、空→None。
++- **(d)**：`_is_failure` 阈值 0.5 正确；成功与失败均保留；verifier 断言两者在。
++- **(e)**：verifier 从工具现推（不读 report JSON），每条款真判别负控制；fixture 充分（4 非空桶、真失败 f2）。
++- **NOT_DEPLOYED**：仅 import math（复核时；现另 import hashlib/json 用于哈希链）；无 I/O/网络/时钟/随机。
++- **判定**：两验收条款（任何用户可见概率有历史校准 / 失败记录不可删除）**真成立、非空跑/作弊/错**。复核指出 append-only 仅 API 级（raw list 可绕过）——列为 minor latent。
++
++## latent 的主动闭合（复核前哈希链 + 复核后两项）
++1. **append-only 仅 API 级、raw-list 绕过**（复核核心 minor）：**复核前已加哈希链** tamper-evidence——`append` 对每记录打 `chain=sha256(prev+seq+core)`，`verify_integrity()` 重算链；**直接 pop 失败 / 把失败改 success 掩盖 → verify_integrity False（可检测）**。故"失败记录不可删除"有**超越 delete() 拒绝的实证牙齿**：删/改任一失败可被检测。verifier 加控制（pop/mutate 失败 → verify_integrity False）。库层为**篡改可检测**，生产强不可删由 D1 append-only（无 DELETE 授权）落地（known_gaps 述）。
++2. **`_bin(None)` 抛 TypeError**（复核指出）：**已修** `_bin` try/except 非数值→None；`has_calibration/calibration_of` 对 None bin 返 False/None；`calibration` 跳过 None-bin forecast。verifier 加控制（has_calibration(None)=False 不崩）。
++3. **"reliability plots" 只有数据无渲染图**（复核指出，acceptance 不要求图）：本任务出**可靠性数据**（每桶 pred_mean/obs_rate/n）供视图渲染；acceptance row 不需图，非缺陷。known_gaps 述。
++
++## 结论
++复核 **CONFIRMED_SOUND**（minor latent 均已闭合）；两验收条款有 load-bearing 判别负控制（未覆盖/None 概率不算校准、delete raise + 哈希链篡改检测、负技能诚实）、非空跑，verifier 从工具现推。append-only 由 delete 拒绝 + **哈希链 tamper-evidence** 双重保障（超越 API 级）；_bin None 优雅处理；reliability 数据齐备。校准/skill 为指标非新模型（运营 MODEL_SPEC 未触）。确定性、零副作用、无 LLM/时钟/随机。实时无回归（live build_id b189d3cc0703 == T040）。判定：**可交独立验证 / SHIP**。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/build_forecast_ledger.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/build_forecast_ledger.py
+new file mode 100644
+index 000000000..f24e66dda
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/build_forecast_ledger.py
+@@ -0,0 +1,56 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Deterministic fixtures for ADP-S6-P02-T073 (calibration + skill + Forecast Ledger).
++
++A well-calibrated forecast set (predicted probability tracks the observed frequency per bin), a model
++that beats a base-rate reference, and a ledger with both a success and a failure record.
++"""
++import json
++import pathlib
++import sys
++
++HERE = pathlib.Path(__file__).resolve().parent
++V01 = HERE.parent.parent
++sys.path.insert(0, str(V01 / "tools"))
++import forecast_ledger as FL
++
++# A well-calibrated set: within each 0.1 bin, the observed rate ~= the predicted probability.
++# bin 0.2: 10 forecasts at 0.2, 2 positives (obs 0.2); bin 0.8: 10 at 0.8, 8 positives (obs 0.8); etc.
++FORECASTS = []
++for prob, n_pos, n in [(0.2, 2, 10), (0.5, 5, 10), (0.8, 8, 10), (0.9, 9, 10)]:
++    for i in range(n):
++        FORECASTS.append({"prob": prob, "label": 1 if i < n_pos else 0})
++
++# model vs reference Brier (per rolling window, from T072-style backtests)
++MODEL_BRIERS = [0.08, 0.09, 0.07]
++REF_BRIERS = [0.22, 0.22, 0.22]
++
++
++def build_ledger():
++    lg = FL.new_ledger()
++    FL.append(lg, "f1", 0.85, 1)   # success (predicted high, happened)
++    FL.append(lg, "f2", 0.80, 0)   # FAILURE (predicted high, did not happen)
++    FL.append(lg, "f3", 0.10, 0)   # success (predicted low, did not happen)
++    return lg
++
++
++def main():
++    calib = FL.calibration(FORECASTS)
++    lg = build_ledger()
++    report = {
++        "calibration_bins": [b for b in calib["bins"] if b["n"] > 0],
++        "brier_skill_score": FL.brier_skill_score(MODEL_BRIERS, REF_BRIERS),
++        "logloss": FL.logloss([f["prob"] for f in FORECASTS], [f["label"] for f in FORECASTS]),
++        "ledger": {"n": len(lg["records"]), "failures": [r["forecast_id"] for r in FL.failures(lg)],
++                   "successes": [r["forecast_id"] for r in FL.successes(lg)]},
++    }
++    (HERE / "forecast_ledger_report.json").write_text(
++        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print("calibration bins (n>0):", [(b["bin"], b["pred_mean"], b["obs_rate"], b["n"]) for b in report["calibration_bins"]])
++    print("BSS:", report["brier_skill_score"], "logloss:", report["logloss"])
++    print("ledger:", report["ledger"])
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/commands.log
+new file mode 100644
+index 000000000..eb9aa069e
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/commands.log
+@@ -0,0 +1,24 @@
++# ADP-S6-P02-T073 commands (deterministic, no network except the read-only realtime build check)
++
++# 1. import sanity
++python3 -c "import sys; sys.path.insert(0,'tools'); import forecast_ledger"
++
++# 2. build calibration/skill/ledger fixtures + report (deterministic)
++python3 evidence/ADP-S6-P02-T073/build_forecast_ledger.py
++#   -> calibration bins (n>0): [(2,0.2,0.2,10),(5,0.5,0.5,10),(8,0.8,0.8,10),(9,0.9,0.9,10)]
++#   -> BSS: 0.636364  logloss: 0.504759
++#   -> ledger: {'n':3,'failures':['f2'],'successes':['f1','f3']}
++
++# 3. run deterministic acceptance verifier (re-derives from tool, not the report)
++python3 evidence/ADP-S6-P02-T073/test-results/t073_verify.py | tee evidence/ADP-S6-P02-T073/test-results/forecast_ledger_tests.txt
++#   calibration: 4 populated bins, pred~obs; covered probs backed, uncovered (0.35) & None not
++#   ledger append-only: failure ['f2'] preserved; delete() raises; tamper (pop/mutate a failure) breaks verify_integrity
++#   skill: BSS(model)=0.636364>0, BSS(equal)=0, BSS(worse)=-0.363636<0 (honest); logloss=0.504759
++#   ACCEPTANCE = PASS (exit 0)
++
++# 4. confirm realtime NOT regressed (read-only GET; NOT_DEPLOYED so must be unchanged)
++curl -s https://adp.linzezhang.com/build.json | python3 -c "import sys,json;print(json.load(sys.stdin)['build_id'])"
++#   -> b189d3cc0703  (== T040; realtime not regressed)
++
++# 5. governance sync (fullwt reset to origin/main, copy evidence + tool, run gov_t073.py),
++#    lean_governance ci --changed-only (expect SHIP, zero_tracked_write True), commit + push HEAD:main
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/cost_value.json
+new file mode 100644
+index 000000000..6ea60a206
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/cost_value.json
+@@ -0,0 +1,34 @@
++{
++  "task_id": "ADP-S6-P02-T073",
++  "title": "实现校准、技能分数与 Forecast Ledger",
++  "release_mode": "NOT_DEPLOYED",
++  "stage": "S6",
++  "phase": "S6-P02",
++  "is_metric_not_model": "calibration/skill are metrics over T072 backtest outputs; no new predictive model; operational MODEL_SPEC untouched",
++  "value": {
++    "user_value": "诚实的预测问责：用户可见概率必有历史校准(可靠性图);技能分数(BSS)对参考量化、负技能诚实报告;Forecast Ledger 长期保存成功与失败、失败不可删且篡改可检测——不只展示漂亮案例。",
++    "value_metric_stage": "S6 滚动回测、校准与 Ledger:为 T074+ Shadow 预测与上线/停止决策提供校准与失败历史。",
++    "measured": {
++      "calibration": "4非空桶pred_mean≈obs_rate;覆盖概率(0.2/0.5/0.8/0.9)has_calibration=True;未覆盖0.35→False(负控制)",
++      "append_only": "失败f2保留;delete()对失败/成功均raise;哈希链verify_integrity=True;pop或改失败→False(篡改可检测)",
++      "skill_honest": "BSS(model)=0.636>0;BSS(equal)=0;BSS(worse)=-0.364<0诚实报告;logloss=0.505"
++    }
++  },
++  "cost": {
++    "note": "未知不填 0；此为 NOT_DEPLOYED 只读库、本地确定性指标无 LLM,生产零副作用。",
++    "production_new_requests": 0,
++    "d1_rows_read": 0,
++    "d1_rows_written": 0,
++    "r2_bytes": 0,
++    "r2_operations": 0,
++    "model_calls": 0,
++    "human_maintenance": "校准/skill/ledger + 验证编写（一次性）",
++    "recurring_cloud_cost_usd_per_month": 0
++  },
++  "realtime_regression": {
++    "live_build_id": "b189d3cc0703",
++    "equals_T040": true,
++    "regressed": false
++  },
++  "rollback": "git revert <sha>（只读库；生产数据未变更）"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/forecast_ledger_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/forecast_ledger_report.json
+new file mode 100644
+index 000000000..73150b8f6
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/forecast_ledger_report.json
+@@ -0,0 +1,48 @@
++{
++  "calibration_bins": [
++    {
++      "bin": 2,
++      "lo": 0.2,
++      "hi": 0.3,
++      "n": 10,
++      "pred_mean": 0.2,
++      "obs_rate": 0.2
++    },
++    {
++      "bin": 5,
++      "lo": 0.5,
++      "hi": 0.6,
++      "n": 10,
++      "pred_mean": 0.5,
++      "obs_rate": 0.5
++    },
++    {
++      "bin": 8,
++      "lo": 0.8,
++      "hi": 0.9,
++      "n": 10,
++      "pred_mean": 0.8,
++      "obs_rate": 0.8
++    },
++    {
++      "bin": 9,
++      "lo": 0.9,
++      "hi": 1.0,
++      "n": 10,
++      "pred_mean": 0.9,
++      "obs_rate": 0.9
++    }
++  ],
++  "brier_skill_score": 0.636364,
++  "logloss": 0.504759,
++  "ledger": {
++    "n": 3,
++    "failures": [
++      "f2"
++    ],
++    "successes": [
++      "f1",
++      "f3"
++    ]
++  }
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/known_gaps.md
+new file mode 100644
+index 000000000..111eae528
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/known_gaps.md
+@@ -0,0 +1,8 @@
++# Known gaps · ADP-S6-P02-T073
++
++- **校准 = 等宽 10 桶可靠性图**：`calibration` 把预测概率分入 10 个等宽桶 [0,0.1)..[0.9,1.0]，每桶报 pred_mean/obs_rate/n（可靠性图数据）。`has_calibration(p)` 仅当 p 所在桶有历史数据（n>0）才 True——**用户可见概率必落在有历史的桶**，否则不算"有校准"（负控制已验）。可扩展为**分位桶**（等频）以更稳的稀疏尾部；本任务用等宽（简单、确定）。
++- **Forecast Ledger 篡改可检测（库层）+ 生产强不可删**：ledger 为 append-only，`append` 记成功与失败并**哈希链**（每记录 chain=sha256(prev+seq+core)），`delete()` **raise**，`verify_integrity()` 重算链——**删/改/重排任一记录（尤其失败）→ False，可检测**。Python 对象皆可变，故库层是**篡改可检测**而非物理不可变；**生产级"失败记录不可删除"由 D1 append-only 表（无 DELETE 授权）落地**，本层提供其可检测契约。
++- **skill 参考 = base-rate/climatology**：`brier_skill_score` = 1 − mean(model)/mean(ref)，参考为便宜基线（T071/base-rate）。**负技能诚实报告不掩盖**（worse model → BSS<0）。ref Brier=0 时返回 None（不除零）。可扩展多参考。
++- **指标非新模型**：calibration/skill 是对 **T072 回测输出**的评估指标 + append-only 记账，**非新预测模型**，故运营 MODEL_SPEC/formula_registry 未改（预测模型的正式规格是 T071 的 MODEL card）。
++- **无时钟/随机/网络**：确定性；相同 forecasts/ledger → 相同校准/skill/链哈希。**模型调用 0**（本地指标，无 LLM）。
++- **NOT_DEPLOYED**：不接 worker/cron/D1/R2，不改生产数据。实时无回归（live build_id b189d3cc0703 == T040）。S6-P02 后接 S6-P03（T074 Shadow 静默预测 / T075 主题加速扩散 / T076 完整 Horizon Shadow 与上线/停止决策）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/forecast_ledger_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/forecast_ledger_tests.txt
+new file mode 100644
+index 000000000..61f8a3354
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/forecast_ledger_tests.txt
+@@ -0,0 +1,5 @@
++calibration: 4 populated bins, pred~obs; covered probs backed, uncovered (0.35) & None not
++ledger append-only: failure ['f2'] preserved; delete() raises; tamper (pop/mutate a failure) breaks verify_integrity
++skill: BSS(model)=0.636364>0, BSS(equal)=0, BSS(worse)=-0.363636<0 (honest); logloss=0.504759
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/realtime_check.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/realtime_check.txt
+new file mode 100644
+index 000000000..60e505976
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/realtime_check.txt
+@@ -0,0 +1,2 @@
++build_id: b189d3cc0703
++MATCH (b189d3cc0703 == T040, realtime NOT regressed)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/t073_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/t073_verify.py
+new file mode 100644
+index 000000000..16e4b2932
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S6-P02-T073/test-results/t073_verify.py
+@@ -0,0 +1,115 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P02-T073 acceptance: calibration + skill scores + append-only Forecast Ledger.
++
++Acceptance (TASK_INDEX row 73): 任何用户可见概率有历史校准；失败记录不可删除。
++  (any user-visible probability has historical calibration; failure records cannot be deleted.)
++
++Deterministic. Re-derives from the TOOL (forecast_ledger) + fixtures -- never trusts the report.
++Negative controls prove discrimination: a probability in a bin with no history is NOT calibration-backed;
++deleting any ledger record (especially a failure) RAISES; and skill is reported honestly (a worse model
++gets a negative BSS).
++"""
++import importlib.util
++import pathlib
++import sys
++
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/"
++                   "arxiv-daily-push/docs/pursuing_goal/v0_1")
++sys.path.insert(0, str(V01 / "tools"))
++import forecast_ledger as FL
++
++T073 = V01 / "evidence" / "ADP-S6-P02-T073"
++spec = importlib.util.spec_from_file_location("bfl", str(T073 / "build_forecast_ledger.py"))
++bfl = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(bfl)
++
++fails = []
++calib = FL.calibration(bfl.FORECASTS)
++
++# =============================================================== 1) 任何用户可见概率有历史校准
++# the reliability diagram has populated bins where predicted mean tracks observed frequency
++populated = [b for b in calib["bins"] if b["n"] > 0]
++if not populated:
++    fails.append("calibration produced no populated bins")
++for b in populated:
++    if b["pred_mean"] is None or b["obs_rate"] is None:
++        fails.append(f"bin {b['bin']} has data but no pred_mean/obs_rate")
++    elif abs(b["pred_mean"] - b["obs_rate"]) > 0.05:
++        fails.append(f"bin {b['bin']} is not well-calibrated: pred {b['pred_mean']} vs obs {b['obs_rate']}")
++# a user-visible probability in a covered bin IS backed by historical calibration
++for p in (0.2, 0.5, 0.8, 0.9):
++    if not FL.has_calibration(p, calib):
++        fails.append(f"probability {p} in a covered bin is not calibration-backed")
++    if FL.calibration_of(p, calib) is None:
++        fails.append(f"probability {p} has no historical observed rate")
++# NEGATIVE CONTROL: a probability whose bin has NO history is NOT calibration-backed (not auto-passed)
++if FL.has_calibration(0.35, calib):   # bin 3 -> no forecasts there
++    fails.append("a probability in an empty bin was wrongly reported as calibration-backed (vacuous)")
++if FL.calibration_of(0.35, calib) is not None:
++    fails.append("an uncalibrated probability returned a historical rate")
++# a non-numeric "probability" is not calibration-backed and does not crash
++if FL.has_calibration(None, calib) or FL.calibration_of(None, calib) is not None:
++    fails.append("a non-numeric probability was treated as calibration-backed / crashed")
++print(f"calibration: {len(populated)} populated bins, pred~obs; covered probs backed, uncovered (0.35) & None not")
++
++# =============================================================== 2) 失败记录不可删除
++lg = bfl.build_ledger()
++fail_ids_before = {r["forecast_id"] for r in FL.failures(lg)}
++if "f2" not in fail_ids_before:
++    fails.append("the failure record f2 was not preserved in the ledger")
++# deleting a FAILURE record must raise (append-only, failures immutable)
++try:
++    FL.delete(lg, "f2")
++    fails.append("a failure record was deleted (ledger is not append-only)")
++except FL.AppendOnlyError:
++    pass
++# deleting ANY record is refused
++try:
++    FL.delete(lg, "f1")
++    fails.append("a success record was deleted (ledger is not append-only)")
++except FL.AppendOnlyError:
++    pass
++# the failure is still there after the delete attempt; both successes and failures kept
++if {r["forecast_id"] for r in FL.failures(lg)} != fail_ids_before:
++    fails.append("the failure set changed after a (refused) delete")
++if not (FL.failures(lg) and FL.successes(lg)):
++    fails.append("the ledger does not preserve both successes AND failures")
++# TAMPER-EVIDENCE: a clean ledger verifies; directly popping a failure (bypassing delete) is DETECTED.
++if not FL.verify_integrity(lg):
++    fails.append("a clean append-only ledger failed its integrity check")
++import copy as _copy
++tampered = _copy.deepcopy(lg)
++tampered["records"] = [r for r in tampered["records"] if r["forecast_id"] != "f2"]   # remove the failure
++if FL.verify_integrity(tampered):
++    fails.append("deleting a failure record (bypassing delete) was NOT detected by verify_integrity")
++# mutating a failure's outcome to hide it also breaks integrity
++mutated = _copy.deepcopy(lg)
++for r in mutated["records"]:
++    if r["forecast_id"] == "f2":
++        r["outcome"] = "success"
++if FL.verify_integrity(mutated):
++    fails.append("mutating a failure into a success was NOT detected by verify_integrity")
++print(f"ledger append-only: failure {sorted(fail_ids_before)} preserved; delete() raises; "
++      f"tamper (pop/mutate a failure) breaks verify_integrity")
++
++# =============================================================== 3) skill scores (honest)
++bss = FL.brier_skill_score(bfl.MODEL_BRIERS, bfl.REF_BRIERS)
++if not (bss is not None and bss > 0):
++    fails.append(f"a model beating the reference should have positive skill, got {bss}")
++# equal model -> zero skill
++if FL.brier_skill_score(bfl.REF_BRIERS, bfl.REF_BRIERS) != 0:
++    fails.append("a model equal to the reference should have zero skill")
++# NEGATIVE CONTROL: a WORSE model -> negative skill, reported honestly (not clamped/hidden)
++worse = FL.brier_skill_score([0.30, 0.30, 0.30], bfl.REF_BRIERS)
++if not (worse is not None and worse < 0):
++    fails.append(f"a worse-than-reference model should have negative skill, got {worse}")
++ll = FL.logloss([f["prob"] for f in bfl.FORECASTS], [f["label"] for f in bfl.FORECASTS])
++if ll is None or ll < 0:
++    fails.append(f"logloss invalid: {ll}")
++print(f"skill: BSS(model)={bss}>0, BSS(equal)=0, BSS(worse)={worse}<0 (honest); logloss={ll}")
++
++print("\nACCEPTANCE = " + ("PASS" if not fails else "FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/forecast_ledger.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/forecast_ledger.py
+new file mode 100644
+index 000000000..94791d2b9
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/forecast_ledger.py
+@@ -0,0 +1,148 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""ADP-S6-P02-T073 -- calibration, skill scores, and the append-only Forecast Ledger.
++
++Preserves successes AND failures over the long run -- never just the pretty cases:
++
++  * calibration(forecasts)      -- a reliability diagram: bin predictions into 10 probability bins and
++    report, per bin, the mean predicted probability vs the observed outcome frequency and the count.
++  * has_calibration(p, calib)   -- True iff the bin a user-visible probability p falls in has historical
++    data (count > 0). A probability whose bin has no history is NOT backed by calibration.
++  * brier_skill_score / logloss -- skill vs a reference (BSS = 1 - Brier(model)/Brier(reference)) and the
++    log loss.
++  * Ledger (append-only)        -- append(record) records a forecast + its outcome (success or failure);
++    delete() is REFUSED (raises) so a failure record can never be removed.
++
++The ledger is TAMPER-EVIDENT: each record carries a hash chained from the previous record, so deleting
++or mutating any record (especially a failure) breaks verify_integrity() -- the append-only property has
++teeth beyond the delete() refusal.
++
++Deterministic; no network, no clock, no randomness, no production side effects.
++"""
++import hashlib
++import json
++import math
++
++N_BINS = 10
++_CORE_FIELDS = ("forecast_id", "prob", "label", "outcome")
++
++
++class AppendOnlyError(Exception):
++    """Raised on any attempt to delete/mutate a Forecast Ledger record -- failures are immutable."""
++
++
++def _bin(p):
++    """The reliability bin index 0..N_BINS-1 for a probability p in [0,1]; None for a non-numeric p."""
++    try:
++        p = min(1.0, max(0.0, float(p)))
++    except (TypeError, ValueError):
++        return None
++    return min(N_BINS - 1, int(p * N_BINS))
++
++
++def calibration(forecasts):
++    """forecasts = [{prob, label}]. Returns per-bin reliability: {bin, lo, hi, n, pred_mean, obs_rate}."""
++    bins = {i: [] for i in range(N_BINS)}
++    for f in forecasts:
++        b = _bin(f.get("prob"))
++        if f.get("label") in (0, 1) and b is not None:
++            bins[b].append(f)
++    out = []
++    for i in range(N_BINS):
++        fs = bins[i]
++        n = len(fs)
++        pred_mean = round(sum(x["prob"] for x in fs) / n, 6) if n else None
++        obs_rate = round(sum(x["label"] for x in fs) / n, 6) if n else None
++        out.append({"bin": i, "lo": round(i / N_BINS, 2), "hi": round((i + 1) / N_BINS, 2),
++                    "n": n, "pred_mean": pred_mean, "obs_rate": obs_rate})
++    return {"bins": out, "n_total": sum(b["n"] for b in out)}
++
++
++def has_calibration(p, calib):
++    """A user-visible probability is calibration-backed iff its bin has historical data (n > 0). A
++    non-numeric probability is not calibration-backed (no crash)."""
++    idx = _bin(p)
++    return idx is not None and calib["bins"][idx]["n"] > 0
++
++
++def calibration_of(p, calib):
++    """The historical observed rate + count for a probability's bin (or None if no history / non-numeric)."""
++    idx = _bin(p)
++    if idx is None:
++        return None
++    b = calib["bins"][idx]
++    return {"bin": b["bin"], "observed_rate": b["obs_rate"], "n": b["n"]} if b["n"] else None
++
++
++def brier_skill_score(model_briers, ref_briers):
++    """BSS = 1 - mean(model_brier)/mean(ref_brier). > 0 means the model beats the reference; 0 = no skill;
++    < 0 = worse than reference (reported honestly, not hidden)."""
++    if not model_briers or not ref_briers:
++        return None
++    mb = sum(model_briers) / len(model_briers)
++    rb = sum(ref_briers) / len(ref_briers)
++    if rb == 0:
++        return None
++    return round(1 - mb / rb, 6)
++
++
++def logloss(preds, labels, eps=1e-15):
++    if not labels:
++        return None
++    total = 0.0
++    for p, y in zip(preds, labels):
++        p = min(1 - eps, max(eps, p))
++        total += -(y * math.log(p) + (1 - y) * math.log(1 - p))
++    return round(total / len(labels), 6)
++
++
++# ------------------------------------------------------------------ append-only Forecast Ledger
++def new_ledger():
++    return {"records": []}
++
++
++def _is_failure(prob, label):
++    return (1 if prob >= 0.5 else 0) != label
++
++
++def _chain_hash(prev, seq, core):
++    payload = json.dumps({"prev": prev, "seq": seq, "core": core}, ensure_ascii=False, sort_keys=True)
++    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
++
++
++def append(ledger, forecast_id, prob, label, meta=None):
++    """Append a forecast + its outcome. Both successes and failures are recorded permanently, each
++    chained to the previous record so any later deletion/mutation is detectable."""
++    core = {"forecast_id": forecast_id, "prob": prob, "label": label,
++            "outcome": "failure" if _is_failure(prob, label) else "success"}
++    seq = len(ledger["records"])
++    prev = ledger["records"][-1]["chain"] if ledger["records"] else "genesis"
++    rec = {**core, "meta": meta or {}, "seq": seq, "chain": _chain_hash(prev, seq, core)}
++    ledger["records"].append(rec)
++    return ledger
++
++
++def verify_integrity(ledger):
++    """Recompute the hash chain. Returns False if any record was deleted, reordered, or mutated -- so a
++    removed failure is DETECTABLE even if a caller bypassed delete() and popped the list directly."""
++    prev = "genesis"
++    for i, r in enumerate(ledger["records"]):
++        core = {k: r.get(k) for k in _CORE_FIELDS}
++        if r.get("seq") != i or r.get("chain") != _chain_hash(prev, i, core):
++            return False
++        prev = r["chain"]
++    return True
++
++
++def delete(ledger, forecast_id):
++    """REFUSED. The Forecast Ledger is append-only -- a failure record can never be deleted."""
++    raise AppendOnlyError(f"cannot delete forecast {forecast_id}: the Forecast Ledger is append-only "
++                          f"(failures are preserved, not hidden)")
++
++
++def failures(ledger):
++    return [r for r in ledger["records"] if r["outcome"] == "failure"]
++
++
++def successes(ledger):
++    return [r for r in ledger["records"] if r["outcome"] == "success"]

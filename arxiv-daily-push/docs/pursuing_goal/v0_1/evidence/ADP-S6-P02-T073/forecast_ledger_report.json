@@ -1,0 +1,48 @@
+{
+  "calibration_bins": [
+    {
+      "bin": 2,
+      "lo": 0.2,
+      "hi": 0.3,
+      "n": 10,
+      "pred_mean": 0.2,
+      "obs_rate": 0.2
+    },
+    {
+      "bin": 5,
+      "lo": 0.5,
+      "hi": 0.6,
+      "n": 10,
+      "pred_mean": 0.5,
+      "obs_rate": 0.5
+    },
+    {
+      "bin": 8,
+      "lo": 0.8,
+      "hi": 0.9,
+      "n": 10,
+      "pred_mean": 0.8,
+      "obs_rate": 0.8
+    },
+    {
+      "bin": 9,
+      "lo": 0.9,
+      "hi": 1.0,
+      "n": 10,
+      "pred_mean": 0.9,
+      "obs_rate": 0.9
+    }
+  ],
+  "brier_skill_score": 0.636364,
+  "logloss": 0.504759,
+  "ledger": {
+    "n": 3,
+    "failures": [
+      "f2"
+    ],
+    "successes": [
+      "f1",
+      "f3"
+    ]
+  }
+}

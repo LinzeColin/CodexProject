@@ -1,0 +1,5 @@
+calibration: 4 populated bins, pred~obs; covered probs backed, uncovered (0.35) & None not
+ledger append-only: failure ['f2'] preserved; delete() raises; tamper (pop/mutate a failure) breaks verify_integrity
+skill: BSS(model)=0.636364>0, BSS(equal)=0, BSS(worse)=-0.363636<0 (honest); logloss=0.504759
+
+ACCEPTANCE = PASS
