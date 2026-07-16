@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S4-P01-T044", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "before scaling each cohort, a Source-Year dashboard shows fetch/storage/AI/failure/manual-maintenance cost with the hard rule that an unknown cost is UNKNOWN not 0, and computes cost per 1000 artifacts and per accepted material event for the source-years whose costs are measured -- so scaling decisions are made on real cost, never on a fake 0",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "cost dashboard over the source-year grid; not wired to production; measured costs come from real Worker analytics / R2 usage keys / model counts when wired"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "dashboard": {"source_years": 30, "computable_rows": 2, "rows_with_unknown_cost": 28, "unknown_cost_cells": 84, "zero_cost_cells": 2, "no_unknown_cost_shown_as_zero": true},
+  "acceptance": {"unknown_cost_never_zero": true, "cost_per_1000_artifacts_computable": true, "cost_per_accepted_event_computable": true, "throughput_and_failure_and_manual_metrics": true}
+}

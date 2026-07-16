@@ -1,0 +1,6 @@
+source-years 30 | computable 2 | unknown-cost 28 | unknown cells 84 | zero cells 2
+unknown row arxiv-all|2016: costs ['UNKNOWN', 'UNKNOWN', 'UNKNOWN'] -> per-1000 fetch UNKNOWN (UNKNOWN, not 0)
+computable arxiv-all|2025: artifacts=22 accepted=8 per1000(fetch=5454.5455,storage=20454545.4545) per_accepted(fetch=15.0)
+computable nejm|2026: artifacts=20 accepted=7 per1000(fetch=1500.0,storage=4500000.0) per_accepted(fetch=4.2857)
+
+ACCEPTANCE = PASS

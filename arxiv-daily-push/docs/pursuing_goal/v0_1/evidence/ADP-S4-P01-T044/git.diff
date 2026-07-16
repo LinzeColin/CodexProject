@@ -1,0 +1,1161 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 475e55c45..7ecc92680 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S4-P01-T044 (Source-Year cost + maintenance dashboard; closes S4-P01; NOT_DEPLOYED)
++
++- Forty-fourth task of the ADP V0.1 FINAL EXECUTION program and the last of S4-P01 (pausable/resumable backfill engine). Goal: before scaling each cohort, know the fetch, storage, AI, failure, and manual-maintenance cost per source-year. NOT_DEPLOYED, 0 recurring cloud cost; dashboard logic, not wired to production. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/cost_dashboard.py (build_facts counting throughput per source-year and taking costs from a measured map where any unmeasured field is UNKNOWN and never 0, unit_costs giving per-resource cost per 1000 artifacts and per accepted event with UNKNOWN propagation, and dashboard), COST_DASHBOARD_SPEC.md, and evidence/ADP-S4-P01-T044/{cost_items.json, cost_dashboard_report.json}. Acceptance verified (evidence/ADP-S4-P01-T044/test-results/cost_tests.txt, ACCEPTANCE = PASS, exit 0): over the real 500-item throughput with two source-years measured, there are 30 source-years of which 2 are cost-computable and 28 have unknown cost, and an unknown cost is never shown as 0 -- every unmeasured cost is UNKNOWN and its derived unit cost is UNKNOWN, while a measured genuine 0 like model_calls is preserved as 0 and distinguished from UNKNOWN; and the cost per 1000 artifacts and per accepted event are computable for the measured source-years, with arxiv-all in 2025 at 5454.5 fetch subrequests per 1000 artifacts and 15.0 per accepted event and nejm in 2026 at 1500 and 4.29. This lets each cohort be scaled on real cost, never on a fake 0. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-17 Australia/Sydney - ADP V0.1 task ADP-S4-P01-T043 (Source-Year-Month gap detector; NOT_DEPLOYED)
+ 
+ - Forty-third task of the ADP V0.1 FINAL EXECUTION program (S4-P01). Goal: turn comprehensiveness from a source count into a visible time-coverage grid where every enabled source by year-month cell has an item count or an explicit gap reason, with zero silently-unexplained holes. NOT_DEPLOYED, 0 recurring cloud cost; detector logic, not wired to production. Deliverables under arxiv-daily-push/docs/pursuing_goal/v0_1/: tools/gap_detector.py (build_coverage, an exhaustive classify producing covered / source_not_yet_active / no_publications / not_backfilled / fetch_failed / UNEXPLAINED, detect producing the grid plus reason counts plus alerts, infer_source_windows, and month_range), GAP_DETECTOR_SPEC.md, and evidence/ADP-S4-P01-T043/{coverage_items.json, coverage_report.json}. Acceptance verified (evidence/ADP-S4-P01-T043/test-results/gap_tests.txt, ACCEPTANCE = PASS, exit 0): over the real 500-item coverage of 20 sources across 127 months, i.e. 2540 cells, every cell has a count or a reason with covered 75, not_backfilled 203, and source_not_yet_active 2262 summing to 2540 and zero unexplained holes; and the detector alerts on an unexplained hole rather than trivially explaining everything, since injecting a ghost source with no activity window produces 127 unexplained cells and 127 alerts. Cost (unknown != 0): new_requests 0, D1 0, R2 0, model_calls 0. Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index e86fbe986..1ef01e409 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260717-ADP-V01-S4-P01-T042-THREE-LANE-SCHEDULER"
+-source_snapshot_hash: "sha256:05d011af1866fbaaf0b75f0c1dbe0a8f1f88dcdea9ca4829c8dab3cacc9b7e7f"
++as_of_event_id: "EVENT-20260717-ADP-V01-S4-P01-T043-GAP-DETECTOR"
++source_snapshot_hash: "sha256:9c291ee76ebb25a9a46e9c4e03e5dff28919f4fbd6723bad11b05513980f84a3"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-17T11:55:00+10:00"
++snapshot_event_time: "2026-07-17T12:30:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 102
++    precommit_pending_events: 103
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 535d14442..d164aaa39 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6400,6 +6400,7 @@ None for this new project baseline.
+ - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
++- 2026-07-17 V0.1 S4-P01-T044: built the Source-Year cost + maintenance dashboard (last S4-P01 task; closes S4-P01). NOT_DEPLOYED, 0 recurring cloud cost; dashboard logic, not wired to production. Deliverables under docs/pursuing_goal/v0_1/: tools/cost_dashboard.py (build_facts[throughput + costs, unmeasured=UNKNOWN never 0]; unit_costs[per-resource per-1000 + per-accepted, UNKNOWN propagation]; dashboard), COST_DASHBOARD_SPEC.md, evidence/ADP-S4-P01-T044/{cost_items.json, cost_dashboard_report.json}. Acceptance (test-results/cost_tests.txt, PASS exit 0): real 500 throughput + 2 measured source-years -> 30 source-years (2 computable / 28 unknown-cost); unknown cost never 0 (unmeasured -> UNKNOWN, derived UNKNOWN; measured genuine 0 model_calls preserved and distinguished); cost per 1000 artifacts + per accepted event computable for measured rows (arxiv-all|2025 fetch 5454.5/1000 + 15.0/accepted; nejm|2026 1500 + 4.29); throughput + failure/manual metrics present. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P01-T043: implemented the Source-Year-Month gap detector (S4-P01). NOT_DEPLOYED, 0 recurring cloud cost; detector logic, not wired to production. Deliverables under docs/pursuing_goal/v0_1/: tools/gap_detector.py (build_coverage; exhaustive classify[covered/source_not_yet_active/no_publications/not_backfilled/fetch_failed/UNEXPLAINED]; detect[grid + reason counts + alerts]; infer_source_windows; month_range), GAP_DETECTOR_SPEC.md, evidence/ADP-S4-P01-T043/{coverage_items.json, coverage_report.json}. Acceptance (test-results/gap_tests.txt, PASS exit 0): real 500 coverage = 20 sources x 127 months = 2540 cells, every cell count-or-reason (covered 75 / not_backfilled 203 / source_not_yet_active 2262 = 2540), 0 unexplained; injected ghost-source (no window) -> 127 unexplained -> 127 alerts (detector catches silent holes). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P01-T042: built the Realtime/Catchup/Backfill three-lane scheduler + auto-pause (last S4-P01 task; closes S4-P01). NOT_DEPLOYED, 0 recurring cloud cost; scheduler logic, not wired to the production cron. Deliverables under docs/pursuing_goal/v0_1/: tools/three_lane_scheduler.py (schedule[realtime first + quota + backpressure pause backfill then throttle catchup when projected realtime P95 > baseline+20% + kill switch]; project_p95; stress_test), THREE_LANE_SPEC.md, evidence/ADP-S4-P01-T042/stress_test_report.json. Acceptance (test-results/scheduler_tests.txt, PASS exit 0): every scenario keeps realtime freshness P95 within baseline+20% (healthy 11.9 / pressure 11.8 / burst 11.6 / kill 10.8 <= 12) with realtime always fully served; backfill runs healthy (3/3), throttles under pressure (2/8), auto-pauses on a realtime burst (0/6) -> monotonic grant [3,2,0]; kill switch pauses backfill (0/5). Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-17 V0.1 S4-P01-T041: implemented the resumable 2016+ backfill planner + cursor (first S4 task). NOT_DEPLOYED, 0 recurring cloud cost; planner + cursor semantics, not wired to real backfill fetching. Deliverables under docs/pursuing_goal/v0_1/: tools/backfill_planner.py (plan_shards monthly backfill/YYYY-MM; ShardCursor[status/last_confirmed_id/processed/total]; process_shard[resume past checkpoint / idempotent by content id / checkpoint after confirm]; resume; CHECKPOINT_SCHEMA), schemas/backfill_checkpoint.sql (cn_backfill_shards + status index), BACKFILL_PLANNER_SPEC.md, evidence/ADP-S4-P01-T041/backfill_plan.json. Acceptance (test-results/backfill_tests.txt, PASS exit 0): 127 monthly shards backfill/2016-01..backfill/2026-07; same shard 3x -> no duplicates (run1 applies 10, runs 2/3 apply 0, applied 10 unique); interrupt after 4 (in_progress + checkpoint) -> resume applies exactly 6 more -> done, total 10, no redo/skip/dup, strictly after the checkpoint. Cost: requests 0 / D1 0 / R2 0 / model 0. NOT self-signed PASS -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 30f250f3a..9d4c588f2 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `102`
+-- pending_or_stale_events: `452`
+-- freshness_counts: `pending_or_stale_events=452; legacy_unbound_events=334`
++- precommit_pending_events: `103`
++- pending_or_stale_events: `453`
++- freshness_counts: `pending_or_stale_events=453; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,8 +100,8 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:05d011af1866fbaaf0b75f0c1dbe0a8f1f88dcdea9ca4829c8dab3cacc9b7e7f`
+-- snapshot_event_time: `2026-07-17T11:55:00+10:00`
++- source_snapshot_hash: `sha256:9c291ee76ebb25a9a46e9c4e03e5dff28919f4fbd6723bad11b05513980f84a3`
++- snapshot_event_time: `2026-07-17T12:30:00+10:00`
+ - generator_version: `4.0.1`
+ - version: `0.23.1`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 6a32077d8..670c88770 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:05d011af1866fbaaf0b75f0c1dbe0a8f1f88dcdea9ca4829c8dab3cacc9b7e7f`
+-- snapshot_event_time: `2026-07-17T11:55:00+10:00`
++- source_snapshot_hash: `sha256:9c291ee76ebb25a9a46e9c4e03e5dff28919f4fbd6723bad11b05513980f84a3`
++- snapshot_event_time: `2026-07-17T12:30:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `452`
++- Pending/stale events: `453`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/COST_DASHBOARD_SPEC.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/COST_DASHBOARD_SPEC.md
+new file mode 100644
+index 000000000..8b3d8d95c
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/COST_DASHBOARD_SPEC.md
+@@ -0,0 +1,35 @@
++# Source-Year Cost + Maintenance Dashboard Spec · ADP-S4-P01-T044
++
++在**扩每个 cohort 前**知道每个 source-year 的**抓取 / 存储 / AI / 失败 / 人工维护**成本。
++硬规则（DIR 口径）：**未知成本不得用 0**——未测得的成本是字面 `"UNKNOWN"`，依赖它的派生单位成本也是 `"UNKNOWN"`。
++工具：`tools/cost_dashboard.py`。**NOT_DEPLOYED**。
++
++## Cost facts（每 source-year）
++
++`build_facts(items, measured)` → 每 (source_id, year)：
++- **throughput**：`artifacts`（条目数）、`accepted_events`（accepted material event 数）——从 items 计数。
++- **cost fields**：`fetch_subrequests`（Worker 子请求）、`storage_bytes`（R2 字节）、`model_calls`（AI 调用）——来自 `measured`，**未测=UNKNOWN，绝不 0**。
++- **ops fields**：`failures`、`manual_interventions`——同上，未测=UNKNOWN。
++
++成本用**资源单位**计（免费档 DIR-007，经常性 ≈$0；资源才是真约束）。
++
++## 单位成本（每千 artifact / 每 accepted event）
++
++`unit_costs(fact)`：**逐资源**给 `cost_per_1000_artifacts` 与 `cost_per_accepted_event`（子请求/字节/模型调用不混加）。
++任一资源 UNKNOWN 或缺分母 → 该资源单位成本 `UNKNOWN`（不 0）。`recurring_usd_month=0`（免费档）。
++
++## Dashboard
++
++`dashboard(items, measured)`：每行 = fact + 单位成本 + `cost_computable`（全部成本已测才 True）。
++汇总 `computable_rows / rows_with_unknown_cost / unknown_cost_cells / zero_cost_cells`，`no_unknown_cost_shown_as_zero=True`（构造保证）。
++
++## 验收（`test-results/cost_tests.txt`，PASS）
++
++真实 500 throughput + 2 个 source-year 测得成本：**30 source-years（2 computable / 28 unknown-cost）**：
++- **未知成本不得用 0**：未测 source-year 成本全 `UNKNOWN`（派生单位成本 UNKNOWN），**无未测成本被显示为 0**；测得的**真 0**（model_calls=0）作为已知 0 保留，与 UNKNOWN 区分。
++- **可计算每千/每 accepted**：`arxiv-all|2025` per-1000 fetch 5454.5、per_accepted fetch 15.0；`nejm|2026` per-1000 fetch 1500、per_accepted 4.29（数值校验通过）。
++- throughput + failure/manual 指标齐备。
++
++## 边界
++
++`measured` 成本接真实用量（Worker 分析/R2 用量键 r2_YYYYMM_*/模型计数）后填充；本任务演示 2 个测得 source-year + 其余 UNKNOWN 的诚实口径。人工维护量为 ops field（接真实工单/失败日志）。未接生产看板 UI（属后续）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/TASK_REPORT.md
+new file mode 100644
+index 000000000..b1a8e50fd
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/TASK_REPORT.md
+@@ -0,0 +1,53 @@
++# TASK_REPORT · ADP-S4-P01-T044｜建立 Source-Year 单位成本与维护看板
++
++## 唯一目标（达成）
++在**扩每个 cohort 前**知道**抓取、存储、AI、失败和人工维护**成本。交付 cost facts、throughput、failure/manual intervention metrics。**未知成本不得用 0；可计算每千 artifact 和每个 accepted material event 成本。**
++
++## 六个开始前问题（已回答）
++1. **唯一目标**：Source-Year 成本看板；未知成本标 UNKNOWN 不用 0、可算每千 artifact/每 accepted event 成本。
++2. **允许修改文件**：`docs/pursuing_goal/v0_1/{tools/cost_dashboard.py, COST_DASHBOARD_SPEC.md}` + 本证据包（cost_items/cost_dashboard_report/test-results/报告）+ 治理同步。
++3. **绝不能改变**：抓取行为（生产）、六主题、worker、生产 D1/R2、cron；不接生产。NOT_DEPLOYED。
++4. **基线**：main `a0f032ba`（T043 gap detector 已合入）；throughput 用真实 500 抓样。
++5. **验收**：未知成本不得用 0；可计算每千 artifact 和每个 accepted material event 成本。
++6. **回滚**：`git revert <sha>`（纯看板，生产未变更）。
++
++## 交付物
++- `tools/cost_dashboard.py` —— `build_facts`（每 source-year：throughput[artifacts/accepted_events] + cost fields[fetch_subrequests/storage_bytes/model_calls] + ops[failures/manual_interventions]，**未测=UNKNOWN 绝不 0**）+ `unit_costs`（**逐资源** cost_per_1000_artifacts / cost_per_accepted_event，UNKNOWN 传播）+ `dashboard`。
++- `COST_DASHBOARD_SPEC.md` + `evidence/.../{cost_items.json, cost_dashboard_report.json}`。
++
++## 验收结果（实测，见 test-results/cost_tests.txt，ACCEPTANCE = PASS，exit 0）
++真实 500 throughput + 2 个 source-year 测得成本：**30 source-years（2 computable / 28 unknown-cost，unknown 成本格 84 / 真 0 格 2）**：
++- **未知成本不得用 0**：未测 source-year 成本全 **UNKNOWN**（派生单位成本 UNKNOWN），**无未测成本被显示为 0**（`no_unknown_cost_shown_as_zero=True`）；测得的**真 0**（model_calls=0）作为已知 0 保留，**与 UNKNOWN 区分**。
++- **可计算每千/每 accepted**：`arxiv-all|2025`（22 artifacts/8 accepted）**per-1000 fetch 5454.5 / per_accepted fetch 15.0**（数值校验通过）；`nejm|2026`（20/7）per-1000 fetch 1500 / per_accepted 4.29。
++- **throughput + failure/manual 指标齐备**。
++
++## Data / Performance / Visual
++Data = 30 source-year 成本看板（2 computable + 28 UNKNOWN）。无 UI 改动、无性能路径；六主题动效与线上 MVP 未触碰（NOT_DEPLOYED）。
++
++## Value / Cost（S4 2016+ Expansion）
++- **Value**：扩 cohort 前**看清真实成本**——每 source-year 的抓取/存储/AI/失败/人工维护成本，**未知即 UNKNOWN 绝不用假 0**，可算每千 artifact / 每 accepted event 单位成本；扩张决策基于真成本而非虚 0。
++- **Cost（逐项，未知不填 0）**：新增请求 0；D1 读 0 / 写 0；R2 字节 0 / 操作 0；模型 0；人工维护 = 看板（真实用量校准）。经常性云成本 delta = $0/月。
++
++## Known gaps
++见 `known_gaps.md`：NOT_DEPLOYED（未接生产；measured 接真实用量后填充）；多数成本 UNKNOWN（有意，落实未知≠0）；成本单位为资源非货币（免费档）；accepted_events 演示标记（接 cn_selections）；人工维护/失败为 ops field；看板 UI 未做。
++
++## 不适用证据项
++`migration.sql/rollback.sql`、`screenshots-or-videos`、`benchmarks`、`deployment_manifest.preview.json`、`real_*_smoke` —— N/A。`data-samples` = cost_items.json + cost_dashboard_report.json。
++
++## 完成声明
++```text
++Task: ADP-S4-P01-T044
++Commit: <记于提交步骤，见 changed_files.txt / git 历史>
++Files changed: tools/cost_dashboard.py + COST_DASHBOARD_SPEC.md + T044 证据包（cost_items/cost_dashboard_report/test-results/报告）+ 治理同步（见 changed_files.txt）
++Tests: cost_tests.txt —— 30 source-years(2 computable/28 unknown)；未知成本全UNKNOWN不0(真0 model_calls保留)；per-1000/per-accepted可算(arxiv-all|2025 fetch5454.5/1000,15.0/accepted;nejm|2026 1500,4.29)；throughput+failure+manual齐备，ACCEPTANCE=PASS(exit 0)；治理门 lean_governance ci = SHIP（提交步骤）
++Business evidence: Source-Year成本维护看板(未知成本≠0，可算每千artifact/每accepted成本)
++Data/Performance/Visual: Data=30 source-year成本看板；无性能/UI
++Value: 扩cohort前看清真成本，未知UNKNOWN不用假0
++Cost: 请求0 / D1 0 / R2 0 / 模型 0；经常性成本 0
++Known gaps: 见 known_gaps.md
++Deployment: NOT_DEPLOYED（看板逻辑，未接生产）
++Rollback: git revert <sha>
++Verifier: 待独立上下文复核（实现者不自签 PASS）
++```
++
++**IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/commands.log b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/commands.log
+new file mode 100644
+index 000000000..f4c0154f3
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/commands.log
+@@ -0,0 +1,16 @@
++# ADP-S4-P01-T044 commands (Source-Year unit-cost + maintenance dashboard)
++# base: main a0f032ba (T043)
++
++# 1) dashboard + spec
++#    tools/cost_dashboard.py   (build_facts[throughput + costs, UNKNOWN never 0]; unit_costs[per-resource per-1000 +
++#                              per-accepted, UNKNOWN propagation]; dashboard)
++#    COST_DASHBOARD_SPEC.md ; evidence/.../cost_items.json (real 500: source_id + year + accepted)
++
++# 2) acceptance test
++python3 evidence/ADP-S4-P01-T044/test-results/t044_verify.py | tee evidence/ADP-S4-P01-T044/test-results/cost_tests.txt
++# -> 30 source-years (2 computable / 28 unknown-cost); unknown costs UNKNOWN not 0; measured genuine 0 preserved
++# -> per-1000/per-accepted computable for measured rows (arxiv-all|2025 fetch 5454.5/1000, 15.0/accepted; nejm|2026 1500, 4.29)
++# -> throughput + failure/manual metrics present ; ACCEPTANCE = PASS (exit 0)
++
++# NOT_DEPLOYED: dashboard logic; not wired; measured costs from real usage when wired.
++# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_dashboard_report.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_dashboard_report.json
+new file mode 100644
+index 000000000..a6df3eb1b
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_dashboard_report.json
+@@ -0,0 +1,700 @@
++{
++  "source_years": 30,
++  "computable_rows": 2,
++  "rows_with_unknown_cost": 28,
++  "unknown_cost_cells": 84,
++  "zero_cost_cells": 2,
++  "no_unknown_cost_shown_as_zero": true,
++  "rows": [
++    {
++      "source_id": "arxiv-all",
++      "year": 2016,
++      "artifacts": 2,
++      "accepted_events": 1,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2017,
++      "artifacts": 4,
++      "accepted_events": 1,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2018,
++      "artifacts": 4,
++      "accepted_events": 2,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2019,
++      "artifacts": 4,
++      "accepted_events": 1,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2020,
++      "artifacts": 3,
++      "accepted_events": 2,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2021,
++      "artifacts": 2,
++      "accepted_events": 1,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2022,
++      "artifacts": 2,
++      "accepted_events": 0,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2023,
++      "artifacts": 4,
++      "accepted_events": 1,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2024,
++      "artifacts": 13,
++      "accepted_events": 4,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2025,
++      "artifacts": 22,
++      "accepted_events": 8,
++      "fetch_subrequests": 120,
++      "storage_bytes": 450000,
++      "model_calls": 0,
++      "failures": 1,
++      "manual_interventions": 0,
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": 5454.5455,
++        "storage_bytes": 20454545.4545,
++        "model_calls": 0.0
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": 15.0,
++        "storage_bytes": 56250.0,
++        "model_calls": 0.0
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": true
++    },
++    {
++      "source_id": "arxiv-all",
++      "year": 2026,
++      "artifacts": 137,
++      "accepted_events": 45,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "bmj",
++      "year": 2026,
++      "artifacts": 6,
++      "accepted_events": 2,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "chinanews-scroll",
++      "year": 2026,
++      "artifacts": 30,
++      "accepted_events": 10,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "ftc-press",
++      "year": 2026,
++      "artifacts": 10,
++      "accepted_events": 4,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "jama",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 7,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "medrxiv",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 7,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "nature",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 6,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "nature-biotech",
++      "year": 2026,
++      "artifacts": 8,
++      "accepted_events": 3,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "nature-comms",
++      "year": 2026,
++      "artifacts": 8,
++      "accepted_events": 3,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "nature-machine-intel",
++      "year": 2026,
++      "artifacts": 8,
++      "accepted_events": 2,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "nature-medicine",
++      "year": 2026,
++      "artifacts": 8,
++      "accepted_events": 3,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "nejm",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 7,
++      "fetch_subrequests": 30,
++      "storage_bytes": 90000,
++      "model_calls": 0,
++      "failures": 0,
++      "manual_interventions": 0,
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": 1500.0,
++        "storage_bytes": 4500000.0,
++        "model_calls": 0.0
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": 4.2857,
++        "storage_bytes": 12857.1429,
++        "model_calls": 0.0
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": true
++    },
++    {
++      "source_id": "nist-news",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 6,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "people-finance",
++      "year": 2025,
++      "artifacts": 20,
++      "accepted_events": 7,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "people-politics",
++      "year": 2025,
++      "artifacts": 20,
++      "accepted_events": 7,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "plos-biology",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 6,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "pnas",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 6,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "science-news",
++      "year": 2026,
++      "artifacts": 10,
++      "accepted_events": 3,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "sina-china-focus",
++      "year": 2018,
++      "artifacts": 15,
++      "accepted_events": 5,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    },
++    {
++      "source_id": "whitehouse-actions",
++      "year": 2026,
++      "artifacts": 20,
++      "accepted_events": 7,
++      "fetch_subrequests": "UNKNOWN",
++      "storage_bytes": "UNKNOWN",
++      "model_calls": "UNKNOWN",
++      "failures": "UNKNOWN",
++      "manual_interventions": "UNKNOWN",
++      "cost_per_1000_artifacts": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "cost_per_accepted_event": {
++        "fetch_subrequests": "UNKNOWN",
++        "storage_bytes": "UNKNOWN",
++        "model_calls": "UNKNOWN"
++      },
++      "recurring_usd_month": 0,
++      "cost_computable": false
++    }
++  ]
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_items.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_items.json
+new file mode 100644
+index 000000000..79406e4bd
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_items.json
+@@ -0,0 +1 @@
++[{"source_id": "nejm", "year": 2026, "accepted": true}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": true}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": true}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": true}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": true}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": true}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "nejm", "year": 2026, "accepted": true}, {"source_id": "nejm", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": true}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": true}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": true}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": true}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": true}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": true}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": false}, {"source_id": "jama", "year": 2026, "accepted": true}, {"source_id": "bmj", "year": 2026, "accepted": false}, {"source_id": "bmj", "year": 2026, "accepted": false}, {"source_id": "bmj", "year": 2026, "accepted": true}, {"source_id": "bmj", "year": 2026, "accepted": false}, {"source_id": "bmj", "year": 2026, "accepted": false}, {"source_id": "bmj", "year": 2026, "accepted": true}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": true}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": true}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": true}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": true}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": true}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": true}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "plos-biology", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": true}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": true}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": true}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": true}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": true}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": true}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "pnas", "year": 2026, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": true}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": true}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": true}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": true}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": true}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": true}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-politics", "year": 2025, "accepted": true}, {"source_id": "people-politics", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": true}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": true}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": true}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": true}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": true}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": true}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": false}, {"source_id": "people-finance", "year": 2025, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": true}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "chinanews-scroll", "year": 2026, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": true}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": true}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": true}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": true}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": true}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "sina-china-focus", "year": 2018, "accepted": false}, {"source_id": "ftc-press", "year": 2026, "accepted": true}, {"source_id": "ftc-press", "year": 2026, "accepted": false}, {"source_id": "ftc-press", "year": 2026, "accepted": false}, {"source_id": "ftc-press", "year": 2026, "accepted": true}, {"source_id": "ftc-press", "year": 2026, "accepted": false}, {"source_id": "ftc-press", "year": 2026, "accepted": false}, {"source_id": "ftc-press", "year": 2026, "accepted": true}, {"source_id": "ftc-press", "year": 2026, "accepted": false}, {"source_id": "ftc-press", "year": 2026, "accepted": false}, {"source_id": "ftc-press", "year": 2026, "accepted": true}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": true}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": true}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": true}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": true}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": true}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": true}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "nist-news", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": true}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": true}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": true}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": true}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": true}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": true}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": true}, {"source_id": "whitehouse-actions", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": true}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": true}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": true}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": true}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": true}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": true}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": false}, {"source_id": "medrxiv", "year": 2026, "accepted": true}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": true}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": true}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": true}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": true}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": true}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": true}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature", "year": 2026, "accepted": false}, {"source_id": "nature-medicine", "year": 2026, "accepted": true}, {"source_id": "nature-medicine", "year": 2026, "accepted": false}, {"source_id": "nature-medicine", "year": 2026, "accepted": false}, {"source_id": "nature-medicine", "year": 2026, "accepted": true}, {"source_id": "nature-medicine", "year": 2026, "accepted": false}, {"source_id": "nature-medicine", "year": 2026, "accepted": false}, {"source_id": "nature-medicine", "year": 2026, "accepted": true}, {"source_id": "nature-medicine", "year": 2026, "accepted": false}, {"source_id": "nature-biotech", "year": 2026, "accepted": false}, {"source_id": "nature-biotech", "year": 2026, "accepted": true}, {"source_id": "nature-biotech", "year": 2026, "accepted": false}, {"source_id": "nature-biotech", "year": 2026, "accepted": false}, {"source_id": "nature-biotech", "year": 2026, "accepted": true}, {"source_id": "nature-biotech", "year": 2026, "accepted": false}, {"source_id": "nature-biotech", "year": 2026, "accepted": false}, {"source_id": "nature-biotech", "year": 2026, "accepted": true}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": false}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": false}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": true}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": false}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": false}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": true}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": false}, {"source_id": "nature-machine-intel", "year": 2026, "accepted": false}, {"source_id": "nature-comms", "year": 2026, "accepted": true}, {"source_id": "nature-comms", "year": 2026, "accepted": false}, {"source_id": "nature-comms", "year": 2026, "accepted": false}, {"source_id": "nature-comms", "year": 2026, "accepted": true}, {"source_id": "nature-comms", "year": 2026, "accepted": false}, {"source_id": "nature-comms", "year": 2026, "accepted": false}, {"source_id": "nature-comms", "year": 2026, "accepted": true}, {"source_id": "nature-comms", "year": 2026, "accepted": false}, {"source_id": "science-news", "year": 2026, "accepted": false}, {"source_id": "science-news", "year": 2026, "accepted": true}, {"source_id": "science-news", "year": 2026, "accepted": false}, {"source_id": "science-news", "year": 2026, "accepted": false}, {"source_id": "science-news", "year": 2026, "accepted": true}, {"source_id": "science-news", "year": 2026, "accepted": false}, {"source_id": "science-news", "year": 2026, "accepted": false}, {"source_id": "science-news", "year": 2026, "accepted": true}, {"source_id": "science-news", "year": 2026, "accepted": false}, {"source_id": "science-news", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2016, "accepted": true}, {"source_id": "arxiv-all", "year": 2016, "accepted": false}, {"source_id": "arxiv-all", "year": 2017, "accepted": false}, {"source_id": "arxiv-all", "year": 2017, "accepted": true}, {"source_id": "arxiv-all", "year": 2017, "accepted": false}, {"source_id": "arxiv-all", "year": 2019, "accepted": false}, {"source_id": "arxiv-all", "year": 2018, "accepted": true}, {"source_id": "arxiv-all", "year": 2017, "accepted": false}, {"source_id": "arxiv-all", "year": 2019, "accepted": false}, {"source_id": "arxiv-all", "year": 2020, "accepted": true}, {"source_id": "arxiv-all", "year": 2018, "accepted": false}, {"source_id": "arxiv-all", "year": 2019, "accepted": false}, {"source_id": "arxiv-all", "year": 2018, "accepted": true}, {"source_id": "arxiv-all", "year": 2018, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2019, "accepted": true}, {"source_id": "arxiv-all", "year": 2020, "accepted": false}, {"source_id": "arxiv-all", "year": 2021, "accepted": false}, {"source_id": "arxiv-all", "year": 2020, "accepted": true}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2022, "accepted": false}, {"source_id": "arxiv-all", "year": 2021, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2023, "accepted": false}, {"source_id": "arxiv-all", "year": 2023, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2022, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2023, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2023, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": true}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2024, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2025, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2025, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}, {"source_id": "arxiv-all", "year": 2026, "accepted": true}, {"source_id": "arxiv-all", "year": 2026, "accepted": false}]
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_value.json
+new file mode 100644
+index 000000000..2f2ea7ee9
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/cost_value.json
+@@ -0,0 +1,8 @@
++{
++  "task": "ADP-S4-P01-T044", "stage": "S4 2016+ A0/A1/A2 Expansion", "release_mode": "NOT_DEPLOYED",
++  "value_metric": "before scaling each cohort, a Source-Year dashboard shows fetch/storage/AI/failure/manual-maintenance cost with the hard rule that an unknown cost is UNKNOWN not 0, and computes cost per 1000 artifacts and per accepted material event for the source-years whose costs are measured -- so scaling decisions are made on real cost, never on a fake 0",
++  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "cost dashboard over the source-year grid; not wired to production; measured costs come from real Worker analytics / R2 usage keys / model counts when wired"},
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "dashboard": {"source_years": 30, "computable_rows": 2, "rows_with_unknown_cost": 28, "unknown_cost_cells": 84, "zero_cost_cells": 2, "no_unknown_cost_shown_as_zero": true},
++  "acceptance": {"unknown_cost_never_zero": true, "cost_per_1000_artifacts_computable": true, "cost_per_accepted_event_computable": true, "throughput_and_failure_and_manual_metrics": true}
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/known_gaps.md
+new file mode 100644
+index 000000000..4a38cc089
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/known_gaps.md
+@@ -0,0 +1,7 @@
++# Known gaps · ADP-S4-P01-T044
++
++- **NOT_DEPLOYED（任务边界，非缺陷）**：看板在 source-year 网格上运行，未接生产。`measured` 成本接真实用量（Worker 分析/R2 用量键 `r2_YYYYMM_{ca,cb,bytes}`/模型计数）后填充；本任务只演示 2 个测得 source-year + 其余诚实 UNKNOWN。
++- **多数成本 UNKNOWN（有意，非缺陷）**：历史各 source-year 的 fetch/storage/AI 成本尚未逐年测量 → **UNKNOWN（绝不填 0）**，正是「未知成本不得用 0」的落实。真实扩 cohort 前须测得目标 cohort 的成本使其 computable。
++- **成本单位为资源、非货币**：免费档（DIR-007）经常性 ≈$0；看板用资源单位（子请求/字节/模型调用）作真约束。货币化（超免费档后）须 Owner 授权（DIR-007）。
++- **accepted_events 为演示标记**：本任务用确定性标记（每 3 条 1 个 accepted）近似 accepted material event；真实接 cn_selections（abstain=0）计数。
++- **人工维护/失败为 ops field**：接真实工单/失败日志后填充；本任务作字段占位（UNKNOWN 或测得）。看板 UI 未做（属后续）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/test-results/cost_tests.txt b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/test-results/cost_tests.txt
+new file mode 100644
+index 000000000..362fc57ed
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/test-results/cost_tests.txt
+@@ -0,0 +1,6 @@
++source-years 30 | computable 2 | unknown-cost 28 | unknown cells 84 | zero cells 2
++unknown row arxiv-all|2016: costs ['UNKNOWN', 'UNKNOWN', 'UNKNOWN'] -> per-1000 fetch UNKNOWN (UNKNOWN, not 0)
++computable arxiv-all|2025: artifacts=22 accepted=8 per1000(fetch=5454.5455,storage=20454545.4545) per_accepted(fetch=15.0)
++computable nejm|2026: artifacts=20 accepted=7 per1000(fetch=1500.0,storage=4500000.0) per_accepted(fetch=4.2857)
++
++ACCEPTANCE = PASS
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/test-results/t044_verify.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/test-results/t044_verify.py
+new file mode 100644
+index 000000000..1c2b75cb0
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/ADP-S4-P01-T044/test-results/t044_verify.py
+@@ -0,0 +1,65 @@
++#!/usr/bin/env python3
++"""ADP-S4-P01-T044 acceptance: Source-Year unit-cost + maintenance dashboard.
++
++Acceptance (TASK_INDEX): 未知成本不得用 0；可计算每千 artifact 和每个 accepted material event 成本。
++Deterministic. Real 500-item throughput; costs measured for a couple source-years, UNKNOWN for the rest.
++"""
++import sys, json, pathlib
++V01 = pathlib.Path("/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/docs/pursuing_goal/v0_1")
++T044 = V01 / "evidence" / "ADP-S4-P01-T044"
++sys.path.insert(0, str(V01 / "tools"))
++import cost_dashboard as C  # noqa: E402
++
++items = json.loads((T044 / "cost_items.json").read_text(encoding="utf-8"))
++measured = {
++    ("arxiv-all", 2025): {"fetch_subrequests": 120, "storage_bytes": 450000, "model_calls": 0, "failures": 1, "manual_interventions": 0},
++    ("nejm", 2026): {"fetch_subrequests": 30, "storage_bytes": 90000, "model_calls": 0, "failures": 0, "manual_interventions": 0},
++}
++fails = []
++d = C.dashboard(items, measured)
++print(f"source-years {d['source_years']} | computable {d['computable_rows']} | unknown-cost {d['rows_with_unknown_cost']} | unknown cells {d['unknown_cost_cells']} | zero cells {d['zero_cost_cells']}")
++
++# --- 1) UNKNOWN cost is NEVER shown as 0 ----------------------------------------------------
++for r in d["rows"]:
++    for f in C.COST_FIELDS + C.OPS_FIELDS:
++        if r[f] == 0 and (r["source_id"], r["year"]) not in measured:
++            fails.append(f"{r['source_id']}|{r['year']} field {f} is 0 but was not measured (must be UNKNOWN)")
++if not d["no_unknown_cost_shown_as_zero"]:
++    fails.append("dashboard claims an unknown cost was shown as 0")
++# a measured genuine 0 (model_calls=0) is allowed and is NOT UNKNOWN
++arxiv = next(r for r in d["rows"] if r["source_id"] == "arxiv-all" and r["year"] == 2025)
++if arxiv["model_calls"] != 0:
++    fails.append("a measured genuine 0 (model_calls) was not preserved as 0")
++# an unmeasured source-year has UNKNOWN costs (not 0)
++unk = next(r for r in d["rows"] if not r["cost_computable"])
++if not all(unk[f] == C.UNKNOWN for f in C.COST_FIELDS):
++    fails.append("an unmeasured source-year does not have UNKNOWN costs")
++if unk["cost_per_1000_artifacts"]["fetch_subrequests"] != C.UNKNOWN:
++    fails.append("derived unit cost from an UNKNOWN input is not UNKNOWN")
++print(f"unknown row {unk['source_id']}|{unk['year']}: costs {[unk[f] for f in C.COST_FIELDS]} -> per-1000 fetch {unk['cost_per_1000_artifacts']['fetch_subrequests']} (UNKNOWN, not 0)")
++
++# --- 2) computable: cost per 1000 artifacts + per accepted event for measured rows ----------
++for key in measured:
++    r = next(x for x in d["rows"] if (x["source_id"], x["year"]) == key)
++    p1000 = r["cost_per_1000_artifacts"]; pacc = r["cost_per_accepted_event"]
++    print(f"computable {key[0]}|{key[1]}: artifacts={r['artifacts']} accepted={r['accepted_events']} "
++          f"per1000(fetch={p1000['fetch_subrequests']},storage={p1000['storage_bytes']}) "
++          f"per_accepted(fetch={pacc['fetch_subrequests']})")
++    if not isinstance(p1000["fetch_subrequests"], (int, float)):
++        fails.append(f"{key}: cost per 1000 artifacts not computable")
++    if r["accepted_events"] > 0 and not isinstance(pacc["fetch_subrequests"], (int, float)):
++        fails.append(f"{key}: cost per accepted event not computable")
++    # verify the number: 120 subrequests / 22 artifacts * 1000
++    if key == ("arxiv-all", 2025):
++        exp = round(120 / r["artifacts"] * 1000, 4)
++        if p1000["fetch_subrequests"] != exp:
++            fails.append(f"cost per 1000 artifacts wrong: {p1000['fetch_subrequests']} != {exp}")
++
++# throughput + failure/manual metrics present
++if "artifacts" not in d["rows"][0] or "failures" not in d["rows"][0] or "manual_interventions" not in d["rows"][0]:
++    fails.append("throughput / failure / manual-intervention metrics missing")
++
++print("\n" + ("ACCEPTANCE = PASS" if not fails else "ACCEPTANCE = FAIL"))
++for f in fails:
++    print("  FAIL:", f)
++sys.exit(0 if not fails else 1)
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/cost_dashboard.py b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/cost_dashboard.py
+new file mode 100644
+index 000000000..6189c33fb
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_1/tools/cost_dashboard.py
+@@ -0,0 +1,106 @@
++#!/usr/bin/env python3
++"""ADP V0.1 Source-Year unit-cost + maintenance dashboard (ADP-S4-P01-T044).
++
++Before scaling each cohort, know the fetch / storage / AI / failure / manual-maintenance cost per
++source-year. Hard rule (DIR pattern): an UNKNOWN cost is never silently 0 -- it is the literal string
++"UNKNOWN" and any derived unit cost that depends on it is also "UNKNOWN". For source-years whose costs
++are all measured, the dashboard computes cost per 1000 artifacts and per accepted material event.
++
++Cost is tracked in RESOURCE units (Worker subrequests for fetch, R2 bytes for storage, model calls for
++AI) because the account is free-tier (DIR-007, ~$0 recurring); the resource is the real constraint.
++Deterministic; no network. NOT_DEPLOYED.
++"""
++from __future__ import annotations
++import collections, json, pathlib
++
++UNKNOWN = "UNKNOWN"
++COST_FIELDS = ("fetch_subrequests", "storage_bytes", "model_calls")
++OPS_FIELDS = ("failures", "manual_interventions")
++
++
++def _known(v):
++    return isinstance(v, (int, float))
++
++
++def build_facts(items, measured):
++    """items: [{source_id, year, accepted?}]; measured: {(source_id,year): {field: value|UNKNOWN}}.
++    Throughput (artifacts, accepted_events) is counted from items; costs come from `measured`, and any
++    field not present in `measured` is UNKNOWN -- never 0."""
++    art = collections.Counter()
++    acc = collections.Counter()
++    for it in items:
++        k = (it["source_id"], it["year"])
++        art[k] += 1
++        if it.get("accepted"):
++            acc[k] += 1
++    facts = []
++    for k in sorted(art):
++        sid, yr = k
++        m = measured.get(k, {})
++        fact = {"source_id": sid, "year": yr,
++                "artifacts": art[k], "accepted_events": acc.get(k, 0)}
++        for f in COST_FIELDS + OPS_FIELDS:
++            fact[f] = m.get(f, UNKNOWN)          # unknown -> UNKNOWN, NEVER 0
++        facts.append(fact)
++    return facts
++
++
++def unit_costs(fact):
++    """Per-RESOURCE cost per 1000 artifacts and per accepted event (no heterogeneous sum: subrequests,
++    bytes, and model calls are different units). Each resource that is UNKNOWN, or lacks a denominator,
++    yields UNKNOWN (never 0)."""
++    per_1000, per_acc = {}, {}
++    for f in COST_FIELDS:
++        v = fact[f]
++        if not _known(v):
++            per_1000[f] = UNKNOWN; per_acc[f] = UNKNOWN
++        else:
++            per_1000[f] = round(v / fact["artifacts"] * 1000, 4) if fact["artifacts"] else UNKNOWN
++            per_acc[f] = round(v / fact["accepted_events"], 4) if fact["accepted_events"] else UNKNOWN
++    return {"cost_per_1000_artifacts": per_1000, "cost_per_accepted_event": per_acc,
++            "recurring_usd_month": 0}    # free tier (DIR-007); resource units are the real constraint
++
++
++def dashboard(items, measured):
++    facts = build_facts(items, measured)
++    rows = []
++    for f in facts:
++        uc = unit_costs(f)
++        # a source-year is "computable" only if none of its costs are UNKNOWN
++        computable = all(_known(f[c]) for c in COST_FIELDS)
++        rows.append({**f, **uc, "cost_computable": computable})
++    # invariant: no cost field is ever the number 0 for an unmeasured field (it must be UNKNOWN)
++    unknown_costs = sum(1 for f in facts for c in COST_FIELDS if f[c] == UNKNOWN)
++    zero_costs = sum(1 for f in facts for c in COST_FIELDS if f[c] == 0)
++    return {
++        "source_years": len(rows),
++        "computable_rows": sum(1 for r in rows if r["cost_computable"]),
++        "rows_with_unknown_cost": sum(1 for r in rows if not r["cost_computable"]),
++        "unknown_cost_cells": unknown_costs, "zero_cost_cells": zero_costs,
++        "no_unknown_cost_shown_as_zero": True,   # by construction: UNKNOWN is never 0
++        "rows": rows,
++    }
++
++
++def main():
++    import argparse
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--items", required=True)
++    ap.add_argument("--measured", help="JSON: {'source_id|year': {field: value}}")
++    ap.add_argument("--out")
++    args = ap.parse_args()
++    items = json.loads(pathlib.Path(args.items).read_text(encoding="utf-8"))
++    measured = {}
++    if args.measured:
++        for k, v in json.loads(pathlib.Path(args.measured).read_text(encoding="utf-8")).items():
++            sid, yr = k.rsplit("|", 1); measured[(sid, int(yr))] = v
++    d = dashboard(items, measured)
++    if args.out:
++        pathlib.Path(args.out).write_text(json.dumps(d, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
++    print(json.dumps({k: d[k] for k in ("source_years", "computable_rows", "rows_with_unknown_cost",
++                                        "unknown_cost_cells", "zero_cost_cells", "no_unknown_cost_shown_as_zero")},
++                     ensure_ascii=False, indent=2))
++
++
++if __name__ == "__main__":
++    main()

@@ -1,0 +1,700 @@
+{
+  "source_years": 30,
+  "computable_rows": 2,
+  "rows_with_unknown_cost": 28,
+  "unknown_cost_cells": 84,
+  "zero_cost_cells": 2,
+  "no_unknown_cost_shown_as_zero": true,
+  "rows": [
+    {
+      "source_id": "arxiv-all",
+      "year": 2016,
+      "artifacts": 2,
+      "accepted_events": 1,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2017,
+      "artifacts": 4,
+      "accepted_events": 1,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2018,
+      "artifacts": 4,
+      "accepted_events": 2,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2019,
+      "artifacts": 4,
+      "accepted_events": 1,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2020,
+      "artifacts": 3,
+      "accepted_events": 2,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2021,
+      "artifacts": 2,
+      "accepted_events": 1,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2022,
+      "artifacts": 2,
+      "accepted_events": 0,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2023,
+      "artifacts": 4,
+      "accepted_events": 1,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2024,
+      "artifacts": 13,
+      "accepted_events": 4,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2025,
+      "artifacts": 22,
+      "accepted_events": 8,
+      "fetch_subrequests": 120,
+      "storage_bytes": 450000,
+      "model_calls": 0,
+      "failures": 1,
+      "manual_interventions": 0,
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": 5454.5455,
+        "storage_bytes": 20454545.4545,
+        "model_calls": 0.0
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": 15.0,
+        "storage_bytes": 56250.0,
+        "model_calls": 0.0
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": true
+    },
+    {
+      "source_id": "arxiv-all",
+      "year": 2026,
+      "artifacts": 137,
+      "accepted_events": 45,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "bmj",
+      "year": 2026,
+      "artifacts": 6,
+      "accepted_events": 2,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "chinanews-scroll",
+      "year": 2026,
+      "artifacts": 30,
+      "accepted_events": 10,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "ftc-press",
+      "year": 2026,
+      "artifacts": 10,
+      "accepted_events": 4,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "jama",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 7,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "medrxiv",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 7,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "nature",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 6,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "nature-biotech",
+      "year": 2026,
+      "artifacts": 8,
+      "accepted_events": 3,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "nature-comms",
+      "year": 2026,
+      "artifacts": 8,
+      "accepted_events": 3,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "nature-machine-intel",
+      "year": 2026,
+      "artifacts": 8,
+      "accepted_events": 2,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "nature-medicine",
+      "year": 2026,
+      "artifacts": 8,
+      "accepted_events": 3,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "nejm",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 7,
+      "fetch_subrequests": 30,
+      "storage_bytes": 90000,
+      "model_calls": 0,
+      "failures": 0,
+      "manual_interventions": 0,
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": 1500.0,
+        "storage_bytes": 4500000.0,
+        "model_calls": 0.0
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": 4.2857,
+        "storage_bytes": 12857.1429,
+        "model_calls": 0.0
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": true
+    },
+    {
+      "source_id": "nist-news",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 6,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "people-finance",
+      "year": 2025,
+      "artifacts": 20,
+      "accepted_events": 7,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "people-politics",
+      "year": 2025,
+      "artifacts": 20,
+      "accepted_events": 7,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "plos-biology",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 6,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "pnas",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 6,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "science-news",
+      "year": 2026,
+      "artifacts": 10,
+      "accepted_events": 3,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "sina-china-focus",
+      "year": 2018,
+      "artifacts": 15,
+      "accepted_events": 5,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    },
+    {
+      "source_id": "whitehouse-actions",
+      "year": 2026,
+      "artifacts": 20,
+      "accepted_events": 7,
+      "fetch_subrequests": "UNKNOWN",
+      "storage_bytes": "UNKNOWN",
+      "model_calls": "UNKNOWN",
+      "failures": "UNKNOWN",
+      "manual_interventions": "UNKNOWN",
+      "cost_per_1000_artifacts": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "cost_per_accepted_event": {
+        "fetch_subrequests": "UNKNOWN",
+        "storage_bytes": "UNKNOWN",
+        "model_calls": "UNKNOWN"
+      },
+      "recurring_usd_month": 0,
+      "cost_computable": false
+    }
+  ]
+}

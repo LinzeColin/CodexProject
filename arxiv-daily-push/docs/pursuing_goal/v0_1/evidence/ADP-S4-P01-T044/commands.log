@@ -1,0 +1,16 @@
+# ADP-S4-P01-T044 commands (Source-Year unit-cost + maintenance dashboard)
+# base: main a0f032ba (T043)
+
+# 1) dashboard + spec
+#    tools/cost_dashboard.py   (build_facts[throughput + costs, UNKNOWN never 0]; unit_costs[per-resource per-1000 +
+#                              per-accepted, UNKNOWN propagation]; dashboard)
+#    COST_DASHBOARD_SPEC.md ; evidence/.../cost_items.json (real 500: source_id + year + accepted)
+
+# 2) acceptance test
+python3 evidence/ADP-S4-P01-T044/test-results/t044_verify.py | tee evidence/ADP-S4-P01-T044/test-results/cost_tests.txt
+# -> 30 source-years (2 computable / 28 unknown-cost); unknown costs UNKNOWN not 0; measured genuine 0 preserved
+# -> per-1000/per-accepted computable for measured rows (arxiv-all|2025 fetch 5454.5/1000, 15.0/accepted; nejm|2026 1500, 4.29)
+# -> throughput + failure/manual metrics present ; ACCEPTANCE = PASS (exit 0)
+
+# NOT_DEPLOYED: dashboard logic; not wired; measured costs from real usage when wired.
+# governance sync (fullwt @ origin/main), lean_governance ci --changed-only == SHIP, commit + push, CI double-green.
