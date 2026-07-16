@@ -1,0 +1,303 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0011-FORGETTING-REFUSAL-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0011",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0011"
+  ],
+  "iteration_id": "ST08-PHD-OPENAIDATABASE-PAM1-0011-001",
+  "generated_at": "2026-07-16T08:31:14Z",
+  "gate_status": "PASS_LOCAL_FORGETTING_AND_EVIDENCE_AWARE_REFUSAL",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "09b9b51a6547b2cde48c78f7191ddfb75c6e07e7",
+  "remote_main_sha_at_run_start": "8d2cc20ed76af19efc4ea54d1c433663eb4cea73",
+  "candidate_tree_sha1_excluding_this_manifest": "74e23a2d12ce8d7a621f602903c262282037eba0",
+  "content_tree_hash": "0a71507b8775feb6eb74f6229bfa6ff84bd0b36ba58a4694dd64abb1175020ad",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 30-file staged closure before this manifest is added; content hash is SHA-256 over sorted path, NUL, staged blob SHA-256 and LF tuples. Final 37/37 publication binds the published business commit.",
+  "summary": "Make current memory retrieval active-only, preserve explicit historical audit, enforce verified negative boundaries, and return deterministic UNKNOWN abstention with missing conditions when evidence is insufficient.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0011 local forgetting and evidence-aware refusal acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_FAST_SECURITY_AND_GOVERNANCE_ACCEPTANCE_REMOTE_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0011-MANIFEST"
+  ],
+  "scope": {
+    "forgetting_policy": "OpenAIDatabase/config/memory-forgetting-policy.json",
+    "forgetting_engine": "OpenAIDatabase/scripts/memory_forgetting.py",
+    "memory_schema": "OpenAIDatabase/config/memory.schema.json",
+    "query_entrypoint": "OpenAIDatabase/scripts/memory.py query",
+    "canonical_record_count": 198,
+    "current_answer_status_count": 1,
+    "current_answer_eligible_count_at_test_time": 6,
+    "inactive_answer_eligible_count": 0,
+    "canonical_negative_boundary_count": 0,
+    "absence_inference_count": 0,
+    "deterministic_evaluation_case_count": 6,
+    "new_fixture_or_sample_file_count": 0,
+    "critical_stale_use_count": 0,
+    "fama": 1.0,
+    "abstention_precision": 1.0,
+    "abstention_recall": 1.0,
+    "canonical_business_data_files_modified": 0,
+    "raw_business_data_files_modified": 0,
+    "database_or_service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "history_rewrites": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0010",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0010-LIFECYCLE-BITEMPORAL-20260716.json",
+    "gate_status": "PASS_LOCAL_LIFECYCLE_BITEMPORAL_TRUTH",
+    "implementation_commit": "09b9b51a6547b2cde48c78f7191ddfb75c6e07e7"
+  },
+  "forgetting_contract": {
+    "schema_version": "openai_database.memory_forgetting_policy.v1",
+    "current_answer_statuses": [
+      "active"
+    ],
+    "current_validity": "effective_at_execution_time",
+    "inactive_default": "exclude",
+    "include_inactive_mode": "audit_only_never_answer",
+    "historical_current_assertion_allowed": false,
+    "abstention_knowledge_state": "UNKNOWN",
+    "missing_conditions_required": true,
+    "negative_memory_kind": "negative_trigger",
+    "negative_authority_sources": [
+      "explicit_user",
+      "repository_evidence"
+    ],
+    "negative_verification_state": "verified",
+    "negative_trigger_min": 1,
+    "negative_validity_required": true,
+    "infer_negative_from_absence": false,
+    "opposite_positive_assertion_allowed": false,
+    "retirement_semantics": "retrieval_exclusion_not_history_deletion",
+    "public_git_history_is_erasure": false,
+    "canonical_business_record_writes": 0
+  },
+  "metric_contract": {
+    "source": "arXiv:2604.20006",
+    "fama_formula": "max(0, MPA - lambda * (1 - FAA))",
+    "lambda_formula": "N_forget / (N_presence + N_forget)",
+    "fama_min": 0.95,
+    "critical_stale_use_max": 0,
+    "abstention_precision_min": 0.9,
+    "abstention_recall_min": 0.9,
+    "full_160_case_benchmark_owner": "TSK.OpenAIDatabase.PAM1.0013",
+    "required_ci_metric_owner": "TSK.OpenAIDatabase.PAM1.0014"
+  },
+  "hard_gate_result": {
+    "current_answers_active_only": true,
+    "inactive_records_audit_only": true,
+    "critical_stale_use_zero": true,
+    "explicit_history_not_current": true,
+    "unknown_abstention_names_missing_conditions": true,
+    "verified_negative_boundary_required": true,
+    "absence_inference_zero": true,
+    "negative_opposite_assertion_zero": true,
+    "fama_gate_passed": true,
+    "abstention_precision_gate_passed": true,
+    "abstention_recall_gate_passed": true,
+    "git_privacy_erasure_claim_zero": true,
+    "canonical_or_raw_business_write_count": 0
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-021",
+    "formula_id": "FORM-021",
+    "parameter_ids": [
+      "PARAM-107"
+    ]
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/scripts/memory_forgetting.py": "b3010e494176df7b4d325bf8f8a0ba11e102d828f65dfdfa5dc6d7e16febf49d",
+    "OpenAIDatabase/scripts/memory.py": "b586234a6d9afd78e3ddd69d2a8eb74b8f0d652f67b7300a9241733adffb9201",
+    "OpenAIDatabase/scripts/memory_mutation.py": "54fb374d3f30db93d0cd1ae00d70742ec66442eed9c0b3b0c793511bdb0796b9",
+    "OpenAIDatabase/scripts/migrate_memory_records.py": "c461b887fdb66941b3a3cc8397270d8fa502fdbfa4fc0b193b893603f8a52925",
+    "OpenAIDatabase/config/memory-forgetting-policy.json": "e378f06d32a38d8ed5f3ca7fa6dece2fd1c8addd16ab90d7535b59dbeb73ae87",
+    "OpenAIDatabase/config/memory.schema.json": "3c6690375e7603c74cc2f922547349c5d317e69861ebbbcbde0667189a7ed5b6",
+    "OpenAIDatabase/config/memory.cutover.json": "0339a1756cabaf24ed0fb8c54ae442c6375207df179074b4a26ad812c0a8b4c2",
+    "OpenAIDatabase/config/agent-memory.schema.json": "fe6b1e07c8f13637f881ba0812954b7200a8d382a96a531eb756aee79273e80e",
+    "OpenAIDatabase/docs/MEMORY_FORGETTING_AND_REFUSAL.md": "901e00cabc641efd6c58e6b0437b2fb46be3444ec0b9a9077b7cc4b43c546d4f",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md": "772c3994036fd7cbfcea634a774bb4e064fd0e6b8f47ce6a111f1b7d1564cc9d",
+    "OpenAIDatabase/data/memory/agent-memory.json": "54cc87673be432f59b8a340144feb0644f395e2f641ef85a39493b6b2e910133",
+    "OpenAIDatabase/tests/test_memory_forgetting.py": "0a3bb92649ea8c691423d5c4cd97f5c838bcede65b7c49f7b83ec488064272e7",
+    "OpenAIDatabase/tests/test_memory_cli.py": "285d85fba76db2c18dae42ed2d64794454babcea3bbb161d3ad3733ac6458f20",
+    "OpenAIDatabase/tests/test_agent_memory_views.py": "f656ce0fba576537eb078228fbebc94e6fc11088d9cbc16aa11c79f20f2a63c6",
+    "OpenAIDatabase/config/command_ownership.json": "848464aa4b753590fd56e53ee4a5aee07b739e26c2c8d0202fb02371c1913fdc",
+    "OpenAIDatabase/config/quality/verification_policy.json": "645db5d96221613f55630d2510ae0d5f6a3281adfb027ed068e08a4a6629c315",
+    "governance/id_registry.json": "e6a0432860a6e7e4cb6f29a5be6176d72238c471bdd25a7288a1a4147b00cf53"
+  },
+  "test_commands": [
+    "python3 -B -m unittest -q tests.test_memory_forgetting",
+    "python3 -B -m unittest -q tests.test_memory_forgetting tests.test_memory_lifecycle tests.test_memory_mutation tests.test_memory_cli tests.test_memory_record_schema_v2",
+    "python3 -B -m unittest -q tests.test_agent_memory_views tests.test_command_ownership tests.test_verification_policy tests.test_memory_canonical_cutover",
+    "ruff check scripts/memory_forgetting.py scripts/memory.py scripts/memory_mutation.py scripts/migrate_memory_records.py and related tests",
+    "python3 -B scripts/memory.py build --agent-views --check",
+    "python3 -B scripts/run_verification.py --tier fast",
+    "python3 -B scripts/run_verification.py --tier security",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub overlap audit"
+  ],
+  "test_results": [
+    {
+      "gate": "task_specific",
+      "result": "PASS",
+      "observed": "4/4 Task-specific tests passed while reusing the existing four-record fixture; six deterministic forgetting/refusal evaluation cases were exercised and no sample file was added."
+    },
+    {
+      "gate": "forgetting_and_refusal_metrics",
+      "result": "PASS",
+      "observed": "Critical stale use=0, FAMA=1.0 and abstention precision/recall=1.0/1.0 against hard gates 0, 0.95 and 0.90/0.90."
+    },
+    {
+      "gate": "focused_regression",
+      "result": "PASS",
+      "observed": "26/26 forgetting, lifecycle, mutation, CLI and schema tests passed; view, ownership, verification-policy and cutover coverage separately passed 17/17."
+    },
+    {
+      "gate": "fast_and_security",
+      "result": "PASS",
+      "observed": "Fast 19/19 and security 102/102 passed; all 63 test files have one owner with zero skip, flaky, duplicate, live-unit or CI drift. A post-gate active-but-expired audit eligibility review was fixed and its focused forgetting/CLI regression passed 11/11."
+    },
+    {
+      "gate": "generated_artifacts",
+      "result": "PASS",
+      "observed": "AGENT_MEMORY.md/agent-memory.json are 4076/5863 bytes; final plan SHA-256 is e962e19848d2383cb90204148599af8b1392977878e5ecf3de7686649a5b110a and drift is zero."
+    },
+    {
+      "gate": "lean_governance",
+      "result": "PASS",
+      "observed": "Seven convergence tests passed; functionality, development and model-parameter views are 9707/15203/28358 bytes, totaling 53268 below the 53500-byte Task-scaled gate."
+    },
+    {
+      "gate": "business_data_boundary",
+      "result": "PASS",
+      "observed": "Canonical record and public-raw changed-path counts are both zero; this Task changes contracts, behavior, tests and governance only."
+    },
+    {
+      "gate": "benchmark_scope_boundary",
+      "result": "PASS",
+      "observed": "No redundant sample corpus or full 160-case benchmark was created; full Gold coverage and the required CI metric remain assigned to PAM1.0013/.0014."
+    },
+    {
+      "gate": "terminal_remote_overlap",
+      "result": "PASS",
+      "observed": "Remote main advanced from 8d2cc20ed76af19efc4ea54d1c433663eb4cea73 to 1f1e231df729e4c9c9e3373e6a60f548920937f3 (2 commits, 29 files); exact overlap with this Task's 30 pre-manifest paths is 0. Open PRs/issues/non-main branches remain 0/0/0."
+    }
+  ],
+  "terminal_remote": {
+    "observed_main_sha": "1f1e231df729e4c9c9e3373e6a60f548920937f3",
+    "commits_since_run_start": 2,
+    "changed_files_since_run_start": 29,
+    "exact_path_overlap": 0,
+    "open_pull_requests": 0,
+    "open_issues": 0,
+    "non_main_branches": 0,
+    "result": "PASS_NO_REBASE_REQUIRED"
+  },
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory-forgetting-policy.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/MEMORY_FORGETTING_AND_REFUSAL.md",
+    "OpenAIDatabase/docs/MEMORY_LIFECYCLE_QUERIES.md",
+    "OpenAIDatabase/docs/MEMORY_MUTATION_TRANSACTIONS.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_forgetting.py",
+    "OpenAIDatabase/scripts/memory_mutation.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_memory_forgetting.py",
+    "OpenAIDatabase/tests/test_memory_mutation.py",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0011-FORGETTING-REFUSAL-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory-forgetting-policy.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/MEMORY_FORGETTING_AND_REFUSAL.md",
+    "OpenAIDatabase/docs/MEMORY_LIFECYCLE_QUERIES.md",
+    "OpenAIDatabase/docs/MEMORY_MUTATION_TRANSACTIONS.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_forgetting.py",
+    "OpenAIDatabase/scripts/memory_mutation.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_memory_forgetting.py",
+    "OpenAIDatabase/tests/test_memory_mutation.py",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0011-FORGETTING-REFUSAL-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0011-FORGETTING-REFUSAL-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0011-FORGETTING-REFUSAL-20260716.json"
+  ],
+  "known_boundaries": [
+    "No canonical or raw business record was created, changed, retired, disputed or deleted in this Task.",
+    "No canonical negative-memory example was added; the contract and deterministic mutation tests prove admission without manufacturing business facts.",
+    "Retirement and current-tree deletion are not privacy erasure guarantees for public Git history, clones, forks, caches or historical objects; this Task performs no history rewrite.",
+    "PAM1.0012 owns injection, credential and supply-chain hardening beyond the existing admission boundary.",
+    "PAM1.0013 owns the full 160-case Gold benchmark and PAM1.0014 owns required CI memory metrics.",
+    "PAM1.0017 owns full branch-to-PR-to-CI-to-settlement transaction glue and PAM1.0019 owns production live validation.",
+    "No issue, branch, PR, deployment, release or remote business write was created."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the forgetting policy, engine, refusal contract and related tests; restore the prior schema, CLI, mutation/cutover validators, generated views and governance files. Canonical/raw business bytes, dependencies, services and remote state require no compensation; no history rewrite is needed."
+}

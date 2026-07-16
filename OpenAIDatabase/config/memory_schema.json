@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "LEGACY V1 INPUT CONTRACT ONLY. New canonical records use config/memory.schema.json; migration/cutover is governed by config/memory.migration.v1-to-v2.json and TSK.OpenAIDatabase.PAM1.0003/.0004.",
   "title": "OpenAIMemoryCandidate",
   "type": "object",
   "required": [

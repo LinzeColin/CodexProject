@@ -54,12 +54,13 @@ jobs:
   runtime-change-scope:
     name: classify-arxiv-runtime-change
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       should_run: ${{ steps.scope.outputs.should_run }}
       reason: ${{ steps.scope.outputs.reason }}
     steps:
       - name: Check out repository for path diff
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
@@ -119,16 +120,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
+      INPUT_GENERATED_AT: ${{ inputs.generated_at }}
+      INPUT_START_DATE: ${{ inputs.start_date || '2026-05-24' }}
+      INPUT_END_DATE: ${{ inputs.end_date || '2026-06-22' }}
+      INPUT_COUNT: ${{ inputs.count || '30' }}
+      INPUT_LOOKBACK_DAYS: ${{ inputs.lookback_days || '7' }}
+      INPUT_MAX_RESULTS: ${{ inputs.max_results || '10' }}
+      INPUT_POLITE_DELAY_SECONDS: ${{ inputs.polite_delay_seconds || '3' }}
       ADP_PRODUCTION_ENABLED: "false"
       ADP_SCHEDULED_RUN_ENABLED: "false"
       ADP_ALLOW_SMTP_SEND: "false"
       ADP_ALLOW_RELEASE_UPLOAD: "false"
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
@@ -137,15 +145,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          generated_at="${{ inputs.generated_at }}"
+          generated_at="$INPUT_GENERATED_AT"
           if [ -z "$generated_at" ]; then generated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
           printf 'generated_at=%s\n' "$generated_at" >> "$GITHUB_OUTPUT"
-          printf 'start_date=%s\n' "${{ inputs.start_date || '2026-05-24' }}" >> "$GITHUB_OUTPUT"
-          printf 'end_date=%s\n' "${{ inputs.end_date || '2026-06-22' }}" >> "$GITHUB_OUTPUT"
-          printf 'count=%s\n' "${{ inputs.count || '30' }}" >> "$GITHUB_OUTPUT"
-          printf 'lookback_days=%s\n' "${{ inputs.lookback_days || '7' }}" >> "$GITHUB_OUTPUT"
-          printf 'max_results=%s\n' "${{ inputs.max_results || '10' }}" >> "$GITHUB_OUTPUT"
-          printf 'polite_delay_seconds=%s\n' "${{ inputs.polite_delay_seconds || '3' }}" >> "$GITHUB_OUTPUT"
+          printf 'start_date=%s\n' "$INPUT_START_DATE" >> "$GITHUB_OUTPUT"
+          printf 'end_date=%s\n' "$INPUT_END_DATE" >> "$GITHUB_OUTPUT"
+          printf 'count=%s\n' "$INPUT_COUNT" >> "$GITHUB_OUTPUT"
+          printf 'lookback_days=%s\n' "$INPUT_LOOKBACK_DAYS" >> "$GITHUB_OUTPUT"
+          printf 'max_results=%s\n' "$INPUT_MAX_RESULTS" >> "$GITHUB_OUTPUT"
+          printf 'polite_delay_seconds=%s\n' "$INPUT_POLITE_DELAY_SECONDS" >> "$GITHUB_OUTPUT"
 
       - name: Run real historical arXiv replay
         id: replay
@@ -202,7 +210,7 @@ jobs:
 
       - name: Upload real 30-day backfill artifacts
         if: always() && steps.replay.outputs.artifact_dir != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-s1p5t03-real-arxiv-30-day-backfill
           path: ${{ steps.replay.outputs.artifact_dir }}

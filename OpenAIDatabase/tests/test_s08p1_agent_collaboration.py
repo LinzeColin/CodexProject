@@ -98,6 +98,7 @@ class S08P1AgentCollaborationTest(unittest.TestCase):
                 "agent-collaboration",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S08P1")
             self.assertTrue(output.exists())

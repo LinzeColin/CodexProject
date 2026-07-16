@@ -1,0 +1,166 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-CODEXPROJECT-REPO1-0003-ID-GOVERNANCE-V2-20260715",
+  "project_id": "root-governance",
+  "task_id": "TSK.CodexProject.REPO1.0003",
+  "acceptance_ids": [
+    "ACC.CodexProject.REPO1.0003"
+  ],
+  "iteration_id": "ST02-PHA-REPO1-0003-LOCAL-IMPLEMENTATION-001",
+  "generated_at": "2026-07-15T13:48:13Z",
+  "implementation_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:7ee0960a9b9db595bcb4a001b6879f657528d204a5b3b8ec6cc8e1b4d7f3953e",
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "docs/governance/ID_GOVERNANCE_V2.md",
+    "docs/governance/STANDARD.md",
+    "governance/id_registry.json",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0003-ID-GOVERNANCE-V2-20260715.json",
+    "governance/schemas/delivery_tasks.schema.json",
+    "governance/schemas/events.schema.json",
+    "governance/schemas/id_registry.schema.json",
+    "governance/schemas/roadmap.schema.json",
+    "governance/schemas/run_manifest.schema.json",
+    "governance/schemas/run_receipt.schema.json",
+    "scripts/governance_id_allocator.py",
+    "scripts/governance_id_audit.py",
+    "scripts/governance_ids.py",
+    "tests/governance/test_governance_id_v2.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "docs/governance/ID_GOVERNANCE_V2.md",
+    "docs/governance/STANDARD.md",
+    "governance/id_registry.json",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0003-ID-GOVERNANCE-V2-20260715.json",
+    "governance/schemas/delivery_tasks.schema.json",
+    "governance/schemas/events.schema.json",
+    "governance/schemas/id_registry.schema.json",
+    "governance/schemas/roadmap.schema.json",
+    "governance/schemas/run_manifest.schema.json",
+    "governance/schemas/run_receipt.schema.json",
+    "scripts/governance_id_allocator.py",
+    "scripts/governance_id_audit.py",
+    "scripts/governance_ids.py",
+    "tests/governance/test_governance_id_v2.py"
+  ],
+  "required_governance_files": [
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "docs/governance/ID_GOVERNANCE_V2.md",
+    "governance/id_registry.json",
+    "governance/schemas/id_registry.schema.json",
+    "scripts/governance_ids.py",
+    "scripts/governance_id_allocator.py",
+    "scripts/governance_id_audit.py",
+    "tests/governance/test_governance_id_v2.py",
+    ".github/workflows/project-governance.yml"
+  ],
+  "updated_governance_files": [
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "docs/governance/ID_GOVERNANCE_V2.md",
+    "governance/projects.yaml",
+    "governance/id_registry.json",
+    "governance/schemas/id_registry.schema.json",
+    "governance/schemas/delivery_tasks.schema.json",
+    "governance/schemas/events.schema.json",
+    "governance/schemas/roadmap.schema.json",
+    "governance/schemas/run_manifest.schema.json",
+    "governance/schemas/run_receipt.schema.json",
+    "scripts/governance_ids.py",
+    "scripts/governance_id_allocator.py",
+    "scripts/governance_id_audit.py",
+    "tests/governance/test_governance_id_v2.py",
+    ".github/workflows/project-governance.yml",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0003-ID-GOVERNANCE-V2-20260715.json"
+  ],
+  "test_commands": [
+    "ruff check scripts/governance_ids.py scripts/governance_id_allocator.py scripts/governance_id_audit.py tests/governance/test_governance_id_v2.py tests/agent_loop",
+    "python3 -B -m py_compile scripts/governance_ids.py scripts/governance_id_allocator.py scripts/governance_id_audit.py",
+    "python3 -B -m unittest tests.governance.test_governance_id_v2 -v",
+    "python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py' -v",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/governance_id_allocator.py --kind TSK --project CodexProject --program REPO1 --base-sha $(git rev-parse HEAD) --idempotency-key acceptance:repo1-0003-dry-run",
+    "python3 -B scripts/validate_project_governance.py --all",
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref HEAD",
+    "python3 -B scripts/lean_governance.py validate --changed-only --base-ref HEAD --enforce-sync --semantic",
+    "git diff --check",
+    "JSON schema and workflow YAML parse",
+    "high-confidence secret-prefix scan"
+  ],
+  "test_results": [
+    {
+      "command": "focused Governance ID V2 tests",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "13 tests passed: duplicate, orphan, cycle, rename, reuse, alias ambiguity, placement movement, positional cutoff, repository audit, dry-run/apply/idempotency, and two-writer CAS concurrency."
+    },
+    {
+      "command": "repository-wide Governance ID audit",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "595 metadata files scanned; 37 Task/Acceptance pairs plus one Goal; 11,476/11,476 identifier references resolved exactly once; duplicate V2 IDs=0; new positional IDs=0."
+    },
+    {
+      "command": "allocator canonical dry-run",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Proposed the next REPO1 pair without mutation; registry SHA remained 73eee6b6066994cfe3b2abaff548e1c7c0df55c912924fe1b465fb193c8c3c50."
+    },
+    {
+      "command": "all active project validator",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root and five active projects passed with errors=0 and warnings=0."
+    },
+    {
+      "command": "python3 -B scripts/lean_governance.py ci --changed-only --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "decision=SHIP; changed_file_count=17; selected_project_count=5; zero_tracked_write=true; errors=0; warnings=0; stable summary sha256=b40141210884d6c0825f9bc1ca09138eef0e6baa4fee0a2bc36a3149b0c6ba26."
+    },
+    {
+      "command": "python3 -B scripts/lean_governance.py validate --changed-only --base-ref HEAD --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root sync and five active projects passed with errors=0 and warnings=0."
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "21 compatibility and Automation C tests passed."
+    },
+    {
+      "command": "Ruff, Python compile, JSON parse, workflow YAML parse, and diff check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Current changed source and contract structure passed the pre-authority checks."
+    }
+  ],
+  "evidence_refs": [
+    "docs/governance/ID_GOVERNANCE_V2.md",
+    "governance/id_registry.json",
+    "governance/schemas/id_registry.schema.json",
+    "scripts/governance_id_allocator.py",
+    "scripts/governance_id_audit.py",
+    "tests/governance/test_governance_id_v2.py",
+    "local-only:lean-governance-stable-summary:sha256:b40141210884d6c0825f9bc1ca09138eef0e6baa4fee0a2bc36a3149b0c6ba26",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0003-ID-GOVERNANCE-V2-20260715.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "TSK.CodexProject.REPO1.0003 local immutable Governance ID V2 implementation",
+  "ci_run_reference": "REMOTE_PUBLICATION_DEFERRED_NO_GITHUB_WRITE",
+  "summary": "Install the immutable V2 allocation registry, fail-closed CAS allocator, repository-wide semantic reference audit, CI immutability gate, and project-scoped legacy alias migration contract.",
+  "rollback": "Before whole-package publication, revert only this local Task commit. After publication, revert code through a normal reviewed transaction; never delete or reuse an already published allocation.",
+  "unresolved_risks": [
+    "The registry is new at this local base, so current-tree immutability has no prior registry to compare; rename/reuse rejection is proven by focused negative fixtures, and every future PR/push compares against its baseline registry.",
+    "Live GitHub Actions and remote commit binding are intentionally deferred until the complete 37-Task package is published.",
+    "Six pre-existing non-main remote branches remain outside this Task; this Run creates or mutates no GitHub object."
+  ]
+}

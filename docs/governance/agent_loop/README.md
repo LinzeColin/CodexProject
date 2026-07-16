@@ -1,53 +1,41 @@
 # Agent Loop Engineering
 
-本目录定义 CodexProject 的 Agent Loop 自动化脚手架。它只覆盖 Owner 已批准
-的 dual-plane Task Pack 执行流程，不替代现有 `AGENTS.md`、
-`docs/governance/STANDARD.md` 或项目级治理。
+本目录定义 CodexProject 的 Automation C 控制面。它消费 Owner 已批准的
+dual-plane Task Pack，不替代 `AGENTS.md`、`docs/governance/STANDARD.md` 或
+项目级治理。
 
 ## 核心流程
 
 | 步骤 | 责任方 | 产物 |
 |---|---|---|
-| 1 | Owner + ChatGPT | 讨论需求并形成 dual-plane Task Pack |
-| 2 | Owner | 明确授权 Task Pack |
-| 3 | Owner / automation | 选择 workflow paste、issue label 或 repository_dispatch 入口 |
-| 4 | GitHub Actions | 把批准的 Task Pack 统一写入 `/tmp/agent_loop/taskpack.md` |
-| 5 | 脚本 | 校验 Task Pack 的 machine plane 和 human plane |
-| 6 | GitHub Actions | 创建 audit issue 记录批准文本和 run link |
-| 7 | Codex | plan-first，生成计划但不得改文件 |
-| 8 | 脚本 | 验证 plan、确认 plan 阶段 git diff 为空 |
-| 9 | Codex | 按 Task Pack 实现 |
-| 10 | 脚本/命令 | 运行 validation commands 和 changed-files policy |
-| 11 | GitHub Actions | 创建 PR |
-| 12 | Codex | 自动 review |
-| 13 | Architect Review | 可行时运行 ChatGPT-style 架构复审，不可行时报告 N/A |
-| 14 | Codex | 在有限次数内 autofix |
-| 15 | 脚本 | 执行 merge policy |
-| 16 | GitHub Actions | gates 通过后 squash merge，关闭 audit issue |
+| 1 | Owner + planner | 明确范围并批准 dual-plane Task Pack |
+| 2 | Local/read-only validator | 校验 machine plane、human plane、routing 和 V1/V2 ID binding |
+| 3 | Isolated implementation | 生成已验证的单一临时 transaction branch |
+| 4 | External authenticated publisher | 创建一个绑定 Task/Acceptance/head/base 的非 draft PR |
+| 5 | `Project Governance / governance` | 只读验证 exact PR head；无 path filter |
+| 6 | Trusted settlement | exact-head squash merge 或 terminal close，再删除 exact trusted ref |
+| 7 | Janitor | 只处理 marker-bound stale/duplicate transaction |
+| 8 | Owner/evidence | 验证 open PR、standalone Issue、transaction branch 均为 0 |
 
 ## 架构原则
 
-- Task Pack 是唯一事实源。
-- GitHub Action 不创建 Planner Agent。
-- GitHub Action 不从模糊 issue 文本推断或重新生成 Task Pack。
-- 支持 `workflow_dispatch` 手动粘贴作为 fallback。
-- 支持 `issues:labeled`：issue body 必须就是已批准 Task Pack。
-- 支持 `repository_dispatch` 的 `agent_loop_taskpack` 事件，为未来 ChatGPT/connector/webhook 集成预留。
-- 不需要 Custom GPT Action。
-- 不需要 GitHub Developer settings。
-- 不需要 PAT；默认使用 `GITHUB_TOKEN`。
-- T1 和 T2 都不需要 Owner 在 plan 与 implementation 之间再次批准。
-- T2 必须 plan-first，但 plan 验证通过后可继续自动实现。
+- Task Pack 是范围与验收事实源。
+- Issue 不用作 queue、lock、audit log 或运行状态。
+- Publisher credential 不进入 repository workflow、secret 或 artifact。
+- Required CI 只读；Settlement/Janitor 独立且不 checkout/执行 PR code。
+- 所有 state transition 必须绑定 exact head/base SHA 和 transaction marker。
+- 未知 actor、fork、draft、stale head/base、conflict、缺失 required check 均 fail closed。
 - 本 bootstrap 禁止自动生产部署。
+- Live ruleset 未激活时必须报告 `REMOTE_ACTIVATION_DEFERRED`。
 
-## 目录
+## 入口文档
 
-- `TASK_PACK_DUAL_PLANE_SPEC.md`: dual-plane Task Pack 规范。
-- `TASK_PACK_TEMPLATE.md`: Owner/ChatGPT 可复制模板。
-- `RUN_APPROVED_TASKPACK.md`: Owner 使用三种入口的步骤。
-- `AUTOMATION.md`: 自动化架构和安全边界。
-- `MERGE_POLICY.md`: T1/T2 自动合并规则。
-- `RELEASE_GATE.md`: merge、staging、production、acceptance、rollback 的边界。
-- `VALIDATION_MATRIX.md`: 校验项矩阵。
-- `SCORECARD.md`: PR/audit scorecard。
-- `RETROSPECTIVE_LOG.md`: retrospective 手工记录入口。
+- `TASK_PACK_DUAL_PLANE_SPEC.md`: Task Pack contract。
+- `TASK_PACK_TEMPLATE.md`: Owner/planner template。
+- `RUN_APPROVED_TASKPACK.md`: read-only validation 与外部 publisher 操作。
+- `AUTOMATION.md`: role separation、settlement 与 Zero-Open contract。
+- `MERGE_POLICY.md`: terminal settlement gate。
+- `AUTOMATION_C_BOOTSTRAP.md`: owner live-activation checklist。
+- `VALIDATION_MATRIX.md`: validation coverage。
+- `SCORECARD.md`、`RETROSPECTIVE_LOG.md`: historical evidence；其中旧 Issue 流程
+  只代表当时事实，不是现行指令。

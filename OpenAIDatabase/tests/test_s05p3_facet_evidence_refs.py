@@ -124,6 +124,7 @@ class S05P3FacetEvidenceRefsTest(unittest.TestCase):
                 "facets",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             events_path = root / "data/derived/behavior_intelligence/events.json"
             self.assertEqual(applied["status"], "phase_s05_p3_evidence_refs_completed_pending_s05_review")

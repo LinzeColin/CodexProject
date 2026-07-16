@@ -1,0 +1,538 @@
+{
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0016",
+  "cases": [
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-001",
+      "observed": {
+        "error": "input_missing_final_lf",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "truncated_jsonl",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-002",
+      "observed": {
+        "error": "duplicate_record_id",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "duplicate_record_id",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-003",
+      "observed": {
+        "error": "record hash mismatch",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "wrong_record_hash",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-004",
+      "observed": {
+        "error": "repository_file_not_found_or_outside_root",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "missing_shard",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-005",
+      "observed": {
+        "error": "lexical_index_schema_invalid",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "missing_lexical_index",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-006",
+      "observed": {
+        "error": "invalid_utf8",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "invalid_utf8",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-007",
+      "observed": {
+        "error": "invalid_json_line:1:duplicate_json_key",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "duplicate_json_key",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-008",
+      "observed": {
+        "error": "shard_integrity_mismatch",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "wrong_shard_hash",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-009",
+      "observed": {
+        "error": "repository_file_not_found_or_outside_root",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "missing_manifest",
+      "status": "PASS"
+    },
+    {
+      "category": "input_integrity",
+      "id": "FI-IN-010",
+      "observed": {
+        "error": "duplicate unresolved active memory key and scope",
+        "outcome": "fail_closed",
+        "partial_write_count": 0
+      },
+      "scenario": "duplicate_active_key",
+      "status": "PASS"
+    },
+    {
+      "category": "canonical_write",
+      "id": "FI-CW-001",
+      "observed": {
+        "error": "injected_directory_fsync_failure",
+        "outcome": "rolled_back",
+        "partial_write_count": 0,
+        "retry_idempotent": false
+      },
+      "scenario": "atomic_precommit_rollback",
+      "status": "PASS"
+    },
+    {
+      "category": "canonical_write",
+      "id": "FI-CW-002",
+      "observed": {
+        "error": "injected_directory_fsync_failure",
+        "outcome": "converged",
+        "partial_write_count": 0,
+        "retry_idempotent": true
+      },
+      "scenario": "atomic_postcommit_convergence",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-001",
+      "observed": {
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "success",
+        "request_count": 2,
+        "response_status": 200,
+        "retry_delays_seconds": []
+      },
+      "scenario": "etag_stale_invalidation",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-002",
+      "observed": {
+        "error": "github_304_without_cache",
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "fail_closed",
+        "request_count": 1,
+        "retry_delays_seconds": []
+      },
+      "scenario": "304_without_cache",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-003",
+      "observed": {
+        "error": "github_read_forbidden",
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "fail_closed",
+        "request_count": 1,
+        "retry_delays_seconds": []
+      },
+      "scenario": "forbidden_403",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-004",
+      "observed": {
+        "error": "github_read_not_found",
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "fail_closed",
+        "request_count": 1,
+        "retry_delays_seconds": []
+      },
+      "scenario": "not_found_404",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-005",
+      "observed": {
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "success",
+        "request_count": 2,
+        "response_status": 200,
+        "retry_delays_seconds": [
+          2.0
+        ]
+      },
+      "scenario": "rate_limit_429_recovery",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-006",
+      "observed": {
+        "error": "github_rate_limit_retry_exhausted",
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "fail_closed",
+        "request_count": 3,
+        "retry_delays_seconds": [
+          1.0,
+          1.0
+        ]
+      },
+      "scenario": "rate_limit_429_exhaustion",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-007",
+      "observed": {
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "success",
+        "request_count": 2,
+        "response_status": 200,
+        "retry_delays_seconds": [
+          1.0
+        ]
+      },
+      "scenario": "server_500_recovery",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-008",
+      "observed": {
+        "error": "github_transient_retry_exhausted",
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "fail_closed",
+        "request_count": 3,
+        "retry_delays_seconds": [
+          1.0,
+          2.0
+        ]
+      },
+      "scenario": "server_500_exhaustion",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-009",
+      "observed": {
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "success",
+        "request_count": 2,
+        "response_status": 200,
+        "retry_delays_seconds": [
+          1.0
+        ]
+      },
+      "scenario": "timeout_recovery",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-010",
+      "observed": {
+        "error": "github_transient_retry_exhausted",
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "fail_closed",
+        "request_count": 3,
+        "retry_delays_seconds": [
+          1.0,
+          2.0
+        ]
+      },
+      "scenario": "timeout_exhaustion",
+      "status": "PASS"
+    },
+    {
+      "category": "transport",
+      "id": "FI-API-011",
+      "observed": {
+        "error": "github_etag_missing",
+        "github_write_count": 0,
+        "live_network_request_count": 0,
+        "outcome": "fail_closed",
+        "request_count": 1,
+        "retry_delays_seconds": []
+      },
+      "scenario": "missing_etag",
+      "status": "PASS"
+    },
+    {
+      "category": "concurrency",
+      "id": "FI-CON-001",
+      "observed": {
+        "duplicate_record_count": 0,
+        "legal_write_count": 1,
+        "partial_write_count": 0,
+        "rejected_writer_count": 1,
+        "retry_idempotent_count": 2,
+        "writer_count": 2
+      },
+      "scenario": "concurrent_writers_2",
+      "status": "PASS"
+    },
+    {
+      "category": "concurrency",
+      "id": "FI-CON-002",
+      "observed": {
+        "duplicate_record_count": 0,
+        "legal_write_count": 1,
+        "partial_write_count": 0,
+        "rejected_writer_count": 4,
+        "retry_idempotent_count": 5,
+        "writer_count": 5
+      },
+      "scenario": "concurrent_writers_5",
+      "status": "PASS"
+    },
+    {
+      "category": "concurrency",
+      "id": "FI-CON-003",
+      "observed": {
+        "duplicate_record_count": 0,
+        "legal_write_count": 1,
+        "partial_write_count": 0,
+        "rejected_writer_count": 9,
+        "retry_idempotent_count": 10,
+        "writer_count": 10
+      },
+      "scenario": "concurrent_writers_10",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-001",
+      "observed": {
+        "action": "NOOP",
+        "close_issue": false,
+        "convergence_minutes": 0,
+        "duplicate_settlement_write_count": 0,
+        "reason": "duplicate_event"
+      },
+      "scenario": "duplicate_workflow_run",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-002",
+      "observed": {
+        "actions": [
+          "MERGE_DELETE",
+          "NOOP"
+        ],
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "legal_settlement_write_count": 1
+      },
+      "scenario": "settlement_double_run",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-003",
+      "observed": {
+        "action": "CLOSE_DELETE",
+        "close_issue": false,
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "reason": "superseded"
+      },
+      "scenario": "stale_pr",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-004",
+      "observed": {
+        "action": "DELETE_ORPHAN",
+        "close_issue": false,
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "reason": "trusted_orphan"
+      },
+      "scenario": "janitor_trusted_orphan",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-005",
+      "observed": {
+        "action": "WAIT",
+        "close_issue": false,
+        "convergence_minutes": 0,
+        "duplicate_settlement_write_count": 0,
+        "reason": "workflow_not_terminal"
+      },
+      "scenario": "janitor_active_transaction",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-006",
+      "observed": {
+        "action": "BLOCK",
+        "close_issue": false,
+        "convergence_minutes": 0,
+        "duplicate_settlement_write_count": 0,
+        "reason": "untrusted_orphan"
+      },
+      "scenario": "janitor_untrusted_orphan",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-007",
+      "observed": {
+        "action": "CLOSE_DELETE",
+        "close_issue": false,
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "reason": "failure"
+      },
+      "scenario": "terminal_failure",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-008",
+      "observed": {
+        "action": "CLOSE_DELETE",
+        "close_issue": false,
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "reason": "timed_out"
+      },
+      "scenario": "terminal_timeout",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-009",
+      "observed": {
+        "action": "CLOSE_DELETE",
+        "close_issue": false,
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "reason": "conflict"
+      },
+      "scenario": "merge_conflict",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-010",
+      "observed": {
+        "action": "CLOSE_DELETE",
+        "close_issue": false,
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "reason": "stale_tested_base"
+      },
+      "scenario": "stale_tested_base",
+      "status": "PASS"
+    },
+    {
+      "category": "settlement",
+      "id": "FI-SET-011",
+      "observed": {
+        "action": "NOOP",
+        "close_issue": true,
+        "convergence_minutes": 15,
+        "duplicate_settlement_write_count": 0,
+        "reason": "pr_already_settled"
+      },
+      "scenario": "accidental_issue",
+      "status": "PASS"
+    }
+  ],
+  "execution_mode": "offline_tempdir_replay_fake_clock",
+  "failures": [],
+  "hard_gates": {
+    "all_cases_pass": true,
+    "case_count_min": true,
+    "duplicate_record_zero": true,
+    "duplicate_settlement_write_zero": true,
+    "github_write_zero": true,
+    "janitor_convergence_bounded": true,
+    "live_network_zero": true,
+    "partial_canonical_write_zero": true,
+    "retry_attempts_bounded": true,
+    "retry_delay_bounded": true,
+    "writer_profiles_exact": true
+  },
+  "metrics": {
+    "business_data_file_write_count": 0,
+    "category_counts": {
+      "canonical_write": 2,
+      "concurrency": 3,
+      "input_integrity": 10,
+      "settlement": 11,
+      "transport": 11
+    },
+    "duplicate_record_count": 0,
+    "duplicate_settlement_write_count": 0,
+    "fault_case_count": 37,
+    "github_write_count": 0,
+    "live_network_request_count": 0,
+    "max_convergence_minutes": 15,
+    "max_request_count": 3,
+    "max_retry_delay_total_seconds": 3.0,
+    "partial_canonical_write_count": 0,
+    "passed_case_count": 37,
+    "writer_counts": [
+      2,
+      5,
+      10
+    ]
+  },
+  "schema_version": "openai_database.memory_fault_reliability_report.v1",
+  "status": "PASS",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0016"
+}

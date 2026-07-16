@@ -18,13 +18,13 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 4. 采集明文指标。
 5. 生成全中文报告草稿。
 6. 凭证扫描。
-7. 上传 raw 数据到 `macdata-proM2`。
-8. 远程 hash 验证。
+7. raw 数据通过唯一短命 PR 进入 `main`。
+8. 等待 Project Governance 与 trusted Settlement，逐文件 SHA-256 验证并确认 `0/0/0`。
 9. 验证成功后清理本机 3 天以前数据、macdata 临时缓存和受控开发环境缓存。
-10. 验证成功后清理 automation/Codex 创建且已合入 `main` 的临时 PR、临时 branch 和带 managed marker 的 issue。
+10. 只读确认 trusted Settlement 已删除事务对象；设备脚本不执行 GitHub janitor 写操作。
 11. 生成最终中文报告。
-12. 上传最终报告到 `macdata-proM2`。
-13. Codex session 输出全中文报告。
+12. 最终报告通过第二个顺序短命 PR 进入 `main`，再次验证并回到 `0/0/0`。
+13. Codex session 输出全中文报告；全过程不得同时存在两个 PR。
 
 ## 失败处理
 
@@ -33,10 +33,10 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 | owner_confirmations.json 不存在 | 停止，先问用户 |
 | 设备不匹配 | 停止，列出差异，先问用户 |
 | 凭证扫描失败 | 停止上传，保留本地数据 |
-| Git push 失败 | 不清理本机旧数据 |
-| 远程验证失败 | 不清理本机旧数据 |
+| branch push / PR / CI / Settlement 失败 | 补偿关闭 PR、删除事务分支，不清理本机旧数据 |
+| main hash reconciliation / 0/0/0 失败 | 不清理本机旧数据 |
 | 清理失败 | 报告中明文写出失败原因 |
-| PR/branch/issue 收尾失败 | 报告中明文写出失败原因；不得影响已验证的 macdata 归档 |
+| Settlement 终态审计失败 | 报告中明文写出失败原因，停止后续 GitHub 事务 |
 
 ## 本机减负边界
 
@@ -51,9 +51,7 @@ docker system prune -f（默认不使用 -a，不清理 volumes）
 brew cleanup
 purge（系统缓存 best-effort，权限不足则报告）
 项目内白名单缓存目录：__pycache__、.pytest_cache、.mypy_cache、.ruff_cache、.tox、.nox、.vite、node_modules/.cache、.next/cache、dist/.vite
-已合入 origin/main 的临时远程分支：仅限配置中的 codex/* 且包含 macdata/proM2 的分支
-打开的 PR：仅限上述已合并临时分支对应 PR
-打开的 issue：仅限标题含 `[macdata-proM2 automation]` managed marker 的 issue
+GitHub 对象不在本设备清理范围；只由 trusted Settlement 结算
 ```
 
 不允许删除：
@@ -63,9 +61,6 @@ Docker volumes
 Docker 全量 images prune（`-a`）
 ~/Library/Caches/* 全目录
 项目 node_modules / .venv / build / dist 根目录
-main 分支
-macdata-proM2 归档分支
-未证明已合入 main 的分支
-没有 managed marker 的 issue
+main 分支或任意 GitHub ref/PR/Issue
 任何 OpenAIDatabase/macdata/airM2 内容
 ```

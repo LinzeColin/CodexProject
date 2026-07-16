@@ -7,7 +7,7 @@ names, errors, and source titles in English when that is clearer.
 
 1. Read this `AGENTS.md`.
 2. Route the task with `scripts/route_agent_resources.py --intent <intent>`.
-3. For default startup, read only the route's required `read_order`.
+3. Default startup reads only `data/memory/agent-memory.json`; follow its indexed compact/shard paths instead of scanning the repository.
 4. Load `data/derived/profile/CORE_PROFILE.md`, full agent context packs, or
    architecture docs only when the route lists them as conditional resources
    and the current task gives a concrete reason.
@@ -19,7 +19,7 @@ Use route-specific files before broad repository search.
 ## Canonical Contracts
 
 - Three-layer context source: `config/context_sources/three_layer_context.json`
-- Resource routing: `config/context_sources/resource_routes.json`
+- Resource routing and generated memory discovery: `config/context_sources/resource_routes.json` → `data/memory/agent-memory.json`
 - Codex runtime config: `.codex/config.toml`
 - Personalization manifests, not runtime config:
   `config/codex/config.template.toml` and `config/codex/project.config.toml`
@@ -28,6 +28,22 @@ Use route-specific files before broad repository search.
 - Detailed user requirements: `docs/USER_REQUIREMENTS.md`
 - Model and parameter documentation: `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`
 - Delivery record: `docs/MEMORY_ATLAS_DELIVERY_RECORD.md`
+
+## Lean Governance Boundary
+
+- Editable governance truth is limited to `docs/governance/project.yaml`,
+  `docs/governance/roadmap.yaml`, `docs/governance/events.jsonl`, `VERSION`, and
+  `CHANGELOG.md`.
+- `功能清单.md`, `开发记录.md`, and `模型参数文件.md` are deterministic, non-editable
+  human views written only by `scripts/lean_governance.py render`.
+- Files listed in `docs/governance/legacy_disposition.json` are hash-locked
+  compatibility evidence. Do not edit or regenerate them without an explicit
+  owner-authorized migration that updates the retention policy.
+- Directory ownership and write destinations are governed by
+  `config/storage/directory_lifecycle.json`. Run
+  `scripts/validate_directory_lifecycle.py`; never dual-write a legacy and
+  canonical destination. Current numeric telemetry writes only to
+  `data/run_logs/token_usage/`.
 
 ## Sync Requirement
 
@@ -50,80 +66,27 @@ pattern information must:
 If the update target is unclear, log it as `UNKNOWN` with a follow-up task.
 Do not silently drop memory-affecting changes.
 
-## v1.2 S01 P3 Bridge
+## Raw, Private and Stable Layers
 
-不要把 taskpack 大段写入 AGENTS.md；这里只保留可执行边界。用户授权后 raw/transcript 可公开进入 GitHub，但必须走 public raw、append-only、manifest/hash gate。
-
-raw 只读、只追加、不覆盖、不增删改。cookies、session tokens、passwords、API keys、private keys、OAuth tokens 和浏览器凭证库不是 transcript，永远不能提交。
-
-每次 run 最多只完成一个 phase。S01 P3 完成后下一步是 S01 复审，不自动进入 S02，不上传 GitHub main，不重装 app 入口。
-
-## Raw Archives Requirement
-
-Canonical complete-source archive root:
-`data/raw_archives/`
-
-GitHub URL:
-`https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/data/raw_archives`
-
-All ChatGPT, Codex, future-agent, other-agent, and LLM raw/source exports that
-the user asks to preserve must have a GitHub-recoverable archive under
-`data/raw_archives/{source_id}/{archive_date_or_run_id}/`. Do not leave the
-only complete copy on a temporary local machine.
-
-Each archive directory must include:
-
-1. `manifest.json` with original filename, byte size, SHA256, source id,
-   archive timestamp, visibility/user-authorization note, and ordered part
-   checksums when split.
-2. `README.md` with restore location and verification command.
-3. `restore.sh` or an equivalent deterministic restore instruction when the
-   archive is split or otherwise reconstructed.
-4. Split parts under `parts/` when a file is too large for normal GitHub file
-   limits. Keep each part below GitHub hard limits.
-
-`data/public_raw/`, `data/derived/`, and `data/run_logs/` may remain processing
-and derived layers, but they do not replace `data/raw_archives/` for complete
-original agent/LLM backup. Credentials, cookies, browser state, private keys,
-session tokens, API keys, OAuth tokens, and plaintext secrets are still not
-agent memory; exclude or encrypt them unless the user explicitly authorizes a
-specific public raw archive action.
-
-## Hard Boundaries
-
-- Do not commit cookies, browser state, `.local_keys/`, `.env`, plaintext
-  secrets, private keys, or local absolute paths. User-authorized raw/source
-  agent and LLM archives may enter GitHub only through
-  `data/raw_archives/{source_id}/{archive_date_or_run_id}/` with manifest,
-  restore instructions, and SHA256 verification. User-authorized processed raw
-  transcript may also enter the v1.2 public raw append-only manifest/hash path.
-- Do not automate ChatGPT login, UI scraping, export download, or saved-memory
-  writes.
-- Generated memory candidates remain pending until reviewed.
-- Memory Atlas may consume only redacted derived visualization data from
-  `data/derived/visualization/memory_atlas.json`.
-- Frontend writeback must remain proposal-only; do not directly mutate
-  `data/memory/active/active_memory.jsonl` from the UI.
-- Local `node_modules`, `dist`, app bundles, temporary work, and caches are not
-  delivery artifacts and must not be committed.
-
-## S5PBT02 Structure Boundary
-
-- `apps/memory-atlas/` is the app layer. It reads redacted derived snapshots
-  and must not read raw OpenAI exports, private imports, or plaintext secrets.
-- `skills/openai-memory-analysis/` is the reusable skill/tooling layer.
-- `context/` and `config/context_sources/` hold routing and source-context
-  contracts; default startup must use route-specific reads instead of broad
-  data scans.
-- Private exports are external-first unless the user explicitly requests a
-  GitHub-recoverable complete raw archive. Authorized complete archives go
-  under `data/raw_archives/`; other raw exports and private imports stay outside
-  git, or under ignored/encrypted local paths such as `data/raw/`,
-  `data/raw_encrypted/`, `data/private_imports/`, `private_exports/`,
-  `exports/private/`, and `data/private/`.
-- Default entries must be repository-relative (`AGENTS.md`, route scripts, and
-  redacted derived context packs). Local absolute paths are examples only and
-  are never default entry points.
+- 不把 taskpack 大段写入本文件。`data/public_raw/` 是唯一 tracked raw 目的地，属于可被
+  clone、fork、cache 和历史保留的公开明文；只接受 owner 明确授权、递归脱敏、40 MiB 内、
+  浅层 JSON/JSONL、append-only 且通过 manifest/hash gate 的材料。
+- Raw instruction trust=`none`。password、API/access/OAuth/session token、cookie、private key、
+  recovery code、browser credential/state、local absolute path、`.local_keys/`、`.env` 永不提交；
+  owner 授权不能覆盖此禁令。
+- 不生成或跟踪完整 private-origin tar/zip/bundle/split archive。新增完整 private-origin 恢复资产仅存
+  owner 控制的 private `LinzeColin/AgentDatabase-Private` Release；仓库只留脱敏 asset id、size、
+  SHA-256 disposition。Portable Agent Memory V1 不是原始归档，只能把逐条公开授权、无 credential、
+  `redacted_summary` 且 commit-only 的 memory snapshot 发布到 public `LinzeColin/AgentDatabase` Release。
+  其他 private export/import 留在 git 外或 ignored/encrypted private paths；临时源不是交付。
+- 禁止自动化 ChatGPT login、UI scraping、export download 或 saved-memory writes。Generated
+  memory candidates 审核前保持 pending。
+- `apps/memory-atlas/` 只读 `data/derived/visualization/memory_atlas.json` 等脱敏派生快照；UI
+  writeback 仅生成 proposal，不直接修改 `data/memory/records/records-NNNN.jsonl`。
+- `skills/openai-memory-analysis/` 是 tooling layer；`context/` 与
+  `config/context_sources/` 是 routing/source contract。默认入口必须 repository-relative 并按
+  route 读取，禁止 broad raw scan 或 local absolute default。
+- `node_modules`、`dist`、app bundle、temporary work 和 cache 不是交付物，不得提交。
 
 ## Minimum Validation
 

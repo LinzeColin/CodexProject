@@ -7,6 +7,9 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
+from unittest import mock
+
+from .memory_test_support import write_canonical_memory
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +42,18 @@ def sha256_file(path: Path) -> str:
 
 
 class MemoryAtlasDataTests(unittest.TestCase):
+    def test_source_date_epoch_is_deterministic_and_fail_closed(self):
+        module = load_module()
+        with mock.patch.dict(os.environ, {"SOURCE_DATE_EPOCH": "1784155570"}):
+            first = module.build_timestamp()
+            second = module.build_timestamp()
+        self.assertEqual(first, second)
+        self.assertEqual(first.isoformat(), "2026-07-15T22:46:10+00:00")
+
+        with mock.patch.dict(os.environ, {"SOURCE_DATE_EPOCH": "not-an-integer"}):
+            with self.assertRaisesRegex(ValueError, "integer Unix timestamp"):
+                module.build_timestamp()
+
     def test_builds_read_only_galaxy_contract_and_contribution(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as td:
@@ -48,7 +63,7 @@ class MemoryAtlasDataTests(unittest.TestCase):
                 active_path,
                 [
                     {
-                        "id": "mem_core",
+                        "id": "mem_core_0000",
                         "date": "2026-06-10",
                         "statement": "PRIVATE CORE DETAIL 默认交互方式应优先使用编号选择题、多选矩阵、当前步骤状态表。",
                         "memory_tier": "核心画像",
@@ -62,7 +77,7 @@ class MemoryAtlasDataTests(unittest.TestCase):
                         "conversation_id": "conversation-1",
                     },
                     {
-                        "id": "mem_codex",
+                        "id": "mem_codex_0000",
                         "date": "2026-06-12",
                         "statement": "Codex workflow 需要低上下文、高 ROI、可验证、可恢复。",
                         "memory_tier": "一般",
@@ -74,7 +89,7 @@ class MemoryAtlasDataTests(unittest.TestCase):
                         "retrieval_weight": "medium",
                     },
                     {
-                        "id": "mem_short",
+                        "id": "mem_short_0000",
                         "date": "2026-06-12",
                         "statement": "短期/敏感资料包含不应进入静态图谱的敏感原文 SECRET DETAIL；redacted_source_hash=abc123。",
                         "memory_tier": "临时",
@@ -174,7 +189,7 @@ class MemoryAtlasDataTests(unittest.TestCase):
                 db / "data/memory/candidates/run_20260610T000000Z.memory_candidates.jsonl",
                 [
                     {
-                        "id": "cand_old",
+                        "id": "mem_candidate_old",
                         "date": "2026-06-10",
                         "category": "decision",
                     }
@@ -185,18 +200,28 @@ class MemoryAtlasDataTests(unittest.TestCase):
                 latest_candidate_path,
                 [
                     {
-                        "id": "cand_new_1",
+                        "id": "mem_candidate_new_1",
                         "date": "2026-06-12",
                         "category": "workflow",
                     },
                     {
-                        "id": "cand_new_2",
+                        "id": "mem_candidate_new_2",
                         "date": "2026-06-12",
                         "category": "workflow",
                     },
                 ],
             )
             os.utime(latest_candidate_path, (1, 1))
+            canonical_rows = [json.loads(line) for line in active_path.read_text(encoding="utf-8").splitlines()]
+            canonical_rows.extend(
+                {
+                    **json.loads(line),
+                    "status": "candidate",
+                    "statement": json.loads(line).get("statement") or "Canonical candidate fixture",
+                }
+                for line in latest_candidate_path.read_text(encoding="utf-8").splitlines()
+            )
+            active_path = write_canonical_memory(db, canonical_rows)
             (db / "data/derived/project_index").mkdir(parents=True)
             (db / "data/derived/project_index/PROJECT_INDEX.md").write_text("# Project Index\n", encoding="utf-8")
             (db / "data/derived/decision_log").mkdir(parents=True)
@@ -238,7 +263,7 @@ class MemoryAtlasDataTests(unittest.TestCase):
         codex_node = next(node for node in atlas["nodes"] if node.get("data_source") == "codex")
         self.assertEqual(codex_node["source_label"], "Codex 本地数据")
         self.assertIn("真实 Codex", codex_node["statement"])
-        memory_node = next(node for node in atlas["nodes"] if node.get("memory_id") == "mem_core")
+        memory_node = next(node for node in atlas["nodes"] if node.get("memory_id") == "mem_core_0000")
         self.assertIn("核心画像 ·", memory_node["label"])
         self.assertIn("·", memory_node["label"])
         self.assertNotIn("proposal_ref", memory_node)
@@ -272,7 +297,7 @@ class MemoryAtlasDataTests(unittest.TestCase):
                 db / "data/memory/active/active_memory.jsonl",
                 [
                     {
-                        "id": "mem_1",
+                        "id": "mem_fixture_0001",
                         "date": "2026-06-10",
                         "statement": "Memory Atlas 需要作为多数据源可视化平台。",
                         "memory_tier": "核心画像",
@@ -286,6 +311,10 @@ class MemoryAtlasDataTests(unittest.TestCase):
             )
             registry = json.loads((ROOT / "config/data_sources/source_registry.json").read_text(encoding="utf-8"))
             write_json(db / "config/data_sources/source_registry.json", registry)
+            write_canonical_memory(
+                db,
+                [json.loads(line) for line in (db / "data/memory/active/active_memory.jsonl").read_text(encoding="utf-8").splitlines()],
+            )
 
             atlas = module.build_memory_atlas(db)
 
@@ -310,7 +339,7 @@ class MemoryAtlasDataTests(unittest.TestCase):
                 db / "data/memory/active/active_memory.jsonl",
                 [
                     {
-                        "id": "mem_1",
+                        "id": "mem_fixture_0001",
                         "date": "2026-06-10",
                         "statement": "OpenAIDatabase 是长期记忆数据库。",
                         "memory_tier": "核心画像",
@@ -321,6 +350,10 @@ class MemoryAtlasDataTests(unittest.TestCase):
                         "sensitivity": "private",
                     }
                 ],
+            )
+            write_canonical_memory(
+                db,
+                [json.loads(line) for line in (db / "data/memory/active/active_memory.jsonl").read_text(encoding="utf-8").splitlines()],
             )
             out = db / "atlas.json"
             result = module.main(["--database-dir", str(db), "--output", str(out)])

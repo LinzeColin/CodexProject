@@ -1,12 +1,28 @@
 governance_spec_version: "1.0.0"
 project_id: "OpenAIDatabase"
 tasks:
+  - task_id: "TSK.OpenAIDatabase.CLEAN1.0001"
+    phase: "ST03-PHB"
+    objective: "Preserve the latest airM2/proM2 branch snapshots on main, retire persistent macdata producer branches, and enforce one short-lived Automation C PR transaction with exact Settlement and zero-residue verification."
+    scope: ["OpenAIDatabase/macdata/automation_c.py", "OpenAIDatabase/macdata/airM2", "OpenAIDatabase/macdata/proM2", "OpenAIDatabase canonical governance records"]
+    non_scope: ["GitHub mutation before the 37-task package publication gate", "other non-main branches", "Issue mutation", "direct push to main", "unrelated cache cleanup"]
+    status: "in_progress"
+    dependencies: ["TSK.CodexProject.REPO1.0005"]
+    required_files: ["OpenAIDatabase/macdata/automation_c.py", "OpenAIDatabase/macdata/airM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/tests/test_automation_c.py"]
+    acceptance_ids: ["ACC.OpenAIDatabase.CLEAN1.0001"]
+    test_commands: ["python3 -m unittest OpenAIDatabase.macdata.tests.test_automation_c OpenAIDatabase.macdata.airM2.tests.test_macdata_package OpenAIDatabase.macdata.proM2.tests.test_macdata_package -q", "python3 -B -m py_compile OpenAIDatabase/macdata/automation_c.py OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py", "run both device scripts with --simulate-transaction", "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase"]
+    test_results: ["PASS: 25 focused tests including exact trusted Settlement provenance", "PASS: Python compile", "PASS: airM2 simulation preserved 17 files / 90278 bytes with zero remote writes", "PASS: proM2 simulation preserved 17 files / 101713 bytes with zero remote writes", "PENDING: unified GitHub publication, legacy branch deletion, exact main reconciliation, and terminal PR/Issue/non-main=0/0/0"]
+    evidence_refs: ["OpenAIDatabase/macdata/automation_c.py", "OpenAIDatabase/macdata/airM2/data", "OpenAIDatabase/macdata/airM2/reports", "OpenAIDatabase/macdata/proM2/data", "OpenAIDatabase/macdata/proM2/reports", "OpenAIDatabase/macdata/tests/test_automation_c.py"]
+    risk: "Any remote mutation before package publication violates the owner gate; any snapshot mismatch, secret finding, untrusted Settlement, or remote residue must fail closed."
+    rollback: "Revert only this local task commit; no remote rollback is required because this run performs zero GitHub mutations."
+    target_version: "0.2.0"
+    completed_version: ""
   - task_id: "MACDATA-PROM2-SETUP-20260705"
     phase: "MACDATA"
     objective: "Install proM2 macdata controlled archive workflow and align preflight/cleanup policy with owner-confirmed local hardware and cleanup requirements."
     scope: ["OpenAIDatabase/macdata/proM2", "OpenAIDatabase governance records", "GitHub archive branch macdata-proM2"]
     non_scope: ["Time Machine", "iCloud", "API keys", "tokens", "passwords", "cookies", "sessions", "Keychain", "shell history", "full environment dumps", ".env raw content", "other macdata devices"]
-    status: "in_progress"
+    status: "completed"
     dependencies: ["S5PBT03"]
     required_files: ["OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json", "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"]
     acceptance_ids: ["ACC-MACDATA-PROM2-SETUP-20260705"]
@@ -16,7 +32,7 @@ tasks:
     risk: "Cleanup must remain remote-verified and whitelist-bound; PR/branch/issue hygiene must only touch managed objects already merged to main."
     rollback: "Revert setup commit; delete macdata-proM2 remote branch only after confirming archive history is not needed."
     target_version: "0.2.0"
-    completed_version: ""
+    completed_version: "0.2.0"
   - task_id: "TASK-OAI-A-001"
     phase: "A"
     objective: "Complete P10 read-only audit for OpenAIDatabase."
@@ -132,16 +148,16 @@ tasks:
   - task_id: "TASK-OAI-D-001"
     phase: "D"
     objective: "Run Memory Atlas main-branch release acceptance after data-guide rename, Codex auto-update scheduling, and deployment snapshot refresh."
-    scope: ["main branch merge", "redacted visualization snapshot", "frontend build", "release audit", "visual acceptance", "Memory Atlas acceptance", "Cloudflare Pages + Access preflight", "OpenAIDatabase unit tests"]
-    non_scope: ["live Cloudflare Pages upload without credentials", "Cloudflare Access policy mutation", "raw exports", "plaintext secrets", "production readiness promotion"]
+    scope: ["main branch merge", "redacted visualization snapshot", "frontend build", "release audit", "visual acceptance", "Memory Atlas acceptance", "Cloudflare Pages + Access preflight", "OpenAIDatabase unit tests", "scheduled export repository hygiene"]
+    non_scope: ["live Cloudflare Pages upload without credentials", "Cloudflare Access policy mutation", "raw exports in Git", "plaintext secrets", "production readiness promotion", "history rewrite"]
     status: "completed"
     dependencies: ["TASK-OAI-A-004"]
-    required_files: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/scripts/install_codex_weekly_sync.py", "OpenAIDatabase/scripts/run_codex_memory_auto_update.py", "OpenAIDatabase/data/derived/visualization/memory_atlas.json", "OpenAIDatabase/tests/test_memory_atlas_visual_acceptance.py"]
+    required_files: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/scripts/install_codex_weekly_sync.py", "OpenAIDatabase/scripts/run_codex_memory_auto_update.py", "OpenAIDatabase/scripts/export_codex_history_archives.py", "OpenAIDatabase/data/derived/visualization/memory_atlas.json", "OpenAIDatabase/tests/test_memory_atlas_visual_acceptance.py", "OpenAIDatabase/tests/test_codex_history_exports.py", "governance/repository_hygiene_policy.json"]
     acceptance_ids: ["ACC-OAI-D-001"]
-    test_commands: ["python3 scripts/build_memory_atlas_data.py --database-dir . --output data/derived/visualization/memory_atlas.json", "npm ci --prefix apps/memory-atlas", "npm run lint --prefix apps/memory-atlas", "npm run build --prefix apps/memory-atlas", "python3 scripts/audit_memory_atlas_release.py --publish-dir apps/memory-atlas/dist", "python3 scripts/audit_memory_atlas_visual_acceptance.py --repo-root .", "python3 scripts/audit_memory_atlas_acceptance.py --repo-root . --publish-dir apps/memory-atlas/dist", "python3 scripts/preflight_cloudflare_pages_access.py --repo-root . --publish-dir apps/memory-atlas/dist", "python3 -m unittest discover -s tests -p \"test_*.py\" -q", "python3 scripts/deploy_memory_atlas_cloudflare.py --repo-root ."]
-    test_results: ["PASS: snapshot active_memory=278 conversation_count=201 nodes=657 edges=3500 generated_at=2026-06-26T11:49:34.986Z", "PASS: npm ci added 81 packages with 0 vulnerabilities", "PASS: TypeScript lint/typecheck exit 0", "PASS: Vite build exit 0 with chunk-size warning only", "PASS: release audit checked 6 publish files", "PASS: 24 visual acceptance checks including data_guide_framework_ready", "PASS: Memory Atlas acceptance checked 23 gates including Cloudflare preflight readiness", "PASS: Cloudflare preflight checked wrangler config, templates, docs, and publish safety; live env not required in local preflight", "PASS: OpenAIDatabase unittest discover ran 43 tests OK after updating the data-guide visual test assertion", "DRY_RUN: deploy script command contract valid; live execute blocked by absent Wrangler login and missing Cloudflare live env vars"]
-    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py", "OpenAIDatabase/scripts/preflight_cloudflare_pages_access.py", "OpenAIDatabase/tests/test_memory_atlas_visual_acceptance.py", "OpenAIDatabase/data/derived/visualization/memory_atlas.json"]
-    risk: "Cloudflare live upload and Access verification remain unproven until credentials and allowed-user verification are available."
+    test_commands: ["python3 scripts/build_memory_atlas_data.py --database-dir . --output data/derived/visualization/memory_atlas.json", "npm ci --prefix apps/memory-atlas", "npm run lint --prefix apps/memory-atlas", "npm run build --prefix apps/memory-atlas", "python3 scripts/audit_memory_atlas_release.py --publish-dir apps/memory-atlas/dist", "python3 scripts/audit_memory_atlas_visual_acceptance.py --repo-root .", "python3 scripts/audit_memory_atlas_acceptance.py --repo-root . --publish-dir apps/memory-atlas/dist", "python3 scripts/preflight_cloudflare_pages_access.py --repo-root . --publish-dir apps/memory-atlas/dist", "python3 -m unittest discover -s tests -p \"test_*.py\" -q", "python3 -B -m unittest OpenAIDatabase.tests.test_codex_history_exports tests.governance.test_repository_hygiene -v", "python3 -B scripts/repository_hygiene_audit.py --root .", "python3 scripts/deploy_memory_atlas_cloudflare.py --repo-root ."]
+    test_results: ["PASS: snapshot active_memory=278 conversation_count=201 nodes=657 edges=3500 generated_at=2026-06-26T11:49:34.986Z", "PASS: npm ci added 81 packages with 0 vulnerabilities", "PASS: TypeScript lint/typecheck exit 0", "PASS: Vite build exit 0 with chunk-size warning only", "PASS: release audit checked 6 publish files", "PASS: 24 visual acceptance checks including data_guide_framework_ready", "PASS: Memory Atlas acceptance checked 23 gates including Cloudflare preflight readiness", "PASS: Cloudflare preflight checked wrangler config, templates, docs, and publish safety; live env not required in local preflight", "PASS: OpenAIDatabase unittest discover ran 43 tests OK after updating the data-guide visual test assertion", "PASS: six focused export/hygiene tests; 53 retained large objects and four archives uniquely governed; tracked noise and backup producers zero", "PASS: clean checkout ran 232 OpenAIDatabase tests, installed 154 packages, built 1768 modules, passed tree hygiene and remained Git-clean", "DRY_RUN: deploy script command contract valid; live execute blocked by absent Wrangler login and missing Cloudflare live env vars"]
+    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py", "OpenAIDatabase/scripts/preflight_cloudflare_pages_access.py", "OpenAIDatabase/tests/test_memory_atlas_visual_acceptance.py", "OpenAIDatabase/tests/test_codex_history_exports.py", "OpenAIDatabase/data/derived/visualization/memory_atlas.json", "governance/repository_hygiene_policy.json", "tests/governance/test_repository_hygiene.py"]
+    risk: "Cloudflare live upload and Access verification remain unproven; the retained June raw-session tar must be privately offloaded before removal or history rewrite."
     rollback: "Revert the main merge and snapshot refresh commits, then redeploy the previous successful Cloudflare Pages version if one exists."
     target_version: "0.2.0"
     completed_version: "0.2.0"
@@ -221,11 +237,11 @@ tasks:
     non_scope: ["Cloudflare live upload", "Cloudflare Access policy mutation", "publishing memoryatlas.linzezhang.com", "raw export ingestion", "plaintext secrets", "dist or node_modules commits", "delivery readiness promotion"]
     status: "completed"
     dependencies: ["TASK-OAI-D-001", "TASK-OAI-D-002"]
-    required_files: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_inspector_proposal.mjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part3_stage2.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part4_stage3.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part7_stage6.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py"]
+    required_files: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_inspector_proposal.mjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part3_stage2.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part4_stage3.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part7_stage6.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", ".github/workflows/openai-database-ci.yml"]
     acceptance_ids: ["ACC-OAI-D-004"]
-    test_commands: ["pnpm --dir OpenAIDatabase/apps/memory-atlas run lint", "pnpm --dir OpenAIDatabase/apps/memory-atlas run build", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-release-safety", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app-packaging", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:whole-project", "cd OpenAIDatabase && python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist", "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"]
+    test_commands: ["pnpm --dir OpenAIDatabase/apps/memory-atlas run lint", "pnpm --dir OpenAIDatabase/apps/memory-atlas run build", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-release-safety", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app-packaging", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:whole-project", "cd OpenAIDatabase && python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist", "python3 scripts/workflow_security_audit.py audit", "actionlint", "python3 scripts/lean_governance.py ci --changed-only --base-ref HEAD"]
     test_results: ["PASS: lint completed", "PASS: build completed", "PASS: stage8 release safety completed", "PASS: stage8 local app completed", "PASS: stage8 local app packaging completed", "PASS: whole-project validator completed", "PASS: Cloudflare Pages + Access offline preflight completed", "PASS: changed-only governance CI decision SHIP"]
-    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", "OpenAIDatabase/scripts/preflight_cloudflare_pages_access.py"]
+    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", "OpenAIDatabase/scripts/preflight_cloudflare_pages_access.py", "governance/workflow_policy.json", "tests/governance/test_workflow_security.py"]
     risk: "This proves local readiness gates only; live Cloudflare deployment and Access verification remain unexecuted until credentials and explicit deploy authorization are provided."
     rollback: "Revert TASK-OAI-D-004 validator/package/governance changes and restore the previous release gate behavior."
     target_version: "0.2.0"

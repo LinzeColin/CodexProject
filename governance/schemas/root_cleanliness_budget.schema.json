@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/governance/schemas/root_cleanliness_budget.schema.json",
+  "title": "CodexProject Root Cleanliness Budget",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "owner",
+    "task_id",
+    "acceptance_id",
+    "budgets",
+    "entry_files",
+    "active_project_entrypoints",
+    "allowed_active_scope_exclusions",
+    "owned_root_items",
+    "agents_required_tokens",
+    "readme_forbidden_patterns"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "policy_id": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1 },
+    "task_id": { "type": "string", "pattern": "^TSK\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[0-9]{4}$" },
+    "acceptance_id": { "type": "string", "pattern": "^ACC\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[0-9]{4}$" },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agents_max_bytes",
+        "readme_max_bytes",
+        "initial_context_max_bytes",
+        "initial_context_max_files"
+      ],
+      "properties": {
+        "agents_max_bytes": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "readme_max_bytes": { "type": "integer", "minimum": 1, "maximum": 8192 },
+        "initial_context_max_bytes": { "type": "integer", "minimum": 1, "maximum": 12288 },
+        "initial_context_max_files": { "type": "integer", "minimum": 1, "maximum": 5 }
+      }
+    },
+    "entry_files": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "active_project_entrypoints": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "allowed_active_scope_exclusions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "owned_root_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind", "owner", "purpose"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^[^/]+$" },
+          "kind": { "enum": ["file", "directory"] },
+          "owner": { "type": "string", "minLength": 1 },
+          "purpose": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "agents_required_tokens": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "readme_forbidden_patterns": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

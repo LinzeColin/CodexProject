@@ -1,0 +1,288 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0010-LIFECYCLE-BITEMPORAL-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0010",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0010"
+  ],
+  "iteration_id": "ST08-PHD-OPENAIDATABASE-PAM1-0010-001",
+  "generated_at": "2026-07-16T07:32:36Z",
+  "gate_status": "PASS_LOCAL_LIFECYCLE_BITEMPORAL_TRUTH",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "bb7796d582c92564009bff29b0ac82c9ba9e8130",
+  "remote_main_sha_at_run_start": "2027e012fba861a8b0d9b429da62afd90c852b4d",
+  "candidate_tree_sha1_excluding_this_manifest": "5f31e7217f879164fedb2243039dd513a5b180f7",
+  "content_tree_hash": "63c3ab4d915466015c1094836c9b66c2b019d5b5c6aa2bd9aedd79bdd2de99c9",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 29-file staged closure before this manifest is added; content hash is SHA-256 over sorted path, NUL, staged blob SHA-256 and LF tuples. Final 37/37 publication binds the published business commit.",
+  "summary": "Deterministically classify duplicate and conflict states, preserve supersession history, and expose current, valid-time and recorded-time memory queries while blocking unresolved settlement and abstaining when audit history is insufficient.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0010 local lifecycle and bitemporal truth acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_FAST_SECURITY_AND_GOVERNANCE_ACCEPTANCE_REMOTE_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0010-MANIFEST"
+  ],
+  "scope": {
+    "lifecycle_policy": "OpenAIDatabase/config/memory-lifecycle-policy.json",
+    "lifecycle_engine": "OpenAIDatabase/scripts/memory_lifecycle.py",
+    "memory_schema": "OpenAIDatabase/config/memory.schema.json",
+    "query_entrypoint": "OpenAIDatabase/scripts/memory.py query",
+    "canonical_record_count": 198,
+    "classification_types_required": 4,
+    "classification_types_implemented": 4,
+    "query_modes_required": 3,
+    "query_modes_implemented": 3,
+    "active_duplicate_or_conflict_count": 0,
+    "unresolved_conflict_count": 0,
+    "embedding_sole_decision_count": 0,
+    "critical_update_new_fact_rate": 1.0,
+    "canonical_business_data_files_modified": 0,
+    "raw_business_data_files_modified": 0,
+    "database_or_service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0009",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0009-MUTATION-ADMISSION-20260716.json",
+    "gate_status": "PASS_LOCAL_GOVERNED_MUTATION_ADMISSION",
+    "implementation_commit": "bb7796d582c92564009bff29b0ac82c9ba9e8130"
+  },
+  "lifecycle_contract": {
+    "schema_version": "openai_database.memory_lifecycle_policy.v1",
+    "normalization": [
+      "NFKC",
+      "casefold",
+      "collapse Unicode whitespace"
+    ],
+    "classification_order": [
+      "exact_duplicate",
+      "normalized_duplicate",
+      "overlapping_validity_conflict",
+      "same_key_conflict"
+    ],
+    "valid_interval": "[valid_from, valid_to)",
+    "query_modes": [
+      "current",
+      "valid_as_of",
+      "recorded_as_of"
+    ],
+    "update_rule": "A material update retires the prior active record, closes its valid interval, links both supersession directions, and appends a recorded transition.",
+    "reversal_rule": "A reversal is an explicit material update; it does not rewrite or delete recorded history.",
+    "unresolved_conflict_rule": "Any unresolved duplicate, overlap or linked dispute blocks automatic settlement.",
+    "insufficient_audit_rule": "Recorded-time reconstruction abstains and returns a stable error when the requested history cannot be bounded.",
+    "embedding_can_be_sole_decision": false,
+    "canonical_business_record_writes": 0
+  },
+  "hard_gate_result": {
+    "four_classifications_distinguished": true,
+    "active_duplicate_or_conflict_zero": true,
+    "critical_update_creates_new_fact": true,
+    "prior_active_truth_retired": true,
+    "two_current_truths_rejected": true,
+    "current_query_uses_effective_valid_state": true,
+    "valid_as_of_query_is_half_open": true,
+    "recorded_as_of_query_replays_transitions": true,
+    "retired_record_hidden_from_current": true,
+    "scope_is_part_of_lifecycle_identity": true,
+    "stale_concurrent_update_fails_before_write": true,
+    "unresolved_conflict_blocks_settlement": true,
+    "insufficient_history_abstains": true,
+    "embedding_sole_decision_zero": true,
+    "canonical_or_raw_business_write_count": 0
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-020",
+    "formula_id": "FORM-020",
+    "parameter_ids": [
+      "PARAM-106"
+    ]
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/scripts/memory_lifecycle.py": "928e06f1ac8fb9dd1db390cf78d2c19d3c45dffdafdd5d7c05a833db5bc6106f",
+    "OpenAIDatabase/scripts/memory.py": "0a21cc4d3b99ca2802f6d6d3f52696ac1c970f5f41463ea3fddd411be27d9666",
+    "OpenAIDatabase/scripts/memory_mutation.py": "09b3a95e1a5f059a4deff1edc2786156fcb8affb9d21f7976944f5d6dbae9e7e",
+    "OpenAIDatabase/scripts/migrate_memory_records.py": "aceb799c31fbe78bf4af42c6d29a495e9e61c6fd5f319023c9b7d159a6ee376a",
+    "OpenAIDatabase/config/memory-lifecycle-policy.json": "194490bc22db85ff92bd51037d6f53d9760d1752ace2c8c293c045b1e1d63485",
+    "OpenAIDatabase/config/memory.schema.json": "c6000e4603875ce0b67e5914de31babc403075915ac01eed257f6cba2eb9f2e3",
+    "OpenAIDatabase/config/memory.cutover.json": "36ae7a792034561fb6276b4b207fad399dad0da0a0093e75b60f55781175b6f8",
+    "OpenAIDatabase/config/agent-memory.schema.json": "c11f08074a957bc639fda16b5c5cb4e4b4d070e66a48b303d53e21fc3069e1e4",
+    "OpenAIDatabase/docs/MEMORY_LIFECYCLE_QUERIES.md": "ab28e4ca4f389050f759c18c04a83f43a2319a9ed600e25babe14d1acd97adf0",
+    "OpenAIDatabase/docs/MEMORY_MUTATION_TRANSACTIONS.md": "7dd81223efe79984b630427b12eac2ad417266cdb1f570582a4637895d2121c1",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md": "a46533bc376f4720d4f7dff7c7917ee7e0a66727727d988c245e9216011d27be",
+    "OpenAIDatabase/data/memory/agent-memory.json": "64f5eba890fffea7bee59cf316bbf08719bbf77ea0f6781adb2ff9d4180af38a",
+    "OpenAIDatabase/tests/test_memory_lifecycle.py": "6872adf6ff834ac3f901f7a75e03c26d6105b1dd4e4945e25db4a81f6e9b78cd",
+    "OpenAIDatabase/tests/test_memory_mutation.py": "29ebbde618893e18a97a59ef7be62ed53eb0755ae690df6c8c30f15da75a9af8",
+    "OpenAIDatabase/tests/test_memory_cli.py": "2c3733e3c239222329eed34e5977a3e6c1c078071a1c9ac3ae6b994a2b050408",
+    "OpenAIDatabase/config/command_ownership.json": "e71547d29578d713ecac957796f1b178bf37ba790740504769bd3898ae33cff5",
+    "OpenAIDatabase/config/quality/verification_policy.json": "816d1a952feeeda21203c0cd8e80da05be2e298e8ca638db1786d629050c69bb",
+    "governance/id_registry.json": "d4e7505c34f728bda5f866bbc7b41b6cac22b6fa6c307fee93a09a54b90c3788"
+  },
+  "test_commands": [
+    "python3 -B -m unittest -q tests.test_memory_lifecycle",
+    "python3 -B -m unittest -q tests.test_memory_lifecycle tests.test_memory_mutation tests.test_memory_record_schema_v2",
+    "python3 -B -m unittest -q tests.test_memory_cli tests.test_agent_memory_views",
+    "python3 -B scripts/memory.py build --agent-views --check",
+    "python3 -B scripts/run_verification.py --tier fast",
+    "python3 -B scripts/run_verification.py --tier security",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub overlap audit"
+  ],
+  "test_results": [
+    {
+      "gate": "task_specific",
+      "result": "PASS",
+      "observed": "5/5 Task-specific cases passed: four lifecycle cases plus one unresolved-dispute settlement blocker; the existing four-record fixture was reused and no sample file was added."
+    },
+    {
+      "gate": "focused_regression",
+      "result": "PASS",
+      "observed": "15/15 lifecycle, mutation and schema tests passed; CLI and generated-view coverage separately passed 10/10."
+    },
+    {
+      "gate": "fast_and_security",
+      "result": "PASS",
+      "observed": "Fast 19/19 and security 98/98 passed; 62 test files have one owner with zero skip, flaky, duplicate, live-unit or CI drift. The initial schema-lock mismatch was corrected to the exact schema bytes/hash and its regression passed before the final security rerun."
+    },
+    {
+      "gate": "canonical_lifecycle_baseline",
+      "result": "PASS",
+      "observed": "All 198 canonical records validated with exact, normalized, overlapping-validity and same-key active counts at 0; unresolved blockers and embedding-only decisions are 0."
+    },
+    {
+      "gate": "bitemporal_behavior",
+      "result": "PASS",
+      "observed": "Current, valid-as-of and recorded-as-of queries distinguish effective and audit truth; half-open boundaries, reversal, retired invisibility, scope isolation and fail-closed incomplete audit all passed."
+    },
+    {
+      "gate": "generated_artifacts",
+      "result": "PASS",
+      "observed": "AGENT_MEMORY.md/agent-memory.json are 3963/5979 bytes; final plan SHA-256 is 6adc2517c5e41774b188677e3611de7367cb0be0998a37777d91be4d41eb83ac and drift is zero."
+    },
+    {
+      "gate": "lean_governance",
+      "result": "PASS",
+      "observed": "Seven convergence tests passed; functionality, development and model-parameter views are 9536/14824/27343 bytes, totaling 51703 below the 52000-byte task-scaled gate."
+    },
+    {
+      "gate": "business_data_boundary",
+      "result": "PASS",
+      "observed": "Canonical record and public-raw changed-path counts are both zero; this Task changes contracts, behavior, tests and governance only."
+    },
+    {
+      "gate": "terminal_remote_overlap",
+      "result": "PASS",
+      "observed": "Remote main advanced from 2027e012fba861a8b0d9b429da62afd90c852b4d to 8d2cc20ed76af19efc4ea54d1c433663eb4cea73 (6 commits, 78 files); exact overlap with this Task's 30 committed paths is 0. Open PRs/issues/non-main branches remain 0/0/0."
+    }
+  ],
+  "terminal_remote": {
+    "observed_main_sha": "8d2cc20ed76af19efc4ea54d1c433663eb4cea73",
+    "commits_since_run_start": 6,
+    "changed_files_since_run_start": 78,
+    "exact_path_overlap": 0,
+    "open_pull_requests": 0,
+    "open_issues": 0,
+    "non_main_branches": 0,
+    "result": "PASS_NO_REBASE_REQUIRED"
+  },
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory-lifecycle-policy.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/MEMORY_LIFECYCLE_QUERIES.md",
+    "OpenAIDatabase/docs/MEMORY_MUTATION_TRANSACTIONS.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_lifecycle.py",
+    "OpenAIDatabase/scripts/memory_mutation.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_memory_lifecycle.py",
+    "OpenAIDatabase/tests/test_memory_mutation.py",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0010-LIFECYCLE-BITEMPORAL-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory-lifecycle-policy.json",
+    "OpenAIDatabase/config/memory.cutover.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/MEMORY_LIFECYCLE_QUERIES.md",
+    "OpenAIDatabase/docs/MEMORY_MUTATION_TRANSACTIONS.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_lifecycle.py",
+    "OpenAIDatabase/scripts/memory_mutation.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_memory_lifecycle.py",
+    "OpenAIDatabase/tests/test_memory_mutation.py",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0010-LIFECYCLE-BITEMPORAL-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0010-LIFECYCLE-BITEMPORAL-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0010-LIFECYCLE-BITEMPORAL-20260716.json"
+  ],
+  "known_boundaries": [
+    "No canonical or raw business record was created, changed, retired, disputed or deleted in this Task.",
+    "PAM1.0011 owns forgetting, retirement policy, dispute resolution, negative memory and refusal behavior beyond the unresolved-settlement blocker implemented here.",
+    "PAM1.0017 owns full branch-to-PR-to-CI-to-settlement transaction glue and its end-to-end scenarios.",
+    "PAM1.0019 owns production and five-profile live validation after the single final publication.",
+    "Legacy records without bounded transition history may support current and valid-time truth but recorded-time audit abstains instead of guessing.",
+    "No issue, branch, PR, deployment, release or remote business write was created."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the lifecycle policy, engine, query contract, transition schema and related tests; restore the prior CLI, mutation/cutover validators, generated views and governance files. Canonical/raw business bytes, dependencies, services and remote state require no compensation."
+}

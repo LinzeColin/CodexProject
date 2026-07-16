@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/blob/main/OpenAIDatabase/config/memory-mutation.schema.json",
+  "title": "OpenAIDatabase Governed Memory Mutation Envelope V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "operation",
+    "idempotency_key",
+    "base_commit_sha",
+    "actor",
+    "source",
+    "authorization",
+    "target",
+    "payload",
+    "valid_time",
+    "sensitivity",
+    "reason"
+  ],
+  "properties": {
+    "schema_version": {"const": "openai_database.memory_mutation.v1"},
+    "operation": {"enum": ["add", "update", "retire", "dispute"]},
+    "idempotency_key": {
+      "type": "string",
+      "pattern": "^memory-mutation:[a-f0-9]{64}$"
+    },
+    "base_commit_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"enum": ["user_via_agent", "automation_c"]},
+        "id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ref", "observed_at", "evidence_hash"],
+      "properties": {
+        "type": {"enum": ["explicit_user", "repository_evidence", "raw_import", "model_inference"]},
+        "ref": {"type": "string", "minLength": 1, "maxLength": 512},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "evidence_hash": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "ref", "authorized_at"],
+      "properties": {
+        "mode": {"enum": ["explicit_user_zero_human", "repository_evidence_preapproved", "none"]},
+        "ref": {"type": "string", "minLength": 1, "maxLength": 512},
+        "authorized_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_id", "memory_key", "scope"],
+      "properties": {
+        "record_id": {
+          "type": ["string", "null"],
+          "pattern": "^mem_[A-Za-z0-9][A-Za-z0-9._-]{7,127}$"
+        },
+        "memory_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._:/-]{2,255}$"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "key"],
+          "properties": {
+            "type": {"enum": ["global", "project", "task", "conversation"]},
+            "key": {"type": "string", "minLength": 1, "maxLength": 256}
+          }
+        }
+      }
+    },
+    "payload": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "statement", "confidence", "importance", "aliases", "tags", "negative_triggers"],
+          "properties": {
+            "kind": {"enum": ["answering_rule", "preference", "decision", "project_context", "workflow", "security_boundary", "fact", "negative_trigger"]},
+            "statement": {"type": "string", "minLength": 1, "maxLength": 8192},
+            "confidence": {"enum": ["high", "medium", "low"]},
+            "importance": {"enum": ["high", "medium", "low"]},
+            "aliases": {"$ref": "#/$defs/string_array"},
+            "tags": {"$ref": "#/$defs/string_array"},
+            "negative_triggers": {"$ref": "#/$defs/string_array"}
+          }
+        }
+      ]
+    },
+    "valid_time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"type": "string", "format": "date-time"},
+        "to": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "sensitivity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "handling", "credential_present", "public_repository_allowed"],
+      "properties": {
+        "classification": {"enum": ["public", "private", "sensitive"]},
+        "handling": {"enum": ["public_text", "redacted_summary"]},
+        "credential_present": {"const": false},
+        "public_repository_allowed": {"const": true}
+      }
+    },
+    "reason": {"type": "string", "minLength": 1, "maxLength": 512}
+  },
+  "$defs": {
+    "string_array": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 256}
+    }
+  }
+}

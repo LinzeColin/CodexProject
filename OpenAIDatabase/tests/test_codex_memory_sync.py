@@ -230,14 +230,14 @@ class CodexMemorySyncTests(unittest.TestCase):
 
             with tempfile.TemporaryDirectory() as td:
                 repo = Path(td)
-                (repo / "token_usage/current-mac-latest").mkdir(parents=True)
+                (repo / "data/run_logs/token_usage").mkdir(parents=True)
                 result = module.git_commit_and_push(repo, push=False)
         finally:
             module.run_command = original_run_command
             module.subprocess.run = original_subprocess_run
 
         self.assertEqual(result, {"committed": False, "pushed": False, "reason": "no_changes"})
-        self.assertEqual(commands[0][0], ["git", "add", "token_usage/current-mac-latest"])
+        self.assertEqual(commands[0][0], ["git", "add", "data/run_logs"])
 
 
 if __name__ == "__main__":

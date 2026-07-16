@@ -12,12 +12,19 @@
   "routes": [
     {
       "intent": "startup",
-      "description": "Minimal default new-agent boot path.",
+      "description": "One-object generated memory handshake; follow indexed paths only when task-relevant.",
       "read_order": [
-        "AGENTS.md",
-        "data/derived/personalization/codex_personalization.md"
+        "data/memory/agent-memory.json"
       ],
       "conditional_resources": [
+        {
+          "path": "data/memory/AGENT_MEMORY.md",
+          "condition": "Load when the task needs active high-importance hot context after handshake discovery."
+        },
+        {
+          "path": "data/derived/personalization/codex_personalization.md",
+          "condition": "Load only for provider-specific Codex personalization beyond canonical active memory."
+        },
         {
           "path": "data/derived/profile/CORE_PROFILE.md",
           "condition": "Load only when the task needs stable user profile or taste detail beyond the startup summary."

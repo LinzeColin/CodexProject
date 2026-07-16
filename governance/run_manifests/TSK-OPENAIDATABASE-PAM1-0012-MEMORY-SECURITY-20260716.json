@@ -1,0 +1,280 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0012-MEMORY-SECURITY-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0012",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0012"
+  ],
+  "iteration_id": "ST08-PHE-OPENAIDATABASE-PAM1-0012-001",
+  "generated_at": "2026-07-16T09:11:30Z",
+  "gate_status": "PASS_LOCAL_MEMORY_INPUT_AND_WORKFLOW_SUPPLY_CHAIN_SECURITY",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "4cee90c91bc2dca429efddb5f716587c9ff3703a",
+  "remote_main_sha_at_run_start": "1f1e231df729e4c9c9e3373e6a60f548920937f3",
+  "candidate_tree_sha1_excluding_this_manifest": "b49e2703583324cabc4b58425dd0bebabdc28400",
+  "content_tree_hash": "bc4c80694ea0d409a7db271b0b25eb20d4e763626e8c9b4741f8d8cd32e78cfa",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 27-file staged closure before this manifest is added; content hash is SHA-256 over sorted path, NUL, staged blob SHA-256 and LF tuples. Final 37/37 publication binds the published business commit.",
+  "summary": "Treat raw, pull-request and external text as data only; block injection and suspected credentials without echo; prove immutable Action pins and trusted Settlement isolation through the canonical workflow audit.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0012 local memory input and workflow supply-chain security acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_FAST_SECURITY_AND_GOVERNANCE_ACCEPTANCE_REMOTE_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0012-MANIFEST"
+  ],
+  "scope": {
+    "security_policy": "OpenAIDatabase/config/memory-security-policy.json",
+    "security_engine": "OpenAIDatabase/scripts/memory_security.py",
+    "raw_importer": "OpenAIDatabase/scripts/import_public_raw_evidence.py",
+    "threat_model": "OpenAIDatabase/docs/MEMORY_SECURITY_THREAT_MODEL.md",
+    "untrusted_boundary_count": 4,
+    "bounded_case_count": 10,
+    "prompt_injection_case_count": 4,
+    "credential_case_count": 4,
+    "new_fixture_or_sample_file_count": 1,
+    "canonical_workflow_count": 15,
+    "external_action_ref_count": 58,
+    "resolved_action_pin_count": 8,
+    "canonical_business_data_files_modified": 0,
+    "raw_business_data_files_modified": 0,
+    "workflow_files_modified": 0,
+    "dependency_additions_or_version_changes": 0,
+    "database_or_service_additions": 0,
+    "history_rewrites": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0011",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0011-FORGETTING-REFUSAL-20260716.json",
+    "gate_status": "PASS_LOCAL_FORGETTING_AND_EVIDENCE_AWARE_REFUSAL",
+    "implementation_commit": "4cee90c91bc2dca429efddb5f716587c9ff3703a"
+  },
+  "security_contract": {
+    "instruction_trust": "none",
+    "untrusted_boundaries": [
+      "raw_evidence",
+      "pull_request_title",
+      "pull_request_body",
+      "external_document"
+    ],
+    "normalization": "NFKC",
+    "credential_pattern_scan": true,
+    "credential_entropy_scan": true,
+    "entropy_min_length": 24,
+    "entropy_min_character_classes": 3,
+    "entropy_min_bits_per_character": 4.0,
+    "suspected_value_echo_allowed": false,
+    "incident_first_actions": [
+      "revoke",
+      "rotate"
+    ],
+    "automatic_history_rewrite": false,
+    "history_remediation_owner": "separate_authorized_task"
+  },
+  "hard_gate_result": {
+    "instruction_obedience_count": 0,
+    "credential_blocked_count": 4,
+    "credential_case_count": 4,
+    "credential_block_rate": 1.0,
+    "suspected_value_echo_count": 0,
+    "raw_malicious_path_write_count": 0,
+    "raw_archive_write_count": 0,
+    "workflow_unowned_count": 0,
+    "workflow_unpinned_action_count": 0,
+    "workflow_unapproved_action_count": 0,
+    "workflow_direct_context_violation_count": 0,
+    "workflow_high_privilege_violation_count": 0,
+    "untraceable_action_pin_count": 0,
+    "settlement_role_count": 1,
+    "settlement_untrusted_execution_count": 0,
+    "machine_handshake_bytes": 5962,
+    "machine_handshake_max_characters": 6000
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-022",
+    "formula_id": "FORM-022",
+    "parameter_ids": [
+      "PARAM-108"
+    ]
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/config/memory-security-policy.json": "55755f0698f0a16f68762445225c978ca3bb6a1734d01c2c1bb7ce2b1755ed53",
+    "OpenAIDatabase/scripts/memory_security.py": "7a0d0ff9c91836b983c3074adaa36a1feaa956a9b475b7b6babccb590ad60752",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py": "0d697476922b7a993c5a3fc137adcd76802e54817cc70d64390bb253328cb905",
+    "OpenAIDatabase/docs/MEMORY_SECURITY_THREAT_MODEL.md": "88af2853bef8404da98cf2a754995b2724be5ead7c29c54fbc41167277ff1923",
+    "OpenAIDatabase/tests/fixtures/memory_security/adversarial_cases.json": "409794185d336345da1f8da81e82a54472f562099eb8d59e3fc75a2bdba8b1e9",
+    "OpenAIDatabase/tests/test_memory_security.py": "34366c22a17695e1e6c4a5584f22cf32ddf39d5b98375013b1ec23b790418d14",
+    "OpenAIDatabase/config/agent-memory.schema.json": "a26f131575a18316c227f1a3246803d6009f9a4b872df616c2388746b0c43472",
+    "OpenAIDatabase/data/memory/agent-memory.json": "6f7a91188933904277ce9b5ce473871b145b53a1d3883df2ffbf657e54150af8",
+    "OpenAIDatabase/config/command_ownership.json": "4a99bb4e6396da1ee556d4e8ad8235abe63ea9c7a37d67faaa4c9fd2b399b066",
+    "OpenAIDatabase/config/quality/verification_policy.json": "ca93856fca46c3bef57ac2f94ddda4a4b84a2c4d7a2b9e9a59277221f967f8a0",
+    "scripts/workflow_security_audit.py": "cf4033fc02377a90c23c227a33e2c566a7cf24799c099bd52a619b9c380e1895",
+    "governance/workflow_policy.json": "83518be90a578c4c29f12a6f714d5dcbc2abce7c7fd88e40fd8e168192b72ffc",
+    ".github/workflows/agent-loop-settlement.yml": "efc305fcf4b406812898b230e1695ddf27adea6790e6a4cff9f857f648ea68f7",
+    "governance/id_registry.json": "d425699afcf0da59f3edacb475ab0360cec72500229d8dd5dd0d9ec909fb1338"
+  },
+  "test_commands": [
+    "python3 -B -m unittest -q tests.test_memory_security",
+    "python3 -B -m unittest -q tests.test_agent_memory_views tests.test_agent_transport_compatibility tests.test_memory_security tests.test_public_raw_import tests.test_memory_cli",
+    "python3 -B scripts/memory_security.py audit --repo-root .. --json",
+    "python3 -B scripts/memory.py build --agent-views --check",
+    "ruff check changed Python files",
+    "python3 -B scripts/run_verification.py --tier fast",
+    "python3 -B scripts/run_verification.py --tier security",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub overlap audit"
+  ],
+  "test_results": [
+    {
+      "gate": "bounded_adversarial_corpus",
+      "result": "PASS",
+      "observed": "10/10 bounded cases passed: prompt-injection cases=4, credential cases=4, instruction obedience=0, credential block=4/4 and suspected-value echo=0. No 160-case benchmark work was started."
+    },
+    {
+      "gate": "raw_import_fail_closed",
+      "result": "PASS",
+      "observed": "The raw importer invokes the centralized gate before sanitization or writes; injection, credential, bidi/invisible, traversal, symlink and archive regressions passed with rejected payloads absent from exceptions."
+    },
+    {
+      "gate": "workflow_supply_chain",
+      "result": "PASS",
+      "observed": "Canonical audit passed 15/15 owned workflows and 58 Action refs; all 8 allowed pins have full SHAs and traceable resolution sources; required violation metrics are zero."
+    },
+    {
+      "gate": "privileged_settlement_boundary",
+      "result": "PASS",
+      "observed": "Exactly one trusted-default-branch Settlement role exists; checkout, PR artifact/cache consumption, direct PR context and high-privilege audit violation counts are zero."
+    },
+    {
+      "gate": "focused_regression",
+      "result": "PASS",
+      "observed": "21/21 Agent view, transport, security, raw-import and unified CLI tests passed; Task-specific security tests passed 4/4."
+    },
+    {
+      "gate": "fast_and_security",
+      "result": "PASS",
+      "observed": "Fast 19/19 and Security 106/106 passed; all 64 Python test files have exactly one owner. The first Fast run exposed only two stale static counters, which were updated to 28 canonical commands and 64 tests before the passing rerun."
+    },
+    {
+      "gate": "generated_and_governance",
+      "result": "PASS",
+      "observed": "Generated views are 4076/5962 bytes with drift zero and a security-policy hash in the machine handshake. Seven Lean convergence tests and deterministic render passed within the Task-scaled byte budget."
+    },
+    {
+      "gate": "business_data_and_scope_boundary",
+      "result": "PASS",
+      "observed": "Canonical record, public-raw, workflow and dependency changed-path counts are zero. The staged credential scan found only three expected synthetic pattern hits in the bounded fixture and zero unexpected files; PAM1.0013 retains the full 160-case benchmark."
+    },
+    {
+      "gate": "terminal_remote_overlap",
+      "result": "PASS",
+      "observed": "Remote main advanced by one arXiv-only commit with 22 changed files from the Run-start SHA; exact overlap with this Task is zero. Open PRs/issues/non-main branches remain 0/0/0."
+    }
+  ],
+  "terminal_remote": {
+    "observed_main_sha": "06d55e96267b496ed8d83a7992709e6cd3de1f9b",
+    "commits_since_run_start": 1,
+    "changed_files_since_run_start": 22,
+    "exact_path_overlap": 0,
+    "open_pull_requests": 0,
+    "open_issues": 0,
+    "non_main_branches": 0,
+    "result": "PASS_NO_REBASE_REQUIRED"
+  },
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory-security-policy.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/raw_import.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/MEMORY_SECURITY_THREAT_MODEL.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_security.py",
+    "OpenAIDatabase/tests/fixtures/memory_security/adversarial_cases.json",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_memory_security.py",
+    "OpenAIDatabase/tests/test_public_raw_import.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0012-MEMORY-SECURITY-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/agent-memory.schema.json",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory-security-policy.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/raw_import.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/MEMORY_SECURITY_THREAT_MODEL.md",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/memory_security.py",
+    "OpenAIDatabase/tests/fixtures/memory_security/adversarial_cases.json",
+    "OpenAIDatabase/tests/test_agent_memory_views.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_memory_security.py",
+    "OpenAIDatabase/tests/test_public_raw_import.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0012-MEMORY-SECURITY-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0012-MEMORY-SECURITY-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0012-MEMORY-SECURITY-20260716.json"
+  ],
+  "known_boundaries": [
+    "No canonical memory record or public-raw business artifact was created, changed, retired, disputed or deleted.",
+    "No workflow file, Action pin or permission was changed because the existing canonical audit already satisfied the Task contract.",
+    "The ten-case fixture is the minimum Task-specific regression corpus; the full 160-case Gold benchmark remains PAM1.0013 and required CI metrics remain PAM1.0014.",
+    "A real credential incident requires STOP, revoke and rotate first; any Git-history remediation is a separate authorized task and is never automatic.",
+    "PAM1.0017 owns full branch-to-PR-to-CI-to-Settlement transaction glue and PAM1.0019 owns production live validation.",
+    "No issue, branch, PR, deployment, release or remote business write was created."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the security policy, engine, threat model, bounded fixture and tests; restore the raw importer, generated handshake, ownership/verification contracts and governance files. Canonical/raw business bytes, workflows, dependencies, services and remote state require no compensation. A real credential incident must not be rolled back into service; revoke/rotate first and handle history separately."
+}

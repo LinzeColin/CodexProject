@@ -1,0 +1,153 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-CODEXPROJECT-REPO1-0004-CANONICAL-EVIDENCE-RETENTION-20260715",
+  "project_id": "root-governance",
+  "task_id": "TSK.CodexProject.REPO1.0004",
+  "acceptance_ids": [
+    "ACC.CodexProject.REPO1.0004"
+  ],
+  "iteration_id": "ST02-PHB-REPO1-0004-LOCAL-IMPLEMENTATION-001",
+  "generated_at": "2026-07-15T14:06:55Z",
+  "implementation_base_sha": "a4085bcb9b0316037f46323f33b237c82fa89a2a",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3f0e5d18024bfce7ea08a4be9fde5e626b5195613357fc11772b1a0909348bff",
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    ".gitignore",
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/artifact_policy.json",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0004-CANONICAL-EVIDENCE-RETENTION-20260715.json",
+    "governance/schemas/artifact_policy.schema.json",
+    "scripts/governance_artifact_policy.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_governance_artifact_policy.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    ".gitignore",
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/artifact_policy.json",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0004-CANONICAL-EVIDENCE-RETENTION-20260715.json",
+    "governance/schemas/artifact_policy.schema.json",
+    "scripts/governance_artifact_policy.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_governance_artifact_policy.py"
+  ],
+  "required_governance_files": [
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/artifact_policy.json",
+    "governance/schemas/artifact_policy.schema.json",
+    "scripts/governance_artifact_policy.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    ".github/workflows/project-governance.yml",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0004-CANONICAL-EVIDENCE-RETENTION-20260715.json"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    ".gitignore",
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/artifact_policy.json",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0004-CANONICAL-EVIDENCE-RETENTION-20260715.json",
+    "governance/schemas/artifact_policy.schema.json",
+    "scripts/governance_artifact_policy.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_governance_artifact_policy.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_governance_artifact_policy -v",
+    "python3 -B scripts/lean_governance.py artifact-audit --base-ref HEAD --json",
+    "python3 -B scripts/lean_governance.py artifact-check-render",
+    "python3 -B scripts/validate_project_governance.py --all",
+    "python3 -B scripts/lean_governance.py validate --changed-only --base-ref HEAD --enforce-sync --semantic",
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "ruff check scripts/governance_artifact_policy.py tests/governance/test_governance_artifact_policy.py",
+    "python3 -B -m py_compile scripts/governance_artifact_policy.py scripts/lean_governance.py",
+    "JSON Schema and workflow YAML parse",
+    "git diff --cached --check",
+    "high-confidence secret-prefix scan"
+  ],
+  "test_results": [
+    {
+      "command": "focused governance artifact policy tests",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "8 focused tests passed: current baselines, duplicate canonical truth, owner/retention, compact-output rejection, append-only legacy/receipt boundaries, full-log rejection, deterministic rendering, and complete human entry."
+    },
+    {
+      "command": "artifact audit and deterministic render",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "duplicate editable truth=0; four legacy collections matched count/bytes/SHA-256; render SHA-256=247a769f73855ab49c0e81885910c18e1129c1e03fc246a03507648d139eafa5; zero tracked write=true."
+    },
+    {
+      "command": "root and changed-scope governance validators",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root plus five active projects passed with errors=0 and warnings=0; changed-scope sync covered the exact 11 files with errors=0 and warnings=0."
+    },
+    {
+      "command": "lean changed-only CI",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "decision=SHIP; changed_file_count=11; selected_project_count=5; zero_tracked_write=true; stable summary SHA-256=bf83c681fddf20fa5ca5448d7d498037f378f8894f2d53f490027558343ac623."
+    },
+    {
+      "command": "repository-wide Governance ID audit",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "596 metadata files scanned; 11,478/11,478 identifier references resolved exactly once; duplicate IDs=0; new positional IDs=0; immutability checked=true."
+    },
+    {
+      "command": "Ruff, Python compile, JSON/YAML parse, ignore rules, diff check, and secret-prefix scan",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed source/contracts passed final local static, structure, artifact-ignore, whitespace, and high-confidence credential-prefix checks."
+    }
+  ],
+  "evidence_refs": [
+    "governance/artifact_policy.json",
+    "governance/schemas/artifact_policy.schema.json",
+    "docs/governance/STANDARD.md",
+    "README.md#治理事实与证据边界",
+    "scripts/governance_artifact_policy.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "local-only:artifact-render:sha256:247a769f73855ab49c0e81885910c18e1129c1e03fc246a03507648d139eafa5",
+    "local-only:lean-governance-stable-summary:sha256:bf83c681fddf20fa5ca5448d7d498037f378f8894f2d53f490027558343ac623",
+    "local-only:lean-governance-full-evidence:sha256:b6feb6ddffe1e6a574a93823cfff78090b5ebafa0ea2ef2bd38f3c0e2472c77c",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0004-CANONICAL-EVIDENCE-RETENTION-20260715.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "TSK.CodexProject.REPO1.0004 local canonical evidence and artifact retention implementation",
+  "ci_run_reference": "REMOTE_PUBLICATION_DEFERRED_NO_GITHUB_WRITE",
+  "artifact_inventory_before": {
+    "tracked_collection_count": 656,
+    "tracked_collection_bytes": 8459590,
+    "compact_task_receipt_count": 2,
+    "compact_task_receipt_bytes": 22165,
+    "locked_legacy_count": 654,
+    "locked_legacy_bytes": 8437425
+  },
+  "artifact_delta_contract": {
+    "new_compact_task_receipts": 1,
+    "new_tracked_full_logs": 0,
+    "locked_legacy_count_delta": 0,
+    "locked_legacy_bytes_delta": 0,
+    "historical_deletions": 0
+  },
+  "summary": "Define one machine-readable canonical/derived/compact/legacy/transient evidence boundary, lock retained historical evidence by owner and aggregate digest, reject future tracked full logs, and expose a read-only audit plus deterministic renderer through Lean governance.",
+  "rollback": "Before whole-package publication, revert only this local Task commit. After publication, revert the policy, validator, workflow gate, and human contract through one reviewed root-governance transaction; do not delete or rewrite retained legacy evidence.",
+  "unresolved_risks": [
+    "Live GitHub Actions and remote commit binding are intentionally deferred until the complete 37-Task package is published.",
+    "Historical stage-gate files include a retained file above the ordinary new-object budget; it is an explicitly hash-locked legacy exception, not permission to add another large tracked artifact.",
+    "Six pre-existing non-main remote branches remain outside this Task; this Run creates or mutates no GitHub object."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this compact receipt; final GitHub CI must bind the published commit after whole-package upload."
+}

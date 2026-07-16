@@ -1,0 +1,37 @@
+{
+  "defaults": {
+    "authorized_actor": true,
+    "base_main": true,
+    "duplicate_event": false,
+    "head_exact": true,
+    "issue_open": false,
+    "mergeable": true,
+    "non_draft": true,
+    "orphan": false,
+    "pr_state": "open",
+    "required_checks_pass": true,
+    "same_repo": true,
+    "superseded": false,
+    "tested_base_exact": true,
+    "trusted_marker": true,
+    "workflow_conclusion": "success"
+  },
+  "cases": [
+    {"name": "success", "overrides": {}, "expected": {"action": "MERGE_DELETE", "reason": "all_gates_pass"}},
+    {"name": "failure", "overrides": {"workflow_conclusion": "failure"}, "expected": {"action": "CLOSE_DELETE", "reason": "failure"}},
+    {"name": "cancelled", "overrides": {"workflow_conclusion": "cancelled"}, "expected": {"action": "CLOSE_DELETE", "reason": "cancelled"}},
+    {"name": "timed_out", "overrides": {"workflow_conclusion": "timed_out"}, "expected": {"action": "CLOSE_DELETE", "reason": "timed_out"}},
+    {"name": "action_required", "overrides": {"workflow_conclusion": "action_required"}, "expected": {"action": "CLOSE_DELETE", "reason": "action_required"}},
+    {"name": "conflict", "overrides": {"mergeable": false}, "expected": {"action": "CLOSE_DELETE", "reason": "conflict"}},
+    {"name": "draft", "overrides": {"non_draft": false}, "expected": {"action": "CLOSE_DELETE", "reason": "draft"}},
+    {"name": "fork", "overrides": {"same_repo": false}, "expected": {"action": "CLOSE_ONLY", "reason": "fork", "delete_branch": false}},
+    {"name": "unauthorized", "overrides": {"authorized_actor": false}, "expected": {"action": "CLOSE_ONLY", "reason": "unauthorized_actor", "delete_branch": false}},
+    {"name": "stale_head", "overrides": {"head_exact": false}, "expected": {"action": "CLOSE_ONLY", "reason": "stale_head", "delete_branch": false}},
+    {"name": "stale_tested_base", "overrides": {"tested_base_exact": false}, "expected": {"action": "CLOSE_DELETE", "reason": "stale_tested_base"}},
+    {"name": "superseded", "overrides": {"superseded": true}, "expected": {"action": "CLOSE_DELETE", "reason": "superseded"}},
+    {"name": "duplicate_event", "overrides": {"duplicate_event": true}, "expected": {"action": "NOOP", "reason": "duplicate_event"}},
+    {"name": "orphan", "overrides": {"orphan": true, "pr_state": "missing"}, "expected": {"action": "DELETE_ORPHAN", "reason": "trusted_orphan"}},
+    {"name": "accidental_issue", "overrides": {"issue_open": true}, "expected": {"action": "MERGE_DELETE", "reason": "all_gates_pass", "close_issue": true}},
+    {"name": "required_check_failure", "overrides": {"required_checks_pass": false}, "expected": {"action": "CLOSE_DELETE", "reason": "required_check_failure"}}
+  ]
+}

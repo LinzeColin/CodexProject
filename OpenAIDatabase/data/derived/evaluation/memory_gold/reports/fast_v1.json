@@ -1,0 +1,220 @@
+{
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0014",
+  "algorithm": {
+    "gold_label_dependency_count": 0,
+    "llm_judge": null,
+    "prediction_input_fields": [
+      "as_of",
+      "query",
+      "state"
+    ],
+    "result_sha256": "6ec190c90eaa0326aada6f7a8f482fe9b562988fb16527166506a5694c944be1",
+    "version": "deterministic_eligible_scope_alias_ranker.v1"
+  },
+  "case_count": 16,
+  "category_accuracy": {
+    "abstention": 1.0,
+    "conflict": 1.0,
+    "cross_agent": 1.0,
+    "cross_session": 1.0,
+    "extraction": 1.0,
+    "forgetting": 1.0,
+    "temporal": 1.0,
+    "update": 1.0
+  },
+  "category_counts": {
+    "abstention": 2,
+    "conflict": 2,
+    "cross_agent": 2,
+    "cross_session": 2,
+    "extraction": 2,
+    "forgetting": 2,
+    "temporal": 2,
+    "update": 2
+  },
+  "hard_gate_failures": [],
+  "hard_gates": {
+    "abstention_precision": {
+      "metric": "abstention_precision",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.9
+    },
+    "abstention_recall": {
+      "metric": "abstention_recall",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.9
+    },
+    "critical_stale_use": {
+      "metric": "critical_stale_use_count",
+      "observed": 0,
+      "operator": "eq",
+      "status": "PASS",
+      "threshold": 0
+    },
+    "cross_profile": {
+      "metric": "profile_pass_count",
+      "observed": 5,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 5
+    },
+    "current_state_accuracy": {
+      "metric": "current_state_accuracy",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.92
+    },
+    "dataset_size": {
+      "metric": "dataset_bytes",
+      "observed": 475733,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 921600
+    },
+    "default_discovery": {
+      "metric": "default_discovery_object_count",
+      "observed": 1,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 1
+    },
+    "fama": {
+      "metric": "fama",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.95
+    },
+    "full_tree_scan": {
+      "metric": "recursive_full_tree_scan_count",
+      "observed": 0,
+      "operator": "eq",
+      "status": "PASS",
+      "threshold": 0
+    },
+    "mrr": {
+      "metric": "mrr",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.9
+    },
+    "provenance_accuracy": {
+      "metric": "provenance_accuracy",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.98
+    },
+    "query_requests": {
+      "metric": "query_requests_per_case",
+      "observed": 1.0,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 1
+    },
+    "recall_at_5": {
+      "metric": "recall_at_5",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.95
+    },
+    "repository_reads": {
+      "metric": "profile_repository_read_budget_max",
+      "observed": 4,
+      "operator": "lte",
+      "status": "PASS",
+      "threshold": 4
+    },
+    "temporal_accuracy": {
+      "metric": "temporal_accuracy",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.92
+    },
+    "update_accuracy": {
+      "metric": "update_accuracy",
+      "observed": 1.0,
+      "operator": "gte",
+      "status": "PASS",
+      "threshold": 0.92
+    }
+  },
+  "metrics": {
+    "abstention_precision": 1.0,
+    "abstention_recall": 1.0,
+    "critical_stale_use_count": 0,
+    "current_state_accuracy": 1.0,
+    "dataset_bytes": 475733,
+    "default_discovery_object_count": 1,
+    "fama": 1.0,
+    "mrr": 1.0,
+    "profile_pass_count": 5,
+    "profile_repository_read_budget_max": 4,
+    "provenance_accuracy": 1.0,
+    "query_requests_per_case": 1.0,
+    "recall_at_5": 1.0,
+    "recursive_full_tree_scan_count": 0,
+    "temporal_accuracy": 1.0,
+    "update_accuracy": 1.0
+  },
+  "profile_results": [
+    {
+      "profile_id": "chatgpt_github",
+      "result_sha256": "6ec190c90eaa0326aada6f7a8f482fe9b562988fb16527166506a5694c944be1",
+      "status": "PASS"
+    },
+    {
+      "profile_id": "codex_git",
+      "result_sha256": "6ec190c90eaa0326aada6f7a8f482fe9b562988fb16527166506a5694c944be1",
+      "status": "PASS"
+    },
+    {
+      "profile_id": "github_mcp",
+      "result_sha256": "6ec190c90eaa0326aada6f7a8f482fe9b562988fb16527166506a5694c944be1",
+      "status": "PASS"
+    },
+    {
+      "profile_id": "rest_https",
+      "result_sha256": "6ec190c90eaa0326aada6f7a8f482fe9b562988fb16527166506a5694c944be1",
+      "status": "PASS"
+    },
+    {
+      "profile_id": "local_offline",
+      "result_sha256": "6ec190c90eaa0326aada6f7a8f482fe9b562988fb16527166506a5694c944be1",
+      "status": "PASS"
+    }
+  ],
+  "runtime_gate_contract": {
+    "local_query_p95_ms_max": 250,
+    "observation_excluded_from_report_hash": true,
+    "suite_elapsed_ms_max": 60000
+  },
+  "schema_version": "openai_database.memory_gold_evaluation_report.v1",
+  "source_hashes": {
+    "config_sha256": "1ff751b3f712247c0fffc8ab55935c155fc338778abcdff8cb97f7fcc1c64fda",
+    "dataset_sha256": "3f33bcc56243660b56c83abbe938bdc496f1e5dd53eb0b87afbad9e3f4b395b4",
+    "evaluator_sha256": "5f03bbe66502b2fcc897bd74c7b0adb9a9c7a54b3d3c61f67c74320f0f41630a",
+    "forgetting_policy_sha256": "e378f06d32a38d8ed5f3ca7fa6dece2fd1c8addd16ab90d7535b59dbeb73ae87",
+    "profiles_sha256": "9c17567f62b014982f1ca6440582088d0c7db5ff221ee5c5a15324b717615470"
+  },
+  "status": "PASS",
+  "suite": "fast",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0014",
+  "workload": {
+    "candidate_input_bytes": 32032,
+    "candidate_input_p95_bytes": 2418,
+    "candidate_output_bytes": 663,
+    "network_request_count": 0,
+    "query_request_count": 16,
+    "recursive_full_tree_scan_count": 0,
+    "request_model": "one in-process evaluation call per case; no network requests"
+  }
+}

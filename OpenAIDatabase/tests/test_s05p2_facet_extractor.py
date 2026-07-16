@@ -166,6 +166,7 @@ class S05P2FacetExtractorTest(unittest.TestCase):
                 "facets",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             events_path = root / "data/derived/behavior_intelligence/events.json"
             self.assertEqual(applied["event_count"], 2)

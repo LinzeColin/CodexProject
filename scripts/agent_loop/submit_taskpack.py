@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Submit an approved Agent Loop Task Pack through local GitHub CLI.
-
-This script uses existing `gh` authentication. It does not ask for, store, or
-print tokens.
-"""
+"""Publish one external-authenticated Automation C PR without creating Issues."""
 
 from __future__ import annotations
 
@@ -14,6 +10,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import urllib.parse
 from pathlib import Path
 
 
@@ -21,235 +18,209 @@ META_RE = re.compile(
     r"<!--\s*AGENT_LOOP_METADATA\s*(.*?)\s*END_AGENT_LOOP_METADATA\s*-->",
     re.DOTALL,
 )
-WORKFLOW_FILE = ".github/workflows/agent-loop-run-approved-taskpack.yml"
-DISPATCH_PAYLOAD_LIMIT_BYTES = 60000
+SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+BRANCH_RE = re.compile(r"^automation-c/[A-Za-z0-9][A-Za-z0-9._/-]{0,180}$")
 
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def read_taskpack(path: str) -> str:
-    text = Path(path).read_text(encoding="utf-8")
-    if "AGENT_LOOP_METADATA" not in text:
-        raise SystemExit("Task Pack must contain AGENT_LOOP_METADATA")
-    return text
-
-
-def extract_metadata(text: str) -> dict:
+def read_taskpack(path: Path) -> tuple[str, dict]:
+    text = path.read_text(encoding="utf-8")
     match = META_RE.search(text)
-    if not match:
-        raise SystemExit("missing AGENT_LOOP_METADATA wrapper")
+    if match is None:
+        raise SystemExit("Task Pack must contain AGENT_LOOP_METADATA")
     try:
         metadata = json.loads(match.group(1))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"metadata JSON parse failed: {exc}") from exc
     if not isinstance(metadata, dict):
         raise SystemExit("metadata must be a JSON object")
-    return metadata
+    return text, metadata
 
 
-def extract_title(text: str, metadata: dict) -> str:
-    for line in text.splitlines():
-        if line.startswith("# "):
-            title = line[2:].strip()
-            if title:
-                return title[:120]
-    return str(metadata.get("roadmap_task_id") or "Approved Task Pack")[:120]
-
-
-def validate_taskpack(taskpack_path: str) -> None:
-    validator = repo_root() / "scripts" / "agent_loop" / "validate_taskpack.py"
-    result = subprocess.run(
-        [sys.executable, str(validator), "--taskpack", taskpack_path],
-        text=True,
+def validate_taskpack(path: Path) -> None:
+    process = subprocess.run(
+        [
+            sys.executable,
+            str(repo_root() / "scripts" / "agent_loop" / "validate_taskpack.py"),
+            "--taskpack",
+            str(path),
+        ],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        text=True,
         check=False,
     )
-    print(result.stdout, end="")
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
+    print(process.stdout, end="")
+    if process.returncode != 0:
+        raise SystemExit(process.returncode)
 
 
 def require_gh() -> None:
-    if not shutil.which("gh"):
-        raise SystemExit(
-            "GitHub CLI `gh` is not installed. Install GitHub CLI and run `gh auth login`; do not create a PAT for this script."
-        )
-    result = subprocess.run(
+    if shutil.which("gh") is None:
+        raise SystemExit("GitHub CLI `gh` is required; do not add a repository PAT")
+    process = subprocess.run(
         ["gh", "auth", "status"],
-        text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        text=True,
         check=False,
     )
-    if result.returncode != 0:
-        raise SystemExit(
-            "GitHub CLI is not authenticated. Run `gh auth login` with your normal GitHub account; do not paste tokens into this script."
-        )
+    if process.returncode != 0:
+        raise SystemExit("Run `gh auth login` with the external publisher identity")
 
 
-def run_gh(args: list[str], *, input_text: str | None = None) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
+def gh_json(*args: str) -> object:
+    process = subprocess.run(
         ["gh", *args],
-        input=input_text,
-        text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        text=True,
         check=False,
+    )
+    if process.returncode != 0:
+        raise SystemExit(process.stdout.strip() or f"gh command failed: {' '.join(args)}")
+    try:
+        return json.loads(process.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit("GitHub CLI returned non-JSON output") from exc
+
+
+def ref_sha(repo: str, branch: str) -> str:
+    encoded = urllib.parse.quote(f"heads/{branch}", safe="/")
+    payload = gh_json("api", f"repos/{repo}/git/ref/{encoded}")
+    if not isinstance(payload, dict):
+        raise SystemExit(f"unexpected ref response for {branch}")
+    sha = payload.get("object", {}).get("sha")
+    if not isinstance(sha, str) or SHA_RE.fullmatch(sha) is None:
+        raise SystemExit(f"invalid ref SHA returned for {branch}")
+    return sha
+
+
+def validate_transaction_branch(branch: str) -> None:
+    if BRANCH_RE.fullmatch(branch) is None:
+        raise SystemExit(
+            "head must be a reserved same-repository branch under automation-c/"
+        )
+    if (
+        ".." in branch
+        or "//" in branch
+        or "@{" in branch
+        or branch.endswith((".", "/", ".lock"))
+    ):
+        raise SystemExit("head is not a valid Automation C transaction branch")
+
+
+def precheck_zero_open(repo: str) -> None:
+    pulls = gh_json("api", f"repos/{repo}/pulls?state=open&per_page=100")
+    issues = gh_json("api", f"repos/{repo}/issues?state=open&per_page=100")
+    if not isinstance(pulls, list) or not isinstance(issues, list):
+        raise SystemExit("unexpected GitHub precheck response")
+    standalone_issues = [item for item in issues if "pull_request" not in item]
+    if pulls or standalone_issues:
+        raise SystemExit(
+            f"Automation C single-flight precheck failed: open_pr={len(pulls)} open_issue={len(standalone_issues)}"
+        )
+
+
+def title_from(text: str, task_id: str) -> str:
+    for line in text.splitlines():
+        if line.startswith("# ") and line[2:].strip():
+            return f"[{task_id}] {line[2:].strip()}"[:240]
+    return f"[{task_id}] approved Task Pack"
+
+
+def pr_body(text: str, task_id: str, acceptance_id: str, head_sha: str, base_sha: str) -> str:
+    marker = (
+        "<!-- AUTOMATION_C_TRANSACTION_V1\n"
+        f"task_id={task_id}\n"
+        f"acceptance_id={acceptance_id}\n"
+        f"head_sha={head_sha}\n"
+        f"base_sha={base_sha}\n"
+        "END_AUTOMATION_C_TRANSACTION_V1 -->\n"
+    )
+    return (
+        marker
+        + "\n# Automation C Transaction\n\n"
+        + "This same-repository, non-draft PR was created by an external authenticated publisher. "
+        + "Project Governance must pass on the exact head and base before trusted settlement.\n\n"
+        + text
     )
 
 
-def ensure_labels(repo: str, risk: str, dry_run_local: bool) -> None:
-    labels = [
-        ("source:chatgpt-approved", "0e8a16", "Approved ChatGPT Task Pack"),
-        ("agent:run", "5319e7", "Agent Loop run"),
-        (f"risk:{risk}", "fbca04", f"Agent Loop risk tier {risk}"),
-    ]
-    for name, color, description in labels:
-        if dry_run_local:
-            print(f"DRY_RUN_LOCAL would ensure label: {name}")
-            continue
-        result = run_gh(
-            [
-                "label",
-                "create",
-                name,
-                "--repo",
-                repo,
-                "--color",
-                color,
-                "--description",
-                description,
-            ]
-        )
-        if result.returncode != 0 and "already exists" not in result.stdout.lower():
-            print(result.stdout, end="")
-            raise SystemExit(result.returncode)
-
-
-def submit_issue(repo: str, taskpack_path: str, text: str, metadata: dict, title: str, dry_run_local: bool) -> None:
-    risk = str(metadata["risk_tier"])
-    labels = ["source:chatgpt-approved", f"risk:{risk}"]
-    if len(text.encode("utf-8")) > 60000:
-        print("WARNING: issue body is large and may approach GitHub limits.")
-    ensure_labels(repo, risk, dry_run_local)
-    if dry_run_local:
-        print("DRY_RUN_LOCAL would create issue with labels: " + ", ".join(labels))
-        print("DRY_RUN_LOCAL would add label agent:run after issue creation")
-        print(f"DRY_RUN_LOCAL title: [Agent Loop] {title}")
-        return
-
+def publish(repo: str, head: str, base: str, body: str, title: str) -> str:
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as handle:
-        handle.write(text)
-        body_file = handle.name
+        handle.write(body)
+        body_path = Path(handle.name)
     try:
-        result = run_gh(
+        process = subprocess.run(
             [
-                "issue",
+                "gh",
+                "pr",
                 "create",
                 "--repo",
                 repo,
+                "--head",
+                head,
+                "--base",
+                base,
                 "--title",
-                f"[Agent Loop] {title}",
+                title,
                 "--body-file",
-                body_file,
-                "--label",
-                labels[0],
-                "--label",
-                labels[1],
-            ]
+                str(body_path),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
         )
     finally:
-        Path(body_file).unlink(missing_ok=True)
-    print(result.stdout, end="")
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
-    issue_url = result.stdout.strip().splitlines()[-1]
-    edit = run_gh(["issue", "edit", issue_url, "--repo", repo, "--add-label", "agent:run"])
-    print(edit.stdout, end="")
-    if edit.returncode != 0:
-        raise SystemExit(edit.returncode)
-    print(f"ISSUE_URL={issue_url}")
-
-
-def submit_dispatch(repo: str, text: str, metadata: dict, title: str, dry_run_local: bool) -> None:
-    risk = str(metadata["risk_tier"])
-    payload = {
-        "event_type": "agent_loop_taskpack",
-        "client_payload": {
-            "taskpack": text,
-            "source": "chatgpt-approved",
-            "title": title,
-            "risk_tier": risk,
-        },
-    }
-    payload_text = json.dumps(payload, ensure_ascii=False)
-    payload_bytes = len(payload_text.encode("utf-8"))
-    if payload_bytes > DISPATCH_PAYLOAD_LIMIT_BYTES:
-        raise SystemExit(
-            f"repository_dispatch payload is {payload_bytes} bytes, above safe limit {DISPATCH_PAYLOAD_LIMIT_BYTES}. "
-            "Use issue mode instead."
-        )
-    if dry_run_local:
-        print(f"DRY_RUN_LOCAL would POST repos/{repo}/dispatches")
-        print(f"DRY_RUN_LOCAL event_type=agent_loop_taskpack risk_tier={risk} bytes={payload_bytes}")
-        return
-    result = run_gh(["api", f"repos/{repo}/dispatches", "--method", "POST", "--input", "-"], input_text=payload_text)
-    print(result.stdout, end="")
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
-    print("DISPATCH_SENT=agent_loop_taskpack")
-    print(f"Check Actions: https://github.com/{repo}/actions/workflows/agent-loop-run-approved-taskpack.yml")
-
-
-def submit_workflow(repo: str, text: str, dry_run: bool, dry_run_local: bool, ref: str) -> None:
-    payload = {"taskpack": text, "dry_run": dry_run}
-    payload_text = json.dumps(payload, ensure_ascii=False)
-    if dry_run_local:
-        print(f"DRY_RUN_LOCAL would run workflow {WORKFLOW_FILE} on ref {ref}")
-        print(f"DRY_RUN_LOCAL workflow dry_run={dry_run}")
-        return
-    result = run_gh(
-        ["workflow", "run", WORKFLOW_FILE, "--repo", repo, "--ref", ref, "--json"],
-        input_text=payload_text,
-    )
-    print(result.stdout, end="")
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
-    print("WORKFLOW_DISPATCH_SENT=1")
-    print(f"Check runs: gh run list --repo {repo} --workflow {WORKFLOW_FILE}")
+        body_path.unlink(missing_ok=True)
+    if process.returncode != 0:
+        raise SystemExit(process.stdout.strip() or "gh pr create failed")
+    return process.stdout.strip().splitlines()[-1]
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Submit an approved Agent Loop Task Pack.")
-    parser.add_argument("--taskpack", required=True, help="Path to approved dual-plane Task Pack Markdown.")
-    parser.add_argument("--mode", required=True, choices=["issue", "dispatch", "workflow"])
+    parser = argparse.ArgumentParser(
+        description="Create one Automation C PR from an already-pushed same-repository branch."
+    )
+    parser.add_argument("--taskpack", required=True, type=Path)
+    parser.add_argument("--head", required=True, help="Existing same-repository transaction branch")
+    parser.add_argument("--base", default="main")
     parser.add_argument("--repo", default="LinzeColin/CodexProject")
-    parser.add_argument("--ref", default="main", help="Workflow ref for workflow mode.")
-    parser.add_argument("--dry-run", action="store_true", help="Set workflow input dry_run=true in workflow mode.")
-    parser.add_argument("--dry-run-local", action="store_true", help="Validate and print intended action without calling GitHub.")
+    parser.add_argument("--dry-run-local", action="store_true")
+    parser.add_argument("--confirm-publish", action="store_true")
     args = parser.parse_args()
 
-    text = read_taskpack(args.taskpack)
+    if args.base != "main":
+        raise SystemExit("base must be main")
+    validate_transaction_branch(args.head)
     validate_taskpack(args.taskpack)
-    metadata = extract_metadata(text)
-    title = extract_title(text, metadata)
-
-    print(f"TASKPACK_TITLE={title}")
-    print(f"PROJECT={metadata.get('project')}")
-    print(f"RISK_TIER={metadata.get('risk_tier')}")
-
-    if not args.dry_run_local:
-        require_gh()
-
-    if args.mode == "issue":
-        submit_issue(args.repo, args.taskpack, text, metadata, title, args.dry_run_local)
-    elif args.mode == "dispatch":
-        submit_dispatch(args.repo, text, metadata, title, args.dry_run_local)
-    else:
-        submit_workflow(args.repo, text, args.dry_run, args.dry_run_local, args.ref)
+    text, metadata = read_taskpack(args.taskpack)
+    if args.repo != metadata.get("repository"):
+        raise SystemExit("--repo must exactly match Task Pack metadata repository")
+    task_id = str(metadata["roadmap_task_id"])
+    acceptance_id = str(metadata["acceptance_id"])
+    print(f"TASK_ID={task_id}")
+    print(f"ACCEPTANCE_ID={acceptance_id}")
+    print("ISSUE_MUTATION=0")
+    if args.dry_run_local:
+        print(f"DRY_RUN_LOCAL head={args.head} base=main repo={args.repo}")
+        return 0
+    if not args.confirm_publish:
+        raise SystemExit("--confirm-publish is required for the external GitHub write")
+    require_gh()
+    precheck_zero_open(args.repo)
+    head_sha = ref_sha(args.repo, args.head)
+    base_sha = ref_sha(args.repo, args.base)
+    body = pr_body(text, task_id, acceptance_id, head_sha, base_sha)
+    url = publish(args.repo, args.head, args.base, body, title_from(text, task_id))
+    print(f"PR_URL={url}")
+    print(f"EXPECTED_HEAD_SHA={head_sha}")
+    print(f"EXPECTED_BASE_SHA={base_sha}")
     return 0
 
 

@@ -1,0 +1,219 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0008",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.CLEAN1.0008"
+  ],
+  "iteration_id": "ST06-PHB-OPENAIDATABASE-CLEAN1-0008-001",
+  "run_id": "TSK-OPENAIDATABASE-CLEAN1-0008-RAW-MATERIAL-20260716",
+  "generated_at": "2026-07-15T22:34:26Z",
+  "gate_status": "PASS_OWNER_MANAGED_REMOTE_SUPPORT_FOLLOW_UP",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "d05af208c0684a556831bfca04ec0c57b7747345",
+  "secure_remote_parent_sha": "5e85e7fedbc15df23fd611c7a25ef08c7d9839a8",
+  "local_history_rebased": true,
+  "candidate_tree_sha1_excluding_this_manifest": "b6955ecc524aab7614704443ef2c86f2a0b57571",
+  "content_tree_hash": "sha256-git-ls-tree-excluding-this-manifest:a8340e914aeddd02e5a3213c16133bb95f3f335ccb2118a1fd318bb5f8bafc09",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every closure file except this self-referential manifest; the final 37-Task publication run binds the published business commit.",
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/validate_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_raw_material_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0008-RAW-MATERIAL-20260716.json",
+    "scripts/repository_hygiene_audit.py",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/validate_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_raw_material_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0008-RAW-MATERIAL-20260716.json",
+    "scripts/repository_hygiene_audit.py",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0008-RAW-MATERIAL-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0008-RAW-MATERIAL-20260716.json"
+  ],
+  "test_commands": [
+    "python3 -B OpenAIDatabase/scripts/validate_raw_material_policy.py --require-remote-verified",
+    "python3 -B OpenAIDatabase/scripts/raw_archive_manifest.py audit --database-dir OpenAIDatabase",
+    "python3 -B -m unittest -q OpenAIDatabase.tests.test_raw_material_policy OpenAIDatabase.tests.test_codex_history_exports OpenAIDatabase.tests.test_directory_lifecycle OpenAIDatabase.tests.test_generated_retention OpenAIDatabase.tests.test_s3pdt01_privacy OpenAIDatabase.tests.test_openai_memory_analysis tests.governance.test_repository_hygiene",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py",
+    "python3 -B OpenAIDatabase/scripts/validate_generated_retention.py",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence tests.governance.test_governance_artifact_policy",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py"
+  ],
+  "ci_attestation_subject": "TSK.OpenAIDatabase.CLEAN1.0008 local raw-material and security-history acceptance",
+  "ci_run_reference": "SECURITY_ONLY_REMOTE_REWRITE_VERIFIED_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "summary": "Converge tracked raw material to data/public_raw, retire repository archive producers, preserve verified private recovery assets, repair three confirmed credential-context copies without value echo, and complete the owner-authorized security-only public-history rewrite.",
+  "scope": {
+    "tracked_raw_destination": "OpenAIDatabase/data/public_raw",
+    "retired_history_paths": [
+      "OpenAIDatabase/session_history",
+      "OpenAIDatabase/data/raw_archives"
+    ],
+    "credential_value_echoed": false,
+    "archive_payload_read": false,
+    "private_recovery_asset_disposition_count": 6,
+    "business_task_publication_count": 0
+  },
+  "incident_repair": {
+    "source_line_sha256": "4f6888f73a5429d64341dde4a726c0492b83124447dba8586d2e51c075c525ee",
+    "public_raw_match_file_count_before": 3,
+    "credential_context_occurrence_count_before": 3,
+    "replacement_count": 3,
+    "target_file_count": 3,
+    "manifest_rows_updated": 3,
+    "hash_ledger_rows_updated": 3,
+    "current_credential_context_match_count": 0,
+    "current_generic_credential_or_private_text_file_count": 0
+  },
+  "raw_ledger_verification": {
+    "current_raw_file_count": 512,
+    "ledger_entry_count": 512,
+    "hash_drift_count": 0,
+    "new_raw_file_count": 0,
+    "deleted_manifest_entry_count": 0
+  },
+  "history_rewrite": {
+    "authorization": "OWNER_AUTHORIZED_SECURITY_REMEDIATION",
+    "force_update_mode": "atomic_force_with_lease",
+    "first_changed_commit": "8c7da7107255fead55156883c4ccc93962e9e6e0",
+    "parsed_commit_count": 2758,
+    "rewritten_commit_count": 2640,
+    "public_main_before": "74d431df63f09769c2b8b898ee49762273e93e5f",
+    "public_main_after": "5e85e7fedbc15df23fd611c7a25ef08c7d9839a8",
+    "public_main_after_tree": "4df5e75e0e018d4a73203ce3d4547d8fa1d692f3",
+    "owner_managed_ref_count_verified": 5,
+    "owner_managed_refs_target_path_count_after": 0,
+    "owner_managed_refs_incident_line_match_count_after": 0,
+    "owner_managed_refs_credential_context_match_count_after": 0,
+    "reachable_object_count_verified": 75129,
+    "reachable_bytes_verified": 8944123331,
+    "affected_tags": {
+      "archive/2026-07-14/serenity": {
+        "before": "36dfafe2591056bbe277225e73d8e8fe757201ce",
+        "after": "4ba67af7d487e90f2a5585b15767aa644370f0ab"
+      },
+      "archive/2026-07-14/wda": {
+        "before": "7fec057ef366b9807545fb4e6f0aa22d5c500fd6",
+        "after": "a30ee6495b1d7b4fc66cf8d656159c7d12718867"
+      },
+      "archive/2026-07-16/macdata-airM2-pre-main-clean-7e6da10f": {
+        "before": "7e6da10fbcc90c8981dcf6ac601e9eda929ec016",
+        "after": "7e6da10fbcc90c8981dcf6ac601e9eda929ec016"
+      },
+      "archive/2026-07-16/macdata-proM2-pre-main-clean-ca43b936": {
+        "before": "ca43b9365ce270157fb10db1f3b47e21c45af6c5",
+        "after": "ca43b9365ce270157fb10db1f3b47e21c45af6c5"
+      }
+    }
+  },
+  "remote_verification": {
+    "fresh_partial_clone_tip": "5e85e7fedbc15df23fd611c7a25ef08c7d9839a8",
+    "fresh_partial_clone_tree": "4df5e75e0e018d4a73203ce3d4547d8fa1d692f3",
+    "tip_redacted_file_count_verified": 3,
+    "tip_retired_path_count": 0,
+    "open_pull_request_count": 0,
+    "open_issue_count": 0,
+    "non_main_branch_count": 0
+  },
+  "support_follow_up": {
+    "required": true,
+    "reason": "GitHub internal pull refs and cached views are not writable through ordinary Git force pushes.",
+    "github_internal_pull_ref_count_observed": 272,
+    "github_internal_pull_refs_listing_sha256": "766afd01d4771992272a06874b0475f6a457b9da3ba41b317fce3adefe469ec5",
+    "requested_action": "Purge cached views and internal pull refs that retain pre-rewrite sensitive objects, then run server-side garbage collection.",
+    "full_platform_gc_claimed": false
+  },
+  "test_results": [
+    {
+      "gate": "raw_policy_full_content_scan",
+      "result": "PASS",
+      "observed": "Full 452781269-byte current public-raw scan reported generic credential/private text 0, known credential context 0, retired paths 0 and all other hard-zero metrics 0."
+    },
+    {
+      "gate": "remote_verified_contract",
+      "result": "PASS",
+      "observed": "A zero-value coercion regression was fixed; focused remote-required policy regression proves zero owner-managed residuals are accepted while the GitHub Support boundary remains mandatory."
+    },
+    {
+      "gate": "raw_manifest",
+      "result": "PASS",
+      "observed": "512 current files equal 512 ledger rows; hash drift, new raw and deleted manifest entries are 0."
+    },
+    {
+      "gate": "focused_regressions",
+      "result": "PASS",
+      "observed": "Policy, export, lifecycle, generated-retention, privacy, consumer and repository-hygiene regression set passed after converting static credential-shaped test fixtures to runtime construction."
+    },
+    {
+      "gate": "lifecycle_and_generated_retention",
+      "result": "PASS",
+      "observed": "Both validators returned errors=[] and every acceptance hard-zero metric at 0."
+    },
+    {
+      "gate": "lean_governance_and_ids",
+      "result": "PASS",
+      "observed": "16 Lean/artifact tests passed; render drift/reference issues were 0/0; registry revision 72 resolved 11809/11809 identifier references exactly once."
+    },
+    {
+      "gate": "history_and_remote",
+      "result": "PASS_WITH_SUPPORT_FOLLOW_UP",
+      "observed": "Owner-managed main/tags and a fresh remote tip clone passed; GitHub internal pull-ref/cache purge is explicitly unresolved and assigned to Support."
+    }
+  ],
+  "evidence_refs": [
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/scripts/validate_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_raw_material_policy.py",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json"
+  ],
+  "rollback": {
+    "private_release_assets_preserved": true,
+    "unsafe_public_history_restore_forbidden": true,
+    "safe_action": "Regenerate owner-managed refs from the secure checkpoint and repeat force-with-lease verification; do not restore the credential-bearing public history."
+  },
+  "next_task_id": "TSK.OpenAIDatabase.CLEAN1.0009",
+  "publication_boundary": "Only the 19-file emergency security subset of .0008 is public. The 13 earlier Task commits plus the full .0008 governance/acceptance delivery remain local until the final 37/37 publication run."
+}

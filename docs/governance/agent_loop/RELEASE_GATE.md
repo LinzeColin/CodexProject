@@ -21,7 +21,8 @@ explicitly authorize production behavior and must pass separate release gates.
 ## Delivery Acceptance
 
 Delivery acceptance is the Owner-readable evidence that acceptance criteria were
-met. It may include PR, audit issue, artifacts, validation logs, and result pack.
+met. It may include the marker-bound PR, required-check result, exact settlement
+record, local validation logs, and result pack. An Issue is not acceptance state.
 
 ## Rollback
 

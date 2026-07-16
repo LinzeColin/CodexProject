@@ -2,7 +2,7 @@
 
 ## 目标
 
-建立一个受控的 Codex Automation：每天 01:10 运行 `airM2` macdata，输出全中文明文指标和报告，上传到 GitHub 归档分支 `macdata-airM2`，验证成功后只保留本机最近 3 天记录。
+建立一个受控的 Codex Automation：每天 01:10 运行 `airM2` macdata，输出全中文明文指标和报告，通过短命 Automation C PR 合入 `main`，验证成功且回到 `0/0/0` 后只保留本机最近 3 天记录。
 
 ## 在 Codex 里创建 Automation
 
@@ -30,7 +30,7 @@ Codex 官方文档说明，project-scoped automations 运行时，本机 Codex a
 2. 查看 `macdata airM2 daily controlled archive`。
 3. 查看当天 run 是否成功。
 4. 查看 Triage 中的中文明文报告。
-5. 查看 GitHub 归档分支 `macdata-airM2` 是否出现当天 commit。
+5. 查看 GitHub `main` 是否出现当天数据，并确认旧 `macdata-airM2` 和短命事务分支均不存在。
 6. 查看本机 `OpenAIDatabase/macdata/airM2/reports/latest/latest_report.md`。
 
 ## 成功状态
@@ -40,6 +40,7 @@ Codex 官方文档说明，project-scoped automations 运行时，本机 Codex a
 - 没有凭证扫描失败。
 - 没有设备角色不匹配。
 - 报告为全中文。
+- PR/Issue/non-main branch=`0/0/0`。
 
 ## 如果 Automation 没有运行
 

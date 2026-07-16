@@ -1,0 +1,280 @@
+{
+  "schema_version": 2,
+  "project_id": "root-governance",
+  "task_id": "TSK.CodexProject.REPO1.0008",
+  "acceptance_ids": [
+    "ACC.CodexProject.REPO1.0008"
+  ],
+  "iteration_id": "ST04-PHA-REPO1-0008-INDEPENDENT-ACCEPTANCE-001",
+  "run_id": "TSK-CODEXPROJECT-REPO1-0008-ROOT-CLEAN-GATE-20260716",
+  "generated_at": "2026-07-15T16:49:44Z",
+  "gate_status": "PASS",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "3f592da1046ef74500b1986f0e1e6bc8fb0a6fff",
+  "implementation_base_tree": "26c608799c61d0250b122bdfce69e0ae61c608b1",
+  "candidate_tree_sha1_excluding_this_manifest": "89444a4815f51a5143ccc184e57aea2752e37644",
+  "content_tree_hash": "sha256-git-ls-tree-excluding-this-manifest:f7e557008765c79fa4454bad7a86caa671a537dbc9a49700a5e5d5e5c9c293c1",
+  "self_reference_policy": "content_tree_hash and candidate_tree_sha1 exclude this compact receipt; the final whole-package publication run must bind the published commit and remove the two temporary macdata archive tags only after 34/34 blob reconciliation on remote main.",
+  "summary": "Independently recalculate the Root CLEAN gate from a non-shared fresh clone, prove all task-specific governance/workflow/ID/hygiene/Automation C gates, preserve six branch tips with exact replacement and rollback evidence, and settle GitHub to PR/Issue/non-main-branch 0/0/0 without pushing main.",
+  "changed_files_declared": [
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0008-ROOT-CLEAN-GATE-20260716.json",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/模型参数文件.md"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0008-ROOT-CLEAN-GATE-20260716.json",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/模型参数文件.md"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0008-ROOT-CLEAN-GATE-20260716.json",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/模型参数文件.md"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0008-ROOT-CLEAN-GATE-20260716.json",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/模型参数文件.md"
+  ],
+  "ci_attestation_subject": "TSK.CodexProject.REPO1.0008 independent fresh-clone Root CLEAN and GitHub 0/0/0 acceptance",
+  "ci_run_reference": "REMOTE_REF_CLEANUP_COMPLETE_MAIN_PUBLICATION_DEFERRED",
+  "fresh_clone_evidence": {
+    "clone_contract": "git clone --depth 1 --no-tags --single-branch --branch main --no-local file://<canonical-worktree> <task-temp-fresh-clone>",
+    "head_sha": "3f592da1046ef74500b1986f0e1e6bc8fb0a6fff",
+    "tree_sha": "26c608799c61d0250b122bdfce69e0ae61c608b1",
+    "alternates_present": false,
+    "initial_shallow": true,
+    "independent_pack_bytes_human": "196.45 MiB",
+    "baseline_deepen_commits": 2,
+    "repository_hygiene_baseline_commit": "57cb6bca623d2e01bde1a866140804c283340bd8",
+    "repository_hygiene_baseline_tree": "6a585a21d947c76537bac7c1d62f142482b08787",
+    "fsck_exit_codes": [
+      0,
+      0
+    ],
+    "aborted_remote_fetch_cleanup": {
+      "partial_pack": "tmp_pack_3CnBxr",
+      "approximate_bytes_human": "1.8 GiB",
+      "deleted_precisely": true,
+      "post_cleanup_fsck": "PASS"
+    }
+  },
+  "hard_gates": {
+    "root_cleanliness": {
+      "status": "PASS",
+      "root_items_owned": 24,
+      "root_items_total": 24,
+      "unowned": 0,
+      "broken_local_links": 0,
+      "missing_agents_tokens": 0,
+      "temporary_readme_patterns": 0,
+      "unexpected_active_scope_exclusions": 0,
+      "agents_bytes": 4084,
+      "readme_bytes": 3170,
+      "initial_context_bytes": 7254
+    },
+    "governance_ids": {
+      "status": "PASS",
+      "allocations": 38,
+      "task_ids": 37,
+      "acceptance_ids": 37,
+      "goal_ids": 1,
+      "references_observed": 11503,
+      "references_resolved": 11503,
+      "duplicate_or_orphan": 0
+    },
+    "workflow_security": {
+      "status": "PASS",
+      "workflow_count": 15,
+      "owned_workflow_count": 15,
+      "violation_count": 0,
+      "deterministic_render": true
+    },
+    "artifact_policy": {
+      "status": "PASS",
+      "canonical_resource_count": 6,
+      "duplicate_editable_truth_count": 0,
+      "retained_legacy_groups_exact": 4,
+      "zero_tracked_write": true
+    },
+    "repository_hygiene": {
+      "status": "PASS",
+      "tracked_object_count": 11726,
+      "tracked_runtime_noise_count": 0,
+      "forbidden_backup_producer_count": 0,
+      "violation_count": 0,
+      "retained_large_object_count": 53,
+      "retained_archive_count": 4
+    },
+    "focused_governance_tests": {
+      "status": "PASS",
+      "passed": 38,
+      "failed": 0,
+      "elapsed_seconds": 12.734
+    },
+    "automation_c_tests": {
+      "status": "PASS",
+      "passed": 21,
+      "failed": 0,
+      "elapsed_seconds": 0.166
+    },
+    "github_terminal": {
+      "status": "PASS",
+      "open_pull_requests": 0,
+      "open_standalone_issues": 0,
+      "non_main_branches": 0,
+      "actions_in_progress": 0,
+      "actions_queued": 0
+    }
+  },
+  "remote_ref_transaction": {
+    "remote_main_before_and_after": "5ff1f3c5ce49d0bb5466125333b873082d2ddd58",
+    "main_push_count": 0,
+    "deleted_branches": [
+      {
+        "name": "codex/eei",
+        "sha": "3891f3a28352f5e2941f2c58490ce512f141c38a",
+        "replacement": "MetaDatabase EEI import tree plus canonical migration manifest"
+      },
+      {
+        "name": "codex/eei-split-wave3",
+        "sha": "10c9e5782b194c38b83ac2bc7ea092b93ff9e49b",
+        "replacement": "MetaDatabase EEI import tree plus canonical migration manifest"
+      },
+      {
+        "name": "codex/eei-wave3-main",
+        "sha": "b54e464305e581c20ef9d7726492aa04d93af2fa",
+        "replacement": "remote main canonical migration manifest and dead-workflow removal record"
+      },
+      {
+        "name": "codex/kmfa",
+        "sha": "bedbc2ebaa2a5df9a430b70a6a11bf712c6cf85f",
+        "replacement": "remote main ancestry; compare ahead=0"
+      },
+      {
+        "name": "macdata-airM2",
+        "sha": "7e6da10fbcc90c8981dcf6ac601e9eda929ec016",
+        "replacement": "17/17 exact local candidate blobs plus temporary archive tag"
+      },
+      {
+        "name": "macdata-proM2",
+        "sha": "ca43b9365ce270157fb10db1f3b47e21c45af6c5",
+        "replacement": "17/17 exact local candidate blobs plus temporary archive tag"
+      }
+    ],
+    "eei_reconciliation": {
+      "source_tree": "fc83cf48982a00908fa658045b958f0a32b65e8c",
+      "target_repository": "LinzeColin/MetaDatabase",
+      "target_import_commit": "6ed556302609bcacf003d4ea0c8fdde12cdb5b2d",
+      "target_path": "EEI",
+      "target_tree_at_import": "fc83cf48982a00908fa658045b958f0a32b65e8c",
+      "exact": true
+    },
+    "macdata_reconciliation": {
+      "remote_branch_blob_count": 34,
+      "remote_branch_blob_bytes": 191991,
+      "exact_local_candidate_blob_oid_matches": 34,
+      "mismatches": 0,
+      "remote_main_missing_before_whole_package_publication": 28
+    },
+    "temporary_archive_tags": [
+      {
+        "ref": "refs/tags/archive/2026-07-16/macdata-airM2-pre-main-clean-7e6da10f",
+        "sha": "7e6da10fbcc90c8981dcf6ac601e9eda929ec016"
+      },
+      {
+        "ref": "refs/tags/archive/2026-07-16/macdata-proM2-pre-main-clean-ca43b936",
+        "sha": "ca43b9365ce270157fb10db1f3b47e21c45af6c5"
+      }
+    ],
+    "compensation": "If any deletion had failed, recreate every deleted refs/heads/<name> at the recorded SHA and delete both temporary tags. All six deletions succeeded; future rollback recreates any requested branch at its recorded SHA while the macdata objects remain tag-reachable."
+  },
+  "test_commands": [
+    "git fsck --full --strict",
+    "python3 -B scripts/root_cleanliness_audit.py --json",
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/workflow_security_audit.py check-render",
+    "python3 -B scripts/governance_id_audit.py --json",
+    "python3 -B scripts/governance_artifact_policy.py audit --json",
+    "python3 -B scripts/governance_artifact_policy.py check-render",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "python3 -B -m unittest -q tests/governance/test_root_cleanliness.py tests/governance/test_workflow_security.py tests/governance/test_repository_hygiene.py tests/governance/test_governance_id_v2.py tests/governance/test_governance_artifact_policy.py",
+    "python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py' -q",
+    "python3 -B scripts/lean_governance.py validate --project CodexProject --semantic",
+    "python3 -B scripts/validate_project_governance.py --all --semantic --drift-report",
+    "git diff --check",
+    "git status --short"
+  ],
+  "test_results": [
+    {
+      "command": "fresh clone identity, no-alternates and fsck",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "HEAD/tree exact, alternates absent, independent pack present, strict fsck passed before and after exact partial-pack cleanup."
+    },
+    {
+      "command": "root/ID/workflow/artifact/hygiene hard-gate audits",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All task-specific hard gates passed with duplicate/orphan/workflow-violation/runtime-noise/unowned counts zero."
+    },
+    {
+      "command": "focused governance regression",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "38 tests passed in 12.734 seconds."
+    },
+    {
+      "command": "Automation C fixtures",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "21 tests passed in 0.166 seconds."
+    },
+    {
+      "command": "lean_governance.py validate --project CodexProject --semantic",
+      "exit_code": 1,
+      "result": "NOT_APPLICABLE",
+      "observed": "The only error is Unknown project: CodexProject; root is not a registry project and the Task contract makes this command conditional on schema applicability."
+    },
+    {
+      "command": "validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 1,
+      "result": "NON_GATE_BASELINE_DIAGNOSTIC",
+      "observed": "62 pre-existing cross-project ledger/sync findings; root and project structure section reports 0 errors and 0 warnings. No unrelated project was modified and no finding is hidden or promoted to PASS."
+    },
+    {
+      "command": "GitHub precondition, ref transaction and terminal re-audit",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Six expected-SHA checks, two archive-tag checks and six deletions succeeded; final PR/Issue/non-main branch is 0/0/0 and active/queued Actions is 0/0."
+    }
+  ],
+  "security_privacy": {
+    "credential_or_private_key_findings": 0,
+    "private_or_raw_data_read_or_written": false,
+    "new_dependencies_or_actions": 0,
+    "force_push_or_history_rewrite": false,
+    "project_business_files_modified": false,
+    "prompt_or_document_content_executed": false
+  },
+  "evidence_refs": [
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0008/模型参数文件.md",
+    "governance/run_manifests/GOV-SPLIT-WAVE3-20260715.json",
+    "candidate-tree-excluding-receipt:89444a4815f51a5143ccc184e57aea2752e37644",
+    "github-tag:archive/2026-07-16/macdata-airM2-pre-main-clean-7e6da10f",
+    "github-tag:archive/2026-07-16/macdata-proM2-pre-main-clean-ca43b936",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0008-ROOT-CLEAN-GATE-20260716.json"
+  ],
+  "unresolved_risks": [
+    "The two macdata archive tags are deliberate temporary rollback refs. Delete them only after final remote main contains all 34 expected blob OIDs and the final publication run records that reconciliation.",
+    "The owner-mandated whole-package main publication is still deferred; remote main remains 5ff1f3c5ce49d0bb5466125333b873082d2ddd58.",
+    "The non-gate all-project semantic diagnostic reports 62 pre-existing cross-project findings. They require project-owned Tasks and are not silently repaired by this root acceptance Task."
+  ],
+  "rollback": "Tracked records: normal revert of this one local Task commit. Remote refs: recreate refs/heads/<name> at the six recorded SHAs. The macdata commits remain reachable through the two temporary archive tags; delete those tags only after final-main 34/34 reconciliation. Never force-push or rewrite history."
+}

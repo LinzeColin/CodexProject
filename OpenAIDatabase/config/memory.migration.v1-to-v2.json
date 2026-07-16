@@ -1,0 +1,329 @@
+{
+  "schema_version": "openai_database.memory_migration_contract.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0001",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0001",
+  "mode": "CUTOVER_COMPLETE_CANONICAL_RECORDS_ACTIVE",
+  "source_schema": "config/memory_schema.json",
+  "source_dataset": "data/memory/active/active_memory.jsonl",
+  "target_schema": "config/memory.schema.json",
+  "target_logical_dataset": "data/memory/records/records-NNNN.jsonl",
+  "sharding_task_id": "TSK.OpenAIDatabase.PAM1.0002",
+  "sharding_contract": "config/memory.sharding.json",
+  "profiling_task_id": "TSK.OpenAIDatabase.PAM1.0003",
+  "profiling_contract": "config/memory.profiling.json",
+  "profiling_outputs": [
+    "data/derived/migration/memory_migration_map.v1.jsonl",
+    "data/derived/migration/memory_quality_report.v1.json"
+  ],
+  "cutover_task_id": "TSK.OpenAIDatabase.PAM1.0004",
+  "cutover_acceptance_id": "ACC.OpenAIDatabase.PAM1.0004",
+  "cutover_contract": "config/memory.cutover.json",
+  "cutover_outputs": [
+    "data/memory/records/manifest.json",
+    "data/memory/records/records-0001.jsonl"
+  ],
+  "single_truth_policy": {
+    "target_editable_truth_count": 1,
+    "target_editable_truth": "data/memory/records/records-NNNN.jsonl",
+    "legacy_state_until_cutover": "read_only_migration_input",
+    "legacy_state_after_cutover": "read_only_audit_evidence_pending_PAM1.0005_raw_disposition",
+    "default_query_status": "active",
+    "second_database_allowed": false,
+    "service_added": false,
+    "current_task_data_writes": 2,
+    "canonical_record_count": 198,
+    "canonical_shard_count": 1,
+    "legacy_writer_count": 0,
+    "dual_write_count": 0
+  },
+  "canonical_hash": {
+    "algorithm": "sha256",
+    "canonicalization": "openai-memory-json-v1",
+    "exclude_top_level_fields": ["hash"],
+    "steps": [
+      "Reject floating-point values.",
+      "Recursively normalize every string to Unicode NFC.",
+      "Sort object keys by Unicode code point; preserve array order.",
+      "Encode compact JSON with comma/colon separators as UTF-8.",
+      "Prefix the lowercase hexadecimal digest with sha256:."
+    ]
+  },
+  "source_type_map": {
+    "explicit_user": "explicit_user",
+    "repository_evidence": "repository_evidence",
+    "raw_import": "raw_import",
+    "model_inference": "model_inference",
+    "openai_export": "raw_import",
+    "codex_pack": "raw_import",
+    "unknown": "REJECT_AND_ASSIGN_TSK.OpenAIDatabase.PAM1.0003"
+  },
+  "status_transition_contract": {
+    "candidate": ["active", "disputed", "retired"],
+    "active": ["disputed", "retired"],
+    "disputed": ["active", "retired"],
+    "retired": [],
+    "model_inference_allowed_statuses": ["candidate", "disputed", "retired"],
+    "model_inference_active_allowed": false
+  },
+  "dataset_invariants": [
+    "For each memory_key plus canonicalized scope, at most one unresolved active record exists.",
+    "An active record is verified and has no unresolved conflict.",
+    "Credential or access-granting material is rejected before hashing and is never echoed.",
+    "Default query returns active records only; candidate, disputed and retired require explicit status selection.",
+    "Every supersession target and conflict reference resolves to exactly one record ID at cutover.",
+    "Migration preserves source row ID, source SHA-256 and exactly-one disposition in its cutover receipt."
+  ],
+  "required_field_synthesis": [
+    {
+      "target": "memory_key",
+      "rule": "PAM1.0003 assigns a stable proposition identity within scope; collision or ambiguity is fail-closed, never legacy-id-per-row by default."
+    },
+    {
+      "target": "scope",
+      "rule": "Use explicit source/project evidence; missing or ambiguous scope is profiled by PAM1.0003 and cannot become active."
+    },
+    {
+      "target": "valid_time",
+      "rule": "date becomes from at 00:00:00Z only when no more precise evidence exists; to remains null unless evidence defines expiry or supersession."
+    },
+    {
+      "target": "recorded_time",
+      "rule": "activated_at is preferred; otherwise the cutover timestamp is recorded with recorded_by=migration and the original date remains valid_time only."
+    },
+    {
+      "target": "aliases/tags/negative_triggers",
+      "rule": "Preserve only bounded legacy identity/retrieval metadata; raw instructions never gain authority."
+    },
+    {
+      "target": "hash",
+      "rule": "Compute only after every field is normalized and all reference and credential gates pass."
+    }
+  ],
+  "legacy_field_map": [
+    {
+      "legacy_field": "action",
+      "disposition": "transform",
+      "target": ["status", "supersession"],
+      "rule": "status takes precedence when present; add/backup are migration hints, update requires supersession evidence, deprecate/ignore map to retired."
+    },
+    {
+      "legacy_field": "activated_at",
+      "disposition": "transform",
+      "target": ["recorded_time.recorded_at"],
+      "rule": "Preserve the RFC3339 value exactly."
+    },
+    {
+      "legacy_field": "activation_mode",
+      "disposition": "transform",
+      "target": ["recorded_time.recorded_by", "verification.rationale"],
+      "rule": "user_authorized_full_flow maps to importer and is retained as rationale; it does not prove explicit-user provenance."
+    },
+    {
+      "legacy_field": "activation_run_id",
+      "disposition": "transform",
+      "target": ["verification.evidence_refs"],
+      "rule": "Prefix with legacy-run:."
+    },
+    {
+      "legacy_field": "backup_status",
+      "disposition": "drop_with_evidence",
+      "target": [],
+      "rule": "Operational backup state is not memory truth; preserve it only in the cutover receipt."
+    },
+    {
+      "legacy_field": "category",
+      "disposition": "transform",
+      "target": ["kind", "status", "tags"],
+      "rule": "Map the seven durable categories directly; deprecated_info becomes fact+retired; temporary_or_sensitive becomes fact plus a legacy-category tag."
+    },
+    {
+      "legacy_field": "confidence",
+      "disposition": "direct",
+      "target": ["confidence"],
+      "rule": "high/medium/low are unchanged."
+    },
+    {
+      "legacy_field": "conversation_id",
+      "disposition": "transform",
+      "target": ["source.ref", "verification.evidence_refs"],
+      "rule": "Preserve non-empty IDs as opaque conversation references; empty values add nothing."
+    },
+    {
+      "legacy_field": "credential_policy",
+      "disposition": "drop_with_evidence",
+      "target": [],
+      "rule": "Runtime authorization policy is external to a memory fact; preserve redacted metadata in the receipt and reject any credential content."
+    },
+    {
+      "legacy_field": "curation_reason",
+      "disposition": "transform",
+      "target": ["verification.rationale"],
+      "rule": "Append non-empty reviewed rationale without granting source authority."
+    },
+    {
+      "legacy_field": "curation_status",
+      "disposition": "transform",
+      "target": ["verification.state", "tags"],
+      "rule": "Accepted review can support verified only with evidence; demotion states remain bounded legacy-curation tags."
+    },
+    {
+      "legacy_field": "date",
+      "disposition": "transform",
+      "target": ["valid_time.from"],
+      "rule": "Convert YYYY-MM-DD to 00:00:00Z only when no more precise evidence exists."
+    },
+    {
+      "legacy_field": "do_not_use_for",
+      "disposition": "direct",
+      "target": ["negative_triggers"],
+      "rule": "Preserve non-empty values as data-level negative retrieval triggers, not executable instructions."
+    },
+    {
+      "legacy_field": "evidence",
+      "disposition": "transform",
+      "target": ["source", "verification.evidence_refs"],
+      "rule": "Normalize redacted evidence references; never copy untrusted instruction text into control fields."
+    },
+    {
+      "legacy_field": "evidence_count",
+      "disposition": "drop_with_evidence",
+      "target": [],
+      "rule": "Recompute from normalized evidence_refs; legacy count is reconciliation evidence only."
+    },
+    {
+      "legacy_field": "id",
+      "disposition": "direct",
+      "target": ["id"],
+      "rule": "Preserve exactly; duplicate or malformed IDs fail closed."
+    },
+    {
+      "legacy_field": "importance",
+      "disposition": "transform",
+      "target": ["importance"],
+      "rule": "高/中/低 map exactly to high/medium/low."
+    },
+    {
+      "legacy_field": "memory_tier",
+      "disposition": "transform",
+      "target": ["importance", "tags"],
+      "rule": "Retain the legacy tier as a bounded tag; importance remains independently mapped."
+    },
+    {
+      "legacy_field": "original_statement_hash",
+      "disposition": "transform",
+      "target": ["verification.evidence_refs"],
+      "rule": "Prefix the existing truncated value with legacy-statement-hash:; it is evidence, never the V2 record hash."
+    },
+    {
+      "legacy_field": "reason",
+      "disposition": "direct",
+      "target": ["verification.rationale"],
+      "rule": "Preserve as provenance rationale."
+    },
+    {
+      "legacy_field": "retrieval_weight",
+      "disposition": "drop_with_evidence",
+      "target": [],
+      "rule": "Derived ranking weight is regenerated from governed query policy and is not canonical memory truth."
+    },
+    {
+      "legacy_field": "review_status",
+      "disposition": "transform",
+      "target": ["verification.state", "verification.rationale"],
+      "rule": "Map only evidence-backed acceptance to verified; automatic promotion alone remains unverified."
+    },
+    {
+      "legacy_field": "secret_ref",
+      "disposition": "transform",
+      "target": ["verification.evidence_refs", "sensitivity"],
+      "rule": "Only an opaque redacted reference may survive; credential/access material itself is prohibited."
+    },
+    {
+      "legacy_field": "security_findings",
+      "disposition": "transform",
+      "target": ["verification.evidence_refs", "sensitivity"],
+      "rule": "Retain redacted finding types/hashes only; echoing matched values fails closed."
+    },
+    {
+      "legacy_field": "sensitivity",
+      "disposition": "transform",
+      "target": ["sensitivity.classification", "sensitivity.handling"],
+      "rule": "public maps to public_text; private/sensitive require an owner-authorized redacted_summary and public_repository_allowed=true."
+    },
+    {
+      "legacy_field": "source",
+      "disposition": "direct",
+      "target": ["source.ref"],
+      "rule": "Preserve the redacted reference exactly after local-path and credential rejection."
+    },
+    {
+      "legacy_field": "source_kind",
+      "disposition": "transform",
+      "target": ["source.type"],
+      "rule": "Use source_type_map; unknown values cannot become active and are assigned to PAM1.0003."
+    },
+    {
+      "legacy_field": "statement",
+      "disposition": "direct",
+      "target": ["statement"],
+      "rule": "Preserve normalized NFC text after credential and authorization gates."
+    },
+    {
+      "legacy_field": "status",
+      "disposition": "transform",
+      "target": ["status", "conflict", "supersession"],
+      "rule": "Map lifecycle explicitly; an active record must be verified and conflict-resolved."
+    },
+    {
+      "legacy_field": "title",
+      "disposition": "transform",
+      "target": ["tags"],
+      "rule": "Retain a bounded normalized legacy-title tag when useful; it is not a second statement."
+    },
+    {
+      "legacy_field": "use_when",
+      "disposition": "drop_with_evidence",
+      "target": [],
+      "rule": "Legacy generated guidance is not executable authority; regenerate retrieval hints from kind/scope/tags."
+    },
+    {
+      "legacy_field": "validity",
+      "disposition": "transform",
+      "target": ["valid_time.to", "tags"],
+      "rule": "Do not invent expiry: retain the legacy validity tag and set to only when evidence gives an exact instant."
+    }
+  ],
+  "consumer_impact": [
+    {
+      "path": "skills/openai-memory-analysis/scripts/openai_memory_analysis.py",
+      "role": "legacy candidate/active writer and local read index",
+      "current_task_action": "canonical records reader/index; legacy memory writes removed",
+      "cutover_owner_task": "TSK.OpenAIDatabase.PAM1.0004"
+    },
+    {
+      "path": "scripts/build_memory_atlas_data.py",
+      "role": "legacy active/candidate render consumer",
+      "current_task_action": "canonical records reader",
+      "cutover_owner_task": "TSK.OpenAIDatabase.PAM1.0004"
+    },
+    {
+      "path": "config/context_sources/three_layer_context.json",
+      "role": "legacy source routing reference",
+      "current_task_action": "canonical manifest source",
+      "cutover_owner_task": "TSK.OpenAIDatabase.PAM1.0004"
+    },
+    {
+      "path": "config/context_sources/resource_routes.json",
+      "role": "legacy read-order reference",
+      "current_task_action": "read-only legacy compatibility retained until PAM1.0007",
+      "cutover_owner_task": "TSK.OpenAIDatabase.PAM1.0007"
+    },
+    {
+      "path": "config/cloudflare/pages_direct_upload.template.json",
+      "role": "legacy recovery include",
+      "current_task_action": "no_change",
+      "cutover_owner_task": "TSK.OpenAIDatabase.PAM1.0018"
+    }
+  ],
+  "rollback": "Revert the PAM1.0004 local commit. Remove canonical records plus cutover code/config changes; the byte-locked legacy directories remain unchanged read-only recovery evidence."
+}

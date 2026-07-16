@@ -7,6 +7,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / 'scripts' / 'run_controlled_cycle.py'
@@ -32,14 +33,44 @@ class MacDataPackageTests(unittest.TestCase):
         hygiene = config['post_run_hygiene_policy']
         self.assertTrue(hygiene['enabled'])
         self.assertIn('main', hygiene['protected_branches'])
-        self.assertIn('macdata-proM2', hygiene['protected_branches'])
+        self.assertNotIn('macdata-proM2', hygiene['protected_branches'])
+        self.assertEqual(hygiene['delegated_to'], 'Automation C Settlement')
+        self.assertEqual(config['base_branch'], 'main')
+        self.assertEqual(config['legacy_archive_branch'], 'macdata-proM2')
+        self.assertNotIn('default_archive_branch', config)
 
-    def test_post_run_hygiene_branch_policy_is_narrow(self):
+    def test_post_run_hygiene_is_read_only_audit(self):
         config = json.loads((ROOT / 'config' / 'device_config.json').read_text(encoding='utf-8'))
-        self.assertTrue(macdata_cycle.is_managed_temporary_branch('origin/codex/macdata-proM2-setup-20260705', config))
-        self.assertFalse(macdata_cycle.is_managed_temporary_branch('origin/main', config))
-        self.assertFalse(macdata_cycle.is_managed_temporary_branch('origin/macdata-proM2', config))
-        self.assertFalse(macdata_cycle.is_managed_temporary_branch('origin/codex/unrelated-work', config))
+        calls = []
+
+        def fake_cmd(args, cwd=None, timeout=30, allow_fail=True):
+            calls.append(args)
+            if args[:5] == ['git', '-C', str(ROOT), 'remote', 'get-url']:
+                return {'ok': True, 'stdout': 'https://github.com/LinzeColin/CodexProject.git', 'stderr': '', 'returncode': 0}
+            if args[:3] == ['git', 'ls-remote', '--heads']:
+                return {'ok': True, 'stdout': f"{'a' * 40}\trefs/heads/main", 'stderr': '', 'returncode': 0}
+            return {'ok': False, 'stdout': '', 'stderr': 'unexpected', 'returncode': 1}
+
+        with mock.patch.object(macdata_cycle, 'cmd', side_effect=fake_cmd), mock.patch.object(
+            macdata_cycle, 'gh_json', return_value=[]
+        ):
+            result = macdata_cycle.cleanup_github_hygiene(ROOT, config)
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['github_mutations'], 0)
+        self.assertFalse(any('push' in call for call in calls))
+        self.assertFalse(any(call[:3] == ['gh', 'issue', 'close'] for call in calls))
+
+    def test_archive_delegates_to_shared_automation_c_publisher(self):
+        config = json.loads((ROOT / 'config' / 'device_config.json').read_text(encoding='utf-8'))
+        expected = {'ok': True, 'base_branch': 'main'}
+        with tempfile.TemporaryDirectory() as td, mock.patch.object(
+            macdata_cycle, 'publish_snapshot', return_value=expected
+        ) as publisher:
+            safe = Path(td) / 'safe.json'
+            safe.write_text('{}', encoding='utf-8')
+            result = macdata_cycle.archive_to_github(Path(td), config, 'raw', 'proM2-test', [safe])
+        self.assertEqual(result, expected)
+        publisher.assert_called_once_with(Path(td), ROOT, config, 'raw', 'proM2-test')
 
     def test_gh_json_uses_repo_context(self):
         calls = []
@@ -95,10 +126,10 @@ class MacDataPackageTests(unittest.TestCase):
     def test_run_status_includes_report_archive_after_final_upload(self):
         config = {
             'device_key': 'proM2',
-            'default_archive_branch': 'macdata-proM2',
+            'base_branch': 'main',
         }
-        raw_archive = {'archive_branch': 'macdata-proM2', 'remote_verified': True}
-        report_archive = {'archive_branch': 'macdata-proM2', 'remote_verified': True, 'local_commit_hash': 'abc123'}
+        raw_archive = {'base_branch': 'main', 'transaction_branch': 'automation-c/macdata-proM2-test-raw', 'remote_verified': True}
+        report_archive = {'base_branch': 'main', 'transaction_branch': 'automation-c/macdata-proM2-test-report', 'remote_verified': True, 'main_commit_hash': 'abc123'}
         cleanup = {'status': '已执行', 'development_cleanup': {'project_cache': {'candidate_count': 0}}}
         status = macdata_cycle.build_run_status(
             config,
@@ -111,8 +142,9 @@ class MacDataPackageTests(unittest.TestCase):
         )
         self.assertTrue(status['ok'])
         self.assertTrue(status['remote_verified'])
-        self.assertEqual(status['archive_branch'], 'macdata-proM2')
-        self.assertEqual(status['report_archive']['local_commit_hash'], 'abc123')
+        self.assertEqual(status['base_branch'], 'main')
+        self.assertEqual(status['transaction_branch'], 'automation-c/macdata-proM2-test-raw')
+        self.assertEqual(status['report_archive']['main_commit_hash'], 'abc123')
         self.assertEqual(status['development_cleanup']['project_cache']['candidate_count'], 0)
 
     def test_chinese_report_contains_required_sections(self):

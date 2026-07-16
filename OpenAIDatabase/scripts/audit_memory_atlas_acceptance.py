@@ -52,6 +52,11 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def read_frontend_sources(source_root: Path) -> str:
+    paths = sorted({*source_root.rglob("*.ts"), *source_root.rglob("*.tsx")})
+    return "\n".join(path.read_text(encoding="utf-8") for path in paths)
+
+
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -169,7 +174,16 @@ def current_git_commit(repo_root: Path) -> str | None:
 
 def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_local_apps: bool = False) -> dict[str, Any]:
     repo_root = repo_root.resolve()
+    ci_workflow_path = repo_root.parent / ".github/workflows/openai-database-ci.yml"
     checks: list[dict[str, str]] = []
+
+    if publish_dir is not None:
+        try:
+            release_result = audit_release(repo_root, publish_dir)
+        except ReleaseAuditError as exc:
+            fail_check(checks, "publish_dir_release_safe", str(exc))
+        else:
+            pass_check(checks, "publish_dir_release_safe", f"{release_result['file_count']} publish files audited")
 
     required_paths = [
         "AGENTS.md",
@@ -184,7 +198,6 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         "config/cloudflare/pages_direct_upload.template.json",
         "config/cloudflare/access_self_hosted_application.template.json",
         "wrangler.jsonc",
-        ".github/workflows/ci.yml",
         "scripts/build_memory_atlas_data.py",
         "scripts/build_agent_context_pack.py",
         "scripts/sync_codex_memory_data.py",
@@ -208,7 +221,10 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         "data/derived/visualization/memory_atlas.json",
     ]
     missing = [relative for relative in required_paths if not (repo_root / relative).exists()]
-    require(checks, not missing, "required_files_present", f"{len(required_paths)} files present", f"missing files: {missing}")
+    if not ci_workflow_path.is_file():
+        missing.append("../.github/workflows/openai-database-ci.yml")
+    required_count = len(required_paths) + 1
+    require(checks, not missing, "required_files_present", f"{required_count} files present", f"missing files: {missing}")
 
     tracked_problems = audit_tracked_files(repo_root)
     require(
@@ -318,6 +334,13 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     vite_config = read_text(repo_root / "apps/memory-atlas/vite.config.ts")
     atlas_loader = read_text(repo_root / "apps/memory-atlas/src/data/atlas.ts")
     app_source = read_text(repo_root / "apps/memory-atlas/src/App.tsx")
+    frontend_source = read_frontend_sources(repo_root / "apps/memory-atlas/src")
+    core_ui_source = "\n".join(
+        [
+            read_text(repo_root / "apps/memory-atlas/src/features/assets/GalaxyView.tsx"),
+            read_text(repo_root / "apps/memory-atlas/src/features/assets/TimelineView.tsx"),
+        ]
+    )
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
     index_html = read_text(repo_root / "apps/memory-atlas/index.html")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
@@ -329,7 +352,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     deployment_doc = read_text(repo_root / "docs/MEMORY_ATLAS_DEPLOYMENT.md")
     model_parameters_doc = read_text(repo_root / "docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md")
     delivery_record_doc = read_text(repo_root / "docs/MEMORY_ATLAS_DELIVERY_RECORD.md")
-    ci_workflow = read_text(repo_root / ".github/workflows/ci.yml")
+    ci_workflow = read_text(ci_workflow_path)
 
     require(
         checks,
@@ -356,11 +379,11 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "<title>记忆星图</title>" in index_html
         and 'lang="zh-CN"' in installer_source
         and "记忆星图启动中" in installer_source
-        and "个节点 /" in app_source
-        and "个事件 ·" in app_source
-        and "change proposal" not in app_source
-        and "versioned proposal" not in app_source
-        and "active memory" not in app_source,
+        and "个节点 /" in core_ui_source
+        and "个事件 ·" in core_ui_source
+        and "change proposal" not in core_ui_source
+        and "versioned proposal" not in core_ui_source
+        and "active memory" not in core_ui_source,
         "chinese_user_facing_ui",
         "app shell, startup page, stats, and writeback explanation are Chinese-first",
         "found English user-facing text in core UI surfaces",
@@ -396,25 +419,25 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     )
     require(
         checks,
-        "const daysInYear = isLeapYear(year) ? 366 : 365" in app_source
-        and "const weekColumns = Math.ceil((daysInYear + startWeekday) / 7)" in app_source
-        and "Array.from({ length: daysInYear }" in app_source
-        and "Array.from({ length: 24 }" in app_source
-        and 'className="year-trend-grid year-comparison-trend"' in app_source
-        and "startColumn" not in app_source
-        and '(["day", "week", "month", "year"] as ContributionScale[])' in app_source,
+        "const daysInYear = isLeapYear(year) ? 366 : 365" in frontend_source
+        and "const weekColumns = Math.ceil((daysInYear + startWeekday) / 7)" in frontend_source
+        and "Array.from({ length: daysInYear }" in frontend_source
+        and "Array.from({ length: 24 }" in frontend_source
+        and 'className="year-trend-grid year-comparison-trend"' in frontend_source
+        and "startColumn" not in frontend_source
+        and '(["day", "week", "month", "year"] as ContributionScale[])' in frontend_source,
         "contribution_grid_time_scales",
         "day/week use 365/366 daily cells; month uses 24 two-year columns; year uses side-by-side comparison cards",
         "contribution grid time-scale requirements are not represented in source",
     )
     require(
         checks,
-        "分析对象" in app_source
-        and "AgentRecommendationsPanel" in app_source
-        and "Memory（给 ChatGPT / Codex Personalization）" in app_source
-        and "Meta Data（给 ChatGPT / Codex Agents.md）" in app_source
-        and "calendarWeekKey(year, weekColumn)" in app_source
-        and "contributionYears(atlas, nodes)" in app_source,
+        "分析对象" in frontend_source
+        and "AgentRecommendationsPanel" in frontend_source
+        and "Memory（给 ChatGPT / Codex Personalization）" in frontend_source
+        and "Meta Data（给 ChatGPT / Codex Agents.md）" in frontend_source
+        and "calendarWeekKey(year, weekColumn)" in frontend_source
+        and "contributionYears(atlas, nodes)" in frontend_source,
         "codex_source_recommendations_and_grid_controls",
         "UI includes source selection, Memory/Meta Data recommendations, natural week keys, and year picker",
         "Source selection, recommendation panels, natural week keys, or year picker are missing",
@@ -426,12 +449,17 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "OpenAIDatabase" in codex_sync_source
         and "--build-atlas" in codex_auto_update_source
         and "--token-usage" in codex_auto_update_source
-        and "should_export_session_history" in codex_auto_update_source
-        and "token_usage/current-mac-latest" in codex_sync_source
-        and "session_history/current-mac-latest" in codex_sync_source
+        and "data/run_logs/token_usage" in codex_history_export_source
+        and "token_usage/current-mac-latest" not in codex_sync_source
+        and "token_usage/current-mac-latest" not in codex_history_export_source
+        and "session_history/current-mac-latest" not in codex_sync_source
+        and "--session-history" not in codex_auto_update_source
+        and "--session-history" not in codex_history_export_source
+        and "--session-history-output" not in codex_history_export_source
+        and "tarfile" not in codex_history_export_source
+        and "raw sessions are never bundled" in codex_history_export_source
         and "sqlite3.connect" in codex_history_export_source
         and "mode=ro" in codex_history_export_source
-        and "Do not copy this directory over `~/.codex/sessions`" in codex_history_export_source
         and "publish_runtime_snapshot" in codex_auto_update_source
         and "run_codex_memory_auto_update.py" in codex_weekly_source
         and '"Weekday": 1' in codex_weekly_source
@@ -442,7 +470,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "--push" in codex_weekly_source
         and "StartCalendarInterval" in codex_weekly_source,
         "real_codex_scheduled_sync_ready",
-        "Real Codex redacted sync, Monday/Wednesday/Friday token usage export, Monday session history export, runtime publish, and Git-backed backup path are present",
+        "Real Codex redacted sync, scheduled numeric-only usage export, no raw-session bundle path, runtime publish, and Git-backed sanitized data are present",
         "Codex sync or scheduled backup launcher does not meet the real-data redacted runtime-update contract",
     )
     try:
@@ -463,25 +491,24 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         "Cloudflare Pages + Access readiness docs/config missing",
     )
     try:
-        preflight_result = cloudflare_preflight(repo_root, publish_dir)
+        # The release artifact was already audited above. Re-running it inside
+        # preflight would repeat the full public-raw scan without adding proof.
+        preflight_result = cloudflare_preflight(repo_root, None)
     except PreflightError as exc:
         fail_check(checks, "cloudflare_pages_access_preflight", str(exc))
     else:
         pass_check(checks, "cloudflare_pages_access_preflight", f"{len(preflight_result['checks'])} Cloudflare preflight checks passed")
     require(
         checks,
-        "scripts/audit_memory_atlas_acceptance.py" in ci_workflow
-        and "scripts/audit_memory_atlas_visual_acceptance.py" in ci_workflow
-        and "scripts/audit_memory_atlas_goal_completion.py" in ci_workflow
-        and "scripts/deploy_memory_atlas_cloudflare.py" in ci_workflow
-        and "scripts/preflight_cloudflare_pages_access.py" in ci_workflow
-        and "scripts/audit_memory_atlas_release.py" in ci_workflow
-        and "scripts/sync_codex_memory_data.py" in ci_workflow
-        and "scripts/build_agent_context_pack.py" in ci_workflow
-        and "scripts/install_codex_weekly_sync.py" in ci_workflow
+        "python scripts/atlasctl.py audit --check goal-completion" in ci_workflow
+        and "python scripts/atlasctl.py audit --check release" not in ci_workflow
+        and "python scripts/atlasctl.py audit --check visual-acceptance" not in ci_workflow
+        and "python scripts/atlasctl.py audit --check acceptance" not in ci_workflow
+        and "SOURCE_DATE_EPOCH=\"$(git log -1 --format=%ct)\"" in ci_workflow
+        and "python3 scripts/run_verification.py --tier integration" in ci_workflow
         and "npm run build --prefix apps/memory-atlas" in ci_workflow,
         "ci_acceptance_gate",
-        "CI builds data/frontend and runs release, acceptance, and Cloudflare preflight audits",
+        "CI runs disjoint verification tiers, reproducible data/frontend builds, and one aggregate local acceptance gate",
         "CI does not include the Memory Atlas acceptance gate",
     )
     require(
@@ -532,14 +559,6 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace, npm/pnpm dependency fallback, runtime cache manifest/stale checks, cleanup guard, release audit gate, pid cleanup, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",
     )
-
-    if publish_dir is not None:
-        try:
-            release_result = audit_release(repo_root, publish_dir)
-        except ReleaseAuditError as exc:
-            fail_check(checks, "publish_dir_release_safe", str(exc))
-        else:
-            pass_check(checks, "publish_dir_release_safe", f"{release_result['file_count']} publish files audited")
 
     if require_local_apps:
         audit_local_apps(repo_root, checks)

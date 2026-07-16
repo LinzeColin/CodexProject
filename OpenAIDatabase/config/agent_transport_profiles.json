@@ -1,0 +1,106 @@
+{
+  "schema_version": "openai_database.agent_transport_profiles.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0008",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0008",
+  "profile_count": 5,
+  "required_operations": ["discover", "read", "query", "cite", "freshness", "fallback"],
+  "identity_fields": ["id", "statement_sha256", "record_sha256", "canonical_source_commit", "source_type", "source_ref_sha256", "source_evidence_hash"],
+  "hard_gates": {
+    "profile_pass_required": 5,
+    "discovery_object_count": 1,
+    "full_repo_scan_allowed": false,
+    "writes_allowed": false,
+    "candidate_snapshot_acceptance_task": "TSK.OpenAIDatabase.PAM1.0008",
+    "published_live_acceptance_task": "TSK.OpenAIDatabase.PAM1.0019"
+  },
+  "official_sources_verified_on": "2026-07-16",
+  "official_sources": [
+    {
+      "claim": "chatgpt_github_read_search_cite_only",
+      "url": "https://help.openai.com/en/articles/11145903-connecting-github-to-chatgpt"
+    },
+    {
+      "claim": "codex_root_to_cwd_agents_chain",
+      "url": "https://developers.openai.com/codex/guides/agents-md"
+    },
+    {
+      "claim": "github_mcp_explicit_read_only_mode",
+      "url": "https://github.com/github/github-mcp-server/blob/main/docs/server-configuration.md"
+    },
+    {
+      "claim": "github_contents_path_ref_raw_and_public_read",
+      "url": "https://docs.github.com/en/rest/repos/contents"
+    },
+    {
+      "claim": "github_conditional_get_etag_304",
+      "url": "https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api"
+    }
+  ],
+  "profiles": [
+    {
+      "profile_id": "chatgpt_github",
+      "display_name": "ChatGPT GitHub App",
+      "transport_ids": ["chatgpt_github"],
+      "access_mode": "host_managed_read_only",
+      "discovery": {"method": "content_search", "locator": "LINZE_AGENT_MEMORY_V3", "expected_objects": 1},
+      "read_query": {"method": "host_injected_exact_files", "paths": ["OpenAIDatabase/data/memory/agent-memory.json", "OpenAIDatabase/{indexed_shard}"]},
+      "citation": {"required_fields": ["repository", "path", "artifact_ref", "id", "record_sha256", "canonical_source_commit"]},
+      "freshness": {"strategy": "require_host_ref_and_bound_hashes", "stale_action": "fallback"},
+      "fallback": ["host_injected_snapshot", "github_rest_pinned_ref", "local_offline_snapshot"],
+      "max_repository_reads": 3,
+      "write_policy": "none"
+    },
+    {
+      "profile_id": "codex_git",
+      "display_name": "Codex AGENTS plus local Git",
+      "transport_ids": ["git"],
+      "access_mode": "local_read_only",
+      "discovery": {"method": "root_to_cwd_agents_then_startup_route", "locator": "data/memory/agent-memory.json", "expected_objects": 1},
+      "read_query": {"method": "exact_local_git_paths", "paths": ["AGENTS.md", "OpenAIDatabase/AGENTS.md", "OpenAIDatabase/data/memory/agent-memory.json", "OpenAIDatabase/{indexed_shard}"]},
+      "citation": {"required_fields": ["repository", "path", "artifact_ref", "id", "record_sha256", "canonical_source_commit"]},
+      "freshness": {"strategy": "compare_worktree_view_hashes_and_canonical_commit", "stale_action": "fail_closed"},
+      "fallback": ["local_offline_snapshot"],
+      "max_repository_reads": 4,
+      "write_policy": "none"
+    },
+    {
+      "profile_id": "github_mcp",
+      "display_name": "GitHub MCP read-only",
+      "transport_ids": ["github_mcp"],
+      "access_mode": "mcp_read_only",
+      "discovery": {"method": "get_file_contents", "locator": "OpenAIDatabase/data/memory/agent-memory.json", "expected_objects": 1},
+      "read_query": {"method": "get_file_contents_pinned_ref", "paths": ["OpenAIDatabase/data/memory/agent-memory.json", "OpenAIDatabase/{indexed_shard}"]},
+      "citation": {"required_fields": ["repository", "path", "artifact_ref", "id", "record_sha256", "canonical_source_commit"]},
+      "freshness": {"strategy": "require_pinned_ref_and_bound_hashes", "stale_action": "fallback"},
+      "fallback": ["github_rest_pinned_ref", "local_offline_snapshot"],
+      "max_repository_reads": 2,
+      "write_policy": "none"
+    },
+    {
+      "profile_id": "rest_https",
+      "display_name": "GitHub REST and raw HTTPS",
+      "transport_ids": ["github_rest", "https"],
+      "access_mode": "public_read_only",
+      "discovery": {"method": "contents_api_pinned_ref", "locator": "OpenAIDatabase/data/memory/agent-memory.json", "expected_objects": 1},
+      "read_query": {"method": "contents_base64_and_raw_https_parity", "paths": ["OpenAIDatabase/data/memory/agent-memory.json", "OpenAIDatabase/{indexed_shard}"]},
+      "citation": {"required_fields": ["repository", "path", "artifact_ref", "id", "record_sha256", "canonical_source_commit"]},
+      "freshness": {"strategy": "pinned_ref_etag_if_none_match_and_hash", "stale_action": "fallback"},
+      "fallback": ["conditional_cache_if_hash_bound", "local_offline_snapshot"],
+      "max_repository_reads": 4,
+      "write_policy": "none"
+    },
+    {
+      "profile_id": "local_offline",
+      "display_name": "Local or tool-less offline Agent",
+      "transport_ids": ["git"],
+      "access_mode": "host_injected_snapshot_read_only",
+      "discovery": {"method": "snapshot_manifest", "locator": "OpenAIDatabase/data/memory/agent-memory.json", "expected_objects": 1},
+      "read_query": {"method": "hash_bound_snapshot_files", "paths": ["OpenAIDatabase/data/memory/agent-memory.json", "OpenAIDatabase/{indexed_shard}"]},
+      "citation": {"required_fields": ["repository", "path", "artifact_ref", "id", "record_sha256", "canonical_source_commit"]},
+      "freshness": {"strategy": "snapshot_manifest_ref_and_file_hashes", "stale_action": "request_new_snapshot"},
+      "fallback": ["host_injected_context_with_same_manifest"],
+      "max_repository_reads": 2,
+      "write_policy": "none"
+    }
+  ]
+}

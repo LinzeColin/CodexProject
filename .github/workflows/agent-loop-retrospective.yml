@@ -13,12 +13,15 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  issues: write
-  actions: read
+
+concurrency:
+  group: agent-loop-retrospective-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   retrospective:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || inputs.pr_number }}
@@ -26,9 +29,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Collect retrospective context
         run: |
@@ -53,7 +57,7 @@ jobs:
 
       - name: Generate retrospective with Codex when available
         if: ${{ env.OPENAI_API_KEY_PRESENT == 'true' }}
-        uses: openai/codex-action@v1
+        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: agent-loop-retrospective/codex-retrospective-prompt.md
@@ -78,7 +82,7 @@ jobs:
           gh pr comment "$PR_NUMBER" --body-file agent-loop-retrospective/retrospective.md
 
       - name: Upload retrospective artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: agent-loop-retrospective-${{ github.run_id }}
           path: agent-loop-retrospective/

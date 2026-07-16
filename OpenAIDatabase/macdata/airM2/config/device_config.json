@@ -4,7 +4,7 @@
   "collect_brew": true,
   "collect_development_load": false,
   "collect_docker": false,
-  "default_archive_branch": "macdata-airM2",
+  "base_branch": "main",
   "default_remote": "origin",
   "device_key": "airM2",
   "device_label_cn": "M2 MacBook Air",
@@ -35,8 +35,16 @@
     ".env raw content"
   ],
   "local_relative_dir": "OpenAIDatabase/macdata/airM2",
+  "legacy_archive_branch": "macdata-airM2",
   "no_automatic_local_scheduler": true,
+  "published_paths": [
+    "data/current_3days",
+    "data/latest",
+    "reports/current_3days",
+    "reports/latest"
+  ],
   "reasoning_effort": "xhigh",
+  "repository": "LinzeColin/CodexProject",
   "retention_days": 3,
   "schedule_cron": "10 1 * * *",
   "schema_version": "macdata-device-config-v1",
@@ -44,5 +52,10 @@
   "storage_yellow_free_gb": 70,
   "swap_red_gb": 4,
   "swap_yellow_gb": 1,
-  "timezone": "Australia/Sydney"
+  "timezone": "Australia/Sydney",
+  "transaction_acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0001",
+  "transaction_branch_prefix": "automation-c/macdata-airM2",
+  "transaction_task_id": "TSK.OpenAIDatabase.CLEAN1.0001",
+  "settlement_poll_seconds": 10,
+  "settlement_timeout_seconds": 900
 }

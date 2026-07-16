@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "policy_id": "CodexProject-workflow-security-v1",
+  "owner": "@LinzeColin",
+  "resolved_at": "2026-07-15T14:21:17Z",
+  "requirements": {
+    "workflow_directory": ".github/workflows",
+    "codeowners_rule": "/.github/workflows/ @LinzeColin",
+    "nested_project_workflows_allowed": false,
+    "required_check_role": "transaction_ci",
+    "settlement_role": "transaction_settlement",
+    "forbidden_triggers": [
+      "pull_request_target"
+    ],
+    "forbidden_direct_run_contexts": [
+      "inputs.",
+      "github.head_ref",
+      "github.ref_name",
+      "github.event.pull_request.title",
+      "github.event.pull_request.body",
+      "github.event.pull_request.head.ref"
+    ]
+  },
+  "action_pins": [
+    {
+      "repository": "actions/checkout",
+      "requested_tag": "v4",
+      "commit_sha": "34e114876b0b11c390a56381ad16ebd13914f8d5",
+      "source": "https://api.github.com/repos/actions/checkout/git/ref/tags/v4"
+    },
+    {
+      "repository": "actions/checkout",
+      "requested_tag": "v5",
+      "commit_sha": "93cb6efe18208431cddfb8368fd83d5badbf9bfd",
+      "source": "https://api.github.com/repos/actions/checkout/git/ref/tags/v5"
+    },
+    {
+      "repository": "actions/setup-node",
+      "requested_tag": "v4",
+      "commit_sha": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+      "source": "https://api.github.com/repos/actions/setup-node/git/ref/tags/v4"
+    },
+    {
+      "repository": "actions/setup-python",
+      "requested_tag": "v5",
+      "commit_sha": "a26af69be951a213d495a4c3e4e4022e16d87065",
+      "source": "https://api.github.com/repos/actions/setup-python/git/ref/tags/v5"
+    },
+    {
+      "repository": "actions/setup-python",
+      "requested_tag": "v6",
+      "commit_sha": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+      "source": "https://api.github.com/repos/actions/setup-python/git/ref/tags/v6"
+    },
+    {
+      "repository": "actions/upload-artifact",
+      "requested_tag": "v4",
+      "commit_sha": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+      "source": "https://api.github.com/repos/actions/upload-artifact/git/ref/tags/v4"
+    },
+    {
+      "repository": "actions/upload-artifact",
+      "requested_tag": "v7",
+      "commit_sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+      "source": "https://api.github.com/repos/actions/upload-artifact/git/ref/tags/v7"
+    },
+    {
+      "repository": "openai/codex-action",
+      "requested_tag": "v1",
+      "tag_object_sha": "b11346a6fa031e2e164ab4b7c7ea201afffd7d59",
+      "commit_sha": "52fe01ec70a42f454c9d2ebd47598f9fd6893d56",
+      "source": "https://api.github.com/repos/openai/codex-action/git/ref/tags/v1"
+    }
+  ],
+  "workflows": [
+    {
+      "path": ".github/workflows/agent-loop-retrospective.yml",
+      "name": "Agent Loop - Retrospective",
+      "role": "transaction_retrospective",
+      "owner": "@LinzeColin",
+      "purpose": "Create an advisory post-close retrospective and PR comment; never settlement evidence.",
+      "triggers": ["pull_request", "workflow_dispatch"],
+      "permissions": {"contents": "read", "pull-requests": "write"},
+      "expected_jobs": ["retrospective"],
+      "trust_boundary": "untrusted_prompt_readonly_sandbox",
+      "failure_behavior": "N/A output without the model secret; comment and artifact remain advisory.",
+      "local_dependencies": [".github/codex/prompts/codex-retrospective.md"],
+      "untrusted_prompt_input": true
+    },
+    {
+      "path": ".github/workflows/agent-loop-review-existing-pr.yml",
+      "name": "Agent Loop - Review Existing PR",
+      "role": "advisory_pr_review",
+      "owner": "@LinzeColin",
+      "purpose": "Review a PR in a read-only Codex sandbox and publish an advisory comment.",
+      "triggers": ["pull_request", "workflow_dispatch"],
+      "permissions": {"contents": "read", "pull-requests": "write"},
+      "expected_jobs": ["review-existing-pr"],
+      "trust_boundary": "untrusted_prompt_readonly_sandbox",
+      "failure_behavior": "Fail before review when the model secret is unavailable; no merge authority.",
+      "local_dependencies": [
+        ".github/codex/prompts/codex-review.md",
+        "scripts/agent_loop/architect_review.py"
+      ],
+      "untrusted_prompt_input": true
+    },
+    {
+      "path": ".github/workflows/agent-loop-run-approved-taskpack.yml",
+      "name": "Agent Loop - Validate Approved Task Pack",
+      "role": "taskpack_validation",
+      "owner": "@LinzeColin",
+      "purpose": "Validate an explicitly supplied Task Pack without branch, PR, Issue, or merge mutation.",
+      "triggers": ["workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["validate-taskpack"],
+      "trust_boundary": "manual_input_via_environment_readonly",
+      "failure_behavior": "Validation failure stops without creating a transaction object.",
+      "local_dependencies": ["scripts/agent_loop/validate_taskpack.py"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/agent-loop-settlement.yml",
+      "name": "Agent Loop Settlement",
+      "role": "transaction_settlement",
+      "owner": "@LinzeColin",
+      "purpose": "Settle or janitor one marker-bound transaction using trusted default-branch code and live APIs only.",
+      "triggers": ["schedule", "workflow_dispatch", "workflow_run"],
+      "permissions": {
+        "actions": "read",
+        "checks": "read",
+        "contents": "write",
+        "issues": "write",
+        "pull-requests": "write"
+      },
+      "expected_jobs": ["janitor", "settlement"],
+      "trust_boundary": "trusted_default_branch_live_api_only",
+      "failure_behavior": "Fail closed; close/delete only exact authorized objects, and never execute PR code or artifacts.",
+      "local_dependencies": [],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-manual-delivery-test.yml",
+      "name": "arXiv Daily Push manual B1 text SMTP test",
+      "role": "adp_manual_delivery_test",
+      "owner": "@LinzeColin",
+      "purpose": "Run one explicitly confirmed Stage 1 SMTP delivery test from the default branch.",
+      "triggers": ["workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["guard", "manual-delivery-test"],
+      "trust_boundary": "manual_secret_gated_inputs_via_environment",
+      "failure_behavior": "Guard skips delivery unless the exact confirmation is present; runtime errors fail the job.",
+      "local_dependencies": ["arxiv-daily-push/src/arxiv_daily_push"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+      "name": "arXiv Daily Push live all-arXiv cloud dry-run",
+      "role": "adp_cloud_dry_run",
+      "owner": "@LinzeColin",
+      "purpose": "Run the live-fetch path with production delivery disabled and artifact-only evidence.",
+      "triggers": ["pull_request", "workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["live-all-arxiv-dry-run", "runtime-change-scope"],
+      "trust_boundary": "pr_or_manual_readonly",
+      "failure_behavior": "Governance-only changes skip runtime work; runtime failure fails closed.",
+      "local_dependencies": ["arxiv-daily-push/src/arxiv_daily_push"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-production-trial.yml",
+      "name": "arXiv Daily Push production trial bootstrap",
+      "role": "adp_production_preflight",
+      "owner": "@LinzeColin",
+      "purpose": "Perform a manually confirmed production preflight without enabling a schedule or release.",
+      "triggers": ["workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["guard", "preflight"],
+      "trust_boundary": "manual_secret_gated_inputs_via_environment",
+      "failure_behavior": "Unconfirmed dispatch is skipped; failed preflight remains a blocking artifact.",
+      "local_dependencies": [
+        "arxiv-daily-push/src/arxiv_daily_push",
+        "arxiv-daily-push/tests",
+        "scripts/validate_project_governance.py"
+      ],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-provisioning-audit.yml",
+      "name": "arXiv Daily Push provisioning audit",
+      "role": "adp_provisioning_audit",
+      "owner": "@LinzeColin",
+      "purpose": "Audit names-only secret/variable readiness and emit non-secret evidence.",
+      "triggers": ["workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["provisioning-audit"],
+      "trust_boundary": "manual_secret_names_only_inputs_via_environment",
+      "failure_behavior": "Missing readiness remains explicit; suspected secret values are never printed.",
+      "local_dependencies": ["arxiv-daily-push/src/arxiv_daily_push"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-real-backfill.yml",
+      "name": "arXiv Daily Push real 30-day backfill",
+      "role": "adp_historical_backfill",
+      "owner": "@LinzeColin",
+      "purpose": "Run bounded historical replay evidence when runtime paths change or on manual dispatch.",
+      "triggers": ["pull_request", "workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["real-arxiv-30-day-backfill", "runtime-change-scope"],
+      "trust_boundary": "pr_or_manual_readonly_inputs_via_environment",
+      "failure_behavior": "Governance-only changes skip runtime work; replay or validation failure blocks.",
+      "local_dependencies": ["arxiv-daily-push/src/arxiv_daily_push"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-scheduled.yml",
+      "name": "arXiv Daily Push scheduled Stage 1 text gate",
+      "role": "adp_scheduled_delivery",
+      "owner": "@LinzeColin",
+      "purpose": "Run health, daily, or watchdog modes only when production variables and gates allow it.",
+      "triggers": ["schedule", "workflow_dispatch"],
+      "permissions": {"actions": "read", "contents": "read"},
+      "expected_jobs": ["gate", "scheduled"],
+      "trust_boundary": "schedule_or_manual_secret_gated_inputs_via_environment",
+      "failure_behavior": "Disabled gates skip delivery; artifact restore is read-only and delivery failures block.",
+      "local_dependencies": ["arxiv-daily-push/src/arxiv_daily_push"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+      "name": "arXiv Daily Push Stage 1 bootstrap",
+      "role": "adp_stage1_bootstrap",
+      "owner": "@LinzeColin",
+      "purpose": "Validate Stage 1 migration/bootstrap with delivery and release mutations disabled.",
+      "triggers": ["pull_request", "push", "workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["runtime-change-scope", "stage1-bootstrap"],
+      "trust_boundary": "pr_push_or_manual_readonly",
+      "failure_behavior": "Governance-only changes skip runtime work; migration/bootstrap validation failure blocks.",
+      "local_dependencies": ["arxiv-daily-push/src/arxiv_daily_push"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-trial-start.yml",
+      "name": "arXiv Daily Push trial start Stage 1 text gate",
+      "role": "adp_trial_start",
+      "owner": "@LinzeColin",
+      "purpose": "Start the explicitly confirmed text-only trial after preflight, source, SMTP, and scheduler plans.",
+      "triggers": ["workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["trial-start"],
+      "trust_boundary": "manual_secret_gated_inputs_via_environment",
+      "failure_behavior": "No confirmation means no job; any prerequisite failure blocks trial start.",
+      "local_dependencies": ["arxiv-daily-push/src/arxiv_daily_push"],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/kmfa-dual-plane.yml",
+      "name": "KMFA Dual-Plane Gate",
+      "role": "kmfa_dual_plane_gate",
+      "owner": "@LinzeColin",
+      "purpose": "Expose the three KMFA dual-plane gates for only its machine/document paths.",
+      "triggers": ["pull_request", "push", "workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["dual-plane-gates"],
+      "trust_boundary": "pr_push_or_manual_readonly",
+      "failure_behavior": "The lineage gate intentionally remains red until facts connect; later gates always report.",
+      "local_dependencies": [
+        "KMFA/machine/tools/render_human.py",
+        "KMFA/machine/tools/check_doc_budget.py",
+        "KMFA/machine/tools/check_blocker_stop.py"
+      ],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/openai-database-ci.yml",
+      "name": "OpenAIDatabase CI",
+      "role": "openaidatabase_ci",
+      "owner": "@LinzeColin",
+      "purpose": "Validate personalization, deterministic memory Gold quality, bounded retrieval performance and the Memory Atlas build/audit role from one root workflow.",
+      "triggers": ["pull_request", "push", "schedule", "workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["memory-atlas-verify", "openai-database-verify"],
+      "trust_boundary": "pr_push_schedule_or_manual_readonly",
+      "failure_behavior": "Any required memory quality, request/cache performance, unit, generated-drift, frontend, release, Access, or acceptance check failure blocks.",
+      "local_dependencies": [
+        "OpenAIDatabase/tests",
+        "OpenAIDatabase/scripts",
+        "OpenAIDatabase/config/evaluation/memory_gold_evaluation_v1.json",
+        "OpenAIDatabase/config/evaluation/memory_retrieval_performance_v1.json",
+        "OpenAIDatabase/apps/memory-atlas/package-lock.json",
+        "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py"
+      ],
+      "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/project-governance.yml",
+      "name": "Project Governance",
+      "role": "transaction_ci",
+      "owner": "@LinzeColin",
+      "purpose": "Run the one required read-only transaction CI role and scheduled/manual full governance.",
+      "triggers": ["pull_request", "push", "schedule", "workflow_dispatch"],
+      "permissions": {"contents": "read"},
+      "expected_jobs": ["governance"],
+      "trust_boundary": "required_ci_executes_pr_code_readonly",
+      "failure_behavior": "Any policy, validation, semantic, artifact, or supply-chain failure blocks settlement.",
+      "local_dependencies": [
+        "scripts/lean_governance.py",
+        "scripts/workflow_security_audit.py",
+        "scripts/governance_artifact_policy.py",
+        "scripts/governance_id_audit.py",
+        "scripts/repository_hygiene_audit.py",
+        "scripts/validate_project_governance.py",
+        "governance/repository_hygiene_policy.json",
+        "tests/governance",
+        "tests/agent_loop"
+      ],
+      "untrusted_prompt_input": false
+    }
+  ],
+  "retired_or_merged": [
+    {
+      "path": "OpenAIDatabase/.github/workflows/ci.yml",
+      "disposition": "MERGED_AND_DELETE_INVALID_NESTED_WORKFLOW",
+      "owner": "@LinzeColin",
+      "replacement": ".github/workflows/openai-database-ci.yml",
+      "reason": "GitHub does not execute nested project workflows; unique Memory Atlas jobs were preserved in the root workflow."
+    }
+  ]
+}

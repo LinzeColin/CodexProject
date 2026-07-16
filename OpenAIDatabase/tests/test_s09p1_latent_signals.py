@@ -40,6 +40,7 @@ def write_latent_fixtures(root: Path) -> None:
         "opportunities",
         "--database-dir",
         str(root),
+        "--apply",
     ])
     target = root / "机器治理" / "行为智能模型" / "latent_signals.v1_2_s09_p1.json"
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -117,6 +118,7 @@ class S09P1LatentSignalsTest(unittest.TestCase):
                 "latent",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S09P1")
             self.assertTrue(output.exists())

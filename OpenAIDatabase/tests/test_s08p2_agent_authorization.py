@@ -46,6 +46,7 @@ def write_authorization_fixtures(root: Path) -> None:
         "agent-collaboration",
         "--database-dir",
         str(root),
+        "--apply",
     ])
 
 
@@ -111,6 +112,7 @@ class S08P2AgentAuthorizationTest(unittest.TestCase):
                 "agent-authorization",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S08P2")
             self.assertTrue(output.exists())

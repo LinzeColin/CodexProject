@@ -1,0 +1,240 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0001",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0001"
+  ],
+  "iteration_id": "ST07-PHA-OPENAIDATABASE-PAM1-0001-001",
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0001-SCHEMA-V2-20260716",
+  "generated_at": "2026-07-16T00:57:22Z",
+  "gate_status": "PASS_LOCAL_SCHEMA_V2_CONTRACT",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "a501d3e660665706da204e0d19a662157588c04f",
+  "remote_main_sha_at_run_start": "662a26dfa9f10577c10d75c3efb515d6823a32ee",
+  "remote_main_terminal_observation": "f24456f954aecab5e2eb62dc57f3a2b10beab975; advanced after run start with overlap_count=0 for this Task scope; PR/Issue/non-main=0/0/0",
+  "candidate_tree_sha1_excluding_this_manifest": "c6dfe1b6314b739aa2b15fe35f207cf8dac04993",
+  "content_tree_hash": "0c11a814a28f2d146b933a6e16c736acad016b40fe814164aff3fd309ce4ef6e",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every changed closure file except this self-referential manifest; the final 37-Task publication run binds the published business commit.",
+  "summary": "Define an executable Memory Record Schema V2 and an exactly-one V1 field-disposition contract for one future logical records dataset, while leaving all legacy data and runtime consumers unchanged until their assigned Tasks.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0001 local Schema V2 contract acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/valid_records.json",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/invalid_records.json",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py"
+  ],
+  "scope": {
+    "schema_contract_changes": 1,
+    "migration_contract_changes": 1,
+    "valid_fixture_records": 4,
+    "invalid_fixture_cases": 6,
+    "memory_data_writes": 0,
+    "active_memory_rows_modified": 0,
+    "candidate_memory_rows_modified": 0,
+    "raw_data_reads": 0,
+    "database_additions": 0,
+    "service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "runtime_writer_changes": 0,
+    "runtime_reader_changes": 0,
+    "model_formula_parameter_value_changes": 0,
+    "governance_renderer_changes": 1,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.CLEAN1.0010",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-CLEAN1-0010-CLEAN-GATE-20260716.json",
+    "manifest_sha256": "3166a925de3366db7b5f592f0243799610fce0332c17b0ea3eab60f711341e8f",
+    "gate_status": "PASS_LOCAL_PROJECT_CLEAN_GATE"
+  },
+  "execution_baseline": {
+    "legacy_schema_property_count": 22,
+    "legacy_active_row_count": 278,
+    "legacy_active_file_bytes": 1082592,
+    "legacy_active_file_sha256": "24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+    "legacy_active_observed_field_count": 30,
+    "legacy_union_field_count": 32,
+    "legacy_candidate_file_count": 9,
+    "legacy_candidate_record_count": 1702,
+    "legacy_invalid_json_record_count": 0,
+    "legacy_source_kind_values": ["codex_pack", "openai_export"],
+    "legacy_status_values": ["active"]
+  },
+  "schema_contract": {
+    "json_schema_draft": "2020-12",
+    "required_semantic_field_count": 19,
+    "required_semantic_field_coverage_percent": 100,
+    "source_types": [
+      "explicit_user",
+      "repository_evidence",
+      "raw_import",
+      "model_inference"
+    ],
+    "lifecycle_statuses": ["candidate", "active", "disputed", "retired"],
+    "default_query_status": "active",
+    "model_inference_active_allowed": false,
+    "credential_present_allowed": false,
+    "max_active_per_memory_key_and_scope": 1,
+    "canonical_hash_algorithm": "sha256",
+    "canonical_hash_format": "openai-memory-json-v1"
+  },
+  "migration_contract": {
+    "mode": "CONTRACT_ONLY_NO_DATA_WRITE",
+    "legacy_fields_observed": 32,
+    "legacy_fields_with_exactly_one_disposition": 32,
+    "legacy_field_disposition_coverage_percent": 100,
+    "target_editable_truth_count": 1,
+    "target_logical_dataset": "data/memory/records/records-NNNN.jsonl",
+    "profiling_task_id": "TSK.OpenAIDatabase.PAM1.0003",
+    "sharding_task_id": "TSK.OpenAIDatabase.PAM1.0002",
+    "cutover_task_id": "TSK.OpenAIDatabase.PAM1.0004"
+  },
+  "research_basis": [
+    {
+      "source": "https://arxiv.org/abs/2410.10813",
+      "use": "information extraction, multi-session reasoning, temporal reasoning, knowledge update and abstention justify explicit source/time/status fields"
+    },
+    {
+      "source": "https://arxiv.org/abs/2604.20006",
+      "use": "obsolete-memory reuse and FAMA motivate supersession, retirement and negative triggers"
+    },
+    {
+      "source": "https://arxiv.org/abs/2402.17753",
+      "use": "long-range temporal and causal evaluation motivates valid-time versus recorded-time and resolvable references"
+    }
+  ],
+  "evidence_sha256": {
+    "OpenAIDatabase/config/memory.schema.json": "86bbcc9db70824b064758bc06bcc369e806d9a707f6bbefa3d4ea5f7a466d6c7",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json": "a657a298bfbbb251ba338a23c9fc1077f11d6e91e0ef397d8811b10a590fb69f",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/valid_records.json": "5e8b86d6fa49d8bba1d7e742d32196a664a811e6cd8d9f22cf58fd91272ac59c",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/invalid_records.json": "50360c2e060f24ca11818d4fc42f3684abf3f26d354ec59af3bfe3917b5a0502",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py": "c4871b36f3839d1fee6d7a447cee93e4a15e0508215cda052fffc87e928351b7"
+  },
+  "test_commands": [
+    "python3 -B -m unittest tests.test_memory_record_schema_v2 tests.test_verification_policy -v",
+    "/opt/anaconda3/bin/python3 Draft202012Validator.check_schema + valid/invalid fixture validation",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier security",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_command_ownership.py --database-dir OpenAIDatabase",
+    "/opt/anaconda3/bin/python3 -B -m unittest discover -s tests/governance -p test_openai_database_lean_convergence.py -q",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "git diff --check; git status --short; GitHub PR/Issue/non-main audit"
+  ],
+  "test_results": [
+    {
+      "gate": "focused_schema_and_policy",
+      "result": "PASS",
+      "observed": "8/8 tests passed; verification policy owns 53/53 test files exactly once with every hard-zero metric at 0."
+    },
+    {
+      "gate": "draft_2020_12_reference_validator",
+      "result": "PASS",
+      "observed": "Meta-schema passed; 4/4 valid records had zero errors and 4/4 record-schema invalid cases were rejected."
+    },
+    {
+      "gate": "hash_and_dataset_invalid_cases",
+      "result": "PASS",
+      "observed": "The declared hash-mismatch case and duplicate-active-key/scope dataset case were rejected while their record schemas remained valid."
+    },
+    {
+      "gate": "legacy_field_disposition",
+      "result": "PASS",
+      "observed": "The union of 22 legacy schema properties and 30 observed active fields is 32 fields; all 32 have one and only one migration disposition."
+    },
+    {
+      "gate": "security_tier",
+      "result": "PASS",
+      "observed": "54/54 security tests passed in 28.207 seconds; accepted credential presence, model-inference active, unresolved active conflict and active duplicate counts are all 0."
+    },
+    {
+      "gate": "directory_and_command_ownership",
+      "result": "PASS",
+      "observed": "229/229 current directories are owned; unowned/dual-write/duplicate destination/dead script/missing implementation/write-mode failures are 0."
+    },
+    {
+      "gate": "lean_governance",
+      "result": "PASS",
+      "observed": "Focused Lean 7/7 passed; render drift/reference issues are 0/0; three human views total 45984 bytes within the unchanged 46000-byte cap; current Task model applicability is explicit NOT_APPLICABLE with its threshold source."
+    }
+  ],
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/memory_schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/invalid_records.json",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/valid_records.json",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0001-SCHEMA-V2-20260716.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.schema.json",
+    "OpenAIDatabase/config/memory_schema.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/invalid_records.json",
+    "OpenAIDatabase/tests/fixtures/memory_record_v2/valid_records.json",
+    "OpenAIDatabase/tests/test_memory_record_schema_v2.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0001-SCHEMA-V2-20260716.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0001-SCHEMA-V2-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0001-SCHEMA-V2-20260716.json"
+  ],
+  "known_boundaries": [
+    "The V2 schema is the target contract; the 278 active and 1702 candidate legacy records are not migrated by this Task.",
+    "PAM1.0002 owns deterministic API-compatible sharding; PAM1.0003 owns per-record profiling and stable memory_key/scope assignment; PAM1.0004 owns data and consumer cutover.",
+    "The legacy SQLite index remains a local rebuildable cache and is not promoted into canonical truth.",
+    "Remote main advanced from 662a26dfa9f10577c10d75c3efb515d6823a32ee to f24456f954aecab5e2eb62dc57f3a2b10beab975; the terminal compare found 0 files overlapping this Task scope and PR/Issue/non-main remained 0/0/0. This Run performs no remote write.",
+    "GitHub Support internal-ref/cache purge and Cloudflare live authorization remain unrelated pre-existing external boundaries."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the V2 schema, migration contract, fixtures, focused test and optional current-task model-applicability renderer marker; restore the legacy-schema annotation and verification policy. No data, database, service, runtime writer/reader, Git history or remote object requires compensation."
+}

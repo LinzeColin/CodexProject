@@ -125,7 +125,8 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
             self.assertIn("allow_reuse_address = True", runtime_server_text)
             self.assertIn("COMMAND_IDS", command_bridge_text)
             self.assertIn("shell=False", command_bridge_text)
-            self.assertIn("window.addEventListener(\"beforeunload\"", (REPO_ROOT / "apps/memory-atlas/src/App.tsx").read_text(encoding="utf-8"))
+            runtime_provider = REPO_ROOT / "apps/memory-atlas/src/providers/AtlasRuntimeProvider.tsx"
+            self.assertIn("window.addEventListener(\"beforeunload\"", runtime_provider.read_text(encoding="utf-8"))
             self.assertIn("/memory_atlas.json", launcher_text)
             self.assertIn("MEMORY_ATLAS_TTL_SECONDS", launcher_text)
             self.assertIn("MEMORY_ATLAS_IDLE_SECONDS", launcher_text)

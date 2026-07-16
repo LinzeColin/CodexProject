@@ -8,8 +8,8 @@
 - 脚本不会自动运行，不包含 launchd、cron、后台守护进程或自动安装脚本。
 - Codex Automation 是唯一调度入口；脚本只是被调用的确定性工具。
 - 每次运行都会生成全中文明文指标和报告。
-- 每次运行都会 commit + push 到 GitHub 归档分支 `macdata-airM2`。
-- 只有远程验证成功后，才删除本机 3 天以前的 `airM2` macdata 数据、报告、记录和 macdata 临时缓存。
+- 每次运行通过唯一 `automation-c/macdata-airM2-*` 短命分支提交非 draft PR，由 trusted Settlement 合入 `main` 并删除事务分支；不创建 Issue。
+- 只有 `main` 上逐文件 SHA-256 对账成功且 GitHub 回到 `0/0/0` 后，才删除本机 3 天以前的 `airM2` macdata 数据、报告、记录和 macdata 临时缓存。
 - Time Machine 不采集，iCloud 不使用。
 
 ## 目录
@@ -53,6 +53,7 @@ unzip /path/to/macdata_airM2_codex_automation_taskpack.zip
 
 ```bash
 python3 -m unittest discover -s OpenAIDatabase/macdata/airM2/tests -p 'test_*.py'
+python3 -m unittest OpenAIDatabase.macdata.tests.test_automation_c -q
 ```
 
 ## 首次运行前
@@ -85,9 +86,16 @@ python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root
 python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root . --execute
 ```
 
+本地无副作用模拟：
+
+```bash
+python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root . --simulate-transaction --simulation-stage raw --simulation-run-id airM2-test
+```
+
 ## 禁止事项
 
 - 不要把本包改成 launchd、cron 或本地守护进程。
 - 不要自动清理 Docker、Homebrew、系统缓存、项目缓存。
 - 不要读取 API key、token、password、cookie、session、Keychain、shell history、完整环境变量、`.env` 原文。
 - 不要让 `airM2` 任务读取或合并另一台设备的数据。
+- 不要 direct-push `main`，不要重建 `macdata-airM2` 永久分支，不要绕过 Project Governance 或 Settlement。

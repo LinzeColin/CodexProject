@@ -33,12 +33,13 @@ jobs:
   runtime-change-scope:
     name: classify-arxiv-runtime-change
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       should_run: ${{ steps.scope.outputs.should_run }}
       reason: ${{ steps.scope.outputs.reason }}
     steps:
       - name: Check out repository for path diff
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
@@ -97,16 +98,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
+      INPUT_GENERATED_AT: ${{ inputs.generated_at }}
+      INPUT_MAX_RESULTS_PER_CATEGORY: ${{ inputs.max_results_per_category || '3' }}
+      INPUT_POLITE_DELAY_SECONDS: ${{ inputs.polite_delay_seconds || '3' }}
       ADP_PRODUCTION_ENABLED: "false"
       ADP_SCHEDULED_RUN_ENABLED: "false"
       ADP_ALLOW_SMTP_SEND: "false"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Resolve dry-run parameters
         id: params
         shell: bash
         run: |
-          generated_at="${{ inputs.generated_at }}"
+          generated_at="$INPUT_GENERATED_AT"
           if [ -z "$generated_at" ]; then generated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
           service_date="$(python3 - "$generated_at" <<'PY'
           from __future__ import annotations
@@ -125,8 +129,8 @@ jobs:
           )"
           printf 'generated_at=%s\n' "$generated_at" >> "$GITHUB_OUTPUT"
           printf 'date=%s\n' "$service_date" >> "$GITHUB_OUTPUT"
-          printf 'max_results=%s\n' "${{ inputs.max_results_per_category || '3' }}" >> "$GITHUB_OUTPUT"
-          printf 'polite_delay=%s\n' "${{ inputs.polite_delay_seconds || '3' }}" >> "$GITHUB_OUTPUT"
+          printf 'max_results=%s\n' "$INPUT_MAX_RESULTS_PER_CATEGORY" >> "$GITHUB_OUTPUT"
+          printf 'polite_delay=%s\n' "$INPUT_POLITE_DELAY_SECONDS" >> "$GITHUB_OUTPUT"
       - name: Run live all-arXiv dry-run
         id: dry_run
         shell: bash
@@ -149,7 +153,7 @@ jobs:
           printf 'report=%s\n' "$stdout_report" >> "$GITHUB_OUTPUT"
       - name: Upload live all-arXiv dry-run evidence
         if: always() && steps.dry_run.outputs.artifact_dir != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-phase12-cloud-dry-run
           path: ${{ steps.dry_run.outputs.artifact_dir }}

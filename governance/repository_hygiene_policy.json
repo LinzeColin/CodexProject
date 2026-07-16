@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "policy_id": "CodexProject-root-repository-hygiene-v1",
+  "owner": "repository-owner",
+  "baseline_tree": "6a585a21d947c76537bac7c1d62f142482b08787",
+  "regular_blob_max_bytes": 1048576,
+  "hard_fail": {
+    "forbidden_names": [
+      ".DS_Store"
+    ],
+    "forbidden_directory_names": [
+      ".cache",
+      ".mypy_cache",
+      ".pytest_cache",
+      ".ruff_cache",
+      "__pycache__",
+      "build",
+      "coverage",
+      "dist",
+      "node_modules"
+    ],
+    "forbidden_suffixes": [
+      ".bak",
+      ".bundle",
+      ".db-shm",
+      ".db-wal",
+      ".pyc",
+      ".pyo",
+      ".sqlite-shm",
+      ".sqlite-wal",
+      ".swp",
+      ".tmp"
+    ],
+    "archive_suffixes": [
+      ".7z",
+      ".tar",
+      ".tar.gz",
+      ".tgz",
+      ".zip"
+    ]
+  },
+  "source_scan": {
+    "extensions": [
+      ".bash",
+      ".cjs",
+      ".js",
+      ".mjs",
+      ".py",
+      ".sh",
+      ".ts",
+      ".yaml",
+      ".yml",
+      ".zsh"
+    ],
+    "excluded_paths": [
+      "scripts/repository_hygiene_audit.py"
+    ],
+    "excluded_segments": [
+      "archive",
+      "archives",
+      "data",
+      "docs",
+      "governance",
+      "node_modules",
+      "tests"
+    ],
+    "forbidden_regexes": [
+      "\\bgit\\s+bundle\\b",
+      "\\bbundle\\s+create\\b",
+      "\\bclone\\s+--mirror\\b",
+      "['\\\"]bundle['\\\"]\\s*,\\s*['\\\"]create['\\\"]"
+    ]
+  },
+  "retained_objects": [
+    {
+      "id": "KMFA_CANONICAL_GOVERNANCE",
+      "prefix": "KMFA/docs/governance/",
+      "kinds": [
+        "large"
+      ],
+      "owner": "KMFA project owner",
+      "purpose": "Canonical delivery, event, formula, and parameter ledgers",
+      "consumer": "KMFA governance validators and owner-readable generated views",
+      "retention": "temporary_baseline_exception_until_project_compaction",
+      "recovery": "Git baseline tree plus KMFA canonical regeneration contracts",
+      "confidentiality": "repository_governance",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 4194304
+    },
+    {
+      "id": "ARXIV_CANONICAL_GOVERNANCE",
+      "prefix": "arxiv-daily-push/docs/governance/",
+      "kinds": [
+        "large"
+      ],
+      "owner": "arxiv-daily-push project owner",
+      "purpose": "Canonical delivery, event, and parameter ledgers",
+      "consumer": "arxiv-daily-push governance validators and owner reports",
+      "retention": "temporary_baseline_exception_until_project_compaction",
+      "recovery": "Git baseline tree plus project canonical regeneration contracts",
+      "confidentiality": "repository_governance",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 4194304
+    },
+    {
+      "id": "OPENAI_PUBLIC_SESSION_SHARDS",
+      "prefix": "OpenAIDatabase/data/public_raw/codex/sessions/",
+      "kinds": [
+        "large"
+      ],
+      "owner": "OpenAIDatabase project owner",
+      "purpose": "Existing sanitized public transcript shards used by Memory Atlas",
+      "consumer": "OpenAIDatabase sync, Memory Atlas build, and governed analysis",
+      "retention": "temporary_baseline_exception_until_sub_mib_resharding",
+      "recovery": "Regenerate from authorized local Codex sources through the sanitizer and manifest pipeline",
+      "confidentiality": "sanitized_public",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 47185920
+    },
+    {
+      "id": "OPENAI_ACTIVE_MEMORY",
+      "path": "OpenAIDatabase/data/memory/active/active_memory.jsonl",
+      "kinds": [
+        "large"
+      ],
+      "owner": "OpenAIDatabase project owner",
+      "purpose": "Existing active memory dataset pending governed compaction",
+      "consumer": "OpenAIDatabase memory import and Memory Atlas derivation",
+      "retention": "temporary_baseline_exception_until_memory_compaction",
+      "recovery": "Git baseline tree and governed memory derivation inputs",
+      "confidentiality": "sanitized_repository_data",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 2097152
+    },
+    {
+      "id": "OPENAI_MEMORY_INDEX",
+      "path": "OpenAIDatabase/data/processed/indexes/memory_index.sqlite",
+      "kinds": [
+        "large"
+      ],
+      "owner": "OpenAIDatabase project owner",
+      "purpose": "Existing processed search index pending generated-index migration",
+      "consumer": "OpenAIDatabase search and analysis tooling",
+      "retention": "temporary_baseline_exception_until_index_regeneration_contract",
+      "recovery": "Rebuild from canonical processed memory inputs",
+      "confidentiality": "sanitized_repository_data",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 4194304
+    },
+    {
+      "id": "OPENAI_MEMORY_ATLAS_CURRENT",
+      "path": "OpenAIDatabase/data/derived/visualization/memory_atlas.json",
+      "kinds": [
+        "large"
+      ],
+      "owner": "OpenAIDatabase project owner",
+      "purpose": "Current governed Memory Atlas visualization snapshot",
+      "consumer": "Memory Atlas local runtime and release audit",
+      "retention": "temporary_baseline_exception_until_snapshot_compaction",
+      "recovery": "Rebuild with sync_codex_memory_data.py from canonical sanitized inputs",
+      "confidentiality": "sanitized_public",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 4194304
+    },
+    {
+      "id": "OPENAI_MEMORY_ATLAS_RELEASES",
+      "prefix": "OpenAIDatabase/data/releases/memory_atlas/",
+      "kinds": [
+        "large"
+      ],
+      "owner": "OpenAIDatabase project owner",
+      "purpose": "Existing immutable release snapshot",
+      "consumer": "Memory Atlas release and rollback audit",
+      "retention": "immutable_release_baseline_until_release_retention_review",
+      "recovery": "Git baseline tree and release-specific build inputs",
+      "confidentiality": "sanitized_public",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 4194304
+    },
+    {
+      "id": "PFI_VISUAL_ACCEPTANCE",
+      "prefix": "PFI/reports/",
+      "kinds": [
+        "large"
+      ],
+      "owner": "PFI project owner",
+      "purpose": "Reviewed visual and browser acceptance evidence already present in the P45 baseline",
+      "consumer": "PFI stage reviewers and regression evidence readers",
+      "retention": "baseline_only_until_project_evidence_compaction",
+      "recovery": "Regenerate with the PFI acceptance workflow from the referenced build",
+      "confidentiality": "project_acceptance_evidence",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 12680824
+    },
+    {
+      "id": "PFI_ACCEPTANCE_ARCHIVES",
+      "prefix": "PFI/reports/",
+      "kinds": [
+        "archive"
+      ],
+      "owner": "PFI project owner",
+      "purpose": "Reviewed browser trace archives already present in the P45 baseline",
+      "consumer": "PFI stage reviewers and regression evidence readers",
+      "retention": "baseline_only_until_project_evidence_compaction",
+      "recovery": "Regenerate with the PFI acceptance workflow from the referenced build",
+      "confidentiality": "project_acceptance_evidence",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 12680824
+    },
+    {
+      "id": "PFI_V025_SOURCE_TASKPACK",
+      "path": "PFI/docs/source_packages/pfi_v025/PFI_v0.2.5_Production_Truth_Human_Workflow_TaskPack.zip",
+      "kinds": [
+        "archive"
+      ],
+      "owner": "PFI project owner",
+      "purpose": "Reviewed source TaskPack retained for exact workflow traceability",
+      "consumer": "PFI implementation and acceptance reviewers",
+      "retention": "baseline_only_until_source_package_retention_review",
+      "recovery": "Git baseline tree plus owner-controlled source package",
+      "confidentiality": "project_source_material",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 86942
+    },
+    {
+      "id": "ARXIV_PURSUING_GOAL_EVIDENCE",
+      "prefix": "arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/",
+      "kinds": [
+        "large"
+      ],
+      "owner": "arxiv-daily-push project owner",
+      "purpose": "Reviewed exact-diff evidence already present in the P45 baseline",
+      "consumer": "arxiv-daily-push stage reviewers and governance validators",
+      "retention": "baseline_only_until_evidence_compaction",
+      "recovery": "Git baseline tree and referenced repository diff",
+      "confidentiality": "repository_governance",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 1556045
+    },
+    {
+      "id": "ARXIV_DEPLOY_MEDIA",
+      "prefix": "arxiv-daily-push/deploy/cloudflare/assets/media/",
+      "kinds": [
+        "large"
+      ],
+      "owner": "arxiv-daily-push project owner",
+      "purpose": "Existing product media served by the Cloudflare application",
+      "consumer": "arxiv-daily-push frontend deployment",
+      "retention": "baseline_only_until_media_release_migration",
+      "recovery": "Git baseline tree and project-owned source media",
+      "confidentiality": "public_product_asset",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 4194304
+    },
+    {
+      "id": "PFI_PRE_CANONICAL_ARCHIVE",
+      "path": "PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz",
+      "kinds": [
+        "archive"
+      ],
+      "owner": "PFI project owner",
+      "purpose": "Existing pre-canonical migration recovery artifact",
+      "consumer": "PFI rollback review only",
+      "retention": "baseline_only_until_PFI_owner_retention_decision",
+      "recovery": "Git baseline blob 34353de04fb84bebcad22c4243bb4d77bae05a03",
+      "confidentiality": "project_recovery_artifact",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 809988
+    },
+    {
+      "id": "EVA_LEGACY_HANDOFF_ARCHIVE",
+      "path": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip",
+      "kinds": [
+        "archive"
+      ],
+      "owner": "root governance archive owner",
+      "purpose": "Read-only legacy handoff compatibility artifact",
+      "consumer": "Historical Other8 handoff references",
+      "retention": "locked_legacy_baseline_until_owner_migration",
+      "recovery": "Git baseline blob 432435b0313629a85b7a40c2684fb1115dc99737",
+      "confidentiality": "legacy_repository_evidence",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 107173
+    },
+    {
+      "id": "KM_IDSYSTEM_LEGACY_ARCHIVE",
+      "path": "governance/archive/other8_wave1_pending/KM_IDSystem/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_web_pdf_enhanced.zip",
+      "kinds": [
+        "archive"
+      ],
+      "owner": "root governance archive owner",
+      "purpose": "Read-only legacy generated-output compatibility artifact",
+      "consumer": "Historical KM_IDSystem evidence references",
+      "retention": "locked_legacy_baseline_until_owner_migration",
+      "recovery": "Git baseline blob 3b3b990def0659a201ddb0f4413b02ec0439ff9b",
+      "confidentiality": "legacy_repository_evidence",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 75207
+    }
+  ],
+  "history_rewrite": {
+    "allowed_in_this_task": false,
+    "decision": "DEFERRED",
+    "reason": "P45 performs a normal additive integration and current-tree cleanup only; no history rewrite or remote force update is authorized.",
+    "future_preconditions": [
+      "owner explicitly authorizes the exact refs and force-update window",
+      "every removed object has a SHA-256 verified private recovery copy",
+      "remote writers and publication are frozen",
+      "PR, signature, release, clone, and downstream reference impact is recorded",
+      "fresh-clone acceptance and rollback rehearsal pass before old refs are retired"
+    ]
+  }
+}

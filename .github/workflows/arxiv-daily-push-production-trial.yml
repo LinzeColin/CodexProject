@@ -33,6 +33,9 @@ concurrency:
 jobs:
   guard:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      INPUT_MODE: ${{ inputs.mode }}
     steps:
       - name: Report disabled dispatch
         if: inputs.confirm_production_trial != 'true'
@@ -49,7 +52,7 @@ jobs:
           {
             echo "## arXiv Daily Push production trial"
             echo "- status: confirmed"
-            echo "- mode: ${{ inputs.mode }}"
+            echo "- mode: $INPUT_MODE"
             echo "- runner: ubuntu-latest"
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -59,13 +62,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
+      INPUT_GENERATED_AT: ${{ inputs.generated_at }}
+      INPUT_MODE: ${{ inputs.mode }}
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
       ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
       ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
       ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
       ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
       - name: Install cloud MP4 runtime
@@ -80,8 +85,8 @@ jobs:
         id: generated_at
         shell: bash
         run: |
-          if [ -n "${{ inputs.generated_at }}" ]; then
-            printf 'value=%s\n' "${{ inputs.generated_at }}" >> "$GITHUB_OUTPUT"
+          if [ -n "$INPUT_GENERATED_AT" ]; then
+            printf 'value=%s\n' "$INPUT_GENERATED_AT" >> "$GITHUB_OUTPUT"
           else
             printf 'value=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
           fi
@@ -104,7 +109,7 @@ jobs:
           exit 0
       - name: Upload production preflight artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-production-preflight
           path: ${{ runner.temp }}/adp-production-preflight.json
@@ -134,7 +139,7 @@ jobs:
         run: |
           {
             echo "## arXiv Daily Push production trial bootstrap"
-            echo "- mode: ${{ inputs.mode }}"
+            echo "- mode: $INPUT_MODE"
             echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
             echo "- preflight_exit_code: ${{ steps.preflight.outputs.exit_code || 'not_run' }}"
             echo "- release upload: disabled"

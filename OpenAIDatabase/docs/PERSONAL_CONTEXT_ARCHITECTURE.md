@@ -20,8 +20,8 @@ The machine contract is `config/context_sources/three_layer_context.json`.
 - Purpose: durable core profile, stable answer style, collaboration standards,
   preference, taste, long-term plans, and hard safety boundaries.
 - Canonical files:
+  - `data/memory/records/manifest.json`
   - `data/derived/profile/CORE_PROFILE.md`
-  - `data/memory/curation/core_profile_review.json`
 - Required update targets: `profile`, `preference`, `taste`.
 
 ### L2_PROJECT_MEMORY
@@ -29,8 +29,7 @@ The machine contract is `config/context_sources/three_layer_context.json`.
 - Purpose: accepted active memory, project index, decision log, reusable
   workflows, medium/long-term constraints, and durable project context.
 - Canonical files:
-  - `data/memory/active/active_memory.jsonl`
-  - `data/memory/active/active_memory.md`
+  - `data/memory/records/manifest.json`
   - `data/derived/project_index/PROJECT_INDEX.md`
   - `data/derived/decision_log/DECISION_LOG.md`
 - Required update targets: `history`, `pattern`, `project_context`.
@@ -49,6 +48,10 @@ The machine contract is `config/context_sources/three_layer_context.json`.
   - `data/derived/weekly/*.weekly_memory_pack.md`
   - `data/derived/monthly/*.monthly_memory_pack.md`
 - Required update targets: `history`, `pattern`.
+
+Canonical candidate, active, disputed, and retired states share the V2 schema
+under `data/memory/records/`. The former `active/`, `candidates/`, `curation/`,
+and `secret_refs/` trees are read-only migration evidence, not update targets.
 
 ## Generated Personalization Exports
 

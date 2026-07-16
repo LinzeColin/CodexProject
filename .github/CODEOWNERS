@@ -3,7 +3,13 @@
 # GitHub branch protection is not required for Agent Loop policy enforcement;
 # workflows enforce the merge policy. CODEOWNERS provides review visibility.
 
+/.github/workflows/ @LinzeColin
 /.github/workflows/agent-loop-* @LinzeColin
 /.github/codex/ @LinzeColin
 /docs/governance/agent_loop/ @LinzeColin
+/docs/governance/WORKFLOW_ROLE_MATRIX.md @LinzeColin
 /scripts/agent_loop/ @LinzeColin
+/scripts/governance_ids.py @LinzeColin
+/scripts/workflow_security_audit.py @LinzeColin
+/governance/workflow_policy.json @LinzeColin
+/governance/schemas/ @LinzeColin

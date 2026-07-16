@@ -1,121 +1,55 @@
-> # ⚠️ 仓库拆分迁移进行中 —— 给所有 Agent 的最高优先级指令
->
-> **本仓库正在被拆分为多个独立仓库。目录会陆续消失。这是有意的，不是数据丢失。**
->
-> ## 绝对禁令（优先级高于本文件其余全部规则）
->
-> 1. **禁止恢复任何消失的目录或文件。** 不要从 git 历史 `checkout`、不要 `revert`、不要重建、不要从备份还原。
-> 2. **禁止把目录消失报告为事故、损坏或数据丢失。** 它不是。
-> 3. **禁止"修复"下方表格中已标记为已迁出的项目。**
-> 4. 如果你发现某个项目不见了，**先查下表**。表里有 = 已迁走 = 一切正常，继续做你的事。
->
-> 违反以上任何一条，都会与迁移过程形成**恢复—删除的死循环**，破坏迁移并可能造成真实的数据损坏。
->
-> ## 已迁出项目
->
-> | 项目 | 新位置 | 状态 |
-> |---|---|---|
-> | `whkmSalary` | [LinzeColin/KMOS](https://github.com/LinzeColin/KMOS) | 已迁出，即将从本仓库移除 |
-> | `Alpha` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
-> | `FIFA` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
-> | `QBVS` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
-> | `MetaDatabase/` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) → 改名为 `LinzeDatabase/` | 已迁出，即将从本仓库移除 |
-> | `Serenity-Alipay` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
-> | `EEI` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) → `EEI/` 子目录 | 已迁出，即将从本仓库移除 |
-> | 治理框架 | [LinzeColin/Governance](https://github.com/LinzeColin/Governance) | 已迁出（本仓库暂保留副本） |
->
-> 每一项都已通过 **git tree hash 逐字节比对**，与本仓库内容完全一致后才标记为已迁出。
->
-> ## 数据去向
->
-> - 全部 agent 历史数据、会话记录 → **`LinzeColin/AgentDatabase`（私有）**，以 Release 附件形式保存
-> - 各项目源码 → 见上表
-> - **所有迁移都经过 sha256 逐字节校验后才从本仓库移除。没有任何数据丢失。**
->
-> ## 若你需要确认
->
-> 迁移由 owner 主导。**有疑问就停下并询问 owner，不要自行恢复。**
-
 # CodexProject 主仓库
 
-LinzeColin 的多项目 GitHub main tree 与本机主 checkout。这里是治理与同步入口，不是普通并行开发 worktree。
+LinzeColin 的多项目源码与治理入口。根目录只保留稳定导航和公共治理边界；项目状态、运行证据与实现细节留在对应项目。
 
-## Owner 首屏
-
-- 当前用途：多个受治理项目的源码级 GitHub hub 与本机主仓库入口。
-- 当前事实源：GitHub `main` 加下方本机 main checkout；普通项目推进应在长期项目 worktree 中做，不在这个主 checkout 中做。
-- 过时或高风险根目录：重复 `CodexProject*`、独立项目副本、旧电脑路径、app caches、以及每项目 shadow folders。
-- 下一步阅读：先读 [AGENTS.md](AGENTS.md)，再读 [docs/governance/STANDARD.md](docs/governance/STANDARD.md)；进入具体项目时读项目根目录的 `功能清单.md`、`开发记录.md`、`模型参数文件.md`。
-- 没有明确 run contract 时不要触碰：secrets、runtime DB/WAL/SHM、browser profiles、raw private datasets、caches、以及无关项目目录。
-- 待决策：项目级 owner decision 写在项目 human-entry files，以及任何 active `docs/pursuing_goal/**/V*_ROOT_LOCK.yaml`。
-- 证据位置：治理事实收敛到项目 `docs/governance/`、`VERSION`、`CHANGELOG.md`、tests、validators、以及 commit-bound evidence。
-- 未知处理：如果项目 human-entry files 没有清楚说明当前 Stage/Phase/Task，把状态视为 `UNKNOWN`，并停止等待更窄 handoff。
-- 最小下一步：选择一个 project/worktree，验证 `cwd`、git root、branch、remote、HEAD、status，然后只读该项目入口文件再编辑。
-
-## 治理入口
+## Governance Entry
 
 - 执行契约：[AGENTS.md](AGENTS.md)
-- Lean v2 标准：[docs/governance/STANDARD.md](docs/governance/STANDARD.md)
-- 项目 human-entry files：`功能清单.md`、`开发记录.md`、`模型参数文件.md`
-
-## 本机权威根目录
-
-在 Linze 的本机上，这个 GitHub product hub 的 active 主 checkout 只有一个：
-```text
-/Users/linzezhang/Documents/Codex/CodexProject
-```
-不要把重复 `CodexProject*`、`PFI_OS`、`EVA_OS`、或每项目 shadow folders 当作 product roots。清理或迁移前必须验证 `.app` launchers、LaunchAgents、PID files、以及 listening process cwd，确保 PFI、EEI、Alpha、Serenity、OpenAIDatabase/Memory Atlas、arxiv-daily-push 仍解析到这个 checkout。
-
-总工作区：/Users/linzezhang/Documents/Codex
-
-主仓库 / 主 working tree：/Users/linzezhang/Documents/Codex/CodexProject
-
-GitHub source of truth：https://github.com/LinzeColin/CodexProject.git
-
-worktree 根目录：/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/
-
-## Assurance Vocabulary
-
-- `structural_completeness`: required governance files parse and cross-reference.
-- `implementation_congruence`: documented implementation values and fingerprints match extractable code/config sources.
-- `parameter_source_quality`: active parameter values have source selectors or explicit unresolved tasks.
-- `empirical_validation`: model claims are supported by calibration, backtest, fixture, or experiment evidence.
-- `operational_validation`: runtime, CI, soak, or production-trial evidence exists.
-- `delivery_evidence`: delivery gates and completed tasks have acceptance evidence.
-- `evidence_freshness`: events are tree-bound, commit-bound, or honestly listed as legacy unbound.
-
-`machine_verified` is not a production claim. It only maps to implementation congruence when code/config extraction proves documented facts.
+- 治理标准：[docs/governance/STANDARD.md](docs/governance/STANDARD.md)
+- 每个开发 Task 的人类记录：`governance/task_records/<Task-ID>/功能清单.md`、`开发记录.md`、`模型参数文件.md`
+- 根清洁预算：[governance/root_cleanliness_budget.json](governance/root_cleanliness_budget.json)
 
 ## Projects
 
-| Project | Path | Repository |
+| Project | Path | Entry |
 |---|---|---|
-| `KM_IDSystem` | `KM_IDSystem` | https://github.com/LinzeColin/CodexProject/tree/main/KM_IDSystem |
-| `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
-| `KMFA` | `KMFA` | https://github.com/LinzeColin/CodexProject/tree/main/KMFA |
-| `PFI` | `PFI` | https://github.com/LinzeColin/CodexProject/tree/main/PFI |
-| `arxiv-daily-push` | `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |
+| `KM_IDSystem` | `KM_IDSystem` | [README](KM_IDSystem/README.md) · [AGENTS](KM_IDSystem/AGENTS.md) |
+| `OpenAIDatabase` | `OpenAIDatabase` | [README](OpenAIDatabase/README.md) · [AGENTS](OpenAIDatabase/AGENTS.md) |
+| `KMFA` | `KMFA` | [README](KMFA/README.md) · [AGENTS](KMFA/AGENTS.md) |
+| `PFI` | `PFI` | [README](PFI/README.md) · [AGENTS](PFI/AGENTS.md) |
+| `arxiv-daily-push` | `arxiv-daily-push` | [README](arxiv-daily-push/README.md) · [AGENTS](arxiv-daily-push/AGENTS.md) |
 
 ## Retired projects
 
-- `WDA` is retired by Owner decision on 2026-07-13. Its tracked history stays in
-  `WDA/`, but it is not an active/required governance project and cannot be changed
-  without an explicit Owner-authorized reactivation task.
+- `WDA` 由 Owner 于 2026-07-13 退役；只保留历史，不得在无明确再激活 Task 时修改。
+- 已迁出项目、目标仓库与 recovery evidence 只以 `governance/projects.yaml` 的 `migrated_projects` 为准，不在 README 复制可漂移状态表。
+
+## 治理事实与证据边界
+
+- 项目清单：`governance/projects.yaml`
+- 不可变 ID：`governance/id_registry.json`
+- 证据边界：`governance/artifact_policy.json`
+- workflow 权限与供应链：`governance/workflow_policy.json`
+- 大对象/archive/cache：`governance/repository_hygiene_policy.json`
+- 根入口、归属、链接与上下文预算：`governance/root_cleanliness_budget.json`
+
+每个 fact domain 只能有一个唯一写入者：canonical registry/policy 负责可编辑事实，README 与 generated view 只负责导航或展示，不能反向覆盖 canonical data。旧 manifest、attestation、review bundle 与 stage gate 仅作只读兼容；新运行只追加小于 64 KiB 的 `TSK-*.json` 紧凑收据，完整 stdout、日志和大文件只能进入临时或 CI artifact。
+
+README 只做稳定导航，不记录短期执行状态或本机路径。Canonical facts、derived views、紧凑收据和完整 CI artifact 必须保持分层；本地 cache、WAL/SHM、session、recovery folder 不是 product source。
 
 ## Required Checks
 
-Use read-only changed-scope checks for ordinary PR and local development:
+普通变更使用只读 changed-scope gate：
 
 ```bash
 python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
+python3 -B scripts/root_cleanliness_audit.py --root . --json
 ```
 
-Write-mode generators are not part of the ordinary PR fast gate. Run them only
-for scheduled/manual/release governance evidence, and write root generated views
-to an artifact directory instead of the tracked repository root:
+Write-mode generators are not part of the ordinary PR fast gate。仅 scheduled/manual/release evidence 可写入显式 artifact 目录：
 
 ```bash
 python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir /tmp/governance-generated-views
 ```
 
-This repository is the source-level project hub. Each project directory must keep Lean v2 canonical facts and human-entry files synchronized with implementation evidence. Root dashboards and portfolio summaries are generated on demand as CI artifacts instead of committed source files.
+进入项目后先读其 `README.md`、`AGENTS.md` 和 Task 要求的人类记录；无明确合同时不得触碰 secrets、private/raw data、runtime DB、browser profile、cache 或无关项目。

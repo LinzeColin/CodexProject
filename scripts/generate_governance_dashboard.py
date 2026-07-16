@@ -1930,56 +1930,71 @@ def brief_list(values: list[str], limit: int = 3) -> str:
     return text
 
 
-def render_readme(projects: list[dict[str, Any]], meta: dict[str, str]) -> str:
+def render_readme(
+    projects: list[dict[str, Any]],
+    meta: dict[str, str],
+    retired_projects: list[dict[str, Any]] | None = None,
+) -> str:
     rows = "\n".join(
-        f"| `{item['project_id']}` | `{item['path']}` | {PROJECT_REPOSITORIES.get(item['project_id'], 'UNKNOWN')} |"
+        f"| `{item['project_id']}` | `{item['path']}` | "
+        f"[README]({item['path']}/README.md) · [AGENTS]({item['path']}/AGENTS.md) |"
         for item in projects
     )
-    return f"""# CodexProject
+    retired_rows = "\n".join(
+        f"- `{item['project_id']}` 由 Owner 于 {item['retired_at']} 退役；只保留历史，不得在无明确再激活 Task 时修改。"
+        for item in (retired_projects or [])
+    ) or "- 无已注册退役项目。"
+    return f"""# CodexProject 主仓库
 
-Active Codex-related project hub for LinzeColin.
+LinzeColin 的多项目源码与治理入口。根目录只保留稳定导航和公共治理边界；项目状态、运行证据与实现细节留在对应项目。
 
 ## Governance Entry
 
-- Execution contract: [AGENTS.md](AGENTS.md)
-- Lean v2 standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
-- Project human-entry files: `功能清单.md`, `开发记录.md`, `模型参数文件.md`
-
-## Assurance Vocabulary
-
-- `structural_completeness`: required governance files parse and cross-reference.
-- `implementation_congruence`: documented implementation values and fingerprints match extractable code/config sources.
-- `parameter_source_quality`: active parameter values have source selectors or explicit unresolved tasks.
-- `empirical_validation`: model claims are supported by calibration, backtest, fixture, or experiment evidence.
-- `operational_validation`: runtime, CI, soak, or production-trial evidence exists.
-- `delivery_evidence`: delivery gates and completed tasks have acceptance evidence.
-- `evidence_freshness`: events are tree-bound, commit-bound, or honestly listed as legacy unbound.
-
-`machine_verified` is not a production claim. It only maps to implementation congruence when code/config extraction proves documented facts.
+- 执行契约：[AGENTS.md](AGENTS.md)
+- 治理标准：[docs/governance/STANDARD.md](docs/governance/STANDARD.md)
+- 每个开发 Task 的人类记录：`governance/task_records/<Task-ID>/功能清单.md`、`开发记录.md`、`模型参数文件.md`
+- 根清洁预算：[governance/root_cleanliness_budget.json](governance/root_cleanliness_budget.json)
 
 ## Projects
 
-| Project | Path | Repository |
+| Project | Path | Entry |
 |---|---|---|
 {rows}
 
+## Retired projects
+
+{retired_rows}
+- 已迁出项目、目标仓库与 recovery evidence 只以 `governance/projects.yaml` 的 `migrated_projects` 为准，不在 README 复制可漂移状态表。
+
+## 治理事实与证据边界
+
+- 项目清单：`governance/projects.yaml`
+- 不可变 ID：`governance/id_registry.json`
+- 证据边界：`governance/artifact_policy.json`
+- workflow 权限与供应链：`governance/workflow_policy.json`
+- 大对象/archive/cache：`governance/repository_hygiene_policy.json`
+- 根入口、归属、链接与上下文预算：`governance/root_cleanliness_budget.json`
+
+每个 fact domain 只能有一个唯一写入者：canonical registry/policy 负责可编辑事实，README 与 generated view 只负责导航或展示，不能反向覆盖 canonical data。旧 manifest、attestation、review bundle 与 stage gate 仅作只读兼容；新运行只追加小于 64 KiB 的 `TSK-*.json` 紧凑收据，完整 stdout、日志和大文件只能进入临时或 CI artifact。
+
+README 只做稳定导航，不记录短期执行状态或本机路径。Canonical facts、derived views、紧凑收据和完整 CI artifact 必须保持分层；本地 cache、WAL/SHM、session、recovery folder 不是 product source。
+
 ## Required Checks
 
-Use read-only changed-scope checks for ordinary PR and local development:
+普通变更使用只读 changed-scope gate：
 
 ```bash
 python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
+python3 -B scripts/root_cleanliness_audit.py --root . --json
 ```
 
-Write-mode generators are not part of the ordinary PR fast gate. Run them only
-for scheduled/manual/release governance evidence, and write root generated views
-to an artifact directory instead of the tracked repository root:
+Write-mode generators are not part of the ordinary PR fast gate。仅 scheduled/manual/release evidence 可写入显式 artifact 目录：
 
 ```bash
 python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir /tmp/governance-generated-views
 ```
 
-This repository is the source-level project hub. Each project directory must keep Lean v2 canonical facts and human-entry files synchronized with implementation evidence. Root dashboards and portfolio summaries are generated on demand as CI artifacts instead of committed source files.
+进入项目后先读其 `README.md`、`AGENTS.md` 和 Task 要求的人类记录；无明确合同时不得触碰 secrets、private/raw data、runtime DB、browser profile、cache 或无关项目。
 """
 
 
@@ -2495,7 +2510,23 @@ def select_projects(
         changed = structural.git_changed_files(base_ref)
         selected = [project for project in projects if structural.project_matches_changed(project, changed)]
         include_root = any(path in changed for path in ROOT_OUTPUT_REL_PATHS)
-        return selected, include_root
+    return selected, include_root
+
+
+def legacy_project_views_frozen(project_path: Path) -> bool:
+    """Return true when Lean v2 human views replaced tracked legacy dashboards."""
+
+    disposition_path = project_path / "docs/governance/legacy_disposition.json"
+    if not disposition_path.is_file():
+        return False
+    try:
+        payload = json.loads(disposition_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return False
+    return (
+        payload.get("schema_version") == "openai_database.legacy_governance_disposition.v1"
+        and payload.get("legacy_dashboard_mode") == "frozen_read_only"
+    )
     return projects, True
 
 
@@ -2525,7 +2556,15 @@ def generate(
     outputs: list[str] = []
     if include_root:
         root_outputs = {
-            ROOT / "README.md": render_readme(all_infos, meta),
+            ROOT / "README.md": render_readme(
+                all_infos,
+                meta,
+                [
+                    project
+                    for project in structural.as_list(config.get("retired_projects"))
+                    if isinstance(project, dict)
+                ],
+            ),
             ROOT / "GOVERNANCE_DASHBOARD.md": render_dashboard(all_infos, meta),
             ROOT / "OWNER_PORTFOLIO.md": render_owner_portfolio(all_infos, meta),
             ROOT / "governance" / "binding_backlog.yaml": render_binding_backlog(all_infos, meta),
@@ -2537,6 +2576,8 @@ def generate(
                 target.write_text(text, encoding="utf-8")
             outputs.append(rel(path))
     for info in infos:
+        if legacy_project_views_frozen(ROOT / info["path"]):
+            continue
         base = ROOT / info["path"] / "docs/governance"
         assurance_path = base / "ASSURANCE_STATUS.yaml"
         assurance_text = "\n".join(dump_yaml(info["assurance"])) + "\n"

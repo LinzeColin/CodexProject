@@ -208,18 +208,18 @@ models:
     test_refs: ["OpenAIDatabase/tests/test_personalization_architecture.py:1", "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"]
     evidence_refs: ["OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md:1", "OpenAIDatabase/config/context_sources/three_layer_context.json:1", "OpenAIDatabase/config/context_sources/resource_routes.json:1", "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json"]
   - model_id: "MOD-MACDATA-PROM2-001"
-    name: "Device preflight and archive cleanup policy"
+    name: "Device preflight and main-only transactional archive policy"
     kind: "deterministic_workflow_model"
-    purpose: "Enforce the proM2 MacData device preflight, GitHub archive upload, remote hash verification, and owner-confirmed post-upload cleanup gates."
+    purpose: "Enforce airM2/proM2 preflight, exact snapshot publication through one trusted Automation C PR, and fail-closed post-Settlement verification."
     owner: "OpenAIDatabase"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "macdata-prom2-v1"
+    model_version: "macdata-mainonly-v2"
     assumptions: ["ASM-001"]
     formula_ids: ["FORM-MACDATA-PROM2-001"]
     parameter_ids: ["PARAM-MACDATA-PROM2-001", "PARAM-MACDATA-PROM2-002", "PARAM-MACDATA-PROM2-003", "PARAM-MACDATA-PROM2-004"]
-    inputs: ["local macOS hardware profile", "owner confirmations", "device_config.json", "repository metrics"]
-    outputs: ["MacData JSON record", "Chinese run report", "GitHub archive commit", "remote verification result", "cleanup report"]
-    code_refs: ["OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py:1"]
-    test_refs: ["OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py:1"]
-    evidence_refs: ["OpenAIDatabase/macdata/proM2/config/device_config.json:1", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json:1"]
+    inputs: ["local macOS hardware profile", "owner confirmations", "both device_config.json files", "declared snapshot paths", "live GitHub zero-open state"]
+    outputs: ["MacData JSON record", "Chinese run report", "short-lived PR transaction", "exact main snapshot verification", "cleanup gate result"]
+    code_refs: ["OpenAIDatabase/macdata/automation_c.py:1", "OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py:1", "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py:1"]
+    test_refs: ["OpenAIDatabase/macdata/tests/test_automation_c.py:1", "OpenAIDatabase/macdata/airM2/tests/test_macdata_package.py:1", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py:1"]
+    evidence_refs: ["OpenAIDatabase/macdata/airM2/config/device_config.json:1", "OpenAIDatabase/macdata/proM2/config/device_config.json:1", "OpenAIDatabase/macdata/tests/test_automation_c.py:1"]

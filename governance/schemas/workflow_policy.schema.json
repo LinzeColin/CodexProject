@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodexProject Workflow Security Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "owner",
+    "resolved_at",
+    "requirements",
+    "action_pins",
+    "workflows",
+    "retired_or_merged"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "policy_id": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "resolved_at": {"type": "string", "minLength": 1},
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflow_directory",
+        "codeowners_rule",
+        "nested_project_workflows_allowed",
+        "required_check_role",
+        "settlement_role",
+        "forbidden_triggers",
+        "forbidden_direct_run_contexts"
+      ],
+      "properties": {
+        "workflow_directory": {"type": "string", "minLength": 1},
+        "codeowners_rule": {"type": "string", "minLength": 1},
+        "nested_project_workflows_allowed": {"type": "boolean", "const": false},
+        "required_check_role": {"type": "string", "minLength": 1},
+        "settlement_role": {"type": "string", "minLength": 1},
+        "forbidden_triggers": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "forbidden_direct_run_contexts": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      }
+    },
+    "action_pins": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repository", "requested_tag", "commit_sha", "source"],
+        "properties": {
+          "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+          "requested_tag": {"type": "string", "minLength": 1},
+          "tag_object_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "source": {"type": "string", "pattern": "^https://api\\.github\\.com/"}
+        }
+      }
+    },
+    "workflows": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/workflow"}
+    },
+    "retired_or_merged": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/disposition"}
+    }
+  },
+  "$defs": {
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "name",
+        "role",
+        "owner",
+        "purpose",
+        "triggers",
+        "permissions",
+        "expected_jobs",
+        "trust_boundary",
+        "failure_behavior",
+        "local_dependencies",
+        "untrusted_prompt_input"
+      ],
+      "properties": {
+        "path": {"type": "string", "pattern": "^\\.github/workflows/.+\\.ya?ml$"},
+        "name": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "owner": {"type": "string", "minLength": 1},
+        "purpose": {"type": "string", "minLength": 1},
+        "triggers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "permissions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "enum": ["none", "read", "write"]
+          }
+        },
+        "expected_jobs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "trust_boundary": {"type": "string", "minLength": 1},
+        "failure_behavior": {"type": "string", "minLength": 1},
+        "local_dependencies": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "untrusted_prompt_input": {"type": "boolean"}
+      }
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "disposition", "owner", "replacement", "reason"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "disposition": {"type": "string", "minLength": 1},
+        "owner": {"type": "string", "minLength": 1},
+        "replacement": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

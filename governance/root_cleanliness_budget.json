@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "policy_id": "POL.CodexProject.ROOT_CLEANLINESS.V1",
+  "owner": "root-governance",
+  "task_id": "TSK.CodexProject.REPO1.0007",
+  "acceptance_id": "ACC.CodexProject.REPO1.0007",
+  "budgets": {
+    "agents_max_bytes": 4096,
+    "readme_max_bytes": 8192,
+    "initial_context_max_bytes": 12288,
+    "initial_context_max_files": 2
+  },
+  "entry_files": [
+    "AGENTS.md",
+    "README.md"
+  ],
+  "active_project_entrypoints": [
+    "README.md",
+    "AGENTS.md"
+  ],
+  "allowed_active_scope_exclusions": [],
+  "owned_root_items": [
+    {
+      "path": ".gitattributes",
+      "kind": "file",
+      "owner": "root-governance",
+      "purpose": "Git path and binary handling policy"
+    },
+    {
+      "path": ".gitignore",
+      "kind": "file",
+      "owner": "root-governance",
+      "purpose": "Repository-local generated and runtime exclusion policy"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "file",
+      "owner": "root-governance",
+      "purpose": "Always-on agent execution contract"
+    },
+    {
+      "path": "CLAUDE.md",
+      "kind": "file",
+      "owner": "root-agent-adapter",
+      "purpose": "Claude adapter entrypoint"
+    },
+    {
+      "path": "LICENSE",
+      "kind": "file",
+      "owner": "repository-owner",
+      "purpose": "Repository license"
+    },
+    {
+      "path": "PRODUCT.md",
+      "kind": "file",
+      "owner": "OpenAIDatabase",
+      "purpose": "Memory Atlas product-design context consumed from repository root"
+    },
+    {
+      "path": "README.md",
+      "kind": "file",
+      "owner": "root-governance",
+      "purpose": "Stable human navigation entrypoint"
+    },
+    {
+      "path": "pytest.ini",
+      "kind": "file",
+      "owner": "root-testing",
+      "purpose": "Shared Python test configuration"
+    },
+    {
+      "path": ".agents",
+      "kind": "directory",
+      "owner": "root-agent-tooling",
+      "purpose": "Repository-local reusable agent skills"
+    },
+    {
+      "path": ".claude",
+      "kind": "directory",
+      "owner": "root-agent-adapter",
+      "purpose": "Claude repository configuration"
+    },
+    {
+      "path": ".codex",
+      "kind": "directory",
+      "owner": "root-agent-tooling",
+      "purpose": "Codex hooks and configuration templates"
+    },
+    {
+      "path": ".github",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "GitHub workflow and ownership controls"
+    },
+    {
+      "path": "FINAL_ACCEPTANCE_BUNDLE",
+      "kind": "directory",
+      "owner": "legacy-acceptance-evidence",
+      "purpose": "Retained acceptance evidence pending a dedicated disposition task"
+    },
+    {
+      "path": "docs",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "Root standards, contracts, and templates"
+    },
+    {
+      "path": "governance",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "Canonical root policies, registries, schemas, and compact receipts"
+    },
+    {
+      "path": "scripts",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "Root governance and repository automation"
+    },
+    {
+      "path": "tests",
+      "kind": "directory",
+      "owner": "root-testing",
+      "purpose": "Root regression and governance tests"
+    },
+    {
+      "path": "tools",
+      "kind": "directory",
+      "owner": "root-tooling",
+      "purpose": "Shared repository utilities"
+    }
+  ],
+  "agents_required_tokens": [
+    "中文优先",
+    "功能清单.md",
+    "开发记录.md",
+    "模型参数文件.md",
+    "Roadmap",
+    "Zero-Open",
+    "TSK/ACC.<project>.<program>.<sequence>",
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "READ_ONLY",
+    "IMPLEMENT",
+    "zero tracked/source write",
+    "GitHub source-of-truth",
+    "scripts/lean_governance.py",
+    "governance/run_manifests",
+    "Shared durable context routes through OpenAIDatabase",
+    "use `codex_personalization`",
+    "load only its `read_order`",
+    "never scan raw/private memory paths"
+  ],
+  "readme_forbidden_patterns": [
+    "(?im)^\\s*[-*]?\\s*(?:current|当前)\\s+(?:task|run|branch)\\s*[:：]",
+    "(?im)^\\s*[-*]?\\s*(?:task|run|branch)(?:\\s+id)?\\s*[:：]\\s*\\S+",
+    "TSK\\.[A-Za-z0-9]",
+    "ACC\\.[A-Za-z0-9]",
+    "codex/[A-Za-z0-9._/-]+",
+    "迁移进行中"
+  ]
+}

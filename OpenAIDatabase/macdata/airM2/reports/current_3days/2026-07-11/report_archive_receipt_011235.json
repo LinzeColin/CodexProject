@@ -1,0 +1,7 @@
+{
+  "created_at_local": "2026-07-11T01:12:35+10:00",
+  "device_key": "airM2",
+  "message_suffix": "airM2-20260711-011209",
+  "retention_note": "归档分支当前树只保留最近三天；更早数据通过 GitHub 提交历史保留。",
+  "stage": "report"
+}

@@ -1,0 +1,268 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0003",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0003"
+  ],
+  "iteration_id": "ST07-PHB-OPENAIDATABASE-PAM1-0003-001",
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0003-PROFILE-20260716",
+  "generated_at": "2026-07-16T02:18:47Z",
+  "gate_status": "PASS_LOCAL_MEMORY_QUALITY_PROFILE",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "01c4f0f3966db2fb67085e16404caf9ca6f84741",
+  "remote_main_sha_at_run_start": "00c855a56d67f883a1a8add90faafee6c6c5fd85",
+  "remote_main_terminal_observation": "2026-07-16 terminal audit: main=80d9e11c50f8c5f032cdcc4723cb78c713d76a12; 89 files changed since run start, all outside this Task scope; relevant overlap=0; open PR/open issue/non-main branch=0/0/0; no remote write.",
+  "candidate_tree_sha1_excluding_this_manifest": "7092649e39eaa9ebabcfe5cf67662b915b943f8e",
+  "content_tree_hash": "1a01722487d10af682afa23979baecb5ba3aaab2322b957e727cda8aca7973b6",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every changed closure file except this self-referential manifest; the final 37-Task publication run binds the published business commit.",
+  "summary": "Deterministically profile every legacy memory ID across active, candidate, curation and secret-reference inputs, emit one value-redacted exactly-one migration map and one full quality report, and leave canonical memory plus legacy consumers unchanged for PAM1.0004.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0003 local deterministic migration-profile acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "OpenAIDatabase/config/memory.profiling.json",
+    "OpenAIDatabase/data/derived/migration/memory_migration_map.v1.jsonl",
+    "OpenAIDatabase/data/derived/migration/memory_quality_report.v1.json",
+    "OpenAIDatabase/scripts/build_memory_migration_profile.py",
+    "OpenAIDatabase/tests/test_memory_migration_profile.py"
+  ],
+  "scope": {
+    "profiling_contract_additions": 1,
+    "deterministic_profile_builder_additions": 1,
+    "focused_profile_test_methods": 5,
+    "derived_migration_map_writes": 1,
+    "derived_quality_report_writes": 1,
+    "read_write_capability_additions": 1,
+    "model_additions": 1,
+    "formula_additions": 1,
+    "parameter_additions": 3,
+    "active_memory_rows_modified": 0,
+    "candidate_memory_rows_modified": 0,
+    "curation_rows_modified": 0,
+    "secret_ref_rows_modified": 0,
+    "canonical_record_files_written": 0,
+    "legacy_writer_changes": 0,
+    "legacy_reader_changes": 0,
+    "database_additions": 0,
+    "service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0002",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0002-SHARDING-20260716.json",
+    "manifest_sha256": "cc764574654c78b96509f300e645cffc2c781d5089a2ec1d86461bc89e9706b0",
+    "gate_status": "PASS_LOCAL_DETERMINISTIC_SHARDING"
+  },
+  "execution_baseline": {
+    "input_file_count": 19,
+    "input_bytes": 3756164,
+    "active_record_count": 278,
+    "candidate_record_occurrence_count": 1702,
+    "curation_override_count": 12,
+    "secret_ref_record_count": 0,
+    "record_occurrence_count": 1980,
+    "unique_legacy_id_count": 278,
+    "input_collection_sha256": "a103baa5d87f1ceb730ba62deba117eacc0b08b1c75c7ae31c3f9cb8fe5740bf",
+    "active_memory_sha256": "24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+    "candidate_snapshot_duplicate_occurrences": 1424,
+    "candidate_exact_duplicate_row_occurrences": 1283,
+    "semantic_duplicate_group_count": 0,
+    "material_conflict_id_count": 0
+  },
+  "profiling_contract": {
+    "schema_version": "openai_database.memory_profiling_contract.v1",
+    "profile_as_of_date": "2026-07-16",
+    "identity_domain": "union(active.id,candidates.id,secret_refs.memory_id,curation.overrides keys)",
+    "allowed_dispositions": [
+      "migrate-active",
+      "migrate-candidate",
+      "retire",
+      "raw-evidence-only",
+      "prohibited",
+      "owner-decision"
+    ],
+    "record_value_fields_in_outputs": 0,
+    "raw_instruction_trust": "none",
+    "max_output_file_bytes": 921600,
+    "canonical_write_owner_task": "TSK.OpenAIDatabase.PAM1.0004"
+  },
+  "quality_baseline": {
+    "old_id_coverage": "278/278",
+    "source_coverage": "278/278",
+    "valid_time_coverage": "278/278",
+    "recorded_time_coverage": "278/278",
+    "evidence_coverage": "278/278",
+    "disposition_counts": {
+      "migrate-active": 6,
+      "migrate-candidate": 108,
+      "raw-evidence-only": 80,
+      "retire": 84,
+      "prohibited": 0,
+      "owner-decision": 0
+    },
+    "age_bucket_counts": {
+      "31-90": 177,
+      "91-365": 101
+    },
+    "age_alone_changes_disposition": false,
+    "phone_finding_id_count": 22,
+    "credential_or_secret_id_count": 0,
+    "absolute_local_source_ref_id_count": 0,
+    "matched_values_included": false
+  },
+  "derived_outputs": {
+    "migration_map": {
+      "path": "OpenAIDatabase/data/derived/migration/memory_migration_map.v1.jsonl",
+      "bytes": 586685,
+      "line_count": 278,
+      "sha256": "52203348d11e20e4bbb55b0f7337002263fe4db1ef5ee52e741a0dca467268fc"
+    },
+    "quality_report": {
+      "path": "OpenAIDatabase/data/derived/migration/memory_quality_report.v1.json",
+      "bytes": 9101,
+      "sha256": "917efa8cd86950d3b2c095687df287916406551a7d855bbd18aa885225cbbf05"
+    },
+    "repeat_build_identical": true,
+    "canonical_memory_writes": 0
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-013",
+    "formula_id": "FORM-013",
+    "parameter_ids": [
+      "PARAM-096",
+      "PARAM-097",
+      "PARAM-098"
+    ],
+    "profile_as_of_date": "2026-07-16",
+    "age_bucket_days": [
+      30,
+      90,
+      365
+    ],
+    "per_nonempty_class_sample_count": 1
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/config/memory.profiling.json": "528b78b1158b31f8cc2c91e7f995b615676275077d4b95aa61127643b74165ac",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json": "e3ea12fd52168cd8a4184feb6100fe7d9c4124efd92c610814e0c9980e2f4d04",
+    "OpenAIDatabase/scripts/build_memory_migration_profile.py": "1193a5dc7f61c38d54045c365c43b20a5d54c2fa91554740f924c2858b6af88e",
+    "OpenAIDatabase/tests/test_memory_migration_profile.py": "884cd0242bfdf11bf8227a2a05a3b0b4ab86111226a5125a6712edfb4c4acdad",
+    "OpenAIDatabase/data/derived/migration/memory_migration_map.v1.jsonl": "52203348d11e20e4bbb55b0f7337002263fe4db1ef5ee52e741a0dca467268fc",
+    "OpenAIDatabase/data/derived/migration/memory_quality_report.v1.json": "917efa8cd86950d3b2c095687df287916406551a7d855bbd18aa885225cbbf05"
+  },
+  "test_commands": [
+    "python3 -B -m unittest OpenAIDatabase.tests.test_memory_migration_profile OpenAIDatabase.tests.test_command_ownership OpenAIDatabase.tests.test_verification_policy -v",
+    "python3 -B OpenAIDatabase/scripts/build_memory_migration_profile.py --database-dir OpenAIDatabase --contract config/memory.profiling.json --write; repeat --dry-run twice",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier security",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_command_ownership.py --database-dir OpenAIDatabase",
+    "/opt/anaconda3/bin/python3 -B -m unittest discover -s tests/governance -p test_openai_database_lean_convergence.py -q",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "git diff --check; credential-shape scan; git status --short; GitHub PR/Issue/non-main audit"
+  ],
+  "test_results": [
+    {
+      "gate": "focused_profile_ownership_policy",
+      "result": "PASS",
+      "observed": "13/13 focused tests passed; the six disposition branches, actual deterministic dataset, baseline drift, credential non-echo and traversal rejection are covered; command ownership is 22 capabilities/58 top-level scripts with every hard-zero metric at 0; verification policy owns 55/55 test files exactly once."
+    },
+    {
+      "gate": "actual_profile_and_outputs",
+      "result": "PASS",
+      "observed": "278/278 IDs and 1980 record occurrences produce exactly one disposition each: active/candidate/raw-only/retire/prohibited/owner=6/108/80/84/0/0. The 586685-byte map and 9101-byte report rebuild byte-identically and remain below 921600 bytes."
+    },
+    {
+      "gate": "quality_security_and_cutover_boundary",
+      "result": "PASS",
+      "observed": "Source/date/recorded/evidence coverage is 100%; conflicts, credential IDs, absolute source refs and forbidden value keys are 0; phone is reported only as a type/count for 22 IDs; active/candidate/curation/secret/canonical records and legacy writer/reader changes are all 0."
+    },
+    {
+      "gate": "lean_precommit",
+      "result": "PASS_WITH_KNOWN_UNRELATED_ROOT_BASELINE",
+      "observed": "Lean convergence passed 7/7 and render drift/reference issues are 0/0 with total human-view bytes 45421<=46000. OpenAIDatabase project semantic result is 0 errors/0 warnings; the broader command retains 62 pre-existing KMFA/root errors outside this Task scope."
+    },
+    {
+      "gate": "final_scope_gates",
+      "result": "PASS",
+      "observed": "Security tier passed 66/66 in 36.289 seconds; directory lifecycle, changed-only governance (0 errors/0 warnings), registry revision 77 ID audit, repository hygiene and diff checks passed. Exactly 20 closure files are declared. Credential-shaped source IDs and hardcoded credential values are 0; the builder contains only its fail-closed detector signatures. Terminal GitHub audit found 89 external files changed since run start with relevant overlap 0 and PR/issue/non-main counts 0/0/0."
+    }
+  ],
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.profiling.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/derived/migration/memory_migration_map.v1.jsonl",
+    "OpenAIDatabase/data/derived/migration/memory_quality_report.v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_memory_migration_profile.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_migration_profile.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0003-PROFILE-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.profiling.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/data/derived/migration/memory_migration_map.v1.jsonl",
+    "OpenAIDatabase/data/derived/migration/memory_quality_report.v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/build_memory_migration_profile.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_migration_profile.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0003-PROFILE-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0003-PROFILE-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0003-PROFILE-20260716.json"
+  ],
+  "known_boundaries": [
+    "The migration map and quality report are redacted derived evidence, not canonical memory records; data/memory/records remains absent.",
+    "Only six explicitly curated core records qualify for migrate-active; 108 remain candidate, 80 stay evidence-only and 84 retire. PAM1.0004 owns all actual record writes and consumer cutover.",
+    "The profile date is fixed for deterministic evidence and age alone never changes disposition.",
+    "The terminal external audit found 89 intervening files, all outside this Task scope; relevant overlap is 0 and this Run performs no remote write."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the profiling contract, builder, focused test, derived map/report, ownership/policy entries and MOD-013/FORM-013/PARAM-096..098 facts; restore the prior migration pointer and generated views. Legacy and canonical memory data, runtime consumers, dependencies, Git history and remote objects require no compensation."
+}

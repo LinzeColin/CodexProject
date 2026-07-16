@@ -39,5 +39,5 @@ dual-plane Task Pack；仓库层只在路由唯一、低风险、可证明时补
 - routing matrix 没有该 project。
 - 缺失 validation commands 且 matrix 无可运行默认命令。
 
-阻断时 workflow 添加 `agent:blocked`，并在 audit issue 评论候选项目、
-缺失字段和阻断原因。
+阻断时 validator 非零退出，并把候选项目、缺失字段和阻断原因写入本地输出或
+read-only workflow summary。不得创建或修改 Issue。

@@ -28,8 +28,8 @@
     "schema_version": { "type": "integer", "minimum": 2 },
     "run_id": { "type": "string", "minLength": 1 },
     "project_id": { "type": "string", "minLength": 1 },
-    "task_id": { "type": "string", "minLength": 1 },
-    "acceptance_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "task_id": { "$ref": "#/$defs/task_id" },
+    "acceptance_ids": { "type": "array", "items": { "$ref": "#/$defs/acceptance_id" } },
     "iteration_id": { "type": "string", "minLength": 1 },
     "generated_at": { "type": "string", "minLength": 1 },
     "implementation_base_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
@@ -47,5 +47,31 @@
     },
     "ci_attestation_subject": { "type": "string", "minLength": 1 },
     "ci_run_reference": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "task_id": {
+      "type": "string",
+      "anyOf": [
+        {"pattern": "^TSK\\.[A-Z][A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*\\.[0-9]{4}$"},
+        {
+          "allOf": [
+            {"minLength": 1},
+            {"not": {"pattern": "^(TSK|ACC|AC|PG|EVT)\\."}}
+          ]
+        }
+      ]
+    },
+    "acceptance_id": {
+      "type": "string",
+      "anyOf": [
+        {"pattern": "^ACC\\.[A-Z][A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*\\.[0-9]{4}$"},
+        {
+          "allOf": [
+            {"minLength": 1},
+            {"not": {"pattern": "^(TSK|ACC|AC|PG|EVT)\\."}}
+          ]
+        }
+      ]
+    }
   }
 }

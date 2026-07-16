@@ -1,0 +1,54 @@
+{
+  "schema_version": "openai_database.memory_gold_evaluation_config.v1",
+  "report_schema_version": "openai_database.memory_gold_evaluation_report.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0014",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0014",
+  "algorithm_version": "deterministic_eligible_scope_alias_ranker.v1",
+  "files": {
+    "self": "config/evaluation/memory_gold_evaluation_v1.json",
+    "dataset": "data/derived/evaluation/memory_gold/benchmark_v1.jsonl",
+    "profiles": "config/agent_transport_profiles.json",
+    "forgetting_policy": "config/memory-forgetting-policy.json"
+  },
+  "suites": {
+    "fast": {
+      "case_indices": [1, 10],
+      "case_count": 16,
+      "report": "data/derived/evaluation/memory_gold/reports/fast_v1.json",
+      "runtime_ms_max": 60000
+    },
+    "full": {
+      "case_count": 160,
+      "report": "data/derived/evaluation/memory_gold/reports/full_v1.json",
+      "runtime_ms_max": 900000
+    }
+  },
+  "hard_gates": {
+    "recall_at_5": {"metric": "recall_at_5", "operator": "gte", "threshold": 0.95},
+    "mrr": {"metric": "mrr", "operator": "gte", "threshold": 0.9},
+    "current_state_accuracy": {"metric": "current_state_accuracy", "operator": "gte", "threshold": 0.92},
+    "temporal_accuracy": {"metric": "temporal_accuracy", "operator": "gte", "threshold": 0.92},
+    "update_accuracy": {"metric": "update_accuracy", "operator": "gte", "threshold": 0.92},
+    "provenance_accuracy": {"metric": "provenance_accuracy", "operator": "gte", "threshold": 0.98},
+    "abstention_precision": {"metric": "abstention_precision", "operator": "gte", "threshold": 0.9},
+    "abstention_recall": {"metric": "abstention_recall", "operator": "gte", "threshold": 0.9},
+    "fama": {"metric": "fama", "operator": "gte", "threshold": 0.95},
+    "critical_stale_use": {"metric": "critical_stale_use_count", "operator": "eq", "threshold": 0},
+    "cross_profile": {"metric": "profile_pass_count", "operator": "gte", "threshold": 5},
+    "query_requests": {"metric": "query_requests_per_case", "operator": "lte", "threshold": 1},
+    "repository_reads": {"metric": "profile_repository_read_budget_max", "operator": "lte", "threshold": 4},
+    "default_discovery": {"metric": "default_discovery_object_count", "operator": "lte", "threshold": 1},
+    "full_tree_scan": {"metric": "recursive_full_tree_scan_count", "operator": "eq", "threshold": 0},
+    "dataset_size": {"metric": "dataset_bytes", "operator": "lte", "threshold": 921600}
+  },
+  "runtime_hard_gates": {
+    "local_query_p95_ms": {"metric": "local_query_p95_ms", "operator": "lte", "threshold": 250}
+  },
+  "ci": {
+    "fast_event": "pull_request",
+    "full_events": ["push:main", "schedule", "workflow_dispatch"],
+    "fast_command": "python3 scripts/evaluate_memory_gold_benchmark.py --suite fast --check",
+    "full_command": "python3 scripts/evaluate_memory_gold_benchmark.py --suite full --check",
+    "soft_failure_allowed": false
+  }
+}

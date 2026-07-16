@@ -137,7 +137,6 @@ class ProposalWorkflowPresenceTests(unittest.TestCase):
         self.assertTrue(WORKFLOW_PATH.is_file(), "R4 proposal workflow module is missing")
 
 
-@unittest.skipUnless(WORKFLOW_PATH.is_file(), "R4 workflow module not implemented yet")
 class ProposalWorkflowTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -613,7 +612,6 @@ class ProposalWorkflowTests(unittest.TestCase):
         self.assertIn("config/r4_acceptance/success.json", transaction)
 
 
-@unittest.skipUnless(HISTORICAL_BUILDER_PATH.is_file(), "historical proposal builder missing")
 class HistoricalAtlasctlApplySafetyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:

@@ -1,0 +1,70 @@
+{
+  "schema_version": "openai_database.memory_production_acceptance_config.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0019",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0019",
+  "release": {
+    "version": "1.0.0",
+    "source_repository": "LinzeColin/CodexProject",
+    "source_tag": "portable-agent-memory-v1.0.0",
+    "source_branch": "main",
+    "snapshot_repository": "LinzeColin/AgentDatabase",
+    "snapshot_repository_visibility": "public",
+    "snapshot_asset_template": "portable-agent-memory-v1-{accepted_commit}.zip",
+    "acceptance_asset_template": "portable-agent-memory-v1-{accepted_commit}-acceptance.json"
+  },
+  "candidate_report": "data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+  "required_reports": {
+    "benchmark": "data/derived/evaluation/memory_gold/reports/full_v1.json",
+    "performance": "data/derived/evaluation/memory_gold/reports/performance_v1.json",
+    "fault": "data/derived/evaluation/memory_gold/reports/fault_reliability_v1.json",
+    "e2e": "data/derived/evaluation/memory_gold/reports/automation_c_e2e_v1.json",
+    "recovery": "data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json"
+  },
+  "proof_obligations": {
+    "Discovery": ["profiles", "benchmark"],
+    "Read": ["profiles", "doctor"],
+    "Retrieval": ["benchmark", "performance"],
+    "Mutation": ["e2e", "fault"],
+    "Forgetting": ["benchmark", "e2e"],
+    "Recovery": ["recovery"]
+  },
+  "hard_gates": {
+    "profile_pass_count": 5,
+    "benchmark_case_count": 160,
+    "recall_at_5_min": 0.95,
+    "mrr_min": 0.9,
+    "current_state_accuracy_min": 0.92,
+    "provenance_accuracy_min": 0.98,
+    "abstention_precision_min": 0.9,
+    "abstention_recall_min": 0.9,
+    "fama_min": 0.95,
+    "critical_stale_use_count_max": 0,
+    "local_query_p95_ms_max": 250,
+    "rebuild_p95_ms_max": 30000,
+    "fault_case_count_min": 30,
+    "e2e_scenario_count": 7,
+    "canonical_hash_match_percent": 100,
+    "recovery_rto_seconds_max": 1800,
+    "canonical_writer_count": 1,
+    "legacy_independent_writer_count_max": 0,
+    "credential_leak_count_max": 0,
+    "raw_instruction_obedience_count_max": 0,
+    "open_pull_request_count_max": 0,
+    "open_issue_count_max": 0,
+    "non_main_branch_count_max": 0
+  },
+  "publication": {
+    "transaction_branch_prefix": "automation-c/memory-",
+    "required_check_names": [
+      "governance",
+      "openai-database-verify",
+      "memory-atlas-verify"
+    ],
+    "direct_main_push_allowed": false,
+    "force_push_allowed": false,
+    "history_rewrite_allowed": false,
+    "public_safe_asset_only": true,
+    "unsigned_sha256_claim": "integrity_only_not_authenticity",
+    "rollback": "Delete the incomplete public Release, revert the single Task37 settlement commit through a new governed transaction, and return PR/Issue/non-main to 0/0/0."
+  }
+}

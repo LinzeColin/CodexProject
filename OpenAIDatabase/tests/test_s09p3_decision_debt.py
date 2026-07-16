@@ -35,6 +35,7 @@ def write_decision_debt_fixtures(root: Path) -> None:
         "latent",
         "--database-dir",
         str(root),
+        "--apply",
     ])
     self_iteration_target = root / "机器治理" / "行为智能模型" / "self_iteration.v1_2_s09_p2.json"
     self_iteration_target.parent.mkdir(parents=True, exist_ok=True)
@@ -47,6 +48,7 @@ def write_decision_debt_fixtures(root: Path) -> None:
         "self-iteration",
         "--database-dir",
         str(root),
+        "--apply",
     ])
     target = root / "机器治理" / "行为智能模型" / "decision_debt.v1_2_s09_p3.json"
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -132,6 +134,7 @@ class S09P3DecisionDebtTest(unittest.TestCase):
                 "decision-debt",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S09P3")
             self.assertTrue(output.exists())

@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +40,18 @@ def valid_atlas() -> dict:
 
 
 class MemoryAtlasAcceptanceAuditTests(unittest.TestCase):
+    def test_publish_release_scan_is_reused_by_preflight(self) -> None:
+        module = load_module()
+        with (
+            mock.patch.object(module, "audit_release", return_value={"status": "PASS", "file_count": 3}) as release,
+            mock.patch.object(module, "cloudflare_preflight", return_value={"status": "PASS", "checks": []}) as preflight,
+        ):
+            result = module.audit_acceptance(ROOT, ROOT / "apps/memory-atlas/dist")
+
+        self.assertEqual(result["status"], "PASS")
+        release.assert_called_once_with(ROOT.resolve(), ROOT / "apps/memory-atlas/dist")
+        preflight.assert_called_once_with(ROOT.resolve(), None)
+
     def test_acceptance_audit_passes_for_current_repo_sources(self) -> None:
         module = load_module()
 

@@ -15,7 +15,6 @@ on:
         type: string
 
 permissions:
-  actions: read
   contents: read
 
 concurrency:
@@ -28,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
+      INPUT_GENERATED_AT: ${{ inputs.generated_at }}
       GH_TOKEN: ${{ github.token }}
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
       ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
@@ -40,14 +40,14 @@ jobs:
       ADP_CANDIDATE_QUEUE_INPUT_PATH: ${{ vars.ADP_CANDIDATE_QUEUE_INPUT_PATH }}
       ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
       - name: Resolve generated_at
         id: generated_at
         shell: bash
         run: |
-          if [ -n "${{ inputs.generated_at }}" ]; then value="${{ inputs.generated_at }}"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
+          if [ -n "$INPUT_GENERATED_AT" ]; then value="$INPUT_GENERATED_AT"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
           service_date="$(python3 - "$value" <<'PY'
           from __future__ import annotations
 
@@ -78,7 +78,7 @@ jobs:
         run: exit 2
       - name: Upload trial start preflight
         if: always() && steps.preflight.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-preflight
           path: ${{ steps.preflight.outputs.path }}
@@ -110,7 +110,7 @@ jobs:
         run: exit 2
       - name: Upload production refs
         if: always() && steps.production_refs.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-production-refs
           path: |
@@ -134,7 +134,7 @@ jobs:
         run: exit 2
       - name: Upload launch readiness
         if: always() && steps.launch.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-launch-readiness
           path: ${{ steps.launch.outputs.path }}
@@ -148,13 +148,13 @@ jobs:
           PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_plans" PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-scheduler --path . --generated-at "${{ steps.generated_at.outputs.value }}" --json > "$scheduler"
           printf 'bootstrap=%s\n' "$bootstrap" >> "$GITHUB_OUTPUT"; printf 'scheduler=%s\n' "$scheduler" >> "$GITHUB_OUTPUT"
       - name: Upload bootstrap plan
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-bootstrap-plan
           path: ${{ steps.plans.outputs.bootstrap }}
           if-no-files-found: error
       - name: Upload scheduler plan
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-scheduler-plan
           path: ${{ steps.plans.outputs.scheduler }}
@@ -176,19 +176,19 @@ jobs:
           test -s "${{ steps.source.outputs.artifact_dir }}/adp-text-delivery-policy.json"
           test -s "${{ steps.source.outputs.artifact_dir }}/adp-email-brief.json"
       - name: Upload all-arXiv trial input
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-all-arxiv-daily-input
           path: ${{ steps.source.outputs.report }}
           if-no-files-found: error
       - name: Upload trial start phase12 artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-phase12-artifacts
           path: ${{ steps.source.outputs.artifact_dir }}
           if-no-files-found: error
       - name: Upload trial start candidate queue
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-candidate-queue
           path: ${{ steps.source.outputs.queue }}
@@ -203,7 +203,7 @@ jobs:
           printf 'execution=%s\n' "$execution" >> "$GITHUB_OUTPUT"; printf 'path=%s\n' "$smtp" >> "$GITHUB_OUTPUT"
       - name: Upload SMTP delivery probe
         if: always() && steps.smtp.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-smtp-delivery
           path: |
@@ -219,7 +219,7 @@ jobs:
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
       - name: Upload trial start gate
         if: always() && steps.trial_gate.outputs.path != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: adp-trial-start-gate
           path: ${{ steps.trial_gate.outputs.path }}

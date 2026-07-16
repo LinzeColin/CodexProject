@@ -2,25 +2,28 @@
 
 ## Current Status
 
-- product version: 0.2.0
-- product version status: provisional
-- current phase: SM-P0-RUN1 - provider-neutral shared-memory adapter
-- current gate: ACC-OAIDB-SM-P0-R1-PASSED-LOCAL
-- confirmed iterations: 13
+- product version: 1.0.0
+- product version status: release candidate local; production publication blocked
+- current phase: ST10-PHC - Portable Agent Memory V1 production acceptance
+- current gate: ACC.OpenAIDatabase.PAM1.0019-CANDIDATE-PASS-PUBLICATION-BLOCKED
+- confirmed iterations: 16
 - reconstructed development events: 24
-- current task: OAIDB-SM-P0-R1 is accepted locally after the premature acceptance was revoked, two P1 provenance/evaluator defects were corrected, full state-sensitive gates passed, and a second independent review found no new P0/P1; owner review remains required before any later commit/push or RUN 2
-- blockers: remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
+- current task: TSK.OpenAIDatabase.PAM1.0019 has a locally verified 1.0.0 candidate with six Proofs, five profiles and all memory quality/security/performance/fault/E2E/recovery hard gates passing; production acceptance is not claimed
+- publication boundary: the Task Pack and owner instruction require public `LinzeColin/AgentDatabase`; it is verified `PUBLIC` and the new release path requires commit-only, public-authorized, credential-free redacted summaries
+- blocker: the latest remote main still fails repository hygiene on unrelated cross-project findings, so publication remains fail-closed
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records thirteen confirmed iterations: the baseline run, three TASK-OAI-C-002
+records fifteen confirmed iterations: the baseline run, three TASK-OAI-C-002
 follow-up governance and personalization hardening runs, the semantic
 extractor rollout run, the S3PDT01 synthetic privacy-boundary run, the
 TASK-OAI-D-001 Memory Atlas local release/preflight run, and the TASK-OAI-D-003
 OpenAIDatabase CI evidence-schema repair run, the macdata proM2 setup run, and
 the TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair run, plus
 the CF-L2 public-safe build/privacy/dry-run iteration, and the protected
-MemoryAtlas live-evidence reconciliation from remote main, and the corrected
-OAIDB-SM-P0-R1 provider-neutral shared-memory adapter acceptance.
+MemoryAtlas live-evidence reconciliation from remote main, the corrected
+OAIDB-SM-P0-R1 provider-neutral shared-memory adapter acceptance, and the
+Task37 Portable Agent Memory V1 local candidate acceptance, the superseded private-target
+attempt, and the verified public-safe release-contract correction.
 
 ## Phase Matrix
 
@@ -327,3 +330,73 @@ RECONSTRUCTED development events only, not confirmed iterations.
 - next step: owner reviews the uncommitted OpenAIDatabase-only diff and evidence; any commit/push decision or RUN 2 execution is a separate authorized action.
 
 - 2026-07-15 炸弹A归档卸载：5 个大归档（6.08GB / 101 分片）经校验迁至 AgentDatabase，数据零丢失，仓库瘦身。见 GOV-BOMBA-ARCHIVES-20260715.json。
+
+### ITER-20260715-REPO1-0005-OAIDB-WORKFLOW
+
+- date: 2026-07-15
+- fact level: VERIFIED for the local workflow tree and focused validation; remote Actions execution remains pending whole-package publication
+- version before/after: `0.2.0 provisional` / `0.2.0 provisional`
+- task / acceptance: `TSK.CodexProject.REPO1.0005` / `ACC.CodexProject.REPO1.0005`
+- objective: preserve OpenAIDatabase and Memory Atlas CI coverage in one executable root workflow while deleting the invalid nested workflow path.
+- files changed: root OpenAIDatabase CI workflow, nested workflow deletion, root workflow policy/auditor/tests, and the minimum OpenAIDatabase governance synchronization set.
+- model/formula/parameter values: unchanged; `PARAM-095` and `REQ-OAI-016` only gain the root CI workflow as a governing code reference.
+- tests: Actionlint; workflow security tests; Agent Loop compatibility tests; OpenAIDatabase unit/build smoke; root and changed-scope governance.
+- decision: keep product version and delivery readiness unchanged; do not claim remote GitHub Actions execution before the single final package publication.
+- rollback: restore the nested file only together with removal of the merged root job, or revert this local Task commit before publication.
+- next step: stop before the next Task after local acceptance and commit.
+
+### ITER-20260716-OAIDB-CLEAN1-0001
+
+- date: 2026-07-16
+- fact level: VERIFIED for local implementation/tests and EXTRACTED for the preserved branch-tip payloads; remote acceptance remains pending
+- task / acceptance: `TSK.OpenAIDatabase.CLEAN1.0001` / `ACC.OpenAIDatabase.CLEAN1.0001`
+- objective: preserve the latest airM2/proM2 snapshots on `main`, retire persistent producer branches, and enforce Automation C short-lived PR transactions.
+- files changed: shared publisher/tests; both device configs, scripts, docs and payload paths; required OpenAIDatabase governance synchronization.
+- model/formula/parameters: `MOD-MACDATA-PROM2-001`, `FORM-MACDATA-PROM2-001`, `PARAM-MACDATA-PROM2-003/004` now describe main-only exact-marker publication, trusted Settlement provenance, per-file verification and zero residue.
+- tests: 25 focused unit tests, Python compile, two 17-file local simulations, renderer/check-render, project governance and diff gates.
+- decision: perform zero GitHub mutations in this Run because the owner requires one publication only after all 37 Tasks.
+- rollback: revert only this Task commit; no remote rollback is required.
+- next step: keep the commit local and continue with the next Task; perform branch deletion and formal `0/0/0` acceptance only at unified publication.
+
+### ITER-20260716-REPO1-0006-OAIDB-HYGIENE
+
+- date: 2026-07-16
+- fact level: VERIFIED for local implementation, focused negative tests and read-only repository audits; remote acceptance remains pending
+- version before/after: `0.2.0 provisional` / `0.2.0 provisional`
+- task / acceptance: `TSK.CodexProject.REPO1.0006` / `ACC.CodexProject.REPO1.0006`
+- objective: stop future tracked large-object/archive/cache/generated and whole-repository backup producers without unsafe history rewriting.
+- files changed: root policy/schema/auditor/test/CI/docs; targeted OpenAIDatabase export/sync/acceptance code and tests; one SHA-verified duplicate transfer tar; required governance synchronization.
+- model/formula/parameter values: unchanged; deterministic repository parameters are documented in `docs/governance/REPOSITORY_HYGIENE.md`.
+- verified results: six focused tests PASS; clean checkout ran 232 OpenAIDatabase tests, installed 154 packages, built 1,768 modules and stayed Git-clean; 53 retained large objects and four archives map to unique baseline rules; tracked runtime noise and forbidden backup producer counts are zero; workflow, artifact, ID and structural project gates PASS.
+- decision: preserve the 38.3 MB raw-session tar until an independent recovery copy exists; do not claim the current-tree deletion shrinks the 3.54 GiB historical pack; do not enable LFS or rewrite history in this Task.
+- rollback: revert only this local Task commit; never force-push or rewrite history as rollback.
+- next step: append the compact root receipt, pass final changed-only governance, commit locally, then stop before the next Task.
+
+### ITER-20260717-OAIDB-PAM1-0019-PRIVATE-TARGET
+
+- date: 2026-07-17 AEST
+- fact level: VERIFIED for GitHub repository visibility and local deterministic recovery/candidate gates; production acceptance remains pending
+- task / acceptance: `TSK.OpenAIDatabase.PAM1.0019` / `ACC.OpenAIDatabase.PAM1.0019`
+- objective: preserve the existing public `LinzeColin/AgentDatabase` while moving all new Portable Agent Memory V1 snapshot publication to a dedicated private Release repository.
+- owner decision: choice 1; create/use `LinzeColin/AgentDatabase-Private` and update the forward publication contract without changing the legacy repository visibility.
+- external result: GitHub created `LinzeColin/AgentDatabase-Private`; API verification reports `PRIVATE`, default branch `main`, one branch and zero Releases. No snapshot, tag or Release asset was uploaded.
+- files changed: forward release policies/configuration, snapshot validator/test, recovery and candidate reports, runbooks, Task37 governance records; historical AgentDatabase Release evidence remains unchanged.
+- model/formula/samples: no model, formula, parameter value, benchmark case or business sample changed.
+- tests: ruff and py_compile PASS; 17 focused tests PASS; deterministic recovery check passes 12/12 byte identity, 10 offline queries and 3 negative cases; candidate remains 6/6 Proofs, 5/5 profiles and zero hard-gate failures.
+- remaining blocker: the conflict-free Task37 merge tree still has 60 pre-existing repository-hygiene violations owned by KM_IDSystem (7), PFI (48) and arxiv-daily-push (5). Task37 does not weaken the policy or modify those projects.
+- rollback: revert this contract update locally; do not delete or change visibility of either GitHub repository without separate explicit owner authorization.
+- next step: clear the 60 cross-project findings in a separate governed Run, then resume the single Automation C publication transaction.
+
+### ITER-20260717-OAIDB-PAM1-0019-PUBLIC-CORRECTION
+
+- date: 2026-07-17 AEST
+- fact level: VERIFIED for Task Pack intent, GitHub repository visibility, local public-safety implementation and focused tests; production acceptance remains pending
+- task / acceptance: `TSK.OpenAIDatabase.PAM1.0019` / `ACC.OpenAIDatabase.PAM1.0019`
+- correction: the private-only target was an implementation-design error, not a Task Pack requirement. The owner explicitly requires the existing public route, and the Task Pack defines GitHub as the public versioned external-memory surface while permanently forbidding credentials/access material.
+- external result: GitHub API verifies `LinzeColin/AgentDatabase` is `PUBLIC`, `private=false`, default branch `main`; no `portable-agent-memory-v1.0.0` tag or new asset exists. The mistakenly created empty private repository is not used or modified in this correction.
+- implementation: public Release acceptance now requires every canonical record to be `public_repository_allowed=true`, `credential_present=false` and `handling=redacted_summary`; `--release-candidate` reads every ZIP member from the exact accepted commit; published verification rejects visibility, provenance, record-safety, hash or terminal-state drift.
+- model/formula/samples: no model, formula, parameter threshold, benchmark case or business sample changed; `PARAM-102` only corrects the release visibility/safety contract.
+- evidence: ruff/compile/diff checks pass; 22 focused tests pass; deterministic and accepted-commit ephemeral recovery remain hash-identical 100% with 10/10 offline queries and 3/3 negative cases; candidate remains six Proofs 6/6, profiles 5/5 and hard-gate failures 0; full verification passes Fast 19/19, Unit 33/33, Security 146/146 and Integration 153/153.
+- remaining blocker: latest remote main repository hygiene is not clean on unrelated cross-project artifacts. This Task does not weaken the policy or modify those projects.
+- rollback: revert only the public-contract correction and delete an incomplete new public-safe Release if one is later created; never change repository visibility or rewrite history as rollback.
+- next step: complete full local verification, then resume the single Automation C publication only when integrated repository hygiene is clean.

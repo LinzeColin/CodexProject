@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0002",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0002"
+  ],
+  "iteration_id": "ST07-PHA-OPENAIDATABASE-PAM1-0002-001",
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0002-SHARDING-20260716",
+  "generated_at": "2026-07-16T01:30:36Z",
+  "gate_status": "PASS_LOCAL_DETERMINISTIC_SHARDING",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "8fa003029f61a16c2792f17881af9434ca978778",
+  "remote_main_sha_at_run_start": "83a845bed55c6046c2a59dd89de3f1e7bad7da7f",
+  "remote_main_terminal_observation": "2026-07-16 terminal audit: main=9a5f8fad6e837da2872d067d49bf1bc37fd0c596; 44 files changed since run start, all outside this Task scope; relevant overlap=0; open PR/open issue/non-main branch=0/0/0; no remote write.",
+  "candidate_tree_sha1_excluding_this_manifest": "18d58c23e770762892bdabc709a5a917b066c052",
+  "content_tree_hash": "84d78fa43f2433068d549d64b23b21e7754558705516cf0b95253746d227f409",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind every changed closure file except this self-referential manifest; the final 37-Task publication run binds the published business commit.",
+  "summary": "Define and execute a no-write deterministic plan for one logical <=900KiB records shard set, with one direct discovery manifest and exact reconstruction hashes, while leaving legacy data and runtime consumers unchanged until PAM1.0004.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0002 local deterministic sharding acceptance",
+  "ci_run_reference": "LOCAL_FOCUSED_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "OpenAIDatabase/config/memory.sharding.json",
+    "OpenAIDatabase/scripts/plan_memory_shards.py",
+    "OpenAIDatabase/tests/test_memory_sharding.py"
+  ],
+  "scope": {
+    "sharding_contract_changes": 1,
+    "dry_run_planner_additions": 1,
+    "boundary_and_corruption_test_methods": 7,
+    "read_only_capability_additions": 1,
+    "model_additions": 1,
+    "formula_additions": 1,
+    "parameter_additions": 3,
+    "memory_data_writes": 0,
+    "canonical_record_files_written": 0,
+    "active_memory_rows_modified": 0,
+    "candidate_memory_rows_modified": 0,
+    "runtime_writer_changes": 0,
+    "runtime_reader_changes": 0,
+    "database_additions": 0,
+    "service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0001",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0001-SCHEMA-V2-20260716.json",
+    "manifest_sha256": "15194428eb0cd89c344789576a545464f581cc17c6fb205866949b35ffeecc2f",
+    "gate_status": "PASS_LOCAL_SCHEMA_V2_CONTRACT"
+  },
+  "execution_baseline": {
+    "legacy_input": "OpenAIDatabase/data/memory/active/active_memory.jsonl",
+    "legacy_input_bytes": 1082592,
+    "legacy_input_record_count": 278,
+    "legacy_input_sha256": "24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+    "record_bytes_min": 1297,
+    "record_bytes_p50": 4623,
+    "record_bytes_p95": 5400,
+    "record_bytes_max": 5904,
+    "duplicate_id_count": 0,
+    "invalid_json_record_count": 0,
+    "tracked_canonical_records_path_count": 0
+  },
+  "sharding_contract": {
+    "logical_dataset": "data/memory/records/records-NNNN.jsonl",
+    "discovery_path": "data/memory/records/manifest.json",
+    "canonicalization": "openai-memory-jsonl-v1",
+    "record_order": "normalized_id_ascending",
+    "rotation": "ordered_greedy_v1",
+    "max_shard_kib": 900,
+    "max_shard_bytes": 921600,
+    "single_record_over_limit_action": "FAIL_CLOSED",
+    "default_discovery_objects": 1,
+    "recursive_tree_scan_count": 0,
+    "unique_rebuild": "verify every shard hash and concatenate exactly once in manifest sequence"
+  },
+  "current_dataset_dry_run": {
+    "status": "PASS",
+    "writes_files": false,
+    "repeat_build_identical": true,
+    "record_count": 278,
+    "shard_count": 2,
+    "shard_bytes": [
+      918848,
+      135054
+    ],
+    "shard_record_counts": [
+      240,
+      38
+    ],
+    "dataset_bytes": 1053902,
+    "dataset_sha256": "4d5f240292c4e8eaefa0a10a9bbe1fc60f4dc2a07b8dc5105ac44bc0034d9b9e",
+    "discovery_sha256": "b733c4eabf4e0bb99b5ba87721e66f4a3926f8b78c71d407f66bce5a9e66348c",
+    "plan_sha256": "b3f196257b400f9def1ff70fe5893e342f3c51f8d8778d5817ea11cb1c922741",
+    "full_dataset_content_gets": 3
+  },
+  "boundary_and_corruption_gates": {
+    "record_899_kib": "ACCEPT",
+    "record_900_kib": "ACCEPT",
+    "record_over_900_kib": "REJECT",
+    "duplicate_record_id": "REJECT",
+    "truncated_jsonl": "REJECT",
+    "duplicate_json_key": "REJECT",
+    "reordered_shards": "REJECT",
+    "tampered_or_noncanonical_shard": "REJECT",
+    "absolute_path_traversal_or_symlink": "REJECT"
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-012",
+    "formula_id": "FORM-012",
+    "parameter_ids": [
+      "PARAM-093",
+      "PARAM-094",
+      "PARAM-095"
+    ],
+    "max_shard_bytes": 921600,
+    "github_contents_conservative_comparison_bytes": 1000000,
+    "default_discovery_object_count": 1
+  },
+  "github_api_basis": [
+    {
+      "source": "https://docs.github.com/en/rest/repos/contents?apiVersion=2026-03-10",
+      "verified_at": "2026-07-16",
+      "use": "GitHub documents full Contents endpoint support for files at 1 MB or smaller and a 1000-file directory response limit; this contract uses a conservative decimal comparison and a 900KiB hard gate."
+    },
+    {
+      "source": "https://docs.github.com/en/rest/git/trees?apiVersion=2026-03-10",
+      "verified_at": "2026-07-16",
+      "use": "Recursive tree responses can truncate at 100000 entries or 7 MB; default discovery therefore uses one direct known manifest object and no recursive scan."
+    }
+  ],
+  "evidence_sha256": {
+    "OpenAIDatabase/config/memory.sharding.json": "0d8d56282d85fd829f6aeef662894f465fa85d2ccb93b515eb2db07eb2901682",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json": "3a30b1984706dc74a140d6e6f0d8dc7fb03f394c9e0b407bc680e8527ff37b96",
+    "OpenAIDatabase/scripts/plan_memory_shards.py": "90b177e5c3e3c9c68e52f7189602dc81a76c3c9c15e61e892a63ba91a415d01f",
+    "OpenAIDatabase/tests/test_memory_sharding.py": "f6766e307f5c8cf1ba8c52c5934e30966f4c0569d475227b3820584a65a10bcb"
+  },
+  "test_commands": [
+    "python3 -B -m unittest tests.test_memory_sharding tests.test_command_ownership tests.test_verification_policy -v",
+    "python3 -B OpenAIDatabase/scripts/plan_memory_shards.py --database-dir OpenAIDatabase --input data/memory/active/active_memory.jsonl --dry-run",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier security",
+    "python3 -B OpenAIDatabase/scripts/validate_directory_lifecycle.py --database-dir OpenAIDatabase",
+    "python3 -B OpenAIDatabase/scripts/validate_command_ownership.py --database-dir OpenAIDatabase",
+    "/opt/anaconda3/bin/python3 -B -m unittest discover -s tests/governance -p test_openai_database_lean_convergence.py -q",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "git diff --check; credential-shape scan; git status --short; GitHub PR/Issue/non-main audit"
+  ],
+  "test_results": [
+    {
+      "gate": "focused_sharding_ownership_policy",
+      "result": "PASS",
+      "observed": "15/15 focused tests passed; canonical command capabilities are 21 with 57 top-level scripts and every command hard-zero metric at 0; verification policy owns 54/54 test files exactly once."
+    },
+    {
+      "gate": "current_dataset_dry_run",
+      "result": "PASS",
+      "observed": "The unchanged 1082592-byte/278-record input planned twice to byte-identical 918848-byte and 135054-byte shards; unique reconstruction and all hashes passed with canonical data writes 0."
+    },
+    {
+      "gate": "boundary_corruption_and_request_budget",
+      "result": "PASS",
+      "observed": "899/900KiB accepted; >900KiB, duplicate/truncated/duplicate-key/reordered/tampered and unsafe path cases rejected; default discovery is 1 object, recursive scan 0 and current full dataset budget 3 GETs."
+    },
+    {
+      "gate": "final_scope_gates",
+      "result": "PASS",
+      "observed": "Security tier passed 61/61 tests in 32.555s with 54/54 owned test files; lifecycle and command ownership reported 0 errors; Lean convergence passed 7/7, rendered drift/reference issues were 0/0 and changed-only validation was 0 errors/0 warnings; Governance ID audit resolved 11841/11841 references at registry revision 76; repository hygiene reported 0 violations; git diff and changed-file credential-shape scans reported 0 findings; the legacy input SHA remained unchanged, the canonical records path remained absent and the terminal remote audit found 0 relevant overlap."
+    }
+  ],
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.sharding.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/plan_memory_shards.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_sharding.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0002-SHARDING-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/memory.migration.v1-to-v2.json",
+    "OpenAIDatabase/config/memory.sharding.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/plan_memory_shards.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_sharding.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0002-SHARDING-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0002-SHARDING-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0002-SHARDING-20260716.json"
+  ],
+  "known_boundaries": [
+    "The two shards and discovery manifest are verified dry-run products held in memory only; this Task creates no data/memory/records path and performs no data cutover.",
+    "PAM1.0003 owns per-record profiling and migration disposition; PAM1.0004 owns canonical shard writes, manifest generation and legacy consumer cutover.",
+    "GitHub API observations are from official documentation verified on 2026-07-16; future live consumers must continue to treat provider limits as mutable and fail closed.",
+    "The external repository writer was non-overlapping at the start audit; this Run performs no remote write."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove the sharding contract, read-only planner, focused tests, ownership/policy entries and MOD-012/FORM-012/PARAM-093..095 facts; restore the prior migration pointer and generated views. The legacy input, canonical data, databases, services, dependencies, Git history and remote objects require no compensation."
+}

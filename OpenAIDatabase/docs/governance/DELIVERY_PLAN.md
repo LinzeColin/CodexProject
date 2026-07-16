@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 17
+task_count: 18
 
 ## Phase A - Discovery and Baseline
 
@@ -235,7 +235,7 @@ task_count: 17
 - objective: Install proM2 MacData controlled archive workflow using the local Apple M2 Max MacBook Pro as device truth.
 - scope: `OpenAIDatabase/macdata/proM2`, OpenAIDatabase governance records, GitHub archive branch `macdata-proM2`.
 - non_scope: Time Machine, iCloud, API keys, tokens, passwords, cookies, sessions, Keychain, shell history, full environment dumps, `.env` raw content, and other macdata devices.
-- status: in_progress
+- status: completed
 - dependencies: S5PBT03
 - required files: `device_config.json`, `owner_confirmations.json`, `run_controlled_cycle.py`, `test_macdata_package.py`
 - acceptance_ids: ACC-MACDATA-PROM2-SETUP-20260705
@@ -243,6 +243,22 @@ task_count: 17
 - evidence: local package tests and preflight pass on MacBook Pro / Mac14,5 / Apple M2 Max / 32GB; full archive branch verification is pending until setup is pushed.
 - risk: Docker/Homebrew/system/project-cache cleanup must remain gated by remote hash verification and project-cache whitelist rules.
 - rollback: revert setup commit; delete remote `macdata-proM2` only after confirming archive history is no longer needed.
+
+### TSK.OpenAIDatabase.CLEAN1.0001
+
+- task_id: TSK.OpenAIDatabase.CLEAN1.0001
+- phase: ST03-PHB
+- objective: Preserve the latest airM2/proM2 snapshots on `main`, retire persistent `macdata-*` producer branches, and enforce fail-closed Automation C short-lived PR transactions.
+- scope: shared publisher, both device configs/scripts/tests, four declared snapshot paths per device, and canonical governance records.
+- non_scope: GitHub mutation before the 37-task publication gate, Issue mutation, direct push to `main`, other branches, and unrelated cache cleanup.
+- status: in_progress
+- dependencies: TSK.CodexProject.REPO1.0005
+- required files: `OpenAIDatabase/macdata/automation_c.py`, both `device_config.json` files, and `OpenAIDatabase/macdata/tests/test_automation_c.py`.
+- acceptance_ids: ACC.OpenAIDatabase.CLEAN1.0001
+- test commands: 25 focused unit tests; Python compile; both device `--simulate-transaction` runs; Lean render/governance validation.
+- evidence: local simulations preserve 17 files per device with zero remote writes; formal GitHub migration/deletion/reconciliation remains deferred to unified publication.
+- risk: any snapshot mismatch, secret finding, untrusted merge, main drift, or remote residue fails closed.
+- rollback: revert only this local task commit; this Run performs no GitHub mutation.
 
 ### TASK-OAI-E-001
 

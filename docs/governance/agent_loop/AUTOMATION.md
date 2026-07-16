@@ -1,156 +1,88 @@
-# Agent Loop 自动化说明
+# Agent Loop Automation C
 
-## 三种入口
+Automation C is a Zero-Open transaction pipeline. GitHub Issues are not a
+queue, lock, audit log, or state machine. A transaction may create one
+same-repository pull request; settlement must leave no open transaction PR and
+no transaction branch.
 
-Agent Loop 支持三种 Task Pack ingestion mode。三种入口都会先把批准的
-dual-plane Task Pack 写入 raw 文件：
+## Roles and trust boundaries
 
-```text
-/tmp/agent_loop/taskpack.raw.md
-```
-
-然后通过 routing/autofill 层生成 normalized 文件：
-
-```text
-/tmp/agent_loop/taskpack.md
-```
-
-后续 Codex plan、implementation、validation、review、autofix、merge policy
-都只读取 normalized 文件。
-
-| 入口 | 触发方式 | Task Pack 来源 | Audit issue |
+| Role | Identity | Repository permission | Responsibility |
 |---|---|---|---|
-| Manual fallback | `workflow_dispatch` | `taskpack` input | workflow 创建 |
-| C2 Issue automation | `issues` opened/edited/labeled | issue body | 触发 issue 本身 |
-| D1/Future integration | `repository_dispatch` `agent_loop_taskpack` | `client_payload.taskpack` | workflow 创建 |
+| Validator | `Agent Loop - Validate Approved Task Pack` | `contents: read` | Validate one approved Task Pack; never publish or settle |
+| Publisher | External authenticated `gh` session | User-controlled | Publish one already-pushed, same-repository transaction branch as one PR |
+| Required CI | `Project Governance / governance` | `contents: read` | Test the exact PR head without write permission or path filters |
+| Settlement/Janitor | `Agent Loop Settlement` | `contents`/`pull-requests` write; cleanup-only `issues` write | Merge or close the exact transaction, delete only its exact branch ref, and close only authorized exact-marker accidental Issues |
 
-## 不是 Planner Agent
+Settlement and Janitor use the trusted default-branch workflow definition and
+live GitHub APIs only. They do not checkout PR code, execute repository code,
+download artifacts, restore caches, create Issues, or accept unbound branch
+names.
 
-GitHub Actions 只消费 Owner 已批准的 Task Pack：
+## Transaction flow
 
-- 不运行 Planner Agent。
-- 不从 issue 文本重新生成 Task Pack。
-- 不让 LLM 从模糊 issue 推断需求。
-- 不要求 Custom GPT Action。
-- 不要求 GitHub Developer settings。
-- 不要求 PAT。
-- 不在 plan 与 implementation 之间等待 Owner 审批。
+1. Validate the dual-plane Task Pack locally or with the read-only validation
+   workflow.
+2. Implement and validate in an isolated worktree.
+3. Push one temporary same-repository branch under the reserved
+   `automation-c/` namespace using an external authenticated publisher.
+   Repository workflows never receive publisher credentials.
+4. Run `submit_taskpack.py` with `--confirm-publish`. It requires zero open PRs
+   and zero standalone Issues, resolves the exact head/base SHAs, and creates
+   one non-draft PR with an `AUTOMATION_C_TRANSACTION_V1` marker.
+5. `Project Governance / governance` tests the exact PR head read-only.
+6. Settlement verifies the marker, actor allowlist, same repository, non-draft
+   state, `main` base, exact tested head/base, mergeability, and required check.
+7. On success it squash-merges the exact head and deletes the exact ref. On a
+   terminal failure it closes the PR and deletes only a trusted, marker-bound,
+   exact ref. Unknown or untrusted refs fail closed.
+8. Janitor runs every five minutes, reconciles only stale or duplicate
+   marker-bound transactions, and closes an authorized exact-marker accidental
+   Issue without using it as state. It never scans or deletes arbitrary branches.
 
-## Trigger Rules
+## Stable identity contract
 
-`workflow_dispatch`:
+New governance objects use namespaced V2 IDs:
 
-- `taskpack` input 必须包含 `AGENT_LOOP_METADATA`。
-- Workflow 创建新的 audit issue。
+```text
+TSK.<Project>.<Program>.NNNN
+ACC.<Project>.<Program>.NNNN
+PG.<Project>.<Program>.NNNN
+```
 
-`issues` opened/edited/labeled:
+Legacy V1 IDs remain readable. A Task/Acceptance pair must share namespace and
+numeric suffix. Mixed V1/V2 references require an explicit project-scoped
+alias; global fuzzy matching and suffix-only inference are forbidden.
 
-- Issue body 必须包含 `AGENT_LOOP_METADATA`。
-- Metadata 中 `source` 必须是 `chatgpt-approved`。
-- Issue 作者必须是 repository owner、member 或 collaborator。
-- `opened` 和 `edited` 不要求预先存在 labels。
-- `labeled` 仅在新增 `agent:run` 时作为兼容入口。
-- Issue 不得已有 `agent:running`、`agent:done`、`agent:blocked`。
-- 这个 issue 本身就是 audit issue。
-- Workflow 开始时创建缺失 labels，并添加 `source:chatgpt-approved`、
-  `agent:run`、`agent:running` 和风险 label。
-- 成功时移除 `agent:running`、添加 `agent:done`、关闭 issue。
-- 失败时移除 `agent:running`、添加 `agent:blocked`、评论失败摘要。
+## Local validation
 
-`repository_dispatch`:
+```bash
+python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py' -v
+python3 -B scripts/agent_loop/validate_taskpack.py --taskpack TASKPACK.md
+python3 -B scripts/agent_loop/submit_taskpack.py \
+  --taskpack TASKPACK.md \
+  --head automation-c/TSK.Project.Program.0001 \
+  --dry-run-local
+```
 
-- Event type 必须是 `agent_loop_taskpack`。
-- `client_payload.taskpack` 必须包含 `AGENT_LOOP_METADATA`。
-- 可选 payload 字段 `title`、`risk_tier`、`source` 只能作为审计提示；
-  workflow 真实路由仍以 Task Pack metadata 为准。
-- Workflow 创建新的 audit issue。
+## Bootstrap and activation
 
-## Task Pack 是事实源
+Repository ruleset activation, final branch cleanup, and the single permitted
+manual/native bootstrap settlement are owner operations. Until that final
+activation run is evidenced, report `REMOTE_ACTIVATION_DEFERRED`; do not claim
+that local code already enforces live GitHub settings. Follow
+`docs/governance/AUTOMATION_C_BOOTSTRAP.md`.
 
-Audit issue 只用于追踪和审计。若 Task Pack 与 issue 评论、payload title、
-payload risk tier 或 workflow 输入说明冲突，以 `/tmp/agent_loop/taskpack.md`
-中的 Task Pack 为准。
-
-Workflow 不猜项目。路由字段必须来自 metadata：
-
-- `project`
-- `allowed_paths`
-- `forbidden_paths`
-- `risk_tier`
-- `plan_required`
-- `validation_commands`
-
-如果 `project` 缺失、为空、占位或同时指向多个项目，Task Pack validation 必须失败。
-
-## Routing / Autofill
-
-Owner 不需要记忆每个项目的 `allowed_paths` 和 `forbidden_paths`。
-
-- 路由事实源是 `PROJECT_ROUTING_MATRIX.md` 的
-  `AGENT_LOOP_ROUTING_MATRIX_JSON` block。
-- `route_taskpack.py` 判断 project 是否唯一。
-- `autofill_taskpack_metadata.py` 只补全缺失的 routing metadata。
-- 如果路由模糊、多项目、或缺少可运行 validation command，workflow 标记
-  `agent:blocked` 并评论候选项目和缺失字段。
-- 该层不生成需求、不运行 Planner Agent、不把 T2 降为 T1。
-
-## C2/C3/D1 使用方式
-
-- C2: Owner 创建 issue，把完整 Task Pack 放在 issue body。可信作者不需要手动
-  添加 labels；workflow 自动补齐。
-- C3: Owner 使用 `.github/ISSUE_TEMPLATE/codex-task.yml`。表单只有一个大
-  textarea，不要求手选 project、risk 或 labels；这些字段必须来自 metadata
-  或 routing/autofill。
-- D1: 可选本地工具。Owner 不需要默认运行脚本；C2/C3 是默认入口。
-- D2 future: 可由 Cloudflare Workers 或类似 webhook bridge 转发已批准的
-  Task Pack 到 `repository_dispatch`。本阶段不实现。
-- D3 future: 可由 ChatGPT connector、MCP 或外部 action 直接提交已批准的
-  Task Pack。当前不依赖。
-
-## T1 和 T2
-
-| Tier | 含义 | Owner approval | Plan-first | Auto-merge |
-|---|---|---|---|---|
-| T1 | 旧 T1/T2，低/中风险任务 | 不需要 | 按 Task Pack 要求 | gates 通过后允许 |
-| T2 | 旧 T3/T4，高/关键风险任务 | 不需要 | 必须 | gates 通过后允许 |
-
-T2 的 plan-first 是自动化质量门，不是人工审批门。Plan 必须列出读取文件、
-拟修改文件、验证命令、rollback、stop conditions，并且 plan 阶段不得修改仓库。
-
-## 阻断合并的条件
-
-- Task Pack 缺失或 metadata 无效。
-- `source` 不是 `chatgpt-approved`。
-- `repository` 不是 `LinzeColin/CodexProject`。
-- `project` 缺失或不明确。
-- `auto_merge` 不是 `true`。
-- T2 没有 `plan_required: true`。
-- plan 阶段产生文件改动。
-- 变更文件超出 `allowed_paths`。
-- 触碰 `forbidden_paths`。
-- 检测到 secrets、env 文件或未授权依赖变更。
-- validation commands 失败。
-- Codex review 或 Architect Review 发现未解决 P0/P1。
-- 生产部署被尝试执行。
-- `BLOCK_MERGE=true`。
-
-## 日志位置
-
-- Workflow run summary: GitHub Actions run 页面。
-- Audit issue: workflow 自动创建或复用，并评论 plan、validation、review、merge 结果。
-- Artifacts: plan、result pack、review、architect review、validation summary。
-- PR: 自动创建的实现 PR。
-
-## Memory Sync / Backup 覆盖保护
-
-Memory sync、backup、history import 或本地恢复类提交不得覆盖 Agent Loop
-control-plane 文件。以下路径属于 Agent Loop control plane：
+## Protected control-plane paths
 
 - `.github/workflows/agent-loop-*`
-- `scripts/agent_loop/**`
-- `docs/governance/agent_loop/**`
+- `.github/workflows/project-governance.yml`
+- `.github/PULL_REQUEST_TEMPLATE/codex-task.md`
 - `.github/codex/prompts/**`
-- `.github/ISSUE_TEMPLATE/codex-task.yml`
+- `scripts/agent_loop/**`
+- `scripts/governance_ids.py`
+- `tests/agent_loop/**`
+- `docs/governance/agent_loop/**`
 
-如果 memory sync 或 backup 流程需要移动、导入或重写文件，必须显式排除以上路径，
-除非当前 Task Pack 明确授权修改 Agent Loop control plane。
+Memory sync, backup, and history import processes must not rewrite these paths
+unless the active Task Pack explicitly authorizes the change.

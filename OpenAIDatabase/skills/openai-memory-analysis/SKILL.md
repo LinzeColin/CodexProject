@@ -13,7 +13,8 @@ Keep this workflow local-first, deterministic, and review-gated.
 - Do not automate ChatGPT login, ChatGPT UI export, browser profiles, cookies, sessions, or saved-memory writes.
 - Do not commit raw OpenAI export ZIPs, unredacted raw messages, credentials, browser state, `.env`, cookies, private keys, or session tokens.
 - Do not send raw sensitive export content to a model unless the user explicitly authorizes that exact transfer.
-- Treat generated memory candidates as `pending` until the user accepts or edits them.
+- Treat generated run-local memory candidates as pending until a governed
+  writer records the review outcome in the canonical V2 dataset.
 - Prefer redacted JSONL/Markdown as the durable surface; SQLite is a local, ignored, rebuildable search index.
 - Do not create raw ZIP/tar/bundle copies. Complete private-origin recovery belongs in owner-controlled private Release storage; this skill records only redacted SHA-256-backed references.
 - Do not upload plaintext secrets to GitHub. If finance, trading, or other agents need credentials, store only redacted `secret_ref` metadata, intended use, authorization boundary, and local secret-resolver instructions in the memory database.
@@ -36,8 +37,11 @@ Keep this workflow local-first, deterministic, and review-gated.
    - `dual_agent_review.md`
 5. Output the human layer in the chat after processing. Link files only as audit backup, not as the main deliverable.
 6. Generate `chat_report.md` as the repository backup of the exact chat-facing report, but still paste the report into the chat.
-7. Maintain `data/memory/active/active_memory.jsonl` with all three tiers. Core profile uses high retrieval weight, important mid/long-term uses medium weight, and general short-term uses low weight.
-8. Apply `data/memory/curation/core_profile_review.json` when present, then maintain `data/derived/profile/CORE_PROFILE.md` as the fast personalization entry for future agents.
+7. Read canonical memory from `data/memory/records/manifest.json`. Candidate,
+   active, disputed, and retired records share `config/memory.schema.json`;
+   never write the retired legacy memory directories.
+8. Maintain `data/derived/profile/CORE_PROFILE.md` as a derived fast-entry view
+   of verified canonical `active` records.
 9. Maintain `PROJECT_INDEX.md`, `DECISION_LOG.md`, and `TIMELINE.md` so future agents can use the database directly.
 10. Commit and push durable derived memory, reports, requirements, and index changes to GitHub when the user wants repository backup.
 11. Rebuild/query the read-only retrieval index with `search`, `fetch`, or `serve-mcp`.
@@ -122,15 +126,20 @@ The human layer must translate memory records into:
 
 The full-flow durable database must include:
 
-- `data/memory/active/active_memory.jsonl` and `.md`: all three tiers, with retrieval weight and use/do-not-use guidance.
-- `data/memory/curation/core_profile_review.json`: reviewed overrides that keep only durable personalization in high-weight core profile.
+- `data/memory/records/manifest.json` and `records-NNNN.jsonl`: the one
+  canonical V2 dataset for candidate, active, disputed, and retired state.
 - `data/derived/profile/CORE_PROFILE.md`: compact, human-readable core profile for future agent personalization.
-- `data/memory/candidates/`: raw generated candidates for audit.
+- Run-local candidate output: human-review evidence only; no parallel durable
+  candidate store or implicit activation.
 - `data/derived/project_index/PROJECT_INDEX.md`: theme/project index.
 - `data/derived/decision_log/DECISION_LOG.md`: decisions and default implications.
 - `data/derived/timeline/TIMELINE.md`: chronological memory timeline.
 - `data/derived/chat_reports/*.chat_report.md`: backup copy of the chat-facing report.
 - `data/processed/indexes/memory_index.sqlite`: local read-only search/fetch index, ignored by Git and rebuilt automatically when absent.
+
+The former `data/memory/active/`, `candidates/`, `curation/`, and
+`secret_refs/` trees are read-only migration evidence. Do not modify, append,
+or dual-write them.
 
 Every memory candidate must include:
 

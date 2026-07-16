@@ -1,0 +1,153 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-CODEXPROJECT-REPO1-0007-ROOT-CLEANLINESS-20260716",
+  "project_id": "root-governance",
+  "task_id": "TSK.CodexProject.REPO1.0007",
+  "acceptance_ids": [
+    "ACC.CodexProject.REPO1.0007"
+  ],
+  "iteration_id": "ST03-PHD-REPO1-0007-LOCAL-IMPLEMENTATION-001",
+  "generated_at": "2026-07-15T16:25:41Z",
+  "implementation_base_sha": "79beaf0aa51b5d0e2914cead5fc4f3e660f8b430",
+  "implementation_base_tree": "c3ddacd64d050d646ddcf315e3905b1ca1dab802",
+  "content_tree_hash": "sha256-git-ls-tree-excluding-this-manifest:64ef17db3beca00e7accf29309208899533d8a03df64a6c252be8ef393bdf1d8",
+  "candidate_tree_sha1_excluding_this_manifest": "ecc2dcad12977062b910f5a43c4cdb9799c3e244",
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "README.md",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "docs/governance/ROOT_CLEANLINESS.md",
+    "governance/projects.yaml",
+    "governance/root_cleanliness_budget.json",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0007-ROOT-CLEANLINESS-20260716.json",
+    "governance/schemas/root_cleanliness_budget.schema.json",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/模型参数文件.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/root_cleanliness_audit.py",
+    "tests/governance/test_root_cleanliness.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "README.md",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "docs/governance/ROOT_CLEANLINESS.md",
+    "governance/projects.yaml",
+    "governance/root_cleanliness_budget.json",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0007-ROOT-CLEANLINESS-20260716.json",
+    "governance/schemas/root_cleanliness_budget.schema.json",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/模型参数文件.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/root_cleanliness_audit.py",
+    "tests/governance/test_root_cleanliness.py"
+  ],
+  "required_governance_files": [
+    "AGENTS.md",
+    "README.md",
+    "docs/governance/ROOT_CLEANLINESS.md",
+    "governance/projects.yaml",
+    "governance/root_cleanliness_budget.json",
+    "governance/schemas/root_cleanliness_budget.schema.json",
+    "scripts/root_cleanliness_audit.py",
+    "tests/governance/test_root_cleanliness.py",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0007-ROOT-CLEANLINESS-20260716.json"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "README.md",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "docs/governance/ROOT_CLEANLINESS.md",
+    "governance/projects.yaml",
+    "governance/root_cleanliness_budget.json",
+    "governance/schemas/root_cleanliness_budget.schema.json",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/功能清单.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/开发记录.md",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/模型参数文件.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/root_cleanliness_audit.py",
+    "tests/governance/test_root_cleanliness.py",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0007-ROOT-CLEANLINESS-20260716.json"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_root_cleanliness -v",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/validate_project_governance.py --all",
+    "python3 -B scripts/workflow_security_audit.py audit --json && python3 -B scripts/workflow_security_audit.py check-render",
+    "python3 -B scripts/lean_governance.py artifact-audit --base-ref HEAD --json",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root . --tree-ish <candidate-tree>",
+    "python3 -B scripts/lean_governance.py validate --changed-only --base-ref HEAD --enforce-sync --semantic",
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref HEAD",
+    "git diff --cached --check",
+    "high-confidence added-line secret-prefix scan"
+  ],
+  "test_results": [
+    {
+      "command": "focused root cleanliness regressions",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "7 tests passed, including current-root, policy/schema registration, generator parity, unowned item, duplicate registry, unapproved exclusion, temporary state, and broken-link guards."
+    },
+    {
+      "command": "root cleanliness audit",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "AGENTS 4084 bytes; README 3170 bytes; initial context 7254 bytes; 24/24 root items owned; active/retired/migrated projects 5/1/7; unowned, broken links, missing tokens, temporary patterns, and unapproved exclusions all zero."
+    },
+    {
+      "command": "all-project governance and workflow security",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All five active projects validate with 0 errors and 0 warnings after adding the missing arxiv roadmap_kind compatibility field; 15 workflows owned and every workflow-security counter is zero."
+    },
+    {
+      "command": "existing root contract compatibility regressions",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "7 selected historical root-entry, byte-budget, Zero-Open, ID, README, and Lean v2 contract tests passed; 331 unrelated cases were not selected."
+    },
+    {
+      "command": "artifact, Governance ID V2, and repository hygiene gates",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Artifact policy has 6 canonical resources and 0 duplicate editable truths with four retained legacy digests exact; 11501/11501 ID references resolve with 0 new positional IDs; repository hygiene retains 53 large objects and 4 archives with runtime noise and backup producers both zero."
+    },
+    {
+      "command": "changed-scope semantic validation and Lean CI",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope sync/semantic validation has 0 errors and 0 warnings; Lean CI decision SHIP, zero tracked write, stable SHA-256 bdf14517328f48ef0445dcecaac1e6c67021089d5b7cfbd39f635ef86c29624f."
+    },
+    {
+      "command": "diff and high-confidence added-line secret-prefix scan",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "git diff --cached --check passed and high-confidence added-line credential/private-key prefix findings equal zero."
+    }
+  ],
+  "evidence_refs": [
+    "docs/governance/ROOT_CLEANLINESS.md",
+    "governance/root_cleanliness_budget.json",
+    "scripts/root_cleanliness_audit.py",
+    "tests/governance/test_root_cleanliness.py",
+    "governance/task_records/TSK-CODEXPROJECT-REPO1-0007/开发记录.md",
+    "candidate-tree-excluding-receipt:ecc2dcad12977062b910f5a43c4cdb9799c3e244",
+    "governance/run_manifests/TSK-CODEXPROJECT-REPO1-0007-ROOT-CLEANLINESS-20260716.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "TSK.CodexProject.REPO1.0007 local root entry, registry, link, ownership, and context-budget cleanliness",
+  "ci_run_reference": "REMOTE_PUBLICATION_DEFERRED_NO_GITHUB_WRITE",
+  "summary": "Compress root AGENTS/README into stable Chinese entrypoints, remove stale required-project changed-scope exclusions, add a deterministic machine-readable root cleanliness budget and CI auditor, and preserve complete Task-level feature, development, and parameter records.",
+  "rollback": "Before whole-package publication, revert only this local Task commit. After publication, use a normal reviewed revert; history rewrite, force push, and direct main mutation are not rollback mechanisms.",
+  "unresolved_risks": [
+    "Formal GitHub acceptance and terminal PR/Issue/non-main=0/0/0 are deferred to the owner-mandated whole-package publication; this Run performs zero GitHub writes and leaves six pre-existing non-main branches untouched.",
+    "An optional WDA retirement-history regression probe passed 7 of 8 tests; its final test could not resolve historical commit d26a9f2379b48fb5d01aba256f8f03d614c49305 in the isolated object database. No large fetch is authorized for this Task."
+  ],
+  "self_reference_policy": "content_tree_hash and candidate_tree_sha1 exclude this compact receipt; final GitHub CI must bind the published commit after whole-package upload."
+}

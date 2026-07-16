@@ -1,0 +1,249 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0006-MEMORY-CLI-20260716",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0006",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0006"
+  ],
+  "iteration_id": "ST08-PHA-OPENAIDATABASE-PAM1-0006-001",
+  "generated_at": "2026-07-16T04:36:10Z",
+  "gate_status": "PASS_LOCAL_UNIFIED_MEMORY_CLI",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "implementation_base_sha": "c2256a091f38031cc237586c71de5226eb3e3e82",
+  "remote_main_sha_at_run_start": "1f3902d0b86a0cac6c2dd7cd0b9d05123b7cfa99",
+  "remote_main_terminal_observation": "terminal main=0faeebcd195a60388d1a3f5af79633cb9d6a28a2; 42 remote files changed since run start; exact local-file overlap=0; open PR/open issue/non-main branch=0/0/0; remote writes=0",
+  "candidate_tree_sha1_excluding_this_manifest": "0cdd6c2098052e691ce2339415c4fa1486394dd1",
+  "content_tree_hash": "d980ffddf4e27003e314c0210b7d73aeb9f11f924b59ebc21b4449e323356db8",
+  "self_reference_policy": "candidate_tree_sha1 and content_tree_hash bind the 21-file staged closure before this manifest is added; content hash is SHA-256 over sorted path, NUL, staged blob SHA-256 and LF tuples. Final 37/37 publication binds the published business commit.",
+  "summary": "Unify deterministic offline memory reads and plan-first guarded writes behind scripts/memory.py without changing canonical or raw business bytes.",
+  "ci_attestation_subject": "TSK.OpenAIDatabase.PAM1.0006 local unified memory CLI acceptance",
+  "ci_run_reference": "LOCAL_FAST_AND_SECURITY_ACCEPTANCE_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "evidence_refs": [
+    "EVID-OAIDB-PAM1-0006-MANIFEST"
+  ],
+  "scope": {
+    "unified_subcommand_count": 8,
+    "canonical_record_count": 198,
+    "canonical_active_record_count": 6,
+    "canonical_dataset_bytes": 488877,
+    "historical_public_raw_file_count": 513,
+    "canonical_business_data_files_modified": 0,
+    "raw_business_data_files_modified": 0,
+    "legacy_independent_cli_writer_count": 0,
+    "database_or_service_additions": 0,
+    "dependency_additions_or_version_changes": 0,
+    "business_remote_writes": 0,
+    "next_task_started": false
+  },
+  "dependency_evidence": {
+    "task_id": "TSK.OpenAIDatabase.PAM1.0005",
+    "manifest": "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0005-RAW-IMPORT-20260716.json",
+    "gate_status": "PASS_LOCAL_GOVERNED_RAW_IMPORT",
+    "implementation_commit": "c2256a091f38031cc237586c71de5226eb3e3e82"
+  },
+  "memory_cli_contract": {
+    "implementation": "OpenAIDatabase/scripts/memory.py",
+    "subcommands": [
+      "validate",
+      "build",
+      "query",
+      "import",
+      "export",
+      "doctor",
+      "benchmark",
+      "apply"
+    ],
+    "default_mode": "read_only",
+    "offline_commands": [
+      "validate",
+      "build",
+      "query",
+      "export"
+    ],
+    "write_commands": [
+      "import",
+      "apply"
+    ],
+    "write_guards": [
+      "deterministic_plan_first",
+      "--apply",
+      "exact_head_base_sha",
+      "content_bound_idempotency_key",
+      "single_flight_lock"
+    ],
+    "query_filters": [
+      "id",
+      "key",
+      "kind",
+      "scope",
+      "tag",
+      "as-of",
+      "keyword"
+    ],
+    "query_default": "active_only",
+    "query_default_limit": 20,
+    "query_max_limit": 200,
+    "benchmark_max_iterations": 20,
+    "query_p95_ms_max": 250,
+    "build_p95_ms_max": 30000,
+    "existing_canonical_mutation_admission": "FAIL_CLOSED_UNTIL_PAM1_0009"
+  },
+  "hard_gate_result": {
+    "one_implementation_entrypoint": true,
+    "default_read_only": true,
+    "byte_identical_build": true,
+    "canonical_export_matches_dataset_sha256": true,
+    "active_and_as_of_query": true,
+    "path_traversal_rejected": true,
+    "invalid_utf8_rejected": true,
+    "stale_base_rejected": true,
+    "wrong_idempotency_key_rejected": true,
+    "single_flight_collision_rejected": true,
+    "partial_write_count": 0,
+    "automatic_active_promotion_count": 0,
+    "legacy_independent_writer_count": 0,
+    "canonical_or_raw_business_write_count": 0
+  },
+  "model_formula_parameters": {
+    "model_id": "MOD-016",
+    "formula_id": "FORM-016",
+    "parameter_ids": [
+      "PARAM-102"
+    ]
+  },
+  "evidence_sha256": {
+    "OpenAIDatabase/scripts/memory.py": "88464d03df32778367780226420ad71c27b8bb8e06b4b445da8eb08b4497e99c",
+    "OpenAIDatabase/tests/test_memory_cli.py": "7e81b1239bc4d1bf408f1b46568d6636245488b54e6e8c3d80dc43ec383d58dc",
+    "OpenAIDatabase/config/command_ownership.json": "0ff5f56c66a68a235569b64d158bcb68e12290cef7b17eb9fc9a5ca58266dd01",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json": "bf676e7ca0d681f106747739c7ef043fac4779eb885358b2e9a76d7e4c024e9a",
+    "OpenAIDatabase/config/storage/raw_material_policy.json": "440e65c447a1c56043b571267d3281e58d92a9727310012417173d436b9989f9",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py": "1fb225c82b54f0c2daacc00f53950782e695263d2fd53fa10d1ebebbe9f84b1b",
+    "OpenAIDatabase/scripts/migrate_memory_records.py": "f2ae4df1a1901b14ab5b1311216312d9cc3573f9f13f3987a06fbd247e550eb6",
+    "governance/id_registry.json": "8f823455d87c3841274ee5fb0ee1c6dbe4b5dd1ffbe47e59796614103c572266"
+  },
+  "test_commands": [
+    "python3 -B -m unittest -q OpenAIDatabase.tests.test_memory_cli",
+    "python3 -B -m unittest -q OpenAIDatabase.tests.test_memory_cli OpenAIDatabase.tests.test_memory_canonical_cutover OpenAIDatabase.tests.test_memory_sharding OpenAIDatabase.tests.test_public_raw_import OpenAIDatabase.tests.test_command_ownership OpenAIDatabase.tests.test_directory_lifecycle OpenAIDatabase.tests.test_verification_policy",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier fast",
+    "python3 -B OpenAIDatabase/scripts/run_verification.py --tier security",
+    "python3 -B -m unittest -q tests.governance.test_openai_database_lean_convergence",
+    "python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref HEAD --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish <candidate-tree>",
+    "git diff --check; staged credential-shape scan; terminal GitHub audit"
+  ],
+  "test_results": [
+    {
+      "gate": "focused_memory_cli",
+      "result": "PASS",
+      "observed": "7/7 new tests passed with one four-record canonical fixture and one bounded raw fixture. They cover all eight subcommands, JSON errors, deterministic build/export, active/as-of filters, path/UTF-8 rejection, plan/base/idempotency/lock and raw/canonical replay."
+    },
+    {
+      "gate": "related_regression",
+      "result": "PASS",
+      "observed": "35/35 memory, cutover, sharding, raw import, command ownership, directory and verification-policy tests passed."
+    },
+    {
+      "gate": "fast_and_security",
+      "result": "PASS",
+      "observed": "Fast tier passed 19/19 and security tier passed 83/83. The first security run exposed one stale raw-writer ownership literal; the one-line validator correction passed its four focused tests and the full security rerun."
+    },
+    {
+      "gate": "canonical_bytes_and_performance",
+      "result": "PASS",
+      "observed": "The current 198-record build and JSONL export reproduce dataset SHA-256 fa9edb7191c5751331f52f4103aa1a6709a7a1e22044d6d85e38ed7d771ca927. One bounded benchmark observed build/query p95 81.897/0.048 ms against 30000/250 ms gates."
+    },
+    {
+      "gate": "governance_and_repository",
+      "result": "PASS",
+      "observed": "Lean render has zero drift/reference issues and 45961 total bytes; convergence passed 7/7. ID registry revision 80, candidate-tree hygiene, diff and staged high-confidence credential-shape count zero passed."
+    },
+    {
+      "gate": "terminal_remote",
+      "result": "PASS",
+      "observed": "Remote main advanced by three commits and 42 KMFA/arxiv files after run start; exact local overlap is zero. Open PR/open issue/non-main branch=0/0/0 and this Run made no remote write."
+    }
+  ],
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/scripts/validate_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_canonical_cutover.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0006-MEMORY-CLI-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/config/command_ownership.json",
+    "OpenAIDatabase/config/quality/verification_policy.json",
+    "OpenAIDatabase/config/storage/directory_lifecycle.json",
+    "OpenAIDatabase/config/storage/raw_material_policy.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/import_public_raw_evidence.py",
+    "OpenAIDatabase/scripts/memory.py",
+    "OpenAIDatabase/scripts/migrate_memory_records.py",
+    "OpenAIDatabase/scripts/validate_raw_material_policy.py",
+    "OpenAIDatabase/tests/test_command_ownership.py",
+    "OpenAIDatabase/tests/test_memory_canonical_cutover.py",
+    "OpenAIDatabase/tests/test_memory_cli.py",
+    "OpenAIDatabase/tests/test_verification_policy.py",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0006-MEMORY-CLI-20260716.json",
+    "tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0006-MEMORY-CLI-20260716.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单.md",
+    "OpenAIDatabase/开发记录.md",
+    "OpenAIDatabase/模型参数文件.md",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0006-MEMORY-CLI-20260716.json"
+  ],
+  "known_boundaries": [
+    "No real canonical or raw business record was created, changed, retired, disputed or deleted in this Task.",
+    "The complete-record-set apply path may materialize an absent canonical dataset or no-op on identical bytes; it rejects a differing existing dataset until PAM1.0009 adds mutation admission and PR transaction semantics.",
+    "Full conflict/supersession lifecycle remains PAM1.0010 and forgetting/negative-memory behavior remains PAM1.0011.",
+    "Historical cutover code remains a read-only verifier; the raw importer remains a thin compatibility CLI plus tested library helper, not an independent canonical command owner.",
+    "No resident database/service, vector database, MCP server, dependency, deployment or remote business object was added.",
+    "Business publication remains deferred until all 37 Task Pack tasks pass."
+  ],
+  "publication_boundary": "LOCAL_ONLY_BUSINESS_PUBLICATION_DEFERRED_UNTIL_37_OF_37",
+  "rollback": "Revert this one local Task commit. Remove memory.py, its focused test and ownership/governance changes; restore the historical raw/cutover CLI declarations. Canonical/raw business bytes, dependencies, services and remote state require no compensation."
+}

@@ -38,6 +38,7 @@ def write_stage_flight_fixtures(root: Path) -> None:
         "agent-authorization",
         "--database-dir",
         str(root),
+        "--apply",
     ])
 
 
@@ -96,6 +97,7 @@ class S08P3StageFlightTest(unittest.TestCase):
                 "stage-flight",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S08P3")
             self.assertTrue(output.exists())

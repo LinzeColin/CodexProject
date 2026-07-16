@@ -44,12 +44,43 @@ jobs:
       PYTHONPYCACHEPREFIX: /tmp/python-pycache
       PYTEST_ADDOPTS: "-p no:cacheprovider"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v6
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
+      - name: Audit workflow topology, permissions, and action pins
+        run: |
+          python3 -B scripts/workflow_security_audit.py audit --json
+          python3 -B scripts/workflow_security_audit.py check-render
+      - name: Audit canonical evidence and artifact retention
+        env:
+          GOVERNANCE_ARTIFACT_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}
+        run: |
+          if [ -n "${GOVERNANCE_ARTIFACT_BASE_REF}" ] && git rev-parse --verify "${GOVERNANCE_ARTIFACT_BASE_REF}^{commit}" >/dev/null 2>&1; then
+            python3 -B scripts/lean_governance.py artifact-audit --base-ref "${GOVERNANCE_ARTIFACT_BASE_REF}" --json
+          else
+            python3 -B scripts/lean_governance.py artifact-audit --json
+          fi
+          python3 -B scripts/lean_governance.py artifact-check-render
+      - name: Audit repository large objects and generated hygiene
+        run: python3 -B scripts/repository_hygiene_audit.py --root . --tree-ish HEAD
+      - name: Audit root entries, ownership, links, and context budget
+        run: python3 -B scripts/root_cleanliness_audit.py --root . --json
+      - name: Audit immutable Governance ID V2
+        env:
+          GOVERNANCE_ID_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}
+        run: |
+          if [ -n "${GOVERNANCE_ID_BASE_REF}" ] && git rev-parse --verify "${GOVERNANCE_ID_BASE_REF}^{commit}" >/dev/null 2>&1; then
+            python3 -B scripts/governance_id_audit.py --base-ref "${GOVERNANCE_ID_BASE_REF}" --json
+          else
+            python3 -B scripts/governance_id_audit.py --json
+          fi
+      - name: Run Agent Loop bootstrap contract tests
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py' -q
       - name: Run full governance validator tests
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: |
@@ -128,7 +159,7 @@ jobs:
             python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py -q
       - name: Upload changed-only governance evidence artifact
         if: always() && (github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'))
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: governance-changed-only-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/governance-ci-evidence/**
@@ -146,12 +177,14 @@ jobs:
         run: python3 scripts/lean_governance.py validate --all --semantic --drift-report
       - name: Validate selected project
         if: github.event_name == 'workflow_dispatch' && inputs.scope == 'project'
+        env:
+          SELECTED_PROJECT: ${{ inputs.project }}
         run: |
-          if [ -z "${{ inputs.project }}" ]; then
+          if [ -z "$SELECTED_PROJECT" ]; then
             echo "project input is required when scope=project"
             exit 1
           fi
-          python3 scripts/lean_governance.py validate --project "${{ inputs.project }}" --semantic
+          python3 scripts/lean_governance.py validate --project "$SELECTED_PROJECT" --semantic
       - name: Verify generated governance dashboard
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: |
@@ -160,7 +193,7 @@ jobs:
           git diff --exit-code -- ':(glob)**/docs/governance/ASSURANCE_STATUS.yaml' ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
       - name: Upload generated governance views artifact
         if: success() && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all'))
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: governance-generated-views-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/governance-generated-views/**
@@ -186,7 +219,7 @@ jobs:
           python3 scripts/governance_setup_doctor.py --json --check-github > "${GOVERNANCE_ATTESTATION_DIR}/governance-setup-doctor.json"
       - name: Upload CI attestation artifact
         if: success() && github.event_name == 'workflow_dispatch' && inputs.scope == 'all'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/governance-ci-attestation/*.json
@@ -194,12 +227,15 @@ jobs:
           retention-days: 30
       - name: Write governance summary
         if: always()
+        env:
+          SUMMARY_SCOPE: ${{ inputs.scope || 'auto' }}
+          SUMMARY_PROJECT: ${{ inputs.project || 'not_applicable' }}
         run: |
           {
             echo "## Project Governance"
             echo "- event: ${{ github.event_name }}"
-            echo "- scope: ${{ inputs.scope || 'auto' }}"
-            echo "- project: ${{ inputs.project || 'not_applicable' }}"
+            echo "- scope: $SUMMARY_SCOPE"
+            echo "- project: $SUMMARY_PROJECT"
             echo "- PR/main path: changed-scope fast gate"
             echo "- full governance, generated views, and attestation: scheduled or manual all scope"
           } >> "$GITHUB_STEP_SUMMARY"

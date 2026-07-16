@@ -1,0 +1,32 @@
+{
+  "cleanup": {
+    "cache_cleanup": {
+      "cache_path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/macdata/airM2/data/cache/archive_push",
+      "freed_mb": 0.0,
+      "status": "已清理 macdata 临时上传缓存"
+    },
+    "cutoff_date_kept_from": "2026-07-09",
+    "deleted_dirs": 0,
+    "deleted_files": 0,
+    "deleted_paths": [],
+    "dry_run": false,
+    "freed_mb": 0.0,
+    "retention_days": 3,
+    "status": "已在 raw 数据上传验证成功后清理本机旧数据和 macdata 临时缓存"
+  },
+  "created_at_local": "2026-07-11T01:12:29+10:00",
+  "device_key": "airM2",
+  "final_report_path": "reports/current_3days/2026-07-11/airM2-20260711-011209_final.md",
+  "raw_archive": {
+    "archive_branch": "macdata-airM2",
+    "commit_message": "data(macdata-airM2): 2026-07-11 raw airM2-20260711-011209",
+    "local_commit_hash": "cf1e03f1291dce16010c90b0c30a6f29ed7c7f89",
+    "message": "远程分支提交哈希与本地提交哈希一致。",
+    "ok": true,
+    "remote_commit_hash": "cf1e03f1291dce16010c90b0c30a6f29ed7c7f89",
+    "remote_verified": true,
+    "status": "上传成功并已验证"
+  },
+  "raw_data_path": "data/current_3days/raw/2026-07-11/airM2-20260711-011209.json",
+  "run_id": "airM2-20260711-011209"
+}

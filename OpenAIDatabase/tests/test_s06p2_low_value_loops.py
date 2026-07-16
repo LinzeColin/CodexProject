@@ -196,6 +196,7 @@ class S06P2LowValueLoopsTest(unittest.TestCase):
                 "low-value-loops",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             loops_path = root / "data/derived/behavior_intelligence/low_value_loops.json"
             self.assertEqual(applied["task_id"], "MA-V12-S06P2")

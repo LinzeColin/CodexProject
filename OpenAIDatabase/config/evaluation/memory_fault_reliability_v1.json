@@ -1,0 +1,277 @@
+{
+  "schema_version": "openai_database.memory_fault_reliability.v1",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0016",
+  "acceptance_id": "ACC.OpenAIDatabase.PAM1.0016",
+  "files": {
+    "report": "data/derived/evaluation/memory_gold/reports/fault_reliability_v1.json"
+  },
+  "limits": {
+    "case_count_min": 30,
+    "writer_counts": [2, 5, 10],
+    "max_attempts": 3,
+    "max_retry_seconds": 120,
+    "janitor_convergence_minutes_max": 15,
+    "partial_canonical_write_count_max": 0,
+    "duplicate_record_count_max": 0,
+    "duplicate_settlement_write_count_max": 0,
+    "required_scenarios": [
+      "truncated_jsonl",
+      "duplicate_record_id",
+      "wrong_record_hash",
+      "missing_shard",
+      "missing_lexical_index",
+      "etag_stale_invalidation",
+      "forbidden_403",
+      "not_found_404",
+      "rate_limit_429_recovery",
+      "server_500_recovery",
+      "timeout_recovery",
+      "concurrent_writers_2",
+      "concurrent_writers_5",
+      "concurrent_writers_10",
+      "duplicate_workflow_run",
+      "stale_pr",
+      "settlement_double_run",
+      "janitor_active_transaction",
+      "janitor_trusted_orphan",
+      "stale_tested_base"
+    ]
+  },
+  "cases": [
+    {
+      "id": "FI-IN-001",
+      "category": "input_integrity",
+      "scenario": "truncated_jsonl",
+      "expected": {"outcome": "fail_closed", "error": "input_missing_final_lf", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-002",
+      "category": "input_integrity",
+      "scenario": "duplicate_record_id",
+      "expected": {"outcome": "fail_closed", "error": "duplicate_record_id", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-003",
+      "category": "input_integrity",
+      "scenario": "wrong_record_hash",
+      "expected": {"outcome": "fail_closed", "error": "record hash mismatch", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-004",
+      "category": "input_integrity",
+      "scenario": "missing_shard",
+      "expected": {"outcome": "fail_closed", "error": "repository_file_not_found_or_outside_root", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-005",
+      "category": "input_integrity",
+      "scenario": "missing_lexical_index",
+      "expected": {"outcome": "fail_closed", "error": "lexical_index_schema_invalid", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-006",
+      "category": "input_integrity",
+      "scenario": "invalid_utf8",
+      "expected": {"outcome": "fail_closed", "error": "invalid_utf8", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-007",
+      "category": "input_integrity",
+      "scenario": "duplicate_json_key",
+      "expected": {"outcome": "fail_closed", "error": "invalid_json_line:1:duplicate_json_key", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-008",
+      "category": "input_integrity",
+      "scenario": "wrong_shard_hash",
+      "expected": {"outcome": "fail_closed", "error": "shard_integrity_mismatch", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-009",
+      "category": "input_integrity",
+      "scenario": "missing_manifest",
+      "expected": {"outcome": "fail_closed", "error": "repository_file_not_found_or_outside_root", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-IN-010",
+      "category": "input_integrity",
+      "scenario": "duplicate_active_key",
+      "expected": {"outcome": "fail_closed", "error": "duplicate unresolved active memory key and scope", "partial_write_count": 0}
+    },
+    {
+      "id": "FI-CW-001",
+      "category": "canonical_write",
+      "scenario": "atomic_precommit_rollback",
+      "expected": {"outcome": "rolled_back", "error": "injected_directory_fsync_failure", "partial_write_count": 0, "retry_idempotent": false}
+    },
+    {
+      "id": "FI-CW-002",
+      "category": "canonical_write",
+      "scenario": "atomic_postcommit_convergence",
+      "expected": {"outcome": "converged", "error": "injected_directory_fsync_failure", "partial_write_count": 0, "retry_idempotent": true}
+    },
+    {
+      "id": "FI-API-001",
+      "category": "transport",
+      "scenario": "etag_stale_invalidation",
+      "expected": {"outcome": "success", "response_status": 200, "request_count": 2, "retry_delays_seconds": []}
+    },
+    {
+      "id": "FI-API-002",
+      "category": "transport",
+      "scenario": "304_without_cache",
+      "expected": {"outcome": "fail_closed", "error": "github_304_without_cache", "request_count": 1, "retry_delays_seconds": []}
+    },
+    {
+      "id": "FI-API-003",
+      "category": "transport",
+      "scenario": "forbidden_403",
+      "expected": {"outcome": "fail_closed", "error": "github_read_forbidden", "request_count": 1, "retry_delays_seconds": []}
+    },
+    {
+      "id": "FI-API-004",
+      "category": "transport",
+      "scenario": "not_found_404",
+      "expected": {"outcome": "fail_closed", "error": "github_read_not_found", "request_count": 1, "retry_delays_seconds": []}
+    },
+    {
+      "id": "FI-API-005",
+      "category": "transport",
+      "scenario": "rate_limit_429_recovery",
+      "expected": {"outcome": "success", "response_status": 200, "request_count": 2, "retry_delays_seconds": [2.0]}
+    },
+    {
+      "id": "FI-API-006",
+      "category": "transport",
+      "scenario": "rate_limit_429_exhaustion",
+      "expected": {"outcome": "fail_closed", "error": "github_rate_limit_retry_exhausted", "request_count": 3, "retry_delays_seconds": [1.0, 1.0]}
+    },
+    {
+      "id": "FI-API-007",
+      "category": "transport",
+      "scenario": "server_500_recovery",
+      "expected": {"outcome": "success", "response_status": 200, "request_count": 2, "retry_delays_seconds": [1.0]}
+    },
+    {
+      "id": "FI-API-008",
+      "category": "transport",
+      "scenario": "server_500_exhaustion",
+      "expected": {"outcome": "fail_closed", "error": "github_transient_retry_exhausted", "request_count": 3, "retry_delays_seconds": [1.0, 2.0]}
+    },
+    {
+      "id": "FI-API-009",
+      "category": "transport",
+      "scenario": "timeout_recovery",
+      "expected": {"outcome": "success", "response_status": 200, "request_count": 2, "retry_delays_seconds": [1.0]}
+    },
+    {
+      "id": "FI-API-010",
+      "category": "transport",
+      "scenario": "timeout_exhaustion",
+      "expected": {"outcome": "fail_closed", "error": "github_transient_retry_exhausted", "request_count": 3, "retry_delays_seconds": [1.0, 2.0]}
+    },
+    {
+      "id": "FI-API-011",
+      "category": "transport",
+      "scenario": "missing_etag",
+      "expected": {"outcome": "fail_closed", "error": "github_etag_missing", "request_count": 1, "retry_delays_seconds": []}
+    },
+    {
+      "id": "FI-CON-001",
+      "category": "concurrency",
+      "scenario": "concurrent_writers_2",
+      "writer_count": 2,
+      "expected": {"writer_count": 2, "legal_write_count": 1, "rejected_writer_count": 1, "retry_idempotent_count": 2, "duplicate_record_count": 0, "partial_write_count": 0}
+    },
+    {
+      "id": "FI-CON-002",
+      "category": "concurrency",
+      "scenario": "concurrent_writers_5",
+      "writer_count": 5,
+      "expected": {"writer_count": 5, "legal_write_count": 1, "rejected_writer_count": 4, "retry_idempotent_count": 5, "duplicate_record_count": 0, "partial_write_count": 0}
+    },
+    {
+      "id": "FI-CON-003",
+      "category": "concurrency",
+      "scenario": "concurrent_writers_10",
+      "writer_count": 10,
+      "expected": {"writer_count": 10, "legal_write_count": 1, "rejected_writer_count": 9, "retry_idempotent_count": 10, "duplicate_record_count": 0, "partial_write_count": 0}
+    },
+    {
+      "id": "FI-SET-001",
+      "category": "settlement",
+      "scenario": "duplicate_workflow_run",
+      "overrides": {"duplicate_event": true},
+      "expected": {"action": "NOOP", "reason": "duplicate_event", "close_issue": false, "convergence_minutes": 0, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-002",
+      "category": "settlement",
+      "scenario": "settlement_double_run",
+      "expected": {"actions": ["MERGE_DELETE", "NOOP"], "legal_settlement_write_count": 1, "duplicate_settlement_write_count": 0, "convergence_minutes": 15}
+    },
+    {
+      "id": "FI-SET-003",
+      "category": "settlement",
+      "scenario": "stale_pr",
+      "overrides": {"superseded": true},
+      "expected": {"action": "CLOSE_DELETE", "reason": "superseded", "close_issue": false, "convergence_minutes": 15, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-004",
+      "category": "settlement",
+      "scenario": "janitor_trusted_orphan",
+      "overrides": {"orphan": true, "pr_state": "missing"},
+      "expected": {"action": "DELETE_ORPHAN", "reason": "trusted_orphan", "close_issue": false, "convergence_minutes": 15, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-005",
+      "category": "settlement",
+      "scenario": "janitor_active_transaction",
+      "overrides": {"workflow_conclusion": "in_progress"},
+      "expected": {"action": "WAIT", "reason": "workflow_not_terminal", "close_issue": false, "convergence_minutes": 0, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-006",
+      "category": "settlement",
+      "scenario": "janitor_untrusted_orphan",
+      "overrides": {"orphan": true, "pr_state": "missing", "trusted_marker": false},
+      "expected": {"action": "BLOCK", "reason": "untrusted_orphan", "close_issue": false, "convergence_minutes": 0, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-007",
+      "category": "settlement",
+      "scenario": "terminal_failure",
+      "overrides": {"workflow_conclusion": "failure"},
+      "expected": {"action": "CLOSE_DELETE", "reason": "failure", "close_issue": false, "convergence_minutes": 15, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-008",
+      "category": "settlement",
+      "scenario": "terminal_timeout",
+      "overrides": {"workflow_conclusion": "timed_out"},
+      "expected": {"action": "CLOSE_DELETE", "reason": "timed_out", "close_issue": false, "convergence_minutes": 15, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-009",
+      "category": "settlement",
+      "scenario": "merge_conflict",
+      "overrides": {"mergeable": false},
+      "expected": {"action": "CLOSE_DELETE", "reason": "conflict", "close_issue": false, "convergence_minutes": 15, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-010",
+      "category": "settlement",
+      "scenario": "stale_tested_base",
+      "overrides": {"tested_base_exact": false},
+      "expected": {"action": "CLOSE_DELETE", "reason": "stale_tested_base", "close_issue": false, "convergence_minutes": 15, "duplicate_settlement_write_count": 0}
+    },
+    {
+      "id": "FI-SET-011",
+      "category": "settlement",
+      "scenario": "accidental_issue",
+      "overrides": {"issue_open": true, "pr_state": "closed"},
+      "expected": {"action": "NOOP", "reason": "pr_already_settled", "close_issue": true, "convergence_minutes": 15, "duplicate_settlement_write_count": 0}
+    }
+  ]
+}

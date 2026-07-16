@@ -18,12 +18,12 @@ python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root
 4. 采集明文指标。
 5. 生成全中文报告草稿。
 6. 凭证扫描。
-7. 上传 raw 数据到 `macdata-airM2`。
-8. 远程 hash 验证。
+7. raw 数据通过唯一短命 PR 进入 `main`。
+8. 等待 Project Governance 与 trusted Settlement，逐文件 SHA-256 验证并确认 `0/0/0`。
 9. 验证成功后清理本机 3 天以前数据和 macdata 临时缓存。
 10. 生成最终中文报告。
-11. 上传最终报告到 `macdata-airM2`。
-12. Codex session 输出全中文报告。
+11. 最终报告通过第二个顺序短命 PR 进入 `main`，再次验证并回到 `0/0/0`。
+12. Codex session 输出全中文报告；全过程不得同时存在两个 PR。
 
 ## 失败处理
 
@@ -32,8 +32,8 @@ python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root
 | owner_confirmations.json 不存在 | 停止，先问用户 |
 | 设备不匹配 | 停止，列出差异，先问用户 |
 | 凭证扫描失败 | 停止上传，保留本地数据 |
-| Git push 失败 | 不清理本机旧数据 |
-| 远程验证失败 | 不清理本机旧数据 |
+| branch push / PR / CI / Settlement 失败 | 补偿关闭 PR、删除事务分支，不清理本机旧数据 |
+| main hash reconciliation / 0/0/0 失败 | 不清理本机旧数据 |
 | 清理失败 | 报告中明文写出失败原因 |
 
 ## 本机减负边界

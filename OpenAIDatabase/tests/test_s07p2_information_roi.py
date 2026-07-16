@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from OpenAIDatabase.tests.memory_test_support import write_canonical_memory
 from OpenAIDatabase.tests.test_s07p1_economic_proxy import (
     ATLASCTL_SCRIPT,
     REPO_ROOT,
@@ -43,6 +44,22 @@ def copy_s07p2_configs(root: Path) -> None:
 def write_information_roi_fixtures(root: Path) -> None:
     write_economic_proxy_fixtures(root)
     copy_s07p2_configs(root)
+    write_canonical_memory(
+        root,
+        [
+            {
+                "id": "mem_information_roi_fixture",
+                "statement": "Synthetic Memory Atlas information ROI fixture.",
+                "category": "project_context",
+                "status": "active",
+                "date": "2026-07-08",
+                "importance": "中",
+                "confidence": "high",
+                "memory_tier": "一般",
+                "sensitivity": "public",
+            }
+        ],
+    )
     run_json([
         sys.executable,
         str(ATLASCTL_SCRIPT),
@@ -51,6 +68,7 @@ def write_information_roi_fixtures(root: Path) -> None:
         "economic-proxy",
         "--database-dir",
         str(root),
+        "--apply",
     ])
     atlas_output = root / "data" / "derived" / "visualization" / "memory_atlas.json"
     run_json([
@@ -119,6 +137,7 @@ class S07P2InformationRoiTest(unittest.TestCase):
                 "information-roi",
                 "--database-dir",
                 str(root),
+                "--apply",
             ])
             self.assertEqual(applied["task_id"], "MA-V12-S07P2")
             self.assertTrue((root / "data/derived/information_roi/information_roi_gate.json").exists())

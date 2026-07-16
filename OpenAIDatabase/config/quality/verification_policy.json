@@ -1,0 +1,263 @@
+{
+  "schema_version": "openai_database.verification_policy.v1",
+  "task_id": "TSK.OpenAIDatabase.CLEAN1.0009",
+  "acceptance_id": "ACC.OpenAIDatabase.CLEAN1.0009",
+  "last_updated_task_id": "TSK.OpenAIDatabase.PAM1.0019",
+  "last_updated_acceptance_id": "ACC.OpenAIDatabase.PAM1.0019",
+  "execution_tiers": {
+    "fast": {
+      "owner": "OpenAIDatabase/governance-quality",
+      "purpose": "Static policy, ownership, lifecycle and retention gates",
+      "test_files": [
+        "tests/test_command_ownership.py",
+        "tests/test_directory_lifecycle.py",
+        "tests/test_generated_retention.py",
+        "tests/test_personalization_architecture.py",
+        "tests/test_verification_policy.py"
+      ]
+    },
+    "unit": {
+      "owner": "OpenAIDatabase/modeling-core",
+      "purpose": "Offline deterministic model and transformation behavior",
+      "test_files": [
+        "tests/test_codex_runtime_config.py",
+        "tests/test_memory_atlas_v1_2_home_layout_contract.py",
+        "tests/test_memory_atlas_v1_2_product_identity_contract.py",
+        "tests/test_s05p2_facet_extractor.py",
+        "tests/test_s05p3_facet_evidence_refs.py",
+        "tests/test_s06p1_cluster_builder.py",
+        "tests/test_s06p2_low_value_loops.py",
+        "tests/test_s06p3_opportunity_discovery.py",
+        "tests/test_s07p1_economic_proxy.py",
+        "tests/test_s07p2_information_roi.py",
+        "tests/test_s07p3_formula_what_if.py",
+        "tests/test_s08p1_agent_collaboration.py",
+        "tests/test_s08p3_stage_flight.py",
+        "tests/test_s09p1_latent_signals.py",
+        "tests/test_s09p2_self_iteration.py",
+        "tests/test_s09p3_decision_debt.py"
+      ]
+    },
+    "security": {
+      "owner": "OpenAIDatabase/privacy-security",
+      "purpose": "Offline privacy, authorization, raw-data and deployment-boundary gates",
+      "test_files": [
+        "tests/test_cloudflare_pages_access_preflight.py",
+        "tests/test_memory_atlas_cloudflare_deploy.py",
+      "tests/test_memory_atlas_r7_public_raw.py",
+        "tests/test_memory_atlas_r7_raw_integrity.py",
+        "tests/test_agent_memory_views.py",
+        "tests/test_agent_transport_compatibility.py",
+        "tests/test_memory_canonical_cutover.py",
+      "tests/test_memory_cli.py",
+        "tests/test_memory_forgetting.py",
+        "tests/test_memory_gold_benchmark.py",
+        "tests/test_memory_gold_evaluation.py",
+        "tests/test_memory_retrieval_performance.py",
+        "tests/test_memory_fault_reliability.py",
+        "tests/test_memory_automation_c_e2e.py",
+        "tests/test_memory_snapshot_recovery.py",
+        "tests/test_memory_production_acceptance.py",
+        "tests/test_memory_lifecycle.py",
+      "tests/test_memory_mutation.py",
+      "tests/test_memory_security.py",
+      "tests/test_memory_migration_profile.py",
+      "tests/test_memory_record_schema_v2.py",
+      "tests/test_memory_sharding.py",
+      "tests/test_public_raw_import.py",
+      "tests/test_raw_material_policy.py",
+        "tests/test_s03p3_raw_manifest.py",
+        "tests/test_s08p2_agent_authorization.py",
+        "tests/test_s3pdt01_privacy.py"
+      ]
+    },
+    "integration": {
+      "owner": "OpenAIDatabase/runtime-integration",
+      "purpose": "Local-only sync, runtime, build and acceptance integration",
+      "test_files": [
+        "tests/test_agent_context_pack.py",
+        "tests/test_codex_auto_update_launchagent.py",
+        "tests/test_codex_history_exports.py",
+        "tests/test_codex_memory_sync.py",
+        "tests/test_cross_agent_memory_adapter.py",
+        "tests/test_memory_atlas_acceptance_audit.py",
+        "tests/test_memory_atlas_app_runtime.py",
+        "tests/test_memory_atlas_data.py",
+        "tests/test_memory_atlas_deployment.py",
+        "tests/test_memory_atlas_goal_completion.py",
+        "tests/test_memory_atlas_launcher.py",
+        "tests/test_memory_atlas_owner_daily.py",
+        "tests/test_memory_atlas_proposal_apply.py",
+        "tests/test_memory_atlas_r7_recovery.py",
+        "tests/test_memory_atlas_r7_release_parity.py",
+        "tests/test_memory_atlas_r8_acceptance.py",
+        "tests/test_memory_atlas_release_audit.py",
+        "tests/test_memory_atlas_visual_acceptance.py",
+        "tests/test_memory_atlas_visual_workflows.py",
+        "tests/test_openai_memory_analysis.py",
+        "tests/test_s04p1_chatgpt_sync.py",
+        "tests/test_s04p2_codex_agent_sync.py",
+        "tests/test_s04p3_github_backup.py"
+      ]
+    },
+    "full": {
+      "owner": "OpenAIDatabase/quality",
+      "purpose": "Aggregate every disjoint test tier once",
+      "includes": [
+        "fast",
+        "unit",
+        "security",
+        "integration"
+      ]
+    }
+  },
+  "test_rules": {
+    "known_flaky_count": 0,
+    "conditional_skip_count": 0,
+    "forbidden_skip_patterns": [
+      "@unittest\\.skip",
+      "@pytest\\.mark\\.skip",
+      "pytest\\.skip\\("
+    ],
+    "forbidden_flaky_patterns": [
+      "@pytest\\.mark\\.flaky",
+      "--reruns",
+      "tenacity\\.retry"
+    ],
+    "unit_forbidden_live_or_nondeterministic_patterns": [
+      "\\brequests\\.",
+      "\\bhttpx\\.",
+      "urllib\\.request",
+      "\\burlopen\\(",
+      "\\bsocket\\.",
+      "\\bcurl\\b",
+      "\\bwget\\b",
+      "\\bgh api\\b",
+      "\\brandom\\.",
+      "datetime\\.now\\(",
+      "time\\.sleep\\("
+    ]
+  },
+  "frontend": {
+    "package_json": "apps/memory-atlas/package.json",
+    "lockfile": "apps/memory-atlas/package-lock.json",
+    "script_directory": "apps/memory-atlas/scripts",
+    "required_install_command": "npm ci --prefix apps/memory-atlas",
+    "required_build_command": "npm run build --prefix apps/memory-atlas",
+    "compatibility_aliases": {
+      "validate:stage8-local-app-packaging": "npm run validate:stage8-local-app"
+    }
+  },
+  "ci": {
+    "workflow": ".github/workflows/openai-database-ci.yml",
+    "required_tiers": [
+      "fast",
+      "unit",
+      "security",
+      "integration"
+    ],
+    "required_reproducible_build_fragment": "SOURCE_DATE_EPOCH=\"$(git log -1 --format=%ct)\" python scripts/atlasctl.py build-atlas --apply",
+    "required_step_order": [
+      "SOURCE_DATE_EPOCH=\"$(git log -1 --format=%ct)\" python scripts/atlasctl.py build-atlas --apply",
+      "npm run build --prefix apps/memory-atlas",
+      "python3 scripts/run_verification.py --tier integration",
+      "python scripts/atlasctl.py audit --check goal-completion"
+    ],
+    "aggregate_audit": {
+      "command": "python scripts/atlasctl.py audit --check goal-completion",
+      "root_script": "scripts/audit_memory_atlas_goal_completion.py",
+      "root_required_calls": [
+        "audit_acceptance(",
+        "cloudflare_preflight(",
+        "audit_final_records("
+      ],
+      "acceptance_script": "scripts/audit_memory_atlas_acceptance.py",
+      "acceptance_required_calls": [
+        "audit_release(",
+        "audit_visual_acceptance(",
+        "cloudflare_preflight("
+      ],
+      "forbidden_duplicate_commands": [
+        "python scripts/atlasctl.py audit --check release",
+        "python scripts/atlasctl.py audit --check visual-acceptance",
+        "python scripts/atlasctl.py audit --check acceptance",
+        "python scripts/preflight_cloudflare_pages_access.py --publish-dir"
+      ]
+    },
+    "full_tier_is_local_aggregate": true,
+    "memory_gold_required_gate": {
+      "config": "config/evaluation/memory_gold_evaluation_v1.json",
+      "fast_event": "pull_request",
+      "full_events": ["push:main", "schedule", "workflow_dispatch"],
+      "fast_command": "python3 scripts/evaluate_memory_gold_benchmark.py --suite fast --check",
+      "full_command": "python3 scripts/evaluate_memory_gold_benchmark.py --suite full --check",
+      "soft_failure_allowed": false
+    },
+    "memory_retrieval_required_gate": {
+      "config": "config/evaluation/memory_retrieval_performance_v1.json",
+      "command": "python3 scripts/evaluate_memory_retrieval_performance.py --check",
+      "events": [
+        "pull_request",
+        "push:main",
+        "schedule",
+        "workflow_dispatch"
+      ],
+      "soft_failure_allowed": false
+    },
+    "memory_automation_c_e2e_required_gate": {
+      "config": "config/evaluation/memory_automation_c_e2e_v1.json",
+      "command": "python3 scripts/evaluate_memory_automation_c_e2e.py --check",
+      "events": [
+        "pull_request",
+        "push:main",
+        "schedule",
+        "workflow_dispatch"
+      ],
+      "scenario_count": 7,
+      "profile_pass_required": 5,
+      "soft_failure_allowed": false,
+      "target_github_write_count": 0
+    },
+    "memory_snapshot_recovery_required_gate": {
+      "config": "config/evaluation/memory_snapshot_recovery_v1.json",
+      "command": "python3 scripts/evaluate_memory_snapshot_recovery.py --check",
+      "events": [
+        "pull_request",
+        "push:main",
+        "schedule",
+        "workflow_dispatch"
+      ],
+      "canonical_hash_match_percent": 100,
+      "rto_target_seconds": 1800,
+      "required_negative_case_count": 3,
+      "soft_failure_allowed": false,
+      "target_github_write_count": 0
+    },
+    "memory_production_acceptance_required_gate": {
+      "config": "config/evaluation/memory_production_acceptance_v1.json",
+      "command": "python3 scripts/evaluate_memory_production_acceptance.py --phase candidate --check --reuse-current-reports",
+      "events": [
+        "pull_request",
+        "push:main",
+        "schedule",
+        "workflow_dispatch"
+      ],
+      "proof_count": 6,
+      "profile_pass_required": 5,
+      "canonical_writer_count": 1,
+      "soft_failure_allowed": false
+    },
+    "forbidden_fragments": [
+      "continue-on-error: true",
+      "--reruns",
+      "|| true"
+    ]
+  },
+  "verified_removals": {
+    "duplicate_npm_command_bodies": [
+      "validate:stage8-local-app-packaging"
+    ],
+    "conditional_skip_decorators": 2,
+    "deleted_test_files": []
+  }
+}

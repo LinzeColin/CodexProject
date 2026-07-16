@@ -1,65 +1,68 @@
-# KM_IDS Migration Backup
+# KM_IDS Migration Recovery
 
-Created: 2026-07-16 11:15:26 Australia/Sydney
+Updated: 2026-07-17 Australia/Sydney
 
-## Source Identity
+## Source identity
 
-- Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
-- Branch: `codex/ids-v0-1-stages-001-010`
-- HEAD: `e1679d247986eb03665d440185e04dd56223a364`
-- Bundle prerequisite: `565babef3a610f289fed0da38b58e550b5707e3e`
-- Repository: `git@github.com:LinzeColin/CodexProject.git`
+- Repository: `LinzeColin/CodexProject`
+- Source branch: `codex/ids-v0-1-stages-001-010`
+- Source HEAD: `e1679d247986eb03665d440185e04dd56223a364`
+- Bundle prerequisite / prior batch baseline: `565babef3a610f289fed0da38b58e550b5707e3e`
+- Reachable archive commit: `f37ae7af823173aef8a34d9eb491c5606ac4d929`
 
-## Backup Contents
+## Verify retained recovery material
 
-- `KM_IDS-local-commits-565babef-to-e1679d24.bundle`: 12 local commits after the previously merged batch baseline.
-- `KM_IDS-local-commits.mbox.gz`: compressed binary full-index patch series for the same 12 commits.
-- `KM_IDS-main-integration-candidate.bundle`: 11 Stage041-043 commits replayed onto `origin/main` at `0aa4c1d7...`, preserving main's deleted dual-plane views.
-- `KM_IDS-main-integration-candidate.mbox.gz`: compressed patch series for that replay candidate.
-- `STAGE043-integration-candidate-check.json.txt`: fail-closed JSON evidence showing the replay candidate still requires commit-ancestry rebinding before active merge.
-- `KM_IDS-HEAD-e1679d24-project-snapshot.tar.gz`: tracked KM_IDSystem and required root governance/tooling snapshot at HEAD.
-- `KM_IDS-dirty-tracked.patch.gz`: compressed binary patch for the three modified tracked owner files.
-- `KM_IDS-working-tree-overlay.tar.gz`: the three modified tracked files plus untracked `frontend/pnpm-workspace.yaml`.
-- `opme-system-legacy-assets.tar.gz`: legacy non-Git Blender/GLB/DXF/Web/document assets, excluding `.DS_Store`.
-- `opme-system-files.sha256`: source-file checksums for the legacy asset directory.
-- `git-status-porcelain-v2.txt`: pre-migration worktree state.
-- `local-commit-chain.tsv`: ordered local commit chain.
-- `CHECKSUMS.sha256`: checksums for all backup payloads and this restore guide.
-
-## Verify
+From this `backup/` directory:
 
 ```bash
-cd /Users/linzezhang/Documents/Codex/backups/CodexProject/KM_IDS-migration-20260716T111526+1000
 LC_ALL=C shasum -a 256 -c CHECKSUMS.sha256
-git bundle verify KM_IDS-local-commits-565babef-to-e1679d24.bundle
+gzip -t KM_IDS-local-commits.mbox.gz
+gzip -t KM_IDS-main-integration-candidate.mbox.gz
+gzip -t KM_IDS-dirty-tracked.patch.gz
 ```
 
-## Restore Commits
-
-Clone or open `LinzeColin/CodexProject` with prerequisite commit `565babef...`, then:
-
-```bash
-git fetch /absolute/path/KM_IDS-local-commits-565babef-to-e1679d24.bundle HEAD:refs/heads/recovery/km-ids-e1679d24
-```
-
-Alternative patch recovery:
+Restore the original 12-commit series only in an isolated branch with the
+required baseline available:
 
 ```bash
 gzip -dc KM_IDS-local-commits.mbox.gz | git am --3way
 ```
 
-## Restore Working Overlay
+The current-main replay candidate remains blocked while
+`STAGE043-integration-candidate-check.json.txt` reports a red ancestry binding.
+Do not activate it as a green Stage043 result.
 
-Extract `KM_IDS-working-tree-overlay.tar.gz` at the repository root. The tracked-only alternative is:
+## Recover removed binary containers from Git history
+
+P45 removed five duplicate or oversized backup containers from the current
+public tree. Their source commit is a verified ancestor. Recover a payload only
+to a private, owner-controlled path; do not add it back to this repository:
 
 ```bash
-gzip -dc KM_IDS-dirty-tracked.patch.gz | git apply --3way
+commit=f37ae7af823173aef8a34d9eb491c5606ac4d929
+path=KM_IDSystem/governance/archive/local_handoff_20260716/backup
+mkdir -p /private/owner-controlled/km-ids-recovery
+git show "$commit:$path/KM_IDS-HEAD-e1679d24-project-snapshot.tar.gz" > /private/owner-controlled/km-ids-recovery/KM_IDS-HEAD-e1679d24-project-snapshot.tar.gz
+git show "$commit:$path/KM_IDS-local-commits-565babef-to-e1679d24.bundle" > /private/owner-controlled/km-ids-recovery/KM_IDS-local-commits-565babef-to-e1679d24.bundle
+git show "$commit:$path/KM_IDS-main-integration-candidate.bundle" > /private/owner-controlled/km-ids-recovery/KM_IDS-main-integration-candidate.bundle
+git show "$commit:$path/KM_IDS-working-tree-overlay.tar.gz" > /private/owner-controlled/km-ids-recovery/KM_IDS-working-tree-overlay.tar.gz
+git show "$commit:$path/opme-system-legacy-assets.tar.gz" > /private/owner-controlled/km-ids-recovery/opme-system-legacy-assets.tar.gz
 ```
+
+Expected identities:
+
+| Payload | Git blob | SHA-256 | Bytes |
+|---|---|---|---:|
+| `KM_IDS-HEAD-e1679d24-project-snapshot.tar.gz` | `4f7586fd85990d69588643bbce6400f20889388f` | `2b64ea313a9050585ba2fd2261321ebd702a2ae2cd1185e88b013b32d295cb1b` | 2321654 |
+| `KM_IDS-local-commits-565babef-to-e1679d24.bundle` | `84854861b57ecf0ac501f0f3bce2bc7a573317d6` | `d145eec8babc6c90f652cbb2556b106e4cbfc9f75bd740446546d7e94032423b` | 455289 |
+| `KM_IDS-main-integration-candidate.bundle` | `8f2578838159a39e2bce8403b1591ffe85b8d90e` | `cf97c784441142d5086f4ba90f275554d2a11d4a57783757db2749ca9f877d4c` | 378925 |
+| `KM_IDS-working-tree-overlay.tar.gz` | `3c7984e6f53b22f248f93ab21bb2e6f8397fa9ec` | `708da7e0a84c04067c45339fdec6f5d71074ed6d333b465603b3a3404fffc306` | 3328 |
+| `opme-system-legacy-assets.tar.gz` | `2745e4b70e9d2b4464c7350ed7612c269f759730` | `57bee433ec510d08593b3defd66cadec27082f21487b5d903f8baeef0ac4f403` | 3204643 |
 
 ## Boundaries
 
-- `.DS_Store`, dependencies, caches, runtime databases, reports, outputs, secrets, and app-generated files are excluded.
-- `/Users/linzezhang/Downloads/IDS_MetaData` was not listed, read, hashed, copied, archived, modified, or uploaded.
-- Legacy `opme-system` assets contain documented assumptions and are backup material until separately classified; they are not proof of real production data.
-- The main-integration candidate is not release-ready: `stage042_review_commit_bound=false` because main history was rewritten. Do not merge it as active Stage043 code until the hash-bound evidence chain is migrated and the full suite passes.
-- This backup does not itself prove GitHub `main` synchronization. Remote verification is a separate gate.
+- The old machine-local backup path is not required and is not asserted to exist.
+- Do not restore repository-split deletions or unreviewed owner work into active main.
+- Do not access or upload `IDS_MetaData` content.
+- Legacy assets remain archival and are not evidence of real production data.
+- Remote synchronization and production acceptance are separate gates.

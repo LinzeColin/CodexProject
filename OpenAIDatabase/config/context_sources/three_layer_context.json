@@ -13,7 +13,7 @@
       "purpose": "High-weight durable identity, communication preferences, collaboration standards, stable taste, long-term plans, and safety boundaries.",
       "canonical_files": [
         "data/derived/profile/CORE_PROFILE.md",
-        "data/memory/curation/core_profile_review.json"
+        "data/memory/records/manifest.json"
       ],
       "update_triggers": [
         "profile",
@@ -34,8 +34,7 @@
       "name": "一般长期上下文 / Project And Decision Memory",
       "purpose": "Project index, decision log, workflows, medium/long-term constraints, reusable context, and accepted active memory.",
       "canonical_files": [
-        "data/memory/active/active_memory.jsonl",
-        "data/memory/active/active_memory.md",
+        "data/memory/records/manifest.json",
         "data/derived/project_index/PROJECT_INDEX.md",
         "data/derived/decision_log/DECISION_LOG.md"
       ],

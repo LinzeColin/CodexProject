@@ -13,13 +13,15 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  issues: write
-  actions: read
-  checks: read
+
+concurrency:
+  group: agent-loop-review-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   review-existing-pr:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || inputs.pr_number }}
@@ -35,9 +37,10 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Collect PR context
         run: |
@@ -62,7 +65,7 @@ jobs:
           } > agent-loop-review/codex-review-prompt.md
 
       - name: Run Codex review
-        uses: openai/codex-action@v1
+        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: agent-loop-review/codex-review-prompt.md
@@ -95,7 +98,7 @@ jobs:
           gh pr comment "$PR_NUMBER" --body-file agent-loop-review/review-comment.md
 
       - name: Upload review artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: agent-loop-review-pr-${{ env.PR_NUMBER }}
           path: agent-loop-review/

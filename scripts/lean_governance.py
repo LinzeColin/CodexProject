@@ -17,7 +17,14 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+import governance_artifact_policy as artifact_policy
 import validate_project_governance as governance
+from governance_ids import (
+    GovernanceIdError,
+    load_registry,
+    parse_identifier,
+    resolve_registry_identifier,
+)
 
 
 sys.dont_write_bytecode = True
@@ -576,7 +583,8 @@ def roadmap_fact_summary(project_facts: dict[str, Any], roadmap: dict[str, Any])
         str(item)
         for gate in gates
         for item in governance.as_list(
-            gate.get("evidence") or (gate.get("evidence_refs") if use_contextual_fallbacks else None)
+            gate.get("evidence")
+            or (gate.get("evidence_refs") if use_contextual_fallbacks else None)
         )
         if item
     }
@@ -603,6 +611,415 @@ def roadmap_fact_summary(project_facts: dict[str, Any], roadmap: dict[str, Any])
         "roadmap_evidence_ref_count": len(task_evidence_refs | gate_evidence_refs),
         "project_evidence_ref_count": len(project_evidence),
     }
+
+
+def compact_table_cell(value: object) -> str:
+    return text_or_na(value).replace("|", "\\|").replace("\n", "<br>")
+
+
+def render_openai_database_feature_list(
+    project_facts: dict[str, Any], roadmap: dict[str, Any]
+) -> str:
+    features = [
+        item
+        for item in governance.as_list(project_facts.get("features"))
+        if isinstance(item, dict)
+    ]
+    evidence = [
+        item
+        for item in governance.as_list(project_facts.get("evidence_refs"))
+        if isinstance(item, dict)
+    ]
+    totals = roadmap_totals(roadmap)
+    summary = roadmap_fact_summary(project_facts, roadmap)
+    lines = [
+        "# 功能清单",
+        "",
+        "## 摘要",
+        "",
+        "| 项目 | 版本 / 当前位置 | 进度 | Gate / 下一任务 | 阻断 | 证据 |",
+        "|---|---|---:|---|---|---|",
+        (
+            f"| {compact_table_cell(project_facts.get('project_id'))} | "
+            f"{compact_table_cell(project_facts.get('version'))} · "
+            f"{compact_table_cell(roadmap.get('current_stage_id'))} → "
+            f"{compact_table_cell(roadmap.get('current_phase_id'))} → "
+            f"{compact_table_cell(roadmap.get('current_task_id'))} | "
+            f"{pct(totals['completed'], totals['total'])} | "
+            f"{compact_table_cell(roadmap.get('next_gate_id'))} / "
+            f"{compact_table_cell(summary['next_unique_task'])} | "
+            f"{compact_table_cell(summary['blockers'])} | "
+            f"{len(evidence)} refs · {compact_table_cell(project_facts.get('fact_level'))} |"
+        ),
+        (
+            f"- project_id: `{compact_table_cell(project_facts.get('project_id'))}` · "
+            f"current_stage: `{compact_table_cell(roadmap.get('current_stage_id'))}` · "
+            f"current_task: `{compact_table_cell(roadmap.get('current_task_id'))}` · "
+            f"evidence_status: `{compact_table_cell(project_facts.get('fact_level'))}`"
+        ),
+        "",
+        "## 功能概览",
+        "",
+        "| 功能 ID | 名称 | 状态 | 说明 |",
+        "|---|---|---|---|",
+    ]
+    for feature in features:
+        fact_level = str(feature.get("fact_level") or "")
+        status = compact_table_cell(feature.get("status"))
+        if fact_level and fact_level != str(project_facts.get("fact_level") or ""):
+            status = f"{status} · {compact_table_cell(fact_level)}"
+        lines.append(
+            f"| {compact_table_cell(feature.get('feature_id'))} | "
+            f"{compact_table_cell(feature.get('name'))} | {status} | "
+            f"{compact_table_cell(feature.get('description'))} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## 证据",
+            "",
+            "默认事实等级继承项目 `fact_level`；例外直接标在类型后。",
+            "",
+            "| 证据 ID | 类型 | 引用 |",
+            "|---|---|---|",
+        ]
+    )
+    for item in evidence:
+        kind = compact_table_cell(item.get("kind"))
+        fact_level = str(item.get("fact_level") or "")
+        if fact_level and fact_level != str(project_facts.get("fact_level") or ""):
+            kind = f"{kind} · {compact_table_cell(fact_level)}"
+        lines.append(
+            f"| {compact_table_cell(item.get('evidence_id'))} | {kind} | "
+            f"{compact_table_cell(item.get('ref'))} |"
+        )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def render_openai_database_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
+    totals = roadmap_totals(roadmap)
+    lines: list[str] = ["Stage -> Phase -> Task", ""]
+    for stage in [
+        item for item in governance.as_list(roadmap.get("stages")) if isinstance(item, dict)
+    ]:
+        current_stage = stage.get("stage_id") == roadmap.get("current_stage_id")
+        stage_gate = stage.get("stop_gate") if isinstance(stage.get("stop_gate"), dict) else {}
+        stage_tasks = [
+            task
+            for phase in governance.as_list(stage.get("phases"))
+            if isinstance(phase, dict)
+            for task in governance.as_list(phase.get("tasks"))
+            if isinstance(task, dict)
+        ]
+        stage_hours = sum(float(task.get("estimated_hours") or 0) for task in stage_tasks)
+        stage_stop = compact_table_cell(stage.get("stop_conditions"))
+        stage_gate_contract = (
+            f"{compact_table_cell(stop_gate_field(stage_gate, 'pass_criteria', 'pass_conditions'))} / "
+            f"{compact_table_cell(stop_gate_field(stage_gate, 'evidence', 'evidence_refs'))} / "
+            f"{compact_table_cell(stop_gate_failure_action(stage_gate))}"
+        )
+        if not current_stage:
+            stage_stop = f"{len(governance.as_list(stage.get('stop_conditions')))} recorded"
+            stage_gate_contract = (
+                f"{len(governance.as_list(stage_gate.get('pass_criteria') or stage_gate.get('pass_conditions')))} conditions / "
+                f"{len(governance.as_list(stage_gate.get('evidence') or stage_gate.get('evidence_refs')))} evidence refs / "
+                f"{compact_table_cell(stop_gate_failure_action(stage_gate))}"
+            )
+        lines.extend(
+            [
+                f"### {compact_table_cell(stage.get('stage_id'))} {compact_table_cell(stage.get('name'))}",
+                "",
+                "| 状态 | 工时 / 占比 | 人类目标 | Stop Conditions | Gate | Gate 条件 / 证据 / 失败动作 |",
+                "|---|---:|---|---|---|---|",
+                (
+                    f"| {compact_table_cell(stage.get('status'))} | {stage_hours:.2f} / "
+                    f"{pct(stage_hours, totals['total'])} | {compact_table_cell(stage.get('person_goal'))} | "
+                    f"{stage_stop} | "
+                    f"{compact_table_cell(stage_gate.get('gate_id'))} · "
+                    f"{compact_table_cell(stage_gate.get('status'))} | "
+                    f"{stage_gate_contract} |"
+                ),
+                "",
+            ]
+        )
+        for phase in [
+            item for item in governance.as_list(stage.get("phases")) if isinstance(item, dict)
+        ]:
+            phase_gate = phase.get("stop_gate") if isinstance(phase.get("stop_gate"), dict) else {}
+            tasks = [
+                item for item in governance.as_list(phase.get("tasks")) if isinstance(item, dict)
+            ]
+            phase_hours = sum(float(task.get("estimated_hours") or 0) for task in tasks)
+            phase_stop = compact_table_cell(phase.get("stop_conditions"))
+            phase_gate_contract = (
+                f"{compact_table_cell(stop_gate_field(phase_gate, 'pass_criteria', 'pass_conditions'))} / "
+                f"{compact_table_cell(stop_gate_field(phase_gate, 'evidence', 'evidence_refs'))} / "
+                f"{compact_table_cell(stop_gate_failure_action(phase_gate))}"
+            )
+            if not current_stage:
+                phase_stop = f"{len(governance.as_list(phase.get('stop_conditions')))} recorded"
+                phase_gate_contract = (
+                    f"{len(governance.as_list(phase_gate.get('pass_criteria') or phase_gate.get('pass_conditions')))} conditions / "
+                    f"{len(governance.as_list(phase_gate.get('evidence') or phase_gate.get('evidence_refs')))} evidence refs / "
+                    f"{compact_table_cell(stop_gate_failure_action(phase_gate))}"
+                )
+            lines.extend(
+                [
+                    f"#### {compact_table_cell(phase.get('phase_id'))} {compact_table_cell(phase.get('name'))}",
+                    "",
+                    "| 状态 | 工时 / 占比 | 目标 | Stop Conditions | Gate | Gate 条件 / 证据 / 失败动作 |",
+                    "|---|---:|---|---|---|---|",
+                    (
+                        f"| {compact_table_cell(phase.get('status'))} | {phase_hours:.2f} / "
+                        f"{pct(phase_hours, totals['total'])} | {compact_table_cell(phase.get('objective'))} | "
+                        f"{phase_stop} | "
+                        f"{compact_table_cell(phase_gate.get('gate_id'))} · "
+                        f"{compact_table_cell(phase_gate.get('status'))} | "
+                        f"{phase_gate_contract} |"
+                    ),
+                    "",
+                    "| Task | 名称 | 状态 | 工时 / 占比 | 依赖 | Acceptance | Result | Evidence | Rollback |",
+                    "|---|---|---|---:|---|---|---|---|---|",
+                ]
+            )
+            for task in tasks:
+                hours = float(task.get("estimated_hours") or 0)
+                result = task.get("current_result") or (
+                    "accepted" if task.get("status") == "completed" else task_test_results(task)
+                )
+                evidence_refs = governance.as_list(task.get("evidence_refs"))
+                evidence = compact_table_cell(evidence_refs)
+                if task.get("task_id") != roadmap.get("current_task_id") and evidence_refs:
+                    evidence = f"{len(evidence_refs)} refs · {compact_table_cell(evidence_refs[0])}"
+                lines.append(
+                    f"| {compact_table_cell(task.get('task_id'))} | "
+                    f"{compact_table_cell(task.get('name'))} | "
+                    f"{compact_table_cell(task.get('status'))} | {hours:.2f} / "
+                    f"{pct(hours, totals['total'])} | {compact_table_cell(task.get('dependencies'))} | "
+                    f"{compact_table_cell(task.get('acceptance_ids'))} | "
+                    f"{compact_table_cell(result)} | "
+                    f"{evidence} | "
+                    f"{compact_table_cell(task.get('rollback'))} |"
+                )
+            lines.append("")
+    return lines
+
+
+def render_openai_database_development_record(
+    project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]
+) -> str:
+    ensure_product_roadmap(roadmap, target="project development record")
+    totals = roadmap_totals(roadmap)
+    summary = roadmap_fact_summary(project_facts, roadmap)
+    recent_limit = 2
+    recent_events = events[-recent_limit:]
+    lines = [
+        "# 开发记录",
+        "",
+        "## 摘要",
+        "",
+        "| 项目 / 版本 | 当前位置 | 工时 / 进度 | Gate / 下一任务 | Roadmap 覆盖 | 阻断 / 事实等级 |",
+        "|---|---|---:|---|---|---|",
+        (
+            f"| {compact_table_cell(project_facts.get('project_id'))} / "
+            f"{compact_table_cell(project_facts.get('version'))} | "
+            f"{compact_table_cell(roadmap.get('current_stage_id'))} → "
+            f"{compact_table_cell(roadmap.get('current_phase_id'))} → "
+            f"{compact_table_cell(roadmap.get('current_task_id'))} | "
+            f"{totals['completed']:.2f} / {totals['total']:.2f} · "
+            f"{pct(totals['completed'], totals['total'])} | "
+            f"{compact_table_cell(roadmap.get('next_gate_id'))} / "
+            f"{compact_table_cell(summary['next_unique_task'])} | "
+            f"{summary['roadmap_task_count']} Tasks · {summary['roadmap_gate_count']} Gates · "
+            f"{summary['roadmap_acceptance_count']} Acceptance · "
+            f"{summary['roadmap_evidence_ref_count']} evidence refs | "
+            f"{compact_table_cell(summary['blockers'])} / "
+            f"{compact_table_cell(project_facts.get('fact_level'))} |"
+        ),
+        f"- stop_gate: `{compact_table_cell(roadmap.get('next_gate_id'))}`",
+        "",
+        "## Roadmap",
+        "",
+    ]
+    lines.extend(render_openai_database_roadmap_body(roadmap))
+    lines.extend(
+        [
+            "## 近期事件",
+            "",
+            f"显示 append-only canonical events 的最近 {len(recent_events)}/{len(events)} 条；完整历史仍在 `docs/governance/events.jsonl`。",
+            "",
+            "| 时间 | 类型 | 摘要 | Task | 事实等级 |",
+            "|---|---|---|---|---|",
+        ]
+    )
+    for event in recent_events:
+        lines.append(
+            f"| {compact_table_cell(event.get('occurred_at'))} | "
+            f"{compact_table_cell(event.get('event_type'))} | "
+            f"{compact_table_cell(event.get('summary'))} | "
+            f"{compact_table_cell(event.get('task_id'))} | "
+            f"{compact_table_cell(event.get('fact_level'))} |"
+        )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def evidence_bundle_keys(items: list[dict[str, Any]]) -> tuple[dict[tuple[str, ...], str], list[tuple[str, tuple[str, ...]]]]:
+    keys: dict[tuple[str, ...], str] = {}
+    rows: list[tuple[str, tuple[str, ...]]] = []
+    for item in items:
+        refs = tuple(str(ref) for ref in governance.as_list(item.get("evidence_refs")))
+        if refs not in keys:
+            key = f"E{len(keys) + 1}"
+            keys[refs] = key
+            rows.append((key, refs))
+    return keys, rows
+
+
+def render_openai_database_model_parameters(
+    project_facts: dict[str, Any], roadmap: dict[str, Any]
+) -> str:
+    models = [
+        item for item in governance.as_list(project_facts.get("models")) if isinstance(item, dict)
+    ]
+    formulas = [
+        item for item in governance.as_list(project_facts.get("formulas")) if isinstance(item, dict)
+    ]
+    parameters = [
+        item for item in governance.as_list(project_facts.get("parameters")) if isinstance(item, dict)
+    ]
+    current_task = next(
+        (
+            item
+            for item in roadmap_tasks(roadmap)
+            if str(item.get("task_id") or "") == str(roadmap.get("current_task_id") or "")
+        ),
+        {},
+    )
+    task_model_applicability = next(
+        (
+            str(item)
+            for item in governance.as_list(current_task.get("test_results"))
+            if str(item).startswith("NOT_APPLICABLE:")
+        ),
+        "",
+    )
+    summary = roadmap_fact_summary(project_facts, roadmap)
+    evidence_keys, evidence_rows = evidence_bundle_keys(models + formulas)
+    source_counts: dict[str, int] = {}
+    for parameter in parameters:
+        source = str(parameter.get("source") or "")
+        source_counts[source] = source_counts.get(source, 0) + 1
+    source_keys: dict[str, str] = {}
+    source_rows: list[tuple[str, str]] = []
+    for parameter in parameters:
+        source = str(parameter.get("source") or "")
+        if source_counts[source] > 1 and source not in source_keys:
+            key = f"S{len(source_keys) + 1}"
+            source_keys[source] = key
+            source_rows.append((key, source))
+    lines = [
+        "# 模型参数文件",
+        "",
+        "## 摘要",
+        "",
+        "| 项目 / 版本 | 当前位置 | Active M / F / P | Gate / 下一任务 | 阻断 / 事实等级 |",
+        "|---|---|---:|---|---|",
+        (
+            f"| {compact_table_cell(project_facts.get('project_id'))} / "
+            f"{compact_table_cell(project_facts.get('version'))} | "
+            f"{compact_table_cell(roadmap.get('current_stage_id'))} → "
+            f"{compact_table_cell(roadmap.get('current_phase_id'))} → "
+            f"{compact_table_cell(roadmap.get('current_task_id'))} | "
+            f"{active_count(models)} / {active_count(formulas)} / {active_count(parameters)} | "
+            f"{compact_table_cell(roadmap.get('next_gate_id'))} / "
+            f"{compact_table_cell(summary['next_unique_task'])} | "
+            f"{compact_table_cell(summary['blockers'])} / "
+            f"{compact_table_cell(project_facts.get('fact_level'))} |"
+        ),
+        (
+            f"- active_model_count: `{active_count(models)}` · "
+            f"active_formula_count: `{active_count(formulas)}` · "
+            f"active_parameter_count: `{active_count(parameters)}`"
+        ),
+        *([f"- task_model_applicability: `{compact_table_cell(task_model_applicability)}`"] if task_model_applicability else []),
+        "",
+        "## 模型",
+        "",
+        "| Model | 名称 / 目的 | 状态 | Formula / Parameter 数量 | Evidence |",
+        "|---|---|---|---:|---|",
+    ]
+    for model in models:
+        refs = tuple(str(ref) for ref in governance.as_list(model.get("evidence_refs")))
+        lines.append(
+            f"| {compact_table_cell(model.get('model_id'))} | "
+            f"{compact_table_cell(model.get('name'))}<br>{compact_table_cell(model.get('purpose'))} | "
+            f"{compact_table_cell(model.get('status'))} | "
+            f"{len(governance.as_list(model.get('formula_ids')))} / "
+            f"{len(governance.as_list(model.get('parameter_ids')))} | {evidence_keys[refs]} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## 公式",
+            "",
+            "| Formula | Model | Expression / Pseudocode | Evidence |",
+            "|---|---|---|---|",
+        ]
+    )
+    for formula in formulas:
+        refs = tuple(str(ref) for ref in governance.as_list(formula.get("evidence_refs")))
+        lines.append(
+            f"| {compact_table_cell(formula.get('formula_id'))} | "
+            f"{compact_table_cell(formula.get('model_id'))} | "
+            f"{compact_table_cell(formula.get('expression'))} | {evidence_keys[refs]} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Evidence bundles",
+            "",
+            "| Key | Evidence refs |",
+            "|---|---|",
+        ]
+    )
+    for key, refs in evidence_rows:
+        lines.append(f"| {key} | {compact_table_cell(list(refs))} |")
+    lines.extend(
+        [
+            "",
+            "## 参数来源 bundles",
+            "",
+            "| Key | 完整来源 |",
+            "|---|---|",
+        ]
+    )
+    for key, source in source_rows:
+        lines.append(f"| {key} | {compact_table_cell(source)} |")
+    lines.extend(
+        [
+            "",
+            "## 参数",
+            "",
+            "默认参数事实等级继承项目 `fact_level`；例外标在来源后。",
+            "",
+            "| 参数 ID | 符号 / 名称 | 当前值 | 来源 |",
+            "|---|---|---|---|",
+        ]
+    )
+    for parameter in parameters:
+        raw_source = str(parameter.get("source") or "")
+        source = source_keys.get(raw_source) or compact_table_cell(raw_source)
+        fact_level = str(parameter.get("fact_level") or "")
+        if fact_level and fact_level != str(project_facts.get("fact_level") or ""):
+            source = f"{source} · {compact_table_cell(fact_level)}"
+        lines.append(
+            f"| {compact_table_cell(parameter.get('parameter_id'))} | "
+            f"{compact_table_cell(parameter.get('symbol'))}<br>"
+            f"{compact_table_cell(parameter.get('name'))} | "
+            f"{compact_table_cell(parameter.get('value'))} | "
+            f"{source} |"
+        )
+    return "\n".join(lines).rstrip() + "\n"
 
 
 def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
@@ -743,6 +1160,8 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
 
 
 def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) -> str:
+    if str(project_facts.get("project_id") or "") == "OpenAIDatabase":
+        return render_openai_database_feature_list(project_facts, roadmap)
     features = [item for item in governance.as_list(project_facts.get("features")) if isinstance(item, dict)]
     evidence = [item for item in governance.as_list(project_facts.get("evidence_refs")) if isinstance(item, dict)]
     totals = roadmap_totals(roadmap)
@@ -792,6 +1211,8 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
 
 
 def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> str:
+    if str(project_facts.get("project_id") or "") == "OpenAIDatabase":
+        return render_openai_database_development_record(project_facts, roadmap, events)
     ensure_product_roadmap(roadmap, target="project development record")
     totals = roadmap_totals(roadmap)
     display = roadmap_display_metrics(roadmap)
@@ -839,6 +1260,8 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
 
 
 def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, Any]) -> str:
+    if str(project_facts.get("project_id") or "") == "OpenAIDatabase":
+        return render_openai_database_model_parameters(project_facts, roadmap)
     models = [item for item in governance.as_list(project_facts.get("models")) if isinstance(item, dict)]
     formulas = [item for item in governance.as_list(project_facts.get("formulas")) if isinstance(item, dict)]
     parameters = [item for item in governance.as_list(project_facts.get("parameters")) if isinstance(item, dict)]
@@ -1081,7 +1504,40 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
     return "\n".join(lines).rstrip() + "\n"
 
 
+def canonicalize_render_event_task_ids(
+    project_facts: dict[str, Any], events: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    project_id = str(project_facts.get("project_id") or "")
+    registry_path = ROOT / "governance" / "id_registry.json"
+    if not project_id or not registry_path.is_file():
+        return events
+    registry = load_registry(registry_path)
+    if project_id not in registry.get("migrated_projects", []):
+        return events
+    canonical_events: list[dict[str, Any]] = []
+    for event in events:
+        canonical_event = dict(event)
+        task_id = canonical_event.get("task_id")
+        if task_id not in (None, ""):
+            try:
+                parsed = parse_identifier(task_id, "TSK")
+            except GovernanceIdError:
+                # Non-identifier annotations are preserved; malformed V2 values
+                # still fail the ID audit before delivery.
+                pass
+            else:
+                canonical_event["task_id"] = resolve_registry_identifier(
+                    parsed.raw,
+                    kind="TSK",
+                    project=project_id,
+                    registry=registry,
+                )
+        canonical_events.append(canonical_event)
+    return canonical_events
+
+
 def rendered_project_texts(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> dict[str, str]:
+    events = canonicalize_render_event_task_ids(project_facts, events)
     return {
         "功能清单.md": render_feature_list(project_facts, roadmap),
         "开发记录.md": render_development_record(project_facts, roadmap, events),
@@ -2983,6 +3439,17 @@ def run_roi_final_audit(base_ref: str | None = None, *, root: Path = ROOT, proje
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
+    artifact_audit = subparsers.add_parser(
+        "artifact-audit",
+        help="Audit canonical, compact, retained-legacy, and transient artifact boundaries.",
+    )
+    artifact_audit.add_argument("--base-ref", help="Optional commit/ref for append-only changed-path checks.")
+    artifact_audit.add_argument("--json", action="store_true", help="Retained for an explicit machine-output contract.")
+    subparsers.add_parser("artifact-render", help="Render the root artifact policy to deterministic Markdown.")
+    subparsers.add_parser(
+        "artifact-check-render",
+        help="Render the artifact policy twice in memory and prove zero repository writes.",
+    )
     baseline = subparsers.add_parser("baseline", help="Print a read-only repository baseline summary.")
     baseline.add_argument("--all", action="store_true", help="Inspect root governance and all registered projects.")
     subparsers.add_parser("context-contract", help="Print the ordinary T0/T1 compact context contract.")
@@ -3016,6 +3483,17 @@ def main(argv: list[str] | None = None) -> int:
     validate.add_argument("--semantic", action="store_true", help="Run semantic drift checks.")
     validate.add_argument("--drift-report", action="store_true", help="Print a machine-readable semantic drift report.")
     args = parser.parse_args(argv)
+    if args.command == "artifact-audit":
+        summary = artifact_policy.audit_repository(root=ROOT, base_ref=args.base_ref)
+        print(json.dumps(summary, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+        return 0 if summary.get("status") == "PASS" else 1
+    if args.command == "artifact-render":
+        print(artifact_policy.render_policy(artifact_policy.load_policy()), end="")
+        return 0
+    if args.command == "artifact-check-render":
+        summary = artifact_policy.check_render(root=ROOT)
+        print(json.dumps(summary, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+        return 0 if summary.get("status") == "PASS" else 1
     if args.command == "baseline":
         if not args.all:
             parser.error("baseline currently requires --all")
