@@ -1,0 +1,8 @@
+same bytes -> same key/hash: True
+different bytes -> different key: True
+different source -> different key (same bytes): True
+different version -> different key: True
+object key has no secret/PII (token stays in metadata url only): True
+pdf -> mime application/pdf, not compressed: True
+html -> compressed gzip: True
+RESULT: PASS

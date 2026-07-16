@@ -1,0 +1,8 @@
+{
+  "task": "ADP-S2-P01-T021", "stage": "S2 Immutable Raw Evidence", "release_mode": "NOT_DEPLOYED",
+  "value_metric": "stable object contract for immutable raw evidence: content-addressed key (same bytes -> same key, idempotent; different source/version -> different key, no overwrite; key carries no URL/token/PII), sha256, mime sniff, metadata schema, compression policy; groundwork for T022 dual-write and T023 shadow",
+  "cost_itemized_unknown_not_zero": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "human_maintenance": "update the contract for new mime/compression rules"},
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "r2_status": "NOT_ENABLED (FACT-012); this task is spec-only and requires no R2. T022 dual-write needs R2 -> Owner decision.",
+  "acceptance": "self-test PASS: same bytes same key/hash; different source/version different key (no overwrite); no secret/PII in key; PDF not compressed / HTML gzip"
+}

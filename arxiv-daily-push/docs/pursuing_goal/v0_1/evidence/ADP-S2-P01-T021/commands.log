@@ -1,0 +1,17 @@
+# ADP-S2-P01-T021 commands.log · R2 RawArtifact key/hash/metadata/compression contract
+# base commit 84e0c968 (T020 merged, S1 complete) ; spec-only, NOT_DEPLOYED, NO R2 write
+
+$ python3 tools/r2_artifact_key.py --selftest
+#   same bytes -> same key/hash: True
+#   different bytes -> different key: True
+#   different source -> different key (same bytes): True
+#   different version -> different key: True
+#   object key has no secret/PII (token stays in metadata url only): True
+#   pdf -> mime application/pdf, not compressed: True ; html -> compressed gzip: True
+#   RESULT: PASS
+# schema parses OK
+# full: test-results/r2_key_tests.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP

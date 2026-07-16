@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "adp.r2_raw_artifact.v0_1",
+  "title": "ADP V0.1 R2 RawArtifact Metadata",
+  "description": "Metadata contract for an immutable raw artifact stored in R2. The object is content-addressed by sha256; the key never contains a URL, query string, token, or PII.",
+  "type": "object",
+  "required": ["object_key", "sha256", "mime", "content_length", "compression", "source_id", "content_version", "immutable"],
+  "additionalProperties": false,
+  "properties": {
+    "object_key": {"type": "string", "pattern": "^raw/[a-z0-9][a-z0-9_-]*/[a-z0-9._-]+/[0-9a-f]{2}/[0-9a-f]{2}/[0-9a-f]{64}(\\.[a-z0-9]+)?$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "mime": {"type": "string"},
+    "content_length": {"type": "integer", "minimum": 0},
+    "compressed": {"type": "boolean"},
+    "compression": {"type": "string", "enum": ["gzip", "none"]},
+    "source_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$"},
+    "content_version": {"type": "string"},
+    "url": {"type": ["string", "null"], "description": "source URL kept as METADATA only, never in the key"},
+    "fetched_at": {"type": ["string", "null"]},
+    "immutable": {"const": true}
+  }
+}
