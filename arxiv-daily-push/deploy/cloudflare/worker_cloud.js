@@ -6,6 +6,11 @@
  * Stage 1：数据基座 + 流水线 + today 页。Stage 2：六主题全 UI。Stage 3：切 adp.linzezhang.com。
  */
 
+// Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+// build_id/source_sha256 are a self-excluding hash: reset both values back to their
+// zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+const BUILD = { build_id: 'bd67a78020a3', source_sha256: 'bd67a78020a3bc77bb1c8629960eb6407f8f2b997cc271517b036ad96eead084', schema_version: 'cn_v0_3', built_at: '2026-07-16' };
+
 // ───────────────────────── 数据源注册表（对应 boards_v0_3.yaml；全部进每日精选） ─────────────────────────
 const REGISTRY = [
   { board: 'board1', name: '板块一 · 研究前沿', sources: [
@@ -732,7 +737,7 @@ ${navLinks('nav-side', page)}
 ${opts.hero || ''}
 <main>${body}</main>
 ${navLinks('nav-dock', page)}
-<footer class="receipt">整套系统运行在 Cloudflare（抓取·选择·讲义·回忆·排程都在云端）；每日 cron 自动更新，不依赖任何本机。 · <a href="/history">往期精选</a></footer>
+<footer class="receipt">整套系统运行在 Cloudflare（抓取·选择·讲义·回忆·排程都在云端）；每日 cron 自动更新，不依赖任何本机。 · <a href="/history">往期精选</a> · <a href="/build.json" style="color:inherit" title="运行版本">build ${BUILD.build_id}</a></footer>
 <script>${THEME_JS}</script>
 </body></html>`;
 
@@ -1081,6 +1086,7 @@ export default {
     try {
       if (p === '/favicon.ico') return new Response('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>', { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=86400' } });
       if (p === '/robots.txt') return new Response('User-agent: *\nDisallow:\n', { headers: { 'content-type': 'text/plain' } });
+      if (p === '/build.json') return jsonResp(BUILD);
 
       if (request.method === 'POST') {
         if (p.startsWith('/api/grade/')) {

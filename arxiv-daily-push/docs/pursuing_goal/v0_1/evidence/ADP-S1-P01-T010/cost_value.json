@@ -1,0 +1,25 @@
+{
+  "task": "ADP-S1-P01-T010",
+  "stage": "S1 Truth & Content Stabilization",
+  "release_mode": "PRODUCTION",
+  "deploy": {
+    "worker": "adp-cloud",
+    "pre_deploy_version_rollback_target": "455afd98-027a-4ace-9619-736a464f9bd3",
+    "post_deploy_version": "3816d21c-5ca8-4fdd-89f5-e13b8b56efb0",
+    "domains": ["adp.linzezhang.com", "adp-cloud.linzezhang35.workers.dev"],
+    "cron_preserved": "30 20 * * *"
+  },
+  "value_metric_s1": "both domains + test tools can now confirm the exact running build via /build.json (build_id bd67a78020a3, source_sha256, schema_version cn_v0_3); proven identical across both domains -> supports FACT-014 build<->domain verification and drift detection",
+  "cost_itemized_unknown_not_zero": {
+    "new_requests": "occasional read-only GET /build.json (tiny JSON, no D1 access)",
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_operations": 0,
+    "model_calls": 0,
+    "human_maintenance": "build id auto-computed by self-excluding hash at build time"
+  },
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "protected_baseline_intact": "six themes 6/6 + 3 hero videos + cosmic dashboard + fx layers + ChatGPT deep-dive verified present on both domains post-deploy",
+  "rollback_verified_command": "wrangler versions deploy 455afd98-027a-4ace-9619-736a464f9bd3 (pre-deploy version recorded; additive-only change, no schema/data change)"
+}

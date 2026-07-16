@@ -1,0 +1,34 @@
+# ADP-S1-P01-T010 commands.log · read-only build endpoint + footer build id (PRODUCTION)
+# base commit 0aa4c1d7 ; worker change additive-only (+7/-1)
+
+## edit worker_cloud.js (surgical, additive): BUILD const + /build.json route + footer build id
+# build_id/source_sha256 = self-excluding hash (placeholders '0'*12 / '0'*64)
+$ python3 (compute sha256 with placeholders) -> source_sha256 bd67a78020a3...ead084 ; build_id bd67a78020a3
+# self-excluding verify: reset values to placeholders, sha256(file) == source_sha256 -> True
+$ node --check deploy/cloudflare/worker_cloud.js -> SYNTAX OK
+
+## pre-deploy version (rollback target)
+$ npx wrangler@4 deployments list --name adp-cloud   -> 455afd98-027a-4ace-9619-736a464f9bd3
+
+## deploy
+$ cd deploy/cloudflare && npx wrangler@4 deploy --config wrangler_cloud.jsonc
+# Uploaded adp-cloud ; Current Version ID: 3816d21c-5ca8-4fdd-89f5-e13b8b56efb0
+# domains: adp.linzezhang.com (custom) + adp-cloud.linzezhang35.workers.dev ; schedule 30 20 * * *
+
+## verify /build.json identical across domains
+$ curl https://adp.linzezhang.com/build.json           -> {"build_id":"bd67a78020a3","source_sha256":"bd67a78020a3...ead084","schema_version":"cn_v0_3","built_at":"2026-07-16"}
+$ curl https://adp-cloud.linzezhang35.workers.dev/build.json -> (identical)
+# IDENTICAL ✓ ; secret scan clean
+
+## verify all routes 200 (both domains)
+$ for R in / /radar /review /system /search /history /build.json: curl -o/dev/null -w %{http_code}  -> 200 x7 (both)
+
+## verify protected baseline intact (both domains)
+# six themes 6/6 (warm/minimal/fresh/techno/cosmos/forest) ; hero videos 3 (velorah/voyage/aethera) ;
+# cosmic dashboard present ; fx layers present ; ChatGPT deep-dive present ; footer build id bd67a78020a3
+
+# full: test-results/deploy_verify.txt ; build_json_both_domains.txt
+
+## 治理门（提交步骤记录）
+$ python3 scripts/generate_governance_dashboard.py --write --project arxiv-daily-push
+$ python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main   # 期望 SHIP
