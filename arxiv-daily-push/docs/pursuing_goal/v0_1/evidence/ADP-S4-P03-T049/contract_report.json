@@ -1,0 +1,102 @@
+{
+  "task": "ADP-S4-P03-T049",
+  "acceptance": ">=3 provincial site templates pass; special logic confined to profile",
+  "profiles_total": 3,
+  "profiles_passed": 3,
+  "template_families": [
+    "art-cms",
+    "beijing-zhengce"
+  ],
+  "connector_class_province_literals": [],
+  "results": [
+    {
+      "source_id": "jiangsu-gov",
+      "province": "江苏",
+      "template_family": "art-cms",
+      "discovered": 75,
+      "authority_level": "A1",
+      "raw_title": "江苏省人民政府 政府办公室(厅)文件 省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知",
+      "clean_title": "省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知",
+      "doc_number": "苏政办函〔2026〕39号",
+      "doc_date": "2026-07-14",
+      "maketime_rejected": "2026-07-15",
+      "url_date": "2026-07-14",
+      "attachments": 0,
+      "checks": {
+        "discovered": true,
+        "verified_A1": true,
+        "official_noncentral_domain": true,
+        "title_cleaned": true,
+        "docnum_province_prefixed": true,
+        "has_date": true,
+        "date_not_render_timestamp": true,
+        "date_matches_url_path": true,
+        "date_matches_pubdate_meta": true
+      },
+      "passed": true
+    },
+    {
+      "source_id": "shandong-gov",
+      "province": "山东",
+      "template_family": "art-cms",
+      "discovered": 45,
+      "authority_level": "A1",
+      "raw_title": "山东省人民政府 通知公告 山东省科学技术厅关于开展2025年度山东省重点研发计划（软科学）项目结题验收（综合绩效评价）工作的通知",
+      "clean_title": "山东省科学技术厅关于开展2025年度山东省重点研发计划（软科学）项目结题验收（综合绩效评价）工作的通知",
+      "doc_number": "鲁科字〔2023〕143号",
+      "doc_date": "2026-07-09",
+      "maketime_rejected": "2026-07-16",
+      "url_date": "2026-07-09",
+      "attachments": 0,
+      "checks": {
+        "discovered": true,
+        "verified_A1": true,
+        "official_noncentral_domain": true,
+        "title_cleaned": true,
+        "docnum_province_prefixed": true,
+        "has_date": true,
+        "date_not_render_timestamp": true,
+        "date_matches_url_path": true,
+        "date_matches_pubdate_meta": true
+      },
+      "passed": true
+    },
+    {
+      "source_id": "beijing-gov",
+      "province": "北京",
+      "template_family": "beijing-zhengce",
+      "discovered": 999,
+      "authority_level": "A1",
+      "raw_title": "北京市科学技术委员会、中关村科技园区管理委员会关于印发《北京市科技行政处罚裁量权适用规定》的通知_政策文件_首都之窗_北京市人民政府门户网站",
+      "clean_title": "北京市科学技术委员会、中关村科技园区管理委员会关于印发《北京市科技行政处罚裁量权适用规定》的通知",
+      "doc_number": "京科发〔2026〕10号",
+      "doc_date": "2026-07-14",
+      "maketime_rejected": null,
+      "url_date": null,
+      "attachments": 3,
+      "checks": {
+        "discovered": true,
+        "verified_A1": true,
+        "official_noncentral_domain": true,
+        "title_cleaned": true,
+        "docnum_province_prefixed": true,
+        "has_date": true,
+        "date_not_render_timestamp": true,
+        "date_matches_url_path": true,
+        "date_matches_pubdate_meta": true
+      },
+      "passed": true
+    }
+  ],
+  "all_passed": true,
+  "cost": {
+    "production_new_requests": 0,
+    "d1_rows_read": 0,
+    "d1_rows_written": 0,
+    "r2_bytes": 0,
+    "r2_ops": 0,
+    "model_calls": 0,
+    "human_maintenance": "dev-env fixture capture + family/profile authoring"
+  },
+  "deployment": "NOT_DEPLOYED (adapter family + profiles; production worker/cron untouched)"
+}

@@ -1,0 +1,11 @@
+[jiangsu-gov] family=art-cms pass=True level=A1 discover=75 docnum=苏政办函〔2026〕39号 date=2026-07-14 atts=0
+    raw='江苏省人民政府 政府办公室(厅)文件 省政府办公厅关于印发江苏省低温雨雪冰冻灾害...' -> clean='省政府办公厅关于印发江苏省低温雨雪冰冻灾害应急预案的通知...'
+[shandong-gov] family=art-cms pass=True level=A1 discover=45 docnum=鲁科字〔2023〕143号 date=2026-07-09 atts=0
+    raw='山东省人民政府 通知公告 山东省科学技术厅关于开展2025年度山东省重点研发计划...' -> clean='山东省科学技术厅关于开展2025年度山东省重点研发计划（软科学）项目结题验收（综...'
+[beijing-gov] family=beijing-zhengce pass=True level=A1 discover=999 docnum=京科发〔2026〕10号 date=2026-07-14 atts=3
+    raw='北京市科学技术委员会、中关村科技园区管理委员会关于印发《北京市科技行政处罚裁量权...' -> clean='北京市科学技术委员会、中关村科技园区管理委员会关于印发《北京市科技行政处罚裁量权...'
+
+profiles passing: 3/3 | template families: ['art-cms', 'beijing-zhengce']
+connector class body province literals: NONE
+
+ACCEPTANCE = PASS
