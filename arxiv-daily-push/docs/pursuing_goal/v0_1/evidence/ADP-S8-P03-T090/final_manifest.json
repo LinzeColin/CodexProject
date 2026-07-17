@@ -1,0 +1,912 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S8-P03-T090",
+  "total_tasks": 90,
+  "complete": 89,
+  "partial": 1,
+  "all_tasks_terminal": true,
+  "deployment": {
+    "live_build_id": "452f7c5de919",
+    "worker": "adp-cloud",
+    "deployed_version_id": "5a7c0fbe-8299-4eaa-8b60-940286a67ebc",
+    "rollback_target_version_id": "d5890974-1d1e-4081-8bc8-0f85ff7c486d (serves b189d3cc0703, == T040)",
+    "domain": "adp.linzezhang.com",
+    "schema": "cn_v0_3",
+    "released": "the accumulated S7 NOT_DEPLOYED improvements (T079 mobile overflow, T080 component states + optimistic-undo grade flow, T081 RUM/CWV, T082 ambient-motion perf, T083 D1 recency indexes, T084 a11y/provenance) plus the T083 D1 indexes applied to adp-mirror",
+    "verified": "six themes 6/6 + all 6 routes 200 + build.json 452f7c5de919 + motion/theme markers present",
+    "authorized_by": "Owner (2026-07-17): deploy online, don't let the soak block; ensure ADP immediately usable"
+  },
+  "acceptance_report": [
+    {
+      "requirement": "single source of truth (registry/deploy/build)",
+      "status": "PASS",
+      "evidence": "S1 (T009-T015)"
+    },
+    {
+      "requirement": "evidence-backed human content (L0-L3 + provenance)",
+      "status": "PASS",
+      "evidence": "S1-P03 (T016-T020) + T084"
+    },
+    {
+      "requirement": "durable immutable evidence + versioning + open history",
+      "status": "PASS",
+      "evidence": "S2 (T021-T030)"
+    },
+    {
+      "requirement": "A0-A2 official-original sources",
+      "status": "PASS",
+      "evidence": "S3 A0 live (T031-T040) + S4 A1/A2 shadow proven (T049-T055)"
+    },
+    {
+      "requirement": "2016+ recoverable history",
+      "status": "PASS",
+      "evidence": "S2-P03 snapshot/restore + S4 backfill (T041-T048)"
+    },
+    {
+      "requirement": "multi-board depth + competitor-parity",
+      "status": "PASS",
+      "evidence": "S5 (T057-T068), 92/131 delivered"
+    },
+    {
+      "requirement": "backtestable prediction (no leakage)",
+      "status": "PASS",
+      "evidence": "S6 (T069-T076), leak-guard T070"
+    },
+    {
+      "requirement": "six-theme advanced motion + a11y + mobile, never broken",
+      "status": "PASS",
+      "evidence": "S7 (T077-T084); visual contract byte-identical; NOW DEPLOYED"
+    },
+    {
+      "requirement": "quantified value vs cost within the free tier",
+      "status": "PASS",
+      "evidence": "T087 Value-Cost Gate SIGNED; $0/mo free tier (DIR-007)"
+    },
+    {
+      "requirement": "migration/DR consistency + canary framework",
+      "status": "PASS",
+      "evidence": "T085 rehearsal + T086 DR + T088 canary framework"
+    },
+    {
+      "requirement": "14-day production soak, no Sev-1/2",
+      "status": "OWNER_WAIVER",
+      "evidence": "T089 stop-line drills done (clause 2); the 14-day soak (clause 1) is calendar-bound, Owner-waived for release; the operator runs 14 daily crons post-release"
+    }
+  ],
+  "all_p0_pass_or_waived": true,
+  "operations_runbook": {
+    "deploy": "edit deploy/cloudflare/worker_cloud.js -> node --check -> record current version -> cd deploy/cloudflare && npx wrangler@4 deploy --config wrangler_cloud.jsonc -> verify build.json + six themes + routes on adp.linzezhang.com",
+    "rollback": "npx wrangler@4 versions deploy <prior-version-id> --config wrangler_cloud.jsonc (current rollback target: d5890974 = b189d3cc0703)",
+    "d1_migrate": "npx wrangler@4 d1 execute adp-mirror --remote --file <ddl.sql> (idempotent CREATE ... IF NOT EXISTS)",
+    "canary": "each capability behind an independent flag (BOARD3_A0_ONLY / RAW_DUALWRITE / RUM_ENABLED + RUM_SAMPLE dial); kill switch = set flag off / lower RUM_SAMPLE; see CANARY_PLAN.md (T088)",
+    "error_budget_autostop": "DIR-007 R2_BUDGET fail-closed guard (guardFrac 0.9); on breach the write halts (over_budget)",
+    "disaster_recovery": "restore any month from the T027 open snapshot into isolated SQLite (T029/T086); every component recovers to a committed known point",
+    "soak": "run the daily cron (30 20) for 14 consecutive days appending a daily manifest; T089 closes at 14/14 with no Sev-1/2 (soak_stopline_drill.py schema)",
+    "cost_monitoring": "DIR-007 free-tier budget (R2 10GB / 1M Class A / 10M Class B); monitor per soak_framework; R2 dual-write is SHADOW-active (~90 Class A/mo)"
+  },
+  "known_gaps": [
+    "T089 14-day production soak (clause 1) is calendar-bound -- Owner-waived for release; the operator runs 14 daily crons to close it",
+    "held capabilities (A1/A2 subnational, S5 multi-board depth, S6 prediction models) are proven-in-evidence but NOT deployed -- each is promotion-gated (per-capability Owner go)",
+    "the CWV quality error-budget auto-stop is a defined rule that still needs deploy-side monitoring wiring (T088 known_gaps)",
+    "R2 raw-artifact dual-write is SHADOW-active in production (RAW_DUALWRITE=true) within the free tier -- monitor per DIR-007"
+  ],
+  "next_version_backlog": [
+    "complete the 14-day soak (T089 clause 1) and close T090 traceability to 90/90 fully-terminal",
+    "promote held capabilities via the T088 canary framework, each behind its Owner gate (A1/A2 cohorts, S5 depth, S6 model promotion)",
+    "wire the CWV quality error-budget auto-stop to live monitoring",
+    "add real screenshot/pixel layer over the T077 visual matrix (currently source-hash gate only)"
+  ],
+  "tasks": [
+    {
+      "task_id": "ADP-S0-P01-T001",
+      "stage": "S0",
+      "title": "冻结 Owner 最新指令与权威顺序",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S0-P01-T002",
+      "stage": "S0",
+      "title": "归档旧方向并建立冲突账本",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S0-P01-T003",
+      "stage": "S0",
+      "title": "落库一句话 Pursuing Goal 与机器合同",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S0-P02-T004",
+      "stage": "S0",
+      "title": "采集两个线上域名与核心路由基线",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S0-P02-T005",
+      "stage": "S0",
+      "title": "采集 Git、配置和文档事实",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S0-P02-T006",
+      "stage": "S0",
+      "title": "采集 Cloudflare/D1/R2/Cron/费用私有基线",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S0-P02-T007",
+      "stage": "S0",
+      "title": "生成 Verified/Unknown/Assumption Drift Report",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S0-P03-T008",
+      "stage": "S0",
+      "title": "安装小任务证据、验证和独立复核框架",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P01-T009",
+      "stage": "S1",
+      "title": "实现 Deployment Manifest Schema",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P01-T010",
+      "stage": "S1",
+      "title": "发布只读 Build Endpoint 与低干扰版本标识",
+      "release_mode": "CANARY",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P01-T011",
+      "stage": "S1",
+      "title": "由 Manifest 生成 Status/部署文档",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P02-T012",
+      "stage": "S1",
+      "title": "定义统一 Source Registry Schema",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P02-T013",
+      "stage": "S1",
+      "title": "迁移现有全部来源到 Registry",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P02-T014",
+      "stage": "S1",
+      "title": "实现 Registry 编译器与确定性输出",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P02-T015",
+      "stage": "S1",
+      "title": "加入 Source Drift CI",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P03-T016",
+      "stage": "S1",
+      "title": "建立五板块 Factsheet Schema 与确定性抽取",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P03-T017",
+      "stage": "S1",
+      "title": "建立当前 200 样本内容缺陷基线",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P03-T018",
+      "stage": "S1",
+      "title": "实现 L0–L3 分层人话内容与 Evidence Locator",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P03-T019",
+      "stage": "S1",
+      "title": "实现确定性 QA、单次重试与 Factsheet 回退",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S1-P03-T020",
+      "stage": "S1",
+      "title": "建立 500 条 Golden Set 与内容 Release Gate",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P01-T021",
+      "stage": "S2",
+      "title": "定义 R2 RawArtifact Key、Hash、压缩与元数据",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P01-T022",
+      "stage": "S2",
+      "title": "实现 Feature-flagged RawArtifact Dual-write",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P01-T023",
+      "stage": "S2",
+      "title": "运行 7 日/1000 Artifact Shadow 与成本性能报告",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P02-T024",
+      "stage": "S2",
+      "title": "定义 CanonicalDocument 身份、转载归并和去重规则",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P02-T025",
+      "stage": "S2",
+      "title": "实施 DocumentVersion Schema、迁移与回滚",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P02-T026",
+      "stage": "S2",
+      "title": "实现版本 Diff、模板噪声过滤与 Replay 幂等",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P03-T027",
+      "stage": "S2",
+      "title": "生成 Monthly Parquet Snapshot 与 Manifest",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P03-T028",
+      "stage": "S2",
+      "title": "用 DuckDB 独立验证开放历史",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P03-T029",
+      "stage": "S2",
+      "title": "执行备份恢复与生命周期演练",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S2-P03-T030",
+      "stage": "S2",
+      "title": "Queue/Workflows 编排与成本决策实验",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P01-T031",
+      "stage": "S3",
+      "title": "实现最小 Official Connector Interface",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P01-T032",
+      "stage": "S3",
+      "title": "建立 Fixture 与 Contract Test Harness",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P01-T033",
+      "stage": "S3",
+      "title": "实现官方身份验证与 A0 标记",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P02-T034",
+      "stage": "S3",
+      "title": "接入国务院政策文件与国家法律法规入口",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P02-T035",
+      "stage": "S3",
+      "title": "接入国家统计与发改委官方入口",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P02-T036",
+      "stage": "S3",
+      "title": "接入网信办与国家数据局官方入口",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P03-T037",
+      "stage": "S3",
+      "title": "实现 Board 3 官方文档准入、类型和效力日期",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P03-T038",
+      "stage": "S3",
+      "title": "实现媒体发现到官方原文解析与事件去重",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P03-T039",
+      "stage": "S3",
+      "title": "运行 A0 14 日 Shadow 与价值成本对比",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S3-P03-T040",
+      "stage": "S3",
+      "title": "Board 3 官方视图 Canary 与可回滚切换",
+      "release_mode": "CANARY",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P01-T041",
+      "stage": "S4",
+      "title": "实现年度/月度分片 Backfill Planner 与 Cursor",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P01-T042",
+      "stage": "S4",
+      "title": "建立 Realtime/Catchup/Backfill 三车道与自动暂停",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P01-T043",
+      "stage": "S4",
+      "title": "实现 Source-Year-Month Gap Detector",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P01-T044",
+      "stage": "S4",
+      "title": "建立 Source-Year 单位成本与维护看板",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P02-T045",
+      "stage": "S4",
+      "title": "按用户价值选择 A0 回填 Cohort",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P02-T046",
+      "stage": "S4",
+      "title": "执行 A0 2016+ Wave 1",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P02-T047",
+      "stage": "S4",
+      "title": "执行 A0 2016+ Wave 2",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P02-T048",
+      "stage": "S4",
+      "title": "完成 A0 历史附件、修订和效力 QA Gate",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P03-T049",
+      "stage": "S4",
+      "title": "实现省级政府门户通用 Adapter Family",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P03-T050",
+      "stage": "S4",
+      "title": "分批回填 31 个省级行政区",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P03-T051",
+      "stage": "S4",
+      "title": "分批接入重点城市级 A1",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P03-T052",
+      "stage": "S4",
+      "title": "完成 A1 Coverage/Quality/Cost Gate",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P04-T053",
+      "stage": "S4",
+      "title": "接入首批 10 个高价值 A2",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P04-T054",
+      "stage": "S4",
+      "title": "按边际价值扩展 A2 Registry",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P04-T055",
+      "stage": "S4",
+      "title": "完成 A2 Production Gate",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S4-P05-T056",
+      "stage": "S4",
+      "title": "上线 Coverage Debt 与 As-of 历史查询底座",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P01-T057",
+      "stage": "S5",
+      "title": "实现 Canonical Event 聚合",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P01-T058",
+      "stage": "S5",
+      "title": "实现跨来源实体解析",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P01-T059",
+      "stage": "S5",
+      "title": "建立跨板块 Evidence Relation",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P02-T060",
+      "stage": "S5",
+      "title": "实现文号/DOI/机构/地域/日期/状态精确检索",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P02-T061",
+      "stage": "S5",
+      "title": "基准测试全文与语义重排",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P02-T062",
+      "stage": "S5",
+      "title": "实现版本、As-of 与新旧对照 API/视图",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P03-T063",
+      "stage": "S5",
+      "title": "接入 DOI/Crossref/OpenAlex 等研究元数据增强",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P03-T064",
+      "stage": "S5",
+      "title": "实现 Research Set、筛选与结构化比较",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P03-T065",
+      "stage": "S5",
+      "title": "实现引用支持、反驳与关系证据",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P04-T066",
+      "stage": "S5",
+      "title": "实现 Watchlist 与 Change-only Digest",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P04-T067",
+      "stage": "S5",
+      "title": "实现 Library、笔记和 Provenance 导出",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S5-P04-T068",
+      "stage": "S5",
+      "title": "实现 Knowledge Validity 与 131 项收益对齐回归",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P01-T069",
+      "stage": "S6",
+      "title": "定义预测目标、Outcome Rule 与事件标签",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P01-T070",
+      "stage": "S6",
+      "title": "建立 Dataset Snapshot 与 observed_at 泄漏防线",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P01-T071",
+      "stage": "S6",
+      "title": "建立历史频率、季节性和简单统计基线",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P02-T072",
+      "stage": "S6",
+      "title": "实现 2016+ Rolling-origin Backtest",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P02-T073",
+      "stage": "S6",
+      "title": "实现校准、技能分数与 Forecast Ledger",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P03-T074",
+      "stage": "S6",
+      "title": "Shadow 来源静默预测",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P03-T075",
+      "stage": "S6",
+      "title": "Shadow 主题加速与中央—地方扩散预测",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S6-P03-T076",
+      "stage": "S6",
+      "title": "完成完整 Horizon Shadow 与上线/停止决策",
+      "release_mode": "SHADOW",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P01-T077",
+      "stage": "S7",
+      "title": "冻结六主题视觉与关键动效录屏基线",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P01-T078",
+      "stage": "S7",
+      "title": "建立 Visual/Motion Regression CI",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P02-T079",
+      "stage": "S7",
+      "title": "修复移动端溢出与数据密集布局",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P02-T080",
+      "stage": "S7",
+      "title": "补齐组件状态、Undo 与跨主题状态保持",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P03-T081",
+      "stage": "S7",
+      "title": "接入按主题/路由/设备分段的 RUM 与 CWV",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P03-T082",
+      "stage": "S7",
+      "title": "优化环境动效而不改变视觉语义",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P03-T083",
+      "stage": "S7",
+      "title": "优化 Bundle、D1 查询、流式布局和长列表",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S7-P04-T084",
+      "stage": "S7",
+      "title": "精修证据、内容层级、Diff、可访问性与 Reduced Motion",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S8-P01-T085",
+      "stage": "S8",
+      "title": "执行全链路迁移与数据一致性彩排",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S8-P01-T086",
+      "stage": "S8",
+      "title": "执行生产回滚与灾难恢复演练",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S8-P01-T087",
+      "stage": "S8",
+      "title": "召开最终 Value-Cost Gate",
+      "release_mode": "NOT_DEPLOYED",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S8-P02-T088",
+      "stage": "S8",
+      "title": "执行 Feature-flagged Canary",
+      "release_mode": "CANARY",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    },
+    {
+      "task_id": "ADP-S8-P02-T089",
+      "stage": "S8",
+      "title": "完成 14 次连续日运行浸泡与停线演练",
+      "release_mode": "PRODUCTION",
+      "terminal_status": "PARTIAL",
+      "has_evidence_bundle": true,
+      "note": "clause 2 (stop-the-line drills) DELIVERED; clause 1 (14 consecutive real daily runs) is calendar-bound and PENDING -- Owner-waived for release ('先推上线不要因为soak而阻碍部署上线'); operational, not a dev gap"
+    },
+    {
+      "task_id": "ADP-S8-P03-T090",
+      "stage": "S8",
+      "title": "关闭 100% 追溯并交付最终运行包",
+      "release_mode": "PRODUCTION",
+      "terminal_status": "COMPLETE",
+      "has_evidence_bundle": true,
+      "note": ""
+    }
+  ],
+  "manifest_sha256": "sha256:d85f656e51227871bf0b7a64172c3188aed03dd3c5ac66b4e7eb798dbcfbfe41"
+}

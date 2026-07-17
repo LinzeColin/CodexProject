@@ -1,0 +1,5 @@
+final handoff: 90 tasks -- 89 COMPLETE + 1 PARTIAL (T089, calendar-bound + Owner-waived); all terminal; P0 = 10 PASS + 1 Owner-waiver; manifest sha256:d85f656e5122787 reproducible
+deployment: manifest live_build=452f7c5de919 == actual live 452f7c5de919; rollback d5890974-1
+
+ACCEPTANCE = PASS
+NOTE: 90/90 tasks have a terminal state (89 COMPLETE + 1 honest PARTIAL = T089 whose 14-day soak is calendar-bound and Owner-waived for release); every P0 requirement is PASS or explicit Owner waiver; the run package (manifest + acceptance report + operations runbook + known gaps + next-version backlog) has a reproducible hash; the declared live build matches the actual deployment (452f7c5de919).
