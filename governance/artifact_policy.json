@@ -101,12 +101,6 @@
       "owner": "repository-owner",
       "writer": "owner-authorized repository hygiene task",
       "retention": "repository_lifetime"
-    },
-    {
-      "path": "OpenAIDatabase/docs/governance/legacy_disposition.json",
-      "owner": "OpenAIDatabase privacy_owner + product_owner",
-      "writer": "TSK.OpenAIDatabase.CLEAN1.0004",
-      "retention": "until_explicit_owner_authorized_legacy_retirement"
     }
   ],
   "compact_receipts": {
@@ -140,19 +134,6 @@
   },
   "retained_legacy_collections": [
     {
-      "path": "OpenAIDatabase/docs/governance",
-      "selector": "basename_allowlist:ASSURANCE_STATUS.yaml,DELIVERY_PLAN.md,DEVELOPMENT_LEDGER.md,LOCAL_HISTORY_IMPORTS_MOVE_20260630.md,MODEL_SPEC.md,OWNER_STATUS.md,STATUS.md,TRACEABILITY_MATRIX.csv,VERSION_MATRIX.yaml,delivery_tasks.yaml,development_events.jsonl,formula_registry.yaml,model_registry.yaml,parameter_registry.csv",
-      "owner": "OpenAIDatabase privacy_owner + product_owner",
-      "retention": "read_only_until_owner_authorized_migration",
-      "reason": "Lean v2 canonical facts and deterministic Chinese human views replace these legacy editable surfaces; validators and historical references still require exact compatibility files.",
-      "mutable": false,
-      "baseline": {
-        "count": 14,
-        "bytes": 334805,
-        "sha256": "c455178e70d2dec8b94ed7cc25fd7a0a73da0b44977aae162bf1f7e6dbf86d01"
-      }
-    },
-    {
       "path": "governance/run_manifests",
       "selector": "basename_not_prefix:TSK-",
       "owner": "repository-owner",
@@ -160,9 +141,9 @@
       "reason": "Historical run evidence remains reference-compatible; new Task Runs use compact TSK receipts.",
       "mutable": false,
       "baseline": {
-        "count": 574,
-        "bytes": 4577432,
-        "sha256": "75cc535d1c57a90f0266ef8d26b22af49492cb3b7295322d72ac2239ae529d34"
+        "count": 575,
+        "bytes": 4579735,
+        "sha256": "87cac5406185bd332fadbaa1028137f5913a0af8a79c93f7edd1375b90bd770d"
       }
     },
     {
