@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '452f7c5de919', source_sha256: '452f7c5de919e77c4adabc2d4b90f5f90fca3d6fd0847c80c440eee8d85f24d9', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '0864030f7dc8', source_sha256: '0864030f7dc85e4c7ca026f561bc59193f4d845bab8c37c6bd2e23ab4ac467d8', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -459,6 +459,37 @@ async function makeLesson(env, asOfDate, it) {
   return id;
 }
 
+// ───────────────────────── 关键事实卡（S1-P03-T016 确定性 Factsheet；缺失即空，绝不编造） ─────────────────────────
+// 从条目已有字段（title/url/summary/categories/authors/published_at）确定性抽取稳定事实。
+// 端口自 tools/extract_factsheet.py：不臆造，抽不到就不显示。纯展示层，不改数据/流水线。
+const FS_DOI_RE = /10\.\d{4,9}\/[^\s"'<>]+/;
+const FS_DOCNUM_RE = /[一-龥A-Za-z]{0,8}[〔[（(]\s*20\d{2}\s*[〕\]）)]\s*第?\s*\d+\s*号|第\s*\d+\s*号(?:令|公告)?/;
+const FS_UNIT_RE = /\d[\d,.]{0,39}\s*(?:%|％|个百分点|亿元|万元|亿美元|亿|万|bps|个基点|美元|元)/g;  // {0,39}=有界量词→线性时间（数字串永不超 40 字符），防 ReDoS 二次回溯
+function fsFirst(re, ...texts) { for (const t of texts) { if (!t) continue; const m = String(t).match(re); if (m) return m[0].trim(); } return null; }
+function fsUnits(...texts) { const out = []; for (const t of texts) { if (!t) continue; const mm = String(t).match(FS_UNIT_RE); if (mm) for (const u of mm) { const v = u.trim(); if (!out.includes(v)) out.push(v); } } return out; }
+function factsheet(item) {
+  const board = item.board_id;
+  // 输入长度兜底：确保抽取正则在请求路径恒为线性时间（防 ReDoS 二次回溯）；入库已截断，这里再本地保证。
+  const title = (item.title || '').slice(0, 500), summary = (item.summary || '').slice(0, 2000);
+  const facts = [];
+  const date = (item.published_at || '').slice(0, 10);
+  if (date) facts.push(['日期', date]);
+  const doi = fsFirst(FS_DOI_RE, item.id, item.url, summary);
+  if ((board === 'board1' || board === 'board2') && doi) facts.push(['DOI', doi.replace(/[).,;]+$/, '')]);
+  if (board === 'board3') { const dn = fsFirst(FS_DOCNUM_RE, title, summary); if (dn) facts.push(['文号', dn]); }
+  if (board === 'board3' || board === 'board4') { const u = fsUnits(title, summary); if (u.length) facts.push(['关键数字', u.slice(0, 3).join('、')]); }
+  const auth = (item.authors || '').split(/[;；]/).map(a => a.trim()).filter(Boolean);
+  if (auth.length > 1) facts.push(['作者', auth.length + ' 位']);
+  return facts;
+}
+function factsheetHTML(item) {
+  // 日期在各卡片元信息行已展示，展示层去重（factsheet() 仍保留 date 以忠实于 schema）。
+  const facts = factsheet(item).filter(([k]) => k !== '日期');
+  if (!facts.length) return '';
+  return `<p class="mt" style="margin-top:6px">${facts.map(([k, v]) =>
+    `<span class="badge" title="确定性抽取自原文字段·缺失即空">${esc(k)}：${esc(v)}</span>`).join('')}</p>`;
+}
+
 // ───────────────────────── FSRS-6（默认参数，紧凑实现） ─────────────────────────
 const W = [0.2172,1.1771,3.2602,16.1507,7.0114,0.57,2.0966,0.0069,1.5261,0.112,1.0178,1.849,0.1133,0.3127,2.2934,0.2191,3.0004,0.7536,0.3332,0.1437,0.2];
 const DECAY = -W[20], FACTOR = Math.pow(0.9, 1 / DECAY) - 1, RETENTION = 0.9;
@@ -866,6 +897,7 @@ async function todayPage(env) {
   if (item) {
     body += `<div class="card"><h1>${esc(item.title)}</h1>
       <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a></p>
+      ${factsheetHTML(item)}
       <p style="margin:4px 0 2px">${deepDiveBtn(item)}</p>`;
     if (lesson) body += lessonHTML(lesson);   // T084 用中心化 lessonHTML（带证据/推断 provenance 标注）
     body += `</div><div class="card"><h2>主动回忆</h2>
@@ -1008,6 +1040,7 @@ function itemListHTML(items, { study = true } = {}) {
   return items.map(it => `<div class="itemrow"><div class="body">
     <a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 110))}</a>
     <div class="mt">${esc(BOARD_NAMES[it.board_id] || it.board_id || '')}${it.published_at ? ' · ' + esc(it.published_at.slice(0, 10)) : ''} · <a href="${safeHref(it.url)}" rel="noopener">原文</a></div>
+    ${factsheetHTML(it)}
     </div>${study ? `<button class="btn-sm" data-id="${esc(it.id)}" onclick="study(this)">学这个</button>` : ''}</div>`).join('');
 }
 // 可复用的主动回忆评分组件（reveal 内容 + 四档评分 + 脚本）
@@ -1115,6 +1148,7 @@ async function itemPage(env, id) {
   let body = `<div class="card"><p class="mt"><a href="/board/${esc(item.board_id)}">← ${esc(BOARD_NAMES[item.board_id] || item.board_id)}</a></p>
     <h1>${esc(item.title)}</h1>
     <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
+    ${factsheetHTML(item)}
     ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
     ${review ? '' : `<button class="btn-sm" data-id="${esc(item.id)}" onclick="study(this)">加入复习队列</button>`}
     <p style="margin:8px 0 0">${deepDiveBtn(item)}</p></div>`;

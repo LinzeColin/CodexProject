@@ -1,0 +1,22 @@
+=== 1. build.json == 0864030f7dc8 ===
+{"build_id":"0864030f7dc8","source_sha256":"0864030f7dc85e4c7ca026f561bc59193f4d845bab8c37c6bd2e23ab4ac467d8","schema_version":"cn_v0_3","built_at":"2026-07-17"}
+  OK build matches
+=== 2. routes 200 ===
+  / -> 200
+  /today -> 200
+  /queue -> 200
+  /radar -> 200
+  /system -> 200
+  /history -> 200
+  /search?q=policy -> 200
+=== 3. six themes present on / ===
+  themes present: 6/6
+=== 4. factsheet chips LIVE (marker '确定性抽取自原文字段') ===
+  /board/board1 factsheet chips: 60
+  /board/board2 factsheet chips: 4
+  /board/board3 factsheet chips: 7
+  /board/board4 factsheet chips: 1
+  OK factsheet live on 4/4 boards
+
+DEPLOY VERIFY: PASS
+exit=0

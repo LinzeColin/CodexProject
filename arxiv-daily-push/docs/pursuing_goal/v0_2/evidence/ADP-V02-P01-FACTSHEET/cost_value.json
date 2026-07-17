@@ -1,0 +1,20 @@
+{
+  "task": "ADP-V02-P01-FACTSHEET",
+  "program": "ADP V0.2 生产集成（把 NOT_DEPLOYED 认知能力分批集成上线）",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "452f7c5de919",
+  "live_build_after": "0864030f7dc8",
+  "deploy_version_id": "f26dc86a-446f-445b-b1ab-d2c132b1cf46",
+  "rollback_target_version_id": "5a7c0fbe-8299-4eaa-8b60-940286a67ebc",
+  "value": "把 S1-P03-T016 确定性 Factsheet（DOI/文号/关键数字/作者）从 NOT_DEPLOYED 提升到 PRODUCTION；首屏起每条内容多出结构化关键事实，直接可见可用。",
+  "d1_rows_read": 0,
+  "d1_rows_written": 0,
+  "r2_class_a": 0,
+  "r2_class_b": 0,
+  "model_calls": 0,
+  "new_d1_tables": 0,
+  "cron_change": false,
+  "external_fetch_added": false,
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "dir_007_free_tier": "unchanged (纯展示层，无新增读写/抓取)"
+}

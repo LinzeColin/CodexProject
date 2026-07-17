@@ -1,0 +1,8 @@
+PASS board3 有文号+数字
+PASS NC board3 无文号无数字(不臆造)
+PASS NC board1 arxiv-id非DOI
+PASS board2 真DOI
+PASS NC 空条目->空
+PASS ReDoS-guarded pathological board4 ms=0.29 facts=[]
+
+ACCEPTANCE = PASS (faithful port + load-bearing negative controls + ReDoS-safe)
