@@ -10,7 +10,7 @@
   "generated_at": "2026-07-16T23:50:21Z",
   "implementation_base_sha": "f97f6826794c73128afa38ca907b618115a06893",
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:63e8aad50972a772298c15e2bab86e6ce9f797dadf0d3e5236dd30aeeacba9fe",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:0de822b4f9c7ed58d077e47a5c773a676a8d063bb04e64a09217bbeb5834b455",
   "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the sixteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
   "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
   "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",

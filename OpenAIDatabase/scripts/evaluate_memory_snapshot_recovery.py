@@ -322,6 +322,9 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
             raise RecoveryEvaluationError("recovery_snapshot_not_deterministic")
 
         validation = memory_snapshot.validate_snapshot(asset_a, source_commit)
+        snapshot_manifest_sha256 = sha256_prefixed(
+            canonical_json_bytes(validation.manifest) + b"\n"
+        )
         record_id = str(validation.manifest["smoke_query_record_id"])
         iterations = int(config["smoke_query_iterations_per_surface"])
         snapshot_queries = [
@@ -389,7 +392,9 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
                 "asset_name": asset_a.name,
                 "asset_bytes": export_a["asset_bytes"],
                 "asset_sha256": export_a["asset_sha256"],
+                "manifest_sha256": snapshot_manifest_sha256,
                 "payload_tree_sha256": validation.manifest["payload_tree_sha256"],
+                "source_commit_time": validation.manifest["source_commit_time"],
                 "file_count": validation.result["file_count"],
                 "commit_file_count": validation.result["commit_file_count"],
                 "runtime_file_count": validation.result["runtime_file_count"],
@@ -488,13 +493,30 @@ def main(argv: Sequence[str] | None = None) -> int:
                     tracked_json = json.loads(tracked)
                     difference_paths = _json_difference_paths(tracked_json, report)
                 except (UnicodeError, json.JSONDecodeError):
+                    tracked_json = {}
                     difference_paths = ["$"]
+                tracked_snapshot = (
+                    tracked_json.get("snapshot", {}) if isinstance(tracked_json, dict) else {}
+                )
+                computed_snapshot = report["snapshot"]
                 print(
                     json.dumps(
                         {
+                            "computed_asset_bytes": computed_snapshot["asset_bytes"],
+                            "computed_asset_sha256": computed_snapshot["asset_sha256"],
+                            "computed_manifest_sha256": computed_snapshot["manifest_sha256"],
+                            "computed_source_commit_time": computed_snapshot[
+                                "source_commit_time"
+                            ],
                             "computed_sha256": sha256_prefixed(rendered),
                             "differing_paths": difference_paths[:32],
                             "diagnostic": "recovery_report_drift",
+                            "tracked_asset_bytes": tracked_snapshot.get("asset_bytes"),
+                            "tracked_asset_sha256": tracked_snapshot.get("asset_sha256"),
+                            "tracked_manifest_sha256": tracked_snapshot.get("manifest_sha256"),
+                            "tracked_source_commit_time": tracked_snapshot.get(
+                                "source_commit_time"
+                            ),
                             "tracked_sha256": sha256_prefixed(tracked),
                         },
                         sort_keys=True,
