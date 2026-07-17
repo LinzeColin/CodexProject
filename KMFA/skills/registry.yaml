@@ -1,0 +1,151 @@
+# KMFA Skills 机器可读登记表
+# 建立 2026-07-17。人读版见同目录 README.md。
+# 用途：让「谁依赖哪个目录/哪个外部命令」可被程序查询 —— 2026-07-17 的事故正是因为
+#       删掉 main_worktree 时，没有任何地方能查到 6 个排程依赖它。
+schema_version: 1
+registry_id: KMFA-skills-registry-v1
+generated_at: "2026-07-17"
+
+skills:
+  - id: gongzi-fafang-biaozhun
+    name_zh: 工资发放标准
+    path: KMFA/skills/gongzi-fafang-biaozhun
+    status: MIGRATED_2026_07_17
+    previous_location: ~/.codex/skills/gongzi-fafang-biaozhun
+    version_controlled_before: false      # 迁入前无任何版本控制，丢了就没了
+    external_deps: []
+    schedules: []
+    hardcoded_local_paths: 0
+    contains_secrets: false               # 迁入前已扫描：无密钥/手机号/身份证/金额/真名
+
+  - id: hongquan-main-contract-dws
+    name_zh: 红圈主合同
+    path: KMFA/skills/hongquan-main-contract-dws
+    status: MIGRATED_2026_07_17
+    previous_location: ~/.codex/skills/hongquan-main-contract-dws
+    version_controlled_before: false
+    external_deps: ["红圈 cloud.hecom.cn 网页"]
+    schedules: ["dws-weekly-archive-local", "kmfa-upstream-dws-archive"]
+    hardcoded_local_paths: 1              # 待办：改成配置项
+    contains_secrets: false
+
+  - id: info-fee-update
+    name_zh: 信息费更新
+    path: KMFA/skills/info-fee-update
+    status: MIGRATED_2026_07_17
+    previous_location: ~/.codex/skills/info-fee-update
+    version_controlled_before: false
+    external_deps: ["红圈 cloud.hecom.cn 网页", "WPS"]
+    schedules: []
+    hardcoded_local_paths: 1              # 待办：改成配置项；且引用 Downloads/KMFA_MetaData
+    contains_secrets: false
+
+  - id: kmfa-dingtalk-attendance-skill
+    name_zh: 钉钉考勤
+    path: KMFA/kmfa-dingtalk-attendance-skill     # 尚未物理移入 KMFA/skills/
+    status: REGISTERED_IN_PLACE
+    move_blocked_by: "25 处外部引用，含每天在跑的 KMFA/tools/dingtalk_attendance/ 生产代码"
+    external_deps: ["dws (DingTalk Workspace CLI)"]
+    external_deps_available_locally: false        # ⚠️ command -v dws 找不到；~/.dws/ 不存在
+    schedules: ["kmfa-attendance-morning", "kmfa-attendance-evening", "kmfa-work-check"]
+
+  - id: fund-weekly-analysis-skill
+    name_zh: 付款申请群资金周报
+    path: KMFA/fund-weekly-analysis-skill
+    status: REGISTERED_IN_PLACE
+    move_blocked_by: "7 处外部引用"
+    external_deps: []
+    schedules: ["kmfa-fund-weekly"]
+
+  - id: daily_routine_check_skill
+    name_zh: 每日工作检查
+    path: KMFA/daily_routine_check_skill
+    status: REGISTERED_IN_PLACE
+    move_blocked_by: "10 处外部引用"
+    external_deps: []
+    schedules: []
+
+  - id: mgmt-monthly-report-skill
+    name_zh: 经营管理月报
+    path: KMFA/mgmt-monthly-report-skill
+    status: REGISTERED_IN_PLACE
+    move_blocked_by: "4 处外部引用"
+    external_deps: []
+    schedules: []
+
+# 排程配在 Codex 应用内部，不在本仓库也不在 ~/.codex/automations/。
+# 本仓库只有契约记录：KMFA/metadata/automation/codex_app_schedules.contract.toml
+schedules:
+  - id: kmfa-attendance-morning
+    name_zh: 考勤早
+    skill: kmfa-dingtalk-attendance-skill
+    configured_in: codex_app
+    cwd_declared: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa
+    cwd_exists: false                     # 🔴 2026-07-17 大清理已删除该路径
+    cwd_should_be: /Users/linzezhang/Documents/Codex/GithubProject/CodexProject
+    fixable_by_agent: false               # 只能 Owner 在 Codex 应用界面改
+
+  - id: kmfa-attendance-evening
+    name_zh: 考勤晚
+    skill: kmfa-dingtalk-attendance-skill
+    configured_in: codex_app
+    cwd_exists: false
+    cwd_should_be: /Users/linzezhang/Documents/Codex/GithubProject/CodexProject
+    fixable_by_agent: false
+
+  - id: kmfa-work-check
+    name_zh: 工作检查
+    skill: kmfa-dingtalk-attendance-skill
+    configured_in: codex_app
+    local_wall_clock_times: ["13:35", "19:05"]
+    cwd_exists: false
+    cwd_should_be: /Users/linzezhang/Documents/Codex/GithubProject/CodexProject
+    fixable_by_agent: false
+
+  - id: kmfa-fund-weekly
+    name_zh: 付款申请群资金周报
+    skill: fund-weekly-analysis-skill
+    configured_in: codex_app
+    local_wall_clock_times: ["Monday 11:00", "Saturday 11:00"]
+    cwd_exists: false
+    cwd_should_be: /Users/linzezhang/Documents/Codex/GithubProject/CodexProject
+    fixable_by_agent: false
+
+  - id: kmfa-upstream-dws-archive
+    name_zh: 上游归档
+    skill: hongquan-main-contract-dws
+    configured_in: codex_app
+    local_wall_clock_times: ["11:00"]
+    cwd_declared: /Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p
+    cwd_exists: false                     # 🔴 该临时目录已随清理消失
+    cwd_should_be: TBD                    # 需按用途重定，不能照抄 CodexProject
+    fixable_by_agent: false
+
+  - id: dws-auth-keepalive-2
+    name_zh: dws 保活
+    skill: null                           # 认证底座，全部 DWS 类共用
+    configured_in: codex_app
+    local_wall_clock_times: ["00:20", "04:20", "08:20", "12:20", "16:20", "20:20"]
+    cwd_exists: false
+    cwd_should_be: TBD
+    fixable_by_agent: false
+
+  - id: dws-weekly-archive-local
+    name_zh: 红圈主合同DWS 每周六自动归档
+    skill: hongquan-main-contract-dws
+    configured_in: ~/.codex/automations/dws/automation.toml   # 这条在本机文件里
+    cwd_declared: /Users/linzezhang/Documents/Codex
+    cwd_exists: true                      # ✅ 未失效
+    fixable_by_agent: true
+
+open_issues:
+  - id: DWS_BIN_MISSING
+    detail: "考勤 skill 调 dws（DingTalk Workspace CLI，env DWS_BIN 回落到 'dws'）；本机 command -v dws 找不到、~/.dws/ 不存在。与 cwd 失效是两个独立故障。dws 有开源实现，不绑 Codex，需选定实现并固化版本。"
+  - id: SCHEDULES_ALL_BROKEN
+    detail: "6 条 ACTIVE 排程 cwd 全部指向已删除路径，正在空跑失败。只能 Owner 在 Codex 应用改。见 _protected/BROKEN_AUTOMATIONS_20260717.md"
+  - id: CONTRACT_VS_ACTUAL_DRIFT
+    detail: "codex_app_schedules.contract.toml 声明 ACTIVE 的 6 条，在 ~/.codex/automations/ 里一条都不存在；契约与实际存放位置脱节，需确认权威源。"
+  - id: HARDCODED_PATHS
+    detail: "hongquan-main-contract-dws 与 info-fee-update 各有 1 处写死本机绝对路径，换机/上云即失效，应改配置项。"
+  - id: FOUR_SKILLS_NOT_MOVED
+    detail: "4 个在仓 skill 共 46 处外部引用，物理移入 KMFA/skills/ 需同步改引用 + 回归测试，属独立重构。"

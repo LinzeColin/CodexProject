@@ -1,0 +1,4 @@
+interface:
+  display_name: "红圈主合同DWS"
+  short_description: "从红圈导出主合同 DWS 数据并按日期命名归档"
+  default_prompt: "Use $hongquan-main-contract-dws to download today's 红圈主合同 DWS data and archive it."
