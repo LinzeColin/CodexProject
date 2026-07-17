@@ -103,7 +103,7 @@ class MemorySnapshotRecoveryTests(unittest.TestCase):
         self.assertEqual(self.observed["snapshot"]["runtime_file_count"], 0)
         self.assertRegex(self.observed["snapshot"]["manifest_sha256"], r"^sha256:[0-9a-f]{64}$")
         self.assertEqual(
-            self.observed["snapshot"]["source_commit_time"], "2026-07-16T23:41:35+00:00"
+            self.observed["snapshot"]["source_commit_time"], "2026-07-16T23:41:35Z"
         )
         self.assertEqual(self.observed["roundtrip"]["checked_file_count"], 15)
         self.assertEqual(self.observed["roundtrip"]["matched_file_count"], 15)

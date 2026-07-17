@@ -18,6 +18,7 @@ import subprocess
 import tempfile
 import zipfile
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Mapping, Sequence
 
@@ -261,7 +262,13 @@ def repository_context(database_dir: Path, source_commit: str) -> tuple[Path, st
     commit = _git(root, "rev-parse", "--verify", f"{source_commit}^{{commit}}").decode("ascii").strip()
     if SHA_RE.fullmatch(commit) is None:
         raise SnapshotError("snapshot_source_commit_invalid")
-    committed_at = _git(root, "show", "-s", "--format=%cI", commit).decode("ascii").strip()
+    committed_epoch_raw = _git(root, "show", "-s", "--format=%ct", commit).decode("ascii").strip()
+    try:
+        committed_at = datetime.fromtimestamp(int(committed_epoch_raw), UTC).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
+    except (OverflowError, ValueError) as exc:
+        raise SnapshotError("snapshot_source_commit_time_invalid") from exc
     return root, commit, committed_at
 
 
