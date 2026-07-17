@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-SPLIT-WAVE6-POLICY-20260717",
+  "project_id": "ROOT",
+  "task_id": "CODEXPROJECT-GOV-P0-SPLIT-WAVE6-POLICY-20260717",
+  "acceptance_ids": [
+    "ACC-CODEXPROJECT-GOV-P0-SPLIT-WAVE6-POLICY-20260717"
+  ],
+  "iteration_id": "ITER-20260717-REPOSITORY-SPLIT-WAVE6-POLICY",
+  "generated_at": "2026-07-17T17:30:00+10:00",
+  "implementation_base_sha": "061f4f4fdb6720038cd7bd414ac7f4c2c2f72ddf",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1cbe7737245e8585ab8bcae793a2d06f962f86c540800b8edd48feb06e5b1236",
+  "content_records": [
+    {
+      "path": "governance/workflow_policy.json",
+      "sha256": "825e30f86109bed3fefd2dd3a93aaa17e29b1ef565d1cf9dad8580ea5e81c44f"
+    },
+    {
+      "path": "governance/artifact_policy.json",
+      "sha256": "14d91e854785df1412341a278ce0bb1810fd7ba44d0928fe55a9a1102d85a611"
+    },
+    {
+      "path": "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+      "sha256": "e44fab995904a5cfe64b80767e4194672d79f4c0b6e494c95fd721e9887ca119"
+    },
+    {
+      "path": "scripts/workflow_security_audit.py",
+      "sha256": "e30929d4123591f3da890193eb7c770480daf125088ce8c03f0057fb4819f782"
+    },
+    {
+      "path": "tests/governance/test_migrated_workflow_retirement.py",
+      "sha256": "6cd527ed6f9d804c80f972af814a39183555ff2c3f55119aaa198e81e7c02972"
+    }
+  ],
+  "changed_files_declared": [
+    "governance/run_manifests/TSK-CODEXPROJECT-SPLIT-WAVE6-POLICY-20260717.json",
+    "tests/governance/test_migrated_workflow_retirement.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/TSK-CODEXPROJECT-SPLIT-WAVE6-POLICY-20260717.json",
+    "tests/governance/test_migrated_workflow_retirement.py"
+  ],
+  "required_governance_files": [
+    "governance/workflow_policy.json",
+    "governance/artifact_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-CODEXPROJECT-SPLIT-WAVE6-POLICY-20260717.json"
+  ],
+  "updated_governance_files": [
+    "governance/artifact_policy.json",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-CODEXPROJECT-SPLIT-WAVE6-POLICY-20260717.json",
+    "tests/governance/test_migrated_workflow_retirement.py"
+  ],
+  "test_commands": [
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/workflow_security_audit.py check-render",
+    "python3 -B scripts/lean_governance.py artifact-audit --base-ref <base> --json",
+    "python3 -m pytest tests/governance/test_migrated_workflow_retirement.py -q"
+  ],
+  "test_results": [
+    {
+      "command": "workflow_security_audit audit",
+      "result": "PASS",
+      "observed": "status PASS, errors []"
+    },
+    {
+      "command": "workflow_security_audit check-render",
+      "result": "PASS",
+      "observed": "matches true"
+    },
+    {
+      "command": "lean_governance artifact-audit",
+      "result": "PASS",
+      "observed": "status PASS, errors 0"
+    },
+    {
+      "command": "pytest test_migrated_workflow_retirement",
+      "result": "PASS",
+      "observed": "3 passed"
+    }
+  ],
+  "evidence_refs": [
+    "governance/workflow_policy.json",
+    "governance/artifact_policy.json",
+    "tests/governance/test_migrated_workflow_retirement.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Align workflow and artifact policies with the wave-6 repository boundary",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "purpose": "第6波迁出 KMFA/OpenAIDatabase 后，令工作流策略与产物留存策略与新仓库边界一致。",
+  "owner_decision": "OWNER_AUTHORIZED_REPOSITORY_SPLIT_2026-07-17",
+  "raw_private_data_read_or_written": false,
+  "other_project_status_changed": false,
+  "product_model_delta": "none",
+  "governance_model_delta": "工作流策略支持跨仓退休记法 owner/repo:path；产物策略移除已迁出项目条目；新证据改用 TSK- 紧凑收据命名空间（run_manifests 中非 TSK- 部分为只读 legacy 归档，不得新增或改基线）",
+  "rollback": {
+    "repo": "git revert 本提交即可恢复原策略；不涉及数据迁移"
+  },
+  "status": "completed",
+  "gate_status": "PASS_LOCAL",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "summary": "令工作流策略与产物留存策略与第6波后的仓库边界一致：迁走的工作流登记为跨仓退休；移除已迁出项目的契约资源与留存集合；新证据改用 TSK- 紧凑收据命名空间(run_manifests 中非 TSK- 部分是只读 legacy 归档，不得新增、不得改其基线)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "stop_conditions": [
+    "只读 legacy 归档(非 TSK- 的 run_manifests)不得新增或改基线"
+  ],
+  "unresolved_risks": [
+    "渲染器 PyYAML 非确定性尚未根治，暂以各仓 CI 装 PyYAML 绕过；待 ⑦ 统一修并传播"
+  ],
+  "next_allowed_task": "⑦ 退休 CodexProject 旧治理框架（需 ADP 收工）"
+}
