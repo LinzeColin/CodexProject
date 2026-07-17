@@ -867,6 +867,7 @@ models:
       - "EVID-OAIDB-PAM1-0006-MANIFEST"
       - "EVID-OAIDB-PAM1-0018-MANIFEST"
       - "EVID-OAIDB-PAM1-0019-MANIFEST"
+      - "EVID-OAIDB-PAM1-0019-PORTABILITY-REMEDIATION"
   -
     model_id: "MOD-017"
     name: "Generated Agent memory views"
@@ -4472,4 +4473,9 @@ evidence_refs:
     evidence_id: "EVID-OAIDB-PAM1-0019-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PRODUCTION-ACCEPTANCE-20260717.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-PAM1-0019-PORTABILITY-REMEDIATION"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json"
     fact_level: "EXTRACTED"

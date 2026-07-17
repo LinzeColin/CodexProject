@@ -10,12 +10,12 @@
   "generated_at": "2026-07-16T23:50:21Z",
   "implementation_base_sha": "bed2c13bec7b62653d76ec6711ce3a5c990bd34f",
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:232458b2353642123027fc9d37bac31407a89852b07c51ac174e19de86711f39",
-  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the four non-manifest closure files; this manifest is excluded to avoid self-reference.",
-  "ci_attestation_subject": "Task37 accepted-main clean-clone portability and exact-base Settlement race remediation",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:85b7fb05f85fe5a3ae9f63a639d5e5616f73c304d5c8c4a9585e9b3260e9c020",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the twelve non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
   "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
   "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
-  "summary": "Close the two production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with the accepted public-main tree and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "summary": "Close the three production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with the accepted public-main tree, rebind snapshot recovery to that reachable commit, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
   "scope": {
     "new_business_sample_files": 0,
     "canonical_or_raw_business_data_files_modified": 0,
@@ -28,6 +28,14 @@
   },
   "changed_files_declared": [
     ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
     "governance/repository_hygiene_policy.json",
     "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
     "tests/agent_loop/test_workflow_contract.py",
@@ -35,6 +43,14 @@
   ],
   "changed_files_actual": [
     ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
     "governance/repository_hygiene_policy.json",
     "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
     "tests/agent_loop/test_workflow_contract.py",
@@ -42,6 +58,14 @@
   ],
   "required_governance_files": [
     ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
     "governance/repository_hygiene_policy.json",
     "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
     "tests/agent_loop/test_workflow_contract.py",
@@ -49,6 +73,14 @@
   ],
   "updated_governance_files": [
     ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
     "governance/repository_hygiene_policy.json",
     "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
     "tests/agent_loop/test_workflow_contract.py",
@@ -57,13 +89,18 @@
   "evidence_refs": [
     "https://github.com/LinzeColin/CodexProject/actions/runs/29542903124",
     "https://github.com/LinzeColin/CodexProject/actions/runs/29542732909",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29543207293",
     ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
     "governance/repository_hygiene_policy.json"
   ],
   "test_commands": [
     "python3 -B -m unittest -q tests.agent_loop.test_workflow_contract tests.governance.test_repository_hygiene",
     "python3 -B scripts/workflow_security_audit.py audit --json",
     "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py --database-dir OpenAIDatabase --write",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py --database-dir OpenAIDatabase --phase candidate --artifact-ref CANDIDATE_TREE --reuse-current-reports --write",
     "python3 -B scripts/lean_governance.py ci --changed-only --base-ref bed2c13bec7b62653d76ec6711ce3a5c990bd34f"
   ],
   "test_results": [
@@ -81,6 +118,16 @@
       "command": "repository hygiene audit",
       "result": "PASS",
       "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; zero policy errors and zero violations."
+    },
+    {
+      "command": "snapshot recovery and candidate acceptance regeneration",
+      "result": "PASS",
+      "observed": "Recovery uses public reachable commit bed2c13bec7b62653d76ec6711ce3a5c990bd34f; 100% canonical hash identity, 10 offline queries and 3 negative cases pass; six proof and five profile candidate acceptance remains PASS."
+    },
+    {
+      "command": "Lean Governance changed-only",
+      "result": "PASS",
+      "observed": "SHIP with 13 changed files, 5 selected projects, 5 validated projects and zero tracked writes."
     }
   ],
   "stop_conditions": {
@@ -91,7 +138,7 @@
     "public_snapshot_contains_runtime_or_unsafe_records": true
   },
   "rollback": {
-    "action": "Revert this five-file remediation through a new governed transaction.",
+    "action": "Revert this thirteen-file remediation through a new governed transaction.",
     "history_rewrite": false,
     "canonical_or_raw_data_compensation": "none"
   },
