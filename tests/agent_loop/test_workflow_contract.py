@@ -32,6 +32,8 @@ class WorkflowContractTest(unittest.TestCase):
         self.assertIn("AUTOMATION_C_TRANSACTION_V1", workflow)
         self.assertIn("branch tip drifted; exact deletion refused", workflow)
         self.assertIn("governance_run_id", workflow)
+        self.assertIn('main_ref = api("git/ref/heads/main")', workflow)
+        self.assertIn("live_main_sha != expected_base", workflow)
         self.assertIn("AUTOMATION_C_MAX_AGE_MINUTES", workflow)
         self.assertIn("ref_used_by_open_pr", workflow)
         self.assertIn("CLOSE_ACCIDENTAL_ISSUE", workflow)

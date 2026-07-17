@@ -2,7 +2,7 @@
   "schema_version": 1,
   "policy_id": "CodexProject-root-repository-hygiene-v1",
   "owner": "repository-owner",
-  "baseline_tree": "84c1c17f84722bef9b00bd720d48126b417850c6",
+  "baseline_tree": "0669f6c51940477894d1a8303511063872e5266e",
   "regular_blob_max_bytes": 1048576,
   "hard_fail": {
     "forbidden_names": [
@@ -101,12 +101,18 @@
       "confidentiality": "repository_governance",
       "change_policy": "baseline_oid_only",
       "reviewed_oids": [
+        "395d22cafd3b77a51a39007fc826259d7719fbfe",
+        "4dd63561638ef1dd6af6aea5c01b1b3518b4cdc9",
         "6702b3537532188cba9afe42e2e3c44a2658c8fe",
         "698573d69f2f14423729e446cfd8dde726ba7a7b",
+        "843f6f76fb41d5bf7135fc49e6d766d59cb42a93",
         "a2f9250ccbe626805a6f67f4312da306cb5515d0",
         "a8f611fc0382350b69fb4f3ec0c959e56b9df980",
         "acbf968d5ae1f1e5ca682c3d7f6e26bfa1bd92d3",
         "b50fe6a325a791fb825c6c9d9f061fbdf9479519",
+        "d08565d44416a6ee2a15589eb3337fa08c5019e7",
+        "d6a45bdcf3067f0b8ee5455f4023dd77a2325f1f",
+        "dafc6c89e00d83822cdaf4ef6a23367061b7f6ad",
         "def49e44cb2cd0d476a67c389a1bec9ae307884e"
       ],
       "max_bytes": 4194304

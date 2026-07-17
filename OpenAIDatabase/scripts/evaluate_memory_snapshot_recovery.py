@@ -46,6 +46,30 @@ def sha256_prefixed(payload: bytes) -> str:
     return "sha256:" + hashlib.sha256(payload).hexdigest()
 
 
+def _json_difference_paths(left: Any, right: Any, path: str = "$") -> list[str]:
+    if type(left) is not type(right):
+        return [path]
+    if isinstance(left, dict):
+        differences: list[str] = []
+        for key in sorted(set(left) | set(right)):
+            child = f"{path}.{key}"
+            if key not in left or key not in right:
+                differences.append(child)
+            else:
+                differences.extend(_json_difference_paths(left[key], right[key], child))
+        return differences
+    if isinstance(left, list):
+        differences = []
+        for index in range(max(len(left), len(right))):
+            child = f"{path}[{index}]"
+            if index >= len(left) or index >= len(right):
+                differences.append(child)
+            else:
+                differences.extend(_json_difference_paths(left[index], right[index], child))
+        return differences
+    return [] if left == right else [path]
+
+
 def _load_json(path: Path, label: str) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -222,7 +246,12 @@ def _commit_payload_match(
     restored_root: Path,
     source_commit: str,
     validation: memory_snapshot.SnapshotValidation,
+    policy: Mapping[str, Any],
 ) -> dict[str, Any]:
+    runtime_sources = {
+        str(row["snapshot_path"]): str(row["source"])
+        for row in policy["runtime_files"]
+    }
     checked = 0
     matched = 0
     for descriptor in validation.manifest["files"]:
@@ -230,7 +259,12 @@ def _commit_payload_match(
             continue
         checked += 1
         snapshot_path = str(descriptor["path"])
-        relative = snapshot_path.removeprefix("OpenAIDatabase/")
+        if snapshot_path.startswith("OpenAIDatabase/"):
+            relative = snapshot_path.removeprefix("OpenAIDatabase/")
+        elif snapshot_path in runtime_sources:
+            relative = runtime_sources[snapshot_path]
+        else:
+            raise RecoveryEvaluationError("recovery_commit_source_mapping_missing")
         source = memory_snapshot._git_file(repository_root, source_commit, relative)
         snapshot = validation.payloads[snapshot_path]
         restored = (restored_root / snapshot_path).read_bytes()
@@ -259,13 +293,25 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
     with tempfile.TemporaryDirectory(prefix="memory-snapshot-recovery-") as temp_dir:
         sandbox = Path(temp_dir).resolve()
         export_a, asset_a = memory_snapshot.export_snapshot(
-            database, policy, source_commit, sandbox / "export-a"
+            database,
+            policy,
+            source_commit,
+            sandbox / "export-a",
+            release_candidate=True,
         )
         export_idempotent, repeated_asset = memory_snapshot.export_snapshot(
-            database, policy, source_commit, sandbox / "export-a"
+            database,
+            policy,
+            source_commit,
+            sandbox / "export-a",
+            release_candidate=True,
         )
         export_b, asset_b = memory_snapshot.export_snapshot(
-            database, policy, source_commit, sandbox / "export-b"
+            database,
+            policy,
+            source_commit,
+            sandbox / "export-b",
+            release_candidate=True,
         )
         if (
             repeated_asset != asset_a
@@ -276,6 +322,9 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
             raise RecoveryEvaluationError("recovery_snapshot_not_deterministic")
 
         validation = memory_snapshot.validate_snapshot(asset_a, source_commit)
+        snapshot_manifest_sha256 = sha256_prefixed(
+            canonical_json_bytes(validation.manifest) + b"\n"
+        )
         record_id = str(validation.manifest["smoke_query_record_id"])
         iterations = int(config["smoke_query_iterations_per_surface"])
         snapshot_queries = [
@@ -302,7 +351,7 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
             raise RecoveryEvaluationError("recovery_clean_room_query_mismatch")
 
         payload_match = _commit_payload_match(
-            root, restored_root, source_commit, validation
+            root, restored_root, source_commit, validation, policy
         )
         recovery_elapsed = time.monotonic() - started
         if recovery_elapsed > int(config["local_drill_bound_seconds"]):
@@ -343,7 +392,9 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
                 "asset_name": asset_a.name,
                 "asset_bytes": export_a["asset_bytes"],
                 "asset_sha256": export_a["asset_sha256"],
+                "manifest_sha256": snapshot_manifest_sha256,
                 "payload_tree_sha256": validation.manifest["payload_tree_sha256"],
+                "source_commit_time": validation.manifest["source_commit_time"],
                 "file_count": validation.result["file_count"],
                 "commit_file_count": validation.result["commit_file_count"],
                 "runtime_file_count": validation.result["runtime_file_count"],
@@ -436,7 +487,42 @@ def main(argv: Sequence[str] | None = None) -> int:
             report_path.parent.mkdir(parents=True, exist_ok=True)
             report_path.write_bytes(rendered)
         else:
-            if not report_path.is_file() or report_path.read_bytes() != rendered:
+            tracked = report_path.read_bytes() if report_path.is_file() else b""
+            if tracked != rendered:
+                try:
+                    tracked_json = json.loads(tracked)
+                    difference_paths = _json_difference_paths(tracked_json, report)
+                except (UnicodeError, json.JSONDecodeError):
+                    tracked_json = {}
+                    difference_paths = ["$"]
+                tracked_snapshot = (
+                    tracked_json.get("snapshot", {}) if isinstance(tracked_json, dict) else {}
+                )
+                computed_snapshot = report["snapshot"]
+                print(
+                    json.dumps(
+                        {
+                            "computed_asset_bytes": computed_snapshot["asset_bytes"],
+                            "computed_asset_sha256": computed_snapshot["asset_sha256"],
+                            "computed_manifest_sha256": computed_snapshot["manifest_sha256"],
+                            "computed_source_commit_time": computed_snapshot[
+                                "source_commit_time"
+                            ],
+                            "computed_sha256": sha256_prefixed(rendered),
+                            "differing_paths": difference_paths[:32],
+                            "diagnostic": "recovery_report_drift",
+                            "tracked_asset_bytes": tracked_snapshot.get("asset_bytes"),
+                            "tracked_asset_sha256": tracked_snapshot.get("asset_sha256"),
+                            "tracked_manifest_sha256": tracked_snapshot.get("manifest_sha256"),
+                            "tracked_source_commit_time": tracked_snapshot.get(
+                                "source_commit_time"
+                            ),
+                            "tracked_sha256": sha256_prefixed(tracked),
+                        },
+                        sort_keys=True,
+                    ),
+                    file=sys.stderr,
+                )
                 raise RecoveryEvaluationError("recovery_report_stale_or_missing")
         print(
             json.dumps(

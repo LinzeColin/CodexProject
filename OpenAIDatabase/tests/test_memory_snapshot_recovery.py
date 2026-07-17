@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import io
 import json
+import stat
 import sys
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -37,6 +40,35 @@ class MemorySnapshotRecoveryTests(unittest.TestCase):
         self.assertEqual(self.observed["offline_query_smoke"]["total_pass_count"], 10)
         self.assertEqual(self.observed["offline_query_smoke"]["network_request_count"], 0)
 
+    def test_report_drift_diagnostic_exposes_paths_without_values(self) -> None:
+        left = {"snapshot": {"asset_bytes": 1, "hash": "left"}, "status": "PASS"}
+        right = {"snapshot": {"asset_bytes": 2, "hash": "right"}, "status": "PASS"}
+        self.assertEqual(
+            evaluator._json_difference_paths(left, right),
+            ["$.snapshot.asset_bytes", "$.snapshot.hash"],
+        )
+
+    def test_snapshot_zip32_writer_fixes_all_cross_runtime_metadata(self) -> None:
+        archive = memory_snapshot.build_snapshot_bytes(
+            {"OpenAIDatabase/test.txt": b"portable"},
+            {"schema_version": "test"},
+        )
+        self.assertEqual(
+            archive,
+            memory_snapshot.build_snapshot_bytes(
+                {"OpenAIDatabase/test.txt": b"portable"},
+                {"schema_version": "test"},
+            ),
+        )
+        with zipfile.ZipFile(io.BytesIO(archive), "r") as opened:
+            self.assertIsNone(opened.testzip())
+            self.assertEqual(opened.namelist(), ["OpenAIDatabase/test.txt", "SNAPSHOT_MANIFEST.json"])
+            for info in opened.infolist():
+                self.assertEqual(info.date_time, memory_snapshot.ZIP_TIMESTAMP)
+                self.assertEqual(info.compress_type, zipfile.ZIP_STORED)
+                self.assertEqual(info.create_system, 3)
+                self.assertEqual((info.external_attr >> 16) & 0xFFFF, stat.S_IFREG | 0o644)
+
     def test_tamper_missing_member_wrong_commit_and_unsafe_paths_fail_closed(self) -> None:
         self.assertEqual(
             set(self.observed["negative_cases"]), set(self.config["required_negative_cases"])
@@ -65,8 +97,16 @@ class MemorySnapshotRecoveryTests(unittest.TestCase):
         self.assertFalse(release["repository_archive_or_bundle_created"])
         self.assertFalse(release["archive_branch_created"])
         self.assertEqual(release["public_release_safe_record_count"], 198)
-        self.assertFalse(self.observed["snapshot"]["release_candidate"])
-        self.assertFalse(self.observed["snapshot"]["all_members_from_source_commit"])
+        self.assertTrue(self.observed["snapshot"]["release_candidate"])
+        self.assertTrue(self.observed["snapshot"]["all_members_from_source_commit"])
+        self.assertEqual(self.observed["snapshot"]["commit_file_count"], 15)
+        self.assertEqual(self.observed["snapshot"]["runtime_file_count"], 0)
+        self.assertRegex(self.observed["snapshot"]["manifest_sha256"], r"^sha256:[0-9a-f]{64}$")
+        self.assertEqual(
+            self.observed["snapshot"]["source_commit_time"], "2026-07-16T23:41:35Z"
+        )
+        self.assertEqual(self.observed["roundtrip"]["checked_file_count"], 15)
+        self.assertEqual(self.observed["roundtrip"]["matched_file_count"], 15)
         self.assertFalse(self.observed["snapshot"]["authenticity_claim"])
         self.assertEqual(self.observed["snapshot"]["raw_file_count"], 0)
 

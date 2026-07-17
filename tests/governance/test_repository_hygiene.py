@@ -31,6 +31,10 @@ class RepositoryHygieneTests(unittest.TestCase):
         errors = hygiene.validate_policy(policy, root=ROOT)
         self.assertTrue(any(".owner must be non-empty" in error for error in errors), errors)
 
+    def test_baseline_tree_is_reachable_from_head_history(self) -> None:
+        result = self._git(ROOT, "log", "--format=%T", "HEAD")
+        self.assertIn(self.policy["baseline_tree"], result.stdout.splitlines())
+
     def test_new_large_archive_runtime_noise_and_backup_producer_fail(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

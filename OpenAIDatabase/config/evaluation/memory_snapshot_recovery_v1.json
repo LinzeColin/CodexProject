@@ -2,7 +2,7 @@
   "schema_version": "openai_database.memory_snapshot_recovery_evaluation.v1",
   "task_id": "TSK.OpenAIDatabase.PAM1.0018",
   "acceptance_id": "ACC.OpenAIDatabase.PAM1.0018",
-  "source_commit": "543de9d53a42457d74a7a9ab1480d070ab468438",
+  "source_commit": "bed2c13bec7b62653d76ec6711ce3a5c990bd34f",
   "policy": "config/memory-snapshot-policy.json",
   "report": "data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
   "smoke_query_iterations_per_surface": 5,

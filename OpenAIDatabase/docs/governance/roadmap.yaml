@@ -784,9 +784,10 @@ stages:
               - "PASS_CANDIDATE: six Proof=6/6；profiles=5/5；benchmark=160；fault=37；E2E=7；recovery hash=100%"
               - "PASS_CANDIDATE: Recall@5/MRR/current/provenance/abstention/FAMA=1.0；critical stale use=0；writer=1；legacy writer=0"
               - "PASS_BOUNDARY: intended AgentDatabase target remains PUBLIC/private=false；new release requires commit-only members and 198/198 public-safe canonical records"
-              - "PASS_LOCAL_READY: P45 clears integrated repository hygiene to zero violations; fresh remote main ac871bd4 has zero candidate-path overlap and the Task37 candidate may proceed to the single governed publication transaction"
+              - "PASS_LOCAL_REMEDIATION: public-main-reachable hygiene baseline, accepted-public recovery source and live exact-base Settlement recheck are implemented；recovery hash=100%，offline queries=10，negative cases=3"
             evidence_refs:
               - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PRODUCTION-ACCEPTANCE-20260717.json"
+              - "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json"
             risks: "Production PASS is prohibited until integrated main hygiene is clean, the public-safe asset validates against accepted main, required checks pass, and terminal GitHub state is 0/0/0。"
             rollback: "Delete any incomplete public-safe Release; revert the single Task37 settlement through a governed transaction；no visibility change, direct/force push or history rewrite。"
   - stage_id: "CF-L2"

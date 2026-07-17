@@ -1,0 +1,206 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0019",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0019"
+  ],
+  "iteration_id": "ST10-PHC-OPENAIDATABASE-PAM1-0019-003",
+  "generated_at": "2026-07-16T23:50:21Z",
+  "implementation_base_sha": "c0c6fafe9f580b09ed9cc380cfbedd188a1b7430",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d3336d6e836d94094d6af5cb9d2ce4e19b9a52adffebccf6b6ecce6e5b5894fd",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the nineteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
+  "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
+  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects, normalize commit time from epoch to UTC Z and write canonical explicit ZIP32 bytes, refresh both tracked Agent views to the accepted canonical source commit, register only the six exact append-only governance OIDs introduced by the intervening accepted main commits, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 0,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
+    "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
+    "governance/id_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
+    "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
+    "governance/id_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "required_governance_files": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
+    "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
+    "governance/id_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
+    "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
+    "governance/id_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLICATION-PORTABILITY-RACE-FIX-20260717.json",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "evidence_refs": [
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29542903124",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29542732909",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29543207293",
+    "https://github.com/LinzeColin/CodexProject/commit/f97f6826794c73128afa38ca907b618115a06893",
+    "https://github.com/LinzeColin/CodexProject/commit/b9c5a5d747f99e35247b2a23141be7caf4588353",
+    "https://github.com/LinzeColin/CodexProject/commit/8fa394a6879b9cd05a87ea74515667dcb70883e3",
+    "https://github.com/LinzeColin/CodexProject/commit/c0c6fafe9f580b09ed9cc380cfbedd188a1b7430",
+    ".github/workflows/agent-loop-settlement.yml",
+    "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "governance/id_registry.json",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest -q tests.agent_loop.test_workflow_contract tests.governance.test_repository_hygiene",
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/governance_id_audit.py --base-ref c0c6fafe9f580b09ed9cc380cfbedd188a1b7430 --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py --database-dir OpenAIDatabase --write",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_retrieval_performance.py --database-dir OpenAIDatabase --write",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py --database-dir OpenAIDatabase --phase candidate --artifact-ref CANDIDATE_TREE --reuse-current-reports --write",
+    "python3 -B OpenAIDatabase/scripts/memory.py --database-dir OpenAIDatabase build --agent-views --check",
+    "cd OpenAIDatabase && python3 -B scripts/run_verification.py --tier security",
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref c0c6fafe9f580b09ed9cc380cfbedd188a1b7430"
+  ],
+  "test_results": [
+    {
+      "command": "focused workflow and hygiene regression",
+      "result": "PASS",
+      "observed": "9/9 tests passed. The contract requires a live main-ref comparison and the hygiene baseline must be a root tree reachable from HEAD history."
+    },
+    {
+      "command": "workflow security audit",
+      "result": "PASS",
+      "observed": "15 owned workflows; zero high-privilege, unpinned, permission, trigger, context or duplicate-role violations."
+    },
+    {
+      "command": "repository hygiene audit",
+      "result": "PASS",
+      "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; the intervening accepted main commits add exactly six reviewed single-line append-only governance OIDs; zero policy errors and zero violations."
+    },
+    {
+      "command": "generated Agent view source binding",
+      "result": "PASS",
+      "observed": "Both tracked Agent views deterministically bind accepted canonical source commit bed2c13bec7b62653d76ec6711ce3a5c990bd34f; the previously failing repository-view regression now passes."
+    },
+    {
+      "command": "offline security tier",
+      "result": "PASS",
+      "observed": "150/150 tests passed after regenerating the existing 160-case performance report against the refreshed Agent view; no benchmark samples were added."
+    },
+    {
+      "command": "snapshot recovery and candidate acceptance regeneration",
+      "result": "PASS",
+      "observed": "Recovery uses public reachable commit bed2c13bec7b62653d76ec6711ce3a5c990bd34f with 15/15 members sourced from Git objects; 100% canonical hash identity, 10 offline queries and 3 negative cases pass; six proof and five profile candidate acceptance remains PASS."
+    },
+    {
+      "command": "Lean Governance changed-only",
+      "result": "PASS",
+      "observed": "SHIP with 20 changed files, 5 selected projects, 5 validated projects and zero tracked writes."
+    },
+    {
+      "command": "immutable Governance ID V2 audit",
+      "result": "PASS",
+      "observed": "Allocated EVT.OpenAIDatabase.PAM1.0020 through registry revision 95; all 13,230 identifier references resolve exactly once, with zero new positional IDs or errors."
+    },
+    {
+      "command": "snapshot and production acceptance unit regression",
+      "result": "PASS",
+      "observed": "16/16 tests passed, including value-free JSON-path diagnostics and canonical explicit ZIP32 metadata coverage for clean-checkout report drift."
+    }
+  ],
+  "stop_conditions": {
+    "live_main_differs_from_tested_base": true,
+    "hygiene_baseline_not_reachable_from_head_history": true,
+    "required_check_failure": true,
+    "agentdatabase_not_public": true,
+    "public_snapshot_contains_runtime_or_unsafe_records": true
+  },
+  "rollback": {
+    "action": "Revert this seventeen-file remediation through a new governed transaction.",
+    "history_rewrite": false,
+    "canonical_or_raw_data_compensation": "none"
+  },
+  "unresolved_risks": [
+    "Remote required checks and published acceptance remain pending; do not tag or upload until all accepted-main gates succeed."
+  ],
+  "next_allowed_task": "Complete the same Task37 trusted Settlement, source tag, public Release and published acceptance."
+}

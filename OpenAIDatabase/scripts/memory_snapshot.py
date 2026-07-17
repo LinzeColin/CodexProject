@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import binascii
 import copy
 import hashlib
 import io
@@ -12,10 +13,12 @@ import os
 import re
 import shutil
 import stat
+import struct
 import subprocess
 import tempfile
 import zipfile
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Mapping, Sequence
 
@@ -37,6 +40,10 @@ SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 MEMORY_ID_RE = re.compile(r"^mem_[A-Za-z0-9][A-Za-z0-9._-]{7,127}$")
 MAX_BOOTSTRAP_ASSET_BYTES = 2 * 1024 * 1024
 ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
+ZIP32_VERSION = 20
+ZIP32_MAX_VALUE = (1 << 32) - 1
+ZIP32_MAX_MEMBERS = (1 << 16) - 1
+ZIP_UTF8_FLAG = 0x800
 CREDENTIAL_PATTERNS = (
     re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     re.compile(r"\bgh[pousr]_[A-Za-z0-9]{30,}\b"),
@@ -255,7 +262,13 @@ def repository_context(database_dir: Path, source_commit: str) -> tuple[Path, st
     commit = _git(root, "rev-parse", "--verify", f"{source_commit}^{{commit}}").decode("ascii").strip()
     if SHA_RE.fullmatch(commit) is None:
         raise SnapshotError("snapshot_source_commit_invalid")
-    committed_at = _git(root, "show", "-s", "--format=%cI", commit).decode("ascii").strip()
+    committed_epoch_raw = _git(root, "show", "-s", "--format=%ct", commit).decode("ascii").strip()
+    try:
+        committed_at = datetime.fromtimestamp(int(committed_epoch_raw), UTC).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
+    except (OverflowError, ValueError) as exc:
+        raise SnapshotError("snapshot_source_commit_time_invalid") from exc
     return root, commit, committed_at
 
 
@@ -540,10 +553,92 @@ def _zip_info(name: str) -> zipfile.ZipInfo:
 def build_snapshot_bytes(payloads: Mapping[str, bytes], manifest: Mapping[str, Any]) -> bytes:
     members = dict(payloads)
     members[SNAPSHOT_MANIFEST] = canonical_json_bytes(manifest) + b"\n"
+    if len(members) > ZIP32_MAX_MEMBERS:
+        raise SnapshotError("snapshot_zip32_limit_exceeded")
+
+    year, month, day, hour, minute, second = ZIP_TIMESTAMP
+    dos_time = (hour << 11) | (minute << 5) | (second // 2)
+    dos_date = ((year - 1980) << 9) | (month << 5) | day
+    external_attr = (stat.S_IFREG | 0o644) << 16
+    version_made_by = (3 << 8) | ZIP32_VERSION
     buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_STORED) as archive:
-        for name in sorted(members):
-            archive.writestr(_zip_info(name), members[name])
+    central_rows: list[tuple[bytes, int, int, int, int]] = []
+
+    for name in sorted(members):
+        safe_relative_path(name)
+        payload = members[name]
+        try:
+            name_bytes = name.encode("ascii")
+            flag_bits = 0
+        except UnicodeEncodeError:
+            name_bytes = name.encode("utf-8")
+            flag_bits = ZIP_UTF8_FLAG
+        offset = buffer.tell()
+        size = len(payload)
+        if len(name_bytes) > ZIP32_MAX_MEMBERS or max(offset, size) > ZIP32_MAX_VALUE:
+            raise SnapshotError("snapshot_zip32_limit_exceeded")
+        crc = binascii.crc32(payload) & ZIP32_MAX_VALUE
+        buffer.write(
+            struct.pack(
+                "<IHHHHHIIIHH",
+                0x04034B50,
+                ZIP32_VERSION,
+                flag_bits,
+                0,
+                dos_time,
+                dos_date,
+                crc,
+                size,
+                size,
+                len(name_bytes),
+                0,
+            )
+        )
+        buffer.write(name_bytes)
+        buffer.write(payload)
+        central_rows.append((name_bytes, flag_bits, crc, size, offset))
+
+    central_offset = buffer.tell()
+    for name_bytes, flag_bits, crc, size, offset in central_rows:
+        buffer.write(
+            struct.pack(
+                "<IHHHHHHIIIHHHHHII",
+                0x02014B50,
+                version_made_by,
+                ZIP32_VERSION,
+                flag_bits,
+                0,
+                dos_time,
+                dos_date,
+                crc,
+                size,
+                size,
+                len(name_bytes),
+                0,
+                0,
+                0,
+                0,
+                external_attr,
+                offset,
+            )
+        )
+        buffer.write(name_bytes)
+    central_size = buffer.tell() - central_offset
+    if max(central_offset, central_size) > ZIP32_MAX_VALUE:
+        raise SnapshotError("snapshot_zip32_limit_exceeded")
+    buffer.write(
+        struct.pack(
+            "<IHHHHIIH",
+            0x06054B50,
+            0,
+            0,
+            len(central_rows),
+            len(central_rows),
+            central_size,
+            central_offset,
+            0,
+        )
+    )
     return buffer.getvalue()
 
 
