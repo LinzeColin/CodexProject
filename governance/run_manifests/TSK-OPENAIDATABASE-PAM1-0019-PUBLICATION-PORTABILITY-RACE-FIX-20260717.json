@@ -10,12 +10,12 @@
   "generated_at": "2026-07-16T23:50:21Z",
   "implementation_base_sha": "bed2c13bec7b62653d76ec6711ce3a5c990bd34f",
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3e062b26726b0fd91f757dc93d51dba7e7baec0472765799ea5cdc0ec3de7058",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f287f7fc57cf6dad5aed49ab1ba5cb5a2f4b4cb8bbe3173d8035bfe192d58bcb",
   "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the fifteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
   "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
   "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
   "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
-  "summary": "Close the three production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with the accepted public-main tree, rebind snapshot recovery to that reachable commit, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with the accepted public-main tree, rebind snapshot recovery to that reachable commit, source all recovery members from its Git objects, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
   "scope": {
     "new_business_sample_files": 0,
     "canonical_or_raw_business_data_files_modified": 0,
@@ -136,7 +136,7 @@
     {
       "command": "snapshot recovery and candidate acceptance regeneration",
       "result": "PASS",
-      "observed": "Recovery uses public reachable commit bed2c13bec7b62653d76ec6711ce3a5c990bd34f; 100% canonical hash identity, 10 offline queries and 3 negative cases pass; six proof and five profile candidate acceptance remains PASS."
+      "observed": "Recovery uses public reachable commit bed2c13bec7b62653d76ec6711ce3a5c990bd34f with 15/15 members sourced from Git objects; 100% canonical hash identity, 10 offline queries and 3 negative cases pass; six proof and five profile candidate acceptance remains PASS."
     },
     {
       "command": "Lean Governance changed-only",

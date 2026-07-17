@@ -246,7 +246,12 @@ def _commit_payload_match(
     restored_root: Path,
     source_commit: str,
     validation: memory_snapshot.SnapshotValidation,
+    policy: Mapping[str, Any],
 ) -> dict[str, Any]:
+    runtime_sources = {
+        str(row["snapshot_path"]): str(row["source"])
+        for row in policy["runtime_files"]
+    }
     checked = 0
     matched = 0
     for descriptor in validation.manifest["files"]:
@@ -254,7 +259,12 @@ def _commit_payload_match(
             continue
         checked += 1
         snapshot_path = str(descriptor["path"])
-        relative = snapshot_path.removeprefix("OpenAIDatabase/")
+        if snapshot_path.startswith("OpenAIDatabase/"):
+            relative = snapshot_path.removeprefix("OpenAIDatabase/")
+        elif snapshot_path in runtime_sources:
+            relative = runtime_sources[snapshot_path]
+        else:
+            raise RecoveryEvaluationError("recovery_commit_source_mapping_missing")
         source = memory_snapshot._git_file(repository_root, source_commit, relative)
         snapshot = validation.payloads[snapshot_path]
         restored = (restored_root / snapshot_path).read_bytes()
@@ -283,13 +293,25 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
     with tempfile.TemporaryDirectory(prefix="memory-snapshot-recovery-") as temp_dir:
         sandbox = Path(temp_dir).resolve()
         export_a, asset_a = memory_snapshot.export_snapshot(
-            database, policy, source_commit, sandbox / "export-a"
+            database,
+            policy,
+            source_commit,
+            sandbox / "export-a",
+            release_candidate=True,
         )
         export_idempotent, repeated_asset = memory_snapshot.export_snapshot(
-            database, policy, source_commit, sandbox / "export-a"
+            database,
+            policy,
+            source_commit,
+            sandbox / "export-a",
+            release_candidate=True,
         )
         export_b, asset_b = memory_snapshot.export_snapshot(
-            database, policy, source_commit, sandbox / "export-b"
+            database,
+            policy,
+            source_commit,
+            sandbox / "export-b",
+            release_candidate=True,
         )
         if (
             repeated_asset != asset_a
@@ -326,7 +348,7 @@ def evaluate(database_dir: Path, config: Mapping[str, Any]) -> tuple[dict[str, A
             raise RecoveryEvaluationError("recovery_clean_room_query_mismatch")
 
         payload_match = _commit_payload_match(
-            root, restored_root, source_commit, validation
+            root, restored_root, source_commit, validation, policy
         )
         recovery_elapsed = time.monotonic() - started
         if recovery_elapsed > int(config["local_drill_bound_seconds"]):
