@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'e78306049663', source_sha256: 'e78306049663da5bef870b7896e0e9204dba908c18bfd0a913173a28173c8e76', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '204c97eb5406', source_sha256: '204c97eb540680be4207647c90717fb1d2b35f495926bd543bce3c6011485196', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -78,6 +78,13 @@ const REGISTRY = [
     { id: 'ieee-spectrum', name: 'IEEE Spectrum', platform: 'spectrum.ieee.org 官方 RSS', website: 'https://spectrum.ieee.org', method: 'rss', feed: 'https://spectrum.ieee.org/feeds/feed.rss', official: 1 },
   ]},
   { board: 'board3', name: '板块三 · 中国政策法规', sources: [
+    // ── S3 A0 官方原文（P04 接入每日 cron）──
+    // 只接入「边缘可达 + 静态可解析」的官方源；不可达的诚实地不接（见 known_gaps）：
+    //   gov-cn-fagui 列表页 HTTP 403（拦截）；nda-gov 仅 193 字节 JS 跳转空壳（S3 适配器已标 live_blocked=True）。
+    { id: 'gov-cn-policy', name: '国务院 · 政策文件（官方原文）', platform: '中国政府网 gov.cn', website: 'https://www.gov.cn', method: 'a0', list: 'https://www.gov.cn/zhengce/xxgk/', official: 1, cadence: '每日' },
+    { id: 'stats-gov', name: '国家统计局 · 最新发布（官方原文）', platform: 'stats.gov.cn', website: 'https://www.stats.gov.cn', method: 'a0', list: 'https://www.stats.gov.cn/sj/zxfb/', official: 1, cadence: '每日' },
+    { id: 'cac-gov', name: '中央网信办（官方原文）', platform: 'cac.gov.cn', website: 'https://www.cac.gov.cn', method: 'a0', list: 'https://www.cac.gov.cn/', official: 1, cadence: '每日' },
+    { id: 'ndrc-gov', name: '国家发改委 · 政策发布（官方原文）', platform: 'ndrc.gov.cn', website: 'https://www.ndrc.gov.cn', method: 'a0', list: 'https://www.ndrc.gov.cn/xxgk/', official: 1, cadence: '每日' },
     // Google News 从数据中心 IP 被拦（429/403），换为可从云端抓的官方/主流媒体 RSS
     { id: 'people-politics', name: '人民网 · 时政（政策/政府）', platform: 'people.com.cn 官方 RSS', website: 'http://politics.people.com.cn', method: 'rss', feed: 'http://www.people.com.cn/rss/politics.xml', official: 1, cadence: '每日' },
     { id: 'people-finance', name: '人民网 · 经济与财经政策', platform: 'people.com.cn 官方 RSS', website: 'http://finance.people.com.cn', method: 'rss', feed: 'http://www.people.com.cn/rss/finance.xml', official: 1, cadence: '每日' },
@@ -343,6 +350,37 @@ async function ingestAll(env, counts) {
   counts.feed_fetched = rotated.length;
   counts.feed_disabled = feeds.length - eligible.length;
 
+  // A0 官方原文（board3）：与 RSS 同样的健康/自动停用/自愈纪律，独立小额子请求预算。
+  const a0all = [];
+  for (const b of REGISTRY) for (const s of b.sources) if (s.method === 'a0') a0all.push({ b: b.board, s });
+  const a0eligible = a0all.filter(f => {
+    const h = hmap[f.s.id];
+    if (h?.health !== 'disabled_auto') return true;
+    return !h.last_fetch || (Date.now() - Date.parse(h.last_fetch)) > 3 * 864e5;
+  });
+  a0eligible.sort((a, b) => (hmap[a.s.id]?.last_fetch || '').localeCompare(hmap[b.s.id]?.last_fetch || ''));
+  const a0run = a0eligible.slice(0, A0_PER_RUN);
+  const a0settled = await Promise.allSettled(a0run.map(f =>
+    fetchFeedText(f.s.list, env, f.s.id).then(html => ({ f, items: parseA0(html, f.s.id) }))));
+  let a0New = 0;
+  for (let i = 0; i < a0run.length; i++) {
+    const res = a0settled[i], f = a0run[i];
+    if (res.status === 'fulfilled') {
+      for (const it of res.value.items) {
+        itemStmts.push(itemStmt(env, { id: 'a0:' + await sha1(f.s.id + '|' + it.url), board: f.b, source: f.s.id,
+          kind: 'official', title: it.title, url: it.url, summary: '', categories: '', authors: '', published: it.published }));
+        a0New++;
+      }
+      healthStmts.push(healthStmt(env, f.s.id, res.value.items.length > 0, hmap[f.s.id]?.consecutive_failures));
+      if (!res.value.items.length) counts.degraded.push('a0:' + f.s.id + ':parsed0');
+    } else {
+      counts.degraded.push('a0:' + f.s.id);
+      healthStmts.push(healthStmt(env, f.s.id, false, hmap[f.s.id]?.consecutive_failures));
+    }
+  }
+  counts.a0_official = a0New;
+  counts.a0_fetched = a0run.length;
+
   // 批量写入 + 健康 + 保留上限（每个 batch 一个子请求）
   await batchWrite(env, itemStmts);
   await batchWrite(env, healthStmts);
@@ -423,6 +461,64 @@ async function selectDaily(env, asOfDate, counts) {
   ).bind(asOfDate, it.id, sc.score, why, JSON.stringify(sc.contrib), it.board_id, runAt).run();
   counts.selected = it.id;
   return { it, sc, why };
+}
+
+// ───────────────────────── A0 官方原文抓取（S3 适配器接入生产 cron；board3） ─────────────────────────
+// 只从列表页抽「链接 + 标题 + 日期」，不抓正文（每源 1 子请求，DIR-007 预算）。
+// 日期只在能从 URL 真实读出时才给；新版 gov.cn /content/YYYYMM/ 只有年月没有日 → published_at 留空，绝不编造。
+const A0_PER_RUN = 4;               // 每次 cron 最多抓的 A0 源数（覆盖全部 4 个源）。
+// DIR-007 子请求核算（外部 fetch/次 cron）：arxiv 2 + biorxiv 1 + RSS 13 + A0 4 = 20，上限 50。
+// D1/R2 属 internal services，另有 1000/次 的独立额度，不与这 50 混算。
+const pad2 = (n) => String(+n).padStart(2, '0');
+const A0_SOURCES = {
+  'gov-cn-policy': {
+    // 钉住 host：否则 gov.cn 列表页上的站外链接会被当作「官方原文」入库（a0Board3Eligible 按 source_id 放行，不再校验 host）。
+    match: /^https:\/\/www\.gov\.cn\/zhengce\/content\/[^"']+\.htm$/,
+    resolve: (u) => u,
+    // 旧版 /2019-04/15/ 有完整日期；新版 /202607/ 只有年月 → null（不编造「日」）
+    date: (u) => { const m = /\/(\d{4})-(\d{1,2})\/(\d{1,2})\//.exec(u); return m ? `${m[1]}-${pad2(m[2])}-${pad2(m[3])}` : null; },
+  },
+  'stats-gov': {
+    match: /^\.\/\d{6}\/t\d{8}_\d+\.html$/,
+    resolve: (u) => 'https://www.stats.gov.cn/sj/zxfb/' + u.slice(2),
+    date: (u) => { const m = /t(\d{4})(\d{2})(\d{2})_/.exec(u); return m ? `${m[1]}-${m[2]}-${m[3]}` : null; },
+  },
+  'ndrc-gov': {
+    // 发改委自有政策原文：./zcfb/tz/202607/t20260716_1406539.html（与 stats 同为 t{YYYYMMDD}_ 形态）
+    match: /^\.\/[a-z/]+\/\d{6}\/t\d{8}_\d+\.html$/,
+    resolve: (u) => 'https://www.ndrc.gov.cn/xxgk/' + u.slice(2),
+    date: (u) => { const m = /t(\d{4})(\d{2})(\d{2})_/.exec(u); return m ? `${m[1]}-${m[2]}-${m[3]}` : null; },
+  },
+  'cac-gov': {
+    match: /^\/\/www\.cac\.gov\.cn\/\d{4}-\d{2}\/\d{2}\/c_\d+\.htm$/,
+    resolve: (u) => 'https:' + u,
+    date: (u) => { const m = /\/(\d{4})-(\d{2})\/(\d{2})\//.exec(u); return m ? `${m[1]}-${m[2]}-${m[3]}` : null; },
+  },
+};
+// 从列表页 HTML 解析 A0 条目：title 优先取 title 属性（stats 用单引号），否则取链接文字；
+// 去重按解析后 URL；标题过短（如 cac 的「全文」跳转链）直接丢弃而不是入库垃圾。
+function parseA0(html, sourceId) {
+  const cfg = A0_SOURCES[sourceId];
+  if (!cfg) return [];
+  const out = [], seen = new Set();
+  // 有界量词 + 不要求闭合 </a>（取到下一个 < 为止）→ 线性时间：未闭合 <a 洪水不会二次回溯（ReDoS）。
+  const re = /<a\s([^>]{0,400})>([^<]{0,200})/g;
+  let m;
+  while ((m = re.exec(html)) && out.length < MAX_ITEMS_PER_FEED) {
+    const attrs = m[1];
+    const hm = /href=["']([^"']+)["']/.exec(attrs);
+    if (!hm) continue;
+    const href = hm[1].trim();
+    if (!cfg.match.test(href)) continue;
+    const url = cfg.resolve(href);
+    if (seen.has(url)) continue;                       // 同一 href 常因响应式布局重复出现
+    const t = /title=["']([^"']+)["']/.exec(attrs);
+    const title = decodeEntities(stripTags(t ? t[1] : m[2]));   // 复用既有 helper（含实体解码）
+    if (title.length < 6) continue;                    // 「全文」这类跳转链无有效标题 → 不入库
+    seen.add(url);
+    out.push({ title, url, published: cfg.date(href) });
+  }
+  return out;
 }
 
 // ───────────────────────── 讲义（确定性八段模板） ─────────────────────────
@@ -1353,36 +1449,51 @@ export default {
       if (p === '/robots.txt') return new Response('User-agent: *\nDisallow:\n', { headers: { 'content-type': 'text/plain' } });
       if (p === '/build.json') return jsonResp(BUILD);
       if (p === '/api/a0-canary') {
-        // S3-P03-T040 非破坏性 canary：实抓 gov.cn 政策原文（1 子请求）→ 应用 Board 3 A0 门 → 报告官方证据率。
-        // 不写生产（只读预览）。回滚 = BOARD3_A0_ONLY=false 一次部署。
-        let official = [];
-        try {
-          const r = await fetch('https://www.gov.cn/zhengce/xxgk/', { headers: { 'user-agent': UA }, cf: { cacheTtl: 300 } });
-          const h = await r.text();
-          const re = /href="(https?:\/\/[^"]*\/zhengce\/content\/[^"]+\.htm)"[^>]*>([^<]{6,80})/g; let m;
-          const seen = new Set();
-          while ((m = re.exec(h)) && official.length < 8) {
-            if (seen.has(m[1])) continue; seen.add(m[1]);
-            const d = /\/(\d{4})-(\d{1,2})\/(\d{1,2})\//.exec(m[1]);
-            official.push({ source_id: 'gov-cn-policy', board_id: 'board3', title: m[2].trim(), url: m[1],
-                            date: d ? `${d[1]}-${String(+d[2]).padStart(2, '0')}-${String(+d[3]).padStart(2, '0')}` : null,
-                            a0_eligible: a0Board3Eligible({ board_id: 'board3', source_id: 'gov-cn-policy', url: m[1] }) });
-          }
-        } catch (e) { official = []; }
-        const { results: b3media } = await env.DB.prepare(
-          "SELECT id,source_id,title,url FROM cn_items WHERE board_id='board3' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 200").all();
-        const mediaDemoted = (b3media || []).filter(it => !a0Board3Eligible(it)).length;
-        const officialEligible = official.filter(o => o.a0_eligible).length;
+        // S3-P03-T040 canary，P04 升级：用与生产 cron 同一个 parseA0 解析器逐源实测边缘可达性与产出，
+        // 不再用重复的内联正则（旧正则只认 /YYYY-MM/DD/ 旧链接形态，所以只吐 2019/2020 老文件）。
+        // 只读：不写任何生产数据。
+        const probes = [];
+        for (const b of REGISTRY) for (const s of b.sources) {
+          if (s.method !== 'a0') continue;
+          let rec = { source_id: s.id, list: s.list, reachable: false, parsed: 0, with_date: 0, error: null, sample: [] };
+          try {
+            // sourceId=null 关掉 fetchFeedText 的 R2 双写旁路（其内部 `&& sourceId` 守卫），
+            // 否则这个「只读」端点会真写 R2+D1（未鉴权 → 任何人可烧 DIR-007 预算）——复核抓到的真实缺陷。
+            const html = await fetchFeedText(s.list, env, null);
+            const items = parseA0(html, s.id);
+            rec.reachable = true;
+            rec.parsed = items.length;
+            rec.with_date = items.filter(i => i.published).length;
+            rec.sample = items.slice(0, 2).map(i => ({ title: i.title.slice(0, 60), url: i.url, published: i.published,
+              a0_eligible: a0Board3Eligible({ board_id: 'board3', source_id: s.id, url: i.url }) }));
+          } catch (e) { rec.error = String(e && e.name || e).slice(0, 60); }
+          probes.push(rec);
+        }
+        const { results: b3 } = await env.DB.prepare(
+          // 必须选出 board_id：a0Board3Eligible 首行是 `if (it.board_id !== 'board3') return true`，
+          // 漏选会让每一行都恒真通过 → 把 105 条媒体误报成「官方 A0」并谎称 safe_to_flip（T040 原版同样漏选，其 media_demoted:0 是空跑）。
+          "SELECT id,board_id,source_id,title,url,kind FROM cn_items WHERE board_id='board3' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 400").all();
+        const inDbOfficial = (b3 || []).filter(it => a0Board3Eligible(it)).length;
+        const inDbMedia = (b3 || []).length - inDbOfficial;
+        const parsedTotal = probes.reduce((a, p) => a + p.parsed, 0);
         return jsonResp({
-          canary: 'board3_a0_view', flag_state: BOARD3_A0_ONLY ? 'ON' : 'OFF (production unchanged)',
-          non_destructive: true, note: 'reads live gov.cn policy + current DB; writes nothing to production',
-          official_original_items_found: official.length, official_eligible: officialEligible,
-          board3_media_in_db: (b3media || []).length, board3_media_demoted_to_discovery: mediaDemoted,
-          official_evidence_rate: official.length ? (officialEligible / official.length) : null,
-          media_evidence_rate_under_gate: 0,
-          sample_official: official.slice(0, 3),
+          canary: 'board3_a0_view', flag_state: BOARD3_A0_ONLY ? 'ON' : 'OFF (media still counts as evidence)',
+          non_destructive: true, note: 'probes each A0 source live from the edge with the SAME parser the cron uses; writes nothing',
+          a0_sources_probed: probes.length,
+          a0_sources_reachable: probes.filter(p => p.reachable && p.parsed > 0).length,
+          a0_items_parsed_now: parsedTotal,
+          probes,
+          board3_in_db_total: (b3 || []).length,
+          board3_in_db_official_a0: inDbOfficial,
+          board3_in_db_media: inDbMedia,
+          // 翻开关的前提：库里真的有 A0 官方原文，否则 board3 会被清空
+          safe_to_flip_flag: inDbOfficial > 0,
+          flip_precondition: 'BOARD3_A0_ONLY=true demotes media to discovery; flipping while board3_in_db_official_a0 == 0 would EMPTY board 3',
           rollback: 'set BOARD3_A0_ONLY=false and redeploy (one deploy); flag currently ' + (BOARD3_A0_ONLY ? 'ON' : 'OFF'),
-          owner_gate: 'S3 Exit approved A0 promotion; full flip pending A0 adapters wired to worker + real 14-day shadow (DIR-007 budgeted)',
+          not_wired_honestly: {
+            'gov-cn-fagui': 'listing returns HTTP 403 (blocked) - not ingested',
+            'nda-gov': 'listing returns a ~193-byte JS-redirect stub (S3 adapter already marks live_blocked=true) - not ingested',
+          },
         });
       }
 

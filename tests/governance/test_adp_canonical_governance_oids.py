@@ -57,6 +57,19 @@ class TestAdpCanonicalGovernanceOids(unittest.TestCase):
         """The guarded invariant only holds if the rule really is baseline_oid_only."""
         self.assertEqual(self.rule.get("change_policy"), "baseline_oid_only")
 
+    def test_rule_is_not_dead_config(self):
+        """A retained rule whose prefix no longer exists, or that covers nothing oversized, has
+        silently stopped protecting anything while still reporting green -- the same 'looks fine but
+        checks nothing' failure mode that made the old canary vacuous. Assert the rule is live."""
+        prefix = self.rule.get("prefix")
+        directory = ROOT / prefix
+        self.assertTrue(directory.is_dir(), "retained rule prefix no longer exists: {}".format(prefix))
+        limit = int(self.policy["regular_blob_max_bytes"])
+        oversized = [p for p in directory.rglob("*") if p.is_file() and p.stat().st_size > limit]
+        self.assertTrue(oversized,
+                        "no file under {} exceeds regular_blob_max_bytes ({}) -- this rule now protects "
+                        "nothing; it is either stale config or the limit changed".format(prefix, limit))
+
     def test_baseline_tree_is_resolvable(self):
         """The whole audit is anchored on baseline_tree; if it is unreachable the audit degrades to a
         confusing 'FAIL with violations: []'. That exact failure mode has bitten this repo before

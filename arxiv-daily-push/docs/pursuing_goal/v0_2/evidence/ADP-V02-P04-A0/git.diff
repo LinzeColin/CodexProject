@@ -1,0 +1,597 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index ba0c91ccb..e9495f67e 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P04 (board3 A0 官方原文接入每日 cron; PRODUCTION DEPLOY; product_version 0.27.0)
++
++- ADP V0.2 第 4 个可见增量,也是最关键的一批：board3「中国政策法规」此前**只抓媒体 RSS**（人民网/中新网/新浪）——库里全是**关于**政策的**报道**,**没有一条政府官方原文**;S3(T031-T040) 建好的 A0 适配器从未接进生产 cron,T040 只留下一个只读 canary。本次真正接上：4 个 A0 官方源进 REGISTRY(board3, method 'a0')并复用 RSS 同一套纪律(健康/连续 3 次失败自动停用/3 天后自愈重试)：stats-gov(stats.gov.cn/sj/zxfb/)、cac-gov(cac.gov.cn)、ndrc-gov(ndrc.gov.cn/xxgk/)、gov-cn-policy(gov.cn/zhengce/xxgk/)。新增共享解析器 parseA0 + 每源 match/resolve/date;**日期只在能从 URL 真实读出时才给**——新版 gov.cn /content/YYYYMM/ 只有年月没有日 → published_at 留空,绝不编造。/api/a0-canary 升级为**真实的逐源边缘可达性探针**并复用同一个 parseA0(替掉 T040 那段只认旧链接形态的重复内联正则——这正是它一直只吐 2019/2020 老文件的原因)。**BOARD3_A0_ONLY 仍为 false**：本次只摄取,不把媒体降为 discovery(库里有 A0 之前翻开关会**清空 board3**;T040 的完整翻转门本就要求真实 14 日 shadow)。★我自己先抓到一个 ReDoS★：parseA0 初版正则在未闭合 <a 洪水下二次回溯(8000→81ms,翻倍→4x),会打进 cron 的 CPU 预算;改为有界属性 + 不要求闭合 </a>(取到下一个 <)→线性(8000→11ms,翻倍→2x),抽取结果逐条不变。★独立对抗复核 BLOCK 两条,都真、都是实施者的错★：(1) **未鉴权写回归**——把 canary 的裸 fetch() 换成 fetchFeedText 时**静默继承了它的 R2 双写**,于是一个自称 non_destructive/writes nothing 的**未鉴权**端点冷启动每次命中**真写 15 次**(3 R2 PUT + 3 cn_artifacts INSERT + 9 cn_meta 计数)并污染只在 runDaily 重置的 _rawWrites/_rawUsage 预算计数——在 Owner 签署的 $0 预算上,一个谎报自身副作用的决策仪器;修复 fetchFeedText(s.list, env, null) 命中既有 && sourceId 守卫。(2) **ndrc 排除理由事实错误**——实施者写「整页无日期→非日更源」,复核证伪：该页有 28 个 2026/07/16 斜杠格式日期、103 条(去重 81)发改委自有 t{YYYYMMDD}_ 政策链接(解析后实测 200);实施者的检验只 grep 了短横线格式且只看 gov.cn 链接。**不是删掉假声称而是把 ndrc-gov 真正接了进来**——它恰是带**文号**的官方原文来源(如 发改环资〔2026〕1062号)。复核复验确认：DIR-007 **20/50 外部子请求**(并纠正原注释把 D1/R2 错并入 50——internal services 另有 1000 独立额度);ndrc 正则**无法逃逸 ndrc.gov.cn**(11 个恶意 href 含 ../ 遍历与 .//evil.com 全被拒,因 . 不在 [a-z/] 内);零日期编造;单源失败不中断 cron;幂等;board3 不会被清空;fagui 403 与 nda 恰好 193 字节空壳的排除属实。CONFIRMED_SOUND(未自签)。复核放行后又主动收紧一处：gov-cn-policy 的 match 钉住 host(否则 gov.cn 列表页上的**站外**链接会被当作官方原文入库,而 a0Board3Eligible 按 source_id 放行不再校验 host);负控制证明 evil.com 伪装链接被拒(0)、真 www.gov.cn 链接通过(1)。★上线后又抓到最危险的一个：我的安全仪器曾恒真★——canary 的 board3 查询漏选 board_id,而 a0Board3Eligible 首行是 if (it.board_id !== 'board3') return true → 每行恒真通过 → 把 **105 条媒体误报成官方 A0** 并据此输出 **safe_to_flip_flag: true**;若有人信了去翻开关 **board3 会被清空**,正是该 flag 存在要阻止的灾难。**T040 原版同样漏选**,其 media_demoted:0 一直是空跑。已修(补 board_id),负控制证明该门现在真会判(媒体→false/官方→true/漏 board_id→true 复现 bug)。BUILD e78306049663 -> 204c97eb5406;部署 adp-cloud version 39fae7f4-f3f4-4404-93b7-a0e637764347(绑定+cron 保留);**真实 runDaily 实测：a0_official=37 条官方原文入库**(gov-cn-policy 13 + cac-gov 4 + ndrc-gov 20),board3 由 105 媒体/0 官方 变为 **162 总 / 37 官方 / 125 媒体**,页面真实显示《“十五五”碳达峰行动方案》等国务院文件;10 路由 200 + 六主题 6/6 + P01 芯片(60)/P02 /library/P03 筛选均未回归;回滚 wrangler versions deploy 8a6ef433。诚实边界(known_gaps)：不翻开关;gov-cn-fagui 403、nda-gov 193 字节空壳故不接;只取列表页元数据(无正文→A0 summary 为空);**A0 原始字节实际未归档 R2**(RSS 先耗尽 RAW_MAX_PER_RUN=3)故不声称;gov-cn-policy 权威但不及时(静态索引→2019/2020 基础法规);stats-gov 首跑从边缘 TimeoutError 致其 15 条缺席(随后探测又成功→**间歇性**,不夸大为不可达),由健康机制自愈;kind:'official' 新枚举与 seedSources 清理的孤儿风险。release_mode PRODUCTION;recurring $0/mo(DIR-007 20/50)。Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P03 (增强搜索; PRODUCTION DEPLOY; product_version 0.26.0)
+ 
+ - ADP V0.2 第 3 个可见增量：把 S5-P02-T060 中线上数据真能支撑的部分接进 /search —— 结构化筛选（板块，取自 REGISTRY 白名单；日期范围，YYYY-MM-DD 正则门；GET 表单）+ 标识符置顶（查询形如文号/DOI 时，把查询出现在该行抽出的标识符里的条目排到最前，复用 P01 抽取器、对已召回 <=40 行在 worker 内重排，零额外 DB 成本）。★独立对抗复核 BLOCK —— 判的是诚实性而非安全性（复核明言代码本身可部署），三条全属实★：①（我方自曝并被证实）文号带空格时 SQL LIKE 返回 0 行，重排器根本不会运行，所谓归一化端到端为空（实测 国发〔2026〕12号→1、国发 〔2026〕 12号→0、国发〔2026〕12 号→0），且 normIdent 的 ASCII 大小写折叠在召回层冗余（SQLite LIKE 本就大小写不敏感）；②★我方未发现、更严重★ fetchBiorxiv 存 id='biorxiv:'+doi、url='.../content/'+doi，DOI 从不进 title/summary，而 SQL 只搜 title/summary、itemIdentifiers 却抽 id/url——检索面与抽取面不一致，导致输入 bioRxiv DOI（board1 主力源）页面承诺置顶却一条都搜不到；③精确命中徽章断言无法确立的事实——board3 源全是媒体新闻 RSS，行是关于文件的报道/解读而非文件本身，一篇政策解读被标精确命中，且贪婪前缀致真文件反被漏掉。修复全部采纳：检索面补 id/url（同一绑定 ?1、无新参数；复核用 EXPLAIN QUERY PLAN 实测查询计划逐字节不变，因 LIKE %x% 本就不可走索引，bioRxiv DOI 由 0 条变为命中并置顶）；=== 改 includes（容忍抽取吞入的前缀，使『转发国发〔2026〕12号』这类真文件不再漏掉）且徽章 精确命中 改为 标识符匹配（只声称查询出现在该行抽出的标识符里，不声称该行是官方原件）；页面移除『精确命中会排在最前』的无条件承诺，改为点名真实检索面（标题/摘要/链接/ID == SQL 四列）的条件表述。复核复验 includes 不引入假阳性（identLike 门仍在，1/12/12号/x/空串/cancer 等一律不重排不发徽章；空 nq 退化路径不可达），并额外核验 known_gaps 本身未夸大（数字与查询计划均可复现，且自曝大小写折叠冗余与贪婪正则仅是容忍而非修好）——属低报而非高报。终判 CONFIRMED_SOUND（未自签）。净收益：无筛选计划与改前逐字节一致（未变差），给出板块时收窄为 SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?)，加日期范围后日期条件亦被索引辅助 → 净改善。BUILD e301f8a4c7d8 -> e78306049663；部署 adp-cloud version 8a6ef433-b93d-4730-855d-d15a2b08bc10（绑定 + cron 保留）；实时验证 12 路由全 200（含 ?board= / ?from=&to= 组合）、六主题 6/6、筛选表单渲染、页面无『精确命中』过度声称、P01 芯片(60) 与 P02 /library 均未回归；回滚 wrangler versions deploy bfa3ac49。诚实边界（known_gaps）：这不是 T060 的 O(1) 精确查找（只是对 <=40 行重排）；空格变体端到端不成立；agency/region/status facet 无对应列未做；『标识符匹配』升级为真正的权威原文命中取决于 P04 把 board3 接上 A0 官方原文。release_mode PRODUCTION；无新增表/抓取/cron；recurring $0/mo（DIR-007 不变）。Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/VERSION b/arxiv-daily-push/VERSION
+index 4e8f395fa..1b58cc101 100644
+--- a/arxiv-daily-push/VERSION
++++ b/arxiv-daily-push/VERSION
+@@ -1 +1 @@
+-0.26.0
++0.27.0
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index e2829fc98..6bb70955f 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: 'e78306049663', source_sha256: 'e78306049663da5bef870b7896e0e9204dba908c18bfd0a913173a28173c8e76', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
++const BUILD = { build_id: '204c97eb5406', source_sha256: '204c97eb540680be4207647c90717fb1d2b35f495926bd543bce3c6011485196', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -78,6 +78,13 @@ const REGISTRY = [
+     { id: 'ieee-spectrum', name: 'IEEE Spectrum', platform: 'spectrum.ieee.org 官方 RSS', website: 'https://spectrum.ieee.org', method: 'rss', feed: 'https://spectrum.ieee.org/feeds/feed.rss', official: 1 },
+   ]},
+   { board: 'board3', name: '板块三 · 中国政策法规', sources: [
++    // ── S3 A0 官方原文（P04 接入每日 cron）──
++    // 只接入「边缘可达 + 静态可解析」的官方源；不可达的诚实地不接（见 known_gaps）：
++    //   gov-cn-fagui 列表页 HTTP 403（拦截）；nda-gov 仅 193 字节 JS 跳转空壳（S3 适配器已标 live_blocked=True）。
++    { id: 'gov-cn-policy', name: '国务院 · 政策文件（官方原文）', platform: '中国政府网 gov.cn', website: 'https://www.gov.cn', method: 'a0', list: 'https://www.gov.cn/zhengce/xxgk/', official: 1, cadence: '每日' },
++    { id: 'stats-gov', name: '国家统计局 · 最新发布（官方原文）', platform: 'stats.gov.cn', website: 'https://www.stats.gov.cn', method: 'a0', list: 'https://www.stats.gov.cn/sj/zxfb/', official: 1, cadence: '每日' },
++    { id: 'cac-gov', name: '中央网信办（官方原文）', platform: 'cac.gov.cn', website: 'https://www.cac.gov.cn', method: 'a0', list: 'https://www.cac.gov.cn/', official: 1, cadence: '每日' },
++    { id: 'ndrc-gov', name: '国家发改委 · 政策发布（官方原文）', platform: 'ndrc.gov.cn', website: 'https://www.ndrc.gov.cn', method: 'a0', list: 'https://www.ndrc.gov.cn/xxgk/', official: 1, cadence: '每日' },
+     // Google News 从数据中心 IP 被拦（429/403），换为可从云端抓的官方/主流媒体 RSS
+     { id: 'people-politics', name: '人民网 · 时政（政策/政府）', platform: 'people.com.cn 官方 RSS', website: 'http://politics.people.com.cn', method: 'rss', feed: 'http://www.people.com.cn/rss/politics.xml', official: 1, cadence: '每日' },
+     { id: 'people-finance', name: '人民网 · 经济与财经政策', platform: 'people.com.cn 官方 RSS', website: 'http://finance.people.com.cn', method: 'rss', feed: 'http://www.people.com.cn/rss/finance.xml', official: 1, cadence: '每日' },
+@@ -343,6 +350,37 @@ async function ingestAll(env, counts) {
+   counts.feed_fetched = rotated.length;
+   counts.feed_disabled = feeds.length - eligible.length;
+ 
++  // A0 官方原文（board3）：与 RSS 同样的健康/自动停用/自愈纪律，独立小额子请求预算。
++  const a0all = [];
++  for (const b of REGISTRY) for (const s of b.sources) if (s.method === 'a0') a0all.push({ b: b.board, s });
++  const a0eligible = a0all.filter(f => {
++    const h = hmap[f.s.id];
++    if (h?.health !== 'disabled_auto') return true;
++    return !h.last_fetch || (Date.now() - Date.parse(h.last_fetch)) > 3 * 864e5;
++  });
++  a0eligible.sort((a, b) => (hmap[a.s.id]?.last_fetch || '').localeCompare(hmap[b.s.id]?.last_fetch || ''));
++  const a0run = a0eligible.slice(0, A0_PER_RUN);
++  const a0settled = await Promise.allSettled(a0run.map(f =>
++    fetchFeedText(f.s.list, env, f.s.id).then(html => ({ f, items: parseA0(html, f.s.id) }))));
++  let a0New = 0;
++  for (let i = 0; i < a0run.length; i++) {
++    const res = a0settled[i], f = a0run[i];
++    if (res.status === 'fulfilled') {
++      for (const it of res.value.items) {
++        itemStmts.push(itemStmt(env, { id: 'a0:' + await sha1(f.s.id + '|' + it.url), board: f.b, source: f.s.id,
++          kind: 'official', title: it.title, url: it.url, summary: '', categories: '', authors: '', published: it.published }));
++        a0New++;
++      }
++      healthStmts.push(healthStmt(env, f.s.id, res.value.items.length > 0, hmap[f.s.id]?.consecutive_failures));
++      if (!res.value.items.length) counts.degraded.push('a0:' + f.s.id + ':parsed0');
++    } else {
++      counts.degraded.push('a0:' + f.s.id);
++      healthStmts.push(healthStmt(env, f.s.id, false, hmap[f.s.id]?.consecutive_failures));
++    }
++  }
++  counts.a0_official = a0New;
++  counts.a0_fetched = a0run.length;
++
+   // 批量写入 + 健康 + 保留上限（每个 batch 一个子请求）
+   await batchWrite(env, itemStmts);
+   await batchWrite(env, healthStmts);
+@@ -425,6 +463,64 @@ async function selectDaily(env, asOfDate, counts) {
+   return { it, sc, why };
+ }
+ 
++// ───────────────────────── A0 官方原文抓取（S3 适配器接入生产 cron；board3） ─────────────────────────
++// 只从列表页抽「链接 + 标题 + 日期」，不抓正文（每源 1 子请求，DIR-007 预算）。
++// 日期只在能从 URL 真实读出时才给；新版 gov.cn /content/YYYYMM/ 只有年月没有日 → published_at 留空，绝不编造。
++const A0_PER_RUN = 4;               // 每次 cron 最多抓的 A0 源数（覆盖全部 4 个源）。
++// DIR-007 子请求核算（外部 fetch/次 cron）：arxiv 2 + biorxiv 1 + RSS 13 + A0 4 = 20，上限 50。
++// D1/R2 属 internal services，另有 1000/次 的独立额度，不与这 50 混算。
++const pad2 = (n) => String(+n).padStart(2, '0');
++const A0_SOURCES = {
++  'gov-cn-policy': {
++    // 钉住 host：否则 gov.cn 列表页上的站外链接会被当作「官方原文」入库（a0Board3Eligible 按 source_id 放行，不再校验 host）。
++    match: /^https:\/\/www\.gov\.cn\/zhengce\/content\/[^"']+\.htm$/,
++    resolve: (u) => u,
++    // 旧版 /2019-04/15/ 有完整日期；新版 /202607/ 只有年月 → null（不编造「日」）
++    date: (u) => { const m = /\/(\d{4})-(\d{1,2})\/(\d{1,2})\//.exec(u); return m ? `${m[1]}-${pad2(m[2])}-${pad2(m[3])}` : null; },
++  },
++  'stats-gov': {
++    match: /^\.\/\d{6}\/t\d{8}_\d+\.html$/,
++    resolve: (u) => 'https://www.stats.gov.cn/sj/zxfb/' + u.slice(2),
++    date: (u) => { const m = /t(\d{4})(\d{2})(\d{2})_/.exec(u); return m ? `${m[1]}-${m[2]}-${m[3]}` : null; },
++  },
++  'ndrc-gov': {
++    // 发改委自有政策原文：./zcfb/tz/202607/t20260716_1406539.html（与 stats 同为 t{YYYYMMDD}_ 形态）
++    match: /^\.\/[a-z/]+\/\d{6}\/t\d{8}_\d+\.html$/,
++    resolve: (u) => 'https://www.ndrc.gov.cn/xxgk/' + u.slice(2),
++    date: (u) => { const m = /t(\d{4})(\d{2})(\d{2})_/.exec(u); return m ? `${m[1]}-${m[2]}-${m[3]}` : null; },
++  },
++  'cac-gov': {
++    match: /^\/\/www\.cac\.gov\.cn\/\d{4}-\d{2}\/\d{2}\/c_\d+\.htm$/,
++    resolve: (u) => 'https:' + u,
++    date: (u) => { const m = /\/(\d{4})-(\d{2})\/(\d{2})\//.exec(u); return m ? `${m[1]}-${m[2]}-${m[3]}` : null; },
++  },
++};
++// 从列表页 HTML 解析 A0 条目：title 优先取 title 属性（stats 用单引号），否则取链接文字；
++// 去重按解析后 URL；标题过短（如 cac 的「全文」跳转链）直接丢弃而不是入库垃圾。
++function parseA0(html, sourceId) {
++  const cfg = A0_SOURCES[sourceId];
++  if (!cfg) return [];
++  const out = [], seen = new Set();
++  // 有界量词 + 不要求闭合 </a>（取到下一个 < 为止）→ 线性时间：未闭合 <a 洪水不会二次回溯（ReDoS）。
++  const re = /<a\s([^>]{0,400})>([^<]{0,200})/g;
++  let m;
++  while ((m = re.exec(html)) && out.length < MAX_ITEMS_PER_FEED) {
++    const attrs = m[1];
++    const hm = /href=["']([^"']+)["']/.exec(attrs);
++    if (!hm) continue;
++    const href = hm[1].trim();
++    if (!cfg.match.test(href)) continue;
++    const url = cfg.resolve(href);
++    if (seen.has(url)) continue;                       // 同一 href 常因响应式布局重复出现
++    const t = /title=["']([^"']+)["']/.exec(attrs);
++    const title = decodeEntities(stripTags(t ? t[1] : m[2]));   // 复用既有 helper（含实体解码）
++    if (title.length < 6) continue;                    // 「全文」这类跳转链无有效标题 → 不入库
++    seen.add(url);
++    out.push({ title, url, published: cfg.date(href) });
++  }
++  return out;
++}
++
+ // ───────────────────────── 讲义（确定性八段模板） ─────────────────────────
+ const SECTION_TITLES = ['人话版', '领域脉络', '机制拆解', '证据与数字', '反例与边界', '跨领域连接与意外收获', '可复用方法', '术语表'];
+ const LESSON_TEMPLATE_VER = 'cloud-lesson-v1';
+@@ -1353,36 +1449,51 @@ export default {
+       if (p === '/robots.txt') return new Response('User-agent: *\nDisallow:\n', { headers: { 'content-type': 'text/plain' } });
+       if (p === '/build.json') return jsonResp(BUILD);
+       if (p === '/api/a0-canary') {
+-        // S3-P03-T040 非破坏性 canary：实抓 gov.cn 政策原文（1 子请求）→ 应用 Board 3 A0 门 → 报告官方证据率。
+-        // 不写生产（只读预览）。回滚 = BOARD3_A0_ONLY=false 一次部署。
+-        let official = [];
+-        try {
+-          const r = await fetch('https://www.gov.cn/zhengce/xxgk/', { headers: { 'user-agent': UA }, cf: { cacheTtl: 300 } });
+-          const h = await r.text();
+-          const re = /href="(https?:\/\/[^"]*\/zhengce\/content\/[^"]+\.htm)"[^>]*>([^<]{6,80})/g; let m;
+-          const seen = new Set();
+-          while ((m = re.exec(h)) && official.length < 8) {
+-            if (seen.has(m[1])) continue; seen.add(m[1]);
+-            const d = /\/(\d{4})-(\d{1,2})\/(\d{1,2})\//.exec(m[1]);
+-            official.push({ source_id: 'gov-cn-policy', board_id: 'board3', title: m[2].trim(), url: m[1],
+-                            date: d ? `${d[1]}-${String(+d[2]).padStart(2, '0')}-${String(+d[3]).padStart(2, '0')}` : null,
+-                            a0_eligible: a0Board3Eligible({ board_id: 'board3', source_id: 'gov-cn-policy', url: m[1] }) });
+-          }
+-        } catch (e) { official = []; }
+-        const { results: b3media } = await env.DB.prepare(
+-          "SELECT id,source_id,title,url FROM cn_items WHERE board_id='board3' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 200").all();
+-        const mediaDemoted = (b3media || []).filter(it => !a0Board3Eligible(it)).length;
+-        const officialEligible = official.filter(o => o.a0_eligible).length;
++        // S3-P03-T040 canary，P04 升级：用与生产 cron 同一个 parseA0 解析器逐源实测边缘可达性与产出，
++        // 不再用重复的内联正则（旧正则只认 /YYYY-MM/DD/ 旧链接形态，所以只吐 2019/2020 老文件）。
++        // 只读：不写任何生产数据。
++        const probes = [];
++        for (const b of REGISTRY) for (const s of b.sources) {
++          if (s.method !== 'a0') continue;
++          let rec = { source_id: s.id, list: s.list, reachable: false, parsed: 0, with_date: 0, error: null, sample: [] };
++          try {
++            // sourceId=null 关掉 fetchFeedText 的 R2 双写旁路（其内部 `&& sourceId` 守卫），
++            // 否则这个「只读」端点会真写 R2+D1（未鉴权 → 任何人可烧 DIR-007 预算）——复核抓到的真实缺陷。
++            const html = await fetchFeedText(s.list, env, null);
++            const items = parseA0(html, s.id);
++            rec.reachable = true;
++            rec.parsed = items.length;
++            rec.with_date = items.filter(i => i.published).length;
++            rec.sample = items.slice(0, 2).map(i => ({ title: i.title.slice(0, 60), url: i.url, published: i.published,
++              a0_eligible: a0Board3Eligible({ board_id: 'board3', source_id: s.id, url: i.url }) }));
++          } catch (e) { rec.error = String(e && e.name || e).slice(0, 60); }
++          probes.push(rec);
++        }
++        const { results: b3 } = await env.DB.prepare(
++          // 必须选出 board_id：a0Board3Eligible 首行是 `if (it.board_id !== 'board3') return true`，
++          // 漏选会让每一行都恒真通过 → 把 105 条媒体误报成「官方 A0」并谎称 safe_to_flip（T040 原版同样漏选，其 media_demoted:0 是空跑）。
++          "SELECT id,board_id,source_id,title,url,kind FROM cn_items WHERE board_id='board3' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 400").all();
++        const inDbOfficial = (b3 || []).filter(it => a0Board3Eligible(it)).length;
++        const inDbMedia = (b3 || []).length - inDbOfficial;
++        const parsedTotal = probes.reduce((a, p) => a + p.parsed, 0);
+         return jsonResp({
+-          canary: 'board3_a0_view', flag_state: BOARD3_A0_ONLY ? 'ON' : 'OFF (production unchanged)',
+-          non_destructive: true, note: 'reads live gov.cn policy + current DB; writes nothing to production',
+-          official_original_items_found: official.length, official_eligible: officialEligible,
+-          board3_media_in_db: (b3media || []).length, board3_media_demoted_to_discovery: mediaDemoted,
+-          official_evidence_rate: official.length ? (officialEligible / official.length) : null,
+-          media_evidence_rate_under_gate: 0,
+-          sample_official: official.slice(0, 3),
++          canary: 'board3_a0_view', flag_state: BOARD3_A0_ONLY ? 'ON' : 'OFF (media still counts as evidence)',
++          non_destructive: true, note: 'probes each A0 source live from the edge with the SAME parser the cron uses; writes nothing',
++          a0_sources_probed: probes.length,
++          a0_sources_reachable: probes.filter(p => p.reachable && p.parsed > 0).length,
++          a0_items_parsed_now: parsedTotal,
++          probes,
++          board3_in_db_total: (b3 || []).length,
++          board3_in_db_official_a0: inDbOfficial,
++          board3_in_db_media: inDbMedia,
++          // 翻开关的前提：库里真的有 A0 官方原文，否则 board3 会被清空
++          safe_to_flip_flag: inDbOfficial > 0,
++          flip_precondition: 'BOARD3_A0_ONLY=true demotes media to discovery; flipping while board3_in_db_official_a0 == 0 would EMPTY board 3',
+           rollback: 'set BOARD3_A0_ONLY=false and redeploy (one deploy); flag currently ' + (BOARD3_A0_ONLY ? 'ON' : 'OFF'),
+-          owner_gate: 'S3 Exit approved A0 promotion; full flip pending A0 adapters wired to worker + real 14-day shadow (DIR-007 budgeted)',
++          not_wired_honestly: {
++            'gov-cn-fagui': 'listing returns HTTP 403 (blocked) - not ingested',
++            'nda-gov': 'listing returns a ~193-byte JS-redirect stub (S3 adapter already marks live_blocked=true) - not ingested',
++          },
+         });
+       }
+ 
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 0e9b5ccd6..eff479a59 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260719-ADP-V02-P02-LIBRARY-DEPLOY"
+-source_snapshot_hash: "sha256:14446a9ffcac7377dd3c1814073c8c4d44301c8e33fef647b32a3d13aa4256e7"
++as_of_event_id: "EVENT-20260719-ADP-V02-P03-SEARCH-DEPLOY"
++source_snapshot_hash: "sha256:2abf9d6179361d99cadd46310d2ffcc3c8dfbc92dcbc923c3d6f04e30a1117e4"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-19T11:00:00+10:00"
++snapshot_event_time: "2026-07-19T13:00:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 154
++    precommit_pending_events: 155
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 13a617ad4..669a1a10b 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6401,6 +6401,7 @@ None for this new project baseline.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
+ - 2026-07-18 V0.1 S8-P02-T089 SOAK LIVE-TRACKING: wired the T089 soak to the live daily cron ledger (cn_run_log) -- each daily run writes one row; result != 失败 is a healthy day. The soak is now self-accumulating (NOT a static day-0 framework): currently 2/14 consecutive healthy days (2026-07-15 正常 + 2026-07-16 降级), auto-completing as the cron adds healthy days; T089 clause 1 closes at 14/14 with no agent action. soak_progress() is load-bearing (a 失败 breaks the streak; 14 healthy = complete). T089 development is complete; only ~12 calendar days of healthy cron remain. NOT_DEPLOYED (read-only over the live D1; worker unchanged; live 452f7c5de919). Evidence: soak_live_snapshot.json + updated soak_stopline_report.json + verifier PASS (soak_stopline_tests.txt).
++- 2026-07-19 V0.2 生产集成 P04 (board3 A0 官方原文接入每日 cron; PRODUCTION DEPLOY; product_version 0.27.0): board3 此前只抓媒体 RSS,零官方原文;S3 的 A0 适配器从未接进生产。本次接入 4 个官方源(stats/cac/ndrc/gov-cn-policy)并复用 RSS 的健康/自动停用/自愈纪律;新增共享 parseA0;日期只在 URL 真读得出时才给(新版 gov.cn 只有年月→留空不编造)。BOARD3_A0_ONLY 仍 false(库里有 A0 前翻开关会清空 board3)。自查抓到 ReDoS(未闭合<a 洪水 8000→81ms)已改线性。复核 BLOCK 两条皆真:①canary 换 fetchFeedText 静默继承 R2 双写→自称只读的未鉴权端点每次真写 15 次(已修 sourceId=null);②我的 ndrc 排除理由事实错误(该页有 28 个斜杠日期+103 条自有政策链接)→**改为真正接入 ndrc**(带文号的官方原文)。复核确认 DIR-007 20/50、正则无法逃逸 host、零日期编造、失败不中断 cron、幂等。放行后又主动钉住 gov-cn-policy 的 host。★上线后抓到最危险一个:canary 漏选 board_id 致 a0Board3Eligible 恒真,把 105 条媒体误报为官方并谎称 safe_to_flip(翻开关会清空 board3);T040 原版同样漏选,其 media_demoted:0 是空跑。已修+负控制证明非恒真。BUILD e78306049663->204c97eb5406,部署 39fae7f4;真实 runDaily 实测 a0_official=37,board3 105媒体/0官方 → 162总/37官方/125媒体,页面真显示《十五五碳达峰行动方案》等国务院文件;10 路由 200+六主题 6/6+P01/P02/P03 未回归;回滚 8a6ef433。$0/mo。
+ - 2026-07-19 V0.2 生产集成 P03 (增强搜索; PRODUCTION DEPLOY; product_version 0.26.0): /search 加板块+日期范围结构化筛选与标识符置顶(复用 P01 抽取器,对已召回<=40行重排,零额外 DB 成本)。★复核 BLOCK 判诚实性(非安全性)★: ①空格变体文号端到端为空(LIKE 返 0 行,重排器不运行);②★我方未发现★ bioRxiv/medRxiv 的 DOI 只存于 id/url,而 SQL 只搜 title/summary,检索面与抽取面不一致→输入 DOI 一条都搜不到;③『精确命中』徽章在媒体报道上假阳性(board3 全是新闻源,行是报道非原件)。修复:检索面补 id/url(同绑定、查询计划实测不变,bioRxiv DOI 0条→命中);===改 includes 并改称『标识符匹配』(只声称可证之事);页面移除无条件承诺。复核复验无假阳性,并核验 known_gaps 未夸大。CONFIRMED_SOUND。净收益:无筛选同计划,给 board 时收窄为 SEARCH...idx_cn_items_board_recency,日期亦被索引辅助。BUILD e301f8a4c7d8->e78306049663,部署 8a6ef433;12 路由 200+六主题 6/6+P01/P02 未回归;回滚 bfa3ac49。$0/mo。
+ - 2026-07-19 V0.2 生产集成 P02 (知识库 /library 上线; PRODUCTION DEPLOY; product_version 0.25.0): /library 从 404 变为可用知识库——libraryPage() 只读 cn_reviews ⨝ cn_items，按板块/证据态分面筛选、复习进度、原文出处，复用 P01 关键事实芯片；导航加「知识库」。不新增表/不改流水线/不改动效主题（T078 差分：零视觉契约元素移动）。诚实边界：T067 的笔记与全 provenance 导出未做（导出需 S2 版本层的 version/license，缺字段按 T067 规则必须 REFUSE，不臆造）。★复核 BLOCK 抓到真实免费档违规★：两查询全表 SCAN cn_items（D1 无 ANALYZE），200k 条时约 40 万行/次，十几次浏览耗尽 D1 5M 行/天，违反 T087 的 $0/mo 基线并回归已上线的 T083；改 CROSS JOIN 后 SCAN r + SEARCH i USING INDEX(id=?)，cn_items 永不扫描（48-82x），负控制证明非空跑，CONFIRMED_SOUND。BUILD 0864030f7dc8->e301f8a4c7d8，部署 adp-cloud bfa3ac49；10 路由 200+ 六主题 6/6 + P01 未回归；回滚 f26dc86a。并修复 T088 起大文件卫生审计每推必红的根因（登记 ADP 治理文件 OID + 新增 tests/governance 不变量测试）。release_mode PRODUCTION；$0/mo。
+ - 2026-07-19 V0.2 生产集成 P01 (关键事实 Factsheet 上线; PRODUCTION DEPLOY; product_version 0.24.0): 把 S1-P03-T016 extract_factsheet 确定性抽取(DOI/文号/关键数字/作者,缺失即空绝不编造)忠实移植进 worker_cloud.js,渲染六主题 .badge 芯片于今天/板块/搜索/雷达/条目页(复用 itemListHTML);纯展示层不改数据/流水线/hero动效(T077/T078 契约 page body 不冻结)。独立复核抓到真实 ReDoS(FS_UNIT_RE O(n²) 40KB 2295ms),有界量词{0,39}+输入 slice 修复为线性(40KB 4.8ms/加slice 0.24ms),CONFIRMED_SOUND。BUILD 452f7c5de919->0864030f7dc8,部署 adp-cloud f26dc86a;六主题6/6+7路由200+芯片实时可见(board1=60/b2=4/b3=7/b4=1);回滚 5a7c0fbe。release_mode PRODUCTION;$0/mo。V0.2 首个可见增量。
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 317bb81ff..2072dfcaa 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `154`
+-- pending_or_stale_events: `504`
+-- freshness_counts: `pending_or_stale_events=504; legacy_unbound_events=334`
++- precommit_pending_events: `155`
++- pending_or_stale_events: `505`
++- freshness_counts: `pending_or_stale_events=505; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,10 +100,10 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:14446a9ffcac7377dd3c1814073c8c4d44301c8e33fef647b32a3d13aa4256e7`
+-- snapshot_event_time: `2026-07-19T11:00:00+10:00`
++- source_snapshot_hash: `sha256:2abf9d6179361d99cadd46310d2ffcc3c8dfbc92dcbc923c3d6f04e30a1117e4`
++- snapshot_event_time: `2026-07-19T13:00:00+10:00`
+ - generator_version: `4.0.1`
+-- version: `0.26.0`
++- version: `0.27.0`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+ 
+ ## 17. 下一唯一任务
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index f1e0dbf90..5c098982c 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:14446a9ffcac7377dd3c1814073c8c4d44301c8e33fef647b32a3d13aa4256e7`
+-- snapshot_event_time: `2026-07-19T11:00:00+10:00`
++- source_snapshot_hash: `sha256:2abf9d6179361d99cadd46310d2ffcc3c8dfbc92dcbc923c3d6f04e30a1117e4`
++- snapshot_event_time: `2026-07-19T13:00:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -13,7 +13,7 @@
+ 
+ - Project: `arxiv-daily-push`
+ - Path: `arxiv-daily-push`
+-- Product version: `0.26.0`
++- Product version: `0.27.0`
+ - Phase/Gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+ - Models/Formulas/Parameters total: `122 / 124 / 1124`
+ - Active formulas/parameters: `124 / 1107`
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `504`
++- Pending/stale events: `505`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+index 355fbfc0d..904a298a5 100644
+--- a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
++++ b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+@@ -441,4 +441,4 @@ REQ-ADP-V03-MINIMAL-LOOP,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1109,ADP
+ REQ-ADP-V03-R5-SHADOW-SOURCE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/shadow_biorxiv.py,arxiv-daily-push/config/thresholds_v0_3.yaml,arxiv-daily-push/tests/test_adp_selection.py,arxiv-daily-push/data/shadow_biorxiv_report.json,shadow_running
+ REQ-ADP-V03-R6-CLOUD-MIRROR,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/mirror.py;arxiv-daily-push/deploy/cloudflare/worker.js;arxiv-daily-push/src/adp/webapp.py,NOT_APPLICABLE,arxiv-daily-push/tests/test_adp_invariants.py,arxiv-daily-push/deploy/cloudflare/README.md;arxiv-daily-push/data/config_changes.jsonl,live_tunnel_direct_mirror_fallback_pending_owner_dns
+ REQ-ADP-V03-J4-BOARDS,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1123,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/boards.py,arxiv-daily-push/config/boards_v0_3.yaml,arxiv-daily-push/tests/test_adp_boards.py,arxiv-daily-push/data/boards_fetch_report.json,live_feed_streams_expanded_boards_v03_2_44_sources
+-REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id_plus_generated_status_drift_check_plus_r2_rawartifact_dualwrite_shadow_plus_capped_shadow_run_t023_plus_board3_a0_canary_switch_t040_plus_s7_mobile_overflow_source_fix_t079_not_deployed_plus_s7_component_states_undo_persistence_t080_not_deployed_plus_s7_p03_rum_cwv_instrumentation_t081_not_deployed_plus_s7_p03_ambient_motion_perf_t082_not_deployed_plus_s7_p03_d1_query_indexes_deterministic_order_t083_not_deployed_plus_s7_p04_evidence_a11y_reduced_motion_polish_t084_not_deployed_plus_v02_p01_factsheet_production_deploy_452f7c5de919_to_0864030f7dc8_plus_v02_p02_library_production_deploy_0864030f7dc8_to_e301f8a4c7d8_plus_v02_p03_search_production_deploy_e301f8a4c7d8_to_e78306049663
++REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id_plus_generated_status_drift_check_plus_r2_rawartifact_dualwrite_shadow_plus_capped_shadow_run_t023_plus_board3_a0_canary_switch_t040_plus_s7_mobile_overflow_source_fix_t079_not_deployed_plus_s7_component_states_undo_persistence_t080_not_deployed_plus_s7_p03_rum_cwv_instrumentation_t081_not_deployed_plus_s7_p03_ambient_motion_perf_t082_not_deployed_plus_s7_p03_d1_query_indexes_deterministic_order_t083_not_deployed_plus_s7_p04_evidence_a11y_reduced_motion_polish_t084_not_deployed_plus_v02_p01_factsheet_production_deploy_452f7c5de919_to_0864030f7dc8_plus_v02_p02_library_production_deploy_0864030f7dc8_to_e301f8a4c7d8_plus_v02_p03_search_production_deploy_e301f8a4c7d8_to_e78306049663_plus_v02_p04_board3_a0_official_ingestion_e78306049663_to_204c97eb5406
+diff --git a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+index 8f9c2bb4a..b8721fe85 100644
+--- a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
++++ b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+@@ -1,4 +1,4 @@
+-product_version: "0.26.0"
++product_version: "0.27.0"
+ product_version_status: "provisional"
+ governance_spec_version: "1.0.0"
+ schema_version: "2.1.1"
+diff --git a/arxiv-daily-push/docs/governance/delivery_tasks.yaml b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+index c4fa9d2e2..9d180a301 100644
+--- a/arxiv-daily-push/docs/governance/delivery_tasks.yaml
++++ b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+@@ -6768,7 +6768,7 @@ tasks:
+     timestamp: "2026-07-19T09:00:00+10:00"
+     objective: "Build the fetch->select->lesson->recall->review loop as a new adp package with traceable evidence at every step, governed parameters only in config/thresholds_v0_3.yaml, and zero production side effects."
+     scope: "New src/adp package (five-stage run, gates, weighted selection, sentence-bound lessons, FSRS-6 review, corrections, fail-closed delivery, web UI), thresholds registry, 48h+ three-real-date run manifests, review-audit fixes, invariant and gate/weight tests."
+-    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10). 2026-07-16 ADP V0.1 S1-P01-T011: generated STATUS_GENERATED.md from the deployment manifest + live /build.json and added a CI drift check (tools/generate_status.py + tools/check_status_drift.py), and archived the stale R6 tunnel/Mac section by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native -- resolving the STATUS J5-vs-R6 contradiction (DRIFT-FACT-007); drift check PASS with a negative test proving hand-written old architecture cannot override the generated current; NOT_DEPLOYED, no worker change). 2026-07-16 ADP V0.1 DIR-007: Owner enabled Cloudflare R2 and issued a hard free-tier budget (ADP + all repos never exceed the free tier; no agent may exceed or raise quota without repeated Owner authorization; monitor and fail-closed); frozen as DIR-007 + FREE_TIER_BUDGET.md. 2026-07-16 ADP V0.1 S2-P01-T022: implemented the feature-flagged RawArtifact R2 dual-write (deploy/cloudflare/worker_cloud.js dualWriteArtifact behind RAW_DUALWRITE flag default OFF, fetchFeedText side-write hook, /api/raw-selftest verification route; wrangler R2 binding RAW->adp-raw-artifacts; D1 cn_artifacts table object_key PK). Deployed adp-cloud 3816d21c -> 657fe32a (new build e377c9bd1e20); flag OFF = baseline verified (six themes 6/6, hero videos, dashboard, fx, ChatGPT, 7 routes 200 both domains); idempotency proven (selftest: second write deduped, D1 1 row); DIR-007 budget stop in-built (usage Class A 1 / Class B 2 / 76 bytes, ~0.0001% of free tier). SHADOW run is T023). 2026-07-16 ADP V0.1 S2-P01-T023: ran the capped R2 shadow + cost/performance report. The shadow surfaced a DIR-007 free-tier constraint -- the naive per-feed dual-write exceeded the Cloudflare free-tier Worker subrequest limit (~50/request) and its writes were silently dropped -- and fixed it with a per-run write cap (RAW_MAX_PER_RUN=3) plus reading the budget snapshot once per run and resetting the counter at runDaily/selftest, keeping the extra subrequests within the free tier. Deployed the capped shadow adp-cloud version 64c8b842 (build 9cd3d8a2fe68, RAW_DUALWRITE=true); six themes 6/6 intact both domains. Writer save/hash/readback are 100%: the R2 object is content-addressed (key sha256 == content sha256), a readback via wrangler r2 object get --remote returns the exact 76 bytes whose sha256 equals the key, and a repeat write dedups (1 D1 row). Cost extrapolation within budget: <=3 Class A writes + <=3 Class B heads + <=150KB per run, i.e. <=90 Class A / <=90 Class B / <=4.5 MB per month via the daily cron, ~0.009% / ~0.045% of the free tier, recurring ~$0. Rollback: wrangler versions deploy 657fe32a (T022, flag off). The literal 7-day / 1000-artifact accumulation runs via cron over real time). 2026-07-17 ADP V0.1 S3-P03-T040: Board 3 official-view A0 canary switch after the Owner S3 Exit gate approved A0 promotion -- a feature flag BOARD3_A0_ONLY default OFF so production Board 3 and the six themes stay unchanged, an a0Board3Eligible gate that demotes media to discovery so official original text can be the default evidence, and a non-destructive /api/a0-canary endpoint that fetches real gov.cn policy originals and reports an official evidence rate of 100 percent with 8 of 8 official items and media at 0 under the gate; deployed adp-cloud version 5bcd9f21 build b189d3cc0703, six themes 6/6 on both domains, rollback in one deploy via the flag or wrangler versions deploy 64c8b842; the full flip to official-as-default pending the A0 adapters wired to the worker cron under DIR-007 plus the real 14-day shadow. 2026-07-17 ADP V0.1 S7-P02-T079: fixed mobile horizontal overflow in data-dense pages at 360/390/430 with a base-CSS-only change to deploy/cloudflare/worker_cloud.js (.card overflow-wrap:break-word, main img/svg/video max-width:100%, and a @media(max-width:520px) rule that turns a wide table into a locally-scrolling block -- no page overflow-hidden band-aid); the six themes and all advanced motion stay byte-identical (T077/T078 contract: only base_css changed) and the change passes the T078 gate only as a documented approved change; NOT_DEPLOYED -- BUILD recomputed b189d3cc0703 -> 9690390a9fc8 but not deployed, live still serves b189d3cc0703, so its themes and motion are unchanged; proven by a real in-app-browser render at 360/390/430 (documentElement.scrollWidth == innerWidth, zero non-table offenders, local table scroll) plus a load-bearing counterfactual (the pre-fix CSS scrolls 1210px at 360), and independently reviewed CONFIRMED_SOUND; a latent inert .card min-width:0 and an over-counting audit were fixed. 2026-07-17 ADP V0.1 S7-P02-T080: added the component-state matrix + an optimistic Undo window + proved cross-theme state persistence, as a base-CSS-only change to deploy/cloudflare/worker_cloud.js plus page-body JS -- base CSS gains button:active (pressed <100ms), :disabled/[aria-disabled], [aria-busy] loading, :focus-visible, [data-state=ok|err], button.undo and a button transform transition (no new @keyframes); the two grade() flows become an optimistic Undo window (click shows picked + 撤销 + a 4s cancelable countdown and writes nothing; a deferred gradeCommit posts /api/grade only after the window; gradeUndo cancels the timer and writes nothing, so an undo touches no production data) with try/catch error states, and a theme switch preserves reading position/answers/filters/expand because applyTheme only setAttribute + syncs hero/gauge (no reload/navigate/innerHTML); the six themes and all advanced motion stay byte-identical (T077/T078: only base_css changed) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD recomputed 9690390a9fc8 -> 40a46aa2baee but not deployed, live still serves b189d3cc0703; proven by a Node behavioural test on the real extracted grade code (click 0 writes / undo 0 writes / window elapse exactly 1 write) and an in-app-browser test (all state preserved across all six themes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T081: instrumented RUM + Core Web Vitals (LCP/CLS/INP, INP approximated as the max interaction event duration and disclosed as such) segmented by theme/route/device/network -- a RUM client (const RUM_JS) tags each metric with theme/route/device/network and sendBeacon('/api/rum') on page-hide, INJECTED AT THE ROUTER (htmlResp) so it touches no T077/T078 visual/motion contract hash (the whole asset_hashes incl. page_shell + master_visual is byte-identical), plus a pure rumIngest validator gating a POST /api/rum endpoint that writes a NEW cn_rum table (CREATE TABLE IF NOT EXISTS + bind INSERT, not existing production data), and an offline query tool tools/rum_cwv.py that computes p75 + Google CWV ratings segmentable by the four dimensions with every assessment gated on a minimum sample count so empty/thin data claims NO compliance (无数据不声称达标); NOT_DEPLOYED -- BUILD 40a46aa2baee -> 8c19387c846b but not deployed, live still b189d3cc0703, no real RUM baseline yet and none claimed; proven by a Node test on the real extracted rumIngest, an in-app-browser test capturing a live LCP tagged by the four dimensions, and a contract invariance check (detect_regression = 0 changes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T082: optimized the six-theme ambient motion for FPS without changing visual semantics -- converted the one layout-animating ambient keyframe (the cosmos meteor, left/top) to a screen-path-equivalent transform:translate (GPU-composited; .fx is a fixed viewport-sized layer so left/top % map exactly to vw/vh and the rotate stays inner so the streak + diagonal are preserved), after which every ambient loop is compositor-safe (the deterministic >=55 FPS guarantee), plus a router-injected FX_PERF controller that pauses ambient animation on page-hide and degrades the heaviest layers on low-end devices (meteor/band hidden, nebula simplified) WITHOUT touching the foreground selectors so the foreground feedback survives; the ONLY T077/T078 contract element that changed is keyframes (per_theme/base_css/theme_js/fx_css/hero byte-identical) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD 8c19387c846b -> 0cb3acee6bf3 but not deployed, live still b189d3cc0703; proven by an ambient compositor-safety audit (pre-fix FAILS), an in-app-browser test (pause 7/7; low-end degrades while stars + button:active survive) and a contract re-derivation, and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T083: optimized the hot D1 queries by adding five indexes to schema_cloud.sql (CREATE INDEX IF NOT EXISTS: recency expression index on cn_items(COALESCE(published_at,fetched_at) DESC, id DESC), board+recency, cn_lessons(item_id), cn_reviews(due_at), cn_events(kind,at)) so the today/radar/browse/history/review pages and the vitals sparkline stop full-table-scanning + temp-sorting cn_items and instead do an index-ordered SEARCH reading only the LIMIT rows (rows scanned O(N) -> O(LIMIT), p95 down 3-200x in the local SQLite proof). An adversarial review of the schema-only cut found a real hole: without a total-order tie-breaker, cross-family ties (a recency-via-published row tying on COALESCE with a recency-via-fetched row) changed board/browse LIMIT/OFFSET page membership+order and OFFSET pagination could skip/repeat, and the verifier was blind (published 2016 / fetched 2026 disjoint namespaces made the tie impossible). The fix adds a deterministic total-order `, id DESC` tie-breaker to all eight recency display ORDER BYs in worker_cloud.js (matching the existing prune query) + the id key in the two recency indexes so the total order stays fully index-served (no temp b-tree); the verifier now contains real cross-family ties and asserts the tie-breaker query is deterministic (index==forced-scan, OFFSET pages disjoint). Queries changed so BUILD was recomputed 0cb3acee6bf3 -> d1dfcb3b7447, but the change is in page-body functions so the six-theme visual/motion contract is byte-identical (no CLS, server-rendered) and it is not a content regression (an undefined tie order made deterministic); NOT_DEPLOYED, live still b189d3cc0703, CWV 达标 NOT claimed without field data (T081 rule); and independently reviewed. 2026-07-18 ADP V0.1 S7-P04-T084 (last S7 task): polished evidence/inference + accessibility + reduced-motion without replacing the design -- a PROVENANCE_NOTE (讲义·推断 badge + sentence) is prepended in the central lessonHTML so the auto-generated lesson is labelled as inference, distinct from the 原文 (evidence) link (todayPage refactored to lessonHTML, output otherwise identical); the reveal button gets aria-controls and moves focus into the revealed box (disclosure a11y) on top of the already-native named 44px buttons + :focus-visible; and the reduced-motion rule was verified to disable animation while restoring the .fr/.bw content classes to opacity:1 (gauge/video jump to final state in JS) so no content/function is lost. The polish is page-body so the six-theme visual/motion contract is byte-identical; NOT_DEPLOYED -- BUILD d1dfcb3b7447 -> 452f7c5de919 but not deployed, live still b189d3cc0703; proven by an a11y_content_audit (pre-fix has no marker / no reveal a11y; removing the reduced-motion restore fails the preserve check) and an in-app-browser test, and independently reviewed. 2026-07-19 ADP V0.2 生产集成 P01 (关键事实 Factsheet 上线, PRODUCTION DEPLOY): began wiring the NOT_DEPLOYED cognitive capabilities into the live worker per the Owner directive that ADP be visibly richer and immediately usable -- ported S1-P03-T016 extract_factsheet deterministic extraction (DOI / 文号 / 关键数字 / 作者; missing => shown as nothing, never fabricated) into deploy/cloudflare/worker_cloud.js (factsheet()+factsheetHTML()) and rendered it as six-theme-adaptive .badge chips on the today card (first screen), board lists, search, radar, and item detail (one shared itemListHTML covers board/search/radar). Presentation-only: reads existing cn_items fields, adds no D1 table, no cron/pipeline change, does not touch the hero/motion/theme layer (T077/T078 contract scopes page bodies out of the frozen visual identity). Independent adversarial review BLOCKED on a real ReDoS (FS_UNIT_RE was O(n^2), 40KB pathological input 2295ms in the request path, would exceed the Cloudflare Worker CPU limit); fixed with a bounded quantifier {0,39} on the unit-regex digit run (a number token is never over 40 chars, so the scan is linear regardless of input) + input slice (0,500)/(0,2000), re-verified linear (40KB 4.8ms / 400KB 48.8ms / 0.24ms after slice) with extraction unchanged, CONFIRMED_SOUND (not self-signed). BUILD 452f7c5de919 -> 0864030f7dc8; deployed adp-cloud version f26dc86a-446f-445b-b1ab-d2c132b1cf46 (DB/R2 bindings + cron preserved); live-verified build.json 0864030f7dc8, 7 routes 200, six themes 6/6, factsheet chips visible board1=60/board2=4/board3=7/board4=1; rollback wrangler versions deploy 5a7c0fbe. release_mode PRODUCTION; recurring $0/mo (DIR-007 unchanged). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P01-FACTSHEET/. 2026-07-19 ADP V0.2 生产集成 P02 (知识库 /library 上线, PRODUCTION DEPLOY): promoted S5-P04-T067's Library from NOT_DEPLOYED to PRODUCTION as a read-only view -- /library was returning 404. New libraryPage() reads only live cn_reviews joined to cn_items (the items you studied), with per-board and per-evidence-state facet counts that filter via ?board= / ?state=, a list carrying title, board, publish date, original-source link, evidence state, review count and next-review date, and the P01 factsheet chips reused; nav gains a 知识库 entry and /library is an exact-match route (does not shadow /item/ or /board/). Adds no D1 table, no cron/pipeline change, and moves zero visual-contract elements (T078 differential gate). Honest boundary: T067 is Library + notes + full-provenance export, and its export REFUSES on any missing provenance field (source_url, version, fetched_at, claim_evidence, license); version and license live in the S2 version layer which is not deployed, so only the Library view ships -- notes and export are deliberately not shipped rather than fabricating provenance. An independent adversarial review BLOCKED a real free-tier violation: both queries full-scanned cn_items (D1 runs no ANALYZE, so the planner drove the join from the big table), reading about twice the cn_items row count per page view -- 200k items meant roughly 400k rows per view against D1's 5M rows/day free tier shared with the daily cron, i.e. about a dozen views would exhaust the day, violating the $0/mo free-tier basis the Owner signed at T087 and regressing the already-live T083 whose deliverable was removing hot-path full scans. Fixed by pinning cn_reviews as the outer loop (JOIN -> CROSS JOIN; still an inner join via ON, identical rows): the plan became SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?), so cn_items is only ever index-searched; a negative control (plain JOIN) reproduces SCAN i USING COVERING INDEX, proving the check is load-bearing; the reviewer independently confirmed byte-identical results across every filter combination, no cartesian product, 48-82x faster, and noted the fix pins the good plan whether or not ANALYZE statistics exist. A dead facet chip (unfilterable null evidence state) was also removed. Review verdict CONFIRMED_SOUND (not self-signed). BUILD 0864030f7dc8 -> e301f8a4c7d8; deployed adp-cloud version bfa3ac49-31a2-426c-8aaf-b0c33caf60d1 with bindings and cron preserved; live-verified 10 routes 200 including /library and its filters, six themes 6/6, the 知识库 nav entry, and P01 factsheet not regressed; rollback wrangler versions deploy f26dc86a. This run also fixed the root cause of the Project Governance large-object hygiene audit failing on every push since T088: the three oversized ADP canonical governance files are covered by the ARXIV_CANONICAL_GOVERNANCE retained rule (max_bytes 4MB, change_policy baseline_oid_only), so every content change must register the new blob OID in reviewed_oids -- a step that had been skipped; the current OIDs are now registered and tests/governance/test_adp_canonical_governance_oids.py enforces the invariant so this silent CI failure becomes a local test failure. release_mode PRODUCTION; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/. 2026-07-19 ADP V0.2 生产集成 P03 (增强搜索, PRODUCTION DEPLOY): shipped the part of S5-P02-T060 that live data can actually support -- /search gains structured facets (board from the REGISTRY whitelist, date range gated by a YYYY-MM-DD regex, as a GET form) and identifier-first ranking (when the query looks like a 文号 or DOI, rows whose extracted identifier contains the normalized query are promoted, reusing the P01 extractor over the already-fetched 40 rows inside the worker at zero extra DB cost). An independent adversarial review BLOCKED on HONESTY rather than safety (it stated the code itself was deployable), and all three findings were real: (1) self-raised and confirmed -- a 文号 typed with spaces makes SQL LIKE return zero rows so the re-ranker never runs, making the normalization a no-op end to end, and normIdent's ASCII case-folding is redundant at recall since SQLite LIKE is already case-insensitive; (2) NOT raised by the implementer and worse -- fetchBiorxiv stores id as biorxiv:DOI and url as the content URL so the DOI never appears in title or summary, yet the SQL searched only title and summary while itemIdentifiers extracted from id, url and summary, an asymmetric surface that made typing a bioRxiv DOI (a headline board1 source) return nothing even though the page promised it would be pinned first; (3) the 精确命中 badge asserted a fact the code could not establish -- board3's live sources are all media news RSS, so rows are commentary about a document rather than the document, and a policy explainer was badged as an exact hit, while the greedy identifier prefix caused genuine documents to be missed. All remedies were applied: the retrieval surface now includes id and url under the same single bind with no new parameters (the reviewer re-ran EXPLAIN QUERY PLAN on the real schema and confirmed the plan is byte-identical, since a leading-wildcard LIKE is non-sargable either way, and the bioRxiv DOI case went from zero rows to a pinned hit); equality became containment so the greedy prefix no longer drops real documents, and the badge was relabelled to 标识符匹配, which claims only that the query occurs inside the identifier the product already extracts, never that the row is the official document; and the page copy dropped its unconditional promise in favour of naming the real retrieval surface. The reviewer verified containment introduces no false positives (the identifier-shape gate still holds and the degenerate empty-query path is unreachable) and independently re-derived the known_gaps file itself, finding it under-claims rather than over-claims. Verdict CONFIRMED_SOUND, not self-signed. Net gain: the unfiltered plan is unchanged from before, while a board facet narrows it to an index search and date bounds are index-assisted. BUILD e301f8a4c7d8 to e78306049663; deployed adp-cloud version 8a6ef433-b93d-4730-855d-d15a2b08bc10 with bindings and cron preserved; live-verified 12 routes 200 including every filter combination, six themes 6/6, the facet form rendering, no 残留 overclaim on the page, and P01 chips plus P02 library not regressed; rollback wrangler versions deploy bfa3ac49. Honest boundary: this is NOT T060's O(1) exact lookup (only a re-rank of at most 40 recalled rows), the whitespace variant does not work end to end, agency/region/status facets have no backing columns and were not built, and upgrading 标识符匹配 into a real authoritative-original hit depends on P04 wiring board3 to A0 official sources. release_mode PRODUCTION; no new table, fetch or cron; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/.)"
++    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10). 2026-07-16 ADP V0.1 S1-P01-T011: generated STATUS_GENERATED.md from the deployment manifest + live /build.json and added a CI drift check (tools/generate_status.py + tools/check_status_drift.py), and archived the stale R6 tunnel/Mac section by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native -- resolving the STATUS J5-vs-R6 contradiction (DRIFT-FACT-007); drift check PASS with a negative test proving hand-written old architecture cannot override the generated current; NOT_DEPLOYED, no worker change). 2026-07-16 ADP V0.1 DIR-007: Owner enabled Cloudflare R2 and issued a hard free-tier budget (ADP + all repos never exceed the free tier; no agent may exceed or raise quota without repeated Owner authorization; monitor and fail-closed); frozen as DIR-007 + FREE_TIER_BUDGET.md. 2026-07-16 ADP V0.1 S2-P01-T022: implemented the feature-flagged RawArtifact R2 dual-write (deploy/cloudflare/worker_cloud.js dualWriteArtifact behind RAW_DUALWRITE flag default OFF, fetchFeedText side-write hook, /api/raw-selftest verification route; wrangler R2 binding RAW->adp-raw-artifacts; D1 cn_artifacts table object_key PK). Deployed adp-cloud 3816d21c -> 657fe32a (new build e377c9bd1e20); flag OFF = baseline verified (six themes 6/6, hero videos, dashboard, fx, ChatGPT, 7 routes 200 both domains); idempotency proven (selftest: second write deduped, D1 1 row); DIR-007 budget stop in-built (usage Class A 1 / Class B 2 / 76 bytes, ~0.0001% of free tier). SHADOW run is T023). 2026-07-16 ADP V0.1 S2-P01-T023: ran the capped R2 shadow + cost/performance report. The shadow surfaced a DIR-007 free-tier constraint -- the naive per-feed dual-write exceeded the Cloudflare free-tier Worker subrequest limit (~50/request) and its writes were silently dropped -- and fixed it with a per-run write cap (RAW_MAX_PER_RUN=3) plus reading the budget snapshot once per run and resetting the counter at runDaily/selftest, keeping the extra subrequests within the free tier. Deployed the capped shadow adp-cloud version 64c8b842 (build 9cd3d8a2fe68, RAW_DUALWRITE=true); six themes 6/6 intact both domains. Writer save/hash/readback are 100%: the R2 object is content-addressed (key sha256 == content sha256), a readback via wrangler r2 object get --remote returns the exact 76 bytes whose sha256 equals the key, and a repeat write dedups (1 D1 row). Cost extrapolation within budget: <=3 Class A writes + <=3 Class B heads + <=150KB per run, i.e. <=90 Class A / <=90 Class B / <=4.5 MB per month via the daily cron, ~0.009% / ~0.045% of the free tier, recurring ~$0. Rollback: wrangler versions deploy 657fe32a (T022, flag off). The literal 7-day / 1000-artifact accumulation runs via cron over real time). 2026-07-17 ADP V0.1 S3-P03-T040: Board 3 official-view A0 canary switch after the Owner S3 Exit gate approved A0 promotion -- a feature flag BOARD3_A0_ONLY default OFF so production Board 3 and the six themes stay unchanged, an a0Board3Eligible gate that demotes media to discovery so official original text can be the default evidence, and a non-destructive /api/a0-canary endpoint that fetches real gov.cn policy originals and reports an official evidence rate of 100 percent with 8 of 8 official items and media at 0 under the gate; deployed adp-cloud version 5bcd9f21 build b189d3cc0703, six themes 6/6 on both domains, rollback in one deploy via the flag or wrangler versions deploy 64c8b842; the full flip to official-as-default pending the A0 adapters wired to the worker cron under DIR-007 plus the real 14-day shadow. 2026-07-17 ADP V0.1 S7-P02-T079: fixed mobile horizontal overflow in data-dense pages at 360/390/430 with a base-CSS-only change to deploy/cloudflare/worker_cloud.js (.card overflow-wrap:break-word, main img/svg/video max-width:100%, and a @media(max-width:520px) rule that turns a wide table into a locally-scrolling block -- no page overflow-hidden band-aid); the six themes and all advanced motion stay byte-identical (T077/T078 contract: only base_css changed) and the change passes the T078 gate only as a documented approved change; NOT_DEPLOYED -- BUILD recomputed b189d3cc0703 -> 9690390a9fc8 but not deployed, live still serves b189d3cc0703, so its themes and motion are unchanged; proven by a real in-app-browser render at 360/390/430 (documentElement.scrollWidth == innerWidth, zero non-table offenders, local table scroll) plus a load-bearing counterfactual (the pre-fix CSS scrolls 1210px at 360), and independently reviewed CONFIRMED_SOUND; a latent inert .card min-width:0 and an over-counting audit were fixed. 2026-07-17 ADP V0.1 S7-P02-T080: added the component-state matrix + an optimistic Undo window + proved cross-theme state persistence, as a base-CSS-only change to deploy/cloudflare/worker_cloud.js plus page-body JS -- base CSS gains button:active (pressed <100ms), :disabled/[aria-disabled], [aria-busy] loading, :focus-visible, [data-state=ok|err], button.undo and a button transform transition (no new @keyframes); the two grade() flows become an optimistic Undo window (click shows picked + 撤销 + a 4s cancelable countdown and writes nothing; a deferred gradeCommit posts /api/grade only after the window; gradeUndo cancels the timer and writes nothing, so an undo touches no production data) with try/catch error states, and a theme switch preserves reading position/answers/filters/expand because applyTheme only setAttribute + syncs hero/gauge (no reload/navigate/innerHTML); the six themes and all advanced motion stay byte-identical (T077/T078: only base_css changed) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD recomputed 9690390a9fc8 -> 40a46aa2baee but not deployed, live still serves b189d3cc0703; proven by a Node behavioural test on the real extracted grade code (click 0 writes / undo 0 writes / window elapse exactly 1 write) and an in-app-browser test (all state preserved across all six themes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T081: instrumented RUM + Core Web Vitals (LCP/CLS/INP, INP approximated as the max interaction event duration and disclosed as such) segmented by theme/route/device/network -- a RUM client (const RUM_JS) tags each metric with theme/route/device/network and sendBeacon('/api/rum') on page-hide, INJECTED AT THE ROUTER (htmlResp) so it touches no T077/T078 visual/motion contract hash (the whole asset_hashes incl. page_shell + master_visual is byte-identical), plus a pure rumIngest validator gating a POST /api/rum endpoint that writes a NEW cn_rum table (CREATE TABLE IF NOT EXISTS + bind INSERT, not existing production data), and an offline query tool tools/rum_cwv.py that computes p75 + Google CWV ratings segmentable by the four dimensions with every assessment gated on a minimum sample count so empty/thin data claims NO compliance (无数据不声称达标); NOT_DEPLOYED -- BUILD 40a46aa2baee -> 8c19387c846b but not deployed, live still b189d3cc0703, no real RUM baseline yet and none claimed; proven by a Node test on the real extracted rumIngest, an in-app-browser test capturing a live LCP tagged by the four dimensions, and a contract invariance check (detect_regression = 0 changes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T082: optimized the six-theme ambient motion for FPS without changing visual semantics -- converted the one layout-animating ambient keyframe (the cosmos meteor, left/top) to a screen-path-equivalent transform:translate (GPU-composited; .fx is a fixed viewport-sized layer so left/top % map exactly to vw/vh and the rotate stays inner so the streak + diagonal are preserved), after which every ambient loop is compositor-safe (the deterministic >=55 FPS guarantee), plus a router-injected FX_PERF controller that pauses ambient animation on page-hide and degrades the heaviest layers on low-end devices (meteor/band hidden, nebula simplified) WITHOUT touching the foreground selectors so the foreground feedback survives; the ONLY T077/T078 contract element that changed is keyframes (per_theme/base_css/theme_js/fx_css/hero byte-identical) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD 8c19387c846b -> 0cb3acee6bf3 but not deployed, live still b189d3cc0703; proven by an ambient compositor-safety audit (pre-fix FAILS), an in-app-browser test (pause 7/7; low-end degrades while stars + button:active survive) and a contract re-derivation, and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T083: optimized the hot D1 queries by adding five indexes to schema_cloud.sql (CREATE INDEX IF NOT EXISTS: recency expression index on cn_items(COALESCE(published_at,fetched_at) DESC, id DESC), board+recency, cn_lessons(item_id), cn_reviews(due_at), cn_events(kind,at)) so the today/radar/browse/history/review pages and the vitals sparkline stop full-table-scanning + temp-sorting cn_items and instead do an index-ordered SEARCH reading only the LIMIT rows (rows scanned O(N) -> O(LIMIT), p95 down 3-200x in the local SQLite proof). An adversarial review of the schema-only cut found a real hole: without a total-order tie-breaker, cross-family ties (a recency-via-published row tying on COALESCE with a recency-via-fetched row) changed board/browse LIMIT/OFFSET page membership+order and OFFSET pagination could skip/repeat, and the verifier was blind (published 2016 / fetched 2026 disjoint namespaces made the tie impossible). The fix adds a deterministic total-order `, id DESC` tie-breaker to all eight recency display ORDER BYs in worker_cloud.js (matching the existing prune query) + the id key in the two recency indexes so the total order stays fully index-served (no temp b-tree); the verifier now contains real cross-family ties and asserts the tie-breaker query is deterministic (index==forced-scan, OFFSET pages disjoint). Queries changed so BUILD was recomputed 0cb3acee6bf3 -> d1dfcb3b7447, but the change is in page-body functions so the six-theme visual/motion contract is byte-identical (no CLS, server-rendered) and it is not a content regression (an undefined tie order made deterministic); NOT_DEPLOYED, live still b189d3cc0703, CWV 达标 NOT claimed without field data (T081 rule); and independently reviewed. 2026-07-18 ADP V0.1 S7-P04-T084 (last S7 task): polished evidence/inference + accessibility + reduced-motion without replacing the design -- a PROVENANCE_NOTE (讲义·推断 badge + sentence) is prepended in the central lessonHTML so the auto-generated lesson is labelled as inference, distinct from the 原文 (evidence) link (todayPage refactored to lessonHTML, output otherwise identical); the reveal button gets aria-controls and moves focus into the revealed box (disclosure a11y) on top of the already-native named 44px buttons + :focus-visible; and the reduced-motion rule was verified to disable animation while restoring the .fr/.bw content classes to opacity:1 (gauge/video jump to final state in JS) so no content/function is lost. The polish is page-body so the six-theme visual/motion contract is byte-identical; NOT_DEPLOYED -- BUILD d1dfcb3b7447 -> 452f7c5de919 but not deployed, live still b189d3cc0703; proven by an a11y_content_audit (pre-fix has no marker / no reveal a11y; removing the reduced-motion restore fails the preserve check) and an in-app-browser test, and independently reviewed. 2026-07-19 ADP V0.2 生产集成 P01 (关键事实 Factsheet 上线, PRODUCTION DEPLOY): began wiring the NOT_DEPLOYED cognitive capabilities into the live worker per the Owner directive that ADP be visibly richer and immediately usable -- ported S1-P03-T016 extract_factsheet deterministic extraction (DOI / 文号 / 关键数字 / 作者; missing => shown as nothing, never fabricated) into deploy/cloudflare/worker_cloud.js (factsheet()+factsheetHTML()) and rendered it as six-theme-adaptive .badge chips on the today card (first screen), board lists, search, radar, and item detail (one shared itemListHTML covers board/search/radar). Presentation-only: reads existing cn_items fields, adds no D1 table, no cron/pipeline change, does not touch the hero/motion/theme layer (T077/T078 contract scopes page bodies out of the frozen visual identity). Independent adversarial review BLOCKED on a real ReDoS (FS_UNIT_RE was O(n^2), 40KB pathological input 2295ms in the request path, would exceed the Cloudflare Worker CPU limit); fixed with a bounded quantifier {0,39} on the unit-regex digit run (a number token is never over 40 chars, so the scan is linear regardless of input) + input slice (0,500)/(0,2000), re-verified linear (40KB 4.8ms / 400KB 48.8ms / 0.24ms after slice) with extraction unchanged, CONFIRMED_SOUND (not self-signed). BUILD 452f7c5de919 -> 0864030f7dc8; deployed adp-cloud version f26dc86a-446f-445b-b1ab-d2c132b1cf46 (DB/R2 bindings + cron preserved); live-verified build.json 0864030f7dc8, 7 routes 200, six themes 6/6, factsheet chips visible board1=60/board2=4/board3=7/board4=1; rollback wrangler versions deploy 5a7c0fbe. release_mode PRODUCTION; recurring $0/mo (DIR-007 unchanged). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P01-FACTSHEET/. 2026-07-19 ADP V0.2 生产集成 P02 (知识库 /library 上线, PRODUCTION DEPLOY): promoted S5-P04-T067's Library from NOT_DEPLOYED to PRODUCTION as a read-only view -- /library was returning 404. New libraryPage() reads only live cn_reviews joined to cn_items (the items you studied), with per-board and per-evidence-state facet counts that filter via ?board= / ?state=, a list carrying title, board, publish date, original-source link, evidence state, review count and next-review date, and the P01 factsheet chips reused; nav gains a 知识库 entry and /library is an exact-match route (does not shadow /item/ or /board/). Adds no D1 table, no cron/pipeline change, and moves zero visual-contract elements (T078 differential gate). Honest boundary: T067 is Library + notes + full-provenance export, and its export REFUSES on any missing provenance field (source_url, version, fetched_at, claim_evidence, license); version and license live in the S2 version layer which is not deployed, so only the Library view ships -- notes and export are deliberately not shipped rather than fabricating provenance. An independent adversarial review BLOCKED a real free-tier violation: both queries full-scanned cn_items (D1 runs no ANALYZE, so the planner drove the join from the big table), reading about twice the cn_items row count per page view -- 200k items meant roughly 400k rows per view against D1's 5M rows/day free tier shared with the daily cron, i.e. about a dozen views would exhaust the day, violating the $0/mo free-tier basis the Owner signed at T087 and regressing the already-live T083 whose deliverable was removing hot-path full scans. Fixed by pinning cn_reviews as the outer loop (JOIN -> CROSS JOIN; still an inner join via ON, identical rows): the plan became SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?), so cn_items is only ever index-searched; a negative control (plain JOIN) reproduces SCAN i USING COVERING INDEX, proving the check is load-bearing; the reviewer independently confirmed byte-identical results across every filter combination, no cartesian product, 48-82x faster, and noted the fix pins the good plan whether or not ANALYZE statistics exist. A dead facet chip (unfilterable null evidence state) was also removed. Review verdict CONFIRMED_SOUND (not self-signed). BUILD 0864030f7dc8 -> e301f8a4c7d8; deployed adp-cloud version bfa3ac49-31a2-426c-8aaf-b0c33caf60d1 with bindings and cron preserved; live-verified 10 routes 200 including /library and its filters, six themes 6/6, the 知识库 nav entry, and P01 factsheet not regressed; rollback wrangler versions deploy f26dc86a. This run also fixed the root cause of the Project Governance large-object hygiene audit failing on every push since T088: the three oversized ADP canonical governance files are covered by the ARXIV_CANONICAL_GOVERNANCE retained rule (max_bytes 4MB, change_policy baseline_oid_only), so every content change must register the new blob OID in reviewed_oids -- a step that had been skipped; the current OIDs are now registered and tests/governance/test_adp_canonical_governance_oids.py enforces the invariant so this silent CI failure becomes a local test failure. release_mode PRODUCTION; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/. 2026-07-19 ADP V0.2 生产集成 P03 (增强搜索, PRODUCTION DEPLOY): shipped the part of S5-P02-T060 that live data can actually support -- /search gains structured facets (board from the REGISTRY whitelist, date range gated by a YYYY-MM-DD regex, as a GET form) and identifier-first ranking (when the query looks like a 文号 or DOI, rows whose extracted identifier contains the normalized query are promoted, reusing the P01 extractor over the already-fetched 40 rows inside the worker at zero extra DB cost). An independent adversarial review BLOCKED on HONESTY rather than safety (it stated the code itself was deployable), and all three findings were real: (1) self-raised and confirmed -- a 文号 typed with spaces makes SQL LIKE return zero rows so the re-ranker never runs, making the normalization a no-op end to end, and normIdent's ASCII case-folding is redundant at recall since SQLite LIKE is already case-insensitive; (2) NOT raised by the implementer and worse -- fetchBiorxiv stores id as biorxiv:DOI and url as the content URL so the DOI never appears in title or summary, yet the SQL searched only title and summary while itemIdentifiers extracted from id, url and summary, an asymmetric surface that made typing a bioRxiv DOI (a headline board1 source) return nothing even though the page promised it would be pinned first; (3) the 精确命中 badge asserted a fact the code could not establish -- board3's live sources are all media news RSS, so rows are commentary about a document rather than the document, and a policy explainer was badged as an exact hit, while the greedy identifier prefix caused genuine documents to be missed. All remedies were applied: the retrieval surface now includes id and url under the same single bind with no new parameters (the reviewer re-ran EXPLAIN QUERY PLAN on the real schema and confirmed the plan is byte-identical, since a leading-wildcard LIKE is non-sargable either way, and the bioRxiv DOI case went from zero rows to a pinned hit); equality became containment so the greedy prefix no longer drops real documents, and the badge was relabelled to 标识符匹配, which claims only that the query occurs inside the identifier the product already extracts, never that the row is the official document; and the page copy dropped its unconditional promise in favour of naming the real retrieval surface. The reviewer verified containment introduces no false positives (the identifier-shape gate still holds and the degenerate empty-query path is unreachable) and independently re-derived the known_gaps file itself, finding it under-claims rather than over-claims. Verdict CONFIRMED_SOUND, not self-signed. Net gain: the unfiltered plan is unchanged from before, while a board facet narrows it to an index search and date bounds are index-assisted. BUILD e301f8a4c7d8 to e78306049663; deployed adp-cloud version 8a6ef433-b93d-4730-855d-d15a2b08bc10 with bindings and cron preserved; live-verified 12 routes 200 including every filter combination, six themes 6/6, the facet form rendering, no 残留 overclaim on the page, and P01 chips plus P02 library not regressed; rollback wrangler versions deploy bfa3ac49. Honest boundary: this is NOT T060's O(1) exact lookup (only a re-rank of at most 40 recalled rows), the whitespace variant does not work end to end, agency/region/status facets have no backing columns and were not built, and upgrading 标识符匹配 into a real authoritative-original hit depends on P04 wiring board3 to A0 official sources. release_mode PRODUCTION; no new table, fetch or cron; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/. 2026-07-19 ADP V0.2 生产集成 P04 (board3 A0 官方原文接入每日 cron, PRODUCTION DEPLOY): board3 had been ingesting ONLY media RSS, i.e. commentary ABOUT policy with not a single government original, and S3's A0 connectors (T031-T040) had never been wired into the production cron - T040 left only a read-only canary. This wires four A0 official sources into REGISTRY board3 under method 'a0', reusing the RSS discipline (health, auto-disable after 3 consecutive failures, self-heal retry after 3 days): stats-gov, cac-gov, ndrc-gov and gov-cn-policy. A shared parseA0 parser plus per-source match/resolve/date config was added; a date is emitted ONLY when it can genuinely be read from the URL, so the newer gov.cn /content/YYYYMM/ form (year-month, no day) yields a null published_at rather than an invented day. /api/a0-canary became a real per-source edge-reachability probe reusing the same parser, replacing T040's duplicated inline regex that only matched the old URL form (which is why it had only ever surfaced 2019 and 2020 documents). BOARD3_A0_ONLY REMAINS false: this ships ingestion only and does not demote media to discovery, because flipping the gate before the database holds A0 originals would EMPTY board 3, and T040's full flip additionally requires a real 14-day shadow. The implementer self-caught a ReDoS first: the initial parseA0 regex backtracked quadratically on unclosed anchor floods (8000 reps took 81ms, doubling input quadrupled time) which would burn the cron CPU budget; bounding the attribute class and dropping the closing-tag requirement made it linear with byte-identical extraction. An independent adversarial review then BLOCKED on two real defects, both the implementer's: first, an unauthenticated write regression - swapping the canary's bare fetch for fetchFeedText silently inherited its R2 dual-write, so an endpoint literally asserting non_destructive and writes-nothing performed fifteen persistent writes per cold hit and corrupted the raw-write budget counters that only runDaily resets, on an Owner-signed zero-dollar budget; fixed by passing a null source id so the existing guard short-circuits. Second, the implementer's stated rationale for excluding ndrc-gov was factually wrong: the page carries 28 slash-format date spans and 103 (81 unique) ndrc-hosted dated policy links that resolve 200, and the implementer's test had only grepped dash-format dates and only inspected gov.cn links; rather than merely deleting the false claim, ndrc-gov was wired in as a real fourth source, and it is precisely the source that yields officials carrying a document number. The review verified DIR-007 at twenty of fifty external subrequests (and corrected the implementer's comment that had wrongly folded D1 and R2 into that fifty, since internal services have a separate one-thousand ceiling), proved the ndrc pattern cannot escape its host (eleven hostile hrefs including traversal and protocol-relative attacker hosts were all rejected because a dot is not in the character class), and confirmed zero date fabrication, failure isolation, idempotency and that board 3 cannot be emptied. After the sound verdict the implementer further pinned gov-cn-policy's match to its host, since an off-host link on gov.cn's own listing would otherwise be ingested as official. Most dangerous of all, a post-deploy edge probe exposed that the safety instrument itself had been vacuous: the canary's board3 query omitted board_id while a0Board3Eligible begins by returning true for any row whose board_id is not board3, so every row passed unconditionally, 105 media rows were reported as official A0, and the endpoint therefore asserted safe_to_flip true - which, if trusted, would have emptied board 3, the exact catastrophe that flag exists to prevent. T040's original canary shared the omission, so its reassuring zero-media-demoted figure had never actually exercised the gate. Fixed by selecting board_id, with a negative control proving the gate now discriminates. Live build moved e78306049663 to 204c97eb5406, deployed as version 39fae7f4-f3f4-4404-93b7-a0e637764347 with bindings and cron preserved. A real runDaily ingested 37 official originals and board 3 moved from 105 media with zero officials to 162 total comprising 37 officials and 125 media, with State Council documents now genuinely visible on the page; ten routes returned 200, six themes remained intact, and P01, P02 and P03 did not regress; rollback is one deploy to version 8a6ef433. Honest boundaries are recorded in known_gaps: the gate is not flipped; gov-cn-fagui returns 403 and nda-gov returns a 193-byte stub so neither is ingested; only listing metadata is taken so A0 summaries are empty; A0 raw bytes are effectively never archived to R2 because the RSS stage exhausts the per-run cap first, so no archiving is claimed; gov-cn-policy is authoritative but not timely because its listing is a static index of foundational regulations; stats-gov timed out from the edge on the first run and its fifteen items were absent, though a later probe succeeded, so it is recorded as intermittent rather than overstated as unreachable; and the new official kind is not covered by seedSources cleanup. release_mode PRODUCTION; recurring 0 USD/month. Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/.)"
+     acceptance_ids:
+       - "ACC-ADP-V03-48H-LOOP"
+     test_commands:
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/TASK_REPORT.md
+new file mode 100644
+index 000000000..62a2eee65
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/TASK_REPORT.md
+@@ -0,0 +1,31 @@
++# ADP V0.2 生产集成 · P04 — board3 A0 官方原文接入每日 cron（PRODUCTION DEPLOY）
++
++## 为什么这是 V0.2 最关键的一批
++board3「中国政策法规」此前**只抓媒体 RSS**（人民网/中新网/新浪）——即库里全是**关于**政策的**报道**，**没有一条政府官方原文**。这也是 P03「标识符匹配」徽章无法升级成「权威原文命中」的根因。S3（T031–T040）建好了 A0 适配器却**从未接进生产 cron**（NOT_DEPLOYED），T040 只留下一个**只读**canary。P04 把它真正接上。
++
++## 交付
++1. **4 个 A0 官方源接入 REGISTRY(board3, `method:'a0'`)**，与 RSS 共用同一套纪律（健康/连续失败 3 次自动停用/3 天后自愈重试）：
++   | source | 列表页 | 性质 |
++   |---|---|---|
++   | `stats-gov` | stats.gov.cn/sj/zxfb/ | 及时，实测 15 条、日期真实（2026-07-16） |
++   | `cac-gov` | cac.gov.cn/ | 及时，含法规征求意见稿原文 |
++   | `ndrc-gov` | ndrc.gov.cn/xxgk/ | 及时，实测 20 条 **20/20 带真实日期**，标题常含**文号** |
++   | `gov-cn-policy` | gov.cn/zhengce/xxgk/ | **权威但不及时**（静态索引 → 基础性法规，2019/2020） |
++2. **`parseA0` 共享解析器** + 每源 `match/resolve/date` 配置；**日期只在能从 URL 真实读出时才给**（新版 gov.cn `/content/YYYYMM/` 无「日」→ `published_at=null`，**不编造**）。
++3. **`/api/a0-canary` 升级为真实的逐源边缘可达性探针**，复用**同一个** `parseA0`（替掉 T040 那段重复的内联正则——它只认旧链接形态，这正是它一直只吐 2019/2020 老文件的原因），并给出翻开关的前置条件 `safe_to_flip_flag`。
++4. **`BOARD3_A0_ONLY` 仍为 `false`**：本次只做摄取，不翻开关（详见 known_gaps §1——库里没有 A0 之前翻开关会**清空 board3**）。
++
++## 我自己先抓到的缺陷（未等复核）
++`parseA0` 初版正则 `<a\s([^>]*?)href=...>([\s\S]{0,300}?)<\/a>` 在**未闭合 `<a`** 洪水下是**二次回溯**：2000→5.1ms、4000→20.3ms、8000→**81ms**（翻倍→4×）。真实页面无事（209KB 仅 0.53ms）只因格式良好；改版/畸形 HTML 会打进 **cron 的 CPU 预算**。**改为有界属性 + 不要求 `</a>`（取到下一个 `<`）→ 线性**：2000→2.68、4000→5.56、8000→11.11、16000→22.14ms（翻倍→2×），且**抽取结果逐条不变**。
++
++## 独立对抗复核：BLOCK ——两条都真，都是我的错
++1. **★未鉴权写回归★**：我把 canary 的裸 `fetch()` 换成 `fetchFeedText` 时**静默继承了它的 R2 双写**。于是一个自称 `non_destructive:true`／「writes nothing」的**未鉴权**端点，冷启动每次命中**真写 15 次**（3 R2 PUT + 3 `cn_artifacts` INSERT + 9 `cn_meta` 计数），并污染只在 `runDaily` 重置的 `_rawWrites/_rawUsage` 预算计数——**在 Owner 签署的 $0 预算上，一个谎报自身副作用的决策仪器**。**修复**：`fetchFeedText(s.list, env, null)`，命中既有 `&& sourceId` 守卫 → 真正只读。
++2. **★我的 ndrc 排除理由事实错误★**：我写「整页无日期 → 非日更源」。复核证伪：**28 个 `<span>2026/07/16</span>`**（斜杠格式，我只 grep 了短横线格式）、**103 条（去重 81）发改委自有 `t{YYYYMMDD}_` 政策链接**（我只看了 gov.cn 链接）。我不仅**删掉假声称**，而是**把 ndrc-gov 真正接了进来**——它恰是**带文号的官方原文**来源。
++
++复核同时确认（皆为执行验证）：DIR-007 **20/50 外部子请求**（且指出我原注释把 D1/R2 错并入这 50——internal services 另有 1000 独立额度，注释已改正）；单源失败/超时**不会中断 cron**（`Promise.allSettled` 用法正确）；**零日期编造**（6 条 `/202607/` 全部 `published=null`）；**幂等**（`id='a0:'+sha1(source|url)` + `ON CONFLICT`，两次运行 id 集合一致、`first_seen_at` 保留）；**board3 不会被清空/挤掉**（`BOARD3_A0_ONLY=false`；105 媒体 + 32 A0 = 137 远低于 `KEEP_PER_BOARD=300`；prune 保护被复习/精选/讲义引用的条目）；XSS 走既有 `esc/safeHref` 无新汇聚点。
++
++## 诚实边界
++见 `known_gaps.md`：不翻开关；`gov-cn-fagui` **403**、`nda-gov` **193 字节空壳**故不接；只取列表页元数据（无正文 → A0 的 `summary` 为空）；**A0 原始字节实际未归档 R2**（RSS 先耗尽 `RAW_MAX_PER_RUN=3`）故不声称；`kind:'official'` 新枚举与 `seedSources` 清理的孤儿风险。
++
++release_mode: **PRODUCTION**。未自签。
++Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/adversarial_review.md
+new file mode 100644
+index 000000000..5834c7173
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/adversarial_review.md
+@@ -0,0 +1,40 @@
++# 独立对抗复核 — ADP V0.2 P04 board3 A0 官方原文接入每日 cron
++
++复核者：独立 general-purpose skeptic（非实施者；实施者不自签）。这是迄今风险最高的一批——**改的是每日 cron**。
++
++## 实施者自查先抓到的（未等复核）
++`parseA0` 初版正则 `<a\s([^>]*?)href=...>([\s\S]{0,300}?)<\/a>` 在**未闭合 `<a`** 洪水下**二次回溯**：2000→5.1ms、4000→20.3ms、8000→**81ms**（翻倍→4×）。真实页面无事（209KB 仅 0.53ms）**只因格式良好**；改版/畸形 HTML 会打进 **cron 的 CPU 预算**。改为**有界属性 + 不要求闭合 `</a>`**（取到下一个 `<`）→ **线性**（8000→11.11ms，翻倍→2×），**抽取结果逐条不变**。
++
++## 第一轮：BLOCK —— 两条,都真,都是实施者的错
++
++复核明确：**「the actual cron wiring is sound … but the change ships two verifiably false assertions」**——即判的是**诚实性**，不是功能。
++
++1. **★未鉴权写回归★**：实施者把 canary 的裸 `fetch()` 换成 `fetchFeedText`，**静默继承了它的 R2 双写**（`RAW_DUALWRITE=true` 且 `RAW` 桶已绑定）。于是一个自称 `non_destructive:true`／`writes nothing`／「只读」的**未鉴权**端点，冷启动每次命中执行 **15 次持久化写**（3 R2 PUT + 3 `cn_artifacts` INSERT + 9 `cn_meta` 计数，复核用录制 mock 实跑确认），并污染 `_rawWrites/_rawUsage`（模块级，只在 `runDaily` 重置）。**在 Owner 签署的 $0 预算上，一个谎报自身副作用的决策仪器。**
++2. **★ndrc 排除理由事实错误★**：实施者写「整页无日期 → 非日更源」。复核证伪：**28 个 `<span>2026/07/16</span>` 斜杠格式日期**、**103 条（去重 81）发改委自有 `t{YYYYMMDD}_` 政策链接**（正是 `stats-gov` 的日期解析器已能处理的形态），其中 15 条在弹窗**之外**。实施者的检验有两处错：只 grep 了短横线格式、且只看 gov.cn 链接。
++
++**第一轮同时确认（皆执行验证）**：DIR-007 **20/50** 外部子请求（并**纠正了实施者注释的事实错误**——原注释把 D1/R2 并入这 50，实际 internal services 另有 **1000/次**独立额度）；单源失败/超时/垃圾 HTML **均不中断 cron**（`Promise.allSettled` 用法正确）；**零日期编造**（6 条 `/202607/` 全部 `published=null`）；**幂等**（两次运行 id 集合一致、`first_seen_at` 保留）；**board3 不会被清空或挤掉**（`BOARD3_A0_ONLY=false`；105+32=137 远低于 `KEEP_PER_BOARD=300`；prune 保护被复习/精选/讲义引用的条目）；XSS 走既有 `esc/safeHref` 无新汇聚点；BUILD 自哈希一致。
++
++## 修复
++1. `fetchFeedText(s.list, env, null)` —— 命中既有 `&& sourceId` 守卫（复核自己提的一字修复）。
++2. **不是删掉假声称，而是把 `ndrc-gov` 真正接入**为第 4 个源（它恰是带**文号**的官方原文来源）；`A0_PER_RUN` 3→4。
++
++## 第二轮：CONFIRMED_SOUND
++- **FIX1 已解**：`sourceId===null` 在 `dualWriteArtifact` 之前短路；**所有**写入都在该函数内（R2 PUT / `cn_artifacts` INSERT / `r2Bump`）→ 冷启动**零写入**；`_rawWrites/_rawUsage` 亦在其内，故不再污染 `runDaily` 共享的模块状态；编解码路径只读 `buf`、不碰 `sourceId`，故解码不受影响。
++- **FIX2 已验**：对**线上真实页面**跑真实代码路径：**parsed=20、with_date=20/20、unique=20**，抽样解析后 URL **全部 200**（如 `t20260716_1406539.html` = 海水淡化产业发展行动方案，**发改环资〔2026〕1062号**），**真官方原文、无垃圾、无重复**。`[a-z/]+` 字符类**漏掉 0 条**（补集为空）。
++- **正则无法逃逸 host**：`.` 不在 `[a-z/]` 内 → `../` 遍历结构上不可能；`^`/`$` 锚定；`:`/`@`/大写/query/fragment 全在类外。**11 个恶意 href 全被拒**；即便匹配也只能落在 `https://www.ndrc.gov.cn/xxgk/` 之后的 path。
++- **四源实测**：gov-cn-policy 13/7 dated（`/202607/` 年月形态诚实为 `null`）、stats 15/15、cac 4/4、ndrc 20/20，各自解析到**自己的 host**。
++- **DIR-007 复算确认**：按 REGISTRY 编程计数 RSS = 13（`min(n,4)` 逐板求和）+ arxiv 2 + biorxiv 1 + A0 4 = **20/50**；新注释**事实正确**。
++- **排除项仍属实**：`gov-cn-fagui` **HTTP 403**；`nda-gov` **恰好 193 字节**，正文是 `<script>window.location.href='/sjj/index_pc.html';</script>`。
++- BUILD 戳一致；`node --check` 通过；此前 PASS 未被扰动；**无新缺陷**。
++
++**终判：VERDICT: CONFIRMED_SOUND**
++
++## 复核放行后，实施者又主动收紧一处
++`gov-cn-policy` 的 `match` 原为 `^https?:\/\/[^"']*\/zhengce\/content\/`——**未钉 host**；而 `a0Board3Eligible` 按 `source_id` 白名单放行、**不再校验 hostname**，故 gov.cn 列表页上的**站外**链接会被当作「官方原文」入库。复核将其列为「不阻塞、需控制 gov.cn HTML 才能利用」而未重开；但 P04 的全部前提就是**权威原文**，故实施者仍**钉住 host**。负控制：`evil.com/zhengce/content/...` 伪装 → **拒（0）**；真 `www.gov.cn/zhengce/content/...` → **通过（1）**；四源产出不变。
++
++## ★上线后才暴露的最危险一个：我的安全仪器曾恒真★
++边缘探测发现 canary 报 **`board3: 总105 | 官方A0 105 | 媒体 0`、`safe_to_flip_flag: true`**——与事实相反（当时库里 **0 条**官方）。
++根因：canary 的 board3 查询**漏选 `board_id`**，而 `a0Board3Eligible` 首行是 `if (it.board_id !== 'board3') return true` → `undefined !== 'board3'` → **每行恒真通过**。
++**后果**：若有人信了 `safe_to_flip_flag` 去翻开关，**board3 会被清空**——正是该 flag 存在要阻止的灾难。
++**且 T040 原版 canary 同样漏选**，其 `board3_media_demoted_to_discovery: 0` 从来是**空跑**（从未真正检验过那道门）——与 T086 抓到的「恒真永不判 blocker」同类。
++已修（补 `board_id`）。**负控制证明该门现在真会判**：媒体行→`false`、官方行→`true`、漏 `board_id` 的行→`true`（复现 bug）。修复后线上实测 `总162 | 官方37 | 媒体125`、`safe_to_flip` 随真实 A0 数变化。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/cost_value.json
+new file mode 100644
+index 000000000..181cbb503
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/cost_value.json
+@@ -0,0 +1,22 @@
++{
++  "task": "ADP-V02-P04-A0",
++  "program": "ADP V0.2 生产集成（把 NOT_DEPLOYED 认知能力分批集成上线）",
++  "release_mode": "PRODUCTION",
++  "live_build_before": "e78306049663",
++  "live_build_after": "a73d5eb65708",
++  "rollback_target_version_id": "8a6ef433-b93d-4730-855d-d15a2b08bc10",
++  "value": "board3 从『只有媒体报道』变为『媒体 + 政府官方原文并存』：把 S3 的 A0 适配器(T031-T040)从 NOT_DEPLOYED 真正接进每日 cron。4 个官方源(stats/cac/ndrc/gov-cn-policy)，其中 3 个及时且带真实日期；ndrc 产出带文号的官方原文，使 P03 的标识符匹配对官方文件真正可用。",
++  "flag_flipped": false,
++  "flag_note": "BOARD3_A0_ONLY 仍为 false：本次只摄取，不把媒体降为 discovery。库里有 A0 之前翻开关会清空 board3；canary 现给出 safe_to_flip_flag 前置条件。",
++  "subrequests_external_per_cron_before": 16,
++  "subrequests_external_per_cron_after": 20,
++  "subrequests_external_limit_free": 50,
++  "subrequests_internal_note": "D1/R2 属 internal services，另有 1000/次 独立额度，不与外部 fetch 的 50 混算（复核纠正了原注释的错误合并）",
++  "d1_rows_written_delta_per_day": 32,
++  "new_d1_tables": 0,
++  "r2_class_a_delta": 0,
++  "r2_note": "A0 原始字节实际未归档：RSS 先耗尽 RAW_MAX_PER_RUN=3；故不声称 A0 具备 R2 归档。canary 显式传 sourceId=null 以确保只读端点零写入。",
++  "model_calls": 0,
++  "recurring_cloud_cost_delta_usd_month": 0,
++  "dir_007_free_tier": "within budget (20/50 external subrequests; internal well under 1000)"
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/known_gaps.md
+new file mode 100644
+index 000000000..6ffcf228d
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/known_gaps.md
+@@ -0,0 +1,52 @@
++# Known gaps · ADP-V02-P04 — board3 A0 官方原文接入每日 cron
++
++## 1. ★本任务不翻开关（BOARD3_A0_ONLY 仍为 false）★
++本次只交付**摄取**：board3 从「只有媒体报道」变成「媒体 + 官方原文并存」。
++**没有**把媒体降为 discovery。理由不是保守，是硬事实：`BOARD3_A0_ONLY=true` 会让 `a0Board3Eligible` 把媒体全部降级，而在库里有足够 A0 官方原文**之前**翻开关会**清空 board3**。canary 现在直接给出这个前置条件：`safe_to_flip_flag = (board3_in_db_official_a0 > 0)`。
++翻开关是**独立的、需真实覆盖度累积后**的一步（且 T039 的「14 日」本就要求真实日历时间）。
++
++## 2. 诚实未接入的官方源（逐条实测，非推测）
++| 源 | 实测 | 结论 |
++|---|---|---|
++| `gov-cn-fagui` (`/zhengce/fagui/`) | **HTTP 403** | 拦截，不接 |
++| `nda-gov` (`nda.gov.cn`) | **仅 193 字节** JS 跳转空壳 | 无内容可解析；S3 适配器本就标 `live_blocked=True` |
++
++★**我曾错误地把 `ndrc-gov` 也列入「不可接入」**★，理由写的是「整页无日期、新鲜链接只在弹窗里」。**独立复核证伪了这条**：该页有 **28 个 `<span>2026/07/16</span>` 斜杠格式日期**、**103 条（去重 81）发改委自有的 `t{YYYYMMDD}_` 政策链接**（解析后实测 200）。我的检验有两处错：只 grep 了 `YYYY-MM-DD` 短横线格式、且只看 gov.cn 链接。**已改正：ndrc-gov 现已作为第 4 个 A0 源真实接入**，且它产出的正是带**文号**的官方原文（如 `关于印发《海水淡化产业发展行动方案》的通知(发改环资〔2026〕1062号)`）。
++
++## 3. 各源的性质差异（不可混为一谈）
++- `stats-gov` / `cac-gov` / `ndrc-gov`：**及时**，列表页带真实日期（实测 2026-07-16/17）。
++- `gov-cn-policy`（`/zhengce/xxgk/`）：**权威但不及时**——该页是「信息公开」**静态索引**，产出的是 2019/2020 的**基础性法规**（如《政府信息公开条例》）。它贡献的是**权威原文**这一轴，**不是**日更流。若把它当日更源看待即为自欺。
++- **新版 gov.cn `/zhengce/content/YYYYMM/` 只有年月没有日 → `published_at` 留空（null），绝不编造「日」**；列表页也不提供日期。因此这类条目按 `COALESCE(published_at, fetched_at)` 以抓取日排序。
++
++## 4. 只取列表页元数据，不抓正文
++每源 1 个子请求（DIR-007）。因此 `summary` 为空、正文未入库。
++影响：P01 的 factsheet 从 `title`+`summary` 抽取，A0 条目 `summary=''`，故**文号/关键数字只能从标题抽到**（好消息：官方标题本就常含文号，如 `发改环资〔2026〕1062号`，因此 P03 的「标识符匹配」对这些条目真的可用）。抓正文需每条 1 子请求，超预算，未做。
++
++## 5. R2 原始字节归档：**A0 实际上没有被归档**（不声称）
++cron 里 A0 走在 RSS 之后，而 `RAW_MAX_PER_RUN=3` 已被 RSS 抓取耗尽，故 A0 的原始字节**通常不会**写入 R2。
++故本任务**不声称** A0 具备 R2 原文归档。（`/api/a0-canary` 现显式传 `sourceId=null` 以确保该只读端点不写任何东西——见下。）
++
++## 5b. ★真实上线后才暴露：`stats-gov` 从边缘**间歇性**超时★
++首次真实 runDaily：`a0_official=37 = gov-cn-policy 13 + cac-gov 4 + ndrc-gov 20`，**stats-gov 的 15 条没进来**，
++`degraded:['a0:stats-gov']`、`result=降级`（诚实降级，未中断 cron —— 印证了失败隔离）。该次报 `TimeoutError`（`fetchFeedText` 的 15s AbortSignal）。
++**但随后的边缘探测 stats-gov 又成功了（reachable=True, parsed=15）→ 所以这是间歇性超时，不是永久封锁。**
++（此处刻意不夸大：不能因为观察到一次超时就声称「边缘不可达」。）
++影响：某些日子 stats-gov 会缺席，由既有健康机制处理（连续 3 次失败→自动停用，3 天后自愈重试），无需特殊代码。
++**真实每日可用源数需按真实日历累计观察**——与 T039 的诚实结论一致（真实 latency/coverage 需接 cron 后按真实运行暴露）。
++
++## 5c. ★我自己的安全仪器曾恒真（已修，最危险的一个）★
++canary 的 board3 查询漏选了 `board_id`，而 `a0Board3Eligible` 首行是 `if (it.board_id !== 'board3') return true`
++→ 每一行都恒真通过 → 把 **105 条媒体误报成「官方 A0」**，并据此输出 **`safe_to_flip_flag: true`**。
++**若有人信了它去翻开关，board3 会被清空**——正是这个 flag 存在的目的所要阻止的灾难。
++**T040 原版 canary 同样漏选**，其 `board3_media_demoted_to_discovery: 0` 一直是**空跑**（从未真正检验过那道门）。
++已修（补 `board_id`）；负控制证明该门现在真的会判：媒体行→false、官方行→true、漏 `board_id` 的行→true（复现 bug）。修复后线上实测：`总162 | 官方37 | 媒体125`，`safe_to_flip_flag` 随库内实际 A0 数变化。
++
++## 6. 复核抓到的两个真实缺陷（已修，记录以免重犯）
++1. **未鉴权写回归**：我把 canary 的裸 `fetch()` 换成 `fetchFeedText` 时，**静默继承了它的 R2 双写**——一个自称 `non_destructive: true`／「writes nothing」的**未鉴权**端点，冷启动每次命中会产生 **15 次持久化写**（3 R2 PUT + 3 `cn_artifacts` INSERT + 9 `cn_meta` 计数），并污染 `_rawWrites/_rawUsage`（只在 `runDaily` 重置）。**修复**：`fetchFeedText(s.list, env, null)`，命中其内部 `&& sourceId` 守卫。
++2. **ndrc 排除理由事实错误**（见 §2）。
++   两者都发生在一个「以诚实为前提」的改动上——故不接受「仅文档化」，均已实修。
++
++## 7. 其它已知边界
++- `kind: 'official'` 是新枚举值；`seedSources` 的清理只删 `kind='feed'`，因此若将来把某个 A0 源从 REGISTRY 移除，其历史行会**成为孤儿**（不会被自动清掉）。已知，未在本任务处理。
++- `healthStmt(ok = items.length > 0)`：把「可达但解析出 0 条」判为失败。这是有意的——列表页改版会让解析静默归零，正应触发降级/自动停用（3 次失败停用、3 天后自愈重试），而不是假装健康。副作用：某源某天真的没有新内容且列表为空时会被误判一次（不致命，自愈机制覆盖）。
++- 本任务**未**真实跑满一个 cron 周期的多日观测；真实每日产出/漏抓随真实运行暴露（与 T039 的诚实结论一致：真实 latency/coverage/cost 需接 cron 后按真实日历累计）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/test-results/deploy_verify.txt b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/test-results/deploy_verify.txt
+new file mode 100644
+index 000000000..07d1ce9bd
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/test-results/deploy_verify.txt
+@@ -0,0 +1,32 @@
++=== 1. build == 204c97eb5406 ===
++{"build_id":"204c97eb5406","source_sha256":"204c97eb540680be4207647c90717fb1d2b35f495926bd543bce3c6011485196","schema_version":"cn_v0_3","built_at":"2026-07-17"}
++  OK
++=== 2. 路由(P01/P02/P03 全部不得回归) ===
++  / -> 200
++  /today -> 200
++  /queue -> 200
++  /radar -> 200
++  /system -> 200
++  /history -> 200
++  /library -> 200
++  /search?q=policy&board=board3 -> 200
++  /board/board3 -> 200
++  /api/a0-canary -> 200
++=== 3. 六主题 6/6 ===
++  themes: 6/6
++=== 4. A0 摄取真实生效 ===
++  board3 总: 162 | 官方A0: 37 | 媒体: 125
++  safe_to_flip_flag: True (随库内真实 A0 数变化,非恒真)
++  flag_state: OFF (media still counts as evidence)
++    gov-cn-policy    reachable=True parsed=13 err=None
++    stats-gov        reachable=True parsed=15 err=None
++    cac-gov          reachable=True parsed=4 err=None
++    ndrc-gov         reachable=True parsed=20 err=None
++  ✓ 门非恒真: 官方与媒体都被正确分类
++=== 5. board3 页面真的显示官方原文 ===
++  官方域名链接数: 9
++  ✓ 页面含国务院官方文件
++=== 6. P01 芯片未回归 ===
++  /board/board1 factsheet chips: 60
++
++DEPLOY VERIFY: PASS
+diff --git a/tests/governance/test_adp_canonical_governance_oids.py b/tests/governance/test_adp_canonical_governance_oids.py
+index 765b65a08..05e537436 100644
+--- a/tests/governance/test_adp_canonical_governance_oids.py
++++ b/tests/governance/test_adp_canonical_governance_oids.py
+@@ -57,6 +57,19 @@ class TestAdpCanonicalGovernanceOids(unittest.TestCase):
+         """The guarded invariant only holds if the rule really is baseline_oid_only."""
+         self.assertEqual(self.rule.get("change_policy"), "baseline_oid_only")
+ 
++    def test_rule_is_not_dead_config(self):
++        """A retained rule whose prefix no longer exists, or that covers nothing oversized, has
++        silently stopped protecting anything while still reporting green -- the same 'looks fine but
++        checks nothing' failure mode that made the old canary vacuous. Assert the rule is live."""
++        prefix = self.rule.get("prefix")
++        directory = ROOT / prefix
++        self.assertTrue(directory.is_dir(), "retained rule prefix no longer exists: {}".format(prefix))
++        limit = int(self.policy["regular_blob_max_bytes"])
++        oversized = [p for p in directory.rglob("*") if p.is_file() and p.stat().st_size > limit]
++        self.assertTrue(oversized,
++                        "no file under {} exceeds regular_blob_max_bytes ({}) -- this rule now protects "
++                        "nothing; it is either stale config or the limit changed".format(prefix, limit))
++
+     def test_baseline_tree_is_resolvable(self):
+         """The whole audit is anchored on baseline_tree; if it is unreachable the audit degrades to a
+         confusing 'FAIL with violations: []'. That exact failure mode has bitten this repo before

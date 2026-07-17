@@ -1,0 +1,179 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P04-A0-20260717",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P04-A0",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-17T04:30:00Z",
+  "implementation_base_sha": "908264efa6439c7bb584e38c98501ae094f5d333",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:0414179e00232d0c3aa5412860639b501b0925d3ac5df5ee7f841143621efbf5",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 20 non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP V0.2 P04 board3 A0 official-original ingestion into the live daily cron",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "ADP V0.2 P04: wire S3's A0 official-original connectors into the LIVE daily cron so board3 finally holds government originals instead of only media commentary. Four sources under method 'a0' reusing the RSS health/auto-disable/self-heal discipline; shared parseA0; dates only when genuinely readable from the URL (new gov.cn year-month form yields null, never an invented day). BOARD3_A0_ONLY stays false (flipping before A0 exists would EMPTY board3). Self-caught a quadratic ReDoS and made it linear. Review BLOCKED two real defects: an unauthenticated write regression on the self-declared read-only canary, and a factually wrong ndrc exclusion rationale (ndrc was then wired in as a real source). Post-deploy the edge probe exposed the canary's own gate was vacuous (missing board_id made a0Board3Eligible always true, reporting 105 media as official and asserting safe_to_flip) - fixed with a negative control. Real runDaily ingested 37 officials; board3 105/0 -> 162 total/37 official/125 media.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/test-results/deploy_verify.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P04-A0-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/test-results/deploy_verify.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P04-A0-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "required_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "deploy": {
+    "worker": "adp-cloud",
+    "version_id": "39fae7f4-f3f4-4404-93b7-a0e637764347",
+    "live_build_before": "e78306049663",
+    "live_build_after": "204c97eb5406",
+    "rollback_target": "8a6ef433-b93d-4730-855d-d15a2b08bc10"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P04-A0/test-results/deploy_verify.txt"
+  ],
+  "test_commands": [
+    "node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "python3 -B -m unittest -q tests.governance.test_adp_canonical_governance_oids",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic",
+    "parseA0 against LIVE gov.cn / stats.gov.cn / cac.gov.cn / ndrc.gov.cn listings + negative controls",
+    "curl https://adp.linzezhang.com/api/a0-canary  # per-source EDGE reachability",
+    "curl -X POST https://adp.linzezhang.com/api/run  # real runDaily with A0 ingestion"
+  ],
+  "test_results": [
+    {
+      "command": "node --check",
+      "result": "PASS",
+      "observed": "syntax OK."
+    },
+    {
+      "command": "governance invariant tests",
+      "result": "PASS",
+      "observed": "4 tests: rule is baseline_oid_only; rule is not dead config; baseline_tree resolvable; changed oversized files' OIDs registered. Load-bearing (removing an OID or breaking baseline_tree fails them)."
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "observed": "status PASS, violations []."
+    },
+    {
+      "command": "lean_governance validate",
+      "result": "PASS",
+      "observed": "0 errors project + root."
+    },
+    {
+      "command": "parseA0 vs LIVE listings",
+      "result": "PASS",
+      "observed": "gov-cn-policy 13 (7 dated; the /202607/ year-month form correctly yields null - no fabricated day), stats-gov 15/15, cac-gov 4/4, ndrc-gov 20/20 with real 文号 titles. Negative controls: empty HTML 0, unknown source 0, cac junk 全文 link dropped, evil.com disguised as gov.cn /zhengce/content/ rejected 0 while real www.gov.cn accepted 1. ReDoS linear (8000 unclosed anchors 11ms vs 81ms before)."
+    },
+    {
+      "command": "a0-canary EDGE probe",
+      "result": "PASS",
+      "observed": "4/4 sources reachable from the Cloudflare edge, 52 items parsed. Gate proven non-vacuous after the board_id fix: board3 reports 37 official + 125 media (was falsely 105 official / 0 media) and safe_to_flip now tracks the real A0 count."
+    },
+    {
+      "command": "real runDaily",
+      "result": "PASS (degraded, honestly)",
+      "observed": "a0_official=37 ingested (gov-cn-policy 13 + cac-gov 4 + ndrc-gov 20); a0_fetched=4; result=降级 with degraded=[feed:science-advances, a0:stats-gov] - one A0 source timing out did NOT break the cron (failure isolation confirmed in production). board3 105 media/0 official -> 162 total/37 official/125 media; State Council documents visible on /board/board3."
+    }
+  ],
+  "stop_conditions": [
+    "If the live build is not 204c97eb5406 or any route stops returning 200: wrangler versions deploy 8a6ef433-b93d-4730-855d-d15a2b08bc10 (build e78306049663).",
+    "Do NOT set BOARD3_A0_ONLY=true while /api/a0-canary reports board3_in_db_official_a0 == 0 - it would empty board 3.",
+    "If external subrequests per cron approach 50, stop adding sources: DIR-007 free tier is a hard budget."
+  ],
+  "rollback": {
+    "worker": "wrangler versions deploy 8a6ef433-b93d-4730-855d-d15a2b08bc10",
+    "data": "A0 rows are additive and idempotent (id = a0:sha1(source|url)); no schema/D1 migration was applied."
+  },
+  "unresolved_risks": [
+    "BOARD3_A0_ONLY remains false: media still counts as evidence. The flip is a separate step and T040 additionally requires a real 14-day shadow (calendar-bound).",
+    "stats-gov timed out from the edge on the first real run (its 15 items absent) though a later probe succeeded - intermittent, handled by health auto-disable/self-heal; real per-day availability only emerges over real calendar days.",
+    "gov-cn-policy is authoritative but NOT timely (static 信息公开 index of 2019/2020 foundational regulations).",
+    "Only listing metadata is ingested (1 subrequest per source); A0 summary is empty and full text is not fetched.",
+    "A0 raw bytes are effectively never archived to R2 because RSS exhausts RAW_MAX_PER_RUN=3 first - no archiving claimed.",
+    "kind:'official' is a new enum value not covered by seedSources' kind='feed' cleanup - A0 rows would orphan if a source is later removed from REGISTRY."
+  ],
+  "next_allowed_task": "Observe A0 coverage over real days, then the Owner-gated BOARD3_A0_ONLY flip; or the T077 visual baseline re-freeze."
+}

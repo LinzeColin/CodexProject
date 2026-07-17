@@ -1,0 +1,32 @@
+=== 1. build == 204c97eb5406 ===
+{"build_id":"204c97eb5406","source_sha256":"204c97eb540680be4207647c90717fb1d2b35f495926bd543bce3c6011485196","schema_version":"cn_v0_3","built_at":"2026-07-17"}
+  OK
+=== 2. 路由(P01/P02/P03 全部不得回归) ===
+  / -> 200
+  /today -> 200
+  /queue -> 200
+  /radar -> 200
+  /system -> 200
+  /history -> 200
+  /library -> 200
+  /search?q=policy&board=board3 -> 200
+  /board/board3 -> 200
+  /api/a0-canary -> 200
+=== 3. 六主题 6/6 ===
+  themes: 6/6
+=== 4. A0 摄取真实生效 ===
+  board3 总: 162 | 官方A0: 37 | 媒体: 125
+  safe_to_flip_flag: True (随库内真实 A0 数变化,非恒真)
+  flag_state: OFF (media still counts as evidence)
+    gov-cn-policy    reachable=True parsed=13 err=None
+    stats-gov        reachable=True parsed=15 err=None
+    cac-gov          reachable=True parsed=4 err=None
+    ndrc-gov         reachable=True parsed=20 err=None
+  ✓ 门非恒真: 官方与媒体都被正确分类
+=== 5. board3 页面真的显示官方原文 ===
+  官方域名链接数: 9
+  ✓ 页面含国务院官方文件
+=== 6. P01 芯片未回归 ===
+  /board/board1 factsheet chips: 60
+
+DEPLOY VERIFY: PASS

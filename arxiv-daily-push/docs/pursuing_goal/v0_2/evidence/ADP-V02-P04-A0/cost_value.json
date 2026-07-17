@@ -1,0 +1,22 @@
+{
+  "task": "ADP-V02-P04-A0",
+  "program": "ADP V0.2 生产集成（把 NOT_DEPLOYED 认知能力分批集成上线）",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "e78306049663",
+  "live_build_after": "a73d5eb65708",
+  "rollback_target_version_id": "8a6ef433-b93d-4730-855d-d15a2b08bc10",
+  "value": "board3 从『只有媒体报道』变为『媒体 + 政府官方原文并存』：把 S3 的 A0 适配器(T031-T040)从 NOT_DEPLOYED 真正接进每日 cron。4 个官方源(stats/cac/ndrc/gov-cn-policy)，其中 3 个及时且带真实日期；ndrc 产出带文号的官方原文，使 P03 的标识符匹配对官方文件真正可用。",
+  "flag_flipped": false,
+  "flag_note": "BOARD3_A0_ONLY 仍为 false：本次只摄取，不把媒体降为 discovery。库里有 A0 之前翻开关会清空 board3；canary 现给出 safe_to_flip_flag 前置条件。",
+  "subrequests_external_per_cron_before": 16,
+  "subrequests_external_per_cron_after": 20,
+  "subrequests_external_limit_free": 50,
+  "subrequests_internal_note": "D1/R2 属 internal services，另有 1000/次 独立额度，不与外部 fetch 的 50 混算（复核纠正了原注释的错误合并）",
+  "d1_rows_written_delta_per_day": 32,
+  "new_d1_tables": 0,
+  "r2_class_a_delta": 0,
+  "r2_note": "A0 原始字节实际未归档：RSS 先耗尽 RAW_MAX_PER_RUN=3；故不声称 A0 具备 R2 归档。canary 显式传 sourceId=null 以确保只读端点零写入。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "dir_007_free_tier": "within budget (20/50 external subrequests; internal well under 1000)"
+}
