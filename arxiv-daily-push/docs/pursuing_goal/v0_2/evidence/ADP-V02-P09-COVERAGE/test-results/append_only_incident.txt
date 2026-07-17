@@ -1,0 +1,38 @@
+# 事故记录：我改写了一份 append-only 的历史收据（P07 的 run manifest）
+
+## 发生了什么
+P09 后续那次治理同步里，我顺手敲了一句 `python3 ../mk_manifest.py`。
+那是 **P07 留下的脚本**，它的 RUN_ID 写死是 `TSK-...-P07-WATCHLIST-20260719`。
+于是它把一份**早已提交**的历史凭证重新生成了：
+
+    -  "implementation_base_sha": "a7ba36a8ef5b…"   ← P07 当时真实的基线
+    +  "implementation_base_sha": "1cf2990b38ec…"   ← 被改成了 P09 的基线
+    -  "content_tree_hash": "…440cc645aeaf…"        ← 对应 P07 的 23 个闭包文件
+    +  "content_tree_hash": "…44c07798e899…"        ← 被改成了 19 个文件的哈希
+
+## 为什么这是错的（不只是「CI 红了」）
+`TSK-` 收据是**某次运行的历史证明**。事后重写它 = **伪造当时的记录**。
+它的 `content_tree_hash` 存在的全部意义就是「这次运行确实覆盖了这些文件」——
+把它改成另一次运行的值，这份证明就成了假的。
+这与本轮反复被 BLOCK 的病根**是同一个**：*一个假前提被写下并被信任*，
+只不过这次被伪造的是**历史**。
+
+## 本地为什么没抓到
+我跑了 `lean_governance.py ci`（说 SHIP）、hygiene、workflow audit、visual gate ——
+**唯独没跑 CI 真正跑的那一步**：`lean_governance.py artifact-audit`。
+它**本地一直就有**，是我没跑。**本地绿 ≠ CI 绿，除非本地真的跑了 CI 跑的那条命令。**
+（这与 P06 那次「workflow_security_audit 读 git ls-files，我的新工作流没 add 所以本地 PASS 是空转」同形。）
+
+## 处置
+1. `git checkout 1cf2990b3 -- <P07 收据>` → **与提交时逐字节一致**（已验证）。
+   线上 main 现在的收据是**真正的原件**：base `a7ba36a8ef5b`、hash `…705294d13abc6716`、24 个闭包文件。
+2. **删掉 `../mk_manifest.py`** —— RUN_ID 写死 P07，留着迟早再被谁顺手敲一次。
+3. `artifact-audit` 进提交前必跑清单。负控实测：改 P07 收据一个字段 → `exit=1` 并精确点名；还原 → `exit=0`。
+
+## 一个必须如实说明的代价
+append-only 的判定是「相对 base-ref 有没有 M」。CI 的 base 是 `github.event.before`＝**上一个（坏的）提交**，
+所以**把被污染的收据还原回去，本身也是一次 M** → 修复那一版 CI **仍然是红的**（b10bc8200）。
+
+我仍然选择还原，理由是：**main 上留着一份内容为假的历史凭证，比一次能被解释清楚的红更糟**。
+从 b10bc8200 往后，该文件不再变动 → `artifact-audit --base-ref b10bc8200` 实测 **PASS / exit=0**，
+即**这条红是一次性的**，不是持续故障。这个取舍写在这里，不藏。
