@@ -1,0 +1,4 @@
+{"task": "ADP-S8-P02-T089", "release_mode": "NOT_DEPLOYED", "recurring_cloud_cost_delta_usd_month": 0,
+ "production_cost": {"new_requests": 0, "d1_rows_read": 0, "d1_rows_written": 0, "r2_bytes": 0, "r2_operations": 0, "model_calls": 0, "recurring_cloud_usd": 0, "note": "stop-the-line drills run in isolation; soak framework spec; deploys nothing"},
+ "status": "PARTIAL", "activity": {"readonly_get": 1, "human_maintenance": "stop-the-line drill harness (8 triggers) + soak framework + verifier + evidence + adversarial review"},
+ "value_metric": {"stage": "S8 Release/Soak/Handoff", "delivered": "T089 clause 2 (every stop-the-line trigger drilled >=1x against its real gate, load-bearing) + the 14-day soak monitoring framework. clause 1 (14 consecutive real daily runs, no Sev-1/2) is calendar-bound and PENDING (day 0/14); T089 NOT complete."}}
