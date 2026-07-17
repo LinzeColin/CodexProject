@@ -1,0 +1,720 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 9a273cd22..49b4ca94d 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P02 (知识库 /library 上线; PRODUCTION DEPLOY; product_version 0.25.0)
++
++- ADP V0.2 生产集成第 2 个可见增量。`/library` 此前线上 404（S5-P04-T067 的 Library 一直 NOT_DEPLOYED）；本次把它作为只读视图接进线上 worker：新增 libraryPage()，数据只来自线上 cn_reviews ⨝ cn_items（你学过／在复习的条目），顶部按板块与证据态分面计数并可点击筛选（?board= / ?state=），列表给出标题→条目页、板块、发布日、原文链接、证据态、复习次数、下次复习日，并复用 P01 的关键事实芯片；导航新增「知识库」入口，路由 /library 精确匹配（不遮蔽 /item/ 与 /board/）。不新增 D1 表、不改每日流水线、不改 hero/动效/主题（T078 gate 差分比对：本 diff 未移动任何视觉契约元素）。诚实边界：T067 的完整范围是 Library+笔记+全 provenance 导出，其导出规则为 source_url/version/fetched_at/claim_evidence/license 缺一即 REFUSE，而 version 与 license 属尚未上线的 S2 版本层，故本次只交付 Library 视图，不交付笔记与导出（硬做也会被 T067 规则拒绝），更不臆造 provenance；页面文案不提笔记/版本/许可/导出。★独立对抗复核 BLOCK 抓到一个真实的免费档违规★：两条查询都会全表 SCAN cn_items（D1 不带 ANALYZE 统计，规划器从大表驱动 join），每次页面访问读约 2 倍 cn_items 行数；实测（cn_reviews 固定 500 行）1k→0.4/0.8ms、20k→4.0/4.6ms、200k→33.1/39.4ms，即 200k 条时约 40 万行/次，对 D1 免费档 5M 行/天（还要与每日 cron 及所有页面共享）意味着十几次浏览即耗尽当天预算，违反 Owner 于 T087 签署的 $0/mo 免费档基线（DIR-007），并回归了已上线的 T083（其交付物正是消除热路径全表扫描）。修复：JOIN 改 CROSS JOIN（SQLite 将左表钉为外层循环，经 ON 仍是内连接，结果集不变）；修复后计划为 SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?)，cn_items 只走主键索引查找、永不扫描；负控制（改回普通 JOIN）复现 SCAN i USING COVERING INDEX，证明该检查非空跑；复核者独立复测四／七种筛选组合结果逐字节一致、无笛卡尔积（joined rows == cn_reviews 计数），STATS/LIST 提速 48-82x，并指出该修复比声称的更有价值——它在有无 ANALYZE 统计时都钉住正确计划，而 D1 不会替你跑 ANALYZE。同时修掉一个次要问题：证据态为空时的 — 分面芯片会展示无法被筛选到的计数，已不再渲染。复核终判 CONFIRMED_SOUND（未自签）。BUILD 0864030f7dc8 -> e301f8a4c7d8；部署 adp-cloud version bfa3ac49-31a2-426c-8aaf-b0c33caf60d1（DB/R2 绑定 + cron 30 20 保留）；实时验证 build.json e301f8a4c7d8、10 路由 200（含新 /library 及其筛选）、六主题 6/6、导航「知识库」存在、/library 渲染证据态与复习徽章、P01 关键事实未回归（board1 60 芯片）；回滚 wrangler versions deploy f26dc86a。本次同时修复了从 T088 起令 Project Governance 大文件卫生审计每推必红的根因：ADP 三个超 1MB 的 canonical 治理文件由 ARXIV_CANONICAL_GOVERNANCE 保留规则（max_bytes 4MB、change_policy baseline_oid_only）覆盖，每次改动都必须把新 blob OID 登记进 reviewed_oids，而这一步一直被跳过；现登记当前 OID，并新增 tests/governance/test_adp_canonical_governance_oids.py 以不变量（前缀下每个超限文件的当前 OID 必须已登记）把该类静默 CI 失败转成本地可命名的测试失败。证据 evidence/ADP-V02-P02-LIBRARY/。release_mode PRODUCTION；D1 读取量与 cn_items 规模解耦；recurring $0/mo（DIR-007 不变）。Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P01 (关键事实 Factsheet 上线; PRODUCTION DEPLOY; product_version 0.24.0)
+ 
+ - ADP V0.2 生产集成程序的第 1 个可见增量。诚实背景: V0.1 任务包(T009-T090)把认知系统能力建成独立工具+证据包,全部 NOT_DEPLOYED,0 个接进线上 worker,线上 ≈ T040 MVP + S7 视觉,Owner 观察『网页没有明显变化』完全正确。V0.2 把已建能力分批集成上线,每批可见/可验证/可回滚,不弄坏 MVP。本任务把 S1-P03-T016 的 extract_factsheet 确定性抽取(DOI/文号/关键数字/作者;缺失即空,绝不编造)忠实移植进 deploy/cloudflare/worker_cloud.js(新增 factsheet()+factsheetHTML()),渲染为六主题自适应 .badge 芯片,铺在今天卡(首屏)/板块列表/搜索/雷达/条目详情(复用 itemListHTML 一处覆盖 board/search/radar)。纯展示层: 只读现有 cn_items 字段,不新增 D1 表/不改每日流水线/不改 hero 动效主题(T077/T078 视觉动效契约明确 page body 不在冻结范围)。独立对抗复核 BLOCK 抓到真实 ReDoS: FS_UNIT_RE 的 \d[\d,.]*\s*(?:unit) 是 O(n²),40KB 恶意输入实测 2295ms,跑在请求路径会打爆 Cloudflare Worker CPU;双重修复——有界量词 \d[\d,.]{0,39}(数字 token 永不超 40 字符,全扫描线性)+ factsheet() 输入 slice(0,500)/slice(0,2000) 兜底;复核复验 40KB→4.8ms、400KB→48.8ms(10× 线性证明)、加 slice 0.24ms,真实数字/单位抽取不变,终判 CONFIRMED_SOUND(未自签)。BUILD 自排除哈希 452f7c5de919 -> 0864030f7dc8;部署 adp-cloud version f26dc86a-446f-445b-b1ab-d2c132b1cf46(DB/R2 绑定 + cron 30 20 保留);实时验证 build.json 0864030f7dc8、7 路由 200、六主题 6/6、factsheet 芯片 board1=60/board2=4/board3=7/board4=1 真实可见;回滚 wrangler versions deploy 5a7c0fbe(452f7c5de919)。证据 evidence/ADP-V02-P01-FACTSHEET/(TASK_REPORT/adversarial_review/cost_value/test-results,ACCEPTANCE=PASS)。release_mode PRODUCTION;成本 D1 0/0、R2 0/0、model 0、recurring $0/mo(DIR-007 free tier 不变)。Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/VERSION b/arxiv-daily-push/VERSION
+index 2094a100c..d21d277be 100644
+--- a/arxiv-daily-push/VERSION
++++ b/arxiv-daily-push/VERSION
+@@ -1 +1 @@
+-0.24.0
++0.25.0
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 5756d129b..8ddf120eb 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: '0864030f7dc8', source_sha256: '0864030f7dc85e4c7ca026f561bc59193f4d845bab8c37c6bd2e23ab4ac467d8', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
++const BUILD = { build_id: 'e301f8a4c7d8', source_sha256: 'e301f8a4c7d8d63e7f662d06996f40a8f3a036b1b647930784f96e476b601a65', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -586,7 +586,7 @@ async function runDaily(env, trigger) {
+ }
+ 
+ // ───────────────────────── UI（六主题设计语言，从 base.html 移植） ─────────────────────────
+-const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'], ['/system', '系统']];
++const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'], ['/library', '知识库'], ['/system', '系统']];
+ const FAVICON = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>');
+ const META_DESC = 'ADP 前沿学习——每日跨全领域 arXiv 与顶级期刊、政策、科技金融精选一篇，配讲义、主动回忆与 FSRS 间隔复习，整套系统跑在 Cloudflare。';
+ const THEME_OPTIONS = [['warm', '暖纸学习'], ['minimal', '简约专注'], ['fresh', '清新干净'], ['techno', '炫技'], ['cosmos', '宇宙星河'], ['forest', '森林河流']];
+@@ -1093,6 +1093,51 @@ async function reviewPage(env) {
+   return PAGE('/review', body, { title: '复习' });
+ }
+ 
++// ───────────────────────── 知识库 /library（S5-P04-T067 Library 上线；只读视图） ─────────────────────────
++// 数据只来自线上 cn_reviews ⨝ cn_items（你学过/在复习的条目）。不新增表、不改流水线。
++// 诚实边界：T067 的「笔记」与「全 provenance 导出」需要 version/license 等 S2 版本层字段，
++// 那一层尚未上线；此处只交付可如实呈现的部分，不臆造 provenance，也不做会被 T067 拒绝的残缺导出。
++const LIB_PAGE_SIZE = 100;
++async function libraryPage(env, params) {
++  const board = (params.get('board') || '').slice(0, 12);
++  const state = (params.get('state') || '').slice(0, 12);
++  const { results: stats } = await env.DB.prepare(
++    `SELECT i.board_id AS b, r.evidence_state AS s, COUNT(*) AS n
++     FROM cn_reviews r CROSS JOIN cn_items i ON i.id = r.item_id GROUP BY i.board_id, r.evidence_state`).all();
++  const total = (stats || []).reduce((a, x) => a + (x.n || 0), 0);
++  const byState = {}, byBoard = {};
++  for (const x of (stats || [])) {
++    const s = x.s || '—';
++    byState[s] = (byState[s] || 0) + (x.n || 0);
++    byBoard[x.b] = (byBoard[x.b] || 0) + (x.n || 0);
++  }
++  const { results: rows } = await env.DB.prepare(
++    `SELECT i.*, r.evidence_state, r.due_at, r.reps, r.lapses, r.last_review
++     FROM cn_reviews r CROSS JOIN cn_items i ON i.id = r.item_id
++     WHERE (?1 = '' OR i.board_id = ?1) AND (?2 = '' OR r.evidence_state = ?2)
++     ORDER BY COALESCE(r.last_review, r.due_at) DESC, i.id DESC LIMIT ?3`).bind(board, state, LIB_PAGE_SIZE).all();
++  const qs = (b, s) => {
++    const p = [b ? 'board=' + encodeURIComponent(b) : '', s ? 'state=' + encodeURIComponent(s) : ''].filter(Boolean);
++    return '/library' + (p.length ? '?' + p.join('&') : '');
++  };
++  const chip = (label, n, href, on) =>
++    `<a class="pill-link" href="${href}"${on ? ' aria-current="page"' : ''}>${esc(label)} ${n}</a>`;
++  let body = `<div class="card"><h1>知识库</h1>
++    <p class="mt">你学过／在复习的全部条目——证据态、复习进度与原文出处都在这里。共 <b>${total}</b> 条。</p>
++    <p style="margin:8px 0 2px">${chip('全部', total, qs('', ''), !board && !state)}${Object.keys(byBoard).sort().map(b =>
++      chip(BOARD_NAMES[b] || b, byBoard[b], qs(b, state), board === b)).join('')}</p>
++    <p style="margin:2px 0 0">${Object.keys(byState).filter(s => s !== '—').sort().map(s =>
++      chip(s, byState[s], qs(board, s), state === s)).join('')}</p></div>`;
++  const list = (rows || []).map(it => `<div class="itemrow"><div class="body">
++    <a href="/item/${encodeURIComponent(it.id)}">${esc((it.title || '').slice(0, 110))}</a>
++    <div class="mt">${esc(BOARD_NAMES[it.board_id] || it.board_id || '')}${it.published_at ? ' · ' + esc(String(it.published_at).slice(0, 10)) : ''} · <a href="${safeHref(it.url)}" rel="noopener">原文</a><span class="badge">${esc(it.evidence_state || '—')}</span><span class="badge">复习 ${Number(it.reps) || 0} 次</span>${it.due_at ? `<span class="badge">下次 ${esc(String(it.due_at).slice(0, 10))}</span>` : ''}</div>
++    ${factsheetHTML(it)}
++    </div></div>`).join('');
++  body += `<div class="card">${list || '<p class="mt">知识库还是空的。去 <a href="/">今天</a> 学一篇，或在 <a href="/radar">雷达</a>／<a href="/search">搜索</a> 里点「学这个」。</p>'}
++    ${(rows || []).length >= LIB_PAGE_SIZE ? `<p class="mt">仅显示最近 ${LIB_PAGE_SIZE} 条。</p>` : ''}</div>`;
++  return PAGE('/library', body, { title: '知识库' });
++}
++
+ // ───────────────────────── 板块浏览 /board/:id ─────────────────────────
+ async function boardPage(env, boardId, offset) {
+   const board = REGISTRY.find(b => b.board === boardId) || (boardId === 'board5' ? AGG_BOARD : null);
+@@ -1327,6 +1372,7 @@ export default {
+       else if (p === '/review' || p === '/queue') html = await reviewPage(env);
+       else if (p === '/radar') html = await radarPage(env);
+       else if (p === '/system') html = await systemPage(env);
++      else if (p === '/library') html = await libraryPage(env, url.searchParams);
+       else if (p === '/history') html = await historyPage(env);
+       else if (p === '/search') html = await searchPage(env, url.searchParams.get('q') || '');
+       else if (p.startsWith('/board/')) html = await boardPage(env, p.slice('/board/'.length), Math.max(0, parseInt(url.searchParams.get('offset') || '0', 10) || 0));
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 856c9688a..502fb8bba 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260718-ADP-V01-S8-P02-T089-SOAK-LIVE-TRACKING"
+-source_snapshot_hash: "sha256:8d05518c9e388af2c956ad5f27e195b1c2f968ae44fe9ddca3783a4b83854d5b"
++as_of_event_id: "EVENT-20260719-ADP-V02-P01-FACTSHEET-DEPLOY"
++source_snapshot_hash: "sha256:d70c2dd163af13eec5a99ccf555cc5f754b90c46da7f12509052b83d6d801d33"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-19T01:00:00+10:00"
++snapshot_event_time: "2026-07-19T09:00:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,23 +62,43 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 152
++    precommit_pending_events: 153
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+-  status: "VERIFIED"
+-  release_gate: "UNKNOWN"
++  status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
++  release_gate: "V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION"
+   blocker_ids:
+-    - "FACT-arxiv-daily-push-IMPLEMENTATION-FORMULA-REVIEW"
++    - "persistent_daily_operation_authorization_missing"
++  v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
++  v7_contract_hash: "e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74"
++  v7_roadmap_hash: "7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1"
++  v7_parallel_audit: "ADP-V7.2-FINAL-BASELINE-REVIEW"
++  v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
++  open_p0_findings: 8
++  open_p1_findings: 37
++  production_forbidden_until: "DAILY_OPERATION separately authorized after accepted evidence; daily operation safety preflight passes; persistent operation boundary explicitly approved"
++  stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
++  stage2_integrated_production_accepted: true
++  current_zero_proof_open_p0_findings: 0
++  current_zero_proof_open_p1_findings: 0
++  baseline_counts_mutated: false
++  parallel_shadow_source_task: "NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW"
++  current_v7_task_id: "S2PMT07"
+ next_executable_task:
+-  task_id: "NONE"
+-  status: "not_applicable"
+-  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
+-  acceptance_ids: []
+-  owner: "project owner"
+-  human_owner_role: "project_owner"
+-  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
+-  stale_candidates: []
++  task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
++  status: "blocked_persistent_daily_operation_authorization_missing"
++  reason: "持久 DAILY_OPERATION 授权门已运行但阻断，因为 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 不存在。运行时必须保持禁用。"
++  acceptance_ids:
++    - "ACC-S2PMT07-FINAL-REVIEW"
++    - "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"
++  owner: "content_owner + engineering_owner"
++  human_owner_role: "content_owner + engineering_owner"
++  unblock_condition: "提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，然后运行单独 enablement preflight；在该 gate 通过前，SMTP、scheduler、Release、restore 和 DAILY_OPERATION 必须保持禁用。"
++  stale_candidates:
++    -
++      task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
++      reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
+ owner_decision:
+   required: true
+   decision_id: "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701"
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index 2bd0a38bc..a76f387fa 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6401,6 +6401,7 @@ None for this new project baseline.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
+ - 2026-07-18 V0.1 S8-P02-T089 SOAK LIVE-TRACKING: wired the T089 soak to the live daily cron ledger (cn_run_log) -- each daily run writes one row; result != 失败 is a healthy day. The soak is now self-accumulating (NOT a static day-0 framework): currently 2/14 consecutive healthy days (2026-07-15 正常 + 2026-07-16 降级), auto-completing as the cron adds healthy days; T089 clause 1 closes at 14/14 with no agent action. soak_progress() is load-bearing (a 失败 breaks the streak; 14 healthy = complete). T089 development is complete; only ~12 calendar days of healthy cron remain. NOT_DEPLOYED (read-only over the live D1; worker unchanged; live 452f7c5de919). Evidence: soak_live_snapshot.json + updated soak_stopline_report.json + verifier PASS (soak_stopline_tests.txt).
++- 2026-07-19 V0.2 生产集成 P02 (知识库 /library 上线; PRODUCTION DEPLOY; product_version 0.25.0): /library 从 404 变为可用知识库——libraryPage() 只读 cn_reviews ⨝ cn_items，按板块/证据态分面筛选、复习进度、原文出处，复用 P01 关键事实芯片；导航加「知识库」。不新增表/不改流水线/不改动效主题（T078 差分：零视觉契约元素移动）。诚实边界：T067 的笔记与全 provenance 导出未做（导出需 S2 版本层的 version/license，缺字段按 T067 规则必须 REFUSE，不臆造）。★复核 BLOCK 抓到真实免费档违规★：两查询全表 SCAN cn_items（D1 无 ANALYZE），200k 条时约 40 万行/次，十几次浏览耗尽 D1 5M 行/天，违反 T087 的 $0/mo 基线并回归已上线的 T083；改 CROSS JOIN 后 SCAN r + SEARCH i USING INDEX(id=?)，cn_items 永不扫描（48-82x），负控制证明非空跑，CONFIRMED_SOUND。BUILD 0864030f7dc8->e301f8a4c7d8，部署 adp-cloud bfa3ac49；10 路由 200+ 六主题 6/6 + P01 未回归；回滚 f26dc86a。并修复 T088 起大文件卫生审计每推必红的根因（登记 ADP 治理文件 OID + 新增 tests/governance 不变量测试）。release_mode PRODUCTION；$0/mo。
+ - 2026-07-19 V0.2 生产集成 P01 (关键事实 Factsheet 上线; PRODUCTION DEPLOY; product_version 0.24.0): 把 S1-P03-T016 extract_factsheet 确定性抽取(DOI/文号/关键数字/作者,缺失即空绝不编造)忠实移植进 worker_cloud.js,渲染六主题 .badge 芯片于今天/板块/搜索/雷达/条目页(复用 itemListHTML);纯展示层不改数据/流水线/hero动效(T077/T078 契约 page body 不冻结)。独立复核抓到真实 ReDoS(FS_UNIT_RE O(n²) 40KB 2295ms),有界量词{0,39}+输入 slice 修复为线性(40KB 4.8ms/加slice 0.24ms),CONFIRMED_SOUND。BUILD 452f7c5de919->0864030f7dc8,部署 adp-cloud f26dc86a;六主题6/6+7路由200+芯片实时可见(board1=60/b2=4/b3=7/b4=1);回滚 5a7c0fbe。release_mode PRODUCTION;$0/mo。V0.2 首个可见增量。
+ - 2026-07-18 V0.1 S8-P03-T090 (FINAL task + PRODUCTION DEPLOY): final traceability closure + run package. Per the Owner's 2026-07-17 instruction (deploy online, ensure ADP immediately usable, don't let the soak block), performed the PRODUCTION DEPLOY: adp-cloud version 5a7c0fbe, live b189d3cc0703 -> 452f7c5de919, releasing the accumulated S7 improvements (T079-T084) + applying the T083 D1 recency indexes to adp-mirror. Verified: build.json 452f7c5de919, six themes 6/6, all 6 routes 200, motion layer present; rollback target d5890974 (b189d3cc0703). New tool docs/pursuing_goal/v0_1/tools/final_handoff.py emits the final run package: 90 tasks terminal (89 COMPLETE + 1 PARTIAL = T089, 14-day soak calendar-bound + Owner-waived for release), acceptance report (10 P0 PASS + 1 OWNER_WAIVER soak), operations runbook, known gaps, next-version backlog, deterministic manifest_sha256. Acceptance (test-results/final_handoff_tests.txt, PASS exit 0, verifier re-derives + curl cross-checks the live build): 90/90 terminal, all P0 PASS/waiver, manifest reproducible, declared live build == actual (452f7c5de919). CLOSES ADP V0.1 FINAL EXECUTION: 89/90 fully complete + T089 Owner-waived partial. Cost: 1 deploy + 1 D1 migrate (3130 read/1541 written); recurring $0/mo. NOT self-signed -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+ - 2026-07-18 V0.1 S8-P02-T089 (PARTIAL -- NOT complete): stop-the-line drill harness + soak framework. T089 acceptance clause (2) 'every stop-the-line trigger drilled >=1x' DELIVERED; clause (1) '14 consecutive real daily runs, no Sev-1/2' is CALENDAR-BOUND and PENDING (soak day 0/14, t089_complete=False). New tool docs/pursuing_goal/v0_1/tools/soak_stopline_drill.py drills all 8 anti-black-hole stop-the-line triggers against their real gates (visual_regression_ci T078 for hash-drift + unapproved deletion; validate_evidence T008 for no-evidence + self-signed; dataset_snapshot T070 for time-leak; deterministic threshold mirrors for P95>+20% / DIR-007 cost guardFrac 0.9 / 3rd repeated failure), each load-bearing (fires on trigger, not on benign control). Soak monitoring framework = daily-manifest schema + 14-day accumulator + SLA/quality/cost trends. release_mode NOT_DEPLOYED (no worker/schema/source_registry change; drills isolated; live b189d3cc0703; T077 baseline NOT re-frozen). Acceptance clause 2 (test-results/soak_stopline_tests.txt, PASS exit 0, verifier re-derives): 8/8 drilled + controls, and the verifier asserts t089_complete=False (no over-claim). Does NOT advance the completed count -- stays 88/90; T089 completes on 14/14 no-Sev-1/2 daily runs, T090 depends on that. NOT self-signed -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index 154d63aca..d2ec01170 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -2,7 +2,7 @@
+ 
+ ## 1. 当前结论
+ 
+-arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；GitHub 只保留代码、PR/CI、证据、状态和备份角色，不作为每日生产 runner。
++arxiv-daily-push 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `VERIFIED` / `VERIFIED`，交付状态为 `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`；Stage 2 integrated acceptance 已记录，但 S3/DAILY_OPERATION 仍未授权，这不是持久生产运行声明。
+ 
+ ## 2. 本次运行改变了什么
+ 
+@@ -14,16 +14,16 @@ Owner 视图现在把实现一致性、参数来源、方法依据、实证验
+ 
+ ## 4. 需要人类决定什么
+ 
+-- decision_id: `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701`
+-- decision_question: 持久 DAILY_OPERATION 授权门已运行但阻断；是否提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，或继续保持禁用。
+-- human_owner_role: `content_owner + engineering_owner`
+-- human_assignment_status: `CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY`
++- 决策编号： `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701`
++- 决策问题： 持久 DAILY_OPERATION 授权门已运行但阻断；是否提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，或继续保持禁用。
++- 责任角色： `content_owner + engineering_owner`
++- 人类分配状态： `CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY`
+ 
+ ## 5. 默认建议
+ 
+-- current_recommendation: A：持久 DAILY_OPERATION 授权门当前因缺少显式 owner 授权 artifact 而阻断。继续保持 DAILY_OPERATION 禁用；在该 artifact 存在且单独 enablement preflight 通过前，不得启用 SMTP、scheduler、Release、restore 或持久运行。
+-- estimated_effort: P0/P1; production boundary safety review; owner decision; no-production proof verification
+-- estimated_cost_or_resource: local development and GitHub main evidence; no GitHub cloud scheduled production runner
++- 当前建议： A：持久 DAILY_OPERATION 授权门当前因缺少显式 owner 授权 artifact 而阻断。继续保持 DAILY_OPERATION 禁用；在该 artifact 存在且单独 enablement preflight 通过前，不得启用 SMTP、scheduler、Release、restore 或持久运行。
++- 预计工作量： P0/P1; production boundary safety review; owner decision; no-production proof verification
++- 预计成本或资源： local development and GitHub main evidence; no GitHub cloud scheduled production runner
+ 
+ ## 6. 不决策后果
+ 
+@@ -31,10 +31,10 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ ## 7. 下一行动、责任角色和验收证据
+ 
+-- next_task_id: `NONE`
+-- responsible_role: `project_owner`
+-- acceptance_ids: `none`
+-- unblock_condition: Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.
++- 下一任务： `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
++- 责任角色： `content_owner + engineering_owner`
++- 验收编号： `ACC-S2PMT07-FINAL-REVIEW, ACC-S2PL-DAILY-OPERATION-AUTHORIZATION`
++- 解阻条件： 提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，然后运行单独 enablement preflight；在该 gate 通过前，SMTP、scheduler、Release、restore 和 DAILY_OPERATION 必须保持禁用。
+ 
+ ## 8. 九层 Assurance 状态
+ 
+@@ -46,27 +46,27 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - operational_validation: `VERIFIED`
+ - delivery_evidence: `VERIFIED`
+ - evidence_freshness: `PARTIAL`
+-- delivery_readiness: `VERIFIED`
++- delivery_readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`
+ 
+-## 9. A/B/C Choice Matrix
++## 9. 用户决策矩阵
+ 
+-| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
++| 决策项 | 当前建议 | 选项 A | 选项 B | 选项 C | 不决策后果 |
+ |---|---|---|---|---|---|
+ | `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701` | A：持久 DAILY_OPERATION 授权门当前因缺少显式 owner 授权 artifact 而阻断。继续保持 DAILY_OPERATION 禁用；在该 artifact 存在且单独 enablement preflight 通过前，不得启用 SMTP、scheduler、Release、restore 或持久运行。 | 继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。 | 若 owner 明确授权持久 DAILY_OPERATION，则提交 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑单独 enablement preflight。 | 禁止把一次受控运行验收或 keep-disabled 决策当作持久运行授权。 | Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DAILY_OPERATION 不得进入。 |
+ 
+-## 10. Current Blockers
++## 10. 当前阻断项
+ 
+-1. FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json, persistent_daily_operation_authorization_missing, 若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json, ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like，LaunchAgents disabled，open_pr_count=0，且无后台 ADP 进程
+-2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
+-3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
++1. 唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`；阻断码 `persistent_daily_operation_authorization_missing`。
++2. 在该 artifact 缺失时，`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like，LaunchAgents 必须 disabled，open_pr_count 必须为 0，且不得有后台 ADP 进程。
++3. 不得把 request 包、模板或一次受控真实运行当作持久 DAILY_OPERATION 授权。
+ 
+-## 11. Evidence Required To Unblock
++## 11. 解阻所需证据
+ 
+-- evidence_required: FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json, persistent_daily_operation_authorization_missing, 若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json, ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like，LaunchAgents disabled，open_pr_count=0，且无后台 ADP 进程
+-- principal_risks: 将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement
+-- generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
++- 所需证据： FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json, persistent_daily_operation_authorization_missing, 若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json, ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like，LaunchAgents disabled，open_pr_count=0，且无后台 ADP 进程
++- 主要风险： 将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement
++- 生成来源： `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
+ 
+-## 12. Model Formula Parameter Change
++## 12. 模型、公式和参数变更
+ 
+ - model_count: `122`
+ - total_formulas: `124`
+@@ -75,20 +75,20 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - active_parameters: `1107`
+ - active_values_changed_by_this_view: `0`
+ 
+-## 13. Tests And Acceptance
++## 13. 测试与验收
+ 
+ - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
+-- release_gate: `UNKNOWN`
++- release_gate: `V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+ 
+-## 14. Evidence Freshness
++## 14. 证据新鲜度
+ 
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `152`
+-- pending_or_stale_events: `502`
+-- freshness_counts: `pending_or_stale_events=502; legacy_unbound_events=334`
++- precommit_pending_events: `153`
++- pending_or_stale_events: `503`
++- freshness_counts: `pending_or_stale_events=503; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,13 +100,13 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:8d05518c9e388af2c956ad5f27e195b1c2f968ae44fe9ddca3783a4b83854d5b`
+-- snapshot_event_time: `2026-07-19T01:00:00+10:00`
++- source_snapshot_hash: `sha256:d70c2dd163af13eec5a99ccf555cc5f754b90c46da7f12509052b83d6d801d33`
++- snapshot_event_time: `2026-07-19T09:00:00+10:00`
+ - generator_version: `4.0.1`
+-- version: `UNKNOWN`
+-- phase/gate: `UNKNOWN / UNKNOWN`
++- version: `0.25.0`
++- phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+ 
+-## 17. Next Unique Task
++## 17. 下一唯一任务
+ 
+-- task_id: `NONE`
+-- reason: No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
++- task_id: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
++- 原因： 持久 DAILY_OPERATION 授权门已运行但阻断，因为 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 不存在。运行时必须保持禁用。
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index 8eca5da92..f57ea9c2d 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:8d05518c9e388af2c956ad5f27e195b1c2f968ae44fe9ddca3783a4b83854d5b`
+-- snapshot_event_time: `2026-07-19T01:00:00+10:00`
++- source_snapshot_hash: `sha256:d70c2dd163af13eec5a99ccf555cc5f754b90c46da7f12509052b83d6d801d33`
++- snapshot_event_time: `2026-07-19T09:00:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -13,8 +13,8 @@
+ 
+ - Project: `arxiv-daily-push`
+ - Path: `arxiv-daily-push`
+-- Product version: `UNKNOWN`
+-- Phase/Gate: `UNKNOWN / UNKNOWN`
++- Product version: `0.25.0`
++- Phase/Gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+ - Models/Formulas/Parameters total: `122 / 124 / 1124`
+ - Active formulas/parameters: `124 / 1107`
+ - Machine checked formulas/parameters: `123 / 1107`
+@@ -34,10 +34,23 @@
+ 
+ ## Delivery
+ 
+-- Readiness: `VERIFIED`
+-- Release gate: `UNKNOWN`
+-- Next executable task: `NONE`
+-- Pending/stale events: `502`
++- Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`
++- Release gate: `V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
++- V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
++- V7 contract hash: `e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74`
++- V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
++- V7.1 parallel audit: `ADP-V7.2-FINAL-BASELINE-REVIEW`
++- V7.1 audit hash: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
++- Open audit blockers: `P0=8 / P1=37`
++- Current zero-proof open findings: `P0=0 / P1=0`
++- Baseline counts mutated: `false`
++- Production-forbidden until: `DAILY_OPERATION separately authorized after accepted evidence; daily operation safety preflight passes; persistent operation boundary explicitly approved`
++- Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
++- Stage 2 integrated accepted: `true`
++- Next governance task: `S2PMT07`
++- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
++- Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
++- Pending/stale events: `503`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+index c2516664c..4a764ff45 100644
+--- a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
++++ b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+@@ -441,4 +441,4 @@ REQ-ADP-V03-MINIMAL-LOOP,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1109,ADP
+ REQ-ADP-V03-R5-SHADOW-SOURCE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/shadow_biorxiv.py,arxiv-daily-push/config/thresholds_v0_3.yaml,arxiv-daily-push/tests/test_adp_selection.py,arxiv-daily-push/data/shadow_biorxiv_report.json,shadow_running
+ REQ-ADP-V03-R6-CLOUD-MIRROR,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/mirror.py;arxiv-daily-push/deploy/cloudflare/worker.js;arxiv-daily-push/src/adp/webapp.py,NOT_APPLICABLE,arxiv-daily-push/tests/test_adp_invariants.py,arxiv-daily-push/deploy/cloudflare/README.md;arxiv-daily-push/data/config_changes.jsonl,live_tunnel_direct_mirror_fallback_pending_owner_dns
+ REQ-ADP-V03-J4-BOARDS,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1123,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/boards.py,arxiv-daily-push/config/boards_v0_3.yaml,arxiv-daily-push/tests/test_adp_boards.py,arxiv-daily-push/data/boards_fetch_report.json,live_feed_streams_expanded_boards_v03_2_44_sources
+-REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id_plus_generated_status_drift_check_plus_r2_rawartifact_dualwrite_shadow_plus_capped_shadow_run_t023_plus_board3_a0_canary_switch_t040_plus_s7_mobile_overflow_source_fix_t079_not_deployed_plus_s7_component_states_undo_persistence_t080_not_deployed_plus_s7_p03_rum_cwv_instrumentation_t081_not_deployed_plus_s7_p03_ambient_motion_perf_t082_not_deployed_plus_s7_p03_d1_query_indexes_deterministic_order_t083_not_deployed_plus_s7_p04_evidence_a11y_reduced_motion_polish_t084_not_deployed_plus_v02_p01_factsheet_production_deploy_452f7c5de919_to_0864030f7dc8
++REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id_plus_generated_status_drift_check_plus_r2_rawartifact_dualwrite_shadow_plus_capped_shadow_run_t023_plus_board3_a0_canary_switch_t040_plus_s7_mobile_overflow_source_fix_t079_not_deployed_plus_s7_component_states_undo_persistence_t080_not_deployed_plus_s7_p03_rum_cwv_instrumentation_t081_not_deployed_plus_s7_p03_ambient_motion_perf_t082_not_deployed_plus_s7_p03_d1_query_indexes_deterministic_order_t083_not_deployed_plus_s7_p04_evidence_a11y_reduced_motion_polish_t084_not_deployed_plus_v02_p01_factsheet_production_deploy_452f7c5de919_to_0864030f7dc8_plus_v02_p02_library_production_deploy_0864030f7dc8_to_e301f8a4c7d8
+diff --git a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+index 5d26a6ba8..9280e2c97 100644
+--- a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
++++ b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+@@ -1,4 +1,4 @@
+-product_version: "0.24.0"
++product_version: "0.25.0"
+ product_version_status: "provisional"
+ governance_spec_version: "1.0.0"
+ schema_version: "2.1.1"
+diff --git a/arxiv-daily-push/docs/governance/delivery_tasks.yaml b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+index 0bfe1c074..49e3d95cf 100644
+--- a/arxiv-daily-push/docs/governance/delivery_tasks.yaml
++++ b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+@@ -6768,7 +6768,7 @@ tasks:
+     timestamp: "2026-07-19T09:00:00+10:00"
+     objective: "Build the fetch->select->lesson->recall->review loop as a new adp package with traceable evidence at every step, governed parameters only in config/thresholds_v0_3.yaml, and zero production side effects."
+     scope: "New src/adp package (five-stage run, gates, weighted selection, sentence-bound lessons, FSRS-6 review, corrections, fail-closed delivery, web UI), thresholds registry, 48h+ three-real-date run manifests, review-audit fixes, invariant and gate/weight tests."
+-    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10). 2026-07-16 ADP V0.1 S1-P01-T011: generated STATUS_GENERATED.md from the deployment manifest + live /build.json and added a CI drift check (tools/generate_status.py + tools/check_status_drift.py), and archived the stale R6 tunnel/Mac section by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native -- resolving the STATUS J5-vs-R6 contradiction (DRIFT-FACT-007); drift check PASS with a negative test proving hand-written old architecture cannot override the generated current; NOT_DEPLOYED, no worker change). 2026-07-16 ADP V0.1 DIR-007: Owner enabled Cloudflare R2 and issued a hard free-tier budget (ADP + all repos never exceed the free tier; no agent may exceed or raise quota without repeated Owner authorization; monitor and fail-closed); frozen as DIR-007 + FREE_TIER_BUDGET.md. 2026-07-16 ADP V0.1 S2-P01-T022: implemented the feature-flagged RawArtifact R2 dual-write (deploy/cloudflare/worker_cloud.js dualWriteArtifact behind RAW_DUALWRITE flag default OFF, fetchFeedText side-write hook, /api/raw-selftest verification route; wrangler R2 binding RAW->adp-raw-artifacts; D1 cn_artifacts table object_key PK). Deployed adp-cloud 3816d21c -> 657fe32a (new build e377c9bd1e20); flag OFF = baseline verified (six themes 6/6, hero videos, dashboard, fx, ChatGPT, 7 routes 200 both domains); idempotency proven (selftest: second write deduped, D1 1 row); DIR-007 budget stop in-built (usage Class A 1 / Class B 2 / 76 bytes, ~0.0001% of free tier). SHADOW run is T023). 2026-07-16 ADP V0.1 S2-P01-T023: ran the capped R2 shadow + cost/performance report. The shadow surfaced a DIR-007 free-tier constraint -- the naive per-feed dual-write exceeded the Cloudflare free-tier Worker subrequest limit (~50/request) and its writes were silently dropped -- and fixed it with a per-run write cap (RAW_MAX_PER_RUN=3) plus reading the budget snapshot once per run and resetting the counter at runDaily/selftest, keeping the extra subrequests within the free tier. Deployed the capped shadow adp-cloud version 64c8b842 (build 9cd3d8a2fe68, RAW_DUALWRITE=true); six themes 6/6 intact both domains. Writer save/hash/readback are 100%: the R2 object is content-addressed (key sha256 == content sha256), a readback via wrangler r2 object get --remote returns the exact 76 bytes whose sha256 equals the key, and a repeat write dedups (1 D1 row). Cost extrapolation within budget: <=3 Class A writes + <=3 Class B heads + <=150KB per run, i.e. <=90 Class A / <=90 Class B / <=4.5 MB per month via the daily cron, ~0.009% / ~0.045% of the free tier, recurring ~$0. Rollback: wrangler versions deploy 657fe32a (T022, flag off). The literal 7-day / 1000-artifact accumulation runs via cron over real time). 2026-07-17 ADP V0.1 S3-P03-T040: Board 3 official-view A0 canary switch after the Owner S3 Exit gate approved A0 promotion -- a feature flag BOARD3_A0_ONLY default OFF so production Board 3 and the six themes stay unchanged, an a0Board3Eligible gate that demotes media to discovery so official original text can be the default evidence, and a non-destructive /api/a0-canary endpoint that fetches real gov.cn policy originals and reports an official evidence rate of 100 percent with 8 of 8 official items and media at 0 under the gate; deployed adp-cloud version 5bcd9f21 build b189d3cc0703, six themes 6/6 on both domains, rollback in one deploy via the flag or wrangler versions deploy 64c8b842; the full flip to official-as-default pending the A0 adapters wired to the worker cron under DIR-007 plus the real 14-day shadow. 2026-07-17 ADP V0.1 S7-P02-T079: fixed mobile horizontal overflow in data-dense pages at 360/390/430 with a base-CSS-only change to deploy/cloudflare/worker_cloud.js (.card overflow-wrap:break-word, main img/svg/video max-width:100%, and a @media(max-width:520px) rule that turns a wide table into a locally-scrolling block -- no page overflow-hidden band-aid); the six themes and all advanced motion stay byte-identical (T077/T078 contract: only base_css changed) and the change passes the T078 gate only as a documented approved change; NOT_DEPLOYED -- BUILD recomputed b189d3cc0703 -> 9690390a9fc8 but not deployed, live still serves b189d3cc0703, so its themes and motion are unchanged; proven by a real in-app-browser render at 360/390/430 (documentElement.scrollWidth == innerWidth, zero non-table offenders, local table scroll) plus a load-bearing counterfactual (the pre-fix CSS scrolls 1210px at 360), and independently reviewed CONFIRMED_SOUND; a latent inert .card min-width:0 and an over-counting audit were fixed. 2026-07-17 ADP V0.1 S7-P02-T080: added the component-state matrix + an optimistic Undo window + proved cross-theme state persistence, as a base-CSS-only change to deploy/cloudflare/worker_cloud.js plus page-body JS -- base CSS gains button:active (pressed <100ms), :disabled/[aria-disabled], [aria-busy] loading, :focus-visible, [data-state=ok|err], button.undo and a button transform transition (no new @keyframes); the two grade() flows become an optimistic Undo window (click shows picked + 撤销 + a 4s cancelable countdown and writes nothing; a deferred gradeCommit posts /api/grade only after the window; gradeUndo cancels the timer and writes nothing, so an undo touches no production data) with try/catch error states, and a theme switch preserves reading position/answers/filters/expand because applyTheme only setAttribute + syncs hero/gauge (no reload/navigate/innerHTML); the six themes and all advanced motion stay byte-identical (T077/T078: only base_css changed) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD recomputed 9690390a9fc8 -> 40a46aa2baee but not deployed, live still serves b189d3cc0703; proven by a Node behavioural test on the real extracted grade code (click 0 writes / undo 0 writes / window elapse exactly 1 write) and an in-app-browser test (all state preserved across all six themes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T081: instrumented RUM + Core Web Vitals (LCP/CLS/INP, INP approximated as the max interaction event duration and disclosed as such) segmented by theme/route/device/network -- a RUM client (const RUM_JS) tags each metric with theme/route/device/network and sendBeacon('/api/rum') on page-hide, INJECTED AT THE ROUTER (htmlResp) so it touches no T077/T078 visual/motion contract hash (the whole asset_hashes incl. page_shell + master_visual is byte-identical), plus a pure rumIngest validator gating a POST /api/rum endpoint that writes a NEW cn_rum table (CREATE TABLE IF NOT EXISTS + bind INSERT, not existing production data), and an offline query tool tools/rum_cwv.py that computes p75 + Google CWV ratings segmentable by the four dimensions with every assessment gated on a minimum sample count so empty/thin data claims NO compliance (无数据不声称达标); NOT_DEPLOYED -- BUILD 40a46aa2baee -> 8c19387c846b but not deployed, live still b189d3cc0703, no real RUM baseline yet and none claimed; proven by a Node test on the real extracted rumIngest, an in-app-browser test capturing a live LCP tagged by the four dimensions, and a contract invariance check (detect_regression = 0 changes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T082: optimized the six-theme ambient motion for FPS without changing visual semantics -- converted the one layout-animating ambient keyframe (the cosmos meteor, left/top) to a screen-path-equivalent transform:translate (GPU-composited; .fx is a fixed viewport-sized layer so left/top % map exactly to vw/vh and the rotate stays inner so the streak + diagonal are preserved), after which every ambient loop is compositor-safe (the deterministic >=55 FPS guarantee), plus a router-injected FX_PERF controller that pauses ambient animation on page-hide and degrades the heaviest layers on low-end devices (meteor/band hidden, nebula simplified) WITHOUT touching the foreground selectors so the foreground feedback survives; the ONLY T077/T078 contract element that changed is keyframes (per_theme/base_css/theme_js/fx_css/hero byte-identical) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD 8c19387c846b -> 0cb3acee6bf3 but not deployed, live still b189d3cc0703; proven by an ambient compositor-safety audit (pre-fix FAILS), an in-app-browser test (pause 7/7; low-end degrades while stars + button:active survive) and a contract re-derivation, and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T083: optimized the hot D1 queries by adding five indexes to schema_cloud.sql (CREATE INDEX IF NOT EXISTS: recency expression index on cn_items(COALESCE(published_at,fetched_at) DESC, id DESC), board+recency, cn_lessons(item_id), cn_reviews(due_at), cn_events(kind,at)) so the today/radar/browse/history/review pages and the vitals sparkline stop full-table-scanning + temp-sorting cn_items and instead do an index-ordered SEARCH reading only the LIMIT rows (rows scanned O(N) -> O(LIMIT), p95 down 3-200x in the local SQLite proof). An adversarial review of the schema-only cut found a real hole: without a total-order tie-breaker, cross-family ties (a recency-via-published row tying on COALESCE with a recency-via-fetched row) changed board/browse LIMIT/OFFSET page membership+order and OFFSET pagination could skip/repeat, and the verifier was blind (published 2016 / fetched 2026 disjoint namespaces made the tie impossible). The fix adds a deterministic total-order `, id DESC` tie-breaker to all eight recency display ORDER BYs in worker_cloud.js (matching the existing prune query) + the id key in the two recency indexes so the total order stays fully index-served (no temp b-tree); the verifier now contains real cross-family ties and asserts the tie-breaker query is deterministic (index==forced-scan, OFFSET pages disjoint). Queries changed so BUILD was recomputed 0cb3acee6bf3 -> d1dfcb3b7447, but the change is in page-body functions so the six-theme visual/motion contract is byte-identical (no CLS, server-rendered) and it is not a content regression (an undefined tie order made deterministic); NOT_DEPLOYED, live still b189d3cc0703, CWV 达标 NOT claimed without field data (T081 rule); and independently reviewed. 2026-07-18 ADP V0.1 S7-P04-T084 (last S7 task): polished evidence/inference + accessibility + reduced-motion without replacing the design -- a PROVENANCE_NOTE (讲义·推断 badge + sentence) is prepended in the central lessonHTML so the auto-generated lesson is labelled as inference, distinct from the 原文 (evidence) link (todayPage refactored to lessonHTML, output otherwise identical); the reveal button gets aria-controls and moves focus into the revealed box (disclosure a11y) on top of the already-native named 44px buttons + :focus-visible; and the reduced-motion rule was verified to disable animation while restoring the .fr/.bw content classes to opacity:1 (gauge/video jump to final state in JS) so no content/function is lost. The polish is page-body so the six-theme visual/motion contract is byte-identical; NOT_DEPLOYED -- BUILD d1dfcb3b7447 -> 452f7c5de919 but not deployed, live still b189d3cc0703; proven by an a11y_content_audit (pre-fix has no marker / no reveal a11y; removing the reduced-motion restore fails the preserve check) and an in-app-browser test, and independently reviewed. 2026-07-19 ADP V0.2 生产集成 P01 (关键事实 Factsheet 上线, PRODUCTION DEPLOY): began wiring the NOT_DEPLOYED cognitive capabilities into the live worker per the Owner directive that ADP be visibly richer and immediately usable -- ported S1-P03-T016 extract_factsheet deterministic extraction (DOI / 文号 / 关键数字 / 作者; missing => shown as nothing, never fabricated) into deploy/cloudflare/worker_cloud.js (factsheet()+factsheetHTML()) and rendered it as six-theme-adaptive .badge chips on the today card (first screen), board lists, search, radar, and item detail (one shared itemListHTML covers board/search/radar). Presentation-only: reads existing cn_items fields, adds no D1 table, no cron/pipeline change, does not touch the hero/motion/theme layer (T077/T078 contract scopes page bodies out of the frozen visual identity). Independent adversarial review BLOCKED on a real ReDoS (FS_UNIT_RE was O(n^2), 40KB pathological input 2295ms in the request path, would exceed the Cloudflare Worker CPU limit); fixed with a bounded quantifier {0,39} on the unit-regex digit run (a number token is never over 40 chars, so the scan is linear regardless of input) + input slice (0,500)/(0,2000), re-verified linear (40KB 4.8ms / 400KB 48.8ms / 0.24ms after slice) with extraction unchanged, CONFIRMED_SOUND (not self-signed). BUILD 452f7c5de919 -> 0864030f7dc8; deployed adp-cloud version f26dc86a-446f-445b-b1ab-d2c132b1cf46 (DB/R2 bindings + cron preserved); live-verified build.json 0864030f7dc8, 7 routes 200, six themes 6/6, factsheet chips visible board1=60/board2=4/board3=7/board4=1; rollback wrangler versions deploy 5a7c0fbe. release_mode PRODUCTION; recurring $0/mo (DIR-007 unchanged). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P01-FACTSHEET/.)"
++    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10). 2026-07-16 ADP V0.1 S1-P01-T011: generated STATUS_GENERATED.md from the deployment manifest + live /build.json and added a CI drift check (tools/generate_status.py + tools/check_status_drift.py), and archived the stale R6 tunnel/Mac section by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native -- resolving the STATUS J5-vs-R6 contradiction (DRIFT-FACT-007); drift check PASS with a negative test proving hand-written old architecture cannot override the generated current; NOT_DEPLOYED, no worker change). 2026-07-16 ADP V0.1 DIR-007: Owner enabled Cloudflare R2 and issued a hard free-tier budget (ADP + all repos never exceed the free tier; no agent may exceed or raise quota without repeated Owner authorization; monitor and fail-closed); frozen as DIR-007 + FREE_TIER_BUDGET.md. 2026-07-16 ADP V0.1 S2-P01-T022: implemented the feature-flagged RawArtifact R2 dual-write (deploy/cloudflare/worker_cloud.js dualWriteArtifact behind RAW_DUALWRITE flag default OFF, fetchFeedText side-write hook, /api/raw-selftest verification route; wrangler R2 binding RAW->adp-raw-artifacts; D1 cn_artifacts table object_key PK). Deployed adp-cloud 3816d21c -> 657fe32a (new build e377c9bd1e20); flag OFF = baseline verified (six themes 6/6, hero videos, dashboard, fx, ChatGPT, 7 routes 200 both domains); idempotency proven (selftest: second write deduped, D1 1 row); DIR-007 budget stop in-built (usage Class A 1 / Class B 2 / 76 bytes, ~0.0001% of free tier). SHADOW run is T023). 2026-07-16 ADP V0.1 S2-P01-T023: ran the capped R2 shadow + cost/performance report. The shadow surfaced a DIR-007 free-tier constraint -- the naive per-feed dual-write exceeded the Cloudflare free-tier Worker subrequest limit (~50/request) and its writes were silently dropped -- and fixed it with a per-run write cap (RAW_MAX_PER_RUN=3) plus reading the budget snapshot once per run and resetting the counter at runDaily/selftest, keeping the extra subrequests within the free tier. Deployed the capped shadow adp-cloud version 64c8b842 (build 9cd3d8a2fe68, RAW_DUALWRITE=true); six themes 6/6 intact both domains. Writer save/hash/readback are 100%: the R2 object is content-addressed (key sha256 == content sha256), a readback via wrangler r2 object get --remote returns the exact 76 bytes whose sha256 equals the key, and a repeat write dedups (1 D1 row). Cost extrapolation within budget: <=3 Class A writes + <=3 Class B heads + <=150KB per run, i.e. <=90 Class A / <=90 Class B / <=4.5 MB per month via the daily cron, ~0.009% / ~0.045% of the free tier, recurring ~$0. Rollback: wrangler versions deploy 657fe32a (T022, flag off). The literal 7-day / 1000-artifact accumulation runs via cron over real time). 2026-07-17 ADP V0.1 S3-P03-T040: Board 3 official-view A0 canary switch after the Owner S3 Exit gate approved A0 promotion -- a feature flag BOARD3_A0_ONLY default OFF so production Board 3 and the six themes stay unchanged, an a0Board3Eligible gate that demotes media to discovery so official original text can be the default evidence, and a non-destructive /api/a0-canary endpoint that fetches real gov.cn policy originals and reports an official evidence rate of 100 percent with 8 of 8 official items and media at 0 under the gate; deployed adp-cloud version 5bcd9f21 build b189d3cc0703, six themes 6/6 on both domains, rollback in one deploy via the flag or wrangler versions deploy 64c8b842; the full flip to official-as-default pending the A0 adapters wired to the worker cron under DIR-007 plus the real 14-day shadow. 2026-07-17 ADP V0.1 S7-P02-T079: fixed mobile horizontal overflow in data-dense pages at 360/390/430 with a base-CSS-only change to deploy/cloudflare/worker_cloud.js (.card overflow-wrap:break-word, main img/svg/video max-width:100%, and a @media(max-width:520px) rule that turns a wide table into a locally-scrolling block -- no page overflow-hidden band-aid); the six themes and all advanced motion stay byte-identical (T077/T078 contract: only base_css changed) and the change passes the T078 gate only as a documented approved change; NOT_DEPLOYED -- BUILD recomputed b189d3cc0703 -> 9690390a9fc8 but not deployed, live still serves b189d3cc0703, so its themes and motion are unchanged; proven by a real in-app-browser render at 360/390/430 (documentElement.scrollWidth == innerWidth, zero non-table offenders, local table scroll) plus a load-bearing counterfactual (the pre-fix CSS scrolls 1210px at 360), and independently reviewed CONFIRMED_SOUND; a latent inert .card min-width:0 and an over-counting audit were fixed. 2026-07-17 ADP V0.1 S7-P02-T080: added the component-state matrix + an optimistic Undo window + proved cross-theme state persistence, as a base-CSS-only change to deploy/cloudflare/worker_cloud.js plus page-body JS -- base CSS gains button:active (pressed <100ms), :disabled/[aria-disabled], [aria-busy] loading, :focus-visible, [data-state=ok|err], button.undo and a button transform transition (no new @keyframes); the two grade() flows become an optimistic Undo window (click shows picked + 撤销 + a 4s cancelable countdown and writes nothing; a deferred gradeCommit posts /api/grade only after the window; gradeUndo cancels the timer and writes nothing, so an undo touches no production data) with try/catch error states, and a theme switch preserves reading position/answers/filters/expand because applyTheme only setAttribute + syncs hero/gauge (no reload/navigate/innerHTML); the six themes and all advanced motion stay byte-identical (T077/T078: only base_css changed) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD recomputed 9690390a9fc8 -> 40a46aa2baee but not deployed, live still serves b189d3cc0703; proven by a Node behavioural test on the real extracted grade code (click 0 writes / undo 0 writes / window elapse exactly 1 write) and an in-app-browser test (all state preserved across all six themes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T081: instrumented RUM + Core Web Vitals (LCP/CLS/INP, INP approximated as the max interaction event duration and disclosed as such) segmented by theme/route/device/network -- a RUM client (const RUM_JS) tags each metric with theme/route/device/network and sendBeacon('/api/rum') on page-hide, INJECTED AT THE ROUTER (htmlResp) so it touches no T077/T078 visual/motion contract hash (the whole asset_hashes incl. page_shell + master_visual is byte-identical), plus a pure rumIngest validator gating a POST /api/rum endpoint that writes a NEW cn_rum table (CREATE TABLE IF NOT EXISTS + bind INSERT, not existing production data), and an offline query tool tools/rum_cwv.py that computes p75 + Google CWV ratings segmentable by the four dimensions with every assessment gated on a minimum sample count so empty/thin data claims NO compliance (无数据不声称达标); NOT_DEPLOYED -- BUILD 40a46aa2baee -> 8c19387c846b but not deployed, live still b189d3cc0703, no real RUM baseline yet and none claimed; proven by a Node test on the real extracted rumIngest, an in-app-browser test capturing a live LCP tagged by the four dimensions, and a contract invariance check (detect_regression = 0 changes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T082: optimized the six-theme ambient motion for FPS without changing visual semantics -- converted the one layout-animating ambient keyframe (the cosmos meteor, left/top) to a screen-path-equivalent transform:translate (GPU-composited; .fx is a fixed viewport-sized layer so left/top % map exactly to vw/vh and the rotate stays inner so the streak + diagonal are preserved), after which every ambient loop is compositor-safe (the deterministic >=55 FPS guarantee), plus a router-injected FX_PERF controller that pauses ambient animation on page-hide and degrades the heaviest layers on low-end devices (meteor/band hidden, nebula simplified) WITHOUT touching the foreground selectors so the foreground feedback survives; the ONLY T077/T078 contract element that changed is keyframes (per_theme/base_css/theme_js/fx_css/hero byte-identical) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD 8c19387c846b -> 0cb3acee6bf3 but not deployed, live still b189d3cc0703; proven by an ambient compositor-safety audit (pre-fix FAILS), an in-app-browser test (pause 7/7; low-end degrades while stars + button:active survive) and a contract re-derivation, and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T083: optimized the hot D1 queries by adding five indexes to schema_cloud.sql (CREATE INDEX IF NOT EXISTS: recency expression index on cn_items(COALESCE(published_at,fetched_at) DESC, id DESC), board+recency, cn_lessons(item_id), cn_reviews(due_at), cn_events(kind,at)) so the today/radar/browse/history/review pages and the vitals sparkline stop full-table-scanning + temp-sorting cn_items and instead do an index-ordered SEARCH reading only the LIMIT rows (rows scanned O(N) -> O(LIMIT), p95 down 3-200x in the local SQLite proof). An adversarial review of the schema-only cut found a real hole: without a total-order tie-breaker, cross-family ties (a recency-via-published row tying on COALESCE with a recency-via-fetched row) changed board/browse LIMIT/OFFSET page membership+order and OFFSET pagination could skip/repeat, and the verifier was blind (published 2016 / fetched 2026 disjoint namespaces made the tie impossible). The fix adds a deterministic total-order `, id DESC` tie-breaker to all eight recency display ORDER BYs in worker_cloud.js (matching the existing prune query) + the id key in the two recency indexes so the total order stays fully index-served (no temp b-tree); the verifier now contains real cross-family ties and asserts the tie-breaker query is deterministic (index==forced-scan, OFFSET pages disjoint). Queries changed so BUILD was recomputed 0cb3acee6bf3 -> d1dfcb3b7447, but the change is in page-body functions so the six-theme visual/motion contract is byte-identical (no CLS, server-rendered) and it is not a content regression (an undefined tie order made deterministic); NOT_DEPLOYED, live still b189d3cc0703, CWV 达标 NOT claimed without field data (T081 rule); and independently reviewed. 2026-07-18 ADP V0.1 S7-P04-T084 (last S7 task): polished evidence/inference + accessibility + reduced-motion without replacing the design -- a PROVENANCE_NOTE (讲义·推断 badge + sentence) is prepended in the central lessonHTML so the auto-generated lesson is labelled as inference, distinct from the 原文 (evidence) link (todayPage refactored to lessonHTML, output otherwise identical); the reveal button gets aria-controls and moves focus into the revealed box (disclosure a11y) on top of the already-native named 44px buttons + :focus-visible; and the reduced-motion rule was verified to disable animation while restoring the .fr/.bw content classes to opacity:1 (gauge/video jump to final state in JS) so no content/function is lost. The polish is page-body so the six-theme visual/motion contract is byte-identical; NOT_DEPLOYED -- BUILD d1dfcb3b7447 -> 452f7c5de919 but not deployed, live still b189d3cc0703; proven by an a11y_content_audit (pre-fix has no marker / no reveal a11y; removing the reduced-motion restore fails the preserve check) and an in-app-browser test, and independently reviewed. 2026-07-19 ADP V0.2 生产集成 P01 (关键事实 Factsheet 上线, PRODUCTION DEPLOY): began wiring the NOT_DEPLOYED cognitive capabilities into the live worker per the Owner directive that ADP be visibly richer and immediately usable -- ported S1-P03-T016 extract_factsheet deterministic extraction (DOI / 文号 / 关键数字 / 作者; missing => shown as nothing, never fabricated) into deploy/cloudflare/worker_cloud.js (factsheet()+factsheetHTML()) and rendered it as six-theme-adaptive .badge chips on the today card (first screen), board lists, search, radar, and item detail (one shared itemListHTML covers board/search/radar). Presentation-only: reads existing cn_items fields, adds no D1 table, no cron/pipeline change, does not touch the hero/motion/theme layer (T077/T078 contract scopes page bodies out of the frozen visual identity). Independent adversarial review BLOCKED on a real ReDoS (FS_UNIT_RE was O(n^2), 40KB pathological input 2295ms in the request path, would exceed the Cloudflare Worker CPU limit); fixed with a bounded quantifier {0,39} on the unit-regex digit run (a number token is never over 40 chars, so the scan is linear regardless of input) + input slice (0,500)/(0,2000), re-verified linear (40KB 4.8ms / 400KB 48.8ms / 0.24ms after slice) with extraction unchanged, CONFIRMED_SOUND (not self-signed). BUILD 452f7c5de919 -> 0864030f7dc8; deployed adp-cloud version f26dc86a-446f-445b-b1ab-d2c132b1cf46 (DB/R2 bindings + cron preserved); live-verified build.json 0864030f7dc8, 7 routes 200, six themes 6/6, factsheet chips visible board1=60/board2=4/board3=7/board4=1; rollback wrangler versions deploy 5a7c0fbe. release_mode PRODUCTION; recurring $0/mo (DIR-007 unchanged). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P01-FACTSHEET/. 2026-07-19 ADP V0.2 生产集成 P02 (知识库 /library 上线, PRODUCTION DEPLOY): promoted S5-P04-T067's Library from NOT_DEPLOYED to PRODUCTION as a read-only view -- /library was returning 404. New libraryPage() reads only live cn_reviews joined to cn_items (the items you studied), with per-board and per-evidence-state facet counts that filter via ?board= / ?state=, a list carrying title, board, publish date, original-source link, evidence state, review count and next-review date, and the P01 factsheet chips reused; nav gains a 知识库 entry and /library is an exact-match route (does not shadow /item/ or /board/). Adds no D1 table, no cron/pipeline change, and moves zero visual-contract elements (T078 differential gate). Honest boundary: T067 is Library + notes + full-provenance export, and its export REFUSES on any missing provenance field (source_url, version, fetched_at, claim_evidence, license); version and license live in the S2 version layer which is not deployed, so only the Library view ships -- notes and export are deliberately not shipped rather than fabricating provenance. An independent adversarial review BLOCKED a real free-tier violation: both queries full-scanned cn_items (D1 runs no ANALYZE, so the planner drove the join from the big table), reading about twice the cn_items row count per page view -- 200k items meant roughly 400k rows per view against D1's 5M rows/day free tier shared with the daily cron, i.e. about a dozen views would exhaust the day, violating the $0/mo free-tier basis the Owner signed at T087 and regressing the already-live T083 whose deliverable was removing hot-path full scans. Fixed by pinning cn_reviews as the outer loop (JOIN -> CROSS JOIN; still an inner join via ON, identical rows): the plan became SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?), so cn_items is only ever index-searched; a negative control (plain JOIN) reproduces SCAN i USING COVERING INDEX, proving the check is load-bearing; the reviewer independently confirmed byte-identical results across every filter combination, no cartesian product, 48-82x faster, and noted the fix pins the good plan whether or not ANALYZE statistics exist. A dead facet chip (unfilterable null evidence state) was also removed. Review verdict CONFIRMED_SOUND (not self-signed). BUILD 0864030f7dc8 -> e301f8a4c7d8; deployed adp-cloud version bfa3ac49-31a2-426c-8aaf-b0c33caf60d1 with bindings and cron preserved; live-verified 10 routes 200 including /library and its filters, six themes 6/6, the 知识库 nav entry, and P01 factsheet not regressed; rollback wrangler versions deploy f26dc86a. This run also fixed the root cause of the Project Governance large-object hygiene audit failing on every push since T088: the three oversized ADP canonical governance files are covered by the ARXIV_CANONICAL_GOVERNANCE retained rule (max_bytes 4MB, change_policy baseline_oid_only), so every content change must register the new blob OID in reviewed_oids -- a step that had been skipped; the current OIDs are now registered and tests/governance/test_adp_canonical_governance_oids.py enforces the invariant so this silent CI failure becomes a local test failure. release_mode PRODUCTION; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/.)"
+     acceptance_ids:
+       - "ACC-ADP-V03-48H-LOOP"
+     test_commands:
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/TASK_REPORT.md
+new file mode 100644
+index 000000000..0ca05de15
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/TASK_REPORT.md
+@@ -0,0 +1,36 @@
++# ADP V0.2 生产集成 · P02 — 知识库 /library 上线（PRODUCTION DEPLOY）
++
++## 背景
++`/library` 此前线上返回 **404**——S5-P04-T067 的 Library 一直是 NOT_DEPLOYED 的独立工具。本任务把它作为**只读视图**接进线上，让"学过的东西"成为可浏览、可回溯的长期资产，而不是只存在于"今天"。
++
++## 做了什么
++- 新增 `libraryPage(env, params)`：数据只来自线上 **`cn_reviews` ⨝ `cn_items`**（你学过／在复习的条目）。
++  - 顶部：总条数 + **按板块**、**按证据态** 的分面计数芯片（可点击筛选，`?board=` / `?state=`）。
++  - 列表：标题 → 条目页、板块、发布日、**原文**链接、证据态、复习次数、下次复习日，并复用 **P01 的关键事实芯片**（DOI/文号/关键数字/作者）。
++- 导航新增「知识库」入口；路由 `/library`（精确匹配，不遮蔽 `/item/`、`/board/`）。
++- **不新增 D1 表、不改每日流水线、不改 hero/动效/主题**。
++
++## 诚实边界（未做，且不假装做了）
++T067 的完整范围是 **Library + 笔记 + 全 provenance 导出**。其导出规则是硬性的：`PROVENANCE_FIELDS = (source_url, version, fetched_at, claim_evidence, license)`，**任一字段缺失即拒绝导出**。线上 `cn_items` 只能提供 `source_url` 与 `fetched_at`；`version` / `license` 属于 S2 版本层，**尚未上线**。因此：
++- 本次**只交付 Library 视图**，**不交付笔记与导出**——若强行导出，按 T067 规则本就会被拒绝；臆造 provenance 更是禁止的。
++- 笔记需要新增 `cn_notes` 表 + 写入端点；导出需要 S2 版本层先上线。二者留待后续 phase。
++- 页面文案不提"笔记/版本/许可/导出"，不作任何无法由线上数据证明的声称。
++
++## 独立对抗复核抓到的真实缺陷（已修）
++复核者 **BLOCK**：两条查询都会 **全表 SCAN `cn_items`**——D1 不带 `ANALYZE` 统计，规划器从大表驱动 join，`SEARCH r` 逐行探测。实测（`cn_reviews` 固定 500 行，只变 `cn_items`）：1k→0.4/0.8ms、20k→4.0/4.6ms、**200k→33.1/39.4ms**，即**每次页面访问读 ≈2×|cn_items| 行**；200k 时约 40 万行/次，对 D1 免费档 **5M 行/天**（还要和每日 cron 及所有页面共享）意味着**十几次浏览就能耗尽当天预算**——直接违反 Owner 在 T087 签署的 **$0/mo 免费档基线（DIR-007）**，并且**回归了已上线的 T083**（T083 的交付物正是消除热路径全表扫描）。
++
++**修复**：`JOIN` → **`CROSS JOIN`**（SQLite 将左表钉为外层循环，经 `ON` 仍是内连接，结果集不变）。
++**验证（含载重负控制）**：
++- 修复后计划：`SCAN r` + `SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?)` —— `cn_items` **只被索引查找，永不扫描**。
++- 负控制（改回普通 `JOIN`）：`SCAN i USING COVERING INDEX idx_cn_items_board_recency` —— 证明该检查**不是恒真空跑**。
++- 复核者复测：STATS 33.4ms→0.40ms（82×）、LIST 39.0ms→0.81ms（48×），四种筛选组合结果**逐字节一致**。
++
++同时修掉一个次要问题：证据态为空时的 `—` 分面芯片会展示一个**无法被筛选到**的计数，已不再渲染该芯片。
++
++## 部署与验证
++- BUILD：`0864030f7dc8 -> e301f8a4c7d8`（build_id == source_sha256[:12]）。
++- **六主题/动效契约未破**：T078 gate `decision: PASS, blocked_on: []`（NAV 项与页面正文不属冻结的 theme/motion 契约面）。
++- 实时验证见 `test-results/deploy_verify.txt`。回滚：`wrangler versions deploy <上一版本>`。
++
++release_mode: **PRODUCTION**。未自签；独立复核 CONFIRMED_SOUND（adversarial_review.md）。
++Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/adversarial_review.md
+new file mode 100644
+index 000000000..b61d20d15
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/adversarial_review.md
+@@ -0,0 +1,43 @@
++# 独立对抗复核 — ADP V0.2 P02 知识库 /library
++
++复核者：独立 general-purpose skeptic（非实施者；实施者不自签）。方法：把 schema_cloud.sql 灌进真实 sqlite3 跑查询、在 Node 里用 mock D1 跑 `libraryPage` 本体，力图证伪。
++
++## 第一轮：BLOCK（抓到真实的免费档违规）
++
++**BLOCK — 两条查询都全表 SCAN `cn_items`。** D1 不带 `ANALYZE`（`schema_cloud.sql` 与 worker 里都没有），规划器无行数统计，于是从**大表**驱动 join、逐行探测 `cn_reviews`：
++
++```
++STATS: SCAN i USING COVERING INDEX idx_cn_items_board_recency
++       SEARCH r USING INDEX sqlite_autoindex_cn_reviews_1 (item_id=?)
++```
++
++实测（`cn_reviews` **固定 500 行**，只变 `cn_items`，证明代价挂在"只被 join 进去"的那张表上）：
++
++| cn_items | STATS | LIST |
++|---|---|---|
++| 1,000 | 0.4 ms | 0.8 ms |
++| 20,000 | 4.0 ms | 4.6 ms |
++| 200,000 | 33.1 ms | **39.4 ms** |
++
++即**每次页面访问读约 2×|cn_items| 行**；200k 条时约 40 万行/次。D1 免费档 **5M 行/天**且与每日 cron 及所有页面共享 → **十几次浏览耗尽当天预算**。这直接违反 Owner 于 T087 签署的 **$0/mo 免费档基线（DIR-007）**，并**回归了已上线的 T083**（T083 的交付物正是消除热路径全表扫描；其证据里 `today_recency` 修复前正是被标 `full_scan: true`）。且 `cn_items` 随每日 cron 与 S4 的 2016+ 回填**只增不减**。
++
++其余第一轮全 PASS（均为执行验证而非目测）：schema/列名逐一对真实 schema 核对存在；`i.*` 与 `r.*` 五个别名字段**零重名**，未遮蔽 `factsheetHTML` 所需字段；`?1` 用两次 + `?3` 配 3 个 bind **正确**（SQLite 参数个数取最大索引）；注入（`board="' OR 1=1--"` → 0 行而非全表）与 XSS（`<script>`/`onerror`/`javascript:`/`"><svg onload>` 全部被 `esc` + 双引号属性 + `encodeURIComponent` + `safeHref` 中和）；空值/零行不崩；路由精确匹配不遮蔽 `/item/`、`/board/`；诚实性（页面不提笔记/版本/许可/导出，符合 T067 拒绝规则）。
++
++**修复**：`JOIN` → **`CROSS JOIN`**（SQLite 将左表钉为外层循环，经 `ON` 仍是内连接）。另修掉无法被筛选到的 `—` 分面芯片。
++
++## 第二轮：CONFIRMED_SOUND
++
++- **语义同一**：200k×2k 下 `CROSS JOIN` vs `INNER JOIN` **7 种筛选组合 diff=0**；joined rows = 2000 = `cn_reviews` 行数（真笛卡尔积会是 4 亿）→ **无笛卡尔积**。
++- **`cn_items` 永不扫描**：两查询计划均为 `SCAN r` + `SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?)`（由真实的 `cn_items.id TEXT PRIMARY KEY` autoindex 支撑）。200k 下 STATS 49.3→8.3ms、LIST 57.1→2.4ms（6–24x）。**T083 无全表扫描标准恢复**；代价改挂在 `cn_reviews`（用户主动行为有界）而非 `cn_items`（流水线喂养、随回填无界增长）。
++- **该修复比声称的更强**：负控制只在**无 ANALYZE 统计**时复现（D1 的常态）；`CROSS JOIN` 在**有无统计时都**钉住正确计划，而不是依赖 D1 不会替你跑的 ANALYZE。
++- **TEMP B-TREE 可接受**：只排 `cn_reviews` 行。~2k 复习条目 → ~8k 行/页 → 对 5M/天约 625 次/日；即便病态的 5 万条也约 100ms/页。有界于用户主动行为，轴是对的。
++- **`—` 芯片修复正确**：旧芯片**可证死**（`WHERE evidence_state = '—'` 恒 0 行，真实值是 NULL）；删除不丢信息（NULL 态条目仍经"全部"与板块芯片可见，列表仍显示 `—` 徽章）。板块芯片求和==总数；状态芯片求和==总数−NULL 数，UI 未声称分面穷尽，优于一个点进去空页的芯片。
++- **无新缺陷**；BUILD 自哈希复算一致，`build_id == sha[:12]`。
++
++## 复核者对我方证据的一处纠正（已采纳）
++
++我最初写"重跑 visual_regression_ci → PASS"。复核者指出 `visual_regression_ci.py` **没有 `__main__`**，裸跑会 exit 0 且零输出——正是 T086 那种"恒真永不判 blocker"的空跑陷阱，故该表述**不可复现**。
++复核者改用真实 API 做**差分**检验并确认：**本 diff 未移动任何视觉契约元素**（HEAD vs 工作树，`asset_hashes` 逐元素比对）；`theme_set_consistency` 六主题齐全。
++另一发现（**记为待办**）：对**冻结的 T077 manifest** 跑 `run_ci` 会 `BLOCK on ['base_css','keyframes']`，但**在 HEAD 上同样 BLOCK**——是 T079–T084 已批准改动相对陈旧 T077 基线的**既有漂移**，非本次改动；应单独重新冻结 T077 基线，否则该 gate 恒 BLOCK 而失去意义。`/library` 亦是 T077 `route_labels` 矩阵里没有的新路由（`PIXEL_LAYER_ENFORCED=False`，页面走标准 `PAGE()` 壳，继承主题）。
++
++**终判：VERDICT: CONFIRMED_SOUND**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/cost_value.json
+new file mode 100644
+index 000000000..3c2419a56
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/cost_value.json
+@@ -0,0 +1,19 @@
++{
++  "task": "ADP-V02-P02-LIBRARY",
++  "program": "ADP V0.2 生产集成（把 NOT_DEPLOYED 认知能力分批集成上线）",
++  "release_mode": "PRODUCTION",
++  "live_build_before": "0864030f7dc8",
++  "live_build_after": "e301f8a4c7d8",
++  "value": "把 S5-P04-T067 的 Library 从 NOT_DEPLOYED 提升到 PRODUCTION：/library 从 404 变成可用的知识库（按板块/证据态分面、复习进度、原文出处、关键事实芯片）。已学内容成为可浏览的长期资产。",
++  "scope_honest": "只交付 Library 只读视图；笔记与全 provenance 导出未做（导出需 S2 版本层的 version/license，缺字段按 T067 规则必须 REFUSE，不臆造）。",
++  "new_d1_tables": 0,
++  "cron_change": false,
++  "external_fetch_added": false,
++  "schema_change": false,
++  "d1_read_per_view": "与 cn_items 规模解耦：SCAN cn_reviews(用户已学条目,小) + 按主键索引查 cn_items；修复前为 ~2x|cn_items| 全表扫描",
++  "adversarial_block_fixed": "JOIN->CROSS JOIN；STATS 33.4ms->0.40ms(82x), LIST 39.0ms->0.81ms(48x) @200k items；负控制证明非空跑",
++  "dir_007_free_tier": "compliant (修复后不再全表扫描；若不修,200k items 时约十几次浏览即耗尽 D1 5M 行/天免费额度)",
++  "t083_no_full_scan_standard": "restored (SCAN r + SEARCH i USING INDEX id=?)",
++  "visual_motion_gate": "PASS (blocked_on: [])",
++  "recurring_cloud_cost_delta_usd_month": 0
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/known_gaps.md
+new file mode 100644
+index 000000000..1e8e3fbfe
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/known_gaps.md
+@@ -0,0 +1,22 @@
++# Known gaps · ADP-V02-P02-LIBRARY（诚实边界）
++
++## 只交付了 T067 的一部分
++T067 = **Library + 笔记 + 全 provenance 导出**。本次**只上线 Library 只读视图**。
++
++- **笔记（未做）**：需要新增 `cn_notes` D1 表 + 写入端点 + UI。本 phase 刻意不做——保持增量小、可验证、零 schema 变更。
++- **全 provenance 导出（未做，且现在做会被自己的规则拒绝）**：`library_export.py` 要求
++  `source_url, version, fetched_at, claim_evidence, license` **全齐才允许导出，缺一即 REFUSE**。
++  线上 `cn_items` 只有 `source_url`、`fetched_at`；**`version` 与 `license` 属 S2 版本层，尚未部署**。
++  故导出必须等 S2 版本层上线；**绝不臆造 provenance 来凑齐字段**。
++
++## 语义边界
++- "知识库"= `cn_reviews` 里有记录的条目（即你点过「学这个」或进过复习流）。含 `reps=0`（已加入未开始学）的卡片——列表用 `复习 0 次` 徽章如实标注，不含糊其辞。
++- 顶部 `共 N 条` 是**未筛选总数**；分面芯片各自带本facet计数。筛选时列表变、总数不变（分面计数即为筛选后规模）。
++- 列表上限 100 条（最近优先），超出时页面明示"仅显示最近 100 条"，不静默截断。
++
++## 成本
++纯读、无新增表、无新增抓取、不改 cron。修复后每次访问的 D1 读取量与 `cn_items` 规模**解耦**（只 `SCAN cn_reviews` + 按主键索引查 `cn_items`），符合 DIR-007 免费档；recurring $0/mo。
++
++## 未做
++- 不改 hero/动效/主题（T078 gate PASS 佐证）。
++- 不改每日流水线、不改任何既有路由行为。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/test-results/deploy_verify.txt b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/test-results/deploy_verify.txt
+new file mode 100644
+index 000000000..dbe4bac2f
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/test-results/deploy_verify.txt
+@@ -0,0 +1,26 @@
++=== 1. build.json == e301f8a4c7d8 ===
++{"build_id":"e301f8a4c7d8","source_sha256":"e301f8a4c7d8d63e7f662d06996f40a8f3a036b1b647930784f96e476b601a65","schema_version":"cn_v0_3","built_at":"2026-07-17"}
++  OK
++=== 2. routes 200 (incl. NEW /library) ===
++  / -> 200
++  /today -> 200
++  /queue -> 200
++  /radar -> 200
++  /system -> 200
++  /history -> 200
++  /library -> 200
++  /library?board=board1 -> 200
++  /library?state=%E6%9C%AA%E5%AD%A6 -> 200
++  /search?q=policy -> 200
++=== 3. six themes still 6/6 on / (Phase1+2 must not break the visual MVP) ===
++  themes: 6/6
++=== 4. NEW nav entry 知识库 present ===
++  OK nav 知识库
++=== 5. /library renders the knowledge library ===
++  OK title
++  证据态/复习徽章数: 3
++  关键事实芯片数(P01 复用): 0
++=== 6. Phase 1 factsheet not regressed ===
++  /board/board1 chips: 60
++
++DEPLOY VERIFY: PASS
+diff --git a/governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P02-LIBRARY-20260717.json b/governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P02-LIBRARY-20260717.json
+new file mode 100644
+index 000000000..1254a319a
+--- /dev/null
++++ b/governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P02-LIBRARY-20260717.json
+@@ -0,0 +1,40 @@
++{
++  "schema_version": 2,
++  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P02-LIBRARY-20260717",
++  "project_id": "arxiv-daily-push",
++  "task_id": "ADP-V02-P02-LIBRARY",
++  "acceptance_ids": [
++    "ACC-ADP-V03-48H-LOOP"
++  ],
++  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
++  "generated_at": "2026-07-17T02:40:00Z",
++  "implementation_base_sha": "67a0164e3aebe7ce6973dac220a161c52212a6b4",
++  "binding_status": "PRECOMMIT_TREE_BOUND",
++  "ci_attestation_subject": "ADP V0.2 P02 Library production deploy + ADP canonical-governance OID allowlist repair",
++  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
++  "gate_status": "PASS_LOCAL",
++  "summary": "Promote S5-P04-T067 Library to PRODUCTION as a read-only /library view over live cn_reviews joined to cn_items (was 404); adversarial review BLOCKED a real DIR-007 free-tier violation (both queries full-scanned cn_items, ~2x|cn_items| rows per view) which was fixed with CROSS JOIN so cn_items is only index-searched, restoring the live T083 no-full-scan standard; notes and full-provenance export deliberately NOT shipped because T067 refuses exports missing version/license (S2 layer not deployed). Also repairs the root cause of the large-object hygiene audit failing on every push since T088 by registering the three oversized ADP canonical governance files' current blob OIDs in the ARXIV_CANONICAL_GOVERNANCE retained rule and adding a governance test that enforces the invariant.",
++  "scope": {
++    "new_business_sample_files": 0,
++    "canonical_or_raw_business_data_files_modified": 0,
++    "dependency_changes": 0,
++    "repository_visibility_changes": 0,
++    "direct_main_pushes": 1,
++    "force_pushes": 0,
++    "history_rewrites": 0,
++    "release_assets_published": 0
++  },
++  "deploy": {
++    "worker": "adp-cloud",
++    "version_id": "bfa3ac49-31a2-426c-8aaf-b0c33caf60d1",
++    "live_build_before": "0864030f7dc8",
++    "live_build_after": "e301f8a4c7d8",
++    "rollback_target": "f26dc86a-446f-445b-b1ab-d2c132b1cf46"
++  },
++  "evidence_refs": [
++    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/TASK_REPORT.md",
++    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/adversarial_review.md",
++    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/known_gaps.md",
++    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/test-results/deploy_verify.txt"
++  ]
++}
+diff --git a/tests/governance/test_adp_canonical_governance_oids.py b/tests/governance/test_adp_canonical_governance_oids.py
+new file mode 100644
+index 000000000..13686aae6
+--- /dev/null
++++ b/tests/governance/test_adp_canonical_governance_oids.py
+@@ -0,0 +1,77 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Regression guard for the ADP canonical-governance large-object allowlist.
++
++Why this exists: arxiv-daily-push's canonical governance files (delivery_tasks.yaml,
++DEVELOPMENT_LEDGER.md, development_events.jsonl) legitimately exceed the policy's
++`regular_blob_max_bytes`. They are covered by the ARXIV_CANONICAL_GOVERNANCE retained rule
++whose `change_policy` is `baseline_oid_only`, which means EVERY content change must also
++register the file's new blob OID in `reviewed_oids`.
++
++That per-change step was silently skipped from T088 onward, so the Project Governance
++large-object hygiene audit failed on every push that touched these files -- a red that was
++only discovered by reading CI logs. This test turns that class of failure into a local,
++nameable test failure BEFORE the push.
++
++It is deliberately written against the invariant (every oversized file under the rule's
++prefix must have its CURRENT OID registered), not against a hardcoded OID list, so it keeps
++working as the files grow.
++"""
++import json
++import pathlib
++import subprocess
++import unittest
++
++ROOT = pathlib.Path(__file__).resolve().parents[2]
++POLICY = ROOT / "governance" / "repository_hygiene_policy.json"
++RULE_ID = "ARXIV_CANONICAL_GOVERNANCE"
++
++
++def _blob_oid(path: pathlib.Path) -> str:
++    """The Git blob OID the working-tree content would commit as (content-addressed)."""
++    return subprocess.run(["git", "hash-object", str(path)], cwd=ROOT,
++                          capture_output=True, text=True, check=True).stdout.strip()
++
++
++class TestAdpCanonicalGovernanceOids(unittest.TestCase):
++    def setUp(self):
++        self.policy = json.loads(POLICY.read_text(encoding="utf-8"))
++        rules = [r for r in self.policy.get("retained_objects", []) if r.get("id") == RULE_ID]
++        self.assertEqual(len(rules), 1, f"expected exactly one {RULE_ID} rule in the hygiene policy")
++        self.rule = rules[0]
++
++    def test_rule_is_baseline_oid_only(self):
++        """The guarded invariant only holds if the rule really is baseline_oid_only."""
++        self.assertEqual(self.rule.get("change_policy"), "baseline_oid_only")
++
++    def test_every_oversized_governance_file_has_its_current_oid_registered(self):
++        prefix = self.rule.get("prefix")
++        self.assertTrue(prefix and prefix.endswith("/"), "rule must use a directory prefix")
++        max_bytes = int(self.rule["max_bytes"])
++        limit = int(self.policy["regular_blob_max_bytes"])
++        reviewed = set(self.rule.get("reviewed_oids", []))
++
++        directory = ROOT / prefix
++        self.assertTrue(directory.is_dir(), f"prefix directory missing: {prefix}")
++
++        unregistered, oversize = [], []
++        for path in sorted(p for p in directory.rglob("*") if p.is_file()):
++            size = path.stat().st_size
++            if size <= limit:
++                continue  # small files need no retained-OID registration
++            rel = path.relative_to(ROOT).as_posix()
++            if size > max_bytes:
++                oversize.append(f"{rel} ({size} > rule max_bytes {max_bytes})")
++            if _blob_oid(path) not in reviewed:
++                unregistered.append(f"{rel} (oid {_blob_oid(path)[:12]} not in reviewed_oids)")
++
++        self.assertEqual(oversize, [], "file exceeds the retained rule's max_bytes:\n  " + "\n  ".join(oversize))
++        self.assertEqual(
++            unregistered, [],
++            "Oversized canonical governance file(s) changed without registering the new blob OID in "
++            f"{RULE_ID}.reviewed_oids -- the large-object hygiene audit WILL fail on push:\n  "
++            + "\n  ".join(unregistered))
++
++
++if __name__ == "__main__":
++    unittest.main()

@@ -1,0 +1,26 @@
+=== 1. build.json == e301f8a4c7d8 ===
+{"build_id":"e301f8a4c7d8","source_sha256":"e301f8a4c7d8d63e7f662d06996f40a8f3a036b1b647930784f96e476b601a65","schema_version":"cn_v0_3","built_at":"2026-07-17"}
+  OK
+=== 2. routes 200 (incl. NEW /library) ===
+  / -> 200
+  /today -> 200
+  /queue -> 200
+  /radar -> 200
+  /system -> 200
+  /history -> 200
+  /library -> 200
+  /library?board=board1 -> 200
+  /library?state=%E6%9C%AA%E5%AD%A6 -> 200
+  /search?q=policy -> 200
+=== 3. six themes still 6/6 on / (Phase1+2 must not break the visual MVP) ===
+  themes: 6/6
+=== 4. NEW nav entry 知识库 present ===
+  OK nav 知识库
+=== 5. /library renders the knowledge library ===
+  OK title
+  证据态/复习徽章数: 3
+  关键事实芯片数(P01 复用): 0
+=== 6. Phase 1 factsheet not regressed ===
+  /board/board1 chips: 60
+
+DEPLOY VERIFY: PASS

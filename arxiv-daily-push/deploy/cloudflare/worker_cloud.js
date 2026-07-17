@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '0864030f7dc8', source_sha256: '0864030f7dc85e4c7ca026f561bc59193f4d845bab8c37c6bd2e23ab4ac467d8', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'e301f8a4c7d8', source_sha256: 'e301f8a4c7d8d63e7f662d06996f40a8f3a036b1b647930784f96e476b601a65', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -586,7 +586,7 @@ async function runDaily(env, trigger) {
 }
 
 // ───────────────────────── UI（六主题设计语言，从 base.html 移植） ─────────────────────────
-const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'], ['/system', '系统']];
+const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'], ['/library', '知识库'], ['/system', '系统']];
 const FAVICON = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>');
 const META_DESC = 'ADP 前沿学习——每日跨全领域 arXiv 与顶级期刊、政策、科技金融精选一篇，配讲义、主动回忆与 FSRS 间隔复习，整套系统跑在 Cloudflare。';
 const THEME_OPTIONS = [['warm', '暖纸学习'], ['minimal', '简约专注'], ['fresh', '清新干净'], ['techno', '炫技'], ['cosmos', '宇宙星河'], ['forest', '森林河流']];
@@ -1093,6 +1093,51 @@ async function reviewPage(env) {
   return PAGE('/review', body, { title: '复习' });
 }
 
+// ───────────────────────── 知识库 /library（S5-P04-T067 Library 上线；只读视图） ─────────────────────────
+// 数据只来自线上 cn_reviews ⨝ cn_items（你学过/在复习的条目）。不新增表、不改流水线。
+// 诚实边界：T067 的「笔记」与「全 provenance 导出」需要 version/license 等 S2 版本层字段，
+// 那一层尚未上线；此处只交付可如实呈现的部分，不臆造 provenance，也不做会被 T067 拒绝的残缺导出。
+const LIB_PAGE_SIZE = 100;
+async function libraryPage(env, params) {
+  const board = (params.get('board') || '').slice(0, 12);
+  const state = (params.get('state') || '').slice(0, 12);
+  const { results: stats } = await env.DB.prepare(
+    `SELECT i.board_id AS b, r.evidence_state AS s, COUNT(*) AS n
+     FROM cn_reviews r CROSS JOIN cn_items i ON i.id = r.item_id GROUP BY i.board_id, r.evidence_state`).all();
+  const total = (stats || []).reduce((a, x) => a + (x.n || 0), 0);
+  const byState = {}, byBoard = {};
+  for (const x of (stats || [])) {
+    const s = x.s || '—';
+    byState[s] = (byState[s] || 0) + (x.n || 0);
+    byBoard[x.b] = (byBoard[x.b] || 0) + (x.n || 0);
+  }
+  const { results: rows } = await env.DB.prepare(
+    `SELECT i.*, r.evidence_state, r.due_at, r.reps, r.lapses, r.last_review
+     FROM cn_reviews r CROSS JOIN cn_items i ON i.id = r.item_id
+     WHERE (?1 = '' OR i.board_id = ?1) AND (?2 = '' OR r.evidence_state = ?2)
+     ORDER BY COALESCE(r.last_review, r.due_at) DESC, i.id DESC LIMIT ?3`).bind(board, state, LIB_PAGE_SIZE).all();
+  const qs = (b, s) => {
+    const p = [b ? 'board=' + encodeURIComponent(b) : '', s ? 'state=' + encodeURIComponent(s) : ''].filter(Boolean);
+    return '/library' + (p.length ? '?' + p.join('&') : '');
+  };
+  const chip = (label, n, href, on) =>
+    `<a class="pill-link" href="${href}"${on ? ' aria-current="page"' : ''}>${esc(label)} ${n}</a>`;
+  let body = `<div class="card"><h1>知识库</h1>
+    <p class="mt">你学过／在复习的全部条目——证据态、复习进度与原文出处都在这里。共 <b>${total}</b> 条。</p>
+    <p style="margin:8px 0 2px">${chip('全部', total, qs('', ''), !board && !state)}${Object.keys(byBoard).sort().map(b =>
+      chip(BOARD_NAMES[b] || b, byBoard[b], qs(b, state), board === b)).join('')}</p>
+    <p style="margin:2px 0 0">${Object.keys(byState).filter(s => s !== '—').sort().map(s =>
+      chip(s, byState[s], qs(board, s), state === s)).join('')}</p></div>`;
+  const list = (rows || []).map(it => `<div class="itemrow"><div class="body">
+    <a href="/item/${encodeURIComponent(it.id)}">${esc((it.title || '').slice(0, 110))}</a>
+    <div class="mt">${esc(BOARD_NAMES[it.board_id] || it.board_id || '')}${it.published_at ? ' · ' + esc(String(it.published_at).slice(0, 10)) : ''} · <a href="${safeHref(it.url)}" rel="noopener">原文</a><span class="badge">${esc(it.evidence_state || '—')}</span><span class="badge">复习 ${Number(it.reps) || 0} 次</span>${it.due_at ? `<span class="badge">下次 ${esc(String(it.due_at).slice(0, 10))}</span>` : ''}</div>
+    ${factsheetHTML(it)}
+    </div></div>`).join('');
+  body += `<div class="card">${list || '<p class="mt">知识库还是空的。去 <a href="/">今天</a> 学一篇，或在 <a href="/radar">雷达</a>／<a href="/search">搜索</a> 里点「学这个」。</p>'}
+    ${(rows || []).length >= LIB_PAGE_SIZE ? `<p class="mt">仅显示最近 ${LIB_PAGE_SIZE} 条。</p>` : ''}</div>`;
+  return PAGE('/library', body, { title: '知识库' });
+}
+
 // ───────────────────────── 板块浏览 /board/:id ─────────────────────────
 async function boardPage(env, boardId, offset) {
   const board = REGISTRY.find(b => b.board === boardId) || (boardId === 'board5' ? AGG_BOARD : null);
@@ -1327,6 +1372,7 @@ export default {
       else if (p === '/review' || p === '/queue') html = await reviewPage(env);
       else if (p === '/radar') html = await radarPage(env);
       else if (p === '/system') html = await systemPage(env);
+      else if (p === '/library') html = await libraryPage(env, url.searchParams);
       else if (p === '/history') html = await historyPage(env);
       else if (p === '/search') html = await searchPage(env, url.searchParams.get('q') || '');
       else if (p.startsWith('/board/')) html = await boardPage(env, p.slice('/board/'.length), Math.max(0, parseInt(url.searchParams.get('offset') || '0', 10) || 0));

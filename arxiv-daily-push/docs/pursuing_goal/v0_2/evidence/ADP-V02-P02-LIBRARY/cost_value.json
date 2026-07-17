@@ -1,0 +1,19 @@
+{
+  "task": "ADP-V02-P02-LIBRARY",
+  "program": "ADP V0.2 生产集成（把 NOT_DEPLOYED 认知能力分批集成上线）",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "0864030f7dc8",
+  "live_build_after": "e301f8a4c7d8",
+  "value": "把 S5-P04-T067 的 Library 从 NOT_DEPLOYED 提升到 PRODUCTION：/library 从 404 变成可用的知识库（按板块/证据态分面、复习进度、原文出处、关键事实芯片）。已学内容成为可浏览的长期资产。",
+  "scope_honest": "只交付 Library 只读视图；笔记与全 provenance 导出未做（导出需 S2 版本层的 version/license，缺字段按 T067 规则必须 REFUSE，不臆造）。",
+  "new_d1_tables": 0,
+  "cron_change": false,
+  "external_fetch_added": false,
+  "schema_change": false,
+  "d1_read_per_view": "与 cn_items 规模解耦：SCAN cn_reviews(用户已学条目,小) + 按主键索引查 cn_items；修复前为 ~2x|cn_items| 全表扫描",
+  "adversarial_block_fixed": "JOIN->CROSS JOIN；STATS 33.4ms->0.40ms(82x), LIST 39.0ms->0.81ms(48x) @200k items；负控制证明非空跑",
+  "dir_007_free_tier": "compliant (修复后不再全表扫描；若不修,200k items 时约十几次浏览即耗尽 D1 5M 行/天免费额度)",
+  "t083_no_full_scan_standard": "restored (SCAN r + SEARCH i USING INDEX id=?)",
+  "visual_motion_gate": "PASS (blocked_on: [])",
+  "recurring_cloud_cost_delta_usd_month": 0
+}

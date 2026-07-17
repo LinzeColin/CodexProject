@@ -1,0 +1,173 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P02-LIBRARY-20260717",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P02-LIBRARY",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-17T02:40:00Z",
+  "implementation_base_sha": "67a0164e3aebe7ce6973dac220a161c52212a6b4",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "ADP V0.2 P02 Library production deploy + ADP canonical-governance OID allowlist repair",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "Promote S5-P04-T067 Library to PRODUCTION as a read-only /library view over live cn_reviews joined to cn_items (was 404); adversarial review BLOCKED a real DIR-007 free-tier violation (both queries full-scanned cn_items, ~2x|cn_items| rows per view) which was fixed with CROSS JOIN so cn_items is only index-searched, restoring the live T083 no-full-scan standard; notes and full-provenance export deliberately NOT shipped because T067 refuses exports missing version/license (S2 layer not deployed). Also repairs the root cause of the large-object hygiene audit failing on every push since T088 by registering the three oversized ADP canonical governance files' current blob OIDs in the ARXIV_CANONICAL_GOVERNANCE retained rule and adding a governance test that enforces the invariant.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "deploy": {
+    "worker": "adp-cloud",
+    "version_id": "bfa3ac49-31a2-426c-8aaf-b0c33caf60d1",
+    "live_build_before": "0864030f7dc8",
+    "live_build_after": "e301f8a4c7d8",
+    "rollback_target": "f26dc86a-446f-445b-b1ab-d2c132b1cf46"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/test-results/deploy_verify.txt"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f3821bee5725f9f633ae11e971edd466a9033622ac6469639497d9e1bfc711dc",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 20 non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/test-results/deploy_verify.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P02-LIBRARY-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/test-results/deploy_verify.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P02-LIBRARY-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "required_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "test_commands": [
+    "node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "python3 -B -m unittest -q tests.governance.test_adp_canonical_governance_oids",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic",
+    "python3 -c 'import visual_regression_ci as VRC; VRC.run_ci(baseline_from_HEAD, working_tree, None)'  # T078 differential gate",
+    "sqlite3 (real schema_cloud.sql) EXPLAIN QUERY PLAN for both /library queries + plain-JOIN negative control",
+    "bash verify_deploy2.sh e301f8a4c7d8  # live post-deploy verification against adp.linzezhang.com"
+  ],
+  "test_results": [
+    {
+      "command": "node --check worker_cloud.js",
+      "result": "PASS",
+      "observed": "syntax OK after all edits."
+    },
+    {
+      "command": "tests.governance.test_adp_canonical_governance_oids",
+      "result": "PASS",
+      "observed": "Every oversized file under arxiv-daily-push/docs/governance/ either still matches the policy baseline_tree OID or has its current OID registered in ARXIV_CANONICAL_GOVERNANCE.reviewed_oids. Load-bearing: removing a registered OID makes it fail (verified)."
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "observed": "status PASS, violations []. The three changed oversized ADP governance files' new OIDs are now registered, fixing the audit that had failed on every push since T088."
+    },
+    {
+      "command": "lean_governance validate --changed-only --enforce-sync --semantic",
+      "result": "PASS",
+      "observed": "0 errors for project sync and root validation."
+    },
+    {
+      "command": "T078 visual/motion differential gate",
+      "result": "PASS",
+      "observed": "HEAD vs working tree: zero visual-contract elements moved; theme_set_consistency all six themes. Known gap: the frozen T077 manifest is stale vs production (BLOCKs on base_css/keyframes identically at HEAD from approved T079-T084 drift) and needs a separate re-freeze."
+    },
+    {
+      "command": "EXPLAIN QUERY PLAN for the two /library queries",
+      "result": "PASS",
+      "observed": "After JOIN->CROSS JOIN: SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?) -- cn_items is never scanned. Negative control (plain JOIN) reproduces SCAN i USING COVERING INDEX, proving the check is load-bearing. Restores the live T083 no-full-scan standard and the DIR-007 $0/mo free-tier basis."
+    },
+    {
+      "command": "live post-deploy verification",
+      "result": "PASS",
+      "observed": "build.json e301f8a4c7d8; 10/10 routes 200 including /library and its ?board=/?state= filters; six themes 6/6; 知识库 nav entry present; /library renders evidence-state and review badges; P01 factsheet not regressed (60 chips on /board/board1)."
+    }
+  ],
+  "stop_conditions": [
+    "If the live build is not e301f8a4c7d8 or any route stops returning 200, roll back: wrangler versions deploy f26dc86a-446f-445b-b1ab-d2c132b1cf46 (build 0864030f7dc8).",
+    "If D1 rows-read per /library view stops being decoupled from cn_items size (i.e. a plan regresses to SCAN cn_items), stop and re-pin the join order -- DIR-007 free-tier is a hard budget."
+  ],
+  "rollback": {
+    "worker": "wrangler versions deploy f26dc86a-446f-445b-b1ab-d2c132b1cf46",
+    "governance": "git revert the single commit; no schema/D1 migration was applied, so rollback is worker-only and immediate."
+  },
+  "unresolved_risks": [
+    "T067 notes + full-provenance export remain undeployed: the export refuses on missing version/license, which live cn_items cannot supply until the S2 version layer ships. Deliberately not faked.",
+    "The frozen T077 visual baseline is stale vs production (pre-existing T079-T084 approved drift), so run_ci against it BLOCKs unconditionally; needs a separate re-freeze to make that gate meaningful again."
+  ],
+  "next_allowed_task": "ADP-V02-P03 (enhanced /search exact filters) or the T077 baseline re-freeze."
+}
