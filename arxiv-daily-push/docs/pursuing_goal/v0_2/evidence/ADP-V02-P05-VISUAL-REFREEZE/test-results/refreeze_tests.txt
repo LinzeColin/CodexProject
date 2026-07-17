@@ -1,0 +1,17 @@
+drifted since T077: ['base_css', 'keyframes', 'master_visual', 'theme_js']
+per-theme identity unchanged since T077: True
+  base_css: T079 (mobile overflow: .card overflow-wrap, img/svg/video max-width, <=520px table scrol...
+  keyframes: T082 (ambient-motion perf: the cosmos meteor keyframe converted from layout-animating le...
+  master_visual: aggregate hash over the whole theme/motion surface -- moves iff a component moves; attri...
+
+ABORT: unexplained drift -- refusing to re-freeze: ['theme_js']
+An element moved that no approved+deployed task accounts for. Re-freezing would silently bless it. Investigate before re-freezing.
+gate on committed worker vs re-frozen baseline: PASS (exit 0)
+NC1 unapproved keyframe edit      -> GATE: BLOCK   (run_ci decision: BLOCK) (exit 1)
+NC2 deleted signature motion      -> GATE: BLOCK   (run_ci decision: BLOCK) (exit 1)
+stale T077 baseline vs HEAD       -> BLOCK (exit 1)  <- the defect being fixed
+drift since T077                  -> ['base_css', 'keyframes', 'master_visual'] (all attributable)
+per-theme identity unchanged      -> True  <- the six themes the Owner signed are byte-identical
+
+ACCEPTANCE = PASS
+NOTE: the gate now has a real __main__ with a load-bearing exit code (was: exit 0, no output), and is bound to a baseline re-frozen onto the LIVE build 204c97eb5406. Every element that drifted since T077 is attributable to an approved+deployed task (T079/T080 base_css, T082 keyframes, master_visual aggregate); the Owner-signed per-theme identity is byte-identical, and the re-freeze ABORTS rather than blessing any unattributable drift.

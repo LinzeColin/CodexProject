@@ -1,0 +1,110 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P05-VISUAL-REFREEZE-20260717",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P05-VISUAL-REFREEZE",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-17T06:00:00Z",
+  "implementation_base_sha": "12d10f63d15e41cec50026d5dfd2ea0fab5a0e69",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2e233c7bf29eefec07f3ebe203407050e34c578485210b7a694f706af3a551d4",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 11 non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP V0.2 P05 visual/motion gate re-freeze + 前端呈现基线 v1 archive retention rule",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "ADP V0.2 P05: re-freeze the six-theme visual/motion baseline onto the LIVE build and make the gate real. The T077 baseline was stale (approved+deployed T079/T080 base_css and T082 keyframes drift) so run_ci BLOCKed unconditionally -- even against HEAD -- and visual_regression_ci.py had NO __main__, so running it as a script exited 0 with zero output. Re-freeze is attribution-gated: it ABORTS (2, and does not write even with --write) if any drifted element is unattributable or if the Owner-signed per_theme identity moved. Also closes the aggregate-only escape (an unregistered [data-theme] moves only master_visual -> run_ci PASSes) by wiring partition_consistency/theme_set_consistency into the verdict. Additionally registers the Owner-supplied 前端呈现基线 v1 archive (ADP主题动效v1.1.zip) in the hygiene policy -- committing it without a retained rule had made Project Governance fail with archive_retention_rule_count. release_mode NOT_DEPLOYED (worker untouched; live 204c97eb5406).",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/test-results/refreeze_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/test-results/refreeze_verify.py",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/visual_baseline_manifest.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/tools/visual_baseline_refreeze.py",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P05-VISUAL-REFREEZE-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/test-results/refreeze_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/test-results/refreeze_verify.py",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/visual_baseline_manifest.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/tools/visual_baseline_refreeze.py",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P05-VISUAL-REFREEZE-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/test-results/refreeze_tests.txt"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest -q tests.governance.test_adp_canonical_governance_oids",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P05-VISUAL-REFREEZE/test-results/refreeze_verify.py",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py"
+  ],
+  "test_results": [
+    {
+      "command": "governance invariant tests",
+      "result": "PASS",
+      "observed": "5 tests. Load-bearing: clearing the archive's reviewed_oids -> rc 1; deleting the archive rule -> hygiene FAIL archive_retention_rule_count (reproduces the exact failure this rule fixes); poisoning baseline_tree -> rc 1."
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "observed": "status PASS, violations [] (was FAIL archive_retention_rule_count before the rule)."
+    },
+    {
+      "command": "P05 acceptance",
+      "result": "PASS",
+      "observed": "clean worker GATE PASS exit 0; unapproved keyframe -> BLOCK exit 1; deleted meteor -> BLOCK exit 1; TRUE aggregate-only escape (unregistered [data-theme=neon] inside CSS, moved==['master_visual'], run_ci PASS) -> GATE BLOCK exit 1; stale T077 baseline -> BLOCK (the defect fixed); unattributable drift -> main() ABORT 2 and does NOT write with --write; per_theme identity byte-identical to T077."
+    },
+    {
+      "command": "gate entry point",
+      "result": "PASS",
+      "observed": "was: no __main__, exit 0, zero output. Now: real __main__, load-bearing exit code, single combined GATE verdict, and --json decision consistent with the exit code."
+    }
+  ],
+  "stop_conditions": [
+    "If per_theme hashes ever move, do NOT re-freeze: that is the Owner-signed six-theme identity and requires an Owner visual gate (the tool refuses).",
+    "If a drifted contract element cannot be attributed to an approved+deployed task, do NOT re-freeze -- investigate the regression."
+  ],
+  "rollback": {
+    "repo": "git revert this commit; NOT_DEPLOYED so production is unaffected (live stays 204c97eb5406)."
+  },
+  "unresolved_risks": [
+    "A residual aggregate-only escape exists: an extra unregistered key in THEME_FX/THEME_HERO/HERO_VIDEO moves only master_visual and both consistency controls still report consistent. Independently proven INERT (THEME_NAV is the runtime allowlist via hasOwnProperty and IS pinned; no key iteration over those maps), so it cannot carry a regression. Clean fix = extend theme_set_consistency to those key sets, which is a shared v0_1 function other verifiers depend on -> out of scope, recorded in known_gaps 4b.",
+    "coverage/cells are copied from T077 rather than recomputed (values verified accurate today).",
+    "The gate is runnable and exit-code load-bearing but is NOT yet wired into the GitHub CI workflow."
+  ],
+  "next_allowed_task": "Wire the visual gate into CI, or extend theme_set_consistency to fx/hero/video key sets."
+}

@@ -70,6 +70,34 @@ class TestAdpCanonicalGovernanceOids(unittest.TestCase):
                         "no file under {} exceeds regular_blob_max_bytes ({}) -- this rule now protects "
                         "nothing; it is either stale config or the limit changed".format(prefix, limit))
 
+    def test_adp_archive_rules_cover_their_file_and_register_its_oid(self):
+        """Any ADP-owned `archive`-kind retained rule must actually cover an existing file, stay within
+        max_bytes, and (unless still at its baseline OID) have that OID registered.
+
+        This exists because committing the Owner's 前端呈现基线 v1 archive with NO retained rule made the
+        hygiene audit fail with `archive_retention_rule_count: expected exactly one retained-object rule,
+        found 0` -- i.e. force-adding an archive past .gitignore silently breaks Project Governance until
+        it is registered. Turn that into a local failure instead of a red CI.
+        """
+        baseline_tree = str(self.policy["baseline_tree"])
+        adp_archives = [r for r in self.policy.get("retained_objects", [])
+                        if "archive" in (r.get("kinds") or []) and str(r.get("path") or "").startswith("arxiv-daily-push/")]
+        self.assertTrue(adp_archives, "expected at least one ADP archive retained rule (前端呈现基线 v1)")
+        for rule in adp_archives:
+            rel = rule["path"]
+            f = ROOT / rel
+            self.assertTrue(f.is_file(), "retained archive rule points at a missing file: {}".format(rel))
+            size = f.stat().st_size
+            self.assertLessEqual(size, int(rule["max_bytes"]),
+                                 "{} is {}B > rule max_bytes {}".format(rel, size, rule["max_bytes"]))
+            self.assertEqual(rule.get("change_policy"), "baseline_oid_only")
+            oid = _worktree_oid(f)
+            if oid == _baseline_oid(baseline_tree, rel):
+                continue  # unchanged vs baseline needs no registration
+            self.assertIn(oid, set(rule.get("reviewed_oids", [])),
+                          "archive {} (oid {}) differs from baseline and is NOT in reviewed_oids -- the "
+                          "hygiene audit WILL fail on push".format(rel, oid[:12]))
+
     def test_baseline_tree_is_resolvable(self):
         """The whole audit is anchored on baseline_tree; if it is unreachable the audit degrades to a
         confusing 'FAIL with violations: []'. That exact failure mode has bitten this repo before

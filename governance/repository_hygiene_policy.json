@@ -323,6 +323,24 @@
       "confidentiality": "legacy_repository_evidence",
       "change_policy": "baseline_oid_only",
       "max_bytes": 75207
+    },
+    {
+      "id": "ADP_FRONTEND_BASELINE_V1_ARCHIVE",
+      "path": "arxiv-daily-push/docs/design/前端呈现基线_v1/_原始存档/ADP主题动效v1.1.zip",
+      "kinds": [
+        "archive"
+      ],
+      "owner": "ADP (arxiv-daily-push) Owner",
+      "purpose": "Owner-supplied six-theme UI/motion design source (前端重构增补包 V1.0), designated 前端呈现基线 v1. The Owner has no second local copy -- byte-exact retention is the entire point of committing it. Sibling .md files carry the same bytes in readable form.",
+      "consumer": "ADP frontend implementers; the six-theme visual/motion gate (T077 freeze, P05 re-freeze)",
+      "retention": "permanent_frontend_presentation_baseline_v1",
+      "recovery": "Git tree (this archive) plus the extracted .md siblings under 前端重构增补包/",
+      "confidentiality": "project_source_material",
+      "change_policy": "baseline_oid_only",
+      "max_bytes": 65536,
+      "reviewed_oids": [
+        "5a061b6e191cdaf9f5485f720e3ac35e125501e3"
+      ]
     }
   ],
   "history_rewrite": {

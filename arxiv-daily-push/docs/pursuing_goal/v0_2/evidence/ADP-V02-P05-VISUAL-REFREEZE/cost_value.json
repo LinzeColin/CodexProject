@@ -1,0 +1,21 @@
+{
+  "task": "ADP-V02-P05-VISUAL-REFREEZE",
+  "program": "ADP V0.2 生产集成",
+  "release_mode": "NOT_DEPLOYED",
+  "live_build_id_unchanged": "204c97eb5406",
+  "worker_changed": false,
+  "value": "把保护六主题视觉/动效身份的那道门从『失效』修回『真的会判』：(1) 基线由陈旧的 T077(b189d3cc0703)重冻到线上 204c97eb5406——此前它对 HEAD 自身都无条件 BLOCK,等于没有门;(2) visual_regression_ci.py 补上 __main__ 与载重 exit code——此前裸跑 exit 0 且零输出,是空跑通过;(3) 关掉 AGGREGATE-only 逃逸(未注册主题只动 master_visual → run_ci 放行),把 partition_consistency/theme_set_consistency 接进判决。",
+  "refreeze_is_not_a_rubber_stamp": "漂移元素若不可归因于『已批准且已部署』的任务,或 per-theme 身份改变,则 ABORT(返回 2,--write 也不写)。",
+  "drift_since_t077": ["base_css", "keyframes", "master_visual"],
+  "drift_attribution": {"base_css": "T079+T080", "keyframes": "T082", "master_visual": "aggregate"},
+  "per_theme_identity_unchanged": true,
+  "independent_review": "CONFIRMED_SOUND;复核从每个历史 worker 版本重算 asset_hashes 验证归因,而非采信叙述;确认仅 T079/T080/T082 动过契约元素,T081/T083/T084/P01-P04 均未动。",
+  "d1_rows_read": 0,
+  "d1_rows_written": 0,
+  "r2_class_a": 0,
+  "r2_class_b": 0,
+  "model_calls": 0,
+  "deploys": 0,
+  "recurring_cloud_cost_delta_usd_month": 0,
+  "dir_007_free_tier": "unchanged (工具与基线清单,零生产改动、零云调用)"
+}

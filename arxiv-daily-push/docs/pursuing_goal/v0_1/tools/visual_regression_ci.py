@@ -10,6 +10,8 @@ Changes are categorised VISUAL vs MOTION/RECORDING so a motion/brand loss is sur
 
 Deterministic; no network / clock / randomness. NOT_DEPLOYED: pure gate logic over source hashes.
 """
+import argparse
+import json
 import pathlib
 import sys
 
@@ -83,3 +85,91 @@ def run_ci(baseline_hashes, candidate_src, approvals=None):
                                "future screenshot layer over the T077 matrix; no pixel comparison is "
                                "performed in this source-level gate (no PNGs are captured here)."},
     }
+
+
+# ── ADP-V02-P05: a real entry point ────────────────────────────────────────────────────────────────
+# Until now this module had NO __main__: running `python3 visual_regression_ci.py` exited 0 with zero
+# output, so anything that "ran the gate" as a script got a vacuous pass. The gate only ever existed
+# for callers that imported run_ci() and supplied a baseline themselves. This makes it runnable and
+# gives it a load-bearing exit code (non-zero on BLOCK), and points it at the CURRENT baseline.
+def _current_baseline_path():
+    """Prefer the V0.2 re-frozen baseline (bound to the live build); fall back to the T077 freeze.
+
+    The T077 manifest is bound to live build b189d3cc0703 and is STALE: the approved+deployed
+    T079/T080 (base_css) and T082 (keyframes) changes mean it BLOCKs unconditionally -- even against
+    HEAD -- which is a gate that carries no information.
+    """
+    v01 = pathlib.Path(__file__).resolve().parents[1]
+    refreeze = v01.parent / "v0_2" / "evidence" / "ADP-V02-P05-VISUAL-REFREEZE" / "visual_baseline_manifest.json"
+    if refreeze.exists():
+        return refreeze, "v0_2 re-freeze (bound to the live build)"
+    return (v01 / "evidence" / "ADP-S7-P01-T077" / "visual_baseline_manifest.json",
+            "T077 freeze (STALE vs production -- expect unconditional BLOCK)")
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Gate the worker's six-theme visual/motion contract against the frozen baseline.")
+    ap.add_argument("--baseline", help="path to a visual_baseline_manifest.json (default: current)")
+    ap.add_argument("--candidate", help="path to a candidate worker_cloud.js (default: the committed worker)")
+    ap.add_argument("--approvals", help="path to a JSON list of {element,reason,approver} approved-change records")
+    ap.add_argument("--json", action="store_true", help="emit the full report as JSON")
+    args = ap.parse_args(argv)
+
+    if args.baseline:
+        bpath, which = pathlib.Path(args.baseline), "explicit --baseline"
+    else:
+        bpath, which = _current_baseline_path()
+    baseline = json.loads(bpath.read_text(encoding="utf-8"))["asset_hashes"]
+    src = pathlib.Path(args.candidate).read_text(encoding="utf-8") if args.candidate else VB.WORKER.read_text("utf-8")
+    approvals = json.loads(pathlib.Path(args.approvals).read_text(encoding="utf-8")) if args.approvals else None
+
+    rep = run_ci(baseline, src, approvals)
+
+    # Compensating controls for the AGGREGATE-only escape: run_ci computes `specific = changed -
+    # AGGREGATE`, so a change that moves ONLY master_visual/contract_root is not blocked. Adding an
+    # UNREGISTERED theme/ambience (e.g. `[data-theme="neon"]{...}`) does exactly that: base_css strips
+    # it as if it were registered, per_theme does not cover it, and only the aggregate moves -> PASS.
+    # VB.partition_consistency() is the check that catches it, and nothing was calling it. Same for a
+    # theme deleted from the switcher (theme_set_consistency). Wire both into the gate's verdict.
+    contract = VB.extract_contract(src)
+    partition = VB.partition_consistency(src)
+    theme_set = VB.theme_set_consistency(contract)
+    rep["partition_consistency"] = partition
+    rep["theme_set_consistency"] = theme_set
+    consistency_ok = partition["consistent"] and theme_set["consistent"]
+    # The gate's verdict is run_ci's decision AND the consistency controls. Report it as one value so a
+    # reader never sees "decision: PASS" next to a non-zero exit.
+    rep["gate_result"] = "BLOCK" if (rep["decision"] == "BLOCK" or not consistency_ok) else rep["decision"]
+
+    if args.json:
+        # 机器消费者必须看到与 exit code 一致的判决:此前 JSON 仍带 run_ci 的原始
+        # decision/blocked/blocked_on,在「仅一致性失败」时会显示 PASS 而 exit 却是 1。
+        rep["decision_run_ci_only"] = rep["decision"]
+        rep["decision"] = rep["gate_result"]
+        rep["blocked"] = rep["gate_result"] == "BLOCK"
+        if not consistency_ok:
+            rep["blocked_on"] = sorted(set(rep.get("blocked_on") or []) | {
+                k for k, ok in (("partition_consistency", partition["consistent"]),
+                                ("theme_set_consistency", theme_set["consistent"])) if not ok})
+        print(json.dumps(rep, ensure_ascii=False, indent=2))
+    else:
+        print(f"baseline: {which} -> {bpath.name}")
+        print(f"GATE: {rep['gate_result']}   (run_ci decision: {rep['decision']})")
+        if rep.get("blocked_on"):
+            print(f"blocked_on: {rep['blocked_on']}")
+        for el in rep.get("changed", []):      # run_ci 的键是 `changed`(list[str]);写成 `changes` 时这段永不执行
+            print(f"  changed: {el}")
+        if not partition["consistent"]:
+            print(f"partition_consistency: FAIL unregistered_themes={partition['unregistered_themes']} "
+                  f"unregistered_fx={partition['unregistered_fx']}  <- aggregate-only escape")
+        if not theme_set["consistent"]:
+            print(f"theme_set_consistency: FAIL themes={theme_set['themes']} "
+                  f"option_keys={theme_set['option_keys']} nav_keys={theme_set['nav_keys']} "
+                  f"missing_from_options={theme_set['missing_from_options']} "
+                  f"extra_in_options={theme_set['extra_in_options']}")
+    # LOAD-BEARING exit code: BLOCK must fail the caller, not exit 0 like the old bare run did.
+    return 1 if (rep["decision"] == "BLOCK" or not consistency_ok) else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
