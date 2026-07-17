@@ -1,5 +1,0 @@
-# ADP-S8-P02-T089 (PARTIAL) stop-the-line drills + soak framework
-python3 tools/soak_stopline_drill.py --out evidence/ADP-S8-P02-T089/soak_stopline_report.json
-#   -> STOPLINE_CLAUSE_MET=True (8/8 triggers drilled); SOAK=PENDING day 0/14; T089_COMPLETE=False
-python3 evidence/ADP-S8-P02-T089/test-results/t089_verify.py   # ACCEPTANCE=PASS (clause 2) exit 0
-curl -s https://adp.linzezhang.com/build.json                  # build_id b189d3cc0703 (NOT_DEPLOYED)
