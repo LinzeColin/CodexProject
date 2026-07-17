@@ -23,6 +23,9 @@ from KMFA.tools.v014_s07_p2_wps_file_adapter import (
     NEXT_INSTRUCTION,
     NEXT_PHASE,
     PHASE_SCOPE,
+    PRIVATE_RUNTIME_REGISTRY_REF,
+    PUBLIC_REPOSITORY_REF,
+    RAW_INBOX_REF,
     REPORT_PATH,
     REQUIRED_WPS_EXPORT_TYPES,
     RISK_REGISTER_PATH,
@@ -219,17 +222,16 @@ def check_public_safe_file(path: Path, errors: list[str]) -> None:
 
 def validate_legacy_wps_adapter_baseline() -> dict[str, Any]:
     baseline_manifest, mappings, conversion_guidance, field_report, rule_versions = load_public_safe_wps_baseline()
-    hash_only_mappings = [
+    private_binding_mappings = [
         mapping
         for mapping in mappings
-        if str(mapping.get("source_binding", {}).get("source_header_hash", "")).startswith("sha256:")
-        and mapping.get("source_binding", {}).get("source_header_private_ref")
+        if mapping.get("source_binding", {}).get("binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED"
     ]
     return {
         "source_export_type_count": baseline_manifest["summary"]["source_export_type_count"],
         "source_registry_count": baseline_manifest["summary"]["source_registry_count"],
         "field_mapping_count": baseline_manifest["summary"]["field_mapping_count"],
-        "hash_only_field_mapping_count": len(hash_only_mappings),
+        "private_binding_revalidation_required_count": len(private_binding_mappings),
         "field_report_count": baseline_manifest["summary"]["field_report_count"],
         "conversion_guidance_count": baseline_manifest["summary"]["conversion_guidance_count"],
         "mapping_rule_version_count": baseline_manifest["summary"]["mapping_rule_version_count"],
@@ -273,6 +275,7 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
     require(manifest.get("stage_id") == "S07", "stage_id must be S07", errors)
     require(manifest.get("phase_id") == "S07-P2", "phase_id must be S07-P2", errors)
     require(manifest.get("phase_scope") == PHASE_SCOPE, "phase scope mismatch", errors)
+    require(manifest.get("worktree") == PUBLIC_REPOSITORY_REF, "public repository ref mismatch", errors)
     require(manifest.get("task_id") == TASK_ID, "task id mismatch", errors)
     require(manifest.get("acceptance_id") == ACCEPTANCE_ID, "acceptance id mismatch", errors)
     require(
@@ -299,7 +302,7 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
         "source_export_type_count": 4,
         "source_registry_count": 4,
         "field_mapping_count": 20,
-        "hash_only_field_mapping_count": 20,
+        "private_binding_revalidation_required_count": 20,
         "field_report_count": 4,
         "conversion_guidance_count": 4,
         "mapping_rule_version_count": 1,
@@ -319,7 +322,7 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
     for key, value in legacy.items():
         require(summary.get(key) == value, f"legacy baseline {key} mismatch", errors)
 
-    require(adapter_manifest.get("schema_version") == "kmfa.v014_wps_file_adapter_metadata.v1", "adapter schema mismatch", errors)
+    require(adapter_manifest.get("schema_version") == "kmfa.v014_wps_file_adapter_metadata.v2", "adapter schema mismatch", errors)
     require(set(adapter_manifest.get("wps_export_types", [])) == set(REQUIRED_WPS_EXPORT_TYPES), "adapter export set mismatch", errors)
     require(len(source_registry.get("sources", [])) == 4, "source registry count mismatch", errors)
     require(len(mappings) == 20, "field mapping row count mismatch", errors)
@@ -330,7 +333,9 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
     for source in source_registry.get("sources", []):
         require(source.get("record_type") == "v014_wps_export_source", "source record type mismatch", errors)
         require(source.get("export_type") in REQUIRED_WPS_EXPORT_TYPES, "source export type mismatch", errors)
-        require(str(source.get("converted_structure_fingerprint", "")).startswith("sha256:"), "source fingerprint mismatch", errors)
+        require(str(source.get("opaque_binding_ref", "")).startswith("OPAQUE-V014-WPS-SOURCE-"), "source opaque binding mismatch", errors)
+        require(source.get("binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED", "source binding status mismatch", errors)
+        require("converted_structure_fingerprint" not in source, "source fingerprint must not be public", errors)
         require(source.get("native_wps_conversion_required") is True, "source conversion required must be true", errors)
         require(source.get("read_only_parse") is True, "source read_only_parse must be true", errors)
         require(source.get("raw_layer_write_allowed") is False, "source raw layer write must be false", errors)
@@ -346,9 +351,23 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
         require(str(mapping.get("canonical_field_ref", "")).startswith("field:"), "canonical field ref mismatch", errors)
         require(mapping.get("mapping_rule_version_id") == ACTIVE_MAPPING_RULE_VERSION, "mapping rule version mismatch", errors)
         binding = mapping.get("source_binding", {})
-        require(str(binding.get("source_header_fingerprint", "")).startswith("sha256:"), "source header fingerprint mismatch", errors)
-        require(binding.get("source_header_private_ref"), "source header private ref required", errors)
-        require(str(binding.get("converted_structure_fingerprint", "")).startswith("sha256:"), "converted fingerprint mismatch", errors)
+        require(str(binding.get("opaque_binding_ref", "")).startswith("OPAQUE-V014-WPS-FIELD-BINDING-"), "field opaque binding mismatch", errors)
+        require(binding.get("binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED", "field binding status mismatch", errors)
+        require(
+            not any(
+                key in binding
+                for key in (
+                    "converted_structure_fingerprint",
+                    "sheet_ref",
+                    "column_ref",
+                    "source_header_fingerprint",
+                    "source_header_private_ref",
+                    "source_file_private_ref",
+                )
+            ),
+            "field binding must not publish private-derived fingerprints or coordinates",
+            errors,
+        )
         quality = mapping.get("quality_state", {})
         require(quality.get("q4_human_confirmed") is False, "mapping Q4 must be false", errors)
         require(quality.get("q5_calculation_baseline_allowed") is False, "mapping Q5 must be false", errors)
@@ -392,7 +411,13 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
     require(quality_gate.get("formal_report_allowed_count") == 0, "formal report count mismatch", errors)
 
     raw = manifest.get("raw_data_boundary", {})
-    require(raw.get("raw_inbox_ref") == "operator-designated local raw/private inbox outside repository", "raw inbox ref mismatch", errors)
+    require(raw.get("raw_inbox_ref") == RAW_INBOX_REF, "raw inbox ref mismatch", errors)
+    require(
+        raw.get("private_runtime_registry_ref") == PRIVATE_RUNTIME_REGISTRY_REF,
+        "private runtime registry ref mismatch",
+        errors,
+    )
+    require("private_runtime_output_dir" not in raw, "private runtime path must not be public", errors)
     for key in RAW_BOUNDARY_FALSE_KEYS:
         require(raw.get(key) is False, f"raw_data_boundary.{key} must be false", errors)
     for key in MANIFEST_FALSE_KEYS:
@@ -438,6 +463,9 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
         "stage_id": manifest["stage_id"],
         "phase_id": manifest["phase_id"],
         "phase_scope": manifest["phase_scope"],
+        "worktree": manifest["worktree"],
+        "raw_inbox_ref": manifest["raw_data_boundary"]["raw_inbox_ref"],
+        "private_runtime_registry_ref": manifest["raw_data_boundary"]["private_runtime_registry_ref"],
         "status": manifest["status"],
         "s06_stage_review_dependency_validated": manifest["s06_stage_review_dependency_validated"],
         "s07_p1_dependency_validated": manifest["s07_p1_dependency_validated"],
@@ -445,7 +473,7 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
         "source_export_type_count": summary["source_export_type_count"],
         "source_registry_count": summary["source_registry_count"],
         "field_mapping_count": summary["field_mapping_count"],
-        "hash_only_field_mapping_count": summary["hash_only_field_mapping_count"],
+        "private_binding_revalidation_required_count": summary["private_binding_revalidation_required_count"],
         "field_report_count": summary["field_report_count"],
         "conversion_guidance_count": summary["conversion_guidance_count"],
         "mapping_rule_version_count": summary["mapping_rule_version_count"],

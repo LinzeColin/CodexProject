@@ -224,8 +224,11 @@ def _require_upstream(
     for row in fact_rows:
         if row.get("stage_phase") != "S15-P2":
             raise PerformanceSalaryBoundaryError("S15-P3 input fact rows must be S15-P2")
-        if set(row.get("fact_status_by_field", {})) != set(REQUIRED_FACT_INTERFACE_FIELDS):
-            raise PerformanceSalaryBoundaryError("S15-P2 fact row field coverage mismatch")
+        binding = row.get("fact_binding_summary", {})
+        if binding.get("required_slot_count") != len(REQUIRED_FACT_INTERFACE_FIELDS):
+            raise PerformanceSalaryBoundaryError("S15-P2 fact row slot coverage mismatch")
+        if binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise PerformanceSalaryBoundaryError("S15-P2 private binding must be revalidated")
     if s15p2_manifest.get("quality_gate", {}).get("final_compensation_decision_allowed") is not False:
         raise PerformanceSalaryBoundaryError("S15-P2 must not allow final compensation decision")
 
@@ -256,14 +259,14 @@ def _build_interface_contract(generated_at: str) -> dict[str, Any]:
         "allowed_payload_fields": [
             "performance_fact_row_ref",
             "project_ref",
-            "available_fact_fields",
-            "field_status_refs",
-            "fact_hash_ref_fields",
+            "available_fact_slot_count",
+            "fact_binding_summary",
+            "field_status_aggregate",
             "review_item_refs",
             "evidence_refs",
             "boundary_flags",
         ],
-        "value_policy": "hash_ref_status_and_evidence_only_no_numeric_payload",
+        "value_policy": "opaque_non_derived_ref_status_aggregate_no_numeric_or_digest_payload",
         "read_model_status": "draft_schema_for_future_system_only",
         "api_endpoint_created": False,
         "file_export_created": False,
@@ -289,7 +292,7 @@ def _readiness_row(
     row_id = f"S15P3-READ-{index:03d}"
     fact_row_id = str(fact_row["performance_fact_row_id"])
     return {
-        "schema_version": "kmfa.future_salary_system_readiness_draft.v1",
+        "schema_version": "kmfa.future_salary_system_readiness_draft.v2",
         "record_type": "future_salary_system_readiness_draft",
         "project_id": "KMFA",
         "stage_phase": "S15-P3",
@@ -301,9 +304,21 @@ def _readiness_row(
         "source_review_item_refs": [
             f"KMFA/metadata/reports/performance_review_items.jsonl#{item_id}" for item_id in sorted(review_item_ids)
         ],
-        "available_fact_fields": list(REQUIRED_FACT_INTERFACE_FIELDS),
-        "field_status_refs": dict(fact_row.get("fact_status_by_field", {})),
-        "fact_hash_ref_fields": sorted(fact_row.get("fact_hash_refs_by_field", {}).keys()),
+        "available_fact_slot_count": len(REQUIRED_FACT_INTERFACE_FIELDS),
+        "fact_binding_summary": {
+            "schema_version": "kmfa.public_opaque_salary_fact_binding_summary.v1",
+            "opaque_binding_set_ref": f"OPAQUE-SALARY-READINESS-BINDING-{index:03d}",
+            "private_binding_revalidation_required_slot_count": 2,
+            "manual_review_required_slot_count": 4,
+            "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            "sensitive_binding_values_committed": False,
+            "field_breakdown_committed": False,
+        },
+        "field_status_aggregate": {
+            "required_slot_count": len(REQUIRED_FACT_INTERFACE_FIELDS),
+            "manual_review_required_slot_count": 4,
+            "private_binding_revalidation_required_slot_count": 2,
+        },
         "review_item_count": len(review_item_ids),
         "future_read_status": "draft_only_blocked_until_manual_review_and_human_approval",
         "value_policy": "no_numeric_salary_or_bonus_payload",
@@ -509,7 +524,7 @@ def validate_performance_salary_boundary_artifacts(
         raise PerformanceSalaryBoundaryError("readiness row ids mismatch")
     for row in readiness_rows:
         row_id = str(row.get("readiness_row_id"))
-        if row.get("schema_version") != "kmfa.future_salary_system_readiness_draft.v1":
+        if row.get("schema_version") != "kmfa.future_salary_system_readiness_draft.v2":
             raise PerformanceSalaryBoundaryError(f"{row_id} schema mismatch")
         if row.get("record_type") != "future_salary_system_readiness_draft":
             raise PerformanceSalaryBoundaryError(f"{row_id} record type mismatch")
@@ -521,8 +536,18 @@ def validate_performance_salary_boundary_artifacts(
             raise PerformanceSalaryBoundaryError(f"{row_id} fact row ref mismatch")
         if not str(row.get("project_ref", "")).startswith("entity_ref://KMFA/S08-P2/project/"):
             raise PerformanceSalaryBoundaryError(f"{row_id} project ref mismatch")
-        if set(row.get("available_fact_fields", [])) != set(REQUIRED_FACT_INTERFACE_FIELDS):
-            raise PerformanceSalaryBoundaryError(f"{row_id} available fields mismatch")
+        if row.get("available_fact_slot_count") != len(REQUIRED_FACT_INTERFACE_FIELDS):
+            raise PerformanceSalaryBoundaryError(f"{row_id} available fact slot count mismatch")
+        binding = row.get("fact_binding_summary", {})
+        if binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise PerformanceSalaryBoundaryError(f"{row_id} private binding status mismatch")
+        if binding.get("sensitive_binding_values_committed") is not False:
+            raise PerformanceSalaryBoundaryError(f"{row_id} must not commit sensitive binding values")
+        if binding.get("field_breakdown_committed") is not False:
+            raise PerformanceSalaryBoundaryError(f"{row_id} must not commit field breakdown")
+        for legacy_key in ("available_fact_fields", "field_status_refs", "fact_hash_ref_fields"):
+            if legacy_key in row:
+                raise PerformanceSalaryBoundaryError(f"{row_id} must not publish {legacy_key}")
         if len(row.get("source_review_item_refs", [])) != 4:
             raise PerformanceSalaryBoundaryError(f"{row_id} must reference four review items")
         if row.get("future_read_status") != "draft_only_blocked_until_manual_review_and_human_approval":

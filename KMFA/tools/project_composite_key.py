@@ -307,13 +307,20 @@ def build_default_project_composite_key(
     review_queue = [result["manual_review_queue_record"] for result in match_results if result["manual_review_required"]]
     profiles = [authority, strong, missing_contract, weak]
     manifest = {
-        "schema_version": "kmfa.project_composite_key_manifest.v1",
+        "schema_version": "kmfa.project_composite_key_manifest.v2",
         "record_type": "s08_p1_project_composite_key_manifest",
         "project_id": "KMFA",
         "stage_phase": "S08-P1",
         "generated_at": require_text(generated_at, "generated_at"),
-        "required_components": list(REQUIRED_COMPONENTS),
-        "matching_weights_bps": dict(MATCHING_WEIGHTS_BPS),
+        "matching_policy_public_summary": {
+            "schema_version": "kmfa.public_opaque_matching_policy.v1",
+            "opaque_policy_ref": "OPAQUE-PROJECT-MATCHING-POLICY-0001",
+            "required_component_count": len(REQUIRED_COMPONENTS),
+            "matching_weight_total_bps": sum(MATCHING_WEIGHTS_BPS.values()),
+            "component_breakdown_committed": False,
+            "private_binding_values_committed": False,
+            "private_policy_revalidation_required": True,
+        },
         "thresholds_bps": dict(THRESHOLDS_BPS),
         "summary": {
             "profile_count": len(profiles),
@@ -378,14 +385,24 @@ def validate_project_composite_key_artifacts(
     match_results: list[dict[str, Any]],
     review_queue: list[dict[str, Any]],
 ) -> None:
-    if manifest.get("schema_version") != "kmfa.project_composite_key_manifest.v1":
+    if manifest.get("schema_version") != "kmfa.project_composite_key_manifest.v2":
         raise ProjectCompositeKeyError("invalid S08-P1 manifest schema_version")
-    if tuple(manifest.get("required_components", [])) != REQUIRED_COMPONENTS:
-        raise ProjectCompositeKeyError("S08-P1 required components mismatch")
-    if manifest.get("matching_weights_bps") != MATCHING_WEIGHTS_BPS:
-        raise ProjectCompositeKeyError("S08-P1 matching weights mismatch")
     if sum(MATCHING_WEIGHTS_BPS.values()) != 10000:
         raise ProjectCompositeKeyError("S08-P1 matching weights must sum to 10000 bps")
+    matching_policy = manifest.get("matching_policy_public_summary", {})
+    expected_matching_policy = {
+        "schema_version": "kmfa.public_opaque_matching_policy.v1",
+        "opaque_policy_ref": "OPAQUE-PROJECT-MATCHING-POLICY-0001",
+        "required_component_count": len(REQUIRED_COMPONENTS),
+        "matching_weight_total_bps": 10000,
+        "component_breakdown_committed": False,
+        "private_binding_values_committed": False,
+        "private_policy_revalidation_required": True,
+    }
+    if matching_policy != expected_matching_policy:
+        raise ProjectCompositeKeyError("S08-P1 public matching policy summary mismatch")
+    if "required_components" in manifest or "matching_weights_bps" in manifest:
+        raise ProjectCompositeKeyError("S08-P1 public manifest must not publish private component weighting")
     if manifest.get("thresholds_bps") != THRESHOLDS_BPS:
         raise ProjectCompositeKeyError("S08-P1 thresholds mismatch")
     if manifest.get("quality_gate", {}).get("github_upload_allowed") is not False:

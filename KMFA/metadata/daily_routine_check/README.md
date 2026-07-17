@@ -5,8 +5,14 @@ Public-safe metadata for `Dingtalk-routine-check / 钉钉工作检查`.
 This metadata controls a local skill that reads existing DWS output from OneDrive. The primary input is the zip package:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+external-source://DWS_OUTPUT_ZIP
 ```
+
+The token is resolved at run time from the machine-private
+`KMFA_DWS_OUTPUT_ZIP` environment entry. The resolved local path must never be
+written back to public metadata. Durable output resolves independently from
+`KMFA_DAILY_ROUTINE_ARCHIVE_ROOT`; a live run fails closed if either private
+entry is absent.
 
 The checker streams required CSV members from this complete zip and does not copy or extract the package. It is the only upstream input. A disk `DWS_Outputs/` folder is normally absent and must never be probed, created, materialized, or used as fallback. `DWS_Outputs/<群>/...` is retained only as a member path inside the zip.
 
@@ -36,13 +42,13 @@ Morning runs also produce `cash_risk_result` for 杨婷资金账户监控. The p
 Private runtime data belongs under OneDrive, not inside the Git package:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
+local-resource://PRIVATE_RUNTIME/daily_routine_check/
 ```
 
 Durable logs and snapshots belong under:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/
+local-resource://DAILY_ROUTINE_ARCHIVE/
 ```
 
 Public files here:

@@ -1,0 +1,177 @@
+{
+  "schema_version": "kmfa.v015.s01_stage_review.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "planning_spec": "TaskPack/Roadmap v2.0",
+  "stage_id": "S01",
+  "task_id": "KMFA-V015-S01-STAGE-REVIEW-20260713",
+  "acceptance_id": "ACC-KMFA-V015-S01-STAGE-REVIEW",
+  "generated_at": "2026-07-13T11:35:39+10:00",
+  "run_mode": "IMPLEMENT",
+  "work_kind": "STAGE_REVIEW_REMEDIATION",
+  "review_base_commit": "5aba436c3e7f1a98bb1a3ad88735b8ad2b279d46",
+  "source_package": {
+    "name": "KMFA_ChatGPT_Stage3_Codex_TaskPack_Roadmap_v2_0_UIUX_FULL_REBUILD.zip",
+    "bytes": 118652,
+    "sha256": "e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8",
+    "taskpack_version": "v2.0",
+    "roadmap_stage_count": 24,
+    "roadmap_phase_count": 72,
+    "roadmap_task_count": 216
+  },
+  "phase_evidence": [
+    {
+      "phase_id": "S01-P1",
+      "manifest_ref": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json",
+      "manifest_sha256": "abfc1d61d2d5cc4416d6d4e12a2a0956fcbeae28545872922b7b3cdd0c09bbe1",
+      "manifest_bytes": 9363,
+      "manifest_content_hash": "sha256:fb533ea2170880f7ba89d69819ffc5239e0fbdc66c60af46ff22ca9d7fa42452",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "NOT_PASSED",
+      "accepted_tasks": 0,
+      "total_tasks": 3
+    },
+    {
+      "phase_id": "S01-P2",
+      "manifest_ref": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/s01_p2_implementation_spec_gap_inventory_manifest.json",
+      "manifest_sha256": "2ec1fd24e43b9c6c659dbd363dd888e3ba6991358b3e8d1206a145441b6fd300",
+      "manifest_bytes": 6050,
+      "manifest_content_hash": "sha256:0b73988c6a3580dfb4185a7bd55b79f0e0ca767c916772a8f0d0701ede0e5d86",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "accepted_tasks": 3,
+      "total_tasks": 3
+    },
+    {
+      "phase_id": "S01-P3",
+      "manifest_ref": "KMFA/stage_artifacts/V015_S01_P3_READ_ONLY_AUDIT_GATE/machine/s01_p3_read_only_audit_gate_manifest.json",
+      "manifest_sha256": "284b949a792ab93575531527279e314851b40c4993f2258292f911020d367f29",
+      "manifest_bytes": 6436,
+      "manifest_content_hash": "sha256:e4f33027260dbcac2dbd8fad362ae4c883e516884d368c2f3793c5aaa16b5ef4",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "NOT_PASSED",
+      "accepted_tasks": 2,
+      "total_tasks": 3
+    }
+  ],
+  "task_accounting": {
+    "total": 9,
+    "accepted": 5,
+    "not_accepted": 4,
+    "triggered_stop_conditions": 3,
+    "all_tasks_explicitly_indexed": true
+  },
+  "review_findings": {
+    "total": 22,
+    "review_defect_total": 17,
+    "review_defect_fixed_validated": 17,
+    "review_defect_open": 0,
+    "inherited_blocker_total": 5,
+    "inherited_blocker_open_blocking": 5
+  },
+  "open_risk_plan": {
+    "total": 24,
+    "p0": 18,
+    "p1": 6,
+    "p0_plan_gap_count": 0,
+    "risks_resolved_by_review": false
+  },
+  "stage_gate": {
+    "review_execution_status": "EXECUTION_COMPLETE",
+    "evidence_validation_status": "PASS",
+    "final_validation_status": "PASS",
+    "stage_lifecycle_status": "BLOCKED",
+    "stage_acceptance_status": "NOT_PASSED",
+    "decision": "NO_GO",
+    "s02_entry_allowed": false
+  },
+  "next_gate": {
+    "next_allowed_run": "S01_CONTROLLED_TRANSITION_AMENDMENT",
+    "existing_full_rebuild_objective_is_scope_authority": true,
+    "additional_owner_authorization_requested": false,
+    "stage_history_must_remain_blocked_not_passed_no_go": true,
+    "amendment_is_stage_pass": false
+  },
+  "downstream_actions": {
+    "s02_started": false,
+    "product_runtime_implementation_performed": false,
+    "api_implementation_performed": false,
+    "database_implementation_performed": false,
+    "ui_implementation_performed": false,
+    "business_execution_performed": false,
+    "github_upload_performed": false,
+    "app_reinstall_performed": false,
+    "raw_inbox_mutated": false
+  },
+  "review_correction_binding": {
+    "correction_kind": "REVIEW_REMEDIATION_NOT_SILENT_HISTORICAL_REWRITE",
+    "historical_phase_conclusions_preserved": true,
+    "corrected_validator_and_test_refs": [
+      "KMFA/tools/check_v015_s01_p1_legacy_reference_baseline.py",
+      "KMFA/tests/test_v015_s01_p1_legacy_reference_baseline.py",
+      "KMFA/tools/check_v015_s01_p2_implementation_spec_gap_inventory.py",
+      "KMFA/tests/test_v015_s01_p2_implementation_spec_gap_inventory.py",
+      "KMFA/tools/check_v015_s01_p3_read_only_audit_gate.py",
+      "KMFA/tests/test_v015_s01_p3_read_only_audit_gate.py"
+    ],
+    "corrected_human_test_result_refs": [
+      "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/test_results_zh.md",
+      "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/human/test_results_zh.md",
+      "KMFA/stage_artifacts/V015_S01_P3_READ_ONLY_AUDIT_GATE/human/test_results_zh.md"
+    ],
+    "focused_mutation_test_counts": {
+      "s01_p1": 13,
+      "s01_p2": 28,
+      "s01_p3": 56,
+      "total": 97
+    }
+  },
+  "artifact_refs": {
+    "manifest": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_manifest.json",
+    "review_matrix": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_matrix_public_safe.json",
+    "review_findings": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_findings_public_safe.csv",
+    "cross_phase_contracts": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/cross_phase_contracts_public_safe.json",
+    "review_report": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/human/stage1_review_report_zh.md",
+    "rollback_plan": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/human/rollback_plan_zh.md",
+    "test_results": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/human/test_results_zh.md",
+    "validation_results": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/validation_results.jsonl"
+  },
+  "artifact_integrity": [
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_matrix_public_safe.json",
+      "bytes": 5267,
+      "sha256": "5a8c990e9e533b379cd6ead1d622b2c6b7a072b55b5d6f54c89ee76a6eded8a0"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_findings_public_safe.csv",
+      "bytes": 7593,
+      "sha256": "ff5a8b072c4420cbecc7ac4336809e0809cf0fd1e4fa154fc485686bb656956c"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/cross_phase_contracts_public_safe.json",
+      "bytes": 2894,
+      "sha256": "86fa05826088568ca4d0f9b1d798ee1cbc989d655c4e09e743514184aba5a149"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/human/stage1_review_report_zh.md",
+      "bytes": 2920,
+      "sha256": "ca7161e6d83cd2709f3a52a593bbbb58e3c195c47f5c711a564db3ff22552945"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/human/rollback_plan_zh.md",
+      "bytes": 921,
+      "sha256": "2f7e34bf412b8b48eaf5549ec052b61b0810c29e8cdf757c14cb204061ac4317"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/human/test_results_zh.md",
+      "bytes": 1112,
+      "sha256": "2bd9a1deeb3df97b7a23b153120d6ea1a0b721a358adf16b6f1d251eef595260"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/validation_results.jsonl",
+      "bytes": 2894,
+      "sha256": "d21cb9cd9423254e6917acad7ac1fa6fa39e1e231ee2d0ecf80725f1b45c5200"
+    }
+  ],
+  "content_hash": "sha256:542043139b1c4d86bc764f6b0341f205266284d7d119e6bdcf638ab2d17a91bb"
+}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -10,8 +11,13 @@ except ImportError:  # pragma: no cover - direct script execution
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
     from KMFA.tools.daily_routine_check.archive_reader import DwsArchiveReader
 
-DEFAULT_INPUT = Path("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip")
-DEFAULT_RUNTIME = Path("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime")
+DEFAULT_INPUT = Path(os.environ.get("KMFA_DWS_OUTPUT_ZIP", "ENV::KMFA_DWS_OUTPUT_ZIP"))
+DEFAULT_RUNTIME = Path(
+    os.environ.get(
+        "KMFA_DAILY_ROUTINE_PRIVATE_RUNTIME",
+        "ENV::KMFA_DAILY_ROUTINE_PRIVATE_RUNTIME",
+    )
+)
 REQUIRED_GROUPS = ("付款请示群", "生产管理群")
 
 

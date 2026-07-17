@@ -5,7 +5,7 @@
 验证结果：
 
 1. strict baseline validator：PASS；同时校验 private evidence、installed App、raw root、remote main 和 source package；输出明确为 `phase_acceptance=NOT_PASSED / accepted_tasks=0/3`。
-2. focused unittest：9/9 PASS；覆盖 happy path、false Phase PASS、acceptance/metadata 文档身份、acceptance check identity/finding、metadata App hash、SHA inventory hash、空 release-state 和 private evidence 缺项变异。
+2. focused unittest：13/13 PASS；覆盖 happy path、false Phase PASS、acceptance/metadata 文档身份、acceptance check identity/finding、metadata App hash、SHA inventory hash、空 release-state、private evidence 缺项、artifact refs、phase gate、not-passed count 与 live remote 可验证性变异。
 3. project governance required / lean governance required / changed-only governance sync：全部 PASS，`errors=0 / warnings=0`。
 4. no-float / no-omission：PASS；no-omission=`requirements 20 / P0 9 / P1 8 / status 1215 / tasks 162`。
 5. structured parse：JSON=3、JSONL=2、CSV=3、YAML=5，全部 PASS。

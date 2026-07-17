@@ -10,9 +10,7 @@ generation, UI, external connector, Stage 9 review, or GitHub upload work.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -80,7 +78,6 @@ FORBIDDEN_PUBLIC_KEYS = {
 }
 
 FORBIDDEN_PUBLIC_SUFFIXES = (".zip", ".xls", ".xlsx", ".pdf", ".sqlite", ".db")
-HASH_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
 
 
 class ProjectCostFactLayerError(ValueError):
@@ -94,10 +91,6 @@ def require_text(value: Any, field_name: str) -> str:
     if not text:
         raise ProjectCostFactLayerError(f"{field_name} is required")
     return text
-
-
-def _sha256_for(label: str) -> str:
-    return "sha256:" + hashlib.sha256(label.encode("utf-8")).hexdigest()
 
 
 def _public_repo_safety() -> dict[str, bool]:
@@ -158,14 +151,20 @@ def _authority_summary(authority_records: list[dict[str, Any]]) -> dict[str, Any
     locked = [item for item in authority_records if item.get("lock_status") == "q5_locked_public_safe_hash_baseline"]
     excluded = [item for item in authority_records if item.get("lock_status") == "excluded_cross_source_support_only"]
     locked_fields = sorted({str(item.get("field_key")) for item in locked if item.get("field_key")})
+    required_support = (
+        "contract_amount" in locked_fields,
+        "total_expense" in locked_fields,
+        "cost_category" in locked_fields,
+    )
     return {
         "locked_field_count": len(locked),
         "excluded_cross_source_support_count": len(excluded),
         "locked_field_keys": locked_fields,
-        "required_s09_field_support_present": {
-            "contract_amount": "contract_amount" in locked_fields,
-            "cost_total": "total_expense" in locked_fields,
-            "cost_category": "cost_category" in locked_fields,
+        "required_s09_field_support_summary": {
+            "required_slot_count": len(required_support),
+            "support_present_slot_count": sum(required_support),
+            "all_required_support_present": all(required_support),
+            "field_breakdown_committed": False,
         },
         "authority_baseline_ref": "KMFA/metadata/baseline/a0_authority_baseline_manifest.json",
         "authority_records_ref": "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl",
@@ -222,25 +221,6 @@ def _upstream_quality_summary(
     }
 
 
-def _metric_private_refs(fact_record_id: str) -> dict[str, str]:
-    return {metric: f"private_ref://KMFA/S09-P1/{fact_record_id}/{metric}" for metric in REQUIRED_FACT_METRICS}
-
-
-def _metric_hash_refs(fact_record_id: str) -> dict[str, str]:
-    return {metric: _sha256_for(f"S09-P1:{fact_record_id}:{metric}:value-ref") for metric in REQUIRED_FACT_METRICS}
-
-
-def _cost_category_private_refs(fact_record_id: str) -> dict[str, str]:
-    return {category: f"private_ref://KMFA/S09-P1/{fact_record_id}/cost-category/{category}" for category in REQUIRED_COST_CATEGORIES}
-
-
-def _cost_category_hash_refs(fact_record_id: str) -> dict[str, str]:
-    return {
-        category: _sha256_for(f"S09-P1:{fact_record_id}:cost-category:{category}")
-        for category in REQUIRED_COST_CATEGORIES
-    }
-
-
 def _profile_ref(profile: dict[str, Any], index: int) -> str:
     profile_id = require_text(profile.get("profile_id", f"profile-{index}"), "profile_id")
     return f"KMFA/metadata/schema_maps/project_identity_profiles.jsonl#{profile_id}"
@@ -255,7 +235,7 @@ def _build_fact_records(
         profile_ref = _profile_ref(profile, index)
         records.append(
             {
-                "schema_version": "kmfa.project_cost_fact_record.v1",
+                "schema_version": "kmfa.project_cost_fact_record.v2",
                 "record_type": "project_cost_fact_record",
                 "project_id": "KMFA",
                 "stage_phase": "S09-P1",
@@ -265,18 +245,32 @@ def _build_fact_records(
                 "authority_baseline_ref": "KMFA/metadata/baseline/a0_authority_baseline_manifest.json",
                 "business_entity_schema_ref": "KMFA/metadata/schema_maps/business_entity_model_schema.json",
                 "quality_gate_ref": "KMFA/metadata/quality/data_quality_results.jsonl",
-                "source_hash": _sha256_for(f"S09-P1:{fact_record_id}:{profile_ref}"),
+                "source_binding_ref": f"OPAQUE-PROJECT-COST-SOURCE-BINDING-{index:03d}",
+                "source_binding_schema_version": "kmfa.public_opaque_source_binding.v1",
+                "source_binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
                 "source_refs": [
                     "source_ref://KMFA/S05/A0-authority-baseline",
                     "source_ref://KMFA/S06/zero-delta-and-difference-queue",
                     "source_ref://KMFA/S08/project-identity-and-entity-model",
                 ],
                 "metric_slots": list(REQUIRED_FACT_METRICS),
-                "metric_private_refs": _metric_private_refs(fact_record_id),
-                "metric_hash_refs": _metric_hash_refs(fact_record_id),
+                "metric_binding_summary": {
+                    "schema_version": "kmfa.public_opaque_metric_binding_summary.v1",
+                    "opaque_binding_set_ref": f"OPAQUE-PROJECT-COST-METRIC-SET-{index:03d}",
+                    "required_slot_count": len(REQUIRED_FACT_METRICS),
+                    "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                    "private_binding_values_committed": False,
+                    "field_breakdown_committed": False,
+                },
                 "cost_category_slots": list(REQUIRED_COST_CATEGORIES),
-                "cost_category_private_refs": _cost_category_private_refs(fact_record_id),
-                "cost_category_hash_refs": _cost_category_hash_refs(fact_record_id),
+                "cost_category_binding_summary": {
+                    "schema_version": "kmfa.public_opaque_cost_binding_summary.v1",
+                    "opaque_binding_set_ref": f"OPAQUE-PROJECT-COST-CATEGORY-SET-{index:03d}",
+                    "required_slot_count": len(REQUIRED_COST_CATEGORIES),
+                    "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                    "private_binding_values_committed": False,
+                    "field_breakdown_committed": False,
+                },
                 "metric_values_public_committed": False,
                 "amount_calculation_performed": False,
                 "formal_calculation_allowed": False,
@@ -295,7 +289,7 @@ def _build_fact_records(
 def _build_unallocated_pool(upstream_quality: dict[str, Any]) -> list[dict[str, Any]]:
     return [
         {
-            "schema_version": "kmfa.unallocated_project_cost_pool.v1",
+            "schema_version": "kmfa.unallocated_project_cost_pool.v2",
             "record_type": "unallocated_project_cost_pool_item",
             "project_id": "KMFA",
             "stage_phase": "S09-P1",
@@ -303,9 +297,10 @@ def _build_unallocated_pool(upstream_quality: dict[str, Any]) -> list[dict[str, 
             "pool_type": "unallocated_project_cost_pool",
             "cost_category": category,
             "cost_category_ref": f"cost_category_ref://KMFA/S09-P1/{category}",
-            "cost_category_hash": _sha256_for(f"S09-P1:unallocated-cost-category:{category}"),
-            "amount_value_private_ref": f"private_ref://KMFA/S09-P1/unallocated-cost/{category}",
-            "amount_value_hash_ref": _sha256_for(f"S09-P1:unallocated-cost:{category}:value-ref"),
+            "opaque_binding_ref": f"OPAQUE-PROJECT-COST-UNALLOCATED-BINDING-{index:03d}",
+            "binding_schema_version": "kmfa.public_opaque_cost_binding.v1",
+            "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            "private_binding_values_committed": False,
             "amount_value_public_committed": False,
             "assignment_status": "pending_project_assignment_or_quality_resolution",
             "blocking_reason_refs": [
@@ -343,13 +338,13 @@ def build_default_project_cost_fact_layer(
     unallocated_pool = _build_unallocated_pool(upstream_quality)
 
     manifest = {
-        "schema_version": "kmfa.project_cost_fact_layer_manifest.v1",
+        "schema_version": "kmfa.project_cost_fact_layer_manifest.v2",
         "record_type": "project_cost_fact_layer_manifest",
         "project_id": "KMFA",
         "stage_phase": "S09-P1",
         "generated_at": generated_at_value,
         "formula_version": "FORM-KMFA-PROJECT-COST-FACT-LAYER-001",
-        "mapping_version": "MAP-KMFA-S09P1-PUBLIC-SAFE-v1",
+        "mapping_version": "MAP-KMFA-S09P1-PUBLIC-SAFE-v2",
         "fact_layer_status": "structural_fact_layer_blocked_for_formal_calculation"
         if upstream_quality["formal_calculation_blocked"]
         else "structural_fact_layer_ready_for_s09_p2",
@@ -435,32 +430,12 @@ def _require_false(container: dict[str, Any], path: str) -> None:
             raise ProjectCostFactLayerError(f"{path}.{key} must be false")
 
 
-def _require_hash(value: Any, path: str) -> None:
-    if not isinstance(value, str) or not HASH_RE.match(value):
-        raise ProjectCostFactLayerError(f"{path} must be sha256")
-
-
-def _validate_private_ref_map(refs: dict[str, Any], expected_keys: tuple[str, ...], path: str) -> None:
-    if set(refs) != set(expected_keys):
-        raise ProjectCostFactLayerError(f"{path} keys mismatch")
-    for key, value in refs.items():
-        if not isinstance(value, str) or not value.startswith("private_ref://"):
-            raise ProjectCostFactLayerError(f"{path}.{key} must be private_ref")
-
-
-def _validate_hash_ref_map(refs: dict[str, Any], expected_keys: tuple[str, ...], path: str) -> None:
-    if set(refs) != set(expected_keys):
-        raise ProjectCostFactLayerError(f"{path} keys mismatch")
-    for key, value in refs.items():
-        _require_hash(value, f"{path}.{key}")
-
-
 def validate_project_cost_fact_layer_artifacts(
     manifest: dict[str, Any],
     fact_records: list[dict[str, Any]],
     unallocated_pool: list[dict[str, Any]],
 ) -> None:
-    if manifest.get("schema_version") != "kmfa.project_cost_fact_layer_manifest.v1":
+    if manifest.get("schema_version") != "kmfa.project_cost_fact_layer_manifest.v2":
         raise ProjectCostFactLayerError("invalid S09-P1 manifest schema_version")
     if manifest.get("stage_phase") != "S09-P1":
         raise ProjectCostFactLayerError("S09-P1 manifest stage_phase mismatch")
@@ -509,7 +484,7 @@ def validate_project_cost_fact_layer_artifacts(
         raise ProjectCostFactLayerError("S09-P1 must preserve unresolved source difference queue status")
 
     for record in fact_records:
-        if record.get("schema_version") != "kmfa.project_cost_fact_record.v1":
+        if record.get("schema_version") != "kmfa.project_cost_fact_record.v2":
             raise ProjectCostFactLayerError("invalid S09-P1 fact record schema_version")
         if record.get("record_type") != "project_cost_fact_record":
             raise ProjectCostFactLayerError("S09-P1 fact record type mismatch")
@@ -519,15 +494,29 @@ def validate_project_cost_fact_layer_artifacts(
             raise ProjectCostFactLayerError(f"{record.get('fact_record_id')} metric slots mismatch")
         if set(record.get("cost_category_slots", [])) != set(REQUIRED_COST_CATEGORIES):
             raise ProjectCostFactLayerError(f"{record.get('fact_record_id')} cost categories mismatch")
-        _validate_private_ref_map(record.get("metric_private_refs", {}), REQUIRED_FACT_METRICS, "metric_private_refs")
-        _validate_hash_ref_map(record.get("metric_hash_refs", {}), REQUIRED_FACT_METRICS, "metric_hash_refs")
-        _validate_private_ref_map(
-            record.get("cost_category_private_refs", {}), REQUIRED_COST_CATEGORIES, "cost_category_private_refs"
-        )
-        _validate_hash_ref_map(
-            record.get("cost_category_hash_refs", {}), REQUIRED_COST_CATEGORIES, "cost_category_hash_refs"
-        )
-        _require_hash(record.get("source_hash"), "record.source_hash")
+        metric_binding = record.get("metric_binding_summary", {})
+        if metric_binding.get("required_slot_count") != len(REQUIRED_FACT_METRICS):
+            raise ProjectCostFactLayerError("S09-P1 metric binding slot count mismatch")
+        if metric_binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ProjectCostFactLayerError("S09-P1 metric bindings must require private revalidation")
+        cost_binding = record.get("cost_category_binding_summary", {})
+        if cost_binding.get("required_slot_count") != len(REQUIRED_COST_CATEGORIES):
+            raise ProjectCostFactLayerError("S09-P1 cost binding slot count mismatch")
+        if cost_binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ProjectCostFactLayerError("S09-P1 cost bindings must require private revalidation")
+        if not str(record.get("source_binding_ref", "")).startswith("OPAQUE-PROJECT-COST-SOURCE-BINDING-"):
+            raise ProjectCostFactLayerError("S09-P1 fact record opaque source binding missing")
+        if record.get("source_binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ProjectCostFactLayerError("S09-P1 fact source binding must require private revalidation")
+        for legacy_key in (
+            "source_hash",
+            "metric_private_refs",
+            "metric_hash_refs",
+            "cost_category_private_refs",
+            "cost_category_hash_refs",
+        ):
+            if legacy_key in record:
+                raise ProjectCostFactLayerError(f"S09-P1 public fact record must not publish {legacy_key}")
         if record.get("metric_values_public_committed") is not False:
             raise ProjectCostFactLayerError("S09-P1 fact record cannot commit metric values")
         if record.get("amount_calculation_performed") is not False:
@@ -542,14 +531,19 @@ def validate_project_cost_fact_layer_artifacts(
     if pool_categories != set(REQUIRED_COST_CATEGORIES):
         raise ProjectCostFactLayerError("S09-P1 unallocated pool cost category coverage mismatch")
     for pool_item in unallocated_pool:
-        if pool_item.get("schema_version") != "kmfa.unallocated_project_cost_pool.v1":
+        if pool_item.get("schema_version") != "kmfa.unallocated_project_cost_pool.v2":
             raise ProjectCostFactLayerError("invalid S09-P1 unallocated pool schema_version")
         if pool_item.get("pool_type") != "unallocated_project_cost_pool":
             raise ProjectCostFactLayerError("S09-P1 pool type mismatch")
-        _require_hash(pool_item.get("cost_category_hash"), "pool.cost_category_hash")
-        _require_hash(pool_item.get("amount_value_hash_ref"), "pool.amount_value_hash_ref")
-        if not str(pool_item.get("amount_value_private_ref", "")).startswith("private_ref://"):
-            raise ProjectCostFactLayerError("S09-P1 pool amount private ref missing")
+        if not str(pool_item.get("opaque_binding_ref", "")).startswith(
+            "OPAQUE-PROJECT-COST-UNALLOCATED-BINDING-"
+        ):
+            raise ProjectCostFactLayerError("S09-P1 pool opaque binding ref missing")
+        if pool_item.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ProjectCostFactLayerError("S09-P1 pool binding must require private revalidation")
+        for legacy_key in ("cost_category_hash", "amount_value_hash_ref", "amount_value_private_ref"):
+            if legacy_key in pool_item:
+                raise ProjectCostFactLayerError(f"S09-P1 public pool item must not publish {legacy_key}")
         if pool_item.get("amount_value_public_committed") is not False:
             raise ProjectCostFactLayerError("S09-P1 pool cannot commit amount values")
         if pool_item.get("assignment_status") != "pending_project_assignment_or_quality_resolution":

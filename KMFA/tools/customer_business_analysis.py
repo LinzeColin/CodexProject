@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -76,9 +75,11 @@ UPSTREAM_METADATA_REFS = {
     "report_grade_runtime": "KMFA/metadata/reports/report_grade_runtime_records.jsonl",
 }
 
-ANALYSIS_VERSION = "CBA-KMFA-S16P3-CUSTOMER-BUSINESS-PUBLIC-SAFE-001"
+ANALYSIS_VERSION = "CBA-KMFA-S16P3-CUSTOMER-BUSINESS-PUBLIC-SAFE-002"
 FORMULA_VERSION = "FORM-KMFA-S16P3-CUSTOMER-BUSINESS-ANALYSIS-001"
-MAPPING_VERSION = "MAP-KMFA-S16P3-PUBLIC-SAFE-v1"
+MAPPING_VERSION = "MAP-KMFA-S16P3-PUBLIC-SAFE-v2"
+PUBLIC_CUSTOMER_BINDING_VERSION = "kmfa.customer_operating_public_binding_summary.v2"
+PUBLIC_CUSTOMER_EXCEPTION_VERSION = "kmfa.customer_exception_public_evidence_summary.v2"
 
 FORBIDDEN_PUBLIC_KEYS = {
     "amount_cents",
@@ -102,6 +103,14 @@ FORBIDDEN_PUBLIC_KEYS = {
     "token",
     "api_key",
     "private_key",
+    "customer_identity_hash_ref",
+    "customer_value_signal_hash_ref",
+    "project_margin_signal_hash_ref",
+    "collection_quality_signal_ref",
+    "aging_risk_signal_ref",
+    "project_lifecycle_signal_ref",
+    "evidence_hash_refs",
+    "content_hash",
 }
 
 FORBIDDEN_PUBLIC_SUFFIXES = (".zip", ".xls", ".xlsx", ".pdf", ".sqlite", ".db", ".parquet")
@@ -120,20 +129,12 @@ FORBIDDEN_PUBLIC_TEXT = (
     "token",
     "api_key",
     "private_key",
+    "sha256:",
 )
 
 
 class CustomerBusinessAnalysisError(ValueError):
     """Raised when S16-P3 customer business analysis artifacts are invalid."""
-
-
-def _sha256_for(label: str) -> str:
-    return "sha256:" + hashlib.sha256(label.encode("utf-8")).hexdigest()
-
-
-def _sha256_json(payload: Any) -> str:
-    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -363,10 +364,6 @@ def _base_public_record(*, record_type: str, generated_at: str) -> dict[str, Any
     }
 
 
-def _hash_ref(record_id: str, component: str) -> str:
-    return _sha256_for(f"S16-P3:{record_id}:{component}:public-safe-customer-analysis")
-
-
 def _summary_rows(
     *,
     margin_records: list[dict[str, Any]],
@@ -378,33 +375,24 @@ def _summary_rows(
     for index in range(4):
         summary_id = f"CBA-S16P3-{index + 1:03d}"
         collection_item = collection_items[index % len(collection_items)]
-        margin_record = margin_records[index % len(margin_records)]
-        lifecycle_record = lifecycle_records[index % len(lifecycle_records)]
         row = _base_public_record(record_type="customer_operating_summary", generated_at=generated_at)
         row.update(
             {
+                "schema_version": "kmfa.customer_operating_summary.public_safe.v2",
                 "customer_summary_id": summary_id,
-                "customer_group_ref": str(collection_item.get("customer_group_ref") or f"public_customer_group_ref_{index + 1:03d}"),
-                "customer_identity_hash_ref": _hash_ref(summary_id, "customer-identity"),
-                "project_group_refs": [
-                    str(collection_item.get("project_group_ref") or f"public_project_group_ref_{index + 1:03d}"),
-                    str(margin_record.get("project_entity_ref") or f"entity_ref://KMFA/S08-P2/project/{index + 1:03d}"),
-                ],
+                "customer_group_ref": f"OPAQUE-CUSTOMER-GROUP-{index + 1:03d}",
+                "project_group_refs": [f"OPAQUE-PROJECT-GROUP-{index + 1:03d}"],
                 "dimension_signal_refs": list(REQUIRED_ANALYSIS_DIMENSIONS),
-                "customer_value_signal_hash_ref": _hash_ref(summary_id, "customer-value-signal"),
-                "project_margin_signal_hash_ref": str(
-                    margin_record.get("system_recomputed_value_hash_refs", {}).get("gross_margin_rate")
-                    or _hash_ref(summary_id, "margin-signal")
-                ),
-                "collection_quality_signal_ref": str(
-                    collection_item.get("amount_signal_ref") or _hash_ref(summary_id, "collection-quality")
-                ),
-                "aging_risk_signal_ref": str(
-                    collection_item.get("aging_bucket_ref") or _hash_ref(summary_id, "aging-risk")
-                ),
-                "project_lifecycle_signal_ref": str(
-                    lifecycle_record.get("lifecycle_record_id") or f"PLC-S16P2-{index + 1:03d}"
-                ),
+                "public_signal_summary": {
+                    "schema_version": PUBLIC_CUSTOMER_BINDING_VERSION,
+                    "binding_status": "private_binding_revalidation_required",
+                    "opaque_signal_set_ref": f"OPAQUE-CUSTOMER-SIGNAL-SET-{index + 1:03d}",
+                    "dimension_signal_slot_count": len(REQUIRED_ANALYSIS_DIMENSIONS),
+                    "linked_project_group_count": 1,
+                    "linked_public_evidence_count": 3,
+                    "private_digest_values_committed": False,
+                    "business_derived_refs_committed": False,
+                },
                 "linked_public_evidence_refs": [
                     "KMFA/metadata/lineage/project_margin_cash_margin_records.jsonl",
                     "KMFA/metadata/reports/collection_receivable_aging_priority_items.jsonl",
@@ -414,7 +402,7 @@ def _summary_rows(
                 "review_priority": str(collection_item.get("priority_level") or "medium"),
                 "manual_review_required": True,
                 "recommended_review_mode": "owner_or_authorized_delegate_review_only",
-                "customer_operating_summary_basis": "public_safe_hash_refs_status_refs_and_prior_review_candidates_only",
+                "customer_operating_summary_basis": "opaque_non_derived_refs_status_and_aggregate_counts_only",
             }
         )
         rows.append(row)
@@ -442,10 +430,10 @@ def _exception_items(
     rows: list[dict[str, Any]] = []
     for index, exception_type in enumerate(REQUIRED_EXCEPTION_TYPES, start=1):
         summary = customer_summaries[index - 1]
-        collection_item = collection_items[(index - 1) % len(collection_items)]
         row = _base_public_record(record_type="customer_analysis_exception_item", generated_at=generated_at)
         row.update(
             {
+                "schema_version": "kmfa.customer_analysis_exception_item.public_safe.v2",
                 "exception_item_id": f"CAE-S16P3-{index:03d}",
                 "exception_type": exception_type,
                 "visible_exception_label": labels[exception_type],
@@ -453,10 +441,14 @@ def _exception_items(
                 "customer_summary_ref": summary["customer_summary_id"],
                 "customer_group_ref": summary["customer_group_ref"],
                 "source_lane_refs": list(REQUIRED_SOURCE_LANES),
-                "evidence_hash_refs": [
-                    _hash_ref(f"CAE-S16P3-{index:03d}", exception_type),
-                    str(collection_item.get("amount_signal_ref") or _hash_ref(f"CAE-S16P3-{index:03d}", "amount-signal")),
-                ],
+                "public_evidence_summary": {
+                    "schema_version": PUBLIC_CUSTOMER_EXCEPTION_VERSION,
+                    "evidence_status": "review_evidence_slot_present_private_revalidation_required",
+                    "opaque_evidence_ref": f"OPAQUE-CUSTOMER-EXCEPTION-{index:03d}",
+                    "linked_customer_summary_count": 1,
+                    "private_digest_values_committed": False,
+                    "business_derived_refs_committed": False,
+                },
                 "review_owner_role": owner_roles[exception_type],
                 "required_review_action": "confirm_public_safe_customer_business_signal",
                 "manual_review_required": True,
@@ -526,7 +518,7 @@ def build_default_customer_business_analysis(
     )
 
     manifest = {
-        "schema_version": "kmfa.customer_business_analysis_manifest.v1",
+        "schema_version": "kmfa.customer_business_analysis_manifest.public_safe.v2",
         "record_type": "customer_business_analysis_manifest",
         "project_id": "KMFA",
         "stage_phase": "S16-P3",
@@ -580,14 +572,7 @@ def build_default_customer_business_analysis(
             "报告等级仍显示 D，12 条 pending owner 或授权复核差异继续阻断正式报告和经营决策依据。",
         ],
     }
-    manifest["content_hash"] = _sha256_json(
-        {
-            "manifest_without_hash": manifest,
-            "source_lanes": source_lanes,
-            "customer_summaries": customer_summaries,
-            "exception_items": exception_items,
-        }
-    )
+    manifest["public_build_ref"] = "OPAQUE-S16P3-CUSTOMER-BUILD-001"
     validate_customer_business_analysis_artifacts(manifest, source_lanes, customer_summaries, exception_items)
     return manifest, source_lanes, customer_summaries, exception_items
 
@@ -604,7 +589,7 @@ def validate_customer_business_analysis_artifacts(
     customer_summaries: list[dict[str, Any]],
     exception_items: list[dict[str, Any]],
 ) -> None:
-    if manifest.get("schema_version") != "kmfa.customer_business_analysis_manifest.v1":
+    if manifest.get("schema_version") != "kmfa.customer_business_analysis_manifest.public_safe.v2":
         raise CustomerBusinessAnalysisError("manifest schema_version mismatch")
     if manifest.get("stage_phase") != "S16-P3":
         raise CustomerBusinessAnalysisError("manifest stage_phase must be S16-P3")
@@ -676,6 +661,8 @@ def validate_customer_business_analysis_artifacts(
     for record in customer_summaries:
         if record.get("record_type") != "customer_operating_summary":
             raise CustomerBusinessAnalysisError("customer summary record_type mismatch")
+        if record.get("schema_version") != "kmfa.customer_operating_summary.public_safe.v2":
+            raise CustomerBusinessAnalysisError("customer summary schema_version mismatch")
         if record.get("stage_phase") != "S16-P3":
             raise CustomerBusinessAnalysisError("customer summary stage_phase must be S16-P3")
         if set(record.get("dimension_signal_refs", [])) != set(REQUIRED_ANALYSIS_DIMENSIONS):
@@ -684,6 +671,23 @@ def validate_customer_business_analysis_artifacts(
             raise CustomerBusinessAnalysisError("customer summary status mismatch")
         if record.get("manual_review_required") is not True:
             raise CustomerBusinessAnalysisError("customer summary manual_review_required must be true")
+        binding = record.get("public_signal_summary", {})
+        if binding.get("schema_version") != PUBLIC_CUSTOMER_BINDING_VERSION:
+            raise CustomerBusinessAnalysisError("customer public signal schema mismatch")
+        if binding.get("binding_status") != "private_binding_revalidation_required":
+            raise CustomerBusinessAnalysisError("customer public signal binding status mismatch")
+        if not str(binding.get("opaque_signal_set_ref", "")).startswith("OPAQUE-CUSTOMER-SIGNAL-SET-"):
+            raise CustomerBusinessAnalysisError("customer opaque signal ref mismatch")
+        if binding.get("dimension_signal_slot_count") != len(REQUIRED_ANALYSIS_DIMENSIONS):
+            raise CustomerBusinessAnalysisError("customer signal slot count mismatch")
+        if binding.get("linked_project_group_count") != len(record.get("project_group_refs", [])):
+            raise CustomerBusinessAnalysisError("customer linked project group count mismatch")
+        if binding.get("linked_public_evidence_count") != len(record.get("linked_public_evidence_refs", [])):
+            raise CustomerBusinessAnalysisError("customer linked public evidence count mismatch")
+        if binding.get("private_digest_values_committed") is not False:
+            raise CustomerBusinessAnalysisError("customer summary cannot commit private digests")
+        if binding.get("business_derived_refs_committed") is not False:
+            raise CustomerBusinessAnalysisError("customer summary cannot commit business-derived refs")
         _require_false(
             record,
             (
@@ -712,10 +716,21 @@ def validate_customer_business_analysis_artifacts(
     for item in exception_items:
         if item.get("record_type") != "customer_analysis_exception_item":
             raise CustomerBusinessAnalysisError("exception item record_type mismatch")
+        if item.get("schema_version") != "kmfa.customer_analysis_exception_item.public_safe.v2":
+            raise CustomerBusinessAnalysisError("exception item schema_version mismatch")
         if item.get("candidate_status") != "review_only_pending_owner_or_authorized_confirmation":
             raise CustomerBusinessAnalysisError("exception item candidate_status mismatch")
         if item.get("manual_review_required") is not True:
             raise CustomerBusinessAnalysisError("exception item manual_review_required must be true")
+        evidence = item.get("public_evidence_summary", {})
+        if evidence.get("schema_version") != PUBLIC_CUSTOMER_EXCEPTION_VERSION:
+            raise CustomerBusinessAnalysisError("customer exception public evidence schema mismatch")
+        if evidence.get("linked_customer_summary_count") != 1:
+            raise CustomerBusinessAnalysisError("customer exception linked summary count mismatch")
+        if evidence.get("private_digest_values_committed") is not False:
+            raise CustomerBusinessAnalysisError("customer exception cannot commit private digests")
+        if evidence.get("business_derived_refs_committed") is not False:
+            raise CustomerBusinessAnalysisError("customer exception cannot commit business-derived refs")
         _require_false(
             item,
             (

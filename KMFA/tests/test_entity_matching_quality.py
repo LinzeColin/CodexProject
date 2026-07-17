@@ -72,7 +72,9 @@ class EntityMatchingQualityTests(unittest.TestCase):
             self.assertNotIn(forbidden_key, payload)
         self.assertIn("profile_ref", payload)
         self.assertIn("entity_ref", payload)
-        self.assertIn("source_hash", payload)
+        self.assertIn("OPAQUE-ENTITY-MATCH-BINDING-", payload)
+        self.assertIn("PRIVATE_BINDING_REVALIDATION_REQUIRED", payload)
+        self.assertNotIn('"source_hash"', payload)
 
     def test_scope_excludes_stage_review_fact_layer_lineage_report_ui_connector_and_upload(self) -> None:
         manifest, cases, report, review_queue = build_default_entity_matching_quality(

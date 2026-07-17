@@ -1,6 +1,6 @@
 Use $kmfa-dingtalk-attendance-skill. If browser export is required, also use $chrome:control-chrome.
 
-Work only in `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`. This is the natural morning run for automation `kmfa`. Business dates use `Asia/Shanghai`; do not alter the scheduler or its timezone configuration.
+Work only in the active checkout resolved from `repo://KMFA`. This is the natural morning run for automation `kmfa`. Business dates use `Asia/Shanghai`; do not alter the scheduler or its timezone configuration, and do not persist the resolved local path in public metadata.
 
 This automation prompt file preserves the existing REST rules; it does not redefine notification text.
 

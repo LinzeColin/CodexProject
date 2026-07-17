@@ -26,6 +26,18 @@ FORBIDDEN_TEXT = {
     "plaintext_content",
 }
 
+MISMATCH_COLUMNS = (
+    "mismatch_id",
+    "source_id",
+    "field_path",
+    "binding_contract_version",
+    "mapping_version",
+    "formula_version",
+    "status",
+    "evidence_ref",
+)
+MISMATCH_BINDING_CONTRACT_VERSION = "kmfa.s06_p3.mismatch_public_binding.v2"
+
 
 def fail(message: str) -> None:
     print(f"FAIL: {message}")
@@ -113,8 +125,14 @@ def check_stage_outputs() -> None:
     if zero_delta.get("mismatch_count") != len(rows):
         fail("stage mismatch_report.csv row count must match zero_delta_result.json mismatch_count")
     for row in rows:
-        if not row.get("field_path", "").startswith("field_ref:sha256:"):
-            fail("stage mismatch_report.csv field_path must be a hash/ref, not plaintext")
+        if tuple(row) != MISMATCH_COLUMNS:
+            fail("stage mismatch_report.csv columns drift")
+        if not row.get("field_path", "").startswith("FIELD-S06P3-V2-"):
+            fail("stage mismatch_report.csv field_path must be a versioned opaque ref")
+        if not row.get("source_id", "").startswith("SRC-S06P3-V2-"):
+            fail("stage mismatch_report.csv source_id must be a versioned opaque ref")
+        if row.get("binding_contract_version") != MISMATCH_BINDING_CONTRACT_VERSION:
+            fail("stage mismatch_report.csv binding contract drift")
 
     check_public_safe_text([zero_delta_path, mismatch_path, status_path])
 
@@ -153,8 +171,12 @@ def check_metadata_quality_outputs() -> None:
     if not s06p3_rows:
         fail("metadata/quality/mismatch_report.csv missing S06-P3 sanitized mismatch row")
     for row in s06p3_rows:
-        if not row.get("field_path", "").startswith("field_ref:sha256:"):
-            fail("S06-P3 metadata mismatch field_path must be a hash/ref")
+        if tuple(row) != MISMATCH_COLUMNS:
+            fail("S06-P3 metadata mismatch columns drift")
+        if not row.get("field_path", "").startswith("FIELD-") or "-S06P3-V2-" not in row.get("field_path", ""):
+            fail("S06-P3 metadata mismatch field_path must be a versioned opaque ref")
+        if row.get("binding_contract_version") != MISMATCH_BINDING_CONTRACT_VERSION:
+            fail("S06-P3 metadata mismatch binding contract drift")
 
     check_public_safe_text(
         [

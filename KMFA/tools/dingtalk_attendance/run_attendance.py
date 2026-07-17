@@ -18,11 +18,13 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from KMFA.tools.dingtalk_attendance import (
+    ARCHIVE_ROOT_REF,
     AUTOMATION_NAME,
-    ONEDRIVE_ROOT,
+    OWNER_DINGTALK_USER_ID,
+    PrivateArchiveConfigError,
     SKILL_ID,
     TIMEZONE,
-    ZHANG_LINZE_USER_ID,
+    resolve_archive_root,
 )
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import DWS_COMMAND_ALLOW_ENV, dws_command_safety_status
@@ -61,7 +63,10 @@ from KMFA.tools.dingtalk_attendance.notification_template import (
 from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
     validate_reconciliation_certificate,
 )
-from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
+from KMFA.tools.dingtalk_attendance.onedrive_archive import (
+    archive_paths_for_run,
+    private_archive_refs_for_run,
+)
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
@@ -75,6 +80,7 @@ def build_run_plan(
     timezone: str = TIMEZONE,
     run_id: str | None = None,
     run_datetime: datetime | None = None,
+    onedrive_root: str | Path | None = None,
 ) -> dict[str, Any]:
     if run_type not in PLAN_RUN_TYPES:
         raise ValueError(f"run_type must be one of {PLAN_RUN_TYPES}")
@@ -98,17 +104,23 @@ def build_run_plan(
         "summary_datetime_source": "actual_run_datetime_in_business_date_timezone",
         "live_only": True,
         "uses_sample_data": False,
-        "onedrive_root": ONEDRIVE_ROOT,
+        "onedrive_root": str(onedrive_root) if onedrive_root is not None else None,
+        "onedrive_root_private_registry_ref": ARCHIVE_ROOT_REF,
         "onedrive_month_folder_pattern": "YYYYMM",
-        "archive_paths": archive_paths_for_run(effective_run_id, now),
+        "archive_paths": (
+            archive_paths_for_run(effective_run_id, now, onedrive_root=onedrive_root)
+            if onedrive_root is not None
+            else private_archive_refs_for_run(effective_run_id, now)
+        ),
         "known_recipients": {
-            "zhang_linze": {
-                "name": "张霖泽",
-                "dingtalk_user_id": ZHANG_LINZE_USER_ID,
+            "owner_personal": {
+                "name_ref": "ROLE::OWNER",
+                "dingtalk_user_id_ref": "ENV::KMFA_DINGTALK_OWNER_USER_ID",
+                "configured": OWNER_DINGTALK_USER_ID != "CONFIG_REQUIRED",
             },
             "boss": {
-                "name": "老板",
-                "dingtalk_user_id": "CONFIG_REQUIRED",
+                "name_ref": "ROLE::BOSS",
+                "dingtalk_user_id_ref": "ENV::DINGTALK_BOSS_USER_ID",
             },
         },
         "public_repo_safety": {
@@ -664,6 +676,25 @@ def run_attendance(
 
     output_status: dict[str, Any] = {}
     dispatch_receipt: dict[str, Any] = {"notification_status": "FAILED"}
+    try:
+        archive_root = resolve_archive_root()
+    except PrivateArchiveConfigError as exc:
+        cleanup_status.update(cleanup())
+        return {
+            "status": "PRIVATE_ARCHIVE_CONFIG_MISSING",
+            "run_plan": plan,
+            "collection_status": "COLLECTED_NOT_ARCHIVED_PRIVATE_CONFIG_MISSING",
+            "notification_status": "NOT_SENT_PRIVATE_ARCHIVE_CONFIG_MISSING",
+            "onedrive_archive_status": "NOT_WRITTEN_PRIVATE_ARCHIVE_CONFIG_MISSING",
+            "failure_reason": str(exc),
+            "cleanup_status": cleanup_status,
+        }
+    plan = build_run_plan(
+        run_type=run_type,
+        timezone=timezone,
+        run_datetime=run_datetime,
+        onedrive_root=archive_root,
+    )
     output_status = write_private_outputs(
         plan=plan,
         collection=collection,
@@ -721,8 +752,8 @@ def run_attendance(
     }
 
 
-def find_latest_report_manifest(*, run_type: str, onedrive_root: str = ONEDRIVE_ROOT) -> Path | None:
-    root = Path(onedrive_root)
+def find_latest_report_manifest(*, run_type: str, onedrive_root: str | Path | None = None) -> Path | None:
+    root = resolve_archive_root(onedrive_root)
     candidates = [
         path
         for month_dir in root.glob("20[0-9][0-9][0-9][0-9]")

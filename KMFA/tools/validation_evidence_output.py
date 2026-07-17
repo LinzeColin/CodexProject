@@ -23,13 +23,16 @@ class ValidationEvidenceError(ValueError):
 MISMATCH_REPORT_COLUMNS = (
     "mismatch_id",
     "source_id",
-    "file_hash",
     "field_path",
+    "binding_contract_version",
     "mapping_version",
     "formula_version",
     "status",
     "evidence_ref",
 )
+
+MISMATCH_BINDING_CONTRACT_VERSION = "kmfa.s06_p3.mismatch_public_binding.v2"
+MISMATCH_MAPPING_VERSION = "MAP-KMFA-S06P3-PUBLIC-SAFE-v2"
 
 CLOSED_QUEUE_STATUSES = {"resolved"}
 FORBIDDEN_OUTPUT_KEYS = {
@@ -75,21 +78,23 @@ def _safe_hash(*parts: Any) -> str:
     return hashlib.sha256("|".join(str(part) for part in parts).encode("utf-8")).hexdigest()
 
 
-def _field_ref(field_name: str) -> str:
+def _queue_field_ref(field_name: str) -> str:
+    """Preserve the existing synthetic queue contract outside mismatch-row v2 scope."""
+
     return f"field_ref:sha256:{_safe_hash('kmfa-s06-p3-field-ref', field_name)}"
 
 
-def _safe_source_id(source_text: str) -> str:
-    digest = _safe_hash("kmfa-s06-p3-source", source_text)
-    return f"SRC-s06p3-zero-delta-{digest[:8]}"
+def _require_public_namespace(value: str) -> str:
+    namespace = _require_text(value, "public_evidence_namespace").upper()
+    if not all(character.isalnum() or character == "-" for character in namespace):
+        raise ValidationEvidenceError("public_evidence_namespace must use only A-Z, 0-9, and hyphen")
+    return namespace
 
 
-def _mapping_version_for_source(source_id: str) -> str:
-    return f"MAP-{source_id}-v0.1.0"
+def _opaque_sequence_ref(kind: str, namespace: str, index: int) -> str:
+    """Return a versioned public ref that is not derived from source or field values."""
 
-
-def _source_file_hash(source_text: str, evidence_ref: str) -> str:
-    return f"sha256:{_safe_hash('kmfa-s06-p3-public-safe-evidence-ref', source_text, evidence_ref)}"
+    return f"{kind}-{namespace}-V2-{index:03d}"
 
 
 def _ensure_public_safe_record(record: dict[str, Any], label: str) -> None:
@@ -178,21 +183,25 @@ def _build_project_statuses(
     return statuses
 
 
-def _build_mismatch_rows(mismatches: list[dict[str, Any]], source_mismatch_report_ref: str) -> list[dict[str, str]]:
+def _build_mismatch_rows(
+    mismatches: list[dict[str, Any]],
+    source_mismatch_report_ref: str,
+    *,
+    public_evidence_namespace: str,
+) -> list[dict[str, str]]:
+    namespace = _require_public_namespace(public_evidence_namespace)
     rows: list[dict[str, str]] = []
-    for mismatch in mismatches:
-        record_id = _require_text(mismatch.get("record_id"), "mismatch.record_id")
-        field_name = _require_text(mismatch.get("field"), "mismatch.field")
-        source_text = _require_text(mismatch.get("source"), "mismatch.source")
-        source_id = _safe_source_id(source_text)
-        mismatch_id = f"MM-S06P3-{_safe_hash('kmfa-s06-p3-mismatch', record_id, field_name, source_text)[:16]}"
+    for index, mismatch in enumerate(mismatches, start=1):
+        _require_text(mismatch.get("record_id"), "mismatch.record_id")
+        _require_text(mismatch.get("field"), "mismatch.field")
+        _require_text(mismatch.get("source"), "mismatch.source")
         rows.append(
             {
-                "mismatch_id": mismatch_id,
-                "source_id": source_id,
-                "file_hash": _source_file_hash(source_text, source_mismatch_report_ref),
-                "field_path": _field_ref(field_name),
-                "mapping_version": _mapping_version_for_source(source_id),
+                "mismatch_id": _opaque_sequence_ref("MM", namespace, index),
+                "source_id": _opaque_sequence_ref("SRC", namespace, index),
+                "field_path": _opaque_sequence_ref("FIELD", namespace, index),
+                "binding_contract_version": MISMATCH_BINDING_CONTRACT_VERSION,
+                "mapping_version": MISMATCH_MAPPING_VERSION,
                 "formula_version": "FORM-KMFA-S06P3-VALIDATION-EVIDENCE-v0.1.0",
                 "status": "zero_delta_failed",
                 "evidence_ref": source_mismatch_report_ref,
@@ -227,7 +236,7 @@ def _build_metadata_queue_records(queue_items: list[dict[str, Any]], source_queu
                 "stage_phase": "S06-P3",
                 "queue_id": _require_text(item.get("queue_id"), "queue_item.queue_id"),
                 "project_ref": _require_text(item.get("project_ref"), "queue_item.project_ref"),
-                "field_path": _field_ref(_require_text(item.get("field"), "queue_item.field")),
+                "field_path": _queue_field_ref(_require_text(item.get("field"), "queue_item.field")),
                 "source_ids": source_ids,
                 "source_anchor_refs": source_anchor_refs,
                 "difference_cents": int(item.get("difference_cents")),
@@ -272,6 +281,7 @@ def build_validation_evidence(
     source_mismatch_report_ref: str,
     source_queue_ref: str,
     source_gate_ref: str,
+    public_evidence_namespace: str = "S06P3",
 ) -> dict[str, Any]:
     """Build public-safe S06-P3 validation evidence records."""
 
@@ -308,7 +318,11 @@ def build_validation_evidence(
         evidence_refs=evidence_refs,
         event_time=event_time,
     )
-    mismatch_rows = _build_mismatch_rows(mismatches, source_mismatch_report_ref)
+    mismatch_rows = _build_mismatch_rows(
+        mismatches,
+        source_mismatch_report_ref,
+        public_evidence_namespace=public_evidence_namespace,
+    )
     metadata_queue_records = _build_metadata_queue_records(queue_items, source_queue_ref, event_time)
 
     zero_delta_output = {
@@ -494,6 +508,7 @@ def build_from_paths(
     difference_queue_path: Path,
     report_gate_path: Path,
     evidence_time: str | None,
+    public_evidence_namespace: str = "S06P3",
 ) -> dict[str, Any]:
     if not source_mismatch_report_path.is_file():
         raise ValidationEvidenceError(f"source mismatch report not found: {source_mismatch_report_path}")
@@ -506,6 +521,7 @@ def build_from_paths(
         source_mismatch_report_ref=str(source_mismatch_report_path),
         source_queue_ref=str(difference_queue_path),
         source_gate_ref=str(report_gate_path),
+        public_evidence_namespace=public_evidence_namespace,
     )
 
 
@@ -518,6 +534,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--metadata-quality-dir", required=True, type=Path)
     parser.add_argument("--evidence-time")
+    parser.add_argument("--public-evidence-namespace", default="S06P3")
     args = parser.parse_args(argv)
 
     evidence = build_from_paths(
@@ -526,6 +543,7 @@ def main(argv: list[str] | None = None) -> int:
         difference_queue_path=args.difference_queue,
         report_gate_path=args.report_gate,
         evidence_time=args.evidence_time,
+        public_evidence_namespace=args.public_evidence_namespace,
     )
     write_validation_evidence_outputs(
         evidence,

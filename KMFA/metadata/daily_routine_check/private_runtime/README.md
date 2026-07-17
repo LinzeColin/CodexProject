@@ -5,7 +5,7 @@ This directory is a Git-tracked placeholder only.
 Do not place active runtime files here. Active runtime files live in OneDrive:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
+local-resource://PRIVATE_RUNTIME/daily_routine_check/
 ```
 
 Expected OneDrive private runtime files include:

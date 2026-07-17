@@ -202,7 +202,15 @@ def check_raw_roots_policy(errors: list[str]) -> None:
     require(isinstance(raw_roots, list) and len(raw_roots) == 1, "raw roots policy must contain one public-safe root", errors)
     if isinstance(raw_roots, list) and raw_roots:
         root = raw_roots[0]
-        require(root.get("path") == "/Users/linzezhang/Downloads/KMFA_MetaData", "raw root path mismatch", errors)
+        require(root.get("raw_root_id") == "PRIMARY_RAW_ROOT", "raw root id mismatch", errors)
+        require(root.get("path") is None, "public raw root path must be null", errors)
+        require(root.get("public_path_value") is None, "public raw path value must be null", errors)
+        require(
+            root.get("private_registry_ref")
+            == "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
+            "private raw root registry ref mismatch",
+            errors,
+        )
         require(root.get("access_policy") == "read_only_when_phase_authorized", "raw root access policy mismatch", errors)
         for key in (
             "current_phase_read_performed",

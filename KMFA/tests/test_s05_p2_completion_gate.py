@@ -78,7 +78,7 @@ class S05P2CompletionGateTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
         self.assertIn("PASS: KMFA S05-P2 completion gate blocked as expected", result.stdout)
-        self.assertIn("pending_fields=5", result.stdout)
+        self.assertIn("pending_fields=45", result.stdout)
         self.assertIn("decision_code=none", result.stdout)
 
     def test_default_gate_fails_when_current_state_is_blocked(self) -> None:
@@ -87,14 +87,14 @@ class S05P2CompletionGateTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("BLOCKED: KMFA S05-P2 completion gate not satisfied", result.stdout + result.stderr)
 
-    def test_resolving_downgrade_decision_allows_s05_p2_to_close_without_q4_or_q5(self) -> None:
+    def test_legacy_downgrade_decision_cannot_close_v2_projection_without_private_receipt(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             decision_path = self.write_decision(downgrade_decision(), Path(tmp))
-            result = self.run_checker("--decision", str(decision_path))
+            result = self.run_checker("--decision", str(decision_path), "--expect-blocked")
 
         self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
-        self.assertIn("PASS: KMFA S05-P2 completion gate ready", result.stdout)
-        self.assertIn("mode=owner_downgrade_to_cross_source_support", result.stdout)
+        self.assertIn("PASS: KMFA S05-P2 completion gate blocked as expected", result.stdout)
+        self.assertIn("reason=v2_public_projection_requires_complete_private_receipt_revalidation", result.stdout)
         self.assertIn("decision_code=downgrade_to_cross_source_support", result.stdout)
 
     def test_keep_pending_decision_still_blocks_completion(self) -> None:

@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import subprocess
 from datetime import datetime
@@ -66,10 +65,6 @@ def git_output(args: list[str]) -> str:
     if result.returncode != 0:
         raise RuntimeError(f"git {' '.join(args)} failed: {result.stderr.strip()}")
     return result.stdout.strip()
-
-
-def sha256_text(value: str) -> str:
-    return "sha256:" + hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -182,11 +177,11 @@ def build_v014_outputs(
     baseline_rollback_plan: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], dict[str, Any], list[dict[str, Any]], dict[str, Any], str]:
     templates: list[dict[str, Any]] = []
-    for template in baseline_templates:
+    for template_index, template in enumerate(baseline_templates, start=1):
         templates.append(
             {
                 "record_type": "v014_redcircle_reserved_export_template",
-                "schema_version": "kmfa.v014_redcircle_reserved_export_template.v1",
+                "schema_version": "kmfa.v014_redcircle_reserved_export_template.v2",
                 "project_id": "KMFA",
                 "stage_phase": "S07-P3",
                 "generated_at": EVIDENCE_TIME,
@@ -194,12 +189,11 @@ def build_v014_outputs(
                 "template_status": "reserved_postponed",
                 "export_type": template["export_type"],
                 "source_ref": template["source_ref"],
-                "source_file_private_ref": template["source_file_private_ref"],
-                "template_contract_hash": template["template_contract_hash"],
+                "opaque_source_binding_ref": f"OPAQUE-V014-REDCIRCLE-SOURCE-V1-{template_index:04d}",
                 "template_section_ref_count": len(template.get("template_section_refs", [])),
-                "template_contract_ref": "contract:" + sha256_text(
-                    f"{template['export_type']}:{template['template_id']}:{template['template_contract_hash']}"
-                ).removeprefix("sha256:"),
+                "template_contract_ref": f"OPAQUE-V014-REDCIRCLE-TEMPLATE-CONTRACT-V1-{template_index:04d}",
+                "template_contract_binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                "sensitive_binding_values_committed": False,
                 "manual_export_file_allowed": True,
                 "automatic_connector_allowed": False,
                 "d15_file_mvp_automatic_connector_allowed": False,
@@ -266,7 +260,7 @@ def build_v014_outputs(
 
     registry = {
         "record_type": "v014_redcircle_export_source_registry",
-        "schema_version": "kmfa.v014_redcircle_export_source_registry.v1",
+        "schema_version": "kmfa.v014_redcircle_export_source_registry.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P3",
         "generated_at": EVIDENCE_TIME,
@@ -274,14 +268,16 @@ def build_v014_outputs(
         "sources": [
             {
                 "record_type": "v014_redcircle_export_source",
-                "schema_version": "kmfa.v014_redcircle_export_source.v1",
+                "schema_version": "kmfa.v014_redcircle_export_source.v2",
                 "project_id": "KMFA",
                 "stage_phase": "S07-P3",
                 "source_ref": template["source_ref"],
                 "export_type": template["export_type"],
                 "template_id": template["template_id"],
-                "template_contract_hash": template["template_contract_hash"],
-                "source_file_private_ref": template["source_file_private_ref"],
+                "template_contract_ref": template["template_contract_ref"],
+                "template_contract_binding_status": template["template_contract_binding_status"],
+                "opaque_source_binding_ref": template["opaque_source_binding_ref"],
+                "sensitive_binding_values_committed": False,
                 "template_status": template["template_status"],
                 "manual_export_file_allowed": True,
                 "automatic_connector_allowed": False,
@@ -344,8 +340,8 @@ def build_manifest(
         "redcircle_export_type_count": len(REQUIRED_REDCIRCLE_EXPORT_TYPES),
         "reserved_template_count": len(templates),
         "registry_source_count": len(registry["sources"]),
-        "template_contract_hash_count": sum(1 for row in templates if str(row["template_contract_hash"]).startswith("sha256:")),
-        "source_private_ref_count": sum(1 for row in registry["sources"] if row.get("source_file_private_ref")),
+        "template_contract_hash_count": sum(1 for row in templates if row.get("template_contract_ref")),
+        "source_private_ref_count": sum(1 for row in registry["sources"] if row.get("opaque_source_binding_ref")),
         "connector_policy_count": 1,
         "rollback_plan_count": len(rollback_plan),
         "automatic_connector_allowed_count": sum(1 for row in templates if row.get("automatic_connector_allowed") is True),
@@ -376,7 +372,7 @@ def build_manifest(
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "evidence_time": EVIDENCE_TIME,
         "reviewed_head": git_output(["rev-parse", "HEAD"]),
-        "worktree": git_output(["rev-parse", "--show-toplevel"]),
+        "worktree": "repo://KMFA",
         "branch": git_output(["branch", "--show-current"]),
         "remote": git_output(["remote", "get-url", "origin"]),
         "status": "completed_validated_local_only_no_go_upload_deferred_redcircle_postponement",
@@ -553,7 +549,7 @@ def write_human_evidence(manifest: dict[str, Any]) -> None:
                 "",
                 "- This phase reserves Redcircle export template contracts and keeps automatic Redcircle connector access postponed.",
                 "- It does not read, list, inventory, stat, hash, modify, delete, move, rename, overwrite, or write the operator-designated raw/private inbox.",
-                "- Public evidence keeps export types, template ids, private refs, hashes, aggregate counts and control flags only.",
+                "- Public evidence keeps export types, template ids, opaque non-derived binding refs, aggregate counts and control flags only.",
                 "- It does not publish source headers, raw file names, source values, credentials, workbooks, documents, private tables, databases or raw business data.",
                 "- Stage 7 review, S08, GitHub upload, raw content matching, formal report, live connector and business execution remain out of scope.",
                 "",

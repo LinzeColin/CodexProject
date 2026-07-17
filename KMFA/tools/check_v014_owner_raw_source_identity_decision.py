@@ -281,7 +281,13 @@ def validate_v014_owner_raw_source_identity_decision(
     contract = read_json(INTAKE_CONTRACT_PATH)
     metadata_contract = read_json(METADATA_CONTRACT_PATH)
 
-    require(metadata_manifest == manifest, "metadata manifest copy mismatch", errors)
+    require(
+        {key: value for key, value in metadata_manifest.items() if key != "worktree"}
+        == {key: value for key, value in manifest.items() if key != "worktree"},
+        "metadata manifest copy mismatch",
+        errors,
+    )
+    require(metadata_manifest.get("worktree") == "repo://KMFA", "public metadata worktree token mismatch", errors)
     require(metadata_go_no_go == go_no_go, "metadata go/no-go copy mismatch", errors)
     require(metadata_packet == packet, "metadata packet copy mismatch", errors)
     require(metadata_contract == contract, "metadata contract copy mismatch", errors)

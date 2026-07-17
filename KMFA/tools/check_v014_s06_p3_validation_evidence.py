@@ -97,8 +97,8 @@ LOCAL_DOWNLOADS_RAW_PATH_PATTERN = re.compile(r"/Users/[^\s\"'`]+/Downloads/[^\s
 SANITIZED_MISMATCH_COLUMNS = (
     "mismatch_id",
     "source_id",
-    "file_hash",
     "field_path",
+    "binding_contract_version",
     "mapping_version",
     "formula_version",
     "status",
@@ -268,8 +268,11 @@ def validate_v014_s06_p3_validation_evidence(manifest_path: Path = MANIFEST_PATH
     if mismatch_rows:
         row = mismatch_rows[0]
         require(tuple(row.keys()) == SANITIZED_MISMATCH_COLUMNS, "sanitized mismatch columns mismatch", errors)
-        require(str(row.get("field_path", "")).startswith("field_ref:sha256:"), "field_path must be hash/ref", errors)
-        require(str(row.get("file_hash", "")).startswith("sha256:"), "file_hash must be hash", errors)
+        require(str(row.get("mismatch_id", "")).startswith("MM-V014-S06P3-V2-"), "mismatch_id must be a versioned opaque ref", errors)
+        require(str(row.get("source_id", "")).startswith("SRC-V014-S06P3-V2-"), "source_id must be a versioned opaque ref", errors)
+        require(str(row.get("field_path", "")).startswith("FIELD-V014-S06P3-V2-"), "field_path must be a versioned opaque ref", errors)
+        require(row.get("binding_contract_version") == "kmfa.s06_p3.mismatch_public_binding.v2", "binding contract drift", errors)
+        require("sha256:" not in json.dumps(row, sort_keys=True), "mismatch row must not contain source/value-derived hashes", errors)
         require(row.get("status") == "zero_delta_failed", "mismatch status mismatch", errors)
 
     require(manifest.get("metadata_quality_written") is True, "metadata quality flag mismatch", errors)

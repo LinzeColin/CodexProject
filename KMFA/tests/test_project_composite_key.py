@@ -125,8 +125,13 @@ class ProjectCompositeKeyTests(unittest.TestCase):
         )
         validate_project_composite_key_artifacts(manifest, profiles, match_results, review_queue)
 
-        self.assertEqual(set(REQUIRED_COMPONENTS), set(manifest["required_components"]))
-        self.assertEqual(sum(manifest["matching_weights_bps"].values()), 10000)
+        policy = manifest["matching_policy_public_summary"]
+        self.assertEqual(policy["required_component_count"], len(REQUIRED_COMPONENTS))
+        self.assertEqual(policy["matching_weight_total_bps"], 10000)
+        self.assertFalse(policy["component_breakdown_committed"])
+        self.assertTrue(policy["private_policy_revalidation_required"])
+        self.assertNotIn("required_components", manifest)
+        self.assertNotIn("matching_weights_bps", manifest)
         self.assertEqual(manifest["thresholds_bps"]["strong_auto_match"], 8500)
         self.assertEqual(manifest["thresholds_bps"]["human_review"], 7000)
         self.assertFalse(manifest["stage_scope"]["fact_layer_scope_included"])

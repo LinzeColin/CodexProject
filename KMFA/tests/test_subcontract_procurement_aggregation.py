@@ -88,6 +88,17 @@ class SubcontractProcurementAggregationTests(unittest.TestCase):
         self.assertIn("matched_to_project", statuses)
         self.assertIn("unmatched_to_project", statuses)
         self.assertIn("cross_project_candidate", statuses)
+        for record in project_matches:
+            self.assertEqual(record["schema_version"], "kmfa.subcontract_project_match.public_safe.v2")
+            binding = record["public_binding_summary"]
+            self.assertEqual(
+                binding["schema_version"],
+                "kmfa.subcontract_match_public_binding_summary.v2",
+            )
+            self.assertTrue(binding["opaque_match_ref"].startswith("OPAQUE-SUBCONTRACT-MATCH-"))
+            self.assertEqual(binding["component_slot_count"], 4)
+            self.assertFalse(binding["private_digest_values_committed"])
+            self.assertFalse(binding["business_derived_refs_committed"])
 
         pool_refs = {item["match_record_ref"] for item in unallocated_pool}
         unmatched_refs = {
@@ -121,6 +132,14 @@ class SubcontractProcurementAggregationTests(unittest.TestCase):
         self.assertEqual(candidate_types.count("cross_project_cost_candidate"), 2)
         for candidate in anomaly_candidates:
             self.assertEqual(candidate["record_type"], "subcontract_anomaly_candidate")
+            evidence = candidate["public_evidence_summary"]
+            self.assertEqual(
+                evidence["schema_version"],
+                "kmfa.subcontract_anomaly_public_evidence_summary.v2",
+            )
+            self.assertTrue(evidence["opaque_evidence_ref"].startswith("OPAQUE-SUBCONTRACT-ANOMALY-"))
+            self.assertEqual(evidence["linked_match_record_count"], len(candidate["match_record_refs"]))
+            self.assertFalse(evidence["private_digest_values_committed"])
             self.assertTrue(candidate["manual_review_required"])
             self.assertFalse(candidate["action_execution_allowed"])
             self.assertFalse(candidate["payment_execution_allowed"])
@@ -163,6 +182,9 @@ class SubcontractProcurementAggregationTests(unittest.TestCase):
             "token",
             "api_key",
             "private_key",
+            "sha256:",
+            "_hash_ref",
+            "evidence_hash_refs",
         ):
             self.assertNotIn(forbidden_text, payload)
 

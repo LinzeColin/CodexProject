@@ -22,7 +22,7 @@ class ProjectMarginCashMarginTests(unittest.TestCase):
         self.assertEqual(metrics["cash_gross_profit_cents"], 300_00)
         self.assertEqual(metrics["gross_margin_rate_basis_points"], 3500)
 
-    def test_default_layer_preserves_authority_and_system_values_separately(self) -> None:
+    def test_default_layer_commits_only_opaque_public_binding_summaries(self) -> None:
         manifest, margin_records, difference_summary = build_default_project_margin_cash_margin_layer(
             generated_at="2026-06-30T23:45:00+10:00"
         )
@@ -38,17 +38,28 @@ class ProjectMarginCashMarginTests(unittest.TestCase):
             self.assertFalse(record["public_amount_values_committed"])
             self.assertFalse(record["raw_layer_write_allowed"])
             self.assertFalse(record["authority_system_overwrite_allowed"])
-            self.assertIn("authority_value_private_refs", record)
-            self.assertIn("system_recomputed_value_private_refs", record)
-            self.assertIn("cash_margin_value_private_refs", record)
-            self.assertNotEqual(
-                record["authority_value_private_refs"]["gross_profit"],
-                record["system_recomputed_value_private_refs"]["gross_profit"],
+            summary = record["public_binding_summary"]
+            self.assertEqual(
+                summary["schema_version"],
+                "kmfa.project_margin_cash_margin_public_binding_summary.v2",
             )
-            self.assertNotEqual(
-                record["authority_value_hash_refs"]["gross_profit"],
-                record["system_recomputed_value_hash_refs"]["gross_profit"],
-            )
+            self.assertTrue(summary["opaque_binding_set_ref"].startswith("OPAQUE-MARGIN-BINDING-"))
+            self.assertEqual(summary["required_metric_slot_count"], 4)
+            self.assertFalse(summary["private_value_refs_committed"])
+            self.assertFalse(summary["private_digest_values_committed"])
+            self.assertFalse(summary["business_derived_refs_committed"])
+            for legacy_field in (
+                "authority_value_private_refs",
+                "authority_value_hash_refs",
+                "system_recomputed_value_private_refs",
+                "system_recomputed_value_hash_refs",
+                "cash_margin_value_private_refs",
+                "cash_margin_value_hash_refs",
+                "input_private_refs",
+                "input_hash_refs",
+                "calculation_private_execution_ref",
+            ):
+                self.assertNotIn(legacy_field, record)
 
     def test_differences_enter_summary_without_s09_p3_resolution(self) -> None:
         manifest, margin_records, difference_summary = build_default_project_margin_cash_margin_layer(
@@ -91,8 +102,10 @@ class ProjectMarginCashMarginTests(unittest.TestCase):
             "raw_file_bytes",
         ):
             self.assertNotIn(forbidden_key, payload)
-        self.assertIn("sha256:", payload)
-        self.assertIn("private_ref://", payload)
+        margin_payload = json.dumps(margin_records, ensure_ascii=False, sort_keys=True)
+        self.assertNotIn("sha256:", margin_payload)
+        self.assertNotIn("private_ref://", margin_payload)
+        self.assertIn("OPAQUE-MARGIN-BINDING-", margin_payload)
         self.assertFalse(manifest["quality_gate"]["formal_report_allowed"])
         self.assertFalse(manifest["quality_gate"]["github_upload_allowed"])
         self.assertFalse(manifest["stage_scope"]["stage9_review_scope_included"])

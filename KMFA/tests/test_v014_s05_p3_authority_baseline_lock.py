@@ -15,6 +15,13 @@ class TestV014S05P3AuthorityBaselineLock(unittest.TestCase):
         self.assertEqual(manifest["stage_id"], "S05")
         self.assertEqual(manifest["phase_id"], "S05-P3")
         self.assertEqual(manifest["phase_scope"], "v014_s05_p3_authority_baseline_lock_only")
+        self.assertEqual(manifest["worktree"], "repo://KMFA")
+        self.assertEqual(manifest["raw_data_boundary"]["raw_inbox_path"], "PRIMARY_RAW_ROOT")
+        self.assertEqual(
+            manifest["raw_data_boundary"]["private_runtime_registry_ref"],
+            "PRIVATE_REGISTRY::V014_S05_P3_RUNTIME",
+        )
+        self.assertNotIn("private_runtime_output_dir", manifest["raw_data_boundary"])
         self.assertTrue(manifest["s05_p2_dependency_validated"])
         self.assertEqual(summary["authority_record_count"], 45)
         self.assertEqual(summary["field_candidate_count"], 45)

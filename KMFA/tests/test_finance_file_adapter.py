@@ -105,9 +105,18 @@ class FinanceFileAdapterTests(unittest.TestCase):
         self.assertFalse(manifest["quality_gate"]["formal_report_allowed"])
 
         candidate_payload = json.dumps(candidates, ensure_ascii=False, sort_keys=True)
-        self.assertIn("source_header_hash", candidate_payload)
-        self.assertIn("source_header_private_ref", candidate_payload)
-        for forbidden in ("source_header_text", "raw_value", "normalized_value", "bank_account_number"):
+        self.assertIn("OPAQUE-FIN-SOURCE-BINDING-", candidate_payload)
+        self.assertIn("PRIVATE_BINDING_REVALIDATION_REQUIRED", candidate_payload)
+        for forbidden in (
+            "file_hash",
+            "source_header_hash",
+            "source_header_private_ref",
+            "source_file_private_ref",
+            "source_header_text",
+            "raw_value",
+            "normalized_value",
+            "bank_account_number",
+        ):
             self.assertNotIn(forbidden, candidate_payload)
 
         categories_with_report = {record["finance_category"] for record in field_report}

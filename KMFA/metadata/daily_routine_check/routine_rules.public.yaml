@@ -3,7 +3,9 @@ project_id: KMFA
 automation_name: Dingtalk-routine-check
 chinese_name: 钉钉工作检查
 timezone: Asia/Shanghai
-input_zip_default: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+input_zip_default: ENV::KMFA_DWS_OUTPUT_ZIP
+private_identity_map_ref: ENV::KMFA_DAILY_ROUTINE_IDENTITY_MAP_JSON
+identity_policy: public_role_refs_private_env_resolution_fail_closed
 input_policy:
   mode: zip_only
   disk_folder_probe_allowed: false

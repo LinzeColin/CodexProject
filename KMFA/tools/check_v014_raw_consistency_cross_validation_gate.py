@@ -195,7 +195,13 @@ def validate_v014_raw_consistency_cross_validation_gate(
     metadata_go_no_go = read_json(METADATA_GO_NO_GO_PATH)
     baseline_lock = read_json(METADATA_BASELINE_LOCK_PATH)
 
-    require(metadata_manifest == manifest, "metadata manifest copy mismatch", errors)
+    require(
+        {key: value for key, value in metadata_manifest.items() if key != "worktree"}
+        == {key: value for key, value in manifest.items() if key != "worktree"},
+        "metadata manifest copy mismatch",
+        errors,
+    )
+    require(metadata_manifest.get("worktree") == "repo://KMFA", "public metadata worktree token mismatch", errors)
     require(metadata_go_no_go == go_no_go, "metadata go/no-go copy mismatch", errors)
     require(manifest.get("schema_version") == SCHEMA_VERSION, "schema mismatch", errors)
     require(manifest.get("project_id") == "KMFA", "project_id mismatch", errors)

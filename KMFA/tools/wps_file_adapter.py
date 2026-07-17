@@ -431,9 +431,11 @@ def build_default_structures() -> list[dict[str, Any]]:
     return structures
 
 
-def build_mapping_id(source_ref: str, field_key: str, source_header_hash: str) -> str:
-    seed = f"{source_ref}:{field_key}:{source_header_hash}:{ACTIVE_MAPPING_RULE_VERSION}"
-    return "WPS-FLD-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:12].upper()
+def build_mapping_id(sequence: int) -> str:
+    """Return a stable public identifier that is not derived from private input."""
+    if sequence < 1:
+        raise ValueError("mapping sequence must be positive")
+    return f"WPS-FLD-{sequence:04d}"
 
 
 def build_mapping_records(structures: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -452,10 +454,10 @@ def build_mapping_records(structures: list[dict[str, Any]]) -> list[dict[str, An
             mappings.append(
                 {
                     "record_type": "wps_field_mapping",
-                    "schema_version": "kmfa.wps_field_mapping.v1",
+                    "schema_version": "kmfa.wps_field_mapping.v2",
                     "project_id": "KMFA",
                     "stage_phase": "S07-P2",
-                    "mapping_id": build_mapping_id(spec.source_ref, field.field_key, source_header_hash),
+                    "mapping_id": build_mapping_id(len(mappings) + 1),
                     "mapping_rule_version_id": ACTIVE_MAPPING_RULE_VERSION,
                     "export_type": spec.export_type,
                     "source_ref": spec.source_ref,
@@ -466,13 +468,11 @@ def build_mapping_records(structures: list[dict[str, Any]]) -> list[dict[str, An
                         "field_role": field.field_role,
                     },
                     "source_binding": {
-                        "source_file_private_ref": structure["source_file_private_ref"],
+                        "binding_ref": f"OPAQUE-WPS-SOURCE-BINDING-{len(mappings) + 1:04d}",
+                        "binding_schema_version": "kmfa.public_opaque_source_binding.v1",
                         "file_format": structure["file_format"],
-                        "file_hash": structure["file_hash"],
-                        "sheet_ref": structure["sheets"][0]["sheet_ref"],
-                        "column_ref": header["column_ref"],
-                        "source_header_hash": source_header_hash,
-                        "source_header_private_ref": header["source_header_private_ref"],
+                        "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                        "private_evidence_committed": False,
                         "source_anchor_status": "hash_only_from_readonly_converted_xlsx",
                     },
                     "quality_state": {
@@ -563,25 +563,27 @@ def build_field_report(structures: list[dict[str, Any]], mappings: list[dict[str
 def build_source_registry(structures: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "record_type": "wps_export_source_registry",
-        "schema_version": "kmfa.wps_export_source_registry.v1",
+        "schema_version": "kmfa.wps_export_source_registry.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P2",
         "sources": [
             {
+                "binding_ref": f"OPAQUE-WPS-CONVERTED-SOURCE-{index:04d}",
+                "binding_schema_version": "kmfa.public_opaque_source_binding.v1",
+                "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
                 "source_ref": structure["source_ref"],
                 "export_type": structure["export_type"],
                 "converted_file_format": structure["file_format"],
-                "converted_file_hash": structure["file_hash"],
-                "source_file_private_ref": structure["source_file_private_ref"],
                 "read_only_parse": True,
                 "native_wps_conversion_required": True,
                 "native_wps_parse_status": "requires_conversion_to_xlsx_or_csv",
                 "raw_layer_write_allowed": False,
                 "raw_source_mutation_allowed": False,
                 "source_header_plaintext_committed": False,
-                "parse_status": "parsed_structure_from_converted_xlsx",
+                "parse_status": "private_converted_structure_parse_completed_binding_revalidation_required",
+                "private_evidence_committed": False,
             }
-            for structure in structures
+            for index, structure in enumerate(structures, start=1)
         ],
         "public_repo_safety": {
             "raw_business_values_committed": False,
@@ -632,7 +634,7 @@ def build_default_wps_adapter(
     rule_versions = build_rule_versions(generated_timestamp)
     manifest = {
         "record_type": "wps_file_adapter_manifest",
-        "schema_version": "kmfa.wps_file_adapter.v1",
+        "schema_version": "kmfa.wps_file_adapter.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P2",
         "generated_at": generated_timestamp,
@@ -715,7 +717,7 @@ def validate_wps_adapter(
     if registry is not None:
         walk_forbidden_keys(registry)
 
-    if manifest.get("schema_version") != "kmfa.wps_file_adapter.v1":
+    if manifest.get("schema_version") != "kmfa.wps_file_adapter.v2":
         raise ValueError("invalid WPS adapter manifest schema_version")
     if manifest.get("stage_phase") != "S07-P2":
         raise ValueError("WPS adapter manifest must be S07-P2")
@@ -751,7 +753,14 @@ def validate_wps_adapter(
     if {item.get("export_type") for item in registry_sources} != set(REQUIRED_WPS_EXPORT_TYPES):
         raise ValueError("source registry export types must match required WPS export types")
     for item in registry_sources:
-        ensure_hash(item.get("converted_file_hash"), "source_registry.converted_file_hash")
+        if not str(item.get("binding_ref", "")).startswith("OPAQUE-WPS-CONVERTED-SOURCE-"):
+            raise ValueError("WPS source registry requires non-derived opaque binding refs")
+        if item.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ValueError("WPS source registry must require private binding revalidation")
+        if item.get("private_evidence_committed") is not False:
+            raise ValueError("WPS source registry must not commit private evidence")
+        if any(key in item for key in ("converted_file_hash", "source_file_private_ref")):
+            raise ValueError("WPS source registry must not publish converted source digests or private refs")
         if item.get("native_wps_conversion_required") is not True:
             raise ValueError("source registry rows must require native WPS conversion")
         if item.get("read_only_parse") is not True:
@@ -776,7 +785,7 @@ def validate_wps_adapter(
         raise ValueError("field mappings must cover all required WPS export types")
     seen_ids: set[str] = set()
     for item in mappings:
-        if item.get("schema_version") != "kmfa.wps_field_mapping.v1":
+        if item.get("schema_version") != "kmfa.wps_field_mapping.v2":
             raise ValueError("invalid WPS field mapping schema_version")
         if item.get("mapping_rule_version_id") != ACTIVE_MAPPING_RULE_VERSION:
             raise ValueError("field mappings must bind active mapping rule version")
@@ -787,10 +796,22 @@ def validate_wps_adapter(
             raise ValueError(f"duplicate WPS field mapping_id: {mapping_id}")
         seen_ids.add(mapping_id)
         source_binding = item.get("source_binding") or {}
-        ensure_hash(source_binding.get("file_hash"), "field_mapping.file_hash")
-        ensure_hash(source_binding.get("source_header_hash"), "field_mapping.source_header_hash")
-        if "source_header_private_ref" not in source_binding:
-            raise ValueError("WPS field mappings must keep source_header_private_ref")
+        if not str(source_binding.get("binding_ref", "")).startswith("OPAQUE-WPS-SOURCE-BINDING-"):
+            raise ValueError("WPS field mappings require non-derived opaque binding refs")
+        if source_binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ValueError("WPS field mappings must require private binding revalidation")
+        if source_binding.get("private_evidence_committed") is not False:
+            raise ValueError("WPS field mappings must not commit private binding evidence")
+        for forbidden_key in (
+            "file_hash",
+            "source_header_hash",
+            "source_file_private_ref",
+            "source_header_private_ref",
+            "sheet_ref",
+            "column_ref",
+        ):
+            if forbidden_key in source_binding:
+                raise ValueError(f"WPS field mappings must not publish {forbidden_key}")
         if item.get("quality_state", {}).get("q4_human_confirmed") is not False:
             raise ValueError("S07-P2 field mappings must not claim Q4 confirmation")
         if item.get("quality_state", {}).get("q5_calculation_baseline_allowed") is not False:
@@ -887,7 +908,7 @@ def write_outputs(
 ) -> None:
     registry = {
         "record_type": "wps_export_source_registry",
-        "schema_version": "kmfa.wps_export_source_registry.v1",
+        "schema_version": "kmfa.wps_export_source_registry.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P2",
         "sources": manifest["source_registry"],

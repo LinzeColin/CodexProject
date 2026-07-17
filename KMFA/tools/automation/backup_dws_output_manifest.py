@@ -4,9 +4,9 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -17,10 +17,11 @@ from typing import Any
 
 TARGET = Path("KMFA/metadata/dws_outputs_backup")
 COMMIT_PREFIX = "KMFA metadata: backup DWS output manifest "
-SUMMARY_FIELDS = (
+SCHEMA_VERSION = "kmfa.dws_outputs_backup.public_safe.v2"
+SOURCE_PACKAGE_REF = "SOURCE-PACKAGE-DWS-PRIVATE"
+LOCAL_RESOURCE_REF = "LOCAL-RESOURCE-DWS-PRIVATE"
+RUN_STATUS_FIELDS = (
     "run_id",
-    "automation_name",
-    "run_source",
     "run_started",
     "run_ended",
     "success",
@@ -28,11 +29,23 @@ SUMMARY_FIELDS = (
     "downloads_temp_output_removed",
     "missing_total",
     "exhausted_total",
-    "mirror_archive_size_bytes",
-    "data_archive_size_before",
-    "data_archive_size_after",
-    "cold_archive_root",
 )
+REQUIRED_RUN_STATUS_FIELDS = {"run_id", "run_started", "run_ended", "success"}
+FORBIDDEN_PUBLIC_KEYS = {
+    "auto_completed_project_groups",
+    "cold_archive_root",
+    "groups",
+    "local_downloads_output_path",
+    "mirror_archive_path",
+    "mirror_archive_size_bytes",
+    "output_root",
+    "source_package",
+    "source_package_sha256",
+    "source_package_size_bytes",
+}
+ABSOLUTE_PATH_PATTERN = re.compile(r"(?<![A-Za-z0-9_])(?:/[A-Za-z0-9._~-]+){2,}")
+WINDOWS_PATH_PATTERN = re.compile(r"\b[A-Za-z]:\\(?:[^\\\s]+\\)+[^\\\s]+")
+SHA256_PATTERN = re.compile(r"(?i)(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])")
 
 
 class BackupError(RuntimeError):
@@ -49,9 +62,9 @@ def load_json(path: Path, label: str) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise BackupError("INPUT_INVALID", f"Cannot read {label}: {path}: {exc}") from exc
+        raise BackupError("INPUT_INVALID", f"Cannot read {label}: {type(exc).__name__}") from exc
     if not isinstance(value, dict):
-        raise BackupError("INPUT_INVALID", f"{label} must contain a JSON object: {path}")
+        raise BackupError("INPUT_INVALID", f"{label} must contain a JSON object")
     return value
 
 
@@ -63,17 +76,8 @@ def git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProce
         check=False,
     )
     if check and result.returncode != 0:
-        detail = result.stderr.strip() or result.stdout.strip() or "unknown git error"
-        raise BackupError("GIT_STATE_BLOCKED", f"git {' '.join(args)} failed: {detail}")
+        raise BackupError("GIT_STATE_BLOCKED", f"git {' '.join(args)} failed")
     return result
-
-
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def atomic_json_write(path: Path, value: dict[str, Any]) -> None:
@@ -96,11 +100,11 @@ def validate_inputs(
     source_package: Path,
     summary: dict[str, Any],
     validation: dict[str, Any],
-) -> tuple[str, int]:
+) -> str:
     if not dws_project.is_dir():
-        raise BackupError("INPUT_INVALID", f"DWS project directory does not exist: {dws_project}")
+        raise BackupError("INPUT_INVALID", "DWS project directory does not exist")
     if not source_package.is_file():
-        raise BackupError("INPUT_INVALID", f"DWS source package does not exist: {source_package}")
+        raise BackupError("INPUT_INVALID", "DWS source package does not exist")
     run_id = summary.get("run_id")
     if not isinstance(run_id, str) or not run_id or not run_id.replace("T", "").isdigit():
         raise BackupError("INPUT_INVALID", "DWS summary has an invalid run_id")
@@ -133,12 +137,12 @@ def validate_inputs(
     file_count = mirror.get("file_count")
     if not isinstance(file_count, int) or file_count <= 0:
         raise BackupError("VALIDATION_FAILED", "Validated mirror file_count must be positive")
-    return run_id, file_count
+    return run_id
 
 
 def ensure_main_ready(repo: Path) -> None:
     if git(repo, "rev-parse", "--is-inside-work-tree").stdout.strip() != "true":
-        raise BackupError("GIT_STATE_BLOCKED", f"Not a Git worktree: {repo}")
+        raise BackupError("GIT_STATE_BLOCKED", "Repository root is not a Git worktree")
     if git(repo, "branch", "--show-current").stdout.strip() != "main":
         raise BackupError("GIT_STATE_BLOCKED", "CodexProject must be checked out on main")
     tracked_dirty = git(repo, "status", "--porcelain", "--untracked-files=no").stdout.strip()
@@ -163,35 +167,130 @@ def ensure_main_ready(repo: Path) -> None:
             raise BackupError("GIT_STATE_BLOCKED", "Local-only commits modify files outside the DWS manifest target")
 
 
-def build_manifest(
-    source_package: Path,
-    summary: dict[str, Any],
-    file_count: int,
-    notion_status: str,
-    timestamp: str,
-) -> dict[str, Any]:
-    safe_summary = {key: summary[key] for key in SUMMARY_FIELDS if key in summary}
-    return {
-        "schema_version": 1,
-        "backup_type": "dws_outputs_manifest_only",
-        "source_package": str(source_package),
-        "raw_zip_committed": False,
-        "raw_zip_commit_policy": "blocked_by_github_file_size_and_private_raw_data_boundary",
-        "source_package_size_bytes": source_package.stat().st_size,
-        "source_package_sha256": sha256(source_package),
-        "source_package_file_count": file_count,
-        "dws_run": safe_summary,
-        "validation": {
-            "validate_dws_output_structure": "pass",
-            "mirror_file_count": file_count,
-            "cold_storage_status": "ok",
+def _walk_public_values(value: Any, path: tuple[str, ...] = ()) -> list[tuple[tuple[str, ...], Any]]:
+    rows: list[tuple[tuple[str, ...], Any]] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            rows.append((path + (str(key),), child))
+            rows.extend(_walk_public_values(child, path + (str(key),)))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            rows.extend(_walk_public_values(child, path + (str(index),)))
+    return rows
+
+
+def validate_public_manifest(manifest: dict[str, Any]) -> None:
+    """Fail closed if a public manifest contains private-resource detail."""
+
+    expected_top_level = {
+        "schema_version",
+        "record_type",
+        "backup_type",
+        "source_package_ref",
+        "local_resource_ref",
+        "private_receipt_required",
+        "raw_resource_committed",
+        "run_status",
+        "validation_status",
+        "notion_sync",
+        "updated_at",
+    }
+    if set(manifest) != expected_top_level:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Public manifest fields do not match the v2 allowlist")
+    if manifest.get("schema_version") != SCHEMA_VERSION:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Public manifest schema version is invalid")
+    if manifest.get("record_type") != "dws_outputs_backup_public_summary":
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Public manifest record type is invalid")
+    if manifest.get("backup_type") != "metadata_only":
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Public manifest backup type is invalid")
+    if manifest.get("source_package_ref") != SOURCE_PACKAGE_REF:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Source package reference is not the approved opaque token")
+    if manifest.get("local_resource_ref") != LOCAL_RESOURCE_REF:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Local resource reference is not the approved opaque token")
+    if manifest.get("private_receipt_required") is not True:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Private receipt requirement must remain explicit")
+    if manifest.get("raw_resource_committed") is not False:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Raw resources cannot be represented as committed")
+
+    run_status = manifest.get("run_status")
+    if not isinstance(run_status, dict):
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Run status must be an object")
+    if not REQUIRED_RUN_STATUS_FIELDS.issubset(run_status) or not set(run_status).issubset(RUN_STATUS_FIELDS):
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Run status fields do not match the aggregate allowlist")
+    run_id = run_status.get("run_id")
+    if not isinstance(run_id, str) or not run_id.replace("T", "").isdigit():
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Run status identifier is invalid")
+    for field in ("run_started", "run_ended", "updated_at"):
+        value = manifest.get(field) if field == "updated_at" else run_status.get(field)
+        if not isinstance(value, str):
+            raise BackupError("PUBLIC_SAFETY_BLOCKED", f"{field} must be an ISO-8601 string")
+        try:
+            datetime.fromisoformat(value)
+        except ValueError as exc:
+            raise BackupError("PUBLIC_SAFETY_BLOCKED", f"{field} must be an ISO-8601 string") from exc
+    if run_status.get("success") is not True:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Only successful validated runs may be published")
+    for field in ("group_count", "missing_total", "exhausted_total"):
+        if field in run_status and (not isinstance(run_status[field], int) or isinstance(run_status[field], bool) or run_status[field] < 0):
+            raise BackupError("PUBLIC_SAFETY_BLOCKED", f"{field} must be a non-negative integer")
+    if "downloads_temp_output_removed" in run_status and not isinstance(
+        run_status["downloads_temp_output_removed"], bool
+    ):
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "downloads_temp_output_removed must be boolean")
+
+    if manifest.get("validation_status") != {
+        "structure": "pass",
+        "mirror": "pass",
+        "cold_storage": "pass",
+        "local_output": "pass",
+        "group_checks": "pass",
+    }:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Validation status is not the approved aggregate projection")
+    notion_sync = manifest.get("notion_sync")
+    if not isinstance(notion_sync, dict) or set(notion_sync) != {"status", "blocks_manifest_backup"}:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Notion status fields are invalid")
+    if notion_sync.get("status") not in {"pending", "synced", "not_recorded"}:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Notion status is invalid")
+    if notion_sync.get("blocks_manifest_backup") is not False:
+        raise BackupError("PUBLIC_SAFETY_BLOCKED", "Notion status cannot block manifest backup")
+
+    for key_path, value in _walk_public_values(manifest):
+        if key_path and key_path[-1] in FORBIDDEN_PUBLIC_KEYS:
+            raise BackupError("PUBLIC_SAFETY_BLOCKED", "Public manifest contains a forbidden private-detail field")
+        if isinstance(value, str) and (
+            ABSOLUTE_PATH_PATTERN.search(value)
+            or WINDOWS_PATH_PATTERN.search(value)
+            or SHA256_PATTERN.search(value)
+        ):
+            raise BackupError("PUBLIC_SAFETY_BLOCKED", "Public manifest contains a path or private digest")
+
+
+def build_manifest(summary: dict[str, Any], notion_status: str, timestamp: str) -> dict[str, Any]:
+    safe_summary = {key: summary[key] for key in RUN_STATUS_FIELDS if key in summary}
+    manifest = {
+        "schema_version": SCHEMA_VERSION,
+        "record_type": "dws_outputs_backup_public_summary",
+        "backup_type": "metadata_only",
+        "source_package_ref": SOURCE_PACKAGE_REF,
+        "local_resource_ref": LOCAL_RESOURCE_REF,
+        "private_receipt_required": True,
+        "raw_resource_committed": False,
+        "run_status": safe_summary,
+        "validation_status": {
+            "structure": "pass",
+            "mirror": "pass",
+            "cold_storage": "pass",
+            "local_output": "pass",
+            "group_checks": "pass",
         },
         "notion_sync": {
             "status": notion_status,
-            "blocks_github_manifest_backup": False,
+            "blocks_manifest_backup": False,
         },
         "updated_at": timestamp,
     }
+    validate_public_manifest(manifest)
+    return manifest
 
 
 def parse_args() -> argparse.Namespace:
@@ -222,10 +321,10 @@ def main() -> int:
             parsed_timestamp = datetime.fromisoformat(timestamp)
         except ValueError as exc:
             raise BackupError("INPUT_INVALID", "manifest timestamp must be ISO-8601") from exc
-        run_id, file_count = validate_inputs(dws_project, source_package, summary, validation)
+        run_id = validate_inputs(dws_project, source_package, summary, validation)
         ensure_main_ready(repo)
 
-        manifest = build_manifest(source_package, summary, file_count, args.notion_status, timestamp)
+        manifest = build_manifest(summary, args.notion_status, timestamp)
         latest_path = repo / TARGET / "latest" / "manifest.json"
         run_path = repo / TARGET / "runs" / f"{run_id}.json"
         atomic_json_write(latest_path, manifest)
@@ -261,8 +360,15 @@ def main() -> int:
     except BackupError as exc:
         emit({"status": exc.status, "error": str(exc), "committed": False, "pushed": False})
         return 1
-    except Exception as exc:  # fail closed while keeping stdout machine-readable
-        emit({"status": "BACKUP_FAILED", "error": str(exc), "committed": False, "pushed": False})
+    except Exception:  # fail closed without echoing private runtime paths
+        emit(
+            {
+                "status": "BACKUP_FAILED",
+                "error": "Unexpected publisher failure; inspect private runtime logs",
+                "committed": False,
+                "pushed": False,
+            }
+        )
         return 1
 
 

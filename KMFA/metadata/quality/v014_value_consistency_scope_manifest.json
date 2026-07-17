@@ -266,5 +266,5 @@
     "value_consistency_scope_locked": true
   },
   "version": "0.1.4",
-  "worktree": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"
+  "worktree": "repo://KMFA"
 }

@@ -3,7 +3,7 @@
 ## 最终结果
 
 - strict validator（source package + raw root）：PASS；requirements=55、migration capabilities=37、next=S01-P3、Stage 01 passed=false。
-- focused mutation tests：18/18 PASS；ResourceWarning 作为错误执行仍通过。
+- focused mutation tests：28/28 PASS；ResourceWarning 作为错误执行仍通过。
 - project governance：0 errors / 0 warnings。
 - lean governance：0 errors / 0 warnings。
 - changed-only governance sync：0 errors / 0 warnings。

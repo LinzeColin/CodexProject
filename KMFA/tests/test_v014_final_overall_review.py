@@ -49,6 +49,21 @@ class V014FinalOverallReviewTests(unittest.TestCase):
         self.assertTrue(self.manifest["historical_overall_review_structural_baseline_validated"])
         self.assertFalse(self.manifest["historical_overall_review_dynamic_state_authoritative"])
         self.assertFalse(self.manifest["historical_overall_review_upload_state_authoritative"])
+        historical = self.manifest["historical_overall_review_baseline"]
+        self.assertEqual(
+            [artifact["artifact_role"] for artifact in historical["artifacts"]],
+            [
+                "v014_overall_review_structural_baseline",
+                "whole_project_review_structural_baseline",
+            ],
+        )
+        for artifact in historical["artifacts"]:
+            artifact_path = Path(artifact["artifact_ref"])
+            self.assertTrue(artifact_path.is_file())
+            self.assertEqual(artifact["artifact_sha256"], self.review._sha256_file(artifact_path))
+        historical_payload = json.dumps(historical, sort_keys=True)
+        self.assertNotIn("whole_project_artifact_sha256", historical_payload)
+        self.assertNotIn("v014_artifact_sha256", historical_payload)
 
     @unittest.skipUnless(IMPLEMENTATION_EXISTS, "implementation not written yet")
     def test_all_current_stage_validators_and_full_suite_are_recorded(self) -> None:

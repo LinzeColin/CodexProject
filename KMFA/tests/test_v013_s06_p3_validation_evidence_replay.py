@@ -47,7 +47,10 @@ class V013S06P3ValidationEvidenceReplayTests(unittest.TestCase):
         self.assertEqual(zero_delta["mismatch_count"], 1)
         self.assertEqual(len(statuses), 2)
         self.assertEqual(len(rows), 1)
-        self.assertTrue(rows[0]["field_path"].startswith("field_ref:sha256:"))
+        self.assertEqual(rows[0]["mismatch_id"], "MM-V013-S06P3-V2-001")
+        self.assertEqual(rows[0]["source_id"], "SRC-V013-S06P3-V2-001")
+        self.assertEqual(rows[0]["field_path"], "FIELD-V013-S06P3-V2-001")
+        self.assertNotIn("file_hash", rows[0])
         combined = "\n".join(
             [
                 ZERO_DELTA_OUTPUT_PATH.read_text(encoding="utf-8"),

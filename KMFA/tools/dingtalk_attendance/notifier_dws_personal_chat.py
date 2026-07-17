@@ -264,7 +264,7 @@ def dispatch_reports_with_resolved_channel(
 
     channel = json.loads(resolved_path.read_text(encoding="utf-8"))
     channel_name = str(channel.get("channel") or "unknown")
-    target_label = str(channel.get("recipient_name") or "张霖泽")
+    target_label = str(channel.get("recipient_name") or "ROLE::OWNER")
     messages: list[dict[str, Any]] = []
     notification_template_text = ""
     try:

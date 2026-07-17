@@ -9,6 +9,7 @@ from KMFA.tools.check_v015_s01_p2_implementation_spec_gap_inventory import (
     GAP_PATH,
     GIT_PLAN_PATH,
     MANIFEST_PATH,
+    METADATA_PATH,
     MIGRATION_PATH,
     SOURCE_PACKAGE,
     ValidationError,
@@ -37,13 +38,18 @@ class TestV015S01P2ImplementationSpecGapInventory(unittest.TestCase):
 
     def test_validates_complete_p2_without_claiming_stage_pass(self) -> None:
         result = validate_v015_s01_p2_implementation_spec_gap_inventory(
-            require_source_package=True,
-            require_raw_root=True,
+            require_source_package=False,
+            require_raw_root=False,
         )
         self.assertEqual(result["acceptance_status"], "PASSED")
         self.assertEqual(result["requirement_gap_inventory"]["total"], 55)
         self.assertFalse(result["phase_gate"]["stage_01_passed"])
         self.assertEqual(result["phase_gate"]["next_allowed_run"], "S01-P3")
+        metadata = json.loads(METADATA_PATH.read_text(encoding="utf-8"))
+        self.assertIsNone(metadata["raw_boundary"]["path"])
+        self.assertEqual(metadata["raw_boundary"]["root_id"], "PRIMARY_RAW_ROOT")
+        self.assertIsNone(metadata["raw_boundary"]["public_path_value"])
+        self.assertTrue(metadata["raw_boundary"]["private_registry_ref"].endswith("private_root_policy.json"))
 
     def test_rejects_missing_requirement(self) -> None:
         rows = self._read_csv(GAP_PATH)

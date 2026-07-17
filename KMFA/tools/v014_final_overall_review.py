@@ -243,10 +243,18 @@ def _historical_baseline() -> dict[str, Any]:
         raise ValueError("historical whole-project review identity drift")
     return {
         "validated": True,
-        "v014_artifact_ref": HISTORICAL_V014_OVERALL_PATH.as_posix(),
-        "v014_artifact_sha256": _sha256_file(HISTORICAL_V014_OVERALL_PATH),
-        "whole_project_artifact_ref": HISTORICAL_WHOLE_PROJECT_PATH.as_posix(),
-        "whole_project_artifact_sha256": _sha256_file(HISTORICAL_WHOLE_PROJECT_PATH),
+        "artifacts": [
+            {
+                "artifact_role": "v014_overall_review_structural_baseline",
+                "artifact_ref": HISTORICAL_V014_OVERALL_PATH.as_posix(),
+                "artifact_sha256": _sha256_file(HISTORICAL_V014_OVERALL_PATH),
+            },
+            {
+                "artifact_role": "whole_project_review_structural_baseline",
+                "artifact_ref": HISTORICAL_WHOLE_PROJECT_PATH.as_posix(),
+                "artifact_sha256": _sha256_file(HISTORICAL_WHOLE_PROJECT_PATH),
+            },
+        ],
         "structural_history_only": True,
         "dynamic_state_authoritative": False,
         "upload_state_authoritative": False,

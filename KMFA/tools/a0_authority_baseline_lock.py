@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Build KMFA S05-P3 public-safe A0 authority baseline lock metadata.
+"""Build the A0 authority public projection without publishing private hashes.
 
-S05-P3 locks only field candidates that already have private value hashes and
-source anchors. Candidates resolved by owner/authorized downgrade are retained
-as explicit exclusions so unconfirmed fields cannot enter formal reports.
+Q5 may only be asserted when a complete ignored private fixture receipt is
+present and validates.  Without it, every non-excluded record is emitted as a
+fail-closed revalidation requirement.  Public records never contain value or
+source digests, source anchors, filenames, or private paths.
 """
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import sys
@@ -20,7 +20,13 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from KMFA.tools.a0_golden_fixture import DEFAULT_OUTPUT_CANDIDATES, FIELD_KEYS
+from KMFA.tools.a0_golden_fixture import (
+    DEFAULT_OUTPUT_CANDIDATES,
+    FIELD_KEYS,
+    PUBLIC_RECORD_SCHEMA as FIXTURE_PUBLIC_RECORD_SCHEMA,
+    read_jsonl,
+    validate_private_value_receipt,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,27 +38,36 @@ DEFAULT_OWNER_DECISION = (
     / "owner_decision_records"
     / "excel_owner_resolution_decision.json"
 )
+DEFAULT_PRIVATE_FIXTURE_RECEIPT = (
+    ROOT / ".codex_private_runtime" / "a0_public_projection_v2" / "a0_fixture_private_binding_receipt.json"
+)
 DEFAULT_OUTPUT_MANIFEST = ROOT / "metadata" / "baseline" / "a0_authority_baseline_manifest.json"
 DEFAULT_OUTPUT_RECORDS = ROOT / "metadata" / "baseline" / "a0_authority_baseline_records.jsonl"
 
-HASH_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
-FORBIDDEN_PUBLIC_KEYS = {
-    "raw_value",
-    "normalized_value",
-    "original_value",
-    "plaintext_content",
-    "full_file_text",
-    "raw_file_bytes",
-    "bank_account_number",
-    "identity_document_number",
-    "password",
-    "token",
-    "api_key",
-    "private_key",
-}
+PUBLIC_SCHEMA = "kmfa.a0_authority_baseline.public_projection.v2"
+PUBLIC_RECORD_SCHEMA = "kmfa.a0_authority_baseline_field.public_projection.v2"
+DEFAULT_BASELINE_VERSION = "KMFA-A0-PUBLIC-PROJECTION-V2"
 ALLOWED_LOCK_STATUSES = {
-    "q5_locked_public_safe_hash_baseline",
+    "q5_locked_private_receipt_verified",
     "excluded_cross_source_support_only",
+    "private_binding_revalidation_required",
+}
+HEX_DIGEST_RE = re.compile(r"(?i)(?:sha(?:-?256)?[:=])?[a-f0-9]{64}")
+FORBIDDEN_PUBLIC_KEYS = {
+    "baseline_content_hash",
+    "cell_ref",
+    "normalized_value",
+    "normalized_value_hash",
+    "normalized_value_private_ref",
+    "page_ref",
+    "plaintext_content",
+    "raw_file_bytes",
+    "raw_value",
+    "raw_value_hash",
+    "raw_value_private_ref",
+    "sheet_ref",
+    "source_package_hash",
+    "source_public_inventory_path_hash",
 }
 
 
@@ -63,55 +78,35 @@ def read_json(path: Path) -> dict[str, Any]:
     return payload
 
 
-def read_jsonl(path: Path) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
-    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        if not line.strip():
-            continue
-        payload = json.loads(line)
-        if not isinstance(payload, dict):
-            raise ValueError(f"{path}:{line_no} must contain a JSON object")
-        records.append(payload)
-    return records
-
-
-def canonical_json(value: Any) -> str:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-
-
-def sha256_payload(value: Any) -> str:
-    return "sha256:" + hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
-
-
-def walk_forbidden_keys(value: Any, path: str = "$") -> None:
+def _walk_public(value: Any, path: str = "$") -> None:
     if isinstance(value, dict):
         for key, child in value.items():
             if key in FORBIDDEN_PUBLIC_KEYS:
-                raise ValueError(f"forbidden public metadata key {key!r} at {path}")
-            walk_forbidden_keys(child, f"{path}.{key}")
+                raise ValueError(f"forbidden public authority key {key!r} at {path}")
+            _walk_public(child, f"{path}.{key}")
     elif isinstance(value, list):
         for index, child in enumerate(value):
-            walk_forbidden_keys(child, f"{path}[{index}]")
+            _walk_public(child, f"{path}[{index}]")
+    elif isinstance(value, str) and HEX_DIGEST_RE.search(value):
+        raise ValueError(f"digest-like value is forbidden in public authority projection at {path}")
 
 
-def has_private_hashes_and_source_anchor(record: dict[str, Any]) -> bool:
-    value_binding = record.get("value_binding") or {}
-    source_binding = record.get("source_binding") or {}
-    return (
-        bool(value_binding.get("raw_value_hash"))
-        and bool(value_binding.get("normalized_value_hash"))
-        and source_binding.get("source_anchor_status") == "recorded_from_private_input"
-    )
+def validate_owner_downgrade(owner_decision: dict[str, Any], known_candidates: set[str]) -> tuple[str, list[str]] | None:
+    """Return an applicable v2 exclusion, or None for an unmappable legacy decision.
 
+    A legacy filename-derived candidate ID cannot be mapped in public because
+    publishing that mapping would recreate the disclosure.  Such a decision is
+    retained only as an aggregate fail-closed status until a v2 private receipt
+    and a v2 owner decision are supplied.
+    """
 
-def validate_owner_downgrade(owner_decision: dict[str, Any]) -> tuple[str, str, list[str]]:
-    walk_forbidden_keys(owner_decision)
+    _walk_public(owner_decision)
     if owner_decision.get("decision_code") != "downgrade_to_cross_source_support":
-        raise ValueError("S05-P3 lock currently requires downgrade_to_cross_source_support for excluded candidate")
+        raise ValueError("authority projection only accepts downgrade_to_cross_source_support")
     if owner_decision.get("candidate_role") != "cross_source_support_only":
         raise ValueError("downgraded candidate must be cross_source_support_only")
     if owner_decision.get("q5_exclusion_confirmed") is not True:
-        raise ValueError("downgraded candidate must confirm q5 exclusion")
+        raise ValueError("downgraded candidate must confirm Q5 exclusion")
     for key in (
         "business_plaintext_committed",
         "raw_source_committed",
@@ -122,58 +117,63 @@ def validate_owner_downgrade(owner_decision: dict[str, Any]) -> tuple[str, str, 
     ):
         if owner_decision.get(key) is not False:
             raise ValueError(f"owner_decision.{key} must be false")
-    field_keys = owner_decision.get("field_keys") or []
+    field_keys = list(owner_decision.get("field_keys") or [])
     if set(field_keys) != FIELD_KEYS:
-        raise ValueError("owner_decision.field_keys must match S05 required fields")
-    return str(owner_decision["candidate_id"]), str(owner_decision["file_id"]), list(field_keys)
+        raise ValueError("owner_decision.field_keys must match required A0 fields")
+    candidate_id = str(owner_decision.get("candidate_id", ""))
+    if candidate_id not in known_candidates:
+        return None
+    return candidate_id, field_keys
 
 
-def build_locked_record(
-    record: dict[str, Any],
+def _public_record(
+    fixture: dict[str, Any],
     *,
+    lock_status: str,
     locked_at: str,
     locked_by_role: str,
     locked_by_ref: str,
 ) -> dict[str, Any]:
-    value_binding = record["value_binding"]
-    source_binding = record["source_binding"]
+    source = fixture.get("source_binding") or {}
+    value = fixture.get("value_binding") or {}
+    q5_allowed = lock_status == "q5_locked_private_receipt_verified"
+    excluded = lock_status == "excluded_cross_source_support_only"
     return {
-        "record_type": "a0_authority_baseline_field_lock",
-        "schema_version": "kmfa.a0_authority_baseline_field_lock.v1",
+        "record_type": "a0_authority_baseline_field_public_projection",
+        "schema_version": PUBLIC_RECORD_SCHEMA,
         "stage_phase": "S05-P3",
-        "fixture_candidate_id": record["fixture_candidate_id"],
-        "candidate_id": record["candidate_id"],
-        "a0_file_id": record["a0_file_id"],
-        "field_key": record["field_key"],
-        "field_label": record.get("field_label"),
-        "lock_status": "q5_locked_public_safe_hash_baseline",
+        "fixture_candidate_id": fixture["fixture_candidate_id"],
+        "candidate_id": fixture["candidate_id"],
+        "a0_file_id": fixture["a0_file_id"],
+        "field_key": fixture["field_key"],
+        "field_label": fixture.get("field_label"),
+        "lock_status": lock_status,
         "locked_at": locked_at,
         "locked_by_role": locked_by_role,
         "locked_by_ref": locked_by_ref,
-        "source_lock": {
-            "source_file_ref": source_binding["source_file_ref"],
-            "source_file_format": source_binding["source_file_format"],
-            "source_package_hash": source_binding["source_package_hash"],
-            "source_public_inventory_path_hash": source_binding["source_public_inventory_path_hash"],
-            "source_anchor_status": source_binding["source_anchor_status"],
-            "page_ref": source_binding.get("page_ref"),
-            "sheet_ref": source_binding.get("sheet_ref"),
-            "cell_ref": source_binding.get("cell_ref"),
+        "source_status": {
+            "source_file_ref": source.get("source_file_ref"),
+            "source_file_format": source.get("source_file_format"),
+            "source_anchor_publication_status": "private_only_not_committed",
+            "private_binding_receipt_status": (
+                "verified_private_receipt" if q5_allowed else "required_not_verified"
+            ),
         },
-        "value_lock": {
-            "raw_value_private_ref": value_binding["raw_value_private_ref"],
-            "normalized_value_private_ref": value_binding["normalized_value_private_ref"],
-            "raw_value_hash": value_binding["raw_value_hash"],
-            "normalized_value_hash": value_binding["normalized_value_hash"],
-            "normalized_value_kind": value_binding["normalized_value_kind"],
-            "raw_value_public_committed": False,
-            "normalized_value_public_committed": False,
+        "value_status": {
+            "normalized_value_kind": value.get("normalized_value_kind"),
+            "private_binding_receipt_status": (
+                "verified_private_receipt" if q5_allowed else "required_not_verified"
+            ),
+            "raw_or_normalized_digest_committed": False,
         },
+        "exclusion_status": "confirmed_public_decision" if excluded else "not_applicable",
         "quality_state": {
             "machine_candidate_quality_grade": "Q3",
-            "q4_human_confirmed": True,
-            "q4_human_confirmation_status": "human_confirmed_public_safe_hash_lock",
-            "q5_calculation_baseline_allowed": True,
+            "q4_human_confirmed": q5_allowed,
+            "q4_human_confirmation_status": (
+                "private_receipt_verified" if q5_allowed else "pending_private_receipt_revalidation"
+            ),
+            "q5_calculation_baseline_allowed": q5_allowed,
             "formal_report_allowed": False,
         },
         "public_repo_safety": {
@@ -181,52 +181,8 @@ def build_locked_record(
             "normalized_business_values_committed": False,
             "raw_file_committed": False,
             "private_csv_committed": False,
-        },
-    }
-
-
-def build_excluded_record(
-    record: dict[str, Any],
-    *,
-    owner_decision: dict[str, Any],
-    locked_at: str,
-    locked_by_role: str,
-    locked_by_ref: str,
-) -> dict[str, Any]:
-    return {
-        "record_type": "a0_authority_baseline_field_lock",
-        "schema_version": "kmfa.a0_authority_baseline_field_lock.v1",
-        "stage_phase": "S05-P3",
-        "fixture_candidate_id": record["fixture_candidate_id"],
-        "candidate_id": record["candidate_id"],
-        "a0_file_id": record["a0_file_id"],
-        "field_key": record["field_key"],
-        "field_label": record.get("field_label"),
-        "lock_status": "excluded_cross_source_support_only",
-        "locked_at": locked_at,
-        "locked_by_role": locked_by_role,
-        "locked_by_ref": locked_by_ref,
-        "exclusion": {
-            "decision_code": owner_decision["decision_code"],
-            "decision_time": owner_decision["decision_time"],
-            "actor_role": owner_decision["actor_role"],
-            "actor_ref": owner_decision["actor_ref"],
-            "candidate_role": "cross_source_support_only",
-            "reason": "owner_authorized_downgrade_excludes_candidate_from_q5_baseline",
-            "q5_exclusion_confirmed": True,
-        },
-        "quality_state": {
-            "machine_candidate_quality_grade": "Q3",
-            "q4_human_confirmed": False,
-            "q4_human_confirmation_status": "excluded_by_owner_authorized_downgrade",
-            "q5_calculation_baseline_allowed": False,
-            "formal_report_allowed": False,
-        },
-        "public_repo_safety": {
-            "raw_business_values_committed": False,
-            "normalized_business_values_committed": False,
-            "raw_file_committed": False,
-            "private_csv_committed": False,
+            "raw_or_normalized_digest_committed": False,
+            "source_anchor_plaintext_committed": False,
         },
     }
 
@@ -235,51 +191,55 @@ def build_authority_baseline_lock(
     *,
     fixture_records: list[dict[str, Any]],
     owner_decision: dict[str, Any],
+    private_fixture_receipt_path: Path | None = None,
     locked_at: str | None = None,
     locked_by_role: str = "authorized_delegate",
-    locked_by_ref: str = "codex_s05p3_public_safe_authority_baseline_lock",
-    baseline_version: str = "KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK",
+    locked_by_ref: str = "codex_s05p3_public_projection_v2",
+    baseline_version: str = DEFAULT_BASELINE_VERSION,
     output_manifest: Path | None = None,
     output_records: Path | None = None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     locked_timestamp = locked_at or datetime.now(timezone.utc).isoformat()
-    excluded_candidate_id, excluded_file_id, excluded_fields = validate_owner_downgrade(owner_decision)
-    baseline_records: list[dict[str, Any]] = []
+    if any(item.get("schema_version") != FIXTURE_PUBLIC_RECORD_SCHEMA for item in fixture_records):
+        raise ValueError("authority builder requires v2 public fixture projections")
+    known_candidates = {str(item.get("candidate_id")) for item in fixture_records}
+    applicable_exclusion = validate_owner_downgrade(owner_decision, known_candidates)
 
-    for record in fixture_records:
-        walk_forbidden_keys(record)
-        candidate_id = str(record.get("candidate_id"))
-        field_key = str(record.get("field_key"))
-        if candidate_id == excluded_candidate_id:
-            if record.get("a0_file_id") != excluded_file_id or field_key not in excluded_fields:
-                raise ValueError("excluded candidate record does not match owner decision")
-            baseline_records.append(
-                build_excluded_record(
-                    record,
-                    owner_decision=owner_decision,
-                    locked_at=locked_timestamp,
-                    locked_by_role=locked_by_role,
-                    locked_by_ref=locked_by_ref,
-                )
-            )
-            continue
-        if has_private_hashes_and_source_anchor(record):
-            baseline_records.append(
-                build_locked_record(
-                    record,
-                    locked_at=locked_timestamp,
-                    locked_by_role=locked_by_role,
-                    locked_by_ref=locked_by_ref,
-                )
-            )
-            continue
-        raise ValueError(f"unresolved fixture field cannot enter S05-P3 baseline: {candidate_id}/{field_key}")
+    private_bindings: set[str] = set()
+    private_receipt_verified = False
+    if private_fixture_receipt_path is not None:
+        receipt = validate_private_value_receipt(private_fixture_receipt_path, expected_count=len(fixture_records))
+        private_bindings = {str(item.get("fixture_candidate_id")) for item in receipt["bindings"]}
+        expected = {str(item.get("fixture_candidate_id")) for item in fixture_records}
+        if private_bindings != expected:
+            raise ValueError("private fixture receipt does not align with public fixture references")
+        private_receipt_verified = True
 
-    locked_count = sum(1 for item in baseline_records if item["lock_status"] == "q5_locked_public_safe_hash_baseline")
-    excluded_count = sum(1 for item in baseline_records if item["lock_status"] == "excluded_cross_source_support_only")
+    excluded_candidate_id = applicable_exclusion[0] if applicable_exclusion else None
+    records: list[dict[str, Any]] = []
+    for fixture in fixture_records:
+        if fixture["candidate_id"] == excluded_candidate_id:
+            status = "excluded_cross_source_support_only"
+        elif private_receipt_verified and fixture["fixture_candidate_id"] in private_bindings:
+            status = "q5_locked_private_receipt_verified"
+        else:
+            status = "private_binding_revalidation_required"
+        records.append(
+            _public_record(
+                fixture,
+                lock_status=status,
+                locked_at=locked_timestamp,
+                locked_by_role=locked_by_role,
+                locked_by_ref=locked_by_ref,
+            )
+        )
+
+    locked_count = sum(item["lock_status"] == "q5_locked_private_receipt_verified" for item in records)
+    excluded_count = sum(item["lock_status"] == "excluded_cross_source_support_only" for item in records)
+    pending_count = sum(item["lock_status"] == "private_binding_revalidation_required" for item in records)
     manifest = {
-        "record_type": "a0_authority_baseline_manifest",
-        "schema_version": "kmfa.a0_authority_baseline.v1",
+        "record_type": "a0_authority_baseline_public_projection",
+        "schema_version": PUBLIC_SCHEMA,
         "project_id": "KMFA",
         "stage_phase": "S05-P3",
         "baseline_version": baseline_version,
@@ -288,15 +248,20 @@ def build_authority_baseline_lock(
         "locked_by_ref": locked_by_ref,
         "source_fixture_ref": "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl",
         "owner_decision_ref": "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_records/excel_owner_resolution_decision.json",
-        "baseline_content_hash": sha256_payload(baseline_records),
         "lock_summary": {
             "total_fixture_fields": len(fixture_records),
-            "authority_records": len(baseline_records),
+            "authority_records": len(records),
             "q5_locked_field_count": locked_count,
             "excluded_field_count": excluded_count,
+            "private_binding_revalidation_required_count": pending_count,
             "q4_human_confirmed_count": locked_count,
             "q5_calculation_baseline_allowed_count": locked_count,
-            "excluded_candidate_ids": sorted({excluded_candidate_id}),
+            "owner_decision_projection_status": (
+                "applied_to_v2_opaque_candidate" if applicable_exclusion else "legacy_decision_unmappable_fail_closed"
+            ),
+            "private_fixture_receipt_status": (
+                "verified_private_receipt" if private_receipt_verified else "required_not_verified"
+            ),
             "formal_report_allowed": False,
             "stage5_review_completed": False,
             "github_upload_allowed": False,
@@ -306,87 +271,60 @@ def build_authority_baseline_lock(
             "normalized_business_values_committed": False,
             "raw_file_bytes_committed": False,
             "private_csv_committed": False,
+            "raw_or_normalized_digest_committed": False,
+            "source_anchor_plaintext_committed": False,
+            "q5_claim_requires_complete_private_receipt": True,
         },
     }
-    validate_authority_baseline_lock(manifest, baseline_records)
+    validate_authority_baseline_lock(manifest, records)
     if output_manifest is not None and output_records is not None:
-        write_outputs(manifest, baseline_records, output_manifest, output_records)
-    return manifest, baseline_records
+        write_outputs(manifest, records, output_manifest, output_records)
+    return manifest, records
 
 
 def validate_authority_baseline_lock(manifest: dict[str, Any], records: list[dict[str, Any]]) -> None:
-    walk_forbidden_keys(manifest)
-    walk_forbidden_keys(records)
-    if manifest.get("schema_version") != "kmfa.a0_authority_baseline.v1":
-        raise ValueError("invalid authority baseline manifest schema_version")
-    if manifest.get("stage_phase") != "S05-P3":
-        raise ValueError("authority baseline manifest must be S05-P3")
-    if manifest.get("baseline_content_hash") != sha256_payload(records):
-        raise ValueError("authority baseline content hash mismatch")
-    safety = manifest.get("public_repo_safety") or {}
-    for key in (
-        "raw_business_values_committed",
-        "normalized_business_values_committed",
-        "raw_file_bytes_committed",
-        "private_csv_committed",
-    ):
-        if safety.get(key) is not False:
-            raise ValueError(f"manifest public safety flag {key} must be false")
+    _walk_public(manifest)
+    _walk_public(records)
+    if manifest.get("schema_version") != PUBLIC_SCHEMA or manifest.get("stage_phase") != "S05-P3":
+        raise ValueError("invalid A0 authority public projection")
     summary = manifest.get("lock_summary") or {}
-    if summary.get("formal_report_allowed") is not False:
-        raise ValueError("S05-P3 lock alone must not allow formal report")
-    if summary.get("stage5_review_completed") is not False:
-        raise ValueError("S05-P3 must not claim Stage 5 review")
+    if summary.get("formal_report_allowed") is not False or summary.get("stage5_review_completed") is not False:
+        raise ValueError("authority projection must not claim stage review or formal report permission")
     if summary.get("github_upload_allowed") is not False:
-        raise ValueError("S05-P3 must not allow GitHub upload")
+        raise ValueError("authority projection must not allow GitHub upload")
 
     seen: set[tuple[str, str]] = set()
-    locked_count = 0
-    excluded_count = 0
+    counts = {status: 0 for status in ALLOWED_LOCK_STATUSES}
     for record in records:
-        if record.get("schema_version") != "kmfa.a0_authority_baseline_field_lock.v1":
-            raise ValueError("invalid authority baseline record schema_version")
-        if record.get("stage_phase") != "S05-P3":
-            raise ValueError("authority baseline record must be S05-P3")
+        if record.get("schema_version") != PUBLIC_RECORD_SCHEMA or record.get("stage_phase") != "S05-P3":
+            raise ValueError("invalid authority public record schema")
         key = (str(record.get("fixture_candidate_id")), str(record.get("field_key")))
         if key in seen:
-            raise ValueError(f"duplicate authority baseline field lock: {key[0]}/{key[1]}")
+            raise ValueError(f"duplicate authority field projection: {key[0]}/{key[1]}")
         seen.add(key)
         if record.get("field_key") not in FIELD_KEYS:
-            raise ValueError(f"unknown field_key: {record.get('field_key')}")
-        if record.get("lock_status") not in ALLOWED_LOCK_STATUSES:
-            raise ValueError(f"invalid lock_status: {record.get('lock_status')}")
+            raise ValueError(f"unknown authority field_key: {record.get('field_key')}")
+        status = str(record.get("lock_status"))
+        if status not in ALLOWED_LOCK_STATUSES:
+            raise ValueError(f"invalid lock_status: {status}")
+        counts[status] += 1
         quality = record.get("quality_state") or {}
-        if record["lock_status"] == "q5_locked_public_safe_hash_baseline":
-            locked_count += 1
-            value_lock = record.get("value_lock") or {}
-            source_lock = record.get("source_lock") or {}
-            for hash_key in ("raw_value_hash", "normalized_value_hash"):
-                if not HASH_RE.match(str(value_lock.get(hash_key, ""))):
-                    raise ValueError(f"locked record {hash_key} must be sha256:<64 hex>")
-            if source_lock.get("source_anchor_status") != "recorded_from_private_input":
-                raise ValueError("locked record must have recorded source anchor")
-            if quality.get("q4_human_confirmed") is not True:
-                raise ValueError("locked record must set q4_human_confirmed=true")
-            if quality.get("q5_calculation_baseline_allowed") is not True:
-                raise ValueError("locked record must allow q5 calculation baseline")
-            if quality.get("formal_report_allowed") is not False:
-                raise ValueError("locked record must not allow formal report")
-        else:
-            excluded_count += 1
-            if record.get("exclusion", {}).get("q5_exclusion_confirmed") is not True:
-                raise ValueError("excluded record must confirm q5 exclusion")
-            if quality.get("q4_human_confirmed") is not False:
-                raise ValueError("excluded record must not set q4 human confirmed")
-            if quality.get("q5_calculation_baseline_allowed") is not False:
-                raise ValueError("excluded record must not allow q5 calculation baseline")
+        q5_expected = status == "q5_locked_private_receipt_verified"
+        if quality.get("q4_human_confirmed") is not q5_expected:
+            raise ValueError("Q4 confirmation must exactly follow verified private receipt lock status")
+        if quality.get("q5_calculation_baseline_allowed") is not q5_expected:
+            raise ValueError("Q5 permission must exactly follow verified private receipt lock status")
+        if quality.get("formal_report_allowed") is not False:
+            raise ValueError("authority field projection must not allow formal reports")
 
     if summary.get("authority_records") != len(records):
-        raise ValueError("manifest authority_records count mismatch")
-    if summary.get("q5_locked_field_count") != locked_count:
-        raise ValueError("manifest q5 locked count mismatch")
-    if summary.get("excluded_field_count") != excluded_count:
-        raise ValueError("manifest excluded count mismatch")
+        raise ValueError("authority record count mismatch")
+    if summary.get("q5_locked_field_count") != counts["q5_locked_private_receipt_verified"]:
+        raise ValueError("Q5 locked count mismatch")
+    if summary.get("excluded_field_count") != counts["excluded_cross_source_support_only"]:
+        raise ValueError("excluded count mismatch")
+    if summary.get("private_binding_revalidation_required_count") != counts["private_binding_revalidation_required"]:
+        raise ValueError("private binding revalidation count mismatch")
 
 
 def write_outputs(manifest: dict[str, Any], records: list[dict[str, Any]], manifest_path: Path, records_path: Path) -> None:
@@ -400,34 +338,35 @@ def write_outputs(manifest: dict[str, Any], records: list[dict[str, Any]], manif
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Build KMFA S05-P3 authority baseline lock metadata.")
+    parser = argparse.ArgumentParser(description="Build KMFA A0 authority public projection v2.")
     parser.add_argument("--fixtures", type=Path, default=DEFAULT_OUTPUT_CANDIDATES)
     parser.add_argument("--owner-decision", type=Path, default=DEFAULT_OWNER_DECISION)
+    parser.add_argument("--private-fixture-receipt", type=Path)
     parser.add_argument("--output-manifest", type=Path, default=DEFAULT_OUTPUT_MANIFEST)
     parser.add_argument("--output-records", type=Path, default=DEFAULT_OUTPUT_RECORDS)
     parser.add_argument("--locked-at")
     parser.add_argument("--locked-by-role", default="authorized_delegate")
-    parser.add_argument("--locked-by-ref", default="codex_s05p3_public_safe_authority_baseline_lock")
-    parser.add_argument("--baseline-version", default="KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK")
+    parser.add_argument("--locked-by-ref", default="codex_s05p3_public_projection_v2")
+    parser.add_argument("--baseline-version", default=DEFAULT_BASELINE_VERSION)
     parser.add_argument("--check-only", action="store_true")
     args = parser.parse_args(argv)
 
     manifest, records = build_authority_baseline_lock(
         fixture_records=read_jsonl(args.fixtures),
         owner_decision=read_json(args.owner_decision),
+        private_fixture_receipt_path=args.private_fixture_receipt,
         locked_at=args.locked_at,
         locked_by_role=args.locked_by_role,
         locked_by_ref=args.locked_by_ref,
         baseline_version=args.baseline_version,
+        output_manifest=None if args.check_only else args.output_manifest,
+        output_records=None if args.check_only else args.output_records,
     )
-    if not args.check_only:
-        write_outputs(manifest, records, args.output_manifest, args.output_records)
     summary = manifest["lock_summary"]
     print(
-        "PASS: KMFA S05-P3 authority baseline lock built "
-        f"(q5_locked_fields={summary['q5_locked_field_count']}, "
-        f"excluded_fields={summary['excluded_field_count']}, "
-        f"formal_report_allowed={summary['formal_report_allowed']})"
+        "PASS: A0 authority public projection v2 built "
+        f"(records={len(records)}, q5_locked={summary['q5_locked_field_count']}, "
+        f"pending_private_revalidation={summary['private_binding_revalidation_required_count']})"
     )
     return 0
 

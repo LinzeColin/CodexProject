@@ -25,6 +25,15 @@ class CrossTableReviewTests(unittest.TestCase):
         self.assertEqual(manifest["summary"]["quality_report_count"], 1)
         self.assertEqual(manifest["summary"]["pending_reconciliation_count"], 12)
         self.assertEqual(manifest["summary"]["report_grade_visible"], "D")
+        self.assertEqual(
+            manifest["source_summary"]["schema_version"],
+            "kmfa.cross_table_public_source_summary.v2",
+        )
+        self.assertEqual(manifest["source_summary"]["source_manifest_count"], 2)
+        self.assertFalse(manifest["source_summary"]["source_digest_values_committed"])
+        self.assertFalse(manifest["source_summary"]["source_private_refs_committed"])
+        self.assertEqual(manifest["public_build_ref"], "OPAQUE-S13P3-CROSS-TABLE-BUILD-001")
+        self.assertNotIn("content_hash", manifest)
         self.assertFalse(manifest["quality_gate"]["formal_report_allowed"])
         self.assertFalse(manifest["quality_gate"]["business_decision_basis_allowed"])
         self.assertFalse(manifest["quality_gate"]["difference_auto_resolution_allowed"])
@@ -154,6 +163,9 @@ class CrossTableReviewTests(unittest.TestCase):
             "token",
             "api_key",
             "private_key",
+            "sha256:",
+            "s13_p1_manifest_hash",
+            "s13_p2_manifest_hash",
         ):
             self.assertNotIn(forbidden_text, payload)
 

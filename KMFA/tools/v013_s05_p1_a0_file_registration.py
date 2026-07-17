@@ -79,6 +79,12 @@ def sha256_file(path: Path) -> str:
 
 
 def source_package_from_a0_manifest(a0_manifest: dict[str, Any]) -> dict[str, Any]:
+    if a0_manifest.get("schema_version") == "kmfa.a0_file_registration.public_projection.v2":
+        raise ValueError(
+            "v013 raw-alignment replay is fail-closed: the public v2 projection does not publish "
+            "a raw package digest; supply and validate an ignored private binding receipt in a "
+            "dedicated private rerun instead"
+        )
     package = a0_manifest.get("source_package")
     if not isinstance(package, dict):
         raise ValueError("A0 source package must be an object")

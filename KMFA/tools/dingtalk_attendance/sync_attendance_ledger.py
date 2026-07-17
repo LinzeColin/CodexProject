@@ -18,7 +18,7 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT
+from KMFA.tools.dingtalk_attendance import ARCHIVE_ROOT_REF, resolve_archive_root
 from KMFA.tools.dingtalk_attendance.dws_attendance import (
     SUMMARY_TODAY_ANOMALY_TOKENS,
     _record_list_has_morning_and_evening,
@@ -53,13 +53,13 @@ def initialize_ledger(db_path: Path = DEFAULT_LEDGER_PATH) -> dict[str, Any]:
 
 def sync_archives_to_ledger(
     *,
-    onedrive_root: Path | str = Path(ONEDRIVE_ROOT),
+    onedrive_root: Path | str | None = None,
     db_path: Path = DEFAULT_LEDGER_PATH,
     month: str | None = None,
     all_months: bool = False,
     dry_run: bool = False,
 ) -> dict[str, Any]:
-    root = Path(onedrive_root)
+    root = resolve_archive_root(onedrive_root)
     months = _selected_month_dirs(root=root, month=month, all_months=all_months)
     manifests = [manifest for month_dir in months for manifest in archive_manifest_paths(month_dir)]
     raw_files = [
@@ -1052,7 +1052,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--db-path", default=str(DEFAULT_LEDGER_PATH))
-    parser.add_argument("--onedrive-root", default=ONEDRIVE_ROOT)
+    parser.add_argument("--onedrive-root", default=ARCHIVE_ROOT_REF)
     args = parser.parse_args(argv)
     db_path = Path(args.db_path)
     if args.validate:
@@ -1060,7 +1060,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0 if result["status"] == "PASS" else 2
     result = sync_archives_to_ledger(
-        onedrive_root=Path(args.onedrive_root),
+        onedrive_root=args.onedrive_root,
         db_path=db_path,
         month=args.month,
         all_months=bool(args.all),

@@ -11,8 +11,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from KMFA.tools.check_v014_s05_p2_field_golden_baseline import validate_v014_s05_p2_field_golden_baseline
-from KMFA.tools.v014_s05_p1_a0_file_registration import RAW_INBOX
 from KMFA.tools.v014_s05_p3_authority_baseline_lock import (
     ACCEPTANCE_ID,
     BASELINE_VERSION,
@@ -21,6 +19,9 @@ from KMFA.tools.v014_s05_p3_authority_baseline_lock import (
     MANIFEST_PATH,
     PUBLIC_AUTHORITY_MANIFEST_PATH,
     PUBLIC_AUTHORITY_RECORDS_PATH,
+    PRIVATE_RUNTIME_REGISTRY_REF,
+    PUBLIC_REPOSITORY_REF,
+    RAW_INBOX_REF,
     RECORD_SCHEMA_VERSION,
     REPORT_PATH,
     RISK_REGISTER_PATH,
@@ -29,6 +30,7 @@ from KMFA.tools.v014_s05_p3_authority_baseline_lock import (
     TASK_ID,
     TEST_RESULTS_PATH,
     sha256_payload,
+    validate_frozen_s05_p2_public_dependency,
 )
 
 
@@ -220,7 +222,7 @@ def validate_v014_s05_p3_authority_baseline_lock(manifest_path: Path = MANIFEST_
     manifest = read_json(manifest_path)
     authority_manifest = read_json(PUBLIC_AUTHORITY_MANIFEST_PATH)
     authority_records = read_jsonl(PUBLIC_AUTHORITY_RECORDS_PATH)
-    s05_p2 = validate_v014_s05_p2_field_golden_baseline()
+    s05_p2 = validate_frozen_s05_p2_public_dependency()
 
     for public_value in (manifest, authority_manifest, authority_records):
         walk_public(public_value, errors)
@@ -244,6 +246,7 @@ def validate_v014_s05_p3_authority_baseline_lock(manifest_path: Path = MANIFEST_
         errors,
     )
     require(manifest.get("completed_task_ids") == ["S05P3T01", "S05P3T02", "S05P3T03"], "task ids mismatch", errors)
+    require(manifest.get("worktree") == PUBLIC_REPOSITORY_REF, "public repository ref mismatch", errors)
 
     require(s05_p2.get("phase_id") == "S05-P2", "S05-P2 dependency phase mismatch", errors)
     require(s05_p2.get("github_upload_performed") is False, "S05-P2 upload boundary mismatch", errors)
@@ -303,7 +306,22 @@ def validate_v014_s05_p3_authority_baseline_lock(manifest_path: Path = MANIFEST_
         require(record.get("authority_record_ref") not in seen_refs, "duplicate authority record ref", errors)
         seen_refs.add(str(record.get("authority_record_ref")))
         require(record.get("baseline_version") == BASELINE_VERSION, "record baseline version mismatch", errors)
-        require(HASH_RE.match(str(record.get("public_field_candidate_hash", ""))) is not None, "candidate public hash mismatch", errors)
+        require(
+            record.get("field_candidate_binding_ref") == f"OPAQUE-AUTHORITY-FIELD-CANDIDATE-{index:03d}",
+            "candidate opaque binding ref mismatch",
+            errors,
+        )
+        require(
+            record.get("field_candidate_binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            "candidate binding must require private revalidation",
+            errors,
+        )
+        require(
+            record.get("field_candidate_sensitive_values_committed") is False,
+            "candidate sensitive binding values must not be committed",
+            errors,
+        )
+        require("public_field_candidate_hash" not in record, "candidate private-derived digest must not be public", errors)
         require(HASH_RE.match(str(record.get("authority_lock_public_hash", ""))) is not None, "authority public hash mismatch", errors)
         require(record.get("field_role_status") == "canonical_contract_role_not_raw_header_text", "field role status mismatch", errors)
         source_lock = record.get("source_lock", {})
@@ -359,7 +377,13 @@ def validate_v014_s05_p3_authority_baseline_lock(manifest_path: Path = MANIFEST_
         require(scope.get(key) is False, f"phase_scope_controls.{key} must be false", errors)
 
     boundary = manifest.get("raw_data_boundary", {})
-    require(boundary.get("raw_inbox_path") == str(RAW_INBOX), "raw inbox path mismatch", errors)
+    require(boundary.get("raw_inbox_path") == RAW_INBOX_REF, "raw inbox ref mismatch", errors)
+    require(
+        boundary.get("private_runtime_registry_ref") == PRIVATE_RUNTIME_REGISTRY_REF,
+        "private runtime registry ref mismatch",
+        errors,
+    )
+    require("private_runtime_output_dir" not in boundary, "private runtime path must not be public", errors)
     for key in BOUNDARY_FALSE_KEYS:
         require(boundary.get(key) is False, f"raw_data_boundary.{key} must be false", errors)
 

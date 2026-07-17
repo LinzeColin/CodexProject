@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import sys
@@ -114,6 +113,12 @@ FORBIDDEN_PUBLIC_KEYS = {
     "amount_a_cents",
     "amount_b_cents",
     "delta_cents",
+    "amount_a_cents_private_ref",
+    "amount_b_cents_private_ref",
+    "delta_cents_private_ref",
+    "amount_a_cents_hash",
+    "amount_b_cents_hash",
+    "delta_cents_hash",
     "raw_value",
     "normalized_value",
     "original_value",
@@ -136,7 +141,8 @@ FORBIDDEN_PUBLIC_KEYS = {
 }
 
 FORBIDDEN_PUBLIC_SUFFIXES = (".zip", ".xls", ".xlsx", ".pdf", ".sqlite", ".db")
-HASH_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
+VALUE_BINDING_CONTRACT_VERSION = "kmfa.scope_reconciliation.value_binding.v2"
+VALUE_BINDING_STATUS = "private_runtime_only_not_publicly_reconstructive"
 
 
 class ProjectScopeReconciliationError(ValueError):
@@ -150,10 +156,6 @@ def require_text(value: Any, field_name: str) -> str:
     if not text:
         raise ProjectScopeReconciliationError(f"{field_name} is required")
     return text
-
-
-def _sha256_for(label: str) -> str:
-    return "sha256:" + hashlib.sha256(label.encode("utf-8")).hexdigest()
 
 
 def _public_repo_safety() -> dict[str, bool]:
@@ -235,7 +237,7 @@ def _build_reconciliation_records(
         source_a, source_b = _source_refs_for_record(summary_item, mapping)
         records.append(
             {
-                "schema_version": "kmfa.scope_reconciliation_record.v1",
+                "schema_version": "kmfa.scope_reconciliation_record.v2",
                 "record_type": "scope_reconciliation_record",
                 "project_id": "KMFA",
                 "stage_phase": "S09-P3",
@@ -250,12 +252,10 @@ def _build_reconciliation_records(
                 "source_a": source_a,
                 "source_b": source_b,
                 "field_name": require_text(mapping.get("field_name"), "field_name"),
-                "amount_a_cents_private_ref": f"private_ref://KMFA/S09-P3/{difference_id}/amount-a-cents",
-                "amount_b_cents_private_ref": f"private_ref://KMFA/S09-P3/{difference_id}/amount-b-cents",
-                "delta_cents_private_ref": f"private_ref://KMFA/S09-P3/{difference_id}/delta-cents",
-                "amount_a_cents_hash": _sha256_for(f"S09-P3:{difference_id}:amount-a-cents"),
-                "amount_b_cents_hash": _sha256_for(f"S09-P3:{difference_id}:amount-b-cents"),
-                "delta_cents_hash": _sha256_for(f"S09-P3:{difference_id}:delta-cents"),
+                "value_binding_ref": f"VBR-S09P3-V2-{index:03d}",
+                "value_binding_contract_version": VALUE_BINDING_CONTRACT_VERSION,
+                "value_binding_status": VALUE_BINDING_STATUS,
+                "value_slot_count": 3,
                 "reason_candidate": require_text(mapping.get("reason_candidate"), "reason_candidate"),
                 "basis_evidence_refs": [
                     "KMFA/metadata/quality/scope_difference_summary.jsonl",
@@ -444,16 +444,6 @@ def _require_false(container: dict[str, Any], path: str) -> None:
             raise ProjectScopeReconciliationError(f"{path}.{key} must be false")
 
 
-def _require_hash(value: Any, path: str) -> None:
-    if not isinstance(value, str) or not HASH_RE.match(value):
-        raise ProjectScopeReconciliationError(f"{path} must be sha256")
-
-
-def _require_private_ref(value: Any, path: str) -> None:
-    if not isinstance(value, str) or not value.startswith("private_ref://"):
-        raise ProjectScopeReconciliationError(f"{path} must be private_ref")
-
-
 def _validate_human_fields(record: dict[str, Any], path: str) -> None:
     for field_name in REQUIRED_HUMAN_FIELDS:
         if field_name not in record:
@@ -521,7 +511,7 @@ def validate_project_scope_reconciliation_artifacts(
 
     for record in reconciliation_records:
         record_id = require_text(record.get("difference_id"), "difference_id")
-        if record.get("schema_version") != "kmfa.scope_reconciliation_record.v1":
+        if record.get("schema_version") != "kmfa.scope_reconciliation_record.v2":
             raise ProjectScopeReconciliationError(f"{record_id} schema_version mismatch")
         if record.get("record_type") != "scope_reconciliation_record":
             raise ProjectScopeReconciliationError(f"{record_id} record_type mismatch")
@@ -531,12 +521,30 @@ def validate_project_scope_reconciliation_artifacts(
             raise ProjectScopeReconciliationError(f"{record_id} invalid reconciliation_domain")
         for required_text_field in ("source_a", "source_b", "field_name"):
             require_text(record.get(required_text_field), f"{record_id}.{required_text_field}")
-        _require_private_ref(record.get("amount_a_cents_private_ref"), f"{record_id}.amount_a_cents_private_ref")
-        _require_private_ref(record.get("amount_b_cents_private_ref"), f"{record_id}.amount_b_cents_private_ref")
-        _require_private_ref(record.get("delta_cents_private_ref"), f"{record_id}.delta_cents_private_ref")
-        _require_hash(record.get("amount_a_cents_hash"), f"{record_id}.amount_a_cents_hash")
-        _require_hash(record.get("amount_b_cents_hash"), f"{record_id}.amount_b_cents_hash")
-        _require_hash(record.get("delta_cents_hash"), f"{record_id}.delta_cents_hash")
+        record_id_match = re.fullmatch(r"S09P3-REC-(\d{3})", record_id)
+        if record_id_match is None:
+            raise ProjectScopeReconciliationError(f"{record_id}.difference_id format mismatch")
+        expected_binding_ref = f"VBR-S09P3-V2-{record_id_match.group(1)}"
+        if record.get("value_binding_ref") != expected_binding_ref:
+            raise ProjectScopeReconciliationError(f"{record_id}.value_binding_ref mismatch")
+        if record.get("value_binding_contract_version") != VALUE_BINDING_CONTRACT_VERSION:
+            raise ProjectScopeReconciliationError(f"{record_id}.value_binding_contract_version mismatch")
+        if record.get("value_binding_status") != VALUE_BINDING_STATUS:
+            raise ProjectScopeReconciliationError(f"{record_id}.value_binding_status mismatch")
+        if record.get("value_slot_count") != 3:
+            raise ProjectScopeReconciliationError(f"{record_id}.value_slot_count must be 3")
+        for forbidden_binding_key in (
+            "amount_a_cents_private_ref",
+            "amount_b_cents_private_ref",
+            "delta_cents_private_ref",
+            "amount_a_cents_hash",
+            "amount_b_cents_hash",
+            "delta_cents_hash",
+        ):
+            if forbidden_binding_key in record:
+                raise ProjectScopeReconciliationError(
+                    f"{record_id}.{forbidden_binding_key} is not public-safe v2 metadata"
+                )
         _validate_human_fields(record, record_id)
         if record.get("resolution_status") != "pending_owner_or_authorized_review":
             raise ProjectScopeReconciliationError(f"{record_id} must remain pending review")

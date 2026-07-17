@@ -16,7 +16,6 @@ from KMFA.tools.check_v014_s02_stage_review import validate_v014_s02_stage_revie
 
 TASK_ID = "KMFA-V014-S03-P1-FILE-REGISTRATION-20260703"
 ACCEPTANCE_ID = "ACC-V014-S03-P1-FILE-REGISTRATION"
-RAW_INBOX = "/Users/linzezhang/Downloads/KMFA_MetaData"
 MANIFEST_PATH = Path(
     "KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/machine/s03_p1_file_registration_manifest.json"
 )
@@ -188,13 +187,27 @@ def validate_v014_s03_p1_file_registration(manifest_path: Path = MANIFEST_PATH) 
         require(raw_status.get(key) is True, f"raw_root_status.{key} must be true", errors)
     for key in ("write_performed", "delete_performed", "move_performed", "rename_performed", "overwrite_performed"):
         require(raw_status.get(key) is False, f"raw_root_status.{key} must be false", errors)
-    require(raw_status.get("raw_root_path") == RAW_INBOX, "raw inbox path mismatch", errors)
     require(raw_status.get("raw_root_stat_unchanged_after_scan") is True, "raw root stat must remain unchanged", errors)
 
     public_status = public_register.get("raw_root_status", {})
     require(public_register.get("schema_version") == "kmfa.v014_s03_p1.public_raw_file_register.v1", "public schema mismatch", errors)
     require(public_register.get("phase_id") == "S03-P1", "public phase mismatch", errors)
-    require(public_status == raw_status, "public raw root status must match stage manifest", errors)
+    location_keys = {"raw_root_id", "raw_root_path", "public_path_value", "private_registry_ref"}
+    require(
+        {key: value for key, value in public_status.items() if key not in location_keys}
+        == {key: value for key, value in raw_status.items() if key not in location_keys},
+        "public raw root status must match stage manifest outside private location binding",
+        errors,
+    )
+    require(public_status.get("raw_root_id") == "PRIMARY_RAW_ROOT", "public raw root id mismatch", errors)
+    require(public_status.get("raw_root_path") is None, "public raw root path must be null", errors)
+    require(public_status.get("public_path_value") is None, "public path value must be null", errors)
+    require(
+        public_status.get("private_registry_ref")
+        == "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
+        "private raw root registry ref mismatch",
+        errors,
+    )
 
     summary = manifest.get("scan_summary", {})
     public_summary = public_register.get("scan_summary", {})
@@ -250,7 +263,7 @@ def validate_v014_s03_p1_file_registration(manifest_path: Path = MANIFEST_PATH) 
 
     require(protocol.get("schema_version") == "kmfa.raw_data_roots.v1_4.s03_p1", "protocol schema mismatch", errors)
     require(protocol.get("stage_phase") == "S03-P1", "protocol phase mismatch", errors)
-    require(protocol.get("raw_root", {}) == raw_status, "protocol raw root status mismatch", errors)
+    require(protocol.get("raw_root", {}) == public_status, "protocol/public raw root status mismatch", errors)
     require(protocol.get("forbidden_operations_performed") == [], "forbidden operations must be empty", errors)
     require(".codex_private_runtime/" in KMFA_GITIGNORE_PATH.read_text(encoding="utf-8"), "private runtime missing from gitignore", errors)
 

@@ -3,8 +3,9 @@
 
 S09-P2 defines the integer-cent calculation contract for authoritative gross
 profit, system recomputed gross profit, cash gross profit, and gross margin
-rate. Public artifacts keep private refs, result hashes, formulas, status, and
-difference summary records only; they do not commit business amount values or
+rate. Public margin records keep only versioned opaque binding refs, formulas,
+status, and aggregate counts; they do not commit private refs, business-derived
+hashes, business amount values, or
 perform S09-P3 reconciliation, Stage 9 review, formal report, UI, connector, or
 GitHub upload work.
 """
@@ -74,6 +75,7 @@ FORBIDDEN_PUBLIC_KEYS = {
 
 FORBIDDEN_PUBLIC_SUFFIXES = (".zip", ".xls", ".xlsx", ".pdf", ".sqlite", ".db")
 HASH_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
+PUBLIC_BINDING_SCHEMA = "kmfa.project_margin_cash_margin_public_binding_summary.v2"
 
 
 class ProjectMarginCashMarginError(ValueError):
@@ -187,7 +189,10 @@ def calculate_margin_metrics(
 def _authority_field_groups(authority_records: list[dict[str, Any]]) -> list[dict[str, dict[str, Any]]]:
     groups: dict[str, dict[str, dict[str, Any]]] = {}
     for record in authority_records:
-        if record.get("lock_status") != "q5_locked_public_safe_hash_baseline":
+        if record.get("lock_status") not in {
+            "q5_locked_public_safe_hash_baseline",
+            "private_binding_revalidation_required",
+        }:
             continue
         candidate_id = record.get("candidate_id")
         field_key = record.get("field_key")
@@ -206,28 +211,8 @@ def _authority_field_groups(authority_records: list[dict[str, Any]]) -> list[dic
         if all(field_key in group for field_key in ("contract_amount", "total_expense", *AUTHORITY_REQUIRED_FIELDS))
     ]
     if not complete_groups:
-        raise ProjectMarginCashMarginError("no complete S05-P3 authority field groups found")
+        raise ProjectMarginCashMarginError("no complete S05-P3 public authority field groups found")
     return complete_groups
-
-
-def _authority_ref(group: dict[str, dict[str, Any]], field_key: str) -> str:
-    value_lock = group[field_key].get("value_lock", {})
-    return require_text(value_lock.get("normalized_value_private_ref"), f"authority {field_key} private ref").replace(
-        "private://", "private_ref://", 1
-    )
-
-
-def _authority_hash(group: dict[str, dict[str, Any]], field_key: str) -> str:
-    value_lock = group[field_key].get("value_lock", {})
-    return require_text(value_lock.get("normalized_value_hash"), f"authority {field_key} hash")
-
-
-def _hash_ref_map(record_id: str, namespace: str, keys: tuple[str, ...]) -> dict[str, str]:
-    return {key: _sha256_for(f"S09-P2:{record_id}:{namespace}:{key}") for key in keys}
-
-
-def _private_ref_map(record_id: str, namespace: str, keys: tuple[str, ...]) -> dict[str, str]:
-    return {key: f"private_ref://KMFA/S09-P2/{record_id}/{namespace}/{key}" for key in keys}
 
 
 def _build_margin_records(
@@ -237,12 +222,9 @@ def _build_margin_records(
     records: list[dict[str, Any]] = []
     for index, fact_record in enumerate(fact_records, start=1):
         record_id = f"PCM-S09P2-{index:03d}"
-        authority_group = authority_groups[(index - 1) % len(authority_groups)]
-        system_keys = ("gross_profit", "gross_margin_rate")
-        cash_keys = ("cash_gross_profit", "cash_paid_cost")
         records.append(
             {
-                "schema_version": "kmfa.project_margin_cash_margin_record.v1",
+                "schema_version": "kmfa.project_margin_cash_margin_record.public_safe.v2",
                 "record_type": "project_margin_cash_margin_record",
                 "project_id": "KMFA",
                 "stage_phase": "S09-P2",
@@ -261,31 +243,19 @@ def _build_margin_records(
                     "cash_gross_profit": "FORM-KMFA-MARGIN-CASH-MARGIN-001#collection-minus-cash-paid-cost",
                     "gross_margin_rate": "FORM-KMFA-MARGIN-CASH-MARGIN-001#gross-profit-divided-by-revenue",
                 },
-                "authority_value_private_refs": {
-                    "gross_profit": _authority_ref(authority_group, "gross_profit"),
-                    "gross_margin_rate": _authority_ref(authority_group, "gross_margin"),
+                "public_binding_summary": {
+                    "schema_version": PUBLIC_BINDING_SCHEMA,
+                    "binding_status": "private_binding_revalidation_required",
+                    "opaque_binding_set_ref": f"OPAQUE-MARGIN-BINDING-{index:03d}",
+                    "required_metric_slot_count": len(REQUIRED_MARGIN_METRICS),
+                    "authority_metric_slot_count": 2,
+                    "system_metric_slot_count": 2,
+                    "cash_metric_slot_count": 2,
+                    "input_metric_slot_count": 4,
+                    "private_value_refs_committed": False,
+                    "private_digest_values_committed": False,
+                    "business_derived_refs_committed": False,
                 },
-                "authority_value_hash_refs": {
-                    "gross_profit": _authority_hash(authority_group, "gross_profit"),
-                    "gross_margin_rate": _authority_hash(authority_group, "gross_margin"),
-                },
-                "system_recomputed_value_private_refs": _private_ref_map(record_id, "system-recomputed", system_keys),
-                "system_recomputed_value_hash_refs": _hash_ref_map(record_id, "system-recomputed", system_keys),
-                "cash_margin_value_private_refs": _private_ref_map(record_id, "cash-margin", cash_keys),
-                "cash_margin_value_hash_refs": _hash_ref_map(record_id, "cash-margin", cash_keys),
-                "input_private_refs": {
-                    "revenue": fact_record.get("metric_private_refs", {}).get("revenue"),
-                    "management_project_cost": fact_record.get("metric_private_refs", {}).get("cost_total"),
-                    "collection_amount": fact_record.get("metric_private_refs", {}).get("collection_amount"),
-                    "cash_paid_cost": f"private_ref://KMFA/S09-P2/{record_id}/cash-paid-cost/private-calculation-input",
-                },
-                "input_hash_refs": {
-                    "revenue": fact_record.get("metric_hash_refs", {}).get("revenue"),
-                    "management_project_cost": fact_record.get("metric_hash_refs", {}).get("cost_total"),
-                    "collection_amount": fact_record.get("metric_hash_refs", {}).get("collection_amount"),
-                    "cash_paid_cost": _sha256_for(f"S09-P2:{record_id}:cash-paid-cost:input-ref"),
-                },
-                "calculation_private_execution_ref": f"private_ref://KMFA/S09-P2/{record_id}/integer-cent-calculation",
                 "integer_cent_calculation_contract": {
                     "system_recomputed_gross_profit": "management_revenue_cents - management_project_cost_cents",
                     "cash_gross_profit": "collection_amount_cents - cash_paid_cost_cents",
@@ -298,7 +268,7 @@ def _build_margin_records(
                 "authority_display_value_overwritten_by_system": False,
                 "system_recomputed_value_overwritten_by_authority": False,
                 "difference_summary_ref": "KMFA/metadata/quality/scope_difference_summary.jsonl",
-                "calculation_status": "private_calculation_refs_recorded_pending_quality_resolution",
+                "calculation_status": "opaque_binding_recorded_pending_private_revalidation",
                 "raw_layer_write_allowed": False,
                 "formal_report_allowed": False,
                 "evidence_ref": "KMFA/stage_artifacts/S09_P2_margin_cash_margin/human/test_results.md",
@@ -464,18 +434,25 @@ def _require_private_ref(value: Any, path: str) -> None:
         raise ProjectMarginCashMarginError(f"{path} must be private_ref")
 
 
-def _require_private_ref_map(refs: dict[str, Any], expected_keys: tuple[str, ...], path: str) -> None:
-    if set(refs) != set(expected_keys):
-        raise ProjectMarginCashMarginError(f"{path} keys mismatch")
-    for key, value in refs.items():
-        _require_private_ref(value, f"{path}.{key}")
-
-
-def _require_hash_ref_map(refs: dict[str, Any], expected_keys: tuple[str, ...], path: str) -> None:
-    if set(refs) != set(expected_keys):
-        raise ProjectMarginCashMarginError(f"{path} keys mismatch")
-    for key, value in refs.items():
-        _require_hash(value, f"{path}.{key}")
+def _validate_public_binding_summary(value: Any, record_id: str) -> None:
+    identifier = re.fullmatch(r"PCM-S09P2-(\d{3})", record_id)
+    if identifier is None:
+        raise ProjectMarginCashMarginError(f"invalid margin_record_id: {record_id}")
+    expected = {
+        "schema_version": PUBLIC_BINDING_SCHEMA,
+        "binding_status": "private_binding_revalidation_required",
+        "opaque_binding_set_ref": f"OPAQUE-MARGIN-BINDING-{identifier.group(1)}",
+        "required_metric_slot_count": len(REQUIRED_MARGIN_METRICS),
+        "authority_metric_slot_count": 2,
+        "system_metric_slot_count": 2,
+        "cash_metric_slot_count": 2,
+        "input_metric_slot_count": 4,
+        "private_value_refs_committed": False,
+        "private_digest_values_committed": False,
+        "business_derived_refs_committed": False,
+    }
+    if not isinstance(value, dict) or value != expected:
+        raise ProjectMarginCashMarginError(f"{record_id} public_binding_summary drift")
 
 
 def validate_project_margin_cash_margin_artifacts(
@@ -521,7 +498,7 @@ def validate_project_margin_cash_margin_artifacts(
     _require_false(manifest.get("public_repo_safety", {}), "manifest.public_repo_safety")
 
     for record in margin_records:
-        if record.get("schema_version") != "kmfa.project_margin_cash_margin_record.v1":
+        if record.get("schema_version") != "kmfa.project_margin_cash_margin_record.public_safe.v2":
             raise ProjectMarginCashMarginError("invalid S09-P2 margin record schema_version")
         if record.get("record_type") != "project_margin_cash_margin_record":
             raise ProjectMarginCashMarginError("S09-P2 margin record type mismatch")
@@ -529,44 +506,21 @@ def validate_project_margin_cash_margin_artifacts(
             raise ProjectMarginCashMarginError("S09-P2 margin record stage_phase mismatch")
         if set(record.get("margin_metric_slots", [])) != set(REQUIRED_MARGIN_METRICS):
             raise ProjectMarginCashMarginError(f"{record.get('margin_record_id')} margin slots mismatch")
-        _require_private_ref_map(
-            record.get("authority_value_private_refs", {}),
-            ("gross_profit", "gross_margin_rate"),
+        record_id = require_text(record.get("margin_record_id"), "margin_record_id")
+        _validate_public_binding_summary(record.get("public_binding_summary"), record_id)
+        forbidden_binding_fields = {
             "authority_value_private_refs",
-        )
-        _require_hash_ref_map(
-            record.get("authority_value_hash_refs", {}),
-            ("gross_profit", "gross_margin_rate"),
             "authority_value_hash_refs",
-        )
-        _require_private_ref_map(
-            record.get("system_recomputed_value_private_refs", {}),
-            ("gross_profit", "gross_margin_rate"),
             "system_recomputed_value_private_refs",
-        )
-        _require_hash_ref_map(
-            record.get("system_recomputed_value_hash_refs", {}),
-            ("gross_profit", "gross_margin_rate"),
             "system_recomputed_value_hash_refs",
-        )
-        _require_private_ref_map(
-            record.get("cash_margin_value_private_refs", {}),
-            ("cash_gross_profit", "cash_paid_cost"),
             "cash_margin_value_private_refs",
-        )
-        _require_hash_ref_map(
-            record.get("cash_margin_value_hash_refs", {}),
-            ("cash_gross_profit", "cash_paid_cost"),
             "cash_margin_value_hash_refs",
-        )
-        if record["authority_value_private_refs"]["gross_profit"] == record["system_recomputed_value_private_refs"][
-            "gross_profit"
-        ]:
-            raise ProjectMarginCashMarginError("S09-P2 authority and system gross profit refs must differ")
-        if record["authority_value_hash_refs"]["gross_profit"] == record["system_recomputed_value_hash_refs"][
-            "gross_profit"
-        ]:
-            raise ProjectMarginCashMarginError("S09-P2 authority and system gross profit hashes must differ")
+            "input_private_refs",
+            "input_hash_refs",
+            "calculation_private_execution_ref",
+        }
+        if forbidden_binding_fields.intersection(record):
+            raise ProjectMarginCashMarginError(f"{record_id} exposes legacy private/hash binding fields")
         if record.get("public_amount_values_committed") is not False:
             raise ProjectMarginCashMarginError("S09-P2 margin record cannot commit public amount values")
         if record.get("authority_system_overwrite_allowed") is not False:

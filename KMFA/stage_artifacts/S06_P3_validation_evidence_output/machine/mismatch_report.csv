@@ -1,2 +1,2 @@
-mismatch_id,source_id,file_hash,field_path,mapping_version,formula_version,status,evidence_ref
-MM-S06P3-e2e6207968557e31,SRC-s06p3-zero-delta-9dc14c42,sha256:95648c2dfc62c18f463a41c5d82904d1e14b8b21e9deaa73a1ae0b8700a0f9bd,field_ref:sha256:579fa7a11ff2b58292f1cfadd45b2cb1b0b35ec93713ca252c7077a5afb6f572,MAP-SRC-s06p3-zero-delta-9dc14c42-v0.1.0,FORM-KMFA-S06P3-VALIDATION-EVIDENCE-v0.1.0,zero_delta_failed,KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_report.csv
+mismatch_id,source_id,field_path,binding_contract_version,mapping_version,formula_version,status,evidence_ref
+MM-S06P3-V2-001,SRC-S06P3-V2-001,FIELD-S06P3-V2-001,kmfa.s06_p3.mismatch_public_binding.v2,MAP-KMFA-S06P3-PUBLIC-SAFE-v2,FORM-KMFA-S06P3-VALIDATION-EVIDENCE-v0.1.0,zero_delta_failed,KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_report.csv

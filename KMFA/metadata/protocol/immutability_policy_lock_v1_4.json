@@ -66,7 +66,10 @@
     "frontend_or_workbench_raw_write_allowed": false
   },
   "raw_data_boundary": {
-    "raw_inbox_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_inbox_path": null,
+    "raw_root_id": "PRIMARY_RAW_ROOT",
+    "public_path_value": null,
+    "private_registry_ref": "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
     "raw_roots_policy": "KMFA/metadata/protocol/raw_data_roots_v1_4.json",
     "raw_inbox_read_by_this_phase": false,
     "raw_inbox_listed_by_this_phase": false,

@@ -1,0 +1,10 @@
+{"validation_id":"s01_amendment_strict_dependency","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/check_v015_s01_controlled_transition_amendment.py --require-source-package --require-validation-receipts --require-dependency-validator","result":"PASS","exit_code":0}
+{"validation_id":"s01_p2_gap_dependency","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/check_v015_s01_p2_implementation_spec_gap_inventory.py --require-source-package","result":"PASS","exit_code":0}
+{"validation_id":"roadmap_governance_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/v015_roadmap_governance_sync.py --check","result":"PASS","exit_code":0}
+{"validation_id":"s02_p1_focused_tests","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest KMFA.tests.test_v015_s02_p1_requirements_merge -q","result":"PASS","exit_code":0}
+{"validation_id":"governance_project_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/validate_project_governance.py --project KMFA","result":"PASS","exit_code":0}
+{"validation_id":"lean_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/lean_governance.py validate --project KMFA","result":"PASS","exit_code":0}
+{"validation_id":"governance_sync_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/validate_governance_sync.py --changed-only --base-ref 74ce24a516f42cd5d8bf91c738166634199d8823 --enforce-sync","result":"PASS","exit_code":0}
+{"validation_id":"no_float_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/check_no_float_money.py","result":"PASS","exit_code":0}
+{"validation_id":"no_omission_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/no_omission_check.py","result":"PASS","exit_code":0}
+{"validation_id":"phase_diff_whitespace_check","command":"git diff --check 74ce24a516f42cd5d8bf91c738166634199d8823 -- KMFA","result":"PASS","exit_code":0}

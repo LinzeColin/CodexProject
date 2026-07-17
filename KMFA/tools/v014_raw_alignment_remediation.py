@@ -398,7 +398,7 @@ def generate(*, generated_at: str | None = None) -> dict[str, Any]:
         "acceptance_ids": [ACCEPTANCE_ID],
         "generated_at": generated,
         "reviewed_head": git_output(["rev-parse", "HEAD"]),
-        "worktree": git_output(["rev-parse", "--show-toplevel"]),
+        "worktree": "repo://KMFA",
         "branch": git_output(["branch", "--show-current"]),
         "remote": git_output(["remote", "get-url", "origin"]),
         "status": STATUS,

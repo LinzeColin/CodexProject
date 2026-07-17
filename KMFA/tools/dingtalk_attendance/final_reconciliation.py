@@ -16,7 +16,11 @@ from zoneinfo import ZoneInfo
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT, TIMEZONE
+from KMFA.tools.dingtalk_attendance import (
+    PrivateArchiveConfigError,
+    TIMEZONE,
+    resolve_archive_root,
+)
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
 from KMFA.tools.dingtalk_attendance.delivery_policy import (
     DELIVERY_DISABLED_STATUS,
@@ -43,7 +47,6 @@ from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
     INDEPENDENT_EVIDENCE_KIND,
     validate_reconciliation_certificate,
 )
-from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
 from KMFA.tools.dingtalk_attendance.run_attendance import build_run_plan
 
 
@@ -97,7 +100,7 @@ def run_final_reconciliation(
     timezone: str = TIMEZONE,
     allow_dws_commands: bool = False,
     env: Mapping[str, str] | None = None,
-    onedrive_root: Path = Path(ONEDRIVE_ROOT),
+    onedrive_root: Path | None = None,
     collector: Callable[..., dict[str, Any]] = collect_official_org_attendance,
     cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
     now: datetime | None = None,
@@ -113,6 +116,16 @@ def run_final_reconciliation(
             "notification_status": DELIVERY_DISABLED_STATUS,
             "independent_evidence_status": evidence["evidence_status"],
             "failure_reason": evidence["failure_reason"],
+            "cleanup_status": cleanup(),
+        }
+    try:
+        onedrive_root = resolve_archive_root(onedrive_root)
+    except PrivateArchiveConfigError as exc:
+        return {
+            "status": "PRIVATE_ARCHIVE_CONFIG_MISSING",
+            "work_date": work_date,
+            "notification_status": DELIVERY_DISABLED_STATUS,
+            "failure_reason": str(exc),
             "cleanup_status": cleanup(),
         }
     safety = dws_command_safety_status(env=env, allow_override=allow_dws_commands)
@@ -149,13 +162,12 @@ def run_final_reconciliation(
             "cleanup_status": cleanup(),
         }
 
-    plan = build_run_plan(run_type="final", timezone=timezone, run_datetime=current)
-    plan["archive_paths"] = archive_paths_for_run(
-        plan["run_id"],
-        target,
+    plan = build_run_plan(
+        run_type="final",
+        timezone=timezone,
+        run_datetime=current,
         onedrive_root=onedrive_root,
     )
-    plan["onedrive_root"] = str(onedrive_root)
     output = write_private_outputs(
         plan=plan,
         collection=collection,
@@ -295,11 +307,12 @@ def find_reminder_evidence(
 
 def find_latest_pending_work_date(
     *,
-    onedrive_root: Path = Path(ONEDRIVE_ROOT),
+    onedrive_root: Path | None = None,
     timezone: str = TIMEZONE,
     now: datetime | None = None,
 ) -> str | None:
     """Find the latest canonical evening reminder that has no canonical final result."""
+    onedrive_root = resolve_archive_root(onedrive_root)
     current = now or datetime.now(ZoneInfo(timezone))
     today = current.astimezone(ZoneInfo(timezone)).date().isoformat()
     evening_dates: set[str] = set()

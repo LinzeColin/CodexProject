@@ -172,7 +172,13 @@ def validate_v014_value_consistency_scope_gate(
     metadata_scope_matrix = read_json(METADATA_SCOPE_MATRIX_PATH)
     metadata_difference_contract = read_json(METADATA_DIFFERENCE_CONTRACT_PATH)
 
-    require(metadata_manifest == manifest, "metadata manifest copy mismatch", errors)
+    require(
+        {key: value for key, value in metadata_manifest.items() if key != "worktree"}
+        == {key: value for key, value in manifest.items() if key != "worktree"},
+        "metadata manifest copy mismatch",
+        errors,
+    )
+    require(metadata_manifest.get("worktree") == "repo://KMFA", "public metadata worktree token mismatch", errors)
     require(metadata_go_no_go == go_no_go, "metadata go/no-go copy mismatch", errors)
     require(metadata_scope_matrix == scope_matrix, "metadata scope matrix copy mismatch", errors)
     require(metadata_difference_contract == difference_contract, "metadata difference contract copy mismatch", errors)

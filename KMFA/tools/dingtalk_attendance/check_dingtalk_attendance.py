@@ -12,7 +12,7 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT, SKILL_ID
+from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, SKILL_ID
 from KMFA.tools.dingtalk_attendance.notification_template import (
     build_notification_message,
     notification_context_from_output_status,
@@ -68,6 +68,8 @@ REQUIRED_TOOL_FILES = (
     "identity.py",
     "check_dingtalk_attendance.py",
 )
+
+PUBLIC_ONEDRIVE_ROOT_REF = "CONFIG::DINGTALK_ATTENDANCE_ONEDRIVE_ROOT"
 ALLOWED_PRIVATE_RUNTIME_FILES = {
     ".gitkeep",
     "README.md",
@@ -175,8 +177,10 @@ def validate_dingtalk_attendance_files(root: Path) -> dict[str, Any]:
         errors.append("morning prompt scheduler freeze drift")
     if (metadata_root / "codex_automation" / "evening_2000.prompt.md").read_text(encoding="utf-8").find("20:00") < 0:
         errors.append("evening prompt schedule drift")
-    if manifest.get("onedrive_root") != ONEDRIVE_ROOT:
-        errors.append("onedrive root drift")
+    if manifest.get("onedrive_root") is not None:
+        errors.append("public onedrive root must be null")
+    if manifest.get("onedrive_root_private_registry_ref") != PUBLIC_ONEDRIVE_ROOT_REF:
+        errors.append("private onedrive root registry ref drift")
     if manifest.get("onedrive_month_folder_pattern") != "YYYYMM":
         errors.append("onedrive month folder pattern drift")
     official_source = manifest.get("official_statistics_source", {})
@@ -283,6 +287,7 @@ def validate_dingtalk_attendance_files(root: Path) -> dict[str, Any]:
         "automation_name": manifest.get("automation_name"),
         "skill_id": manifest.get("skill_id"),
         "onedrive_root": manifest.get("onedrive_root"),
+        "onedrive_root_private_registry_ref": manifest.get("onedrive_root_private_registry_ref"),
         "prompt_count": len(prompt_files),
         "automation_prompt_contracts": prompt_contracts,
         "prompt_mirrors_match": prompt_mirrors_match,

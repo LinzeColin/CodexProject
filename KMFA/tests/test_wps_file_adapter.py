@@ -107,9 +107,18 @@ class WpsFileAdapterTests(unittest.TestCase):
 
         mapping_payload = json.dumps(mappings, ensure_ascii=False, sort_keys=True)
         self.assertIn("mapping_rule_version_id", mapping_payload)
-        self.assertIn("source_header_hash", mapping_payload)
-        self.assertIn("source_header_private_ref", mapping_payload)
-        for forbidden in ("source_header_text", "raw_value", "normalized_value", "bank_account_number"):
+        self.assertIn("OPAQUE-WPS-SOURCE-BINDING-", mapping_payload)
+        self.assertIn("PRIVATE_BINDING_REVALIDATION_REQUIRED", mapping_payload)
+        for forbidden in (
+            "file_hash",
+            "source_header_hash",
+            "source_header_private_ref",
+            "source_file_private_ref",
+            "source_header_text",
+            "raw_value",
+            "normalized_value",
+            "bank_account_number",
+        ):
             self.assertNotIn(forbidden, mapping_payload)
 
         self.assertEqual({record["export_type"] for record in field_report}, set(REQUIRED_WPS_EXPORT_TYPES))

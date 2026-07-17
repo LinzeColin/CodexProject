@@ -166,6 +166,49 @@ def _validate_identity_and_results(
     _require(manifest.get("historical_overall_review_structural_baseline_validated") is True, "historical structural baseline missing", errors)
     _require(manifest.get("historical_overall_review_dynamic_state_authoritative") is False, "historical dynamic state must be non-authoritative", errors)
     _require(manifest.get("historical_overall_review_upload_state_authoritative") is False, "historical upload state must be non-authoritative", errors)
+    historical = manifest.get("historical_overall_review_baseline", {})
+    expected_historical_artifacts = (
+        ("v014_overall_review_structural_baseline", review.HISTORICAL_V014_OVERALL_PATH),
+        ("whole_project_review_structural_baseline", review.HISTORICAL_WHOLE_PROJECT_PATH),
+    )
+    _require(
+        set(historical) == {
+            "validated",
+            "artifacts",
+            "structural_history_only",
+            "dynamic_state_authoritative",
+            "upload_state_authoritative",
+        },
+        "historical baseline fields drift",
+        errors,
+    )
+    _require(historical.get("validated") is True, "historical baseline validation flag drift", errors)
+    _require(historical.get("structural_history_only") is True, "historical baseline purpose drift", errors)
+    _require(historical.get("dynamic_state_authoritative") is False, "historical dynamic state drift", errors)
+    _require(historical.get("upload_state_authoritative") is False, "historical upload state drift", errors)
+    historical_artifacts = historical.get("artifacts", [])
+    _require(isinstance(historical_artifacts, list), "historical artifacts must be a list", errors)
+    if isinstance(historical_artifacts, list):
+        _require(len(historical_artifacts) == len(expected_historical_artifacts), "historical artifact count drift", errors)
+        for index, (role, artifact_path) in enumerate(expected_historical_artifacts):
+            artifact = historical_artifacts[index] if index < len(historical_artifacts) else {}
+            _require(
+                isinstance(artifact, dict) and set(artifact) == {"artifact_role", "artifact_ref", "artifact_sha256"},
+                f"historical artifact {index + 1} fields drift",
+                errors,
+            )
+            if not isinstance(artifact, dict):
+                continue
+            _require(artifact.get("artifact_role") == role, f"historical artifact {index + 1} role drift", errors)
+            _require(artifact.get("artifact_ref") == artifact_path.as_posix(), f"historical artifact {index + 1} ref drift", errors)
+            _require(artifact_path.is_file(), f"historical artifact {index + 1} missing", errors)
+            _require(_git_tracked(artifact_path), f"historical artifact {index + 1} must be tracked", errors)
+            if artifact_path.is_file():
+                _require(
+                    artifact.get("artifact_sha256") == review._sha256_file(artifact_path),
+                    f"historical artifact {index + 1} digest drift",
+                    errors,
+                )
     _require(summary.get("current_stage_review_count") == 18, "current stage review count drift", errors)
     _require(summary.get("current_stage_review_pass_count") == 18, "current stage review pass count drift", errors)
     _require(summary.get("current_stage_validator_pass_count") == 18, "current stage validator pass count drift", errors)

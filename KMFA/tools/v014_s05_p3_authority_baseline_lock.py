@@ -20,20 +20,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from KMFA.tools.check_v014_s05_p2_field_golden_baseline import validate_v014_s05_p2_field_golden_baseline
-from KMFA.tools.v014_s05_p1_a0_file_registration import RAW_INBOX
 from KMFA.tools.v014_s05_p2_field_golden_baseline import (
     MANIFEST_PATH as S05_P2_MANIFEST_PATH,
     PUBLIC_FIELD_CANDIDATES_PATH as S05_P2_CANDIDATES_PATH,
     PUBLIC_FIELD_CONTRACTS_PATH as S05_P2_CONTRACTS_PATH,
-    validate_owner_decision,
 )
 
 
 TASK_ID = "KMFA-V014-S05-P3-AUTHORITY-BASELINE-LOCK-20260704"
 ACCEPTANCE_ID = "ACC-V014-S05-P3-AUTHORITY-BASELINE-LOCK"
 SCHEMA_VERSION = "kmfa.v014_s05_p3_authority_baseline_lock.v1"
-RECORD_SCHEMA_VERSION = "kmfa.v014_s05_p3_authority_baseline_record.v1"
+RECORD_SCHEMA_VERSION = "kmfa.v014_s05_p3_authority_baseline_record.v2"
 BASELINE_VERSION = "KMFA-V014-A0-AUTHORITY-BASELINE-S05P3-PUBLIC-SAFE-20260704"
 OUTPUT_DIR = Path("KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK")
 MANIFEST_PATH = OUTPUT_DIR / "machine/authority_baseline_lock_manifest.json"
@@ -51,6 +48,9 @@ NEXT_INSTRUCTION = (
 )
 LOCK_STATUS_Q5 = "q5_calculation_baseline_locked_public_safe"
 LOCK_STATUS_EXCLUDED = "excluded_cross_source_support_only"
+PUBLIC_REPOSITORY_REF = "repo://KMFA"
+RAW_INBOX_REF = "PRIMARY_RAW_ROOT"
+PRIVATE_RUNTIME_REGISTRY_REF = "PRIVATE_REGISTRY::V014_S05_P3_RUNTIME"
 
 
 class S05P3GenerationError(Exception):
@@ -87,6 +87,55 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
             raise S05P3GenerationError(f"{path} contains non-object JSONL row")
         records.append(value)
     return records
+
+
+def validate_frozen_s05_p2_public_dependency() -> dict[str, Any]:
+    """Validate only the frozen public evidence consumed by S05-P3.
+
+    The generic A0 fixture was later replaced by a non-reconstructive public
+    projection. Replaying its legacy owner packet would reintroduce removed
+    private-hash count semantics, so S05-P3 validates its own frozen public
+    manifest, contracts, candidates, and recorded public-safe decision state.
+    """
+    manifest = read_json(S05_P2_MANIFEST_PATH)
+    contracts = read_json(S05_P2_CONTRACTS_PATH)
+    candidates = read_jsonl(S05_P2_CANDIDATES_PATH)
+    summary = manifest.get("field_candidate_summary", {})
+    owner = manifest.get("owner_decision_summary", {})
+    expected_manifest = {
+        "phase_id": "S05-P2",
+        "github_upload_performed": False,
+        "next_recommended_phase": "S05-P3",
+    }
+    for key, expected in expected_manifest.items():
+        if manifest.get(key) != expected:
+            raise S05P3GenerationError(f"frozen S05-P2 public dependency {key} mismatch")
+    expected_summary = {
+        "field_candidate_count": 45,
+        "pdf_field_candidate_count": 40,
+        "excel_field_candidate_count": 5,
+        "source_anchor_recorded_private_only_count": 40,
+        "source_anchor_pending_or_downgraded_count": 5,
+    }
+    for key, expected in expected_summary.items():
+        if summary.get(key) != expected:
+            raise S05P3GenerationError(f"frozen S05-P2 public summary {key} mismatch")
+    if contracts.get("contract_count") != 5 or len(candidates) != 45:
+        raise S05P3GenerationError("frozen S05-P2 public contract/candidate count mismatch")
+    expected_owner = {
+        "active_actor_role_validated": True,
+        "active_decision_present": True,
+        "active_decision_code": "downgrade_to_cross_source_support",
+        "active_decision_public_safe": True,
+        "active_decision_raw_or_plaintext_values_included": False,
+        "active_preview_q5_exclusion_confirmed": True,
+        "completion_gate_ready": True,
+        "completion_gate_mode": "owner_downgrade_to_cross_source_support",
+    }
+    for key, expected in expected_owner.items():
+        if owner.get(key) != expected:
+            raise S05P3GenerationError(f"frozen S05-P2 public owner decision {key} mismatch")
+    return manifest
 
 
 def canonical_json(value: Any) -> str:
@@ -152,7 +201,9 @@ def authority_record(
         "locked_at": locked_at,
         "locked_by_role": locked_by_role,
         "locked_by_ref": locked_by_ref,
-        "public_field_candidate_hash": sha256_payload(field_candidate),
+        "field_candidate_binding_ref": f"OPAQUE-AUTHORITY-FIELD-CANDIDATE-{sequence:03d}",
+        "field_candidate_binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+        "field_candidate_sensitive_values_committed": False,
         "authority_lock_public_hash": sha256_payload(
             {
                 "baseline_version": BASELINE_VERSION,
@@ -249,8 +300,8 @@ def build_payloads(
     locked_by_role: str = "authorized_delegate",
     locked_by_ref: str = "codex_v014_s05p3_public_safe_authority_baseline_lock",
 ) -> dict[str, Any]:
-    s05_p2 = validate_v014_s05_p2_field_golden_baseline()
-    owner = validate_owner_decision()
+    s05_p2 = validate_frozen_s05_p2_public_dependency()
+    owner = s05_p2["owner_decision_summary"]
     contracts_payload = read_json(S05_P2_CONTRACTS_PATH)
     candidates = read_jsonl(S05_P2_CANDIDATES_PATH)
     locked_timestamp = locked_at or datetime.now().astimezone().isoformat(timespec="seconds")
@@ -328,7 +379,7 @@ def build_payloads(
         "acceptance_id": ACCEPTANCE_ID,
         "generated_at": locked_timestamp,
         "reviewed_head": git_output(["rev-parse", "HEAD"]),
-        "worktree": git_output(["rev-parse", "--show-toplevel"]),
+        "worktree": PUBLIC_REPOSITORY_REF,
         "branch": git_output(["branch", "--show-current"]),
         "remote": git_output(["remote", "get-url", "origin"]),
         "status": "completed_validated_local_only_no_go_upload_deferred_authority_baseline_locked_public_safe",
@@ -388,7 +439,7 @@ def build_payloads(
             "next_phase_started": False,
         },
         "raw_data_boundary": {
-            "raw_inbox_path": str(RAW_INBOX),
+            "raw_inbox_path": RAW_INBOX_REF,
             "codex_read_allowed_only_when_phase_requires": True,
             "raw_inbox_read_by_this_phase": False,
             "raw_inbox_listed_by_this_phase": False,
@@ -403,7 +454,7 @@ def build_payloads(
             "raw_inbox_generate_inside_by_this_phase": False,
             "raw_inbox_create_extra_files_inside_by_this_phase": False,
             "raw_inbox_mutated_by_this_phase": False,
-            "private_runtime_output_dir": "KMFA/.codex_private_runtime/",
+            "private_runtime_registry_ref": PRIVATE_RUNTIME_REGISTRY_REF,
             "raw_filenames_committed": False,
             "raw_hashes_committed": False,
             "directory_tree_plaintext_committed": False,
@@ -555,7 +606,7 @@ def write_risk_and_rollback(manifest: dict[str, Any]) -> None:
                 "",
                 "- Remove only v0.1.4 S05-P3 files introduced in this phase if validation fails before commit.",
                 "- Keep S05-P1/S05-P2 public-safe evidence unchanged.",
-                "- Do not touch `/Users/linzezhang/Downloads/KMFA_MetaData` during rollback.",
+                "- Do not touch `PRIMARY_RAW_ROOT` during rollback.",
                 "- Re-run S05-P2 and S05-P3 validators after rollback.",
                 "",
             ]

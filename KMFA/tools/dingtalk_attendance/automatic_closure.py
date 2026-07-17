@@ -12,14 +12,18 @@ import re
 import shutil
 import subprocess
 import tempfile
-import tomllib
 from collections.abc import Callable, Mapping
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT, TIMEZONE
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.9 compatibility in the canonical macOS runtime.
+    from pip._vendor import tomli as tomllib
+
+from KMFA.tools.dingtalk_attendance import TIMEZONE, resolve_archive_root
 from KMFA.tools.dingtalk_attendance.final_reconciliation import (
     FINAL_RESULT_KIND,
     find_latest_pending_work_date,
@@ -1017,9 +1021,10 @@ def run_automatic_cycle(
     runtime_identity: Mapping[str, Any] | None = None,
     resume_final_only: bool = False,
     private_root: Path = PRIVATE_R6_ROOT,
-    archive_root: Path = Path(ONEDRIVE_ROOT),
+    archive_root: Path | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
+    archive_root = resolve_archive_root(archive_root)
     current = now or datetime.now(ZoneInfo(TIMEZONE))
     today = current.date().isoformat()
     identity = dict(runtime_identity or current_runtime_identity())

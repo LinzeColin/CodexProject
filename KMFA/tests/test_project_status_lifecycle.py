@@ -90,6 +90,16 @@ class ProjectStatusLifecycleTests(unittest.TestCase):
         self.assertEqual(set(states), set(REQUIRED_LIFECYCLE_STATES))
         for record in lifecycle_records:
             self.assertEqual(record["record_type"], "project_lifecycle_record")
+            self.assertEqual(record["schema_version"], "kmfa.project_lifecycle_record.public_safe.v2")
+            binding = record["public_binding_summary"]
+            self.assertEqual(
+                binding["schema_version"],
+                "kmfa.project_lifecycle_public_binding_summary.v2",
+            )
+            self.assertTrue(binding["opaque_lifecycle_ref"].startswith("OPAQUE-LIFECYCLE-BINDING-"))
+            self.assertEqual(binding["status_signal_slot_count"], 5)
+            self.assertFalse(binding["private_digest_values_committed"])
+            self.assertFalse(binding["business_derived_refs_committed"])
             self.assertTrue(record["manual_review_required"])
             self.assertFalse(record["raw_business_values_allowed"])
             self.assertFalse(record["contains_project_name_plaintext"])
@@ -114,6 +124,13 @@ class ProjectStatusLifecycleTests(unittest.TestCase):
         self.assertEqual({item["exception_type"] for item in exception_items}, set(REQUIRED_EXCEPTION_TYPES))
         for item in exception_items:
             self.assertEqual(item["record_type"], "project_lifecycle_exception_item")
+            evidence = item["public_evidence_summary"]
+            self.assertEqual(
+                evidence["schema_version"],
+                "kmfa.project_lifecycle_exception_public_evidence_summary.v2",
+            )
+            self.assertTrue(evidence["opaque_evidence_ref"].startswith("OPAQUE-LIFECYCLE-EXCEPTION-"))
+            self.assertFalse(evidence["private_digest_values_committed"])
             self.assertTrue(item["manual_review_required"])
             self.assertEqual(item["candidate_status"], "review_only_pending_owner_or_authorized_confirmation")
             self.assertFalse(item["auto_close_allowed"])
@@ -178,6 +195,9 @@ class ProjectStatusLifecycleTests(unittest.TestCase):
             "token",
             "api_key",
             "private_key",
+            "sha256:",
+            "_hash_ref",
+            "evidence_hash_refs",
         ):
             self.assertNotIn(forbidden_text, payload)
 

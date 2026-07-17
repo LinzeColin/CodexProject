@@ -2,9 +2,9 @@
 """Build KMFA S07-P3 Redcircle export postponement policy artifacts.
 
 S07-P3 reserves Redcircle export templates and explicitly postpones automatic
-connectors. Public artifacts contain only template ids, hashes, private refs,
-controls, and evidence refs; they do not contain raw business rows or source
-field plaintext.
+connectors. Public artifacts contain only template ids, opaque non-derived
+binding refs, controls, and evidence refs; they do not contain raw business
+rows or source field plaintext.
 """
 
 from __future__ import annotations
@@ -47,7 +47,7 @@ DEFAULT_OUTPUT_STAGE_MANIFEST = (
     / "s07_p3_manifest.json"
 )
 
-HASH_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
+TEMPLATE_CONTRACT_REF_RE = re.compile(r"^OPAQUE-REDCIRCLE-TEMPLATE-CONTRACT-V1-[0-9]{4}$")
 REQUIRED_REDCIRCLE_EXPORT_TYPES = (
     "operating",
     "contract",
@@ -151,16 +151,10 @@ def future_controls() -> dict[str, bool]:
     }
 
 
-def build_template_contract_hash(spec: RedcircleTemplateSpec) -> str:
-    payload = {
-        "stage_phase": "S07-P3",
-        "export_type": spec.export_type,
-        "template_id": spec.template_id,
-        "template_section_refs": list(spec.template_section_refs),
-        "automatic_connector_allowed": False,
-        "future_ingestion_controls": future_controls(),
-    }
-    return sha256_text(canonical_json(payload))
+def build_template_contract_ref(spec: RedcircleTemplateSpec) -> str:
+    """Return a versioned opaque id that does not encode template contents."""
+    index = REQUIRED_REDCIRCLE_EXPORT_TYPES.index(spec.export_type) + 1
+    return f"OPAQUE-REDCIRCLE-TEMPLATE-CONTRACT-V1-{index:04d}"
 
 
 def build_template_records(generated_at: str) -> list[dict[str, Any]]:
@@ -169,7 +163,7 @@ def build_template_records(generated_at: str) -> list[dict[str, Any]]:
         records.append(
             {
                 "record_type": "redcircle_reserved_export_template",
-                "schema_version": "kmfa.redcircle_reserved_export_template.v1",
+                "schema_version": "kmfa.redcircle_reserved_export_template.v2",
                 "project_id": "KMFA",
                 "stage_phase": "S07-P3",
                 "generated_at": generated_at,
@@ -177,8 +171,10 @@ def build_template_records(generated_at: str) -> list[dict[str, Any]]:
                 "template_status": "reserved_postponed",
                 "export_type": spec.export_type,
                 "source_ref": spec.source_ref,
-                "source_file_private_ref": spec.source_file_private_ref,
-                "template_contract_hash": build_template_contract_hash(spec),
+                "opaque_source_binding_ref": f"OPAQUE-REDCIRCLE-SOURCE-V1-{len(records) + 1:04d}",
+                "template_contract_ref": build_template_contract_ref(spec),
+                "template_contract_binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                "sensitive_binding_values_committed": False,
                 "template_section_refs": list(spec.template_section_refs),
                 "manual_export_file_allowed": True,
                 "automatic_connector_allowed": False,
@@ -268,7 +264,7 @@ def build_rollback_plan(generated_at: str) -> list[dict[str, Any]]:
 def build_source_registry(templates: list[dict[str, Any]], generated_at: str) -> dict[str, Any]:
     return {
         "record_type": "redcircle_export_source_registry",
-        "schema_version": "kmfa.redcircle_export_source_registry.v1",
+        "schema_version": "kmfa.redcircle_export_source_registry.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P3",
         "generated_at": generated_at,
@@ -278,8 +274,10 @@ def build_source_registry(templates: list[dict[str, Any]], generated_at: str) ->
                 "source_ref": template["source_ref"],
                 "export_type": template["export_type"],
                 "template_id": template["template_id"],
-                "template_contract_hash": template["template_contract_hash"],
-                "source_file_private_ref": template["source_file_private_ref"],
+                "template_contract_ref": template["template_contract_ref"],
+                "template_contract_binding_status": template["template_contract_binding_status"],
+                "opaque_source_binding_ref": template["opaque_source_binding_ref"],
+                "sensitive_binding_values_committed": False,
                 "template_status": template["template_status"],
                 "manual_export_file_allowed": True,
                 "automatic_connector_allowed": False,
@@ -505,8 +503,12 @@ def validate_redcircle_postponement_policy(
             raise ValueError("manual export file must remain allowed")
         if template.get("automatic_connector_allowed") is not False:
             raise ValueError("automatic connector must remain blocked")
-        if not HASH_RE.match(str(template.get("template_contract_hash", ""))):
-            raise ValueError("template contract hash missing or invalid")
+        if not TEMPLATE_CONTRACT_REF_RE.match(str(template.get("template_contract_ref", ""))):
+            raise ValueError("template contract opaque ref missing or invalid")
+        if template.get("template_contract_binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ValueError("template contract binding status mismatch")
+        if "template_contract_hash" in template or "source_file_private_ref" in template:
+            raise ValueError("private-derived template hash or private source ref must not be public")
         controls = template.get("future_ingestion_controls", {})
         for key in ("read_only_required", "hash_retention_required", "rollback_plan_required"):
             if controls.get(key) is not True:

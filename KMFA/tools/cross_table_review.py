@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import html
 import json
 import sys
@@ -90,6 +89,7 @@ SOURCE_TASKPACK_REFS = {
 }
 
 CROSS_TABLE_REVIEW_VERSION = "RPT-KMFA-S13P3-CROSS-TABLE-REVIEW-001"
+PUBLIC_SOURCE_SUMMARY_VERSION = "kmfa.cross_table_public_source_summary.v2"
 FORMULA_VERSION = "FORM-KMFA-S13P3-CROSS-TABLE-QUALITY-001"
 MAPPING_VERSION = "MAP-KMFA-S13P3-PUBLIC-SAFE-v1"
 HTML_TEMPLATE_VERSION = "HTML-KMFA-S13P3-BLUE-QUALITY-v1"
@@ -116,6 +116,9 @@ FORBIDDEN_PUBLIC_KEYS = {
     "token",
     "api_key",
     "private_key",
+    "s13_p1_manifest_hash",
+    "s13_p2_manifest_hash",
+    "content_hash",
 }
 
 FORBIDDEN_PUBLIC_SUFFIXES = (".zip", ".xls", ".xlsx", ".pdf", ".sqlite", ".db", ".parquet")
@@ -133,16 +136,12 @@ FORBIDDEN_PUBLIC_TEXT = (
     "token",
     "api_key",
     "private_key",
+    "sha256:",
 )
 
 
 class CrossTableReviewError(ValueError):
     """Raised when S13-P3 cross-table review artifacts are invalid."""
-
-
-def _sha256_json(payload: Any) -> str:
-    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -276,8 +275,11 @@ def _source_summary(
     pending_reconciliation_records: list[dict[str, Any]],
 ) -> dict[str, Any]:
     return {
-        "s13_p1_manifest_hash": s13p1_manifest.get("content_hash"),
-        "s13_p2_manifest_hash": s13p2_manifest.get("content_hash"),
+        "schema_version": PUBLIC_SOURCE_SUMMARY_VERSION,
+        "source_binding_status": "public_metadata_inputs_observed_without_committed_source_digest",
+        "source_manifest_count": int(bool(s13p1_manifest)) + int(bool(s13p2_manifest)),
+        "source_digest_values_committed": False,
+        "source_private_refs_committed": False,
         "s13_p1_lane_count": len(s13p1_lanes),
         "s13_p2_lane_count": len(s13p2_lanes),
         "s13_p1_draft_count": len(s13p1_drafts),
@@ -393,7 +395,7 @@ def _build_quality_report(
     labels = [DIMENSION_LABELS[dimension] for dimension in REQUIRED_REVIEW_DIMENSIONS]
     return {
         "record_type": "operating_report_quality_report",
-        "schema_version": "kmfa.operating_report_quality_report.v1",
+        "schema_version": "kmfa.operating_report_quality_report.public_safe.v2",
         "project_id": "KMFA",
         "stage_phase": "S13-P3",
         "generated_at": generated_at,
@@ -648,7 +650,7 @@ def build_default_cross_table_review_artifacts(
 
     manifest_base: dict[str, Any] = {
         "record_type": "cross_table_review_manifest",
-        "schema_version": "kmfa.cross_table_review_manifest.v1",
+        "schema_version": "kmfa.cross_table_review_manifest.public_safe.v2",
         "project_id": "KMFA",
         "stage_phase": "S13-P3",
         "generated_at": generated_at,
@@ -705,17 +707,8 @@ def build_default_cross_table_review_artifacts(
             "所有项目、客户、金额和时间不一致均需 owner 或授权人复核，不得自动选源或自动修正。",
         ],
     }
-    content_hash = _sha256_json(
-        {
-            "manifest_base": manifest_base,
-            "review_checks": review_checks,
-            "difference_queue": difference_queue,
-            "quality_report": quality_report,
-            "html_outputs": html_outputs,
-        }
-    )
-    manifest = {**manifest_base, "content_hash": content_hash}
-    return manifest, review_checks, difference_queue, quality_report, html_outputs
+    manifest_base["public_build_ref"] = "OPAQUE-S13P3-CROSS-TABLE-BUILD-001"
+    return manifest_base, review_checks, difference_queue, quality_report, html_outputs
 
 
 def _looks_like_forbidden_private_file(value: str) -> bool:
@@ -776,6 +769,8 @@ def validate_cross_table_review_artifacts(
 ) -> None:
     if manifest.get("record_type") != "cross_table_review_manifest":
         raise CrossTableReviewError("manifest record_type must be cross_table_review_manifest")
+    if manifest.get("schema_version") != "kmfa.cross_table_review_manifest.public_safe.v2":
+        raise CrossTableReviewError("manifest schema_version must use public-safe v2")
     if manifest.get("stage_phase") != "S13-P3":
         raise CrossTableReviewError("manifest stage_phase must be S13-P3")
     if tuple(manifest.get("required_review_dimensions", [])) != REQUIRED_REVIEW_DIMENSIONS:
@@ -791,6 +786,21 @@ def validate_cross_table_review_artifacts(
         raise CrossTableReviewError("pending reconciliation count must remain 12")
     if summary.get("report_grade_visible") != "D":
         raise CrossTableReviewError("report_grade_visible must remain D")
+    source_summary = manifest.get("source_summary", {})
+    if source_summary.get("schema_version") != PUBLIC_SOURCE_SUMMARY_VERSION:
+        raise CrossTableReviewError("source_summary schema_version mismatch")
+    if source_summary.get("source_binding_status") != (
+        "public_metadata_inputs_observed_without_committed_source_digest"
+    ):
+        raise CrossTableReviewError("source_summary binding status mismatch")
+    if source_summary.get("source_manifest_count") != 2:
+        raise CrossTableReviewError("source_summary source_manifest_count must be 2")
+    if source_summary.get("source_digest_values_committed") is not False:
+        raise CrossTableReviewError("source_summary cannot commit source digests")
+    if source_summary.get("source_private_refs_committed") is not False:
+        raise CrossTableReviewError("source_summary cannot commit private refs")
+    if {"s13_p1_manifest_hash", "s13_p2_manifest_hash", "content_hash"}.intersection(manifest):
+        raise CrossTableReviewError("manifest exposes legacy unbound digest fields")
 
     quality_gate = manifest.get("quality_gate", {})
     for key in (
@@ -879,6 +889,8 @@ def validate_cross_table_review_artifacts(
 
     if quality_report.get("record_type") != "operating_report_quality_report":
         raise CrossTableReviewError("quality_report record_type mismatch")
+    if quality_report.get("schema_version") != "kmfa.operating_report_quality_report.public_safe.v2":
+        raise CrossTableReviewError("quality_report schema_version must use public-safe v2")
     if quality_report.get("stage_phase") != "S13-P3":
         raise CrossTableReviewError("quality_report stage_phase mismatch")
     if quality_report.get("report_grade_visible") != "D":
@@ -889,6 +901,8 @@ def validate_cross_table_review_artifacts(
         raise CrossTableReviewError("quality_report counts mismatch")
     if quality_report.get("pending_reconciliation_count") != 12:
         raise CrossTableReviewError("quality_report pending reconciliation count mismatch")
+    if quality_report.get("source_summary") != source_summary:
+        raise CrossTableReviewError("quality_report source_summary must equal the manifest public summary")
     for key in (
         "formal_report_allowed",
         "complete_trusted_report_display_allowed",

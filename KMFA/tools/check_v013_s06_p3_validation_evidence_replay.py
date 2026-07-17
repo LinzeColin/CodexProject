@@ -68,8 +68,8 @@ FORBIDDEN_TEXT = (
 SANITIZED_MISMATCH_COLUMNS = (
     "mismatch_id",
     "source_id",
-    "file_hash",
     "field_path",
+    "binding_contract_version",
     "mapping_version",
     "formula_version",
     "status",
@@ -217,8 +217,11 @@ def validate_v013_s06_p3_validation_evidence_replay(manifest_path: Path = MANIFE
     if mismatch_rows:
         row = mismatch_rows[0]
         require(tuple(row.keys()) == SANITIZED_MISMATCH_COLUMNS, "sanitized mismatch columns mismatch")
-        require(str(row.get("field_path", "")).startswith("field_ref:sha256:"), "field_path must be hash/ref")
-        require(str(row.get("file_hash", "")).startswith("sha256:"), "file_hash must be hash")
+        require(str(row.get("mismatch_id", "")).startswith("MM-V013-S06P3-V2-"), "mismatch_id must be a versioned opaque ref")
+        require(str(row.get("source_id", "")).startswith("SRC-V013-S06P3-V2-"), "source_id must be a versioned opaque ref")
+        require(str(row.get("field_path", "")).startswith("FIELD-V013-S06P3-V2-"), "field_path must be a versioned opaque ref")
+        require(row.get("binding_contract_version") == "kmfa.s06_p3.mismatch_public_binding.v2", "binding contract drift")
+        require("sha256:" not in json.dumps(row, sort_keys=True), "mismatch row must not contain source/value-derived hashes")
         require(row.get("status") == "zero_delta_failed", "mismatch status mismatch")
 
     require(manifest.get("metadata_quality_written") is True, "metadata_quality_written must be true")

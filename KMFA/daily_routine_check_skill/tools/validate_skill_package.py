@@ -37,7 +37,13 @@ BLOCKED_SUFFIXES = {".sqlite", ".db", ".jsonl", ".gz"}
 BLOCKED_NAMES = {".env.local"}
 BLOCKED_PATH_PARTS = {"private_runtime"}
 PRIVATE_RUNTIME_ALLOWLIST = {"README.md", ".gitkeep"}
-CANONICAL_INPUT_ZIP = "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip"
+PUBLIC_INPUT_ZIP_REF = "ENV::KMFA_DWS_OUTPUT_ZIP"
+PUBLIC_INPUT_ZIP_TOKEN = "external-source://DWS_OUTPUT_ZIP"
+PUBLIC_INPUT_ZIP_ARGUMENT = "${KMFA_DWS_OUTPUT_ZIP}"
+PRIVATE_IDENTITY_MAP_REF = "ENV::KMFA_DAILY_ROUTINE_IDENTITY_MAP_JSON"
+LOCAL_PATH_PATTERN = re.compile(
+    r"(?:/" + "Users/|/" + "Volumes/|/" + "home/|/" + "tmp/|[A-Za-z]:\\\\)"
+)
 FORBIDDEN_ZIP_CONTRACT_PHRASES = (
     "input_root_default",
     "direct_input_fallback",
@@ -78,7 +84,12 @@ REQUIRED_PHRASES = [
     "ZIP_INPUT_UNREADABLE",
     "zip_input_ready",
     "input_zip_default",
-    CANONICAL_INPUT_ZIP,
+    PRIVATE_IDENTITY_MAP_REF,
+    "ROLE::CASH_REPORT_SENDER",
+    "ROLE::TAX_REPORT_SENDER",
+    "ROLE::PRODUCTION_REPORT_SENDER_PRIMARY",
+    "ROLE::PRODUCTION_REPORT_SENDER_BACKUP",
+    PUBLIC_INPUT_ZIP_TOKEN,
     "CASH_P0_RED",
     "CASH_P1_YELLOW",
     "CASH_NEEDS_REVIEW",
@@ -109,12 +120,36 @@ def main() -> int:
         if not (REPO_ROOT / rel).exists():
             errors.append(f"missing required file: {rel}")
 
+    skill_path = REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "SKILL.md"
+    try:
+        skill_text = skill_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        errors.append(f"invalid SKILL.md: {exc}")
+        skill_text = ""
+    if not skill_text.strip():
+        errors.append("SKILL.md must not be empty")
+    elif not re.match(
+        r"\A---\nname: daily_routine_check_skill\ndescription: [^\n]+\n---\n",
+        skill_text,
+    ):
+        errors.append("SKILL.md must contain the expected non-empty frontmatter")
+
     searchable = []
     for rel in REQUIRED_FILES:
         path = REPO_ROOT / rel
         if path.exists() and path.suffix in {".md", ".yaml", ".json", ".py", ".example"}:
             searchable.append(path.read_text(encoding="utf-8", errors="ignore"))
     joined = "\n".join(searchable)
+    public_metadata_joined = "\n".join(
+        (REPO_ROOT / rel).read_text(encoding="utf-8", errors="ignore")
+        for rel in REQUIRED_FILES
+        if rel.startswith("KMFA/metadata/daily_routine_check/")
+        and (REPO_ROOT / rel).is_file()
+    )
+    if LOCAL_PATH_PATTERN.search(public_metadata_joined):
+        errors.append("public daily-routine metadata contains an absolute local path")
+    if LOCAL_PATH_PATTERN.search(joined):
+        errors.append("public daily-routine package contains an absolute local path")
     for phrase in REQUIRED_PHRASES:
         if phrase not in joined:
             errors.append(f"missing required phrase: {phrase}")
@@ -146,10 +181,25 @@ def main() -> int:
         errors.append(f"invalid automation manifest: {exc}")
         manifest = {}
 
+    database_manifest_path = REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "database_manifest.json"
+    try:
+        database_manifest = json.loads(database_manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"invalid database manifest: {exc}")
+        database_manifest = {}
+    if database_manifest.get("active_private_path") is not None:
+        errors.append("database manifest public active_private_path must be null")
+    if database_manifest.get("active_private_path_registry_ref") != "PRIVATE-REGISTRY::DAILY_ROUTINE_SQLITE":
+        errors.append("database manifest private path registry ref mismatch")
+
     if manifest.get("zip_input_only") is not True:
         errors.append("automation manifest must set zip_input_only=true")
-    if manifest.get("zip_input_path") != CANONICAL_INPUT_ZIP:
-        errors.append(f"automation manifest zip_input_path must equal {CANONICAL_INPUT_ZIP}")
+    if manifest.get("zip_input_path") is not None:
+        errors.append("automation manifest public zip_input_path must be null")
+    if manifest.get("zip_input_private_registry_ref") != PUBLIC_INPUT_ZIP_REF:
+        errors.append("automation manifest private ZIP registry ref mismatch")
+    if manifest.get("cwd") != "repo://KMFA":
+        errors.append("automation manifest public cwd must be repo://KMFA")
     manifest_commands = [
         str(item.get("command", ""))
         for item in manifest.get("trigger_windows", [])
@@ -158,8 +208,8 @@ def main() -> int:
     if len(manifest_commands) != 2:
         errors.append("automation manifest must define exactly two trigger commands")
     for command in manifest_commands:
-        if f"--input-zip {CANONICAL_INPUT_ZIP}" not in command:
-            errors.append("trigger command must use the explicit canonical --input-zip path")
+        if f"--input-zip {PUBLIC_INPUT_ZIP_ARGUMENT}" not in command:
+            errors.append("trigger command must use the private registry environment reference")
         if "--cleanup" in command or "--apply" in command:
             errors.append("regular trigger command must not run --cleanup or --apply")
 
@@ -174,8 +224,8 @@ def main() -> int:
     if len(prompt_commands) != 2:
         errors.append("automation prompt must define exactly two trigger commands")
     for command in prompt_commands:
-        if f"--input-zip {CANONICAL_INPUT_ZIP}" not in command:
-            errors.append("prompt trigger command must use the explicit canonical --input-zip path")
+        if "--input-zip" not in command or "KMFA_DWS_OUTPUT_ZIP" not in command:
+            errors.append("prompt trigger command must resolve --input-zip from private environment")
         if "--cleanup" in command or "--apply" in command:
             errors.append("prompt trigger command must not run --cleanup or --apply")
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import subprocess
 import sys
 import unittest
@@ -22,7 +23,9 @@ from KMFA.tools.daily_routine_check.main import (
     determine_cleanup_mode,
     evaluate_cash_risk,
     flag_merged_results,
+    load_private_identity_map,
     load_rules,
+    resolve_private_location_ref,
     run_sqlite_cleanup,
 )
 from KMFA.tools.daily_routine_check.models import RoutineRule, SourceMessage
@@ -63,6 +66,35 @@ class TriggerWindowTests(unittest.TestCase):
         )
         self.assertIn("PROD_DAILY_PERSONNEL", {rule.rule_id for rule in skipped})
 
+    def test_private_identity_map_resolves_public_role_refs(self) -> None:
+        identity_map = load_private_identity_map(
+            {
+                "KMFA_DAILY_ROUTINE_IDENTITY_MAP_JSON": json.dumps(
+                    {
+                        "ROLE::CASH_REPORT_SENDER": "SYNTHETIC_CASH_SENDER",
+                        "ROLE::TAX_REPORT_SENDER": "SYNTHETIC_TAX_SENDER",
+                        "ROLE::PRODUCTION_REPORT_SENDER_PRIMARY": "SYNTHETIC_PRODUCTION_PRIMARY",
+                        "ROLE::PRODUCTION_REPORT_SENDER_BACKUP": "SYNTHETIC_PRODUCTION_BACKUP",
+                    }
+                )
+            },
+            required=True,
+        )
+        _, rules = load_rules(
+            "KMFA/metadata/daily_routine_check/routine_rules.public.yaml",
+            identity_map=identity_map,
+        )
+
+        by_id = {rule.rule_id: rule for rule in rules}
+        self.assertEqual(
+            by_id["PAY_DAILY_CASH_ACCOUNT"].required_senders,
+            ("SYNTHETIC_CASH_SENDER",),
+        )
+        self.assertEqual(
+            by_id["PROD_DAILY_PERSONNEL"].required_senders,
+            ("SYNTHETIC_PRODUCTION_PRIMARY", "SYNTHETIC_PRODUCTION_BACKUP"),
+        )
+
     def test_evening_window_evaluates_production_and_monthly_third_friday_rules(self) -> None:
         evaluated, skipped = rules_for_trigger_window(self.rules, date(2026, 7, 17), "evening_1705")
         self.assertEqual(
@@ -93,6 +125,23 @@ class TriggerWindowTests(unittest.TestCase):
         self.assertEqual(summary["rules_evaluated"], ["PROD_DAILY_PERSONNEL"])
         self.assertEqual(summary["rules_skipped"], ["PAY_DAILY_CASH_ACCOUNT"])
         self.assertEqual(summary["data_quality_issues"][0]["issue_type"], "SOURCE_MISSING")
+
+    def test_public_location_ref_resolves_only_from_private_environment(self) -> None:
+        with TemporaryDirectory() as tmp:
+            expected = Path(tmp) / "DWS_Outputs.zip"
+            with mock.patch.dict("os.environ", {"KMFA_DWS_OUTPUT_ZIP": str(expected)}, clear=False):
+                resolved = resolve_private_location_ref(
+                    "ENV::KMFA_DWS_OUTPUT_ZIP",
+                    field_name="input_zip",
+                )
+        self.assertEqual(resolved, expected)
+
+        with mock.patch.dict("os.environ", {}, clear=True):
+            with self.assertRaisesRegex(SystemExit, "PRIVATE_LOCATION_REF_UNRESOLVED"):
+                resolve_private_location_ref(
+                    "ENV::KMFA_DWS_OUTPUT_ZIP",
+                    field_name="input_zip",
+                )
 
     def test_trigger_window_not_yaml_due_time_controls_evaluation(self) -> None:
         rule = RoutineRule(
@@ -664,9 +713,9 @@ class TriggerWindowTests(unittest.TestCase):
     def test_runtime_defaults_keep_sqlite_and_notification_config_out_of_repo_package(self) -> None:
         repo_private_runtime = Path("KMFA/metadata/daily_routine_check/private_runtime")
 
-        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_DB))
-        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_NOTIFICATION_TARGETS))
-        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_RUNTIME))
+        self.assertIn("ENV::KMFA_DAILY_ROUTINE_PRIVATE_RUNTIME", str(DEFAULT_DB))
+        self.assertIn("ENV::KMFA_DAILY_ROUTINE_PRIVATE_RUNTIME", str(DEFAULT_NOTIFICATION_TARGETS))
+        self.assertEqual(str(DEFAULT_RUNTIME), "ENV::KMFA_DAILY_ROUTINE_PRIVATE_RUNTIME")
         self.assertFalse(Path(DEFAULT_DB).is_relative_to(repo_private_runtime))
         self.assertFalse(Path(DEFAULT_NOTIFICATION_TARGETS).is_relative_to(repo_private_runtime))
         self.assertFalse(Path(DEFAULT_RUNTIME).is_relative_to(repo_private_runtime))
@@ -693,6 +742,17 @@ class TriggerWindowTests(unittest.TestCase):
                 check=True,
                 capture_output=True,
                 text=True,
+                env={
+                    **os.environ,
+                    "KMFA_DAILY_ROUTINE_IDENTITY_MAP_JSON": json.dumps(
+                        {
+                            "ROLE::CASH_REPORT_SENDER": "SYNTHETIC_CASH_SENDER",
+                            "ROLE::TAX_REPORT_SENDER": "SYNTHETIC_TAX_SENDER",
+                            "ROLE::PRODUCTION_REPORT_SENDER_PRIMARY": "SYNTHETIC_PRODUCTION_PRIMARY",
+                            "ROLE::PRODUCTION_REPORT_SENDER_BACKUP": "SYNTHETIC_PRODUCTION_BACKUP",
+                        }
+                    ),
+                },
             )
 
         payload = json.loads(result.stdout)

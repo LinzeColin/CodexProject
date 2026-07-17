@@ -35,17 +35,14 @@ class V014S15P1PostRemediationPerformanceFactFieldsTest(unittest.TestCase):
         self.assertEqual(self.summary["field_binding_status_count"], 6)
         self.assertEqual(self.summary["manual_review_required_field_count"], 6)
         self.assertEqual(self.summary["candidate_covered_field_count"], 6)
+        self.assertEqual(self.summary["private_candidate_sheet_slot_match_count"], 20)
+        self.assertEqual(self.summary["private_candidate_field_slot_count"], 6)
+        self.assertFalse(self.summary["private_candidate_field_breakdown_committed"])
         self.assertEqual(
-            self.summary["private_candidate_sheet_count_by_field"],
-            {
-                "invoice_amount": 9,
-                "gross_margin_rate": 1,
-                "settlement_speed": 2,
-                "collection_speed": 4,
-                "audit_variance": 2,
-                "customer_relationship_rate": 2,
-            },
+            self.summary["private_binding_status"],
+            "PRIVATE_BINDING_REVALIDATION_REQUIRED",
         )
+        self.assertNotIn("private_candidate_sheet_count_by_field", self.summary)
 
     def test_structure_references_do_not_claim_authoritative_fact_binding(self) -> None:
         self.assertEqual(self.summary["project_cost_structure_reference_connected_field_count"], 6)

@@ -25,6 +25,9 @@ from KMFA.tools.v014_s07_p1_finance_file_adapter import (
     NEXT_INSTRUCTION,
     NEXT_PHASE,
     PHASE_SCOPE,
+    PRIVATE_RUNTIME_REGISTRY_REF,
+    PUBLIC_REPOSITORY_REF,
+    RAW_INBOX_REF,
     REPORT_PATH,
     RISK_REGISTER_PATH,
     ROLLBACK_PATH,
@@ -245,6 +248,7 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
     require(manifest.get("stage_id") == "S07", "stage_id must be S07", errors)
     require(manifest.get("phase_id") == "S07-P1", "phase_id must be S07-P1", errors)
     require(manifest.get("phase_scope") == PHASE_SCOPE, "phase scope mismatch", errors)
+    require(manifest.get("worktree") == PUBLIC_REPOSITORY_REF, "public repository ref mismatch", errors)
     require(manifest.get("task_id") == TASK_ID, "task id mismatch", errors)
     require(manifest.get("acceptance_id") == ACCEPTANCE_ID, "acceptance id mismatch", errors)
     require(
@@ -267,7 +271,7 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
         "source_category_count": 9,
         "source_registry_count": 9,
         "field_candidate_count": 45,
-        "hash_only_field_candidate_count": 45,
+        "private_binding_revalidation_required_count": 45,
         "field_report_count": 9,
         "source_header_fingerprint_count": 45,
         "q4_human_confirmed_count": 0,
@@ -283,7 +287,7 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
     for key, value in legacy.items():
         require(summary.get(key) == value, f"legacy baseline {key} mismatch", errors)
 
-    require(adapter_manifest.get("schema_version") == "kmfa.v014_finance_file_adapter_metadata.v1", "adapter schema mismatch", errors)
+    require(adapter_manifest.get("schema_version") == "kmfa.v014_finance_file_adapter_metadata.v2", "adapter schema mismatch", errors)
     require(set(adapter_manifest.get("finance_categories", [])) == set(REQUIRED_FINANCE_CATEGORIES), "adapter categories mismatch", errors)
     require(len(source_registry.get("sources", [])) == 9, "source registry count mismatch", errors)
     require(len(candidates) == 45, "field candidate row count mismatch", errors)
@@ -292,7 +296,9 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
     for source in source_registry.get("sources", []):
         require(source.get("record_type") == "v014_finance_support_source", "source record type mismatch", errors)
         require(source.get("finance_category") in REQUIRED_FINANCE_CATEGORIES, "source category mismatch", errors)
-        require(str(source.get("synthetic_structure_fingerprint", "")).startswith("sha256:"), "source fingerprint mismatch", errors)
+        require(str(source.get("opaque_binding_ref", "")).startswith("OPAQUE-V014-FIN-SOURCE-"), "source opaque binding mismatch", errors)
+        require(source.get("binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED", "source revalidation status mismatch", errors)
+        require("synthetic_structure_fingerprint" not in source, "source fingerprint must not be public", errors)
         require(source.get("read_only_parse") is True, "source read_only_parse must be true", errors)
         require(source.get("raw_layer_write_allowed") is False, "source raw layer write must be false", errors)
         require(source.get("source_file_committed") is False, "source file committed must be false", errors)
@@ -306,8 +312,13 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
         seen_candidates.add(candidate_id)
         require(str(candidate.get("canonical_field_ref", "")).startswith("field:"), "candidate canonical field ref mismatch", errors)
         binding = candidate.get("source_binding", {})
-        require(str(binding.get("source_header_fingerprint", "")).startswith("sha256:"), "source header fingerprint mismatch", errors)
-        require(binding.get("source_header_private_ref"), "source header private ref required", errors)
+        require(str(binding.get("opaque_binding_ref", "")).startswith("OPAQUE-V014-FIN-FIELD-BINDING-"), "field opaque binding mismatch", errors)
+        require(binding.get("binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED", "field revalidation status mismatch", errors)
+        require(
+            not any(key in binding for key in ("synthetic_structure_fingerprint", "source_header_fingerprint", "source_header_private_ref", "sheet_ref")),
+            "field binding must not publish private-derived fingerprints",
+            errors,
+        )
         quality = candidate.get("quality_state", {})
         require(quality.get("q4_human_confirmed") is False, "candidate Q4 must be false", errors)
         require(quality.get("q5_calculation_baseline_allowed") is False, "candidate Q5 must be false", errors)
@@ -339,7 +350,13 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
     require(quality_gate.get("formal_report_allowed_count") == 0, "formal report count mismatch", errors)
 
     raw = manifest.get("raw_data_boundary", {})
-    require(raw.get("raw_inbox_ref") == "operator-designated local raw/private inbox outside repository", "raw inbox ref mismatch", errors)
+    require(raw.get("raw_inbox_ref") == RAW_INBOX_REF, "raw inbox ref mismatch", errors)
+    require(
+        raw.get("private_runtime_registry_ref") == PRIVATE_RUNTIME_REGISTRY_REF,
+        "private runtime registry ref mismatch",
+        errors,
+    )
+    require("private_runtime_output_dir" not in raw, "private runtime path must not be public", errors)
     for key in RAW_BOUNDARY_FALSE_KEYS:
         require(raw.get(key) is False, f"raw_data_boundary.{key} must be false", errors)
     for key in MANIFEST_FALSE_KEYS:
@@ -383,13 +400,16 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
         "stage_id": manifest["stage_id"],
         "phase_id": manifest["phase_id"],
         "phase_scope": manifest["phase_scope"],
+        "worktree": manifest["worktree"],
+        "raw_inbox_ref": manifest["raw_data_boundary"]["raw_inbox_ref"],
+        "private_runtime_registry_ref": manifest["raw_data_boundary"]["private_runtime_registry_ref"],
         "status": manifest["status"],
         "s06_stage_review_dependency_validated": manifest["s06_stage_review_dependency_validated"],
         "legacy_finance_adapter_validated": manifest["legacy_finance_adapter_validated"],
         "source_category_count": summary["source_category_count"],
         "source_registry_count": summary["source_registry_count"],
         "field_candidate_count": summary["field_candidate_count"],
-        "hash_only_field_candidate_count": summary["hash_only_field_candidate_count"],
+        "private_binding_revalidation_required_count": summary["private_binding_revalidation_required_count"],
         "field_report_count": summary["field_report_count"],
         "source_header_fingerprint_count": summary["source_header_fingerprint_count"],
         "q4_human_confirmed_count": summary["q4_human_confirmed_count"],

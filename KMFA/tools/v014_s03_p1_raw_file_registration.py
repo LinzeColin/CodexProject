@@ -200,8 +200,13 @@ def build_registration(
     private_manifest_path.write_text(json.dumps(private_manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
 
     raw_root_status = {
-        "raw_root_id": "local_kmfa_metadata_raw_root",
-        "raw_root_path": str(raw_root),
+        "raw_root_id": "PRIMARY_RAW_ROOT",
+        "raw_root_path": None,
+        "public_path_value": None,
+        "private_registry_ref": (
+            "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/"
+            "private_root_policy.json"
+        ),
         "access_authorized_for_phase": True,
         "read_only_scan_performed": True,
         "list_performed": True,

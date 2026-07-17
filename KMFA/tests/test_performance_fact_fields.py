@@ -70,6 +70,11 @@ class PerformanceFactFieldTests(unittest.TestCase):
             self.assertFalse(binding["salary_calculation_allowed"])
             self.assertFalse(binding["bonus_approval_allowed"])
             self.assertFalse(binding["payroll_export_allowed"])
+            self.assertEqual(
+                binding["evidence_binding_summary"]["binding_status"],
+                "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            )
+            self.assertNotIn("evidence_hash_refs", binding)
 
         self.assertIn(
             "KMFA/metadata/reports/invoice_tax_plan_manifest.json",

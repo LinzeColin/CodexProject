@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, TIMEZONE, ZHANG_LINZE_USER_ID
+from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, OWNER_DINGTALK_USER_ID, TIMEZONE
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
@@ -32,12 +32,27 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_MANIFEST_PATH = ROOT / "metadata" / "dingtalk_attendance" / "notification_channel_manifest.json"
-RECIPIENT_NAME = "张霖泽"
+RECIPIENT_NAME = "ROLE::OWNER"
+PUBLIC_PROBE_STATUSES = frozenset(
+    {"SENT", "FAILED", "NOTIFIER_CONFIG_MISSING", "DWS_AUTH_REQUIRED"}
+)
+PUBLIC_PROBE_CHANNELS = frozenset(
+    {
+        "dws_userid_chat",
+        "dws_open_dingtalk_id_chat",
+        "dws_ding_personal",
+        "dingtalk_group_robot",
+        "dingtalk_work_notification",
+    }
+)
+PUBLIC_PROBE_ERROR_CODES = frozenset(
+    {"NONE", "CONFIG_MISSING", "AUTH_REQUIRED", "EXTERNAL_FAILURE", "UNKNOWN_FAILURE"}
+)
 
 
 def probe_notification_channels(
     *,
-    recipient: str = ZHANG_LINZE_USER_ID,
+    recipient: str = OWNER_DINGTALK_USER_ID,
     recipient_name: str = RECIPIENT_NAME,
     runtime_dir: Path = PRIVATE_RUNTIME_DIR,
     public_manifest_path: Path = PUBLIC_MANIFEST_PATH,
@@ -49,6 +64,14 @@ def probe_notification_channels(
 ) -> dict[str, Any]:
     values = merged_runtime_env() if env is None else dict(env)
     current = now or datetime.now(ZoneInfo(TIMEZONE))
+    if not recipient or recipient == "CONFIG_REQUIRED":
+        return {
+            "status": "NOTIFIER_CONFIG_MISSING",
+            "successful_channel": None,
+            "recipient_user_id": None,
+            "attempts": [],
+            "failure_reason": "KMFA_DINGTALK_OWNER_USER_ID is required",
+        }
     if dws_runner is run_dws_command and help_provider is get_dws_help:
         dws_safety = dws_command_safety_status(env=values)
         if dws_safety["status"] != "READY":
@@ -298,35 +321,111 @@ def _write_probe_files(
         encoding="utf-8",
     )
     public_manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    public_manifest = _public_manifest(result=result, now=now)
+    _validate_public_probe_manifest(public_manifest)
     public_manifest_path.write_text(
-        json.dumps(_public_manifest(result=result, now=now), ensure_ascii=False, indent=2),
+        json.dumps(public_manifest, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
 
 
 def _public_manifest(*, result: Mapping[str, Any], now: datetime) -> dict[str, Any]:
-    return {
-        "schema_version": 1,
-        "automation_name": AUTOMATION_NAME,
-        "updated_at": now.isoformat(),
-        "last_probe_status": result.get("status"),
-        "last_success_channel": result.get("successful_channel"),
-        "resolved_channel_private_path": "metadata/dingtalk_attendance/private_runtime/notification_channel_resolved.json",
-        "resolved_channel_committed": False,
-        "sensitive_values_committed": False,
-        "attempts": [
+    status = str(result.get("status") or "")
+    if status not in PUBLIC_PROBE_STATUSES:
+        raise ValueError("public probe status is not allowlisted")
+    success_channel = result.get("successful_channel")
+    if success_channel is not None and str(success_channel) not in PUBLIC_PROBE_CHANNELS:
+        raise ValueError("public probe success channel is not allowlisted")
+    attempts: list[dict[str, Any]] = []
+    for attempt in result.get("attempts", []):
+        if not isinstance(attempt, Mapping):
+            continue
+        channel = str(attempt.get("channel") or "")
+        attempt_status = str(attempt.get("status") or "FAILED")
+        if channel not in PUBLIC_PROBE_CHANNELS or attempt_status not in PUBLIC_PROBE_STATUSES:
+            raise ValueError("public probe attempt enum is not allowlisted")
+        attempts.append(
             {
-                "channel": attempt.get("channel"),
-                "status": attempt.get("status"),
-                "failure_reason": attempt.get("failure_reason"),
-                "server_key": attempt.get("server_key"),
+                "channel": channel,
+                "status": attempt_status,
+                "error_code": _public_attempt_error_code(attempt_status, attempt),
                 "trace_id_present": bool(attempt.get("trace_id")),
                 "identifier_present": bool(attempt.get("identifier_present")),
             }
-            for attempt in result.get("attempts", [])
-            if isinstance(attempt, Mapping)
-        ],
+        )
+    manifest = {
+        "schema_version": 2,
+        "automation_name": AUTOMATION_NAME,
+        "updated_at": now.isoformat(),
+        "last_probe_status": status,
+        "last_success_channel": success_channel,
+        "resolved_channel_private_registry_ref": "PRIVATE-REGISTRY::DINGTALK_NOTIFICATION_CHANNEL_RESOLVED",
+        "resolved_channel_committed": False,
+        "sensitive_values_committed": False,
+        "attempt_count": len(attempts),
+        "attempts": attempts,
     }
+    _validate_public_probe_manifest(manifest)
+    return manifest
+
+
+def _public_attempt_error_code(status: str, attempt: Mapping[str, Any]) -> str:
+    if status == "SENT":
+        return "NONE"
+    if status == "NOTIFIER_CONFIG_MISSING":
+        return "CONFIG_MISSING"
+    if status == "DWS_AUTH_REQUIRED":
+        return "AUTH_REQUIRED"
+    if attempt.get("failure_reason") or attempt.get("server_key") or attempt.get("errmsg"):
+        return "EXTERNAL_FAILURE"
+    return "UNKNOWN_FAILURE"
+
+
+def _validate_public_probe_manifest(manifest: Mapping[str, Any]) -> None:
+    expected_top = {
+        "schema_version",
+        "automation_name",
+        "updated_at",
+        "last_probe_status",
+        "last_success_channel",
+        "resolved_channel_private_registry_ref",
+        "resolved_channel_committed",
+        "sensitive_values_committed",
+        "attempt_count",
+        "attempts",
+    }
+    if set(manifest) != expected_top or manifest.get("schema_version") != 2:
+        raise ValueError("public probe manifest schema mismatch")
+    if manifest.get("automation_name") != AUTOMATION_NAME:
+        raise ValueError("public probe automation mismatch")
+    if manifest.get("last_probe_status") not in PUBLIC_PROBE_STATUSES:
+        raise ValueError("public probe status mismatch")
+    channel = manifest.get("last_success_channel")
+    if channel is not None and channel not in PUBLIC_PROBE_CHANNELS:
+        raise ValueError("public probe channel mismatch")
+    if manifest.get("resolved_channel_private_registry_ref") != "PRIVATE-REGISTRY::DINGTALK_NOTIFICATION_CHANNEL_RESOLVED":
+        raise ValueError("public probe private registry ref mismatch")
+    if manifest.get("resolved_channel_committed") is not False or manifest.get("sensitive_values_committed") is not False:
+        raise ValueError("public probe sensitive-value flags mismatch")
+    attempts = manifest.get("attempts")
+    if not isinstance(attempts, list) or manifest.get("attempt_count") != len(attempts):
+        raise ValueError("public probe attempt count mismatch")
+    expected_attempt = {
+        "channel",
+        "status",
+        "error_code",
+        "trace_id_present",
+        "identifier_present",
+    }
+    for attempt in attempts:
+        if not isinstance(attempt, Mapping) or set(attempt) != expected_attempt:
+            raise ValueError("public probe attempt schema mismatch")
+        if attempt.get("channel") not in PUBLIC_PROBE_CHANNELS:
+            raise ValueError("public probe attempt channel mismatch")
+        if attempt.get("status") not in PUBLIC_PROBE_STATUSES:
+            raise ValueError("public probe attempt status mismatch")
+        if attempt.get("error_code") not in PUBLIC_PROBE_ERROR_CODES:
+            raise ValueError("public probe attempt error code mismatch")
 
 
 def _attempt(channel: str, result: Mapping[str, Any], *, identifier_present: bool = False) -> dict[str, Any]:
@@ -376,7 +475,7 @@ def _redact_private_channel(channel: Mapping[str, Any] | None) -> dict[str, Any]
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Probe KMFA DingTalk attendance notification channels.")
-    parser.add_argument("--recipient", default=ZHANG_LINZE_USER_ID)
+    parser.add_argument("--recipient", default=OWNER_DINGTALK_USER_ID)
     parser.add_argument("--recipient-name", default=RECIPIENT_NAME)
     parser.add_argument("--all-targets", action="store_true", help="Probe every enabled target in notification_targets.local.json.")
     args = parser.parse_args(argv)

@@ -353,9 +353,20 @@ def public_candidate_records(file_records: list[dict[str, Any]]) -> list[dict[st
     return records
 
 
+def require_legacy_private_binding_before_raw_replay(legacy_manifest: dict[str, Any]) -> None:
+    """Stop historical raw replay before touching the inbox when only v2 public metadata exists."""
+
+    if legacy_manifest.get("schema_version") == "kmfa.a0_file_registration.public_projection.v2":
+        raise A0RegistrationError(
+            "v014 raw-alignment replay is fail-closed: the public v2 projection contains no raw "
+            "package/member digest; a dedicated rerun must first validate an ignored private binding receipt"
+        )
+
+
 def build_manifest() -> dict[str, Any]:
     stage4 = validate_v014_s04_stage_review()
     legacy_manifest = read_json(LEGACY_A0_MANIFEST_PATH)
+    require_legacy_private_binding_before_raw_replay(legacy_manifest)
     file_records = public_file_records(legacy_manifest)
     candidate_records = public_candidate_records(file_records)
     raw_alignment = inspect_private_a0_zip(legacy_manifest)

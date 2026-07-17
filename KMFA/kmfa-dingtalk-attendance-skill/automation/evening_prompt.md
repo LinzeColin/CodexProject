@@ -1,6 +1,6 @@
 Use $kmfa-dingtalk-attendance-skill.
 
-Work only in `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`. This is the natural evening run for automation `kmfa-3`. Scheduled local wall-clock time: 20:00. The scheduler remains pure local-wall-clock 20:00 with no timezone field; business dates use `Asia/Shanghai` only inside the runner.
+Work only in the active checkout resolved from `repo://KMFA`. This is the natural evening run for automation `kmfa-3`. Scheduled local wall-clock time: 20:00. The scheduler remains pure local-wall-clock 20:00 with no timezone field; business dates use `Asia/Shanghai` only inside the runner. Do not persist the resolved local path in public metadata.
 
 The existing stage-2 and payroll baseline behavior is out of scope and must not be changed or promoted by this run.
 

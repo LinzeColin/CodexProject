@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT, TIMEZONE
+from KMFA.tools.dingtalk_attendance import TIMEZONE, resolve_archive_root
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
 from KMFA.tools.dingtalk_attendance.delivery_policy import DELIVERY_DISABLED_STATUS
 from KMFA.tools.dingtalk_attendance.identity import (
@@ -43,7 +43,8 @@ from KMFA.tools.dingtalk_attendance.run_attendance import build_stats_with_rest_
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
-def find_latest_manifest(onedrive_root: Path = Path(ONEDRIVE_ROOT)) -> Path | None:
+def find_latest_manifest(onedrive_root: Path | None = None) -> Path | None:
+    onedrive_root = resolve_archive_root(onedrive_root)
     candidates = [
         path
         for month_dir in onedrive_root.glob("20[0-9][0-9][0-9][0-9]")
@@ -59,7 +60,7 @@ def send_latest_report(
     *,
     channel: str = "auto",
     targets: str = "all",
-    onedrive_root: Path = Path(ONEDRIVE_ROOT),
+    onedrive_root: Path | None = None,
     resolved_path: Path = RESOLVED_CHANNEL_PATH,
     targets_resolved_path: Path = TARGETS_RESOLVED_PATH,
     public_targets_manifest_path: Path = PUBLIC_TARGETS_MANIFEST_PATH,

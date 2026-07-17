@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -116,6 +115,8 @@ UPSTREAM_METADATA_REFS = {
 LIFECYCLE_VERSION = "LIFE-KMFA-S16P2-PROJECT-STATUS-PUBLIC-SAFE-001"
 FORMULA_VERSION = "FORM-KMFA-S16P2-PROJECT-STATUS-LIFECYCLE-001"
 MAPPING_VERSION = "MAP-KMFA-S16P2-PUBLIC-SAFE-v1"
+PUBLIC_LIFECYCLE_BINDING_VERSION = "kmfa.project_lifecycle_public_binding_summary.v2"
+PUBLIC_EXCEPTION_BINDING_VERSION = "kmfa.project_lifecycle_exception_public_evidence_summary.v2"
 
 FORBIDDEN_PUBLIC_KEYS = {
     "amount_cents",
@@ -139,6 +140,13 @@ FORBIDDEN_PUBLIC_KEYS = {
     "token",
     "api_key",
     "private_key",
+    "project_identity_hash_ref",
+    "production_status_hash_ref",
+    "settlement_status_hash_ref",
+    "invoice_status_hash_ref",
+    "collection_status_hash_ref",
+    "evidence_hash_refs",
+    "content_hash",
 }
 
 FORBIDDEN_PUBLIC_SUFFIXES = (".zip", ".xls", ".xlsx", ".pdf", ".sqlite", ".db", ".parquet")
@@ -157,20 +165,12 @@ FORBIDDEN_PUBLIC_TEXT = (
     "token",
     "api_key",
     "private_key",
+    "sha256:",
 )
 
 
 class ProjectStatusLifecycleError(ValueError):
     """Raised when S16-P2 project status lifecycle artifacts are invalid."""
-
-
-def _sha256_for(label: str) -> str:
-    return "sha256:" + hashlib.sha256(label.encode("utf-8")).hexdigest()
-
-
-def _sha256_json(payload: Any) -> str:
-    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -421,10 +421,6 @@ def _project_profile_ref(index: int) -> str:
     return f"project_profile_ref://KMFA/S08-P1/profile-group-{index:03d}"
 
 
-def _hash_ref(record_id: str, component: str) -> str:
-    return _sha256_for(f"S16-P2:{record_id}:{component}:public-safe-lifecycle-ref")
-
-
 def _lifecycle_records(generated_at: str) -> list[dict[str, Any]]:
     specs = (
         (
@@ -432,7 +428,7 @@ def _lifecycle_records(generated_at: str) -> list[dict[str, Any]]:
             "in_progress_started",
             1,
             {
-                "start": "started_hash_only",
+                "start": "started_signal_present",
                 "completion": "not_completed_or_not_confirmed",
                 "settlement": "not_due_or_not_confirmed",
                 "invoice": "not_due_or_not_confirmed",
@@ -445,8 +441,8 @@ def _lifecycle_records(generated_at: str) -> list[dict[str, Any]]:
             "completed_not_settled",
             2,
             {
-                "start": "started_hash_only",
-                "completion": "completed_hash_only",
+                "start": "started_signal_present",
+                "completion": "completed_signal_present",
                 "settlement": "not_settled_review_required",
                 "invoice": "not_ready",
                 "collection": "not_ready",
@@ -458,9 +454,9 @@ def _lifecycle_records(generated_at: str) -> list[dict[str, Any]]:
             "settled_not_invoiced",
             3,
             {
-                "start": "started_hash_only",
-                "completion": "completed_hash_only",
-                "settlement": "settled_hash_only",
+                "start": "started_signal_present",
+                "completion": "completed_signal_present",
+                "settlement": "settled_signal_present",
                 "invoice": "not_invoiced_review_required",
                 "collection": "not_ready",
             },
@@ -471,10 +467,10 @@ def _lifecycle_records(generated_at: str) -> list[dict[str, Any]]:
             "invoiced_not_collected",
             4,
             {
-                "start": "started_hash_only",
-                "completion": "completed_hash_only",
-                "settlement": "settled_hash_only",
-                "invoice": "invoiced_hash_only",
+                "start": "started_signal_present",
+                "completion": "completed_signal_present",
+                "settlement": "settled_signal_present",
+                "invoice": "invoiced_signal_present",
                 "collection": "not_collected_review_required",
             },
             ["invoiced_not_collected"],
@@ -485,20 +481,24 @@ def _lifecycle_records(generated_at: str) -> list[dict[str, Any]]:
         row = _base_lifecycle_record(record_type="project_lifecycle_record", generated_at=generated_at)
         row.update(
             {
+                "schema_version": "kmfa.project_lifecycle_record.public_safe.v2",
                 "lifecycle_record_id": record_id,
                 "lifecycle_state": lifecycle_state,
                 "project_profile_ref": _project_profile_ref(profile_index),
-                "project_identity_hash_ref": _hash_ref(record_id, "project-identity"),
-                "production_status_hash_ref": _hash_ref(record_id, "production-status"),
-                "settlement_status_hash_ref": _hash_ref(record_id, "settlement-status"),
-                "invoice_status_hash_ref": _hash_ref(record_id, "invoice-status"),
-                "collection_status_hash_ref": _hash_ref(record_id, "collection-status"),
+                "public_binding_summary": {
+                    "schema_version": PUBLIC_LIFECYCLE_BINDING_VERSION,
+                    "binding_status": "private_binding_revalidation_required",
+                    "opaque_lifecycle_ref": f"OPAQUE-LIFECYCLE-BINDING-{profile_index:03d}",
+                    "status_signal_slot_count": 5,
+                    "private_digest_values_committed": False,
+                    "business_derived_refs_committed": False,
+                },
                 "milestone_statuses": milestone_statuses,
                 "source_lane_refs": list(REQUIRED_SOURCE_LANES),
                 "exception_type_refs": exception_types,
                 "manual_review_required": True,
                 "recommended_review_mode": "owner_or_authorized_delegate_review_only",
-                "lifecycle_basis": "hash_refs_status_refs_and_prior_public_safe_candidates_only",
+                "lifecycle_basis": "opaque_non_derived_ref_status_and_aggregate_count_only",
             }
         )
         rows.append(row)
@@ -532,6 +532,7 @@ def _exception_items(lifecycle_records: list[dict[str, Any]], generated_at: str)
         row = _base_lifecycle_record(record_type="project_lifecycle_exception_item", generated_at=generated_at)
         row.update(
             {
+                "schema_version": "kmfa.project_lifecycle_exception_item.public_safe.v2",
                 "exception_item_id": f"PLE-S16P2-{index:03d}",
                 "exception_type": exception_type,
                 "visible_exception_label": labels[exception_type],
@@ -544,10 +545,14 @@ def _exception_items(lifecycle_records: list[dict[str, Any]], generated_at: str)
                     "invoice_status",
                     "collection_status",
                 ],
-                "evidence_hash_refs": [
-                    _hash_ref(f"PLE-S16P2-{index:03d}", exception_type),
-                    str(lifecycle["project_identity_hash_ref"]),
-                ],
+                "public_evidence_summary": {
+                    "schema_version": PUBLIC_EXCEPTION_BINDING_VERSION,
+                    "evidence_status": "review_evidence_slot_present_private_revalidation_required",
+                    "opaque_evidence_ref": f"OPAQUE-LIFECYCLE-EXCEPTION-{index:03d}",
+                    "linked_lifecycle_record_count": 1,
+                    "private_digest_values_committed": False,
+                    "business_derived_refs_committed": False,
+                },
                 "review_owner_role": owner_roles[exception_type],
                 "required_review_action": review_actions[exception_type],
                 "manual_review_required": True,
@@ -655,7 +660,7 @@ def build_default_project_status_lifecycle(
     handoff_guards = _handoff_guards(generated_at)
 
     manifest = {
-        "schema_version": "kmfa.project_status_lifecycle_manifest.v1",
+        "schema_version": "kmfa.project_status_lifecycle_manifest.public_safe.v2",
         "record_type": "project_status_lifecycle_manifest",
         "project_id": "KMFA",
         "stage_phase": "S16-P2",
@@ -717,15 +722,7 @@ def build_default_project_status_lifecycle(
             "报告等级仍显示 D，12 条 pending owner 或授权复核差异继续阻断正式报告和经营决策依据。",
         ],
     }
-    manifest["content_hash"] = _sha256_json(
-        {
-            "manifest_without_hash": manifest,
-            "source_lanes": source_lanes,
-            "lifecycle_records": lifecycle_records,
-            "exception_items": exception_items,
-            "handoff_guards": handoff_guards,
-        }
-    )
+    manifest["public_build_ref"] = "OPAQUE-S16P2-LIFECYCLE-BUILD-001"
     validate_project_status_lifecycle_artifacts(
         manifest,
         source_lanes,
@@ -749,7 +746,7 @@ def validate_project_status_lifecycle_artifacts(
     exception_items: list[dict[str, Any]],
     handoff_guards: list[dict[str, Any]],
 ) -> None:
-    if manifest.get("schema_version") != "kmfa.project_status_lifecycle_manifest.v1":
+    if manifest.get("schema_version") != "kmfa.project_status_lifecycle_manifest.public_safe.v2":
         raise ProjectStatusLifecycleError("manifest schema_version mismatch")
     if manifest.get("stage_phase") != "S16-P2":
         raise ProjectStatusLifecycleError("manifest stage_phase must be S16-P2")
@@ -833,10 +830,25 @@ def validate_project_status_lifecycle_artifacts(
     for record in lifecycle_records:
         if record.get("record_type") != "project_lifecycle_record":
             raise ProjectStatusLifecycleError("lifecycle record_type mismatch")
+        if record.get("schema_version") != "kmfa.project_lifecycle_record.public_safe.v2":
+            raise ProjectStatusLifecycleError("lifecycle schema_version mismatch")
         if record.get("stage_phase") != "S16-P2":
             raise ProjectStatusLifecycleError("lifecycle stage_phase must be S16-P2")
         if record.get("manual_review_required") is not True:
             raise ProjectStatusLifecycleError("lifecycle manual_review_required must be true")
+        binding = record.get("public_binding_summary", {})
+        if binding.get("schema_version") != PUBLIC_LIFECYCLE_BINDING_VERSION:
+            raise ProjectStatusLifecycleError("lifecycle public binding schema mismatch")
+        if binding.get("binding_status") != "private_binding_revalidation_required":
+            raise ProjectStatusLifecycleError("lifecycle public binding status mismatch")
+        if not str(binding.get("opaque_lifecycle_ref", "")).startswith("OPAQUE-LIFECYCLE-BINDING-"):
+            raise ProjectStatusLifecycleError("lifecycle opaque binding ref mismatch")
+        if binding.get("status_signal_slot_count") != 5:
+            raise ProjectStatusLifecycleError("lifecycle status signal slot count mismatch")
+        if binding.get("private_digest_values_committed") is not False:
+            raise ProjectStatusLifecycleError("lifecycle cannot commit private digest values")
+        if binding.get("business_derived_refs_committed") is not False:
+            raise ProjectStatusLifecycleError("lifecycle cannot commit business-derived refs")
         _require_false(
             record,
             (
@@ -866,10 +878,21 @@ def validate_project_status_lifecycle_artifacts(
     for item in exception_items:
         if item.get("record_type") != "project_lifecycle_exception_item":
             raise ProjectStatusLifecycleError("exception item record_type mismatch")
+        if item.get("schema_version") != "kmfa.project_lifecycle_exception_item.public_safe.v2":
+            raise ProjectStatusLifecycleError("exception item schema_version mismatch")
         if item.get("candidate_status") != "review_only_pending_owner_or_authorized_confirmation":
             raise ProjectStatusLifecycleError("exception item candidate_status mismatch")
         if item.get("manual_review_required") is not True:
             raise ProjectStatusLifecycleError("exception item manual_review_required must be true")
+        evidence = item.get("public_evidence_summary", {})
+        if evidence.get("schema_version") != PUBLIC_EXCEPTION_BINDING_VERSION:
+            raise ProjectStatusLifecycleError("exception public evidence schema mismatch")
+        if evidence.get("linked_lifecycle_record_count") != 1:
+            raise ProjectStatusLifecycleError("exception linked lifecycle record count mismatch")
+        if evidence.get("private_digest_values_committed") is not False:
+            raise ProjectStatusLifecycleError("exception cannot commit private digest values")
+        if evidence.get("business_derived_refs_committed") is not False:
+            raise ProjectStatusLifecycleError("exception cannot commit business-derived refs")
         _require_false(
             item,
             (

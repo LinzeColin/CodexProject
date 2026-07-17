@@ -36,7 +36,7 @@ def main(argv: list[str] | None = None) -> int:
     validate_project_composite_key_artifacts(manifest, profiles, match_results, review_queue)
     print(
         "PASS: KMFA S08-P1 project composite key check passed "
-        f"(components={len(manifest['required_components'])}, "
+        f"(components={manifest['matching_policy_public_summary']['required_component_count']}, "
         f"profiles={manifest['summary']['profile_count']}, "
         f"matches={manifest['summary']['match_result_count']}, "
         f"manual_review_queue={manifest['summary']['manual_review_queue_count']}, "

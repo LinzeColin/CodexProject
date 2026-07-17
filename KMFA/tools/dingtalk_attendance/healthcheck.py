@@ -13,7 +13,13 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT, SKILL_ID, TIMEZONE
+from KMFA.tools.dingtalk_attendance import (
+    ARCHIVE_ROOT_ENV,
+    ARCHIVE_ROOT_REF,
+    AUTOMATION_NAME,
+    SKILL_ID,
+    TIMEZONE,
+)
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import robot_notification_status
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import RESOLVED_CHANNEL_PATH
@@ -48,7 +54,9 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
         "automation_name": AUTOMATION_NAME,
         "status": status,
         "timezone": TIMEZONE,
-        "onedrive_root": ONEDRIVE_ROOT,
+        "onedrive_root": None,
+        "onedrive_root_private_registry_ref": ARCHIVE_ROOT_REF,
+        "onedrive_root_configured": bool(values.get(ARCHIVE_ROOT_ENV)),
         "backend": "dws",
         "live_collection_allowed": bool(dws_safety["dws_commands_allowed"]),
         "dws_command_safety": dws_safety,

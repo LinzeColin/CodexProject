@@ -259,14 +259,22 @@
     "stage_id": "S01-S18"
   },
   "historical_overall_review_baseline": {
+    "artifacts": [
+      {
+        "artifact_ref": "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/machine/stage1_18_overall_review_manifest.json",
+        "artifact_role": "v014_overall_review_structural_baseline",
+        "artifact_sha256": "sha256:cb80028ceff6c2fb30a7141fe10f9dffd6fd3d2f28eca552d1ce6cf88ecbadc9"
+      },
+      {
+        "artifact_ref": "KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/machine/whole_project_final_review_manifest.json",
+        "artifact_role": "whole_project_review_structural_baseline",
+        "artifact_sha256": "sha256:bb21a891ec1fe74ba8788295ebf382eb0852faef6ddc10841605b144e519b4c0"
+      }
+    ],
     "dynamic_state_authoritative": false,
     "structural_history_only": true,
     "upload_state_authoritative": false,
-    "v014_artifact_ref": "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/machine/stage1_18_overall_review_manifest.json",
-    "v014_artifact_sha256": "sha256:cb80028ceff6c2fb30a7141fe10f9dffd6fd3d2f28eca552d1ce6cf88ecbadc9",
-    "validated": true,
-    "whole_project_artifact_ref": "KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/machine/whole_project_final_review_manifest.json",
-    "whole_project_artifact_sha256": "sha256:bb21a891ec1fe74ba8788295ebf382eb0852faef6ddc10841605b144e519b4c0"
+    "validated": true
   },
   "historical_overall_review_dynamic_state_authoritative": false,
   "historical_overall_review_structural_baseline_validated": true,

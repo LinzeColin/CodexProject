@@ -16,6 +16,10 @@
 
 全部条目状态均为 `OPEN_WITH_PLAN`。完整机器表见 `machine/open_risk_unknown_register_public_safe.csv`。
 
+## 推荐 Stage 语义链
+
+复审确认七项需求的 TaskPack 推荐 Stage 均被关联风险显式覆盖：`R003→S12`、`R004→S06`、`R014→S04`、`R022→S09`、`R024→S08`、`R027→S13`、`R051→S02`。这些 Stage 是开放风险解决链的一部分，不表示需求或风险已完成。
+
 ## 最高优先级停止线
 
 1. **运行对象**：真实 App/source/build/API/DB/persistence 未建立前，不得实现业务流；静态页面不得替代 runtime。

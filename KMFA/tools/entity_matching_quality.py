@@ -3,14 +3,13 @@
 
 The quality harness stress-tests project/entity matching with same-name,
 multi-entity, multi-account, and multi-period scenarios. Public outputs keep
-refs, hashes, scores, risk signals, review states, and evidence refs only.
+opaque non-derived refs, scores, risk signals, review states, and evidence refs only.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -58,9 +57,6 @@ FORBIDDEN_PUBLIC_KEYS = {
     "api_key",
     "private_key",
 }
-HASH_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
-
-
 class EntityMatchingQualityError(ValueError):
     """Raised when S08-P3 entity matching quality evidence is invalid."""
 
@@ -72,12 +68,6 @@ def require_text(value: Any, field_name: str) -> str:
     if not text:
         raise EntityMatchingQualityError(f"{field_name} is required")
     return text
-
-
-def _sha256_for(label: str) -> str:
-    import hashlib
-
-    return "sha256:" + hashlib.sha256(label.encode("utf-8")).hexdigest()
 
 
 def _case(
@@ -94,7 +84,7 @@ def _case(
 ) -> dict[str, Any]:
     case_id = f"EMQ-S08P3-{index:03d}"
     return {
-        "schema_version": "kmfa.entity_matching_quality_case.v1",
+        "schema_version": "kmfa.entity_matching_quality_case.v2",
         "record_type": "entity_matching_quality_case",
         "project_id": "KMFA",
         "stage_phase": "S08-P3",
@@ -106,7 +96,10 @@ def _case(
         "candidate_profile_ref": f"profile_ref://KMFA/S08-P1/CAND/{index:03d}",
         "authority_entity_ref": f"entity_ref://KMFA/S08-P2/project/AUTH/{index:03d}",
         "candidate_entity_ref": f"entity_ref://KMFA/S08-P2/project/CAND/{index:03d}",
-        "source_hash": _sha256_for(f"S08-P3:{scenario_type}:{index}"),
+        "source_binding_ref": f"OPAQUE-ENTITY-MATCH-BINDING-{index:03d}",
+        "source_binding_schema_version": "kmfa.public_opaque_source_binding.v1",
+        "source_binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+        "private_source_hash_committed": False,
         "source_refs": [
             f"source_ref://KMFA/S08-P3/{scenario_type}/authority",
             f"source_ref://KMFA/S08-P3/{scenario_type}/candidate",
@@ -149,7 +142,7 @@ def build_default_entity_matching_quality(
             risk_level="high",
             matched_components=["project_name", "counterparty", "company_entity", "responsible_person"],
             mismatched_components=["contract_number", "occurrence_or_project_date", "amount_signature"],
-            missing_components=["source_hash"],
+            missing_components=["source_binding"],
             risk_signals=["same_name_with_conflicting_contract_ref", "same_name_with_period_or_amount_conflict"],
             manual_review_required=True,
         ),
@@ -160,7 +153,7 @@ def build_default_entity_matching_quality(
             risk_level="high",
             matched_components=["project_name", "counterparty", "occurrence_or_project_date", "amount_signature"],
             mismatched_components=["company_entity", "contract_number"],
-            missing_components=["responsible_person", "source_hash"],
+            missing_components=["responsible_person", "source_binding"],
             risk_signals=["company_entity_mismatch", "candidate_below_human_review_threshold"],
             manual_review_required=True,
         ),
@@ -170,7 +163,7 @@ def build_default_entity_matching_quality(
             score_bps=7300,
             risk_level="medium",
             matched_components=["contract_number", "project_name", "counterparty", "company_entity"],
-            mismatched_components=["source_hash"],
+            mismatched_components=["source_binding"],
             missing_components=["occurrence_or_project_date", "amount_signature", "responsible_person"],
             risk_signals=["account_ref_variance", "missing_period_amount_owner_components"],
             manual_review_required=True,
@@ -187,7 +180,7 @@ def build_default_entity_matching_quality(
                 "company_entity",
                 "amount_signature",
                 "responsible_person",
-                "source_hash",
+                "source_binding",
             ],
             mismatched_components=["occurrence_or_project_date"],
             missing_components=[],
@@ -359,8 +352,14 @@ def validate_entity_matching_quality_artifacts(
 
     review_case_ids = {item.get("case_id") for item in review_queue}
     for case in cases:
-        if case.get("source_hash") and not HASH_RE.match(case["source_hash"]):
-            raise EntityMatchingQualityError(f"{case.get('case_id')} source_hash must be sha256")
+        if case.get("schema_version") != "kmfa.entity_matching_quality_case.v2":
+            raise EntityMatchingQualityError(f"{case.get('case_id')} case schema mismatch")
+        if not str(case.get("source_binding_ref", "")).startswith("OPAQUE-ENTITY-MATCH-BINDING-"):
+            raise EntityMatchingQualityError(f"{case.get('case_id')} opaque source binding missing")
+        if case.get("source_binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise EntityMatchingQualityError(f"{case.get('case_id')} source binding must require revalidation")
+        if case.get("private_source_hash_committed") is not False or "source_hash" in case:
+            raise EntityMatchingQualityError(f"{case.get('case_id')} must not publish a source hash")
         if case.get("raw_layer_write_allowed") is not False:
             raise EntityMatchingQualityError("S08-P3 case cannot allow raw layer writes")
         _require_false(case.get("public_repo_safety", {}), f"case.{case.get('case_id')}.public_repo_safety")

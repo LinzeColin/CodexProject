@@ -999,7 +999,7 @@ def _risks_markdown(private: Mapping[str, Any]) -> bytes:
         "# KMFA v1.5 S03-P1 开放风险\n\n"
         "- `S03P1-RISK-001 / P1 / CONTROLLED_NONBLOCKING`：kqueue 仅覆盖受控运行窗口，不是 24x7 守护；持续可观测性路由 `S22P3T01`。\n"
         f"- `S03P1-RISK-002 / P2 / CONTROLLED_NONBLOCKING`：owner write bit observed=`{str(owner_write).lower()}`；本 Phase 禁止 chmod/ACL 变更，以递归 guard 检测并 fail-closed；稳定运行复验路由 `S24P2T02`。\n"
-        "- `S03P1-RISK-003 / P2 / CONTROLLED_NONBLOCKING`：private fingerprint/event evidence 的保留与安全清理策略尚未执行；路由 `S03P2T03`。\n"
+        "- `S03P1-RISK-003 / P2 / CONTROLLED_NONBLOCKING`：private fingerprint/event evidence 的保留与安全清理策略尚未执行；guard receipt 的 strict+mtime+mode freshness 仅是 non-cryptographic local receipt attestation，不能证明 guard receipt 与 validation runner 的 run identity 一致；统一路由 `S03P2T03`。\n"
         "- `S03P1-RISK-004 / P1 / CONTROLLED_NONBLOCKING`：macOS/APFS 的授权 list/read/hash 可能更新 root/file atime；pre-v2 两次读取没有 atime baseline，历史 effect 保持 UNKNOWN，final v2 replay 仅代表该次聚合观测；拒绝 absolute-zero metadata mutation 声明且不做 utime 恢复；clone/content-addressed copy 隔离路由 `S03P2T02`。\n"
         "- blocking risk：0；以上风险均有明确 control、follow-up Task 和 stop condition。\n"
     ).encode("utf-8")

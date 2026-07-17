@@ -224,7 +224,17 @@ def check_lock_and_manifest(lock: dict[str, Any], manifest: dict[str, Any], erro
         for key in PHASE_SCOPE_FALSE_KEYS:
             require(phase_scope.get(key) is False, f"{label} phase_scope.{key} must be false", errors)
         raw_boundary = item.get("raw_data_boundary", {})
-        require(raw_boundary.get("raw_inbox_path") == "/Users/linzezhang/Downloads/KMFA_MetaData", f"{label} raw inbox mismatch", errors)
+        if raw_boundary.get("raw_inbox_path") is None:
+            require(raw_boundary.get("raw_root_id") == "PRIMARY_RAW_ROOT", f"{label} raw root id mismatch", errors)
+            require(raw_boundary.get("public_path_value") is None, f"{label} public raw path must be null", errors)
+            require(
+                raw_boundary.get("private_registry_ref")
+                == "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
+                f"{label} private registry ref mismatch",
+                errors,
+            )
+        else:
+            require(label == "manifest", "public lock must not expose an exact raw path", errors)
         for key in RAW_BOUNDARY_FALSE_KEYS:
             require(raw_boundary.get(key) is False, f"{label} raw_data_boundary.{key} must be false", errors)
         release = item.get("release_state", {})

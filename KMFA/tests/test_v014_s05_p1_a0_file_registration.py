@@ -1,9 +1,19 @@
 import unittest
 
 from KMFA.tools.check_v014_s05_p1_a0_file_registration import validate_v014_s05_p1_a0_file_registration
+from KMFA.tools.v014_s05_p1_a0_file_registration import (
+    A0RegistrationError,
+    require_legacy_private_binding_before_raw_replay,
+)
 
 
 class TestV014S05P1A0FileRegistration(unittest.TestCase):
+    def test_v2_public_projection_stops_before_historical_raw_replay(self) -> None:
+        with self.assertRaisesRegex(A0RegistrationError, "fail-closed"):
+            require_legacy_private_binding_before_raw_replay(
+                {"schema_version": "kmfa.a0_file_registration.public_projection.v2"}
+            )
+
     def test_a0_file_registration_locks_public_safe_q3_candidates(self) -> None:
         result = validate_v014_s05_p1_a0_file_registration()
 

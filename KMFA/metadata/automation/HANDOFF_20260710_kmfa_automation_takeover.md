@@ -85,7 +85,7 @@ prompt 没有兑现该要求：它把 `dws auth login --yes --no-browser` 当成
 目标组织后，人工执行一次：
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 /Users/linzezhang/CodexProject/KMFA/tools/automation/dws_auth_keepalive.py --bootstrap-current-profile
+PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/automation/dws_auth_keepalive.py --bootstrap-current-profile
 ```
 
 该命令只读取并固定当前本机 profile，不执行 `auth status`、refresh 或 login。
@@ -103,7 +103,7 @@ delivery 证据前不得写成外部提醒已送达。
 用户已澄清：S20 `KMFA｜钉钉工作检查` 的上游输出只可能是 ZIP，目标必须固定为：
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+external-source://DWS_OUTPUT_ZIP
 ```
 
 这不是 “ZIP 优先、目录回退”，而是 **ZIP-only**。同级 `DWS_Outputs/`
@@ -115,7 +115,7 @@ delivery 证据前不得写成外部提醒已送达。
   probe 文件夹，reader/main/prompt 仍保留 folder fallback，导致 agent 可以继续把
   不存在的文件夹误判为启用条件。
 - 当前 canonical ZIP 为 `568878497` bytes，实际占盘 `555548 KiB`，约 543 MiB，
-  已本地 materialize；`/Users/linzezhang/onedrive/DWS_Outputs.zip` 是同 inode
+  已本地 materialize；`external-source://DWS_OUTPUT_ZIP_LEGACY_ALIAS` 是同 inode
   别名，不是重复副本。
 - OneDrive、别名路径和 Downloads 下均未发现 `DWS_Outputs/` 文件夹；未发现
   routine-check 解压副本。private runtime 约 208 KiB，旧 `/private/tmp` 源码包
@@ -182,7 +182,7 @@ python3 -m unittest KMFA.tests.test_automation_schedule_contract -q
 自然 20:00 调度证据。
 
 仍未完成的唯一 S19 调度验收：等待下一次本机墙钟 20:00 自然触发，确认
-只产生一个新 task、cwd 为 `/Users/linzezhang/CodexProject`、真实取数完成、
+只产生一个新 task、cwd 为 `repo://KMFA`、真实取数完成、
 私有归档成功且通知目标发送成功。
 
 ## 当前目标
@@ -196,7 +196,7 @@ python3 -m unittest KMFA.tests.test_automation_schedule_contract -q
 当前 canonical repo:
 
 ```text
-/Users/linzezhang/CodexProject
+repo://KMFA
 ```
 
 当前 GitHub source of truth:
@@ -216,21 +216,21 @@ KMFA automation: repair Codex project binding
 
 | ID | 名称 | 工作区 | 说明 |
 |---|---|---|---|
-| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `/Users/linzezhang/CodexProject` | S19 晨报；当前 live 为本机墙钟 10:45、scheduler 无时区；业务日仍按 Asia/Shanghai |
-| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `/Users/linzezhang/CodexProject` | S19 晚报，本机墙钟固定 20:00；scheduler 无时区 |
-| `kmfa-4` | `KMFA｜钉钉工作检查` | `/Users/linzezhang/CodexProject` | S20 routine check，Asia/Shanghai 11:35 和 17:05 |
-| `kmfa-5` | `KMFA｜资金周报自动化` | `/Users/linzezhang/CodexProject` | S21 fund weekly，Australia/Sydney 周一/周六 11:00 |
-| `kmfa-dws` | `KMFA｜上游每日钉钉DWS归档` | `/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p` | 独立 DWS archive producer，不属于 KMFA 工作树 |
+| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `repo://KMFA` | S19 晨报；当前 live 为本机墙钟 10:45、scheduler 无时区；业务日仍按 Asia/Shanghai |
+| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `repo://KMFA` | S19 晚报，本机墙钟固定 20:00；scheduler 无时区 |
+| `kmfa-4` | `KMFA｜钉钉工作检查` | `repo://KMFA` | S20 routine check，Asia/Shanghai 11:35 和 17:05 |
+| `kmfa-5` | `KMFA｜资金周报自动化` | `repo://KMFA` | S21 fund weekly，Australia/Sydney 周一/周六 11:00 |
+| `kmfa-dws` | `KMFA｜上游每日钉钉DWS归档` | `project://DWS_ARCHIVE_WORKSPACE` | 独立 DWS archive producer，不属于 KMFA 工作树 |
 
-不要把 DWS archive 工作区加入 `kmfa`、`kmfa-3`、`kmfa-4`、`kmfa-5`。KMFA 四个 automation 只能使用 `/Users/linzezhang/CodexProject`。
+不要把 DWS archive 工作区加入 `kmfa`、`kmfa-3`、`kmfa-4`、`kmfa-5`。KMFA 四个 automation 只能使用 `repo://KMFA`；本机解析值保持私有。
 
 ## 已完成验证
 
 ### Automation / repo consistency
 
 ```bash
-git -C /Users/linzezhang/CodexProject log -1 --oneline --decorate
-git -C /Users/linzezhang/CodexProject ls-remote origin refs/heads/main
+git -C "${KMFA_REPO_ROOT:?KMFA_REPO_ROOT is required}" log -1 --oneline --decorate
+git -C "${KMFA_REPO_ROOT:?KMFA_REPO_ROOT is required}" ls-remote origin refs/heads/main
 python3 KMFA/fund-weekly-analysis-skill/tools/check_codex_app_automation.py
 ```
 
@@ -274,7 +274,7 @@ S20 routine check: 19 tests OK
 ### Source readiness
 
 ```bash
-python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney
+python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root "${KMFA_REPO_ROOT:?KMFA_REPO_ROOT is required}" --timezone Australia/Sydney
 ```
 
 已观察到:
@@ -339,8 +339,8 @@ work_date=2026-07-10
 私有证据路径:
 
 ```text
-/Users/linzezhang/OneDrive/dingtalk_attendance/202607/s19_morning_20260710_103500.dispatch.json
-/Users/linzezhang/OneDrive/dingtalk_attendance/202607/s19_morning_20260710_103500.manifest.json
+local-resource://DINGTALK_ATTENDANCE_ARCHIVE/202607/s19_morning_20260710_103500.dispatch.json
+local-resource://DINGTALK_ATTENDANCE_ARCHIVE/202607/s19_morning_20260710_103500.manifest.json
 ```
 
 注意: 只能确认 DingTalk send 返回 `SENT`；不能从本地证明手机端已读。
@@ -364,11 +364,11 @@ KMFA/metadata/daily_routine_check/codex_automation/automation_manifest.json
 本地 automation TOML 只用于 readback，不要手改:
 
 ```text
-/Users/linzezhang/.codex/automations/kmfa/automation.toml
-/Users/linzezhang/.codex/automations/kmfa-3/automation.toml
-/Users/linzezhang/.codex/automations/kmfa-4/automation.toml
-/Users/linzezhang/.codex/automations/kmfa-5/automation.toml
-/Users/linzezhang/.codex/automations/kmfa-dws/automation.toml
+local-resource://CODEX_AUTOMATION_PRIVATE/kmfa/automation.toml
+local-resource://CODEX_AUTOMATION_PRIVATE/kmfa-3/automation.toml
+local-resource://CODEX_AUTOMATION_PRIVATE/kmfa-4/automation.toml
+local-resource://CODEX_AUTOMATION_PRIVATE/kmfa-5/automation.toml
+local-resource://CODEX_AUTOMATION_PRIVATE/kmfa-dws/automation.toml
 ```
 
 如果需要改 Codex Desktop Scheduled automation，必须使用官方 `automation_update` 工具，然后 readback 验证 project/cwd、rrule、prompt、status。
@@ -379,8 +379,8 @@ KMFA/metadata/daily_routine_check/codex_automation/automation_manifest.json
 
 ```text
 接手 KMFA automation 稳定性维护。先读：
-/Users/linzezhang/CodexProject/KMFA/metadata/automation/HANDOFF_20260710_kmfa_automation_takeover.md
-/Users/linzezhang/CodexProject/KMFA/metadata/automation/bug_log.md
+repo://KMFA/KMFA/metadata/automation/HANDOFF_20260710_kmfa_automation_takeover.md
+repo://KMFA/KMFA/metadata/automation/bug_log.md
 
 当前目标不是重新创建 automation，而是保持现有 5 个 automation 正常：
 - kmfa
@@ -390,8 +390,8 @@ KMFA/metadata/daily_routine_check/codex_automation/automation_manifest.json
 - kmfa-dws
 
 重要边界：
-1. /Users/linzezhang/CodexProject 是 KMFA 四个业务 automation 唯一工作区。
-2. kmfa-dws 是独立 DWS archive producer，固定在 /Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p。
+1. `repo://KMFA` 是 KMFA 四个业务 automation 唯一工作区；本机解析值不得写入 public metadata。
+2. kmfa-dws 是独立 DWS archive producer，固定在 `project://DWS_ARCHIVE_WORKSPACE`。
 3. 不要创建 branch、PR、worktree。
 4. 不要手改 ~/.codex/automations/*/automation.toml；用 Codex automation_update 工具，并 readback 验证。
 5. 不要发送 DingTalk 真实消息，除非我在当前线程明确授权。

@@ -15,6 +15,7 @@ if str(REPO_ROOT) not in sys.path:
 from KMFA.tools.a0_file_register import (
     DEFAULT_OUTPUT_CANDIDATES,
     DEFAULT_OUTPUT_MANIFEST,
+    DEFAULT_PRIVATE_RECEIPT,
     validate_a0_registration,
 )
 
@@ -36,17 +37,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_OUTPUT_MANIFEST)
     parser.add_argument("--candidates", type=Path, default=DEFAULT_OUTPUT_CANDIDATES)
     parser.add_argument("--require-member-sha256", action="store_true")
+    parser.add_argument("--private-receipt", type=Path, default=DEFAULT_PRIVATE_RECEIPT)
     args = parser.parse_args(argv)
 
     manifest = load_json(args.manifest)
     candidates = load_jsonl(args.candidates)
-    validate_a0_registration(manifest, candidates, require_member_sha256=args.require_member_sha256)
+    validate_a0_registration(
+        manifest,
+        candidates,
+        require_member_sha256=args.require_member_sha256,
+        private_receipt_path=args.private_receipt if args.require_member_sha256 else None,
+    )
     summary = manifest["file_summary"]
     print(
         "PASS: KMFA A0 file registration check passed "
         f"(files={summary['total_files']}, pdf={summary['pdf_files']}, excel={summary['excel_files']}, "
-        f"member_sha256_recorded={summary['member_sha256_recorded_count']}, "
-        f"member_sha256_pending={summary['member_sha256_pending_count']}, candidates={len(candidates)})"
+        f"private_binding_verified={summary['private_binding_verified_count']}, "
+        f"private_binding_required={summary['private_binding_required_count']}, candidates={len(candidates)})"
     )
     return 0
 

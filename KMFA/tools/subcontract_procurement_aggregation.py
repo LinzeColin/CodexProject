@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -90,10 +89,10 @@ STRUCTURAL_FIELD_KEYS = {
     ),
     "project_identity_bridge": (
         "project_profile_ref",
-        "contract_hash_ref",
-        "project_hash_ref",
-        "counterparty_hash_ref",
-        "source_hash_ref",
+        "opaque_match_ref",
+        "public_binding_status",
+        "component_slot_count",
+        "source_record_count",
     ),
 }
 
@@ -129,9 +128,11 @@ UPSTREAM_METADATA_REFS = {
     "report_grade_runtime": "KMFA/metadata/reports/report_grade_runtime_records.jsonl",
 }
 
-AGGREGATION_VERSION = "AGG-KMFA-S16P1-SUBCONTRACT-PROCUREMENT-PUBLIC-SAFE-001"
-MATCHING_VERSION = "MATCH-KMFA-S16P1-HASH-STRUCTURE-v1"
-ANOMALY_VERSION = "ANOM-KMFA-S16P1-DUP-CROSS-PROJECT-v1"
+AGGREGATION_VERSION = "AGG-KMFA-S16P1-SUBCONTRACT-PROCUREMENT-PUBLIC-SAFE-002"
+MATCHING_VERSION = "MATCH-KMFA-S16P1-OPAQUE-NON-DERIVED-v2"
+ANOMALY_VERSION = "ANOM-KMFA-S16P1-DUP-CROSS-PROJECT-v2"
+PUBLIC_MATCH_BINDING_VERSION = "kmfa.subcontract_match_public_binding_summary.v2"
+PUBLIC_ANOMALY_EVIDENCE_VERSION = "kmfa.subcontract_anomaly_public_evidence_summary.v2"
 
 FORBIDDEN_PUBLIC_KEYS = {
     "amount_cents",
@@ -155,6 +156,12 @@ FORBIDDEN_PUBLIC_KEYS = {
     "token",
     "api_key",
     "private_key",
+    "subcontract_cost_hash_ref",
+    "procurement_hash_ref",
+    "payment_hash_ref",
+    "supplier_hash_ref",
+    "evidence_hash_refs",
+    "content_hash",
 }
 
 FORBIDDEN_PUBLIC_SUFFIXES = (".zip", ".xls", ".xlsx", ".pdf", ".sqlite", ".db", ".parquet")
@@ -173,20 +180,12 @@ FORBIDDEN_PUBLIC_TEXT = (
     "token",
     "api_key",
     "private_key",
+    "sha256:",
 )
 
 
 class SubcontractProcurementAggregationError(ValueError):
     """Raised when S16-P1 subcontract procurement artifacts are invalid."""
-
-
-def _sha256_for(label: str) -> str:
-    return "sha256:" + hashlib.sha256(label.encode("utf-8")).hexdigest()
-
-
-def _sha256_json(payload: Any) -> str:
-    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -404,13 +403,9 @@ def _project_ref(index: int) -> str:
     return f"project_profile_ref://KMFA/S08-P1/profile-group-{index:03d}"
 
 
-def _hashed_component(match_record_id: str, component: str) -> str:
-    return _sha256_for(f"S16-P1:{match_record_id}:{component}:public-safe-structural-ref")
-
-
 def _project_match_records(generated_at: str) -> list[dict[str, Any]]:
     specs = (
-        ("SPM-S16P1-001", "matched_to_project", 1, "strong_hash_bridge", False),
+        ("SPM-S16P1-001", "matched_to_project", 1, "strong_public_binding", False),
         ("SPM-S16P1-002", "matched_to_project", 2, "procurement_payment_bridge", False),
         ("SPM-S16P1-003", "cross_project_candidate", 3, "project_conflict_candidate", True),
         ("SPM-S16P1-004", "unmatched_to_project", 0, "supplier_payment_without_project_anchor", True),
@@ -422,18 +417,23 @@ def _project_match_records(generated_at: str) -> list[dict[str, Any]]:
         project_profile_ref = _project_ref(project_index) if project_index else None
         row.update(
             {
+                "schema_version": "kmfa.subcontract_project_match.public_safe.v2",
                 "match_record_id": match_record_id,
                 "matching_status": matching_status,
                 "project_profile_ref": project_profile_ref,
-                "subcontract_cost_hash_ref": _hashed_component(match_record_id, "subcontract-cost"),
-                "procurement_hash_ref": _hashed_component(match_record_id, "procurement"),
-                "payment_hash_ref": _hashed_component(match_record_id, "payment"),
-                "supplier_hash_ref": _hashed_component(match_record_id, "supplier"),
+                "public_binding_summary": {
+                    "schema_version": PUBLIC_MATCH_BINDING_VERSION,
+                    "binding_status": "private_binding_revalidation_required",
+                    "opaque_match_ref": f"OPAQUE-SUBCONTRACT-MATCH-{len(records) + 1:03d}",
+                    "component_slot_count": 4,
+                    "private_digest_values_committed": False,
+                    "business_derived_refs_committed": False,
+                },
                 "match_confidence_band": confidence_band,
                 "manual_review_required": manual_review_required,
                 "cross_project_candidate": matching_status == "cross_project_candidate",
                 "unallocated_cost_pool_required": matching_status == "unmatched_to_project",
-                "matching_basis": "hash_and_structure_only_no_business_values_committed",
+                "matching_basis": "opaque_non_derived_ref_status_and_aggregate_count_only",
             }
         )
         records.append(row)
@@ -502,12 +502,20 @@ def _anomaly_candidate_records(generated_at: str) -> list[dict[str, Any]]:
         row = _base_output_record(record_type="subcontract_anomaly_candidate", generated_at=generated_at)
         row.update(
             {
+                "schema_version": "kmfa.subcontract_anomaly_candidate.public_safe.v2",
                 "candidate_id": candidate_id,
                 "candidate_type": candidate_type,
                 "candidate_status": "manual_review_required",
                 "reason_code": reason_code,
                 "match_record_refs": match_record_refs,
-                "evidence_hash_refs": [_sha256_for(f"S16-P1:{candidate_id}:{ref}") for ref in match_record_refs],
+                "public_evidence_summary": {
+                    "schema_version": PUBLIC_ANOMALY_EVIDENCE_VERSION,
+                    "evidence_status": "review_evidence_slots_present_private_revalidation_required",
+                    "opaque_evidence_ref": f"OPAQUE-SUBCONTRACT-ANOMALY-{len(records) + 1:03d}",
+                    "linked_match_record_count": len(match_record_refs),
+                    "private_digest_values_committed": False,
+                    "business_derived_refs_committed": False,
+                },
                 "manual_review_required": True,
                 "action_execution_allowed": False,
                 "candidate_close_allowed_without_owner_review": False,
@@ -571,7 +579,7 @@ def build_default_subcontract_procurement_aggregation(
     )
 
     manifest = {
-        "schema_version": "kmfa.subcontract_procurement_aggregation_manifest.v1",
+        "schema_version": "kmfa.subcontract_procurement_aggregation_manifest.public_safe.v2",
         "record_type": "subcontract_procurement_aggregation_manifest",
         "project_id": "KMFA",
         "stage_phase": "S16-P1",
@@ -637,15 +645,7 @@ def build_default_subcontract_procurement_aggregation(
             "报告等级仍显示 D，12 条 pending owner 或授权复核差异继续阻断正式报告和经营决策依据。",
         ],
     }
-    manifest["content_hash"] = _sha256_json(
-        {
-            "manifest_without_hash": manifest,
-            "source_lanes": source_lanes,
-            "project_matches": project_matches,
-            "unallocated_pool": unallocated_pool,
-            "anomaly_candidates": anomaly_candidates,
-        }
-    )
+    manifest["public_build_ref"] = "OPAQUE-S16P1-SUBCONTRACT-BUILD-001"
     validate_subcontract_procurement_artifacts(
         manifest,
         source_lanes,
@@ -669,7 +669,7 @@ def validate_subcontract_procurement_artifacts(
     unallocated_pool: list[dict[str, Any]],
     anomaly_candidates: list[dict[str, Any]],
 ) -> None:
-    if manifest.get("schema_version") != "kmfa.subcontract_procurement_aggregation_manifest.v1":
+    if manifest.get("schema_version") != "kmfa.subcontract_procurement_aggregation_manifest.public_safe.v2":
         raise SubcontractProcurementAggregationError("manifest schema_version mismatch")
     if manifest.get("stage_phase") != "S16-P1":
         raise SubcontractProcurementAggregationError("manifest stage_phase must be S16-P1")
@@ -752,8 +752,23 @@ def validate_subcontract_procurement_artifacts(
     for record in project_matches:
         if record.get("record_type") != "subcontract_project_match":
             raise SubcontractProcurementAggregationError("project match record_type mismatch")
+        if record.get("schema_version") != "kmfa.subcontract_project_match.public_safe.v2":
+            raise SubcontractProcurementAggregationError("project match schema_version mismatch")
         if record.get("stage_phase") != "S16-P1":
             raise SubcontractProcurementAggregationError("project match stage_phase must be S16-P1")
+        binding = record.get("public_binding_summary", {})
+        if binding.get("schema_version") != PUBLIC_MATCH_BINDING_VERSION:
+            raise SubcontractProcurementAggregationError("project match public binding schema mismatch")
+        if binding.get("binding_status") != "private_binding_revalidation_required":
+            raise SubcontractProcurementAggregationError("project match public binding status mismatch")
+        if not str(binding.get("opaque_match_ref", "")).startswith("OPAQUE-SUBCONTRACT-MATCH-"):
+            raise SubcontractProcurementAggregationError("project match opaque ref mismatch")
+        if binding.get("component_slot_count") != 4:
+            raise SubcontractProcurementAggregationError("project match component slot count mismatch")
+        if binding.get("private_digest_values_committed") is not False:
+            raise SubcontractProcurementAggregationError("project match cannot commit private digests")
+        if binding.get("business_derived_refs_committed") is not False:
+            raise SubcontractProcurementAggregationError("project match cannot commit business-derived refs")
         _require_false(
             record,
             (
@@ -810,8 +825,19 @@ def validate_subcontract_procurement_artifacts(
     for candidate in anomaly_candidates:
         if candidate.get("record_type") != "subcontract_anomaly_candidate":
             raise SubcontractProcurementAggregationError("anomaly candidate record_type mismatch")
+        if candidate.get("schema_version") != "kmfa.subcontract_anomaly_candidate.public_safe.v2":
+            raise SubcontractProcurementAggregationError("anomaly candidate schema_version mismatch")
         if candidate.get("manual_review_required") is not True:
             raise SubcontractProcurementAggregationError("anomaly candidate manual_review_required must be true")
+        evidence = candidate.get("public_evidence_summary", {})
+        if evidence.get("schema_version") != PUBLIC_ANOMALY_EVIDENCE_VERSION:
+            raise SubcontractProcurementAggregationError("anomaly public evidence schema mismatch")
+        if evidence.get("linked_match_record_count") != len(candidate.get("match_record_refs", [])):
+            raise SubcontractProcurementAggregationError("anomaly linked match count mismatch")
+        if evidence.get("private_digest_values_committed") is not False:
+            raise SubcontractProcurementAggregationError("anomaly cannot commit private digests")
+        if evidence.get("business_derived_refs_committed") is not False:
+            raise SubcontractProcurementAggregationError("anomaly cannot commit business-derived refs")
         _require_false(
             candidate,
             (

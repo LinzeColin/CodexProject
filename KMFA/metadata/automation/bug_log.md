@@ -246,20 +246,20 @@ Root causes:
 
 | Issue | Impact | Fix | Validation |
 |---|---|---|---|
-| Two local projects were both named `CodexProject`. The KMFA automations were bound to project id `25bfcad9-f99d-40f9-9094-64a7045f80b0`, whose cwd is the old `/Users/linzezhang/Documents/Codex/2026-07-05/.../CodexProject` worktree. | Fixes made in canonical `/Users/linzezhang/CodexProject` were not used by scheduled runs, so the same bugs appeared to return. | Rebound `kmfa`, `kmfa-3`, `kmfa-4`, and `kmfa-5` to project id `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e`, cwd `/Users/linzezhang/CodexProject`. | Live toml now shows all four KMFA/CodexProject automations with `cwds = ["/Users/linzezhang/CodexProject"]`. |
-| Fund weekly automation checker did not treat old cwd drift as a failure, and runtime readiness compared `FREQ=...` while the tracked/live toml used `RRULE:FREQ=...`. | Quality gates could say ready in one place and blocked in another, or fail to catch the wrong workspace. | Added canonical cwd to `codex_app_automation.contract.toml` and `check_codex_app_automation.py`; aligned runtime/delivery expected RRULE strings. | `python3 KMFA/fund-weekly-analysis-skill/tools/check_codex_app_automation.py` returns `CODEX_AUTOMATION_READY` with cwd `/Users/linzezhang/CodexProject`. |
+| Two local projects were both named `CodexProject`. The KMFA automations were bound to project id `25bfcad9-f99d-40f9-9094-64a7045f80b0`, whose cwd is the old `project://LEGACY_CODEXPROJECT_WORKTREE`. | Fixes made in `repo://KMFA` were not used by scheduled runs, so the same bugs appeared to return. | Rebound `kmfa`, `kmfa-3`, `kmfa-4`, and `kmfa-5` to project id `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e`, cwd `repo://KMFA`. | Live toml showed all four KMFA automations bound to the same canonical project; the tracked public contract now records only `cwds = ["repo://KMFA"]`. |
+| Fund weekly automation checker did not treat old cwd drift as a failure, and runtime readiness compared `FREQ=...` while the tracked/live toml used `RRULE:FREQ=...`. | Quality gates could say ready in one place and blocked in another, or fail to catch the wrong workspace. | Added canonical cwd binding to `codex_app_automation.contract.toml` and `check_codex_app_automation.py`; aligned runtime/delivery expected RRULE strings. | `python3 KMFA/fund-weekly-analysis-skill/tools/check_codex_app_automation.py` returns `CODEX_AUTOMATION_READY` with cwd token `repo://KMFA`. |
 | Tracked prompt mirrors still referenced the old July 5 worktree or stale automation ids. | Future agents could recreate the same bad live configuration from stale repo docs. | Updated fund prompt, attendance SKILL/manifest/validator, and daily routine manifest to current ids and canonical cwd. | Attendance skill package, daily routine skill package, and fund taskpack validators pass. |
-| Upstream DWS archive was separate but KMFA prompts previously described mixed cwd usage. | KMFA tasks could drift back into the DWS archive workspace and duplicate resource-heavy archive work. | KMFA prompts now state that KMFA automations run only from `/Users/linzezhang/CodexProject`; DWS archive remains separate producer automation. | Live `kmfa-dws` remains bound only to the DWS project cwd; KMFA tasks do not include that cwd. |
+| Upstream DWS archive was separate but KMFA prompts previously described mixed cwd usage. | KMFA tasks could drift back into the DWS archive workspace and duplicate resource-heavy archive work. | KMFA prompts now state that KMFA automations run only from `repo://KMFA`; DWS archive remains separate producer automation. | Live `kmfa-dws` remains bound only to `project://DWS_ARCHIVE_WORKSPACE`; KMFA tasks do not include that token. |
 
 Current active KMFA automation set after repair:
 
 | ID | Name | Project id | Cwd | Expected state |
 |---|---|---|---|---|
-| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
-| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
-| `kmfa-4` | `KMFA｜钉钉工作检查` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
-| `kmfa-5` | `KMFA｜资金周报自动化` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
-| `kmfa-dws` | `KMFA｜上游每日钉钉DWS归档` | `cbf3c45e-f4ad-47d7-b397-faf7e3dea35e` | `/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p` | Active |
+| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `repo://KMFA` | Active |
+| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `repo://KMFA` | Active |
+| `kmfa-4` | `KMFA｜钉钉工作检查` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `repo://KMFA` | Active |
+| `kmfa-5` | `KMFA｜资金周报自动化` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `repo://KMFA` | Active |
+| `kmfa-dws` | `KMFA｜上游每日钉钉DWS归档` | `cbf3c45e-f4ad-47d7-b397-faf7e3dea35e` | `project://DWS_ARCHIVE_WORKSPACE` | Active |
 
 Validation commands run:
 
@@ -270,7 +270,7 @@ python3 KMFA/daily_routine_check_skill/tools/validate_skill_package.py
 python3 KMFA/fund-weekly-analysis-skill/tools/validate_taskpack.py
 python3 -m unittest KMFA.tests.test_dingtalk_attendance -q
 python3 -m unittest KMFA.tests.test_daily_routine_check -q
-python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney
+python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root repo://KMFA --timezone Australia/Sydney
 dws doctor --format json
 /usr/bin/python3 scripts/archive_dingtalk_all_files.py --plan-only --run-source codex_automation --automation-name 每日钉钉DWS归档
 python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only
@@ -336,7 +336,7 @@ python3 -m unittest KMFA.tests.test_daily_routine_check -q
 python3 KMFA/fund-weekly-analysis-skill/tools/check_codex_app_automation.py
 python3 KMFA/fund-weekly-analysis-skill/tools/validate_taskpack.py
 python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py
-python3 scripts/validate_dws_output_structure.py --config config/target_groups.yaml --mirror /Users/linzezhang/onedrive/DWS_Outputs.zip --expect-downloads-deleted --summary-json reports/daily_summary.json --cold-root /Users/linzezhang/onedrive/DWS_Archive
+python3 scripts/validate_dws_output_structure.py --config config/target_groups.yaml --mirror private-location://DWS_OUTPUT_ZIP_ALIAS --expect-downloads-deleted --summary-json reports/daily_summary.json --cold-root private-location://DWS_ARCHIVE
 ```
 
 Safety notes:
@@ -373,7 +373,7 @@ Fix:
 
 - Moved the eight `_backup_*` and `_orphan_*` directories out of
   `~/.codex/automations` into:
-  `/Users/linzezhang/.codex/automation_backups/registry_cleanup_20260710T105856`
+  `private-location://CODEX_AUTOMATION_BACKUP/registry_cleanup_20260710T105856`
 - Active automation directories were not modified or deleted.
 - Future fixes must not store backup copies directly inside
   `~/.codex/automations`; use `~/.codex/automation_backups/` or a repo-private
@@ -389,8 +389,8 @@ Observed state:
 | Check | Result |
 |---|---|
 | `kmfa-5` automation contract | Active, weekly Monday/Saturday 11:00 local Sydney time, CodexProject workspace. |
-| Configured source folder | `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` was missing before the entrypoint smoke. |
-| Source zip candidates | `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip` and `/Users/linzezhang/onedrive/DWS_Outputs.zip` were readable. |
+| Configured source folder | `private-location://DWS_OUTPUT_FOLDER_GROUP` was missing before the entrypoint smoke. |
+| Source zip candidates | `private-location://DWS_OUTPUT_ZIP` and `private-location://DWS_OUTPUT_ZIP_ALIAS` were readable. |
 | First source readiness | `SOURCE_MISSING`; runner was not started. |
 
 Root cause:
@@ -448,11 +448,11 @@ Observed state:
 
 | Check | Result |
 |---|---|
-| Canonical S20 input | `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip` existed and was the actual latest run input. |
+| Canonical S20 input | `private-location://DWS_OUTPUT_ZIP` existed and was the actual latest run input. |
 | ZIP disk state | Logical size `568878497` bytes; allocated `555548 KiB` (about 543 MiB); locally materialized, not dataless. |
-| Alias duplication | `/Users/linzezhang/onedrive/DWS_Outputs.zip` had the same inode as the canonical path; it was not a second copy. |
+| Alias duplication | `private-location://DWS_OUTPUT_ZIP_ALIAS` had the same inode as the canonical path; it was not a second copy. |
 | Direct folder state | `DWS_Outputs/` was absent under canonical OneDrive, the alias path, and Downloads; absence is normal for S20. |
-| Extraction/cache scan | No DWS extraction copy was found. Routine private runtime was about 208 KiB; the old `/private/tmp/daily_routine_check_pkg` source package was about 156 KiB with no CSV/JSONL/SQLite/ZIP payloads. |
+| Extraction/cache scan | No DWS extraction copy was found. Routine private runtime was about 208 KiB; the old `private-location://DAILY_ROUTINE_SOURCE_PACKAGE_CACHE` source package was about 156 KiB with no CSV/JSONL/SQLite/ZIP payloads. |
 | Required ZIP payload | Four target CSV members totaled `267878` bytes uncompressed and `65374` bytes compressed inside a roughly 1006-entry archive. |
 
 Root cause:
@@ -501,7 +501,7 @@ Observed root causes:
 Repair:
 
 - Added `KMFA/tools/automation/backup_dws_output_manifest.py`. It accepts an
-  explicit `/Users/linzezhang/CodexProject` repo root, validates the current ZIP
+  explicit `repo://KMFA` repo root token, validates the current ZIP
   against the structure report, publishes only public-safe aggregate manifest
   fields, stages only `KMFA/metadata/dws_outputs_backup/`, and pushes only
   `origin main`.

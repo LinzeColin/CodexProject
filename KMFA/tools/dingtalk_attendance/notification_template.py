@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import json
+import os
 from collections.abc import Mapping
 from datetime import datetime
 from typing import Any
@@ -13,7 +15,24 @@ from KMFA.tools.dingtalk_attendance.identity import run_type_from_run_id, work_d
 
 
 REST_REQUIRED_THRESHOLD_DAYS = 23
-REST_REQUIRED_EXCLUDED_NAMES = frozenset({"丁春法", "李永占"})
+
+
+def _private_name_set(env_key: str) -> frozenset[str]:
+    raw = os.environ.get(env_key, "").strip()
+    if not raw:
+        return frozenset()
+    try:
+        values = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"{env_key} must be a JSON array") from exc
+    if not isinstance(values, list) or any(not isinstance(value, str) for value in values):
+        raise RuntimeError(f"{env_key} must be a JSON array of strings")
+    return frozenset(value.strip() for value in values if value.strip())
+
+
+REST_REQUIRED_EXCLUDED_NAMES = _private_name_set(
+    "KMFA_DINGTALK_REST_EXCLUDED_NAMES_JSON"
+)
 NOTIFICATION_HIDDEN_NAMES = frozenset()
 RUN_TYPE_DISPLAY_LABELS = {
     "morning": "晨间暂时提醒",

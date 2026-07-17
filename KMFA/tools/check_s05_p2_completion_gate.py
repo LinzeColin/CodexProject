@@ -3,9 +3,9 @@
 
 This gate is intentionally stricter than the S05-P2 helper validators. The
 helper validators prove artifacts are public-safe; this gate decides whether the
-phase has enough evidence to move to S05-P3. Current KMFA state is expected to
-be blocked until either all fixture fields have private hashes/source anchors or
-an owner/authorized decision resolves the remaining Excel candidate.
+phase has enough private evidence to move to S05-P3. Under public projection v2,
+the gate remains blocked until a complete ignored private receipt is supplied
+and validated; a legacy public decision cannot substitute for that receipt.
 """
 
 from __future__ import annotations
@@ -23,6 +23,8 @@ if __package__ in {None, ""}:
 from KMFA.tools.a0_golden_fixture import (
     DEFAULT_OUTPUT_CANDIDATES,
     DEFAULT_OUTPUT_MANIFEST,
+    PUBLIC_SCHEMA as PUBLIC_FIXTURE_SCHEMA,
+    validate_private_value_receipt,
     validate_a0_golden_fixture,
 )
 from KMFA.tools.check_s05_p2_owner_decision_intake import validate_decision
@@ -87,6 +89,13 @@ def count_pending_fields(records: list[dict[str, Any]]) -> int:
     for record in records:
         value_binding = record.get("value_binding") or {}
         source_binding = record.get("source_binding") or {}
+        if record.get("schema_version") == "kmfa.a0_golden_fixture_candidate.public_projection.v2":
+            if value_binding.get("private_binding_receipt_status") != "verified_private_receipt":
+                pending += 1
+                continue
+            if source_binding.get("private_binding_receipt_status") != "verified_private_receipt":
+                pending += 1
+            continue
         if not value_binding.get("raw_value_hash"):
             pending += 1
             continue
@@ -116,15 +125,48 @@ def evaluate_gate(
     manifest: dict[str, Any],
     candidates: list[dict[str, Any]],
     decision_code: str,
+    private_receipt_path: Path | None = None,
 ) -> GateResult:
     validate_a0_golden_fixture(manifest, candidates)
     summary = manifest.get("field_summary") or {}
     pending_fields = count_pending_fields(candidates)
-    summary_pending = int(summary.get("private_value_pending_count", pending_fields))
-    source_pending = int(summary.get("source_anchor_pending_count", pending_fields))
+    if manifest.get("schema_version") == PUBLIC_FIXTURE_SCHEMA:
+        summary_pending = int(summary.get("private_binding_required_count", 0)) - int(
+            summary.get("private_binding_verified_count", 0)
+        )
+        source_pending = summary_pending
+    else:
+        summary_pending = int(summary.get("private_value_pending_count", pending_fields))
+        source_pending = int(summary.get("source_anchor_pending_count", pending_fields))
     if pending_fields != summary_pending:
         print("FAIL: fixture pending count does not match manifest summary")
         raise SystemExit(1)
+    if manifest.get("schema_version") == PUBLIC_FIXTURE_SCHEMA:
+        receipt_verified = False
+        if private_receipt_path is not None:
+            validate_private_value_receipt(private_receipt_path, expected_count=len(candidates))
+            receipt_verified = True
+        if pending_fields == 0 and receipt_verified:
+            return GateResult(
+                ready=True,
+                mode="complete_private_receipt_verified",
+                reason="all_required_private_bindings_verified_outside_public_projection",
+                pending_fields=0,
+                decision_code=decision_code,
+            )
+        if decision_code == "keep_pending":
+            reason = "keep_pending_decision_does_not_resolve_s05_p2"
+        elif decision_code in RESOLVING_DECISIONS:
+            reason = "v2_public_projection_requires_complete_private_receipt_revalidation"
+        else:
+            reason = "missing_complete_private_receipt_for_v2_public_projection"
+        return GateResult(
+            ready=False,
+            mode="blocked",
+            reason=reason,
+            pending_fields=pending_fields,
+            decision_code=decision_code,
+        )
     if pending_fields == 0 and source_pending == 0:
         return GateResult(
             ready=True,
@@ -159,13 +201,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_OUTPUT_MANIFEST)
     parser.add_argument("--candidates", type=Path, default=DEFAULT_OUTPUT_CANDIDATES)
     parser.add_argument("--decision", type=Path)
+    parser.add_argument("--private-receipt", type=Path)
     parser.add_argument("--expect-blocked", action="store_true")
     args = parser.parse_args(argv)
 
     manifest = load_json(args.manifest)
     candidates = load_jsonl(args.candidates)
     decision_code = validate_active_decision(args.decision)
-    result = evaluate_gate(manifest, candidates, decision_code)
+    result = evaluate_gate(manifest, candidates, decision_code, args.private_receipt)
 
     details = (
         f"(mode={result.mode}, pending_fields={result.pending_fields}, "

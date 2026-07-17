@@ -1,0 +1,25 @@
+{
+  "schema_version": "kmfa.v015.s01_cross_phase_contracts.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "contracts": [
+    {"contract_id": "S01REV-C01", "name": "taskpack_identity_locked", "result": "PASS", "observed": "sha256:e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8"},
+    {"contract_id": "S01REV-C02", "name": "p1_negative_findings_preserved", "result": "PASS", "observed": "RUNTIME_NOT_FOUND/STATIC_SAMPLE_ONLY/PARTIAL_REPO_REBUILDABLE_APP_RESTORE_ONLY"},
+    {"contract_id": "S01REV-C03", "name": "p1_raw_claim_is_shallow_only", "result": "PASS", "observed": "stat/top-level baseline only; recursive integrity not inferred"},
+    {"contract_id": "S01REV-C04", "name": "p2_preserves_p1_no_go", "result": "PASS", "observed": "P1 NOT_PASSED/NO_GO"},
+    {"contract_id": "S01REV-C05", "name": "p2_inventory_counts", "result": "PASS", "observed": "55 requirements/37 capabilities/0 accepted"},
+    {"contract_id": "S01REV-C06", "name": "p2_identity_and_evidence_refs", "result": "PASS", "observed": "R001-R055/CAP-001-CAP-037/KMFA-relative evidence"},
+    {"contract_id": "S01REV-C07", "name": "p2_no_implementation_or_downstream_action", "result": "PASS", "observed": "fix/S03/review/upload/reinstall/raw mutation false"},
+    {"contract_id": "S01REV-C08", "name": "p3_audit_conclusion", "result": "PASS", "observed": "RUNTIME_OBJECT_MISSING"},
+    {"contract_id": "S01REV-C09", "name": "p3_risk_plan", "result": "PASS", "observed": "24 open/18 P0/0 P0 plan gaps"},
+    {"contract_id": "S01REV-C10", "name": "p3_task_gate", "result": "PASS", "observed": "2 accepted/3 executed/T03 NOT_PASSED"},
+    {"contract_id": "S01REV-C11", "name": "p3_raw_and_process_limitations", "result": "PASS", "observed": "raw recursive UNVERIFIED/process history PARTIAL_RECEIPT_ONLY"},
+    {"contract_id": "S01REV-C12", "name": "p3_git_ref_observation", "result": "PASS", "observed": "one shared Git ref change/fetch attribution unverified/current task push false"},
+    {"contract_id": "S01REV-C13", "name": "nine_task_accounting", "result": "PASS", "observed": "9 accounted/5 accepted/4 not accepted"},
+    {"contract_id": "S01REV-C14", "name": "review_defects_closed", "result": "PASS", "observed": "17 fixed/0 open"},
+    {"contract_id": "S01REV-C15", "name": "inherited_blockers_preserved", "result": "PASS", "observed": "5 open blocking findings"},
+    {"contract_id": "S01REV-C16", "name": "stage_gate_fail_closed", "result": "PASS", "observed": "BLOCKED/NOT_PASSED/NO_GO"},
+    {"contract_id": "S01REV-C17", "name": "s02_entry_closed", "result": "PASS", "observed": "false; next independent run S01_CONTROLLED_TRANSITION_AMENDMENT"},
+    {"contract_id": "S01REV-C18", "name": "run_and_release_boundaries", "result": "PASS", "observed": "run_mode=IMPLEMENT; work_kind=STAGE_REVIEW_REMEDIATION; upload/reinstall/product implementation/business execution false"}
+  ]
+}

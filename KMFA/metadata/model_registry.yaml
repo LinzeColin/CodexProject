@@ -1,3 +1,2003 @@
+kmfa_v015_s23_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s23-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S23-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-3046
+    - PARAM-KMFA-3047
+    - PARAM-KMFA-3048
+    - PARAM-KMFA-3049
+    - PARAM-KMFA-3050
+    - PARAM-KMFA-3051
+    - PARAM-KMFA-3052
+    - PARAM-KMFA-3053
+    - PARAM-KMFA-3054
+    - PARAM-KMFA-3055
+    - PARAM-KMFA-3056
+    - PARAM-KMFA-3057
+    - PARAM-KMFA-3058
+    - PARAM-KMFA-3059
+    - PARAM-KMFA-3060
+    - PARAM-KMFA-3061
+    - PARAM-KMFA-3062
+    - PARAM-KMFA-3063
+    - PARAM-KMFA-3064
+    - PARAM-KMFA-3065
+  evidence_dir: KMFA/stage_artifacts/V015_S23_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s23_stage_review.py
+  scope: Public-synthetic local-only S23 cross-phase review with explicit automated-role and local-memory limitations; no raw, external network, S24 execution, GitHub or App action.
+
+kmfa_v015_s23_p3_stability_usability:
+  model_id: MOD-KMFA-STABILITY-USABILITY-001
+  version: "1.5.0-dev-s23p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S23-P3-STABILITY-USABILITY-001
+  parameter_refs:
+    - PARAM-KMFA-3026
+    - PARAM-KMFA-3027
+    - PARAM-KMFA-3028
+    - PARAM-KMFA-3029
+    - PARAM-KMFA-3030
+    - PARAM-KMFA-3031
+    - PARAM-KMFA-3032
+    - PARAM-KMFA-3033
+    - PARAM-KMFA-3034
+    - PARAM-KMFA-3035
+    - PARAM-KMFA-3036
+    - PARAM-KMFA-3037
+    - PARAM-KMFA-3038
+    - PARAM-KMFA-3039
+    - PARAM-KMFA-3040
+    - PARAM-KMFA-3041
+    - PARAM-KMFA-3042
+    - PARAM-KMFA-3043
+    - PARAM-KMFA-3044
+    - PARAM-KMFA-3045
+  evidence_dir: KMFA/stage_artifacts/V015_S23_P3_STABILITY_USABILITY
+  validator: KMFA/tools/check_v015_s23_p3_stability_usability.py
+  scope: Public-synthetic local-only stability, usability and accessibility proof; no raw, external network, S23 review, S24, GitHub or App action.
+
+kmfa_v015_s23_p2_precision_stress_extreme:
+  model_id: MOD-KMFA-PRECISION-STRESS-001
+  version: "1.5.0-dev-s23p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S23-P2-PRECISION-STRESS-EXTREME-001
+  parameter_refs:
+    - PARAM-KMFA-3006
+    - PARAM-KMFA-3007
+    - PARAM-KMFA-3008
+    - PARAM-KMFA-3009
+    - PARAM-KMFA-3010
+    - PARAM-KMFA-3011
+    - PARAM-KMFA-3012
+    - PARAM-KMFA-3013
+    - PARAM-KMFA-3014
+    - PARAM-KMFA-3015
+    - PARAM-KMFA-3016
+    - PARAM-KMFA-3017
+    - PARAM-KMFA-3018
+    - PARAM-KMFA-3019
+    - PARAM-KMFA-3020
+    - PARAM-KMFA-3021
+    - PARAM-KMFA-3022
+    - PARAM-KMFA-3023
+    - PARAM-KMFA-3024
+    - PARAM-KMFA-3025
+  evidence_dir: KMFA/stage_artifacts/V015_S23_P2_PRECISION_STRESS_EXTREME
+  validator: KMFA/tools/check_v015_s23_p2_precision_stress_extreme.py
+  scope: Public-synthetic local-only precision load concurrency hostile-input and recovery proof; no raw external S23-P3 review GitHub or App action.
+
+kmfa_v015_s23_p1_end_to_end_business_flow:
+  model_id: MOD-KMFA-END-TO-END-ACCEPTANCE-001
+  version: "1.5.0-dev-s23p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S23-P1-END-TO-END-BUSINESS-FLOW-001
+  parameter_refs:
+    - PARAM-KMFA-2986
+    - PARAM-KMFA-2987
+    - PARAM-KMFA-2988
+    - PARAM-KMFA-2989
+    - PARAM-KMFA-2990
+    - PARAM-KMFA-2991
+    - PARAM-KMFA-2992
+    - PARAM-KMFA-2993
+    - PARAM-KMFA-2994
+    - PARAM-KMFA-2995
+    - PARAM-KMFA-2996
+    - PARAM-KMFA-2997
+    - PARAM-KMFA-2998
+    - PARAM-KMFA-2999
+    - PARAM-KMFA-3000
+    - PARAM-KMFA-3001
+    - PARAM-KMFA-3002
+    - PARAM-KMFA-3003
+    - PARAM-KMFA-3004
+    - PARAM-KMFA-3005
+  evidence_dir: KMFA/stage_artifacts/V015_S23_P1_END_TO_END_BUSINESS_FLOW
+  validator: KMFA/tools/check_v015_s23_p1_end_to_end_business_flow.py
+  scope: Public-synthetic local-only authoritative end-to-end business flow; no raw external network later phase review GitHub upload or App reinstall.
+
+kmfa_v015_s22_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s22-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S22-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2966
+    - PARAM-KMFA-2967
+    - PARAM-KMFA-2968
+    - PARAM-KMFA-2969
+    - PARAM-KMFA-2970
+    - PARAM-KMFA-2971
+    - PARAM-KMFA-2972
+    - PARAM-KMFA-2973
+    - PARAM-KMFA-2974
+    - PARAM-KMFA-2975
+    - PARAM-KMFA-2976
+    - PARAM-KMFA-2977
+    - PARAM-KMFA-2978
+    - PARAM-KMFA-2979
+    - PARAM-KMFA-2980
+    - PARAM-KMFA-2981
+    - PARAM-KMFA-2982
+    - PARAM-KMFA-2983
+    - PARAM-KMFA-2984
+    - PARAM-KMFA-2985
+  evidence_dir: KMFA/stage_artifacts/V015_S22_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s22_stage_review.py
+  scope: Public-synthetic local-only cross-part review of authorized safe notifications protected audit details live-state backup zero-difference recovery audited operations and reversible migrations. It performs no raw access external network S23 execution GitHub upload or App reinstall.
+
+kmfa_v015_s22_p3_operations_governance:
+  model_id: MOD-KMFA-OPERATIONS-001
+  version: "1.5.0-dev-s22p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S22-P3-OPERATIONS-GOVERNANCE-001
+  parameter_refs:
+    - PARAM-KMFA-2946
+    - PARAM-KMFA-2947
+    - PARAM-KMFA-2948
+    - PARAM-KMFA-2949
+    - PARAM-KMFA-2950
+    - PARAM-KMFA-2951
+    - PARAM-KMFA-2952
+    - PARAM-KMFA-2953
+    - PARAM-KMFA-2954
+    - PARAM-KMFA-2955
+    - PARAM-KMFA-2956
+    - PARAM-KMFA-2957
+    - PARAM-KMFA-2958
+    - PARAM-KMFA-2959
+    - PARAM-KMFA-2960
+    - PARAM-KMFA-2961
+    - PARAM-KMFA-2962
+    - PARAM-KMFA-2963
+    - PARAM-KMFA-2964
+    - PARAM-KMFA-2965
+  evidence_dir: KMFA/stage_artifacts/V015_S22_P3_OPERATIONS_GOVERNANCE
+  validator: KMFA/tools/check_v015_s22_p3_operations_governance.py
+  scope: Public-synthetic local-only monitoring of six services verified private-local backup and zero-difference recovery drills plus idempotent rollbackable four-surface migrations. It performs no raw access real production monitoring external network S22 review S23 GitHub upload or App reinstall.
+
+kmfa_v015_s22_p2_security_audit:
+  model_id: MOD-KMFA-SECURITY-001
+  version: "1.5.0-dev-s22p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S22-P2-SECURITY-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-2926
+    - PARAM-KMFA-2927
+    - PARAM-KMFA-2928
+    - PARAM-KMFA-2929
+    - PARAM-KMFA-2930
+    - PARAM-KMFA-2931
+    - PARAM-KMFA-2932
+    - PARAM-KMFA-2933
+    - PARAM-KMFA-2934
+    - PARAM-KMFA-2935
+    - PARAM-KMFA-2936
+    - PARAM-KMFA-2937
+    - PARAM-KMFA-2938
+    - PARAM-KMFA-2939
+    - PARAM-KMFA-2940
+    - PARAM-KMFA-2941
+    - PARAM-KMFA-2942
+    - PARAM-KMFA-2943
+    - PARAM-KMFA-2944
+    - PARAM-KMFA-2945
+  evidence_dir: KMFA/stage_artifacts/V015_S22_P2_SECURITY_AUDIT
+  validator: KMFA/tools/check_v015_s22_p2_security_audit.py
+  scope: Public-synthetic local-only authentication signed sessions four-role company authorization hash-linked queryable audit records environment-only secret references and five input-output attack defenses. It performs no raw access real credentials external release S22-P3 GitHub upload or App reinstall.
+
+kmfa_v015_s22_p1_notifications:
+  model_id: MOD-KMFA-NOTIFICATION-001
+  version: "1.5.0-dev-s22p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S22-P1-NOTIFICATIONS-001
+  parameter_refs:
+    - PARAM-KMFA-2906
+    - PARAM-KMFA-2907
+    - PARAM-KMFA-2908
+    - PARAM-KMFA-2909
+    - PARAM-KMFA-2910
+    - PARAM-KMFA-2911
+    - PARAM-KMFA-2912
+    - PARAM-KMFA-2913
+    - PARAM-KMFA-2914
+    - PARAM-KMFA-2915
+    - PARAM-KMFA-2916
+    - PARAM-KMFA-2917
+    - PARAM-KMFA-2918
+    - PARAM-KMFA-2919
+    - PARAM-KMFA-2920
+    - PARAM-KMFA-2921
+    - PARAM-KMFA-2922
+    - PARAM-KMFA-2923
+    - PARAM-KMFA-2924
+    - PARAM-KMFA-2925
+  evidence_dir: KMFA/stage_artifacts/V015_S22_P1_NOTIFICATIONS
+  validator: KMFA/tools/check_v015_s22_p1_notifications.py
+  scope: Public-synthetic local email sandbox reminders with safe body fields five confirmed alert categories deduplication frequency limits silence controls hash-linked delivery history and idempotent retry. It performs no external email raw access S22-P2 GitHub upload or App reinstall.
+
+kmfa_v015_s21_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s21-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S21-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2886
+    - PARAM-KMFA-2887
+    - PARAM-KMFA-2888
+    - PARAM-KMFA-2889
+    - PARAM-KMFA-2890
+    - PARAM-KMFA-2891
+    - PARAM-KMFA-2892
+    - PARAM-KMFA-2893
+    - PARAM-KMFA-2894
+    - PARAM-KMFA-2895
+    - PARAM-KMFA-2896
+    - PARAM-KMFA-2897
+    - PARAM-KMFA-2898
+    - PARAM-KMFA-2899
+    - PARAM-KMFA-2900
+    - PARAM-KMFA-2901
+    - PARAM-KMFA-2902
+    - PARAM-KMFA-2903
+    - PARAM-KMFA-2904
+    - PARAM-KMFA-2905
+  evidence_dir: KMFA/stage_artifacts/V015_S21_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s21_stage_review.py
+  scope: Public-safe S21 report-model generation workflow revision report-center permission and browser integration review. It exposes no raw private identity business value credential public link external publication S22 action GitHub upload or App reinstall.
+
+
+kmfa_v015_s21_p3_report_workflow:
+  model_id: MOD-KMFA-CASH-REPORT-001
+  version: "1.5.0-dev-s21p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S21-P3-REPORT-WORKFLOW-001
+  parameter_refs:
+    - PARAM-KMFA-2866
+    - PARAM-KMFA-2867
+    - PARAM-KMFA-2868
+    - PARAM-KMFA-2869
+    - PARAM-KMFA-2870
+    - PARAM-KMFA-2871
+    - PARAM-KMFA-2872
+    - PARAM-KMFA-2873
+    - PARAM-KMFA-2874
+    - PARAM-KMFA-2875
+    - PARAM-KMFA-2876
+    - PARAM-KMFA-2877
+    - PARAM-KMFA-2878
+    - PARAM-KMFA-2879
+    - PARAM-KMFA-2880
+    - PARAM-KMFA-2881
+    - PARAM-KMFA-2882
+    - PARAM-KMFA-2883
+    - PARAM-KMFA-2884
+    - PARAM-KMFA-2885
+  evidence_dir: KMFA/stage_artifacts/V015_S21_P3_REPORT_WORKFLOW
+  validator: KMFA/tools/check_v015_s21_p3_report_workflow.py
+  scope: Public-synthetic five-step review and approval workflow with explained immutable revisions and company-role-scoped internal report center. External publication public links raw access S21 review S22 GitHub upload and App reinstall remain closed.
+
+
+kmfa_v015_s21_p2_report_generation:
+  model_id: MOD-KMFA-CASH-REPORT-001
+  version: "1.5.0-dev-s21p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S21-P2-REPORT-GENERATION-001
+  parameter_refs:
+    - PARAM-KMFA-2846
+    - PARAM-KMFA-2847
+    - PARAM-KMFA-2848
+    - PARAM-KMFA-2849
+    - PARAM-KMFA-2850
+    - PARAM-KMFA-2851
+    - PARAM-KMFA-2852
+    - PARAM-KMFA-2853
+    - PARAM-KMFA-2854
+    - PARAM-KMFA-2855
+    - PARAM-KMFA-2856
+    - PARAM-KMFA-2857
+    - PARAM-KMFA-2858
+    - PARAM-KMFA-2859
+    - PARAM-KMFA-2860
+    - PARAM-KMFA-2861
+    - PARAM-KMFA-2862
+    - PARAM-KMFA-2863
+    - PARAM-KMFA-2864
+    - PARAM-KMFA-2865
+  evidence_dir: KMFA/stage_artifacts/V015_S21_P2_REPORT_GENERATION
+  validator: KMFA/tools/check_v015_s21_p2_report_generation.py
+  scope: Public-safe responsive printable HTML paginated PDF and exact integer CSV appendix generated from one immutable S21-P1 report version. Approval publication raw access S21-P3 GitHub upload and App reinstall remain closed.
+
+
+kmfa_v015_s21_p1_report_model:
+  model_id: MOD-KMFA-CASH-REPORT-001
+  version: "1.5.0-dev-s21p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S21-P1-REPORT-MODEL-001
+  parameter_refs:
+    - PARAM-KMFA-2826
+    - PARAM-KMFA-2827
+    - PARAM-KMFA-2828
+    - PARAM-KMFA-2829
+    - PARAM-KMFA-2830
+    - PARAM-KMFA-2831
+    - PARAM-KMFA-2832
+    - PARAM-KMFA-2833
+    - PARAM-KMFA-2834
+    - PARAM-KMFA-2835
+    - PARAM-KMFA-2836
+    - PARAM-KMFA-2837
+    - PARAM-KMFA-2838
+    - PARAM-KMFA-2839
+    - PARAM-KMFA-2840
+    - PARAM-KMFA-2841
+    - PARAM-KMFA-2842
+    - PARAM-KMFA-2843
+    - PARAM-KMFA-2844
+    - PARAM-KMFA-2845
+  evidence_dir: KMFA/stage_artifacts/V015_S21_P1_REPORT_MODEL
+  validator: KMFA/tools/check_v015_s21_p1_report_model.py
+  scope: Public-safe immutable report periods and revisions with six source bindings two formula bindings five management sections one professional appendix and plain-language limitations. Formal report generation approval publication raw access S21-P2/P3 GitHub upload and App reinstall remain closed.
+
+
+kmfa_v015_s20_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s20-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S20-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2806
+    - PARAM-KMFA-2807
+    - PARAM-KMFA-2808
+    - PARAM-KMFA-2809
+    - PARAM-KMFA-2810
+    - PARAM-KMFA-2811
+    - PARAM-KMFA-2812
+    - PARAM-KMFA-2813
+    - PARAM-KMFA-2814
+    - PARAM-KMFA-2815
+    - PARAM-KMFA-2816
+    - PARAM-KMFA-2817
+    - PARAM-KMFA-2818
+    - PARAM-KMFA-2819
+    - PARAM-KMFA-2820
+    - PARAM-KMFA-2821
+    - PARAM-KMFA-2822
+    - PARAM-KMFA-2823
+    - PARAM-KMFA-2824
+    - PARAM-KMFA-2825
+  evidence_dir: KMFA/stage_artifacts/V015_S20_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s20_stage_review.py
+  scope: Public-safe mirror of the S20 end-to-end stage review. Data update confirmation lineage affected-chain comparison four-view publication and three-step navigation are validated without raw external release S21 upload or reinstall actions.
+
+kmfa_v015_s20_p3_recalculation_publication:
+  model_id: MOD-KMFA-ACTION-001
+  version: "1.5.0-dev-s20p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S20-P3-RECALCULATION-PUBLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-2786
+    - PARAM-KMFA-2787
+    - PARAM-KMFA-2788
+    - PARAM-KMFA-2789
+    - PARAM-KMFA-2790
+    - PARAM-KMFA-2791
+    - PARAM-KMFA-2792
+    - PARAM-KMFA-2793
+    - PARAM-KMFA-2794
+    - PARAM-KMFA-2795
+    - PARAM-KMFA-2796
+    - PARAM-KMFA-2797
+    - PARAM-KMFA-2798
+    - PARAM-KMFA-2799
+    - PARAM-KMFA-2800
+    - PARAM-KMFA-2801
+    - PARAM-KMFA-2802
+    - PARAM-KMFA-2803
+    - PARAM-KMFA-2804
+    - PARAM-KMFA-2805
+  evidence_dir: KMFA/stage_artifacts/V015_S20_P3_RECALCULATION_PUBLICATION
+  validator: KMFA/tools/check_v015_s20_p3_recalculation_publication.py
+  scope: Public-safe affected-chain recalculation, explained before-and-after comparison, explicit publish-or-retain decision, atomic four-view local synchronization, failure rollback, persistence and zero raw access, external publication, GitHub upload, App reinstall, or S20 review execution.
+
+
+kmfa_v015_s20_p2_confirmation_workbench:
+  model_id: MOD-KMFA-ACTION-001
+  version: "1.5.0-dev-s20p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S20-P2-CONFIRMATION-WORKBENCH-001
+  parameter_refs:
+    - PARAM-KMFA-2766
+    - PARAM-KMFA-2767
+    - PARAM-KMFA-2768
+    - PARAM-KMFA-2769
+    - PARAM-KMFA-2770
+    - PARAM-KMFA-2771
+    - PARAM-KMFA-2772
+    - PARAM-KMFA-2773
+    - PARAM-KMFA-2774
+    - PARAM-KMFA-2775
+    - PARAM-KMFA-2776
+    - PARAM-KMFA-2777
+    - PARAM-KMFA-2778
+    - PARAM-KMFA-2779
+    - PARAM-KMFA-2780
+    - PARAM-KMFA-2781
+    - PARAM-KMFA-2782
+    - PARAM-KMFA-2783
+    - PARAM-KMFA-2784
+    - PARAM-KMFA-2785
+  evidence_dir: KMFA/stage_artifacts/V015_S20_P2_CONFIRMATION_WORKBENCH
+  validator: KMFA/tools/check_v015_s20_p2_confirmation_workbench.py
+  scope: Public-safe human confirmation workbench with business-only issue sorting, side-by-side discrepancy detail, business-first explanations, impact-bound preview and confirmation, append-only auditable control events, persistence and undo, and zero raw editing, fact mutation, S20-P3 execution, GitHub upload, or App reinstall.
+
+
+kmfa_v015_s20_p1_data_update:
+  model_id: MOD-KMFA-FILE-IMPORT-001
+  version: "1.5.0-dev-s20p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S20-P1-DATA-UPDATE-001
+  parameter_refs:
+    - PARAM-KMFA-2746
+    - PARAM-KMFA-2747
+    - PARAM-KMFA-2748
+    - PARAM-KMFA-2749
+    - PARAM-KMFA-2750
+    - PARAM-KMFA-2751
+    - PARAM-KMFA-2752
+    - PARAM-KMFA-2753
+    - PARAM-KMFA-2754
+    - PARAM-KMFA-2755
+    - PARAM-KMFA-2756
+    - PARAM-KMFA-2757
+    - PARAM-KMFA-2758
+    - PARAM-KMFA-2759
+    - PARAM-KMFA-2760
+    - PARAM-KMFA-2761
+    - PARAM-KMFA-2762
+    - PARAM-KMFA-2763
+    - PARAM-KMFA-2764
+    - PARAM-KMFA-2765
+  evidence_dir: KMFA/stage_artifacts/V015_S20_P1_DATA_UPDATE
+  validator: KMFA/tools/check_v015_s20_p1_data_update.py
+  scope: Public-safe three-step local data update flow with explicit source entity scope period and file selection, visibly marked detection, exact human confirmation, real import and validation progress, refresh and interruption recovery, isolated cancellation, and zero raw mutation, downstream execution, GitHub upload, or App reinstall.
+
+
+kmfa_v015_s19_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s19-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S19-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2726
+    - PARAM-KMFA-2727
+    - PARAM-KMFA-2728
+    - PARAM-KMFA-2729
+    - PARAM-KMFA-2730
+    - PARAM-KMFA-2731
+    - PARAM-KMFA-2732
+    - PARAM-KMFA-2733
+    - PARAM-KMFA-2734
+    - PARAM-KMFA-2735
+    - PARAM-KMFA-2736
+    - PARAM-KMFA-2737
+    - PARAM-KMFA-2738
+    - PARAM-KMFA-2739
+    - PARAM-KMFA-2740
+    - PARAM-KMFA-2741
+    - PARAM-KMFA-2742
+    - PARAM-KMFA-2743
+    - PARAM-KMFA-2744
+    - PARAM-KMFA-2745
+  evidence_dir: KMFA/stage_artifacts/V015_S19_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s19_stage_review.py
+  scope: Public-safe S19 cross-phase review of three accepted phases nine tasks 60 receipts 216 predecessor checks 44 integration bindings 278 public checks and eight browser flows. It fixes the three-step navigation dead end and fail-closed professional-review event integrity while keeping filing eligibility promises raw real actions S20 GitHub upload and App reinstall closed.
+
+
+kmfa_v015_s18_p3_relation_reporting:
+  model_id: MOD-KMFA-CASH-REPORT-001
+  version: "1.5.0-dev-s18p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S18-P3-RELATION-REPORTING-001
+  parameter_refs:
+    - PARAM-KMFA-2626
+    - PARAM-KMFA-2627
+    - PARAM-KMFA-2628
+    - PARAM-KMFA-2629
+    - PARAM-KMFA-2630
+    - PARAM-KMFA-2631
+    - PARAM-KMFA-2632
+    - PARAM-KMFA-2633
+    - PARAM-KMFA-2634
+    - PARAM-KMFA-2635
+    - PARAM-KMFA-2636
+    - PARAM-KMFA-2637
+    - PARAM-KMFA-2638
+    - PARAM-KMFA-2639
+    - PARAM-KMFA-2640
+    - PARAM-KMFA-2641
+    - PARAM-KMFA-2642
+    - PARAM-KMFA-2643
+    - PARAM-KMFA-2644
+    - PARAM-KMFA-2645
+  evidence_dir: KMFA/stage_artifacts/V015_S18_P3_RELATION_REPORTING
+  validator: KMFA/tools/check_v015_s18_p3_relation_reporting.py
+  scope: Public-safe mirror of the profit and cash-occupancy dual view sanitised internal alerts and degraded report exports. It contains no private locator full sensitive detail external message payment raw access or release action.
+
+kmfa_v015_s18_p2_funds_accounts:
+  model_id: MOD-KMFA-CASH-FUNDING-001
+  version: "1.5.0-dev-s18p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S18-P2-FUNDS-ACCOUNTS-001
+  parameter_refs:
+    - PARAM-KMFA-2606
+    - PARAM-KMFA-2607
+    - PARAM-KMFA-2608
+    - PARAM-KMFA-2609
+    - PARAM-KMFA-2610
+    - PARAM-KMFA-2611
+    - PARAM-KMFA-2612
+    - PARAM-KMFA-2613
+    - PARAM-KMFA-2614
+    - PARAM-KMFA-2615
+    - PARAM-KMFA-2616
+    - PARAM-KMFA-2617
+    - PARAM-KMFA-2618
+    - PARAM-KMFA-2619
+    - PARAM-KMFA-2620
+    - PARAM-KMFA-2621
+    - PARAM-KMFA-2622
+    - PARAM-KMFA-2623
+    - PARAM-KMFA-2624
+    - PARAM-KMFA-2625
+  evidence_dir: KMFA/stage_artifacts/V015_S18_P2_FUNDS_ACCOUNTS
+  validator: KMFA/tools/check_v015_s18_p2_funds_accounts.py
+  scope: Public-safe mirror of bank account reconciliation cash scenarios and loan funding planning. It contains no private locator full account identifier real identity payment bank operation or later-phase release work.
+
+kmfa_v015_s18_p1_receivables_collections:
+  model_id: MOD-KMFA-RECEIVABLES-001
+  version: "1.5.0-dev-s18p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S18-P1-RECEIVABLES-COLLECTIONS-001
+  parameter_refs:
+    - PARAM-KMFA-2586
+    - PARAM-KMFA-2587
+    - PARAM-KMFA-2588
+    - PARAM-KMFA-2589
+    - PARAM-KMFA-2590
+    - PARAM-KMFA-2591
+    - PARAM-KMFA-2592
+    - PARAM-KMFA-2593
+    - PARAM-KMFA-2594
+    - PARAM-KMFA-2595
+    - PARAM-KMFA-2596
+    - PARAM-KMFA-2597
+    - PARAM-KMFA-2598
+    - PARAM-KMFA-2599
+    - PARAM-KMFA-2600
+    - PARAM-KMFA-2601
+    - PARAM-KMFA-2602
+    - PARAM-KMFA-2603
+    - PARAM-KMFA-2604
+    - PARAM-KMFA-2605
+  evidence_dir: KMFA/stage_artifacts/V015_S18_P1_RECEIVABLES_COLLECTIONS
+  validator: KMFA/tools/check_v015_s18_p1_receivables_collections.py
+  scope: Public-safe mirror of receivable aging explainable collection review and four-dimension reconciliation. It contains no private locator real identity customer contact payment action or later-phase release work.
+
+kmfa_v015_s17_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s17-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S17-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2566
+    - PARAM-KMFA-2567
+    - PARAM-KMFA-2568
+    - PARAM-KMFA-2569
+    - PARAM-KMFA-2570
+    - PARAM-KMFA-2571
+    - PARAM-KMFA-2572
+    - PARAM-KMFA-2573
+    - PARAM-KMFA-2574
+    - PARAM-KMFA-2575
+    - PARAM-KMFA-2576
+    - PARAM-KMFA-2577
+    - PARAM-KMFA-2578
+    - PARAM-KMFA-2579
+    - PARAM-KMFA-2580
+    - PARAM-KMFA-2581
+    - PARAM-KMFA-2582
+    - PARAM-KMFA-2583
+    - PARAM-KMFA-2584
+    - PARAM-KMFA-2585
+  evidence_dir: KMFA/stage_artifacts/V015_S17_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s17_stage_review.py
+  scope: Public-safe mirror of the S17 cross-phase review and four validated fixes. It publishes only aggregate contracts findings audit results and browser evidence and exposes no raw source locator real identity business value credential or later-stage action.
+
+kmfa_v015_s17_p3_project_workflow:
+  model_id: MOD-KMFA-PROJECT-PORTFOLIO-001
+  version: "1.5.0-dev-s17p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S17-P3-PROJECT-WORKFLOW-001
+  parameter_refs:
+    - PARAM-KMFA-2546
+    - PARAM-KMFA-2547
+    - PARAM-KMFA-2548
+    - PARAM-KMFA-2549
+    - PARAM-KMFA-2550
+    - PARAM-KMFA-2551
+    - PARAM-KMFA-2552
+    - PARAM-KMFA-2553
+    - PARAM-KMFA-2554
+    - PARAM-KMFA-2555
+    - PARAM-KMFA-2556
+    - PARAM-KMFA-2557
+    - PARAM-KMFA-2558
+    - PARAM-KMFA-2559
+    - PARAM-KMFA-2560
+    - PARAM-KMFA-2561
+    - PARAM-KMFA-2562
+    - PARAM-KMFA-2563
+    - PARAM-KMFA-2564
+    - PARAM-KMFA-2565
+  evidence_dir: KMFA/stage_artifacts/V015_S17_P3_PROJECT_WORKFLOW
+  validator: KMFA/tools/check_v015_s17_p3_project_workflow.py
+  scope: Public-safe mirror of reversible project cost processing and synchronized HTML PDF XLSX report evidence. No private locator raw read source mutation overall review or release action is published.
+
+kmfa_v015_s17_p2_project_detail:
+  model_id: MOD-KMFA-PROJECT-PORTFOLIO-001
+  version: "1.5.0-dev-s17p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S17-P2-PROJECT-DETAIL-001
+  parameter_refs:
+    - PARAM-KMFA-2526
+    - PARAM-KMFA-2527
+    - PARAM-KMFA-2528
+    - PARAM-KMFA-2529
+    - PARAM-KMFA-2530
+    - PARAM-KMFA-2531
+    - PARAM-KMFA-2532
+    - PARAM-KMFA-2533
+    - PARAM-KMFA-2534
+    - PARAM-KMFA-2535
+    - PARAM-KMFA-2536
+    - PARAM-KMFA-2537
+    - PARAM-KMFA-2538
+    - PARAM-KMFA-2539
+    - PARAM-KMFA-2540
+    - PARAM-KMFA-2541
+    - PARAM-KMFA-2542
+    - PARAM-KMFA-2543
+    - PARAM-KMFA-2544
+    - PARAM-KMFA-2545
+  evidence_dir: KMFA/stage_artifacts/V015_S17_P2_PROJECT_DETAIL
+  validator: KMFA/tools/check_v015_s17_p2_project_detail.py
+  scope: Public-safe mirror of S17-P2 business-first project detail exact cost reconciliation separate revenue collection variance and document tabs and preserved list return context. No private locator raw read fact mutation later phase or release action is published.
+
+kmfa_v015_s17_p1_project_list:
+  model_id: MOD-KMFA-PROJECT-PORTFOLIO-001
+  version: "1.5.0-dev-s17p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S17-P1-PROJECT-LIST-001
+  parameter_refs:
+    - PARAM-KMFA-2506
+    - PARAM-KMFA-2507
+    - PARAM-KMFA-2508
+    - PARAM-KMFA-2509
+    - PARAM-KMFA-2510
+    - PARAM-KMFA-2511
+    - PARAM-KMFA-2512
+    - PARAM-KMFA-2513
+    - PARAM-KMFA-2514
+    - PARAM-KMFA-2515
+    - PARAM-KMFA-2516
+    - PARAM-KMFA-2517
+    - PARAM-KMFA-2518
+    - PARAM-KMFA-2519
+    - PARAM-KMFA-2520
+    - PARAM-KMFA-2521
+    - PARAM-KMFA-2522
+    - PARAM-KMFA-2523
+    - PARAM-KMFA-2524
+    - PARAM-KMFA-2525
+  evidence_dir: KMFA/stage_artifacts/V015_S17_P1_PROJECT_LIST
+  validator: KMFA/tools/check_v015_s17_p1_project_list.py
+  scope: Public-safe mirror of S17-P1 stable project table explicit grouping sorting configurable columns and source-bound read-only batch export. No private locator raw read fact mutation later phase or release action is published.
+
+kmfa_v015_s16_p3_homepage_usability:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s16p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S16-P3-HOMEPAGE-USABILITY-001
+  parameter_refs:
+    - PARAM-KMFA-2470
+    - PARAM-KMFA-2471
+    - PARAM-KMFA-2472
+    - PARAM-KMFA-2473
+    - PARAM-KMFA-2474
+    - PARAM-KMFA-2475
+    - PARAM-KMFA-2476
+    - PARAM-KMFA-2477
+    - PARAM-KMFA-2478
+    - PARAM-KMFA-2479
+    - PARAM-KMFA-2480
+    - PARAM-KMFA-2481
+    - PARAM-KMFA-2482
+    - PARAM-KMFA-2483
+    - PARAM-KMFA-2484
+    - PARAM-KMFA-2485
+    - PARAM-KMFA-2486
+    - PARAM-KMFA-2487
+  evidence_dir: KMFA/stage_artifacts/V015_S16_P3_HOMEPAGE_USABILITY_ACCEPTANCE
+  validator: KMFA/tools/check_v015_s16_p3_homepage_usability.py
+  scope: Public-safe mirror of S16-P3 first-scan one-click path and honest fault-state evidence. It explicitly records zero external human participants and does not claim human research. No private locator raw read fact write real action or later-stage release action is published.
+
+kmfa_v015_s16_p2_drilldown_explanation:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s16p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S16-P2-DRILLDOWN-EXPLANATION-001
+  parameter_refs:
+    - PARAM-KMFA-2452
+    - PARAM-KMFA-2453
+    - PARAM-KMFA-2454
+    - PARAM-KMFA-2455
+    - PARAM-KMFA-2456
+    - PARAM-KMFA-2457
+    - PARAM-KMFA-2458
+    - PARAM-KMFA-2459
+    - PARAM-KMFA-2460
+    - PARAM-KMFA-2461
+    - PARAM-KMFA-2462
+    - PARAM-KMFA-2463
+    - PARAM-KMFA-2464
+    - PARAM-KMFA-2465
+    - PARAM-KMFA-2466
+    - PARAM-KMFA-2467
+    - PARAM-KMFA-2468
+    - PARAM-KMFA-2469
+  evidence_dir: KMFA/stage_artifacts/V015_S16_P2_DRILLDOWN_EXPLANATION
+  validator: KMFA/tools/check_v015_s16_p2_drilldown_explanation.py
+  scope: Public-safe mirror of S16-P2 exact detail reconciliation filter preservation plain-first explanations optional lineage and fail-closed comparison evidence. No private locator raw read fact write real action or later-phase release action is published.
+
+kmfa_v015_s16_p1_homepage_first_screen:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s16p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S16-P1-HOMEPAGE-FIRST-SCREEN-001
+  parameter_refs:
+    - PARAM-KMFA-2434
+    - PARAM-KMFA-2435
+    - PARAM-KMFA-2436
+    - PARAM-KMFA-2437
+    - PARAM-KMFA-2438
+    - PARAM-KMFA-2439
+    - PARAM-KMFA-2440
+    - PARAM-KMFA-2441
+    - PARAM-KMFA-2442
+    - PARAM-KMFA-2443
+    - PARAM-KMFA-2444
+    - PARAM-KMFA-2445
+    - PARAM-KMFA-2446
+    - PARAM-KMFA-2447
+    - PARAM-KMFA-2448
+    - PARAM-KMFA-2449
+    - PARAM-KMFA-2450
+    - PARAM-KMFA-2451
+  evidence_dir: KMFA/stage_artifacts/V015_S16_P1_HOMEPAGE_FIRST_SCREEN
+  validator: KMFA/tools/check_v015_s16_p1_homepage.py
+  scope: Public-safe S16-P1 management homepage with five source-bound metrics honest incomplete-data handling five single-action focus items three table-backed trends and a four-project matrix. It performs no raw read fact write real business action S16-P2 work GitHub upload or App reinstall.
+
+kmfa_v015_s15_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s15-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S15-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2422
+    - PARAM-KMFA-2423
+    - PARAM-KMFA-2424
+    - PARAM-KMFA-2425
+    - PARAM-KMFA-2426
+    - PARAM-KMFA-2427
+    - PARAM-KMFA-2428
+    - PARAM-KMFA-2429
+    - PARAM-KMFA-2430
+    - PARAM-KMFA-2431
+    - PARAM-KMFA-2432
+    - PARAM-KMFA-2433
+  evidence_dir: KMFA/stage_artifacts/V015_S15_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s15_stage_review.py
+  scope: Public-safe S15 integration review for identity, company authorization, search, notifications, preferences, keyboard and touch behavior. It performs no raw read, production identity, real business action, S16 implementation, GitHub upload or App reinstall.
+
+kmfa_v015_s15_p3_app_experience:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s15p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S15-P3-APP-EXPERIENCE-001
+  parameter_refs:
+    - PARAM-KMFA-2404
+    - PARAM-KMFA-2405
+    - PARAM-KMFA-2406
+    - PARAM-KMFA-2407
+    - PARAM-KMFA-2408
+    - PARAM-KMFA-2409
+    - PARAM-KMFA-2410
+    - PARAM-KMFA-2411
+    - PARAM-KMFA-2412
+    - PARAM-KMFA-2413
+    - PARAM-KMFA-2414
+    - PARAM-KMFA-2415
+    - PARAM-KMFA-2416
+    - PARAM-KMFA-2417
+    - PARAM-KMFA-2418
+    - PARAM-KMFA-2419
+    - PARAM-KMFA-2420
+    - PARAM-KMFA-2421
+  evidence_dir: KMFA/stage_artifacts/V015_S15_P3_APP_EXPERIENCE
+  validator: KMFA/tools/check_v015_s15_p3_app_experience.py
+  scope: Public-safe search recent-access notification and current-user preference experience. It contains no production search index message service identity credential raw or fact write real-business action release action S15 review or S16 implementation.
+
+kmfa_v015_s15_p2_identity_roles:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s15p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S15-P2-IDENTITY-ROLES-001
+  parameter_refs:
+    - PARAM-KMFA-2386
+    - PARAM-KMFA-2387
+    - PARAM-KMFA-2388
+    - PARAM-KMFA-2389
+    - PARAM-KMFA-2390
+    - PARAM-KMFA-2391
+    - PARAM-KMFA-2392
+    - PARAM-KMFA-2393
+    - PARAM-KMFA-2394
+    - PARAM-KMFA-2395
+    - PARAM-KMFA-2396
+    - PARAM-KMFA-2397
+    - PARAM-KMFA-2398
+    - PARAM-KMFA-2399
+    - PARAM-KMFA-2400
+    - PARAM-KMFA-2401
+    - PARAM-KMFA-2402
+    - PARAM-KMFA-2403
+  evidence_dir: KMFA/stage_artifacts/V015_S15_P2_IDENTITY_ROLES
+  validator: KMFA/tools/check_v015_s15_p2_identity_roles.py
+  scope: Public-safe mirror of role assignment five resource domains default-deny authorization audit and three role-separated approval flows. It contains no production identity credential raw value private locator live result real-business action release action or later S15 implementation.
+
+kmfa_v015_s15_p1_app_shell:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s15p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S15-P1-APP-SHELL-001
+  parameter_refs:
+    - PARAM-KMFA-2368
+    - PARAM-KMFA-2369
+    - PARAM-KMFA-2370
+    - PARAM-KMFA-2371
+    - PARAM-KMFA-2372
+    - PARAM-KMFA-2373
+    - PARAM-KMFA-2374
+    - PARAM-KMFA-2375
+    - PARAM-KMFA-2376
+    - PARAM-KMFA-2377
+    - PARAM-KMFA-2378
+    - PARAM-KMFA-2379
+    - PARAM-KMFA-2380
+    - PARAM-KMFA-2381
+    - PARAM-KMFA-2382
+    - PARAM-KMFA-2383
+    - PARAM-KMFA-2384
+    - PARAM-KMFA-2385
+  evidence_dir: KMFA/stage_artifacts/V015_S15_P1_APP_SHELL
+  validator: KMFA/tools/check_v015_s15_p1_app_shell.py
+  scope: Public-safe mirror of the localhost app shell route context isolation and recoverable-error contracts. It contains no raw value private locator live result external-network action release action or later S15 implementation.
+
+kmfa_v015_s14_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s14-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S14-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2356
+    - PARAM-KMFA-2357
+    - PARAM-KMFA-2358
+    - PARAM-KMFA-2359
+    - PARAM-KMFA-2360
+    - PARAM-KMFA-2361
+    - PARAM-KMFA-2362
+    - PARAM-KMFA-2363
+    - PARAM-KMFA-2364
+    - PARAM-KMFA-2365
+    - PARAM-KMFA-2366
+    - PARAM-KMFA-2367
+  evidence_dir: KMFA/stage_artifacts/V015_S14_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s14_stage_review.py
+  scope: Public-safe S14 cross-part review binding seven navigation destinations six page types two semantic themes plain-Chinese content and integer-backed display values in one browser-tested page. Raw live network real-business S15 GitHub App and formal-report actions remain prohibited.
+
+kmfa_v015_s14_p2_design_system:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s14p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S14-P2-DESIGN-SYSTEM-001
+  parameter_refs:
+    - PARAM-KMFA-2320
+    - PARAM-KMFA-2321
+    - PARAM-KMFA-2322
+    - PARAM-KMFA-2323
+    - PARAM-KMFA-2324
+    - PARAM-KMFA-2325
+    - PARAM-KMFA-2326
+    - PARAM-KMFA-2327
+    - PARAM-KMFA-2328
+    - PARAM-KMFA-2329
+    - PARAM-KMFA-2330
+    - PARAM-KMFA-2331
+    - PARAM-KMFA-2332
+    - PARAM-KMFA-2333
+    - PARAM-KMFA-2334
+    - PARAM-KMFA-2335
+    - PARAM-KMFA-2336
+    - PARAM-KMFA-2337
+  evidence_dir: KMFA/stage_artifacts/V015_S14_P2_DESIGN_SYSTEM
+  validator: KMFA/tools/check_v015_s14_p2_design_system.py
+  scope: Public-safe business-blue light and dark themes with contrast-tested tokens eleven component families seven complete states controlled warning area non-color-only status semantics reduced-motion-safe transitions and three browser viewports. It performs no raw or live reads real-business action GitHub upload App reinstall or later S14 work.
+
+kmfa_v015_s14_p1_information_architecture:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s14p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S14-P1-INFORMATION-ARCHITECTURE-001
+  parameter_refs:
+    - PARAM-KMFA-2302
+    - PARAM-KMFA-2303
+    - PARAM-KMFA-2304
+    - PARAM-KMFA-2305
+    - PARAM-KMFA-2306
+    - PARAM-KMFA-2307
+    - PARAM-KMFA-2308
+    - PARAM-KMFA-2309
+    - PARAM-KMFA-2310
+    - PARAM-KMFA-2311
+    - PARAM-KMFA-2312
+    - PARAM-KMFA-2313
+    - PARAM-KMFA-2314
+    - PARAM-KMFA-2315
+    - PARAM-KMFA-2316
+    - PARAM-KMFA-2317
+    - PARAM-KMFA-2318
+    - PARAM-KMFA-2319
+  evidence_dir: KMFA/stage_artifacts/V015_S14_P1_INFORMATION_ARCHITECTURE
+  validator: KMFA/tools/check_v015_s14_p1_information_architecture.py
+  scope: Public-safe mirror of the seven-destination task-led information architecture page hierarchy breadcrumb return and progressive-disclosure contracts. It contains no raw value private locator live result real-business action release action or later S14 implementation.
+
+kmfa_v015_s13_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s13-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S13-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2290
+    - PARAM-KMFA-2291
+    - PARAM-KMFA-2292
+    - PARAM-KMFA-2293
+    - PARAM-KMFA-2294
+    - PARAM-KMFA-2295
+    - PARAM-KMFA-2296
+    - PARAM-KMFA-2297
+    - PARAM-KMFA-2298
+    - PARAM-KMFA-2299
+    - PARAM-KMFA-2300
+    - PARAM-KMFA-2301
+  evidence_dir: KMFA/stage_artifacts/V015_S13_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s13_stage_review.py
+  scope: Public-safe mirror of the S13 cross-phase indicator health action and recommendation review. It contains no raw value private locator live result real-business action automatic execution recommendation fact write automatic parameter change or release action.
+
+kmfa_v015_s13_p3_action_priority:
+  model_id: MOD-KMFA-ACTION-001
+  version: "1.5.0-dev-s13p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S13-P3-ACTION-PRIORITY-001
+  parameter_refs:
+    - PARAM-KMFA-2272
+    - PARAM-KMFA-2273
+    - PARAM-KMFA-2274
+    - PARAM-KMFA-2275
+    - PARAM-KMFA-2276
+    - PARAM-KMFA-2277
+    - PARAM-KMFA-2278
+    - PARAM-KMFA-2279
+    - PARAM-KMFA-2280
+    - PARAM-KMFA-2281
+    - PARAM-KMFA-2282
+    - PARAM-KMFA-2283
+    - PARAM-KMFA-2284
+    - PARAM-KMFA-2285
+    - PARAM-KMFA-2286
+    - PARAM-KMFA-2287
+    - PARAM-KMFA-2288
+    - PARAM-KMFA-2289
+  evidence_dir: KMFA/stage_artifacts/V015_S13_P3_ACTION_PRIORITY
+  validator: KMFA/tools/check_v015_s13_p3_action_priority.py
+  scope: Public-safe mirror of six-factor action ranking three-to-five focus selection and append-only recommendation review. It contains no raw value private locator live result real-business priority automatic execution recommendation fact write automatic calibration or release action.
+
+kmfa_v015_s13_p2_business_health_model:
+  model_id: MOD-KMFA-HEALTH-001
+  version: "1.5.0-dev-s13p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S13-P2-BUSINESS-HEALTH-MODEL-001
+  parameter_refs:
+    - PARAM-KMFA-2254
+    - PARAM-KMFA-2255
+    - PARAM-KMFA-2256
+    - PARAM-KMFA-2257
+    - PARAM-KMFA-2258
+    - PARAM-KMFA-2259
+    - PARAM-KMFA-2260
+    - PARAM-KMFA-2261
+    - PARAM-KMFA-2262
+    - PARAM-KMFA-2263
+    - PARAM-KMFA-2264
+    - PARAM-KMFA-2265
+    - PARAM-KMFA-2266
+    - PARAM-KMFA-2267
+    - PARAM-KMFA-2268
+    - PARAM-KMFA-2269
+    - PARAM-KMFA-2270
+    - PARAM-KMFA-2271
+  evidence_dir: KMFA/stage_artifacts/V015_S13_P2_BUSINESS_HEALTH_MODEL
+  validator: KMFA/tools/check_v015_s13_p2_business_health_model.py
+  scope: Public-safe mirror of six health dimensions weight and hard-gate controls score explanations freshness and three immutable scenario projections. It contains no raw value private locator live business health conclusion action priority fact mutation or release action.
+
+kmfa_v015_s13_p1_indicator_registry:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s13p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S13-P1-INDICATOR-REGISTRY-001
+  parameter_refs:
+    - PARAM-KMFA-2240
+    - PARAM-KMFA-2241
+    - PARAM-KMFA-2242
+    - PARAM-KMFA-2243
+    - PARAM-KMFA-2244
+    - PARAM-KMFA-2245
+    - PARAM-KMFA-2246
+    - PARAM-KMFA-2247
+    - PARAM-KMFA-2248
+    - PARAM-KMFA-2249
+    - PARAM-KMFA-2250
+    - PARAM-KMFA-2251
+    - PARAM-KMFA-2252
+    - PARAM-KMFA-2253
+  evidence_dir: KMFA/stage_artifacts/V015_S13_P1_INDICATOR_REGISTRY
+  validator: KMFA/tools/check_v015_s13_p1_indicator_registry.py
+  scope: Public-safe mirror of eight indicator domains eight external parameter versions five function contracts six explicit result statuses and seventy-eight synthetic checks. It contains no raw value private locator live result health score action priority or release action.
+
+kmfa_v015_s12_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s12-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S12-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2228
+    - PARAM-KMFA-2229
+    - PARAM-KMFA-2230
+    - PARAM-KMFA-2231
+    - PARAM-KMFA-2232
+    - PARAM-KMFA-2233
+    - PARAM-KMFA-2234
+    - PARAM-KMFA-2235
+    - PARAM-KMFA-2236
+    - PARAM-KMFA-2237
+    - PARAM-KMFA-2238
+    - PARAM-KMFA-2239
+  evidence_dir: KMFA/stage_artifacts/V015_S12_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s12_stage_review.py
+  scope: Public-safe mirror of the S12 review accounting integrated income cost margin cash risk and explanation evidence. It exposes only synthetic aggregate results and contains no raw value private locator live result real-business result S13 execution or release action.
+
+kmfa_v015_s12_p3_engineering_logic:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s12p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S12-P3-ENGINEERING-LOGIC-001
+  parameter_refs:
+    - PARAM-KMFA-2212
+    - PARAM-KMFA-2213
+    - PARAM-KMFA-2214
+    - PARAM-KMFA-2215
+    - PARAM-KMFA-2216
+    - PARAM-KMFA-2217
+    - PARAM-KMFA-2218
+    - PARAM-KMFA-2219
+    - PARAM-KMFA-2220
+    - PARAM-KMFA-2221
+    - PARAM-KMFA-2222
+    - PARAM-KMFA-2223
+    - PARAM-KMFA-2224
+    - PARAM-KMFA-2225
+    - PARAM-KMFA-2226
+    - PARAM-KMFA-2227
+  evidence_dir: KMFA/stage_artifacts/V015_S12_P3_ENGINEERING_LOGIC
+  validator: KMFA/tools/check_v015_s12_p3_engineering_logic.py
+  scope: Public-safe mirror of supported change income settlement difference collection rate external cost link anomalies inventory conservation and calculation-bound explanations. It contains no raw value private locator live result real-business result stage review or release action.
+
+kmfa_v015_s12_p2_core_calculations:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s12p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S12-P2-CORE-CALCULATIONS-001
+  parameter_refs:
+    - PARAM-KMFA-2196
+    - PARAM-KMFA-2197
+    - PARAM-KMFA-2198
+    - PARAM-KMFA-2199
+    - PARAM-KMFA-2200
+    - PARAM-KMFA-2201
+    - PARAM-KMFA-2202
+    - PARAM-KMFA-2203
+    - PARAM-KMFA-2204
+    - PARAM-KMFA-2205
+    - PARAM-KMFA-2206
+    - PARAM-KMFA-2207
+    - PARAM-KMFA-2208
+    - PARAM-KMFA-2209
+    - PARAM-KMFA-2210
+    - PARAM-KMFA-2211
+  evidence_dir: KMFA/stage_artifacts/V015_S12_P2_CORE_CALCULATIONS
+  validator: KMFA/tools/check_v015_s12_p2_core_calculations.py
+  scope: Public-safe mirror of three explicit margin views zero-cent golden comparison confirmed-cash metrics capital occupation and adjustable risk policy results. It contains no raw value private identifier live source real-business result later S12 work or release action.
+
+kmfa_v015_s12_p1_project_cost_facts:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s12p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S12-P1-PROJECT-COST-FACTS-001
+  parameter_refs:
+    - PARAM-KMFA-2182
+    - PARAM-KMFA-2183
+    - PARAM-KMFA-2184
+    - PARAM-KMFA-2185
+    - PARAM-KMFA-2186
+    - PARAM-KMFA-2187
+    - PARAM-KMFA-2188
+    - PARAM-KMFA-2189
+    - PARAM-KMFA-2190
+    - PARAM-KMFA-2191
+    - PARAM-KMFA-2192
+    - PARAM-KMFA-2193
+    - PARAM-KMFA-2194
+    - PARAM-KMFA-2195
+  evidence_dir: KMFA/stage_artifacts/V015_S12_P1_PROJECT_COST_FACTS
+  validator: KMFA/tools/check_v015_s12_p1_project_cost_facts.py
+  scope: Public-safe mirror of the append-only income and cost fact contracts explicit unallocated pool and exact integer-cent conservation. It contains no raw value private identifier live source formal calculation later S12 work release or business action.
+
+kmfa_v015_s11_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s11-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S11-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2173
+    - PARAM-KMFA-2174
+    - PARAM-KMFA-2175
+    - PARAM-KMFA-2176
+    - PARAM-KMFA-2177
+    - PARAM-KMFA-2178
+    - PARAM-KMFA-2179
+    - PARAM-KMFA-2180
+    - PARAM-KMFA-2181
+  evidence_dir: KMFA/stage_artifacts/V015_S11_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s11_stage_review.py
+  scope: Public-safe mirror of the S11 receipt-bound review findings cross-part contracts reviewed action bindings and stale-request rejection. It contains no raw value live source private identifier real action formal report or release operation.
+
+kmfa_v015_s11_p3_check_board_interface:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s11p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S11-P3-CHECK-BOARD-INTERFACE-001
+  parameter_refs:
+    - PARAM-KMFA-2155
+    - PARAM-KMFA-2156
+    - PARAM-KMFA-2157
+    - PARAM-KMFA-2158
+    - PARAM-KMFA-2159
+    - PARAM-KMFA-2160
+    - PARAM-KMFA-2161
+    - PARAM-KMFA-2162
+    - PARAM-KMFA-2163
+    - PARAM-KMFA-2164
+    - PARAM-KMFA-2165
+    - PARAM-KMFA-2166
+    - PARAM-KMFA-2167
+    - PARAM-KMFA-2168
+    - PARAM-KMFA-2169
+    - PARAM-KMFA-2170
+    - PARAM-KMFA-2171
+    - PARAM-KMFA-2172
+  evidence_dir: KMFA/stage_artifacts/V015_S11_P3_CHECK_BOARD_INTERFACE
+  validator: KMFA/tools/check_v015_s11_p3_check_board_interface.py
+  scope: Human-readable compact business-blue check board with accessible status badges four routed actions and exact return-context restoration. Frontend status writes raw and live reads real upload or sync S11 review GitHub App and business actions remain outside this Phase.
+
+kmfa_v015_s11_p2_check_board_data_model:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s11p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S11-P2-CHECK-BOARD-DATA-MODEL-001
+  parameter_refs:
+    - PARAM-KMFA-2139
+    - PARAM-KMFA-2140
+    - PARAM-KMFA-2141
+    - PARAM-KMFA-2142
+    - PARAM-KMFA-2143
+    - PARAM-KMFA-2144
+    - PARAM-KMFA-2145
+    - PARAM-KMFA-2146
+    - PARAM-KMFA-2147
+    - PARAM-KMFA-2148
+    - PARAM-KMFA-2149
+    - PARAM-KMFA-2150
+    - PARAM-KMFA-2151
+    - PARAM-KMFA-2152
+    - PARAM-KMFA-2153
+    - PARAM-KMFA-2154
+  evidence_dir: KMFA/stage_artifacts/V015_S11_P2_CHECK_BOARD_DATA_MODEL
+  validator: KMFA/tools/check_v015_s11_p2_check_board_data_model.py
+  scope: Public-safe mirror of the six-level check board model and its backend-derived human statuses alerts and projection rules. It contains no raw value live source content private identifier formal report or release action.
+
+kmfa_v015_s11_p1_quality_rules:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s11p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S11-P1-QUALITY-RULES-001
+  parameter_refs:
+    - PARAM-KMFA-2126
+    - PARAM-KMFA-2127
+    - PARAM-KMFA-2128
+    - PARAM-KMFA-2129
+    - PARAM-KMFA-2130
+    - PARAM-KMFA-2131
+    - PARAM-KMFA-2132
+    - PARAM-KMFA-2133
+    - PARAM-KMFA-2134
+    - PARAM-KMFA-2135
+    - PARAM-KMFA-2136
+    - PARAM-KMFA-2137
+    - PARAM-KMFA-2138
+  evidence_dir: KMFA/stage_artifacts/V015_S11_P1_QUALITY_RULES
+  validator: KMFA/tools/check_v015_s11_p1_quality_rules.py
+  scope: Public-safe mirror of the S11-P1 quality rule catalog, human status model, score policy, and synthetic scenario proof. It contains no raw value, live source content, private identifier, formal report or release action.
+
+kmfa_v015_s10_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s10-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S10-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2119
+    - PARAM-KMFA-2120
+    - PARAM-KMFA-2121
+    - PARAM-KMFA-2122
+    - PARAM-KMFA-2123
+    - PARAM-KMFA-2124
+    - PARAM-KMFA-2125
+  evidence_dir: KMFA/stage_artifacts/V015_S10_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s10_stage_review.py
+  scope: Public-safe mirror of the S10 cross-part review and its three fixed integration findings. It exposes only synthetic identifiers and aggregate checks and performs no raw live connector credential release business or S11 action.
+
+kmfa_v015_s10_p3_automatic_ingestion_reserve:
+  model_id: MOD-KMFA-FILE-IMPORT-001
+  version: "1.5.0-dev-s10p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S10-P3-AUTOMATIC-INGESTION-RESERVE-001
+  parameter_refs:
+    - PARAM-KMFA-2107
+    - PARAM-KMFA-2108
+    - PARAM-KMFA-2109
+    - PARAM-KMFA-2110
+    - PARAM-KMFA-2111
+    - PARAM-KMFA-2112
+    - PARAM-KMFA-2113
+    - PARAM-KMFA-2114
+    - PARAM-KMFA-2115
+    - PARAM-KMFA-2116
+    - PARAM-KMFA-2117
+    - PARAM-KMFA-2118
+  evidence_dir: KMFA/stage_artifacts/V015_S10_P3_AUTOMATIC_INGESTION_RESERVE
+  validator: KMFA/tools/check_v015_s10_p3_automatic_ingestion_reserve.py
+  scope: Public-safe mirror of the offline read-only future connector schedule freshness retry revocation and independent source activation gates. It contains no plaintext credential raw content live call source writeback formal report or release action.
+
+kmfa_v015_s10_p2_source_adapters:
+  model_id: MOD-KMFA-FILE-IMPORT-001
+  version: "1.5.0-dev-s10p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S10-P2-SOURCE-ADAPTERS-001
+  parameter_refs:
+    - PARAM-KMFA-2094
+    - PARAM-KMFA-2095
+    - PARAM-KMFA-2096
+    - PARAM-KMFA-2097
+    - PARAM-KMFA-2098
+    - PARAM-KMFA-2099
+    - PARAM-KMFA-2100
+    - PARAM-KMFA-2101
+    - PARAM-KMFA-2102
+    - PARAM-KMFA-2103
+    - PARAM-KMFA-2104
+    - PARAM-KMFA-2105
+    - PARAM-KMFA-2106
+  evidence_dir: KMFA/stage_artifacts/V015_S10_P2_SOURCE_ADAPTERS
+  validator: KMFA/tools/check_v015_s10_p2_source_adapters.py
+  scope: Public-safe mirror of the versioned explicit RedCircle Kingdee WPS bank e-invoice and contract-ledger adapter contracts. It contains synthetic headers and opaque hierarchy identifiers only and exposes no raw content credentials live connector formal report or release action.
+
+kmfa_v015_s10_p1_general_import:
+  model_id: MOD-KMFA-FILE-IMPORT-001
+  version: "1.5.0-dev-s10p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S10-P1-GENERAL-IMPORT-001
+  parameter_refs:
+    - PARAM-KMFA-2082
+    - PARAM-KMFA-2083
+    - PARAM-KMFA-2084
+    - PARAM-KMFA-2085
+    - PARAM-KMFA-2086
+    - PARAM-KMFA-2087
+    - PARAM-KMFA-2088
+    - PARAM-KMFA-2089
+    - PARAM-KMFA-2090
+    - PARAM-KMFA-2091
+    - PARAM-KMFA-2092
+    - PARAM-KMFA-2093
+  evidence_dir: KMFA/stage_artifacts/V015_S10_P1_GENERAL_IMPORT
+  validator: KMFA/tools/check_v015_s10_p1_general_import.py
+  scope: Public-safe mirror of the S10-P1 safe registration preview confirmation and resume controls. It contains temporary synthetic aggregate evidence only and exposes no raw business content private file hash source locator formal report or release action.
+
+kmfa_v015_s09_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s09-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S09-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2075
+    - PARAM-KMFA-2076
+    - PARAM-KMFA-2077
+    - PARAM-KMFA-2078
+    - PARAM-KMFA-2079
+    - PARAM-KMFA-2080
+    - PARAM-KMFA-2081
+  evidence_dir: KMFA/stage_artifacts/V015_S09_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s09_stage_review.py
+  scope: Public-safe mirror of the receipt-bound S09 cross-phase review and its three fixed integration findings. It contains synthetic identifiers and aggregate checks only; no private business value, raw source, formal report or release action is included.
+
+kmfa_v015_s09_p3_human_readable_audit:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s09p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S09-P3-HUMAN-READABLE-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-2065
+    - PARAM-KMFA-2066
+    - PARAM-KMFA-2067
+    - PARAM-KMFA-2068
+    - PARAM-KMFA-2069
+    - PARAM-KMFA-2070
+    - PARAM-KMFA-2071
+    - PARAM-KMFA-2072
+    - PARAM-KMFA-2073
+    - PARAM-KMFA-2074
+  evidence_dir: KMFA/stage_artifacts/V015_S09_P3_HUMAN_READABLE_AUDIT
+  validator: KMFA/tools/check_v015_s09_p3_human_readable_audit.py
+  scope: Public-safe mirror of the S09-P3 plain-Chinese manual management-summary and append-only closure contracts. It contains synthetic display and audit evidence only; no raw source real business value external human signoff formal report Stage review S10 or release action is included.
+
+kmfa_v015_s09_p2_conversion_reconciliation_engine:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s09p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S09-P2-CONVERSION-RECONCILIATION-001
+  parameter_refs:
+    - PARAM-KMFA-2055
+    - PARAM-KMFA-2056
+    - PARAM-KMFA-2057
+    - PARAM-KMFA-2058
+    - PARAM-KMFA-2059
+    - PARAM-KMFA-2060
+    - PARAM-KMFA-2061
+    - PARAM-KMFA-2062
+    - PARAM-KMFA-2063
+    - PARAM-KMFA-2064
+  evidence_dir: KMFA/stage_artifacts/V015_S09_P2_CONVERSION_RECONCILIATION_ENGINE
+  validator: KMFA/tools/check_v015_s09_p2_conversion_reconciliation_engine.py
+  scope: Public-safe mirror of exact-cent conversion project-financial cross-check and rerun-confirmation contracts. It contains synthetic refs and amounts only; no raw source real business values formal report or release action is included.
+
+kmfa_v015_s09_p1_scope_rule_modeling:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s09p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S09-P1-SCOPE-RULE-MODELING-001
+  parameter_refs:
+    - PARAM-KMFA-2046
+    - PARAM-KMFA-2047
+    - PARAM-KMFA-2048
+    - PARAM-KMFA-2049
+    - PARAM-KMFA-2050
+    - PARAM-KMFA-2051
+    - PARAM-KMFA-2052
+    - PARAM-KMFA-2053
+    - PARAM-KMFA-2054
+  evidence_dir: KMFA/stage_artifacts/V015_S09_P1_SCOPE_RULE_MODELING
+  validator: KMFA/tools/check_v015_s09_p1_scope_rule_modeling.py
+  scope: Public-safe mirror of the S09-P1 one-ledger, difference-dictionary and append-only adjustment-event contracts. It contains synthetic rules and aggregate evidence only; no raw source, real business values, formal report or release action is included.
+
+kmfa_v015_s08_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s08-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S08-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2040
+    - PARAM-KMFA-2041
+    - PARAM-KMFA-2042
+    - PARAM-KMFA-2043
+    - PARAM-KMFA-2044
+    - PARAM-KMFA-2045
+  evidence_dir: KMFA/stage_artifacts/V015_S08_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s08_stage_review.py
+  scope: Public-safe mirror of the receipt-bound S08 cross-phase review and its three fixed integration findings. No private identity amount locator source digest or release action is included.
+
+kmfa_v015_s08_p3_matching_quality_confirmation:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s08p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S08-P3-MATCHING-QUALITY-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-2030
+    - PARAM-KMFA-2031
+    - PARAM-KMFA-2032
+    - PARAM-KMFA-2033
+    - PARAM-KMFA-2034
+    - PARAM-KMFA-2035
+    - PARAM-KMFA-2036
+    - PARAM-KMFA-2037
+    - PARAM-KMFA-2038
+    - PARAM-KMFA-2039
+  evidence_dir: KMFA/stage_artifacts/V015_S08_P3_MATCHING_QUALITY_CONFIRMATION
+  validator: KMFA/tools/check_v015_s08_p3_matching_quality_confirmation.py
+  scope: Externalized and auditable three-state matching thresholds with mandatory policy regression; plain-Chinese side-by-side confirmation cards; append-only reversible match-decision events with affected-chain recalculation and direct fact-table mutation rejection. The current 128 open items and 6 conflicts remain unresolved; Stage review and release actions stay outside this Phase.
+
+kmfa_v015_s08_p2_business_entity_hierarchy:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s08p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S08-P2-BUSINESS-ENTITY-HIERARCHY-001
+  parameter_refs:
+    - PARAM-KMFA-2022
+    - PARAM-KMFA-2023
+    - PARAM-KMFA-2024
+    - PARAM-KMFA-2025
+    - PARAM-KMFA-2026
+    - PARAM-KMFA-2027
+    - PARAM-KMFA-2028
+    - PARAM-KMFA-2029
+  evidence_dir: KMFA/stage_artifacts/V015_S08_P2_BUSINESS_ENTITY_HIERARCHY
+  validator: KMFA/tools/check_v015_s08_p2_business_entity_hierarchy.py
+  scope: Company entity assignment and fail-closed integer-cent aggregation; company-to-bank-to-account hierarchy with masked public display and high-risk cross-entity rejection; multi-role counterparty master data without same-name forced merging. The current 128 open items and 6 conflicts remain unresolved; S08-P3 and release actions remain closed until final receipt validation.
+
+kmfa_v015_s08_p1_project_composite_identity:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s08p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S08-P1-PROJECT-COMPOSITE-IDENTITY-001
+  parameter_refs:
+    - PARAM-KMFA-2014
+    - PARAM-KMFA-2015
+    - PARAM-KMFA-2016
+    - PARAM-KMFA-2017
+    - PARAM-KMFA-2018
+    - PARAM-KMFA-2019
+    - PARAM-KMFA-2020
+    - PARAM-KMFA-2021
+  evidence_dir: KMFA/stage_artifacts/V015_S08_P1_PROJECT_COMPOSITE_IDENTITY
+  validator: KMFA/tools/check_v015_s08_p1_project_composite_identity.py
+  scope: Public-safe mirror of the S08-P1 matching policy and synthetic evidence. It exposes no private project identity amount source locator or private digest; S08-P2 and release actions remain closed until receipt-bound acceptance.
+
+kmfa_v015_s07_p3_release_gate:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s07p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S07-P3-RELEASE-GATE-001
+  parameter_refs:
+    - PARAM-KMFA-1999
+    - PARAM-KMFA-2000
+    - PARAM-KMFA-2001
+    - PARAM-KMFA-2002
+    - PARAM-KMFA-2003
+    - PARAM-KMFA-2004
+    - PARAM-KMFA-2005
+    - PARAM-KMFA-2006
+    - PARAM-KMFA-2007
+  evidence_dir: KMFA/stage_artifacts/V015_S07_P3_RELEASE_GATE
+  validator: KMFA/tools/check_v015_s07_p3_release_gate.py
+  scope: Public-safe mirror of S07-P3 human report status difference closure and historical regression gates. It contains only synthetic cases and aggregate private counts.
+
+kmfa_v015_s07_p2_conflict_classification:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s07p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S07-P2-CONFLICT-CLASSIFICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1990
+    - PARAM-KMFA-1991
+    - PARAM-KMFA-1992
+    - PARAM-KMFA-1993
+    - PARAM-KMFA-1994
+    - PARAM-KMFA-1995
+    - PARAM-KMFA-1996
+    - PARAM-KMFA-1997
+    - PARAM-KMFA-1998
+  evidence_dir: KMFA/stage_artifacts/V015_S07_P2_CONFLICT_CLASSIFICATION
+  validator: KMFA/tools/check_v015_s07_p2_conflict_classification.py
+  scope: Public-safe mirror of S07-P2 same-source rerun cross-source manual queue and five-layer responsibility classification. It exposes synthetic cases and aggregate private counts only with no automatic winner business values source locators or private digests.
+
+kmfa_v015_s07_p1_zero_delta_validator:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s07p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S07-P1-ZERO-DELTA-VALIDATOR-001
+  parameter_refs:
+    - PARAM-KMFA-1981
+    - PARAM-KMFA-1982
+    - PARAM-KMFA-1983
+    - PARAM-KMFA-1984
+    - PARAM-KMFA-1985
+    - PARAM-KMFA-1986
+    - PARAM-KMFA-1987
+    - PARAM-KMFA-1988
+    - PARAM-KMFA-1989
+  evidence_dir: KMFA/stage_artifacts/V015_S07_P1_ZERO_DELTA_VALIDATOR
+  validator: KMFA/tools/check_v015_s07_p1_zero_delta_validator.py
+  scope: Public-safe mirror of S07-P1 exact comparison and reconciliation. It exposes five field types zero-cent tolerance aggregate eight-project 92-field private recomputation and synthetic actionable differences without project identities money values source locators or private digests.
+
+kmfa_v015_s06_p3_baseline_coverage_boundary:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s06p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S06-P3-BASELINE-COVERAGE-BOUNDARY-001
+  parameter_refs:
+    - PARAM-KMFA-1966
+    - PARAM-KMFA-1967
+    - PARAM-KMFA-1968
+    - PARAM-KMFA-1969
+    - PARAM-KMFA-1970
+    - PARAM-KMFA-1971
+    - PARAM-KMFA-1972
+    - PARAM-KMFA-1973
+    - PARAM-KMFA-1974
+  evidence_dir: KMFA/stage_artifacts/V015_S06_P3_BASELINE_COVERAGE_BOUNDARY
+  validator: KMFA/tools/check_v015_s06_p3_baseline_coverage_boundary.py
+  scope: Public-safe mirror of the S06-P3 private immutable fixture open-item routing and sample coverage matrix. It exposes only aggregate counts and no project identity amount locator or private digest.
+
+kmfa_v015_s06_p1_authoritative_source_registration:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s06p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S06-P1-AUTHORITATIVE-SOURCE-REGISTRATION-001
+  parameter_refs:
+    - PARAM-KMFA-1948
+    - PARAM-KMFA-1949
+    - PARAM-KMFA-1950
+    - PARAM-KMFA-1951
+    - PARAM-KMFA-1952
+    - PARAM-KMFA-1953
+    - PARAM-KMFA-1954
+    - PARAM-KMFA-1955
+    - PARAM-KMFA-1956
+  evidence_dir: KMFA/stage_artifacts/V015_S06_P1_AUTHORITATIVE_SOURCE_REGISTRATION
+  validator: KMFA/tools/check_v015_s06_p1_authoritative_source_registration.py
+  scope: Metadata mirror of S06-P1 public-safe source registration field-family coverage and template strategies. It contains no raw name path hash text value sheet name formula or locator. Private candidates remain unconfirmed and no downstream action beyond S06-P2 entry can open after final validation.
+
+kmfa_v015_s05_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s05-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S05-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1942
+    - PARAM-KMFA-1943
+    - PARAM-KMFA-1944
+    - PARAM-KMFA-1945
+    - PARAM-KMFA-1946
+    - PARAM-KMFA-1947
+  evidence_dir: KMFA/stage_artifacts/V015_S05_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s05_stage_review.py
+  scope: Metadata mirror of the receipt-bound S05 Stage review and public-safe executable cross-Phase adapter. It contains no raw paths filenames values or private digests and opens no action beyond S06-P1 after final validation.
+
+kmfa_v015_s05_p3_field_standardization:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s05p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S05-P3-FIELD-STANDARDIZATION-001
+  parameter_refs:
+    - PARAM-KMFA-1933
+    - PARAM-KMFA-1934
+    - PARAM-KMFA-1935
+    - PARAM-KMFA-1936
+    - PARAM-KMFA-1937
+    - PARAM-KMFA-1938
+    - PARAM-KMFA-1939
+    - PARAM-KMFA-1940
+    - PARAM-KMFA-1941
+  evidence_dir: KMFA/stage_artifacts/V015_S05_P3_FIELD_STANDARDIZATION
+  validator: KMFA/tools/check_v015_s05_p3_field_standardization.py
+  scope: Metadata mirror of the deterministic S05-P3 public-safe dictionary mapping and value-semantics kernel. No raw value private filename path or source-specific alias is present. Low-confidence ambiguous unregistered blank placeholder and failed-parse cases remain fail closed.
+
+kmfa_v015_s05_p2_date_period:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s05p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S05-P2-DATE-PERIOD-001
+  parameter_refs:
+    - PARAM-KMFA-1924
+    - PARAM-KMFA-1925
+    - PARAM-KMFA-1926
+    - PARAM-KMFA-1927
+    - PARAM-KMFA-1928
+    - PARAM-KMFA-1929
+    - PARAM-KMFA-1930
+    - PARAM-KMFA-1931
+    - PARAM-KMFA-1932
+  evidence_dir: KMFA/stage_artifacts/V015_S05_P2_DATE_PERIOD
+  validator: KMFA/tools/check_v015_s05_p2_date_period.py
+  scope: Metadata mirror of the deterministic S05-P2 explicit date timezone six-period and five-domain attribution kernel. Evidence is synthetic and aggregate only and contains no raw path filename digest business value or private record. Any ambiguity overlap late event or unregistered rule fails closed or routes to manual confirmation.
+
+kmfa_v015_s05_p1_amount_precision:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s05p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S05-P1-AMOUNT-PRECISION-001
+  parameter_refs:
+    - PARAM-KMFA-1916
+    - PARAM-KMFA-1917
+    - PARAM-KMFA-1918
+    - PARAM-KMFA-1919
+    - PARAM-KMFA-1920
+    - PARAM-KMFA-1921
+    - PARAM-KMFA-1922
+    - PARAM-KMFA-1923
+  evidence_dir: KMFA/stage_artifacts/V015_S05_P1_AMOUNT_PRECISION
+  validator: KMFA/tools/check_v015_s05_p1_amount_precision.py
+  scope: Metadata mirror of the deterministic S05-P1 signed-integer-cent exact-Decimal explicit-rounding and explicit-unit kernel. Evidence is synthetic and aggregate only; it contains no raw paths filenames digests business values or private records and opens no downstream action beyond S05-P2 entry after validation.
+
+kmfa_v015_s04_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s04-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S04-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1910
+    - PARAM-KMFA-1911
+    - PARAM-KMFA-1912
+    - PARAM-KMFA-1913
+    - PARAM-KMFA-1914
+    - PARAM-KMFA-1915
+  evidence_dir: KMFA/stage_artifacts/V015_S04_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s04_stage_review.py
+  scope: Metadata mirror of the receipt-bound S04 Stage review and its public-safe executable cross-Phase trace. It contains no raw paths filenames values or private import digests and does not claim production recovery or actual business lineage.
+
+kmfa_v015_s04_p3_audit_recovery:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s04p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S04-P3-AUDIT-RECOVERY-001
+  parameter_refs:
+    - PARAM-KMFA-1901
+    - PARAM-KMFA-1902
+    - PARAM-KMFA-1903
+    - PARAM-KMFA-1904
+    - PARAM-KMFA-1905
+    - PARAM-KMFA-1906
+    - PARAM-KMFA-1907
+    - PARAM-KMFA-1908
+    - PARAM-KMFA-1909
+  evidence_dir: KMFA/stage_artifacts/V015_S04_P3_AUDIT_RECOVERY
+  validator: KMFA/tools/check_v015_s04_p3_audit_recovery.py
+  scope: Active deterministic S04-P3 append-only audit event snapshot recovery and metadata-health kernel using opaque public-safe references and synthetic acceptance fixtures. It reuses the planned traceability model identity without claiming production event writes restores metadata repairs raw access or business lineage; formal reports remain blocked.
+
+kmfa_v015_s04_p2_lineage_version:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s04p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S04-P2-LINEAGE-VERSION-001
+  parameter_refs:
+    - PARAM-KMFA-1892
+    - PARAM-KMFA-1893
+    - PARAM-KMFA-1894
+    - PARAM-KMFA-1895
+    - PARAM-KMFA-1896
+    - PARAM-KMFA-1897
+    - PARAM-KMFA-1898
+    - PARAM-KMFA-1899
+    - PARAM-KMFA-1900
+  evidence_dir: KMFA/stage_artifacts/V015_S04_P2_LINEAGE_VERSION
+  validator: KMFA/tools/check_v015_s04_p2_lineage_version_impact.py
+  scope: Active deterministic S04-P2 field-lineage derived-version and impact-analysis kernel using opaque public-safe references and synthetic acceptance fixtures. It reuses the planned S02-P2 traceability model identity as the implementation model without claiming raw business lineage; actual business lineage remains zero and formal reports remain blocked.
+
+kmfa_v015_s04_p1_data_catalog:
+  model_id: MOD-KMFA-GOV-001
+  version: "1.5.0-dev-s04p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S04-P1-DATA-CATALOG-001
+  parameter_refs:
+    - PARAM-KMFA-1884
+    - PARAM-KMFA-1885
+    - PARAM-KMFA-1886
+    - PARAM-KMFA-1887
+    - PARAM-KMFA-1888
+    - PARAM-KMFA-1889
+    - PARAM-KMFA-1890
+    - PARAM-KMFA-1891
+  evidence_dir: KMFA/stage_artifacts/V015_S04_P1_DATA_CATALOG
+  validator: KMFA/tools/check_v015_s04_p1_data_catalog.py
+  scope: Metadata mirror of the S04-P1 public-safe data catalog. It records only schema status aggregate verification and public role or opaque refs; real source paths filenames digests business values and private import records remain outside Git.
+
+kmfa_v015_s03_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "1.5.0-dev-s03-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S03-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1878
+    - PARAM-KMFA-1879
+    - PARAM-KMFA-1880
+    - PARAM-KMFA-1881
+    - PARAM-KMFA-1882
+    - PARAM-KMFA-1883
+  evidence_dir: KMFA/stage_artifacts/V015_S03_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s03_stage_review.py
+  scope: Metadata mirror of the public-safe S03 Stage-review overlay. It stores aggregate counts, route status and receipt-bound gate state only; no raw path, filename, value, digest, private identifier or private file metadata is committed.
+
+kmfa_v015_s03_p3_public_repository_safety:
+  model_id: MOD-KMFA-GOV-001
+  version: "1.5.0-dev-s03p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S03-P3-PUBLIC-REPOSITORY-SAFETY-001
+  parameter_refs:
+    - PARAM-KMFA-1870
+    - PARAM-KMFA-1871
+    - PARAM-KMFA-1872
+    - PARAM-KMFA-1873
+    - PARAM-KMFA-1874
+    - PARAM-KMFA-1875
+    - PARAM-KMFA-1876
+    - PARAM-KMFA-1877
+  evidence_dir: KMFA/stage_artifacts/V015_S03_P3_PUBLIC_REPOSITORY_SAFETY
+  validator: KMFA/tools/check_v015_s03_p3_public_repository_safety.py
+  scope: Metadata mirror of the S03-P3 repository safety contract. It records only deterministic class counts policy refs aggregate validation status and public-safe dual-plane evidence; no raw path filename value private key or private hash is stored.
+
+kmfa_v015_s03_p2_private_derived_runtime:
+  model_id: MOD-KMFA-PRIVATE-RUNTIME-001
+  version: "1.5.0-dev-s03p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S03-P2-PRIVATE-DERIVED-RUNTIME-001
+  parameter_refs:
+    - PARAM-KMFA-1861
+    - PARAM-KMFA-1862
+    - PARAM-KMFA-1863
+    - PARAM-KMFA-1864
+    - PARAM-KMFA-1865
+    - PARAM-KMFA-1866
+    - PARAM-KMFA-1867
+    - PARAM-KMFA-1868
+    - PARAM-KMFA-1869
+  evidence_dir: KMFA/stage_artifacts/V015_S03_P2_PRIVATE_DERIVED_RUNTIME
+  validator: KMFA/tools/check_v015_s03_p2_private_derived_runtime.py
+  scope: Metadata mirror of the public-safe S03-P2 nine-layer private runtime CAS idempotency quarantine retention and cleanup-rehearsal contract. It exposes aggregate contract states only and never exact paths file names digests private object identifiers or business values. Canonical irreversible cleanup and S03-P3 execution remain false.
+
+kmfa_v015_s03_p1_read_only_root_governance:
+  model_id: MOD-KMFA-GOV-001
+  version: "1.5.0-dev-s03p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S03-P1-READ-ONLY-ROOT-GUARD-001
+  parameter_refs:
+    - PARAM-KMFA-1852
+    - PARAM-KMFA-1853
+    - PARAM-KMFA-1854
+    - PARAM-KMFA-1855
+    - PARAM-KMFA-1856
+    - PARAM-KMFA-1857
+    - PARAM-KMFA-1858
+    - PARAM-KMFA-1859
+    - PARAM-KMFA-1860
+  evidence_dir: KMFA/stage_artifacts/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE
+  validator: KMFA/tools/check_v015_s03_p1_read_only_root_governance.py
+  scope: Metadata mirror of the public-safe S03-P1 read-only root governance contract. It exposes PRIMARY_RAW_ROOT and aggregate safety constants only. Prohibited application mutation excludes OS-managed atime; macOS/APFS list read and hash may update atime. Two authorized pre-v2 read/hash runs lack an atime baseline, so phase-wide historical atime effect remains unknown and final observed status applies only to the final v2 private guard replay. Absolute zero metadata mutation is not claimed and utime restoration is prohibited. It does not expose exact paths private fingerprints raw hashes file names business values or claim a business model or OS-level immutable boundary.
+
+kmfa_v015_s02_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "1.5.0-dev-s02-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S02-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1849
+    - PARAM-KMFA-1850
+    - PARAM-KMFA-1851
+  evidence_dir: KMFA/stage_artifacts/V015_S02_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s02_stage_review.py
+  scope: Governance-only S02 Stage Review overlay; S02 completed and passed with nine accepted tasks and zero open review findings while S03-P1 is allowed but not started. This metadata mirror is non-authoritative for product behavior and does not claim a business model runtime registry ref or CI enforcement.
+
 kmfa_v014_s16_p3_post_remediation_customer_business_analysis:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s16-p3-post-remediation-customer-business-analysis"
@@ -2342,3 +4342,253 @@ kmfa_v014_s18_p1_post_remediation_precision_stress:
   evidence_dir: KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
   validator: KMFA/tools/check_v014_s18_p1_post_remediation_precision_stress.py
   scope: Current actual public-safe synthetic amount zero-delta duplicate bad-file missing-field three-run consistency and 1200-item stress execution with two blocking errors raw immutability and Q4 D NO_GO 3-9-2-1; historical S18 dynamic state is non-authoritative and S18-P2 P3 review upload reinstall formal release and business execution remain closed.
+kmfa_v015_s06_p2_golden_baseline_lock:
+  model_id: MOD-KMFA-COST-001
+  version: "1.5.0-dev-s06p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S06-P2-GOLDEN-BASELINE-LOCK-001
+  parameter_refs:
+    - PARAM-KMFA-1957
+    - PARAM-KMFA-1958
+    - PARAM-KMFA-1959
+    - PARAM-KMFA-1960
+    - PARAM-KMFA-1961
+    - PARAM-KMFA-1962
+    - PARAM-KMFA-1963
+    - PARAM-KMFA-1964
+    - PARAM-KMFA-1965
+  evidence_dir: KMFA/stage_artifacts/V015_S06_P2_GOLDEN_BASELINE_LOCK
+  validator: KMFA/tools/check_v015_s06_p2_golden_baseline_lock.py
+  private_review_interface:
+    implementation: KMFA/tools/v015_s06_p2_signoff_review.py
+    host_policy: 127.0.0.1_ONLY
+    token_required: true
+    same_origin_write_required: true
+    external_asset_count: 0
+    draft_mode: "0600"
+    final_signoff_overwrite_allowed: false
+    golden_ledger_append_enabled: true
+  scope: Public-safe mirror of the S06-P2 authorized golden lock and localhost review controls. It exposes only 157 resolved candidates 92 accepted fields 65 rejected candidates eight consistent projects zero-cent tolerance and one append-only version; private values locators authorization text packet digest confirmer identity signoff and golden records remain in ignored runtime.
+kmfa_v015_s06_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s06-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S06-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1975
+    - PARAM-KMFA-1976
+    - PARAM-KMFA-1977
+    - PARAM-KMFA-1978
+    - PARAM-KMFA-1979
+    - PARAM-KMFA-1980
+  evidence_dir: KMFA/stage_artifacts/V015_S06_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s06_stage_review.py
+  scope: Public-safe mirror of the S06 review evidence. It contains only aggregate predecessor contract finding and risk counts and exposes no project identity amount locator source text or private digest.
+
+kmfa_v015_s07_stage_review:
+  model_id: MOD-KMFA-V015-S02-P2-TRACEABILITY-001
+  version: "1.5.0-dev-s07-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S07-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2008
+    - PARAM-KMFA-2009
+    - PARAM-KMFA-2010
+    - PARAM-KMFA-2011
+    - PARAM-KMFA-2012
+    - PARAM-KMFA-2013
+  evidence_dir: KMFA/stage_artifacts/V015_S07_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s07_stage_review.py
+  scope: Public-safe mirror of S07 review evidence. It exposes only aggregate predecessor contract finding risk regression and release-gate counts; no project identity amount source locator or private digest is published.
+kmfa_v015_s14_p3_language_content:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s14p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S14-P3-LANGUAGE-CONTENT-001
+  parameter_refs:
+    - PARAM-KMFA-2338
+    - PARAM-KMFA-2339
+    - PARAM-KMFA-2340
+    - PARAM-KMFA-2341
+    - PARAM-KMFA-2342
+    - PARAM-KMFA-2343
+    - PARAM-KMFA-2344
+    - PARAM-KMFA-2345
+    - PARAM-KMFA-2346
+    - PARAM-KMFA-2347
+    - PARAM-KMFA-2348
+    - PARAM-KMFA-2349
+    - PARAM-KMFA-2350
+    - PARAM-KMFA-2351
+    - PARAM-KMFA-2352
+    - PARAM-KMFA-2353
+    - PARAM-KMFA-2354
+    - PARAM-KMFA-2355
+  evidence_dir: KMFA/stage_artifacts/V015_S14_P3_LANGUAGE_CONTENT
+  validator: KMFA/tools/check_v015_s14_p3_language_content.py
+  scope: Public-safe ordinary-Chinese interface dictionary integer-based amount and ratio formatting exact page report export consistency six-page content-density rules structural ten-second walkthrough and three browser viewports. It performs no raw or live reads real-business action GitHub upload App reinstall S14 review or later-stage work.
+kmfa_v015_s16_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s16-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S16-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2488
+    - PARAM-KMFA-2489
+    - PARAM-KMFA-2490
+    - PARAM-KMFA-2491
+    - PARAM-KMFA-2492
+    - PARAM-KMFA-2493
+    - PARAM-KMFA-2494
+    - PARAM-KMFA-2495
+    - PARAM-KMFA-2496
+    - PARAM-KMFA-2497
+    - PARAM-KMFA-2498
+    - PARAM-KMFA-2499
+    - PARAM-KMFA-2500
+    - PARAM-KMFA-2501
+    - PARAM-KMFA-2502
+    - PARAM-KMFA-2503
+    - PARAM-KMFA-2504
+    - PARAM-KMFA-2505
+  evidence_dir: KMFA/stage_artifacts/V015_S16_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s16_stage_review.py
+  scope: Public-safe mirror of the S16 cross-phase review and three validated fixes. It publishes only aggregate contracts findings audit results and browser evidence and exposes no raw source locator real identity business value credential or later-stage action.
+kmfa_v015_s18_stage_review:
+  model_id: MOD-KMFA-QUALITY-GATE-001
+  version: "1.5.0-dev-s18-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S18-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-2646
+    - PARAM-KMFA-2647
+    - PARAM-KMFA-2648
+    - PARAM-KMFA-2649
+    - PARAM-KMFA-2650
+    - PARAM-KMFA-2651
+    - PARAM-KMFA-2652
+    - PARAM-KMFA-2653
+    - PARAM-KMFA-2654
+    - PARAM-KMFA-2655
+    - PARAM-KMFA-2656
+    - PARAM-KMFA-2657
+    - PARAM-KMFA-2658
+    - PARAM-KMFA-2659
+    - PARAM-KMFA-2660
+    - PARAM-KMFA-2661
+    - PARAM-KMFA-2662
+    - PARAM-KMFA-2663
+    - PARAM-KMFA-2664
+    - PARAM-KMFA-2665
+  evidence_dir: KMFA/stage_artifacts/V015_S18_STAGE_REVIEW
+  validator: KMFA/tools/check_v015_s18_stage_review.py
+  scope: Public-safe mirror of the S18 cross-phase review and two validated fixes. It publishes only aggregate contracts findings audit results and browser evidence and exposes no raw source locator real identity business value credential or later-stage action.
+kmfa_v015_s19_p3_tax_policy_reporting:
+  model_id: MOD-KMFA-TAX-POLICY-REPORTING-001
+  version: "1.5.0-dev-s19p3"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S19-P3-TAX-POLICY-REPORTING-001
+  parameter_refs:
+    - PARAM-KMFA-2706
+    - PARAM-KMFA-2707
+    - PARAM-KMFA-2708
+    - PARAM-KMFA-2709
+    - PARAM-KMFA-2710
+    - PARAM-KMFA-2711
+    - PARAM-KMFA-2712
+    - PARAM-KMFA-2713
+    - PARAM-KMFA-2714
+    - PARAM-KMFA-2715
+    - PARAM-KMFA-2716
+    - PARAM-KMFA-2717
+    - PARAM-KMFA-2718
+    - PARAM-KMFA-2719
+    - PARAM-KMFA-2720
+    - PARAM-KMFA-2721
+    - PARAM-KMFA-2722
+    - PARAM-KMFA-2723
+    - PARAM-KMFA-2724
+    - PARAM-KMFA-2725
+  evidence_dir: KMFA/stage_artifacts/V015_S19_P3_TAX_POLICY_REPORTING
+  validator: KMFA/tools/check_v015_s19_p3_tax_policy_reporting.py
+  scope: Public-safe mirror of S19-P3 plain-language tax and policy reports plus role-gated append-only review. It exposes no raw private identity credential formal filing eligibility promise mutable review action Stage Review upload or reinstall.
+
+kmfa_v015_s19_p2_policy_eligibility:
+  model_id: MOD-KMFA-POLICY-ELIGIBILITY-001
+  version: "1.5.0-dev-s19p2"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S19-P2-POLICY-ELIGIBILITY-001
+  parameter_refs:
+    - PARAM-KMFA-2686
+    - PARAM-KMFA-2687
+    - PARAM-KMFA-2688
+    - PARAM-KMFA-2689
+    - PARAM-KMFA-2690
+    - PARAM-KMFA-2691
+    - PARAM-KMFA-2692
+    - PARAM-KMFA-2693
+    - PARAM-KMFA-2694
+    - PARAM-KMFA-2695
+    - PARAM-KMFA-2696
+    - PARAM-KMFA-2697
+    - PARAM-KMFA-2698
+    - PARAM-KMFA-2699
+    - PARAM-KMFA-2700
+    - PARAM-KMFA-2701
+    - PARAM-KMFA-2702
+    - PARAM-KMFA-2703
+    - PARAM-KMFA-2704
+    - PARAM-KMFA-2705
+  evidence_dir: KMFA/stage_artifacts/V015_S19_P2_POLICY_ELIGIBILITY
+  validator: KMFA/tools/check_v015_s19_p2_policy_eligibility.py
+  scope: Public official policy snapshots and public synthetic enterprise evidence only. It reports version freshness and evidence gaps, blocks stale-rule conclusions and unverified-source completion, and never fabricates materials, decides real eligibility, accesses raw, starts S19-P3, uploads or reinstalls.
+
+kmfa_v015_s19_p1_tax_invoice_facts:
+  model_id: MOD-KMFA-TAX-INVOICE-001
+  version: "1.5.0-dev-s19p1"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V015-S19-P1-TAX-INVOICE-FACTS-001
+  parameter_refs:
+    - PARAM-KMFA-2666
+    - PARAM-KMFA-2667
+    - PARAM-KMFA-2668
+    - PARAM-KMFA-2669
+    - PARAM-KMFA-2670
+    - PARAM-KMFA-2671
+    - PARAM-KMFA-2672
+    - PARAM-KMFA-2673
+    - PARAM-KMFA-2674
+    - PARAM-KMFA-2675
+    - PARAM-KMFA-2676
+    - PARAM-KMFA-2677
+    - PARAM-KMFA-2678
+    - PARAM-KMFA-2679
+    - PARAM-KMFA-2680
+    - PARAM-KMFA-2681
+    - PARAM-KMFA-2682
+    - PARAM-KMFA-2683
+    - PARAM-KMFA-2684
+    - PARAM-KMFA-2685
+  evidence_dir: KMFA/stage_artifacts/V015_S19_P1_TAX_INVOICE_FACTS
+  validator: KMFA/tools/check_v015_s19_p1_tax_invoice_facts.py
+  scope: Public-safe synthetic output/input invoice facts, explicit tax-rate and state handling, evidence-backed entity project period and rate matching, and project management tax-burden view. Unknown rates remain blocked; automatic adjustment, filing, raw access, S19-P2, upload and reinstall remain closed.
+
+kmfa_v015_s18_p3_relation_reporting:

@@ -45,7 +45,9 @@ NEXT_INSTRUCTION = (
     "Do not perform Stage 7 review or GitHub upload in S07-P1. GitHub main upload remains "
     "deferred until v1.4 Stage 1-18 are complete, overall review has passed, and findings are fixed."
 )
-RAW_INBOX_REF = "operator-designated local raw/private inbox outside repository"
+PUBLIC_REPOSITORY_REF = "repo://KMFA"
+RAW_INBOX_REF = "PRIMARY_RAW_ROOT"
+PRIVATE_RUNTIME_REGISTRY_REF = "PRIVATE_REGISTRY::V014_S07_P1_RUNTIME"
 
 
 def git_output(args: list[str]) -> str:
@@ -114,18 +116,19 @@ def build_v014_outputs(
     baseline_field_report: list[dict[str, Any]],
 ) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, Any], list[dict[str, Any]]]:
     registry_sources: list[dict[str, Any]] = []
-    for source in baseline_manifest["source_registry"]:
+    for source_index, source in enumerate(baseline_manifest["source_registry"], start=1):
         registry_sources.append(
             {
                 "record_type": "v014_finance_support_source",
-                "schema_version": "kmfa.v014_finance_support_source.v1",
+                "schema_version": "kmfa.v014_finance_support_source.v2",
                 "project_id": "KMFA",
                 "stage_phase": "S07-P1",
                 "source_ref": source["source_ref"],
                 "finance_category": source["finance_category"],
                 "file_format": source["file_format"],
-                "synthetic_structure_fingerprint": source["file_hash"],
-                "source_file_private_ref": source["source_file_private_ref"],
+                "opaque_binding_ref": f"OPAQUE-V014-FIN-SOURCE-{source_index:03d}",
+                "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                "sensitive_binding_values_committed": False,
                 "read_only_parse": True,
                 "parse_status": "public_safe_synthetic_structure_probe_only",
                 "raw_layer_write_allowed": False,
@@ -136,13 +139,13 @@ def build_v014_outputs(
         )
 
     candidate_rows: list[dict[str, Any]] = []
-    for candidate in baseline_candidates:
+    for candidate_index, candidate in enumerate(baseline_candidates, start=1):
         binding = candidate["source_binding"]
         canonical = candidate["canonical_field"]
         candidate_rows.append(
             {
                 "record_type": "v014_finance_field_candidate_mapping",
-                "schema_version": "kmfa.v014_finance_field_candidate.v1",
+                "schema_version": "kmfa.v014_finance_field_candidate.v2",
                 "project_id": "KMFA",
                 "stage_phase": "S07-P1",
                 "candidate_id": candidate["mapping_id"].replace("FIN-FLD-", "V014-FIN-FLD-", 1),
@@ -152,14 +155,11 @@ def build_v014_outputs(
                 "canonical_value_kind": canonical["value_kind"],
                 "canonical_role": canonical["field_role"],
                 "source_binding": {
-                    "source_file_private_ref": binding["source_file_private_ref"],
+                    "opaque_binding_ref": f"OPAQUE-V014-FIN-FIELD-BINDING-{candidate_index:03d}",
                     "file_format": binding["file_format"],
-                    "synthetic_structure_fingerprint": binding["file_hash"],
-                    "sheet_ref": binding["sheet_ref"],
-                    "column_ref": binding["column_ref"],
-                    "source_header_fingerprint": binding["source_header_hash"],
-                    "source_header_private_ref": binding["source_header_private_ref"],
-                    "source_anchor_status": "hash_only_from_public_safe_readonly_probe",
+                    "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                    "sensitive_binding_values_committed": False,
+                    "source_anchor_status": "private_evidence_not_publicly_reconstructive",
                 },
                 "quality_state": {
                     "machine_candidate_quality_grade": "Q2_structure_candidate",
@@ -194,7 +194,8 @@ def build_v014_outputs(
                 "source_ref": report["source_ref"],
                 "finance_category": category,
                 "file_format": report["file_format"],
-                "synthetic_structure_fingerprint": report["file_hash"],
+                "opaque_binding_ref": f"OPAQUE-V014-FIN-REPORT-{len(readonly_reports) + 1:03d}",
+                "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
                 "parse_status": "public_safe_synthetic_structure_probe_only",
                 "read_only_parse": True,
                 "raw_layer_write_allowed": False,
@@ -215,7 +216,7 @@ def build_v014_outputs(
 
     adapter_manifest = {
         "record_type": "v014_finance_file_adapter_metadata_manifest",
-        "schema_version": "kmfa.v014_finance_file_adapter_metadata.v1",
+        "schema_version": "kmfa.v014_finance_file_adapter_metadata.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P1",
         "generated_at": EVIDENCE_TIME,
@@ -227,11 +228,9 @@ def build_v014_outputs(
             "source_category_count": len({source["finance_category"] for source in registry_sources}),
             "source_registry_count": len(registry_sources),
             "field_candidate_count": len(candidate_rows),
-            "hash_only_field_candidate_count": sum(
-                1
+            "private_binding_revalidation_required_count": sum(
+                row["source_binding"].get("binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED"
                 for row in candidate_rows
-                if str(row["source_binding"].get("source_header_fingerprint", "")).startswith("sha256:")
-                and row["source_binding"].get("source_header_private_ref")
             ),
             "field_report_count": len(readonly_reports),
             "source_header_fingerprint_count": sum(row["source_header_fingerprint_count"] for row in readonly_reports),
@@ -271,7 +270,7 @@ def build_v014_outputs(
     }
     source_registry = {
         "record_type": "v014_finance_support_source_registry",
-        "schema_version": "kmfa.v014_finance_support_source_registry.v1",
+        "schema_version": "kmfa.v014_finance_support_source_registry.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P1",
         "sources": registry_sources,
@@ -303,7 +302,7 @@ def build_manifest(
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "evidence_time": EVIDENCE_TIME,
         "reviewed_head": git_output(["rev-parse", "HEAD"]),
-        "worktree": git_output(["rev-parse", "--show-toplevel"]),
+        "worktree": PUBLIC_REPOSITORY_REF,
         "branch": git_output(["branch", "--show-current"]),
         "remote": git_output(["remote", "get-url", "origin"]),
         "status": "completed_validated_local_only_no_go_upload_deferred_finance_file_adapter",
@@ -350,7 +349,7 @@ def build_manifest(
             "codex_overwrite_allowed": False,
             "codex_generate_inside_allowed": False,
             "github_commit_allowed": False,
-            "private_runtime_output_dir": "KMFA/.codex_private_runtime/",
+            "private_runtime_registry_ref": PRIVATE_RUNTIME_REGISTRY_REF,
         },
         "raw_inbox_read_performed": False,
         "raw_inbox_mutation_performed": False,
@@ -428,7 +427,7 @@ def write_human_evidence(manifest: dict[str, Any]) -> None:
                 f"- source_category_count: `{summary['source_category_count']}`",
                 f"- source_registry_count: `{summary['source_registry_count']}`",
                 f"- field_candidate_count: `{summary['field_candidate_count']}`",
-                f"- hash_only_field_candidate_count: `{summary['hash_only_field_candidate_count']}`",
+                f"- private_binding_revalidation_required_count: `{summary['private_binding_revalidation_required_count']}`",
                 f"- readonly_field_report_count: `{summary['field_report_count']}`",
                 f"- source_header_fingerprint_count: `{summary['source_header_fingerprint_count']}`",
                 f"- q4_human_confirmed_count: `{summary['q4_human_confirmed_count']}`",
@@ -443,7 +442,7 @@ def write_human_evidence(manifest: dict[str, Any]) -> None:
                 "",
                 "- This phase creates public-safe adapter metadata from synthetic structure probes and existing public adapter logic only.",
                 "- It does not read, list, inventory, stat, hash, modify, delete, move, rename, overwrite, or write the operator-designated raw/private inbox.",
-                "- Public evidence keeps source refs, fingerprints, private refs, aggregate counts, candidate ids and quality gates only.",
+                "- Public evidence keeps source refs, opaque non-derived binding refs, aggregate counts, candidate ids and quality gates only.",
                 "- It does not publish source headers, raw file names, raw file hashes, private source structure, private records, business values, credentials, workbooks, documents, private tables, databases or raw business data.",
                 "- S07-P2, S07-P3, Stage 7 review, GitHub upload, raw content matching, lineage full check, formal report, live connector, OpMe deep coupling and business execution remain out of scope.",
                 "",
@@ -487,7 +486,7 @@ def write_human_evidence(manifest: dict[str, Any]) -> None:
                 "|---|---|---|",
                 "| Adapter evidence could be mistaken for raw-data reconciliation. | Manifest keeps raw inbox read false and Q5/formal report counts at zero. | controlled |",
                 "| Adapter evidence could be mistaken for Stage 7 completion. | Manifest keeps S07-P2, S07-P3 and Stage 7 review false. | controlled |",
-                "| Public evidence could leak private source details. | Outputs use refs, fingerprints and aggregate counts only, followed by safety scans. | controlled |",
+                "| Public evidence could leak private source details. | Outputs use opaque non-derived refs and aggregate counts only, followed by safety scans. | controlled |",
                 "",
             ]
         ),

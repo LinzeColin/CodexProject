@@ -20,7 +20,10 @@
     "extra_worktree_created": false
   },
   "raw_boundary": {
-    "path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "path": null,
+    "root_id": "PRIMARY_RAW_ROOT",
+    "public_path_value": null,
+    "private_registry_ref": "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
     "content_read": false,
     "names_captured": false,
     "hashes_computed": false,

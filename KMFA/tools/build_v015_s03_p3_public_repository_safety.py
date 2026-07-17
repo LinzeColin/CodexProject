@@ -259,6 +259,7 @@ ALLOWED_PHASE_PREFIXES = (
     "KMFA/README.md",
     "KMFA/docs/governance/",
     "KMFA/daily_routine_check_skill/",
+    "KMFA/kmfa-dingtalk-attendance-skill/",
     "KMFA/metadata/",
     "KMFA/mgmt-monthly-report-skill/",
     "KMFA/stage_artifacts/V015_S03_P3_PUBLIC_REPOSITORY_SAFETY/",

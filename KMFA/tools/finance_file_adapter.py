@@ -440,9 +440,11 @@ def build_default_structures() -> list[dict[str, Any]]:
     return structures
 
 
-def build_mapping_id(source_ref: str, field_key: str, source_header_hash: str) -> str:
-    seed = f"{source_ref}:{field_key}:{source_header_hash}"
-    return "FIN-FLD-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:12].upper()
+def build_mapping_id(sequence: int) -> str:
+    """Return a stable public identifier that is not derived from private input."""
+    if sequence < 1:
+        raise ValueError("mapping sequence must be positive")
+    return f"FIN-FLD-{sequence:04d}"
 
 
 def build_candidate_records(structures: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -461,10 +463,10 @@ def build_candidate_records(structures: list[dict[str, Any]]) -> list[dict[str, 
             candidates.append(
                 {
                     "record_type": "finance_field_candidate_mapping",
-                    "schema_version": "kmfa.finance_field_candidate.v1",
+                    "schema_version": "kmfa.finance_field_candidate.v2",
                     "project_id": "KMFA",
                     "stage_phase": "S07-P1",
-                    "mapping_id": build_mapping_id(spec.source_ref, field.field_key, source_header_hash),
+                    "mapping_id": build_mapping_id(len(candidates) + 1),
                     "finance_category": spec.finance_category,
                     "source_ref": spec.source_ref,
                     "canonical_field": {
@@ -474,13 +476,11 @@ def build_candidate_records(structures: list[dict[str, Any]]) -> list[dict[str, 
                         "field_role": field.field_role,
                     },
                     "source_binding": {
-                        "source_file_private_ref": structure["source_file_private_ref"],
+                        "binding_ref": f"OPAQUE-FIN-SOURCE-BINDING-{len(candidates) + 1:04d}",
+                        "binding_schema_version": "kmfa.public_opaque_source_binding.v1",
                         "file_format": structure["file_format"],
-                        "file_hash": structure["file_hash"],
-                        "sheet_ref": structure["sheets"][0]["sheet_ref"],
-                        "column_ref": header["column_ref"],
-                        "source_header_hash": source_header_hash,
-                        "source_header_private_ref": header["source_header_private_ref"],
+                        "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+                        "private_evidence_committed": False,
                         "source_anchor_status": "hash_only_from_readonly_parse",
                     },
                     "quality_state": {
@@ -546,23 +546,25 @@ def build_field_report(structures: list[dict[str, Any]], candidates: list[dict[s
 def build_source_registry(structures: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "record_type": "finance_support_source_registry",
-        "schema_version": "kmfa.finance_support_source_registry.v1",
+        "schema_version": "kmfa.finance_support_source_registry.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P1",
         "sources": [
             {
+                "binding_ref": f"OPAQUE-FIN-SOURCE-{index:04d}",
+                "binding_schema_version": "kmfa.public_opaque_source_binding.v1",
+                "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
                 "source_ref": structure["source_ref"],
                 "finance_category": structure["finance_category"],
                 "file_format": structure["file_format"],
-                "file_hash": structure["file_hash"],
-                "source_file_private_ref": structure["source_file_private_ref"],
                 "read_only_parse": True,
                 "raw_layer_write_allowed": False,
                 "raw_source_mutation_allowed": False,
                 "source_header_plaintext_committed": False,
-                "parse_status": "parsed_structure_from_xlsx",
+                "parse_status": "private_structure_parse_completed_binding_revalidation_required",
+                "private_evidence_committed": False,
             }
-            for structure in structures
+            for index, structure in enumerate(structures, start=1)
         ],
         "public_repo_safety": {
             "raw_business_values_committed": False,
@@ -584,7 +586,7 @@ def build_default_finance_adapter(
     registry = build_source_registry(structures)
     manifest = {
         "record_type": "finance_file_adapter_manifest",
-        "schema_version": "kmfa.finance_file_adapter.v1",
+        "schema_version": "kmfa.finance_file_adapter.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P1",
         "generated_at": generated_timestamp,
@@ -598,7 +600,9 @@ def build_default_finance_adapter(
             "source_registry_count": len(registry["sources"]),
             "field_candidate_count": len(candidates),
             "field_report_count": len(field_report),
+            # Aggregate count only; no digest value or source detail is published.
             "source_header_hash_count": sum(record["source_header_hash_count"] for record in field_report),
+            "private_binding_revalidation_required_count": len(candidates),
         },
         "stage_scope": {
             "finance_file_adapter": True,
@@ -658,7 +662,7 @@ def validate_finance_adapter(
     if registry is not None:
         walk_forbidden_keys(registry)
 
-    if manifest.get("schema_version") != "kmfa.finance_file_adapter.v1":
+    if manifest.get("schema_version") != "kmfa.finance_file_adapter.v2":
         raise ValueError("invalid finance adapter manifest schema_version")
     if manifest.get("stage_phase") != "S07-P1":
         raise ValueError("finance adapter manifest must be S07-P1")
@@ -690,7 +694,12 @@ def validate_finance_adapter(
     if {item.get("finance_category") for item in registry_sources} != set(REQUIRED_FINANCE_CATEGORIES):
         raise ValueError("source registry categories must match required finance categories")
     for item in registry_sources:
-        ensure_hash(item.get("file_hash"), "source_registry.file_hash")
+        if not str(item.get("binding_ref", "")).startswith("OPAQUE-FIN-SOURCE-"):
+            raise ValueError("source registry rows require non-derived opaque binding refs")
+        if item.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ValueError("source registry rows must require private binding revalidation")
+        if any(key in item for key in ("file_hash", "source_file_private_ref")):
+            raise ValueError("source registry rows must not publish private hashes or refs")
         if item.get("read_only_parse") is not True:
             raise ValueError("source registry rows must be read-only parses")
         if item.get("raw_layer_write_allowed") is not False:
@@ -701,7 +710,7 @@ def validate_finance_adapter(
         raise ValueError("field candidates must cover all required finance categories")
     seen_ids: set[str] = set()
     for item in candidates:
-        if item.get("schema_version") != "kmfa.finance_field_candidate.v1":
+        if item.get("schema_version") != "kmfa.finance_field_candidate.v2":
             raise ValueError("invalid field candidate schema_version")
         mapping_id = str(item.get("mapping_id", ""))
         if not mapping_id.startswith("FIN-FLD-"):
@@ -710,10 +719,22 @@ def validate_finance_adapter(
             raise ValueError(f"duplicate field candidate mapping_id: {mapping_id}")
         seen_ids.add(mapping_id)
         source_binding = item.get("source_binding") or {}
-        ensure_hash(source_binding.get("file_hash"), "field_candidate.file_hash")
-        ensure_hash(source_binding.get("source_header_hash"), "field_candidate.source_header_hash")
-        if "source_header_private_ref" not in source_binding:
-            raise ValueError("field candidates must keep source_header_private_ref")
+        if not str(source_binding.get("binding_ref", "")).startswith("OPAQUE-FIN-SOURCE-BINDING-"):
+            raise ValueError("field candidates require non-derived opaque binding refs")
+        if source_binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise ValueError("field candidates must require private binding revalidation")
+        if source_binding.get("private_evidence_committed") is not False:
+            raise ValueError("field candidates must not commit private binding evidence")
+        for forbidden_key in (
+            "file_hash",
+            "source_header_hash",
+            "source_file_private_ref",
+            "source_header_private_ref",
+            "sheet_ref",
+            "column_ref",
+        ):
+            if forbidden_key in source_binding:
+                raise ValueError(f"field candidates must not publish {forbidden_key}")
         if item.get("quality_state", {}).get("q4_human_confirmed") is not False:
             raise ValueError("S07-P1 field candidates must not claim Q4 confirmation")
         if item.get("quality_state", {}).get("q5_calculation_baseline_allowed") is not False:
@@ -790,7 +811,7 @@ def write_outputs(
 ) -> None:
     registry = {
         "record_type": "finance_support_source_registry",
-        "schema_version": "kmfa.finance_support_source_registry.v1",
+        "schema_version": "kmfa.finance_support_source_registry.v2",
         "project_id": "KMFA",
         "stage_phase": "S07-P1",
         "sources": manifest["source_registry"],

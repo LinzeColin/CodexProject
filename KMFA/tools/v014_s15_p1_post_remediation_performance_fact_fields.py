@@ -1161,8 +1161,6 @@ def _write_governance(generated_at: str) -> None:
 
 
 def _render_report(summary: dict[str, Any]) -> str:
-    counts = summary["private_candidate_sheet_count_by_field"]
-    lines = "\n".join(f"- {FIELD_LABELS[key]}：候选工作表 {counts[key]}，人工复核。" for key in FIELD_KEYS)
     return f"""# KMFA v0.1.4 S15-P1 修补后绩效事实字段
 
 ## 结论
@@ -1174,7 +1172,8 @@ def _render_report(summary: dict[str, Any]) -> str:
 
 ## 字段候选
 
-{lines}
+- 公开证据仅保留聚合候选槽位命中数：{summary['private_candidate_sheet_slot_match_count']}。
+- 字段级候选分布不进入 public metadata；六字段均保持人工复核与私有绑定复验。
 
 ## 解释
 
@@ -1201,8 +1200,7 @@ def _render_test_results(summary: dict[str, Any], browser: dict[str, Any]) -> st
 """
 
 
-def _render_private_report(summary: dict[str, Any]) -> str:
-    counts = summary["private_candidate_sheet_count_by_field"]
+def _render_private_report(summary: dict[str, Any], counts: dict[str, int]) -> str:
     lines = "\n".join(f"- {FIELD_LABELS[key]}：{counts[key]} 个候选工作表。" for key in FIELD_KEYS)
     return f"""# S15-P1 私有候选与差异报告
 
@@ -1259,7 +1257,7 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
     counts = probe["private_candidate_sheet_count_by_field"]
     upstream = dependency["summary"]
     summary = {
-        "schema_version": "kmfa.v014.s15_p1.post_remediation.summary.v1",
+        "schema_version": "kmfa.v014.s15_p1.post_remediation.summary.v2",
         "project_id": "KMFA",
         "stage_id": "S15",
         "phase_id": PHASE_ID,
@@ -1276,7 +1274,10 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
         "field_binding_status_count": len(bindings),
         "manual_review_required_field_count": len(manual),
         "candidate_covered_field_count": probe["private_candidate_covered_field_count"],
-        "private_candidate_sheet_count_by_field": counts,
+        "private_candidate_sheet_slot_match_count": sum(counts.values()),
+        "private_candidate_field_slot_count": len(counts),
+        "private_candidate_field_breakdown_committed": False,
+        "private_binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
         "project_cost_structure_reference_connected_field_count": sum(
             row["project_cost_structure_reference_connected"] for row in bindings
         ),
@@ -1481,7 +1482,7 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
 4. 不回退、不移动、不删除、不覆盖任何原始文件。
 """,
     )
-    _write_text(PRIVATE_REPORT_PATH, _render_private_report(summary))
+    _write_text(PRIVATE_REPORT_PATH, _render_private_report(summary, counts))
     if write_governance:
         _write_governance(generated_at)
     return manifest

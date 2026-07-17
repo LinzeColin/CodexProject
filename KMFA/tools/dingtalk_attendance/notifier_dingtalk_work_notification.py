@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
-from KMFA.tools.dingtalk_attendance import ZHANG_LINZE_USER_ID
+from KMFA.tools.dingtalk_attendance import OWNER_DINGTALK_USER_ID
 
 
 WORK_NOTIFICATION_REQUIRED_ENV = (
@@ -28,7 +28,7 @@ def work_notification_status(env: Mapping[str, str]) -> dict[str, Any]:
         "status": "READY" if configured else "NOTIFIER_CONFIG_MISSING",
         "missing": missing,
         "recipients": {
-            "zhang_linze": ZHANG_LINZE_USER_ID,
+            "owner_personal": OWNER_DINGTALK_USER_ID,
             "boss": boss_user_id or "CONFIG_REQUIRED",
         },
     }

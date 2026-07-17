@@ -58,8 +58,8 @@ FIELD_LABELS = {
 }
 
 FIELD_FACT_KIND = {
-    "invoice_amount": "amount_fact_hash_slot",
-    "gross_margin_rate": "ratio_fact_hash_slot",
+    "invoice_amount": "opaque_amount_binding_slot",
+    "gross_margin_rate": "opaque_ratio_binding_slot",
     "settlement_speed": "review_required_speed_slot",
     "collection_speed": "review_required_speed_slot",
     "audit_variance": "review_required_variance_slot",
@@ -67,8 +67,8 @@ FIELD_FACT_KIND = {
 }
 
 FIELD_STATUS = {
-    "invoice_amount": "bound_to_project_cost_invoice_hash_and_invoice_plan",
-    "gross_margin_rate": "bound_to_margin_rate_hash_pending_formal_report_gate",
+    "invoice_amount": "private_binding_revalidation_required_no_public_digest",
+    "gross_margin_rate": "private_binding_revalidation_required_no_public_digest",
     "settlement_speed": "source_bound_manual_review_required_missing_authoritative_settlement_window",
     "collection_speed": "source_bound_manual_review_required_missing_authoritative_collection_window",
     "audit_variance": "source_bound_manual_review_required_pending_cross_table_differences",
@@ -348,7 +348,7 @@ def _field_definition(field_key: str, *, generated_at: str) -> dict[str, Any]:
         "visible_field_label": FIELD_LABELS[field_key],
         "fact_kind": FIELD_FACT_KIND[field_key],
         "generated_at": generated_at,
-        "value_policy": "public_safe_refs_hashes_and_status_only",
+        "value_policy": "opaque_non_derived_refs_and_status_only_no_public_digest",
         "public_numeric_values_allowed": False,
         "raw_business_values_allowed": False,
         "field_plaintext_allowed": False,
@@ -360,7 +360,7 @@ def _field_definition(field_key: str, *, generated_at: str) -> dict[str, Any]:
     }
 
 
-def _binding_evidence_hashes(
+def _binding_evidence_summary(
     *,
     field_key: str,
     fact_records: list[dict[str, Any]],
@@ -372,58 +372,27 @@ def _binding_evidence_hashes(
     cross_table_manifest: dict[str, Any],
     cross_table_difference_queue: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    if field_key == "invoice_amount":
-        return {
-            "project_cost_invoice_hash_refs": _hash_refs_from_fact_records(fact_records, "invoice_amount"),
-            "invoice_tax_manifest_hash": invoice_tax_manifest.get("content_hash"),
-            "invoice_tax_candidate_count_hash": _sha256_for(
-                f"S15-P1:invoice-tax-candidates:{len(invoice_tax_issue_candidates)}"
-            ),
-        }
-    if field_key == "gross_margin_rate":
-        return {
-            "authority_gross_margin_rate_hash_refs": _hash_refs_from_margin_records(
-                margin_records, "authority_value_hash_refs", "gross_margin_rate"
-            ),
-            "system_gross_margin_rate_hash_refs": _hash_refs_from_margin_records(
-                margin_records, "system_recomputed_value_hash_refs", "gross_margin_rate"
-            ),
-        }
-    if field_key == "settlement_speed":
-        source_issue_types = [
-            str(item.get("issue_type"))
-            for item in collection_priority_items
-            if item.get("issue_type") in {"completed_not_settled", "settled_not_invoiced"}
-        ]
-        return {
-            "settlement_issue_type_count_hash": _sha256_for(
-                "S15-P1:settlement-speed:" + ",".join(sorted(source_issue_types))
-            ),
-            "collection_manifest_hash": collection_manifest.get("content_hash"),
-        }
-    if field_key == "collection_speed":
-        source_issue_types = [
-            str(item.get("issue_type"))
-            for item in collection_priority_items
-            if item.get("issue_type") in {"invoiced_not_collected", "overdue_receivable"}
-        ]
-        return {
-            "collection_issue_type_count_hash": _sha256_for(
-                "S15-P1:collection-speed:" + ",".join(sorted(source_issue_types))
-            ),
-            "collection_amount_hash_refs": _hash_refs_from_fact_records(fact_records, "collection_amount"),
-        }
-    if field_key == "audit_variance":
-        difference_ids = [str(item.get("queue_item_id")) for item in cross_table_difference_queue]
-        return {
-            "cross_table_manifest_hash": cross_table_manifest.get("content_hash"),
-            "difference_queue_count_hash": _sha256_for("S15-P1:audit-variance:" + ",".join(sorted(difference_ids))),
-        }
-    if field_key == "customer_relationship_rate":
-        return {
-            "missing_source_hash": _sha256_for("S15-P1:customer-relationship-rate:missing-public-safe-source")
-        }
-    raise PerformanceFactFieldError(f"unknown field_key: {field_key}")
+    del (
+        fact_records,
+        margin_records,
+        collection_manifest,
+        collection_priority_items,
+        invoice_tax_manifest,
+        invoice_tax_issue_candidates,
+        cross_table_manifest,
+        cross_table_difference_queue,
+    )
+    if field_key not in REQUIRED_PERFORMANCE_FACT_FIELDS:
+        raise PerformanceFactFieldError(f"unknown field_key: {field_key}")
+    binding_index = REQUIRED_PERFORMANCE_FACT_FIELDS.index(field_key) + 1
+    return {
+        "schema_version": "kmfa.public_opaque_evidence_binding_summary.v1",
+        "opaque_evidence_ref": f"OPAQUE-PERFORMANCE-FIELD-EVIDENCE-{binding_index:03d}",
+        "source_artifact_ref_count": len(FIELD_SOURCE_ARTIFACT_REFS[field_key]),
+        "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+        "sensitive_binding_values_committed": False,
+        "field_breakdown_committed": False,
+    }
 
 
 def _field_binding(
@@ -442,7 +411,7 @@ def _field_binding(
     binding_index = REQUIRED_PERFORMANCE_FACT_FIELDS.index(field_key) + 1
     manual_review_required = field_key in REQUIRED_MANUAL_REVIEW_FIELDS
     return {
-        "schema_version": "kmfa.performance_fact_field_binding.v1",
+        "schema_version": "kmfa.performance_fact_field_binding.v2",
         "record_type": "performance_fact_field_binding",
         "project_id": "KMFA",
         "stage_phase": "S15-P1",
@@ -452,7 +421,7 @@ def _field_binding(
         "generated_at": generated_at,
         "field_status": FIELD_STATUS[field_key],
         "source_artifact_refs": list(FIELD_SOURCE_ARTIFACT_REFS[field_key]),
-        "evidence_hash_refs": _binding_evidence_hashes(
+        "evidence_binding_summary": _binding_evidence_summary(
             field_key=field_key,
             fact_records=fact_records,
             margin_records=margin_records,
@@ -755,7 +724,7 @@ def validate_performance_fact_field_artifacts(
         raise PerformanceFactFieldError("field binding order mismatch")
     for binding in field_bindings:
         field_key = str(binding.get("field_key"))
-        if binding.get("schema_version") != "kmfa.performance_fact_field_binding.v1":
+        if binding.get("schema_version") != "kmfa.performance_fact_field_binding.v2":
             raise PerformanceFactFieldError(f"{field_key} binding schema mismatch")
         if binding.get("record_type") != "performance_fact_field_binding":
             raise PerformanceFactFieldError(f"{field_key} binding record_type mismatch")
@@ -763,6 +732,15 @@ def validate_performance_fact_field_artifacts(
             raise PerformanceFactFieldError(f"{field_key} binding stage_phase mismatch")
         if binding.get("source_artifact_refs") != list(FIELD_SOURCE_ARTIFACT_REFS[field_key]):
             raise PerformanceFactFieldError(f"{field_key} source_artifact_refs mismatch")
+        evidence_summary = binding.get("evidence_binding_summary", {})
+        if evidence_summary.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise PerformanceFactFieldError(f"{field_key} private evidence binding must be revalidated")
+        if evidence_summary.get("source_artifact_ref_count") != len(FIELD_SOURCE_ARTIFACT_REFS[field_key]):
+            raise PerformanceFactFieldError(f"{field_key} source artifact aggregate mismatch")
+        if evidence_summary.get("sensitive_binding_values_committed") is not False:
+            raise PerformanceFactFieldError(f"{field_key} must not commit sensitive binding values")
+        if "evidence_hash_refs" in binding:
+            raise PerformanceFactFieldError(f"{field_key} must not publish evidence hash refs")
         if binding.get("manual_review_required") is not (field_key in REQUIRED_MANUAL_REVIEW_FIELDS):
             raise PerformanceFactFieldError(f"{field_key} binding manual review flag mismatch")
         if field_key in REQUIRED_MANUAL_REVIEW_FIELDS:

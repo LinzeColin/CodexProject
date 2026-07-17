@@ -24,19 +24,33 @@ class ProjectScopeReconciliationTests(unittest.TestCase):
         self.assertEqual(len(domain_controls), len(REQUIRED_RECONCILIATION_DOMAINS))
         self.assertGreaterEqual(len(records), 1)
 
-        for record in records:
+        for index, record in enumerate(records, start=1):
             for field_name in REQUIRED_HUMAN_FIELDS:
                 self.assertIn(field_name, record)
             self.assertEqual(record["record_type"], "scope_reconciliation_record")
             self.assertEqual(record["stage_phase"], "S09-P3")
             self.assertTrue(record["difference_id"].startswith("S09P3-REC-"))
             self.assertIn(record["reconciliation_domain"], REQUIRED_RECONCILIATION_DOMAINS)
-            self.assertTrue(record["amount_a_cents_private_ref"].startswith("private_ref://"))
-            self.assertTrue(record["amount_b_cents_private_ref"].startswith("private_ref://"))
-            self.assertTrue(record["delta_cents_private_ref"].startswith("private_ref://"))
-            self.assertTrue(record["amount_a_cents_hash"].startswith("sha256:"))
-            self.assertTrue(record["amount_b_cents_hash"].startswith("sha256:"))
-            self.assertTrue(record["delta_cents_hash"].startswith("sha256:"))
+            self.assertEqual(record["schema_version"], "kmfa.scope_reconciliation_record.v2")
+            self.assertEqual(record["value_binding_ref"], f"VBR-S09P3-V2-{index:03d}")
+            self.assertEqual(
+                record["value_binding_contract_version"],
+                "kmfa.scope_reconciliation.value_binding.v2",
+            )
+            self.assertEqual(
+                record["value_binding_status"],
+                "private_runtime_only_not_publicly_reconstructive",
+            )
+            self.assertEqual(record["value_slot_count"], 3)
+            for forbidden_key in (
+                "amount_a_cents_private_ref",
+                "amount_b_cents_private_ref",
+                "delta_cents_private_ref",
+                "amount_a_cents_hash",
+                "amount_b_cents_hash",
+                "delta_cents_hash",
+            ):
+                self.assertNotIn(forbidden_key, record)
             self.assertFalse(record["public_amount_values_committed"])
             self.assertFalse(record["raw_layer_write_allowed"])
 
@@ -86,8 +100,19 @@ class ProjectScopeReconciliationTests(unittest.TestCase):
             "identity_document_number",
         ):
             self.assertNotIn(forbidden_text, payload)
-        self.assertIn("sha256:", payload)
-        self.assertIn("private_ref://", payload)
+        self.assertNotIn("sha256:", payload)
+        self.assertNotIn("private_ref://", payload)
+        self.assertIn("VBR-S09P3-V2-", payload)
+
+    def test_validator_rejects_legacy_value_hash_or_private_ref(self) -> None:
+        manifest, records, domain_controls = build_default_project_scope_reconciliation_layer(
+            generated_at="2026-06-30T23:55:00+10:00"
+        )
+        broken = [dict(records[0]), *records[1:]]
+        broken[0]["amount_a_cents_hash"] = "sha256:" + "a" * 64
+
+        with self.assertRaises(ProjectScopeReconciliationError):
+            validate_project_scope_reconciliation_artifacts(manifest, broken, domain_controls)
 
     def test_validator_rejects_missing_human_readable_fields(self) -> None:
         manifest, records, domain_controls = build_default_project_scope_reconciliation_layer(

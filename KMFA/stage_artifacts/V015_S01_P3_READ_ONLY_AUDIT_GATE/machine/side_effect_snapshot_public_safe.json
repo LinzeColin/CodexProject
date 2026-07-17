@@ -1,0 +1,225 @@
+{
+  "schema_version": "kmfa.v015.s01_p3_side_effect_snapshot.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "phase_id": "S01-P3",
+  "snapshot_status": "UNEXPECTED_LOCAL_GIT_TRACKING_REF_CHANGE_DETECTED_WITH_UNVERIFIED_ATTRIBUTION",
+  "execution_status": "EXECUTION_COMPLETE",
+  "acceptance_status": "NOT_PASSED",
+  "terminal_finding": "UNEXPECTED_LOCAL_GIT_STATE_CHANGE_AND_INSUFFICIENT_PREAUDIT_TELEMETRY",
+  "acceptance_failure_basis": [
+    {
+      "finding": "EXPECTED_AUDIT_CODE_AND_METADATA_WRITES_OCCURRED",
+      "scope": "P1_P2_AND_CURRENT_P3",
+      "reason_zh": "审计窗口内确实新增 validator/test/baseline，并 append governance/status；这些是受控预期写入且非产品副作用，但不满足字面零代码、零 metadata 条件。"
+    },
+    {
+      "finding": "INSUFFICIENT_PREAUDIT_TELEMETRY",
+      "scope": "RAW_RECURSIVE_AND_PROCESS_HISTORY",
+      "reason_zh": "缺少审计开始前 raw 递归指纹和持续历史进程监控，无法证明窗口内绝对无副作用。"
+    },
+    {
+      "finding": "UNEXPECTED_LOCAL_TRACKING_REF_CHANGE_ATTRIBUTION_UNVERIFIED",
+      "scope": "GIT_REFS_REMOTES_ORIGIN_MAIN",
+      "reason_zh": "P3 窗口内 origin/main reflog 出现 fetch fast-forward；共享仓库下无法把该 Git 写操作可靠归因给当前任务或并发进程。"
+    }
+  ],
+  "secondary_external_state_finding": {
+    "finding": "REMOTE_MAIN_AND_LOCAL_TRACKING_REF_DRIFT",
+    "classification": "CONCURRENT_SHARED_REPOSITORY_CHANGE_ATTRIBUTION_UNVERIFIED",
+    "t03_local_write_failure_basis": true
+  },
+  "audit_window": {
+    "v014_public_safe_base_commit": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "s01p1_checkpoint_commit": "0e309502f21f12e2deba0931acd3fe1bafd0614c",
+    "s01p2_and_p3_pre_phase_commit": "ef6c867dcba65c9e6d1f95adc823ace36ac93102",
+    "p3_result_commit": "recorded_by_commit_containing_this_file",
+    "p3_result_parent_must_equal": "ef6c867dcba65c9e6d1f95adc823ace36ac93102",
+    "pre_phase_worktree_clean": true,
+    "post_commit_worktree_clean_required": true
+  },
+  "tracked_diff_before_p3": {
+    "comparison": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05..ef6c867dcba65c9e6d1f95adc823ace36ac93102",
+    "changed_file_count": 41,
+    "changed_path_list_sha256": "4bb4121c2ea6e2402beff6fb8b925e298dc61b2740e38d0e89fb50bb1630fdba",
+    "categories": {
+      "stage_artifacts": 17,
+      "governance_docs": 12,
+      "audit_metadata": 3,
+      "audit_validator_tests": 4,
+      "top_level_delivery_docs": 5,
+      "unexpected": 0,
+      "product_runtime_code": 0,
+      "database_files": 0
+    },
+    "expected_audit_code_writes_nonzero": true,
+    "expected_governance_metadata_writes_nonzero": true,
+    "zero_code_change_claim_allowed": false,
+    "zero_metadata_change_claim_allowed": false
+  },
+  "p3_expected_change_scope": {
+    "allowed_artifact_prefix": "KMFA/stage_artifacts/V015_S01_P3_READ_ONLY_AUDIT_GATE/",
+    "allowed_validator": "KMFA/tools/check_v015_s01_p3_read_only_audit_gate.py",
+    "allowed_test": "KMFA/tests/test_v015_s01_p3_read_only_audit_gate.py",
+    "allowed_metadata": "KMFA/metadata/baseline/v015_s01_p3_read_only_audit_gate.json",
+    "allowed_governance_files": [
+      "KMFA/CHANGELOG.md",
+      "KMFA/HANDOFF.md",
+      "KMFA/docs/governance/ASSURANCE_STATUS.yaml",
+      "KMFA/docs/governance/DEVELOPMENT_LEDGER.md",
+      "KMFA/docs/governance/MODEL_SPEC.md",
+      "KMFA/docs/governance/OWNER_STATUS.md",
+      "KMFA/docs/governance/STATUS.md",
+      "KMFA/docs/governance/TRACEABILITY_MATRIX.csv",
+      "KMFA/docs/governance/VERSION_MATRIX.yaml",
+      "KMFA/docs/governance/delivery_tasks.yaml",
+      "KMFA/docs/governance/development_events.jsonl",
+      "KMFA/docs/governance/formula_registry.yaml",
+      "KMFA/docs/governance/model_registry.yaml",
+      "KMFA/docs/governance/parameter_registry.csv",
+      "KMFA/metadata/stage_status.jsonl",
+      "KMFA/功能清单.md",
+      "KMFA/开发记录.md",
+      "KMFA/模型参数文件.md"
+    ],
+    "product_source_change_allowed": false,
+    "database_change_allowed": false,
+    "app_change_allowed": false,
+    "raw_change_allowed": false
+  },
+  "p3_observed_change_summary": {
+    "changed_file_count": 29,
+    "changed_path_list_sha256": "93ded291ca975585fa50832bd47ae9f04ea25c3b6d89e32276e4f4e431f5eb01",
+    "categories": {
+      "stage_artifacts": 8,
+      "governance_docs": 12,
+      "audit_metadata": 2,
+      "audit_validator_tests": 2,
+      "top_level_delivery_docs": 5,
+      "unexpected": 0,
+      "product_runtime_code": 0,
+      "database_files": 0
+    },
+    "expected_audit_code_write_count": 2,
+    "expected_audit_metadata_write_count": 2,
+    "expected_governance_doc_write_count": 12,
+    "expected_stage_artifact_write_count": 8,
+    "expected_top_level_delivery_doc_write_count": 5,
+    "expected_code_or_metadata_writes_detected": true,
+    "literal_taskpack_zero_code_condition_met": false,
+    "literal_taskpack_zero_metadata_condition_met": false,
+    "unexpected_worktree_product_path_count": 0,
+    "product_runtime_source_change_count": 0,
+    "database_file_change_count": 0
+  },
+  "private_runtime_observation": {
+    "expected_evidence_file_count": 16,
+    "s01p1_t01_file_count": 5,
+    "s01p1_t02_file_count": 10,
+    "one_shot_launch_receipt_count": 1,
+    "unexpected_private_write_count": 0,
+    "private_payload_committed": false
+  },
+  "installed_app": {
+    "path": "/Users/linzezhang/Downloads/KMFA.app",
+    "regular_file_count_pre": 13,
+    "regular_file_count_post_observed": 13,
+    "regular_file_bytes_pre": 830331,
+    "regular_file_bytes_post_observed": 830331,
+    "aggregate_sha256_pre": "848521287dfaafd93f64872ce96cec6cc9996becddfc31df15ff8bbff8877779",
+    "aggregate_sha256_post_observed": "848521287dfaafd93f64872ce96cec6cc9996becddfc31df15ff8bbff8877779",
+    "aggregate_match": true,
+    "code_signature_valid": true,
+    "short_version": "0.1.4",
+    "build_version": "20260713.4",
+    "reinstalled": false,
+    "modified": false
+  },
+  "raw_root": {
+    "path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "pre_sentinel": {
+      "device": 16777234,
+      "inode": 13660536,
+      "mode": "drwxr-xr-x",
+      "size": 224,
+      "mtime_epoch": 1782967639
+    },
+    "post_observed_sentinel": {
+      "device": 16777234,
+      "inode": 13660536,
+      "mode": "drwxr-xr-x",
+      "size": 224,
+      "mtime_epoch": 1782967639
+    },
+    "shallow_sentinel_match": true,
+    "recursive_pre_snapshot_available": false,
+    "recursive_integrity": "UNVERIFIED",
+    "names_captured": false,
+    "contents_read": false,
+    "hashes_computed": false,
+    "mutation_performed": false
+  },
+  "process_observation": {
+    "expected_one_shot_app_launch": true,
+    "one_shot_launch_receipt_time": "2026-07-13T09:34:19+10:00",
+    "current_persistent_app_process_count_pre": 0,
+    "current_persistent_app_process_count_post_observed": 0,
+    "current_app_listener_count_pre": 0,
+    "current_app_listener_count_post_observed": 0,
+    "empty_snapshot_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "historical_process_monitoring": "PARTIAL_RECEIPT_ONLY",
+    "complete_continuous_monitoring_available": false
+  },
+  "database_observation": {
+    "runtime_database_bound": false,
+    "tracked_database_file_change_count": 0,
+    "app_bundle_database_file_count": 0,
+    "external_database_integrity": "UNVERIFIED_OR_NOT_APPLICABLE",
+    "product_database_mutation_detected": false
+  },
+  "remote_repository_observation": {
+    "historical_tracking_main_oid": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "local_tracking_ref_oid_observed": "d0a098b7e1b38763ee07ad264b28ce54a7c06022",
+    "remote_main_oid_observed": "d0a098b7e1b38763ee07ad264b28ce54a7c06022",
+    "remote_main_external_drift_detected": true,
+    "local_tracking_ref_changed_during_p3": true,
+    "local_tracking_ref_reflog_operation": "fetch origin main: fast-forward",
+    "local_tracking_ref_reflog_time": "2026-07-13T10:51:52+10:00",
+    "fetch_attribution": "UNVERIFIED_CONCURRENT_SHARED_REPOSITORY_CHANGE",
+    "current_task_push_performed": false,
+    "classification": "CONCURRENT_SHARED_REPOSITORY_CHANGE_ATTRIBUTION_UNVERIFIED",
+    "final_merge_rebase_and_upload_revalidation_required": true
+  },
+  "side_effect_classification": {
+    "expected_audit_evidence_writes_detected": true,
+    "p3_audit_validator_test_writes_detected": true,
+    "p3_audit_metadata_writes_detected": true,
+    "literal_zero_code_change_condition_met": false,
+    "literal_zero_metadata_change_condition_met": false,
+    "unexpected_worktree_product_change_count": 0,
+    "unexpected_shared_git_ref_change_count": 1,
+    "product_runtime_source_mutation_detected": false,
+    "product_database_mutation_detected": false,
+    "business_metadata_mutation_detected": false,
+    "governance_audit_metadata_writes_detected": true,
+    "external_remote_main_drift_detected": true,
+    "unexpected_local_tracking_ref_change_detected": true,
+    "app_mutation_detected": false,
+    "raw_root_sentinel_mutation_detected": false,
+    "persistent_app_process_or_listener_detected": false
+  },
+  "limitations": [
+    "缺少审计开始前 raw 递归指纹，不能证明子文件内容绝对未变",
+    "只有 one-shot launch receipt 与点时进程/监听快照，没有持续进程监控日志",
+    "P1/P2 及当前 P3 均已产生预期 audit validator/test、baseline、governance/status 和 evidence 写入，不能声称零代码或零 metadata 变化；P3 当前为 29 个预期路径、0 个非预期路径",
+    "GitHub main 与本地 tracking ref 均在 P3 期间移动到 d0a098b7；origin/main reflog 记录 10:51:52 fetch fast-forward，但共享仓库下归因未验证；最终合并前必须重新验证"
+  ],
+  "phase_boundaries": {
+    "p3_product_fix_performed": false,
+    "stage_01_review_performed": false,
+    "s02_started": false,
+    "github_upload_performed": false,
+    "app_reinstall_performed": false,
+    "business_execution_performed": false
+  }
+}

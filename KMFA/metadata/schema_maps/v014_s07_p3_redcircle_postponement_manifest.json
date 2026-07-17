@@ -178,5 +178,5 @@
     "structured_parse": "PENDING_FINAL_VALIDATION"
   },
   "version": "0.1.4",
-  "worktree": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"
+  "worktree": "repo://KMFA"
 }

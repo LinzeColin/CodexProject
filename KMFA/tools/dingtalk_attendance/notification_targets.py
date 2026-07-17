@@ -4,13 +4,19 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Callable, Mapping
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, TIMEZONE, ZHANG_LINZE_USER_ID
+from KMFA.tools.dingtalk_attendance import (
+    AUTOMATION_NAME,
+    OWNER_DINGTALK_USER_ID,
+    TIMEZONE,
+    private_identifier_is_configured,
+)
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notification_template import (
     build_notification_message,
@@ -35,8 +41,25 @@ ROOT = Path(__file__).resolve().parents[2]
 TARGETS_CONFIG_PATH = PRIVATE_RUNTIME_DIR / "notification_targets.local.json"
 TARGETS_RESOLVED_PATH = PRIVATE_RUNTIME_DIR / "notification_targets_resolved.json"
 PUBLIC_TARGETS_MANIFEST_PATH = ROOT / "metadata" / "dingtalk_attendance" / "notification_targets_manifest.json"
-DEFAULT_TARGET_LABEL = "张霖泽"
+DEFAULT_TARGET_LABEL = "ROLE::OWNER"
 DEFAULT_REPORTS = ("management", "hr")
+PUBLIC_TARGET_REF_PATTERN = re.compile(
+    r"^(?:ROLE|TARGET|PERSON|PRIVATE-REGISTRY)::[A-Z0-9][A-Z0-9_.:-]{0,95}$"
+)
+PUBLIC_TARGET_TYPES = frozenset({"personal", "group"})
+PUBLIC_RESOLVED_CHANNELS = frozenset(
+    {
+        "UNRESOLVED",
+        "dws_open_dingtalk_id_chat",
+        "dws_userid_chat",
+        "dws_ding_personal",
+        "dws_group_chat",
+        "dingtalk_group_robot_env",
+    }
+)
+PUBLIC_PROBE_STATUSES = frozenset(
+    {"NOT_PROBED", "SENT", "FAILED", "NOTIFIER_CONFIG_MISSING", "DWS_AUTH_REQUIRED"}
+)
 
 
 def default_targets_config() -> dict[str, Any]:
@@ -46,9 +69,10 @@ def default_targets_config() -> dict[str, Any]:
             {
                 "label": DEFAULT_TARGET_LABEL,
                 "type": "personal",
-                "enabled": True,
+                "enabled": False,
                 "reports": list(DEFAULT_REPORTS),
-                "user_id": ZHANG_LINZE_USER_ID,
+                "user_id_ref": "ENV::KMFA_DINGTALK_OWNER_USER_ID",
+                "configuration_status": "PRIVATE_ID_REQUIRED",
                 "preferred_channel": "dws_open_dingtalk_id_chat",
             }
         ],
@@ -71,7 +95,9 @@ def migrate_legacy_resolved_channel(
     current = now or datetime.now(ZoneInfo(TIMEZONE))
     legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
     label = str(legacy.get("recipient_name") or DEFAULT_TARGET_LABEL)
-    user_id = str(legacy.get("recipient_user_id") or ZHANG_LINZE_USER_ID)
+    user_id = str(legacy.get("recipient_user_id") or OWNER_DINGTALK_USER_ID)
+    if not private_identifier_is_configured(user_id):
+        return {"migrated": False, "reason": "owner_user_id_config_required"}
     channel = str(legacy.get("channel") or "")
     target = {
         "label": label,
@@ -246,7 +272,7 @@ def dispatch_reports_to_targets(
             if not notification_template_text:
                 notification_template_text = text
             send_result = sender(channel=channel, title="开明考勤提醒", text=text, env=values)
-        except (KeyError, OSError) as exc:
+        except (KeyError, OSError, ValueError) as exc:
             send_result = {
                 "status": "FAILED",
                 "channel": str(target.get("resolved_channel") or "unknown"),
@@ -277,6 +303,7 @@ def dispatch_reports_to_targets(
 
 
 def write_public_targets_manifest(manifest: Mapping[str, Any], public_manifest_path: Path = PUBLIC_TARGETS_MANIFEST_PATH) -> None:
+    _validate_public_targets_manifest(manifest)
     public_manifest_path.parent.mkdir(parents=True, exist_ok=True)
     _write_json(public_manifest_path, manifest)
 
@@ -527,6 +554,8 @@ def _probe_group_webhook(
 
 def _resolve_user(*, target: Mapping[str, Any], runner: Callable[..., dict[str, Any]]) -> dict[str, Any]:
     if target.get("user_id"):
+        if not private_identifier_is_configured(target.get("user_id")):
+            return {"status": "FAILED", "failure_reason": "private user id is not configured"}
         result = runner(["dws", "contact", "user", "get", "--ids", str(target["user_id"]), "--format", "json"], timeout=45)
         records = _extract_user_records(result.get("payload", {}))
         if records:
@@ -630,9 +659,13 @@ def _channel_payload_from_target(target: Mapping[str, Any]) -> dict[str, Any]:
     channel = str(target.get("resolved_channel") or "")
     payload = {"channel": channel}
     if channel == "dws_open_dingtalk_id_chat":
+        if not private_identifier_is_configured(target.get("open_dingtalk_id")):
+            raise ValueError("private open_dingtalk_id is not configured")
         payload["open_dingtalk_id"] = target.get("open_dingtalk_id")
         payload["recipient_user_id"] = target.get("user_id")
     elif channel in {"dws_userid_chat", "dws_ding_personal"}:
+        if not private_identifier_is_configured(target.get("user_id")):
+            raise ValueError("private user id is not configured")
         payload["recipient_user_id"] = target.get("user_id")
     elif channel == "dws_group_chat":
         payload["group_conversation_id"] = target.get("group_conversation_id")
@@ -704,25 +737,103 @@ def _targets_receipt(
 
 
 def _public_targets_from_resolved(resolved_targets: list[Mapping[str, Any]], *, updated_at: str) -> dict[str, Any]:
-    return {
-        "schema_version": 1,
+    public_targets: list[dict[str, Any]] = []
+    for target in resolved_targets:
+        target_ref = str(target.get("label") or "").strip()
+        if not PUBLIC_TARGET_REF_PATTERN.fullmatch(target_ref):
+            raise ValueError("public target label must be a stable ROLE/TARGET/PERSON/PRIVATE-REGISTRY ref")
+        target_type = str(target.get("type") or "").strip()
+        if target_type not in PUBLIC_TARGET_TYPES:
+            raise ValueError("public target type is not allowlisted")
+        raw_reports = target.get("reports")
+        if raw_reports is None:
+            report_scopes = list(DEFAULT_REPORTS)
+        elif not isinstance(raw_reports, list) or any(
+            str(scope) not in DEFAULT_REPORTS for scope in raw_reports
+        ):
+            raise ValueError("public target report scope is not allowlisted")
+        else:
+            report_scopes = list(dict.fromkeys(str(scope) for scope in raw_reports))
+        resolved_channel = str(target.get("resolved_channel") or "UNRESOLVED")
+        if resolved_channel not in PUBLIC_RESOLVED_CHANNELS:
+            raise ValueError("public resolved channel is not allowlisted")
+        probe_status = str(target.get("last_probe_status") or "NOT_PROBED")
+        if probe_status not in PUBLIC_PROBE_STATUSES:
+            raise ValueError("public probe status is not allowlisted")
+        public_targets.append(
+            {
+                "target_ref": target_ref,
+                "target_type": target_type,
+                "enabled": bool(target.get("enabled", True)),
+                "report_scopes": report_scopes,
+                "report_scope_count": len(report_scopes),
+                "resolved_channel": resolved_channel,
+                "last_probe_status": probe_status,
+                "probe_timestamp_present": bool(target.get("last_probe_at")),
+                "last_error_present": bool(target.get("last_error")),
+                "sensitive_values_committed": False,
+            }
+        )
+    manifest = {
+        "schema_version": 2,
         "automation_name": AUTOMATION_NAME,
         "updated_at": updated_at,
         "sensitive_values_committed": False,
-        "targets": [
-            {
-                "label": target.get("label"),
-                "type": target.get("type"),
-                "enabled": bool(target.get("enabled", True)),
-                "reports": _coerce_reports(target.get("reports")),
-                "resolved_channel": target.get("resolved_channel"),
-                "last_probe_status": target.get("last_probe_status"),
-                "last_probe_at": target.get("last_probe_at"),
-                "sensitive_values_committed": False,
-            }
-            for target in resolved_targets
-        ],
+        "target_count": len(public_targets),
+        "targets": public_targets,
     }
+    _validate_public_targets_manifest(manifest)
+    return manifest
+
+
+def _validate_public_targets_manifest(manifest: Mapping[str, Any]) -> None:
+    expected_top = {
+        "schema_version",
+        "automation_name",
+        "updated_at",
+        "sensitive_values_committed",
+        "target_count",
+        "targets",
+    }
+    if set(manifest) != expected_top or manifest.get("schema_version") != 2:
+        raise ValueError("public targets manifest schema mismatch")
+    if manifest.get("automation_name") != AUTOMATION_NAME or manifest.get("sensitive_values_committed") is not False:
+        raise ValueError("public targets manifest fixed fields mismatch")
+    try:
+        datetime.fromisoformat(str(manifest.get("updated_at") or ""))
+    except ValueError as exc:
+        raise ValueError("public targets manifest updated_at mismatch") from exc
+    targets = manifest.get("targets")
+    if not isinstance(targets, list) or manifest.get("target_count") != len(targets):
+        raise ValueError("public targets manifest target count mismatch")
+    expected_row = {
+        "target_ref",
+        "target_type",
+        "enabled",
+        "report_scopes",
+        "report_scope_count",
+        "resolved_channel",
+        "last_probe_status",
+        "probe_timestamp_present",
+        "last_error_present",
+        "sensitive_values_committed",
+    }
+    for target in targets:
+        if not isinstance(target, Mapping) or set(target) != expected_row:
+            raise ValueError("public target row schema mismatch")
+        if not PUBLIC_TARGET_REF_PATTERN.fullmatch(str(target.get("target_ref") or "")):
+            raise ValueError("public target ref mismatch")
+        if target.get("target_type") not in PUBLIC_TARGET_TYPES:
+            raise ValueError("public target type mismatch")
+        if target.get("resolved_channel") not in PUBLIC_RESOLVED_CHANNELS:
+            raise ValueError("public target channel mismatch")
+        if target.get("last_probe_status") not in PUBLIC_PROBE_STATUSES:
+            raise ValueError("public target status mismatch")
+        scopes = target.get("report_scopes")
+        if not isinstance(scopes, list) or any(scope not in DEFAULT_REPORTS for scope in scopes):
+            raise ValueError("public target report scopes mismatch")
+        if target.get("report_scope_count") != len(scopes) or target.get("sensitive_values_committed") is not False:
+            raise ValueError("public target aggregate mismatch")
 
 
 def _merge_resolved_targets(existing_targets: Any, new_targets: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -758,6 +869,8 @@ def _selected_targets(targets: Any, *, target_filter: str, label_filter: str | N
     selected: list[Mapping[str, Any]] = []
     for target in targets if isinstance(targets, list) else []:
         if not isinstance(target, Mapping):
+            continue
+        if not target.get("enabled", True):
             continue
         if label_filter and str(target.get("label") or "") != label_filter:
             continue

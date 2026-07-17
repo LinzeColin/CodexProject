@@ -1,9 +1,9 @@
 version: 0.2.0
-input_zip: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
-private_output_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check
-private_runtime_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime
-active_sqlite_path: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/daily_routine_check.sqlite
-notification_targets_path: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/notification_targets.local.json
+input_zip: ENV::KMFA_DWS_OUTPUT_ZIP
+private_output_root: ENV::KMFA_DAILY_ROUTINE_ARCHIVE_ROOT
+private_runtime_root: ENV::KMFA_DAILY_ROUTINE_PRIVATE_RUNTIME
+active_sqlite_path: local-resource://PRIVATE_RUNTIME/daily_routine_check.sqlite
+notification_targets_path: local-resource://PRIVATE_RUNTIME/notification_targets.local.json
 
 monthly_layout:
   root_pattern: "{private_output_root}/{YYYYMM}"

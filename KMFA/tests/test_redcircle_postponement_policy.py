@@ -38,7 +38,16 @@ class RedcirclePostponementPolicyTests(unittest.TestCase):
             self.assertTrue(template["future_ingestion_controls"]["read_only_required"])
             self.assertTrue(template["future_ingestion_controls"]["hash_retention_required"])
             self.assertTrue(template["future_ingestion_controls"]["rollback_plan_required"])
-            self.assertRegex(template["template_contract_hash"], r"^sha256:[a-f0-9]{64}$")
+            self.assertRegex(
+                template["template_contract_ref"],
+                r"^OPAQUE-REDCIRCLE-TEMPLATE-CONTRACT-V1-[0-9]{4}$",
+            )
+            self.assertEqual(
+                template["template_contract_binding_status"],
+                "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            )
+            self.assertNotIn("template_contract_hash", template)
+            self.assertNotIn("source_file_private_ref", template)
 
     def test_connector_policy_requires_readonly_hash_and_rollback_for_future_use(self) -> None:
         manifest, templates, connector_policy, rollback_plan = build_default_redcircle_postponement_policy(

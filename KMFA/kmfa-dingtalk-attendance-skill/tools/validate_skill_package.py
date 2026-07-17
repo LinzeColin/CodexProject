@@ -102,12 +102,14 @@ FORBIDDEN_FILE_PATTERNS = [
 ]
 
 _DINGTALK_QUERY_KEY = "access" + "_token="
-_KNOWN_PRIVATE_USER_ID = "1iv-" + "1t2oesv2yd"
+LOCAL_PATH_PATTERN = re.compile(
+    r"(?:/" + "Users/|/" + "Volumes/|/" + "home/|/" + "tmp/|[A-Za-z]:\\\\)"
+)
 
 FORBIDDEN_CONTENT_PATTERNS = [
     re.compile(re.escape(_DINGTALK_QUERY_KEY), re.IGNORECASE),
     re.compile(r"https://oapi\.dingtalk\.com/robot/send\?" + re.escape(_DINGTALK_QUERY_KEY), re.IGNORECASE),
-    re.compile(re.escape(_KNOWN_PRIVATE_USER_ID)),
+    re.compile(r"\b1iv-[A-Za-z0-9_-]{8,}\b"),
     re.compile(r"cid[A-Za-z0-9+/=]{10,}"),
     re.compile(r"(?:secret|token|password|credential)\s*=\s*(?!<)[A-Za-z0-9_./+=-]{12,}", re.IGNORECASE),
 ]
@@ -156,6 +158,8 @@ def main() -> int:
         for pattern in FORBIDDEN_CONTENT_PATTERNS:
             if pattern.search(text):
                 fail(f"forbidden sensitive-looking content in {rel}: {pattern.pattern}")
+        if LOCAL_PATH_PATTERN.search(text):
+            fail(f"absolute local path is not allowed in public skill file: {rel}")
         if OLD_PACKAGE_PATH in text and rel not in {
             "source_manifest.txt",
             "source_checksums.sha256",

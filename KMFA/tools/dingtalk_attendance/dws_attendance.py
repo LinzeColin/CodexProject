@@ -95,7 +95,23 @@ OFFICIAL_STATUS_NON_ANOMALY_TOKENS = (
     "business trip",
     "vacation",
 )
-KNOWN_NO_RECORD_NAMES = frozenset({"张霖泽", "林全意"})
+def _private_name_set(env_key: str) -> frozenset[str]:
+    """Load a private identity list from an environment JSON array."""
+    raw = os.environ.get(env_key, "").strip()
+    if not raw:
+        return frozenset()
+    try:
+        values = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"{env_key} must be a JSON array") from exc
+    if not isinstance(values, list) or any(not isinstance(value, str) for value in values):
+        raise RuntimeError(f"{env_key} must be a JSON array of strings")
+    return frozenset(value.strip() for value in values if value.strip())
+
+
+KNOWN_NO_RECORD_NAMES = _private_name_set(
+    "KMFA_DINGTALK_KNOWN_NO_RECORD_NAMES_JSON"
+)
 USER_VISIBLE_HIDDEN_NAMES = frozenset()
 SUMMARY_TODAY_ANOMALY_TOKENS = frozenset(
     {

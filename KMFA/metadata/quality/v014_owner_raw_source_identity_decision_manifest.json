@@ -161,7 +161,7 @@
     "diff_check": "PASS"
   },
   "version": "0.1.4",
-  "worktree": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa",
+  "worktree": "repo://KMFA",
   "validation_commands": [
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m py_compile KMFA/tools/v014_owner_raw_source_identity_decision.py KMFA/tools/check_v014_owner_raw_source_identity_decision.py KMFA/tests/test_v014_owner_raw_source_identity_decision.py",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_owner_raw_source_identity_decision -q",

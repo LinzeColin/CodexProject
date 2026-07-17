@@ -1,7 +1,8 @@
 {
   "version": "0.2.0",
   "database_name": "daily_routine_check.sqlite",
-  "active_private_path": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/daily_routine_check.sqlite",
+  "active_private_path": null,
+  "active_private_path_registry_ref": "PRIVATE-REGISTRY::DAILY_ROUTINE_SQLITE",
   "salary_basis_allowed": false,
   "excel_summary_required": false,
   "tables": [

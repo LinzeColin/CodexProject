@@ -224,7 +224,13 @@ def validate_v014_raw_source_identity_decision_application(
     preview = read_json(APPLICATION_PREVIEW_PATH)
     metadata_preview = read_json(METADATA_PREVIEW_PATH)
 
-    require(metadata_manifest == manifest, "metadata manifest copy mismatch", errors)
+    require(
+        {key: value for key, value in metadata_manifest.items() if key != "worktree"}
+        == {key: value for key, value in manifest.items() if key != "worktree"},
+        "metadata manifest copy mismatch",
+        errors,
+    )
+    require(metadata_manifest.get("worktree") == "repo://KMFA", "public metadata worktree token mismatch", errors)
     require(metadata_go_no_go == go_no_go, "metadata go/no-go copy mismatch", errors)
     require(metadata_preview == preview, "metadata preview copy mismatch", errors)
     walk_forbidden_keys(manifest, errors)

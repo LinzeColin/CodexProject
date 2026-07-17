@@ -3,9 +3,16 @@ import unittest
 from KMFA.tools.check_v013_s05_p1_a0_file_registration import (
     validate_v013_s05_p1_a0_file_registration,
 )
+from KMFA.tools.v013_s05_p1_a0_file_registration import source_package_from_a0_manifest
 
 
 class TestV013S05P1A0FileRegistration(unittest.TestCase):
+    def test_v2_public_projection_cannot_supply_raw_alignment_digest(self) -> None:
+        with self.assertRaisesRegex(ValueError, "fail-closed"):
+            source_package_from_a0_manifest(
+                {"schema_version": "kmfa.a0_file_registration.public_projection.v2"}
+            )
+
     def test_a0_file_registration_replay_locks_public_safe_raw_alignment(self) -> None:
         result = validate_v013_s05_p1_a0_file_registration()
 

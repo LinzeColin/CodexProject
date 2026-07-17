@@ -113,7 +113,7 @@ The reader should normalize every input row into:
   "resource_type": "image",
   "original_filename": "...",
   "output_path": "files/0707/...png",
-  "absolute_path": "zip:///Users/.../DWS_Outputs.zip!/DWS_Outputs/付款请示群/files/0707/...png",
+  "source_member_ref": "zip://ENV::KMFA_DWS_OUTPUT_ZIP!/DWS_Outputs/付款请示群/files/0707/SYNTHETIC_RESOURCE.png",
   "sha256": "...",
   "size_bytes": 123456,
   "status": "downloaded|duplicate|missing|failed",

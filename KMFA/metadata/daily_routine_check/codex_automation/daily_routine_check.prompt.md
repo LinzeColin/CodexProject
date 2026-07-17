@@ -3,8 +3,15 @@
 Run locally from:
 
 ```text
-/Users/linzezhang/CodexProject
+repo://KMFA
 ```
+
+Resolve this token from the active Codex project registration. Resolve
+`external-source://DWS_OUTPUT_ZIP` from the machine-private
+`KMFA_DWS_OUTPUT_ZIP` environment entry and
+`local-resource://DAILY_ROUTINE_ARCHIVE` from
+`KMFA_DAILY_ROUTINE_ARCHIVE_ROOT`; fail closed if either is absent and never
+persist either resolved path in public metadata.
 
 Automation:
 
@@ -33,19 +40,19 @@ Recalculate the local hours whenever the host UTC offset changes.
 11:35 command:
 
 ```bash
-python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send
+python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --input-zip "${KMFA_DWS_OUTPUT_ZIP:?KMFA_DWS_OUTPUT_ZIP is required}" --send
 ```
 
 17:05 command:
 
 ```bash
-python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send
+python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --input-zip "${KMFA_DWS_OUTPUT_ZIP:?KMFA_DWS_OUTPUT_ZIP is required}" --send
 ```
 
 Responsibilities:
 
-1. Treat `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip` as the only upstream input. Stream only the required ZIP members for `付款请示群` and `生产管理群`.
-1a. A disk `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/` folder is not an input and is normally absent. Never probe, create, materialize, copy, extract, or fall back to that folder. `DWS_Outputs/<群>/...` is allowed only as a member path inside the ZIP.
+1. Treat `external-source://DWS_OUTPUT_ZIP` as the only upstream input. Stream only the required ZIP members for `付款请示群` and `生产管理群`.
+1a. A disk `external-source://DWS_OUTPUTS_DIRECTORY` is not an input and is normally absent. Never probe, create, materialize, copy, extract, or fall back to that folder. `DWS_Outputs/<群>/...` is allowed only as a member path inside the ZIP.
 1b. Do not copy the ZIP or its members into a local cache and do not automatically evict the ZIP after each run. Read member streams in place; source-cache lifecycle remains under OneDrive/user control.
 2. At `morning_1135`, check 付款请示群 daily items, 杨婷现金 OCR 风险, and Monday-only items when applicable.
 3. At `evening_1705`, check 生产管理群 daily/Thursday/Friday items and monthly third-Friday payment tax items when applicable.
@@ -64,5 +71,5 @@ Responsibilities:
 Before live notification, verify private target config exists:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/notification_targets.local.json
+local-resource://PRIVATE_RUNTIME/daily_routine_check/notification_targets.local.json
 ```

@@ -19,6 +19,7 @@ except ModuleNotFoundError:  # Python 3.9 compatibility in the canonical macOS r
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CHECKER = REPO_ROOT / "KMFA" / "tools" / "automation" / "check_kmfa_automation_schedules.py"
 CONTRACT = REPO_ROOT / "KMFA" / "metadata" / "automation" / "codex_app_schedules.contract.toml"
+BUG_LOG = REPO_ROOT / "KMFA" / "metadata" / "automation" / "bug_log.md"
 EVENING_PROMPT = REPO_ROOT / "KMFA" / "kmfa-dingtalk-attendance-skill" / "automation" / "evening_prompt.md"
 MORNING_PROMPT = REPO_ROOT / "KMFA" / "kmfa-dingtalk-attendance-skill" / "automation" / "morning_prompt.md"
 DWS_AUTH_KEEPALIVE_PROMPT = (
@@ -65,9 +66,8 @@ DAILY_ROUTINE_CONTRACT_FILES = (
     / "codex_automation"
     / "install_or_update_skill.prompt.md",
 )
-CANONICAL_DWS_OUTPUT_ZIP = (
-    "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip"
-)
+PUBLIC_DWS_OUTPUT_ZIP_TOKEN = "external-source://DWS_OUTPUT_ZIP"
+PUBLIC_DWS_OUTPUT_ZIP_REF = "ENV::KMFA_DWS_OUTPUT_ZIP"
 TRIGGER_ONCE_PATTERN = re.compile(
     r"exactly one matching (?:trigger )?window(?: command)? once",
     re.IGNORECASE,
@@ -75,6 +75,21 @@ TRIGGER_ONCE_PATTERN = re.compile(
 
 
 class KmfaAutomationScheduleContractTests(unittest.TestCase):
+    def test_public_automation_metadata_uses_location_tokens(self) -> None:
+        contract_text = CONTRACT.read_text(encoding="utf-8")
+        bug_log = BUG_LOG.read_text(encoding="utf-8")
+        contract = tomllib.loads(contract_text)
+
+        self.assertNotRegex(contract_text, r"(?:/Users/|/Volumes/|/home/|/tmp/)")
+        self.assertNotRegex(bug_log, r"(?:/Users/|/Volumes/|/home/|/tmp/)")
+        self.assertEqual(
+            {tuple(item["cwds"]) for item in contract["automations"]},
+            {("repo://KMFA",), ("project://DWS_ARCHIVE_WORKSPACE",)},
+        )
+        for item in contract["automations"]:
+            if item["cwds"] == ["project://DWS_ARCHIVE_WORKSPACE"]:
+                self.assertEqual(item["project_id"], "cbf3c45e-f4ad-47d7-b397-faf7e3dea35e")
+
     def test_dws_auth_keepalive_uses_deterministic_refresh_wrapper(self) -> None:
         prompt = DWS_AUTH_KEEPALIVE_PROMPT.read_text(encoding="utf-8")
         contract = tomllib.loads(CONTRACT.read_text(encoding="utf-8"))
@@ -83,13 +98,15 @@ class KmfaAutomationScheduleContractTests(unittest.TestCase):
             if item["id"] == "dws-auth-keepalive-2"
         )
 
+        self.assertIn("python3 KMFA/tools/automation/dws_auth_keepalive.py", prompt)
+        self.assertIn("local-resource://CODEX_AUTOMATION_PRIVATE", prompt)
+        self.assertNotRegex(prompt, r"(?:/Users/|/Volumes/|/home/|/tmp/)")
+        self.assertNotIn("auth login --format json --yes --no-browser", prompt)
+        self.assertNotIn("dws-auth-keepalive/memory.md", prompt)
         self.assertIn(
-            "/Users/linzezhang/CodexProject/KMFA/tools/automation/dws_auth_keepalive.py",
+            "local-resource://CODEX_AUTOMATION_PRIVATE/dws-auth-keepalive-2/memory.md",
             prompt,
         )
-        self.assertNotIn("auth login --format json --yes --no-browser", prompt)
-        self.assertNotIn("automations/dws-auth-keepalive/memory.md", prompt)
-        self.assertIn("automations/dws-auth-keepalive-2/memory.md", prompt)
         self.assertIn("Do not execute any `dws auth login` command", prompt)
         self.assertIn("private-pinned-profile", prompt)
         self.assertIn("parseable", prompt)
@@ -117,8 +134,20 @@ class KmfaAutomationScheduleContractTests(unittest.TestCase):
         )
 
         self.assertIs(manifest.get("zip_input_only"), True)
-        self.assertEqual(manifest["zip_input_path"], CANONICAL_DWS_OUTPUT_ZIP)
-        self.assertIn(CANONICAL_DWS_OUTPUT_ZIP, corpus)
+        self.assertIsNone(manifest["zip_input_path"])
+        self.assertEqual(manifest["zip_input_private_registry_ref"], PUBLIC_DWS_OUTPUT_ZIP_REF)
+        self.assertEqual(manifest["cwd"], "repo://KMFA")
+        self.assertNotIn("/Users/", json.dumps(manifest, ensure_ascii=False))
+        self.assertIn(PUBLIC_DWS_OUTPUT_ZIP_TOKEN, corpus)
+        public_metadata_corpus = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in DAILY_ROUTINE_CONTRACT_FILES
+            if path.is_relative_to(REPO_ROOT / "KMFA" / "metadata")
+        )
+        self.assertNotRegex(
+            public_metadata_corpus,
+            r"(?:/Users/|/Volumes/|/home/|/tmp/)",
+        )
         self.assertNotIn("input_root_default", corpus)
         self.assertNotIn("direct_input_fallback", corpus)
         self.assertNotIn("compatibility fallback", corpus.lower())
@@ -131,7 +160,7 @@ class KmfaAutomationScheduleContractTests(unittest.TestCase):
 
         for trigger in manifest["trigger_windows"]:
             command = trigger["command"]
-            self.assertIn(f"--input-zip {CANONICAL_DWS_OUTPUT_ZIP}", command)
+            self.assertIn("--input-zip ${KMFA_DWS_OUTPUT_ZIP}", command)
             self.assertNotIn("--cleanup", command)
             self.assertNotIn("--apply", command)
         self.assertRegex(prompt, TRIGGER_ONCE_PATTERN)
@@ -341,6 +370,114 @@ class KmfaAutomationScheduleContractTests(unittest.TestCase):
                     id = "kmfa-4"
                     status = "ACTIVE"
                     rrule = "RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3"
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(CHECKER),
+                    "--contract-path",
+                    str(contract_path),
+                    "--automation-root",
+                    str(root / "automations"),
+                ],
+                cwd=REPO_ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stderr or completed.stdout)
+            self.assertEqual(json.loads(completed.stdout)["status"], "CODEX_AUTOMATIONS_READY")
+
+    def test_checker_resolves_public_kmfa_cwd_token_without_storing_absolute_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            contract_path = root / "contract.toml"
+            contract_path.write_text(
+                textwrap.dedent(
+                    """
+                    version = 1
+
+                    [[automations]]
+                    id = "kmfa"
+                    status = "ACTIVE"
+                    rrule = "RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35"
+                    cwds = ["repo://KMFA"]
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            automation_dir = root / "automations" / "kmfa"
+            automation_dir.mkdir(parents=True)
+            (automation_dir / "automation.toml").write_text(
+                textwrap.dedent(
+                    f"""
+                    id = "kmfa"
+                    status = "ACTIVE"
+                    rrule = "RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35"
+                    cwds = ["{REPO_ROOT}"]
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(CHECKER),
+                    "--contract-path",
+                    str(contract_path),
+                    "--automation-root",
+                    str(root / "automations"),
+                ],
+                cwd=REPO_ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stderr or completed.stdout)
+            self.assertEqual(json.loads(completed.stdout)["status"], "CODEX_AUTOMATIONS_READY")
+
+    def test_checker_accepts_private_project_cwd_via_project_token_and_project_id(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            contract_path = root / "contract.toml"
+            contract_path.write_text(
+                textwrap.dedent(
+                    """
+                    version = 1
+
+                    [[automations]]
+                    id = "kmfa-dws"
+                    status = "ACTIVE"
+                    rrule = "RRULE:FREQ=DAILY;BYHOUR=11;BYMINUTE=0"
+                    project_id = "private-project"
+                    cwds = ["project://DWS_ARCHIVE_WORKSPACE"]
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            automation_dir = root / "automations" / "kmfa-dws"
+            automation_dir.mkdir(parents=True)
+            private_project = root / "private-project-worktree"
+            private_project.mkdir()
+            (automation_dir / "automation.toml").write_text(
+                textwrap.dedent(
+                    f"""
+                    id = "kmfa-dws"
+                    status = "ACTIVE"
+                    rrule = "RRULE:FREQ=DAILY;BYHOUR=11;BYMINUTE=0"
+                    cwds = ["{private_project}"]
+                    target = {{ type = "project", project_id = "private-project" }}
                     """
                 ).strip()
                 + "\n",

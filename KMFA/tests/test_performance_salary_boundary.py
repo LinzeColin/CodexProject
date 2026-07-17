@@ -42,7 +42,10 @@ class PerformanceSalaryBoundaryTests(unittest.TestCase):
         self.assertEqual(interface_contract["record_type"], "performance_fact_output_interface_contract")
         self.assertEqual(interface_contract["interface_status"], "reserved_contract_only")
         self.assertEqual(interface_contract["source_artifact_ref"], "KMFA/metadata/reports/performance_fact_table.jsonl")
-        self.assertEqual(interface_contract["value_policy"], "hash_ref_status_and_evidence_only_no_numeric_payload")
+        self.assertEqual(
+            interface_contract["value_policy"],
+            "opaque_non_derived_ref_status_aggregate_no_numeric_or_digest_payload",
+        )
         self.assertFalse(interface_contract["api_endpoint_created"])
         self.assertFalse(interface_contract["file_export_created"])
         self.assertFalse(interface_contract["connector_enabled"])
@@ -63,9 +66,16 @@ class PerformanceSalaryBoundaryTests(unittest.TestCase):
             self.assertEqual(row["record_type"], "future_salary_system_readiness_draft")
             self.assertEqual(row["stage_phase"], "S15-P3")
             self.assertTrue(row["performance_fact_row_ref"].startswith("KMFA/metadata/reports/performance_fact_table.jsonl#"))
+            self.assertEqual(row["available_fact_slot_count"], 6)
+            self.assertEqual(
+                row["fact_binding_summary"]["binding_status"],
+                "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            )
+            self.assertNotIn("field_status_refs", row)
+            self.assertNotIn("fact_hash_ref_fields", row)
             self.assertTrue(row["project_ref"].startswith("entity_ref://KMFA/S08-P2/project/"))
             self.assertEqual(row["future_read_status"], "draft_only_blocked_until_manual_review_and_human_approval")
-            self.assertEqual(set(row["available_fact_fields"]), set(REQUIRED_FACT_INTERFACE_FIELDS))
+            self.assertEqual(row["field_status_aggregate"]["required_slot_count"], len(REQUIRED_FACT_INTERFACE_FIELDS))
             self.assertEqual(row["value_policy"], "no_numeric_salary_or_bonus_payload")
             self.assertTrue(row["final_approval_must_be_human"])
             self.assertTrue(row["payment_release_must_be_human"])

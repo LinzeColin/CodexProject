@@ -3,7 +3,8 @@
   "project_id": "KMFA",
   "baseline_version": "v1.4_HUMAN_FLOW_VERIFIED_PUBLIC_SAFE_BASELINE",
   "created_at": "2026-07-03T22:20:00+10:00",
-  "source_zip_path": "/Users/linzezhang/Downloads/KMFA_ChatGPT_Stage3_Codex_Delivery_Pack_v1_4_HUMAN_FLOW_VERIFIED.zip",
+  "source_zip_path": null,
+  "source_zip_private_registry_ref": "PRIVATE-REGISTRY::SOURCE_PACKAGE_V014",
   "source_zip_sha256": "2d5fa2a64ae72d5a5a8810e13444529b10eca358e368bac57611283827608356",
   "source_zip_bytes": 108315203,
   "zip_internal_entry_names_committed": false,
@@ -100,7 +101,10 @@
     "fail": 0
   },
   "raw_data_boundary": {
-    "raw_inbox_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_inbox_path": null,
+    "raw_root_id": "PRIMARY_RAW_ROOT",
+    "public_path_value": null,
+    "private_registry_ref": "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
     "raw_inbox_read_by_this_phase": false,
     "raw_inbox_listed_by_this_phase": false,
     "raw_inbox_mutated_by_this_phase": false,

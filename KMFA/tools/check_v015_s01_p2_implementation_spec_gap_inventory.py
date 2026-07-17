@@ -400,6 +400,16 @@ def validate_v015_s01_p2_implementation_spec_gap_inventory(
     _require(metadata.get("stage_01_passed") is False, "metadata Stage status mismatch", errors)
     _require(metadata.get("s01p1_acceptance_preserved") == "NOT_PASSED", "S01P1 status drift", errors)
     _require(metadata.get("next_allowed_run") == "S01-P3", "metadata next run mismatch", errors)
+    metadata_raw_boundary = metadata.get("raw_boundary", {})
+    _require(metadata_raw_boundary.get("path") is None, "public metadata raw path must be null", errors)
+    _require(metadata_raw_boundary.get("root_id") == "PRIMARY_RAW_ROOT", "public metadata raw root id mismatch", errors)
+    _require(metadata_raw_boundary.get("public_path_value") is None, "public metadata raw path value must be null", errors)
+    _require(
+        metadata_raw_boundary.get("private_registry_ref")
+        == "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
+        "public metadata private raw registry ref mismatch",
+        errors,
+    )
 
     gap_counts = manifest.get("requirement_gap_inventory", {})
     _require(gap_counts.get("total") == len(gaps), "manifest gap count mismatch", errors)

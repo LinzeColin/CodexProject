@@ -80,7 +80,17 @@ class CustomerBusinessAnalysisTests(unittest.TestCase):
         self.assertEqual(len(customer_summaries), 4)
         for record in customer_summaries:
             self.assertEqual(record["record_type"], "customer_operating_summary")
+            self.assertEqual(record["schema_version"], "kmfa.customer_operating_summary.public_safe.v2")
             self.assertEqual(set(record["dimension_signal_refs"]), set(REQUIRED_ANALYSIS_DIMENSIONS))
+            binding = record["public_signal_summary"]
+            self.assertEqual(
+                binding["schema_version"],
+                "kmfa.customer_operating_public_binding_summary.v2",
+            )
+            self.assertTrue(binding["opaque_signal_set_ref"].startswith("OPAQUE-CUSTOMER-SIGNAL-SET-"))
+            self.assertEqual(binding["dimension_signal_slot_count"], 4)
+            self.assertFalse(binding["private_digest_values_committed"])
+            self.assertFalse(binding["business_derived_refs_committed"])
             self.assertTrue(record["manual_review_required"])
             self.assertEqual(record["summary_status"], "review_only_not_business_decision_basis")
             self.assertFalse(record["formal_report_allowed"])
@@ -104,6 +114,13 @@ class CustomerBusinessAnalysisTests(unittest.TestCase):
         self.assertEqual({item["exception_type"] for item in exception_items}, set(REQUIRED_EXCEPTION_TYPES))
         for item in exception_items:
             self.assertEqual(item["record_type"], "customer_analysis_exception_item")
+            evidence = item["public_evidence_summary"]
+            self.assertEqual(
+                evidence["schema_version"],
+                "kmfa.customer_exception_public_evidence_summary.v2",
+            )
+            self.assertTrue(evidence["opaque_evidence_ref"].startswith("OPAQUE-CUSTOMER-EXCEPTION-"))
+            self.assertFalse(evidence["private_digest_values_committed"])
             self.assertTrue(item["manual_review_required"])
             self.assertEqual(item["candidate_status"], "review_only_pending_owner_or_authorized_confirmation")
             self.assertFalse(item["auto_contact_allowed"])
@@ -147,6 +164,9 @@ class CustomerBusinessAnalysisTests(unittest.TestCase):
             "token",
             "api_key",
             "private_key",
+            "sha256:",
+            "_hash_ref",
+            "evidence_hash_refs",
         ):
             self.assertNotIn(forbidden_text, payload)
 

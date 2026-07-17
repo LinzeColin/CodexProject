@@ -22,6 +22,8 @@ DEFAULT_CONTRACT = (
     / "automation"
     / "codex_app_schedules.contract.toml"
 )
+REPO_ROOT = Path(__file__).resolve().parents[3]
+PUBLIC_CWD_TOKENS = {"repo://KMFA", "project://DWS_ARCHIVE_WORKSPACE"}
 
 
 def emit(payload: dict[str, object]) -> None:
@@ -91,6 +93,15 @@ def main() -> int:
             not isinstance(expected_project_id, str) or not expected_project_id
         ):
             errors.append("project_id_invalid")
+        expected_cwds = item.get("cwds")
+        if expected_cwds is not None and (
+            not isinstance(expected_cwds, list)
+            or len(expected_cwds) != 1
+            or expected_cwds[0] not in PUBLIC_CWD_TOKENS
+        ):
+            errors.append("cwds_public_token_invalid")
+        if expected_cwds == ["project://DWS_ARCHIVE_WORKSPACE"] and not expected_project_id:
+            errors.append("dws_project_id_required")
         if not isinstance(automation_id, str) or not automation_id:
             errors.append("id_missing")
         elif automation_id in seen_ids:
@@ -118,7 +129,6 @@ def main() -> int:
         "kind",
         "status",
         "execution_environment",
-        "cwds",
         "model",
         "reasoning_effort",
     )
@@ -161,6 +171,28 @@ def main() -> int:
                 or target.get("project_id") != expected_project_id
             ):
                 mismatches.append("project_id")
+        expected_cwds = expected.get("cwds")
+        if expected_cwds == ["repo://KMFA"]:
+            live_cwds = live.get("cwds")
+            if not isinstance(live_cwds, list) or len(live_cwds) != 1:
+                mismatches.append("cwds")
+            else:
+                try:
+                    live_cwd = Path(str(live_cwds[0])).expanduser().resolve()
+                except (OSError, RuntimeError, ValueError):
+                    mismatches.append("cwds")
+                else:
+                    if live_cwd != REPO_ROOT:
+                        mismatches.append("cwds")
+        elif expected_cwds == ["project://DWS_ARCHIVE_WORKSPACE"]:
+            live_cwds = live.get("cwds")
+            if (
+                not isinstance(live_cwds, list)
+                or len(live_cwds) != 1
+                or not Path(str(live_cwds[0])).expanduser().is_absolute()
+                or Path(str(live_cwds[0])).expanduser().resolve() == REPO_ROOT
+            ):
+                mismatches.append("cwds")
         for field in check_fields:
             if field in expected and live.get(field) != expected.get(field):
                 mismatches.append(field)

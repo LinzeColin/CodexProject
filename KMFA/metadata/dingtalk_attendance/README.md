@@ -28,7 +28,7 @@ Notification config is loaded from the ignored local file `private_runtime/.env.
 Private runtime data belongs outside Git:
 
 - local operational cache: `KMFA/metadata/dingtalk_attendance/private_runtime/`
-- long-term private archive: `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`
+- long-term private archive: `local-resource://DINGTALK_ATTENDANCE_ARCHIVE/YYYYMM/`
 
 The OneDrive month folder stores raw JSONL gzip, management report, HR report, dispatch receipt, manifest, and cleanup audit directly under `YYYYMM`. `--send-latest-report-only` can resend the newest private reports without another DWS collection run.
 

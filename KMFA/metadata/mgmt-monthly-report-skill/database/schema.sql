@@ -1,5 +1,5 @@
--- Public-safe registry schema for mgmt-monthly-report-skill.
--- Do not store raw business row values or sensitive plaintext in these tables.
+-- Public-safe aggregate registry schema for mgmt-monthly-report-skill v2.
+-- Raw/source filenames, file-derived digests, sizes, sheet labels and report details are prohibited.
 
 CREATE TABLE IF NOT EXISTS monthly_report_run (
   run_id TEXT PRIMARY KEY,
@@ -9,28 +9,29 @@ CREATE TABLE IF NOT EXISTS monthly_report_run (
   metadata_policy TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS monthly_report_input_file (
+CREATE TABLE IF NOT EXISTS monthly_report_input_slot_aggregate (
   run_id TEXT NOT NULL,
-  slot_id TEXT NOT NULL,
-  file_sha256 TEXT NOT NULL,
-  file_size_bytes INTEGER NOT NULL,
-  extension TEXT NOT NULL,
-  sheet_count INTEGER,
-  sheet_names_sha256 TEXT,
-  matched_pattern TEXT,
-  is_symlink INTEGER NOT NULL DEFAULT 0,
-  PRIMARY KEY (run_id, slot_id, file_sha256),
+  source_group_ref TEXT NOT NULL,
+  status TEXT NOT NULL,
+  selection_status TEXT NOT NULL,
+  candidate_count INTEGER NOT NULL,
+  selected_count INTEGER NOT NULL,
+  alternate_candidate_count INTEGER NOT NULL,
+  minimum_required_count INTEGER NOT NULL,
+  recommended_count INTEGER NOT NULL,
+  required_sheet_group_count INTEGER NOT NULL,
+  passed_sheet_group_count INTEGER NOT NULL,
+  failed_sheet_group_count INTEGER NOT NULL,
+  PRIMARY KEY (run_id, source_group_ref),
   FOREIGN KEY (run_id) REFERENCES monthly_report_run(run_id)
 );
 
-CREATE TABLE IF NOT EXISTS monthly_report_output_index (
+CREATE TABLE IF NOT EXISTS monthly_report_output_status (
   run_id TEXT NOT NULL,
-  output_type TEXT NOT NULL,
-  file_sha256 TEXT,
-  file_size_bytes INTEGER,
+  output_ref TEXT NOT NULL,
+  status TEXT NOT NULL,
   retained_locally INTEGER NOT NULL,
   committed_plaintext_to_git INTEGER NOT NULL DEFAULT 0,
-  PRIMARY KEY (run_id, output_type),
+  PRIMARY KEY (run_id, output_ref),
   FOREIGN KEY (run_id) REFERENCES monthly_report_run(run_id)
 );
-

@@ -5,8 +5,11 @@ You are working locally in Codex Desktop, not Codex Cloud.
 Repository:
 
 ```text
-/Users/linzezhang/CodexProject
+repo://KMFA
 ```
+
+Resolve the token from the active Codex project registration; do not write the
+resolved local path into public metadata.
 
 Target branch policy:
 
@@ -28,7 +31,7 @@ Task:
 5. Create/update `KMFA/tests/test_daily_routine_check.py`.
 6. Do not modify the existing DWS archive automation.
 7. Do not create any Automation 1. This skill only reads existing OneDrive DWS outputs.
-8. The only upstream input is the complete `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`. A disk `DWS_Outputs/` folder is normally absent: never probe, create, materialize, copy, extract, or use it as fallback. Preserve `DWS_Outputs/<群>/...` only as ZIP member paths.
+8. The only upstream input is the complete `external-source://DWS_OUTPUT_ZIP`, resolved at run time from machine-private configuration. A disk `DWS_Outputs/` folder is normally absent: never probe, create, materialize, copy, extract, or use it as fallback. Preserve `DWS_Outputs/<群>/...` only as ZIP member paths.
 9. Implement independent checks for `资金账户明细表` and `资金流水明细/资金明细`.
 10. Do not generate summary Excel. Implement SQLite + JSONL logs.
 11. Keep exactly one `Dingtalk-routine-check / 钉钉工作检查` automation with two Beijing triggers: `11:35 -> morning_1135` and `17:05 -> evening_1705`.

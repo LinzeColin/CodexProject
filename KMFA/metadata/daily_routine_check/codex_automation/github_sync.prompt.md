@@ -3,8 +3,11 @@
 Run locally from:
 
 ```text
-/Users/linzezhang/CodexProject
+repo://KMFA
 ```
+
+Resolve the token from the active Codex project registration; do not write the
+resolved local path into public metadata.
 
 Use:
 

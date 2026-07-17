@@ -8,7 +8,7 @@ Use $kmfa-dingtalk-attendance-skill.
 KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 ```
 
-手动补跑时只允许选择 `morning` 或 `evening`，所有业务日期和 run slot 都按北京时间 `Asia/Shanghai`。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
+手动补跑时只允许选择 `morning` 或 `evening`，所有业务日期和 run slot 都按北京时间 `Asia/Shanghai`。当前部署 cwd 使用 `repo://KMFA`，由本机私有项目注册表解析；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout，禁止把解析后的绝对路径写回 public metadata。
 
 运行约束：
 1. 确认 cwd 是 KMFA 所在的 `LinzeColin/CodexProject` checkout，branch 为 `main`，且 `HEAD == origin/main`。

@@ -195,13 +195,31 @@ def validate_v014_s01_p2_public_baseline_sync(
     require(baseline_sync.get("raw_payload_extracted") is False, "raw payload must not be extracted", errors)
     require(baseline_sync.get("zip_internal_entry_names_committed") is False, "zip internal entry names must not be committed", errors)
 
-    require(baseline_manifest == metadata_manifest, "taskpack and metadata source package manifests must match", errors)
-    require(baseline_manifest.get("schema_version") == "kmfa.source_package_manifest.v014.v1", "baseline schema mismatch", errors)
+    require(
+        baseline_manifest.get("selected_public_sources") == metadata_manifest.get("selected_public_sources"),
+        "taskpack and metadata public source selections must match",
+        errors,
+    )
+    require(metadata_manifest.get("source_zip_path") is None, "public metadata source ZIP path must be null", errors)
+    require(
+        metadata_manifest.get("source_zip_private_registry_ref") == "PRIVATE-REGISTRY::SOURCE_PACKAGE_V014",
+        "public metadata source ZIP private registry ref mismatch",
+        errors,
+    )
+    require(baseline_manifest.get("schema_version") == "kmfa.source_package_manifest.v014.v1", "taskpack baseline schema mismatch", errors)
+    require(metadata_manifest.get("schema_version") == "kmfa.source_package_manifest.v014.v2", "metadata baseline schema mismatch", errors)
     require(baseline_manifest.get("copied_public_source_count") == 9, "baseline public source count must be 9", errors)
     require(baseline_manifest.get("zip_internal_entry_names_committed") is False, "baseline must not commit zip internal entry names", errors)
+    require("source_zip_sha256" not in metadata_manifest, "private source package digest must not be public metadata", errors)
+    require("source_zip_bytes" not in metadata_manifest, "private source package size must not be public metadata", errors)
     require(
-        baseline_manifest.get("source_zip_sha256") == s01p1.get("source_package", {}).get("sha256"),
-        "baseline source package hash must match S01-P1",
+        metadata_manifest.get("source_package_binding_ref") == "OPAQUE-SOURCE-PACKAGE-BINDING-V014",
+        "opaque source package binding ref mismatch",
+        errors,
+    )
+    require(
+        metadata_manifest.get("source_package_binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+        "private source package binding must require revalidation",
         errors,
     )
     require(
@@ -251,6 +269,16 @@ def validate_v014_s01_p2_public_baseline_sync(
     for key, value in raw_boundary.items():
         require(value is False, f"raw_data_boundary.{key} must be false", errors)
     baseline_raw_boundary = baseline_manifest.get("raw_data_boundary", {})
+    metadata_raw_boundary = metadata_manifest.get("raw_data_boundary", {})
+    require(metadata_raw_boundary.get("raw_inbox_path") is None, "public metadata raw inbox path must be null", errors)
+    require(metadata_raw_boundary.get("raw_root_id") == "PRIMARY_RAW_ROOT", "public metadata raw root id mismatch", errors)
+    require(metadata_raw_boundary.get("public_path_value") is None, "public metadata raw path value must be null", errors)
+    require(
+        metadata_raw_boundary.get("private_registry_ref")
+        == "KMFA/.codex_private_runtime/V015_S03_P1_READ_ONLY_ROOT_GOVERNANCE/private_root_policy.json",
+        "public metadata private raw registry ref mismatch",
+        errors,
+    )
     require(baseline_raw_boundary.get("raw_inbox_read_by_this_phase") is False, "baseline raw read must be false", errors)
     require(baseline_raw_boundary.get("raw_inbox_listed_by_this_phase") is False, "baseline raw listed must be false", errors)
     require(baseline_raw_boundary.get("raw_inbox_mutated_by_this_phase") is False, "baseline raw mutation must be false", errors)

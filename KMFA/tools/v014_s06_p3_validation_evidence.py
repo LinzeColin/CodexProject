@@ -90,6 +90,7 @@ def build_and_write_evidence() -> dict[str, Any]:
         difference_queue_path=S06_P2_QUEUE_PATH,
         report_gate_path=S06_P2_GATE_PATH,
         evidence_time=EVIDENCE_TIME,
+        public_evidence_namespace="V014-S06P3",
     )
     patch_metadata_refs(evidence)
     write_validation_evidence_outputs(

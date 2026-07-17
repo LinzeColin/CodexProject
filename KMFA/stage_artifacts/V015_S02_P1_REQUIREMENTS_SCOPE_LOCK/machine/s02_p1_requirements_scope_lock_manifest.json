@@ -1,0 +1,299 @@
+{
+  "schema_version": "kmfa.v015.s02_p1_requirements_scope_lock.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "stage_id": "S02",
+  "roadmap_phase_id": "S02-P1",
+  "run_phase_id": "V015_S02_P1_REQUIREMENTS_SCOPE_LOCK",
+  "task_id": "KMFA-V015-S02-P1-REQUIREMENTS-SCOPE-LOCK-20260713",
+  "acceptance_id": "ACC-KMFA-V015-S02-P1-REQUIREMENTS-SCOPE-LOCK",
+  "generated_at": "2026-07-13T13:26:11+10:00",
+  "run_mode": "IMPLEMENT",
+  "work_kind": "REQUIREMENTS_SCOPE_LOCK",
+  "phase_base_commit": "74ce24a516f42cd5d8bf91c738166634199d8823",
+  "source_package": {
+    "name": "KMFA_ChatGPT_Stage3_Codex_TaskPack_Roadmap_v2_0_UIUX_FULL_REBUILD.zip",
+    "bytes": 118652,
+    "sha256": "e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8",
+    "stage_count": 24,
+    "phase_count": 72,
+    "task_count": 216,
+    "requirement_count": 55,
+    "priority_counts": {
+      "P0": 46,
+      "P1": 8,
+      "P2": 1
+    },
+    "members": {
+      "taskpack": {
+        "member": "KMFA_ChatGPT_Stage3_UIUX_REBUILD_Delivery_v2_0/01_KMFA_Codex_TaskPack_v2_0_界面交互全量重构_完整防遗漏.md",
+        "bytes": 29768,
+        "sha256": "1d488a7d98e70f8a69b99a6fc39d94d56fa8d78c754a7640e76b5f745fbb31fa"
+      },
+      "roadmap": {
+        "member": "KMFA_ChatGPT_Stage3_UIUX_REBUILD_Delivery_v2_0/02B_KMFA_Codex_Development_Roadmap_v2_0.json",
+        "bytes": 107222,
+        "sha256": "741fdf6a1dd6d04fdaaf916f8cf84ebce07207fbb50d7971736c1c9fc46a5145"
+      },
+      "requirements": {
+        "member": "KMFA_ChatGPT_Stage3_UIUX_REBUILD_Delivery_v2_0/04_KMFA_需求追溯矩阵_v2_0.csv",
+        "bytes": 17281,
+        "sha256": "2ff4eb93f83d52e9bd1c482dceb442d40686a9e2cc54ce9277dfee00e106ab41"
+      },
+      "scope_policy": {
+        "member": "KMFA_ChatGPT_Stage3_UIUX_REBUILD_Delivery_v2_0/11_KMFA_1_4继承_重构_废弃清单_v2_0.md",
+        "bytes": 1887,
+        "sha256": "96c733d0690f462d4c3e3ea852c9b6172c45f54a94506fe67a22066cb10555ad"
+      },
+      "inheritance": {
+        "member": "KMFA_ChatGPT_Stage3_UIUX_REBUILD_Delivery_v2_0/13_KMFA_阶段一与阶段二五环节信息继承清单_v2_0.md",
+        "bytes": 3721,
+        "sha256": "cc61d0daef141311bac67e2dbf54d751a6b8485cfc7c8ce05389538de5770262"
+      }
+    }
+  },
+  "dependency_evidence": {
+    "count": 4,
+    "dependencies": [
+      {
+        "dependency_id": "s01_controlled_transition_amendment",
+        "ref": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/s01_controlled_transition_amendment_manifest.json",
+        "bytes": 8668,
+        "sha256": "0933d035251b77a3b6811f5fd3d019526672da800d1f917df76edb72168e1965",
+        "content_hash": "sha256:e744e9495133307de4aeef7f00a4845ed12783a1fc82e122a9ad0f4b508c583d",
+        "result_commit": "74ce24a516f42cd5d8bf91c738166634199d8823"
+      },
+      {
+        "dependency_id": "s01_p2_gap_manifest",
+        "ref": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/s01_p2_implementation_spec_gap_inventory_manifest.json",
+        "bytes": 6050,
+        "sha256": "2ec1fd24e43b9c6c659dbd363dd888e3ba6991358b3e8d1206a145441b6fd300",
+        "content_hash": "sha256:0b73988c6a3580dfb4185a7bd55b79f0e0ca767c916772a8f0d0701ede0e5d86",
+        "result_commit": "ef6c867dcba65c9e6d1f95adc823ace36ac93102"
+      },
+      {
+        "dependency_id": "s01_p2_gap_matrix",
+        "ref": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/implementation_gap_matrix_public_safe.csv",
+        "bytes": 14150,
+        "sha256": "54b78da6dd0dac5de069e2a044fa4406b7f8f402048108cc354f1e1d7db83000",
+        "content_hash": null,
+        "result_commit": "ef6c867dcba65c9e6d1f95adc823ace36ac93102"
+      },
+      {
+        "dependency_id": "s01_p2_migration_matrix",
+        "ref": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/migration_decision_matrix_public_safe.csv",
+        "bytes": 9733,
+        "sha256": "a08f970fbe1f857003ff8f72e2f3b2d2aef06925d30d2e6ddf2fc3669a2bfe0b",
+        "content_hash": null,
+        "result_commit": "ef6c867dcba65c9e6d1f95adc823ace36ac93102"
+      }
+    ]
+  },
+  "source_scope_policy": {
+    "normative_keep_and_reverify_count": 15,
+    "normative_rebuild_count": 15,
+    "normative_deprecate_as_acceptance_baseline_count": 7,
+    "evidence_qualified_capability_count": 37,
+    "normative_list_counts_used_as_capability_counts": false,
+    "deferred_requirement_ids": [
+      "R052",
+      "R053",
+      "R054"
+    ]
+  },
+  "phase_scope": {
+    "planning_only": true,
+    "requirements_merge": true,
+    "business_line_scope_lock": true,
+    "v14_to_v15_scope_lock": true,
+    "s02_p2_traceability_performed": false,
+    "technology_stack_selection_allowed": false,
+    "product_implementation_allowed": false
+  },
+  "task_accounting": {
+    "total": 3,
+    "execution_complete": 3,
+    "accepted": 3,
+    "not_accepted": 0
+  },
+  "tasks": [
+    {
+      "task_id": "S02P1T01",
+      "name": "建立唯一需求总账",
+      "output": "版本化需求总账。",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/requirements_ledger_public_safe.csv",
+        "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/requirements_ledger_zh.md"
+      ]
+    },
+    {
+      "task_id": "S02P1T02",
+      "name": "登记业务线 1–10",
+      "output": "业务线矩阵。",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/business_line_matrix_public_safe.csv",
+        "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/completion_record_zh.md"
+      ]
+    },
+    {
+      "task_id": "S02P1T03",
+      "name": "锁定当前版本边界",
+      "output": "重构范围锁。",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/scope_lock_dispositions_public_safe.csv",
+        "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/rebuild_scope_lock_zh.md"
+      ]
+    }
+  ],
+  "requirement_ledger_accounting": {
+    "total": 55,
+    "unique": 55,
+    "p0": 46,
+    "p1": 8,
+    "p2": 1,
+    "p0_p1_total": 54,
+    "p0_p1_unique": 54,
+    "duplicate_id_count": 0,
+    "normalized_duplicate_count": 0,
+    "unresolved_normative_conflict_count": 0,
+    "resolved_normative_conflict_count": 1,
+    "source_row_match_count": 55,
+    "implementation_acceptance_claim_count": 0,
+    "delivery_status": "SCOPE_LOCKED_NOT_IMPLEMENTED"
+  },
+  "business_line_accounting": {
+    "total": 10,
+    "unique": 10,
+    "p0": 1,
+    "p1": 7,
+    "p2": 2,
+    "required_input_complete": 10,
+    "required_output_complete": 10,
+    "human_review_boundary_complete": 10,
+    "forbidden_automatic_action_complete": 10,
+    "high_risk_automation_authorized_count": 0,
+    "out_of_scope_business_line_count": 0
+  },
+  "scope_lock_accounting": {
+    "total": 37,
+    "keep_governance_baseline": 12,
+    "rebuild": 12,
+    "defer": 8,
+    "deprecate": 5,
+    "product_acceptance_inherited_count": 0,
+    "implementation_allowed_count": 0,
+    "v15_product_capability_accepted_count": 0
+  },
+  "conflict_control": {
+    "total": 1,
+    "resolved_normatively": 1,
+    "implementation_open": 1,
+    "unresolved_normative_conflicts": 0,
+    "r007_disposition": "RESOLVED_BY_V15_PRECEDENCE_IMPLEMENTATION_OPEN"
+  },
+  "phase_result": {
+    "execution_status": "EXECUTION_COMPLETE",
+    "evidence_validation_status": "PASS",
+    "final_validation_status": "PASS",
+    "acceptance_status": "PASSED",
+    "decision": "CONTINUE_TO_S02_P2_ONLY"
+  },
+  "stage_state": {
+    "stage_id": "S02",
+    "stage_lifecycle_status": "IN_PROGRESS",
+    "stage_acceptance_status": "PENDING",
+    "stage_passed": false,
+    "completed_phase_count": 1,
+    "total_phase_count": 3
+  },
+  "next_entry_gate": {
+    "next_allowed_taskpack_phase": "S02-P2",
+    "s02_p2_entry_allowed": true,
+    "s02_p2_started_in_current_run": false,
+    "s02_p3_entry_allowed": false,
+    "s03_plus_entry_allowed": false,
+    "product_implementation_allowed": false
+  },
+  "downstream_actions": {
+    "s02_p2_started": false,
+    "s02_p3_started": false,
+    "s03_plus_started": false,
+    "technology_stack_selected": false,
+    "product_runtime_implementation_performed": false,
+    "api_implementation_performed": false,
+    "database_implementation_performed": false,
+    "ui_implementation_performed": false,
+    "raw_business_content_read": false,
+    "raw_root_listed_or_inventoried": false,
+    "raw_inbox_mutated": false,
+    "business_execution_performed": false,
+    "github_upload_performed": false,
+    "app_reinstall_performed": false
+  },
+  "artifact_refs": {
+    "manifest": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/s02_p1_requirements_scope_lock_manifest.json",
+    "requirements_ledger": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/requirements_ledger_public_safe.csv",
+    "requirements_report": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/requirements_ledger_zh.md",
+    "business_line_matrix": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/business_line_matrix_public_safe.csv",
+    "scope_lock": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/scope_lock_dispositions_public_safe.csv",
+    "scope_lock_report": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/rebuild_scope_lock_zh.md",
+    "completion_record": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/completion_record_zh.md",
+    "rollback_plan": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/rollback_plan_zh.md",
+    "test_results": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/test_results_zh.md",
+    "validation_results": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/validation_results.jsonl"
+  },
+  "artifact_integrity": [
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/requirements_ledger_public_safe.csv",
+      "bytes": 47895,
+      "sha256": "2c4e67ded7b5ca5d921e20241034e830aaf06c86a1004a606665ead249c439ef"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/requirements_ledger_zh.md",
+      "bytes": 11161,
+      "sha256": "1c0b2d0bc47062244e70f8175104cc18e632b32f9d5881d098b58e38e40b51fd"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/business_line_matrix_public_safe.csv",
+      "bytes": 6983,
+      "sha256": "58450265a8c9aa02066ced06e15c70e4f898323d7db6490603b14a3fce04629d"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/scope_lock_dispositions_public_safe.csv",
+      "bytes": 10780,
+      "sha256": "02ad1ef03d5a7fe0f2ce190ed458a1948a051d343cfaca108ceeca52ac4efb3f"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/rebuild_scope_lock_zh.md",
+      "bytes": 5144,
+      "sha256": "4751d3e18f31c3d2e4f6b5afcccc807ea392817a09d03b73b243f2b8292dfc50"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/completion_record_zh.md",
+      "bytes": 2965,
+      "sha256": "040c6bbca0977f4116f6f7bf0a59ecc70a343edf19037a225fab5f2d50d9bc1e"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/rollback_plan_zh.md",
+      "bytes": 1156,
+      "sha256": "9c5951a5c3fba2687827b5e84407b9ab66dff10fdc8014c0be2ae62026b8b146"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/human/test_results_zh.md",
+      "bytes": 3354,
+      "sha256": "96b933d0b362123e81361bacdea1f82d2201b1668c631c86e2a661307f5a7c06"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S02_P1_REQUIREMENTS_SCOPE_LOCK/machine/validation_results.jsonl",
+      "bytes": 1996,
+      "sha256": "ef0bc58763ee785fe7a1bec2b19036233cbf6a33633db17c6c97f4904aefc958"
+    }
+  ],
+  "content_hash": "sha256:5e2450b41b5308e35a8a57307bfb763c07a38b0ad321f9ac495b9bd8f53e6a04"
+}

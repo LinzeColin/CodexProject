@@ -1,6 +1,7 @@
 {
-  "policy_id": "mgmt_monthly_report_local_retention_v1",
-  "local_target_state": "keep_official_xlsx_and_pdf_reports_only_in_report_output_dir",
+  "schema_version": "mgmt-monthly-report-public-safe-v2",
+  "policy_id": "mgmt_monthly_report_local_retention_v2",
+  "local_target_state": "keep_only_runtime_outputs_referenced_by_public_opaque_ids",
   "cleanup_scope": [
     "skill_created_temp_files",
     "skill_created_cache_files",
@@ -9,13 +10,12 @@
   ],
   "never_auto_delete_without_owner_confirmation": [
     "user_original_input_files",
-    "raw_sensitive_excel",
-    "contracts",
-    "bank_tax_payroll_files"
+    "user_private_source_material",
+    "user_private_contract_material",
+    "user_private_financial_material"
   ],
-  "official_local_outputs": [
-    "经营管理分析报表 YYYYMM.xlsx",
-    "董事会经营分析摘要 YYYYMM.pdf"
+  "official_local_output_refs": [
+    "OUT-MMR-V2-001",
+    "OUT-MMR-V2-002"
   ]
 }
-

@@ -395,7 +395,7 @@ def _manifest(
         "acceptance_ids": [ACCEPTANCE_ID],
         "status": STATUS,
         "generated_at": generated_at,
-        "worktree": Path.cwd().as_posix(),
+        "worktree": "repo://KMFA",
         "branch": _git_output(["branch", "--show-current"]),
         "remote": _git_output(["remote", "get-url", "origin"]),
         "reviewed_head": _git_output(["rev-parse", "HEAD"]),

@@ -41,6 +41,13 @@ class ProjectCostFactLayerTests(unittest.TestCase):
             self.assertIn("authority_baseline_ref", record)
             self.assertIn("project_identity_profile_ref", record)
             self.assertIn("business_entity_schema_ref", record)
+            self.assertEqual(
+                record["source_binding_status"],
+                "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            )
+            self.assertNotIn("source_hash", record)
+            self.assertNotIn("metric_hash_refs", record)
+            self.assertNotIn("metric_private_refs", record)
 
     def test_quality_blocks_keep_fact_layer_structural_and_queue_unallocated_costs(self) -> None:
         manifest, fact_records, unallocated_pool = build_default_project_cost_fact_layer(
@@ -62,6 +69,18 @@ class ProjectCostFactLayerTests(unittest.TestCase):
             self.assertFalse(pool_item["amount_value_public_committed"])
             self.assertFalse(pool_item["raw_layer_write_allowed"])
             self.assertIn("source_difference_queue_ref", pool_item)
+            self.assertTrue(
+                pool_item["opaque_binding_ref"].startswith(
+                    "OPAQUE-PROJECT-COST-UNALLOCATED-BINDING-"
+                )
+            )
+            self.assertEqual(
+                pool_item["binding_status"],
+                "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            )
+            self.assertNotIn("cost_category_hash", pool_item)
+            self.assertNotIn("amount_value_hash_ref", pool_item)
+            self.assertNotIn("amount_value_private_ref", pool_item)
 
         for record in fact_records:
             self.assertEqual(record["calculation_status"], "blocked_pending_quality_resolution")
@@ -86,8 +105,9 @@ class ProjectCostFactLayerTests(unittest.TestCase):
             "raw_file_bytes",
         ):
             self.assertNotIn(forbidden_key, payload)
-        self.assertIn("sha256:", payload)
-        self.assertIn("private_ref://", payload)
+        self.assertNotIn("amount_value_hash_ref", payload)
+        self.assertNotIn("amount_value_private_ref", payload)
+        self.assertIn("OPAQUE-PROJECT-COST-", payload)
         self.assertIn("source_ref://", payload)
 
     def test_scope_excludes_later_phases_review_report_ui_connector_and_upload(self) -> None:

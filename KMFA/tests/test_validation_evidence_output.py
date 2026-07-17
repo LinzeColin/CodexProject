@@ -141,7 +141,7 @@ class ValidationEvidenceOutputTests(unittest.TestCase):
             encoding="utf-8",
         )
         (metadata_quality_dir / "mismatch_report.csv").write_text(
-            "mismatch_id,source_id,file_hash,field_path,mapping_version,formula_version,status,evidence_ref\n",
+            "mismatch_id,source_id,field_path,binding_contract_version,mapping_version,formula_version,status,evidence_ref\n",
             encoding="utf-8",
         )
 
@@ -219,7 +219,14 @@ class ValidationEvidenceOutputTests(unittest.TestCase):
         self.assertTrue(zero_delta_records[-1]["forbidden_plaintext"])
         self.assertTrue(data_quality_records[-1]["forbidden_plaintext"])
         self.assertTrue(queue_records[-1]["forbidden_plaintext"])
-        self.assertTrue(mismatch_rows[0]["field_path"].startswith("field_ref:sha256:"))
+        self.assertEqual(mismatch_rows[0]["mismatch_id"], "MM-S06P3-V2-001")
+        self.assertEqual(mismatch_rows[0]["source_id"], "SRC-S06P3-V2-001")
+        self.assertEqual(mismatch_rows[0]["field_path"], "FIELD-S06P3-V2-001")
+        self.assertEqual(
+            mismatch_rows[0]["binding_contract_version"],
+            "kmfa.s06_p3.mismatch_public_binding.v2",
+        )
+        self.assertNotIn("file_hash", mismatch_rows[0])
 
         combined_output = json.dumps(
             {
@@ -236,6 +243,37 @@ class ValidationEvidenceOutputTests(unittest.TestCase):
         self.assertNotIn("system_value_cents", combined_output)
         self.assertNotIn("10000", combined_output)
         self.assertNotIn("9999", combined_output)
+
+    def test_mismatch_refs_do_not_change_with_source_field_or_values(self) -> None:
+        baseline = self._zero_delta_result()
+        changed = self._zero_delta_result()
+        changed["mismatches"][0].update(
+            {
+                "record_id": "ANOTHER-RECORD",
+                "source": "ANOTHER-SOURCE",
+                "field": "another_money_field",
+                "authoritative_value_cents": 700,
+                "system_value_cents": 300,
+                "difference_cents": 400,
+            }
+        )
+        kwargs = {
+            "queue_items": self._queue_items(),
+            "report_gate": self._report_gate(),
+            "evidence_time": "2026-06-30T15:00:00+10:00",
+            "source_result_ref": "unit/zero_delta_result.json",
+            "source_mismatch_report_ref": "unit/mismatch_report.csv",
+            "source_queue_ref": "unit/source_difference_queue.jsonl",
+            "source_gate_ref": "unit/report_grade_gate.json",
+            "public_evidence_namespace": "UNIT-S06P3",
+        }
+
+        baseline_row = build_validation_evidence(zero_delta_result=baseline, **kwargs)["mismatch_rows"][0]
+        changed_row = build_validation_evidence(zero_delta_result=changed, **kwargs)["mismatch_rows"][0]
+
+        for key in ("mismatch_id", "source_id", "field_path", "binding_contract_version", "mapping_version"):
+            self.assertEqual(baseline_row[key], changed_row[key])
+        self.assertNotIn("sha256:", json.dumps([baseline_row, changed_row], sort_keys=True))
 
     def test_rejects_raw_business_data_flags(self) -> None:
         result = self._zero_delta_result()

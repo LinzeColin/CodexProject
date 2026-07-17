@@ -333,7 +333,13 @@ def validate_v014_s07_p3_redcircle_postponement(manifest_path: Path = MANIFEST_P
     for key, value in legacy.items():
         require(summary.get(key) == value, f"legacy baseline {key} mismatch", errors)
 
-    require(metadata_manifest == manifest, "metadata manifest mirror mismatch", errors)
+    require(
+        {key: value for key, value in metadata_manifest.items() if key != "worktree"}
+        == {key: value for key, value in manifest.items() if key != "worktree"},
+        "metadata manifest mirror mismatch",
+        errors,
+    )
+    require(metadata_manifest.get("worktree") == "repo://KMFA", "public metadata worktree token mismatch", errors)
     require(templates == machine_templates, "metadata template mirror mismatch", errors)
     require(source_registry.get("registry_status") == "reserved_templates_only_no_connector", "registry status mismatch", errors)
     require(len(source_registry.get("sources", [])) == 4, "registry source count mismatch", errors)
@@ -348,7 +354,20 @@ def validate_v014_s07_p3_redcircle_postponement(manifest_path: Path = MANIFEST_P
         require(template.get("manual_export_file_allowed") is True, "manual export flag mismatch", errors)
         require(template.get("automatic_connector_allowed") is False, "automatic connector must be false", errors)
         require(template.get("d15_file_mvp_automatic_connector_allowed") is False, "D15 connector must be false", errors)
-        require(str(template.get("template_contract_hash", "")).startswith("sha256:"), "template hash mismatch", errors)
+        require(
+            str(template.get("template_contract_ref", "")).startswith(
+                "OPAQUE-V014-REDCIRCLE-TEMPLATE-CONTRACT-V1-"
+            ),
+            "template opaque contract ref mismatch",
+            errors,
+        )
+        require(
+            template.get("template_contract_binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            "template contract binding status mismatch",
+            errors,
+        )
+        require("template_contract_hash" not in template, "template hash must not be public", errors)
+        require("source_file_private_ref" not in template, "private source ref must not be public", errors)
         controls = template.get("future_ingestion_controls", {})
         for key in ("read_only_required", "hash_retention_required", "rollback_plan_required", "manual_approval_required"):
             require(controls.get(key) is True, f"template control {key} must be true", errors)
@@ -387,7 +406,20 @@ def validate_v014_s07_p3_redcircle_postponement(manifest_path: Path = MANIFEST_P
         require(source.get("hash_retention_required") is True, "source hash retention mismatch", errors)
         require(source.get("rollback_plan_required") is True, "source rollback mismatch", errors)
         require(source.get("manual_approval_required") is True, "source manual approval mismatch", errors)
-        require(str(source.get("template_contract_hash", "")).startswith("sha256:"), "source template hash mismatch", errors)
+        require(
+            str(source.get("template_contract_ref", "")).startswith(
+                "OPAQUE-V014-REDCIRCLE-TEMPLATE-CONTRACT-V1-"
+            ),
+            "source template opaque contract ref mismatch",
+            errors,
+        )
+        require(
+            source.get("template_contract_binding_status") == "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            "source template binding status mismatch",
+            errors,
+        )
+        require("template_contract_hash" not in source, "source template hash must not be public", errors)
+        require("source_file_private_ref" not in source, "source private ref must not be public", errors)
 
     stage_scope = manifest.get("stage_scope", {})
     require(stage_scope.get("redcircle_postponement_policy") is True, "Redcircle scope must be true", errors)

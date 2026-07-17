@@ -1,21 +1,25 @@
 # 经营管理月报 Metadata
 
-该目录保存 `mgmt-monthly-report-skill` 的数据治理资产。经 owner 明确授权、secret
-扫描和 upload manifest 登记后，原始敏感明文文件也可以放入 `KMFA/metadata/`。
+该目录只保存 `mgmt-monthly-report-skill` 的 public-safe 数据治理资产。任何角色、
+任何授权状态均不得把原始敏感明文、报告正文或 private/source 派生指纹放入
+`KMFA/metadata/`。
 
 允许提交：
 
-- hash index
-- run manifest
+- public-safe v2 schema
+- 脱敏 run manifest
 - backup registry
 - validation summary
 - cleanup report
 - SQL schema/export
 - 脱敏日志摘要
-- owner 授权明文上传登记
-- owner 授权且 secret 扫描通过的原始敏感明文文件
+- 版本化、非派生 opaque ref
+- 状态与聚合计数
 
 不允许提交：
 
 - token、API key、webhook secret、signing key、账号密码、私钥
-- 未登记 owner 授权和 secret 扫描结果的敏感明文文件
+- raw/source/private 文件名、路径、大小、扩展名、sheet 名或其派生指纹
+- 非 tracked public artifact 的任何 digest；tracked public artifact digest 必须绑定可验证 blob
+- 客户、人员、项目、金额、账号、税务或报告明细
+- 任何敏感明文文件（owner 授权不构成例外）

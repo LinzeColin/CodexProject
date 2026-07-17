@@ -3,9 +3,7 @@ from __future__ import annotations
 
 import argparse
 import fnmatch
-import hashlib
 import json
-import os
 import re
 import sqlite3
 import sys
@@ -25,6 +23,7 @@ OFFICIAL_PDF = "董事会经营分析摘要 {period}.pdf"
 @dataclass(frozen=True)
 class InputSlot:
     slot_id: str
+    public_source_ref: str
     display_name: str
     patterns: tuple[str, ...]
     required: bool = True
@@ -38,12 +37,14 @@ class InputSlot:
 INPUT_SLOTS: tuple[InputSlot, ...] = (
     InputSlot(
         "collection_2026",
+        "SRC-MMR-V2-001",
         "WPS 武汉开明 2026年回款表",
         ("*2026*回款表*.xlsx", "*2026*回款*.xlsx"),
         prefer_patterns=("*销售会计*.xlsx",),
     ),
     InputSlot(
         "invoice_tax_cash",
+        "SRC-MMR-V2-002",
         "开票纳税资金汇总表",
         ("*开票*纳税*资金汇总*.xlsx",),
         required_sheet_aliases=(
@@ -52,12 +53,13 @@ INPUT_SLOTS: tuple[InputSlot, ...] = (
             ("2026年资金汇总", ("2026年资金汇总", "*资金汇总*", "*资金流汇总*")),
         ),
     ),
-    InputSlot("receivable_contract", "应收账款合同登记", ("*应收账款*合同登记*.xlsx", "*合同登记*.xlsx")),
-    InputSlot("aging", "应收账龄表", ("*应收账龄*.xlsx",)),
-    InputSlot("deposit", "2026年保证金", ("*保证金2026*.xlsx", "*保证金*.xlsx")),
-    InputSlot("three_major_projects", "三大项目", ("*三大项目*.xlsx",)),
+    InputSlot("receivable_contract", "SRC-MMR-V2-003", "应收账款合同登记", ("*应收账款*合同登记*.xlsx", "*合同登记*.xlsx")),
+    InputSlot("aging", "SRC-MMR-V2-004", "应收账龄表", ("*应收账龄*.xlsx",)),
+    InputSlot("deposit", "SRC-MMR-V2-005", "2026年保证金", ("*保证金2026*.xlsx", "*保证金*.xlsx")),
+    InputSlot("three_major_projects", "SRC-MMR-V2-006", "三大项目", ("*三大项目*.xlsx",)),
     InputSlot(
         "project_status_contracts",
+        "SRC-MMR-V2-007",
         "生产项目状态表与红圈主合同",
         ("*生产项目状态表*.xlsx", "*红圈主合同*.xlsx"),
         min_physical_files=1,
@@ -71,32 +73,20 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
-def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-def sha256_text(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
-
-
 def inspect_xlsx_sheets(path: Path) -> tuple[list[str], str | None]:
     try:
         with zipfile.ZipFile(path) as zf:
             data = zf.read("xl/workbook.xml")
-    except Exception as exc:  # noqa: BLE001 - public-safe diagnostic only
-        return [], f"{type(exc).__name__}: {exc}"
+    except Exception:  # noqa: BLE001 - fail closed without exposing source details
+        return [], "workbook_structure_unreadable"
 
     try:
         root = ET.fromstring(data)
         ns = {"main": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
         sheets = [elem.attrib.get("name", "") for elem in root.findall(".//main:sheets/main:sheet", ns)]
         return [s for s in sheets if s], None
-    except Exception as exc:  # noqa: BLE001
-        return [], f"{type(exc).__name__}: {exc}"
+    except Exception:  # noqa: BLE001
+        return [], "workbook_structure_invalid"
 
 
 def match_aliases(sheet_names: Iterable[str], aliases: Iterable[str]) -> list[str]:
@@ -137,24 +127,6 @@ def select_candidates(slot: InputSlot, candidates: list[Path]) -> tuple[list[Pat
     return [candidates[0]], candidates[1:], "multiple_candidates_first_selected_requires_review"
 
 
-def public_file_record(path: Path, slot: InputSlot, matched_pattern: str | None = None) -> dict:
-    sheets, sheet_error = inspect_xlsx_sheets(path) if path.suffix.lower() == ".xlsx" else ([], "xls_not_supported")
-    return {
-        "slot_id": slot.slot_id,
-        "display_name": slot.display_name,
-        "file_name_sha256": sha256_text(path.name),
-        "file_sha256": sha256_file(path),
-        "file_size_bytes": path.stat().st_size,
-        "extension": path.suffix.lower(),
-        "is_symlink": path.is_symlink(),
-        "sheet_count": len(sheets),
-        "sheet_names_sha256": sha256_text("\n".join(sheets)) if sheets else None,
-        "sheet_read_error": sheet_error,
-        "matched_pattern": matched_pattern,
-        "committed_plaintext_to_git": False,
-    }
-
-
 def slot_status(slot: InputSlot, selected: list[Path], alternates: list[Path]) -> str:
     if slot.required and len(selected) < slot.min_physical_files:
         return "failed_missing"
@@ -181,57 +153,54 @@ def build_manifest(period: str, input_dir: Path, output_dir: Path, metadata_root
     for slot in INPUT_SLOTS:
         candidates = candidates_for_slot(input_dir, slot)
         selected, alternates, selection_reason = select_candidates(slot, candidates)
-        records = [public_file_record(path, slot) for path in selected]
         status = slot_status(slot, selected, alternates)
         if status.startswith("failed"):
-            errors.append(f"{slot.slot_id}:{status}")
+            errors.append(f"{slot.public_source_ref}:{status}")
         elif status.startswith("warning"):
-            warnings.append(f"{slot.slot_id}:{status}")
+            warnings.append(f"{slot.public_source_ref}:{status}")
 
-        sheet_group_checks = []
+        sheet_group_passed_count = 0
+        sheet_group_failed_count = 0
         if slot.required_sheet_aliases and selected:
             sheets, sheet_error = inspect_xlsx_sheets(selected[0])
-            for canonical, aliases in slot.required_sheet_aliases:
+            for _, aliases in slot.required_sheet_aliases:
                 matched = match_aliases(sheets, aliases)
                 ok = bool(matched)
                 if not ok:
-                    errors.append(f"{slot.slot_id}:missing_sheet_group:{canonical}")
-                sheet_group_checks.append(
-                    {
-                        "canonical": canonical,
-                        "matched_sheet_names_sha256": sha256_text("\n".join(matched)) if matched else None,
-                        "matched_count": len(matched),
-                        "status": "passed" if ok else "failed",
-                    }
-                )
+                    errors.append(f"{slot.public_source_ref}:required_sheet_group_missing")
+                    sheet_group_failed_count += 1
+                else:
+                    sheet_group_passed_count += 1
             if sheet_error:
-                errors.append(f"{slot.slot_id}:sheet_read_error")
+                errors.append(f"{slot.public_source_ref}:sheet_structure_unreadable")
 
         input_slots.append(
             {
-                "slot_id": slot.slot_id,
-                "display_name": slot.display_name,
+                "source_group_ref": slot.public_source_ref,
                 "status": status,
-                "selection_reason": selection_reason,
+                "selection_status": selection_reason,
                 "candidate_count": len(candidates),
                 "selected_count": len(selected),
                 "alternate_candidate_count": len(alternates),
-                "min_physical_files": slot.min_physical_files,
-                "recommended_physical_files": slot.recommended_physical_files,
-                "files": records,
-                "sheet_group_checks": sheet_group_checks,
+                "minimum_required_count": slot.min_physical_files,
+                "recommended_count": slot.recommended_physical_files,
+                "required_sheet_group_count": len(slot.required_sheet_aliases),
+                "passed_sheet_group_count": sheet_group_passed_count,
+                "failed_sheet_group_count": sheet_group_failed_count,
             }
         )
 
     excel = output_dir / OFFICIAL_EXCEL.format(period=period)
     pdf = output_dir / OFFICIAL_PDF.format(period=period)
-    outputs = {
-        "excel": output_record("excel", excel),
-        "pdf": output_record("pdf", pdf),
-    }
+    outputs = [
+        output_record("OUT-MMR-V2-001", excel),
+        output_record("OUT-MMR-V2-002", pdf),
+    ]
 
     status = "failed" if errors else ("warning" if warnings else "passed")
     return {
+        "schema_version": "mgmt-monthly-report-public-safe-v2",
+        "record_type": "deidentified_run_manifest",
         "period": period,
         "run_id": run_id,
         "created_at_utc": utc_now(),
@@ -241,9 +210,11 @@ def build_manifest(period: str, input_dir: Path, output_dir: Path, metadata_root
         "input_slot_count": len(INPUT_SLOTS),
         "input_slots": input_slots,
         "outputs": outputs,
-        "metadata_root": str(metadata_root),
+        "metadata_root_ref": "META-MMR-PUBLIC-V2",
         "metadata_policy": {
             "public_safe_only": True,
+            "opaque_refs_non_derived": True,
+            "private_or_source_digests_committed_to_git": False,
             "raw_sensitive_plaintext_committed_to_git": False,
             "report_plaintext_committed_to_git": False,
             "runtime_sqlite_committed_to_git": False,
@@ -251,15 +222,11 @@ def build_manifest(period: str, input_dir: Path, output_dir: Path, metadata_root
     }
 
 
-def output_record(output_type: str, path: Path) -> dict:
+def output_record(output_ref: str, path: Path) -> dict:
     exists = path.exists()
     return {
-        "output_type": output_type,
-        "expected_file_name": path.name,
-        "output_dir_sha256": sha256_text(str(path.parent)),
-        "exists": exists,
-        "file_sha256": sha256_file(path) if exists else None,
-        "file_size_bytes": path.stat().st_size if exists else None,
+        "output_ref": output_ref,
+        "status": "present" if exists else "missing",
         "retained_locally": exists,
         "committed_plaintext_to_git": False,
     }
@@ -300,7 +267,7 @@ def sql_literal(value) -> str:
 
 def render_sql_export(manifest: dict) -> str:
     lines = [
-        "-- Public-safe SQL export generated by mgmt_monthly_report.py",
+        "-- Public-safe aggregate SQL export generated by mgmt_monthly_report.py v2.",
         "BEGIN;",
         (
             "INSERT OR REPLACE INTO monthly_report_run "
@@ -311,24 +278,25 @@ def render_sql_export(manifest: dict) -> str:
         ),
     ]
     for slot in manifest["input_slots"]:
-        for file_rec in slot["files"]:
-            lines.append(
-                "INSERT OR REPLACE INTO monthly_report_input_file "
-                "(run_id, slot_id, file_sha256, file_size_bytes, extension, sheet_count, "
-                "sheet_names_sha256, matched_pattern, is_symlink) VALUES "
-                f"({sql_literal(manifest['run_id'])}, {sql_literal(slot['slot_id'])}, "
-                f"{sql_literal(file_rec['file_sha256'])}, {sql_literal(file_rec['file_size_bytes'])}, "
-                f"{sql_literal(file_rec['extension'])}, {sql_literal(file_rec['sheet_count'])}, "
-                f"{sql_literal(file_rec['sheet_names_sha256'])}, {sql_literal(file_rec['matched_pattern'])}, "
-                f"{sql_literal(file_rec['is_symlink'])});"
-            )
-    for output_type, out in manifest["outputs"].items():
         lines.append(
-            "INSERT OR REPLACE INTO monthly_report_output_index "
-            "(run_id, output_type, file_sha256, file_size_bytes, retained_locally, committed_plaintext_to_git) "
+            "INSERT OR REPLACE INTO monthly_report_input_slot_aggregate "
+            "(run_id, source_group_ref, status, selection_status, candidate_count, selected_count, "
+            "alternate_candidate_count, minimum_required_count, recommended_count, "
+            "required_sheet_group_count, passed_sheet_group_count, failed_sheet_group_count) VALUES "
+            f"({sql_literal(manifest['run_id'])}, {sql_literal(slot['source_group_ref'])}, "
+            f"{sql_literal(slot['status'])}, {sql_literal(slot['selection_status'])}, "
+            f"{sql_literal(slot['candidate_count'])}, {sql_literal(slot['selected_count'])}, "
+            f"{sql_literal(slot['alternate_candidate_count'])}, {sql_literal(slot['minimum_required_count'])}, "
+            f"{sql_literal(slot['recommended_count'])}, {sql_literal(slot['required_sheet_group_count'])}, "
+            f"{sql_literal(slot['passed_sheet_group_count'])}, {sql_literal(slot['failed_sheet_group_count'])});"
+        )
+    for out in manifest["outputs"]:
+        lines.append(
+            "INSERT OR REPLACE INTO monthly_report_output_status "
+            "(run_id, output_ref, status, retained_locally, committed_plaintext_to_git) "
             "VALUES "
-            f"({sql_literal(manifest['run_id'])}, {sql_literal(output_type)}, "
-            f"{sql_literal(out['file_sha256'])}, {sql_literal(out['file_size_bytes'])}, "
+            f"({sql_literal(manifest['run_id'])}, {sql_literal(out['output_ref'])}, "
+            f"{sql_literal(out['status'])}, "
             f"{sql_literal(out['retained_locally'])}, {sql_literal(out['committed_plaintext_to_git'])});"
         )
     lines.append("COMMIT;")
@@ -348,6 +316,8 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
     ensure_metadata_dirs(metadata_root)
     period = manifest["period"]
     raw_index = {
+        "schema_version": "mgmt-monthly-report-public-safe-v2",
+        "record_type": "deidentified_source_aggregate_index",
         "period": period,
         "run_id": manifest["run_id"],
         "metadata_mode": "strict_public_safe_metadata_only",
@@ -355,6 +325,8 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
         "input_slots": manifest["input_slots"],
     }
     report_index = {
+        "schema_version": "mgmt-monthly-report-public-safe-v2",
+        "record_type": "deidentified_output_status_index",
         "period": period,
         "run_id": manifest["run_id"],
         "outputs": manifest["outputs"],
@@ -362,10 +334,12 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
     }
     cleanup_audit = cleanup_audit_for_outputs(period, manifest["outputs"])
     backup_entry = {
+        "schema_version": "mgmt-monthly-report-public-safe-v2",
+        "record_type": "public_artifact_backup_status",
         "period": period,
         "run_id": manifest["run_id"],
         "created_at_utc": manifest["created_at_utc"],
-        "metadata_paths": [
+        "public_artifact_refs": [
             f"KMFA/metadata/mgmt-monthly-report-skill/raw_index/{period}_public_safe_source_index.json",
             f"KMFA/metadata/mgmt-monthly-report-skill/run_manifests/{period}_public_safe_run_manifest.json",
             f"KMFA/metadata/mgmt-monthly-report-skill/public_reports/{period}_output_report_index.json",
@@ -379,12 +353,14 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
         "status": manifest["status"],
     }
     log_entry = {
+        "schema_version": "mgmt-monthly-report-public-safe-v2",
+        "record_type": "aggregate_run_status",
         "event": "monthly_report_register",
         "period": period,
         "run_id": manifest["run_id"],
         "status": manifest["status"],
-        "errors": manifest["errors"],
-        "warnings": manifest["warnings"],
+        "error_count": len(manifest["errors"]),
+        "warning_count": len(manifest["warnings"]),
         "created_at_utc": manifest["created_at_utc"],
     }
 
@@ -402,12 +378,14 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
     (metadata_root / "database" / f"{period}_registry_export.sql").write_text(export_sql, encoding="utf-8")
 
 
-def cleanup_audit_for_outputs(period: str, outputs: dict) -> dict:
+def cleanup_audit_for_outputs(period: str, outputs: list[dict]) -> dict:
     return {
+        "schema_version": "mgmt-monthly-report-public-safe-v2",
+        "record_type": "aggregate_cleanup_status",
         "period": period,
-        "target_state": "local_report_output_dir_keeps_official_xlsx_and_pdf_only",
-        "official_outputs": outputs,
-        "auto_deleted_files": [],
+        "target_state": "local_output_retention_policy_applied",
+        "output_statuses": outputs,
+        "auto_deleted_item_count": 0,
         "destructive_deletion_performed": False,
         "notes": [
             "This audit does not delete user original input files.",

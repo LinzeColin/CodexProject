@@ -274,16 +274,15 @@ def _fact_row(
 ) -> dict[str, Any]:
     fact_record_id = str(fact_record.get("fact_record_id"))
     margin_record_id = str(margin_record.get("margin_record_id"))
-    invoice_hash = fact_record.get("metric_hash_refs", {}).get("invoice_amount")
-    margin_hash = margin_record.get("authority_value_hash_refs", {}).get("gross_margin_rate")
-    if not isinstance(invoice_hash, str) or not invoice_hash.startswith("sha256:"):
-        raise PerformanceReviewListError(f"{fact_record_id} missing public-safe invoice hash")
-    if not isinstance(margin_hash, str) or not margin_hash.startswith("sha256:"):
-        raise PerformanceReviewListError(f"{margin_record_id} missing public-safe margin hash")
+    metric_binding = fact_record.get("metric_binding_summary", {})
+    if metric_binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+        raise PerformanceReviewListError(f"{fact_record_id} private metric binding must be revalidated")
+    if not margin_record_id or margin_record_id == "None":
+        raise PerformanceReviewListError("margin record reference missing")
 
     fact_row_id = f"S15P2-FACT-{index:03d}"
     return {
-        "schema_version": "kmfa.performance_fact_table_row.v1",
+        "schema_version": "kmfa.performance_fact_table_row.v2",
         "record_type": "performance_fact_table_row",
         "project_id": "KMFA",
         "stage_phase": "S15-P2",
@@ -293,10 +292,15 @@ def _fact_row(
         "project_identity_profile_ref": str(fact_record.get("project_identity_profile_ref")),
         "project_cost_fact_ref": f"KMFA/metadata/lineage/project_cost_fact_records.jsonl#{fact_record_id}",
         "project_margin_ref": f"KMFA/metadata/lineage/project_margin_cash_margin_records.jsonl#{margin_record_id}",
-        "fact_status_by_field": {field_key: FIELD_STATUS[field_key] for field_key in REQUIRED_PERFORMANCE_REVIEW_FIELDS},
-        "fact_hash_refs_by_field": {
-            "invoice_amount": invoice_hash,
-            "gross_margin_rate": margin_hash,
+        "fact_binding_summary": {
+            "schema_version": "kmfa.public_opaque_fact_binding_summary.v1",
+            "opaque_binding_set_ref": f"OPAQUE-PERFORMANCE-FACT-BINDING-{index:03d}",
+            "required_slot_count": len(REQUIRED_PERFORMANCE_REVIEW_FIELDS),
+            "private_binding_revalidation_required_slot_count": 2,
+            "manual_review_required_slot_count": len(REQUIRED_MANUAL_REVIEW_FIELDS),
+            "binding_status": "PRIVATE_BINDING_REVALIDATION_REQUIRED",
+            "private_digest_values_committed": False,
+            "field_status_breakdown_committed": False,
         },
         "manual_review_refs_by_field": {
             field_key: _manual_review_ref(field_key) for field_key in REQUIRED_MANUAL_REVIEW_FIELDS
@@ -314,7 +318,7 @@ def _fact_row(
             "KMFA/metadata/reports/cross_table_difference_queue.jsonl",
         ],
         "source_refs": _sanitize_source_refs(fact_record.get("source_refs")),
-        "fact_table_value_policy": "public_safe_hash_refs_and_status_only_no_numeric_display",
+        "fact_table_value_policy": "opaque_non_derived_refs_and_status_aggregate_no_numeric_or_digest_display",
         "review_status": "pending_owner_or_authorized_review_before_compensation_use",
         "report_grade_visible": "D",
         "raw_business_values_allowed": False,
@@ -601,7 +605,7 @@ def validate_performance_review_list_artifacts(
         raise PerformanceReviewListError("fact row id order mismatch")
     for row in fact_rows:
         row_id = str(row.get("performance_fact_row_id"))
-        if row.get("schema_version") != "kmfa.performance_fact_table_row.v1":
+        if row.get("schema_version") != "kmfa.performance_fact_table_row.v2":
             raise PerformanceReviewListError(f"{row_id} schema mismatch")
         if row.get("record_type") != "performance_fact_table_row":
             raise PerformanceReviewListError(f"{row_id} record_type mismatch")
@@ -609,13 +613,20 @@ def validate_performance_review_list_artifacts(
             raise PerformanceReviewListError(f"{row_id} stage_phase mismatch")
         if not str(row.get("project_ref", "")).startswith("entity_ref://KMFA/S08-P2/project/"):
             raise PerformanceReviewListError(f"{row_id} project_ref must be a public entity ref")
-        if set(row.get("fact_status_by_field", {})) != set(REQUIRED_PERFORMANCE_REVIEW_FIELDS):
-            raise PerformanceReviewListError(f"{row_id} fact status fields mismatch")
-        if set(row.get("fact_hash_refs_by_field", {})) != {"invoice_amount", "gross_margin_rate"}:
-            raise PerformanceReviewListError(f"{row_id} fact hash fields mismatch")
-        for hash_ref in row.get("fact_hash_refs_by_field", {}).values():
-            if not isinstance(hash_ref, str) or not hash_ref.startswith("sha256:"):
-                raise PerformanceReviewListError(f"{row_id} fact hash ref must be sha256")
+        binding_summary = row.get("fact_binding_summary", {})
+        if binding_summary.get("required_slot_count") != len(REQUIRED_PERFORMANCE_REVIEW_FIELDS):
+            raise PerformanceReviewListError(f"{row_id} fact binding slot count mismatch")
+        if binding_summary.get("private_binding_revalidation_required_slot_count") != 2:
+            raise PerformanceReviewListError(f"{row_id} private binding count mismatch")
+        if binding_summary.get("manual_review_required_slot_count") != len(REQUIRED_MANUAL_REVIEW_FIELDS):
+            raise PerformanceReviewListError(f"{row_id} manual review slot count mismatch")
+        if binding_summary.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise PerformanceReviewListError(f"{row_id} private binding revalidation status mismatch")
+        if binding_summary.get("private_digest_values_committed") is not False:
+            raise PerformanceReviewListError(f"{row_id} must not commit private digest values")
+        for legacy_key in ("fact_status_by_field", "fact_hash_refs_by_field"):
+            if legacy_key in row:
+                raise PerformanceReviewListError(f"{row_id} must not publish {legacy_key}")
         if set(row.get("manual_review_refs_by_field", {})) != set(REQUIRED_MANUAL_REVIEW_FIELDS):
             raise PerformanceReviewListError(f"{row_id} manual review refs mismatch")
         if len(row.get("review_item_refs", [])) != 4:

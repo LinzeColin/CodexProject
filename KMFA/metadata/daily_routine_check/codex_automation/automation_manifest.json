@@ -8,7 +8,7 @@
   "scheduler_policy": "pure_rrule_local_wall_clock_no_explicit_timezone",
   "host_clock_snapshot": "Australia/Sydney AEST UTC+10",
   "execution_environment": "local",
-  "cwd": "/Users/linzezhang/CodexProject",
+  "cwd": "repo://KMFA",
   "skill_path": "KMFA/daily_routine_check_skill/SKILL.md",
   "rrule": "RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3",
   "rrule_policy": "One pure local-wall-clock RRULE. BYSETPOS selects the paired 13:35 and 19:05 runs. No DTSTART, TZID, explicit scheduler timezone, or multiple RRULE lines.",
@@ -17,13 +17,13 @@
       "trigger_window": "morning_1135",
       "run_time_beijing": "11:35",
       "run_time_local_wall_clock": "13:35 AEST",
-      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send"
+      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --input-zip ${KMFA_DWS_OUTPUT_ZIP} --send"
     },
     {
       "trigger_window": "evening_1705",
       "run_time_beijing": "17:05",
       "run_time_local_wall_clock": "19:05 AEST",
-      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send"
+      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --input-zip ${KMFA_DWS_OUTPUT_ZIP} --send"
     }
   ],
   "single_automation_only": true,
@@ -49,7 +49,8 @@
     "ZIP_INPUT_UNREADABLE"
   ],
   "zip_input_only": true,
-  "zip_input_path": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip",
+  "zip_input_path": null,
+  "zip_input_private_registry_ref": "ENV::KMFA_DWS_OUTPUT_ZIP",
   "zip_required_members": [
     "DWS_Outputs/付款请示群/chat_records/chat_records.csv",
     "DWS_Outputs/付款请示群/_manifest/manifest.csv",
