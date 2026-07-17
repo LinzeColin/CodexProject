@@ -1,129 +1,40 @@
 diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
-index 56c1ae9e9..720afebd1 100644
+index 720afebd1..1d0da448e 100644
 --- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
 +++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
 @@ -9,7 +9,7 @@
  // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
  // build_id/source_sha256 are a self-excluding hash: reset both values back to their
  // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
--const BUILD = { build_id: 'ac7cf4800e18', source_sha256: 'ac7cf4800e18a217a9cb9917340c7f13b496c61e8d7f1cc979118692e2051da1', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
-+const BUILD = { build_id: '39b87041c284', source_sha256: '39b87041c284fc7cebe0acf4302e72c2d1263b1c15bd0e4a28ad8f8f8ea1ace6', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+-const BUILD = { build_id: '39b87041c284', source_sha256: '39b87041c284fc7cebe0acf4302e72c2d1263b1c15bd0e4a28ad8f8f8ea1ace6', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
++const BUILD = { build_id: 'bd0f14211005', source_sha256: 'bd0f142110056d317f534932f9b8d05f9b66425891f04187fb2d10ee79568d50', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
  
  // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
  // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
-@@ -1224,6 +1224,101 @@ async function radarPage(env) {
-   return PAGE('/radar', body, { title: '前沿雷达' });
- }
- 
-+// ───────────────────────── T043 覆盖与缺口（Source-Year-Month） ─────────────────────────
-+const COVERAGE_START = '2016-01';   // 「2016+ 可恢复历史」这条硬约束的起点
-+// ★判定是穷尽且确定的，且【刻意没有】source_not_yet_active★
-+// v0_1 的 gap_detector 会从「我们抓到的条目」反推源的起始月，于是把「我们没回填」误报成
-+// 「那时这个源还不存在」——对 arXiv/Nature/NEJM/PNAS/bioRxiv 全是假话（实测 3665/3937 格 = 93%）。
-+// 没有独立证据就不许下这个判断。默认 not_backfilled 是【可证的事实】：我们确实没回填过。
-+const COV_REASON = {
-+  covered: '有条目',
-+  not_backfilled: '未回填（我们没抓过这一段，不是这个源当时不存在）',
-+};
-+function covMonths(start, end) {
-+  const out = [];
-+  let [y, m] = start.split('-').map(Number);
-+  const [ey, em] = end.split('-').map(Number);
-+  while (y < ey || (y === ey && m <= em)) {
-+    out.push(y + '-' + String(m).padStart(2, '0'));
-+    if (++m > 12) { m = 1; y++; }
-+  }
-+  return out;
-+}
-+// ★DIR-007 实测（rows_read 才是 D1 计量的量，不是结果行数）★
-+//   聚合查询：rows_read=1694（≈ 2 × 表大小 847；全表扫 + USE TEMP B-TREE FOR GROUP BY），结果行 69
-+//   登记查询：rows_read=74，结果行 37
-+//   合计约 1768 行 / 每次 /system 访问 → D1 免费档 5M 行/天 ≈ 2800 次访问/天。
-+// 两句诚实话：
-+//  1. 结果行 69 不是成本，rows_read 才是。原注释写「行数 = 不同 (source,month) 组合数」说的是
-+//     【结果行】，读的人会当成开销 —— 那是误导（复核指出）。
-+//  2. 这是【全表扫，且随 cn_items 线性增长】：substr(COALESCE(...)) 不可索引，GROUP BY 全表本就要扫完。
-+//     今天 KEEP_PER_BOARD=300 把表压在约 847 行，故无压力；若将来真做 2016+ 回填把表撑大，
-+//     每次 /system 访问的开销会跟着涨 —— 到那时必须改成物化/缓存，别等它咬人。
-+async function coverageGrid(env) {
-+  const now = new Date();
-+  const end = now.getUTCFullYear() + '-' + String(now.getUTCMonth() + 1).padStart(2, '0');
-+  const months = covMonths(COVERAGE_START, end);
-+  // ★源清单必须来自 cn_sources（登记表），不能来自 cn_items（我们碰巧抓到的东西）★
-+  // 第一版从 cn_items 推源清单 → 【一条都没抓到的源直接从网格里消失】：线上 cn_sources=37、
-+  // 有条目的仅 31 → 6 个源 × 127 月 = 762 格【既无 count 也无解释】，当场违反 T043 的
-+  // 「0 个静默未解释空洞」。而「一条都没抓到的源」恰恰是缺口检测最该喊出来的东西
-+  // （stats-gov 就是其中之一 —— P04 亲手接进来的 A0 官方源）。
-+  // ★这和 v0_1 的错是同一个谬误★：v0_1 从条目反推「源的起始月」→ 没数据＝「那时源还不存在」；
-+  // 我从条目反推「源的清单」→ 没数据＝「这个源不存在」。同一个错，从时间轴挪到源轴。
-+  // 在一根轴上修好、又在另一根轴上犯一遍 —— 写在这里，因为下一个人还会想这么写。
-+  const [regRes, aggRes] = await env.DB.batch([
-+    env.DB.prepare('SELECT id, board_id, name, health FROM cn_sources ORDER BY board_id, id'),
-+    env.DB.prepare("SELECT source_id, substr(COALESCE(published_at,fetched_at),1,7) mo, COUNT(*) n" +
-+                   " FROM cn_items GROUP BY source_id, mo"),
-+  ]);
-+  const registry = (regRes && regRes.results) || [];
-+  const counts = new Map();
-+  for (const r of ((aggRes && aggRes.results) || [])) {
-+    counts.set(r.source_id + '|' + r.mo, (counts.get(r.source_id + '|' + r.mo) || 0) + r.n);
-+  }
-+  const per = [];
-+  let covered = 0, notBackfilled = 0;
-+  for (const s of registry) {
-+    let c = 0, items = 0, first = null, last = null;
-+    for (const mo of months) {
-+      const n = counts.get(s.id + '|' + mo) || 0;
-+      if (n > 0) { c++; items += n; if (!first) first = mo; last = mo; covered++; }
-+      else notBackfilled++;
-+    }
-+    per.push({ source_id: s.id, board_id: s.board_id || '', health: s.health || '', months_covered: c,
-+               items, first, last, months_missing: months.length - c });
-+  }
-+  const cells = months.length * per.length;
-+  return {
-+    scope_start: COVERAGE_START, scope_end: end, months: months.length, cells,
-+    covered, not_backfilled: notBackfilled,
-+    sources_in_registry: per.length,
-+    sources_with_items: per.filter(x => x.items > 0).length,
-+    sources_never_ingested: per.filter(x => x.items === 0).map(x => x.source_id),
-+    // ★这里【不】导出 unexplained: 0★ —— 它是恒真的字面量，任何改动都推翻不了它，
-+    // 拿它当「全面」的证据就是自欺（复核 BLOCK-4）。真正该看的是 coverage_pct（债务）
-+    // 与 sources_in_registry / sources_with_items 的差（有没有整个源被漏掉）。
-+    coverage_pct: cells ? Math.round((covered / cells) * 1000) / 10 : 0,
-+    per_source: per,
-+  };
-+}
-+function coverageHTML(g) {
-+  const rows = g.per_source.map(s => `<tr><td class="mt">${esc(s.source_id)}</td>
-+    <td class="mt">${esc(BOARD_NAMES[s.board_id] || s.board_id || '')}</td>
-+    <td class="mt">${s.items}</td>
-+    <td class="mt">${s.months_covered} / ${g.months}</td>
-+    <td class="mt">${s.first ? esc(s.first) + ' … ' + esc(s.last) : '—'}</td></tr>`).join('');
-+  return `<div class="card" style="margin-top:14px"><h2>覆盖与缺口（${esc(g.scope_start)} 起）</h2>
-+    <p class="mt">把「全面」从<b>来源数量</b>变成<b>可见的时间覆盖</b>：登记在册 ${g.sources_in_registry} 个来源 × ${g.months} 个月 = ${g.cells} 格（其中 ${g.sources_with_items} 个源真的抓到过东西）。
-+      <span class="badge ok">有条目 ${g.covered}</span>
-+      <span class="badge">未回填 ${g.not_backfilled}</span>
-+      —— 时间覆盖率 <b>${g.coverage_pct}%</b>。
-+      ${g.sources_never_ingested.length ? `<span class="badge">★从未抓到过任何条目的源：<b>${g.sources_never_ingested.length}</b> 个（${esc(g.sources_never_ingested.join('、'))}）★</span>` : ''}</p>
-+    <p class="mt">★这就是当前的<b>覆盖债务</b>：${g.coverage_pct}% 意味着 ${g.scope_start} 以来的绝大多数月份<b>我们从没抓过</b>。
-+      这里<b>不写</b>「那时这个源还不存在」——除非有独立证据，否则那是<b>假话</b>：
-+      arXiv 自 1991 年、Nature 自 1869 年就在了，空着只因<b>我们没有回填</b>。缺口是真的，写清楚比藏起来强。</p>
-+    <table><tr><th>来源</th><th>板块</th><th>条目</th><th>覆盖月数</th><th>已覆盖区间</th></tr>${rows || '<tr><td colspan=5>尚无来源</td></tr>'}</table></div>`;
-+}
- async function systemPage(env) {
-   const { results: runs } = await env.DB.prepare('SELECT * FROM cn_run_log ORDER BY at DESC LIMIT 14').all();
-   const rows = (runs || []).map(r => {
-@@ -1233,9 +1328,13 @@ async function systemPage(env) {
-       <td class="mt">${esc(r.note || '')}</td></tr>`;
-   }).join('');
-   const total = await env.DB.prepare('SELECT COUNT(*) n FROM cn_items').first();
-+  let covHTML = '';
-+  try { covHTML = coverageHTML(await coverageGrid(env)); }
-+  catch (e) { covHTML = ''; }   // 覆盖视图坏了不许把 /system 带下线（与 P08 attachMeta 同一条纪律）
-   return PAGE('/system', `<div class="card"><h1>系统与来源</h1>
-     <p class="mt">整套系统跑在 Cloudflare（Workers + D1 + 每日 cron），不依赖任何本机。当前候选库 ${total ? total.n : 0} 条。</p>
-     <table><tr><th>日期</th><th>结果</th><th>抓取/候选</th><th>说明</th></tr>${rows || '<tr><td colspan=4>尚无运行</td></tr>'}</table>
-+      </div>${covHTML}<div class="card">
-     <p style="margin-top:14px"><button onclick="run(this)">立即运行一次每日流水线</button> <span id="rr" class="mt"></span></p>
-     <script>async function run(b){b.disabled=true;b.setAttribute('aria-busy','true');var rr=document.getElementById('rr');rr.removeAttribute('data-state');rr.textContent='运行中…（抓取全网可能需十几秒）';
-       try{const res=await fetch('/api/run',{method:'POST'});if(!res.ok)throw new Error(res.status);const j=await res.json();
+@@ -1295,6 +1295,13 @@ async function coverageGrid(env) {
+     sources_in_registry: per.length,
+     sources_with_items: per.filter(x => x.items > 0).length,
+     sources_never_ingested: per.filter(x => x.items === 0).map(x => x.source_id),
++    // ★抓取失败 ≠ 未回填★：cn_sources.health 已经把「抓过但失败了」记下来了（run_log 里也有
++    // degraded: ["a0:stats-gov"] 这样的记录）—— 系统一直是诚实的，只是没人去看。
++    // 但★绝不用今天的 health 去解释 2016 年的格子★：一个源今天挂了，不能证明它 2016 年没内容。
++    // 那正是本批开头抓到的谬误（拿手头的数据去解释它管不着的时段）。故 health 只作【来源级】的
++    // 运维事实呈现，不下沉成 per-cell 的历史解释。
++    sources_unhealthy: per.filter(x => x.health && x.health !== 'active')
++                          .map(x => ({ id: x.source_id, health: x.health })),
+     // ★这里【不】导出 unexplained: 0★ —— 它是恒真的字面量，任何改动都推翻不了它，
+     // 拿它当「全面」的证据就是自欺（复核 BLOCK-4）。真正该看的是 coverage_pct（债务）
+     // 与 sources_in_registry / sources_with_items 的差（有没有整个源被漏掉）。
+@@ -1313,7 +1320,11 @@ function coverageHTML(g) {
+       <span class="badge ok">有条目 ${g.covered}</span>
+       <span class="badge">未回填 ${g.not_backfilled}</span>
+       —— 时间覆盖率 <b>${g.coverage_pct}%</b>。
+-      ${g.sources_never_ingested.length ? `<span class="badge">★从未抓到过任何条目的源：<b>${g.sources_never_ingested.length}</b> 个（${esc(g.sources_never_ingested.join('、'))}）★</span>` : ''}</p>
++      ${g.sources_never_ingested.length ? `<span class="badge">★从未抓到过任何条目的源：<b>${g.sources_never_ingested.length}</b> 个（${esc(g.sources_never_ingested.join('、'))}）★</span>` : ''}
++      ${g.sources_unhealthy.length ? `<span class="badge">抓取异常：<b>${g.sources_unhealthy.length}</b> 个（${esc(g.sources_unhealthy.map(x => x.id + '：' + x.health).join('、'))}）</span>` : ''}</p>
++    <p class="mt">「未回填」与「抓取失败」<b>不是一回事</b>：上面这些源<b>抓过、但失败了</b>（health 已记在册，
++      每日运行日志里也有 degraded 记录）。<b>但本页不会拿今天的 health 去解释 2016 年的空格</b>——
++      一个源今天挂了，证明不了它 2016 年没内容。那正是本页开头拒绝的那种「拿手头数据解释它管不着的时段」。</p>
+     <p class="mt">★这就是当前的<b>覆盖债务</b>：${g.coverage_pct}% 意味着 ${g.scope_start} 以来的绝大多数月份<b>我们从没抓过</b>。
+       这里<b>不写</b>「那时这个源还不存在」——除非有独立证据，否则那是<b>假话</b>：
+       arXiv 自 1991 年、Nature 自 1869 年就在了，空着只因<b>我们没有回填</b>。缺口是真的，写清楚比藏起来强。</p>

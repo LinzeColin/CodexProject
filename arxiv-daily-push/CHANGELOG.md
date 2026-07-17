@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 P09 后续 (抓取失败可见化 + 6 个零条目源的边缘诊断; PRODUCTION DEPLOY bd0f14211005; product_version 0.31.0)
+- P09 的覆盖视图暴露出 6 个「从未抓到任何条目」的源。逐个从 **Cloudflare 边缘**实测（探针从未 deploy）：
+  cell/cell-neuron/lancet/science-advances → **边缘 403**，gnews-us-tech → **边缘 503**
+  （出版商与 Google 封数据中心 IP；同样的 URL 本机 curl 全部 200 且有条目）。
+  **这 5 个我修不了**：绕过需代理/付费出口，违反 DIR-007，且绕过反爬不该由我擅自决定。
+- **stats-gov 不一样**：边缘可达（200, 66KB, 3.4–6.7s），且拿**发货 parseA0 的正则原文**对线上真实页面跑，
+  **命中 15/18 条** → **解析器是对的，P04 的「实测 15 条」也是对的**。它是**间歇性抓取失败**，不是解析问题。
+  （我最初怀疑解析器坏了 —— 那是我探针的预期错了：页面用相对链接。如实记下。）
+- **系统一直是诚实的，只是没人看**：cn_run_log 一直记着 degraded:["feed:science-advances","a0:stats-gov"]，
+  cn_sources.health 一直记着 degraded/disabled_auto —— 只是没有任何页面呈现。这正是 T043 要解决的。
+  现在 /system 同时显示「从未抓到任何条目的源」与「抓取异常」及其 health。
+- ★纪律★：health/抓取失败只作**来源级**事实呈现，**绝不下沉成 per-cell 的历史解释** ——
+  一个源今天挂了，证明不了它 2016 年没内容；那与 v0_1 拿 source_not_yet_active 解释历史是**同一个谬误**。
+  per-cell 判定仍只有 covered / not_backfilled 两种（用例钉死：COV_REASON 不得出现 fetch_failed/source_disabled）。
+- **不删不停用任何源**：来源增删属 Owner 的 user-center 同步门。本轮只让状态可见。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P09 / T043 (覆盖与缺口上线; PRODUCTION DEPLOY; product_version 0.30.0)
 - 把 T043「把全面性从来源数量变为可见的时间覆盖和缺口」接进线上 /system。线上如实显示：
   登记在册 37 个来源 × 127 个月 = 4699 格，有条目 69 格，**时间覆盖率 1.5%**，

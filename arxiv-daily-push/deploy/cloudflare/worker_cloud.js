@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '39b87041c284', source_sha256: '39b87041c284fc7cebe0acf4302e72c2d1263b1c15bd0e4a28ad8f8f8ea1ace6', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'bd0f14211005', source_sha256: 'bd0f142110056d317f534932f9b8d05f9b66425891f04187fb2d10ee79568d50', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1295,6 +1295,13 @@ async function coverageGrid(env) {
     sources_in_registry: per.length,
     sources_with_items: per.filter(x => x.items > 0).length,
     sources_never_ingested: per.filter(x => x.items === 0).map(x => x.source_id),
+    // ★抓取失败 ≠ 未回填★：cn_sources.health 已经把「抓过但失败了」记下来了（run_log 里也有
+    // degraded: ["a0:stats-gov"] 这样的记录）—— 系统一直是诚实的，只是没人去看。
+    // 但★绝不用今天的 health 去解释 2016 年的格子★：一个源今天挂了，不能证明它 2016 年没内容。
+    // 那正是本批开头抓到的谬误（拿手头的数据去解释它管不着的时段）。故 health 只作【来源级】的
+    // 运维事实呈现，不下沉成 per-cell 的历史解释。
+    sources_unhealthy: per.filter(x => x.health && x.health !== 'active')
+                          .map(x => ({ id: x.source_id, health: x.health })),
     // ★这里【不】导出 unexplained: 0★ —— 它是恒真的字面量，任何改动都推翻不了它，
     // 拿它当「全面」的证据就是自欺（复核 BLOCK-4）。真正该看的是 coverage_pct（债务）
     // 与 sources_in_registry / sources_with_items 的差（有没有整个源被漏掉）。
@@ -1313,7 +1320,11 @@ function coverageHTML(g) {
       <span class="badge ok">有条目 ${g.covered}</span>
       <span class="badge">未回填 ${g.not_backfilled}</span>
       —— 时间覆盖率 <b>${g.coverage_pct}%</b>。
-      ${g.sources_never_ingested.length ? `<span class="badge">★从未抓到过任何条目的源：<b>${g.sources_never_ingested.length}</b> 个（${esc(g.sources_never_ingested.join('、'))}）★</span>` : ''}</p>
+      ${g.sources_never_ingested.length ? `<span class="badge">★从未抓到过任何条目的源：<b>${g.sources_never_ingested.length}</b> 个（${esc(g.sources_never_ingested.join('、'))}）★</span>` : ''}
+      ${g.sources_unhealthy.length ? `<span class="badge">抓取异常：<b>${g.sources_unhealthy.length}</b> 个（${esc(g.sources_unhealthy.map(x => x.id + '：' + x.health).join('、'))}）</span>` : ''}</p>
+    <p class="mt">「未回填」与「抓取失败」<b>不是一回事</b>：上面这些源<b>抓过、但失败了</b>（health 已记在册，
+      每日运行日志里也有 degraded 记录）。<b>但本页不会拿今天的 health 去解释 2016 年的空格</b>——
+      一个源今天挂了，证明不了它 2016 年没内容。那正是本页开头拒绝的那种「拿手头数据解释它管不着的时段」。</p>
     <p class="mt">★这就是当前的<b>覆盖债务</b>：${g.coverage_pct}% 意味着 ${g.scope_start} 以来的绝大多数月份<b>我们从没抓过</b>。
       这里<b>不写</b>「那时这个源还不存在」——除非有独立证据，否则那是<b>假话</b>：
       arXiv 自 1991 年、Nature 自 1869 年就在了，空着只因<b>我们没有回填</b>。缺口是真的，写清楚比藏起来强。</p>

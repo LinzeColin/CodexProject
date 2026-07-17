@@ -42,5 +42,12 @@ shipped COVERAGE_START = 2016-01
   PASS 空库 -> 0 格 0 覆盖 0%，不除零
   PASS 空库仍能渲染
 
+== 抓取失败要说出来，但★绝不能拿它解释 2016 年的空格★ ==
+  PASS health 异常的源被点名（实得 ["lancet","stats-gov"]）
+  PASS 页面把「抓过但失败了」如实写出来 —— run_log 里本来就有 degraded 记录，只是没人看
+  PASS health 不参与 per-cell 判定
+  PASS ★per-cell 的理由里没有 fetch_failed / source_disabled★ —— 今天的 health 不能解释历史的格子；这与拒绝 source_not_yet_active 是同一条纪律
+  PASS per-cell 判定仍然只有 covered / not_backfilled 两种，且无遗漏
+
 ACCEPTANCE = PASS
 exit=0

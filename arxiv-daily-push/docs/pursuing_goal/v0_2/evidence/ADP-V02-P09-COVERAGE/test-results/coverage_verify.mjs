@@ -60,8 +60,9 @@ function mkEnv(sources, items, opts = {}) {
 const SRC = [
   { id: 'arxiv-all', board_id: 'board1' }, { id: 'biorxiv', board_id: 'board1' },
   { id: 'nature', board_id: 'board2' }, { id: 'ndrc-gov', board_id: 'board3' },
-  { id: 'stats-gov', board_id: 'board3' },      // ← A0 官方源，线上一条都没抓到
-  { id: 'lancet', board_id: 'board2' },         // ← 同上
+  // 线上真实状态：这两个源【抓过但失败了】，health 已记在册（run_log 里也有 degraded 记录）
+  { id: 'stats-gov', board_id: 'board3', health: 'degraded' },      // A0 官方源，边缘可达但慢/间歇失败
+  { id: 'lancet', board_id: 'board2', health: 'disabled_auto' },    // 边缘 403（出版商封数据中心 IP）
 ];
 const LIVE = [
   { source_id: 'arxiv-all', board_id: 'board1', mo: '2026-07', n: 150 },
@@ -171,6 +172,24 @@ console.log('\n== 空库不炸 ==');
   const g = await mod.coverageGrid(mkEnv([], []));
   ok(g.cells === 0 && g.covered === 0 && g.coverage_pct === 0, '空库 -> 0 格 0 覆盖 0%，不除零');
   ok(typeof mod.coverageHTML(g) === 'string', '空库仍能渲染');
+}
+
+console.log('\n== 抓取失败要说出来，但★绝不能拿它解释 2016 年的空格★ ==');
+{
+  const g = await mod.coverageGrid(mkEnv(SRC, LIVE));
+  const html = mod.coverageHTML(g);
+  ok(g.sources_unhealthy.length === 2, `health 异常的源被点名（实得 ${JSON.stringify(g.sources_unhealthy.map(x => x.id))}）`);
+  ok(html.includes('stats-gov：degraded') && html.includes('lancet：disabled_auto'),
+    '页面把「抓过但失败了」如实写出来 —— run_log 里本来就有 degraded 记录，只是没人看');
+  // ★关键纪律★：health 是【来源级】事实，不许下沉成 per-cell 的历史解释。
+  // 一个源今天挂了，证明不了它 2016 年没内容 —— 那正是本批开头拒绝的 v0_1 谬误。
+  ok(!g.per_source.some(x => x.months_covered !== 0 && x.health === 'disabled_auto' && x.months_missing === 0),
+    'health 不参与 per-cell 判定');
+  const cellReasons = Object.keys(mod.COV_REASON);
+  ok(!cellReasons.includes('fetch_failed') && !cellReasons.includes('source_disabled'),
+    '★per-cell 的理由里没有 fetch_failed / source_disabled★ —— 今天的 health 不能解释历史的格子；' +
+    '这与拒绝 source_not_yet_active 是同一条纪律');
+  ok(g.covered + g.not_backfilled === g.cells, 'per-cell 判定仍然只有 covered / not_backfilled 两种，且无遗漏');
 }
 
 console.log('\nACCEPTANCE = ' + (fails ? 'FAIL' : 'PASS'));

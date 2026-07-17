@@ -1,0 +1,132 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P09B-FETCH-VISIBILITY-20260719",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P09-COVERAGE",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-19T20:00:00Z",
+  "implementation_base_sha": "1cf2990b38ec8cb6f44e28d6af51f9c0540c9568",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:6efdbecf9699948f070aaa0fae146f2ad7adf833045753d75d7ba0b82c4daea5",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 18 non-manifest changed files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP V0.2 P09 follow-up: fetch-failure visibility + edge diagnosis of the six zero-item sources",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "P09's coverage view surfaced six sources that had never ingested a single item. Each was probed FROM the Cloudflare edge (probe never deployed): cell, cell-neuron, lancet and science-advances return 403 and gnews-us-tech returns 503, while the same URLs return 200 with real items from a normal client -- the publishers and Google block datacenter IPs. Those five are NOT fixable here: bypassing needs a proxy or paid egress (violating DIR-007), and circumventing bot protection is not a call to make unilaterally. stats-gov is different: it IS reachable from the edge (200, 66KB, 3.4-6.7s) and the SHIPPED parseA0 regex matches 15 of 18 article links on the live page, so the parser is correct and P04's '15 items' claim was accurate -- it is an intermittent fetch failure, not a parse bug. (The implementer first suspected the parser; that was the probe's own wrong expectation -- the page uses relative hrefs -- and is recorded as such.) The system had been honest all along: cn_run_log records degraded ['feed:science-advances','a0:stats-gov'] and cn_sources.health records degraded/disabled_auto; no page surfaced it, which is exactly what T043 exists to fix. /system now shows both the never-ingested sources and the unhealthy ones with their health. DISCIPLINE: health is presented as a SOURCE-level fact and never sinks into a per-cell historical explanation -- a source failing today cannot prove it had no content in 2016, which is the same fallacy as v0_1's source_not_yet_active. No source was deleted or disabled: that belongs to the Owner's user-center sync gate. release_mode PRODUCTION; live 39b87041c284 -> bd0f14211005.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_verify.mjs",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/edge_diagnosis.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P09B-FETCH-VISIBILITY-20260719.json",
+    "tests/governance/test_adp_v02_evidence_bundles.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_verify.mjs",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/edge_diagnosis.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P09B-FETCH-VISIBILITY-20260719.json",
+    "tests/governance/test_adp_v02_evidence_bundles.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/edge_diagnosis.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/nc_results.txt"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_verify.mjs",
+    "python3 -B -m unittest -q tests.governance.test_adp_v02_evidence_bundles",
+    "python3 -B -m unittest -q tests.governance.test_adp_worker_build_stamp",
+    "python3 -B scripts/repository_hygiene_audit.py"
+  ],
+  "test_results": [
+    {
+      "command": "edge reachability probe (wrangler dev --remote; never deployed)",
+      "result": "PASS (diagnosis complete)",
+      "observed": "cell 403 / cell-neuron 403 / lancet 403 / science-advances 403 / gnews-us-tech 503 from the edge; the same URLs give 200 with 24/16/32/42/100 items from a normal client. stats-gov: 200, 66358 bytes, 3.4-6.7s across 3 runs -- reachable, slow, well inside the shipped 15s timeout."
+    },
+    {
+      "command": "shipped parseA0 regex against the LIVE stats.gov.cn page",
+      "result": "PASS",
+      "observed": "18 distinct article hrefs of the form ./202607/t20260716_1964142.html; the shipped /^\\\\.\\\\/\\\\d{6}\\\\/t\\\\d{8}_\\\\d+\\\\.html$/ matches 15 of them. Parser correct; P04's '15 items' verified. The first probe's '0 matches for /sj/zxfb/' was the probe's wrong expectation (relative hrefs), not a defect."
+    },
+    {
+      "command": "P09 acceptance + the new health assertions",
+      "result": "PASS",
+      "observed": "exit 0. New: unhealthy sources are named on the page (stats-gov: degraded, lancet: disabled_auto), AND COV_REASON still contains no fetch_failed/source_disabled -- health must never become a per-cell historical excuse, the same discipline as refusing source_not_yet_active. per-cell verdicts remain covered/not_backfilled with covered+not_backfilled==cells."
+    },
+    {
+      "command": "V0.2 evidence-bundle guard (extended)",
+      "result": "PASS",
+      "observed": "6 tests. New invariant: a PRODUCTION bundle must record an ACTUAL change (live_build_before != live_build_after) -- a sheet copied from the previous phase is a false record of what went live. Load-bearing: setting before==after -> exit 1; restored -> exit 0."
+    },
+    {
+      "command": "live verification",
+      "result": "PASS",
+      "observed": "build.json bd0f14211005; / /radar /system /watchlist all 200; /system renders both '从未抓到过任何条目的源：6 个' and '抓取异常：6 个 (cell：degraded、cell-neuron：degraded、lancet：degraded、science-advances：disabled_auto、stats-gov：degraded、gnews-us-tech：disabled_auto)'."
+    }
+  ],
+  "stop_conditions": [
+    "不要为了让这 6 个源『不再显示异常』而删掉或停用它们 —— 来源增删属 Owner 的 user-center 同步门。",
+    "不要用代理/付费出口去绕 403/503：违反 DIR-007，且绕过反爬不该由实施者擅自决定。",
+    "不要把 health 下沉成 per-cell 的历史解释 —— 那是 v0_1 source_not_yet_active 的同一个谬误。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <previous-version-id> 回到 39b87041c284。",
+    "repo": "git revert 本 commit；只读视图，无数据损失。"
+  },
+  "unresolved_risks": [
+    "★真实运维问题，本轮只让它可见、没有修★：5 个源（cell/cell-neuron/lancet/science-advances/gnews-us-tech）在 Cloudflare 边缘被 403/503，DIR-007 下无解；board2 因此实际只靠其余源供给。",
+    "stats-gov（A0 官方源，国家统计局）边缘可达但间歇失败，至今 0 条入库。延长超时/重试会吃 cron 预算，需先有几次真实 cron 证据再决定 —— 不拍脑袋改。",
+    "P04 的 TASK_REPORT 曾把 stats-gov 列为『及时，实测 15 条』—— 那个测量本身是对的（本轮复验命中 15/18），但它从未真正入库过。测量对 ≠ 入库成功，这个区别当时没写清楚。"
+  ],
+  "next_allowed_task": "等今晚 cron 后核对 enrichMeta 与 stats-gov 的真实表现；或由 Owner 决定这 6 个源的去留。"
+}

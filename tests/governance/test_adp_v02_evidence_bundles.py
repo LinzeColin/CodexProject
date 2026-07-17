@@ -81,6 +81,25 @@ class TestAdpV02EvidenceBundles(unittest.TestCase):
             "The task package requires cost accounting (cost_metric: 未知不得填 0). A bundle without a "
             "parseable cost sheet declaring release_mode is not auditable:\n  " + "\n  ".join(bad))
 
+    def test_production_bundles_record_an_actual_change(self):
+        """A PRODUCTION deploy must move the build: before != after.
+
+        If a bundle claims PRODUCTION but names the same build before and after, either nothing was
+        deployed or the sheet was copied from the previous phase and never updated -- both make the
+        cost sheet a false record of what went live."""
+        bad = []
+        for b in _bundles():
+            f = b / "cost_value.json"
+            if not f.is_file():
+                continue
+            d = json.loads(f.read_text(encoding="utf-8"))
+            if str(d.get("release_mode", "")).upper() != "PRODUCTION":
+                continue
+            before, after = str(d.get("live_build_before", "")), str(d.get("live_build_after", ""))
+            if before and after and before == after:
+                bad.append("{}: live_build_before == live_build_after == {}".format(b.name, after))
+        self.assertEqual(bad, [], "PRODUCTION bundle(s) whose build did not move:\n  " + "\n  ".join(bad))
+
     def test_production_bundles_name_a_real_build_id(self):
         """A PRODUCTION deploy must say which build it put live, as a real 12-hex stamp.
 
