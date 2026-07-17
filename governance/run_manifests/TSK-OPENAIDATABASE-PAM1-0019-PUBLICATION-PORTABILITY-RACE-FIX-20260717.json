@@ -10,12 +10,12 @@
   "generated_at": "2026-07-16T23:50:21Z",
   "implementation_base_sha": "f97f6826794c73128afa38ca907b618115a06893",
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3d88e4a72f2325a50d70d362fd958e2b77543228f91ba1830bb7f9884cc655dd",
-  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the fifteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:63e8aad50972a772298c15e2bab86e6ce9f797dadf0d3e5236dd30aeeacba9fe",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the sixteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
   "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
   "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
   "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
-  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit and source all members from its Git objects, register only the two exact append-only governance OIDs introduced by the intervening accepted main, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects and write canonical explicit ZIP32 bytes, register only the two exact append-only governance OIDs introduced by the intervening accepted main, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
   "scope": {
     "new_business_sample_files": 0,
     "canonical_or_raw_business_data_files_modified": 0,
@@ -37,6 +37,7 @@
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
     "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
     "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
     "governance/id_registry.json",
     "governance/repository_hygiene_policy.json",
@@ -55,6 +56,7 @@
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
     "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
     "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
     "governance/id_registry.json",
     "governance/repository_hygiene_policy.json",
@@ -73,6 +75,7 @@
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
     "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
     "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
     "governance/id_registry.json",
     "governance/repository_hygiene_policy.json",
@@ -91,6 +94,7 @@
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
     "OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py",
+    "OpenAIDatabase/scripts/memory_snapshot.py",
     "OpenAIDatabase/tests/test_memory_snapshot_recovery.py",
     "governance/id_registry.json",
     "governance/repository_hygiene_policy.json",
@@ -142,7 +146,7 @@
     {
       "command": "Lean Governance changed-only",
       "result": "PASS",
-      "observed": "SHIP with 16 changed files, 5 selected projects, 5 validated projects and zero tracked writes."
+      "observed": "SHIP with 17 changed files, 5 selected projects, 5 validated projects and zero tracked writes."
     },
     {
       "command": "immutable Governance ID V2 audit",
@@ -152,7 +156,7 @@
     {
       "command": "snapshot and production acceptance unit regression",
       "result": "PASS",
-      "observed": "15/15 tests passed, including value-free JSON-path diagnostics for clean-checkout report drift."
+      "observed": "16/16 tests passed, including value-free JSON-path diagnostics and canonical explicit ZIP32 metadata coverage for clean-checkout report drift."
     }
   ],
   "stop_conditions": {
@@ -163,7 +167,7 @@
     "public_snapshot_contains_runtime_or_unsafe_records": true
   },
   "rollback": {
-    "action": "Revert this sixteen-file remediation through a new governed transaction.",
+    "action": "Revert this seventeen-file remediation through a new governed transaction.",
     "history_rewrite": false,
     "canonical_or_raw_data_compensation": "none"
   },

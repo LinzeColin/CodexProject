@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import io
 import json
+import stat
 import sys
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -44,6 +47,27 @@ class MemorySnapshotRecoveryTests(unittest.TestCase):
             evaluator._json_difference_paths(left, right),
             ["$.snapshot.asset_bytes", "$.snapshot.hash"],
         )
+
+    def test_snapshot_zip32_writer_fixes_all_cross_runtime_metadata(self) -> None:
+        archive = memory_snapshot.build_snapshot_bytes(
+            {"OpenAIDatabase/test.txt": b"portable"},
+            {"schema_version": "test"},
+        )
+        self.assertEqual(
+            archive,
+            memory_snapshot.build_snapshot_bytes(
+                {"OpenAIDatabase/test.txt": b"portable"},
+                {"schema_version": "test"},
+            ),
+        )
+        with zipfile.ZipFile(io.BytesIO(archive), "r") as opened:
+            self.assertIsNone(opened.testzip())
+            self.assertEqual(opened.namelist(), ["OpenAIDatabase/test.txt", "SNAPSHOT_MANIFEST.json"])
+            for info in opened.infolist():
+                self.assertEqual(info.date_time, memory_snapshot.ZIP_TIMESTAMP)
+                self.assertEqual(info.compress_type, zipfile.ZIP_STORED)
+                self.assertEqual(info.create_system, 3)
+                self.assertEqual((info.external_attr >> 16) & 0xFFFF, stat.S_IFREG | 0o644)
 
     def test_tamper_missing_member_wrong_commit_and_unsafe_paths_fail_closed(self) -> None:
         self.assertEqual(
