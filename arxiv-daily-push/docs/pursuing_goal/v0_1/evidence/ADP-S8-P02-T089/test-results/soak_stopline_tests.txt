@@ -1,0 +1,5 @@
+stop-the-line drills: 8/8 triggers fire their gate (line stops) with passing negative controls [source/deploy hash dri, six-theme/motion unapp, no official original /, no raw evidence but cl, prediction time leakag, backfill P95 > baselin, cost over the free-tie, third repeated failure]
+soak clause: PENDING (calendar-bound: needs 14 consecutive real daily production runs; day 0/14) -- T089 complete = False (honestly gated on 14 real days)
+
+ACCEPTANCE = PASS (clause 2: stop-the-line drills)  |  CLAUSE 1 (14-day soak): PENDING day 0/14 (calendar-bound)
+NOTE: all 8 stop-the-line triggers drilled at least once against their real detection gates, each load-bearing (fires on the trigger, not on a benign control). The 14-consecutive-real-day soak with no Sev-1/2 is inherently calendar-bound and is honestly PENDING (day 0/14); T089 completes only when the operator's daily cron reaches 14/14. NOT_DEPLOYED (live b189d3cc0703).

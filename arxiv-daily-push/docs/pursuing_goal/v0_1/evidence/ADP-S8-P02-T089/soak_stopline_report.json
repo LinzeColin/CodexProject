@@ -1,0 +1,78 @@
+{
+  "iteration": "ITER-20260716-ADP-V01-FINAL-EXECUTION",
+  "task": "ADP-S8-P02-T089",
+  "stopline_drills": [
+    {
+      "trigger": "source/deploy hash drift",
+      "gate": "visual_regression_ci (T078) BLOCK",
+      "line_stopped": true,
+      "negative_control_ok": true
+    },
+    {
+      "trigger": "six-theme/motion unapproved deletion",
+      "gate": "visual_regression_ci (T078) BLOCK unless approved",
+      "line_stopped": true,
+      "negative_control_ok": true
+    },
+    {
+      "trigger": "no official original / no evidence",
+      "gate": "validate_evidence (T008) INCOMPLETE",
+      "line_stopped": true,
+      "negative_control_ok": true
+    },
+    {
+      "trigger": "no raw evidence but claimed complete (self-signed PASS)",
+      "gate": "validate_evidence (T008) self-sign guard",
+      "line_stopped": true,
+      "negative_control_ok": true
+    },
+    {
+      "trigger": "prediction time leakage (observed_at)",
+      "gate": "dataset_snapshot.assert_no_leakage (T070)",
+      "line_stopped": true,
+      "negative_control_ok": true
+    },
+    {
+      "trigger": "backfill P95 > baseline +20%",
+      "gate": "P95 regression threshold (mirror of the SLA guard)",
+      "line_stopped": true,
+      "negative_control_ok": true
+    },
+    {
+      "trigger": "cost over the free-tier limit (DIR-007)",
+      "gate": "DIR-007 R2_BUDGET fail-closed guard (guardFrac 0.9)",
+      "line_stopped": true,
+      "negative_control_ok": true
+    },
+    {
+      "trigger": "third repeated failure",
+      "gate": "anti-black-hole repeat-failure limit (2 -> change path, 3 -> stop)",
+      "line_stopped": true,
+      "negative_control_ok": true
+    }
+  ],
+  "all_triggers_drilled": true,
+  "all_negative_controls_ok": true,
+  "stopline_clause_met": true,
+  "soak": {
+    "required_consecutive_days": 14,
+    "daily_manifest_schema": [
+      "date",
+      "build_id",
+      "source_drift",
+      "content_quality_defects",
+      "cost_usage_free_tier_pct",
+      "cwv_p75",
+      "sev1_2_incidents"
+    ],
+    "sla_quality_cost_trends": "per-day build_id stability + defect trend + DIR-007 usage trend + CWV p75 trend",
+    "acceptance_no_sev12": "every one of the 14 days must have sev1_2_incidents == 0",
+    "days_completed": 0,
+    "days_remaining": 14,
+    "status": "PENDING (calendar-bound: needs 14 consecutive real daily production runs; day 0/14)",
+    "note": "This clause cannot be satisfied by an autonomous session; the operator runs the daily cron for 14 days, each day appending a manifest; T089 closes when 14/14 have no Sev-1/2."
+  },
+  "soak_clause_met": false,
+  "t089_complete": false,
+  "live_build": "b189d3cc0703 (unchanged; drills run in isolation, deploy nothing)"
+}
