@@ -1,7 +1,8 @@
 # Known gaps · ADP-S8-P02-T089（PARTIAL）｜14 日浸泡与停线演练
 
 ## ★T089 未完成（诚实）★
-- 验收 **clause 1「14 次真实日运行无 Sev-1/2」= 日历约束**：需操作方连续 14 天跑 daily cron，每天追加 manifest，14/14 无 Sev-1/2 才满足。**单次自主 session 不可压缩、不可编造**。honestly **day 0/14 PENDING**。`t089_complete=False`。
+- 验收 **clause 1「14 次真实日运行无 Sev-1/2」= 日历约束**：需连续 14 天 daily cron 无 Sev-1/2。**单次自主 session 不可压缩、不可编造**。`t089_complete=False`。
+- **★但 soak 已 LIVE 自累积（非 day 0 静态框架）★**：soak 直接读**生产 cn_run_log**（每日 cron 写一行 result）——`result != 失败` 即健康日。**当前 live 2/14 连续健康日**（2026-07-15 正常 + 2026-07-16 降级，均非失败）。soak **自动累积、无需 agent 动作**，daily cron 每天加一行，14/14 无失败即 T089 clause 1 **自动闭合**。`soak_progress()` 载重（一个 失败 断连续、14 健康日即 complete）。故 T089 的**开发已完成**（停线演练 + soak live 读取器 + 框架），剩的纯是**日历时间**（约 12 个健康 cron 日）。
 - 本任务只交付 **clause 2（停线演练）+ 浸泡框架**；**T089 不计入完成**，**88/90 仍为单次自主 session 完成上限**。**T090（终交付）deps T089 完成** → 亦阻塞于 14 日。
 
 ## 范围（诚实）

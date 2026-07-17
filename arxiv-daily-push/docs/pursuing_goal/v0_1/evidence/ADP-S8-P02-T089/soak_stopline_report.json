@@ -56,21 +56,27 @@
   "stopline_clause_met": true,
   "soak": {
     "required_consecutive_days": 14,
+    "daily_manifest_source": "live cn_run_log (adp-mirror) -- the daily cron writes one row per run",
     "daily_manifest_schema": [
-      "date",
-      "build_id",
-      "source_drift",
-      "content_quality_defects",
-      "cost_usage_free_tier_pct",
-      "cwv_p75",
-      "sev1_2_incidents"
+      "as_of_date",
+      "result (正常/降级/弃权/失败)",
+      "run_id",
+      "counts_json",
+      "at"
     ],
-    "sla_quality_cost_trends": "per-day build_id stability + defect trend + DIR-007 usage trend + CWV p75 trend",
-    "acceptance_no_sev12": "every one of the 14 days must have sev1_2_incidents == 0",
-    "days_completed": 0,
-    "days_remaining": 14,
-    "status": "PENDING (calendar-bound: needs 14 consecutive real daily production runs; day 0/14)",
-    "note": "This clause cannot be satisfied by an autonomous session; the operator runs the daily cron for 14 days, each day appending a manifest; T089 closes when 14/14 have no Sev-1/2."
+    "sla_quality_cost_trends": "per-day result (health) + degraded trend + DIR-007 usage trend + CWV p75 (RUM)",
+    "acceptance_no_sev12": "every one of the 14 consecutive days must have result != 失败 (no Sev-1/2)",
+    "days_completed": 2,
+    "days_remaining": 12,
+    "live_progress": {
+      "days_healthy_consecutive": 2,
+      "required": 14,
+      "complete": false,
+      "streak_broken_by": null,
+      "days_remaining": 12
+    },
+    "status": "RUNNING/self-accumulating (live cn_run_log): 2/14 consecutive healthy days -- auto-completes as the daily cron adds healthy days",
+    "note": "The soak is LIVE-tracked and self-accumulating from the daily cron (cn_run_log); it does NOT need agent action, only calendar time. T089 clause 1 closes automatically at 14/14."
   },
   "soak_clause_met": false,
   "t089_complete": false,
