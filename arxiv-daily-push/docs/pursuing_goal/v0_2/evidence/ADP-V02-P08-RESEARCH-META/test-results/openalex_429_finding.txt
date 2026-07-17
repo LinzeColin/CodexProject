@@ -1,0 +1,40 @@
+# ★P08 在生产上是个静默空转：OpenAlex 的批量 filter= 从 Cloudflare 边缘被 429★
+# （实测，非推断。发现方式：不等今晚 cron，用 wrangler dev --remote 把【发货的 enrichMeta 原样】
+#  绑到【真实 adp-mirror D1】+【真实 OpenAlex】上跑一次 —— 探针从未 deploy，生产 worker 未动。）
+
+## 跑真的 enrichMeta 的结果
+    wall_ms: 890
+    counts.degraded: ["meta:http429"]      ← 降级路径在生产上真实生效了（验收 2 成立）
+    total_rows: 0                          ← ★但一条都没补上★
+    found_rows: 0
+
+## 定位：不是 D1，不是解析，是 OpenAlex 对【批量 filter=】的限额
+从【Cloudflare 边缘】实测：
+
+| 端点 | 边缘结果 | 本机 curl |
+|---|---|---|
+| `/works?filter=doi:…`（P08 的批量设计） | **429 ×3/3**，`retry-after: 46884`（约 13 小时） | **200** |
+| `/works/doi:X`（单条） | **200 ×3/3**，0.8–1.7s，数据正确 | 200 |
+
+429 的原文：`{"error":"Rate limit exceeded","message":"Insufficient budget. This request costs $0.0001 but you on…"}`
+
+**结论**：OpenAlex 按 IP 计预算，而 Cloudflare Workers 的出口是**共享数据中心 IP**，预算早被别人耗尽。
+`mailto` 不解决（`no-mailto` 与带 `mailto` 的 429 完全一样）。**这不是偶发，是系统性的**：
+P08 的整个设计（一个 `filter=` 批量查 50 个 DOI）在生产上**每晚都会 429 → 静默降级 → 补 0 条**。
+
+## 这暴露了我 P08 证据里的一个真实盲区
+P08 的 known_gaps 把「首次 cron 才能结清」列为残余风险，我还特地用真 D1 结清了
+`env.DB.batch([SELECT,SELECT])` 的契约 —— **但我验的是 D1 的 batch，不是 OpenAlex 的 filter= 在边缘能不能用**。
+六轮复核里我和复核者都在本机验证 OpenAlex（本机 200），**没有一次从边缘验**。
+「从我这儿能通」不等于「从生产能通」—— 这与本轮 6 个源 403/503 的教训**是同一条**，
+我刚写完那条教训，转头在 P08 上就漏了同一件事。
+
+## 修法（已知，但**未实施**：需要完整的实现+负控+独立复核+部署周期，不许跳过）
+`/works/doi:X` 单条从边缘是通的。改成单条查询即可，但要重算 DIR-007：
+- cron 现用 **20/50** 外部子请求；单条查询 1 个 DOI = 1 个子请求。
+- 故每晚最多补 **N ≤ 30** 条才不越 50（保守取值应留余量，例如 12 → 32/50）。
+- 代价：约 600 条候选按 12/晚 要 **50 晚**补完（批量设计原本 50/晚 只要 12 晚）——
+  但 **12 条/晚 > 0 条/永远**。
+- 另需实测：单条响应约 11KB，N 条的 JSON.parse 与 15s 超时下的并发方式。
+
+**在完成上述周期之前，P08 的研究元数据在生产上等于没有。** 如实记在这里，不粉饰。
