@@ -1,0 +1,28 @@
+=== 1. build == e78306049663 ===
+{"build_id":"e78306049663","source_sha256":"e78306049663da5bef870b7896e0e9204dba908c18bfd0a913173a28173c8e76","schema_version":"cn_v0_3","built_at":"2026-07-17"}
+  OK
+=== 2. 路由(含 P03 新筛选参数) ===
+  / -> 200
+  /today -> 200
+  /queue -> 200
+  /radar -> 200
+  /system -> 200
+  /history -> 200
+  /library -> 200
+  /search -> 200
+  /search?q=policy -> 200
+  /search?q=policy&board=board3 -> 200
+  /search?q=policy&from=2026-01-01&to=2026-12-31 -> 200
+  /search?q=%E6%94%BF%E7%AD%96&board=board3&from=2026-01-01 -> 200
+=== 3. 六主题 6/6 (P01/P02/P03 均不得破坏) ===
+  themes: 6/6
+=== 4. P03 筛选表单渲染 ===
+  OK 板块筛选
+  OK 日期范围
+  OK 诚实文案(已移除过度承诺)
+  OK 无『精确命中』过度声称
+=== 5. P01/P02 未回归 ===
+  P01 factsheet chips: 60
+  P02 /library OK
+
+DEPLOY VERIFY: PASS

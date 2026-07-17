@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'e301f8a4c7d8', source_sha256: 'e301f8a4c7d8d63e7f662d06996f40a8f3a036b1b647930784f96e476b601a65', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'e78306049663', source_sha256: 'e78306049663da5bef870b7896e0e9204dba908c18bfd0a913173a28173c8e76', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1157,17 +1157,74 @@ async function boardPage(env, boardId, offset) {
 }
 
 // ───────────────────────── 搜索 /search ─────────────────────────
-async function searchPage(env, q) {
-  q = (q || '').trim().slice(0, 80);
-  let body = `<div class="card"><h1>搜索</h1><p class="mt">在候选库标题与摘要里搜索。</p>`;
+// 标识符归一化（T060 _norm_id 语义）：去空白（含全角）+ ASCII 大小写折叠；DOI 大小写不敏感。
+function normIdent(s) { return (s || '').replace(/　/g, ' ').replace(/\s+/g, '').toLowerCase(); }
+// 从条目已有字段抽标识符（跨板块，用于检索排序；沿用 P01 的输入上界，保持线性时间）
+function itemIdentifiers(it) {
+  const out = [];
+  const doi = fsFirst(FS_DOI_RE, it.id, it.url, (it.summary || '').slice(0, 2000));
+  if (doi) out.push(doi.replace(/[).,;]+$/, ''));
+  const dn = fsFirst(FS_DOCNUM_RE, (it.title || '').slice(0, 500), (it.summary || '').slice(0, 2000));
+  if (dn) out.push(dn);
+  return out;
+}
+const SEARCH_LIMIT = 40;
+async function searchPage(env, params) {
+  const q = (params.get('q') || '').trim().slice(0, 80);
+  const board = (params.get('board') || '').slice(0, 12);
+  const from = (params.get('from') || '').slice(0, 10);
+  const to = (params.get('to') || '').slice(0, 10);
+  const boardOpts = REGISTRY.map(b => b.board);
+  const bSel = boardOpts.includes(board) ? board : '';           // 白名单，未知板块视为不筛选
+  const dateOk = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : '';  // 只接受 YYYY-MM-DD
+  const f = dateOk(from), t = dateOk(to);
+
+  const filters = `<form method="get" action="/search" style="margin:8px 0 2px">
+    <input type="hidden" name="q" value="${esc(q)}">
+    <label class="mt">板块 <select name="board"><option value="">全部</option>${boardOpts.map(b =>
+      `<option value="${esc(b)}"${bSel === b ? ' selected' : ''}>${esc(BOARD_NAMES[b] || b)}</option>`).join('')}</select></label>
+    <label class="mt">起 <input type="date" name="from" value="${esc(f)}"></label>
+    <label class="mt">止 <input type="date" name="to" value="${esc(t)}"></label>
+    <button class="btn-sm" type="submit">筛选</button>
+    ${(bSel || f || t) ? `<a class="pill-link" href="/search?q=${encodeURIComponent(q)}">清除筛选</a>` : ''}
+  </form>`;
+
+  let body = `<div class="card"><h1>搜索</h1>
+    <p class="mt">在候选库的标题、摘要、链接与 ID 中检索；可按板块与日期范围筛选。若查询出现在某条的文号／DOI 这类标识符里，该条会被置顶。</p>
+    ${filters}`;
   if (q) {
-    const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';  // 先转义 \ 本身（ESCAPE 字符），再转义 % _
-    const { results } = await env.DB.prepare(
-      "SELECT * FROM cn_items WHERE title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 40").bind(like).all();
-    body += `<p class="mt">「${esc(q)}」找到 ${(results || []).length} 条${(results || []).length === 40 ? '（仅显示前 40）' : ''}</p>
+    const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';
+    // 检索面必须与 itemIdentifiers 的抽取面一致：bioRxiv/medRxiv 的 DOI 只存在于 id/url，不在 title/summary。
+    // LIKE %x% 本就不可走索引，加这两列不改变查询计划（已用 EXPLAIN QUERY PLAN 复验同计划）。
+    const where = ["(title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' OR id LIKE ?1 ESCAPE '\\' OR url LIKE ?1 ESCAPE '\\')"];
+    const binds = [like];
+    if (bSel) { binds.push(bSel); where.push(`board_id = ?${binds.length}`); }
+    if (f) { binds.push(f); where.push(`COALESCE(published_at, fetched_at) >= ?${binds.length}`); }
+    if (t) { binds.push(t); where.push(`COALESCE(published_at, fetched_at) <= ?${binds.length}`); }
+    binds.push(SEARCH_LIMIT);
+    // 列名为代码字面量，全部取值均为绑定参数（无拼接注入面）；给出 board 时可走 idx_cn_items_board_recency
+    const sql = `SELECT * FROM cn_items WHERE ${where.join(' AND ')} ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT ?${binds.length}`;
+    let { results } = await env.DB.prepare(sql).bind(...binds).all();
+    results = results || [];
+    // T060 精确优先：查询形如标识符时，把归一化后精确命中的条目排到最前（对已取回的 <=40 行做，零额外 DB 成本）
+    const nq = normIdent(q);
+    const identLike = /^10\.\d{4,9}\//.test(q.trim()) || FS_DOCNUM_RE.test(q);
+    let exactCount = 0;
+    if (identLike && results.length) {
+      const hit = [], rest = [];
+      for (const it of results) {
+        // 可证语义：查询出现在该行抽出的标识符里（而非正文别处）。用 includes 容忍抽取吞入的前缀
+        // （如「转发国发〔2026〕12号」）；但这只证明标识符文本匹配，不声称该行就是官方原件。
+        (itemIdentifiers(it).some(v => normIdent(v).includes(nq)) ? hit : rest).push(it);
+      }
+      exactCount = hit.length;
+      results = hit.concat(rest);
+    }
+    const note = [bSel ? BOARD_NAMES[bSel] || bSel : '', f ? '起 ' + f : '', t ? '止 ' + t : ''].filter(Boolean).join(' · ');
+    body += `<p class="mt">「${esc(q)}」找到 ${results.length} 条${results.length === SEARCH_LIMIT ? '（仅显示最近 40）' : ''}${note ? '｜筛选：' + esc(note) : ''}${exactCount ? `｜<span class="badge ok">标识符匹配 ${exactCount} 条已置顶</span>` : ''}</p>
       <p style="margin:2px 0 6px"><a class="deep-btn ghost" href="${esc(chatgptHref(deepDiveTopicPrompt(q)))}" target="_blank" rel="noopener noreferrer">🔮 让 ChatGPT 全网深度检索这个主题</a></p>
-      ${itemListHTML(results || [])}`;
-  } else body += '<p class="mt">在右上角搜索框输入关键词。</p>';
+      ${itemListHTML(results)}`;
+  } else body += '<p class="mt">在右上角搜索框输入关键词，或用上面的板块／日期筛选。</p>';
   body += '</div>';
   return PAGE('/search', body + STUDY_JS, { title: '搜索' + (q ? '：' + q : ''), q });
 }
@@ -1374,7 +1431,7 @@ export default {
       else if (p === '/system') html = await systemPage(env);
       else if (p === '/library') html = await libraryPage(env, url.searchParams);
       else if (p === '/history') html = await historyPage(env);
-      else if (p === '/search') html = await searchPage(env, url.searchParams.get('q') || '');
+      else if (p === '/search') html = await searchPage(env, url.searchParams);
       else if (p.startsWith('/board/')) html = await boardPage(env, p.slice('/board/'.length), Math.max(0, parseInt(url.searchParams.get('offset') || '0', 10) || 0));
       else if (p.startsWith('/item/')) html = await itemPage(env, decodeURIComponent(p.slice('/item/'.length)));
       else html = null;

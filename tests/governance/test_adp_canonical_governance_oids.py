@@ -57,6 +57,17 @@ class TestAdpCanonicalGovernanceOids(unittest.TestCase):
         """The guarded invariant only holds if the rule really is baseline_oid_only."""
         self.assertEqual(self.rule.get("change_policy"), "baseline_oid_only")
 
+    def test_baseline_tree_is_resolvable(self):
+        """The whole audit is anchored on baseline_tree; if it is unreachable the audit degrades to a
+        confusing 'FAIL with violations: []'. That exact failure mode has bitten this repo before
+        ('baseline_tree is not available'), so guard it explicitly rather than by inference."""
+        baseline = str(self.policy.get("baseline_tree") or "")
+        self.assertRegex(baseline, r"^[0-9a-f]{40}$", "baseline_tree must be a 40-char Git tree OID")
+        proc = _git("cat-file", "-e", "{}^{{tree}}".format(baseline))
+        self.assertEqual(proc.returncode, 0,
+                         "baseline_tree {} is not resolvable in this clone -- the hygiene audit cannot "
+                         "compare against it and will fail with an empty violations list".format(baseline[:12]))
+
     def test_changed_oversized_governance_files_have_their_oid_registered(self):
         prefix = self.rule.get("prefix")
         self.assertTrue(prefix and prefix.endswith("/"), "rule must use a directory prefix")

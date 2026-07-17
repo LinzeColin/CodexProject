@@ -1,0 +1,20 @@
+{
+  "task": "ADP-V02-P03-SEARCH",
+  "program": "ADP V0.2 生产集成（把 NOT_DEPLOYED 认知能力分批集成上线）",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "e301f8a4c7d8",
+  "live_build_after": "e78306049663",
+  "value": "把 S5-P02-T060 中线上数据真能支撑的部分上线：/search 增加板块+日期范围结构化筛选（走索引，反而收窄扫描），并把查询命中于文号/DOI 标识符内的条目置顶；检索面补上 id/url，修复 bioRxiv/medRxiv 的 DOI 此前搜不到（DOI 只存在于 id/url）。",
+  "scope_honest": "非 T060 的 O(1) 精确查找，只是对已召回≤40行的重排；空格变体文号端到端不成立；agency/region/status facet 未做（无对应列）；徽章只声称『标识符匹配』而非『精确命中』（board3 现为媒体源，行是报道而非原件）。",
+  "new_d1_tables": 0,
+  "schema_change": false,
+  "cron_change": false,
+  "external_fetch_added": false,
+  "query_plan_unfiltered": "SCAN cn_items USING INDEX idx_cn_items_recency —— 与改动前逐字节一致（未变差；LIKE %x% 本就不可走索引，加 id/url 不改计划）",
+  "query_plan_board_filtered": "SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?) —— 净改善（收窄扫描）",
+  "rerank_db_cost": "0（对已取回的 <=40 行在 worker 内重排）",
+  "adversarial_block_fixed": "复核 BLOCK on 诚实性(非安全性)：①DOI-in-url 搜不到 → 检索面补 id/url；②精确命中徽章在媒体报道上假阳性 → 改称『标识符匹配』+ includes 语义；③页面无条件承诺『精确命中置顶』→ 移除，改为可证表述",
+  "dir_007_free_tier": "compliant (无新增读写；无筛选路径与改前同计划，board 筛选反而更省)",
+  "visual_motion_gate": "PASS (差分：零视觉契约元素移动)",
+  "recurring_cloud_cost_delta_usd_month": 0
+}

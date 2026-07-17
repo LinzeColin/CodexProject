@@ -1,0 +1,170 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P03-SEARCH-20260717",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P03-SEARCH",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-17T03:30:00Z",
+  "implementation_base_sha": "319e4e2b1bb8de1666149209c5e6a4d31761970b",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3cae531b2804d1305cab86d1279a3f9b45f5cfcb0243c455ef1a5618d2c9d6e5",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 20 non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP V0.2 P03 enhanced search production deploy (honesty-blocked review remediated)",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "ADP V0.2 P03 增强搜索 production deploy: /search gains board + date-range structured facets and identifier-first ranking (zero extra DB cost, re-rank of the <=40 recalled rows). An independent review BLOCKED on honesty (not safety) and all three findings were real: whitespace normalization is a no-op end to end; bioRxiv/medRxiv DOIs live only in id/url so the title/summary-only SQL returned nothing while the page promised pinning; and the 精确命中 badge false-positived on news commentary because board3's live sources are all media RSS. Fixed by aligning the retrieval surface to id/url (same bind, plan verified byte-identical), switching equality to containment, relabelling the badge to 标识符匹配, and removing the unconditional page promise. CONFIRMED_SOUND.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/test-results/deploy_verify.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P03-SEARCH-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/test-results/deploy_verify.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P03-SEARCH-20260717.json",
+    "tests/governance/test_adp_canonical_governance_oids.py"
+  ],
+  "required_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "deploy": {
+    "worker": "adp-cloud",
+    "version_id": "8a6ef433-b93d-4730-855d-d15a2b08bc10",
+    "live_build_before": "e301f8a4c7d8",
+    "live_build_after": "e78306049663",
+    "rollback_target": "bfa3ac49-31a2-426c-8aaf-b0c33caf60d1"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/test-results/deploy_verify.txt"
+  ],
+  "test_commands": [
+    "node --check arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "python3 -B -m unittest -q tests.governance.test_adp_canonical_governance_oids",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic",
+    "sqlite3 (real schema_cloud.sql) EXPLAIN QUERY PLAN: 2-col vs 4-col LIKE, +board, +board+from+to",
+    "live post-deploy verification against adp.linzezhang.com (12 routes + facets + themes + P01/P02 regression)"
+  ],
+  "test_results": [
+    {
+      "command": "node --check",
+      "result": "PASS",
+      "observed": "syntax OK."
+    },
+    {
+      "command": "governance OID invariant test",
+      "result": "PASS",
+      "observed": "load-bearing (removing a registered OID fails it)."
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "observed": "status PASS, violations []."
+    },
+    {
+      "command": "lean_governance validate",
+      "result": "PASS",
+      "observed": "0 errors project + root."
+    },
+    {
+      "command": "EXPLAIN QUERY PLAN",
+      "result": "PASS",
+      "observed": "Unfiltered 4-col plan byte-identical to the previous 2-col plan (SCAN cn_items USING INDEX idx_cn_items_recency); +board narrows to SEARCH ... idx_cn_items_board_recency (board_id=?); +date bounds are index-assisted. No DIR-007 regression; net improvement when filtered."
+    },
+    {
+      "command": "live post-deploy verification",
+      "result": "PASS",
+      "observed": "build e78306049663; 12/12 routes 200 incl. ?board=/?from=&to=; six themes 6/6; facet form renders; no 精确命中 overclaim remains; P01 chips 60 and P02 /library not regressed."
+    }
+  ],
+  "stop_conditions": [
+    "If the live build is not e78306049663 or any route stops returning 200: wrangler versions deploy bfa3ac49-31a2-426c-8aaf-b0c33caf60d1 (build e301f8a4c7d8).",
+    "If any /search plan regresses to a worse-than-baseline scan, stop: DIR-007 free tier is a hard budget."
+  ],
+  "rollback": {
+    "worker": "wrangler versions deploy bfa3ac49-31a2-426c-8aaf-b0c33caf60d1",
+    "governance": "git revert the single commit; no schema/D1 migration applied."
+  },
+  "unresolved_risks": [
+    "Not T060's O(1) exact lookup: only a re-rank of the <=40 recalled rows; a matching document beyond the 40 most recent is not pinned.",
+    "Whitespace-variant 文号 does not retrieve at all (LIKE misses); a true normalized lookup needs a stored normalized identifier column + backfill.",
+    "agency/region/status facets have no backing columns and are not built.",
+    "标识符匹配 cannot become a real authoritative-original hit until P04 wires board3 to A0 official sources (board3 is currently all media RSS)."
+  ],
+  "next_allowed_task": "ADP-V02-P04 (board3 A0 official sources into runDaily) or the T077 visual baseline re-freeze."
+}

@@ -4,8 +4,8 @@
 
 - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:d70c2dd163af13eec5a99ccf555cc5f754b90c46da7f12509052b83d6d801d33`
-- snapshot_event_time: `2026-07-19T09:00:00+10:00`
+- source_snapshot_hash: `sha256:14446a9ffcac7377dd3c1814073c8c4d44301c8e33fef647b32a3d13aa4256e7`
+- snapshot_event_time: `2026-07-19T11:00:00+10:00`
 - generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -13,7 +13,7 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.25.0`
+- Product version: `0.26.0`
 - Phase/Gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
 - Models/Formulas/Parameters total: `122 / 124 / 1124`
 - Active formulas/parameters: `124 / 1107`
@@ -50,7 +50,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
 - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
-- Pending/stale events: `503`
+- Pending/stale events: `504`
 - Tree-bound events: `17`
 - Commit-bound events: `13`
 - Legacy unbound events: `334`

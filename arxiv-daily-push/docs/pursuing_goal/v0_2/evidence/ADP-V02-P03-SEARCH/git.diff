@@ -1,0 +1,447 @@
+diff --git a/arxiv-daily-push/CHANGELOG.md b/arxiv-daily-push/CHANGELOG.md
+index 49b4ca94d..ba0c91ccb 100644
+--- a/arxiv-daily-push/CHANGELOG.md
++++ b/arxiv-daily-push/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P03 (增强搜索; PRODUCTION DEPLOY; product_version 0.26.0)
++
++- ADP V0.2 第 3 个可见增量：把 S5-P02-T060 中线上数据真能支撑的部分接进 /search —— 结构化筛选（板块，取自 REGISTRY 白名单；日期范围，YYYY-MM-DD 正则门；GET 表单）+ 标识符置顶（查询形如文号/DOI 时，把查询出现在该行抽出的标识符里的条目排到最前，复用 P01 抽取器、对已召回 <=40 行在 worker 内重排，零额外 DB 成本）。★独立对抗复核 BLOCK —— 判的是诚实性而非安全性（复核明言代码本身可部署），三条全属实★：①（我方自曝并被证实）文号带空格时 SQL LIKE 返回 0 行，重排器根本不会运行，所谓归一化端到端为空（实测 国发〔2026〕12号→1、国发 〔2026〕 12号→0、国发〔2026〕12 号→0），且 normIdent 的 ASCII 大小写折叠在召回层冗余（SQLite LIKE 本就大小写不敏感）；②★我方未发现、更严重★ fetchBiorxiv 存 id='biorxiv:'+doi、url='.../content/'+doi，DOI 从不进 title/summary，而 SQL 只搜 title/summary、itemIdentifiers 却抽 id/url——检索面与抽取面不一致，导致输入 bioRxiv DOI（board1 主力源）页面承诺置顶却一条都搜不到；③精确命中徽章断言无法确立的事实——board3 源全是媒体新闻 RSS，行是关于文件的报道/解读而非文件本身，一篇政策解读被标精确命中，且贪婪前缀致真文件反被漏掉。修复全部采纳：检索面补 id/url（同一绑定 ?1、无新参数；复核用 EXPLAIN QUERY PLAN 实测查询计划逐字节不变，因 LIKE %x% 本就不可走索引，bioRxiv DOI 由 0 条变为命中并置顶）；=== 改 includes（容忍抽取吞入的前缀，使『转发国发〔2026〕12号』这类真文件不再漏掉）且徽章 精确命中 改为 标识符匹配（只声称查询出现在该行抽出的标识符里，不声称该行是官方原件）；页面移除『精确命中会排在最前』的无条件承诺，改为点名真实检索面（标题/摘要/链接/ID == SQL 四列）的条件表述。复核复验 includes 不引入假阳性（identLike 门仍在，1/12/12号/x/空串/cancer 等一律不重排不发徽章；空 nq 退化路径不可达），并额外核验 known_gaps 本身未夸大（数字与查询计划均可复现，且自曝大小写折叠冗余与贪婪正则仅是容忍而非修好）——属低报而非高报。终判 CONFIRMED_SOUND（未自签）。净收益：无筛选计划与改前逐字节一致（未变差），给出板块时收窄为 SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?)，加日期范围后日期条件亦被索引辅助 → 净改善。BUILD e301f8a4c7d8 -> e78306049663；部署 adp-cloud version 8a6ef433-b93d-4730-855d-d15a2b08bc10（绑定 + cron 保留）；实时验证 12 路由全 200（含 ?board= / ?from=&to= 组合）、六主题 6/6、筛选表单渲染、页面无『精确命中』过度声称、P01 芯片(60) 与 P02 /library 均未回归；回滚 wrangler versions deploy bfa3ac49。诚实边界（known_gaps）：这不是 T060 的 O(1) 精确查找（只是对 <=40 行重排）；空格变体端到端不成立；agency/region/status facet 无对应列未做；『标识符匹配』升级为真正的权威原文命中取决于 P04 把 board3 接上 A0 官方原文。release_mode PRODUCTION；无新增表/抓取/cron；recurring $0/mo（DIR-007 不变）。Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
++
+ ## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P02 (知识库 /library 上线; PRODUCTION DEPLOY; product_version 0.25.0)
+ 
+ - ADP V0.2 生产集成第 2 个可见增量。`/library` 此前线上 404（S5-P04-T067 的 Library 一直 NOT_DEPLOYED）；本次把它作为只读视图接进线上 worker：新增 libraryPage()，数据只来自线上 cn_reviews ⨝ cn_items（你学过／在复习的条目），顶部按板块与证据态分面计数并可点击筛选（?board= / ?state=），列表给出标题→条目页、板块、发布日、原文链接、证据态、复习次数、下次复习日，并复用 P01 的关键事实芯片；导航新增「知识库」入口，路由 /library 精确匹配（不遮蔽 /item/ 与 /board/）。不新增 D1 表、不改每日流水线、不改 hero/动效/主题（T078 gate 差分比对：本 diff 未移动任何视觉契约元素）。诚实边界：T067 的完整范围是 Library+笔记+全 provenance 导出，其导出规则为 source_url/version/fetched_at/claim_evidence/license 缺一即 REFUSE，而 version 与 license 属尚未上线的 S2 版本层，故本次只交付 Library 视图，不交付笔记与导出（硬做也会被 T067 规则拒绝），更不臆造 provenance；页面文案不提笔记/版本/许可/导出。★独立对抗复核 BLOCK 抓到一个真实的免费档违规★：两条查询都会全表 SCAN cn_items（D1 不带 ANALYZE 统计，规划器从大表驱动 join），每次页面访问读约 2 倍 cn_items 行数；实测（cn_reviews 固定 500 行）1k→0.4/0.8ms、20k→4.0/4.6ms、200k→33.1/39.4ms，即 200k 条时约 40 万行/次，对 D1 免费档 5M 行/天（还要与每日 cron 及所有页面共享）意味着十几次浏览即耗尽当天预算，违反 Owner 于 T087 签署的 $0/mo 免费档基线（DIR-007），并回归了已上线的 T083（其交付物正是消除热路径全表扫描）。修复：JOIN 改 CROSS JOIN（SQLite 将左表钉为外层循环，经 ON 仍是内连接，结果集不变）；修复后计划为 SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?)，cn_items 只走主键索引查找、永不扫描；负控制（改回普通 JOIN）复现 SCAN i USING COVERING INDEX，证明该检查非空跑；复核者独立复测四／七种筛选组合结果逐字节一致、无笛卡尔积（joined rows == cn_reviews 计数），STATS/LIST 提速 48-82x，并指出该修复比声称的更有价值——它在有无 ANALYZE 统计时都钉住正确计划，而 D1 不会替你跑 ANALYZE。同时修掉一个次要问题：证据态为空时的 — 分面芯片会展示无法被筛选到的计数，已不再渲染。复核终判 CONFIRMED_SOUND（未自签）。BUILD 0864030f7dc8 -> e301f8a4c7d8；部署 adp-cloud version bfa3ac49-31a2-426c-8aaf-b0c33caf60d1（DB/R2 绑定 + cron 30 20 保留）；实时验证 build.json e301f8a4c7d8、10 路由 200（含新 /library 及其筛选）、六主题 6/6、导航「知识库」存在、/library 渲染证据态与复习徽章、P01 关键事实未回归（board1 60 芯片）；回滚 wrangler versions deploy f26dc86a。本次同时修复了从 T088 起令 Project Governance 大文件卫生审计每推必红的根因：ADP 三个超 1MB 的 canonical 治理文件由 ARXIV_CANONICAL_GOVERNANCE 保留规则（max_bytes 4MB、change_policy baseline_oid_only）覆盖，每次改动都必须把新 blob OID 登记进 reviewed_oids，而这一步一直被跳过；现登记当前 OID，并新增 tests/governance/test_adp_canonical_governance_oids.py 以不变量（前缀下每个超限文件的当前 OID 必须已登记）把该类静默 CI 失败转成本地可命名的测试失败。证据 evidence/ADP-V02-P02-LIBRARY/。release_mode PRODUCTION；D1 读取量与 cn_items 规模解耦；recurring $0/mo（DIR-007 不变）。Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/VERSION b/arxiv-daily-push/VERSION
+index d21d277be..4e8f395fa 100644
+--- a/arxiv-daily-push/VERSION
++++ b/arxiv-daily-push/VERSION
+@@ -1 +1 @@
+-0.25.0
++0.26.0
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 8ddf120eb..e2829fc98 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: 'e301f8a4c7d8', source_sha256: 'e301f8a4c7d8d63e7f662d06996f40a8f3a036b1b647930784f96e476b601a65', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
++const BUILD = { build_id: 'e78306049663', source_sha256: 'e78306049663da5bef870b7896e0e9204dba908c18bfd0a913173a28173c8e76', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -1157,17 +1157,74 @@ async function boardPage(env, boardId, offset) {
+ }
+ 
+ // ───────────────────────── 搜索 /search ─────────────────────────
+-async function searchPage(env, q) {
+-  q = (q || '').trim().slice(0, 80);
+-  let body = `<div class="card"><h1>搜索</h1><p class="mt">在候选库标题与摘要里搜索。</p>`;
++// 标识符归一化（T060 _norm_id 语义）：去空白（含全角）+ ASCII 大小写折叠；DOI 大小写不敏感。
++function normIdent(s) { return (s || '').replace(/　/g, ' ').replace(/\s+/g, '').toLowerCase(); }
++// 从条目已有字段抽标识符（跨板块，用于检索排序；沿用 P01 的输入上界，保持线性时间）
++function itemIdentifiers(it) {
++  const out = [];
++  const doi = fsFirst(FS_DOI_RE, it.id, it.url, (it.summary || '').slice(0, 2000));
++  if (doi) out.push(doi.replace(/[).,;]+$/, ''));
++  const dn = fsFirst(FS_DOCNUM_RE, (it.title || '').slice(0, 500), (it.summary || '').slice(0, 2000));
++  if (dn) out.push(dn);
++  return out;
++}
++const SEARCH_LIMIT = 40;
++async function searchPage(env, params) {
++  const q = (params.get('q') || '').trim().slice(0, 80);
++  const board = (params.get('board') || '').slice(0, 12);
++  const from = (params.get('from') || '').slice(0, 10);
++  const to = (params.get('to') || '').slice(0, 10);
++  const boardOpts = REGISTRY.map(b => b.board);
++  const bSel = boardOpts.includes(board) ? board : '';           // 白名单，未知板块视为不筛选
++  const dateOk = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : '';  // 只接受 YYYY-MM-DD
++  const f = dateOk(from), t = dateOk(to);
++
++  const filters = `<form method="get" action="/search" style="margin:8px 0 2px">
++    <input type="hidden" name="q" value="${esc(q)}">
++    <label class="mt">板块 <select name="board"><option value="">全部</option>${boardOpts.map(b =>
++      `<option value="${esc(b)}"${bSel === b ? ' selected' : ''}>${esc(BOARD_NAMES[b] || b)}</option>`).join('')}</select></label>
++    <label class="mt">起 <input type="date" name="from" value="${esc(f)}"></label>
++    <label class="mt">止 <input type="date" name="to" value="${esc(t)}"></label>
++    <button class="btn-sm" type="submit">筛选</button>
++    ${(bSel || f || t) ? `<a class="pill-link" href="/search?q=${encodeURIComponent(q)}">清除筛选</a>` : ''}
++  </form>`;
++
++  let body = `<div class="card"><h1>搜索</h1>
++    <p class="mt">在候选库的标题、摘要、链接与 ID 中检索；可按板块与日期范围筛选。若查询出现在某条的文号／DOI 这类标识符里，该条会被置顶。</p>
++    ${filters}`;
+   if (q) {
+-    const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';  // 先转义 \ 本身（ESCAPE 字符），再转义 % _
+-    const { results } = await env.DB.prepare(
+-      "SELECT * FROM cn_items WHERE title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT 40").bind(like).all();
+-    body += `<p class="mt">「${esc(q)}」找到 ${(results || []).length} 条${(results || []).length === 40 ? '（仅显示前 40）' : ''}</p>
++    const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';
++    // 检索面必须与 itemIdentifiers 的抽取面一致：bioRxiv/medRxiv 的 DOI 只存在于 id/url，不在 title/summary。
++    // LIKE %x% 本就不可走索引，加这两列不改变查询计划（已用 EXPLAIN QUERY PLAN 复验同计划）。
++    const where = ["(title LIKE ?1 ESCAPE '\\' OR summary LIKE ?1 ESCAPE '\\' OR id LIKE ?1 ESCAPE '\\' OR url LIKE ?1 ESCAPE '\\')"];
++    const binds = [like];
++    if (bSel) { binds.push(bSel); where.push(`board_id = ?${binds.length}`); }
++    if (f) { binds.push(f); where.push(`COALESCE(published_at, fetched_at) >= ?${binds.length}`); }
++    if (t) { binds.push(t); where.push(`COALESCE(published_at, fetched_at) <= ?${binds.length}`); }
++    binds.push(SEARCH_LIMIT);
++    // 列名为代码字面量，全部取值均为绑定参数（无拼接注入面）；给出 board 时可走 idx_cn_items_board_recency
++    const sql = `SELECT * FROM cn_items WHERE ${where.join(' AND ')} ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT ?${binds.length}`;
++    let { results } = await env.DB.prepare(sql).bind(...binds).all();
++    results = results || [];
++    // T060 精确优先：查询形如标识符时，把归一化后精确命中的条目排到最前（对已取回的 <=40 行做，零额外 DB 成本）
++    const nq = normIdent(q);
++    const identLike = /^10\.\d{4,9}\//.test(q.trim()) || FS_DOCNUM_RE.test(q);
++    let exactCount = 0;
++    if (identLike && results.length) {
++      const hit = [], rest = [];
++      for (const it of results) {
++        // 可证语义：查询出现在该行抽出的标识符里（而非正文别处）。用 includes 容忍抽取吞入的前缀
++        // （如「转发国发〔2026〕12号」）；但这只证明标识符文本匹配，不声称该行就是官方原件。
++        (itemIdentifiers(it).some(v => normIdent(v).includes(nq)) ? hit : rest).push(it);
++      }
++      exactCount = hit.length;
++      results = hit.concat(rest);
++    }
++    const note = [bSel ? BOARD_NAMES[bSel] || bSel : '', f ? '起 ' + f : '', t ? '止 ' + t : ''].filter(Boolean).join(' · ');
++    body += `<p class="mt">「${esc(q)}」找到 ${results.length} 条${results.length === SEARCH_LIMIT ? '（仅显示最近 40）' : ''}${note ? '｜筛选：' + esc(note) : ''}${exactCount ? `｜<span class="badge ok">标识符匹配 ${exactCount} 条已置顶</span>` : ''}</p>
+       <p style="margin:2px 0 6px"><a class="deep-btn ghost" href="${esc(chatgptHref(deepDiveTopicPrompt(q)))}" target="_blank" rel="noopener noreferrer">🔮 让 ChatGPT 全网深度检索这个主题</a></p>
+-      ${itemListHTML(results || [])}`;
+-  } else body += '<p class="mt">在右上角搜索框输入关键词。</p>';
++      ${itemListHTML(results)}`;
++  } else body += '<p class="mt">在右上角搜索框输入关键词，或用上面的板块／日期筛选。</p>';
+   body += '</div>';
+   return PAGE('/search', body + STUDY_JS, { title: '搜索' + (q ? '：' + q : ''), q });
+ }
+@@ -1374,7 +1431,7 @@ export default {
+       else if (p === '/system') html = await systemPage(env);
+       else if (p === '/library') html = await libraryPage(env, url.searchParams);
+       else if (p === '/history') html = await historyPage(env);
+-      else if (p === '/search') html = await searchPage(env, url.searchParams.get('q') || '');
++      else if (p === '/search') html = await searchPage(env, url.searchParams);
+       else if (p.startsWith('/board/')) html = await boardPage(env, p.slice('/board/'.length), Math.max(0, parseInt(url.searchParams.get('offset') || '0', 10) || 0));
+       else if (p.startsWith('/item/')) html = await itemPage(env, decodeURIComponent(p.slice('/item/'.length)));
+       else html = null;
+diff --git a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+index 502fb8bba..0e9b5ccd6 100644
+--- a/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
++++ b/arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml
+@@ -1,9 +1,9 @@
+ project_id: "arxiv-daily-push"
+-as_of_event_id: "EVENT-20260719-ADP-V02-P01-FACTSHEET-DEPLOY"
+-source_snapshot_hash: "sha256:d70c2dd163af13eec5a99ccf555cc5f754b90c46da7f12509052b83d6d801d33"
++as_of_event_id: "EVENT-20260719-ADP-V02-P02-LIBRARY-DEPLOY"
++source_snapshot_hash: "sha256:14446a9ffcac7377dd3c1814073c8c4d44301c8e33fef647b32a3d13aa4256e7"
+ source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
+ source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
+-snapshot_event_time: "2026-07-19T09:00:00+10:00"
++snapshot_event_time: "2026-07-19T11:00:00+10:00"
+ generator_version: "4.0.1"
+ final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+ dimensions:
+@@ -62,7 +62,7 @@ dimensions:
+     tree_bound_events: 17
+     commit_bound_events: 13
+     legacy_unbound_events: 334
+-    precommit_pending_events: 153
++    precommit_pending_events: 154
+     evidence_refs:
+       - "arxiv-daily-push/docs/governance/development_events.jsonl"
+ delivery_readiness:
+diff --git a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+index a76f387fa..13a617ad4 100644
+--- a/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
++++ b/arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md
+@@ -6401,6 +6401,7 @@ None for this new project baseline.
+ - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
+ - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
+ - 2026-07-18 V0.1 S8-P02-T089 SOAK LIVE-TRACKING: wired the T089 soak to the live daily cron ledger (cn_run_log) -- each daily run writes one row; result != 失败 is a healthy day. The soak is now self-accumulating (NOT a static day-0 framework): currently 2/14 consecutive healthy days (2026-07-15 正常 + 2026-07-16 降级), auto-completing as the cron adds healthy days; T089 clause 1 closes at 14/14 with no agent action. soak_progress() is load-bearing (a 失败 breaks the streak; 14 healthy = complete). T089 development is complete; only ~12 calendar days of healthy cron remain. NOT_DEPLOYED (read-only over the live D1; worker unchanged; live 452f7c5de919). Evidence: soak_live_snapshot.json + updated soak_stopline_report.json + verifier PASS (soak_stopline_tests.txt).
++- 2026-07-19 V0.2 生产集成 P03 (增强搜索; PRODUCTION DEPLOY; product_version 0.26.0): /search 加板块+日期范围结构化筛选与标识符置顶(复用 P01 抽取器,对已召回<=40行重排,零额外 DB 成本)。★复核 BLOCK 判诚实性(非安全性)★: ①空格变体文号端到端为空(LIKE 返 0 行,重排器不运行);②★我方未发现★ bioRxiv/medRxiv 的 DOI 只存于 id/url,而 SQL 只搜 title/summary,检索面与抽取面不一致→输入 DOI 一条都搜不到;③『精确命中』徽章在媒体报道上假阳性(board3 全是新闻源,行是报道非原件)。修复:检索面补 id/url(同绑定、查询计划实测不变,bioRxiv DOI 0条→命中);===改 includes 并改称『标识符匹配』(只声称可证之事);页面移除无条件承诺。复核复验无假阳性,并核验 known_gaps 未夸大。CONFIRMED_SOUND。净收益:无筛选同计划,给 board 时收窄为 SEARCH...idx_cn_items_board_recency,日期亦被索引辅助。BUILD e301f8a4c7d8->e78306049663,部署 8a6ef433;12 路由 200+六主题 6/6+P01/P02 未回归;回滚 bfa3ac49。$0/mo。
+ - 2026-07-19 V0.2 生产集成 P02 (知识库 /library 上线; PRODUCTION DEPLOY; product_version 0.25.0): /library 从 404 变为可用知识库——libraryPage() 只读 cn_reviews ⨝ cn_items，按板块/证据态分面筛选、复习进度、原文出处，复用 P01 关键事实芯片；导航加「知识库」。不新增表/不改流水线/不改动效主题（T078 差分：零视觉契约元素移动）。诚实边界：T067 的笔记与全 provenance 导出未做（导出需 S2 版本层的 version/license，缺字段按 T067 规则必须 REFUSE，不臆造）。★复核 BLOCK 抓到真实免费档违规★：两查询全表 SCAN cn_items（D1 无 ANALYZE），200k 条时约 40 万行/次，十几次浏览耗尽 D1 5M 行/天，违反 T087 的 $0/mo 基线并回归已上线的 T083；改 CROSS JOIN 后 SCAN r + SEARCH i USING INDEX(id=?)，cn_items 永不扫描（48-82x），负控制证明非空跑，CONFIRMED_SOUND。BUILD 0864030f7dc8->e301f8a4c7d8，部署 adp-cloud bfa3ac49；10 路由 200+ 六主题 6/6 + P01 未回归；回滚 f26dc86a。并修复 T088 起大文件卫生审计每推必红的根因（登记 ADP 治理文件 OID + 新增 tests/governance 不变量测试）。release_mode PRODUCTION；$0/mo。
+ - 2026-07-19 V0.2 生产集成 P01 (关键事实 Factsheet 上线; PRODUCTION DEPLOY; product_version 0.24.0): 把 S1-P03-T016 extract_factsheet 确定性抽取(DOI/文号/关键数字/作者,缺失即空绝不编造)忠实移植进 worker_cloud.js,渲染六主题 .badge 芯片于今天/板块/搜索/雷达/条目页(复用 itemListHTML);纯展示层不改数据/流水线/hero动效(T077/T078 契约 page body 不冻结)。独立复核抓到真实 ReDoS(FS_UNIT_RE O(n²) 40KB 2295ms),有界量词{0,39}+输入 slice 修复为线性(40KB 4.8ms/加slice 0.24ms),CONFIRMED_SOUND。BUILD 452f7c5de919->0864030f7dc8,部署 adp-cloud f26dc86a;六主题6/6+7路由200+芯片实时可见(board1=60/b2=4/b3=7/b4=1);回滚 5a7c0fbe。release_mode PRODUCTION;$0/mo。V0.2 首个可见增量。
+ - 2026-07-18 V0.1 S8-P03-T090 (FINAL task + PRODUCTION DEPLOY): final traceability closure + run package. Per the Owner's 2026-07-17 instruction (deploy online, ensure ADP immediately usable, don't let the soak block), performed the PRODUCTION DEPLOY: adp-cloud version 5a7c0fbe, live b189d3cc0703 -> 452f7c5de919, releasing the accumulated S7 improvements (T079-T084) + applying the T083 D1 recency indexes to adp-mirror. Verified: build.json 452f7c5de919, six themes 6/6, all 6 routes 200, motion layer present; rollback target d5890974 (b189d3cc0703). New tool docs/pursuing_goal/v0_1/tools/final_handoff.py emits the final run package: 90 tasks terminal (89 COMPLETE + 1 PARTIAL = T089, 14-day soak calendar-bound + Owner-waived for release), acceptance report (10 P0 PASS + 1 OWNER_WAIVER soak), operations runbook, known gaps, next-version backlog, deterministic manifest_sha256. Acceptance (test-results/final_handoff_tests.txt, PASS exit 0, verifier re-derives + curl cross-checks the live build): 90/90 terminal, all P0 PASS/waiver, manifest reproducible, declared live build == actual (452f7c5de919). CLOSES ADP V0.1 FINAL EXECUTION: 89/90 fully complete + T089 Owner-waived partial. Cost: 1 deploy + 1 D1 migrate (3130 read/1541 written); recurring $0/mo. NOT self-signed -> IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/governance/OWNER_STATUS.md b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+index d2ec01170..317bb81ff 100644
+--- a/arxiv-daily-push/docs/governance/OWNER_STATUS.md
++++ b/arxiv-daily-push/docs/governance/OWNER_STATUS.md
+@@ -86,9 +86,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ - tree_bound_events: `17`
+ - commit_bound_events: `13`
+ - legacy_unbound_events: `334`
+-- precommit_pending_events: `153`
+-- pending_or_stale_events: `503`
+-- freshness_counts: `pending_or_stale_events=503; legacy_unbound_events=334`
++- precommit_pending_events: `154`
++- pending_or_stale_events: `504`
++- freshness_counts: `pending_or_stale_events=504; legacy_unbound_events=334`
+ - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+ - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
+ 
+@@ -100,10 +100,10 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:d70c2dd163af13eec5a99ccf555cc5f754b90c46da7f12509052b83d6d801d33`
+-- snapshot_event_time: `2026-07-19T09:00:00+10:00`
++- source_snapshot_hash: `sha256:14446a9ffcac7377dd3c1814073c8c4d44301c8e33fef647b32a3d13aa4256e7`
++- snapshot_event_time: `2026-07-19T11:00:00+10:00`
+ - generator_version: `4.0.1`
+-- version: `0.25.0`
++- version: `0.26.0`
+ - phase/gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+ 
+ ## 17. 下一唯一任务
+diff --git a/arxiv-daily-push/docs/governance/STATUS.md b/arxiv-daily-push/docs/governance/STATUS.md
+index f57ea9c2d..f1e0dbf90 100644
+--- a/arxiv-daily-push/docs/governance/STATUS.md
++++ b/arxiv-daily-push/docs/governance/STATUS.md
+@@ -4,8 +4,8 @@
+ 
+ - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
+ - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+-- source_snapshot_hash: `sha256:d70c2dd163af13eec5a99ccf555cc5f754b90c46da7f12509052b83d6d801d33`
+-- snapshot_event_time: `2026-07-19T09:00:00+10:00`
++- source_snapshot_hash: `sha256:14446a9ffcac7377dd3c1814073c8c4d44301c8e33fef647b32a3d13aa4256e7`
++- snapshot_event_time: `2026-07-19T11:00:00+10:00`
+ - generator_version: `4.0.1`
+ - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+ 
+@@ -13,7 +13,7 @@
+ 
+ - Project: `arxiv-daily-push`
+ - Path: `arxiv-daily-push`
+-- Product version: `0.25.0`
++- Product version: `0.26.0`
+ - Phase/Gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
+ - Models/Formulas/Parameters total: `122 / 124 / 1124`
+ - Active formulas/parameters: `124 / 1107`
+@@ -50,7 +50,7 @@
+ - Next governance task: `S2PMT07`
+ - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+ - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+-- Pending/stale events: `503`
++- Pending/stale events: `504`
+ - Tree-bound events: `17`
+ - Commit-bound events: `13`
+ - Legacy unbound events: `334`
+diff --git a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+index 4a764ff45..355fbfc0d 100644
+--- a/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
++++ b/arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv
+@@ -441,4 +441,4 @@ REQ-ADP-V03-MINIMAL-LOOP,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1109,ADP
+ REQ-ADP-V03-R5-SHADOW-SOURCE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/shadow_biorxiv.py,arxiv-daily-push/config/thresholds_v0_3.yaml,arxiv-daily-push/tests/test_adp_selection.py,arxiv-daily-push/data/shadow_biorxiv_report.json,shadow_running
+ REQ-ADP-V03-R6-CLOUD-MIRROR,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/mirror.py;arxiv-daily-push/deploy/cloudflare/worker.js;arxiv-daily-push/src/adp/webapp.py,NOT_APPLICABLE,arxiv-daily-push/tests/test_adp_invariants.py,arxiv-daily-push/deploy/cloudflare/README.md;arxiv-daily-push/data/config_changes.jsonl,live_tunnel_direct_mirror_fallback_pending_owner_dns
+ REQ-ADP-V03-J4-BOARDS,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,PARAM-ADP-1123,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/src/adp/boards.py,arxiv-daily-push/config/boards_v0_3.yaml,arxiv-daily-push/tests/test_adp_boards.py,arxiv-daily-push/data/boards_fetch_report.json,live_feed_streams_expanded_boards_v03_2_44_sources
+-REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id_plus_generated_status_drift_check_plus_r2_rawartifact_dualwrite_shadow_plus_capped_shadow_run_t023_plus_board3_a0_canary_switch_t040_plus_s7_mobile_overflow_source_fix_t079_not_deployed_plus_s7_component_states_undo_persistence_t080_not_deployed_plus_s7_p03_rum_cwv_instrumentation_t081_not_deployed_plus_s7_p03_ambient_motion_perf_t082_not_deployed_plus_s7_p03_d1_query_indexes_deterministic_order_t083_not_deployed_plus_s7_p04_evidence_a11y_reduced_motion_polish_t084_not_deployed_plus_v02_p01_factsheet_production_deploy_452f7c5de919_to_0864030f7dc8_plus_v02_p02_library_production_deploy_0864030f7dc8_to_e301f8a4c7d8
++REQ-ADP-V03-J5-CLOUD-NATIVE,MOD-ADP-122,ASM-ADP-035,FORM-ADP-124,NOT_APPLICABLE,ADP-V03-REBUILD-R1,ACC-ADP-V03-48H-LOOP,arxiv-daily-push/deploy/cloudflare/worker_cloud.js,arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc,NOT_APPLICABLE,arxiv-daily-push/docs/v03/云端原生迁移_Owner指令.md,stage3_live_adp_domain_commercial_features_plus_chatgpt_deepdive_plus_theme_guard_fix_plus_fx_layers_bold_no_store_plus_hero_video_dashboard_selfhosted_plus_build_endpoint_version_id_plus_generated_status_drift_check_plus_r2_rawartifact_dualwrite_shadow_plus_capped_shadow_run_t023_plus_board3_a0_canary_switch_t040_plus_s7_mobile_overflow_source_fix_t079_not_deployed_plus_s7_component_states_undo_persistence_t080_not_deployed_plus_s7_p03_rum_cwv_instrumentation_t081_not_deployed_plus_s7_p03_ambient_motion_perf_t082_not_deployed_plus_s7_p03_d1_query_indexes_deterministic_order_t083_not_deployed_plus_s7_p04_evidence_a11y_reduced_motion_polish_t084_not_deployed_plus_v02_p01_factsheet_production_deploy_452f7c5de919_to_0864030f7dc8_plus_v02_p02_library_production_deploy_0864030f7dc8_to_e301f8a4c7d8_plus_v02_p03_search_production_deploy_e301f8a4c7d8_to_e78306049663
+diff --git a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+index 9280e2c97..8f9c2bb4a 100644
+--- a/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
++++ b/arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml
+@@ -1,4 +1,4 @@
+-product_version: "0.25.0"
++product_version: "0.26.0"
+ product_version_status: "provisional"
+ governance_spec_version: "1.0.0"
+ schema_version: "2.1.1"
+diff --git a/arxiv-daily-push/docs/governance/delivery_tasks.yaml b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+index 49e3d95cf..c4fa9d2e2 100644
+--- a/arxiv-daily-push/docs/governance/delivery_tasks.yaml
++++ b/arxiv-daily-push/docs/governance/delivery_tasks.yaml
+@@ -6768,7 +6768,7 @@ tasks:
+     timestamp: "2026-07-19T09:00:00+10:00"
+     objective: "Build the fetch->select->lesson->recall->review loop as a new adp package with traceable evidence at every step, governed parameters only in config/thresholds_v0_3.yaml, and zero production side effects."
+     scope: "New src/adp package (five-stage run, gates, weighted selection, sentence-bound lessons, FSRS-6 review, corrections, fail-closed delivery, web UI), thresholds registry, 48h+ three-real-date run manifests, review-audit fixes, invariant and gate/weight tests."
+-    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10). 2026-07-16 ADP V0.1 S1-P01-T011: generated STATUS_GENERATED.md from the deployment manifest + live /build.json and added a CI drift check (tools/generate_status.py + tools/check_status_drift.py), and archived the stale R6 tunnel/Mac section by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native -- resolving the STATUS J5-vs-R6 contradiction (DRIFT-FACT-007); drift check PASS with a negative test proving hand-written old architecture cannot override the generated current; NOT_DEPLOYED, no worker change). 2026-07-16 ADP V0.1 DIR-007: Owner enabled Cloudflare R2 and issued a hard free-tier budget (ADP + all repos never exceed the free tier; no agent may exceed or raise quota without repeated Owner authorization; monitor and fail-closed); frozen as DIR-007 + FREE_TIER_BUDGET.md. 2026-07-16 ADP V0.1 S2-P01-T022: implemented the feature-flagged RawArtifact R2 dual-write (deploy/cloudflare/worker_cloud.js dualWriteArtifact behind RAW_DUALWRITE flag default OFF, fetchFeedText side-write hook, /api/raw-selftest verification route; wrangler R2 binding RAW->adp-raw-artifacts; D1 cn_artifacts table object_key PK). Deployed adp-cloud 3816d21c -> 657fe32a (new build e377c9bd1e20); flag OFF = baseline verified (six themes 6/6, hero videos, dashboard, fx, ChatGPT, 7 routes 200 both domains); idempotency proven (selftest: second write deduped, D1 1 row); DIR-007 budget stop in-built (usage Class A 1 / Class B 2 / 76 bytes, ~0.0001% of free tier). SHADOW run is T023). 2026-07-16 ADP V0.1 S2-P01-T023: ran the capped R2 shadow + cost/performance report. The shadow surfaced a DIR-007 free-tier constraint -- the naive per-feed dual-write exceeded the Cloudflare free-tier Worker subrequest limit (~50/request) and its writes were silently dropped -- and fixed it with a per-run write cap (RAW_MAX_PER_RUN=3) plus reading the budget snapshot once per run and resetting the counter at runDaily/selftest, keeping the extra subrequests within the free tier. Deployed the capped shadow adp-cloud version 64c8b842 (build 9cd3d8a2fe68, RAW_DUALWRITE=true); six themes 6/6 intact both domains. Writer save/hash/readback are 100%: the R2 object is content-addressed (key sha256 == content sha256), a readback via wrangler r2 object get --remote returns the exact 76 bytes whose sha256 equals the key, and a repeat write dedups (1 D1 row). Cost extrapolation within budget: <=3 Class A writes + <=3 Class B heads + <=150KB per run, i.e. <=90 Class A / <=90 Class B / <=4.5 MB per month via the daily cron, ~0.009% / ~0.045% of the free tier, recurring ~$0. Rollback: wrangler versions deploy 657fe32a (T022, flag off). The literal 7-day / 1000-artifact accumulation runs via cron over real time). 2026-07-17 ADP V0.1 S3-P03-T040: Board 3 official-view A0 canary switch after the Owner S3 Exit gate approved A0 promotion -- a feature flag BOARD3_A0_ONLY default OFF so production Board 3 and the six themes stay unchanged, an a0Board3Eligible gate that demotes media to discovery so official original text can be the default evidence, and a non-destructive /api/a0-canary endpoint that fetches real gov.cn policy originals and reports an official evidence rate of 100 percent with 8 of 8 official items and media at 0 under the gate; deployed adp-cloud version 5bcd9f21 build b189d3cc0703, six themes 6/6 on both domains, rollback in one deploy via the flag or wrangler versions deploy 64c8b842; the full flip to official-as-default pending the A0 adapters wired to the worker cron under DIR-007 plus the real 14-day shadow. 2026-07-17 ADP V0.1 S7-P02-T079: fixed mobile horizontal overflow in data-dense pages at 360/390/430 with a base-CSS-only change to deploy/cloudflare/worker_cloud.js (.card overflow-wrap:break-word, main img/svg/video max-width:100%, and a @media(max-width:520px) rule that turns a wide table into a locally-scrolling block -- no page overflow-hidden band-aid); the six themes and all advanced motion stay byte-identical (T077/T078 contract: only base_css changed) and the change passes the T078 gate only as a documented approved change; NOT_DEPLOYED -- BUILD recomputed b189d3cc0703 -> 9690390a9fc8 but not deployed, live still serves b189d3cc0703, so its themes and motion are unchanged; proven by a real in-app-browser render at 360/390/430 (documentElement.scrollWidth == innerWidth, zero non-table offenders, local table scroll) plus a load-bearing counterfactual (the pre-fix CSS scrolls 1210px at 360), and independently reviewed CONFIRMED_SOUND; a latent inert .card min-width:0 and an over-counting audit were fixed. 2026-07-17 ADP V0.1 S7-P02-T080: added the component-state matrix + an optimistic Undo window + proved cross-theme state persistence, as a base-CSS-only change to deploy/cloudflare/worker_cloud.js plus page-body JS -- base CSS gains button:active (pressed <100ms), :disabled/[aria-disabled], [aria-busy] loading, :focus-visible, [data-state=ok|err], button.undo and a button transform transition (no new @keyframes); the two grade() flows become an optimistic Undo window (click shows picked + 撤销 + a 4s cancelable countdown and writes nothing; a deferred gradeCommit posts /api/grade only after the window; gradeUndo cancels the timer and writes nothing, so an undo touches no production data) with try/catch error states, and a theme switch preserves reading position/answers/filters/expand because applyTheme only setAttribute + syncs hero/gauge (no reload/navigate/innerHTML); the six themes and all advanced motion stay byte-identical (T077/T078: only base_css changed) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD recomputed 9690390a9fc8 -> 40a46aa2baee but not deployed, live still serves b189d3cc0703; proven by a Node behavioural test on the real extracted grade code (click 0 writes / undo 0 writes / window elapse exactly 1 write) and an in-app-browser test (all state preserved across all six themes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T081: instrumented RUM + Core Web Vitals (LCP/CLS/INP, INP approximated as the max interaction event duration and disclosed as such) segmented by theme/route/device/network -- a RUM client (const RUM_JS) tags each metric with theme/route/device/network and sendBeacon('/api/rum') on page-hide, INJECTED AT THE ROUTER (htmlResp) so it touches no T077/T078 visual/motion contract hash (the whole asset_hashes incl. page_shell + master_visual is byte-identical), plus a pure rumIngest validator gating a POST /api/rum endpoint that writes a NEW cn_rum table (CREATE TABLE IF NOT EXISTS + bind INSERT, not existing production data), and an offline query tool tools/rum_cwv.py that computes p75 + Google CWV ratings segmentable by the four dimensions with every assessment gated on a minimum sample count so empty/thin data claims NO compliance (无数据不声称达标); NOT_DEPLOYED -- BUILD 40a46aa2baee -> 8c19387c846b but not deployed, live still b189d3cc0703, no real RUM baseline yet and none claimed; proven by a Node test on the real extracted rumIngest, an in-app-browser test capturing a live LCP tagged by the four dimensions, and a contract invariance check (detect_regression = 0 changes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T082: optimized the six-theme ambient motion for FPS without changing visual semantics -- converted the one layout-animating ambient keyframe (the cosmos meteor, left/top) to a screen-path-equivalent transform:translate (GPU-composited; .fx is a fixed viewport-sized layer so left/top % map exactly to vw/vh and the rotate stays inner so the streak + diagonal are preserved), after which every ambient loop is compositor-safe (the deterministic >=55 FPS guarantee), plus a router-injected FX_PERF controller that pauses ambient animation on page-hide and degrades the heaviest layers on low-end devices (meteor/band hidden, nebula simplified) WITHOUT touching the foreground selectors so the foreground feedback survives; the ONLY T077/T078 contract element that changed is keyframes (per_theme/base_css/theme_js/fx_css/hero byte-identical) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD 8c19387c846b -> 0cb3acee6bf3 but not deployed, live still b189d3cc0703; proven by an ambient compositor-safety audit (pre-fix FAILS), an in-app-browser test (pause 7/7; low-end degrades while stars + button:active survive) and a contract re-derivation, and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T083: optimized the hot D1 queries by adding five indexes to schema_cloud.sql (CREATE INDEX IF NOT EXISTS: recency expression index on cn_items(COALESCE(published_at,fetched_at) DESC, id DESC), board+recency, cn_lessons(item_id), cn_reviews(due_at), cn_events(kind,at)) so the today/radar/browse/history/review pages and the vitals sparkline stop full-table-scanning + temp-sorting cn_items and instead do an index-ordered SEARCH reading only the LIMIT rows (rows scanned O(N) -> O(LIMIT), p95 down 3-200x in the local SQLite proof). An adversarial review of the schema-only cut found a real hole: without a total-order tie-breaker, cross-family ties (a recency-via-published row tying on COALESCE with a recency-via-fetched row) changed board/browse LIMIT/OFFSET page membership+order and OFFSET pagination could skip/repeat, and the verifier was blind (published 2016 / fetched 2026 disjoint namespaces made the tie impossible). The fix adds a deterministic total-order `, id DESC` tie-breaker to all eight recency display ORDER BYs in worker_cloud.js (matching the existing prune query) + the id key in the two recency indexes so the total order stays fully index-served (no temp b-tree); the verifier now contains real cross-family ties and asserts the tie-breaker query is deterministic (index==forced-scan, OFFSET pages disjoint). Queries changed so BUILD was recomputed 0cb3acee6bf3 -> d1dfcb3b7447, but the change is in page-body functions so the six-theme visual/motion contract is byte-identical (no CLS, server-rendered) and it is not a content regression (an undefined tie order made deterministic); NOT_DEPLOYED, live still b189d3cc0703, CWV 达标 NOT claimed without field data (T081 rule); and independently reviewed. 2026-07-18 ADP V0.1 S7-P04-T084 (last S7 task): polished evidence/inference + accessibility + reduced-motion without replacing the design -- a PROVENANCE_NOTE (讲义·推断 badge + sentence) is prepended in the central lessonHTML so the auto-generated lesson is labelled as inference, distinct from the 原文 (evidence) link (todayPage refactored to lessonHTML, output otherwise identical); the reveal button gets aria-controls and moves focus into the revealed box (disclosure a11y) on top of the already-native named 44px buttons + :focus-visible; and the reduced-motion rule was verified to disable animation while restoring the .fr/.bw content classes to opacity:1 (gauge/video jump to final state in JS) so no content/function is lost. The polish is page-body so the six-theme visual/motion contract is byte-identical; NOT_DEPLOYED -- BUILD d1dfcb3b7447 -> 452f7c5de919 but not deployed, live still b189d3cc0703; proven by an a11y_content_audit (pre-fix has no marker / no reveal a11y; removing the reduced-motion restore fails the preserve check) and an in-app-browser test, and independently reviewed. 2026-07-19 ADP V0.2 生产集成 P01 (关键事实 Factsheet 上线, PRODUCTION DEPLOY): began wiring the NOT_DEPLOYED cognitive capabilities into the live worker per the Owner directive that ADP be visibly richer and immediately usable -- ported S1-P03-T016 extract_factsheet deterministic extraction (DOI / 文号 / 关键数字 / 作者; missing => shown as nothing, never fabricated) into deploy/cloudflare/worker_cloud.js (factsheet()+factsheetHTML()) and rendered it as six-theme-adaptive .badge chips on the today card (first screen), board lists, search, radar, and item detail (one shared itemListHTML covers board/search/radar). Presentation-only: reads existing cn_items fields, adds no D1 table, no cron/pipeline change, does not touch the hero/motion/theme layer (T077/T078 contract scopes page bodies out of the frozen visual identity). Independent adversarial review BLOCKED on a real ReDoS (FS_UNIT_RE was O(n^2), 40KB pathological input 2295ms in the request path, would exceed the Cloudflare Worker CPU limit); fixed with a bounded quantifier {0,39} on the unit-regex digit run (a number token is never over 40 chars, so the scan is linear regardless of input) + input slice (0,500)/(0,2000), re-verified linear (40KB 4.8ms / 400KB 48.8ms / 0.24ms after slice) with extraction unchanged, CONFIRMED_SOUND (not self-signed). BUILD 452f7c5de919 -> 0864030f7dc8; deployed adp-cloud version f26dc86a-446f-445b-b1ab-d2c132b1cf46 (DB/R2 bindings + cron preserved); live-verified build.json 0864030f7dc8, 7 routes 200, six themes 6/6, factsheet chips visible board1=60/board2=4/board3=7/board4=1; rollback wrangler versions deploy 5a7c0fbe. release_mode PRODUCTION; recurring $0/mo (DIR-007 unchanged). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P01-FACTSHEET/. 2026-07-19 ADP V0.2 生产集成 P02 (知识库 /library 上线, PRODUCTION DEPLOY): promoted S5-P04-T067's Library from NOT_DEPLOYED to PRODUCTION as a read-only view -- /library was returning 404. New libraryPage() reads only live cn_reviews joined to cn_items (the items you studied), with per-board and per-evidence-state facet counts that filter via ?board= / ?state=, a list carrying title, board, publish date, original-source link, evidence state, review count and next-review date, and the P01 factsheet chips reused; nav gains a 知识库 entry and /library is an exact-match route (does not shadow /item/ or /board/). Adds no D1 table, no cron/pipeline change, and moves zero visual-contract elements (T078 differential gate). Honest boundary: T067 is Library + notes + full-provenance export, and its export REFUSES on any missing provenance field (source_url, version, fetched_at, claim_evidence, license); version and license live in the S2 version layer which is not deployed, so only the Library view ships -- notes and export are deliberately not shipped rather than fabricating provenance. An independent adversarial review BLOCKED a real free-tier violation: both queries full-scanned cn_items (D1 runs no ANALYZE, so the planner drove the join from the big table), reading about twice the cn_items row count per page view -- 200k items meant roughly 400k rows per view against D1's 5M rows/day free tier shared with the daily cron, i.e. about a dozen views would exhaust the day, violating the $0/mo free-tier basis the Owner signed at T087 and regressing the already-live T083 whose deliverable was removing hot-path full scans. Fixed by pinning cn_reviews as the outer loop (JOIN -> CROSS JOIN; still an inner join via ON, identical rows): the plan became SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?), so cn_items is only ever index-searched; a negative control (plain JOIN) reproduces SCAN i USING COVERING INDEX, proving the check is load-bearing; the reviewer independently confirmed byte-identical results across every filter combination, no cartesian product, 48-82x faster, and noted the fix pins the good plan whether or not ANALYZE statistics exist. A dead facet chip (unfilterable null evidence state) was also removed. Review verdict CONFIRMED_SOUND (not self-signed). BUILD 0864030f7dc8 -> e301f8a4c7d8; deployed adp-cloud version bfa3ac49-31a2-426c-8aaf-b0c33caf60d1 with bindings and cron preserved; live-verified 10 routes 200 including /library and its filters, six themes 6/6, the 知识库 nav entry, and P01 factsheet not regressed; rollback wrangler versions deploy f26dc86a. This run also fixed the root cause of the Project Governance large-object hygiene audit failing on every push since T088: the three oversized ADP canonical governance files are covered by the ARXIV_CANONICAL_GOVERNANCE retained rule (max_bytes 4MB, change_policy baseline_oid_only), so every content change must register the new blob OID in reviewed_oids -- a step that had been skipped; the current OIDs are now registered and tests/governance/test_adp_canonical_governance_oids.py enforces the invariant so this silent CI failure becomes a local test failure. release_mode PRODUCTION; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/.)"
++    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed. (2026-07-15: R5 shadow live awaiting owner promotion; R6 full-system tunnel direct path live end-to-end at adp.linzezhang.com with automatic mirror fallback; J4 boards 2-5 live as radar feed streams with an EXPANDED source set (boards-v03-2, 44 RSS sources, 1050 items) outside the daily selection pool; home.linzezhang.com returned to the Owner's own linze-home-hub worker (the agent's stray hub worker was removed). J5 cloud-native rebuild Stages 1-2 per Owner directive (web is the primary system, not a Mac mirror): a separate adp-cloud Worker + D1 + cron runs the whole loop (all-arXiv, bioRxiv normal ingestion, all boards into selection) with the six-theme UI, a working board3 Chinese-media source, and (Stage 3) the cutover of adp.linzezhang.com onto the cloud worker plus a commercial feature/polish pass (learning-stats dashboard, guided review session, board browsing, search, history, item detail, study-any-item, security headers), live-verified; the local Python system and the adp.linzezhang.com mirror/tunnel remain untouched until the Stage 3 cutover. The adp-web/adp-tunnel LaunchAgents are V0.3 web/tunnel residents, not the frozen V7.2 scheduler. 2026-07-15 follow-up (Owner: delete useless local info + add a ChatGPT jump so it does live web traversal + deep reasoning + gives surprises): added a per-item 'deep-dive with ChatGPT' button on today/item/review (chatgpt.com/?q= prefilled with the item's title/authors/categories/original-link/abstract and an instruction to do live web search, deep reasoning, comprehensive professional explanation, and surprises) plus a topic deep-dive on search; and did an operational cleanup of the now-dormant retired mirror/tunnel artifacts (unloaded the com.linze.adp.web/tunnel LaunchAgents; removed their installed plists + the cloudflared connector token + the local cloudflared binary + dead logs; reinstall templates kept under deploy/cloudflare/launchd/, no tracked-file change). 2026-07-15 hotfix: theme-selector self-heal -- the six-theme picker applied a stored theme value without validating it, so a stale/invalid localStorage value (or an Object.prototype key like 'constructor'/'__proto__') left the picker blank (selectedIndex -1) and the page stuck on the default theme, which read to the Owner as 'the 6 themes are gone'; load now validates the stored value with Object.prototype.hasOwnProperty and falls back to 'warm', self-healing the stored value; reproduced and live-verified on adp.linzezhang.com across invalid-name, prototype-key, and valid-persist cases. 2026-07-15 follow-up (Owner: the 6 themes just changed one color and the original motion design was all gone -- don't fix A and lose B): the Stage 2 six-theme port had copied only the colour tokens and dropped the per-theme ambient MOTION layers from the local design source src/adp/templates/base.html; restored them faithfully into deploy/cloudflare/worker_cloud.js as pure CSS/SVG (no external deps, CSP-safe) driven by a THEME_FX map + a data-fx attribute (validated + self-healing like the theme guard): cosmos gets the galaxy layer (drifting band, nebula glows, twinkling stars, shooting meteor), techno gets drifting white fluid clouds, minimal gets the ocean top-light + deep vignette, forest gets the layered hill slopes + water band, plus a card fade-in entrance and a prefers-reduced-motion guard; warm/fresh stay clean by original design. The external CloudFront hero videos from base.html were intentionally NOT ported (CSP/dependency fragility). Live-verified per theme on adp.linzezhang.com (desktop + mobile). 2026-07-15 follow-up (Owner reported still no motion on both computer and phone even on a fresh URL): DOM inspection showed the fx layer rendered but the ambient effects were too faint to perceive (1px stars, off-screen nebulae) AND -- the real blocker -- both the in-app and the Owner's browsers were serving a CACHED page under cache-control no-cache, so the Owner was never actually receiving the deploys. Fixed both: (1) HTML cache-control changed from no-cache to no-store, must-revalidate so browsers always refetch; (2) the ambient fx amplified to be boldly visible -- cosmos now has on-screen nebula-glow backgrounds + a conic aurora sweep + brighter denser twinkling stars + a 6s glowing meteor, with cosmos cards made translucent (0.40) so the galaxy shows through; techno clouds larger/brighter; minimal adds a moving light shaft; forest slopes taller with a slow sway. Live-verified in a fresh no-cache browser tab: cosmos galaxy and techno clouds are now clearly visible. 2026-07-15 follow-up (Owner gave the actual v1.1 design package and said the ORIGINAL theme motion was still missing, changed ten times): the real signature motion was never the ambient CSS layer -- it is the today-page HERO first-screen defined in the v1.1 spec, which the cloud port had dropped entirely. Restored it into deploy/cloudflare/worker_cloud.js: minimal/techno/forest now open with the original full-screen hero VIDEO (the three live CloudFront reference clips Velorah/Space-Voyage/Aethera) with an eyebrow, giant serif title (today pick), subtitle and glass CTA over a theme-color gradient mask; cosmos gets the knowledge-vitals DASHBOARD (ring gauge that counts up to today score /104, STREAK/RETENTION/REVIEW-DEBT grid, 7-pick sparkline) over the galaxy (its NOVA video URL is 403 dead); warm/fresh stay clean. Video handling follows the v1.1 red-lines (JS-assigned src, explicit muted/loop booleans, play plus a canplay handler so it never freezes on a first frame); CSP gains a media-src for the CloudFront host. Live-verified each theme in a fresh no-cache tab: minimal/techno/forest videos actually play (paused=false, currentTime advancing) and the cosmos gauge animated to 094. Note: the videos are external CloudFront and one is already dead, so they should be moved to owner R2 storage for durability per v1.1 red-line 4. 2026-07-15 done (Owner fully authorized proceeding but does not want to touch the dashboard): R2 needs a one-time dashboard enable (a billing/terms action, so not taken on the Owner behalf); instead self-hosted the videos on the Worker itself via Cloudflare static assets -- free, same-origin, durable, zero external dependency. Downloaded the three still-live reference clips and compressed them with ffmpeg (via the pip imageio-ffmpeg binary, no system change) to 1280x720 H.264 no-audio faststart loops (62MB total down to 7MB: velorah 1.5MB / voyage 1.9MB / aethera 2.5MB), stored under deploy/cloudflare/assets/media and served same-origin at /media/*.mp4 through a wrangler assets binding; HERO_VIDEO now points at /media/*.mp4 and the CSP media-src is back to self (CloudFront removed). The 7MB of mp4 were force-added past the media/ gitignore because durability requires them versioned (CLAUDE.md allows binaries when the task needs them). Live-verified: /media/*.mp4 all serve 200 video/mp4 and minimal plays from /media/velorah.mp4 (paused=false, currentTime advancing). cosmos stays on the dashboard (its NOVA source was already dead). 2026-07-16 ADP V0.1 S1-P01-T010: published a read-only /build.json endpoint + footer build id on the cloud worker (surgical additive change to worker_cloud.js; six themes/hero videos/cosmic dashboard/fx layers/ChatGPT deep-dive/CSP/no-store all preserved; deployed adp-cloud 455afd98 -> 3816d21c, both domains + cron preserved; /build.json byte-identical across both domains with build_id bd67a78020a3; no secret; PARAM-ADP-1124 re-attested unchanged as adp-v03-j5-cloud-v10). 2026-07-16 ADP V0.1 S1-P01-T011: generated STATUS_GENERATED.md from the deployment manifest + live /build.json and added a CI drift check (tools/generate_status.py + tools/check_status_drift.py), and archived the stale R6 tunnel/Mac section by marking docs/v03/STATUS.yaml R6 superseded_by J5_cloud_native -- resolving the STATUS J5-vs-R6 contradiction (DRIFT-FACT-007); drift check PASS with a negative test proving hand-written old architecture cannot override the generated current; NOT_DEPLOYED, no worker change). 2026-07-16 ADP V0.1 DIR-007: Owner enabled Cloudflare R2 and issued a hard free-tier budget (ADP + all repos never exceed the free tier; no agent may exceed or raise quota without repeated Owner authorization; monitor and fail-closed); frozen as DIR-007 + FREE_TIER_BUDGET.md. 2026-07-16 ADP V0.1 S2-P01-T022: implemented the feature-flagged RawArtifact R2 dual-write (deploy/cloudflare/worker_cloud.js dualWriteArtifact behind RAW_DUALWRITE flag default OFF, fetchFeedText side-write hook, /api/raw-selftest verification route; wrangler R2 binding RAW->adp-raw-artifacts; D1 cn_artifacts table object_key PK). Deployed adp-cloud 3816d21c -> 657fe32a (new build e377c9bd1e20); flag OFF = baseline verified (six themes 6/6, hero videos, dashboard, fx, ChatGPT, 7 routes 200 both domains); idempotency proven (selftest: second write deduped, D1 1 row); DIR-007 budget stop in-built (usage Class A 1 / Class B 2 / 76 bytes, ~0.0001% of free tier). SHADOW run is T023). 2026-07-16 ADP V0.1 S2-P01-T023: ran the capped R2 shadow + cost/performance report. The shadow surfaced a DIR-007 free-tier constraint -- the naive per-feed dual-write exceeded the Cloudflare free-tier Worker subrequest limit (~50/request) and its writes were silently dropped -- and fixed it with a per-run write cap (RAW_MAX_PER_RUN=3) plus reading the budget snapshot once per run and resetting the counter at runDaily/selftest, keeping the extra subrequests within the free tier. Deployed the capped shadow adp-cloud version 64c8b842 (build 9cd3d8a2fe68, RAW_DUALWRITE=true); six themes 6/6 intact both domains. Writer save/hash/readback are 100%: the R2 object is content-addressed (key sha256 == content sha256), a readback via wrangler r2 object get --remote returns the exact 76 bytes whose sha256 equals the key, and a repeat write dedups (1 D1 row). Cost extrapolation within budget: <=3 Class A writes + <=3 Class B heads + <=150KB per run, i.e. <=90 Class A / <=90 Class B / <=4.5 MB per month via the daily cron, ~0.009% / ~0.045% of the free tier, recurring ~$0. Rollback: wrangler versions deploy 657fe32a (T022, flag off). The literal 7-day / 1000-artifact accumulation runs via cron over real time). 2026-07-17 ADP V0.1 S3-P03-T040: Board 3 official-view A0 canary switch after the Owner S3 Exit gate approved A0 promotion -- a feature flag BOARD3_A0_ONLY default OFF so production Board 3 and the six themes stay unchanged, an a0Board3Eligible gate that demotes media to discovery so official original text can be the default evidence, and a non-destructive /api/a0-canary endpoint that fetches real gov.cn policy originals and reports an official evidence rate of 100 percent with 8 of 8 official items and media at 0 under the gate; deployed adp-cloud version 5bcd9f21 build b189d3cc0703, six themes 6/6 on both domains, rollback in one deploy via the flag or wrangler versions deploy 64c8b842; the full flip to official-as-default pending the A0 adapters wired to the worker cron under DIR-007 plus the real 14-day shadow. 2026-07-17 ADP V0.1 S7-P02-T079: fixed mobile horizontal overflow in data-dense pages at 360/390/430 with a base-CSS-only change to deploy/cloudflare/worker_cloud.js (.card overflow-wrap:break-word, main img/svg/video max-width:100%, and a @media(max-width:520px) rule that turns a wide table into a locally-scrolling block -- no page overflow-hidden band-aid); the six themes and all advanced motion stay byte-identical (T077/T078 contract: only base_css changed) and the change passes the T078 gate only as a documented approved change; NOT_DEPLOYED -- BUILD recomputed b189d3cc0703 -> 9690390a9fc8 but not deployed, live still serves b189d3cc0703, so its themes and motion are unchanged; proven by a real in-app-browser render at 360/390/430 (documentElement.scrollWidth == innerWidth, zero non-table offenders, local table scroll) plus a load-bearing counterfactual (the pre-fix CSS scrolls 1210px at 360), and independently reviewed CONFIRMED_SOUND; a latent inert .card min-width:0 and an over-counting audit were fixed. 2026-07-17 ADP V0.1 S7-P02-T080: added the component-state matrix + an optimistic Undo window + proved cross-theme state persistence, as a base-CSS-only change to deploy/cloudflare/worker_cloud.js plus page-body JS -- base CSS gains button:active (pressed <100ms), :disabled/[aria-disabled], [aria-busy] loading, :focus-visible, [data-state=ok|err], button.undo and a button transform transition (no new @keyframes); the two grade() flows become an optimistic Undo window (click shows picked + 撤销 + a 4s cancelable countdown and writes nothing; a deferred gradeCommit posts /api/grade only after the window; gradeUndo cancels the timer and writes nothing, so an undo touches no production data) with try/catch error states, and a theme switch preserves reading position/answers/filters/expand because applyTheme only setAttribute + syncs hero/gauge (no reload/navigate/innerHTML); the six themes and all advanced motion stay byte-identical (T077/T078: only base_css changed) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD recomputed 9690390a9fc8 -> 40a46aa2baee but not deployed, live still serves b189d3cc0703; proven by a Node behavioural test on the real extracted grade code (click 0 writes / undo 0 writes / window elapse exactly 1 write) and an in-app-browser test (all state preserved across all six themes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T081: instrumented RUM + Core Web Vitals (LCP/CLS/INP, INP approximated as the max interaction event duration and disclosed as such) segmented by theme/route/device/network -- a RUM client (const RUM_JS) tags each metric with theme/route/device/network and sendBeacon('/api/rum') on page-hide, INJECTED AT THE ROUTER (htmlResp) so it touches no T077/T078 visual/motion contract hash (the whole asset_hashes incl. page_shell + master_visual is byte-identical), plus a pure rumIngest validator gating a POST /api/rum endpoint that writes a NEW cn_rum table (CREATE TABLE IF NOT EXISTS + bind INSERT, not existing production data), and an offline query tool tools/rum_cwv.py that computes p75 + Google CWV ratings segmentable by the four dimensions with every assessment gated on a minimum sample count so empty/thin data claims NO compliance (无数据不声称达标); NOT_DEPLOYED -- BUILD 40a46aa2baee -> 8c19387c846b but not deployed, live still b189d3cc0703, no real RUM baseline yet and none claimed; proven by a Node test on the real extracted rumIngest, an in-app-browser test capturing a live LCP tagged by the four dimensions, and a contract invariance check (detect_regression = 0 changes), and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T082: optimized the six-theme ambient motion for FPS without changing visual semantics -- converted the one layout-animating ambient keyframe (the cosmos meteor, left/top) to a screen-path-equivalent transform:translate (GPU-composited; .fx is a fixed viewport-sized layer so left/top % map exactly to vw/vh and the rotate stays inner so the streak + diagonal are preserved), after which every ambient loop is compositor-safe (the deterministic >=55 FPS guarantee), plus a router-injected FX_PERF controller that pauses ambient animation on page-hide and degrades the heaviest layers on low-end devices (meteor/band hidden, nebula simplified) WITHOUT touching the foreground selectors so the foreground feedback survives; the ONLY T077/T078 contract element that changed is keyframes (per_theme/base_css/theme_js/fx_css/hero byte-identical) and the change passes the T078 gate as a documented approved change; NOT_DEPLOYED -- BUILD 8c19387c846b -> 0cb3acee6bf3 but not deployed, live still b189d3cc0703; proven by an ambient compositor-safety audit (pre-fix FAILS), an in-app-browser test (pause 7/7; low-end degrades while stars + button:active survive) and a contract re-derivation, and independently reviewed. 2026-07-18 ADP V0.1 S7-P03-T083: optimized the hot D1 queries by adding five indexes to schema_cloud.sql (CREATE INDEX IF NOT EXISTS: recency expression index on cn_items(COALESCE(published_at,fetched_at) DESC, id DESC), board+recency, cn_lessons(item_id), cn_reviews(due_at), cn_events(kind,at)) so the today/radar/browse/history/review pages and the vitals sparkline stop full-table-scanning + temp-sorting cn_items and instead do an index-ordered SEARCH reading only the LIMIT rows (rows scanned O(N) -> O(LIMIT), p95 down 3-200x in the local SQLite proof). An adversarial review of the schema-only cut found a real hole: without a total-order tie-breaker, cross-family ties (a recency-via-published row tying on COALESCE with a recency-via-fetched row) changed board/browse LIMIT/OFFSET page membership+order and OFFSET pagination could skip/repeat, and the verifier was blind (published 2016 / fetched 2026 disjoint namespaces made the tie impossible). The fix adds a deterministic total-order `, id DESC` tie-breaker to all eight recency display ORDER BYs in worker_cloud.js (matching the existing prune query) + the id key in the two recency indexes so the total order stays fully index-served (no temp b-tree); the verifier now contains real cross-family ties and asserts the tie-breaker query is deterministic (index==forced-scan, OFFSET pages disjoint). Queries changed so BUILD was recomputed 0cb3acee6bf3 -> d1dfcb3b7447, but the change is in page-body functions so the six-theme visual/motion contract is byte-identical (no CLS, server-rendered) and it is not a content regression (an undefined tie order made deterministic); NOT_DEPLOYED, live still b189d3cc0703, CWV 达标 NOT claimed without field data (T081 rule); and independently reviewed. 2026-07-18 ADP V0.1 S7-P04-T084 (last S7 task): polished evidence/inference + accessibility + reduced-motion without replacing the design -- a PROVENANCE_NOTE (讲义·推断 badge + sentence) is prepended in the central lessonHTML so the auto-generated lesson is labelled as inference, distinct from the 原文 (evidence) link (todayPage refactored to lessonHTML, output otherwise identical); the reveal button gets aria-controls and moves focus into the revealed box (disclosure a11y) on top of the already-native named 44px buttons + :focus-visible; and the reduced-motion rule was verified to disable animation while restoring the .fr/.bw content classes to opacity:1 (gauge/video jump to final state in JS) so no content/function is lost. The polish is page-body so the six-theme visual/motion contract is byte-identical; NOT_DEPLOYED -- BUILD d1dfcb3b7447 -> 452f7c5de919 but not deployed, live still b189d3cc0703; proven by an a11y_content_audit (pre-fix has no marker / no reveal a11y; removing the reduced-motion restore fails the preserve check) and an in-app-browser test, and independently reviewed. 2026-07-19 ADP V0.2 生产集成 P01 (关键事实 Factsheet 上线, PRODUCTION DEPLOY): began wiring the NOT_DEPLOYED cognitive capabilities into the live worker per the Owner directive that ADP be visibly richer and immediately usable -- ported S1-P03-T016 extract_factsheet deterministic extraction (DOI / 文号 / 关键数字 / 作者; missing => shown as nothing, never fabricated) into deploy/cloudflare/worker_cloud.js (factsheet()+factsheetHTML()) and rendered it as six-theme-adaptive .badge chips on the today card (first screen), board lists, search, radar, and item detail (one shared itemListHTML covers board/search/radar). Presentation-only: reads existing cn_items fields, adds no D1 table, no cron/pipeline change, does not touch the hero/motion/theme layer (T077/T078 contract scopes page bodies out of the frozen visual identity). Independent adversarial review BLOCKED on a real ReDoS (FS_UNIT_RE was O(n^2), 40KB pathological input 2295ms in the request path, would exceed the Cloudflare Worker CPU limit); fixed with a bounded quantifier {0,39} on the unit-regex digit run (a number token is never over 40 chars, so the scan is linear regardless of input) + input slice (0,500)/(0,2000), re-verified linear (40KB 4.8ms / 400KB 48.8ms / 0.24ms after slice) with extraction unchanged, CONFIRMED_SOUND (not self-signed). BUILD 452f7c5de919 -> 0864030f7dc8; deployed adp-cloud version f26dc86a-446f-445b-b1ab-d2c132b1cf46 (DB/R2 bindings + cron preserved); live-verified build.json 0864030f7dc8, 7 routes 200, six themes 6/6, factsheet chips visible board1=60/board2=4/board3=7/board4=1; rollback wrangler versions deploy 5a7c0fbe. release_mode PRODUCTION; recurring $0/mo (DIR-007 unchanged). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P01-FACTSHEET/. 2026-07-19 ADP V0.2 生产集成 P02 (知识库 /library 上线, PRODUCTION DEPLOY): promoted S5-P04-T067's Library from NOT_DEPLOYED to PRODUCTION as a read-only view -- /library was returning 404. New libraryPage() reads only live cn_reviews joined to cn_items (the items you studied), with per-board and per-evidence-state facet counts that filter via ?board= / ?state=, a list carrying title, board, publish date, original-source link, evidence state, review count and next-review date, and the P01 factsheet chips reused; nav gains a 知识库 entry and /library is an exact-match route (does not shadow /item/ or /board/). Adds no D1 table, no cron/pipeline change, and moves zero visual-contract elements (T078 differential gate). Honest boundary: T067 is Library + notes + full-provenance export, and its export REFUSES on any missing provenance field (source_url, version, fetched_at, claim_evidence, license); version and license live in the S2 version layer which is not deployed, so only the Library view ships -- notes and export are deliberately not shipped rather than fabricating provenance. An independent adversarial review BLOCKED a real free-tier violation: both queries full-scanned cn_items (D1 runs no ANALYZE, so the planner drove the join from the big table), reading about twice the cn_items row count per page view -- 200k items meant roughly 400k rows per view against D1's 5M rows/day free tier shared with the daily cron, i.e. about a dozen views would exhaust the day, violating the $0/mo free-tier basis the Owner signed at T087 and regressing the already-live T083 whose deliverable was removing hot-path full scans. Fixed by pinning cn_reviews as the outer loop (JOIN -> CROSS JOIN; still an inner join via ON, identical rows): the plan became SCAN r + SEARCH i USING INDEX sqlite_autoindex_cn_items_1 (id=?), so cn_items is only ever index-searched; a negative control (plain JOIN) reproduces SCAN i USING COVERING INDEX, proving the check is load-bearing; the reviewer independently confirmed byte-identical results across every filter combination, no cartesian product, 48-82x faster, and noted the fix pins the good plan whether or not ANALYZE statistics exist. A dead facet chip (unfilterable null evidence state) was also removed. Review verdict CONFIRMED_SOUND (not self-signed). BUILD 0864030f7dc8 -> e301f8a4c7d8; deployed adp-cloud version bfa3ac49-31a2-426c-8aaf-b0c33caf60d1 with bindings and cron preserved; live-verified 10 routes 200 including /library and its filters, six themes 6/6, the 知识库 nav entry, and P01 factsheet not regressed; rollback wrangler versions deploy f26dc86a. This run also fixed the root cause of the Project Governance large-object hygiene audit failing on every push since T088: the three oversized ADP canonical governance files are covered by the ARXIV_CANONICAL_GOVERNANCE retained rule (max_bytes 4MB, change_policy baseline_oid_only), so every content change must register the new blob OID in reviewed_oids -- a step that had been skipped; the current OIDs are now registered and tests/governance/test_adp_canonical_governance_oids.py enforces the invariant so this silent CI failure becomes a local test failure. release_mode PRODUCTION; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P02-LIBRARY/. 2026-07-19 ADP V0.2 生产集成 P03 (增强搜索, PRODUCTION DEPLOY): shipped the part of S5-P02-T060 that live data can actually support -- /search gains structured facets (board from the REGISTRY whitelist, date range gated by a YYYY-MM-DD regex, as a GET form) and identifier-first ranking (when the query looks like a 文号 or DOI, rows whose extracted identifier contains the normalized query are promoted, reusing the P01 extractor over the already-fetched 40 rows inside the worker at zero extra DB cost). An independent adversarial review BLOCKED on HONESTY rather than safety (it stated the code itself was deployable), and all three findings were real: (1) self-raised and confirmed -- a 文号 typed with spaces makes SQL LIKE return zero rows so the re-ranker never runs, making the normalization a no-op end to end, and normIdent's ASCII case-folding is redundant at recall since SQLite LIKE is already case-insensitive; (2) NOT raised by the implementer and worse -- fetchBiorxiv stores id as biorxiv:DOI and url as the content URL so the DOI never appears in title or summary, yet the SQL searched only title and summary while itemIdentifiers extracted from id, url and summary, an asymmetric surface that made typing a bioRxiv DOI (a headline board1 source) return nothing even though the page promised it would be pinned first; (3) the 精确命中 badge asserted a fact the code could not establish -- board3's live sources are all media news RSS, so rows are commentary about a document rather than the document, and a policy explainer was badged as an exact hit, while the greedy identifier prefix caused genuine documents to be missed. All remedies were applied: the retrieval surface now includes id and url under the same single bind with no new parameters (the reviewer re-ran EXPLAIN QUERY PLAN on the real schema and confirmed the plan is byte-identical, since a leading-wildcard LIKE is non-sargable either way, and the bioRxiv DOI case went from zero rows to a pinned hit); equality became containment so the greedy prefix no longer drops real documents, and the badge was relabelled to 标识符匹配, which claims only that the query occurs inside the identifier the product already extracts, never that the row is the official document; and the page copy dropped its unconditional promise in favour of naming the real retrieval surface. The reviewer verified containment introduces no false positives (the identifier-shape gate still holds and the degenerate empty-query path is unreachable) and independently re-derived the known_gaps file itself, finding it under-claims rather than over-claims. Verdict CONFIRMED_SOUND, not self-signed. Net gain: the unfiltered plan is unchanged from before, while a board facet narrows it to an index search and date bounds are index-assisted. BUILD e301f8a4c7d8 to e78306049663; deployed adp-cloud version 8a6ef433-b93d-4730-855d-d15a2b08bc10 with bindings and cron preserved; live-verified 12 routes 200 including every filter combination, six themes 6/6, the facet form rendering, no 残留 overclaim on the page, and P01 chips plus P02 library not regressed; rollback wrangler versions deploy bfa3ac49. Honest boundary: this is NOT T060's O(1) exact lookup (only a re-rank of at most 40 recalled rows), the whitespace variant does not work end to end, agency/region/status facets have no backing columns and were not built, and upgrading 标识符匹配 into a real authoritative-original hit depends on P04 wiring board3 to A0 official sources. release_mode PRODUCTION; no new table, fetch or cron; recurring 0 USD/month (DIR-007). Evidence docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/.)"
+     acceptance_ids:
+       - "ACC-ADP-V03-48H-LOOP"
+     test_commands:
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/TASK_REPORT.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/TASK_REPORT.md
+new file mode 100644
+index 000000000..2c98f7cab
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/TASK_REPORT.md
+@@ -0,0 +1,36 @@
++# ADP V0.2 生产集成 · P03 — 增强搜索（PRODUCTION DEPLOY）
++
++## 做了什么
++把 S5-P02-T060 中**线上数据真能支撑**的部分接进 `/search`：
++- **结构化筛选**：板块（REGISTRY 白名单）+ 日期范围（`YYYY-MM-DD` 正则门），GET 表单。
++- **标识符置顶**：查询形如文号/DOI 时，把"查询出现在该行抽出的标识符里"的条目排到最前（复用 P01 的抽取器，对已召回的 ≤40 行在 worker 内重排，**零额外 DB 成本**）。
++- **检索面补齐 `id`/`url`**（见下，修复真实缺陷）。
++
++## 独立对抗复核：BLOCK（**诚实性**，非安全性）——三条全是真的
++复核者明确表示"代码本身可部署"，但**页面在承诺它做不到的事**：
++
++1. **我自己举报并被证实**：文号带空格时 SQL `LIKE` 返回 **0 行**，重排器根本不会运行——"归一化"端到端是空的。实测 `国发〔2026〕12号→1`、`国发 〔2026〕 12号→0`、`国发〔2026〕12 号→0`。
++2. **★我没发现、更严重★**：`fetchBiorxiv` 存的是 `id='biorxiv:'+doi`、`url='.../content/'+doi`，**DOI 从不进 title/summary**；而我的 SQL 只搜 title/summary，抽取器却读 id/url——**检索面与抽取面不一致**。结果：输入 bioRxiv DOI，页面承诺置顶，实际**一条都搜不到**（board1 主力源）。
++3. **徽章在断言它无法确立的事实**：board3 数据源**全是媒体新闻 RSS**（人民网/中新网/新浪），行是**关于**文件的报道/解读，**不是文件本身**；一篇政策解读被标成"精确命中"。且贪婪前缀 `[一-龥A-Za-z]{0,8}` 会吞入上文，导致语义相同的行得到相反判定。
++
++## 修复（全部采纳）
++- **①检索面对齐**：`WHERE (title|summary|id|url LIKE ?1 ESCAPE '\')` —— **同一个绑定 ?1、无新参数**。复核用 `EXPLAIN QUERY PLAN` 实测：**查询计划逐字节不变**（`LIKE %x%` 本就不可走索引），零成本。bioRxiv DOI 场景由 **0 条 → 命中并置顶**。
++- **②语义可证**：`===` 改 `includes`（容忍抽取吞入的前缀，使「转发国发〔2026〕12号」这类**真文件**不再漏掉）；徽章 `精确命中` → **`标识符匹配`**——只声称"查询出现在该行抽出的标识符里"，**不声称该行是官方原件**。
++- **③文案诚实化**：移除"输入文号或 DOI 时，精确命中会排在最前"的**无条件承诺**，改为"在标题、摘要、链接与 ID 中检索……若查询出现在某条的文号／DOI 这类标识符里，该条会被置顶"（所述四列 == SQL 实际四列）。
++
++复核复验：`includes` **不引入假阳性**（`identLike` 门仍在；`1`/`12`/`12号`/`x`/空串/`cancer` 等一律不重排不发徽章；空 `nq` 的退化路径**不可达**，因为门要求文号/DOI 前缀匹配）。**终判 CONFIRMED_SOUND**。
++
++## 净收益（不只是没变差）
++- 无筛选：`SCAN cn_items USING INDEX idx_cn_items_recency` —— 与**改动前逐字节一致**（未变差）。
++- 给出板块：收窄为 `SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?)`；加日期范围后复核实测**日期条件亦被索引辅助** → **净改善**。
++
++## 部署与验证
++- BUILD `e301f8a4c7d8 -> e78306049663`；部署 adp-cloud version `8a6ef433-b93d-4730-855d-d15a2b08bc10`（绑定 + cron 保留）；回滚 `wrangler versions deploy bfa3ac49-31a2-426c-8aaf-b0c33caf60d1`。
++- 实时验证（test-results/deploy_verify.txt，PASS）：build.json 一致；**12 条路由全 200**（含 `?board=` / `?from=&to=` 组合）；**六主题 6/6**；筛选表单渲染；**页面无「精确命中」过度声称**；**P01 芯片（60）与 P02 /library 均未回归**。
++- T078 视觉差分 gate：**零视觉契约元素移动**。
++
++## 诚实边界
++见 `known_gaps.md`。要点：这**不是** T060 的 O(1) 精确查找（只是对 ≤40 行重排）；空格变体端到端不成立；agency/region/status facet 无对应列未做；**「标识符匹配」升级为真正的"权威原文命中"，取决于 P04 把 board3 接上 A0 官方原文**。复核者额外核验了 known_gaps 本身**未夸大**（其数字与查询计划均可复现，且自曝 `normIdent` 的大小写折叠在召回层冗余）。
++
++release_mode: **PRODUCTION**。未自签；独立复核 CONFIRMED_SOUND。
++Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/adversarial_review.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/adversarial_review.md
+new file mode 100644
+index 000000000..848eb9c19
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/adversarial_review.md
+@@ -0,0 +1,30 @@
++# 独立对抗复核 — ADP V0.2 P03 增强搜索
++
++复核者：独立 general-purpose skeptic（非实施者；实施者不自签）。方法：用捕获式 stub 驱动真实 `searchPage`、对真实 `schema_cloud.sql` 跑 `EXPLAIN QUERY PLAN`、用 `node-html-parser` 验 XSS（其首个正则探针出过假阳性，遂改用解析器复核）。
++
++## 第一轮：BLOCK —— **诚实性**，非安全性
++
++复核者明确：「Blocking on honesty, not on safety — the code itself is deployable.」
++
++**安全面全部 PASS（执行验证）**：注入（8 种组合 + payload；唯一进入 SQL 文本的非字面量是 `?${binds.length}`，即数组长度，永不含用户数据；`board="b1' OR 1=1--"` 被 REGISTRY 白名单丢弃；`from="2026-01-01' OR '1'='1"` 被 `slice(0,10)` 截断后仍走绑定）；绑定编号 8 种组合均 `maxPlaceholder === binds.length` 且连续；**性能无回归**（无筛选计划与改前**逐字节相同**）；ReDoS 线性（最坏 1827 字符输入 0.012ms）；XSS 解析器验证 9 payload **零注入元素/处理器**；BUILD 自哈希一致；15/15 既有行为回归通过（legacy `/search?q=`、STUDY_JS、ChatGPT 链接、`%`/`_` 转义等）；`board5` 被正确排除（虚拟聚合板块，"全部"即 board5）。
++重排的真实价值也被证实：一条 2020 年的精确匹配被从末位提到首位，越过 5 条更新的子串提及。
++
++**三条诚实性缺陷：**
++1. **空格归一化端到端为空**（我方自曝，被证实）：`国发〔2026〕12号→found=1`；`国发 〔2026〕 12号→found=0`；`国发〔2026〕12 号→found=0`。且 `normIdent` 的 ASCII 大小写折叠在召回层**冗余**——SQLite `LIKE` 本就大小写不敏感（实测）。
++2. **★更严重、我方未提★ DOI 检索对 bioRxiv/medRxiv 完全失效**：`fetchBiorxiv`（worker_cloud.js:217-223）存 `id='biorxiv:'+doi`、`url='.../content/'+doi`，**DOI 从不进 title/summary**；而 SQL 只搜 title/summary，`itemIdentifiers()` 却抽 id/url —— **两个面不一致**。`itemIdentifiers` 能抽出 `10.1101/...`，`searchPage` 却 `找到 0 条`。页面偏偏承诺"输入…DOI 时精确命中会排在最前"。
++3. **`精确命中` 徽章断言无法确立的事实**：board3 源全是新闻 RSS，行是**关于**文件的报道；库里没有原件时，一篇政策解读被标"精确命中 1 条"。贪婪前缀致判定不一致：`（国发〔2026〕12号）政策解读`→抽出 `国发〔2026〕12号`→假阳性命中；`转发国发〔2026〕12号文件`→抽出 `转发国发〔2026〕12号`→**真文件反被漏掉**。
++
++判定：#2 是**功能缺陷**不是注意事项，#3 是**对用户作出虚假事实断言**，故不接受"仅文档化"。
++
++## 第二轮：CONFIRMED_SOUND
++
++- **#2 已解**：`q=10.1101/2024.05.01.592123` 现 `找到 1 条` 并置顶加徽章（旧的两列面返回 0）。**查询计划确未变**（复核跑了四种：旧2列无筛选 / 新4列无筛选 → **相同**；新4列+board → `SEARCH ... idx_cn_items_board_recency`；新4列+board+from+to → **日期条件亦被索引辅助**，属净改善）。
++- **#3 已解**：`includes` 正确救回贪婪前缀场景（`转发国发〔2026〕12号` 现被置顶，`===` 会漏）。徽章现在是**代码能为每一行确立**的声称：只计"查询文本（模空白/大小写）出现在产品**本就抽取并在条目页标为文号**的那个标识符里"，**不声称该行是官方原件**。
++- **`includes` 无假阳性**：`identLike` 门仍在且成立——`1`/`12`/`12号`/`x`/空串/`"   "`/`cancer`/`号`/`2026`/`CRISPR 基因编辑` 全部 `identLike=false`，零重排零徽章；普通词 `study` 不发徽章、recency 序不变。最危险的退化（空 `nq` 使 `includes('')` 恒真）**不可达**——门要求文号/DOI 前缀匹配，强制 `nq` 非空。宽而合法的 `10.1101/` 会置顶全部匹配行，但弱化后的措辞对每一行**仍字面为真**，且 hit/rest 分区稳定、组内 recency 保留。
++- **#1 已解**：无条件承诺移除；文案点名真实检索面（标题/摘要/链接/ID == SQL 的四列）并给出条件。空格变体"记录而不声称"**可接受**——该变体下查询**并未**字面出现在标识符里，故无承诺被证伪；40 条上限已在页面内明示。
++
++**复核者额外核验了 known_gaps 本身**（"过度声称的 known_gaps 本身就是诚实性缺陷"）：其 §2 数字**逐一复现**；查询计划声称复现；§3"board3 全是媒体源"**属实**（live REGISTRY = people-politics / people-finance / chinanews-scroll / sina-china-focus，`BOARD3_A0_ONLY=false`，无 A0 源上线）；并指出该文档**自曝**了 `normIdent` 大小写折叠冗余与"贪婪正则是容忍而非修好"——属**低报而非高报**。
++
++**一处非阻塞 nit**：当 `exactCount === results.length` 时徽章说"N 条已置顶"但实际无一移动——空洞，但不虚假。
++
++**终判：VERDICT: CONFIRMED_SOUND**
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/cost_value.json b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/cost_value.json
+new file mode 100644
+index 000000000..774836ab1
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/cost_value.json
+@@ -0,0 +1,20 @@
++{
++  "task": "ADP-V02-P03-SEARCH",
++  "program": "ADP V0.2 生产集成（把 NOT_DEPLOYED 认知能力分批集成上线）",
++  "release_mode": "PRODUCTION",
++  "live_build_before": "e301f8a4c7d8",
++  "live_build_after": "e78306049663",
++  "value": "把 S5-P02-T060 中线上数据真能支撑的部分上线：/search 增加板块+日期范围结构化筛选（走索引，反而收窄扫描），并把查询命中于文号/DOI 标识符内的条目置顶；检索面补上 id/url，修复 bioRxiv/medRxiv 的 DOI 此前搜不到（DOI 只存在于 id/url）。",
++  "scope_honest": "非 T060 的 O(1) 精确查找，只是对已召回≤40行的重排；空格变体文号端到端不成立；agency/region/status facet 未做（无对应列）；徽章只声称『标识符匹配』而非『精确命中』（board3 现为媒体源，行是报道而非原件）。",
++  "new_d1_tables": 0,
++  "schema_change": false,
++  "cron_change": false,
++  "external_fetch_added": false,
++  "query_plan_unfiltered": "SCAN cn_items USING INDEX idx_cn_items_recency —— 与改动前逐字节一致（未变差；LIKE %x% 本就不可走索引，加 id/url 不改计划）",
++  "query_plan_board_filtered": "SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?) —— 净改善（收窄扫描）",
++  "rerank_db_cost": "0（对已取回的 <=40 行在 worker 内重排）",
++  "adversarial_block_fixed": "复核 BLOCK on 诚实性(非安全性)：①DOI-in-url 搜不到 → 检索面补 id/url；②精确命中徽章在媒体报道上假阳性 → 改称『标识符匹配』+ includes 语义；③页面无条件承诺『精确命中置顶』→ 移除，改为可证表述",
++  "dir_007_free_tier": "compliant (无新增读写；无筛选路径与改前同计划，board 筛选反而更省)",
++  "visual_motion_gate": "PASS (差分：零视觉契约元素移动)",
++  "recurring_cloud_cost_delta_usd_month": 0
++}
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/known_gaps.md b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/known_gaps.md
+new file mode 100644
+index 000000000..b3cfae1af
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/known_gaps.md
+@@ -0,0 +1,41 @@
++# Known gaps · ADP-V02-P03-SEARCH（诚实边界）
++
++本次只交付 T060 中**线上数据真能支撑**的部分。以下是**明确未做/做不到**的，页面文案也不作相应声称。
++
++## 1. 不是 T060 的 O(1) 精确查找，只是「对已召回行的置顶」
++T060 的 `exact_lookup` 是建在**全部文档**上的哈希索引，承诺"精确标识符**每次**都是第一条"。
++线上没有 `doc_number`/`doi` 列，worker 只能对 SQL `LIKE` **已召回的 ≤40 行**做重排。
++→ **能力严格弱于 T060**；页面因此只说"若查询出现在某条的文号／DOI 这类标识符里，该条会被置顶"，
++不再承诺"精确命中会排在最前"（该无条件承诺已被独立复核判定为过度声称并移除）。
++
++## 2. 文号的空格变体端到端不成立（`normIdent` 只影响排序，不影响召回）
++存的是 `国发〔2026〕12号`；用户键入 `国发 〔2026〕 12号` 时 SQL `LIKE` **返回 0 行**，重排器根本不会运行。
++复核实测：`"国发〔2026〕12号"→found=1`；`"国发 〔2026〕 12号"→found=0`；`"国发〔2026〕12 号"→found=0`。
++真正的归一化精确查找需要**落库的归一化标识符列 + 回填**（新列/新表），本次刻意不做，也**不在页面上声称**。
++（`normIdent` 的 ASCII 大小写折叠在召回层其实冗余——SQLite `LIKE` 本就 ASCII 大小写不敏感。）
++
++## 3. ★「标识符匹配」只证明标识符文本匹配，不证明该行就是官方原件★
++线上 board3 的数据源**全是媒体新闻 RSS**（人民网／中新网／新浪）——行是**关于**某文件的报道／解读，
++**不是文件本身**。因此徽章只敢叫「标识符匹配」（可证：查询出现在该行抽出的文号/DOI 里），
++**不敢叫「精确命中」**（不可证：库里可能根本没有那份原件）。
++→ 只有 **P04（board3 接 A0 官方原文入每日流水线）**落地后，库里才会有原件，这个语义才可能升级。
++
++## 4. agency / region / status 三个 facet 未做
++T060 的 `structured_filter` 含 agency/region/status；`cn_items` **没有这些列**，
++要做必须先抽取并落库（新列/新表 + 回填）。本次只做**线上索引真能支撑**的 facet：
++**板块（`idx_cn_items_board_recency`）+ 日期范围（`idx_cn_items_recency`）**。
++
++## 5. 召回上限 40 / 无筛选时仍是扫描（既有行为，未因本次变差）
++- 只对**最近 40 条**命中做重排；若精确的那条排在 40 名之外，不会被置顶。页面明示"仅显示最近 40"。
++- 无 board 筛选时仍为 `SCAN cn_items USING INDEX idx_cn_items_recency` —— 这是**改动前就存在**的行为，
++  本次**未使其变差**（复核用 EXPLAIN QUERY PLAN 逐一比对，计划与改前逐字节一致）；
++  给出 board 筛选时反而**收窄**为 `SEARCH ... USING INDEX idx_cn_items_board_recency (board_id=?)`，是净改善。
++- `LIKE %x%` 天然不可走索引，故检索面加上 `id`/`url` 两列**不改变查询计划**（复核实测同计划）。
++
++## 6. 抽取器的贪婪前缀
++`FS_DOCNUM_RE` 的 `[一-龥A-Za-z]{0,8}` 会吞入前文（「转发国发〔2026〕12号」→ 抽出「转发国发〔2026〕12号」）。
++本次用 `includes` 而非 `===` 容忍该问题（否则真文件会被漏掉），但**未改正则**——
++改它会同时改变 P01 已上线的 factsheet 行为并偏离 `extract_factsheet.py`，应作为单独任务评估。
++
++## 成本
++纯读、无新增表、无新增抓取、不改 cron；recurring $0/mo（DIR-007 不变）。
+diff --git a/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/test-results/deploy_verify.txt b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/test-results/deploy_verify.txt
+new file mode 100644
+index 000000000..9fcc431cb
+--- /dev/null
++++ b/arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P03-SEARCH/test-results/deploy_verify.txt
+@@ -0,0 +1,28 @@
++=== 1. build == e78306049663 ===
++{"build_id":"e78306049663","source_sha256":"e78306049663da5bef870b7896e0e9204dba908c18bfd0a913173a28173c8e76","schema_version":"cn_v0_3","built_at":"2026-07-17"}
++  OK
++=== 2. 路由(含 P03 新筛选参数) ===
++  / -> 200
++  /today -> 200
++  /queue -> 200
++  /radar -> 200
++  /system -> 200
++  /history -> 200
++  /library -> 200
++  /search -> 200
++  /search?q=policy -> 200
++  /search?q=policy&board=board3 -> 200
++  /search?q=policy&from=2026-01-01&to=2026-12-31 -> 200
++  /search?q=%E6%94%BF%E7%AD%96&board=board3&from=2026-01-01 -> 200
++=== 3. 六主题 6/6 (P01/P02/P03 均不得破坏) ===
++  themes: 6/6
++=== 4. P03 筛选表单渲染 ===
++  OK 板块筛选
++  OK 日期范围
++  OK 诚实文案(已移除过度承诺)
++  OK 无『精确命中』过度声称
++=== 5. P01/P02 未回归 ===
++  P01 factsheet chips: 60
++  P02 /library OK
++
++DEPLOY VERIFY: PASS
