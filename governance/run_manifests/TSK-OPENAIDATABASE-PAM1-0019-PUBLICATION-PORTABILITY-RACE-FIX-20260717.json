@@ -10,12 +10,12 @@
   "generated_at": "2026-07-16T23:50:21Z",
   "implementation_base_sha": "8fa394a6879b9cd05a87ea74515667dcb70883e3",
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:30826917fabe3bf83d9df0e878282fd866884b5c5f241b11d6cbdc536dd38c6f",
-  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the sixteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c3dd95aa3741e75b7a6b9deabb1b749bb81c4800408bb6246a70bdc19508b31b",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the nineteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
   "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
   "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
   "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
-  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects, normalize commit time from epoch to UTC Z and write canonical explicit ZIP32 bytes, register only the four exact append-only governance OIDs introduced by the intervening accepted main commits, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects, normalize commit time from epoch to UTC Z and write canonical explicit ZIP32 bytes, refresh both tracked Agent views to the accepted canonical source commit, register only the four exact append-only governance OIDs introduced by the intervening accepted main commits, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
   "scope": {
     "new_business_sample_files": 0,
     "canonical_or_raw_business_data_files_modified": 0,
@@ -31,8 +31,11 @@
     "OpenAIDatabase/CHANGELOG.md",
     "OpenAIDatabase/VERSION",
     "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
     "OpenAIDatabase/docs/governance/events.jsonl",
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
@@ -50,8 +53,11 @@
     "OpenAIDatabase/CHANGELOG.md",
     "OpenAIDatabase/VERSION",
     "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
     "OpenAIDatabase/docs/governance/events.jsonl",
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
@@ -69,8 +75,11 @@
     "OpenAIDatabase/CHANGELOG.md",
     "OpenAIDatabase/VERSION",
     "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
     "OpenAIDatabase/docs/governance/events.jsonl",
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
@@ -88,8 +97,11 @@
     "OpenAIDatabase/CHANGELOG.md",
     "OpenAIDatabase/VERSION",
     "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/performance_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/production_acceptance_candidate_v1.json",
     "OpenAIDatabase/data/derived/evaluation/memory_gold/reports/snapshot_recovery_v1.json",
+    "OpenAIDatabase/data/memory/AGENT_MEMORY.md",
+    "OpenAIDatabase/data/memory/agent-memory.json",
     "OpenAIDatabase/docs/governance/events.jsonl",
     "OpenAIDatabase/docs/governance/project.yaml",
     "OpenAIDatabase/docs/governance/roadmap.yaml",
@@ -121,7 +133,10 @@
     "python3 -B scripts/governance_id_audit.py --base-ref 8fa394a6879b9cd05a87ea74515667dcb70883e3 --json",
     "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
     "python3 -B OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py --database-dir OpenAIDatabase --write",
+    "python3 -B OpenAIDatabase/scripts/evaluate_memory_retrieval_performance.py --database-dir OpenAIDatabase --write",
     "python3 -B OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py --database-dir OpenAIDatabase --phase candidate --artifact-ref CANDIDATE_TREE --reuse-current-reports --write",
+    "python3 -B OpenAIDatabase/scripts/memory.py --database-dir OpenAIDatabase build --agent-views --check",
+    "cd OpenAIDatabase && python3 -B scripts/run_verification.py --tier security",
     "python3 -B scripts/lean_governance.py ci --changed-only --base-ref 8fa394a6879b9cd05a87ea74515667dcb70883e3"
   ],
   "test_results": [
@@ -141,6 +156,16 @@
       "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; the intervening accepted main commits add exactly four reviewed single-line append-only governance OIDs; zero policy errors and zero violations."
     },
     {
+      "command": "generated Agent view source binding",
+      "result": "PASS",
+      "observed": "Both tracked Agent views deterministically bind accepted canonical source commit bed2c13bec7b62653d76ec6711ce3a5c990bd34f; the previously failing repository-view regression now passes."
+    },
+    {
+      "command": "offline security tier",
+      "result": "PASS",
+      "observed": "150/150 tests passed after regenerating the existing 160-case performance report against the refreshed Agent view; no benchmark samples were added."
+    },
+    {
       "command": "snapshot recovery and candidate acceptance regeneration",
       "result": "PASS",
       "observed": "Recovery uses public reachable commit bed2c13bec7b62653d76ec6711ce3a5c990bd34f with 15/15 members sourced from Git objects; 100% canonical hash identity, 10 offline queries and 3 negative cases pass; six proof and five profile candidate acceptance remains PASS."
@@ -148,7 +173,7 @@
     {
       "command": "Lean Governance changed-only",
       "result": "PASS",
-      "observed": "SHIP with 17 changed files, 5 selected projects, 5 validated projects and zero tracked writes."
+      "observed": "SHIP with 20 changed files, 5 selected projects, 5 validated projects and zero tracked writes."
     },
     {
       "command": "immutable Governance ID V2 audit",
