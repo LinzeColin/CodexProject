@@ -1,0 +1,46 @@
+sequence	commit	subject
+1	05d2f91a6cfe7c734b175d04fb5d1491799ca579	docs(openaidatabase): converge current owner records
+2	6ea076b4714a087e1ff23c9b4c817bb3d85df82a	docs(governance): consolidate agent loop guidance
+3	9cef9d79b760290c72fde17fc3e7198c32b02295	fix(openaidatabase): harden Cloudflare validation
+4	d4b3e4819c2eb380d268dc59b474a2f551208100	chore(governance): record S03 cleanup manifest
+5	0c9325209255e983b91d4f9232cdbdef7738d789	OpenAIDatabase v1.2.1 S04-P1: 拆分前端 feature 与共享状态
+6	1ee4b12f1ae2526748b1496996324403cc8c8739	OpenAIDatabase v1.2.1 S04-P2: 模块化 atlasctl 与运行时
+7	6baeb8923ae8fac10935ec14949f1931907d21f6	OpenAIDatabase v1.2.1 S04-P3: 收敛验证 profiles
+8	29be66c89555dbe9d73307a4b9da16462dea8f27	feat(openaidatabase): harden S04 validation review
+9	425bc058469d4e50f9c5313d0e65db76ea931ff4	docs(openaidatabase): bind S04 whole-stage evidence
+10	024d17ccc677bbc8e18e5f07f7bb230ecf8c2dbc	docs(openaidatabase): complete S05-P1 human plane compression
+11	9cf9b83d9e3028f6d216b51540794c71b8a25edd	refactor(openaidatabase): make S05-P2 machine truth unique
+12	0b34116ffc92f0c1fcbeb7b56c89769ed43819e0	feat(openaidatabase): complete S05 P3 zh-CN semantic gate
+13	1bc4ee933078de4cf1527b30fd9e4cb23816f023	fix(openaidatabase): complete S05 whole-stage review
+14	5df633053b31b158925632fe0ec1d29b8821d9a8	feat(openaidatabase): complete S06 P1 source registry
+15	3eff4fa986359fbc6a1145d3d962e8c2ebe485e2	feat(openaidatabase): complete S06-P2 raw archive contract
+16	f53b726f1abbfd8296ba3013d4a43e3cdc56ad97	feat(openaidatabase): complete S06-P3 raw isolation
+17	535614524e34da6d5460ef150a08cc6b6a1fb9cb	fix(openaidatabase): complete S06 whole-stage review
+18	65b97b094df9bd018eaada4d4dac7a0d6afc5158	feat(openaidatabase): complete S07 P1 Codex public raw export
+19	95159b770d866bb824cccbefb83f0533711e9973	feat(openaidatabase): derive Codex Atlas from public raw
+20	3c4f3776170856c847e5cd24bdf1fa998273bda8	feat(OpenAIDatabase): complete S07-P3 automation restore handoff
+21	5c80958a272500fa87ce1210bd8d61116db79595	fix(openaidatabase): complete S07 whole-stage review
+22	2e67b32cf2bf75e2ddd44258a71913d8c54eac8e	feat(openaidatabase): add S08 P1 export request state
+23	dbe0c47f29e4b0a6c3c161dc70c62ed2689d099f	fix(openaidatabase): bind S08 auth recovery receipt
+24	7e2aa7f9d3131b4908815fbba9be5193fa1672f3	fix(openaidatabase): accept exact sentinel auth origin
+25	3c521365fe5f120284013e7434ae23e96969cb90	feat(openaidatabase): complete S09-P1 ChatGPT parser
+26	dbc35df2dc861a7005508af565164cf45c59bb54	feat(openaidatabase): add generic agent connectors
+27	6b378e5cf113b2922ef5ff0cf9263a8f020501af	feat(openaidatabase): complete S09-P3 source state restore
+28	17556400e4a9584ee79519c23d928655a9b6ec7b	fix(openaidatabase): complete S09 whole-stage review
+29	b2ea6f4b9fae34c4a78742cd15df190a8c88c96d	feat(openaidatabase): complete S10-P1 owner pipeline
+30	86320286012212bdb8f0bfb0cc5689e5c356fecd	feat(openaidatabase): complete S10-P2 scheduler recovery
+31	17b987fe6ddba8799ebaf29fd473f2fb094269e9	fix(openaidatabase): restore S10-P2 dashboard truth
+32	60a3b41e189ad4819eb8af225661a5568c6b8f2b	feat(openaidatabase): complete S10-P3 push-main recovery
+33	d3950f1979bb7abb68c72feddc6b60eb8791795b	fix(openaidatabase): complete S10 whole-stage review
+34	4e03934a1174d45a3bc948c8c632c7830c57f381	feat(openaidatabase): complete S11-P1 navigation overview
+35	72b74ea5a7fee544f12c6b68fbe944e09df14eed	feat(openaidatabase): complete S11-P2 decision objects
+36	2ada160ced7b10cf4bffc5ba42e8440e282d41de	feat(openaidatabase): complete S11-P3 overview journey
+37	6712b055d1ff57743639181646e9fe382d44a733	feat(openaidatabase): complete S11 whole-stage review
+38	62d6d97e49ca916380d4839aeac7604805ad7bba	feat(openaidatabase): complete S12-P1 workspaces
+39	05e5f738b3d9b64c57dec42c98383e0cbafe208a	feat(openaidatabase): complete S12-P2 proposal apply
+40	36fa970378a78a5177d257289e4609be5df0ef0c	feat(openaidatabase): complete S12-P3 lifecycle consistency
+41	2995b25f9b7cdf372beb71dad8103317a1ad119d	feat(openaidatabase): complete S12 whole-stage review
+42	0f0d80e2cba7d7256db96532e4e78dd7a70766bc	feat(openaidatabase): complete S13-P1 human search evidence
+43	2b1b7a47a059cfe1a74f73cea8690e5e2d272872	feat(openaidatabase): complete S13-P2 review summary
+44	e6d3426581a849d1effbc3445010875165bf9118	feat(openaidatabase): complete S13-P3 action report closure
+45	0bc1b83bd37cc93f7316b1abbfbdbc335822eeac	feat(openaidatabase): complete S13 whole-stage review
