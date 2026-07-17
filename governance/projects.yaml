@@ -86,26 +86,6 @@ project_governance_files:
   - "VERSION"
   - "CHANGELOG.md"
 projects:
-  - project_id: "KM_IDSystem"
-    path: "KM_IDSystem"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
-  - project_id: "OpenAIDatabase"
-    path: "OpenAIDatabase"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
-  - project_id: "KMFA"
-    path: "KMFA"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
-  - project_id: "PFI"
-    path: "PFI"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
   - project_id: "arxiv-daily-push"
     path: "arxiv-daily-push"
     ci_mode: "required"
@@ -207,3 +187,51 @@ migrated_projects:
     reactivation_requires_owner_authorization: true
     evidence_refs:
       - "governance/run_manifests/GOV-SPLIT-WAVE3-20260715.json"
+  - project_id: "KM_IDSystem"
+    path: "KM_IDSystem"
+    status: "migrated"
+    migrated_at: "2026-07-17"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/KMOS"
+    target_path: "KM_IDSystem"
+    source_tree_sha: "9091db7abf09304f0b23591cbc5225af79193d3c"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json"
+  - project_id: "OpenAIDatabase"
+    path: "OpenAIDatabase"
+    status: "migrated"
+    migrated_at: "2026-07-17"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/AgentDatabase"
+    target_path: "OpenAIDatabase"
+    source_tree_sha: "4c850b1f0120c36f1b223c5264e2e0f9f3dad21d"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json"
+  - project_id: "KMFA"
+    path: "KMFA"
+    status: "migrated"
+    migrated_at: "2026-07-17"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/KMOS"
+    target_path: "KMFA"
+    source_tree_sha: "e54fa39ac1a34c83fda63ff4ba301cf50ce054df"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json"
+  - project_id: "PFI"
+    path: "PFI"
+    status: "migrated"
+    migrated_at: "2026-07-17"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "PFI"
+    source_tree_sha: "89dd4b8f6d03a979c8fc1c4be243ce7e390d39c1"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json"

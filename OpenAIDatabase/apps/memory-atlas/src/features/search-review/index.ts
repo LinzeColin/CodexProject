@@ -1,1 +1,0 @@
-export { SearchReview } from "./SearchReview";

@@ -1,8 +1,0 @@
-{
-  "schema": "PFIV023Stage6WholeStageSourceTermScanV1",
-  "version": "v0.2.3",
-  "stage": "Stage 6",
-  "review_id": "V023-S6-REVIEW",
-  "scanned_file_count": 32,
-  "violations": []
-}

@@ -13,10 +13,6 @@ LinzeColin 的多项目源码与治理入口。根目录只保留稳定导航和
 
 | Project | Path | Entry |
 |---|---|---|
-| `KM_IDSystem` | `KM_IDSystem` | [README](KM_IDSystem/README.md) · [AGENTS](KM_IDSystem/AGENTS.md) |
-| `OpenAIDatabase` | `OpenAIDatabase` | [README](OpenAIDatabase/README.md) · [AGENTS](OpenAIDatabase/AGENTS.md) |
-| `KMFA` | `KMFA` | [README](KMFA/README.md) · [AGENTS](KMFA/AGENTS.md) |
-| `PFI` | `PFI` | [README](PFI/README.md) · [AGENTS](PFI/AGENTS.md) |
 | `arxiv-daily-push` | `arxiv-daily-push` | [README](arxiv-daily-push/README.md) · [AGENTS](arxiv-daily-push/AGENTS.md) |
 
 ## Retired projects

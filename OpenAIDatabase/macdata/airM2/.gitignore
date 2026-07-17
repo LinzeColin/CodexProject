@@ -1,9 +1,0 @@
-# Current-three-day data and latest reports are tracked on main through
-# short-lived Automation C PRs. Only transient run logs and clone caches stay local.
-data/run_logs/**
-!data/run_logs/
-!data/run_logs/.gitkeep
-data/cache/**
-!data/cache/
-!data/cache/archive_push/
-!data/cache/archive_push/.gitkeep

@@ -1,0 +1,59 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-SPLIT-WAVE6-20260717",
+  "project_id": "ROOT",
+  "task_id": "CODEXPROJECT-GOV-P0-SPLIT-WAVE6-20260717",
+  "acceptance_ids": [
+    "ACC-CODEXPROJECT-GOV-P0-SPLIT-WAVE6-20260717"
+  ],
+  "iteration_id": "ITER-20260717-REPOSITORY-SPLIT-WAVE6",
+  "generated_at": "2026-07-17T15:40:00+10:00",
+  "content_tree_hash": "sha256-split-wave6-governance-files:7a70608c60eb695704bf7c9441682f9e186e6b534939499f8fc5ec9bcbe4bd2f",
+  "content_records": [
+    {
+      "path": "README.md",
+      "sha256": "f8d8380188c04e5a340c3aca83e9aad64b5b4793236a0664f8b50e75e3a26ad1"
+    },
+    {
+      "path": "governance/projects.yaml",
+      "sha256": "d1831f921e6ccedf6145281954c2481cce6f07af83996cb4f64e5b21b721a18a"
+    },
+    {
+      "path": "tests/governance/test_retired_project_registry.py",
+      "sha256": "671bccbbc0bc45ac6cff45b9fb7ad3f9cf33daf32215460933561ff7d18735e8"
+    }
+  ],
+  "migration_contract": {
+    "migrated": [
+      {
+        "project_id": "KM_IDSystem",
+        "target_repo": "LinzeColin/KMOS",
+        "source_tree_sha": "9091db7abf09304f0b23591cbc5225af79193d3c",
+        "verified": "目标仓 tree sha 与源位级一致；目标仓双平面 CI 绿"
+      },
+      {
+        "project_id": "OpenAIDatabase",
+        "target_repo": "LinzeColin/AgentDatabase",
+        "source_tree_sha": "4c850b1f0120c36f1b223c5264e2e0f9f3dad21d",
+        "verified": "目标仓 tree sha 与源位级一致；目标仓双平面 CI 绿"
+      },
+      {
+        "project_id": "KMFA",
+        "target_repo": "LinzeColin/KMOS",
+        "source_tree_sha": "e54fa39ac1a34c83fda63ff4ba301cf50ce054df",
+        "verified": "目标仓 tree sha 与源位级一致；目标仓双平面 CI 绿"
+      },
+      {
+        "project_id": "PFI",
+        "target_repo": "LinzeColin/MetaDatabase",
+        "source_tree_sha": "89dd4b8f6d03a979c8fc1c4be243ce7e390d39c1",
+        "verified": "目标仓 tree sha 与源位级一致；目标仓双平面 CI 绿"
+      }
+    ],
+    "note": "MemoryAtlas 已从 OpenAIDatabase/apps/memory-atlas 拆为 AgentDatabase 顶层独立项目（git mv 保留历史，287 文件全数）。"
+  },
+  "owner_decision": "OWNER_AUTHORIZED_REPOSITORY_SPLIT_2026-07-17",
+  "raw_private_data_read_or_written": false,
+  "status": "completed",
+  "gate_status": "PASS"
+}

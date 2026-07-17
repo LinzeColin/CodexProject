@@ -1,3 +1,0 @@
-forbidden_hits=0
-contains_private_values=false
-financial_values_emitted=0
