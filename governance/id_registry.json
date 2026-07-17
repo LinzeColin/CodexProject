@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "registry_revision": 94,
+  "registry_revision": 95,
   "repository": "LinzeColin/CodexProject",
-  "last_updated_at": "2026-07-16T21:25:22Z",
+  "last_updated_at": "2026-07-17T00:08:09Z",
   "bootstrap": {
     "imported_at": "2026-07-15T13:32:34Z",
     "implementation_base_sha": "cf4a26d54d8dc4f48fa943063ced2e3992237a92",
@@ -1372,6 +1372,17 @@
       "allocated_from_base_sha": "585f0ca9861c7f5bdd12e488bb2f26fb2b1218df",
       "allocated_at": "2026-07-16T14:24:03Z",
       "source_ref": "allocator:taskpack-v3:TSK.OpenAIDatabase.PAM1.0019:event"
+    },
+    {
+      "kind": "EVT",
+      "identifier": "EVT.OpenAIDatabase.PAM1.0020",
+      "project": "OpenAIDatabase",
+      "program": "PAM1",
+      "sequence": 20,
+      "idempotency_key": "task37-publication-portability-remediation-v1",
+      "allocated_from_base_sha": "0cca467992b621a699c94f2db440ae08355c6f4b",
+      "allocated_at": "2026-07-17T00:08:09Z",
+      "source_ref": "allocator:task37-publication-portability-remediation-v1"
     },
     {
       "kind": "TSK",

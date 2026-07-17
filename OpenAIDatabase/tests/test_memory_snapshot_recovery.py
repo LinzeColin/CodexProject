@@ -37,6 +37,14 @@ class MemorySnapshotRecoveryTests(unittest.TestCase):
         self.assertEqual(self.observed["offline_query_smoke"]["total_pass_count"], 10)
         self.assertEqual(self.observed["offline_query_smoke"]["network_request_count"], 0)
 
+    def test_report_drift_diagnostic_exposes_paths_without_values(self) -> None:
+        left = {"snapshot": {"asset_bytes": 1, "hash": "left"}, "status": "PASS"}
+        right = {"snapshot": {"asset_bytes": 2, "hash": "right"}, "status": "PASS"}
+        self.assertEqual(
+            evaluator._json_difference_paths(left, right),
+            ["$.snapshot.asset_bytes", "$.snapshot.hash"],
+        )
+
     def test_tamper_missing_member_wrong_commit_and_unsafe_paths_fail_closed(self) -> None:
         self.assertEqual(
             set(self.observed["negative_cases"]), set(self.config["required_negative_cases"])

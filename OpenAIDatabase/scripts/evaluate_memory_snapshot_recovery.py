@@ -46,6 +46,30 @@ def sha256_prefixed(payload: bytes) -> str:
     return "sha256:" + hashlib.sha256(payload).hexdigest()
 
 
+def _json_difference_paths(left: Any, right: Any, path: str = "$") -> list[str]:
+    if type(left) is not type(right):
+        return [path]
+    if isinstance(left, dict):
+        differences: list[str] = []
+        for key in sorted(set(left) | set(right)):
+            child = f"{path}.{key}"
+            if key not in left or key not in right:
+                differences.append(child)
+            else:
+                differences.extend(_json_difference_paths(left[key], right[key], child))
+        return differences
+    if isinstance(left, list):
+        differences = []
+        for index in range(max(len(left), len(right))):
+            child = f"{path}[{index}]"
+            if index >= len(left) or index >= len(right):
+                differences.append(child)
+            else:
+                differences.extend(_json_difference_paths(left[index], right[index], child))
+        return differences
+    return [] if left == right else [path]
+
+
 def _load_json(path: Path, label: str) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -436,7 +460,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             report_path.parent.mkdir(parents=True, exist_ok=True)
             report_path.write_bytes(rendered)
         else:
-            if not report_path.is_file() or report_path.read_bytes() != rendered:
+            tracked = report_path.read_bytes() if report_path.is_file() else b""
+            if tracked != rendered:
+                try:
+                    tracked_json = json.loads(tracked)
+                    difference_paths = _json_difference_paths(tracked_json, report)
+                except (UnicodeError, json.JSONDecodeError):
+                    difference_paths = ["$"]
+                print(
+                    json.dumps(
+                        {
+                            "computed_sha256": sha256_prefixed(rendered),
+                            "differing_paths": difference_paths[:32],
+                            "diagnostic": "recovery_report_drift",
+                            "tracked_sha256": sha256_prefixed(tracked),
+                        },
+                        sort_keys=True,
+                    ),
+                    file=sys.stderr,
+                )
                 raise RecoveryEvaluationError("recovery_report_stale_or_missing")
         print(
             json.dumps(
