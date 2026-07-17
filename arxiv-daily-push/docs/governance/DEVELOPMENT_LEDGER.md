@@ -6516,4 +6516,5 @@ None for this new project baseline.
 - 2026-07-15 follow-up: outbox previews are dual-format (`.eml` wire format + human-readable `.html`); no gate/authorization behavior change.
 - 2026-07-19 ADP V0.2 P07 (product_version 0.28.0): 关注 /watchlist 接入线上（PRODUCTION DEPLOY 204c97eb5406 -> 659d32fd39da）；T066 的诚实子集（doc_number/board/keyword，不臆造未上线的 topic/agency/region/entity 字段）；复核 5 轮前 4 轮 BLOCK 全部属实，第 5 轮 CONFIRMED_SOUND；负控承重。
 - 2026-07-19 ADP V0.2 P08 / T063 (product_version 0.29.0): 研究元数据增强接入每日 cron（PRODUCTION DEPLOY 659d32fd39da -> ac7cf4800e18）；预印本/期刊不混淆、增强失败不阻塞原文；绝不声称「研究论文」（OpenAlex 自身无法区分新闻与论文）；复核 6 轮，第 1 轮抓真实代码缺陷，第 2-5 轮全是证据造假，第 6 轮 CONFIRMED_SOUND。
+- 2026-07-19 ADP V0.2 P09 / T043 (product_version 0.30.0): 覆盖与缺口上线（PRODUCTION DEPLOY ac7cf4800e18 -> 39b87041c284）；线上时间覆盖率 1.5%（69/4699），点名 6 个从未抓到条目的源（含 P04 接入的 A0 源 stats-gov）；不引入 v0_1 的 source_not_yet_active（对真实数据 93% 是假解释）；复核 BLOCK 四条全中已修。
 - Note: V0.3 development history lives in `docs/v03/04_开发记录/CHANGELOG.md` (one line per task); this ledger receives machine-sync rows only (R0-6 freeze).

@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260719-ADP-V02-P08-RESEARCH-META-DEPLOY"
-source_snapshot_hash: "sha256:f41d0ee77b62522ee05a14a94d672291c7ac340125527cba0a130efdbff9553b"
+as_of_event_id: "EVENT-20260719-ADP-V02-P09-COVERAGE-DEPLOY"
+source_snapshot_hash: "sha256:00378992546a2849bec9cbf227e094ca6267d19aae5e6373f1ef9e9fd8d0fb96"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
 snapshot_event_time: "2026-07-19T15:00:00+10:00"
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 158
+    precommit_pending_events: 159
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

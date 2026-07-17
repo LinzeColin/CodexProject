@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P09 / T043 (覆盖与缺口上线; PRODUCTION DEPLOY; product_version 0.30.0)
+- 把 T043「把全面性从来源数量变为可见的时间覆盖和缺口」接进线上 /system。线上如实显示：
+  登记在册 37 个来源 × 127 个月 = 4699 格，有条目 69 格，**时间覆盖率 1.5%**，
+  并**点名** 6 个从未抓到过任何条目的源（cell、cell-neuron、lancet、science-advances、stats-gov、gnews-us-tech）。
+  ★其中 stats-gov 是 P04 亲手接进来的 A0 官方源，至今一条都没抓到 —— 旧网格会永远藏着它。★
+- **没有照搬 v0_1 的 gap_detector**：拿它对真实线上数据跑，unexplained=0（验收 PASS），
+  但 source_not_yet_active 占 3665/3937 = 93%。对 arXiv(1991)/Nature(1869)/NEJM(1812)/PNAS(1915)/
+  bioRxiv(2013) 全是**假的**（仅这 8 源就 1003 格）。即**那条验收是靠假解释通过的**，
+  而它分辨不出「诚实的空洞」与「错的解释」—— 错的解释比空洞更糟。故不引入该判定。
+- **复核 BLOCK 四条全中，全部已修**。最要命的一条：我的第一版把源清单从 cn_items 推出来，
+  于是**一条都没抓到的源整个消失**（6 源 × 127 月 = 762 格既无 count 也无解释，当场违反 T043 验收）。
+  ★复核点破：v0_1 从条目反推「源的起始月」→ 没数据＝「那时源还不存在」；我从条目反推「源的清单」
+  → 没数据＝「这个源不存在」。**同一个谬误，从时间轴挪到源轴 —— 我修好一根轴，又在另一根轴犯一遍。**★
+  另三条：coverage_pct 因此虚高（1.8% vs 诚实 1.5%）；验收套件是哑 mock（把查询换成不存在的表仍 PASS，
+  与 P08 第 1 轮 F1 同一个错）；ok(unexplained===0) 是不可能失败的断言。
+- DIR-007 实测：**rows_read 1768/次 /system 访问**（聚合 1694 = 2×表大小，全表扫 + TEMP B-TREE；登记 74）
+  → 5M/天 ≈ 2800 次访问/天；CPU 0.51/10ms；外部子请求 +0。**rows_read 此前从未被测过**。
+- 7 条负控全部承重、全部由断言判定；验收套件改用真 node:sqlite + 真 schema_cloud.sql。实施者未自签。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P08 / T063 (研究元数据增强; PRODUCTION DEPLOY; product_version 0.29.0)
 - 把 S5 的 T063 从 NOT_DEPLOYED 接进每日 cron：board1/board2 的论文条目获得 OpenAlex 研究元数据
   （预印本/期刊、发表载体、被引次数、开放获取），此前读者无法区分预印本与已发表论文。

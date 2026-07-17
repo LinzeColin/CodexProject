@@ -1,0 +1,141 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P09-COVERAGE-20260719",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P09-COVERAGE",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-19T19:00:00Z",
+  "implementation_base_sha": "4c89503855fc3429e9e80e26c7f9a46354ec844d",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:635a0cd0ce60ba40294c5ffa53825910b6c3d22f2ada010497001337acca4e72",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 22 non-manifest changed files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP V0.2 P09 / T043 coverage-and-gaps production deploy + V0.2 evidence-bundle guard",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "ADP V0.2 P09 deploys task T043 (Source-Year-Month gap detector) onto the live /system page, turning comprehensiveness from a source COUNT into visible time coverage: 37 registered sources x 127 months = 4699 cells, 69 covered, time coverage 1.5 percent, and it NAMES the six sources that have never ingested a single item (cell, cell-neuron, lancet, science-advances, stats-gov, gnews-us-tech). stats-gov is an A0 official source wired in by P04 that has never fetched anything -- a real operational finding the earlier design would have hidden forever. The v0_1 gap_detector was NOT ported as-is: against real live data it reports unexplained=0 and PASSES T043's acceptance, but only by labelling 3665 of 3937 cells source_not_yet_active, false for arXiv (1991), Nature (1869), NEJM (1812), PNAS (1915) and bioRxiv (2013) -- 1003 false cells for those eight sources alone. That acceptance cannot distinguish an honest hole from a wrong explanation, and a wrong explanation is worse, so the reason was dropped for the provable fact not_backfilled. Independent review BLOCKed with four defects, all correct, all fixed -- the worst being that the source list was derived from cn_items so zero-item sources vanished (762 cells with neither count nor reason): the SAME fallacy as v0_1, moved from the time axis to the source axis, committed inside the very patch written to eliminate it. Also adds a guard that every V0.2 evidence bundle carries its evidence -- P08 and P09 had both shipped to production with no TASK_REPORT.md and nothing noticed. release_mode PRODUCTION; live ac7cf4800e18 -> 39b87041c284.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_verify.mjs",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/nc_results.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P09-COVERAGE-20260719.json",
+    "tests/governance/test_adp_v02_evidence_bundles.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_verify.mjs",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/nc_results.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P09-COVERAGE-20260719.json",
+    "tests/governance/test_adp_v02_evidence_bundles.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/nc_results.txt"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_verify.mjs",
+    "python3 -B -m unittest -q tests.governance.test_adp_v02_evidence_bundles",
+    "python3 -B -m unittest -q tests.governance.test_adp_worker_build_stamp",
+    "python3 -B scripts/repository_hygiene_audit.py",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "P09 acceptance (runs the SHIPPED coverageGrid/coverageHTML against a REAL node:sqlite DB loading the REAL schema_cloud.sql)",
+      "result": "PASS",
+      "observed": "exit 0. The shipped SQL executes against the real schema; the output never claims a source did not exist; the grid covers ALL registered sources (a fixture with 6 registered vs 4 with items proves zero-item sources stay visible: stats-gov renders 0/127, not absent); covered+not_backfilled=cells; coverage_pct is computed not hardcoded; month window spans 2016-01..now across year boundaries; one batched pair of queries; empty DB does not divide by zero."
+    },
+    {
+      "command": "P09 negative controls (7)",
+      "result": "PASS (7/7 load-bearing, all decided by assertion, all reach the verdict)",
+      "observed": "nc1 reintroduce source_not_yet_active; nc2 miscount not_backfilled; nc3 hardcode coverage_pct=100; nc4 drop the try/catch; nc5 move the window to 2026-01 (the 2016+ debt vanishes); nc6 revert to deriving the source list from cn_items (the reviewer's BLOCK-1 -- reds with '实得 4' vs 6); nc7 point the registry query at a non-existent table (the reviewer's BLOCK-3 -- a dumb mock could not catch this)."
+    },
+    {
+      "command": "V0.2 evidence-bundle guard (new)",
+      "result": "PASS",
+      "observed": "5 tests. Load-bearing: removing P08's TASK_REPORT.md -> FAIL naming it; setting a PRODUCTION bundle's live_build_after to 'TBD' -> FAIL. Written because the audit found P08 AND P09 had shipped to production with no TASK_REPORT.md at all; both backfilled. Deliberately scoped to what is universally true (cost sheet parses + declares release_mode, test-results non-empty, PRODUCTION names a 12-hex build) -- NOT nc_results/known_gaps, which only P07-P09 carry; a guard red on arrival just gets deleted."
+    },
+    {
+      "command": "DIR-007 measured (rows_read, never measured before)",
+      "result": "PASS",
+      "observed": "aggregate rows_read=1694 (~2x table size 847; full scan + USE TEMP B-TREE FOR GROUP BY; 69 result rows) + registry rows_read=74 = ~1768 rows per /system view -> ~2800 views/day against D1's 5M/day. CPU 0.51 of 10ms. External subrequests +0. Recorded honestly that this is a full scan growing linearly with cn_items and will need materialising if the 2016+ backfill lands."
+    },
+    {
+      "command": "live verification",
+      "result": "PASS",
+      "observed": "build.json 39b87041c284; / /review /radar /library /watchlist /system all 200. /system renders: 登记在册 37 个来源 × 127 个月 = 4699 格 / 有条目 69 / 未回填 4630 / 时间覆盖率 1.5% / 从未抓到过任何条目的源：6 个（cell、cell-neuron、lancet、science-advances、stats-gov、gnews-us-tech）."
+    }
+  ],
+  "stop_conditions": [
+    "若将来真做 2016+ 回填把 cn_items 撑大，/system 的覆盖查询是全表扫、成本会线性增长 —— 必须先改成物化/缓存再放量。",
+    "绝不要为了让 coverage 数字好看而重新引入 source_not_yet_active 或任何「没有独立证据的解释」。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <previous-version-id> 回到 ac7cf4800e18。",
+    "repo": "git revert 本 commit；只读视图，cn_items 未被改写，回滚无数据损失。"
+  },
+  "unresolved_risks": [
+    "not_backfilled 作为兜底确实恒真（至今没跑过任何回填），故 unexplained 天然为 0 —— 正因如此才不拿它当「全面」的证据，页面呈现的是债务比例。",
+    "一个源若只有窗口外的条目会显示 0/127，不额外说明「其条目在窗口外」（复核提的次要项，未修）。",
+    "published_at 与 fetched_at 同时为 NULL 时该条目静默不计入（线上实测 both_null=0）。",
+    "6 个从未抓到条目的源（含 A0 官方源 stats-gov）是【真实的运维问题】，本批只负责让它可见，不负责修它。"
+  ],
+  "next_allowed_task": "排查 stats-gov 等 6 个零条目源为何抓不到；或继续 V0.2 集成。"
+}

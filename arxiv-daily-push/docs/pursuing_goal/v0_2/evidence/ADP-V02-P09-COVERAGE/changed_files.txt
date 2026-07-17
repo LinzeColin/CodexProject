@@ -1,0 +1,13 @@
+# ADP-V02-P09 changed files
+
+## 生产代码
+  arxiv-daily-push/deploy/cloudflare/worker_cloud.js  +100/-1
+  build_id = 39b87041c284
+
+## 证据
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/changed_files.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/git.diff
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/known_gaps.md
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_tests.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/coverage_verify.mjs
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P09-COVERAGE/test-results/nc_results.txt

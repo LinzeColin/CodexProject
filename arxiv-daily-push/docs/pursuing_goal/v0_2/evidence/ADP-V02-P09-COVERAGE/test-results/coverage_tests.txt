@@ -1,0 +1,46 @@
+shipped COVERAGE_START = 2016-01
+
+== 发货的 SQL 必须能对着真 schema 跑通（哑 mock 抓不到这一条） ==
+  PASS 发货的两条查询都能对着真 schema_cloud.sql 执行
+
+== ★核心★：发货代码绝不声称「那时这个源还不存在」 ==
+  PASS COV_REASON 里没有 source_not_yet_active —— 没有独立证据就不下这个判断
+  PASS 输出里不含「该源当时不存在」的断言（v0_1 工具对同样数据会给出 3665/3937 = 93% 这样的假解释）
+  PASS 未覆盖的月份被明确解释为「未回填」，并点명它不等于源不存在
+
+== 每格都有 count 或解释，且 0 未解释 ==
+  PASS cells = months × 登记源数 (127 × 6 = 762)
+  PASS covered(5) + not_backfilled(757) = cells(762) —— 无遗漏
+  PASS 网格覆盖登记表里【全部】 6 个源（实得 6）—— 抓不到东西的源不许消失
+  PASS 每格非 covered 即 not_backfilled —— 无静默空洞
+  PASS 时间覆盖率如实很低（0.7%）—— 这是真实债务，不是失败
+
+== 覆盖率算得对（拿真实分布验算） ==
+  PASS covered = 5（arxiv 2 月 + 其余 3 源各 1 月），实得 5
+  PASS arxiv-all: 2 个月 / 152 条（实得 2 / 152）
+  PASS 已覆盖区间 2018-09 … 2026-07（实得 2018-09 … 2026-07）
+  PASS per_source 有全部 6 个登记源（实得 6）
+  PASS 从未抓到条目的源被点名而不是被隐藏：["lancet","stats-gov"]
+  PASS 登记 6 个源、其中 4 个真抓到过（实得 6 / 4）
+  PASS stats-gov（P04 接进来的 A0 官方源）在网格里是 0/127，而不是不存在
+  PASS coverage_pct 是算出来的不是写死的（0.7）
+
+== 月份窗口正确（2016-01 起，含闰年与跨年） ==
+  PASS covMonths(2016-01..2016-03) = 3 个月
+  PASS 跨年正确：2016-12 -> 2017-01
+  PASS end 早于 start -> 空（不产生负数格）
+  PASS 窗口是 2016-01 至今，约 127 个月（不是只看最近）
+
+== DIR-007：一次聚合查询，行数由「源×月」组合数决定 ==
+  PASS 整个覆盖网格只发 1 条 D1 查询（实得 1）
+
+== 覆盖视图坏掉不许把 /system 带下线 ==
+  PASS coverageGrid 本身会抛（由 systemPage 的 try/catch 兜住）
+  PASS systemPage 用 try/catch 包住覆盖视图 —— 它坏了页面照常渲染（与 P08 attachMeta 同一条纪律）
+
+== 空库不炸 ==
+  PASS 空库 -> 0 格 0 覆盖 0%，不除零
+  PASS 空库仍能渲染
+
+ACCEPTANCE = PASS
+exit=0

@@ -1,0 +1,25 @@
+# ADP-V02-P09 (T043 上线) NEGATIVE CONTROLS — 每条撤销一处保证；验收必须变红，且由【断言】判定。
+#
+# 独立复核 BLOCK 过一轮，四条全中，全部已修：
+#  BLOCK-1（严重）：我的网格从 cn_items 推源清单 → 【一条都没抓到的源整个消失】。
+#    线上 cn_sources=37、有条目的仅 31 → 6 源 × 127 月 = 762 格既无 count 也无解释，
+#    当场违反 T043 的「0 个静默未解释空洞」。而「一条都没抓到的源」正是缺口检测最该喊的东西
+#    —— stats-gov 就是其中之一，是 P04 我自己接进来的 A0 官方源。
+#    ★复核点破的要害★：v0_1 从条目反推「源的起始月」→ 没数据＝「那时源还不存在」；
+#      我从条目反推「源的清单」→ 没数据＝「这个源不存在」。同一个谬误，从时间轴挪到源轴。
+#      我修好了一根轴，又在另一根轴上原样犯了一遍。现改为由 cn_sources 驱动（nc6 钉死）。
+#  BLOCK-2：coverage_pct 因此被抬高（1.8% vs 诚实的 1.5%）—— 分母漏掉了最差的 762 格。已随 BLOCK-1 修好。
+#  BLOCK-3：验收套件的哑 mock 不看 SQL —— 把发货查询换成
+#    "SELECT this_column_does_not_exist FROM table_that_does_not_exist" 仍然 ACCEPTANCE = PASS。
+#    这与 P08 第 1 轮 BLOCK 的 F1 是同一个错，我在 P08 用真 sqlite 修好、转头在 P09 又写了个哑 mock。
+#    现改用真 node:sqlite + 真 schema_cloud.sql（nc7 钉死）。
+#  BLOCK-4：ok(g.unexplained === 0) 中 unexplained 是恒为 0 的字面量 → 不可能失败的断言，
+#    而这份套件上面刚吹过自己删掉了一条 `ok(...||true)`。已删，换成能失败的等价不变量。
+nc1  exit=1  语义失败=2  到达判定=1  重新引入 v0_1 的假解释 source_not_yet_active（「那时这个源还不存在」）
+nc2  exit=1  语义失败=2  到达判定=1  漏计 not_backfilled → covered+not_backfilled ≠ cells，出现静默空洞
+nc3  exit=1  语义失败=3  到达判定=1  把覆盖率写死成 100% → 谎报全面
+nc4  exit=1  语义失败=1  到达判定=1  去掉 try/catch → 覆盖视图坏了会把 /system 带下线
+nc5  exit=1  语义失败=5  到达判定=1  窗口改成 2026-01 起 → 2016+ 的覆盖债务当场消失
+nc6  exit=1  语义失败=5  到达判定=1  退回「从 cn_items 推源清单」→ 一条都没抓到的源静默消失（复核 BLOCK-1）
+nc7  exit=1  语义失败=1  到达判定=1  把登记表查询换成不存在的表 → 真 SQL 必须炸（复核 BLOCK-3：哑 mock 抓不到）
+发货代码 exit=0  语义失败=0  (必须 0/0)

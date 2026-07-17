@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Guard: every ADP V0.2 integration evidence bundle actually carries its evidence.
+
+The V0.2 program deploys NOT_DEPLOYED V0.1 capabilities into production. Each phase ships an
+evidence bundle under `docs/pursuing_goal/v0_2/evidence/<TASK>/`. The bundle is the only durable
+record of what was claimed, measured, and reviewed; a phase whose bundle is missing pieces is a
+production change with no auditable basis.
+
+Why this exists: it was NOT holding. Auditing the bundles while shipping P09 found P08 and P09 had
+NO `TASK_REPORT.md` at all — two production deploys, both reviewed, both missing the document that
+states what shipped. Nothing noticed, because nothing looked. Both were backfilled; this guard is
+what stops the next one.
+
+What it asserts, and why only these:
+  * `cost_value.json` exists, parses, and declares `release_mode` + a live build id.
+    The task package's own cost_metric rule is 未知不得填 0 — cost accounting is mandatory, so a
+    bundle without a parseable cost sheet is not a bundle.
+  * `TASK_REPORT.md` and a non-empty `test-results/` exist.
+  * A PRODUCTION bundle names the build it deployed, and that id looks like a real 12-hex build id
+    (the worker's self-excluding stamp) rather than a placeholder.
+
+What it deliberately does NOT assert: the presence of `nc_results.txt` or `known_gaps.md`. Only
+P07-P09 carry negative controls and P01 has no known_gaps — those predate the discipline. Widening
+this guard to fail on them would make it red on arrival and it would simply be deleted. It is
+scoped to what is universally true today; tighten it when the older bundles are backfilled.
+"""
+import json
+import pathlib
+import re
+import unittest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+EVIDENCE = ROOT / "arxiv-daily-push" / "docs" / "pursuing_goal" / "v0_2" / "evidence"
+BUILD_ID_RE = re.compile(r"^[0-9a-f]{12}$")
+
+
+def _bundles():
+    if not EVIDENCE.is_dir():
+        return []
+    return sorted(p for p in EVIDENCE.iterdir() if p.is_dir() and p.name.startswith("ADP-V02-"))
+
+
+class TestAdpV02EvidenceBundles(unittest.TestCase):
+    def test_there_are_bundles_to_guard(self):
+        """A guard over an empty set passes vacuously -- assert the set is real."""
+        self.assertTrue(EVIDENCE.is_dir(), "V0.2 evidence directory is missing: {}".format(EVIDENCE))
+        self.assertGreaterEqual(len(_bundles()), 5,
+                                "expected the V0.2 integration bundles; found {}".format(len(_bundles())))
+
+    def test_every_bundle_has_a_task_report(self):
+        missing = [b.name for b in _bundles() if not (b / "TASK_REPORT.md").is_file()]
+        self.assertEqual(
+            missing, [],
+            "V0.2 phase(s) shipped to production with no TASK_REPORT.md: {}\n"
+            "The bundle is the only durable record of what was claimed and reviewed. P08 and P09 both "
+            "shipped without one and nothing noticed, because nothing looked.".format(missing))
+
+    def test_every_bundle_has_test_results(self):
+        empty = []
+        for b in _bundles():
+            tr = b / "test-results"
+            if not tr.is_dir() or not any(p.is_file() for p in tr.iterdir()):
+                empty.append(b.name)
+        self.assertEqual(empty, [], "V0.2 bundle(s) with no test-results artifacts: {}".format(empty))
+
+    def test_every_bundle_has_a_parseable_cost_sheet(self):
+        bad = []
+        for b in _bundles():
+            f = b / "cost_value.json"
+            if not f.is_file():
+                bad.append("{}: cost_value.json missing".format(b.name)); continue
+            try:
+                d = json.loads(f.read_text(encoding="utf-8"))
+            except Exception as e:
+                bad.append("{}: cost_value.json does not parse ({})".format(b.name, type(e).__name__)); continue
+            if not d.get("release_mode"):
+                bad.append("{}: cost_value.json declares no release_mode".format(b.name))
+        self.assertEqual(
+            bad, [],
+            "The task package requires cost accounting (cost_metric: 未知不得填 0). A bundle without a "
+            "parseable cost sheet declaring release_mode is not auditable:\n  " + "\n  ".join(bad))
+
+    def test_production_bundles_name_a_real_build_id(self):
+        """A PRODUCTION deploy must say which build it put live, as a real 12-hex stamp.
+
+        The build id is the worker's self-excluding hash (guarded by test_adp_worker_build_stamp).
+        A bundle claiming PRODUCTION without naming a real one cannot be tied to what actually ran."""
+        bad = []
+        for b in _bundles():
+            f = b / "cost_value.json"
+            if not f.is_file():
+                continue
+            d = json.loads(f.read_text(encoding="utf-8"))
+            if str(d.get("release_mode", "")).upper() != "PRODUCTION":
+                continue
+            after = str(d.get("live_build_after", ""))
+            if not BUILD_ID_RE.match(after):
+                bad.append("{}: live_build_after={!r} is not a 12-hex build id".format(b.name, after))
+        self.assertEqual(bad, [], "PRODUCTION bundle(s) that do not name the build they deployed:\n  "
+                         + "\n  ".join(bad))
+
+
+if __name__ == "__main__":
+    unittest.main()
