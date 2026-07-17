@@ -1,0 +1,128 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-OPENAIDATABASE-PAM1-0019-PUBLISHED-HISTORY-FETCH-FIX-20260717",
+  "project_id": "OpenAIDatabase",
+  "task_id": "TSK.OpenAIDatabase.PAM1.0019",
+  "acceptance_ids": [
+    "ACC.OpenAIDatabase.PAM1.0019"
+  ],
+  "iteration_id": "ST10-PHC-OPENAIDATABASE-PAM1-0019-004",
+  "generated_at": "2026-07-17T01:29:23Z",
+  "implementation_base_sha": "7679baddb02308508fa7000f053672382f0c760b",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:7df4ea97b49b442ec5a43ba6f752398612cda1dc859d612b526704840cb9543a",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the ten non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "Task37 published clean-clone history visibility remediation",
+  "ci_run_reference": "LOCAL_PASS_PENDING_PR_REQUIRED_CHECKS",
+  "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
+  "summary": "Replace the published evaluator's depth-one fetch with a bounded configurable 32-commit window so the accepted public repository-hygiene baseline remains available without fetching full history.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 0,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_production_acceptance_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py",
+    "OpenAIDatabase/tests/test_memory_production_acceptance.py",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLISHED-HISTORY-FETCH-FIX-20260717.json",
+    "tests/governance/test_governance_id_v2.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/config/evaluation/memory_production_acceptance_v1.json",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py",
+    "OpenAIDatabase/tests/test_memory_production_acceptance.py",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLISHED-HISTORY-FETCH-FIX-20260717.json",
+    "tests/governance/test_governance_id_v2.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLISHED-HISTORY-FETCH-FIX-20260717.json",
+    "tests/governance/test_governance_id_v2.py"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/VERSION",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "governance/id_registry.json",
+    "governance/run_manifests/TSK-OPENAIDATABASE-PAM1-0019-PUBLISHED-HISTORY-FETCH-FIX-20260717.json",
+    "tests/governance/test_governance_id_v2.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest -q OpenAIDatabase.tests.test_memory_production_acceptance",
+    "python3 -B -m unittest -q tests.governance.test_governance_id_v2",
+    "git fetch --depth=32 accepted_sha; repository_hygiene_audit.py --tree-ish accepted_sha",
+    "python3 -B scripts/governance_id_audit.py --base-ref 7679baddb02308508fa7000f053672382f0c760b --json",
+    "python3 -B scripts/repository_hygiene_audit.py --tree-ish candidate_tree",
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref 7679baddb02308508fa7000f053672382f0c760b"
+  ],
+  "test_results": [
+    {
+      "command": "production acceptance regression",
+      "result": "PASS",
+      "observed": "11/11 tests passed; accepted history depth is 32 and invalid 1, boolean and 257 values fail closed."
+    },
+    {
+      "command": "actual depth-32 accepted clean clone hygiene",
+      "result": "PASS",
+      "observed": "Baseline tree 0669f6c51940477894d1a8303511063872e5266e is available; zero policy errors and zero violations."
+    },
+    {
+      "command": "Governance ID V2 regression",
+      "result": "PASS",
+      "observed": "15/15 tests passed; repository registry contract covers 68 immutable event allocations including EVT.OpenAIDatabase.PAM1.0021."
+    },
+    {
+      "command": "immutable Governance ID V2 audit",
+      "result": "PASS",
+      "observed": "Registry revision 96; all 13,234 identifier references resolve exactly once with zero new positional IDs or errors."
+    },
+    {
+      "command": "Lean Governance changed-only",
+      "result": "PASS",
+      "observed": "SHIP with 11 changed files, 5 selected projects, 5 validated projects and zero tracked writes."
+    }
+  ],
+  "evidence_refs": [
+    "https://github.com/LinzeColin/CodexProject/commit/7679baddb02308508fa7000f053672382f0c760b",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29547016393",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/29547017566",
+    "OpenAIDatabase/config/evaluation/memory_production_acceptance_v1.json",
+    "OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py"
+  ],
+  "stop_conditions": {
+    "live_main_differs_from_tested_base": true,
+    "required_check_failure": true,
+    "published_hygiene_failure": true,
+    "snapshot_repository_not_public": true
+  },
+  "rollback": "Revert this eleven-file remediation through a new governed transaction; incomplete Release and both temporary tags were already deleted.",
+  "unresolved_risks": [
+    "Final PUBLIC Release and published acceptance remain pending until this remediation is accepted on main and accepted-main checks pass."
+  ],
+  "next_allowed_task": "Settle this exact remediation, rerun accepted-main checks, recreate the commit-pinned public Release, and require PRODUCTION_ACCEPTED with final 0/0/0."
+}

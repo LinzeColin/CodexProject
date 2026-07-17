@@ -106,7 +106,7 @@ class GovernanceIdV2ContractTests(unittest.TestCase):
             sum(item["kind"] == "TSK" for item in payload["allocations"]), 63
         )
         self.assertEqual(
-            sum(item["kind"] == "EVT" for item in payload["allocations"]), 66
+            sum(item["kind"] == "EVT" for item in payload["allocations"]), 68
         )
         self.assertEqual(
             sum(item["kind"] == "PG" for item in payload["allocations"]), 1
