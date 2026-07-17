@@ -56,3 +56,6 @@ arxiv-daily-push/deploy/cloudflare/.wrangler/
 /governance/**/*stdout*
 /governance/**/*stderr*
 /governance/**/*transcript*
+
+# New evidence command logs stay untracked artifacts (root-governance-artifact-policy-v1)
+arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/**/commands.log

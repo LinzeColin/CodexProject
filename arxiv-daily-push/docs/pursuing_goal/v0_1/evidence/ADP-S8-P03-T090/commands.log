@@ -1,9 +1,0 @@
-# ADP-S8-P03-T090 final handoff + production deploy
-# deploy (Owner-authorized)
-cd deploy/cloudflare && npx wrangler@4 deploy --config wrangler_cloud.jsonc   # version 5a7c0fbe; live b189->452f7c5de919
-npx wrangler@4 d1 execute adp-mirror --remote --file <t083 indexes>           # apply recency indexes
-curl -s https://adp.linzezhang.com/build.json                                 # build 452f7c5de919; six themes 6/6; routes 200
-# final manifest + verify
-python3 tools/final_handoff.py --out evidence/ADP-S8-P03-T090/final_manifest.json  # 89 COMPLETE + 1 PARTIAL, all terminal
-python3 evidence/ADP-S8-P03-T090/test-results/t090_verify.py                  # ACCEPTANCE=PASS exit 0 (live build cross-checked)
-# rollback if needed: npx wrangler@4 versions deploy d5890974-1d1e-4081-8bc8-0f85ff7c486d
