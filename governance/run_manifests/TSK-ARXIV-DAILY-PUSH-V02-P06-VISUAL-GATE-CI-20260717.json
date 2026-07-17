@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P06-VISUAL-GATE-CI-20260717",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P06-VISUAL-GATE-CI",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-17T07:00:00Z",
+  "implementation_base_sha": "ee02e4a622147009c2530ceb47e1706b29c467de",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:6304bfda5fd4ac5117761a0148574d769a6f857be742f3322160a55a0b9ff959",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 2 non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP six-theme visual/motion gate wired into CI + workflow ownership registration",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "ADP V0.2 P06: wire the six-theme visual/motion gate into GitHub CI so dropping the Owner's UI/motion design fails the push instead of relying on memory. New workflow arxiv-daily-push-visual-gate.yml runs visual_regression_ci.py on worker/baseline/tool changes and exits non-zero on BLOCK. Also discovered that arxiv-daily-push-stage1-bootstrap's runtime-change-scope regex excludes deploy/cloudflare/worker_cloud.js, so its green 'success' on recent worker pushes was the classifier job succeeding while the real check was SKIPPED -- ADP CI had never checked the worker. An auditable approvals path is provided so an approved visual change does not require deleting the workflow. Registers the workflow in governance/workflow_policy.json (the CI audit had failed with 'unowned workflows') and adds a governance test that reads the WORKING TREE, closing the blind spot that made the local pre-commit audit vacuous for the very file being added.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-VISUAL-GATE-CI-20260717.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_policy_covers_all_workflows.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-VISUAL-GATE-CI-20260717.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_policy_covers_all_workflows.py"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-VISUAL-GATE-CI-20260717.json",
+    "governance/workflow_policy.json"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-VISUAL-GATE-CI-20260717.json",
+    "governance/workflow_policy.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/design/前端呈现基线_v1/README.md",
+    ".github/workflows/arxiv-daily-push-visual-gate.yml",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_policy_covers_all_workflows.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest -q tests.governance.test_workflow_policy_covers_all_workflows",
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic",
+    "bash: replay the workflow's exact gate step against clean / mutated / escape candidates"
+  ],
+  "test_results": [
+    {
+      "command": "workflow policy coverage test",
+      "result": "PASS",
+      "observed": "3 tests. LOAD-BEARING: it FAILED before the registration was added (reproducing the exact CI error 'unowned workflows'), and passes after. Reads the working tree, not git ls-files, which is the blind spot that made the local audit vacuous."
+    },
+    {
+      "command": "workflow_security_audit",
+      "result": "PASS",
+      "observed": "status PASS; owned 16 / unowned 0 / total 16; errors []; duplicate_role_count 0; unpinned_actions 0; unapproved_actions 0."
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "observed": "status PASS, violations []."
+    },
+    {
+      "command": "lean_governance validate",
+      "result": "PASS",
+      "observed": "0 errors project + root."
+    },
+    {
+      "command": "workflow gate step replay (exact bash, incl. set -u empty-array expansion)",
+      "result": "PASS",
+      "observed": "clean worker -> job exit 0 (green); mutated keyframe -> exit 1 (red); unregistered [data-theme=neon] aggregate-only escape -> exit 1 (red). Approvals semantics verified: empty array approves nothing (mutation still exit 1); a complete record (element+reason+approver) -> PASS_APPROVED exit 0; a record missing approver -> still exit 1 (fail-safe)."
+    },
+    {
+      "command": "live CI observation",
+      "result": "PASS",
+      "observed": "On push ee02e4a62 the new workflow ran on GitHub and reported success against the clean worker."
+    }
+  ],
+  "stop_conditions": [
+    "If the gate blocks a change you believe is correct, do NOT delete the workflow: add an approval record (element+reason+approver) to arxiv-daily-push/docs/design/visual_change_approvals.json and re-freeze the baseline.",
+    "A per_theme hash change is the Owner-signed six-theme identity: it requires an Owner visual gate; the re-freeze tool refuses to bless it automatically."
+  ],
+  "rollback": {
+    "repo": "git revert this commit; NOT_DEPLOYED so production is unaffected (live stays 204c97eb5406)."
+  },
+  "unresolved_risks": [
+    "arxiv-daily-push-stage1-bootstrap's runtime-change-scope regex still excludes deploy/cloudflare/**, so that workflow continues to skip its real job on worker-only changes. Not widened here (out of scope, and the new gate now covers the worker's visual contract); worth a separate decision about what else should run on worker changes.",
+    "The gate is source-hash level; no screenshot/pixel layer (PIXEL_LAYER_ENFORCED=False).",
+    "A residual INERT aggregate-only escape remains (extra unregistered key in THEME_FX/THEME_HERO/HERO_VIDEO) -- see ADP-V02-P05 known_gaps 4b."
+  ],
+  "next_allowed_task": "Owner-gated BOARD3_A0_ONLY flip after real A0 coverage days, or extend theme_set_consistency to fx/hero/video key sets."
+}
