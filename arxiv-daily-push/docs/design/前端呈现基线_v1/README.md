@@ -54,6 +54,22 @@
 
 **规矩**：改动六主题/首屏/动效 ⇒ 先对照本包 ⇒ 若确需偏离，必须留下批准记录并**重冻基线**；`per_theme` 哈希（= 六主题身份本身）变化**必须走 Owner 视觉门**，工具会拒绝自动重冻。
 
+### 这道门现在是自动的（不再靠人记得）
+
+`.github/workflows/arxiv-daily-push-visual-gate.yml` 在**每次改到 worker / 基线 / 门工具时自动运行**，
+判 BLOCK 即**推送变红**。（此前它虽然存在却**没有任何人调用**，且裸跑 `exit 0` 零输出 = 空跑通过。）
+
+**要做一次经批准的视觉改动**（正门，不要去删工作流）：
+1. 新建 `arxiv-daily-push/docs/design/visual_change_approvals.json`，内容是一个数组：
+   ```json
+   [{"element": "keyframes", "reason": "为什么必须改，一句话说清", "approver": "linzezhang"}]
+   ```
+   `element` 取门报出的 `blocked_on` 名（如 `base_css` / `keyframes` / `theme_js` / `hero_css` / `fx_css` …）。
+   **三个字段缺一不可**：缺 `reason` 或 `approver` 的残缺记录**不会放行**（工具 fail-safe，已实测）。
+   该文件默认不存在 = **默认拒绝一切未批准的视觉改动**。
+2. 改完后用 `docs/pursuing_goal/v0_2/tools/visual_baseline_refreeze.py --live-build-id <新build> --write` **重冻基线**；
+   若漂移**不可归因**或 `per_theme` 变了，它会 **ABORT 并拒绝写盘**——那说明这不是一次该被自动祝福的改动。
+
 ## 后续
 
 Owner 会持续优化本规格。新版本请**新增目录**（如 `前端呈现基线_v2/`）并在此说明取代关系，**不要原地覆盖**——历史版本是复原的最后一道保险。
