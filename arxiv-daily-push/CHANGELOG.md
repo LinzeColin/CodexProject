@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P08 / T063 (研究元数据增强; PRODUCTION DEPLOY; product_version 0.29.0)
+- 把 S5 的 T063 从 NOT_DEPLOYED 接进每日 cron：board1/board2 的论文条目获得 OpenAlex 研究元数据
+  （预印本/期刊、发表载体、被引次数、开放获取），此前读者无法区分预印本与已发表论文。
+- **绝不声称「研究论文」**：实测 Nature 新闻 (10.1038/d41586-*) 与 PNAS「In This Issue」(10.1073/iti*)
+  在 OpenAlex 里同样是 type=article / is_paratext=false / venue=Nature|PNAS，与真论文完全无法区分。
+  故只逐字转述 OpenAlex 的字段，不替它断言它没说的东西。
+- 验收（T063 原文）：预印本/期刊不混淆 ✅（type=preprint 或 source.type=repository，必须是「或」——
+  实测 eLife 是 preprint+journal）；增强失败不阻塞原始论文 ✅（**此刻正在生产被真实执行**：
+  cn_item_meta 尚不存在，每次页面加载的 attachMeta 都真撞 D1 'no such table'，而全部路由仍 200）。
+- DIR-007：外部子请求 20/50 → 21/50（一批 50 个 DOI 只花一个）；D1 内部操作最坏 404/1000；
+  读取约 600 行/晚 vs 5M/天。
+- **独立对抗复核 6 轮**：第 1 轮抓到 6 条真实代码缺陷；**第 2/3/4/5 轮全部是证据造假**
+  （把参数错误当承重、贴了别条查询的计划、把「我测不出来」写成「不可能测出来」、写入上界差 8 倍、
+  把自己的取值说成 API 强制上限且该假话写进了发货代码注释）。第 6 轮 CONFIRMED_SOUND。实施者未自签。
+- 12 条负控全部承重且无一靠崩溃判定；验收套件跑真 node:sqlite + 真 schema。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P07 (关注 /watchlist 接入线上; PRODUCTION DEPLOY; product_version 0.28.0)
 - 把 S6 的 T066 关注摘要从 NOT_DEPLOYED 变成线上真能用的 /watchlist（此前该路由 404，NAV 里却一直有链接）：
   三个 facet（doc_number / board / keyword），上限 20 条，只看最近 30 天内、最多 1000 条的新条目；

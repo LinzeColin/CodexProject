@@ -1,0 +1,45 @@
+# ADP-V02-P08 线上验证（build ac7cf4800e18）
+
+## build
+{"build_id":"ac7cf4800e18","source_sha256":"ac7cf4800e18a217a9cb9917340c7f13b496c61e8d7f1cc979118692e2051da1",...}
+自排除哈希复现通过；复核第 6 轮另用密码学方式确认：把 META_BATCH 注释还原成旧文本 + 改回旧 stamp
+即可精确复现 28236c23f417 → 与前五轮被攻击过的可执行内容【逐字节一致】，本轮唯一代码增量就是那条注释。
+
+## ★验收 2「增强失败不阻塞原始论文」——此刻正在生产环境被真实执行★
+cron 尚未跑过，故 `cn_item_meta` 这张表【还不存在】。
+于是每一次页面加载里的 attachMeta 都在真实地撞上 D1 的 "no such table" 错误。
+若降级不成立，这些路由现在应该是 500：
+
+  /           200
+  /library    200
+  /radar      200
+  /watchlist  200
+  /system     200
+
+且页面渲染的是**真实内容**而不是错误页（/library 正常显示「知识库」，首页 footer 显示 build ac7cf4800e18）。
+—— 这比任何 mock 都强：这是**真 D1 的真错误**打在**真生产**上，而原文照常呈现。
+
+## 无回归
+/ /review /radar /library /watchlist /system 全部 200。
+
+## ★尚未验证的部分（如实记录，不含糊）★
+`enrichMeta` 的**首次真实执行**在下一次 cron（`30 20 * * *` UTC）。今天的 run 已幂等完成
+（`cn_run_log` 有 `2026-07-17T0414-manual` 的成功记录），故 `POST /api/run` 返回「未运行：当日已成功运行，幂等跳过」。
+
+**我没有去强行绕过这个幂等守卫。** 绕过它要删掉当天的 `cn_run_log` 行，那会让 `ingestAll` 与
+`selectDaily` 一并重跑 —— 可能**改掉 Owner 今天已经发布的当日精选**。为了我自己验证方便去动
+线上已发布的内容，不划算，也违反「不得改写既有生产数据」。
+
+因此以下三项**在下一次 cron 之前仍是未验证的**（复核第 6 轮的残余风险 #4，原样保留）：
+1. `env.DB.batch([q1, q2])` 读 SELECT 结果 —— 这是**全仓唯一**一处用 batch() 跑 SELECT 的地方，
+   正确性依据是 Cloudflare 文档的 `D1Result[]` 契约，**没有仓内先例**。若该契约与文档不符，
+   `results` 会为空 → enrichMeta 静默地什么都不补（不会报错、不会降级、页面照常）——
+   这正是本项目最怕的「看着绿、其实什么都没做」，故**必须在首次 cron 后实查**。
+2. 真实 D1 的查询计划（本地用的是 sqlite 3.43.2 + 真 schema 作代理）。
+3. 真实 cron 的 CPU 余量。
+
+**首次 cron 后必须实查**（不查就等于没上线）：
+  SELECT COUNT(*) FROM cn_item_meta;                      -- 必须 > 0，否则 batch() 契约有问题
+  SELECT COUNT(*) FROM cn_item_meta WHERE found=1;        -- 真正补上的
+  SELECT is_preprint, COUNT(*) FROM cn_item_meta WHERE found=1 GROUP BY is_preprint;  -- 预印本/期刊两侧都要有
+  以及 /system 或 cn_run_log 里的 counts.meta = {requested, matched}

@@ -6515,4 +6515,5 @@ None for this new project baseline.
 - 2026-07-15 batch 2: v1.1 six-theme frontend rebuild; R5 bioRxiv shadow source (zero-ingestion, 14-day real report, Owner-only promotion); R6 Cloudflare hybrid mirror live at home.linzezhang.com (D1 one-way mirror, recall write-back, cron reminder; R2 snapshot degraded pending Owner enablement). No production-boundary change.
 - 2026-07-15 follow-up: outbox previews are dual-format (`.eml` wire format + human-readable `.html`); no gate/authorization behavior change.
 - 2026-07-19 ADP V0.2 P07 (product_version 0.28.0): 关注 /watchlist 接入线上（PRODUCTION DEPLOY 204c97eb5406 -> 659d32fd39da）；T066 的诚实子集（doc_number/board/keyword，不臆造未上线的 topic/agency/region/entity 字段）；复核 5 轮前 4 轮 BLOCK 全部属实，第 5 轮 CONFIRMED_SOUND；负控承重。
+- 2026-07-19 ADP V0.2 P08 / T063 (product_version 0.29.0): 研究元数据增强接入每日 cron（PRODUCTION DEPLOY 659d32fd39da -> ac7cf4800e18）；预印本/期刊不混淆、增强失败不阻塞原文；绝不声称「研究论文」（OpenAlex 自身无法区分新闻与论文）；复核 6 轮，第 1 轮抓真实代码缺陷，第 2-5 轮全是证据造假，第 6 轮 CONFIRMED_SOUND。
 - Note: V0.3 development history lives in `docs/v03/04_开发记录/CHANGELOG.md` (one line per task); this ledger receives machine-sync rows only (R0-6 freeze).

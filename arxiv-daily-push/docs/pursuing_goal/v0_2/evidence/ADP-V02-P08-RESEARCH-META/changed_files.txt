@@ -1,0 +1,14 @@
+# ADP-V02-P08 changed files
+
+## 生产代码
+  arxiv-daily-push/deploy/cloudflare/worker_cloud.js  +184/-5
+  build_id = ac7cf4800e18  (自排除哈希复现通过)
+
+## 证据
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/changed_files.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/cost_value.json
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/git.diff
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/known_gaps.md
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_tests.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_verify.mjs
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/nc_results.txt

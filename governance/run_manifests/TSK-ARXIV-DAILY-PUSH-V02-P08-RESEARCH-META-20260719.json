@@ -1,0 +1,147 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P08-RESEARCH-META-20260719",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P08-RESEARCH-META",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-19T17:00:00Z",
+  "implementation_base_sha": "45a8ada0d1c19683c46252054b42a805bc0e9a75",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:a19fd4aa2c0b72accdc1ecc93dd8957277eb8dd1ca2923bdca87577da57dde54",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 21 non-manifest changed files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP V0.2 P08 / T063 research metadata production deploy + worker build-stamp guard",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "ADP V0.2 P08 implements task T063 (research metadata enrichment) and wires it into the daily cron: board1/board2 paper items now carry OpenAlex metadata (preprint vs journal, venue, citation count, open access). T063's two acceptance clauses hold. Clause 1, preprints not conflated with journals: type=='preprint' OR source.type=='repository' -- it must be OR, since eLife measures as preprint+journal. Clause 2, enrichment failure must not block the original paper: enrichMeta and attachMeta are wholly wrapped; this clause is currently being exercised for real in production, because the cron has not run since deploy so cn_item_meta does not exist, every page load hits a genuine D1 no-such-table error inside attachMeta, and every route still returns 200 with real content. The implementation NEVER claims a work is a research paper: OpenAlex reports Nature news and PNAS In This Issue as type=article/is_paratext=false/venue=Nature|PNAS, indistinguishable from real research, so only OpenAlex's own fields are transcribed. Root governance was touched only to register the three ADP canonical governance blob OIDs this sync changed. Also adds a guard that the worker's self-excluding BUILD stamp reproduces -- nothing enforced it before, so an unstamped edit made /build.json report a source that was not running, and every review that uses the stamp to prove 'no code changed after sign-off' was reasoning from an unverified premise. release_mode PRODUCTION; live 659d32fd39da -> ac7cf4800e18.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/deploy_verify.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_verify.mjs",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/nc_results.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P08-RESEARCH-META-20260719.json",
+    "tests/governance/test_adp_worker_build_stamp.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/deploy_verify.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_verify.mjs",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/nc_results.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P08-RESEARCH-META-20260719.json",
+    "tests/governance/test_adp_worker_build_stamp.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/nc_results.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/deploy_verify.txt"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_verify.mjs",
+    "python3 -B -m unittest -q tests.governance.test_adp_worker_build_stamp",
+    "python3 -B -m unittest -q tests.governance.test_generated_project_views_match_generator",
+    "python3 -B -m unittest -q tests.governance.test_adp_canonical_governance_oids",
+    "python3 -B scripts/repository_hygiene_audit.py",
+    "python3 -B arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "P08 acceptance (runs the SHIPPED metaDoi/enrichMeta/attachMeta/metaFacts against a REAL node:sqlite DB loading the REAL schema_cloud.sql)",
+      "result": "PASS",
+      "observed": "exit 0, 39 assertions. Adapters resolve all 9 live source id/url forms to the right DOI and abstain (null) on the 7 that have none. Clause 1: arXiv/bioRxiv preprint=1, NEJM/Nature-Comms preprint=0, repository alone suffices, and no output ever contains 研究论文. Clause 2: network throw / HTTP 500 / malformed JSON / dead D1 all degrade without throwing. Dedup: one duplicated DOI requested once and broadcast to both items, 1 external subrequest. DIR-007: 300 candidates -> 1 subrequest of 50 DOIs. Not-found bookkeeping is behavioural (a fresh miss is not re-requested; it IS retried once enriched_at ages past META_RETRY_DAYS)."
+    },
+    {
+      "command": "P08 negative controls (12)",
+      "result": "PASS (all 12 load-bearing, none decided by a crash)",
+      "observed": "nc1..nc11 incl. nc6a/nc6b: every revert reds for its stated semantic, 崩溃=0, each reaches the final verdict. Shipped code exit 0. Fixture uses ANALYZE (stricter than production D1, which has no ANALYZE); verified no assertion's PASS depends on statistics, so no green claims anything production does not guarantee."
+    },
+    {
+      "command": "worker build-stamp guard (new)",
+      "result": "PASS",
+      "observed": "4 tests. Load-bearing: editing META_SCAN 200->201 without re-stamping -> FAIL. Before this guard, source_sha256 appeared NOWHERE in tests/ or .github/workflows/ -- an unstamped edit shipped a /build.json that lied about which source was running, and the stamp is the exact mechanism six adversarial review rounds used to prove no code changed after sign-off."
+    },
+    {
+      "command": "generated-view drift guard + ADP canonical OID guard + hygiene",
+      "result": "PASS",
+      "observed": "views match a fresh render; the three oversized canonical files changed by this sync have their new blob OIDs registered (reviewed_oids 28 -> 31); hygiene PASS."
+    },
+    {
+      "command": "six-theme visual/motion gate",
+      "result": "PASS",
+      "observed": "exit 0; P08 adds badges through the existing component/CSS path and does not touch the Owner's v1.1 contract."
+    },
+    {
+      "command": "live verification (adp.linzezhang.com)",
+      "result": "PASS",
+      "observed": "build.json ac7cf4800e18; / /review /radar /library /watchlist /system all 200. Clause 2 exercised for real in production (cn_item_meta absent -> attachMeta hits a genuine D1 error on every page load -> all routes still 200 with real content)."
+    }
+  ],
+  "stop_conditions": [
+    "首次 cron 后必须实查 cn_item_meta 是否真的有行：env.DB.batch([SELECT,SELECT]) 是全仓唯一一处 batch 跑 SELECT，无仓内先例；若 D1 的 D1Result[] 契约与文档不符，results 会为空 -> enrichMeta 静默什么都不补、不报错、不降级 —— 正是本项目最怕的『看着绿、其实什么都没做』。",
+    "若要提高 META_BATCH，先重读 known_gaps §5：50 是我们自己的保守取值，OpenAlex 的 doi OR 上限实测是 100。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <previous-version-id> 回到 659d32fd39da。",
+    "repo": "git revert 本 commit；cn_item_meta 独立成表、cn_items 从未被改写，故回滚不损失既有数据。"
+  },
+  "unresolved_risks": [
+    "env.DB.batch([q1,q2]) 读 SELECT：全仓唯一一处，正确性依据是 Cloudflare 文档的 D1Result[] 契约而非仓内先例。首次 cron 后必须实查。",
+    "未强行绕过 runDaily 的幂等守卫去验证 enrichMeta：绕过需删当天 cn_run_log 行，会连带重跑 ingestAll/selectDaily 并可能改掉 Owner 已发布的当日精选。故首次真实执行在下一次 cron（30 20 * * * UTC）。",
+    "响应侧去重规则（取 cited_by 最大者）只在一对真实重复上验证过；理论上被撤稿/paratext 的重复记录若引用数更高会胜出。影响面有界：代码只逐字转述 OpenAlex 字段、从不合成标签，最坏是被引数字错，不是捏造身份。",
+    "『每晚约 600 行』不是硬上界：prune 豁免被 cn_reviews/cn_selections/cn_lessons 引用的条目，受保护行会越过 KEEP_PER_BOARD 累积（估每年 +1k，十年后仍 < 5M/天 的 0.3%）。",
+    "nc7 的检出力依赖 fixture 的 ANALYZE，而生产 D1 无 ANALYZE：即 ORDER BY 在今天的生产计划下未被测到（按设计如此——测的是契约，不是 planner 的运气）。"
+  ],
+  "next_allowed_task": "首次 cron 后核对 cn_item_meta 与 counts.meta；或继续 S4 历史回填 / S6 预测基线。"
+}

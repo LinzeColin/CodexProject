@@ -1,0 +1,75 @@
+shipped constants: META_BATCH=50 META_SCAN=200 META_RETRY_DAYS=7
+
+== metadata adapters: REAL live id/url forms (taken from the production D1) ==
+  PASS all 9 live source forms resolve to the right DOI
+  PASS NC: sources with no DOI resolve to null (abstains, does not guess)
+
+== metaKey: OpenAlex lowercases the DOI it returns -- the map key must survive that ==
+  PASS request-side NEJMoa2512275 and response-side nejmoa2512275 collapse to the same key
+  PASS strips the doi.org prefix and lowercases
+
+== ACCEPTANCE 1: 预印本/期刊不混淆 ==
+  PASS arXiv + bioRxiv are recorded as 预印本 (is_preprint=1)
+  PASS NEJM + Nature Communications are NOT recorded as 预印本 (is_preprint=0)
+  PASS the venue recorded is the one OpenAlex reports, verbatim
+  PASS the rendered label separates 预印本 from 发表于
+  PASS NC: never claims 研究论文 -- OpenAlex reports Nature news as type=article too, so that label would be false
+  PASS source.type=repository alone is enough to call it 预印本 (not conflated with a journal)
+
+== ACCEPTANCE 2: 增强失败不阻塞原始论文 ==
+  PASS fetch throwing -> enrichMeta degrades, never throws (cron survives)
+  PASS HTTP 500 -> recorded as degraded, never throws
+  PASS malformed JSON -> degrades, never throws
+  PASS attachMeta with a dead D1 -> returns the papers unchanged, no _meta, no throw (原文不被阻塞)
+
+== dedup rules: two items, one DOI ==
+  PASS a request was actually issued (otherwise nothing below is meaningful)
+  PASS the duplicated DOI is requested ONCE, not twice
+  PASS the single result is broadcast back to BOTH items
+  PASS DIR-007: exactly ONE external subrequest for the whole batch
+
+== DIR-007: one batch, one subrequest, bounded ==
+  300 candidate rows -> 1 subrequest asking for 50 DOIs
+  PASS exactly 1 external subrequest per cron run (cron 20/50 -> 21/50)
+  PASS the batch is non-empty and never exceeds META_BATCH (50)
+
+== not-found bookkeeping: do not re-ask the same misses every night ==
+  PASS a miss is recorded (found=0) so it is not re-requested every run
+  PASS a fresh miss is NOT re-requested on the next run
+  PASS but it IS retried once enriched_at ages past META_RETRY_DAYS
+
+== F2: the LIMIT does NOT bound the scan -- the plan must use the recency index, no temp sort ==
+  IN(2 boards): SEARCH cn_items USING INDEX idx_cn_items_board (board_id=?) | CORRELATED SCALAR SUBQUERY 1 | SEA
+  = 1 board   : SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?) | CORRELATED SCALAR SUBQUERY
+  PASS reproduces the defect: IN (2 boards) forces USE TEMP B-TREE FOR ORDER BY
+  PASS the shipped per-board query needs NO temp sort
+  PASS the shipped per-board query uses idx_cn_items_board_recency
+  PASS the shipped code issues one equality query per board (board1, board2), never board_id IN (...)
+
+== F3: OpenAlex returns MULTIPLE works per DOI -> the winner must be deterministic ==
+  PASS duplicate works -> canonical 18240 wins regardless of response order (got 18240)
+  PASS duplicate works -> canonical 18240 wins regardless of response order (got 18240)
+  PASS ties break on the lowest OpenAlex id (deterministic)
+
+== F4: a truncated response must NOT be recorded as "OpenAlex does not know this paper" ==
+  PASS response truncated -> writes NO found=0 row (does not blame OpenAlex for our truncation)
+  PASS the truncation is reported as a degradation instead
+  PASS meta.count missing entirely -> treated as truncated (unknown fails SAFE, no false found=0)
+  PASS per-page (200) exceeds META_BATCH (50) so duplicates cannot truncate the page
+
+== F7: metadata rows for pruned items must not accumulate forever ==
+  PASS an orphan meta row (its cn_item was pruned) is deleted
+
+== the ORDER BY must actually be load-bearing: newest papers get enriched FIRST ==
+  asked for 50 DOIs; 50 of them are among the 50 most recent
+  PASS a full batch of 50 was actually requested (guards the check below from passing on an empty batch)
+  PASS the batch is exactly the most-recent items (ORDER BY is doing real work -- nc7 proves it)
+
+== META_SCAN must actually bound the READ (nc6 was mislabelled 承重 in round 2) ==
+  320 candidates per board -> SELECT returned [200,200] rows (META_SCAN=200)
+  PASS each per-board candidate query reads exactly META_SCAN rows -- the LIMIT bounds the READ
+  lint (arithmetic, no DB): 2 x META_SCAN = 400; real reads are bounded by KEEP_PER_BOARD=300 -> ~600 rows/night
+  PASS META_SCAN stays a sane constant (lint on the constant, NOT a measured read budget)
+
+ACCEPTANCE = PASS
+exit=0

@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '659d32fd39da', source_sha256: '659d32fd39dadc311ba329859bbbb30b74fb1d6db87592b88cfc240a1e452863', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'ac7cf4800e18', source_sha256: 'ac7cf4800e18a217a9cb9917340c7f13b496c61e8d7f1cc979118692e2051da1', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -118,6 +118,7 @@ const CANDIDATE_WINDOW_DAYS = 7;
 // 对策：D1 写入全部 batch（一次 batch = 一个子请求）；板块 feed 按天轮转抓取。
 const ARXIV_CAP = 220;          // 单次入库 arXiv 上限（跨所有领域采样，控制子请求/CPU）
 const ARXIV_PAGES = 2;
+const OPENALEX_WORKS = 'https://api.openalex.org/works';   // T063 研究元数据
 const FEED_PER_BOARD = 4;       // 每板每次抓取的 feed 数（按最久未抓取优先）——保证每板都有覆盖
 const BATCH_CHUNK = 80;         // 每个 D1 batch 的语句数上限
 function chunk(arr, n) { const o = []; for (let i = 0; i < arr.length; i += n) o.push(arr.slice(i, i + n)); return o; }
@@ -578,12 +579,184 @@ function factsheet(item) {
   if (auth.length > 1) facts.push(['作者', auth.length + ' 位']);
   return facts;
 }
+// ───────────────────────── T063 研究元数据（OpenAlex） ─────────────────────────
+const META_BATCH = 50;        // 一批查多少个 DOI —— 一批只花【1 个】外部子请求。
+                              // ★这是我们自己的保守取值，不是 API 上限★：OpenAlex 的 doi OR 上限
+                              // 实测是 100（101 个即报 Maximum number of values exceeded for doi）。
+                              // 取 50 的理由：重复 work 存在（50 个 DOI 实测回过 58 条），100 个 DOI
+                              // 在高重复率下会逼近 per-page=200 的天花板；50 留足余量。
+                              // （原注释写「其 OR 上限就是 50」是假的 —— 把自己的选择说成 API 的强制。）
+const META_SCAN = 200;        // 单板单次扫描的读取上限。★真正兜住这张表的是 KEEP_PER_BOARD=300 的保留策略★，
+                              // 不是这个 LIMIT —— LIMIT 限的是返回行数，不是扫描量（复核 F2 纠正的假前提）。
+const META_RETRY_DAYS = 7;    // 查过但没查到的，7 天后再试一次（新预印本可能还没被索引）
+const META_UA_MAILTO = 'adp@linzezhang.com';   // OpenAlex polite pool：带 mailto 才有稳定配额
+const OA_LABEL = { gold: '金色OA', green: '绿色OA', hybrid: '混合OA', bronze: '青铜OA', diamond: '钻石OA' };
+// ★metadata adapters★：只从【既有 id/url】确定性地解析 DOI；解析不出就返回 null —— 不猜、不构造。
+// 每条正则都是线性的（无嵌套量词、无回溯陷阱），且都实测过真实线上 URL 形态。
+function metaDoi(it) {
+  const id = String(it && it.id || ''), url = String(it && it.url || '');
+  let m;
+  if ((m = /^arxiv:(\d{4}\.\d{4,5})/.exec(id))) return '10.48550/arxiv.' + m[1];
+  if ((m = /arxiv\.org\/abs\/(\d{4}\.\d{4,5})/.exec(url))) return '10.48550/arxiv.' + m[1];
+  if ((m = /^(?:biorxiv|medrxiv):(10\.\d{4,9}\/[^\s]{1,80})$/.exec(id))) return m[1];
+  if ((m = /(?:biorxiv|medrxiv)\.org\/content\/(10\.\d{4,9}\/[0-9.]{1,40})/.exec(url))) return m[1];
+  if ((m = /nature\.com\/articles\/([a-z]\d{5,6}-\d{3}-\d{4,6}-[a-z0-9]{1,3})/.exec(url))) return '10.1038/' + m[1];
+  if ((m = /elifesciences\.org\/articles\/(\d{4,7})/.exec(url))) return '10.7554/elife.' + m[1];
+  if ((m = /\/doi\/(?:full\/|abs\/|pdf\/)?(10\.\d{4,9}\/[^?#\s]{1,80})/.exec(url))) return metaNotAsset(m[1]);
+  if ((m = /[?&]id=(10\.\d{4,9}\/[^&#\s]{1,80})/.exec(url))) return metaNotAsset(m[1]);
+  return null;
+}
+// 附件链接（PLOS 的 article/file?id=<doi>.PDF 等）里的「DOI」其实是资源名，不是作品 DOI。
+// 复核指出原实现会返回 10.1371/journal.pbio.3003906.PDF —— 那是**猜**。抽不准就弃权。
+function metaNotAsset(doi) { return /\.(?:pdf|xml|docx?|zip|csv|tiff?|png|jpe?g|s\d{3})$/i.test(doi) ? null : doi; }
+// OpenAlex 回给的 doi 是全 URL 且【小写化】的（NEJMoa2512275 -> nejmoa2512275），
+// 故请求侧与响应侧必须用同一个小写裸 DOI 做键，否则整批都对不上（实测坑）。
+const metaKey = d => String(d || '').toLowerCase().replace(/^https?:\/\/(?:dx\.)?doi\.org\//, '').trim();
+async function metaTables(env) {
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS cn_item_meta (item_id TEXT PRIMARY KEY, doi TEXT, oa_id TEXT, work_type TEXT, is_preprint INTEGER, venue TEXT, venue_type TEXT, cited_by INTEGER, oa_status TEXT, pub_year INTEGER, authors_n INTEGER, found INTEGER NOT NULL DEFAULT 0, enriched_at TEXT NOT NULL)').run();
+}
+// 一次 cron 补一批。★任何失败都只降级、不抛★ —— 验收明写「增强失败不阻塞原始论文」。
+async function enrichMeta(env, counts) {
+  try {
+    await metaTables(env);
+    // 条目被 prune 掉后其元数据行是孤儿（复核指出该表只增不减）。按主键反查删除，不用 join。
+    // ★必须无条件执行★：一旦放到「有新条目要补」的分支里，稳态（全部补完）下就永远不跑，
+    // 而稳态恰恰就是孤儿堆积的时候 —— 我的第一版就是这么写的，被自己的测试当场抓到。
+    await env.DB.prepare('DELETE FROM cn_item_meta WHERE NOT EXISTS (SELECT 1 FROM cn_items i WHERE i.id = cn_item_meta.item_id)').run();
+    const cutoff = new Date(Date.now() - META_RETRY_DAYS * 864e5).toISOString();
+    // ★一板一查，不用 board_id IN (...)★ —— 复核实测：IN (两个值) 会让计划**放弃**
+    // idx_cn_items_board_recency (board_id, COALESCE(published_at,fetched_at) DESC, id DESC)，
+    // 退化成 idx_cn_items_board + USE TEMP B-TREE FOR ORDER BY，即**先全排序再 LIMIT**：
+    // LIMIT 限的是**返回行数，不是扫描量**。单值等值时索引自带顺序，无需临时 B 树。
+    // （我原注释写的「行数有界」是**假前提**：真正兜住它的是 KEEP_PER_BOARD=300 的保留策略，
+    //   board1+board2 合计约 600 行；不是这个 LIMIT。依据必须是真的，哪怕结论一样。）
+    const q = board => env.DB.prepare(
+      `SELECT id, url FROM cn_items WHERE board_id = ?1
+         AND NOT EXISTS (SELECT 1 FROM cn_item_meta m WHERE m.item_id = cn_items.id AND (m.found = 1 OR m.enriched_at >= ?2))
+       ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC LIMIT ?3`).bind(board, cutoff, META_SCAN);
+    const parts = await env.DB.batch([q('board1'), q('board2')]);
+    const results = [].concat(...parts.map(p => (p && p.results) || []));
+    // ★dedup rules★：多个条目可能解析到同一个 DOI（同一篇论文经不同 feed 进来）。
+    // 按 DOI 归并成一个查询键，再把结果【广播回每个】条目 —— 既不重复计子请求，也不漏条目。
+    const byDoi = new Map();
+    for (const it of (results || [])) {
+      const doi = metaKey(metaDoi(it));
+      if (!doi) continue;
+      if (!byDoi.has(doi)) byDoi.set(doi, []);
+      byDoi.get(doi).push(it.id);
+      if (byDoi.size >= META_BATCH) break;
+    }
+    if (!byDoi.size) return;
+    const dois = [...byDoi.keys()];
+    // ★per-page 必须大于 META_BATCH★：OpenAlex 对一个 DOI 可能回**多条** work，50 个 DOI 实测回过 58 条，
+    // per-page=50 会把第 50 条之后的截掉 → 那些**真论文**会被我们自己写成 found=0（「OpenAlex 不认识」），
+    // 而事实是「我们把自己的响应页截断了」。复核实测被截掉的正是 FedAvg（5641 次引用）。
+    // 又因候选是「最近 200 条」的窗口、按新到旧取，被误判 found=0 的条目会沉到窗口外 → 几乎永不重试。
+    // authorships 只为取个 .length 却要拉回整份作者表（实测 1.33MB 批 JSON.parse 2.48ms），不值 → 不要了。
+    const url = OPENALEX_WORKS + '?per-page=200&mailto=' + encodeURIComponent(META_UA_MAILTO)
+      + '&select=' + encodeURIComponent('doi,type,primary_location,cited_by_count,open_access,publication_year')
+      + '&filter=' + encodeURIComponent('doi:' + dois.join('|'));
+    const r = await fetch(url, { headers: { 'User-Agent': 'adp-cloud (mailto:' + META_UA_MAILTO + ')' }, cf: { cacheTtl: 3600 } });
+    if (!r.ok) { counts.degraded.push('meta:http' + r.status); return; }
+    const data = await r.json();
+    const got = (data && data.results) || [];
+    // ★dedup rules（响应侧）★：OpenAlex 对同一个 DOI 会回**多条** work（未合并的重复记录）。
+    // 复核用真实 API 实测 arxiv:1506.01497 回 2 条，cited_by 分别是 18240 与 6274；D1 batch 按序执行
+    // ＝**最后一条赢** → 页面会把 6274 当作事实展示，而 OpenAlex 自己的规范记录是 18240。
+    // 「在冲突记录之间随机挑一条当事实」正是本项目不许干的事，故规则必须**确定**：
+    // 取 cited_by_count 最大者（规范记录是合并后的，引用数最全），并列时取 OpenAlex id 字典序最小者。
+    const best = new Map();
+    for (const w of got) {
+      const key = metaKey(w.doi);
+      if (!byDoi.has(key)) continue;            // 回了没要的，忽略（不臆造归属）
+      const cur = best.get(key);
+      const c = Number(w.cited_by_count) || 0, cc = cur ? (Number(cur.cited_by_count) || 0) : -1;
+      if (!cur || c > cc || (c === cc && String(w.id || '') < String(cur.id || ''))) best.set(key, w);
+    }
+    // 响应是否被截断：被截断时「没回」并不等于「查不到」，此时**不得**写 found=0。
+    // 未知必须【向安全侧倒】：拿不到 meta.count 就无法判断是否被截断，此时绝不能写 found=0
+    // （否则又回到「把自己的截断栽赃成 OpenAlex 查不到」那条路上）。复核指出的残余风险，堵掉。
+    const cnt = data && data.meta && data.meta.count;
+    const truncated = typeof cnt !== 'number' || cnt > got.length;
+    const now = nowISO(), stmts = [], hit = new Set();
+    for (const [key, w] of best) {
+      const ids = byDoi.get(key);
+      hit.add(key);
+      const srcObj = (w.primary_location && w.primary_location.source) || {};
+      const venueType = srcObj.type || null;
+      // ★预印本/期刊不混淆★：OpenAlex 的 type=preprint 或载体 type=repository 即预印本。
+      // ★两个条件必须是「或」，不是「且」★：复核实测 eLife 是 type=preprint 但 source.type=journal
+      // （eLife 的 Reviewed Preprint 模式），arXiv/bioRxiv/medRxiv 则是 preprint+repository。
+      // 我原先写的「实测全部命中 preprint+repository」是**假的**，结论侥幸没错而已 —— 依据不能是假的。
+      const isPre = (w.type === 'preprint' || venueType === 'repository') ? 1 : 0;
+      for (const id of ids) {
+        stmts.push(env.DB.prepare(
+          `INSERT INTO cn_item_meta (item_id,doi,oa_id,work_type,is_preprint,venue,venue_type,cited_by,oa_status,pub_year,authors_n,found,enriched_at)
+           VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,1,?12)
+           ON CONFLICT(item_id) DO UPDATE SET doi=excluded.doi, oa_id=excluded.oa_id, work_type=excluded.work_type,
+             is_preprint=excluded.is_preprint, venue=excluded.venue, venue_type=excluded.venue_type,
+             cited_by=excluded.cited_by, oa_status=excluded.oa_status, pub_year=excluded.pub_year,
+             authors_n=excluded.authors_n, found=1, enriched_at=excluded.enriched_at`)
+          .bind(id, key, String(w.id || '').slice(0, 64) || null, String(w.type || '').slice(0, 32) || null, isPre,
+                String(srcObj.display_name || '').slice(0, 120) || null, venueType ? String(venueType).slice(0, 32) : null,
+                Number(w.cited_by_count) || 0, String((w.open_access && w.open_access.oa_status) || '').slice(0, 16) || null,
+                Number(w.publication_year) || null, null, now));
+      }
+    }
+    // 查过但没回的：记 found=0，避免每天重查同一批查不到的；META_RETRY_DAYS 后自动重试。
+    // ★但只有在确知响应没被截断时才这么判★ —— 否则是把自己的截断栽赃成「OpenAlex 查不到」。
+    if (!truncated) {
+      for (const [doi, ids] of byDoi) {
+        if (hit.has(doi)) continue;
+        for (const id of ids) stmts.push(env.DB.prepare(
+          'INSERT INTO cn_item_meta (item_id,doi,found,enriched_at) VALUES (?1,?2,0,?3) ON CONFLICT(item_id) DO UPDATE SET enriched_at=excluded.enriched_at')
+          .bind(id, doi, now));
+      }
+    } else counts.degraded.push('meta:truncated');
+    if (stmts.length) await env.DB.batch(stmts);
+    counts.meta = { requested: byDoi.size, matched: hit.size, truncated: truncated || undefined };
+  } catch (e) {
+    // 降级即可：原始论文本来就在库里，元数据只是增强。绝不让它把 cron 带崩。
+    counts.degraded.push('meta:' + e.name);
+  }
+}
+// 给一批条目挂上元数据（只挂 found=1 的）。同样【绝不抛】。
+async function attachMeta(env, items) {
+  try {
+    const list = (items || []).filter(Boolean);
+    const ids = list.map(i => i.id).filter(Boolean);
+    if (!ids.length) return items;
+    const map = new Map();
+    for (let i = 0; i < ids.length; i += 50) {          // 分块：别去顶 SQLite 的绑定变量上限
+      const part = ids.slice(i, i + 50);
+      const { results } = await env.DB.prepare(
+        'SELECT * FROM cn_item_meta WHERE found=1 AND item_id IN (' + part.map((_, k) => '?' + (k + 1)).join(',') + ')')
+        .bind(...part).all();
+      for (const r of (results || [])) map.set(r.item_id, r);
+    }
+    for (const it of list) if (map.has(it.id)) it._meta = map.get(it.id);
+  } catch (e) { /* 增强失败不阻塞原始论文：静默降级，页面照常渲染 */ }
+  return items;
+}
+// ★只如实转述 OpenAlex 的口径，不加解释、不声称「研究论文」★（见文件头：Nature 新闻同样是 article）。
+function metaFacts(meta) {
+  if (!meta) return [];
+  const out = [];
+  if (meta.venue) out.push([meta.is_preprint ? '预印本' : '发表于', String(meta.venue)]);
+  if (Number(meta.cited_by) > 0) out.push(['被引', Number(meta.cited_by) + ' 次']);
+  const oa = meta.oa_status;
+  if (oa && oa !== 'closed') out.push(['开放获取', OA_LABEL[oa] || String(oa)]);
+  return out;
+}
 function factsheetHTML(item) {
   // 日期在各卡片元信息行已展示，展示层去重（factsheet() 仍保留 date 以忠实于 schema）。
   const facts = factsheet(item).filter(([k]) => k !== '日期');
-  if (!facts.length) return '';
-  return `<p class="mt" style="margin-top:6px">${facts.map(([k, v]) =>
-    `<span class="badge" title="确定性抽取自原文字段·缺失即空">${esc(k)}：${esc(v)}</span>`).join('')}</p>`;
+  // T063：研究元数据来自【第三方 OpenAlex】，与「确定性抽取自原文」不是一回事，
+  // 故用不同的 title 标注出处 —— 证据来源不能混为一谈。
+  const meta = metaFacts(item && item._meta);
+  if (!facts.length && !meta.length) return '';
+  const b = (cls, title) => ([k, v]) => `<span class="badge${cls}" title="${title}">${esc(k)}：${esc(v)}</span>`;
+  return `<p class="mt" style="margin-top:6px">${facts.map(b('', '确定性抽取自原文字段·缺失即空')).join('')}${meta.map(b(' ok', 'OpenAlex 研究元数据·第三方来源·非原文抽取')).join('')}</p>`;
 }
 
 // ───────────────────────── FSRS-6（默认参数，紧凑实现） ─────────────────────────
@@ -668,6 +841,7 @@ async function runDaily(env, trigger) {
     if (done) { result = '未运行'; note = `当日已成功运行 ${done.run_id}，幂等跳过`; }
     else {
       await ingestAll(env, counts);
+      await enrichMeta(env, counts);   // T063：+1 个外部子请求（一批 50 条 DOI）；失败只降级
       const pick = await selectDaily(env, asOfDate, counts);
       if (pick) { await makeLesson(env, asOfDate, pick.it); await scheduleNewCard(env, pick.it.id); }
       else result = '弃权';
@@ -984,6 +1158,7 @@ async function todayPage(env) {
   const spark = (recent || []).map(r => r.abstain ? 0 : (r.score || 0)).reverse();
   if (!sel) return PAGE('/', vitalsCard(v) + `<div class="card"><h1>还没有内容</h1><p class="mt">每日流水线尚未运行。可在 <a href="/system">系统页</a> 手动触发一次。</p></div>`);
   const item = sel.abstain ? null : await env.DB.prepare('SELECT * FROM cn_items WHERE id=?').bind(sel.item_id).first();
+  await attachMeta(env, [item]);
   const hero = heroSection(sel, item, v, spark);
   if (sel.abstain) return PAGE('/', `<span id="todaymain"></span>` + vitalsCard(v) + `<div class="card"><h1>今日弃权</h1><p>${esc(sel.abstain_reason)}</p><p class="mt">决策日期 ${esc(sel.as_of_date)}——宁缺毋滥。可去 <a href="/radar">雷达</a> 挑条目「学这个」，或看 <a href="/history">往期</a>。</p></div>`, { hero });
   const lesson = await env.DB.prepare('SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1').bind(sel.item_id).first();
@@ -1300,7 +1475,7 @@ async function watchlistPage(env) {
         <form method="POST" action="/api/watch/del/${encodeURIComponent(w.id)}" style="display:inline">
           <button class="btn-sm" type="submit">删除关注</button></form>
       </div>
-      ${unseen.length ? itemListHTML(unseen.slice(0, 20)) : '<p class="mt">暂无新条目。</p>'}
+      ${unseen.length ? itemListHTML(await attachMeta(env, unseen.slice(0, 20))) : '<p class="mt">暂无新条目。</p>'}
       ${unseen.length > 20 ? `<p class="mt">仅显示前 20 条（共 ${unseen.length} 条新）。</p>` : ''}
     </div>`;
   }
@@ -1342,6 +1517,7 @@ async function libraryPage(env, params) {
       chip(BOARD_NAMES[b] || b, byBoard[b], qs(b, state), board === b)).join('')}</p>
     <p style="margin:2px 0 0">${Object.keys(byState).filter(s => s !== '—').sort().map(s =>
       chip(s, byState[s], qs(board, s), state === s)).join('')}</p></div>`;
+  await attachMeta(env, rows || []);
   const list = (rows || []).map(it => `<div class="itemrow"><div class="body">
     <a href="/item/${encodeURIComponent(it.id)}">${esc((it.title || '').slice(0, 110))}</a>
     <div class="mt">${esc(BOARD_NAMES[it.board_id] || it.board_id || '')}${it.published_at ? ' · ' + esc(String(it.published_at).slice(0, 10)) : ''} · <a href="${safeHref(it.url)}" rel="noopener">原文</a><span class="badge">${esc(it.evidence_state || '—')}</span><span class="badge">复习 ${Number(it.reps) || 0} 次</span>${it.due_at ? `<span class="badge">下次 ${esc(String(it.due_at).slice(0, 10))}</span>` : ''}</div>
@@ -1363,6 +1539,7 @@ async function boardPage(env, boardId, offset) {
     : env.DB.prepare("SELECT * FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT ? OFFSET ?").bind(boardId, PAGE_SIZE + 1, offset)).all();
   const more = (items || []).length > PAGE_SIZE;
   const shown = (items || []).slice(0, PAGE_SIZE);
+  await attachMeta(env, shown);
   let body = `<div class="card"><h1>${esc(name)}</h1><p class="mt"><a href="/radar">← 前沿雷达</a></p>
     ${itemListHTML(shown)}
     <p style="margin-top:12px">${offset > 0 ? `<a class="pill-link" href="/board/${boardId}?offset=${Math.max(0, offset - PAGE_SIZE)}">← 上一页</a>` : ''}
@@ -1435,6 +1612,7 @@ async function searchPage(env, params) {
       results = hit.concat(rest);
     }
     const note = [bSel ? BOARD_NAMES[bSel] || bSel : '', f ? '起 ' + f : '', t ? '止 ' + t : ''].filter(Boolean).join(' · ');
+    await attachMeta(env, results);
     body += `<p class="mt">「${esc(q)}」找到 ${results.length} 条${results.length === SEARCH_LIMIT ? '（仅显示最近 40）' : ''}${note ? '｜筛选：' + esc(note) : ''}${exactCount ? `｜<span class="badge ok">标识符匹配 ${exactCount} 条已置顶</span>` : ''}</p>
       <p style="margin:2px 0 6px"><a class="deep-btn ghost" href="${esc(chatgptHref(deepDiveTopicPrompt(q)))}" target="_blank" rel="noopener noreferrer">🔮 让 ChatGPT 全网深度检索这个主题</a></p>
       ${itemListHTML(results)}`;
@@ -1461,6 +1639,7 @@ async function itemPage(env, id) {
   if (!item) return null;
   const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(id).first();
   const review = await env.DB.prepare("SELECT * FROM cn_reviews WHERE item_id=?").bind(id).first();
+  await attachMeta(env, [item]);
   let body = `<div class="card"><p class="mt"><a href="/board/${esc(item.board_id)}">← ${esc(BOARD_NAMES[item.board_id] || item.board_id)}</a></p>
     <h1>${esc(item.title)}</h1>
     <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
