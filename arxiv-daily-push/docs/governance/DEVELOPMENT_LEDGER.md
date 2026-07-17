@@ -6514,4 +6514,5 @@ None for this new project baseline.
 - 2026-07-15 batch 3: cloud mirror key login removed per Owner directive (open read access; tradeoff and Access upgrade disclosed; receipt in config_changes).
 - 2026-07-15 batch 2: v1.1 six-theme frontend rebuild; R5 bioRxiv shadow source (zero-ingestion, 14-day real report, Owner-only promotion); R6 Cloudflare hybrid mirror live at home.linzezhang.com (D1 one-way mirror, recall write-back, cron reminder; R2 snapshot degraded pending Owner enablement). No production-boundary change.
 - 2026-07-15 follow-up: outbox previews are dual-format (`.eml` wire format + human-readable `.html`); no gate/authorization behavior change.
+- 2026-07-19 ADP V0.2 P07 (product_version 0.28.0): 关注 /watchlist 接入线上（PRODUCTION DEPLOY 204c97eb5406 -> 659d32fd39da）；T066 的诚实子集（doc_number/board/keyword，不臆造未上线的 topic/agency/region/entity 字段）；复核 5 轮前 4 轮 BLOCK 全部属实，第 5 轮 CONFIRMED_SOUND；负控承重。
 - Note: V0.3 development history lives in `docs/v03/04_开发记录/CHANGELOG.md` (one line per task); this ledger receives machine-sync rows only (R0-6 freeze).

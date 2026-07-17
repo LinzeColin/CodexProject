@@ -1,0 +1,156 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P07-WATCHLIST-20260719",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P07-WATCHLIST",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-19T15:00:00Z",
+  "implementation_base_sha": "a7ba36a8ef5ba9c4646299657d34f785b92f5f11",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:440cc645aeafed4c582c6c2f5d283907e144d06ae7302842705294d13abc6716",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 23 non-manifest changed files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "ADP V0.2 P07 watchlist production deploy + generated-view drift guard",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "ADP V0.2 P07: bring the /watchlist route live (it was a 404 while NAV linked to it) by wiring S6's T066 watchlist digest into the request path, as an HONEST SUBSET of T066 rather than T066 itself: facets are doc_number, board and keyword only, because topic/agency/region/entity need the S5 entity resolution layer that is not deployed and those fields are not invented; keyword is an ADP-V02 addition and is not a T066 facet; detection reports NEW ITEMS ONLY because T066's content_hash substantive-change test needs the T026 version layer that is not deployed, and the page says so. Independent adversarial review ran five rounds; the first four were BLOCK and all four were correct (per-watch boundedness missed the x20 aggregate = 83ms vs the 10ms Workers Free CPU limit; the same bug was left in keyword after doc_number was fixed = 29.0ms; fix 3 defeated fix 2 by truncating the seen set and re-notifying future-dated policy items; known_gaps recorded a premise already disproven). Round five returned CONFIRMED_SOUND and confirmed by self-excluding hash that the code was not altered after review; the implementer did not self-sign. Root governance touched only to register the three ADP canonical governance blob OIDs the sync changed. Also adds a local guard that the DERIVED governance views match the generator -- push CI never checks this (the drift check is schedule/dispatch-only). release_mode PRODUCTION; live 204c97eb5406 -> 659d32fd39da.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/nc_results.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/visual_gate.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_verify.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P07-WATCHLIST-20260719.json",
+    "tests/governance/test_generated_project_views_match_generator.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/nc_results.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/visual_gate.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_verify.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P07-WATCHLIST-20260719.json",
+    "tests/governance/test_generated_project_views_match_generator.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/adversarial_review.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/known_gaps.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/nc_results.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/visual_gate.txt"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_verify.mjs",
+    "python3 -B -m unittest -q tests.governance.test_generated_project_views_match_generator",
+    "python3 -B -m unittest -q tests.governance.test_adp_canonical_governance_oids",
+    "python3 -B scripts/repository_hygiene_audit.py",
+    "python3 -B arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "P07 acceptance (runs the SHIPPED watchDigest/watchMatches extracted from worker_cloud.js)",
+      "result": "PASS",
+      "observed": "exit 0. CPU under the 10ms Workers Free limit for 20 watches: keyword@1000 CJK 1.16ms, keyword@1000 EN 0.61ms, doc_number@1000 CJK 2.13ms; 1->20 watches 0.33->1.16ms (3.6x, not 20x). Correctness: keyword 1000, board 1000, doc_number exactly i7, case-insensitive, % literal; NC a row with no doc number is not matched. Re-entrancy: first view all unseen -> ack -> zero unseen -> a NEW item still surfaces. The reviewer's counterexample (6001 seen rows + a future-dated item acked earliest) is NOT re-notified. Fuzz 200k strings: 156 matches, 0 without 号."
+    },
+    {
+      "command": "P07 negative controls (nc_results.txt)",
+      "result": "PASS (both revert-the-fix controls fail as they must)",
+      "observed": "NC1 revert the hay hoist -> 1->20 ratio 11.8x -> FAIL exit 1. NC2 revert fix 3 (restore ORDER BY at DESC LIMIT 5000) -> the counterexample IS re-notified -> FAIL exit 1. Shipped code PASS exit 0, worker sha256 unchanged. NC2 FIRST PASSED VACUOUSLY because the D1 mock ignored the SQL text and returned the whole seen set regardless; the mock now honours ORDER BY/LIMIT. Recorded in known_gaps 3e rather than quietly fixed -- it is the 5th instance this round of the same root cause (a check that looks green while testing nothing)."
+    },
+    {
+      "command": "generated-view drift guard (new)",
+      "result": "PASS",
+      "observed": "2 tests. Load-bearing: hand-editing the DERIVED OWNER_STATUS.md -> FAIL; a stale STATUS.md -> FAIL; restored -> PASS. It EARNED its place immediately: after rebasing onto the wave-6 split, ADP's tracked views were genuinely stale (projects.yaml is a canonical input, so removing the migrated projects moved source_snapshot_hash) and this guard caught it. Checks every non-frozen project in projects.yaml, which today is arxiv-daily-push alone."
+    },
+    {
+      "command": "ADP canonical governance OID guard",
+      "result": "PASS",
+      "observed": "The three oversized canonical files changed by this sync (DEVELOPMENT_LEDGER.md, delivery_tasks.yaml, development_events.jsonl) have their new blob OIDs registered in ARXIV_CANONICAL_GOVERNANCE.reviewed_oids; hygiene went FAIL large_new_or_modified -> PASS."
+    },
+    {
+      "command": "six-theme visual/motion gate",
+      "result": "PASS",
+      "observed": "exit 0. Load-bearing: changing one THEME_FX ambience value -> BLOCK exit 1 naming theme:warm. P07 reuses existing components/CSS and does not touch the Owner's v1.1 contract."
+    },
+    {
+      "command": "lean_governance ci --changed-only",
+      "result": "PASS",
+      "observed": "decision SHIP, legacy_exit_code 0."
+    },
+    {
+      "command": "live verification (adp.linzezhang.com)",
+      "result": "PASS",
+      "observed": "build.json 659d32fd39da; /watchlist 200 (was 404); a board3 watch surfaced 87 new items and a doc_number watch on 发改环资〔2026〕1062号 matched exactly one real A0 official document; ack drove it to 暂无新条目 and a second ack did not re-notify; a bogus facet was rejected 422; / /review /radar /library /system all 200; test watches were removed afterwards."
+    }
+  ],
+  "stop_conditions": [
+    "If watch counts or breadth grow, the cn_watch_seen read (~300x the candidate scan) is the dominant D1 quota term and must be optimised BEFORE adding facets.",
+    "Do NOT reintroduce a LIMIT on the seen read to bound it: that trades correctness for boundedness and re-notifies future-dated policy items (this round's fix 3 defeating fix 2)."
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <previous-version-id> to return to 204c97eb5406.",
+    "repo": "git revert this commit; /watchlist returns to 404 and no other route is affected."
+  },
+  "unresolved_risks": [
+    "The cn_watch_seen read is unbounded by design (bounded instead by window pruning): ~46k rows per typical view, ~301k worst case, against D1's 5M rows/day free tier -- fine for a single user, honestly recorded as a real tail risk rather than smoothed over.",
+    "This is a subset of T066, not T066: no topic/agency/region/entity facets (needs S5), no content_hash substantive-change detection (needs T026), no silence signal.",
+    "A benign re-notification path remains: a feed item absent 30+ days that reappears has its fetched_at bumped (worker_cloud.js:239), so for NULL-published_at items it re-enters the window and notifies again -- acceptable, since it genuinely is new to the watch.",
+    "PRE-EXISTING, NOT ADP'S AND NOT FIXED HERE: scripts/generate_governance_dashboard.py --write --all dies with UnboundLocalError: local variable 'selected' referenced before assignment (select_projects), reproduced on a PRISTINE origin/main -- wave-6 split fallout. It is the exact command the nightly 'Verify generated governance dashboard' CI step runs, so that step will go red until repaired; and because it fails before writing, 'run it and see no diff' looks like the views are in sync when nothing was rendered at all. Reported rather than fixed: it is root tooling inside the migration thread's in-flight work. Workaround: --write --project <id>."
+  ],
+  "next_allowed_task": "BOARD3_A0_ONLY flip requires a real 14-day shadow per T040 (calendar-bound), or begin the 2016+ history / research-metadata tables."
+}

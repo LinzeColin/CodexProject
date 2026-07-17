@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '204c97eb5406', source_sha256: '204c97eb540680be4207647c90717fb1d2b35f495926bd543bce3c6011485196', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '659d32fd39da', source_sha256: '659d32fd39dadc311ba329859bbbb30b74fb1d6db87592b88cfc240a1e452863', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -682,7 +682,7 @@ async function runDaily(env, trigger) {
 }
 
 // ───────────────────────── UI（六主题设计语言，从 base.html 移植） ─────────────────────────
-const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'], ['/library', '知识库'], ['/system', '系统']];
+const NAV = [['/', '今天'], ['/review', '复习'], ['/radar', '前沿雷达'], ['/watchlist', '关注'], ['/library', '知识库'], ['/system', '系统']];
 const FAVICON = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>');
 const META_DESC = 'ADP 前沿学习——每日跨全领域 arXiv 与顶级期刊、政策、科技金融精选一篇，配讲义、主动回忆与 FSRS 间隔复习，整套系统跑在 Cloudflare。';
 const THEME_OPTIONS = [['warm', '暖纸学习'], ['minimal', '简约专注'], ['fresh', '清新干净'], ['techno', '炫技'], ['cosmos', '宇宙星河'], ['forest', '森林河流']];
@@ -1189,6 +1189,124 @@ async function reviewPage(env) {
   return PAGE('/review', body, { title: '复习' });
 }
 
+// ───────────────────────── 关注 /watchlist（S5-P04-T066 的诚实子集；只读线上数据 + 两张小表） ─────────────────────────
+// T066 的 facet 是 {topic,agency,region,entity,doc_number} 且靠 T026 content_hash 判「实质变化」。
+// 线上 cn_items 没有这些 facet 字段，S2 版本层也未上线。因此本实现只交付线上数据真能支撑的：
+//   doc_number —— 用 P01 的确定性抽取器从 title/summary 真实抽出后精确匹配（board3 官方原文标题常带文号）
+//   board      —— cn_items.board_id 真字段，精确匹配
+//   keyword    —— 标题/摘要子串；★这不是 T066 的 facet，是 ADP-V02 追加★
+// 变化判定只做「新条目」；「已入库条目的内容实质变化」需要 T026 content_hash，未上线 → 不做、不声称。
+const WATCH_FACETS = ['doc_number', 'board', 'keyword'];
+const WATCH_MAX = 20;                 // 关注条数上限
+const WATCH_SCAN = 1000;              // 一次共享扫描读取的条目上限（硬上限）
+const WATCH_WINDOW_DAYS = 30;         // 只看最近 N 天 —— 关注要的就是「新条目」
+// ★DIR-007 双重有界 + 单遍扫描（两者都是实测换来的）★
+// 1) 行数：候选查询必须「时间窗 + LIMIT」双重有界。只用 LIKE+LIMIT 时，匹配不到会为凑满 LIMIT
+//    走完整个索引（真实 schema 5 万行实测 25.0ms）。加时间窗后计划变为
+//    SEARCH cn_items USING INDEX idx_cn_items_recency (<expr>>?)（索引范围定位），无匹配也仅 1.51ms。
+// 2) CPU：必须「一遍扫描对所有关注」而不是「每条关注扫一遍」。FS_DOCNUM_RE 在中文正文上约
+//    0.041ms/行（[一-龥A-Za-z]{0,8} 使 V8 在每个汉字位置都无法跳过；英文约 0.05ms/1000 行），
+//    每条关注各跑一遍时 100CJK/900EN 实测 4.17ms/条 → ×20 = 83ms，而 Workers 免费档 CPU 限额是
+//    10ms/次 → 约 3 条文号关注就打爆。故：共享一次窗口扫描，每条目只抽一次文号，并用 '号' 预筛
+//    （FS_DOCNUM_RE 的每种形态都必然含 '号'，英文正文则完全没有）。这同时把行读取量也降了 ×20。
+//    这与 T066 的循环结构一致：for it in items: for w in watches。
+const watchCutoff = () => new Date(Date.now() - WATCH_WINDOW_DAYS * 864e5).toISOString().slice(0, 10);
+async function watchTables(env) {
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS cn_watchlist (id TEXT PRIMARY KEY, facet TEXT NOT NULL, value TEXT NOT NULL, created_at TEXT NOT NULL)').run();
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS cn_watch_seen (watch_id TEXT NOT NULL, item_id TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY (watch_id, item_id))').run();
+}
+// 单条关注是否命中某条目。
+// ★内层循环里不得有「只与条目有关」或「只与关注有关」的计算★ —— 它们会被乘以 (条目数 × 关注数)。
+// doc（该条目只抽一次的文号）与 hay（该条目只拼一次的小写正文）由调用方按条目预计算；
+// w._nv（关注值的归一化/小写形式）由调用方按关注预计算。
+function watchMatches(it, w, doc, hay) {
+  if (w.facet === 'board') return it.board_id === w.value;          // 真字段，精确
+  if (w.facet === 'doc_number') return !!doc && doc.includes(w._nv); // 与 P03 同口径
+  return hay.includes(w._nv);                                        // keyword：ADP-V02 追加，非 T066 facet
+}
+// 一次共享扫描 → 对所有关注求未读。返回 Map(watch_id -> 未读条目[])。
+async function watchDigest(env, watches) {
+  const out = new Map(watches.map(w => [w.id, []]));
+  if (!watches.length) return out;
+  const { results: items } = await env.DB.prepare(
+    'SELECT * FROM cn_items WHERE COALESCE(published_at,fetched_at) >= ?1 ORDER BY COALESCE(published_at,fetched_at) DESC, id DESC LIMIT ?2')
+    .bind(watchCutoff(), WATCH_SCAN).all();
+  const rows = items || [];
+  // 每条目只抽一次文号，且只对可能含文号的行跑正则（'号' 预筛）
+  const docs = new Map();
+  if (watches.some(w => w.facet === 'doc_number')) {
+    for (const it of rows) {
+      if (((it.title || '') + (it.summary || '')).indexOf('号') < 0) continue;
+      // 与 factsheet()/itemIdentifiers() 同约定：抽取前先给输入长度兜底（请求路径线性时间的纵深防御）
+      const dn = fsFirst(FS_DOCNUM_RE, (it.title || '').slice(0, 500), (it.summary || '').slice(0, 2000));
+      if (dn) docs.set(it.id, normIdent(dn));
+    }
+  }
+  const seen = new Map();
+  for (const w of watches) {
+    // ★不设 LIMIT、不排序★。曾经写成 ORDER BY at DESC LIMIT N，前提是「窗口 <= WATCH_SCAN 条，
+    // 故最近的若干次已读必然覆盖窗口」—— 这个前提是错的：WATCH_SCAN 限的是**读取量**，不是窗口。
+    // 30 天窗口在线上约 1.5 万条，已读集会超过任何 N；一旦截断，被截掉的是**最早 ack** 的行，
+    // 而未来日期的条目（政策生效日）会永远排在候选第 1 位、其 ack 时间却会老化出界 → 重复通知，
+    // 恰好重开了下面按窗口剪枝所要堵的那个洞。有界性由剪枝保证，不能靠一个会静默牺牲正确性的 LIMIT。
+    // 无 ORDER BY 亦使计划回到 SEARCH cn_watch_seen USING COVERING INDEX (watch_id=?)。
+    const { results: s } = await env.DB.prepare(
+      'SELECT item_id FROM cn_watch_seen WHERE watch_id=?1').bind(w.id).all();
+    seen.set(w.id, new Set((s || []).map(r => r.item_id)));
+    w._nv = w.facet === 'doc_number' ? normIdent(w.value) : String(w.value).toLowerCase();  // 每条关注只算一次
+  }
+  const needHay = watches.some(w => w.facet === 'keyword');   // 与上面 docs 的守卫对齐：没有就别算
+  for (const it of rows) {                       // T066 的循环序：先条目，再关注
+    const doc = docs.get(it.id);
+    const hay = needHay ? ((it.title || '') + ' ' + (it.summary || '')).toLowerCase() : '';  // ★每条目只拼一次★
+    for (const w of watches) {
+      if (seen.get(w.id).has(it.id)) continue;
+      if (watchMatches(it, w, doc, hay)) out.get(w.id).push(it);
+    }
+  }
+  return out;
+}
+async function watchlistPage(env) {
+  await watchTables(env);
+  const { results: watches } = await env.DB.prepare(
+    'SELECT * FROM cn_watchlist ORDER BY created_at DESC LIMIT ?1').bind(WATCH_MAX).all();
+  const facetLabel = { doc_number: '文号', board: '板块', keyword: '关键词' };
+  let body = `<div class="card"><h1>关注</h1>
+    <p class="mt">盯住一个<b>文号</b>、<b>板块</b>或<b>关键词</b>；有<b>新条目</b>时这里会列出来，点「标记已读」后不再重复出现。</p>
+    <p class="mt" style="font-size:12px">只读线上已入库的内容，不新增抓取；每条关注只看<b>最近 ${WATCH_WINDOW_DAYS} 天</b>内、最多 ${WATCH_SCAN} 条。<b>只检测新条目</b>——已入库条目的内容改动检测需要尚未上线的版本层，故不做也不声称。</p>
+    <form method="POST" action="/api/watch/add" style="margin-top:10px">
+      <select name="facet" aria-label="关注类型">
+        <option value="doc_number">文号（如 国发〔2026〕12号）</option>
+        <option value="board">板块</option>
+        <option value="keyword">关键词</option>
+      </select>
+      <input name="value" placeholder="要关注的内容" maxlength="80" required style="min-width:220px">
+      <button class="btn-sm" type="submit">添加关注</button>
+    </form>
+    <p class="mt" style="font-size:12px">板块可填：${REGISTRY.map(b => esc(b.board) + '=' + esc(b.name)).join('、')}</p>
+  </div>`;
+  if (!(watches || []).length) {
+    body += '<div class="card"><p class="mt">还没有关注项。添加一个文号或板块试试。</p></div>';
+    return PAGE('/watchlist', body, { title: '关注' });
+  }
+  const digest = await watchDigest(env, watches);
+  for (const w of watches) {
+    const unseen = digest.get(w.id) || [];
+    body += `<div class="card"><h2>${esc(facetLabel[w.facet] || w.facet)}：${esc(w.value)}
+      <span class="badge${unseen.length ? '' : ' ok'}">${unseen.length ? unseen.length + ' 条新' : '无新'}</span></h2>
+      <div class="mt">
+        <form method="POST" action="/api/watch/ack/${encodeURIComponent(w.id)}" style="display:inline">
+          <button class="btn-sm" type="submit"${unseen.length ? '' : ' disabled'}>标记已读</button></form>
+        <form method="POST" action="/api/watch/del/${encodeURIComponent(w.id)}" style="display:inline">
+          <button class="btn-sm" type="submit">删除关注</button></form>
+      </div>
+      ${unseen.length ? itemListHTML(unseen.slice(0, 20)) : '<p class="mt">暂无新条目。</p>'}
+      ${unseen.length > 20 ? `<p class="mt">仅显示前 20 条（共 ${unseen.length} 条新）。</p>` : ''}
+    </div>`;
+  }
+  return PAGE('/watchlist', body + STUDY_JS, { title: '关注' });
+}
+
 // ───────────────────────── 知识库 /library（S5-P04-T067 Library 上线；只读视图） ─────────────────────────
 // 数据只来自线上 cn_reviews ⨝ cn_items（你学过/在复习的条目）。不新增表、不改流水线。
 // 诚实边界：T067 的「笔记」与「全 provenance 导出」需要 version/license 等 S2 版本层字段，
@@ -1498,6 +1616,47 @@ export default {
       }
 
       if (request.method === 'POST') {
+        if (p === '/api/watch/add' || p.startsWith('/api/watch/ack/') || p.startsWith('/api/watch/del/')) {
+          await watchTables(env);
+          if (p === '/api/watch/add') {
+            const form = await request.formData();
+            const facet = String(form.get('facet') || '');
+            const value = String(form.get('value') || '').trim().slice(0, 80);
+            if (!WATCH_FACETS.includes(facet) || !value) return jsonResp({ error: 'bad facet or value' }, 422);
+            const { results: cnt } = await env.DB.prepare('SELECT COUNT(*) n FROM cn_watchlist').all();
+            if ((cnt?.[0]?.n || 0) >= WATCH_MAX) return jsonResp({ error: 'watch limit reached', limit: WATCH_MAX }, 422);
+            const id = 'w:' + (await sha1(facet + '|' + value)).slice(0, 12);
+            await env.DB.prepare('INSERT INTO cn_watchlist (id,facet,value,created_at) VALUES (?,?,?,?) ON CONFLICT(id) DO NOTHING')
+              .bind(id, facet, value, nowISO()).run();
+            return Response.redirect(new URL('/watchlist', request.url).toString(), 303);
+          }
+          const wid = decodeURIComponent(p.split('/')[4] || '');
+          if (!wid) return jsonResp({ error: 'bad watch id' }, 422);
+          if (p.startsWith('/api/watch/del/')) {
+            await env.DB.batch([
+              env.DB.prepare('DELETE FROM cn_watchlist WHERE id=?').bind(wid),
+              env.DB.prepare('DELETE FROM cn_watch_seen WHERE watch_id=?').bind(wid),
+            ]);
+            return Response.redirect(new URL('/watchlist', request.url).toString(), 303);
+          }
+          // ack：把当前未读全部记为已读 —— 之后再访问该关注为零新条目（T066 的可重入性质）
+          const w = await env.DB.prepare('SELECT * FROM cn_watchlist WHERE id=?').bind(wid).first();
+          if (!w) return jsonResp({ error: 'not found' }, 404);
+          const unseen = (await watchDigest(env, [w])).get(w.id) || [];
+          const now = nowISO();
+          const stmts = unseen.map(it => env.DB.prepare(
+            'INSERT INTO cn_watch_seen (watch_id,item_id,at) VALUES (?,?,?) ON CONFLICT(watch_id,item_id) DO NOTHING')
+            .bind(wid, it.id, now));
+          // 剪枝：删掉「其条目已不在窗口内」的已读行 —— 窗口外的条目永不再成为候选，其已读行是死重量。
+          // ★按条目自身的窗口归属判定，而不是按 ack 时间★：ack 时间剪枝在 published_at 为未来日期时
+          // 有洞（政策生效日就是真实例子）—— 已读行被剪掉而条目仍在窗口内 → 会重复通知。
+          // 相关子查询按主键查 cn_items，不做 join（避免 D1 无 ANALYZE 时的 join 顺序问题）。
+          stmts.push(env.DB.prepare(
+            'DELETE FROM cn_watch_seen WHERE watch_id=?1 AND NOT EXISTS (SELECT 1 FROM cn_items i WHERE i.id=cn_watch_seen.item_id AND COALESCE(i.published_at,i.fetched_at) >= ?2)')
+            .bind(wid, watchCutoff()));
+          await env.DB.batch(stmts);
+          return Response.redirect(new URL('/watchlist', request.url).toString(), 303);
+        }
         if (p.startsWith('/api/grade/')) {
           const [, , , idEnc, gradeRaw] = p.split('/');
           const grade = parseInt(gradeRaw, 10);
@@ -1540,6 +1699,7 @@ export default {
       else if (p === '/review' || p === '/queue') html = await reviewPage(env);
       else if (p === '/radar') html = await radarPage(env);
       else if (p === '/system') html = await systemPage(env);
+      else if (p === '/watchlist') html = await watchlistPage(env);
       else if (p === '/library') html = await libraryPage(env, url.searchParams);
       else if (p === '/history') html = await historyPage(env);
       else if (p === '/search') html = await searchPage(env, url.searchParams);

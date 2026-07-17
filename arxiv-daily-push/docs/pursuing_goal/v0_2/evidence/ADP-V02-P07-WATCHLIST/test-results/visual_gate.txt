@@ -1,0 +1,20 @@
+# P07 六主题视觉/动效门（P05 冻结 + P06 CI 自动化）— 本批改了 worker，故必须跑
+# Owner 的要求是「再丢掉我本地就完全不能恢复」，所以这里不接受「绿了就信」。
+
+## 发货代码
+GATE: PASS   (run_ci decision: PASS)   exit=0
+
+## 负控（证明这个 PASS 不是空转的）
+把 THEME_FX 里 warm 的氛围层 'none' 换成 'minimal'
+（即「某个主题的动效被悄悄改掉」——正是 Owner 反复丢失的那类东西）：
+GATE: BLOCK  (run_ci decision: BLOCK)  exit=1
+blocked_on: ['theme:warm']
+  changed: contract_root
+  changed: master_visual
+  changed: theme:warm
+→ 门能精确定位到是哪个主题被动了。
+
+## 还原后
+exit=0，worker sha256 = f09bc92a5079f0b95efe4436ef582461acff76d7f1fed51ef5b2c01b020dadf8（与发货一致，未被负控污染）
+
+结论：P07 新增 /watchlist 沿用既有组件与 CSS，未触碰六主题视觉/动效契约；该结论由承重的门给出，不是自我声明。

@@ -1,0 +1,21 @@
+# ADP-V02-P07 NEGATIVE CONTROLS — every assertion must FAIL when its fix is reverted.
+# Without this file the suite proves only "it ran", not "it checks". NC2 is the point of the file:
+# on the first attempt it PASSED against the reverted code, because the D1 mock ignored the SQL's
+# ORDER BY/LIMIT and handed back the full seen set regardless. The test was vacuous. The mock now
+# honours ORDER BY at DESC / LIMIT n, and NC2 fails as it must.
+
+## nc1 — revert the per-pair hay hoist (re-introduce the xWATCH_MAX CPU multiplier)
+  scaling 1 -> 20 watches: 0.56 -> 6.58 ms (ratio 11.8x)
+  FAIL x20 watches costs far less than x20 (item-only work is hoisted, not per-pair)
+ACCEPTANCE = FAIL
+exit=1  (must be 1)
+
+## nc2 — revert fix #3 (re-introduce ORDER BY at DESC LIMIT 5000 on the seen read)
+  scaling 1 -> 20 watches: 0.33 -> 1.25 ms (ratio 3.7x)
+  FAIL future-dated item acked earliest is NOT re-notified with 6001 seen rows (fix #3 no longer defeats fix #2)
+ACCEPTANCE = FAIL
+exit=1  (must be 1)
+
+## restored shipped code
+exit=0  (must be 0)
+worker sha256 = f09bc92a5079f0b95efe4436ef582461acff76d7f1fed51ef5b2c01b020dadf8  (identical to the acceptance run above)

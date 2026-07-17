@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P07 (关注 /watchlist 接入线上; PRODUCTION DEPLOY; product_version 0.28.0)
+- 把 S6 的 T066 关注摘要从 NOT_DEPLOYED 变成线上真能用的 /watchlist（此前该路由 404，NAV 里却一直有链接）：
+  三个 facet（doc_number / board / keyword），上限 20 条，只看最近 30 天内、最多 1000 条的新条目；
+  ack 后可重入（再看即零未读）。doc_number 复用 P01 的确定性抽取器，与 P03 同口径，对 P04 接入的
+  board3 A0 官方原文（标题常带文号）真正可用。线上实测：board3 关注 87 条新、文号关注精确 1 条
+  （发改环资〔2026〕1062号），ack 后归零且不重复通知。
+- 诚实边界：这是 T066 在线上数据能支撑的**子集**，不是 T066 本身——topic/agency/region/entity 需要
+  S5 实体解析（未上线），不臆造；keyword 是 ADP-V02 追加、非 T066 facet；只报新条目、不做 content_hash
+  实质变化判定（需 T026 版本层，未上线），页面明写；无 silence signal。
+- 独立对抗复核 5 轮，前 4 轮全部 BLOCK 且全部属实（有界性只算单条漏了 ×20 → 83ms vs Free 档 10ms；
+  修了 doc_number 却把同样的 bug 留在 keyword → 29.0ms；修复 #3 亲手废掉修复 #2；文档写下了已被证伪的前提）。
+  第 5 轮 CONFIRMED_SOUND，并用自排除哈希确认代码未被偷改。实施者未自签。
+- 负控承重：撤销 hay 提升 → 比值 11.8× FAIL；撤销修复 #3 → 反例被重复通知 FAIL；发货代码 PASS。
+  （NC2 首次运行时曾误 PASS —— D1 mock 无视 SQL 文本，断言是空转的；已修，见 known_gaps §3e。）
+- 六主题视觉/动效门 PASS，且负控证明其承重（改 THEME_FX 一个值 → BLOCK 并精确指认 theme:warm）。
+- DIR-007：cron 外部子请求不变 20/50；请求路径 CPU 实测 2.13/10ms；D1 读取尾部风险已如实标注。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 生产集成 P04 (board3 A0 官方原文接入每日 cron; PRODUCTION DEPLOY; product_version 0.27.0)
 
 - ADP V0.2 第 4 个可见增量,也是最关键的一批：board3「中国政策法规」此前**只抓媒体 RSS**（人民网/中新网/新浪）——库里全是**关于**政策的**报道**,**没有一条政府官方原文**;S3(T031-T040) 建好的 A0 适配器从未接进生产 cron,T040 只留下一个只读 canary。本次真正接上：4 个 A0 官方源进 REGISTRY(board3, method 'a0')并复用 RSS 同一套纪律(健康/连续 3 次失败自动停用/3 天后自愈重试)：stats-gov(stats.gov.cn/sj/zxfb/)、cac-gov(cac.gov.cn)、ndrc-gov(ndrc.gov.cn/xxgk/)、gov-cn-policy(gov.cn/zhengce/xxgk/)。新增共享解析器 parseA0 + 每源 match/resolve/date;**日期只在能从 URL 真实读出时才给**——新版 gov.cn /content/YYYYMM/ 只有年月没有日 → published_at 留空,绝不编造。/api/a0-canary 升级为**真实的逐源边缘可达性探针**并复用同一个 parseA0(替掉 T040 那段只认旧链接形态的重复内联正则——这正是它一直只吐 2019/2020 老文件的原因)。**BOARD3_A0_ONLY 仍为 false**：本次只摄取,不把媒体降为 discovery(库里有 A0 之前翻开关会**清空 board3**;T040 的完整翻转门本就要求真实 14 日 shadow)。★我自己先抓到一个 ReDoS★：parseA0 初版正则在未闭合 <a 洪水下二次回溯(8000→81ms,翻倍→4x),会打进 cron 的 CPU 预算;改为有界属性 + 不要求闭合 </a>(取到下一个 <)→线性(8000→11ms,翻倍→2x),抽取结果逐条不变。★独立对抗复核 BLOCK 两条,都真、都是实施者的错★：(1) **未鉴权写回归**——把 canary 的裸 fetch() 换成 fetchFeedText 时**静默继承了它的 R2 双写**,于是一个自称 non_destructive/writes nothing 的**未鉴权**端点冷启动每次命中**真写 15 次**(3 R2 PUT + 3 cn_artifacts INSERT + 9 cn_meta 计数)并污染只在 runDaily 重置的 _rawWrites/_rawUsage 预算计数——在 Owner 签署的 $0 预算上,一个谎报自身副作用的决策仪器;修复 fetchFeedText(s.list, env, null) 命中既有 && sourceId 守卫。(2) **ndrc 排除理由事实错误**——实施者写「整页无日期→非日更源」,复核证伪：该页有 28 个 2026/07/16 斜杠格式日期、103 条(去重 81)发改委自有 t{YYYYMMDD}_ 政策链接(解析后实测 200);实施者的检验只 grep 了短横线格式且只看 gov.cn 链接。**不是删掉假声称而是把 ndrc-gov 真正接了进来**——它恰是带**文号**的官方原文来源(如 发改环资〔2026〕1062号)。复核复验确认：DIR-007 **20/50 外部子请求**(并纠正原注释把 D1/R2 错并入 50——internal services 另有 1000 独立额度);ndrc 正则**无法逃逸 ndrc.gov.cn**(11 个恶意 href 含 ../ 遍历与 .//evil.com 全被拒,因 . 不在 [a-z/] 内);零日期编造;单源失败不中断 cron;幂等;board3 不会被清空;fagui 403 与 nda 恰好 193 字节空壳的排除属实。CONFIRMED_SOUND(未自签)。复核放行后又主动收紧一处：gov-cn-policy 的 match 钉住 host(否则 gov.cn 列表页上的**站外**链接会被当作官方原文入库,而 a0Board3Eligible 按 source_id 放行不再校验 host);负控制证明 evil.com 伪装链接被拒(0)、真 www.gov.cn 链接通过(1)。★上线后又抓到最危险的一个：我的安全仪器曾恒真★——canary 的 board3 查询漏选 board_id,而 a0Board3Eligible 首行是 if (it.board_id !== 'board3') return true → 每行恒真通过 → 把 **105 条媒体误报成官方 A0** 并据此输出 **safe_to_flip_flag: true**;若有人信了去翻开关 **board3 会被清空**,正是该 flag 存在要阻止的灾难。**T040 原版同样漏选**,其 media_demoted:0 一直是空跑。已修(补 board_id),负控制证明该门现在真会判(媒体→false/官方→true/漏 board_id→true 复现 bug)。BUILD e78306049663 -> 204c97eb5406;部署 adp-cloud version 39fae7f4-f3f4-4404-93b7-a0e637764347(绑定+cron 保留);**真实 runDaily 实测：a0_official=37 条官方原文入库**(gov-cn-policy 13 + cac-gov 4 + ndrc-gov 20),board3 由 105 媒体/0 官方 变为 **162 总 / 37 官方 / 125 媒体**,页面真实显示《“十五五”碳达峰行动方案》等国务院文件;10 路由 200 + 六主题 6/6 + P01 芯片(60)/P02 /library/P03 筛选均未回归;回滚 wrangler versions deploy 8a6ef433。诚实边界(known_gaps)：不翻开关;gov-cn-fagui 403、nda-gov 193 字节空壳故不接;只取列表页元数据(无正文→A0 summary 为空);**A0 原始字节实际未归档 R2**(RSS 先耗尽 RAW_MAX_PER_RUN=3)故不声称;gov-cn-policy 权威但不及时(静态索引→2019/2020 基础法规);stats-gov 首跑从边缘 TimeoutError 致其 15 条缺席(随后探测又成功→**间歇性**,不夸大为不可达),由健康机制自愈;kind:'official' 新枚举与 seedSources 清理的孤儿风险。release_mode PRODUCTION;recurring $0/mo(DIR-007 20/50)。Ends IMPLEMENTATION_READY_FOR_INDEPENDENT_VERIFICATION.

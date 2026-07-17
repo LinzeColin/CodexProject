@@ -1,0 +1,35 @@
+# ADP-V02-P07 acceptance run  (node v24.18.0, Darwin arm64)
+# worker_cloud.js sha256 = f09bc92a5079f0b95efe4436ef582461acff76d7f1fed51ef5b2c01b020dadf8
+
+shipped constants: WATCH_MAX=20 WATCH_SCAN=1000 WATCH_WINDOW_DAYS=30
+
+== CPU: the xWATCH_MAX multiplier must be gone (Workers Free = 10ms CPU/invocation) ==
+  20 keyword  @1000 CJK : 1.34 ms   (pre-fix review measured 29.0)
+  20 keyword  @1000 EN  : 0.73 ms   (pre-fix 7.95 = 80% of budget)
+  20 doc_number @1000 CJK: 2.11 ms   (pre-fix 83)
+  PASS all 20-watch cases under the 10ms Free CPU limit
+  scaling 1 -> 20 watches: 0.32 -> 1.33 ms (ratio 4.1x)
+  PASS x20 watches costs far less than x20 (item-only work is hoisted, not per-pair)
+
+== correctness (unchanged by the perf work) ==
+  PASS keyword matches every CJK row (1000)
+  PASS board exact match (1000)
+  PASS doc_number is exact: only i7
+  PASS keyword is case-insensitive
+  PASS keyword % is a literal, not a wildcard
+  PASS NC: doc_number does not match a row without a 文号
+
+== idempotency (T066 re-run property) ==
+  PASS first view: all unseen
+  PASS after ack: zero unseen (does not re-notify)
+  PASS a NEW item still surfaces after ack
+
+== the reviewer's counterexample: seen-set truncation must be impossible ==
+  PASS future-dated item acked earliest is NOT re-notified with 6001 seen rows (fix #3 no longer defeats fix #2)
+
+== the 号 pre-filter must never drop a real hit ==
+  fuzz 200k strings: 162 matches, 0 without 号
+  PASS every FS_DOCNUM_RE match contains 号 -> the pre-filter cannot drop a real hit
+
+ACCEPTANCE = PASS
+exit=0

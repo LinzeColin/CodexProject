@@ -1,0 +1,14 @@
+# ADP-V02-P07 changed files
+
+## 生产代码（唯一被改动的生产文件）
+  arxiv-daily-push/deploy/cloudflare/worker_cloud.js  +162/-2
+  sha256 = f09bc92a5079f0b95efe4436ef582461acff76d7f1fed51ef5b2c01b020dadf8
+  build_id = 659d32fd39da  (自排除哈希复现通过)
+
+## 证据（新增，非生产代码）
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/changed_files.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/git.diff
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/known_gaps.md
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/nc_results.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_tests.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P07-WATCHLIST/test-results/watchlist_verify.mjs
