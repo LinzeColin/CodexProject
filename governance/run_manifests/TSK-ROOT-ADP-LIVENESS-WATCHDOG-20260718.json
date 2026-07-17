@@ -1,0 +1,90 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-ADP-LIVENESS-WATCHDOG-20260718",
+  "project_id": "root",
+  "task_id": "ROOT-ADP-LIVENESS-WATCHDOG",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260718-ADP-LONGTERM-STABILITY",
+  "generated_at": "2026-07-18T20:30:00Z",
+  "implementation_base_sha": "5a1c17c1a6c0aa3c35ef07379cf50e4515f8072a",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c1efd8a02d4686b7cd306a1b72b9b7e0b8db54a14833544f76e25155bf31b628",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 3 non-manifest changed files; changed_files_* list all 4 including this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP 长期稳定 watchdog：让静默的零变吵（新增 liveness 检查脚本 + 定时 workflow + 决策逻辑守卫）",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (2 rounds; R1 BLOCK: watchdog itself green while pipeline fails — 逐字复现本会话的招牌病; R2 sound; implementer did not self-sign)",
+  "summary": "长期稳定：合成监控 watchdog，让『绿色 cron 掩盖静默的零』变吵。scripts/adp_liveness_check.py 只读探活 ADP 公共端点，定时(30 8→实为 0 22 UTC，日 cron 后)跑，在系统在线但静默不产出时变红：最近一次运行 失败、最新【已完成】运行 arXiv 摄入=0 或 候选=0(该选而未选)、可见历史内无已完成运行或已陈旧、backfill 降级。★复核 R1 BLOCK 属实且致命：v1 的 watchdog 自己就『绿着而管道已坏』——它跳过最新的 失败 行去报告更早的健康运行，正是它要抓的病。逐字复现后重写：所有检查以【最新真正跑过的运行】为准，最新行是 失败 立即报警，弃权(abstain)算健康、不再对 abstain 连续日狼来了。★ R2 CONFIRMED_SOUND。★如实记范围★：不覆盖 P08 的真实病(元数据 matched=0，摄入/选择正常)——/system 不渲染每轮元数据计数，无公共端点可见；docstring 明说『它抓不到 P08』，补该洞需 worker 端点(本轮不做)。决策逻辑由 tests/governance/test_adp_liveness_check.py 的 11 断言钉死(含四个复核攻击的专门用例)，网络无关。workflow 只 schedule + workflow_dispatch(不在 PR 上打线上)，permissions contents:read，超时 5 分，concurrency 有。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "new_scheduled_workflow": 1,
+    "worker_change": 0
+  },
+  "changed_files_declared": [
+    ".github/workflows/arxiv-daily-push-liveness.yml",
+    "governance/run_manifests/TSK-ROOT-ADP-LIVENESS-WATCHDOG-20260718.json",
+    "scripts/adp_liveness_check.py",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/arxiv-daily-push-liveness.yml",
+    "governance/run_manifests/TSK-ROOT-ADP-LIVENESS-WATCHDOG-20260718.json",
+    "scripts/adp_liveness_check.py",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "required_governance_files": [
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "updated_governance_files": [
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "evidence_refs": [
+    "scripts/adp_liveness_check.py",
+    "tests/governance/test_adp_liveness_check.py",
+    ".github/workflows/arxiv-daily-push-liveness.yml"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_adp_liveness_check",
+    "python3 scripts/adp_liveness_check.py",
+    "python3 scripts/workflow_security_audit.py audit",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_adp_liveness_check (11 断言，网络无关)",
+      "result": "PASS",
+      "detail": "含四个复核攻击专门用例：fresh 失败 on top、sustained 失败、stale-under-failure、弃权 streak 不狼来了。另有 arXiv/候选 静默零、未运行 skip、无已完成运行、无解析行。"
+    },
+    {
+      "command": "adp_liveness_check.py 对线上",
+      "result": "PASS",
+      "detail": "exit=0：6 路由 200、build_id e8491f75970f、最新完成运行 2026-07-17(降级) arXiv=220 候选=546、新鲜、backfill 未跑。"
+    },
+    {
+      "command": "workflow_security_audit audit",
+      "result": "PASS",
+      "detail": "status PASS，0 violation，triggers 仅 schedule+dispatch，permissions contents:read。"
+    }
+  ],
+  "stop_conditions": [
+    "★watchdog 的检查必须以【最新真正跑过的运行】为准★：以渲染顺序或 fresh 失败/未运行 零行为准会让它自己绿着而管道已坏(复核 R1 的病)。",
+    "★不要声称它抓 P08★：P08 是元数据 matched=0(摄入/选择正常)，本 watchdog 看不到——补洞需 worker 暴露每轮元数据计数。",
+    "不要给它加会对 abstain(弃权) 连续日报警的检查——狼来了会让 Owner 关掉 watchdog。",
+    "不要在 PR 上跑它(会对线上打请求)：只 schedule + workflow_dispatch。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯新增脚本+守卫+workflow，无 worker/基础设施副作用。删 workflow 即停定时探活。"
+  },
+  "unresolved_risks": [
+    "★覆盖洞★：不抓元数据静默零(P08 真实病)——需 worker 端点暴露 meta match-rate 才能补。已在 docstring/manifest 明记。",
+    "arXiv==0 是硬报警——极安静/假日 arXiv 日有低频假阳性风险(有意的严格，Owner 可接受权衡)。",
+    "两个检查依赖 /system 的 ORDER BY at DESC 渲染顺序(复核已验 at 与 as_of_date 同向、无过去日期回填，故成立)；防御性日期排序是可选加固。"
+  ],
+  "next_allowed_task": "可选：(1) 补 worker 端点暴露每轮元数据 matched 计数，让 watchdog 也能抓 P08 真实病；(2) Owner 若要，把 schedule 保留(默认已开)或改。"
+}

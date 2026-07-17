@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Guard: the ADP liveness watchdog's silent-zero detection actually detects a silent zero.
+
+`scripts/adp_liveness_check.py` is the 长期稳定 watchdog whose whole job is to go RED when the live
+system is up but silently producing nothing (P08's disease: a green cron enriching 0 rows for weeks).
+A watchdog that can't tell a healthy run from a 补0 run is worse than none -- it manufactures false
+confidence. This test pins the decision logic (`evaluate_runs`, extracted to be network-free) against
+fixtures, so the detection cannot silently rot.
+
+These are unit tests over pure logic; the workflow does the actual live probing on a schedule.
+"""
+import datetime
+import importlib.util
+import pathlib
+import unittest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+CHECK = ROOT / "scripts" / "adp_liveness_check.py"
+
+
+def _load():
+    spec = importlib.util.spec_from_file_location("adp_liveness_check", CHECK)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+HEALTHY = "2026-07-16 | 降级 | arXiv 220 · bio 30 · 板块流 189 · 候选 546 |"
+HEALTHY2 = "2026-07-15 | 降级 | arXiv 210 · bio 28 · 板块流 180 · 候选 500 |"
+FAILED_TOP = "2026-07-17 | 失败 | arXiv 0 · bio 0 · 板块流 0 · 候选 0 | RuntimeError"
+ZERO_ARXIV = "2026-07-17 | 降级 | arXiv 0 · bio 0 · 板块流 0 · 候选 0 |"
+ZERO_CAND = "2026-07-17 | 正常 | arXiv 180 · bio 20 · 板块流 90 · 候选 0 |"
+SKIP = "2026-07-17 | 未运行 | arXiv 0 · bio 0 · 板块流 0 · 候选 0 | 当日已成功运行, 幂等跳过"
+ABSTAIN = "2026-07-17 | 弃权 | arXiv 180 · bio 20 · 板块流 90 · 候选 3 |"
+TODAY = datetime.date(2026, 7, 17)
+
+
+class TestAdpLivenessCheck(unittest.TestCase):
+    def setUp(self):
+        self.m = _load()
+
+    def test_the_script_exists_and_exposes_the_pure_evaluator(self):
+        self.assertTrue(CHECK.is_file(), "watchdog script missing: {}".format(CHECK))
+        self.assertTrue(hasattr(self.m, "evaluate_runs"), "evaluate_runs not exposed -- test cannot pin the logic")
+
+    def test_healthy_latest_run_passes(self):
+        ok, fail = self.m.evaluate_runs(HEALTHY, 3, TODAY)
+        self.assertEqual(fail, [], "healthy run wrongly flagged: {}".format(fail))
+        self.assertTrue(any("ingest ok" in x for x in ok))
+
+    # ---- the decisive case the first version silently passed (review Attack C) ----
+    def test_fresh_failure_on_top_is_caught(self):
+        """Tonight's run FAILED; yesterday+ were healthy. Old code skipped past 失败 to the healthy run
+        and went GREEN -- a watchdog green while the pipeline is broken. Must RED on the failure."""
+        ok, fail = self.m.evaluate_runs(FAILED_TOP + "\n" + HEALTHY + "\n" + HEALTHY2, 3, TODAY)
+        self.assertTrue(any("FAILED" in x for x in fail),
+                        "fresh 失败 on top was NOT flagged: ok={} fail={}".format(ok, fail))
+
+    def test_sustained_failure_fires_immediately_not_after_two_weeks(self):
+        """12 straight 失败 with 2 healthy rows still in the 14-row window must RED now, not only once
+        every visible row is non-executed (review Attack A)."""
+        page = "\n".join("2026-07-%02d | 失败 | arXiv 0 · bio 0 · 板块流 0 · 候选 0 |" % d for d in range(17, 5, -1))
+        page += "\n" + "2026-07-05 | 降级 | arXiv 200 · bio 20 · 板块流 100 · 候选 300 |"
+        ok, fail = self.m.evaluate_runs(page, 3, TODAY)
+        self.assertTrue(any("FAILED" in x for x in fail), "sustained failure not caught: {}".format(fail))
+
+    def test_staleness_uses_newest_completed_not_a_fresh_failure_row(self):
+        """Newest COMPLETED run is 12 days old; a fresh 失败 sits on top. Contract: staleness keys off
+        the newest ACTUAL run, so it must flag stale (review Attack B)."""
+        old_ran = "2026-07-05 | 降级 | arXiv 200 · bio 20 · 板块流 100 · 候选 300 |"
+        ok, fail = self.m.evaluate_runs(FAILED_TOP + "\n" + old_ran, 3, TODAY)
+        self.assertTrue(any("stale" in x for x in fail),
+                        "staleness used the fresh 失败 row instead of the 12-day-old completed run: {}".format(fail))
+
+    def test_abstain_streak_is_not_cry_wolf(self):
+        """弃权 (abstain) is a HEALTHY completed run that ingested fine but selected nothing. A streak of
+        them with healthy arXiv must NOT RED (review Attack D -- crying wolf gets a watchdog disabled)."""
+        page = "\n".join("2026-07-%02d | 弃权 | arXiv 180 · bio 20 · 板块流 90 · 候选 3 |" % d for d in range(17, 3, -1))
+        ok, fail = self.m.evaluate_runs(page, 3, TODAY)
+        self.assertEqual(fail, [], "abstain streak with healthy ingest wrongly flagged: {}".format(fail))
+
+    def test_silent_zero_arxiv_is_caught(self):
+        ok, fail = self.m.evaluate_runs(ZERO_ARXIV + "\n" + HEALTHY, 3, TODAY)
+        self.assertTrue(any("SILENT ZERO" in x and "arXiv=0" in x for x in fail),
+                        "silent arXiv=0 not caught: ok={} fail={}".format(ok, fail))
+
+    def test_silent_zero_candidates_is_caught(self):
+        ok, fail = self.m.evaluate_runs(ZERO_CAND + "\n" + HEALTHY, 3, TODAY)
+        self.assertTrue(any("SILENT ZERO" in x and "候选=0" in x for x in fail),
+                        "silent 候选=0 not caught: ok={} fail={}".format(ok, fail))
+
+    def test_idempotent_skip_on_top_of_a_healthy_run_passes(self):
+        """A 未运行 skip is all-zeros but healthy; with a fresh completed run below it must NOT flag."""
+        ok, fail = self.m.evaluate_runs(SKIP + "\n" + HEALTHY.replace("2026-07-16", "2026-07-17"), 3, TODAY)
+        self.assertEqual(fail, [], "未运行 skip over a healthy same-day run wrongly flagged: {}".format(fail))
+
+    def test_no_completed_run_in_window_is_flagged(self):
+        page = "\n".join("2026-07-%02d | 未运行 | arXiv 0 · bio 0 · 板块流 0 · 候选 0 | skip" % d for d in range(17, 3, -1))
+        ok, fail = self.m.evaluate_runs(page, 3, TODAY)
+        self.assertTrue(any("no completed run" in x for x in fail), "all-未运行 window not flagged: {}".format(fail))
+
+    def test_no_runs_at_all_is_flagged_not_silently_passed(self):
+        ok, fail = self.m.evaluate_runs("<html>no run table here</html>", 3, TODAY)
+        self.assertTrue(fail, "an unparseable /system passed vacuously -- watchdog would be blind")
+
+
+if __name__ == "__main__":
+    unittest.main()
