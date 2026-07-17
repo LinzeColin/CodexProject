@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P06-ROLE-MATRIX-RENDER-20260717",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P06-VISUAL-GATE-CI",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-17T07:30:00Z",
+  "implementation_base_sha": "dff7fb15bbeece114f89d019f342db291e9d9a85",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:4539cbf504ee0d932c6a3fc0814a9f6afffaafd5908bd1e61238fab7c8ac3ee3",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 2 non-manifest closure files; this manifest is excluded to avoid self-reference.",
+  "ci_attestation_subject": "Workflow role matrix re-render + local drift guard",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "Regenerate docs/governance/WORKFLOW_ROLE_MATRIX.md from workflow_policy.json after registering the ADP six-theme visual/motion gate workflow: the matrix is a DERIVED view and CI's check-render failed with 'workflow role matrix drift'. Adds a governance test that calls the same check_render() entry point CI uses, so this drift fails locally before the push instead of only in CI. Note: the render subcommand writes to stdout (there is no --write flag), which is why the regeneration step is easy to miss.",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_visibility_changes": 0,
+    "direct_main_pushes": 1,
+    "force_pushes": 0,
+    "history_rewrites": 0,
+    "release_assets_published": 0
+  },
+  "changed_files_declared": [
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-ROLE-MATRIX-RENDER-20260717.json",
+    "tests/governance/test_workflow_policy_covers_all_workflows.py"
+  ],
+  "changed_files_actual": [
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-ROLE-MATRIX-RENDER-20260717.json",
+    "tests/governance/test_workflow_policy_covers_all_workflows.py"
+  ],
+  "required_governance_files": [
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-ROLE-MATRIX-RENDER-20260717.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P06-ROLE-MATRIX-RENDER-20260717.json"
+  ],
+  "evidence_refs": [
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_policy_covers_all_workflows.py"
+  ],
+  "test_commands": [
+    "python3 -B scripts/workflow_security_audit.py check-render",
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B -m unittest -q tests.governance.test_workflow_policy_covers_all_workflows"
+  ],
+  "test_results": [
+    {
+      "command": "check-render",
+      "result": "PASS",
+      "observed": "status PASS, matches true, errors []. Render is deterministic (same sha256 4c20ec73... across repeated runs)."
+    },
+    {
+      "command": "workflow_security_audit",
+      "result": "PASS",
+      "observed": "owned 16 / unowned 0 / errors [] / duplicate_role 0 / unpinned 0 / unapproved 0."
+    },
+    {
+      "command": "governance tests",
+      "result": "PASS",
+      "observed": "4 tests. LOAD-BEARING: appending a drift marker to the matrix makes the render-sync test FAIL; restoring it passes. The coverage test FAILED before the workflow was registered (reproducing CI's 'unowned workflows')."
+    }
+  ],
+  "stop_conditions": [
+    "If check-render drifts, regenerate: python3 -B scripts/workflow_security_audit.py render > docs/governance/WORKFLOW_ROLE_MATRIX.md"
+  ],
+  "rollback": {
+    "repo": "git revert; NOT_DEPLOYED, production unaffected (live 204c97eb5406)."
+  },
+  "unresolved_risks": [
+    "PRE-EXISTING AND NOT MINE: origin/main already fails repository_hygiene_audit with large_retention_rule_count on OpenAIDatabase/docs/migration_handoff/20260717_local_s04_s13_preservation/patches/8.gz, introduced by commit f50767739 (chore(openaidatabase): preserve local S04-S13 migration patches). Verified by auditing origin/main WITHOUT any of my changes -> FAIL. That project's owner must register a retained rule; I did not touch another project's governance."
+  ],
+  "next_allowed_task": "Owner-gated BOARD3_A0_ONLY flip after real A0 coverage days."
+}
