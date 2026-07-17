@@ -86,6 +86,22 @@ class MemoryProductionAcceptanceTest(unittest.TestCase):
         ):
             acceptance.validate_config(unsafe)
 
+    def test_published_history_fetch_depth_is_bounded(self) -> None:
+        config = acceptance.load_json_strict(
+            DATABASE_DIR / acceptance.DEFAULT_CONFIG,
+            "production_config",
+        )
+        self.assertEqual(config["publication"]["accepted_history_fetch_depth"], 32)
+        acceptance.validate_config(config)
+        for value in (1, True, 257):
+            unsafe = copy.deepcopy(config)
+            unsafe["publication"]["accepted_history_fetch_depth"] = value
+            with self.subTest(value=value), self.assertRaisesRegex(
+                acceptance.ProductionAcceptanceError,
+                "published_history_fetch_depth_invalid",
+            ):
+                acceptance.validate_config(unsafe)
+
     def test_public_snapshot_requires_commit_only_redacted_records(self) -> None:
         accepted_commit = "a" * 40
         report = {

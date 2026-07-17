@@ -29,6 +29,8 @@ REQUIRED_CHECK_NAMES = (
     "openai-database-verify",
     "memory-atlas-verify",
 )
+PUBLISHED_HISTORY_DEPTH_MIN = 2
+PUBLISHED_HISTORY_DEPTH_MAX = 256
 
 
 class ProductionAcceptanceError(RuntimeError):
@@ -153,6 +155,13 @@ def validate_config(config: Mapping[str, Any]) -> None:
         raise ProductionAcceptanceError("publication_safety_mismatch")
     if tuple(publication.get("required_check_names") or ()) != REQUIRED_CHECK_NAMES:
         raise ProductionAcceptanceError("required_check_contract_mismatch")
+    history_depth = publication.get("accepted_history_fetch_depth")
+    if (
+        not isinstance(history_depth, int)
+        or isinstance(history_depth, bool)
+        or not PUBLISHED_HISTORY_DEPTH_MIN <= history_depth <= PUBLISHED_HISTORY_DEPTH_MAX
+    ):
+        raise ProductionAcceptanceError("published_history_fetch_depth_invalid")
     if publication.get("public_safe_asset_only") is not True:
         raise ProductionAcceptanceError("public_release_safety_missing")
 
@@ -655,7 +664,11 @@ def evaluate_published(
         clone = root / "source"
         clone.mkdir()
         run_command(("git", "init", "--quiet"), cwd=clone)
-        run_command(("git", "fetch", "--quiet", "--depth=1", source_url, artifact_ref), cwd=clone)
+        history_depth = int(config["publication"]["accepted_history_fetch_depth"])
+        run_command(
+            ("git", "fetch", "--quiet", f"--depth={history_depth}", source_url, artifact_ref),
+            cwd=clone,
+        )
         run_command(("git", "checkout", "--quiet", "--detach", "FETCH_HEAD"), cwd=clone)
         observed_ref = run_command(("git", "rev-parse", "HEAD"), cwd=clone).stdout.strip()
         if observed_ref != artifact_ref:

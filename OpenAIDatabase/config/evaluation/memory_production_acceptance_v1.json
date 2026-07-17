@@ -54,6 +54,7 @@
     "non_main_branch_count_max": 0
   },
   "publication": {
+    "accepted_history_fetch_depth": 32,
     "transaction_branch_prefix": "automation-c/memory-",
     "required_check_names": [
       "governance",
