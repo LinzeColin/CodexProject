@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-SPLIT-WAVE6-POLICY-20260717",
+  "project_id": "ROOT",
+  "task_id": "CODEXPROJECT-GOV-P0-SPLIT-WAVE6-POLICY-20260717",
+  "acceptance_ids": [
+    "ACC-CODEXPROJECT-GOV-P0-SPLIT-WAVE6-POLICY-20260717"
+  ],
+  "iteration_id": "ITER-20260717-REPOSITORY-SPLIT-WAVE6-POLICY",
+  "generated_at": "2026-07-17T17:30:00+10:00",
+  "implementation_base_sha": "2b413e1148ef7641ac0255986a417cb8f5673998",
+  "content_tree_hash": "sha256-split-wave6-policy:453279a5ecded429f57d951f9c43fcaee0b4a3ed8a4ae2facaa02ecb1a61618d",
+  "content_records": [
+    {
+      "path": "governance/workflow_policy.json",
+      "sha256": "825e30f86109bed3fefd2dd3a93aaa17e29b1ef565d1cf9dad8580ea5e81c44f"
+    },
+    {
+      "path": "governance/artifact_policy.json",
+      "sha256": "14d91e854785df1412341a278ce0bb1810fd7ba44d0928fe55a9a1102d85a611"
+    },
+    {
+      "path": "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+      "sha256": "e44fab995904a5cfe64b80767e4194672d79f4c0b6e494c95fd721e9887ca119"
+    },
+    {
+      "path": "scripts/workflow_security_audit.py",
+      "sha256": "e30929d4123591f3da890193eb7c770480daf125088ce8c03f0057fb4819f782"
+    },
+    {
+      "path": "tests/governance/test_migrated_workflow_retirement.py",
+      "sha256": "6cd527ed6f9d804c80f972af814a39183555ff2c3f55119aaa198e81e7c02972"
+    }
+  ],
+  "changed_files_declared": [
+    "governance/artifact_policy.json",
+    "governance/run_manifests/GOV-SPLIT-WAVE6-POLICY-20260717.json",
+    "tests/governance/test_migrated_workflow_retirement.py"
+  ],
+  "changed_files_actual": [
+    "governance/artifact_policy.json",
+    "governance/run_manifests/GOV-SPLIT-WAVE6-POLICY-20260717.json",
+    "tests/governance/test_migrated_workflow_retirement.py"
+  ],
+  "required_governance_files": [
+    "governance/workflow_policy.json",
+    "governance/artifact_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md"
+  ],
+  "updated_governance_files": [
+    "governance/artifact_policy.json",
+    "governance/run_manifests/GOV-SPLIT-WAVE6-POLICY-20260717.json",
+    "tests/governance/test_migrated_workflow_retirement.py"
+  ],
+  "test_commands": [
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/workflow_security_audit.py check-render",
+    "python3 -B scripts/lean_governance.py artifact-audit --json",
+    "python3 -m pytest tests/governance/test_migrated_workflow_retirement.py -q"
+  ],
+  "test_results": [
+    {
+      "command": "workflow_security_audit audit",
+      "status": "PASS",
+      "errors": 0
+    },
+    {
+      "command": "workflow_security_audit check-render",
+      "status": "PASS",
+      "matches": true
+    },
+    {
+      "command": "lean_governance artifact-audit",
+      "status": "PASS",
+      "errors": 0
+    },
+    {
+      "command": "pytest test_migrated_workflow_retirement",
+      "status": "PASS",
+      "passed": 3
+    }
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/GOV-SPLIT-WAVE6-POLICY-20260717.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "CodexProject Project Governance changed-only gate",
+  "ci_run_reference": "验证于本机后随本提交推送；CI 结果以推送后的 Project Governance 运行为准",
+  "purpose": "第6波迁出 KMFA/OpenAIDatabase 后，令工作流策略与产物留存策略与新仓库边界一致。",
+  "owner_decision": "OWNER_AUTHORIZED_REPOSITORY_SPLIT_2026-07-17",
+  "raw_private_data_read_or_written": false,
+  "other_project_status_changed": false,
+  "product_model_delta": "none",
+  "governance_model_delta": "工作流策略支持跨仓退休记法 owner/repo:path；产物策略移除已迁出项目条目",
+  "rollback": "revert 本提交即可恢复原策略；不涉及数据迁移",
+  "status": "completed",
+  "gate_status": "PASS"
+}

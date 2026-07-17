@@ -141,9 +141,9 @@
       "reason": "Historical run evidence remains reference-compatible; new Task Runs use compact TSK receipts.",
       "mutable": false,
       "baseline": {
-        "count": 575,
-        "bytes": 4579735,
-        "sha256": "87cac5406185bd332fadbaa1028137f5913a0af8a79c93f7edd1375b90bd770d"
+        "bytes": 4583520,
+        "count": 576,
+        "sha256": "23c615da37375df9e553b2a5b646a3d3f781895573c2256b21ed8c609df03bed"
       }
     },
     {
