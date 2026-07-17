@@ -1,0 +1,18 @@
+# ADP-V02-P10 changed files
+
+## 生产代码
+  arxiv-daily-push/deploy/cloudflare/worker_cloud.js  +58/-47
+  build_id = dc91b5b221d0（自排除哈希复现；线上已部署）
+
+## 证据
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/TASK_REPORT.md
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/changed_files.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/cost_value.json
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/git.diff
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/test-results/nc_results.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/test-results/openalex_valid_select_fields.json
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/test-results/p10_tests.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P10-OPENALEX-SINGLE/test-results/proposed_fix_patch.mjs
+
+## 被修改的 P08 套件（P10 把它从批量改成单条端点）
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P08-RESEARCH-META/test-results/meta_verify.mjs

@@ -1,0 +1,31 @@
+{
+  "task": "ADP-V02-P10-OPENALEX-SINGLE",
+  "fixes": "ADP-V02-P08-RESEARCH-META (T063) 的生产静默空转",
+  "program": "ADP V0.2 生产集成",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "bd0f14211005",
+  "live_build_after": "dc91b5b221d0",
+  "defect_fixed": "★P08 在生产上每晚补 0 条★：它的整个设计是一个批量 /works?filter=doi:a|b|c。从 Cloudflare 边缘实测 429 ×3/3（Insufficient budget… $0 remaining. Resets at midnight UTC；retry-after≈13h；mailto 无用）—— OpenAlex 按 IP 计预算，而 Workers 出口是共享数据中心 IP，预算早被别人耗尽。把发货的 enrichMeta 原样跑在真 D1+真 OpenAlex 上：degraded:[\"meta:http429\"]、total_rows: 0。",
+  "fix": "批量 filter= → N 条并行的单条 /works/doi:X（边缘 200 ×12/12）。META_BATCH(50, OR 列表长度) → META_PER_RUN(12, 子请求预算)。404=确知未收录→found=0；429/5xx/超时/异常=不知道→什么都不写。select= 带 id（否则 oa_id 恒 NULL）。每条 fetch 带 AbortSignal.timeout(8000)。degraded 保留状态码。",
+  "value": "board1/board2 的论文条目【第一次真的】拿到 OpenAlex 元数据。线上验证：/item 页面渲染出「预印本：medRxiv」徽章（带 OpenAlex 出处 title）。真实基础设施跑通：requested:12, matched:12, degraded:[], rows:12。",
+  "subrequests_external_per_cron_before": 20,
+  "subrequests_external_per_cron_after": 32,
+  "subrequests_external_limit_free": 50,
+  "dir_007_note": "1 DOI = 1 子请求 × META_PER_RUN(12) → 20+12 = 32/50，留 18 余量（复核逐条数过 cron 的 20：arxiv 2 + biorxiv 1 + RSS 13 + A0 4）。超时不增加子请求。",
+  "cost_of_the_fix": "★如实记★：批量设计本可 50 条/晚只花 1 个子请求；单条设计是 12 条/晚花 12 个。约 600 条候选要约 50 晚补完（批量原本 12 晚）。但 12 条/晚 > 0 条/永远，而 0 条/永远正是修复前生产上的真实状态。",
+  "cpu_ms": "12 条并行边缘实测 2302–2369ms wall；select= 让单条响应约 1KB（不带 select 17475–53671 字节，随 DOI 的作者/机构规模而变，约 18×–49×）。",
+  "timeout_ms": 8000,
+  "timeout_rationale": "边缘实测 12 条并行 2369ms，8000 给约 3.4× 余量。上限的意义是【一个挂住的连接不许卡死 cron】—— enrichMeta 跑在 selectDaily 之前，元数据是增强，不许拖垮当日精选。复核用真挂起 socket 实测：8003ms 返回、degraded:[\"meta:TimeoutError\"]、0 行（落入 unknown，绝不 found=0）。",
+  "negative_controls_load_bearing": "13/13",
+  "negative_controls_note": "ncU/ncE（unknown 守卫 + 部分失败）· ncB（退回批量）· ncT（超时）· ncD（DOI 编码）· ncS（状态码）· ncI/ncO（oa_id：lint + 行为断言并存）· ncQ（select 字段合法性，对真 API 的 400）· ncP（META_PER_RUN 上限）· ncF2（IN() → TEMP B-TREE）· ncR1/ncR3（retry 窗口 —— P10 全部价值所系）。全部由断言判定，无一靠崩溃。套件另有：必备小节盘点自检（防整节被静默删除）+ 断言数钉死（防「留标题、掏空断言」）。",
+  "adversarial_review": "★6 轮，前 5 轮全 BLOCK，全部属实，全部是我的错★。第 1 轮 8 条（含 2 条 HIGH：unknown 守卫 100% 未被测到、完全没有部分失败用例）。第 2–5 轮【全部是证据造假或守卫失效】，代码从第 2 轮起 md5 三轮未动：'&' 的机理是假的（真凶是 #/?）；合法字段集凭记忆手写且含真 API 会拒的 grants；修那条时把 oa_id 的行为断言删了换成请求 lint；一次 section 拼接静默吃掉四整节（我声称两节且『都已恢复』——又是假话），其中两节守着 P10 的全部价值与一条前轮 BLOCK 过的原缺陷；我写的「小节盘点」自检本身永远不会失败，且我拿一个 SyntaxError 的 exit=1 当作它的验证。第 6 轮 CONFIRMED_SOUND。实施者未自签。",
+  "root_cause_recorded": "「exit=1」从来不是证据；「哪一行断言让它变红」才是。诚实验证【一个】守卫，我失败了三次，三次 exit=1 各有各的错因（下标写反 / 孤儿 } / 副本放 /tmp 导致 readFileSync 失败）。",
+  "residual_risks": [
+    "★首要★：OpenAlex 单实体 GET 不吃 filter= 的预算 —— 这是【未写进文档的厂商行为】，也正是 P10 能工作的全部原因。它一变，每个 DOI 都非 200 → errs===dois.length → 每晚 0 行，即 P08 的病复发。修复 #8（保留状态码）+ ncS 是唯一能让它在 run_log 里现形的东西（meta:http429xN / http400xN）。★部署后头几晚要看 counts.degraded，不能只看 cron 是不是绿的。★",
+    "select= 字段清单是 2026-07-17 的快照（钉住，含出处）。它抓的是我们自己的拼写错误，不跟踪 OpenAlex 的 schema；退役字段这条路由 #8 现形。若要收掉，只能放在非阻塞处（定时漂移报告），绝不进部署门 —— 这是复核的理由，记为复核的。",
+    "约 600 条候选按 12/晚 需约 50 晚补完；retry 窗口是它单调前进的保证（ncR1/ncR3 守着）。一周后该看 matched 是在累积，还是在反复确认同一批 miss。",
+    "断言级侵蚀（留标题、掏空断言）已由断言数钉死覆盖；但没有任何守卫能覆盖所有侵蚀方式（反转断言、放松阈值、放宽 mock）——复核明确拒绝在这里无限加守卫，正确的终点是记录残余 + 有人读 diff。"
+  ],
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

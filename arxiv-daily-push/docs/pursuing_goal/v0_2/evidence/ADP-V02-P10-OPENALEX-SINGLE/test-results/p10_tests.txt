@@ -1,0 +1,112 @@
+self-check: 17 个必备小节全部在场（从源码解析出 17 个小节标题比对，非文本 includes）
+shipped constants: META_PER_RUN=12 META_SCAN=200 META_RETRY_DAYS=7
+
+== metadata adapters: REAL live id/url forms (taken from the production D1) ==
+  PASS all 9 live source forms resolve to the right DOI
+  PASS NC: sources with no DOI resolve to null (abstains, does not guess)
+
+== metaKey: OpenAlex lowercases the DOI it returns -- the map key must survive that ==
+  PASS request-side NEJMoa2512275 and response-side nejmoa2512275 collapse to the same key
+  PASS strips the doi.org prefix and lowercases
+
+== ACCEPTANCE 1: 预印本/期刊不混淆 ==
+  PASS arXiv + bioRxiv are recorded as 预印本 (is_preprint=1)
+  PASS NEJM + Nature Communications are NOT recorded as 预印本 (is_preprint=0)
+  PASS the venue recorded is the one OpenAlex reports, verbatim
+  PASS the rendered label separates 预印本 from 发表于
+  PASS NC: never claims 研究论文 -- OpenAlex reports Nature news as type=article too, so that label would be false
+  PASS source.type=repository alone is enough to call it 预印本 (not conflated with a journal)
+
+== ACCEPTANCE 2: 增强失败不阻塞原始论文 ==
+  PASS fetch throwing -> enrichMeta degrades, never throws (cron survives)
+  PASS HTTP 500 -> degraded WITH its status code, never throws
+  PASS HTTP 500 writes NO found=0 row (unknown != not-found)
+  PASS malformed JSON -> degrades, never throws
+  PASS attachMeta with a dead D1 -> returns the papers unchanged, no _meta, no throw (原文不被阻塞)
+
+== dedup rules: two items, one DOI ==
+  PASS a request was actually issued (otherwise nothing below is meaningful)
+  PASS the duplicated DOI is requested ONCE, not twice (one URL, one subrequest; calls=1)
+  PASS the single result is broadcast back to BOTH items
+  PASS DIR-007: exactly ONE external subrequest for the whole batch
+
+== DIR-007: 一个 DOI 一个子请求，上界 META_PER_RUN ==
+  300 candidates -> 12 subrequests (META_PER_RUN=12); cron 20/50 -> 32/50
+  PASS exactly META_PER_RUN(12) subrequests -- one per DOI (got 12)
+  PASS DIR-007: cron stays inside the 50-subrequest Free limit (20 + 12 = 32)
+  PASS 每个请求都打【单条】/works/doi:X，绝不打 ?filter= 批量（批量在生产上 429，P08 因此每晚补 0 条）
+  PASS DOI 里没有裸露的 |&# （URL 结构不会被撑破）
+
+== ★DOI 必须 URL 编码 —— 但真正的凶手是 # 和 ?，不是 &★ ==
+  PASS #: 这个 DOI 确实经 id 形态到得了适配器
+  PASS #: 服务端看到的 DOI 与我们要查的【完全一致】（实得 "10.1234/abc#def"）—— 未编码时 # / ? 会把它截断
+  PASS #: mailto 与 select 都还在 —— 未编码时 # / ? 会把它们整个吞掉，请求变成匿名且不带 select
+  PASS ?: 这个 DOI 确实经 id 形态到得了适配器
+  PASS ?: 服务端看到的 DOI 与我们要查的【完全一致】（实得 "10.1234/abc?def"）—— 未编码时 # / ? 会把它截断
+  PASS ?: mailto 与 select 都还在 —— 未编码时 # / ? 会把它们整个吞掉，请求变成匿名且不带 select
+  PASS &: 这个 DOI 确实经 id 形态到得了适配器
+  PASS &: 服务端看到的 DOI 与我们要查的【完全一致】（实得 "10.1234/abc&def"）—— 未编码时 # / ? 会把它截断
+  PASS &: mailto 与 select 都还在 —— 未编码时 # / ? 会把它们整个吞掉，请求变成匿名且不带 select
+
+== ★每个 OpenAlex 请求必须带超时★：Promise.all 会等满，一个挂住的连接会卡死 cron（在 selectDaily 之前）==
+  PASS a request was issued
+  PASS 每个 OpenAlex fetch 都带 AbortSignal（超时），否则一个挂住的连接会卡死 cron
+
+== ★部分失败：12 个并行里混一个 429 —— 这才是真实形态，也是 unknown 守卫唯一被测到的地方★ ==
+  PASS 成功的那条正常入库 found=1
+  PASS ★被限流的那条一行都不写★ —— 不是 found=0。写了就等于把我们自己的失败栽赃成「OpenAlex 不认识」，而它会随 200 条窗口下沉、几乎永不重试（这条断言正是 unknown 守卫的唯一守护者）
+  PASS 部分失败仍如实记降级并保留状态码
+  PASS 只写了成功的那一行（实得 1）
+
+== F7: metadata rows for pruned items must not accumulate forever ==
+  PASS an orphan meta row (its cn_item was pruned) is deleted
+
+== the ORDER BY must actually be load-bearing: newest papers get enriched FIRST ==
+  asked for 12 DOIs; 12 of them are among the most recent 12
+  PASS a full run of 12 DOIs was actually requested (guards the check below from passing on an empty run)
+  PASS the run is exactly the most-recent items (ORDER BY is doing real work -- nc7 proves it)
+
+== META_SCAN must actually bound the READ (nc6 was mislabelled 承重 in round 2) ==
+  320 candidates per board -> SELECT returned [200,200] rows (META_SCAN=200)
+  PASS each per-board candidate query reads exactly META_SCAN rows -- the LIMIT bounds the READ
+  lint (arithmetic, no DB): 2 x META_SCAN = 400; real reads are bounded by KEEP_PER_BOARD=300 -> ~600 rows/night
+  PASS META_SCAN stays a sane constant (lint on the constant, NOT a measured read budget)
+
+== ★select= 的字段必须是 OpenAlex 真的认的★（mock 只验形状，不验合法性 —— 复核 #2）==
+  PASS 合法字段集来自 API 自己的 400 报文（58 个），不是我手写的
+  PASS 'grants' 不在其中 —— 这正是我手写版里那个真 API 会拒的字段
+  PASS a request was issued (otherwise nothing below is meaningful)
+  PASS the request carries a select= (payload stays small)
+  PASS select= 的每个字段都是 OpenAlex 认的（非法字段会让真 API 回 400 → 12/12 全 unknown → 每晚 0 行，正是 P08 那种静默空转）。非法字段：[]
+  PASS select= 必须包含 id（落库要用它；漏了就是 NULL 字段的静默降级）
+  PASS select= 必须包含 doi（落库要用它；漏了就是 NULL 字段的静默降级）
+  PASS select= 必须包含 type（落库要用它；漏了就是 NULL 字段的静默降级）
+  PASS select= 必须包含 primary_location（落库要用它；漏了就是 NULL 字段的静默降级）
+  PASS select= 必须包含 cited_by_count（落库要用它；漏了就是 NULL 字段的静默降级）
+  PASS select= 必须包含 open_access（落库要用它；漏了就是 NULL 字段的静默降级）
+
+== 单条端点回规范记录 -> P08 的「重复 work」问题从根上消失（含 oa_id 的【行为】断言）==
+  PASS 规范记录的被引数 18240 落库（实得 18240）
+  PASS ★oa_id 真的落库了规范记录的身份★（实得 https://openalex.org/W2613718673）—— P10 的立论就是「单条端点回规范记录」，而那条记录的身份正是被丢掉过、又被我删掉断言的那个字段
+  PASS venue / is_preprint 也照 OpenAlex 的口径落库
+
+== 404=确知未收录 / 429=不知道：后者绝不写 found=0 ==
+  PASS 404（确知未收录）-> 写 found=0，不必每晚重查
+  PASS 429 -> 一行都不写（不知道 != 查不到）
+  PASS 429 保留状态码（正是让 P08 隐形整整一轮的那个信号）
+
+== not-found bookkeeping：别每晚重问同一批 miss，但也别永远不再问（★P10 的价值全靠它★）==
+  PASS a miss is recorded (found=0) so it is not re-requested every run
+  PASS a fresh miss is NOT re-requested on the next run
+  PASS but it IS retried once enriched_at ages past META_RETRY_DAYS
+
+== F2：LIMIT 限的是返回行数不是扫描量 —— 计划必须走 recency 索引、不许 TEMP B-TREE ==
+  IN(2 boards): SEARCH cn_items USING INDEX idx_cn_items_board (board_id=?) | CORRELATED SCALAR SUBQUERY 1 | SEA
+  = 1 board   : SEARCH cn_items USING INDEX idx_cn_items_board_recency (board_id=?) | CORRELATED SCALAR SUBQUERY
+  PASS reproduces the defect: IN (2 boards) forces USE TEMP B-TREE FOR ORDER BY
+  PASS the shipped per-board query needs NO temp sort
+  PASS the shipped per-board query uses idx_cn_items_board_recency
+  PASS the shipped code issues one equality query per board (board1, board2), never board_id IN (...)
+
+ACCEPTANCE = PASS
+exit=0

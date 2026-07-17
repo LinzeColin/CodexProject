@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 P10: 修 P08 的生产静默空转 (PRODUCTION DEPLOY dc91b5b221d0; product_version 0.32.0)
+- ★P08（T063 研究元数据）在生产上每晚补 0 条★。它的整个设计是一个批量 `/works?filter=doi:a|b|c`。
+  从 Cloudflare 边缘实测 **429 ×3/3**（`Insufficient budget… $0 remaining. Resets at midnight UTC`，
+  retry-after≈13h，mailto 无用）—— OpenAlex 按 **IP** 计预算，而 Workers 出口是**共享数据中心 IP**，
+  预算早被别人耗尽。把发货的 enrichMeta 原样跑在真 D1+真 OpenAlex 上：`degraded:["meta:http429"]`、`total_rows: 0`。
+- ★我的盲区★：六轮复核里我和复核者都只从**本机**验 OpenAlex（200），**从未从边缘验**。我还特地用真 D1
+  结清了 `env.DB.batch([SELECT,SELECT])` 的契约 —— 验的是 **D1 的 batch**，不是 **OpenAlex 的 filter= 在边缘能不能用**。
+  「从我这儿能通」≠「从生产能通」。这与同日查出的 6 个源 403/503 **是同一条教训**，我刚写完就又漏了一次。
+- 修法：批量 → **N 条并行的单条 `/works/doi:X`**（边缘 200 ×12/12）；`META_PER_RUN=12`（1 DOI = 1 子请求，
+  cron 20/50 → **32/50**）；**404=确知未收录**→`found=0`，**429/5xx/超时=不知道**→**什么都不写**；
+  `select=` 带 `id`；每条 fetch 带 `AbortSignal.timeout(8000)`（enrichMeta 在 selectDaily **之前**跑，
+  一个挂住的连接不许把当日精选拖没）；`degraded` **保留状态码**（429 正是让 P08 隐形整轮的信号）。
+- **代价如实记**：批量本可 50 条/晚花 1 个子请求；单条是 12 条/晚花 12 个 → 约 600 条候选要约 **50 晚**
+  （批量原本 12 晚）。但 **12 条/晚 > 0 条/永远**。
+- 线上验证：`/item` 页面渲染出「**预印本：medRxiv**」徽章（带 OpenAlex 出处 title）——
+  P08 的价值**第一次**真的出现在页面上。真实基础设施：`requested:12, matched:12, degraded:[], rows:12`。
+- **独立对抗复核 6 轮，前 5 轮全 BLOCK 且全部属实**。代码从第 2 轮起 **md5 三轮未动** ——
+  后面每一次 BLOCK 都在**守卫与证据**层：'&' 的机理是假的（真凶是 `#`/`?`）；合法字段集**凭记忆手写**
+  且含真 API 会拒的 `grants`；修那条时把 `oa_id` 的**行为断言删了**换成请求 lint；一次 section 拼接
+  **静默吃掉四整节**（我声称两节且「都已恢复」——又是假话），其中两节守着 P10 的**全部价值**
+  （retry 窗口）与一条**前轮 BLOCK 过的原缺陷**（`IN()` → TEMP B-TREE）；我写的「小节盘点」自检
+  **本身永远不会失败**，且我拿一个 **SyntaxError 的 exit=1** 当作它的验证。第 6 轮 **CONFIRMED_SOUND**。未自签。
+- **13 条负控全部承重、全部由断言判定**；套件另加：必备小节盘点自检 + 断言数钉死（防覆盖静默流失）。
+- ★根因，记下来★：**「exit=1」从来不是证据；「哪一行断言让它变红」才是。** 诚实验证**一个**守卫我失败了三次，
+  三次 exit=1 各有各的错因（下标写反 / 孤儿 `}` / 副本放 /tmp 导致 readFileSync 失败）。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 P09 后续 (抓取失败可见化 + 6 个零条目源的边缘诊断; PRODUCTION DEPLOY bd0f14211005; product_version 0.31.0)
 - P09 的覆盖视图暴露出 6 个「从未抓到任何条目」的源。逐个从 **Cloudflare 边缘**实测（探针从未 deploy）：
   cell/cell-neuron/lancet/science-advances → **边缘 403**，gnews-us-tech → **边缘 503**

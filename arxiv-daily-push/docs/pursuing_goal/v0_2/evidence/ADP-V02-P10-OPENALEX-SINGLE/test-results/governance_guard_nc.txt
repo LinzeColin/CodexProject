@@ -1,0 +1,25 @@
+ADP-V02-P10 — 新增治理守卫的负控（tests/governance/test_adp_v02_evidence_bundles.py）
+日期 2026-07-19  ·  判定标准：不是「exit=1」，而是【哪一条断言变红】
+
+为什么加这两条：
+  两份记录都自称在说「生产上跑的是什么」——worker 的自排除 BUILD 戳，和最新 PRODUCTION 证据包的
+  live_build_after。它们由不同的手在不同时间写下，而【此前没有任何东西把它们绑在一起】。
+  这正是本轮反复栽的同一个坑：一个断言写下一次，就被永远信任（P08 的证据说它работает，它每晚补 0 条）。
+
+  shipped:  8 tests, exit=0
+
+  NC2 [隔离 worker-match]  P10 的 live_build_after 改成一个谁也哈希不出的 'abcdef012345'
+      → fired: test_latest_production_bundle_matches_the_committed_worker   ✓ 且【仅此一条】
+  NC3 [隔离 dup 守卫]      P09（非最新，不影响 worker-match）改成认领 P08 的 ac7cf4800e18
+      → fired: test_no_two_production_bundles_claim_the_same_deploy         ✓
+        fired: test_production_bundles_record_an_actual_change              （预期内：P09 的 before 本就是 ac7cf4800e18，
+                                                                             改后 before==after，旧守卫理应同时红）
+  NC4 [反空过]             把所有证据包的 release_mode 全改成 NOT_DEPLOYED（PRODUCTION 集合变空）
+      → fired: test_latest_production_bundle_matches_the_committed_worker   ✓（assertTrue(prod) 拒绝空集静默通过）
+
+★如实记一条弱点★：NC4 下 test_no_two_production_bundles_claim_the_same_deploy 【不会红】——
+  空集确实没有重复，它是真通过而非假通过。但这意味着「PRODUCTION 集合被清空」这件事只由
+  worker-match 一条守卫兜住。可接受（一条足够让 CI 红），但不假装是两条。
+
+NC1（先做的、未隔离的那次）：P10 认领 P09 的 bd0f14211005 → 两条新守卫同时红。
+  信息量低于 NC2/NC3，故不作为承重证据，仅存档。

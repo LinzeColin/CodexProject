@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'bd0f14211005', source_sha256: 'bd0f142110056d317f534932f9b8d05f9b66425891f04187fb2d10ee79568d50', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'dc91b5b221d0', source_sha256: 'dc91b5b221d00a80d2ed67f059cb4404d9afc7dbecbed2ec4bdde148c863a606', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -580,15 +580,21 @@ function factsheet(item) {
   return facts;
 }
 // ───────────────────────── T063 研究元数据（OpenAlex） ─────────────────────────
-const META_BATCH = 50;        // 一批查多少个 DOI —— 一批只花【1 个】外部子请求。
-                              // ★这是我们自己的保守取值，不是 API 上限★：OpenAlex 的 doi OR 上限
-                              // 实测是 100（101 个即报 Maximum number of values exceeded for doi）。
-                              // 取 50 的理由：重复 work 存在（50 个 DOI 实测回过 58 条），100 个 DOI
-                              // 在高重复率下会逼近 per-page=200 的天花板；50 留足余量。
-                              // （原注释写「其 OR 上限就是 50」是假的 —— 把自己的选择说成 API 的强制。）
+const META_PER_RUN = 12;      // 每次 cron 补多少条 —— ★单条查询：1 个 DOI = 1 个外部子请求★。
+                              // ★DIR-007★：cron 现用 20/50，故 20+12 = 32/50，留 18 个余量。
+                              // 为什么不是批量：P08 原本用 /works?filter=doi:a|b|c 一次查 50 个（只花 1 个子请求），
+                              // 但那条路【在生产上是死的】—— 从 Cloudflare 边缘实测 429 ×3/3
+                              // （Insufficient budget…，retry-after≈13 小时，mailto 不解决）：
+                              // OpenAlex 按 IP 计预算，而 Workers 出口是共享数据中心 IP，预算早被耗尽。
+                              // 同一边缘上单条 /works/doi:X 是 200 ×3/3。实测 12 条并行：2302ms、0 次 429。
+                              // 代价如实记：约 600 条候选按 12/晚 要约 50 晚补完（批量原本 12 晚）——
+                              // 但 12 条/晚 > 0 条/永远，而后者正是现在生产上的真实状态。
 const META_SCAN = 200;        // 单板单次扫描的读取上限。★真正兜住这张表的是 KEEP_PER_BOARD=300 的保留策略★，
                               // 不是这个 LIMIT —— LIMIT 限的是返回行数，不是扫描量（复核 F2 纠正的假前提）。
 const META_RETRY_DAYS = 7;    // 查过但没查到的，7 天后再试一次（新预印本可能还没被索引）
+const META_FETCH_TIMEOUT_MS = 8000;   // 单条查询的超时。边缘实测单条 0.8–1.7s、12 条并行 2.3s，
+                              // 故 8s 给足余量；上限的意义是【一个挂住的连接不许卡死 cron】——
+                              // enrichMeta 跑在 selectDaily 之前，元数据是增强，不许拖垮当日精选。
 const META_UA_MAILTO = 'adp@linzezhang.com';   // OpenAlex polite pool：带 mailto 才有稳定配额
 const OA_LABEL = { gold: '金色OA', green: '绿色OA', hybrid: '混合OA', bronze: '青铜OA', diamond: '钻石OA' };
 // ★metadata adapters★：只从【既有 id/url】确定性地解析 DOI；解析不出就返回 null —— 不猜、不构造。
@@ -644,41 +650,47 @@ async function enrichMeta(env, counts) {
       if (!doi) continue;
       if (!byDoi.has(doi)) byDoi.set(doi, []);
       byDoi.get(doi).push(it.id);
-      if (byDoi.size >= META_BATCH) break;
+      if (byDoi.size >= META_PER_RUN) break;   // 子请求预算：一个 DOI 一个子请求
     }
     if (!byDoi.size) return;
     const dois = [...byDoi.keys()];
-    // ★per-page 必须大于 META_BATCH★：OpenAlex 对一个 DOI 可能回**多条** work，50 个 DOI 实测回过 58 条，
-    // per-page=50 会把第 50 条之后的截掉 → 那些**真论文**会被我们自己写成 found=0（「OpenAlex 不认识」），
-    // 而事实是「我们把自己的响应页截断了」。复核实测被截掉的正是 FedAvg（5641 次引用）。
-    // 又因候选是「最近 200 条」的窗口、按新到旧取，被误判 found=0 的条目会沉到窗口外 → 几乎永不重试。
-    // authorships 只为取个 .length 却要拉回整份作者表（实测 1.33MB 批 JSON.parse 2.48ms），不值 → 不要了。
-    const url = OPENALEX_WORKS + '?per-page=200&mailto=' + encodeURIComponent(META_UA_MAILTO)
-      + '&select=' + encodeURIComponent('doi,type,primary_location,cited_by_count,open_access,publication_year')
-      + '&filter=' + encodeURIComponent('doi:' + dois.join('|'));
-    const r = await fetch(url, { headers: { 'User-Agent': 'adp-cloud (mailto:' + META_UA_MAILTO + ')' }, cf: { cacheTtl: 3600 } });
-    if (!r.ok) { counts.degraded.push('meta:http' + r.status); return; }
-    const data = await r.json();
-    const got = (data && data.results) || [];
-    // ★dedup rules（响应侧）★：OpenAlex 对同一个 DOI 会回**多条** work（未合并的重复记录）。
-    // 复核用真实 API 实测 arxiv:1506.01497 回 2 条，cited_by 分别是 18240 与 6274；D1 batch 按序执行
-    // ＝**最后一条赢** → 页面会把 6274 当作事实展示，而 OpenAlex 自己的规范记录是 18240。
-    // 「在冲突记录之间随机挑一条当事实」正是本项目不许干的事，故规则必须**确定**：
-    // 取 cited_by_count 最大者（规范记录是合并后的，引用数最全），并列时取 OpenAlex id 字典序最小者。
+    // ★单条查询，并行★。每个 DOI 一个子请求（预算见 META_PER_RUN）。
+    // 单条端点回的是【规范记录】，故 P08 的「同一 DOI 多条 work、最后一条赢、被引数会错」
+    // （复核 F3：arxiv:1506.01497 回 2 条 18240/6274）随之消失 —— 不再需要响应侧去重。
+    // 截断判定也一并删除：单条查询没有分页，不存在截断。
+    // 复核 #7：select= 里必须带 id —— P10 的立论是「单条端点回的是【规范记录】」，
+    // 而被丢掉的恰恰是那条规范记录的【身份】，oa_id 会恒为 NULL。带上它。
+    const SEL = encodeURIComponent('id,doi,type,primary_location,cited_by_count,open_access,publication_year');
+    const settled = await Promise.all(dois.map(async (doi) => {
+      // 复核 #5：DOI 必须 URL 编码（P08 本来有，P10 第一版把它改回归了）。
+      // OpenAlex 对畸形 DOI 回 404 —— 与「真的没收录」【无法区分】→ 会给真论文写 found=0。
+      // 可达字符集是真的：biorxiv/medrxiv 的 id 形态允许 [^\s]{1,80}，/doi/ 形态允许 & 与 %。
+      const u = OPENALEX_WORKS + '/doi:' + encodeURIComponent(doi) + '?mailto=' + encodeURIComponent(META_UA_MAILTO) + '&select=' + SEL;
+      try {
+        // 复核 #4：必须有超时。worker 别处都用 AbortSignal.timeout(15000/20000)，这里原本没有。
+        // Promise.all 会等满 12 个 —— 一个挂住的连接会卡死 cron，而且是在 selectDaily 之前，
+        // 即为了补元数据把【当日精选】搞没。元数据是增强，不许拖垮正事。
+        const r = await fetch(u, { headers: { 'User-Agent': 'adp-cloud (mailto:' + META_UA_MAILTO + ')' },
+                                   cf: { cacheTtl: 3600 }, signal: AbortSignal.timeout(META_FETCH_TIMEOUT_MS) });
+        if (r.status === 404) return { doi, miss: true };          // 未收录：干净的 404 → 可以写 found=0
+        if (!r.ok) return { doi, err: 'http' + r.status };         // 429/5xx：不知道，绝不写 found=0
+        return { doi, work: await r.json() };
+      } catch (e) { return { doi, err: e.name };  }                // 超时/网络异常同样是「不知道」
+    }));
     const best = new Map();
-    for (const w of got) {
-      const key = metaKey(w.doi);
-      if (!byDoi.has(key)) continue;            // 回了没要的，忽略（不臆造归属）
-      const cur = best.get(key);
-      const c = Number(w.cited_by_count) || 0, cc = cur ? (Number(cur.cited_by_count) || 0) : -1;
-      if (!cur || c > cc || (c === cc && String(w.id || '') < String(cur.id || ''))) best.set(key, w);
+    const errKinds = new Map();
+    let errs = 0;
+    for (const s of settled) {
+      if (s.work) best.set(s.doi, s.work);
+      else if (s.err) { errs++; errKinds.set(s.err, (errKinds.get(s.err) || 0) + 1); }   // 未知 → 向安全侧倒
     }
-    // 响应是否被截断：被截断时「没回」并不等于「查不到」，此时**不得**写 found=0。
-    // 未知必须【向安全侧倒】：拿不到 meta.count 就无法判断是否被截断，此时绝不能写 found=0
-    // （否则又回到「把自己的截断栽赃成 OpenAlex 查不到」那条路上）。复核指出的残余风险，堵掉。
-    const cnt = data && data.meta && data.meta.count;
-    const truncated = typeof cnt !== 'number' || cnt > got.length;
+    // 复核 #8：★把状态码留住★。P08 推的是 meta:http429，P10 第一版抹成了 meta:err12 ——
+    // 而 429 正是让 P08 隐形整整一轮的那个信号。厂商行为随时可能变（单实体 GET 现在不吃 filter= 的预算，
+    // 那是【没写进文档的】行为），一旦复发，抹掉状态码会让它【很难被看见】。
+    for (const [k, n] of errKinds) counts.degraded.push('meta:' + k + (n > 1 ? 'x' + n : ''));
+    if (errs === dois.length) return;                              // 全挂：什么都别写
     const now = nowISO(), stmts = [], hit = new Set();
+    const unknown = new Set(settled.filter(s => s.err).map(s => s.doi));
     for (const [key, w] of best) {
       const ids = byDoi.get(key);
       hit.add(key);
@@ -703,18 +715,17 @@ async function enrichMeta(env, counts) {
                 Number(w.publication_year) || null, null, now));
       }
     }
-    // 查过但没回的：记 found=0，避免每天重查同一批查不到的；META_RETRY_DAYS 后自动重试。
-    // ★但只有在确知响应没被截断时才这么判★ —— 否则是把自己的截断栽赃成「OpenAlex 查不到」。
-    if (!truncated) {
-      for (const [doi, ids] of byDoi) {
-        if (hit.has(doi)) continue;
-        for (const id of ids) stmts.push(env.DB.prepare(
-          'INSERT INTO cn_item_meta (item_id,doi,found,enriched_at) VALUES (?1,?2,0,?3) ON CONFLICT(item_id) DO UPDATE SET enriched_at=excluded.enriched_at')
-          .bind(id, doi, now));
-      }
-    } else counts.degraded.push('meta:truncated');
+    // 只给【确知未收录】的（HTTP 404）写 found=0，避免每晚重查同一批查不到的；META_RETRY_DAYS 后重试。
+    // ★「不知道」（429/5xx/异常）绝不写 found=0★ —— 那等于把我们自己的失败栽赃成「OpenAlex 查不到」，
+    // 而被误判的条目会随窗口下沉、几乎永不重试。未知一律留白，下次再来。
+    for (const [doi, ids] of byDoi) {
+      if (hit.has(doi) || unknown.has(doi)) continue;
+      for (const id of ids) stmts.push(env.DB.prepare(
+        'INSERT INTO cn_item_meta (item_id,doi,found,enriched_at) VALUES (?1,?2,0,?3) ON CONFLICT(item_id) DO UPDATE SET enriched_at=excluded.enriched_at')
+        .bind(id, doi, now));
+    }
     if (stmts.length) await env.DB.batch(stmts);
-    counts.meta = { requested: byDoi.size, matched: hit.size, truncated: truncated || undefined };
+    counts.meta = { requested: byDoi.size, matched: hit.size, unknown: unknown.size || undefined };
   } catch (e) {
     // 降级即可：原始论文本来就在库里，元数据只是增强。绝不让它把 cron 带崩。
     counts.degraded.push('meta:' + e.name);

@@ -1,0 +1,47 @@
+# ADP-V02-P10 NEGATIVE CONTROLS — 修 P08 生产静默空转（批量 filter= → 单条 /works/doi:X）
+# 每条撤销一处保证；套件必须变红，且由【断言】判定。这是 P10 的表。
+#
+# 病灶（复核独立复现）：/works?filter=doi:… 从边缘 429 ×3/3（Insufficient budget，retry-after≈13h；
+# mailto 无用 —— OpenAlex 按 IP 计预算，Workers 出口是共享数据中心 IP）；单条 /works/doi:X 同边缘 200 ×12/12。
+# 发货的 enrichMeta 跑在真 D1 + 真 OpenAlex：
+#   修复前 degraded:["meta:http429"]、total_rows:0        ← 每晚静默补 0 条
+#   修复后 degraded:[]、requested:12、matched:12、rows:12  ← P08 第一次真的工作
+#
+# ★五轮复核抓到的「同一个病」——记在这里，因为它们比功能本身重要★
+#  1. ncD 原本测 '&' 并写「& 撑破 query」：实测 & 是合法 path sub-delim，什么都没坏；真凶是 '#'/'?'。
+#     修复对、依据【假】。
+#  2. ncQ 的合法字段集我【凭记忆手写】，含 'grants' —— 真 API 拒它 → 守卫会【放行】真 API 不认的字段。
+#     已改为读 API 自己 400 报文抓下来的产物。
+#  3. ncO：我在修上一条时，把 oa_id 的【行为断言】删掉、只留请求 lint → 「select 写 id、落库 bind null」
+#     又测不出来。★修 bug 的动作引入了同一类 bug★。
+#  4. ★最严重的一次★：我第 3 轮的一次 section 拼接，一口气【静默吃掉四整节】。我以为是两节、
+#     还向复核声称「both restored」—— 那本身又是一句假话。复核逐节盘点才发现另外两节还躺在地上：
+#       · not-found bookkeeping（retry 窗口）—— 守的是 P10 的【全部价值】：没它，found=0 不再被排除，
+#         配合 ORDER BY recency + LIMIT 12，★同样 12 条最新的 miss 每晚重问、永远，存量一步不前进★，
+#         12 个子请求全烧在重复确认已知的 miss 上 —— 一种静默的近乎空转，正是 P10 要治的病。
+#       · F2（查询计划）—— 守的是【前面某轮复核 BLOCK 过的原缺陷】：IN(2值) 弃索引 + TEMP B-TREE。
+#     两节已从 git HEAD 恢复并改指单条端点；对应负控 ncR1/ncR3/ncF2 补齐（此前它们【全绿】）。
+#     套件现在自带「必备小节盘点」自检：整节被删 → 立刻红。复核原话：
+#     「失败模式不是粗心，而是【没有任何东西盯着静默删除】。」
+ncU   exit=1 语义失败=2  到达判定=1  撤销 unknown 守卫 → 被限流的条目被写成 found=0
+ncE   exit=1 语义失败=2  到达判定=1  任一失败就早退 → 部分失败时成功的那条也不入库
+ncB   exit=1 语义失败=13 到达判定=1  退回批量 filter= → 正是【现在线上】那个每晚 429、补 0 条的设计
+ncT   exit=1 语义失败=1  到达判定=1  去掉超时 → 挂住的连接卡死 cron（在 selectDaily 之前）
+ncD   exit=1 语义失败=4  到达判定=1  DOI 不编码 → '#' 截断 DOI 并吞掉 mailto+select；'?' 至少吞掉 mailto
+ncS   exit=1 语义失败=3  到达判定=1  抹掉状态码 → 429/400 复发时很难被看见
+ncI   exit=1 语义失败=2  到达判定=1  select 不带 id → oa_id 恒 NULL
+ncQ   exit=1 语义失败=1  到达判定=1  select 塞入真 API 不认的字段 → 真 API 400 → 每晚 0 行
+ncP   exit=1 语义失败=4  到达判定=1  废掉 META_PER_RUN 上限 → 子请求预算失控（DIR-007）
+ncO   exit=1 语义失败=1  到达判定=1  select 仍写 id 但落库 bind null → 只有【行为】断言抓得住
+ncF2  exit=1 语义失败=1  到达判定=1  board_id IN(2值) → 弃 recency 索引 + TEMP B-TREE（前面某轮 BLOCK 过的原缺陷）
+ncR1  exit=1 语义失败=1  到达判定=1  删掉 retry 窗口 → ★同 12 条 miss 每晚重问、永远，存量一步不前进★
+ncR3  exit=1 语义失败=1  到达判定=1  META_RETRY_DAYS→99999 → 未收录的新预印本永远不再重试
+发货代码 exit=0  语义失败=0  断言数=67  (必须 0 / 0)
+self-check: 必备小节盘点在场 —— ★但第一版这个自检本身是永远不会失败的★（复核第 5 轮抓到）：
+#   它拿 REQUIRED_SECTIONS 去 includes() 匹配整份源码，而清单就写在源码里 → 被清单自己满足。
+#   我还声称「删 F2 验证过 exit=1」—— 那个 exit=1 是我的拼接造成的 SyntaxError，不是守卫。
+#   已改为【从源码解析小节标题】再比对。诚实重验（前三次都失败、且 exit=1 各有各的错因：
+#   下标写反 / 孤儿 } / 副本放 /tmp 导致 readFileSync 失败）——
+#   第四次：brace 匹配整块删除 + 文件仍是合法 JS + 就地运行 → 守卫打印
+#     FAIL ★整节被删★：["F2"]   exit=1
+#   ★「exit=1」从来不是证据；「哪一行断言让它变红」才是。★

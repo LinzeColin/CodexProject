@@ -25,6 +25,7 @@ P07-P09 carry negative controls and P01 has no known_gaps — those predate the 
 this guard to fail on them would make it red on arrival and it would simply be deleted. It is
 scoped to what is universally true today; tighten it when the older bundles are backfilled.
 """
+import hashlib
 import json
 import pathlib
 import re
@@ -32,13 +33,39 @@ import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 EVIDENCE = ROOT / "arxiv-daily-push" / "docs" / "pursuing_goal" / "v0_2" / "evidence"
+WORKER = ROOT / "arxiv-daily-push" / "deploy" / "cloudflare" / "worker_cloud.js"
 BUILD_ID_RE = re.compile(r"^[0-9a-f]{12}$")
+PHASE_RE = re.compile(r"^ADP-V02-P(\d{2})-")
+STAMP_RE = re.compile(r"build_id: '([0-9a-f]{12})', source_sha256: '([0-9a-f]{64})'")
 
 
 def _bundles():
     if not EVIDENCE.is_dir():
         return []
     return sorted(p for p in EVIDENCE.iterdir() if p.is_dir() and p.name.startswith("ADP-V02-"))
+
+
+def _sheet(bundle):
+    f = bundle / "cost_value.json"
+    if not f.is_file():
+        return None
+    try:
+        return json.loads(f.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _production_bundles():
+    """(phase_number, name, sheet) for every bundle whose sheet says PRODUCTION."""
+    out = []
+    for b in _bundles():
+        d = _sheet(b)
+        if not d or str(d.get("release_mode", "")).upper() != "PRODUCTION":
+            continue
+        m = PHASE_RE.match(b.name)
+        if m:
+            out.append((int(m.group(1)), b.name, d))
+    return sorted(out)
 
 
 class TestAdpV02EvidenceBundles(unittest.TestCase):
@@ -118,6 +145,63 @@ class TestAdpV02EvidenceBundles(unittest.TestCase):
                 bad.append("{}: live_build_after={!r} is not a 12-hex build id".format(b.name, after))
         self.assertEqual(bad, [], "PRODUCTION bundle(s) that do not name the build they deployed:\n  "
                          + "\n  ".join(bad))
+
+
+    def test_latest_production_bundle_matches_the_committed_worker(self):
+        """The newest PRODUCTION bundle must name the build the COMMITTED worker source hashes to.
+
+        Two records claim to say what is running in production: the worker's self-excluding BUILD
+        stamp (guarded by test_adp_worker_build_stamp) and the newest PRODUCTION bundle's
+        `live_build_after`. They are written at different times by different hands, and nothing tied
+        them together -- so they could disagree, and the disagreement is invisible.
+
+        The disagreement is not hypothetical. This program's recurring failure is a claim recorded
+        once and trusted forever: P08 shipped, its bundle said it worked, and it enriched 0 rows every night
+        for weeks. This is the same shape one level up -- deploy build X, then keep editing the
+        worker, and the bundle still names X while the repo holds Y. Whoever later asks "what source
+        is live?" gets a confident, wrong answer from a file that was true once.
+
+        The guard is cheap and exact: recompute the stamp from the committed bytes, compare to the
+        sheet. It goes red on the two things that should be red -- a deploy whose bundle was never
+        updated, and a worker edited after its bundle froze without a re-stamp+re-deploy."""
+        prod = _production_bundles()
+        self.assertTrue(prod, "no PRODUCTION bundle found -- this guard would pass vacuously")
+        self.assertTrue(WORKER.is_file(), "the deployed worker is missing: {}".format(WORKER))
+        src = WORKER.read_text(encoding="utf-8")
+        m = STAMP_RE.search(src)
+        self.assertIsNotNone(m, "worker_cloud.js carries no BUILD stamp to compare against")
+        stamped = m.group(1)
+        recomputed = hashlib.sha256(
+            src.replace("build_id: '{}'".format(m.group(1)), "build_id: '{}'".format("0" * 12))
+               .replace("source_sha256: '{}'".format(m.group(2)), "source_sha256: '{}'".format("0" * 64))
+               .encode("utf-8")).hexdigest()[:12]
+        self.assertEqual(stamped, recomputed,
+                         "worker stamp does not reproduce -- test_adp_worker_build_stamp explains this")
+        phase, name, sheet = prod[-1]
+        self.assertEqual(
+            str(sheet.get("live_build_after", "")), recomputed,
+            "the newest PRODUCTION bundle ({}) says live_build_after={!r}, but the committed worker "
+            "hashes to {!r}.\nEither the worker moved after that bundle froze (re-stamp, re-deploy, "
+            "and open a new bundle) or a deploy never updated its sheet. Until they agree, the "
+            "evidence names a source that is not the source.".format(
+                name, sheet.get("live_build_after"), recomputed))
+
+    def test_no_two_production_bundles_claim_the_same_deploy(self):
+        """Distinct deploys put distinct builds live; a repeat means a sheet was copied, not written.
+
+        `test_production_bundles_record_an_actual_change` catches before==after *within* one sheet.
+        This catches the other half: two phases both claiming they put build X live. Only one of them
+        can be true, and the copied one is a fabricated production record."""
+        seen, dupes = {}, []
+        for _, name, d in _production_bundles():
+            after = str(d.get("live_build_after", ""))
+            if not BUILD_ID_RE.match(after):
+                continue
+            if after in seen:
+                dupes.append("{} and {} both claim they deployed {}".format(seen[after], name, after))
+            seen[after] = name
+        self.assertEqual(dupes, [], "PRODUCTION bundle(s) claiming a deploy another phase already "
+                                    "claimed:\n  " + "\n  ".join(dupes))
 
 
 if __name__ == "__main__":
