@@ -21,8 +21,6 @@
 | `.github/workflows/arxiv-daily-push-stage1-bootstrap.yml` | `adp_stage1_bootstrap` | Validate Stage 1 migration/bootstrap with delivery and release mutations disabled. | `pull_request`, `push`, `workflow_dispatch` | `contents:read` | `runtime-change-scope`, `stage1-bootstrap` | `pr_push_or_manual_readonly` | Governance-only changes skip runtime work; migration/bootstrap validation failure blocks. |
 | `.github/workflows/arxiv-daily-push-trial-start.yml` | `adp_trial_start` | Start the explicitly confirmed text-only trial after preflight, source, SMTP, and scheduler plans. | `workflow_dispatch` | `contents:read` | `trial-start` | `manual_secret_gated_inputs_via_environment` | No confirmation means no job; any prerequisite failure blocks trial start. |
 | `.github/workflows/arxiv-daily-push-visual-gate.yml` | `adp_visual_motion_gate` | Gate the Owner-signed six-theme visual/motion contract: block any contract element changed without a recorded approval, and any unregistered theme/ambience layer. | `pull_request`, `push`, `workflow_dispatch` | `contents:read` | `visual-motion-gate` | `pr_push_or_manual_readonly` | A six-theme visual/motion contract element changed without an approval record, or an unregistered theme/ambience was introduced, blocks the push. Approved changes are recorded in arxiv-daily-push/docs/design/visual_change_approvals.json and the baseline is re-frozen. |
-| `.github/workflows/kmfa-dual-plane.yml` | `kmfa_dual_plane_gate` | Expose the three KMFA dual-plane gates for only its machine/document paths. | `pull_request`, `push`, `workflow_dispatch` | `contents:read` | `dual-plane-gates` | `pr_push_or_manual_readonly` | The lineage gate intentionally remains red until facts connect; later gates always report. |
-| `.github/workflows/openai-database-ci.yml` | `openaidatabase_ci` | Validate personalization, deterministic memory Gold quality, bounded retrieval performance and the Memory Atlas build/audit role from one root workflow. | `pull_request`, `push`, `schedule`, `workflow_dispatch` | `contents:read` | `memory-atlas-verify`, `openai-database-verify` | `pr_push_schedule_or_manual_readonly` | Any required memory quality, request/cache performance, unit, generated-drift, frontend, release, Access, or acceptance check failure blocks. |
 | `.github/workflows/project-governance.yml` | `transaction_ci` | Run the one required read-only transaction CI role and scheduled/manual full governance. | `pull_request`, `push`, `schedule`, `workflow_dispatch` | `contents:read` | `governance` | `required_ci_executes_pr_code_readonly` | Any policy, validation, semantic, artifact, or supply-chain failure blocks settlement. |
 
 ## Resolved third-party action pins
@@ -40,7 +38,9 @@
 
 ## Merged or retired workflow paths
 
-- `OpenAIDatabase/.github/workflows/ci.yml` → `.github/workflows/openai-database-ci.yml`: MERGED_AND_DELETE_INVALID_NESTED_WORKFLOW. GitHub does not execute nested project workflows; unique Memory Atlas jobs were preserved in the root workflow.
+- `OpenAIDatabase/.github/workflows/ci.yml` → `LinzeColin/AgentDatabase:.github/workflows/dual-plane.yml`: MERGED_AND_DELETE_INVALID_NESTED_WORKFLOW. GitHub does not execute nested project workflows; unique Memory Atlas jobs were preserved in the root workflow. 该根工作流已随 OpenAIDatabase 于 2026-07-17 迁往 AgentDatabase。 替代物在 LinzeColin/AgentDatabase 仓内的 Dual-Plane Governance 工作流。
+- `.github/workflows/kmfa-dual-plane.yml` → `LinzeColin/KMOS:.github/workflows/dual-plane.yml`: MIGRATED_WITH_PROJECT. KMFA 已于 2026-07-17 迁往 LinzeColin/KMOS（仓库拆分第6波，权限隔离）；项目专属工作流随项目一并迁走，本仓不再持有。 替代物在 LinzeColin/KMOS 仓内的 Dual-Plane Governance 工作流。
+- `.github/workflows/openai-database-ci.yml` → `LinzeColin/AgentDatabase:.github/workflows/dual-plane.yml`: MIGRATED_WITH_PROJECT. OpenAIDatabase 已于 2026-07-17 迁往 LinzeColin/AgentDatabase（仓库拆分第6波，权限隔离）；项目专属工作流随项目一并迁走，本仓不再持有。 替代物在 LinzeColin/AgentDatabase 仓内的 Dual-Plane Governance 工作流。
 
 ## Hard gates
 

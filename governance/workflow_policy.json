@@ -387,63 +387,6 @@
       "untrusted_prompt_input": false
     },
     {
-      "path": ".github/workflows/kmfa-dual-plane.yml",
-      "name": "KMFA Dual-Plane Gate",
-      "role": "kmfa_dual_plane_gate",
-      "owner": "@LinzeColin",
-      "purpose": "Expose the three KMFA dual-plane gates for only its machine/document paths.",
-      "triggers": [
-        "pull_request",
-        "push",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "dual-plane-gates"
-      ],
-      "trust_boundary": "pr_push_or_manual_readonly",
-      "failure_behavior": "The lineage gate intentionally remains red until facts connect; later gates always report.",
-      "local_dependencies": [
-        "KMFA/machine/tools/render_human.py",
-        "KMFA/machine/tools/check_doc_budget.py",
-        "KMFA/machine/tools/check_blocker_stop.py"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/openai-database-ci.yml",
-      "name": "OpenAIDatabase CI",
-      "role": "openaidatabase_ci",
-      "owner": "@LinzeColin",
-      "purpose": "Validate personalization, deterministic memory Gold quality, bounded retrieval performance and the Memory Atlas build/audit role from one root workflow.",
-      "triggers": [
-        "pull_request",
-        "push",
-        "schedule",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "memory-atlas-verify",
-        "openai-database-verify"
-      ],
-      "trust_boundary": "pr_push_schedule_or_manual_readonly",
-      "failure_behavior": "Any required memory quality, request/cache performance, unit, generated-drift, frontend, release, Access, or acceptance check failure blocks.",
-      "local_dependencies": [
-        "OpenAIDatabase/tests",
-        "OpenAIDatabase/scripts",
-        "OpenAIDatabase/config/evaluation/memory_gold_evaluation_v1.json",
-        "OpenAIDatabase/config/evaluation/memory_retrieval_performance_v1.json",
-        "OpenAIDatabase/apps/memory-atlas/package-lock.json",
-        "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
       "path": ".github/workflows/project-governance.yml",
       "name": "Project Governance",
       "role": "transaction_ci",
@@ -482,8 +425,22 @@
       "path": "OpenAIDatabase/.github/workflows/ci.yml",
       "disposition": "MERGED_AND_DELETE_INVALID_NESTED_WORKFLOW",
       "owner": "@LinzeColin",
-      "replacement": ".github/workflows/openai-database-ci.yml",
-      "reason": "GitHub does not execute nested project workflows; unique Memory Atlas jobs were preserved in the root workflow."
+      "replacement": "LinzeColin/AgentDatabase:.github/workflows/dual-plane.yml",
+      "reason": "GitHub does not execute nested project workflows; unique Memory Atlas jobs were preserved in the root workflow. 该根工作流已随 OpenAIDatabase 于 2026-07-17 迁往 AgentDatabase。 替代物在 LinzeColin/AgentDatabase 仓内的 Dual-Plane Governance 工作流。"
+    },
+    {
+      "path": ".github/workflows/kmfa-dual-plane.yml",
+      "disposition": "MIGRATED_WITH_PROJECT",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/KMOS:.github/workflows/dual-plane.yml",
+      "reason": "KMFA 已于 2026-07-17 迁往 LinzeColin/KMOS（仓库拆分第6波，权限隔离）；项目专属工作流随项目一并迁走，本仓不再持有。 替代物在 LinzeColin/KMOS 仓内的 Dual-Plane Governance 工作流。"
+    },
+    {
+      "path": ".github/workflows/openai-database-ci.yml",
+      "disposition": "MIGRATED_WITH_PROJECT",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/AgentDatabase:.github/workflows/dual-plane.yml",
+      "reason": "OpenAIDatabase 已于 2026-07-17 迁往 LinzeColin/AgentDatabase（仓库拆分第6波，权限隔离）；项目专属工作流随项目一并迁走，本仓不再持有。 替代物在 LinzeColin/AgentDatabase 仓内的 Dual-Plane Governance 工作流。"
     }
   ]
 }

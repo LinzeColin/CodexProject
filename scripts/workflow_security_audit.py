@@ -144,7 +144,11 @@ def validate_policy(policy: dict[str, Any], *, root: Path = ROOT) -> list[str]:
         replacement = root / str(item.get("replacement") or "")
         if source.exists():
             errors.append(f"retired nested workflow still exists: {source.relative_to(root)}")
-        if str(item.get("replacement") or "") and not replacement.is_file():
+        replacement_ref = str(item.get("replacement") or "")
+        # 跨仓替代物记法 owner/repo:path —— 项目迁出本仓后，其专属工作流随项目走，
+        # 替代物不在本仓，无法做本地存在性校验，只校验记法完整。
+        external = bool(re.match(r"^[\w.-]+/[\w.-]+:.+$", replacement_ref))
+        if replacement_ref and not external and not replacement.is_file():
             errors.append(f"workflow replacement missing: {replacement.relative_to(root)}")
     return errors
 
