@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-INFRASTRUCTURE-REGISTRY-V1-20260718",
+  "project_id": "root",
+  "task_id": "ROOT-INFRASTRUCTURE-REGISTRY-V1",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260718-UNIFIED-INFRA-GOVERNANCE",
+  "generated_at": "2026-07-18T19:00:00Z",
+  "implementation_base_sha": "eb51f6cd65dc947c05ebceb6ef5af6369fbb4470",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:50f5c87f96569dc03f6910e3ca1667fe8858f05fa34eca8f43b289a8f5f9f3e9",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 2 non-manifest changed files; changed_files_* list all 3 including this manifest; hash excludes it.",
+  "ci_attestation_subject": "统一治理：新增 governance/infrastructure_registry.json（Cloudflare + OVH VPS + Coolify 单一治理入口）+ 校验守卫（含无密钥扫描）",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "应 Owner『统一治理、降低复杂度』要求，新增单一基础设施注册表 governance/infrastructure_registry.json —— 一处看清全部部署面(Cloudflare 账户 + 一台 OVH VPS + 装在其上的 Coolify)、各自约束/成本、workload→surface 映射、Owner 待决项。★澄清：面看着 3 个实为 2 处(Cloudflare + 1 台 VPS，Coolify 是 VPS 上的层)★。★原则：统一【治理】≠统一【基础设施】——把免费档无状态的 Cloudflare workload 硬迁付费 VPS 会增 ops+成本、与降复杂度相反★。只登记非机密事实(provider/region/specs/公网 IP/引用名)，私钥/密码/Token 的值一律不入。守卫 test_infrastructure_registry.py：校验 schema/placement 交叉引用 + ★无密钥扫描(load-bearing：植入 PEM/token 即红，且不误伤对密钥的散文描述)★。本轮【只建治理注册表，不动任何基础设施、不碰任何 secret、不迁移任何 workload】——迁移/退役面属 Owner 逐项决策。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "infra_change": 0,
+    "secrets_touched": 0
+  },
+  "changed_files_declared": [
+    "governance/infrastructure_registry.json",
+    "governance/run_manifests/TSK-ROOT-INFRASTRUCTURE-REGISTRY-V1-20260718.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "changed_files_actual": [
+    "governance/infrastructure_registry.json",
+    "governance/run_manifests/TSK-ROOT-INFRASTRUCTURE-REGISTRY-V1-20260718.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "required_governance_files": [
+    "governance/infrastructure_registry.json"
+  ],
+  "updated_governance_files": [
+    "governance/infrastructure_registry.json"
+  ],
+  "evidence_refs": [
+    "governance/infrastructure_registry.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_infrastructure_registry",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_infrastructure_registry (4 断言)",
+      "result": "PASS",
+      "detail": "schema 形状 + placement 交叉引用 + 无密钥扫描 + 扫描器非空(能抓合成 PEM/api_key)。NC 证明承重：往副本植入 SSH 私钥 → 扫描命中 PEM+base64；发货注册表对密钥的散文描述不误报(hits [])."
+    }
+  ],
+  "stop_conditions": [
+    "★本注册表只登记非机密事实★：私钥/密码/Token/Secret 值一律不入(无密钥守卫会红)。",
+    "不要把免费档无状态 Cloudflare workload 默认迁到付费 VPS——增 ops+成本，与降复杂度相反(见 distinction_note)。",
+    "新增/退役 surface、改 workload→surface 映射，属 Owner 逐项决策，不擅自执行。",
+    "DIR-007 不变：Cloudflare 永不超免费档；VPS 单一主节点不新增付费资源。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯新增治理文档 + 守卫，无基础设施副作用。"
+  },
+  "unresolved_risks": [
+    "注册表是【手工登记】的事实快照(2026-07-18)；surface 事实变化需人工更新——守卫保证结构/无密钥，不保证事实新鲜度。",
+    "OVH VPS 的 workload 迁入、Coolify 编排范围、CF/VPS 分工边界均为 Owner 待决(见 open_owner_decisions)，本轮不决。"
+  ],
+  "next_allowed_task": "待 Owner 决定是否要『注册表 + 迁移决策文档(选项2)』或就此打住。若要协调 ovh 线程可据本注册表对齐事实。"
+}

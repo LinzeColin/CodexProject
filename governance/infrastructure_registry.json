@@ -1,0 +1,70 @@
+{
+  "schema_version": "infrastructure_registry.v1",
+  "purpose": "统一治理入口：一处看清 LinzeColin 全部部署面(surface)、各自约束/成本、以及哪个 workload 部署在哪里。降低多面治理的复杂度。",
+  "owner": "LinzeColin",
+  "generated_at": "2026-07-18",
+  "clarification": "面看着有三个(Cloudflare/Coolify/OVH VPS)，实为【两处】：Cloudflare 账户 + 一台 OVH VPS。Coolify 是【装在那台 VPS 上】的自托管 PaaS 层，不是第三台机器。",
+  "governance_rule": "任何 surface 上的任何部署，都在本表登记 surface，并在该 surface 的 deployments 明细里登记一次(方式一致)。新增/退役 surface、或改变 workload→surface 映射，属 Owner 决策。",
+  "secrets_boundary": "本表只登记【非机密】事实(provider/region/specs/公网 IP/角色/约束/引用名)。私钥、密码、Token、Secret 槽位的【值】一律不入本文件、不入仓库、不入日志——只登记其【名字/引用】。",
+  "distinction_note": "★统一【治理】≠统一【基础设施】★。统一治理 = 一处一致地管理所有面(本表就是)。把无状态/免费档的 Cloudflare workload 硬迁到付费 VPS 会【增加】ops+成本，与『降低复杂度』相反。分工原则(建议)：无状态/边缘/免费档留 Cloudflare；需持久进程/后台任务/非 CF 运行时的才考虑上 VPS。",
+  "surfaces": [
+    {
+      "surface_id": "cloudflare",
+      "kind": "serverless_edge",
+      "provider": "Cloudflare",
+      "account": "linzezhang35.workers.dev",
+      "plan": "free",
+      "cost_usd_month": 0,
+      "status": "active_primary_for_current_web_workloads",
+      "constraints": [
+        "DIR-007：永不超免费档；无 Owner 三次确认不升级付费",
+        "Workers Free：50 外部子请求/invocation；10ms CPU/请求处理(定时任务更宽)",
+        "D1 Free：5M 行/天写；免费档子请求上限见 DIR-007",
+        "Cron：5 触发器/账户(免费)"
+      ],
+      "detail_ref": "governance/cloudflare/deployments.json, governance/cloudflare/projects.yaml",
+      "workloads": ["arxiv-daily-push", "linze-home-hub", "nab", "eei"]
+    },
+    {
+      "surface_id": "ovh-vps-sgp1",
+      "kind": "vps",
+      "provider": "OVH",
+      "region": "Singapore (os-sgp2)",
+      "arch": "amd64 (x86_64, Intel Haswell)",
+      "specs": "2 vCore / 3.7GB RAM / 40GB SSD / Ubuntu 24.04 LTS",
+      "cost_aud_month_approx": 7.4,
+      "network": { "ipv4": "139.99.61.6", "ipv6": "2402:1f00:8000:800::1ac3" },
+      "access": "纯 SSH key。key 名 linze-ovh-production；私钥仅在本机 _protected/，经部署 Secret 槽位 PRIMARY_HOST_SSH_KEY_FILE 引用(值不入仓)。",
+      "status": "provisioned_and_taken_over_baseline; Docker/防火墙/自动更新/Coolify 待装(下一阶段)",
+      "role_intended": "主部署节点候选(跨会话 ovh 线程通报)。但【是否/哪些】workload 迁入【未定，属 Owner 逐项决策】(涉付费/ops 增量)。",
+      "constraints": [
+        "单一主节点，不新增付费资源",
+        "上云走容量 Gate + 任务包分批，不一次性全部部署",
+        "多架构镜像目标 linux/amd64(可保留 arm64 备将来 Oracle 只读节点)"
+      ],
+      "source": "cross-session ovh 线程通报 2026-07-18(name: OVH Singapore VPS-1 SSH 部署密钥)",
+      "workloads": []
+    },
+    {
+      "surface_id": "coolify",
+      "kind": "paas_self_hosted",
+      "provider": "Coolify (self-hosted)",
+      "host_surface": "ovh-vps-sgp1",
+      "cost": "随宿主 VPS，无额外付费",
+      "status": "planned_not_installed",
+      "role_intended": "装好后作为 ovh-vps-sgp1 上的部署编排层(不是独立第三台机器)。",
+      "workloads": []
+    }
+  ],
+  "workload_placement": [
+    { "workload": "arxiv-daily-push", "surface": "cloudflare", "url": "https://adp.linzezhang.com", "status": "live", "note": "免费档、边缘、无状态定时——留 Cloudflare 最省，勿迁。" },
+    { "workload": "linze-home-hub", "surface": "cloudflare", "url": "https://home.linzezhang.com", "status": "live" },
+    { "workload": "nab", "surface": "cloudflare", "url": "https://nab.linzezhang.com", "status": "live" },
+    { "workload": "eei", "surface": "cloudflare", "url": "https://codex-eei.linzezhang35.workers.dev", "status": "domain_manual_step_pending" }
+  ],
+  "open_owner_decisions": [
+    "OVH VPS 的角色：主部署节点候选，但哪些(若有)workload 迁入未定——迁移属 Owner 逐项决策，涉付费/ops 增量。",
+    "Coolify 装好后编排哪些 workload。",
+    "Cloudflare 免费档 workload 与 VPS 的分工边界(建议见 distinction_note)。"
+  ]
+}
