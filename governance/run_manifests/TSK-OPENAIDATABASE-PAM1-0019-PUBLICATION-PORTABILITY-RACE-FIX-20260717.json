@@ -8,14 +8,14 @@
   ],
   "iteration_id": "ST10-PHC-OPENAIDATABASE-PAM1-0019-003",
   "generated_at": "2026-07-16T23:50:21Z",
-  "implementation_base_sha": "f97f6826794c73128afa38ca907b618115a06893",
+  "implementation_base_sha": "b9c5a5d747f99e35247b2a23141be7caf4588353",
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f9d8611563a71d311ce8e66fb52ccff6e05a4011afdc1b933391395463b705ca",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:30826917fabe3bf83d9df0e878282fd866884b5c5f241b11d6cbdc536dd38c6f",
   "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the sixteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
   "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
   "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
   "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
-  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects, normalize commit time from epoch to UTC Z and write canonical explicit ZIP32 bytes, register only the two exact append-only governance OIDs introduced by the intervening accepted main, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects, normalize commit time from epoch to UTC Z and write canonical explicit ZIP32 bytes, register only the four exact append-only governance OIDs introduced by the intervening accepted main commits, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
   "scope": {
     "new_business_sample_files": 0,
     "canonical_or_raw_business_data_files_modified": 0,
@@ -107,6 +107,7 @@
     "https://github.com/LinzeColin/CodexProject/actions/runs/29542732909",
     "https://github.com/LinzeColin/CodexProject/actions/runs/29543207293",
     "https://github.com/LinzeColin/CodexProject/commit/f97f6826794c73128afa38ca907b618115a06893",
+    "https://github.com/LinzeColin/CodexProject/commit/b9c5a5d747f99e35247b2a23141be7caf4588353",
     ".github/workflows/agent-loop-settlement.yml",
     "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
     "OpenAIDatabase/docs/governance/events.jsonl",
@@ -116,11 +117,11 @@
   "test_commands": [
     "python3 -B -m unittest -q tests.agent_loop.test_workflow_contract tests.governance.test_repository_hygiene",
     "python3 -B scripts/workflow_security_audit.py audit --json",
-    "python3 -B scripts/governance_id_audit.py --base-ref f97f6826794c73128afa38ca907b618115a06893 --json",
+    "python3 -B scripts/governance_id_audit.py --base-ref b9c5a5d747f99e35247b2a23141be7caf4588353 --json",
     "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
     "python3 -B OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py --database-dir OpenAIDatabase --write",
     "python3 -B OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py --database-dir OpenAIDatabase --phase candidate --artifact-ref CANDIDATE_TREE --reuse-current-reports --write",
-    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref f97f6826794c73128afa38ca907b618115a06893"
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref b9c5a5d747f99e35247b2a23141be7caf4588353"
   ],
   "test_results": [
     {
@@ -136,7 +137,7 @@
     {
       "command": "repository hygiene audit",
       "result": "PASS",
-      "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; the intervening accepted main adds exactly two reviewed single-line append-only governance OIDs; zero policy errors and zero violations."
+      "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; the intervening accepted main commits add exactly four reviewed single-line append-only governance OIDs; zero policy errors and zero violations."
     },
     {
       "command": "snapshot recovery and candidate acceptance regeneration",
@@ -151,7 +152,7 @@
     {
       "command": "immutable Governance ID V2 audit",
       "result": "PASS",
-      "observed": "Allocated EVT.OpenAIDatabase.PAM1.0020 through registry revision 95; all 13,224 identifier references resolve exactly once, with zero new positional IDs or errors."
+      "observed": "Allocated EVT.OpenAIDatabase.PAM1.0020 through registry revision 95; all 13,227 identifier references resolve exactly once, with zero new positional IDs or errors."
     },
     {
       "command": "snapshot and production acceptance unit regression",
