@@ -1,0 +1,29 @@
+{
+  "task": "ADP-V02-P12-BACKFILL",
+  "program": "ADP V0.2 生产集成",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "dc91b5b221d0",
+  "live_build_after": "e8491f75970f",
+  "deploy_version_id": "f9b79493-68ca-4b61-943e-2823610d3d36",
+  "objective": "把 /system 覆盖网格的时间覆盖债务逐夜填起来——起点实测 1.5%（69/4699 格，4630 格从未回填）。这是 P09 已量出的、通往 goal「全面」的真实距离。",
+  "what": "arXiv OAI-PMH 历史 datestamp 轴回填：每夜从 cn_meta 游标处取一页 from/until 历史窗口，按论文真实 <created> 落进覆盖网格的正确格，游标单调前进。★独立 cron invocation（30 8 UTC）★，独享子请求/CPU 预算，与当日流水线（30 20 UTC）完全隔离。",
+  "grounded_on_measurement": "全部实测、零假设：(1) arXiv 从边缘可达——生产 run_log 2026-07-17『arXiv 220』就是这个 OAI 端点抓的；(2) OAI 历史 from/until 窗口返回记录——实测 http=200、420~1300 条；(3) resumptionToken 无状态、值里编码下一段 from=YYYY-MM-DD → 游标 = 持久化日期；(4) 页大小 ~1300 条。",
+  "design_nuance_datestamp_vs_created": "OAI from/until 按 datestamp（feed 修改时间）过滤，≠ created。一个 datestamp 窗口返回 <created> 跨多年的论文（老论文那天被重新 stamp）。故回填【单调填真实空洞，但不精确定向某一格】——条目按真实 created 落进正确的格，覆盖率照样爬（格有≥1条即翻绿）。设计已知，非缺陷。",
+  "dir_007": "回填独占一个 invocation：1 外部（OAI）+ ~20 内部（getCursor 1 + insertItems ≤1300/80≈17 batch + setCursor 1 + backfill_last 1）≈ 21 子请求。< 50（若 D1 记外部）且 < 1000（若 D1 记内部）——★两种读法都安全★。当日流水线的 invocation 一字未动，仍是部署前的生产基线。D1 写 ~1300 行/夜 « 免费档 5M 行/天。两个 cron « 免费档 5/账户。零付费资源。",
+  "cpu_note": "回填只解析 1 页（≤ 当日流水线 ARXIV_PAGES=2 的解析量）+ 1300 条 I/O 型 D1 写，且独占整个 CPU 预算。首夜 CPU/时长【尚未实测】——但保守起步 PAGES=1，且★一次超时自愈★（独立 invocation，被 kill → 游标不推进 → 下夜重试；当日流水线不受影响，幂等靠 ON CONFLICT）。读 /api/backfill 的 last_run.ms 后再决定是否加大 PAGES（同 P10『发保守、测真实』）。",
+  "adversarial_review": "★2 轮，R1 BLOCK 属实且致命，R2 CONFIRMED_SOUND，未自签。★ R1 抓到：回填原本链在 runDaily 【同一个 invocation】里，而 D1 写【算子请求】（Cloudflare 文档确认『子请求 = 用 Fetch 或对 R2/KV/D1 的请求』；50/invocation 免费档），叠加会撞 50 上限 → insert 抛『Too many subrequests』→ 被 try/catch + 外层 .catch 吞掉 → setCursor 永不执行 → 游标永不推进 → 每夜补 0 条 → ★正是 P08 的病★，且本地 node:sqlite 验证器【结构上看不见】（夹具无子请求上限）。R1 还抓到 skip= 被丢弃导致超密单日游标卡死的潜在 bug。",
+  "review_r1_fix": "★不靠赢下文档歧义，靠让它变得无关★：把回填移到【独立 cron invocation】，独享预算，两种读法都安全。skip= 卡死加 forward-progress 守卫（token 在但游标没进 → 强制 +1 天，丢超密日尾部但该格已覆盖）。复核独立 sabotage 复验两个守卫都承重。",
+  "doc_ambiguity_honest": "Cloudflare 文档【确实说不清】D1 到底算在 50 还是单列的 1000 —— 两次 WebFetch 都确认文档没有明说。故没有拿一个未定的前提去背书，改用隔离 invocation 让问题消失。",
+  "verifier": "backfill_verify.mjs：真 node:sqlite + 真 schema_cloud.sql + mock OAI，★直接从 worker_cloud.js 抽取 //@P12-CORE 段测发货代码本体（非副本、非字节等同的脆断言）★。24 断言全绿。承重负控由 sabotage 证明：J1（删防卡死守卫→超密日游标卡在 2016-03-01）、C2（去单调守卫→游标后退到 2016-01-31）、NC-D（坏 insert→历史格空、条目堆 today 格）。另有断言数钉死(24) + 从抽取失败即退出（防空测）。",
+  "value": "arXiv 历史论文第一次真的开始回填进覆盖网格。机制上线即验证：/build.json=e8491f75970f、6 路由 200、/api/backfill 就绪（cursor=null 待首夜）、两 cron 已注册。★覆盖率 % 之后按 cron 自己爬★——格首触即翻绿，所以 /system 的数字会比『4630 格』的直觉快得多。",
+  "acceptance_honest": "机制的验收 = 已部署 + DIR-007 未破 + 当日流水线未受影响 + 首个 08:30 cron 后 /api/backfill 显示抓到历史论文并落进正确历史格（+ backfill_last.ms 实测 CPU）。★首夜证据时间延迟到下一个 08:30 UTC★，读 /api/backfill 即得（同 P10 的 ~50 夜观察）。覆盖率爬升本身是数月的 cron，任何 session 都填不完——这是物理，不是未完成。",
+  "residual_risks": [
+    "★首夜 CPU/时长未实测★：保守 PAGES=1 起步；一次超时自愈（独立 invocation + 幂等）。读 last_run.ms 后再调 PAGES。",
+    "超密单日（≥1300 条/单个 datestamp 日）会丢该日尾部——forward-progress 守卫的代价；该日的格仍覆盖。复核实测 2007–2025 未见单日≥1300（峰值 ~627），极端边缘。",
+    "覆盖率爬升是数月 cron；不是一次性可完成的。",
+    "游标方向 = 从 2016 向今（OAI resumptionToken 原生前进方向）；近端已由当日 cron 覆盖。方向是 cn_meta 游标初值，可逆，属 Owner。"
+  ],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 dc91b5b221d0 + 从 wrangler_cloud.jsonc 去掉 30 8 cron + 删 cn_meta.backfill_from。回填写入的是真实 arXiv 论文（dedup），删除游标即停止。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

@@ -1,0 +1,129 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P12-BACKFILL-20260718",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P12-BACKFILL",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260718-ADP-V02-INTEGRATE",
+  "generated_at": "2026-07-18T18:20:00Z",
+  "implementation_base_sha": "7471fe5bdeca4aef66c7ccaf9eba6be26ed93073",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:46d91862cb6e622154e35874b6f075fe2c3d05bf81dcd8bdb3b179034212cee0",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 20 non-manifest changed files; changed_files_* list all 21 including this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P12: arXiv 历史回填填覆盖债务；独立 cron invocation 隔离预算；复核 R1 BLOCK(D1 写算子请求→撞 50→游标永不进→P08 病) R2 CONFIRMED_SOUND",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (2 rounds; R1 BLOCK subrequest-budget overflow / P08-disease, R2 sound; implementer did not self-sign)",
+  "summary": "arXiv 历史 OAI datestamp 轴回填，把 /system 覆盖网格的 1.5% 时间覆盖债务逐夜还起来（4630 格从未回填）。条目按真实 <created> 落进正确覆盖格，游标单调。★独立 cron invocation(30 8 UTC)★与当日流水线(30 20 UTC)隔离，独享子请求/CPU 预算。复核 2 轮：R1 BLOCK 属实且致命 —— 回填原本链在 runDaily 同一 invocation，而 D1 写【算子请求】(Cloudflare 文档，免费档 50/invocation)，叠加撞 50 → insert 抛错被吞 → setCursor 永不执行 → 游标永不推进 → 每夜补 0 条 → 正是 P08 的病，本地 node:sqlite 验证器结构上看不见。R1 还抓到 skip= 丢弃导致超密单日卡死。修法不靠赢文档歧义(文档确实说不清 D1 算 50 还是单列 1000)，靠移到独立 invocation(两种读法都安全)+forward-progress 守卫。R2 CONFIRMED_SOUND。验证器直接抽取 //@P12-CORE 测发货代码本体(非副本)，24 断言全绿，J1/C2/NC-D 三守卫 sabotage 承重。上线：/build.json=e8491f75970f、6 路由 200、/api/backfill 就绪、两 cron 已注册。首夜证据延迟到下一个 30 8 cron。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1,
+    "new_cron_trigger": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_verify.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P12-BACKFILL-20260718.json",
+    "tests/governance/test_adp_worker_cron_routing.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_tests.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_verify.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P12-BACKFILL-20260718.json",
+    "tests/governance/test_adp_worker_cron_routing.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_verify.mjs",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_tests.txt"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_verify.mjs",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python3 scripts/lean_governance.py artifact-audit --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "backfill_verify.mjs (真 node:sqlite + 真 schema + mock OAI；抽取 //@P12-CORE 测发货本体)",
+      "result": "PASS",
+      "detail": "24 断言全绿；J1 防卡死/C2 单调/NC-D 落格 三守卫 sabotage 承重；断言数钉死(24)+抽取失败即退。"
+    },
+    {
+      "command": "生产部署验证",
+      "result": "PASS",
+      "detail": "Version f9b79493-68ca-4b61-943e-2823610d3d36；/build.json=e8491f75970f；6 路由 200；/api/backfill 就绪(cursor=null)；两 cron(30 20 + 30 8)已注册。"
+    },
+    {
+      "command": "首夜回填 + CPU",
+      "result": "PENDING_FIRST_CRON",
+      "detail": "★时间延迟到下一个 30 8 UTC cron★，读 /api/backfill 的 last_run(含 ms) 即得。保守 PAGES=1，超时自愈。"
+    }
+  ],
+  "stop_conditions": [
+    "★不要把回填塞回 runDaily 的 invocation★：D1 写算子请求，叠加会撞 50/invocation 上限 → 游标永不推进 → P08 病复发。它必须独占自己的 cron invocation。",
+    "不要在读到 backfill_last.ms 之前就加大 PAGES：首夜 CPU 未实测，保守 PAGES=1 起步。",
+    "不要把游标方向或起点当作可随意重置的——它单调前进；回退会重复抓取（P09/P10 栽过）。",
+    "不要因『超密单日丢尾部』就去掉 forward-progress 守卫——没有它会永久卡死（J1 已证）。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <prev> 回 dc91b5b221d0 + 从 wrangler_cloud.jsonc 去掉 30 8 cron + 删 cn_meta.backfill_from。",
+    "repo": "git revert 本 commit。"
+  },
+  "unresolved_risks": [
+    "首夜 CPU/时长未实测（保守 PAGES=1，超时自愈：独立 invocation + 幂等）。读 /api/backfill last_run.ms 后再调。",
+    "超密单日(≥1300 条/单 datestamp 日)丢尾部——守卫代价，该格仍覆盖；复核实测峰值 ~627，极端边缘。",
+    "覆盖率爬升是数月 cron，非一次性可完成——物理。",
+    "Cloudflare 文档对 D1 算 50 还是单列 1000 确实说不清；本方案用隔离 invocation 让此歧义无关(两种读法都安全)，非靠断定。"
+  ],
+  "next_allowed_task": "★读首个 30 8 UTC cron 后的 /api/backfill last_run★（rows/cursor_next/ms）——不是只看 cron 绿不绿；据 ms 决定是否加大 PAGES。一周后核对 /system 覆盖率是否在爬。"
+}

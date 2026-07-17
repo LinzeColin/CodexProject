@@ -1,0 +1,154 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index ca92e58d4..3738e17d4 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: 'dc91b5b221d0', source_sha256: 'dc91b5b221d00a80d2ed67f059cb4404d9afc7dbecbed2ec4bdde148c863a606', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
++const BUILD = { build_id: 'e8491f75970f', source_sha256: 'e8491f75970fbda50d64b30c847e030ce925eefb5a487b68dd682f04191ce88e', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -121,6 +121,11 @@ const ARXIV_PAGES = 2;
+ const OPENALEX_WORKS = 'https://api.openalex.org/works';   // T063 研究元数据
+ const FEED_PER_BOARD = 4;       // 每板每次抓取的 feed 数（按最久未抓取优先）——保证每板都有覆盖
+ const BATCH_CHUNK = 80;         // 每个 D1 batch 的语句数上限
++// P12 历史回填：把 /system 覆盖网格的时间覆盖债务逐夜填起来（实测起点 1.5%）。
++// 依据本会话实测：OAI 页 ~1300 条；resumptionToken 无状态、值里编码 from=YYYY-MM-DD → 游标 = 持久化日期。
++const BACKFILL_START = '2016-01-01';   // 与覆盖网格 COVERAGE_START 一致
++const BACKFILL_PAGES = 1;              // 每夜 OAI 页数（1 页≈1 外部子请求≈1300 条）；32+1=33/50，DIR-007 保守起步
++const BACKFILL_SPAN_DAYS = 366;        // 单夜 until 窗口跨度上限（封顶到 today）
+ function chunk(arr, n) { const o = []; for (let i = 0; i < arr.length; i += n) o.push(arr.slice(i, i + n)); return o; }
+ 
+ // ───────────────────────── 工具 ─────────────────────────
+@@ -217,6 +222,85 @@ async function fetchArxivAll(fromDay) {
+   return items;
+ }
+ 
++// ───────────────────────── P12 历史回填 ─────────────────────────
++// datestamp≠created：OAI from/until 按 datestamp 过滤，但条目按真实 <created>（parseOaiArxiv 的 published）
++// 落进覆盖网格的正确格 —— 单调填真实空洞，不精确定向某一格（设计已知，非缺陷）。
++// ★下面 P12-CORE 标记之间的 4 个函数就是被 backfill_verify.mjs 【直接抽取并测试】的发货代码本体★
++//   （验证器从本文件抽这段、跑 20 断言 —— 不是测一个副本，测的就是这里）。故无 replica、无字节等同脆性。
++//@P12-CORE-START
++function nextBackfillFrom(tokenValue) {   // OAI resumptionToken 无状态，值里编码了下一段 from=YYYY-MM-DD
++  if (!tokenValue) return null;
++  let dec; try { dec = decodeURIComponent(tokenValue); } catch { dec = String(tokenValue); }
++  const m = dec.match(/from=(\d{4}-\d{2}-\d{2})/);
++  return m ? m[1] : null;
++}
++function advanceCursor(cursor, tokenValue, until) {
++  const cand = nextBackfillFrom(tokenValue) || until;
++  return cand > cursor ? cand : cursor;   // ★单调★：只进不退（P09/P10 都栽过「反复确认同一批」）
++}
++function backfillWindow(cursor, today, spanDays) {
++  const d = new Date(cursor + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + spanDays);
++  const capped = d.toISOString().slice(0, 10);
++  return { from: cursor, until: capped < today ? capped : today };   // 不越 today；近端由每日 cron 负责
++}
++function plusDaysISO(dateStr, n) {
++  const d = new Date(dateStr + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n);
++  return d.toISOString().slice(0, 10);
++}
++// 编排核心：依赖全部注入（fetchPage/insertItems/get|setCursor），故可用真 node:sqlite + mock OAI 单测。
++async function runBackfill({ fetchPage, insertItems, getCursor, setCursor, today, START, PAGES, SPAN_DAYS, degraded }) {
++  try {
++    let cursor = (await getCursor()) || START;
++    if (cursor >= today) return { skipped: 'caught_up', cursor };  // 已追平近端，交给每日 cron
++    const { from, until } = backfillWindow(cursor, today, SPAN_DAYS);
++    let token = null, rows = 0, pages = 0, curFrom = from, busy = false;
++    for (pages = 0; pages < PAGES; pages++) {                       // ★页封顶 = 子请求/CPU 预算（DIR-007）★
++      const { items, nextToken, busy: b } = await fetchPage(curFrom, until, token);
++      if (b) { busy = true; break; }                               // OAI 忙(503)：★不推进游标★，下夜重试同窗口
++      await insertItems(items);                                    // published_at=created→正确格；ON CONFLICT 去重
++      rows += items.length;
++      token = nextToken;
++      if (!token) break;                                           // 窗口取尽
++      curFrom = nextBackfillFrom(token) || curFrom;
++    }
++    if (busy) { degraded.push('backfill:oai503'); return { from, until, busy: true }; }  // ★不 setCursor★
++    let next = advanceCursor(cursor, token, until);
++    // ★防永久卡死★：还有 token（窗口内更多数据）但游标没前进 —— 出现于「单个 datestamp 日 ≥ 一页(~1300)」，
++    // 使 token 的 from 仍等于 cursor（且我们重放时不带 skip=）—— 强制 +1 天。会丢该超密日的尾部，但该日的格已覆盖。
++    if (token && next <= cursor) { next = plusDaysISO(cursor, 1); if (next > until) next = until; }
++    await setCursor(next);
++    return { from, until, pages, rows, cursor_next: next, more: !!token };
++  } catch (e) {
++    degraded.push('backfill:' + (e && e.name || 'err'));           // 降级，不抛
++    return { error: e && e.name || 'err' };
++  }
++}
++//@P12-CORE-END
++async function fetchBackfillPage(from, until) {
++  const url = `https://export.arxiv.org/oai2?verb=ListRecords&metadataPrefix=arXiv&from=${from}&until=${until}`;
++  const r = await fetch(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(20000) });
++  if (r.status === 503) return { items: [], token: null, busy: true };   // OAI 忙：本夜跳过、不推进游标
++  if (!r.ok) throw new Error('http' + r.status);
++  return parseOaiArxiv(await r.text());   // {items, token}
++}
++// 薄壳：把真实 D1/OAI 依赖注入上面被测的 runBackfill 核心。与当日流水线隔离——在 scheduled 里
++// runDaily 【之后】经 waitUntil 单独跑；runBackfill 永不抛。一次 CPU 超时只丢当晚回填，绝不动当日 run_log。
++// 首夜靠 backfill_last.ms 实测 CPU/时长，再决定是否加大 PAGES（保守起步 PAGES=1）。
++async function backfillArxiv(env) {
++  const t0 = Date.now();
++  const degraded = [];
++  const r = await runBackfill({
++    fetchPage: async (from, until) => { const pg = await fetchBackfillPage(from, until); return { items: pg.items, nextToken: pg.token, busy: pg.busy }; },
++    insertItems: (items) => batchWrite(env, items.map(p => itemStmt(env, { ...p, board: 'board1', source: 'arxiv-all', kind: 'paper' }))),
++    getCursor: async () => { const x = await env.DB.prepare("SELECT value FROM cn_meta WHERE key='backfill_from'").first(); return x && x.value; },
++    setCursor: (v) => env.DB.prepare("INSERT INTO cn_meta (key,value) VALUES ('backfill_from',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(v).run(),
++    today: dayISO(), START: BACKFILL_START, PAGES: BACKFILL_PAGES, SPAN_DAYS: BACKFILL_SPAN_DAYS, degraded,
++  });
++  const rec = { at: nowISO(), ms: Date.now() - t0, degraded, ...r };
++  try { await env.DB.prepare("INSERT INTO cn_meta (key,value) VALUES ('backfill_last',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(JSON.stringify(rec)).run(); } catch (e) { }
++  return rec;
++}
++
+ async function fetchBiorxiv(fromDay, toDay) {
+   const url = `https://api.biorxiv.org/details/biorxiv/${fromDay}/${toDay}/0`;
+   const resp = await fetch(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(20000) });
+@@ -1866,6 +1950,16 @@ export default {
+       if (p === '/favicon.ico') return new Response('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="82" font-size="82">📚</text></svg>', { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=86400' } });
+       if (p === '/robots.txt') return new Response('User-agent: *\nDisallow:\n', { headers: { 'content-type': 'text/plain' } });
+       if (p === '/build.json') return jsonResp(BUILD);
++      if (p === '/api/backfill') {
++        // P12 只读观测：回填游标 + 上一夜结果（含 ms，用于实测 CPU/时长）。不写任何数据。
++        const cur = await env.DB.prepare("SELECT value FROM cn_meta WHERE key='backfill_from'").first();
++        const last = await env.DB.prepare("SELECT value FROM cn_meta WHERE key='backfill_last'").first();
++        return jsonResp({
++          backfill: 'arxiv-oai-datestamp-walk', writes_nothing: true,
++          cursor: cur ? cur.value : null, start: BACKFILL_START, pages_per_night: BACKFILL_PAGES,
++          last_run: last ? JSON.parse(last.value) : null,
++        });
++      }
+       if (p === '/api/a0-canary') {
+         // S3-P03-T040 canary，P04 升级：用与生产 cron 同一个 parseA0 解析器逐源实测边缘可达性与产出，
+         // 不再用重复的内联正则（旧正则只认 /YYYY-MM/DD/ 旧链接形态，所以只吐 2019/2020 老文件）。
+@@ -2013,6 +2107,9 @@ export default {
+     }
+   },
+   async scheduled(event, env, ctx) {
+-    ctx.waitUntil(runDaily(env, 'cron'));
++    // ★按 cron 路由到【不同的 invocation】★：回填独享自己的 50 外部 + 1000 内部子请求预算与 CPU 预算，
++    // 绝不与当日流水线共享（复核 R1：叠在同一 invocation 会撞 50 上限 → 插入抛错被吞 → 游标永不推进 → P08 病）。
++    if (event.cron === '30 8 * * *') ctx.waitUntil(backfillArxiv(env).catch(() => { }));
++    else ctx.waitUntil(runDaily(env, 'cron'));
+   },
+ };
+diff --git a/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc b/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc
+index 6e654aa13..009995042 100644
+--- a/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc
++++ b/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc
+@@ -28,6 +28,8 @@
+   // 静态资产：hero 首屏视频自托管（同源 /media/*.mp4），从对标原视频压制的 720p 无音轨 loop；
+   // 匹配到资产的请求直接由 Cloudflare 边缘返回，未匹配的走 worker（应用页面）。免费、零外部依赖、随部署持久。
+   "assets": { "directory": "./assets" },
+-  // 每日 20:30 UTC（=悉尼 06:30）跑完整流水线：抓取→选择→讲义→建卡→run_log
+-  "triggers": { "crons": ["30 20 * * *"] }
++  // 20:30 UTC（=悉尼 06:30）跑完整当日流水线：抓取→选择→讲义→建卡→run_log
++  // 08:30 UTC = P12 历史回填，★独立 invocation★：独享 50 外部 + 1000 内部子请求预算与整个 CPU 预算，
++  //   与当日流水线完全不共享（复核 R1 的 BLOCK 就是「回填叠在 runDaily 同一个 invocation 里会撞 50 上限」）。
++  "triggers": { "crons": ["30 20 * * *", "30 8 * * *"] }
+ }

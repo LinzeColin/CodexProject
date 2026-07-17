@@ -1,0 +1,14 @@
+# ADP-V02-P12 changed files
+
+## 生产代码 + 部署配置
+  arxiv-daily-push/deploy/cloudflare/worker_cloud.js  +99/-2
+  arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc  +4/-2
+  build_id = e8491f75970f（自排除哈希复现；线上已部署 Version f9b79493）
+
+## 证据
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/TASK_REPORT.md
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/changed_files.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/cost_value.json
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/git.diff
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_tests.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results/backfill_verify.mjs

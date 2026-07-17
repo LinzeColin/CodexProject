@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260719-ADP-V02-P11-TASK-INDEX-DEAD-CONFIG"
-source_snapshot_hash: "sha256:e487a54135d9b2c5cef76baeb8962c213466ba639e6cde65a1dbeb279542c331"
+as_of_event_id: "EVENT-20260718-ADP-V02-P12-BACKFILL-DEPLOY"
+source_snapshot_hash: "sha256:ba763c4f4f0166d739f60b5c1b3ea628b37d4c4a98422ae77790430794759007"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
 snapshot_event_time: "2026-07-19T15:00:00+10:00"
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 162
+    precommit_pending_events: 163
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

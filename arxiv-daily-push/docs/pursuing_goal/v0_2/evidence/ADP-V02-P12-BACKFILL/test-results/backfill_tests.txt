@@ -1,0 +1,27 @@
+ADP-V02-P12 backfill_verify.mjs —— 测的是从 worker_cloud.js 抽取的 //@P12-CORE 发货代码本体（非副本）
+自定位：从脚本位置向上找 arxiv-daily-push/deploy/cloudflare/worker_cloud.js。以下从证据包目录跑，证明可复现。
+
+$ (cd arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P12-BACKFILL/test-results && node backfill_verify.mjs)
+== A. 游标从真实 OAI token 解析（无状态，token 里编码了 from=） ==
+== B. 窗口计算：until 封顶到 today，不越未来 ==
+== C. 游标单调推进（★只进不退★） ==
+== D. 落格：历史条目按 created 落进正确的历史格（覆盖债务真的被填） ==
+== E. 去重：同一 arxiv id 再来一次不产生重复行（ON CONFLICT） ==
+== F. 页封顶 = 预算（DIR-007）：给 5 页却只抓 PAGES=2 ==
+== G. ★永不抛★：抓取失败只降级，绝不拖垮当日运行 ==
+== H. 追平近端：游标 >= today 时跳过（近端交给每日 cron） ==
+== NC-D. 证明 D1/D3 承重：在真 runBackfill 里把 published_at 换成 null（→COALESCE 落到 today） ==
+== I. OAI 忙(503)：★不推进游标★，本夜降级、下夜重试同窗口 ==
+== J. ★防卡死★：单日≥一页时 token.from==cursor（skip= 被丢弃），仍强制 +1 天前进 ==
+== 自检 ==
+  pass=24 fail=0 total=24
+OK — all green（测的是从 worker_cloud.js 抽取的发货代码本体）
+
+───── 承重证明（抽取发货 core、破坏一个守卫、看指定断言变红）─────
+
+# J1 防卡死守卫：删掉 forward-progress 行 -> 超密单日游标卡死
+  WITH-GUARD -> cursor_next=2016-03-02
+  GUARD-DELETED -> cursor_next=2016-03-01  (STALLED)
+
+# C2 单调守卫：改成 return cand -> 游标后退
+  no-monotonic-guard advanceCursor(2016-03-01,null,2016-01-31) -> 2016-01-31 (后退 -> C2 承重)

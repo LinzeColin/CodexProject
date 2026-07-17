@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-07-18 Australia/Sydney - ADP V0.2 P12: arXiv 历史回填，填覆盖债务 (PRODUCTION DEPLOY e8491f75970f; product_version 0.33.0)
+- `/system` 覆盖网格实测**时间覆盖率 1.5%**（69/4699 格，4630 格从未回填）——P09 量出的、通往 goal「全面」的真实距离。
+  不是来源不存在，是**我们从没抓过那些月份**。P12 逐夜回填 arXiv 历史论文，把这条债务还起来。
+- 做法：arXiv OAI-PMH 历史 datestamp 轴回填。每夜从 `cn_meta` 游标取一页 `from/until` 窗口，按论文真实 `<created>`
+  落进覆盖网格的正确格，游标**单调**前进。★**独立 cron invocation**（`30 8 UTC`）★，独享子请求/CPU 预算，
+  与当日流水线（`30 20 UTC`）完全隔离。
+- 全部以实测为据：arXiv 从边缘可达（生产 run_log『arXiv 220』就是这个 OAI 端点）；OAI 历史窗口实测 http=200/420~1300 条；
+  resumptionToken **无状态**、编码下一段 `from=` → 游标 = 持久化日期。
+- ★设计关键 datestamp≠created★：OAI `from/until` 按 datestamp 过滤，但条目按真实 `<created>` 落格 →
+  单调填真实空洞、不精确定向某一格（格有≥1条即翻绿，覆盖率照爬）。设计已知。
+- ★复核 2 轮，R1 BLOCK 属实且致命★：回填原本链在 `runDaily` **同一 invocation**，而 **D1 写算子请求**
+  （Cloudflare 文档确认；免费档 50/invocation），叠加撞 50 → insert 抛错被吞 → `setCursor` 永不执行
+  → 游标永不推进 → 每夜补 0 条 → **正是 P08 的病**，且本地验证器**结构上看不见**。R1 还抓到 `skip=` 卡死潜在 bug。
+  修法：★不靠赢文档歧义（文档确实说不清 D1 算 50 还是单列 1000），靠让它无关★——移到**独立 invocation**，两种读法都安全；
+  `skip=` 卡死加 forward-progress 守卫。R2 CONFIRMED_SOUND，未自签。
+- 验证器**直接抽取 `//@P12-CORE` 测发货代码本体**（非副本），**24 断言全绿**；J1/C2/NC-D 三守卫 sabotage 承重。
+- 上线验证：`/build.json=e8491f75970f`、6 路由 200、`/api/backfill` 就绪、两 cron 已注册。
+  ★首夜回填证据时间延迟到下一个 `30 8 UTC` cron，读 `/api/backfill` 即得★（同 P10『发保守、测真实』）。
+- DIR-007：回填独占 invocation ~21 子请求（两种读法都 <50 且 <1000）；D1 ~1300 行/夜«5M/天；两 cron«5/账户；零付费。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 P11: TASK_INDEX.csv 的 status 列是死配置（守卫；不改归档、不填列）
 
 - `docs/pursuing_goal/v0_1/TASK_INDEX.csv` 的 `status` 列对**全部 90 个任务**写着 `NOT_STARTED`。
