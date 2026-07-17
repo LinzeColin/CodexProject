@@ -155,6 +155,71 @@ def validate_packet(packet: dict[str, Any]) -> None:
 def validate_counts(packet: dict[str, Any], manifest: dict[str, Any], candidates: list[dict[str, Any]]) -> None:
     summary = manifest.get("field_summary") or {}
     current_counts = packet.get("current_counts") or {}
+    public_projection_v2 = (
+        manifest.get("schema_version") == "kmfa.a0_golden_fixture.public_projection.v2"
+        and manifest.get("record_type") == "a0_golden_fixture_public_projection"
+        and candidates
+        and all(
+            item.get("schema_version") == "kmfa.a0_golden_fixture_candidate.public_projection.v2"
+            for item in candidates
+        )
+    )
+    if public_projection_v2:
+        expected_summary = {
+            "fixture_candidate_count": 45,
+            "a0_project_candidates": 9,
+            "required_fields_per_candidate": 5,
+            "private_binding_required_count": 45,
+            "private_binding_verified_count": 0,
+        }
+        for key, expected in expected_summary.items():
+            if summary.get(key) != expected:
+                fail(f"public projection field_summary.{key} mismatch")
+        if current_counts.get("fixture_candidate_count") != len(candidates):
+            fail("owner decision packet fixture count must match public projection")
+        if (
+            current_counts.get("private_field_hash_recorded_count", 0)
+            + current_counts.get("private_field_pending_count", 0)
+            != len(candidates)
+        ):
+            fail("owner decision packet historical private-field partition mismatch")
+        if (
+            current_counts.get("source_anchor_recorded_count", 0)
+            + current_counts.get("source_anchor_pending_count", 0)
+            != len(candidates)
+        ):
+            fail("owner decision packet historical source-anchor partition mismatch")
+
+        candidate_fields: dict[tuple[str, str], set[str]] = {}
+        for record in candidates:
+            group = (str(record.get("candidate_id")), str(record.get("a0_file_id")))
+            candidate_fields.setdefault(group, set()).add(str(record.get("field_key")))
+            source = record.get("source_binding") or {}
+            value = record.get("value_binding") or {}
+            quality = record.get("quality_state") or {}
+            safety = record.get("public_repo_safety") or {}
+            if source.get("private_binding_required") is not True:
+                fail("public projection source binding must require private revalidation")
+            if source.get("private_binding_receipt_status") != "required_not_verified":
+                fail("public projection source binding receipt status mismatch")
+            if value.get("private_binding_required") is not True:
+                fail("public projection value binding must require private revalidation")
+            if value.get("private_binding_receipt_status") != "required_not_verified":
+                fail("public projection value binding receipt status mismatch")
+            if value.get("raw_value_public_committed") is not False:
+                fail("public projection must not commit raw values")
+            if value.get("normalized_value_public_committed") is not False:
+                fail("public projection must not commit normalized values")
+            if quality.get("q4_human_confirmed") is not False:
+                fail("public projection must not assert Q4 confirmation")
+            if quality.get("q5_calculation_baseline_allowed") is not False:
+                fail("public projection must not allow Q5 baseline")
+            if any(value is not False for value in safety.values()):
+                fail("public projection safety flags must remain false")
+        if len(candidate_fields) != 9 or any(fields != EXPECTED_PENDING_FIELDS for fields in candidate_fields.values()):
+            fail("public projection must preserve nine complete five-field candidate groups")
+        return
+
     count_pairs = {
         "fixture_candidate_count": "fixture_candidate_count",
         "private_field_hash_recorded_count": "private_value_hash_recorded_count",

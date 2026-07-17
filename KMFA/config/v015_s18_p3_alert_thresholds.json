@@ -1,0 +1,12 @@
+{
+  "schema_version": "kmfa.v015.s18p3.alert_thresholds.v1",
+  "threshold_version": "1.5.0-s18p3-thresholds-v1",
+  "data_classification": "PUBLIC_SYNTHETIC",
+  "major_overdue_amount_cents": 20000000,
+  "major_overdue_days": 60,
+  "funding_gap_cents": 1,
+  "loan_maturity_days": 90,
+  "currency": "CNY",
+  "owner_role": "财务负责人",
+  "change_policy": "阈值变更必须更新版本并完整复跑 S18-P3 验收。"
+}

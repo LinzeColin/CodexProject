@@ -270,7 +270,7 @@ def ensure_metadata_dirs(root: Path) -> None:
         "backup_registry",
         "cleanup",
         "database",
-        "logs",
+        "run_status",
         "public_reports",
         "raw_index",
         "run_manifests",
@@ -350,8 +350,8 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
     raw_index = {
         "period": period,
         "run_id": manifest["run_id"],
-        "metadata_mode": "governed_index_owner_authorized_plaintext_upload_supported",
-        "owner_authorized_plaintext_upload_registered": False,
+        "metadata_mode": "strict_public_safe_metadata_only",
+        "owner_plaintext_exception_effective": False,
         "input_slots": manifest["input_slots"],
     }
     report_index = {
@@ -373,8 +373,8 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
         ],
         "raw_sensitive_plaintext_uploaded": False,
         "reason": (
-            "KMFA AGENTS.md permits owner-authorized plaintext GitHub upload under KMFA/metadata; "
-            "this register command records metadata only and does not copy raw files."
+            "KMFA v1.5 public-repository policy denies plaintext sensitive uploads for every role; "
+            "this register command records strict public-safe metadata only and does not copy raw files."
         ),
         "status": manifest["status"],
     }
@@ -393,7 +393,7 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
     write_json(metadata_root / "public_reports" / f"{period}_output_report_index.json", report_index)
     write_json(metadata_root / "cleanup" / f"{period}_cleanup_audit.json", cleanup_audit)
     jsonl_append(metadata_root / "backup_registry" / "backup_upload_register.jsonl", backup_entry)
-    jsonl_append(metadata_root / "logs" / f"{period}_public_safe_run_log.jsonl", log_entry)
+    jsonl_append(metadata_root / "run_status" / f"{period}_public_safe_run_status.jsonl", log_entry)
 
     export_sql = render_sql_export(manifest)
     schema_path = metadata_root / "database" / "schema.sql"

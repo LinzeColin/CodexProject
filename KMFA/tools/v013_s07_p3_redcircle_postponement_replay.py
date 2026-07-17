@@ -141,6 +141,32 @@ def validate_legacy_s07_p3() -> dict[str, Any]:
     )
 
     future_controls = connector_policy["future_connector_controls"]
+    template_contract_bound = [
+        template
+        for template in templates
+        if template.get("template_contract_hash")
+        or (
+            template.get("schema_version") == "kmfa.redcircle_reserved_export_template.v2"
+            and template.get("template_contract_binding_status")
+            == "PRIVATE_BINDING_REVALIDATION_REQUIRED"
+            and str(template.get("template_contract_ref", "")).startswith(
+                "OPAQUE-REDCIRCLE-TEMPLATE-CONTRACT-V1-"
+            )
+            and template.get("sensitive_binding_values_committed") is False
+        )
+    ]
+    source_private_bound = [
+        template
+        for template in templates
+        if template.get("source_file_private_ref")
+        or (
+            template.get("schema_version") == "kmfa.redcircle_reserved_export_template.v2"
+            and str(template.get("opaque_source_binding_ref", "")).startswith(
+                "OPAQUE-REDCIRCLE-SOURCE-V1-"
+            )
+            and template.get("sensitive_binding_values_committed") is False
+        )
+    ]
     return {
         "redcircle_export_types": list(manifest["redcircle_export_types"]),
         "reserved_template_count": manifest["summary"]["reserved_template_count"],
@@ -148,8 +174,8 @@ def validate_legacy_s07_p3() -> dict[str, Any]:
         "rollback_plan_count": manifest["summary"]["rollback_plan_count"],
         "automatic_connector_allowed_count": manifest["summary"]["automatic_connector_allowed_count"],
         "registry_source_count": len(registry["sources"]),
-        "template_contract_hash_count": sum(1 for template in templates if template.get("template_contract_hash")),
-        "source_private_ref_count": sum(1 for template in templates if template.get("source_file_private_ref")),
+        "template_contract_hash_count": len(template_contract_bound),
+        "source_private_ref_count": len(source_private_bound),
         "manual_export_file_allowed_count": sum(
             1 for template in templates if template.get("manual_export_file_allowed") is True
         ),

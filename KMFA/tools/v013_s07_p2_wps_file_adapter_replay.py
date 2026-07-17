@@ -131,8 +131,21 @@ def validate_legacy_s07_p2() -> dict[str, Any]:
     hash_only_mappings = [
         mapping
         for mapping in mappings
-        if str(mapping.get("source_binding", {}).get("source_header_hash", "")).startswith("sha256:")
-        and mapping.get("source_binding", {}).get("source_header_private_ref")
+        if (
+            str(mapping.get("source_binding", {}).get("source_header_hash", "")).startswith("sha256:")
+            and mapping.get("source_binding", {}).get("source_header_private_ref")
+        )
+        or (
+            mapping.get("schema_version") == "kmfa.wps_field_mapping.v2"
+            and mapping.get("source_binding", {}).get("binding_schema_version")
+            == "kmfa.public_opaque_source_binding.v1"
+            and mapping.get("source_binding", {}).get("binding_status")
+            == "PRIVATE_BINDING_REVALIDATION_REQUIRED"
+            and str(mapping.get("source_binding", {}).get("binding_ref", "")).startswith(
+                "OPAQUE-WPS-SOURCE-BINDING-"
+            )
+            and mapping.get("source_binding", {}).get("private_evidence_committed") is False
+        )
     ]
 
     return {

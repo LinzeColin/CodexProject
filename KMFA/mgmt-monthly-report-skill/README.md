@@ -28,7 +28,7 @@ KMFA/metadata/mgmt-monthly-report-skill/
   cleanup/
   config/
   database/
-  logs/
+  run_status/
   public_reports/
   raw_index/
   run_manifests/
@@ -39,7 +39,7 @@ KMFA/metadata/mgmt-monthly-report-skill/
 
 1. 把本期输入文件放到受控输入目录。
 2. 用 `config/input_manifest.7slots.template.yml` 填好或自动生成本期映射。
-3. 先运行 `scripts/mgmt_monthly_report.py register`，登记 hash、sheet、输出状态。
+3. 先运行 `scripts/mgmt_monthly_report.py register`，仅登记静态 source/output ref、状态与聚合计数。
 4. 生成 `经营管理分析报表 YYYYMM.xlsx`。
 5. 运行 `scripts/validate_deliverables.py`。
 6. Excel 通过后生成 `董事会经营分析摘要 YYYYMM.pdf`。

@@ -114,8 +114,21 @@ def validate_legacy_s07_p1() -> dict[str, Any]:
     hash_only_candidates = [
         candidate
         for candidate in candidates
-        if str(candidate.get("source_binding", {}).get("source_header_hash", "")).startswith("sha256:")
-        and candidate.get("source_binding", {}).get("source_header_private_ref")
+        if (
+            str(candidate.get("source_binding", {}).get("source_header_hash", "")).startswith("sha256:")
+            and candidate.get("source_binding", {}).get("source_header_private_ref")
+        )
+        or (
+            candidate.get("schema_version") == "kmfa.finance_field_candidate.v2"
+            and candidate.get("source_binding", {}).get("binding_schema_version")
+            == "kmfa.public_opaque_source_binding.v1"
+            and candidate.get("source_binding", {}).get("binding_status")
+            == "PRIVATE_BINDING_REVALIDATION_REQUIRED"
+            and str(candidate.get("source_binding", {}).get("binding_ref", "")).startswith(
+                "OPAQUE-FIN-SOURCE-BINDING-"
+            )
+            and candidate.get("source_binding", {}).get("private_evidence_committed") is False
+        )
     ]
     source_formats = Counter(str(source.get("file_format")) for source in registry["sources"])
 

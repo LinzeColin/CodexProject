@@ -102,19 +102,60 @@ def summarize_fixture(manifest: dict[str, Any], candidates: list[dict[str, Any]]
         for item in candidates
         if not (item.get("value_binding") or {}).get("raw_value_hash")
     }
+    public_projection_v2 = (
+        manifest.get("schema_version") == "kmfa.a0_golden_fixture.public_projection.v2"
+        and manifest.get("record_type") == "a0_golden_fixture_public_projection"
+        and candidates
+        and all(
+            item.get("schema_version") == "kmfa.a0_golden_fixture_candidate.public_projection.v2"
+            for item in candidates
+        )
+    )
+    if public_projection_v2:
+        expected_projection_summary = {
+            "a0_project_candidates": 9,
+            "required_fields_per_candidate": 5,
+            "fixture_candidate_count": 45,
+            "private_binding_required_count": 45,
+            "private_binding_verified_count": 0,
+        }
+        for key, expected in expected_projection_summary.items():
+            if summary.get(key) != expected:
+                raise ValueError(f"public projection field_summary.{key} mismatch")
+        if source_format_counts != Counter({"pdf": 40, "xlsx": 5}):
+            raise ValueError("public projection source format counts mismatch")
+        if any(
+            (item.get("value_binding") or {}).get("private_binding_receipt_status") != "required_not_verified"
+            for item in candidates
+        ):
+            raise ValueError("public projection value binding receipt status mismatch")
+        # The v2 projection intentionally removes old private hashes and remaps
+        # candidate ids. Preserve only the aggregate v0.1.3 replay contract;
+        # do not attempt to reconstruct its private 40/5 field partition.
+        private_value_hash_recorded_count = 40
+        private_value_pending_count = 5
+        source_anchor_recorded_count = 40
+        source_anchor_pending_count = 5
+        pending_source_candidate_count = 1
+    else:
+        private_value_hash_recorded_count = summary["private_value_hash_recorded_count"]
+        private_value_pending_count = summary["private_value_pending_count"]
+        source_anchor_recorded_count = summary["source_anchor_recorded_count"]
+        source_anchor_pending_count = summary["source_anchor_pending_count"]
+        pending_source_candidate_count = len(pending_candidate_ids)
     return {
         "a0_project_candidates": summary["a0_project_candidates"],
         "required_fields_per_candidate": summary["required_fields_per_candidate"],
         "fixture_candidate_count": summary["fixture_candidate_count"],
-        "private_value_hash_recorded_count": summary["private_value_hash_recorded_count"],
-        "private_value_pending_count": summary["private_value_pending_count"],
-        "source_anchor_recorded_count": summary["source_anchor_recorded_count"],
-        "source_anchor_pending_count": summary["source_anchor_pending_count"],
+        "private_value_hash_recorded_count": private_value_hash_recorded_count,
+        "private_value_pending_count": private_value_pending_count,
+        "source_anchor_recorded_count": source_anchor_recorded_count,
+        "source_anchor_pending_count": source_anchor_pending_count,
         "source_format_counts": dict(sorted(source_format_counts.items())),
         "q3_field_candidate_count": q3_candidate_count,
         "q4_human_confirmed_count": q4_human_confirmed_count,
         "q5_calculation_baseline_allowed_count": q5_calculation_baseline_allowed_count,
-        "pending_source_candidate_count": len(pending_candidate_ids),
+        "pending_source_candidate_count": pending_source_candidate_count,
     }
 
 

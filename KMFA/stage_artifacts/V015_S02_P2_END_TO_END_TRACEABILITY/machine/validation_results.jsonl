@@ -1,0 +1,12 @@
+{"validation_id":"s02_p1_strict_dependency","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/check_v015_s02_p1_requirements_scope_lock.py --require-source-package --require-validation-receipts --require-roadmap-sync","result":"PASS","exit_code":0}
+{"validation_id":"s02_p2_focused_tests","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest KMFA.tests.test_v015_s02_p2_end_to_end_traceability KMFA.tests.test_v015_roadmap_governance_sync -q","result":"PASS","exit_code":0}
+{"validation_id":"s02_p2_requirement_mutations","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest KMFA.tests.test_v015_s02_p2_requirement_trace -q","result":"PASS","exit_code":0}
+{"validation_id":"s02_p2_lineage_mutations","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest KMFA.tests.test_v015_s02_p2_lineage_contract -q","result":"PASS","exit_code":0}
+{"validation_id":"s02_p2_formula_mutations","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest KMFA.tests.test_v015_s02_p2_formula_trace -q","result":"PASS","exit_code":0}
+{"validation_id":"roadmap_governance_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/v015_roadmap_governance_sync.py --check","result":"PASS","exit_code":0}
+{"validation_id":"governance_project_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/validate_project_governance.py --project KMFA --mode required","result":"PASS","exit_code":0}
+{"validation_id":"lean_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/lean_governance.py validate --project KMFA --mode required","result":"PASS","exit_code":0}
+{"validation_id":"governance_sync_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/validate_governance_sync.py --changed-only --base-ref 1de399f35d1c0d2b7ee1ea6451c2be8d1c49a861 --enforce-sync","result":"PASS","exit_code":0}
+{"validation_id":"no_float_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/check_no_float_money.py","result":"PASS","exit_code":0}
+{"validation_id":"no_omission_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/no_omission_check.py","result":"PASS","exit_code":0}
+{"validation_id":"exact_core_rebuild_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/build_v015_s02_p2_end_to_end_traceability.py --check","result":"PASS","exit_code":0}

@@ -58,15 +58,13 @@ REQUIRED_AUDIT_ACTION_TYPES = (
     "notification",
 )
 
-POLICY_VERSION = "KMFA-S17P1-ACCESS-SECURITY-OWNER-PLAINTEXT-002"
-ROLE_POLICY_VERSION = "ROLE-KMFA-S17P1-LEAST-PRIVILEGE-001"
-SENSITIVE_POLICY_VERSION = "SEC-KMFA-S17P1-PUBLIC-REPO-OWNER-PLAINTEXT-002"
-SECRET_POLICY_VERSION = "SEC-KMFA-S17P1-CREDENTIAL-SECRET-DENY-002"
+POLICY_VERSION = "KMFA-V015-S03P3-ACCESS-SECURITY-STRICT-PUBLIC-SAFE-001"
+ROLE_POLICY_VERSION = "ROLE-KMFA-V015-S03P3-LEAST-PRIVILEGE-001"
+SENSITIVE_POLICY_VERSION = "SEC-KMFA-V015-S03P3-PUBLIC-REPOSITORY-DENY-001"
+SECRET_POLICY_VERSION = SENSITIVE_POLICY_VERSION
 AUDIT_POLICY_VERSION = "AUD-KMFA-S17P1-ACTION-LOG-001"
 
-OWNER_AUTHORIZED_PLAINTEXT_ALLOWED_CATEGORIES = tuple(
-    category for category in REQUIRED_SENSITIVE_POLICY_CATEGORIES if category != "credential_secret"
-)
+OWNER_AUTHORIZED_PLAINTEXT_ALLOWED_CATEGORIES: tuple[str, ...] = ()
 
 FORBIDDEN_PUBLIC_TEXT = (
     "raw_value",
@@ -168,7 +166,7 @@ def _quality_gate() -> dict[str, Any]:
         "role_permission_matrix_complete": True,
         "sensitive_public_repo_policy_enforced": True,
         "audit_log_policy_complete": True,
-        "raw_sensitive_public_repo_allowed": True,
+        "raw_sensitive_public_repo_allowed": False,
         "credential_secret_public_repo_allowed": False,
         "notification_delivery_allowed": False,
         "notification_full_report_body_allowed": False,
@@ -178,16 +176,16 @@ def _quality_gate() -> dict[str, Any]:
         "external_connector_allowed": False,
         "lineage_full_check_allowed": False,
         "stage17_review_allowed": False,
-        "github_upload_allowed": True,
-        "phase_completion_upload_allowed": True,
-        "release_block_reason": "owner_authorized_plaintext_github_policy_only_not_business_release",
+        "github_upload_allowed": False,
+        "phase_completion_upload_allowed": False,
+        "release_block_reason": "v1.5_strict_public_safe_gate_and_final_release_acceptance_required",
     }
 
 
 def _role_matrix() -> list[dict[str, Any]]:
     common_denied = [
         "source_document_open_without_owner_authorization",
-        "sensitive_material_public_commit_without_owner_authorization",
+        "sensitive_material_public_commit",
         "credential_view",
         "quality_gate_bypass",
         "formal_report_release",
@@ -203,9 +201,9 @@ def _role_matrix() -> list[dict[str, Any]]:
                 "view_public_safe_summary",
                 "review_risk_dashboard",
                 "approve_stage_review_after_validators",
-                "authorize_owner_plaintext_github_upload",
+                "approve_public_safe_metadata_after_validation",
             ],
-            "max_write_scope": "metadata_and_owner_authorized_plaintext_upload_manifest",
+            "max_write_scope": "public_safe_metadata_only",
         },
         {
             "role_id": "finance",
@@ -214,9 +212,9 @@ def _role_matrix() -> list[dict[str, Any]]:
                 "register_source_metadata",
                 "review_finance_evidence_index",
                 "append_metadata_status_event",
-                "prepare_owner_authorized_plaintext_upload_manifest",
+                "prepare_public_safe_metadata_envelope",
             ],
-            "max_write_scope": "metadata_and_owner_authorized_plaintext_upload_manifest",
+            "max_write_scope": "public_safe_metadata_only",
         },
         {
             "role_id": "reviewer",
@@ -225,9 +223,9 @@ def _role_matrix() -> list[dict[str, Any]]:
                 "run_validators",
                 "review_exception_queue",
                 "record_review_finding",
-                "validate_owner_authorized_plaintext_upload_manifest",
+                "validate_public_safe_metadata_envelope",
             ],
-            "max_write_scope": "metadata_and_owner_authorized_plaintext_upload_manifest",
+            "max_write_scope": "public_safe_metadata_only",
         },
         {
             "role_id": "readonly",
@@ -240,15 +238,14 @@ def _role_matrix() -> list[dict[str, Any]]:
         },
     ]
     for row in rows:
-        owner_authorized_commit_allowed = row["role_id"] != "readonly"
         row.update(
             {
                 "record_type": "access_role_permission",
                 "policy_version": ROLE_POLICY_VERSION,
                 "denied_actions": common_denied,
-                "raw_business_data_access_in_public_repo": owner_authorized_commit_allowed,
-                "sensitive_file_public_commit_allowed": owner_authorized_commit_allowed,
-                "owner_authorization_required_for_sensitive_commit": owner_authorized_commit_allowed,
+                "raw_business_data_access_in_public_repo": False,
+                "sensitive_file_public_commit_allowed": False,
+                "owner_authorization_required_for_sensitive_commit": False,
                 "credential_access_allowed": False,
                 "business_execution_allowed": False,
                 "bypass_quality_gate_allowed": False,
@@ -263,30 +260,29 @@ def _role_matrix() -> list[dict[str, Any]]:
 
 def _sensitive_policies() -> list[dict[str, Any]]:
     controls = [
-        "explicit_owner_authorization_required",
-        "owner_authorized_upload_manifest_required",
-        "secret_scan_before_upload",
-        "git_history_bloat_review",
-        "local_commit_before_upload_gate",
+        "strict_tracked_index_worktree_scan",
+        "gitignore_negative_and_positive_probe",
+        "schema_aware_public_metadata_audit",
+        "dual_plane_leakage_and_reconstruction_test",
+        "final_upload_public_safe_gate",
     ]
     rows: list[dict[str, Any]] = []
     for category in REQUIRED_SENSITIVE_POLICY_CATEGORIES:
-        allowed = category in OWNER_AUTHORIZED_PLAINTEXT_ALLOWED_CATEGORIES
         rows.append(
             {
                 "record_type": "public_repo_sensitive_data_policy",
                 "category_id": category,
-                "policy_version": SENSITIVE_POLICY_VERSION if allowed else SECRET_POLICY_VERSION,
-                "public_repo_allowed": allowed,
-                "git_upload_allowed": allowed,
-                "value_plaintext_allowed": allowed,
-                "metadata_hash_or_ref_only_allowed": not allowed,
+                "policy_version": SENSITIVE_POLICY_VERSION,
+                "public_repo_allowed": False,
+                "git_upload_allowed": False,
+                "value_plaintext_allowed": False,
+                "metadata_hash_or_ref_only_allowed": True,
                 "metadata_hash_or_ref_allowed": True,
-                "requires_explicit_owner_authorization": allowed,
+                "public_artifact_hash_or_opaque_ref_allowed": True,
+                "raw_private_hash_allowed": False,
+                "requires_explicit_owner_authorization": False,
                 "credential_secret_allowed": False,
-                "handling": "owner_authorized_plaintext_github_upload"
-                if allowed
-                else "secret_or_credential_never_plaintext_public_repo",
+                "handling": "private_plane_or_strict_public_safe_metadata_only",
                 "enforcement_controls": controls,
                 "evidence_ref": "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl",
             }
@@ -297,16 +293,18 @@ def _sensitive_policies() -> list[dict[str, Any]]:
 def _owner_authorized_plaintext_github_policy() -> dict[str, Any]:
     return {
         "policy_version": SENSITIVE_POLICY_VERSION,
-        "policy_mode": "owner_authorized_plaintext_github_upload",
-        "allowed": True,
-        "allowed_categories": list(OWNER_AUTHORIZED_PLAINTEXT_ALLOWED_CATEGORIES),
-        "denied_categories": ["credential_secret"],
-        "requires_explicit_owner_authorization": True,
-        "requires_upload_manifest": True,
-        "owner_authorization_source": "current_thread_owner_instruction_or_signed_upload_manifest",
+        "policy_mode": "superseded_by_v1.5_strict_public_safe_only",
+        "allowed": False,
+        "allowed_categories": [],
+        "denied_categories": list(REQUIRED_SENSITIVE_POLICY_CATEGORIES),
+        "requires_explicit_owner_authorization": False,
+        "requires_upload_manifest": False,
+        "owner_authorization_source": "not_applicable_owner_cannot_override_v1.5_public_repository_deny",
         "tracked_upload_manifest": "KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl",
         "credential_secret_public_repo_allowed": False,
         "actual_plaintext_files_committed_by_this_manifest": False,
+        "legacy_policy_effective": False,
+        "superseded_in_phase": "V015_S03_P3_PUBLIC_REPOSITORY_SAFETY",
     }
 
 
@@ -378,11 +376,18 @@ def build_default_access_security_policy(
             "role_count": len(role_matrix),
             "sensitive_policy_category_count": len(sensitive_policies),
             "audit_action_type_count": len(audit_policies),
-            "public_repo_safety_status": "owner_authorized_plaintext_github_allowed_except_credentials",
+            "public_repo_safety_status": "v1.5_strict_public_safe_only_no_owner_plaintext_exception",
             "notification_scope": "log_policy_only_no_delivery_in_s17_p1",
         },
         "public_repo_safety": _public_repo_safety(),
         "owner_authorized_plaintext_github_policy": _owner_authorized_plaintext_github_policy(),
+        "current_effective_policy": {
+            "target_release": "v1.5",
+            "phase": "S03-P3",
+            "policy_ref": "KMFA/metadata/protocol/v015_s03_p3_public_repository_protection_policy_public_safe.json",
+            "legacy_s17_policy_origin_preserved": True,
+            "legacy_owner_plaintext_exception_effective": False,
+        },
         "stage_scope": _stage_scope(),
         "quality_gate": _quality_gate(),
         "output_refs": {
@@ -495,12 +500,10 @@ def validate_access_security_policy_artifacts(
         "role_permission_matrix_complete",
         "sensitive_public_repo_policy_enforced",
         "audit_log_policy_complete",
-        "raw_sensitive_public_repo_allowed",
-        "github_upload_allowed",
-        "phase_completion_upload_allowed",
     ):
         _require_true(f"manifest.quality_gate.{key}", quality_gate.get(key))
     for key in (
+        "raw_sensitive_public_repo_allowed",
         "credential_secret_public_repo_allowed",
         "notification_delivery_allowed",
         "notification_full_report_body_allowed",
@@ -510,18 +513,20 @@ def validate_access_security_policy_artifacts(
         "external_connector_allowed",
         "lineage_full_check_allowed",
         "stage17_review_allowed",
+        "github_upload_allowed",
+        "phase_completion_upload_allowed",
     ):
         _require_false(f"manifest.quality_gate.{key}", quality_gate.get(key))
 
     owner_policy = manifest.get("owner_authorized_plaintext_github_policy")
     if not isinstance(owner_policy, dict):
         raise AccessSecurityPolicyError("manifest.owner_authorized_plaintext_github_policy must be an object")
-    _require_true("owner_policy.allowed", owner_policy.get("allowed"))
-    _require_true(
+    _require_false("owner_policy.allowed", owner_policy.get("allowed"))
+    _require_false(
         "owner_policy.requires_explicit_owner_authorization",
         owner_policy.get("requires_explicit_owner_authorization"),
     )
-    _require_true("owner_policy.requires_upload_manifest", owner_policy.get("requires_upload_manifest"))
+    _require_false("owner_policy.requires_upload_manifest", owner_policy.get("requires_upload_manifest"))
     _require_false(
         "owner_policy.credential_secret_public_repo_allowed",
         owner_policy.get("credential_secret_public_repo_allowed"),
@@ -531,6 +536,12 @@ def validate_access_security_policy_artifacts(
         tuple(owner_policy.get("allowed_categories", [])),
         OWNER_AUTHORIZED_PLAINTEXT_ALLOWED_CATEGORIES,
     )
+    _require_equal(
+        "owner_policy.denied_categories",
+        tuple(owner_policy.get("denied_categories", [])),
+        REQUIRED_SENSITIVE_POLICY_CATEGORIES,
+    )
+    _require_false("owner_policy.legacy_policy_effective", owner_policy.get("legacy_policy_effective"))
 
     roles = {str(row.get("role_id")): row for row in role_matrix}
     _require_equal("role ids", set(roles), set(REQUIRED_ROLES))
@@ -540,25 +551,20 @@ def validate_access_security_policy_artifacts(
         actions = row.get("allowed_public_safe_actions")
         if not isinstance(actions, list) or len(actions) < 2:
             raise AccessSecurityPolicyError(f"{role_id}.allowed_public_safe_actions must contain at least two actions")
-        owner_authorized_commit_allowed = role_id != "readonly"
         if role_id == "readonly":
             _require_equal(f"{role_id}.max_write_scope", row.get("max_write_scope"), "none")
         else:
             _require_equal(
                 f"{role_id}.max_write_scope",
                 row.get("max_write_scope"),
-                "metadata_and_owner_authorized_plaintext_upload_manifest",
+                "public_safe_metadata_only",
             )
         for key in ("raw_business_data_access_in_public_repo", "sensitive_file_public_commit_allowed"):
-            if owner_authorized_commit_allowed:
-                _require_true(f"{role_id}.{key}", row.get(key))
-            else:
-                _require_false(f"{role_id}.{key}", row.get(key))
-        if owner_authorized_commit_allowed:
-            _require_true(
-                f"{role_id}.owner_authorization_required_for_sensitive_commit",
-                row.get("owner_authorization_required_for_sensitive_commit"),
-            )
+            _require_false(f"{role_id}.{key}", row.get(key))
+        _require_false(
+            f"{role_id}.owner_authorization_required_for_sensitive_commit",
+            row.get("owner_authorization_required_for_sensitive_commit"),
+        )
         for key in ("credential_access_allowed", "business_execution_allowed", "bypass_quality_gate_allowed", "notification_body_report_allowed"):
             _require_false(f"{role_id}.{key}", row.get(key))
         _require_true(f"{role_id}.audit_required", row.get("audit_required"))
@@ -569,35 +575,28 @@ def validate_access_security_policy_artifacts(
     for category in REQUIRED_SENSITIVE_POLICY_CATEGORIES:
         row = categories[category]
         _require_equal(f"{category}.record_type", row.get("record_type"), "public_repo_sensitive_data_policy")
-        if category == "credential_secret":
-            for key in ("public_repo_allowed", "git_upload_allowed", "value_plaintext_allowed"):
-                _require_false(f"{category}.{key}", row.get(key))
-            _require_true(
-                f"{category}.metadata_hash_or_ref_only_allowed",
-                row.get("metadata_hash_or_ref_only_allowed"),
-            )
-            _require_false(f"{category}.credential_secret_allowed", row.get("credential_secret_allowed"))
-            _require_equal(
-                f"{category}.handling",
-                row.get("handling"),
-                "secret_or_credential_never_plaintext_public_repo",
-            )
-        else:
-            for key in ("public_repo_allowed", "git_upload_allowed", "value_plaintext_allowed"):
-                _require_true(f"{category}.{key}", row.get(key))
-            _require_false(
-                f"{category}.metadata_hash_or_ref_only_allowed",
-                row.get("metadata_hash_or_ref_only_allowed"),
-            )
-            _require_true(
-                f"{category}.requires_explicit_owner_authorization",
-                row.get("requires_explicit_owner_authorization"),
-            )
-            _require_equal(f"{category}.handling", row.get("handling"), "owner_authorized_plaintext_github_upload")
+        for key in ("public_repo_allowed", "git_upload_allowed", "value_plaintext_allowed"):
+            _require_false(f"{category}.{key}", row.get(key))
+        _require_true(
+            f"{category}.metadata_hash_or_ref_only_allowed",
+            row.get("metadata_hash_or_ref_only_allowed"),
+        )
+        _require_true(
+            f"{category}.public_artifact_hash_or_opaque_ref_allowed",
+            row.get("public_artifact_hash_or_opaque_ref_allowed"),
+        )
+        _require_false(f"{category}.raw_private_hash_allowed", row.get("raw_private_hash_allowed"))
+        _require_false(f"{category}.requires_explicit_owner_authorization", row.get("requires_explicit_owner_authorization"))
+        _require_false(f"{category}.credential_secret_allowed", row.get("credential_secret_allowed"))
+        _require_equal(
+            f"{category}.handling",
+            row.get("handling"),
+            "private_plane_or_strict_public_safe_metadata_only",
+        )
         controls = row.get("enforcement_controls")
-        if not isinstance(controls, list) or "explicit_owner_authorization_required" not in controls:
+        if not isinstance(controls, list) or "strict_tracked_index_worktree_scan" not in controls:
             raise AccessSecurityPolicyError(
-                f"{category}.enforcement_controls missing explicit_owner_authorization_required"
+                f"{category}.enforcement_controls missing strict_tracked_index_worktree_scan"
             )
 
     actions = {str(row.get("action_type")): row for row in audit_policies}
@@ -691,7 +690,7 @@ def main(argv: list[str] | None = None) -> int:
         f"(roles={summary['role_count']}, "
         f"sensitive_categories={summary['sensitive_policy_category_count']}, "
         f"audit_actions={summary['audit_action_type_count']}, "
-        "owner_authorized_plaintext_github=true, credential_secret=false)"
+        "owner_authorized_plaintext_github=false, strict_public_safe_only=true)"
     )
     return 0
 

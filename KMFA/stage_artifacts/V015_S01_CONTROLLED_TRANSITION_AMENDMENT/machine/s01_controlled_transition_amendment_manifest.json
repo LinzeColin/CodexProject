@@ -1,0 +1,203 @@
+{
+  "schema_version": "kmfa.v015.s01_controlled_transition_amendment.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "bridge_id": "S01-CTA",
+  "task_id": "KMFA-V015-S01-CONTROLLED-TRANSITION-AMENDMENT-20260713",
+  "acceptance_id": "ACC-KMFA-V015-S01-CONTROLLED-TRANSITION-AMENDMENT",
+  "generated_at": "2026-07-13T12:09:13+10:00",
+  "run_mode": "IMPLEMENT",
+  "work_kind": "CONTROLLED_TRANSITION_AMENDMENT",
+  "amendment_base_commit": "08ce4b2b7c2491b2685bab2f33c32f57de519b1b",
+  "source_package": {
+    "name": "KMFA_ChatGPT_Stage3_Codex_TaskPack_Roadmap_v2_0_UIUX_FULL_REBUILD.zip",
+    "bytes": 118652,
+    "sha256": "e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8",
+    "stage_count": 24,
+    "phase_count": 72,
+    "task_count": 216
+  },
+  "dependency_evidence": {
+    "count": 1,
+    "stage_review_manifest_ref": "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_manifest.json",
+    "stage_review_manifest_bytes": 7553,
+    "stage_review_manifest_sha256": "809ec47d052a80a492f1d5e9fdb6a8fe25409cc4e4d494a2afaa0c6a83514c3b",
+    "stage_review_manifest_content_hash": "sha256:542043139b1c4d86bc764f6b0341f205266284d7d119e6bdcf638ab2d17a91bb",
+    "stage_review_result_commit": "08ce4b2b7c2491b2685bab2f33c32f57de519b1b"
+  },
+  "authority": {
+    "existing_full_rebuild_objective_is_scope_authority": true,
+    "additional_owner_authorization_required": false,
+    "taskpack_stage_gate_overridden": false,
+    "taskpack_stage_gate_satisfied": false,
+    "historical_evidence_mutated": false,
+    "roadmap_counts_mutated": false,
+    "bridge_counted_as_taskpack_phase": false
+  },
+  "historical_stage_snapshot": {
+    "stage_lifecycle_status": "BLOCKED",
+    "stage_acceptance_status": "NOT_PASSED",
+    "decision": "NO_GO",
+    "s02_entry_allowed": false,
+    "task_total": 9,
+    "task_accepted": 5,
+    "task_not_accepted": 4,
+    "triggered_stop_conditions": 3,
+    "audit_conclusion": "RUNTIME_OBJECT_MISSING",
+    "existing_runtime_refactor_authorized": false
+  },
+  "change_control_basis": {
+    "p3_greenfield_change_control_required": true,
+    "transition_mode": "GREENFIELD_PLANNING_ONLY",
+    "risk_id": "RISK-P3-RUN-001",
+    "risk_resolution_stages": [
+      "S02",
+      "S15",
+      "S20"
+    ],
+    "runtime_business_flow_stop_preserved": true,
+    "greenfield_rebuild_planning_authorized": true,
+    "greenfield_rebuild_implementation_authorized": false,
+    "technology_stack_selection_allowed": false
+  },
+  "bridge_task_accounting": {
+    "total": 3,
+    "accepted": 3,
+    "not_accepted": 0
+  },
+  "bridge_tasks": [
+    {
+      "task_id": "S01CTA-T01",
+      "name": "冻结 authority 与 Stage 负面历史",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "output": "FULL REBUILD scope authority and immutable Stage review dependency binding",
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_manifest.json",
+        "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/controlled_transition_amendment_zh.md"
+      ]
+    },
+    {
+      "task_id": "S01CTA-T02",
+      "name": "建立 planning-only transition edge",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "output": "five blocker dispositions and twelve transition clauses",
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/blocker_dispositions_public_safe.csv",
+        "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/transition_contract_public_safe.json"
+      ]
+    },
+    {
+      "task_id": "S01CTA-T03",
+      "name": "验证下一入口与非动作边界",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "output": "S02-P1 planning-only next-entry gate with all downstream actions false",
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/validation_results.jsonl",
+        "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/test_results_zh.md"
+      ]
+    }
+  ],
+  "blocker_disposition_accounting": {
+    "historical_total": 5,
+    "carried_open_acceptance_blockers": 4,
+    "resolved_transition_blockers": 1,
+    "historical_rows_mutated": 0,
+    "s02_p1_planning_blockers": 0,
+    "runtime_implementation_blockers": 4
+  },
+  "risk_carry_forward": {
+    "total": 24,
+    "p0": 18,
+    "p1": 6,
+    "p0_plan_gap_count": 0,
+    "resolved_by_amendment": 0,
+    "all_remain_open_with_plan": true
+  },
+  "amendment_result": {
+    "execution_status": "EXECUTION_COMPLETE",
+    "evidence_validation_status": "PASS",
+    "final_validation_status": "PASS",
+    "acceptance_status": "PASSED",
+    "decision": "GO_TO_S02_P1_ONLY",
+    "amendment_is_stage_pass": false,
+    "stage_acceptance_recomputed": false
+  },
+  "next_entry_gate": {
+    "next_allowed_taskpack_phase": "S02-P1",
+    "s02_p1_planning_entry_allowed_by_amendment": true,
+    "s02_p1_started_in_amendment_run": false,
+    "s02_p1_product_implementation_allowed": false,
+    "s02_p2_entry_allowed": false,
+    "s02_p3_entry_allowed": false,
+    "s03_plus_entry_allowed": false,
+    "product_implementation_allowed": false
+  },
+  "future_obligation": {
+    "s01_deferred_revalidation_required": true,
+    "revalidation_requires_tracked_runtime": true,
+    "revalidation_requires_real_routes": true,
+    "revalidation_requires_tracked_builder_installer": true,
+    "revalidation_requires_complete_preaudit_telemetry": true,
+    "revalidation_deadline": "BEFORE_S24_RELEASE_ACCEPTANCE_FINAL_OVERALL_REVIEW_GITHUB_UPLOAD_APP_REINSTALL",
+    "historical_records_append_only": true,
+    "new_evidence_required_to_change_acceptance": true
+  },
+  "downstream_actions": {
+    "s02_started": false,
+    "technology_stack_selected": false,
+    "product_runtime_implementation_performed": false,
+    "api_implementation_performed": false,
+    "database_implementation_performed": false,
+    "ui_implementation_performed": false,
+    "raw_business_content_read": false,
+    "business_execution_performed": false,
+    "github_upload_performed": false,
+    "app_reinstall_performed": false,
+    "raw_inbox_mutated": false
+  },
+  "artifact_refs": {
+    "manifest": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/s01_controlled_transition_amendment_manifest.json",
+    "transition_contract": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/transition_contract_public_safe.json",
+    "blocker_dispositions": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/blocker_dispositions_public_safe.csv",
+    "report": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/controlled_transition_amendment_zh.md",
+    "rollback_plan": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/rollback_plan_zh.md",
+    "test_results": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/test_results_zh.md",
+    "validation_results": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/validation_results.jsonl"
+  },
+  "artifact_integrity": [
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/transition_contract_public_safe.json",
+      "bytes": 3415,
+      "sha256": "8e443a7be3acf07dcf8f0a95b24f40608b0c22628a8b045fad5de0b3e514bd29"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/blocker_dispositions_public_safe.csv",
+      "bytes": 2040,
+      "sha256": "ac1aaf2768364ef487be98e77f107242db3c299da158acebf0fe547ecf9e9d2e"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/controlled_transition_amendment_zh.md",
+      "bytes": 2177,
+      "sha256": "158ff8d4b4129672108908d031375a550efcab6f0c0e7ab927da0dd570a33b2c"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/rollback_plan_zh.md",
+      "bytes": 562,
+      "sha256": "c1b3fb63a464ea81cf6d19a3791d997ea9edabb36c84c623908ae0eb320fe7d9"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/test_results_zh.md",
+      "bytes": 1261,
+      "sha256": "822bbb7b2a9d51866faf250b7e342899525ed17204f771b84a007757132d0e9c"
+    },
+    {
+      "ref": "KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/validation_results.jsonl",
+      "bytes": 1733,
+      "sha256": "6b5a024189cb2c174e1df657c46dac7bd4aaae28ead5d75a48b205b21cb618a3"
+    }
+  ],
+  "content_hash": "sha256:e744e9495133307de4aeef7f00a4845ed12783a1fc82e122a9ad0f4b508c583d"
+}

@@ -1,0 +1,153 @@
+{
+  "schema_version": "kmfa.v015.s01_p2_implementation_spec_gap_inventory.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "roadmap_stage_id": "S01",
+  "roadmap_phase_id": "S01-P2",
+  "task_id": "KMFA-V015-S01-P2-IMPLEMENTATION-SPEC-GAP-INVENTORY-20260713",
+  "acceptance_id": "ACC-KMFA-V015-S01-P2-IMPLEMENTATION-SPEC-GAP-INVENTORY",
+  "execution_status": "EXECUTION_COMPLETE",
+  "acceptance_status": "PASSED",
+  "decision": "CONTINUE_TO_S01_P3_ONLY",
+  "source_package": {
+    "path": "/Users/linzezhang/Downloads/KMFA_ChatGPT_Stage3_Codex_TaskPack_Roadmap_v2_0_UIUX_FULL_REBUILD.zip",
+    "sha256": "e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8",
+    "taskpack_version": "v2.0",
+    "roadmap_stage_count": 24,
+    "roadmap_phase_count": 72,
+    "roadmap_task_count": 216,
+    "requirement_count": 55
+  },
+  "baseline_dependency": {
+    "s01p1_manifest_ref": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json",
+    "s01p1_acceptance_status": "NOT_PASSED",
+    "s01p1_decision": "NO_GO",
+    "s01p1_checkpoint_commit": "0e309502f21f12e2deba0931acd3fe1bafd0614c",
+    "v014_public_safe_baseline_commit": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "negative_findings_preserved": true
+  },
+  "requirement_gap_inventory": {
+    "total": 55,
+    "unique": 55,
+    "accepted_v15_requirement_count": 0,
+    "status_counts": {
+      "PARTIAL_VERIFIED": 37,
+      "MISSING": 8,
+      "UNVERIFIED": 6,
+      "DEFERRED": 3,
+      "CONFLICTING_POLICY": 1
+    },
+    "severity_counts": {
+      "CRITICAL": 26,
+      "HIGH": 23,
+      "MEDIUM": 5,
+      "LOW": 1
+    },
+    "migration_hint_counts": {
+      "KEEP": 15,
+      "REFACTOR": 29,
+      "DEPRECATE": 4,
+      "UNVERIFIED": 7
+    },
+    "explicit_conflicts": [
+      {
+        "requirement_id": "R007",
+        "conflict": "旧策略存在 owner 授权上传 raw/plaintext 例外；v2.0 要求公开仓库严格禁止敏感原文",
+        "disposition": "S03 废止例外并保留 public-safe 扫描器"
+      }
+    ]
+  },
+  "migration_inventory": {
+    "total": 37,
+    "decision_counts": {
+      "KEEP": 12,
+      "REFACTOR": 12,
+      "DEPRECATE": 5,
+      "UNVERIFIED": 8
+    },
+    "keep_verified_count": 12,
+    "unverified_keep_count": 0,
+    "hard_invariants": [
+      "金额不得使用 float",
+      "一分差异必须失败或入队",
+      "raw 永不写入",
+      "人工处置必须追加审计事件",
+      "派生版本绑定来源、公式、映射和 lineage",
+      "缺证据一律 NO_GO"
+    ]
+  },
+  "git_recovery": {
+    "plan_status": "PLANNED_AND_DRY_RUN_VALIDATED",
+    "existing_independent_worktree_reused": true,
+    "new_branch_created": false,
+    "new_worktree_created": false,
+    "baseline_tag_created": false,
+    "non_destructive_code_recovery_available": true,
+    "installed_app_replacement_allowed": false
+  },
+  "task_outcomes": [
+    {
+      "task_id": "S01P2T01",
+      "name": "对比实际实现与既有任务包",
+      "output": "55 行实现差距矩阵",
+      "acceptance_status": "PASSED",
+      "evidence": "machine/implementation_gap_matrix_public_safe.csv"
+    },
+    {
+      "task_id": "S01P2T02",
+      "name": "识别可保留与需废弃部分",
+      "output": "37 行迁移决策表",
+      "acceptance_status": "PASSED",
+      "evidence": "machine/migration_decision_matrix_public_safe.csv"
+    },
+    {
+      "task_id": "S01P2T03",
+      "name": "建立重构分支与回滚方案",
+      "output": "复用独立 worktree 的分支、回滚、合并和一次性上传方案",
+      "acceptance_status": "PASSED",
+      "evidence": "machine/git_recovery_plan_public_safe.json"
+    }
+  ],
+  "phase_gate": {
+    "task_execution_complete_count": 3,
+    "task_acceptance_passed_count": 3,
+    "s01p2_acceptance_passed": true,
+    "stage_01_passed": false,
+    "stage_01_review_performed": false,
+    "next_phase_started": false,
+    "fixes_performed": false,
+    "github_upload_performed": false,
+    "app_reinstall_performed": false,
+    "raw_mutation_performed": false,
+    "next_allowed_run": "S01-P3"
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false
+  },
+  "public_repo_safety": {
+    "raw_file_name_committed": false,
+    "raw_file_hash_committed": false,
+    "raw_business_value_committed": false,
+    "source_document_committed": false,
+    "credential_committed": false,
+    "private_evidence_payload_committed": false
+  },
+  "artifact_refs": {
+    "gap_matrix": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/implementation_gap_matrix_public_safe.csv",
+    "migration_matrix": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/migration_decision_matrix_public_safe.csv",
+    "git_recovery_plan": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/git_recovery_plan_public_safe.json",
+    "acceptance_matrix": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/acceptance_matrix_public_safe.json",
+    "gap_report": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/human/implementation_gap_report_zh.md",
+    "migration_report": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/human/migration_decision_report_zh.md",
+    "git_plan_report": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/human/branch_rollback_merge_plan_zh.md",
+    "risk_register": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/human/risk_register_zh.md",
+    "test_results": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/human/test_results_zh.md",
+    "metadata_snapshot": "KMFA/metadata/baseline/v015_s01_p2_implementation_spec_gap_inventory.json"
+  },
+  "content_hash": "sha256:0b73988c6a3580dfb4185a7bd55b79f0e0ca767c916772a8f0d0701ede0e5d86"
+}

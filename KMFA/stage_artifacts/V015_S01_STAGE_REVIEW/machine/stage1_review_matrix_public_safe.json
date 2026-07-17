@@ -1,0 +1,129 @@
+{
+  "schema_version": "kmfa.v015.s01_stage_review_matrix.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "stage_id": "S01",
+  "review_base_commit": "5aba436c3e7f1a98bb1a3ad88735b8ad2b279d46",
+  "stage_gate_contract": "本 Stage 所有 P0 Task 的验收、测试和证据通过；开放风险有明确后续任务；不得以时间到期替代质量证据。",
+  "task_status_accounted_count": 9,
+  "task_acceptance_passed_count": 5,
+  "task_acceptance_not_passed_count": 4,
+  "triggered_stop_condition_count": 3,
+  "tasks": [
+    {
+      "task_id": "S01P1T01",
+      "phase_id": "S01-P1",
+      "execution_status": "COMPLETE",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "RUNTIME_NOT_FOUND",
+      "stop_condition_triggered": true,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json",
+        "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md"
+      ]
+    },
+    {
+      "task_id": "S01P1T02",
+      "phase_id": "S01-P1",
+      "execution_status": "STOPPED_BY_CONTRACT",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "STATIC_SAMPLE_ONLY",
+      "stop_condition_triggered": true,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json",
+        "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/acceptance_matrix_public_safe.json"
+      ]
+    },
+    {
+      "task_id": "S01P1T03",
+      "phase_id": "S01-P1",
+      "execution_status": "COMPLETE_WITH_LIMITATIONS",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "PARTIAL_REPO_REBUILDABLE_APP_RESTORE_ONLY",
+      "stop_condition_triggered": false,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/legacy_reference_sha256_public_safe.csv",
+        "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/rollback_plan_zh.md"
+      ]
+    },
+    {
+      "task_id": "S01P2T01",
+      "phase_id": "S01-P2",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "terminal_finding": "TASK_ACCEPTED",
+      "stop_condition_triggered": false,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/implementation_gap_matrix_public_safe.csv"
+      ]
+    },
+    {
+      "task_id": "S01P2T02",
+      "phase_id": "S01-P2",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "terminal_finding": "TASK_ACCEPTED",
+      "stop_condition_triggered": false,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/migration_decision_matrix_public_safe.csv"
+      ]
+    },
+    {
+      "task_id": "S01P2T03",
+      "phase_id": "S01-P2",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "terminal_finding": "TASK_ACCEPTED",
+      "stop_condition_triggered": false,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/git_recovery_plan_public_safe.json"
+      ]
+    },
+    {
+      "task_id": "S01P3T01",
+      "phase_id": "S01-P3",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "terminal_finding": "RUNTIME_OBJECT_MISSING",
+      "stop_condition_triggered": false,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P3_READ_ONLY_AUDIT_GATE/human/read_only_audit_report_zh.md"
+      ]
+    },
+    {
+      "task_id": "S01P3T02",
+      "phase_id": "S01-P3",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "PASSED",
+      "terminal_finding": "OPEN_RISKS_PLANNED_NOT_RESOLVED",
+      "stop_condition_triggered": false,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P3_READ_ONLY_AUDIT_GATE/machine/open_risk_unknown_register_public_safe.csv"
+      ]
+    },
+    {
+      "task_id": "S01P3T03",
+      "phase_id": "S01-P3",
+      "execution_status": "EXECUTION_COMPLETE",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "UNEXPECTED_LOCAL_GIT_STATE_CHANGE_AND_INSUFFICIENT_PREAUDIT_TELEMETRY",
+      "stop_condition_triggered": true,
+      "evidence_refs": [
+        "KMFA/stage_artifacts/V015_S01_P3_READ_ONLY_AUDIT_GATE/machine/side_effect_snapshot_public_safe.json"
+      ]
+    }
+  ],
+  "phase_summaries": [
+    {"phase_id": "S01-P1", "execution_status": "EXECUTION_COMPLETE", "acceptance_status": "NOT_PASSED", "accepted_tasks": 0, "total_tasks": 3},
+    {"phase_id": "S01-P2", "execution_status": "EXECUTION_COMPLETE", "acceptance_status": "PASSED", "accepted_tasks": 3, "total_tasks": 3},
+    {"phase_id": "S01-P3", "execution_status": "EXECUTION_COMPLETE", "acceptance_status": "NOT_PASSED", "accepted_tasks": 2, "total_tasks": 3}
+  ],
+  "stage_result": {
+    "review_execution_status": "EXECUTION_COMPLETE",
+    "evidence_validation_status": "PASS",
+    "stage_lifecycle_status": "BLOCKED",
+    "stage_acceptance_status": "NOT_PASSED",
+    "decision": "NO_GO",
+    "s02_entry_allowed": false
+  }
+}

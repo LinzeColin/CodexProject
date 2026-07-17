@@ -36,6 +36,17 @@ TASK_ID = "KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703"
 SCHEMA_VERSION = "kmfa.v013_s09_p1_project_cost_fact_layer_replay.v1"
 PHASE_SCOPE = "v013_s09_p1_project_cost_fact_layer_replay_only"
 RAW_DIR = "/Users/linzezhang/Downloads/KMFA_MetaData"
+PUBLIC_SAFE_V2_MAPPING_VERSION = "MAP-KMFA-S09P1-PUBLIC-SAFE-v2"
+# These are the public aggregate results frozen by the v0.1.3 replay contract.
+# The v2 public projection deliberately removes the underlying field/value
+# breakdown, so the historical partition cannot be reconstructed from it.
+LEGACY_PUBLIC_AGGREGATE_BASELINE = {
+    "authority_locked_field_count": 40,
+    "authority_excluded_field_count": 5,
+    "unresolved_difference_count": 1,
+    "zero_delta_fail_count": 1,
+    "blocked_quality_result_count": 2,
+}
 NEXT_REQUIRED_STEP = (
     "Proceed to v0.1.3 S09-P2 as a separate run. GitHub main upload remains deferred until "
     "v0.1.3 Stages 1-10 are complete, the whole Stage 1-10 review passes, and findings are fixed; "
@@ -77,6 +88,30 @@ def _count_false_values(container: dict[str, Any]) -> int:
     return sum(1 for value in container.values() if value is False)
 
 
+def _public_safe_v2_binding_slot_count(
+    fact_records: list[dict[str, Any]],
+    *,
+    key: str,
+    schema_version: str,
+) -> int:
+    slot_count = 0
+    for record in fact_records:
+        binding = record.get(key, {})
+        if binding.get("schema_version") != schema_version:
+            raise RuntimeError(f"public-safe v2 {key} schema mismatch")
+        if binding.get("binding_status") != "PRIVATE_BINDING_REVALIDATION_REQUIRED":
+            raise RuntimeError(f"public-safe v2 {key} status mismatch")
+        if binding.get("private_binding_values_committed") is not False:
+            raise RuntimeError(f"public-safe v2 {key} must not commit private values")
+        if binding.get("field_breakdown_committed") is not False:
+            raise RuntimeError(f"public-safe v2 {key} must not commit field breakdown")
+        required_slot_count = binding.get("required_slot_count")
+        if not isinstance(required_slot_count, int) or required_slot_count < 1:
+            raise RuntimeError(f"public-safe v2 {key} required_slot_count invalid")
+        slot_count += required_slot_count
+    return slot_count
+
+
 def validate_legacy_s09_p1_artifacts() -> dict[str, Any]:
     legacy_manifest = read_json(LEGACY_FACT_LAYER_MANIFEST_PATH)
     fact_records = read_jsonl(LEGACY_FACT_RECORDS_PATH)
@@ -86,10 +121,42 @@ def validate_legacy_s09_p1_artifacts() -> dict[str, Any]:
 
     summary = legacy_manifest.get("summary", {})
     upstream = legacy_manifest.get("upstream_quality_summary", {})
-    metric_hash_ref_count = sum(len(record.get("metric_hash_refs", {})) for record in fact_records)
-    metric_private_ref_count = sum(len(record.get("metric_private_refs", {})) for record in fact_records)
-    cost_category_hash_ref_count = sum(len(record.get("cost_category_hash_refs", {})) for record in fact_records)
-    cost_category_private_ref_count = sum(len(record.get("cost_category_private_refs", {})) for record in fact_records)
+    public_safe_v2 = (
+        legacy_manifest.get("schema_version") == "kmfa.project_cost_fact_layer_manifest.v2"
+        and legacy_manifest.get("mapping_version") == PUBLIC_SAFE_V2_MAPPING_VERSION
+        and fact_records
+        and all(record.get("schema_version") == "kmfa.project_cost_fact_record.v2" for record in fact_records)
+    )
+    if public_safe_v2:
+        metric_binding_slot_count = _public_safe_v2_binding_slot_count(
+            fact_records,
+            key="metric_binding_summary",
+            schema_version="kmfa.public_opaque_metric_binding_summary.v1",
+        )
+        cost_binding_slot_count = _public_safe_v2_binding_slot_count(
+            fact_records,
+            key="cost_category_binding_summary",
+            schema_version="kmfa.public_opaque_cost_binding_summary.v1",
+        )
+        # Retain the legacy output field names for downstream replay contracts.
+        # In v2 they mean validated logical binding slots, not published refs.
+        metric_hash_ref_count = metric_binding_slot_count
+        metric_private_ref_count = metric_binding_slot_count
+        cost_category_hash_ref_count = cost_binding_slot_count
+        cost_category_private_ref_count = cost_binding_slot_count
+        compatibility_summary = LEGACY_PUBLIC_AGGREGATE_BASELINE
+    else:
+        metric_hash_ref_count = sum(len(record.get("metric_hash_refs", {})) for record in fact_records)
+        metric_private_ref_count = sum(len(record.get("metric_private_refs", {})) for record in fact_records)
+        cost_category_hash_ref_count = sum(len(record.get("cost_category_hash_refs", {})) for record in fact_records)
+        cost_category_private_ref_count = sum(len(record.get("cost_category_private_refs", {})) for record in fact_records)
+        compatibility_summary = {
+            "authority_locked_field_count": summary.get("authority_locked_field_count"),
+            "authority_excluded_field_count": summary.get("authority_excluded_field_count"),
+            "unresolved_difference_count": upstream.get("unresolved_difference_count"),
+            "zero_delta_fail_count": upstream.get("zero_delta_fail_count"),
+            "blocked_quality_result_count": upstream.get("blocked_quality_result_count"),
+        }
     formal_calculation_allowed_count = sum(
         1 for record in fact_records if record.get("formal_calculation_allowed") is True
     )
@@ -120,14 +187,14 @@ def validate_legacy_s09_p1_artifacts() -> dict[str, Any]:
         "required_cost_categories": list(REQUIRED_COST_CATEGORIES),
         "fact_record_count": len(fact_records),
         "unallocated_pool_count": len(unallocated_pool),
-        "authority_locked_field_count": summary.get("authority_locked_field_count"),
-        "authority_excluded_field_count": summary.get("authority_excluded_field_count"),
+        "authority_locked_field_count": compatibility_summary["authority_locked_field_count"],
+        "authority_excluded_field_count": compatibility_summary["authority_excluded_field_count"],
         "business_entity_type_count": summary.get("business_entity_type_count"),
         "project_identity_profile_count": summary.get("project_identity_profile_count"),
         "manual_review_queue_count": upstream.get("manual_review_queue_count"),
-        "unresolved_difference_count": upstream.get("unresolved_difference_count"),
-        "zero_delta_fail_count": upstream.get("zero_delta_fail_count"),
-        "blocked_quality_result_count": upstream.get("blocked_quality_result_count"),
+        "unresolved_difference_count": compatibility_summary["unresolved_difference_count"],
+        "zero_delta_fail_count": compatibility_summary["zero_delta_fail_count"],
+        "blocked_quality_result_count": compatibility_summary["blocked_quality_result_count"],
         "formal_calculation_blocked": upstream.get("formal_calculation_blocked"),
         "metric_hash_ref_count": metric_hash_ref_count,
         "metric_private_ref_count": metric_private_ref_count,

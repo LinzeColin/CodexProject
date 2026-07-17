@@ -1,0 +1,17 @@
+{
+  "schema_version": "kmfa.v015.s19p1.tax_invoice_policy.v1",
+  "policy_version": "1.5.0-s19p1-tax-invoice-v1",
+  "data_classification": "PUBLIC_SYNTHETIC",
+  "money_unit": "INTEGER_CENTS",
+  "tax_rate_unit": "BASIS_POINTS",
+  "explicit_demo_tax_rates_bps": [600, 900, 1300],
+  "tax_inclusive_states": ["INCLUSIVE", "EXCLUSIVE", "UNKNOWN"],
+  "invoice_statuses": ["ISSUED", "RECEIVED", "PENDING_CONFIRMATION"],
+  "matching_dimensions": ["entity", "project", "period", "tax_rate"],
+  "unknown_tax_rate_action": "BLOCK_NO_INFERENCE",
+  "unknown_tax_rate_label_zh": "税率待确认，不自动推断",
+  "automatic_tax_adjustment_allowed": false,
+  "formal_filing_conclusion_allowed": false,
+  "management_analysis_only": true,
+  "rate_note_zh": "页面税率只来自公开合成票据与合同事实，不是法定税率默认值。"
+}

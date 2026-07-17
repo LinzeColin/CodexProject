@@ -8,8 +8,12 @@ import hashlib
 import json
 import re
 import sys
-import tomllib
 from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.9 compatibility in the canonical macOS runtime.
+    from pip._vendor import tomli as tomllib
 
 
 DEFAULT_CONTRACT = (

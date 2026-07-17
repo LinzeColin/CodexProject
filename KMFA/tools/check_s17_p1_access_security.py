@@ -46,7 +46,7 @@ def main(argv: list[str] | None = None) -> int:
         f"(roles={summary['role_count']}, "
         f"sensitive_categories={summary['sensitive_policy_category_count']}, "
         f"audit_actions={summary['audit_action_type_count']}, "
-        "owner_authorized_plaintext_github=true, credential_secret=false, "
+        "owner_authorized_plaintext_github=false, credential_secret=false, "
         "notification_delivery=false, stage17_review=false)"
     )
     return 0

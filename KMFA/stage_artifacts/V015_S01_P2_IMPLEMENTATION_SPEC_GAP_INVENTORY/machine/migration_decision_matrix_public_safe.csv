@@ -1,0 +1,38 @@
+capability_id,capability_name,domain,decision,verification_status,evidence_refs,rationale,target_stage,preservation_constraint
+CAP-001,金额 Money 内核,ACCURACY,KEEP,VERIFIED,KMFA/tools/amount_tools.py;KMFA/tests/test_amount_tools.py,保留整数分/Decimal 与拒绝 float 的契约和测试意图,S05,不得放宽为 float 或非整数分
+CAP-002,逐字段零差异校验,ACCURACY,KEEP,VERIFIED,KMFA/tools/zero_delta_validator.py;KMFA/tests/test_zero_delta_validator.py,保留一分即失败、缺字段不当零的 fail-closed 内核,S05,真实数据仍须重新验收，不继承通过状态
+CAP-003,raw 只读边界,DATA_GOVERNANCE,KEEP,VERIFIED,KMFA/docs/governance/RAW_DATA_BOUNDARY.md;KMFA/docs/governance/IMMUTABILITY_POLICY.md,保留禁止写删改移覆盖的硬边界,S03,新运行时须增加文件系统级保护
+CAP-004,私有运行空间 Git 边界,SECURITY,KEEP,VERIFIED,KMFA/.gitignore;KMFA/docs/governance/RAW_DATA_BOUNDARY.md,保留敏感派生物不入 Git 的边界,S03,路径合同须在 S03 统一
+CAP-005,公开仓库安全扫描,SECURITY,KEEP,VERIFIED,KMFA/tools/check_v014_one_time_github_main_upload.py;KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/acceptance_matrix_public_safe.json,保留 secret/public-safe 检查器作为发布门禁,S03,不得保留任何 raw/plaintext 授权例外
+CAP-006,metadata 协议,GOVERNANCE,KEEP,VERIFIED,KMFA/docs/governance/METADATA_PROTOCOL.md;KMFA/tools/metadata_protocol_check.py,保留标识符、版本和 public/private 分层语义,S02,需迁移为产品级持久化合同
+CAP-007,不可变与控制事件语义,DATA_GOVERNANCE,KEEP,VERIFIED,KMFA/docs/governance/IMMUTABILITY_POLICY.md;KMFA/tools/immutability_policy_check.py,保留派生版本不覆盖和控制事件可审计语义,S03,真实写服务必须 append-only 且可并发
+CAP-008,来源优先级与冲突不自动选边,ACCURACY,KEEP,VERIFIED,KMFA/tools/source_priority.py;KMFA/tests/test_source_priority.py,保留来源优先序和人工确认约束,S04,规则需外置、版本化并绑定 owner
+CAP-009,质量等级与差异队列 fail-closed,QUALITY_GATE,KEEP,VERIFIED,KMFA/docs/governance/QUALITY_GATE_POLICY.md;KMFA/tools/check_report_grade_gate.py,保留缺证据阻断和差异必须升级的门禁,S11,技术等级不得直接暴露在普通用户页面
+CAP-010,公式参数模型注册,GOVERNANCE,KEEP,VERIFIED,KMFA/docs/governance/formula_registry.yaml;KMFA/docs/governance/parameter_registry.csv;KMFA/docs/governance/model_registry.yaml,保留外置、版本化、可测试原则,S13,后续收敛为单一事实源
+CAP-011,追溯与无遗漏检查,GOVERNANCE,KEEP,VERIFIED,KMFA/docs/governance/TRACEABILITY_MATRIX.csv;KMFA/tools/no_omission_check.py,保留需求、公式、测试、证据绑定意图,S02,不得以历史矩阵替代 v1.5 追溯
+CAP-012,Git 指纹与基线证据,DELIVERY,KEEP,VERIFIED,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json,保留 commit/blob/hash 可重建证据模式,S24,不继承旧 App 可重建结论
+CAP-013,文件导入登记与适配器,INGESTION,REFACTOR,EVIDENCE_PARTIAL,KMFA/tools/file_import_register.py;KMFA/stage_artifacts/S07_P1_finance_file_adapter;KMFA/stage_artifacts/S07_P2_wps_file_adapter,改造成只读 raw 输入和受控 private 输出的 ingestion adapter,S10,禁止任意输出路径和原地解包
+CAP-014,差异队列持久化,QUALITY_GATE,REFACTOR,EVIDENCE_PARTIAL,KMFA/tools/cross_source_difference_queue.py;KMFA/metadata/quality/source_difference_queue.jsonl,改造成并发安全、幂等、授权状态机,S07,关闭差异必须有追加审计事件
+CAP-015,人工确认与重跑,WORKFLOW,REFACTOR,EVIDENCE_PARTIAL,KMFA/tools/manual_resolution_events.py;KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism,改造成真实审批 repository、影响预览和 rerun orchestration,S20,禁止整文件覆盖模拟 append-only
+CAP-016,lineage 与派生版本,DATA_MODEL,REFACTOR,EVIDENCE_PARTIAL,KMFA/metadata/lineage/derived_data_versions.jsonl;KMFA/tools/check_lineage_report_gate.py,改造成 field→metric→report 图和可验证重算链,S02,关键金额无完整血缘不得发布
+CAP-017,治理 registry 单一事实源,GOVERNANCE,REFACTOR,EVIDENCE_PARTIAL,KMFA/docs/governance/VERSION_MATRIX.yaml;KMFA/docs/governance/model_registry.yaml;KMFA/docs/governance/parameter_registry.csv,减少多文件人工同步与漂移,S13,迁移前后 ID 和历史版本不可丢失
+CAP-018,测试分层,TESTING,REFACTOR,EVIDENCE_PARTIAL,KMFA/tests;KMFA/stage_artifacts/S18_P2_full_regression_acceptance,重建 domain unit、contract、integration、E2E 分层,S23,历史测试只作回归输入，不作 v1.5 通过证据
+CAP-019,项目身份与主体模型,DATA_MODEL,REFACTOR,EVIDENCE_PARTIAL,KMFA/tools/project_composite_key.py;KMFA/tools/business_entity_model.py;KMFA/tools/entity_matching_quality.py,把纯函数/schema 接入真实 master data 和人工确认,S08,防跨主体误合并必须有负向 E2E
+CAP-020,项目成本与毛利内核,DOMAIN,REFACTOR,EVIDENCE_PARTIAL,KMFA/tools/project_cost_fact_layer.py;KMFA/tools/project_margin_cash_margin.py,保留算法意图并接入真实事实层与可解释差异,S12,不得继承 Q4/D/NO_GO 数据为黄金值
+CAP-021,报告生成与导出,REPORTING,REFACTOR,EVIDENCE_PARTIAL,KMFA/tools/report_export_runtime.py;KMFA/stage_artifacts/S10_P3_report_export,重建真实 HTML/PDF/CSV/Excel 一致性输出,S21,必须绑定同一事实版本与来源
+CAP-022,权限与审计策略,ACCESS,REFACTOR,EVIDENCE_PARTIAL,KMFA/tools/access_security_policy.py;KMFA/stage_artifacts/S17_P1_access_security,接入真实身份、最小权限和发布审计,S15,策略文件不能替代认证授权
+CAP-023,通知策略,NOTIFICATION,REFACTOR,EVIDENCE_PARTIAL,KMFA/metadata/notifications/notification_manifest.json;KMFA/stage_artifacts/S17_P2_notification,接入真实邮件 connector 与失败升级,S22,不得发送完整报告或敏感明细
+CAP-024,private runtime 作为产品数据层,RUNTIME,REFACTOR,EVIDENCE_PARTIAL,KMFA/.codex_private_runtime;KMFA/docs/governance/RAW_DATA_BOUNDARY.md,仅保留为证据/缓存，不作为事务数据库,S03,产品状态需迁移、备份和一致性机制
+CAP-025,v0.1.4 静态 App launcher,RUNTIME,DEPRECATE,VERIFIED,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json,仅保留历史回滚参考，不进入 v1.5 产品运行时,S14,不得作为 build/runtime 验收证据
+CAP-026,旧静态信息架构和页面,UI_UX,DEPRECATE,VERIFIED,KMFA/stage_artifacts/S11_P1_home_navigation;KMFA/stage_artifacts/S11_P2_source_check_board;KMFA/stage_artifacts/S11_P3_project_cost_page,旧机械堆叠 IA 不是 v1.5 验收基线,S14,允许取用脱敏字段与内容参考
+CAP-027,静态按钮/DOM 变化验收,TESTING,DEPRECATE,VERIFIED,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/acceptance_matrix_public_safe.json,点击或 DOM 文案变化不能证明真实流程,S23,验收必须覆盖 API、持久化、刷新与恢复
+CAP-028,普通页面技术术语,UI_UX,DEPRECATE,VERIFIED,KMFA/stage_artifacts/S11_P1_home_navigation;KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,废弃 Q4、D、NO_GO、hash、lineage 等普通页面表达,S14,专业详情可渐进披露
+CAP-029,owner 授权上传 raw/plaintext 例外,SECURITY,DEPRECATE,VERIFIED,KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl,与 v2.0 严格公开仓库安全边界冲突,S03,新规则必须无授权例外
+CAP-030,完整 field/metric/report lineage,DATA_MODEL,UNVERIFIED,NOT_VERIFIED,KMFA/metadata/lineage/field_lineage.jsonl;KMFA/metadata/lineage/metric_lineage.jsonl;KMFA/metadata/lineage/report_lineage.jsonl,当前协议头不证明实际全链路记录,S02,证明前不得标记 KEEP
+CAP-031,真实黄金数据与 zero-delta,ACCURACY,UNVERIFIED,NOT_VERIFIED,KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW;KMFA/stage_artifacts/S05_P3_authority_baseline_lock,仍有未决差异，且本轮不读 raw 内容,S06,人工锁定与零分差异前 NO_GO
+CAP-032,v1.5 App/API/数据库/持久化,RUNTIME,UNVERIFIED,NOT_VERIFIED,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,真实运行时、构建系统、API 和数据库均未找到,S20,不得由静态页面推断实现
+CAP-033,多主体多账户隔离,DATA_MODEL,UNVERIFIED,NOT_VERIFIED,KMFA/metadata/schema_maps/business_entity_model_manifest.json;KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan,schema/计划不能证明真实账户隔离,S08,真实负向合并测试前不得 KEEP
+CAP-034,跨格式报告一致性,REPORTING,UNVERIFIED,NOT_VERIFIED,KMFA/stage_artifacts/S10_P3_report_export;KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW,无真实事实层到页面/PDF/CSV/Excel 的逐值证据,S21,所有格式必须绑定同一版本
+CAP-035,真实用户角色与身份,ACCESS,UNVERIFIED,NOT_VERIFIED,KMFA/stage_artifacts/S17_P1_access_security,策略不等于 live identity 和多角色授权,S15,真实鉴权 E2E 前不得 KEEP
+CAP-036,压力并发浸泡恢复与可访问性,TESTING,UNVERIFIED,NOT_VERIFIED,KMFA/metadata/quality/full_regression_acceptance_manifest.json;KMFA/stage_artifacts/S18_P1_precision_stress,历史 synthetic 测试不覆盖真实 v1.5 App,S23,完整目标测试集通过前不得 KEEP
+CAP-037,红圈与 OpMe 自动集成,INTEGRATION,UNVERIFIED,NOT_VERIFIED,KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy;KMFA/stage_artifacts/S18_P3_integration_preparation,仅有后置策略与计划，无真实 connector,S24,独立稳定和文件型闭环通过后再实施

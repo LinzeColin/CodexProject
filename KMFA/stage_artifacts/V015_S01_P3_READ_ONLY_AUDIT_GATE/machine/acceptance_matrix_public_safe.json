@@ -1,0 +1,152 @@
+{
+  "schema_version": "kmfa.v015.s01_p3_acceptance_matrix.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "stage_id": "S01",
+  "phase_id": "P3",
+  "acceptance_id": "ACC-KMFA-V015-S01-P3-READ-ONLY-AUDIT-GATE",
+  "evidence_validation_status": "PASS",
+  "phase_acceptance_status": "NOT_PASSED",
+  "quality_gate_passed": false,
+  "check_count": 22,
+  "check_pass_count": 19,
+  "check_fail_count": 3,
+  "checks": [
+    {
+      "check_id": "taskpack_fingerprint_locked",
+      "result": "PASS",
+      "evidence": "sha256:e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8"
+    },
+    {
+      "check_id": "s01p1_negative_findings_preserved",
+      "result": "PASS",
+      "evidence": "RUNTIME_NOT_FOUND/STATIC_SAMPLE_ONLY/APP_BUILDER_INSTALLER_NOT_TRACKED"
+    },
+    {
+      "check_id": "s01p2_inventory_preserved",
+      "result": "PASS",
+      "evidence": "55 requirements/37 capabilities/0 v1.5 accepted"
+    },
+    {
+      "check_id": "audit_conclusion_allowed_enum",
+      "result": "PASS",
+      "evidence": "RUNTIME_OBJECT_MISSING=运行对象缺失"
+    },
+    {
+      "check_id": "audit_conclusion_runtime_evidence_based",
+      "result": "PASS",
+      "evidence": "no source/build/API/DB/persistence/service/runtime"
+    },
+    {
+      "check_id": "button_and_static_dom_not_acceptance_evidence",
+      "result": "PASS",
+      "evidence": "CAP-025/CAP-027 DEPRECATE"
+    },
+    {
+      "check_id": "risk_register_unique_complete",
+      "result": "PASS",
+      "evidence": "24 unique OPEN_WITH_PLAN"
+    },
+    {
+      "check_id": "five_unknown_categories_covered",
+      "result": "PASS",
+      "evidence": "FIELD/DATA_SOURCE/ACCESS/RUNTIME_DEPENDENCY/UI_BREAKPOINT"
+    },
+    {
+      "check_id": "risk_owner_stage_stop_complete",
+      "result": "PASS",
+      "evidence": "24/24"
+    },
+    {
+      "check_id": "p0_without_resolution_plan_zero",
+      "result": "PASS",
+      "evidence": "18 P0/0 missing plan"
+    },
+    {
+      "check_id": "high_risk_requirement_coverage",
+      "result": "PASS",
+      "evidence": "all P0/P1 CRITICAL/HIGH or MISSING/UNVERIFIED/CONFLICTING_POLICY gaps covered"
+    },
+    {
+      "check_id": "tracked_diff_expected_classification",
+      "result": "PASS",
+      "evidence": "41 paths=17/12/3/4/5 and 0 unexpected"
+    },
+    {
+      "check_id": "expected_audit_code_metadata_writes_disclosed",
+      "result": "PASS",
+      "evidence": "audit validators/tests and governance metadata explicitly nonzero"
+    },
+    {
+      "check_id": "installed_app_fingerprint_and_signature_unchanged",
+      "result": "PASS",
+      "evidence": "13 files/830331 bytes/sha256:848521287/code signature PASS"
+    },
+    {
+      "check_id": "raw_root_shallow_sentinel_match",
+      "result": "PASS",
+      "evidence": "device/inode/mode/size/mtime match"
+    },
+    {
+      "check_id": "current_persistent_app_process_listener_zero",
+      "result": "PASS",
+      "evidence": "0 processes/0 listeners"
+    },
+    {
+      "check_id": "product_database_unexpected_change_zero",
+      "result": "PASS",
+      "evidence": "tracked DB change=0/app DB=0/runtime DB unbound"
+    },
+    {
+      "check_id": "private_audit_writes_explicit",
+      "result": "PASS",
+      "evidence": "16 expected private evidence files"
+    },
+    {
+      "check_id": "remote_main_external_drift_disclosed",
+      "result": "PASS",
+      "evidence": "historical=d6f379ad local_tracking=d0a098b7 remote_snapshot=d0a098b7 current_task_push=false"
+    },
+    {
+      "check_id": "local_tracking_ref_stable",
+      "result": "FAIL",
+      "finding": "UNEXPECTED_LOCAL_TRACKING_REF_CHANGE_ATTRIBUTION_UNVERIFIED",
+      "evidence": "origin/main reflog 2026-07-13T10:51:52+10:00 fetch origin main fast-forward; shared-repository attribution unverified"
+    },
+    {
+      "check_id": "raw_recursive_integrity_proven",
+      "result": "FAIL",
+      "finding": "INSUFFICIENT_PREAUDIT_RAW_FINGERPRINT",
+      "evidence": "recursive_pre_snapshot_available=false"
+    },
+    {
+      "check_id": "historical_process_monitoring_complete",
+      "result": "FAIL",
+      "finding": "INSUFFICIENT_HISTORICAL_PROCESS_LOG",
+      "evidence": "PARTIAL_RECEIPT_ONLY"
+    }
+  ],
+  "task_outcomes": [
+    {
+      "task_id": "S01P3T01",
+      "acceptance_status": "PASSED",
+      "terminal_finding": "RUNTIME_OBJECT_MISSING"
+    },
+    {
+      "task_id": "S01P3T02",
+      "acceptance_status": "PASSED",
+      "terminal_finding": "OPEN_RISKS_PLANNED_NOT_RESOLVED"
+    },
+    {
+      "task_id": "S01P3T03",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "UNEXPECTED_LOCAL_GIT_STATE_CHANGE_AND_INSUFFICIENT_PREAUDIT_TELEMETRY"
+    }
+  ],
+  "stage_01_status": "NOT_PASSED",
+  "stage_01_passed": false,
+  "stage_01_review_required": true,
+  "stage_01_review_performed": false,
+  "s02_entry_allowed": false,
+  "next_allowed_run": "STAGE-01-REVIEW only"
+}

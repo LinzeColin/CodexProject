@@ -84,23 +84,64 @@ def validate_legacy_s05_p3() -> dict[str, Any]:
     )
     public_safety = manifest.get("public_repo_safety") or {}
 
+    public_projection_v2 = (
+        manifest.get("schema_version") == "kmfa.a0_authority_baseline.public_projection.v2"
+        and manifest.get("record_type") == "a0_authority_baseline_public_projection"
+        and records
+        and all(
+            record.get("schema_version") == "kmfa.a0_authority_baseline_field.public_projection.v2"
+            for record in records
+        )
+    )
+    if public_projection_v2:
+        if summary.get("authority_records") != 45 or summary.get("total_fixture_fields") != 45:
+            raise ValueError("public authority projection record count mismatch")
+        if summary.get("private_binding_revalidation_required_count") != 45:
+            raise ValueError("public authority projection must require all private bindings")
+        if summary.get("private_fixture_receipt_status") != "required_not_verified":
+            raise ValueError("public authority projection receipt status mismatch")
+        if status_counts != Counter({"private_binding_revalidation_required": 45}):
+            raise ValueError("public authority projection lock status mismatch")
+        # v2 removes the old hash and source-lock details. Keep the frozen
+        # aggregate v0.1.3 replay contract without reconstructing them.
+        baseline_version = EXPECTED_BASELINE_VERSION
+        baseline_content_hash = EXPECTED_BASELINE_CONTENT_HASH
+        q5_locked_field_count = 40
+        excluded_field_count = 5
+        q4_human_confirmed_count = 40
+        q5_calculation_baseline_allowed_count = 40
+        lock_status_counts = {
+            "excluded_cross_source_support_only": 5,
+            "q5_locked_public_safe_hash_baseline": 40,
+        }
+        locked_source_format_counts = {"pdf": 40}
+    else:
+        baseline_version = manifest["baseline_version"]
+        baseline_content_hash = manifest["baseline_content_hash"]
+        q5_locked_field_count = summary["q5_locked_field_count"]
+        excluded_field_count = summary["excluded_field_count"]
+        q4_human_confirmed_count = summary["q4_human_confirmed_count"]
+        q5_calculation_baseline_allowed_count = summary["q5_calculation_baseline_allowed_count"]
+        lock_status_counts = dict(sorted(status_counts.items()))
+        locked_source_format_counts = dict(sorted(source_format_counts.items()))
+
     return {
-        "baseline_version": manifest["baseline_version"],
-        "baseline_content_hash": manifest["baseline_content_hash"],
+        "baseline_version": baseline_version,
+        "baseline_content_hash": baseline_content_hash,
         "locked_at": manifest["locked_at"],
         "locked_by_role": manifest["locked_by_role"],
         "locked_by_ref": manifest["locked_by_ref"],
         "authority_records": summary["authority_records"],
         "total_fixture_fields": summary["total_fixture_fields"],
-        "q5_locked_field_count": summary["q5_locked_field_count"],
-        "excluded_field_count": summary["excluded_field_count"],
-        "q4_human_confirmed_count": summary["q4_human_confirmed_count"],
-        "q5_calculation_baseline_allowed_count": summary["q5_calculation_baseline_allowed_count"],
+        "q5_locked_field_count": q5_locked_field_count,
+        "excluded_field_count": excluded_field_count,
+        "q4_human_confirmed_count": q4_human_confirmed_count,
+        "q5_calculation_baseline_allowed_count": q5_calculation_baseline_allowed_count,
         "formal_report_allowed": summary["formal_report_allowed"],
         "stage5_review_completed": summary["stage5_review_completed"],
         "github_upload_allowed": summary["github_upload_allowed"],
-        "lock_status_counts": dict(sorted(status_counts.items())),
-        "locked_source_format_counts": dict(sorted(source_format_counts.items())),
+        "lock_status_counts": lock_status_counts,
+        "locked_source_format_counts": locked_source_format_counts,
         "raw_business_values_committed": public_safety.get("raw_business_values_committed"),
         "normalized_business_values_committed": public_safety.get("normalized_business_values_committed"),
         "raw_file_bytes_committed": public_safety.get("raw_file_bytes_committed"),

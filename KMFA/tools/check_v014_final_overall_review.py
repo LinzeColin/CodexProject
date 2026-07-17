@@ -268,8 +268,13 @@ def _validate_private(errors: list[str]) -> None:
         report = review.PRIVATE_DIFFERENCE_REPORT_PATH.read_text(encoding="utf-8")
         for token in ("差异报告", "三项最终接受未决", "九项非零差异", "一项未完成比较", "未关闭"):
             _require(token in report, f"private Chinese difference report missing token: {token}", errors)
-    raw_root = Path("/Users/linzezhang/Downloads/KMFA_MetaData")
-    raw_names = {path.name.encode("utf-8") for path in raw_root.rglob("*") if path.is_file()}
+    snapshot = _read_json(review.PRIVATE_RAW_AFTER_PATH, errors)
+    snapshot_files = snapshot.get("files", []) if isinstance(snapshot, dict) else []
+    raw_names = {
+        Path(str(row.get("relative_path", ""))).name.encode("utf-8")
+        for row in snapshot_files
+        if isinstance(row, dict) and row.get("relative_path")
+    }
     _require(len(raw_names) == 5, "raw filename leak scan source inventory drift", errors)
     tracked = subprocess.run(
         ["git", "-c", "core.quotePath=false", "ls-files", "KMFA"],

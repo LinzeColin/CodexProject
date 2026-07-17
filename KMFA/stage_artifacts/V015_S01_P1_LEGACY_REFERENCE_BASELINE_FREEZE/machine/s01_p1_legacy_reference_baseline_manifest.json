@@ -1,0 +1,212 @@
+{
+  "schema_version": "kmfa.v015.s01_p1_legacy_reference_baseline.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "planning_spec": "TaskPack/Roadmap v2.0",
+  "stage_id": "S01",
+  "phase_id": "P1",
+  "roadmap_phase_id": "S01-P1",
+  "task_id": "KMFA-V015-S01-P1-LEGACY-REFERENCE-BASELINE-FREEZE-20260713",
+  "acceptance_id": "ACC-KMFA-V015-S01-P1-LEGACY-REFERENCE-BASELINE-FREEZE",
+  "generated_at": "2026-07-13T09:39:01+10:00",
+  "execution_status": "EXECUTION_COMPLETE",
+  "acceptance_status": "NOT_PASSED",
+  "decision": "NO_GO",
+  "baseline_kind": "legacy_static_reference_not_v15_runtime",
+  "legacy_reference_frozen": true,
+  "content_hash": "sha256:fb533ea2170880f7ba89d69819ffc5239e0fbdc66c60af46ff22ca9d7fa42452",
+  "task_outcomes": [
+    {
+      "task_id": "S01P1T01",
+      "name_zh": "确认仓库与运行对象",
+      "execution_status": "COMPLETE",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "RUNTIME_NOT_FOUND",
+      "reason_zh": "当前 App 只是静态 HTML 启动器，未找到真实应用源码、服务进程、端口、API 或数据库绑定。"
+    },
+    {
+      "task_id": "S01P1T02",
+      "name_zh": "盘点真实路由与页面",
+      "execution_status": "STOPPED_BY_CONTRACT",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "STATIC_SAMPLE_ONLY",
+      "reason_zh": "八个导航均为同一 file:// HTML 内的 DOM 显隐，不是真实运行路由。"
+    },
+    {
+      "task_id": "S01P1T03",
+      "name_zh": "冻结只读审计基线",
+      "execution_status": "COMPLETE_WITH_LIMITATIONS",
+      "acceptance_status": "NOT_PASSED",
+      "terminal_finding": "PARTIAL_REPO_REBUILDABLE_APP_RESTORE_ONLY",
+      "reason_zh": "Git 与静态目标可重建，已安装 App 可比较和恢复；仓库内没有 App builder/installer 源码，无法证明完整 App 可重建。"
+    }
+  ],
+  "phase_gate": {
+    "task_execution_complete_count": 3,
+    "task_acceptance_passed_count": 0,
+    "task_acceptance_not_passed_count": 3,
+    "s01p1_acceptance_passed": false,
+    "stage_01_review_performed": false,
+    "next_phase_started": false,
+    "github_upload_performed": false,
+    "app_reinstall_performed": false
+  },
+  "source_package": {
+    "name": "KMFA_ChatGPT_Stage3_Codex_TaskPack_Roadmap_v2_0_UIUX_FULL_REBUILD.zip",
+    "bytes": 118652,
+    "sha256": "e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8",
+    "manifest_rows": 21,
+    "manifest_mismatch_count": 0,
+    "copied_into_repository": false
+  },
+  "repository_baseline": {
+    "canonical_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa",
+    "branch": "codex/kmfa",
+    "upstream": "origin/main",
+    "remote_url": "git@github.com:LinzeColin/CodexProject.git",
+    "commit": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "origin_main_commit": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "github_main_commit_observed": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "repository_snapshot_reconstructable": true,
+    "tracked_worktree_clean_before_phase": true
+  },
+  "tracked_metadata_snapshot": {
+    "path": "KMFA/metadata",
+    "git_tree_oid": "be43e5828e2fc07427a6dda02e621d3451e89e0a",
+    "regular_file_count": 1239,
+    "regular_file_bytes": 10109750,
+    "aggregate_algorithm": "sha256(sorted(path + NUL + bytes + NUL + file_sha256 + LF))",
+    "aggregate_sha256": "a9f9316805f7fdc5994bef2e253e870631e8e752c94d15dc3ab2b80a1951bcea",
+    "reconstructable_from_git_commit": true
+  },
+  "governance_snapshot": {
+    "path": "KMFA/docs/governance",
+    "git_tree_oid": "4d772d1ee017bc97dba6f8cb22b389c19d0de876",
+    "reconstructable_from_git_commit": true
+  },
+  "legacy_static_target": {
+    "path": "KMFA/stage_artifacts/V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION/exports/html/kmfa_home_navigation.html",
+    "git_blob_oid": "5410e829d842f2349c2a6b02042184534bb3b1bf",
+    "sha256": "8b3618a6ba01977ead18e03b07afc4296183ebcf02aa4b2a5e3fd4af29b816b2",
+    "protocol": "file",
+    "navigation_count": 8,
+    "unique_static_link_target_count": 4,
+    "fetch_xhr_websocket_count": 0,
+    "real_application_runtime": false,
+    "reconstructable_from_git_commit": true
+  },
+  "installed_app_reference": {
+    "path": "/Users/linzezhang/Downloads/KMFA.app",
+    "bundle_identifier": "com.linze.kmfa.launcher",
+    "short_version": "0.1.4",
+    "build_version": "20260713.4",
+    "architecture": "arm64",
+    "code_signature_valid": true,
+    "regular_file_count": 13,
+    "regular_file_bytes": 830331,
+    "aggregate_algorithm": "sha256(sorted(relative_path + NUL + bytes + NUL + file_sha256 + LF))",
+    "aggregate_sha256": "848521287dfaafd93f64872ce96cec6cc9996becddfc31df15ff8bbff8877779",
+    "selected_file_sha256": {
+      "Contents/Info.plist": "0a80fb2176dd9da123d4f88ec5bf2c0b3f5d5c3addfad3cc0784974b7136e13c",
+      "Contents/MacOS/KMFA": "e6081fe4bab529b4c17c5cc2d99f04a49a620227fa263af2eae808f2b435adbe",
+      "Contents/Resources/KMFA_ACTIVE_TARGET_HTML": "a4f79346b36bf69bad2deb162cc6619718203e6c28ecbd43c95825b81c311a2a",
+      "Contents/Resources/KMFA_RUNTIME_MANIFEST.json": "3cabe39186cd3d8ab86c239b23c46122c991d39d480ee0a990c95fb638e7c33b",
+      "Contents/Resources/KMFA_launcher.zsh": "ab22383f07ae83e1c0edaf8c20fa45cefbc6f6b825245078eb040f69c7d1e453"
+    },
+    "fingerprint_comparable": true,
+    "restore_from_existing_bundle_possible": true,
+    "reconstructable_from_tracked_source": false,
+    "real_application_runtime": false
+  },
+  "private_evidence_index": [
+    {
+      "evidence_id": "S01P1T01_RUNTIME_FACTS",
+      "path": "KMFA/.codex_private_runtime/V015_S01_P1_T01_RUNTIME_FACTS/S01P1T01_RUNTIME_FACTS.md",
+      "bytes": 5188,
+      "sha256": "4cce3abba3a78b02edf30c10f7f3bd8ddd4a19a6573cc89cecba729058128ea4"
+    },
+    {
+      "evidence_id": "S01P1T02_RUNTIME_READBACK",
+      "path": "KMFA/.codex_private_runtime/V015_S01_P1_T02_STATIC_ROUTE_AUDIT/S01P1T02_RUNTIME_READBACK.json",
+      "bytes": 13625,
+      "sha256": "cbb07ecc3d34057ed7a2742b885e5504444acab541f29fd9b74cdcaf3738e899"
+    },
+    {
+      "evidence_id": "S01P1T02_DESKTOP_SCREENSHOT",
+      "path": "KMFA/.codex_private_runtime/V015_S01_P1_T02_STATIC_ROUTE_AUDIT/fresh_static_runtime_desktop.png",
+      "bytes": 139180,
+      "sha256": "30c579b89a2c3452ae6e517870fde732098f81055910cc8af0b7f3cc3802f6a1",
+      "viewport": "1440x1000"
+    },
+    {
+      "evidence_id": "S01P1T02_MOBILE_SCREENSHOT",
+      "path": "KMFA/.codex_private_runtime/V015_S01_P1_T02_STATIC_ROUTE_AUDIT/fresh_static_runtime_mobile.png",
+      "bytes": 114287,
+      "sha256": "4d5bf1de9d89c34cf6faf2e271bfb8245a7f3876348b6302130391c010e52b74",
+      "viewport": "390x1497"
+    },
+    {
+      "evidence_id": "V014_FRESH_APP_LAUNCH_RECEIPT",
+      "path": "KMFA/.codex_private_runtime/v014_app_reinstall_and_parity/latest_app_launch_receipt.txt",
+      "bytes": 436,
+      "sha256": "60695e956765dc8161c64237fbb841410fb32e341097faadf24cfbfb80f5d2a4"
+    }
+  ],
+  "raw_root_snapshot": {
+    "path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "device": 16777234,
+    "inode": 13660536,
+    "mode": "drwxr-xr-x",
+    "size": 224,
+    "mtime_epoch": 1782967639,
+    "top_level_file_count": 5,
+    "top_level_directory_count": 0,
+    "file_names_captured": false,
+    "file_contents_read": false,
+    "file_hashes_computed": false,
+    "mutation_performed": false
+  },
+  "reconstructability": {
+    "repository_snapshot": true,
+    "tracked_metadata_snapshot": true,
+    "legacy_static_target": true,
+    "installed_app_fingerprint": true,
+    "installed_app_from_tracked_source": false,
+    "real_v15_application_runtime": false,
+    "full_s01p1_baseline_acceptance": false
+  },
+  "blockers": [
+    "REAL_APP_SOURCE_NOT_FOUND",
+    "BUILD_SYSTEM_NOT_FOUND",
+    "PRODUCT_BACKEND_API_NOT_FOUND",
+    "PRODUCT_DATABASE_BINDING_NOT_FOUND",
+    "APP_BUILDER_INSTALLER_NOT_TRACKED",
+    "TASKPACK_NAMED_STACK_NOT_SPECIFIED"
+  ],
+  "public_repo_safety": {
+    "raw_file_name_committed": false,
+    "raw_file_hash_committed": false,
+    "raw_business_value_committed": false,
+    "source_document_committed": false,
+    "credential_committed": false,
+    "private_evidence_payload_committed": false,
+    "private_evidence_hash_index_committed": true
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false
+  },
+  "artifact_refs": {
+    "acceptance_matrix": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/acceptance_matrix_public_safe.json",
+    "sha256_inventory": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/legacy_reference_sha256_public_safe.csv",
+    "baseline_report": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md",
+    "risk_register": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/risk_register_zh.md",
+    "rollback_plan": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/rollback_plan_zh.md",
+    "test_results": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/test_results_zh.md",
+    "metadata_baseline": "KMFA/metadata/baseline/v015_s01_p1_legacy_reference_baseline.json"
+  }
+}

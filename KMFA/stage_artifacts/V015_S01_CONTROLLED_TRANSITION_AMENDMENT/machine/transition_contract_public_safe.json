@@ -1,0 +1,20 @@
+{
+  "schema_version": "kmfa.v015.s01_controlled_transition_contract.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "bridge_id": "S01-CTA",
+  "clauses": [
+    {"clause_id": "S01CTA-C01", "name": "historical_stage_result_preserved", "result": "PASS", "observed": "S01 remains BLOCKED/NOT_PASSED/NO_GO", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_manifest.json"]},
+    {"clause_id": "S01CTA-C02", "name": "stage_acceptance_not_recomputed", "result": "PASS", "observed": "amendment_is_stage_pass=false; stage_acceptance_recomputed=false", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/controlled_transition_amendment_zh.md"]},
+    {"clause_id": "S01CTA-C03", "name": "taskpack_stage_gate_not_overridden", "result": "PASS", "observed": "Stage gate criteria remain unchanged and unsatisfied", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_manifest.json"]},
+    {"clause_id": "S01CTA-C04", "name": "runtime_missing_remains_authoritative", "result": "PASS", "observed": "RUNTIME_OBJECT_MISSING; existing_runtime_refactor_authorized=false", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_P3_READ_ONLY_AUDIT_GATE/machine/s01_p3_read_only_audit_gate_manifest.json"]},
+    {"clause_id": "S01CTA-C05", "name": "stage_review_artifacts_immutable", "result": "PASS", "observed": "review manifest bytes/SHA/content hash bound to commit 08ce4b2b7", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_STAGE_REVIEW/machine/stage1_review_manifest.json"]},
+    {"clause_id": "S01CTA-C06", "name": "full_rebuild_scope_authority", "result": "PASS", "observed": "existing user objective authorizes FULL REBUILD planning scope", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/controlled_transition_amendment_zh.md"]},
+    {"clause_id": "S01CTA-C07", "name": "no_redundant_owner_authorization", "result": "PASS", "observed": "additional_owner_authorization_required=false", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/human/controlled_transition_amendment_zh.md"]},
+    {"clause_id": "S01CTA-C08", "name": "only_transition_blocker_resolved", "result": "PASS", "observed": "IB-005 RESOLVED_BY_AMENDMENT; IB-001 through IB-004 CARRIED_OPEN", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/blocker_dispositions_public_safe.csv"]},
+    {"clause_id": "S01CTA-C09", "name": "acceptance_blockers_remain_open", "result": "PASS", "observed": "four acceptance blockers continue blocking S01 acceptance and runtime implementation", "evidence_refs": ["KMFA/stage_artifacts/V015_S01_CONTROLLED_TRANSITION_AMENDMENT/machine/blocker_dispositions_public_safe.csv"]},
+    {"clause_id": "S01CTA-C10", "name": "next_entry_s02_p1_planning_only", "result": "PASS", "observed": "S02-P1 planning allowed next Run; S02-P2/P3 and S03+ false", "evidence_refs": ["KMFA/docs/governance/roadmap.yaml"]},
+    {"clause_id": "S01CTA-C11", "name": "no_product_or_business_implementation", "result": "PASS", "observed": "runtime/API/database/UI/stack selection/business execution all false", "evidence_refs": ["KMFA/AGENTS.md"]},
+    {"clause_id": "S01CTA-C12", "name": "no_release_or_raw_action", "result": "PASS", "observed": "GitHub upload/App reinstall/raw mutation all false", "evidence_refs": ["KMFA/AGENTS.md"]}
+  ]
+}

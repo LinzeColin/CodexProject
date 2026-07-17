@@ -202,7 +202,7 @@ def build_reconstructed_rows(snapshot: Mapping[str, Any], *, work_date: str) -> 
     report_ids = [str(value) for value in snapshot.get("report_column_ids") or []]
     if len(report_names) != len(report_ids):
         raise ValueError("report column names and ids must have equal length")
-    column_id_by_name = dict(zip(report_names, report_ids, strict=True))
+    column_id_by_name = dict(zip(report_names, report_ids))
     report_rows = _payload_results(list((snapshot.get("report_query_data") or {}).get(work_date) or []))
     leave_rows = _payload_results(list((snapshot.get("report_query_leave") or {}).get(work_date) or []))
     profiles = _profiles(snapshot)

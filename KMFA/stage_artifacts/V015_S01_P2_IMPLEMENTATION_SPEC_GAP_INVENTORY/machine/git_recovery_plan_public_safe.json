@@ -1,0 +1,121 @@
+{
+  "schema_version": "kmfa.v015.s01_p2_git_recovery_plan.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "phase_id": "S01-P2",
+  "plan_status": "PLANNED_AND_DRY_RUN_VALIDATED",
+  "observed_at": "2026-07-13T00:00:00+10:00",
+  "repository": {
+    "canonical_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa",
+    "common_git_worktree_kind": "independent_sparse_worktree",
+    "implementation_branch": "codex/kmfa",
+    "upstream": "origin/main",
+    "s01p1_checkpoint_commit": "0e309502f21f12e2deba0931acd3fe1bafd0614c",
+    "v014_public_safe_baseline_commit": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "v014_legacy_target_path": "KMFA/stage_artifacts/V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION/exports/html/kmfa_home_navigation.html",
+    "v014_legacy_target_blob_oid": "5410e829d842f2349c2a6b02042184534bb3b1bf",
+    "v014_legacy_target_sha256": "8b3618a6ba01977ead18e03b07afc4296183ebcf02aa4b2a5e3fd4af29b816b2",
+    "branch_reuse_decision": "REUSE_EXISTING_INDEPENDENT_WORKTREE_BRANCH",
+    "extra_branch_created": false,
+    "extra_worktree_created": false,
+    "baseline_tag_created": false
+  },
+  "rationale": [
+    "canonical KMFA 已是独立 sparse worktree，不是主仓库 main worktree",
+    "复用 codex/kmfa 可避免重复 worktree、额外远端分支和基线漂移",
+    "固定提交和 blob/hash 足以无歧义恢复，不依赖可移动分支或远端旧 codex/kmfa"
+  ],
+  "preconditions_for_any_recovery": [
+    "工作区必须 clean",
+    "基线提交必须可解析且是 S01P1 checkpoint 的祖先",
+    "raw root 不得被读取内容、写入、删除、移动、覆盖或原地转换",
+    "当前 App 在最终替换前保持不变；替换前必须建立 ignored 私有备份并逐文件复核"
+  ],
+  "one_command_code_recovery": {
+    "command": "git switch --detach d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "restore_development_command": "git switch codex/kmfa",
+    "guard": "test -z \"$(git status --porcelain=v1)\"",
+    "effect": "仅切换 tracked 代码视图，不改 raw root，不删除开发提交"
+  },
+  "parallel_read_only_recovery_option": {
+    "command": "git worktree add --detach \"${TMPDIR:-/tmp}/kmfa-v014-public-safe\" d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "cleanup_command": "git worktree remove \"${TMPDIR:-/tmp}/kmfa-v014-public-safe\"",
+    "use_only_when": "需要与当前开发态并行比较且目标目录不存在",
+    "selected_for_current_phase": false
+  },
+  "dry_run_evidence": {
+    "baseline_commit_resolves": "PASS",
+    "baseline_is_head_ancestor": "PASS",
+    "legacy_blob_matches": "PASS",
+    "streamed_archive_sha256_matches": "PASS_AFTER_LOCALE_FIXED_TO_C",
+    "first_archive_attempt": "NON_MUTATING_ENVIRONMENT_FAILURE_LOCALE_C_UTF8_UNAVAILABLE",
+    "current_branch_ref_format_valid": "PASS",
+    "optional_tag_ref_format_valid": "PASS",
+    "raw_root_stat_unchanged": "PASS",
+    "raw_root_stat": {
+      "device": 16777234,
+      "inode": 13660536,
+      "mode": "drwxr-xr-x",
+      "size": 224,
+      "mtime_epoch": 1782967639
+    }
+  },
+  "installed_app_recovery": {
+    "current_app_path": "/Users/linzezhang/Downloads/KMFA.app",
+    "current_reference_version": "0.1.4",
+    "tracked_builder_available": false,
+    "replacement_allowed_now": false,
+    "future_pre_replacement_gate": [
+      "在 ignored private runtime 建立 KMFA.app 逐文件备份",
+      "用 S01P1 aggregate fingerprint 与 codesign 验证备份",
+      "新 App 从最终 GitHub main exact commit 构建并验证",
+      "替换失败时以临时名恢复旧 bundle，再做版本、签名和指纹复核"
+    ]
+  },
+  "phase_commit_policy": {
+    "branch": "codex/kmfa",
+    "local_phase_commits_allowed": true,
+    "stage_uploads_allowed": false,
+    "remote_push_allowed_before_final_overall_review": false,
+    "force_push_allowed": false,
+    "commit_scope": "仅 KMFA 当前 Run Contract 文件，显式 git add 路径"
+  },
+  "final_merge_and_single_upload": [
+    "24 Stage 全部 Phase、逐 Stage 复审及 finding 修复、最终整体复审全部通过",
+    "git fetch origin main",
+    "使用 git merge-tree 做三方只读冲突预检",
+    "git merge --no-ff --no-commit origin/main；冲突或意外范围即 git merge --abort",
+    "复跑全量、治理、public-safe、final validators 并提交 integration commit",
+    "记录 EXPECTED origin/main 并以 git ls-remote 再锁定远端未漂移",
+    "唯一一次非 force 上传：git push origin HEAD:refs/heads/main",
+    "fetch 后证明 local HEAD、origin/main、GitHub main 三者一致",
+    "仅从该 exact commit 构建、重装 App，并验证 App/GitHub/本地治理记录 parity"
+  ],
+  "forbidden_commands": [
+    "git push（最终门禁前）",
+    "git push --force",
+    "git push --force-with-lease",
+    "git pull",
+    "git rebase",
+    "git reset --hard",
+    "git checkout --",
+    "破坏性 git restore",
+    "git clean -fd",
+    "git clean -fdx",
+    "git commit --amend",
+    "git tag -f",
+    "git branch -D codex/kmfa",
+    "git filter-repo",
+    "git filter-branch",
+    "git add -A",
+    "任何写入或清理 /Users/linzezhang/Downloads/KMFA_MetaData 的命令"
+  ],
+  "current_phase_boundaries": {
+    "fixes_performed": false,
+    "next_phase_started": false,
+    "stage_review_performed": false,
+    "github_upload_performed": false,
+    "app_reinstall_performed": false,
+    "raw_mutation_performed": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "kmfa.metadata.v015.s01_p1_legacy_reference_baseline.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "baseline_id": "V015-S01-P1-LEGACY-REFERENCE-BASELINE",
+  "baseline_kind": "legacy_static_reference_not_v15_runtime",
+  "baseline_manifest_ref": "KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json",
+  "repository_commit": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+  "tracked_metadata_tree_oid": "be43e5828e2fc07427a6dda02e621d3451e89e0a",
+  "tracked_metadata_aggregate_sha256": "a9f9316805f7fdc5994bef2e253e870631e8e752c94d15dc3ab2b80a1951bcea",
+  "legacy_static_target_sha256": "8b3618a6ba01977ead18e03b07afc4296183ebcf02aa4b2a5e3fd4af29b816b2",
+  "installed_app_aggregate_sha256": "848521287dfaafd93f64872ce96cec6cc9996becddfc31df15ff8bbff8877779",
+  "repository_reconstructable": true,
+  "installed_app_reconstructable_from_tracked_source": false,
+  "real_v15_runtime_present": false,
+  "s01p1_acceptance_passed": false,
+  "decision": "NO_GO"
+}

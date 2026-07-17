@@ -1,0 +1,100 @@
+{
+  "schema_version": "kmfa.v015.s01_p2_acceptance_matrix.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "stage_id": "S01",
+  "phase_id": "P2",
+  "acceptance_id": "ACC-KMFA-V015-S01-P2-IMPLEMENTATION-SPEC-GAP-INVENTORY",
+  "evidence_validation_status": "PASS",
+  "phase_acceptance_status": "PASSED",
+  "quality_gate_passed": true,
+  "check_count": 16,
+  "check_pass_count": 16,
+  "check_fail_count": 0,
+  "checks": [
+    {
+      "check_id": "all_55_requirements_present_once",
+      "result": "PASS",
+      "evidence": "machine/implementation_gap_matrix_public_safe.csv"
+    },
+    {
+      "check_id": "taskpack_priority_and_name_identity_locked",
+      "result": "PASS",
+      "evidence": "source_package_sha256=e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8"
+    },
+    {
+      "check_id": "no_requirement_claims_v15_acceptance",
+      "result": "PASS",
+      "evidence": "accepted_status_count=0"
+    },
+    {
+      "check_id": "every_gap_has_severity_impact_evidence_stage",
+      "result": "PASS",
+      "evidence": "55/55"
+    },
+    {
+      "check_id": "public_repo_policy_conflict_explicit",
+      "result": "PASS",
+      "evidence": "R007=CONFLICTING_POLICY"
+    },
+    {
+      "check_id": "four_migration_classes_present",
+      "result": "PASS",
+      "evidence": "KEEP/REFACTOR/DEPRECATE/UNVERIFIED"
+    },
+    {
+      "check_id": "keep_requires_verified_evidence",
+      "result": "PASS",
+      "evidence": "12/12 KEEP verified"
+    },
+    {
+      "check_id": "unverified_never_keep",
+      "result": "PASS",
+      "evidence": "8/8 UNVERIFIED not KEEP"
+    },
+    {
+      "check_id": "governance_and_precision_invariants_preserved",
+      "result": "PASS",
+      "evidence": "CAP-001..CAP-011"
+    },
+    {
+      "check_id": "static_runtime_and_legacy_ui_not_retained",
+      "result": "PASS",
+      "evidence": "CAP-025..CAP-029"
+    },
+    {
+      "check_id": "existing_independent_worktree_reuse_planned",
+      "result": "PASS",
+      "evidence": "machine/git_recovery_plan_public_safe.json"
+    },
+    {
+      "check_id": "v014_commit_blob_and_archive_recovery_validated",
+      "result": "PASS",
+      "evidence": "d6f379ad/5410e829/sha256:8b3618a6"
+    },
+    {
+      "check_id": "raw_root_stat_unchanged",
+      "result": "PASS",
+      "evidence": "device=16777234 inode=13660536 size=224 mtime=1782967639"
+    },
+    {
+      "check_id": "no_p2_fixes_or_runtime_implementation",
+      "result": "PASS",
+      "evidence": "planning/evidence artifacts only"
+    },
+    {
+      "check_id": "no_p3_stage_review_upload_or_reinstall",
+      "result": "PASS",
+      "evidence": "all boundary flags false"
+    },
+    {
+      "check_id": "s01p1_negative_findings_preserved",
+      "result": "PASS",
+      "evidence": "S01P1 remains NOT_PASSED/NO_GO"
+    }
+  ],
+  "stage_01_status": "IN_PROGRESS",
+  "stage_01_passed": false,
+  "stage_01_blocker": "S01P1 remained NOT_PASSED and S01P3/stage review not executed",
+  "next_allowed_run": "S01-P3 only"
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "kmfa.metadata.v015.s01_p2_implementation_spec_gap_inventory.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "inventory_id": "V015-S01-P2-IMPLEMENTATION-SPEC-GAP-INVENTORY",
+  "manifest_ref": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/s01_p2_implementation_spec_gap_inventory_manifest.json",
+  "acceptance_ref": "KMFA/stage_artifacts/V015_S01_P2_IMPLEMENTATION_SPEC_GAP_INVENTORY/machine/acceptance_matrix_public_safe.json",
+  "taskpack_sha256": "e822c98bfe21445b4ddf7110ecf81d14c8fa8bd5f2cdeb00fab4a21e72df39f8",
+  "requirement_count": 55,
+  "migration_capability_count": 37,
+  "s01p2_acceptance_passed": true,
+  "stage_01_passed": false,
+  "s01p1_acceptance_preserved": "NOT_PASSED",
+  "next_allowed_run": "S01-P3",
+  "repository": {
+    "implementation_branch": "codex/kmfa",
+    "s01p1_checkpoint_commit": "0e309502f21f12e2deba0931acd3fe1bafd0614c",
+    "v014_baseline_commit": "d6f379ad11d486d8a7ebde9e61b2fc7b3aaf9d05",
+    "extra_branch_created": false,
+    "extra_worktree_created": false
+  },
+  "raw_boundary": {
+    "path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "content_read": false,
+    "names_captured": false,
+    "hashes_computed": false,
+    "mutation_performed": false,
+    "stat_unchanged": true
+  },
+  "release_state": {
+    "github_upload_performed": false,
+    "app_reinstall_performed": false,
+    "delivery_allowed": false
+  }
+}

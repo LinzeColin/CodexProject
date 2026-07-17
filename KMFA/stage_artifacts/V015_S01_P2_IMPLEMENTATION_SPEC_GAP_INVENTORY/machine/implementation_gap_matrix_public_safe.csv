@@ -1,0 +1,56 @@
+requirement_id,priority,requirement_name,current_status,gap_type,severity,impact,evidence_refs,recommended_stage,migration_hint
+R001,P0,系统名称与项目形态,MISSING,RUNTIME,CRITICAL,无可构建真实应用，无法形成独立 KMFA 产品形态,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,S02,REFACTOR
+R002,P0,核心用户与角色,MISSING,ACCESS,HIGH,真实用户、多人多角色和三主视角尚未进入运行时,KMFA/stage_artifacts/S17_P1_access_security;KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,S15,REFACTOR
+R003,P0,行业适配,UNVERIFIED,DOMAIN,HIGH,行业场景仅有历史模型片段，未由真实业务流验证,KMFA/stage_artifacts/S16_P2_project_status_lifecycle;KMFA/stage_artifacts/S16_P3_customer_business_analysis,S12,UNVERIFIED
+R004,P0,项目成本优先,PARTIAL_VERIFIED,DOMAIN,CRITICAL,存在项目成本事实层原型，但没有真实首要业务闭环,KMFA/stage_artifacts/S09_P1_project_cost_fact_layer;KMFA/stage_artifacts/S11_P3_project_cost_page,S06,REFACTOR
+R005,P0,原始数据只读,PARTIAL_VERIFIED,DATA_GOVERNANCE,CRITICAL,只读政策已验证，v1.5 运行时写保护和事件监测仍缺失,KMFA/docs/governance/RAW_DATA_BOUNDARY.md;KMFA/docs/governance/IMMUTABILITY_POLICY.md,S03,KEEP
+R006,P0,私有派生空间,PARTIAL_VERIFIED,DATA_GOVERNANCE,CRITICAL,gitignore 私有空间存在，但产品级分层、权限和生命周期未实现,KMFA/.gitignore;KMFA/docs/governance/RAW_DATA_BOUNDARY.md,S03,KEEP
+R007,P0,公开 GitHub 安全,CONFLICTING_POLICY,SECURITY,CRITICAL,当前提交内容安全，但旧策略允许 owner 授权后上传 raw/plaintext，与 v2.0 严格禁止规则冲突,KMFA/tools/check_v014_one_time_github_main_upload.py;KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl;KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/acceptance_matrix_public_safe.json,S03,REFACTOR
+R008,P0,数据优先级,PARTIAL_VERIFIED,DATA_GOVERNANCE,CRITICAL,来源优先级规则存在，尚未成为版本化运行时决策服务,KMFA/tools/source_priority.py;KMFA/stage_artifacts/S03_P3_source_priority,S04,KEEP
+R009,P0,同源引用一致,PARTIAL_VERIFIED,ACCURACY,CRITICAL,已有差异与重跑原型，未形成真实缓存失效全链路,KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism;KMFA/metadata/quality/source_difference_queue.jsonl,S07,REFACTOR
+R010,P0,跨源冲突处理,PARTIAL_VERIFIED,ACCURACY,CRITICAL,禁止自动选边的规则可复用，真实人工确认状态机未实现,KMFA/tools/source_priority.py;KMFA/stage_artifacts/S06_P2_cross_source_difference_queue,S07,REFACTOR
+R011,P0,用户与系统责任判定,PARTIAL_VERIFIED,ACCURACY,HIGH,历史差异证据未稳定归因到源、映射、规则、计算、展示五层,KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW;KMFA/metadata/quality/source_difference_queue.jsonl,S07,REFACTOR
+R012,P0,零差异金额精度,PARTIAL_VERIFIED,ACCURACY,CRITICAL,整数分/Decimal 和零分容差内核已验证，真实权威数据仍未零差异,KMFA/tools/amount_tools.py;KMFA/tools/zero_delta_validator.py;KMFA/stage_artifacts/S18_P1_precision_stress,S05,KEEP
+R013,P0,权威基准,UNVERIFIED,ACCURACY,CRITICAL,黄金输入锁定流程有历史证据，但本轮未读取或验证真实权威值,KMFA/stage_artifacts/S05_P3_authority_baseline_lock;KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW,S06,UNVERIFIED
+R014,P0,原始值与处理值并存,PARTIAL_VERIFIED,DATA_MODEL,CRITICAL,版本与字段标准化结构存在，真实运行时历史不可覆盖性未证明,KMFA/stage_artifacts/S04_P2_field_standardization;KMFA/docs/governance/IMMUTABILITY_POLICY.md,S04,KEEP
+R015,P0,项目组合主键,PARTIAL_VERIFIED,DATA_MODEL,HIGH,组合主键 schema 与测试存在，真实项目匹配质量尚未验收,KMFA/metadata/schema_maps/project_composite_key_manifest.json;KMFA/stage_artifacts/S08_P1_project_composite_key,S08,KEEP
+R016,P0,多主体多账户,UNVERIFIED,DATA_MODEL,CRITICAL,主体模型原型存在，真实多银行多账户及防误合并未验证,KMFA/metadata/schema_maps/business_entity_model_manifest.json;KMFA/stage_artifacts/S08_P2_business_entity_model,S08,UNVERIFIED
+R017,P0,数据源范围,PARTIAL_VERIFIED,INGESTION,CRITICAL,文件适配器与计划分散存在，未覆盖所有指定真实来源,KMFA/stage_artifacts/S07_P1_finance_file_adapter;KMFA/stage_artifacts/S07_P2_wps_file_adapter;KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy,S10,REFACTOR
+R018,P1,三类导入方式,PARTIAL_VERIFIED,INGESTION,HIGH,仅文件型 CLI 原型可见，网页导入与自动接入未实现,KMFA/stage_artifacts/S03_P1_file_import;KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy,S10,REFACTOR
+R019,P0,数据源检查板,PARTIAL_VERIFIED,UI_UX,HIGH,静态检查板可作字段参考，非真实状态驱动页面,KMFA/stage_artifacts/S03_P2_source_check_matrix;KMFA/stage_artifacts/S11_P2_source_check_board,S11,REFACTOR
+R020,P0,检查状态,PARTIAL_VERIFIED,UI_UX,HIGH,历史状态枚举存在，尚未统一映射到 v1.5 蓝色系组件与真实状态,KMFA/docs/governance/QUALITY_GATE_POLICY.md;KMFA/stage_artifacts/S11_P2_source_check_board,S11,REFACTOR
+R021,P0,缺数据流程门禁,PARTIAL_VERIFIED,QUALITY_GATE,CRITICAL,fail-closed 门禁工具可复用，未接入真实计算和报告服务,KMFA/docs/governance/QUALITY_GATE_POLICY.md;KMFA/tools/check_report_grade_gate.py,S11,KEEP
+R022,P0,一套账本多视图,UNVERIFIED,DATA_MODEL,CRITICAL,历史事实层不足以证明唯一合法账本和可审计视图转换,KMFA/stage_artifacts/S09_P1_project_cost_fact_layer;KMFA/stage_artifacts/S09_P3_scope_reconciliation,S09,UNVERIFIED
+R023,P0,人类可读差异规则,PARTIAL_VERIFIED,GOVERNANCE,HIGH,治理文档与差异队列存在，但经营报告分层展示未实现,KMFA/docs/governance/QUALITY_GATE_POLICY.md;KMFA/stage_artifacts/S06_P2_cross_source_difference_queue,S09,KEEP
+R024,P0,前端不污染原始数据,PARTIAL_VERIFIED,SECURITY,CRITICAL,不可变/控制事件语义已定义，真实前后端写边界尚未验证,KMFA/docs/governance/IMMUTABILITY_POLICY.md;KMFA/stage_artifacts/S12_P1_manual_resolution_events,S08,KEEP
+R025,P0,前端实时影响后端,MISSING,WORKFLOW,CRITICAL,无真实 API、持久化、失效、重算、预览和同步链路,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md;KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism,S20,REFACTOR
+R026,P0,公式参数外置,PARTIAL_VERIFIED,GOVERNANCE,HIGH,公式参数注册表已版本化，但存在多登记面同步成本且未接真实服务,KMFA/docs/governance/formula_registry.yaml;KMFA/docs/governance/parameter_registry.csv;KMFA/docs/governance/model_registry.yaml,S13,KEEP
+R027,P1,经营健康模型,PARTIAL_VERIFIED,MODEL,HIGH,历史模型登记存在，维度完整性、解释性和运行时输出未验收,KMFA/docs/governance/model_registry.yaml;KMFA/stage_artifacts/S13_P1_financial_operating_report,S13,REFACTOR
+R028,P1,行动优先级,PARTIAL_VERIFIED,MODEL,MEDIUM,排序理念有历史登记，未形成可测试、不可自动执行的产品能力,KMFA/docs/governance/model_registry.yaml;KMFA/stage_artifacts/S17_P3_operations_sop,S13,REFACTOR
+R029,P0,项目制成本分类,PARTIAL_VERIFIED,DOMAIN,CRITICAL,项目成本事实字段原型存在，指定分类完整性和真实映射未验证,KMFA/stage_artifacts/S09_P1_project_cost_fact_layer;KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation,S12,REFACTOR
+R030,P0,项目毛利与现金毛利,PARTIAL_VERIFIED,DOMAIN,CRITICAL,历史毛利/现金毛利原型存在，合同变更、质保金与占用未闭环,KMFA/stage_artifacts/S09_P2_margin_cash_margin;KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan,S12,REFACTOR
+R031,P1,回款应收与账龄,PARTIAL_VERIFIED,DOMAIN,HIGH,历史账龄报告原型存在，合同节点与催收优先级未形成真实业务流,KMFA/stage_artifacts/S13_P2_collection_receivable_aging,S18,REFACTOR
+R032,P1,资金与贷款,PARTIAL_VERIFIED,DOMAIN,HIGH,资金计划原型存在，多账户实时余额和缺口预测未验证,KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan,S18,REFACTOR
+R033,P1,税务与政策,PARTIAL_VERIFIED,DOMAIN,HIGH,税务/政策仅有历史规划证据，真实数据、角色和申报边界未联调,KMFA/stage_artifacts/S14_P2_invoice_tax_plan;KMFA/stage_artifacts/S14_P3_policy_evidence_plan,S19,REFACTOR
+R034,P0,报告周期与格式,PARTIAL_VERIFIED,REPORTING,CRITICAL,模板和静态导出存在，周期调度与真实 Dashboard/PDF/附表链路缺失,KMFA/stage_artifacts/S10_P1_report_templates;KMFA/stage_artifacts/S10_P3_report_export,S21,REFACTOR
+R035,P0,报告人类可读,PARTIAL_VERIFIED,REPORTING,HIGH,历史报告可作内容参考，但仍含技术状态和模型演示表达,KMFA/stage_artifacts/S13_P1_financial_operating_report;KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,S21,REFACTOR
+R036,P0,报告数据一致,UNVERIFIED,REPORTING,CRITICAL,无真实事实层与多格式导出的逐单元格一致性证据,KMFA/stage_artifacts/S10_P3_report_export;KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW,S21,UNVERIFIED
+R037,P0,数据检查板不进入经营报告,PARTIAL_VERIFIED,REPORTING,HIGH,静态页面有分离意图，真实导航和报告渲染未验证,KMFA/stage_artifacts/S11_P2_source_check_board;KMFA/stage_artifacts/S13_P1_financial_operating_report,S11,REFACTOR
+R038,P0,界面全量重构,MISSING,UI_UX,CRITICAL,v0.1.4 静态信息架构明确不是验收基线，v1.5 尚未开始实现,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md;KMFA/stage_artifacts/S11_P1_home_navigation,S14,DEPRECATE
+R039,P0,真实商业软件质感,MISSING,UI_UX,HIGH,当前静态样板仍呈现技术化和机械堆叠表达,KMFA/stage_artifacts/S11_P1_home_navigation;KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,S14,DEPRECATE
+R040,P0,一级导航,PARTIAL_VERIFIED,UI_UX,HIGH,旧导航仅是静态参考，未覆盖目标七入口的真实路由与状态,KMFA/stage_artifacts/S11_P1_home_navigation,S14,REFACTOR
+R041,P0,渐进披露,MISSING,UI_UX,HIGH,普通页面仍暴露 Q4、D、NO_GO 等技术状态,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md;KMFA/stage_artifacts/S11_P1_home_navigation,S14,DEPRECATE
+R042,P0,真实操作流程,MISSING,WORKFLOW,CRITICAL,当前无真实 API、后端状态、持久化、刷新、恢复或输出闭环,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/acceptance_matrix_public_safe.json,S20,DEPRECATE
+R043,P0,状态反馈与恢复,MISSING,WORKFLOW,HIGH,无真实运行时可验证加载、成功、失败、撤销和恢复,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,S20,REFACTOR
+R044,P0,压力极限回归,PARTIAL_VERIFIED,TESTING,CRITICAL,历史精度/回归测试存在，v1.5 并发、故障、浸泡、恢复和可访问性未执行,KMFA/stage_artifacts/S18_P1_precision_stress;KMFA/stage_artifacts/S18_P2_full_regression_acceptance,S23,REFACTOR
+R045,P0,静默错误为零,PARTIAL_VERIFIED,TESTING,CRITICAL,fail-closed 工具语义存在，真实解析/映射/计算/导出/通知链未覆盖,KMFA/docs/governance/QUALITY_GATE_POLICY.md;KMFA/stage_artifacts/S18_P2_full_regression_acceptance,S23,KEEP
+R046,P0,通知规则,PARTIAL_VERIFIED,NOTIFICATION,HIGH,通知策略与样例存在，真实邮件发送、安全正文和失败升级未验证,KMFA/stage_artifacts/S17_P2_notification,S22,REFACTOR
+R047,P0,权限与审计,PARTIAL_VERIFIED,ACCESS,CRITICAL,权限/审计策略原型存在，真实认证、最小权限与发布审计未实现,KMFA/stage_artifacts/S17_P1_access_security;KMFA/stage_artifacts/S12_P1_manual_resolution_events,S15,REFACTOR
+R048,P0,时间仅作参考,PARTIAL_VERIFIED,GOVERNANCE,MEDIUM,TaskPack 已声明质量优先，但全程门禁尚待后续 Stage 执行证明,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json,S24,KEEP
+R049,P0,Stage 结构,PARTIAL_VERIFIED,SCOPE,MEDIUM,24 Stage/每 Stage 三 Phase/每 Phase 三 Task 的计划已验证，执行尚未完成,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json,S02,KEEP
+R050,P0,不要写复核角色任务,PARTIAL_VERIFIED,SCOPE,MEDIUM,正式 TaskPack 未写复核角色，但后续生成任务仍需持续门禁,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json,S02,KEEP
+R051,P1,业务线 1–10,UNVERIFIED,SCOPE,HIGH,历史功能散落但尚未建立唯一业务线总账与完整输入输出边界,KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW;KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/human/legacy_reference_baseline_report_zh.md,S02,UNVERIFIED
+R052,P1,自动接入后置,DEFERRED,INTEGRATION,MEDIUM,红圈自动接入按路线后置，当前仅保留文件型优先约束,KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy;KMFA/stage_artifacts/S18_P3_integration_preparation,S24,REFACTOR
+R053,P2,合同风险与报价漏项,DEFERRED,SCOPE,LOW,明确不进入首个稳定闭环，需未来独立立项,KMFA/stage_artifacts/V015_S01_P1_LEGACY_REFERENCE_BASELINE_FREEZE/machine/s01_p1_legacy_reference_baseline_manifest.json,S24,UNVERIFIED
+R054,P0,OpMe 后续集成,DEFERRED,INTEGRATION,HIGH,仅有集成准备证据，须在 KMFA 独立稳定后实施低耦合接入,KMFA/stage_artifacts/S18_P3_integration_preparation,S24,REFACTOR
+R055,P0,中文入口与维护,PARTIAL_VERIFIED,DOCUMENTATION,HIGH,治理文档当前同步，但 v1.5 实现尚不存在且需逐 Phase 持续同步,KMFA/功能清单.md;KMFA/开发记录.md;KMFA/模型参数文件.md;KMFA/docs/governance/VERSION_MATRIX.yaml,S24,KEEP

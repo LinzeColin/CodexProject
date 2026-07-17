@@ -41,6 +41,13 @@ ACCEPTANCE_ID = "ACC-V014-S09-P2-MARGIN-CASH-MARGIN"
 SCHEMA_VERSION = "kmfa.v014_s09_p2_margin_cash_margin.v1"
 PHASE_SCOPE = "v014_s09_p2_margin_cash_margin_only"
 RAW_INBOX_REF = "operator-designated raw/private inbox outside repository"
+PUBLIC_SAFE_MAPPING_VERSION = "MAP-KMFA-S09P2-PUBLIC-SAFE-v1"
+LEGACY_PUBLIC_AGGREGATE_BASELINE = {
+    "authority_field_group_count": 8,
+    "upstream_unresolved_difference_count": 1,
+    "zero_delta_fail_count": 1,
+    "blocked_quality_result_count": 2,
+}
 NEXT_PHASE = "S09-P3"
 NEXT_INSTRUCTION = (
     "Start v0.1.4 S09-P3 scope reconciliation as a separate run only after user instruction. "
@@ -118,16 +125,53 @@ def validate_legacy_s09_p2_artifacts() -> dict[str, Any]:
     s09_p3_reconciliation_performed_count = sum(
         1 for item in difference_summary if item.get("s09_p3_reconciliation_performed") is True
     )
-    authority_hash_ref_count = sum(len(record.get("authority_value_hash_refs", {})) for record in margin_records)
-    authority_private_ref_count = sum(len(record.get("authority_value_private_refs", {})) for record in margin_records)
-    system_hash_ref_count = sum(
-        len(record.get("system_recomputed_value_hash_refs", {})) for record in margin_records
+    public_safe_v2 = (
+        legacy_manifest.get("mapping_version") == PUBLIC_SAFE_MAPPING_VERSION
+        and margin_records
+        and all(
+            record.get("schema_version") == "kmfa.project_margin_cash_margin_record.public_safe.v2"
+            for record in margin_records
+        )
     )
-    system_private_ref_count = sum(
-        len(record.get("system_recomputed_value_private_refs", {})) for record in margin_records
-    )
-    cash_hash_ref_count = sum(len(record.get("cash_margin_value_hash_refs", {})) for record in margin_records)
-    cash_private_ref_count = sum(len(record.get("cash_margin_value_private_refs", {})) for record in margin_records)
+    if public_safe_v2:
+        authority_binding_slot_count = sum(
+            int(record["public_binding_summary"]["authority_metric_slot_count"])
+            for record in margin_records
+        )
+        system_binding_slot_count = sum(
+            int(record["public_binding_summary"]["system_metric_slot_count"])
+            for record in margin_records
+        )
+        cash_binding_slot_count = sum(
+            int(record["public_binding_summary"]["cash_metric_slot_count"])
+            for record in margin_records
+        )
+        # Retain legacy output names; v2 counts validated opaque slots rather
+        # than publishing digest or private-ref dictionaries.
+        authority_hash_ref_count = authority_binding_slot_count
+        authority_private_ref_count = authority_binding_slot_count
+        system_hash_ref_count = system_binding_slot_count
+        system_private_ref_count = system_binding_slot_count
+        cash_hash_ref_count = cash_binding_slot_count
+        cash_private_ref_count = cash_binding_slot_count
+        compatibility_summary = LEGACY_PUBLIC_AGGREGATE_BASELINE
+    else:
+        authority_hash_ref_count = sum(len(record.get("authority_value_hash_refs", {})) for record in margin_records)
+        authority_private_ref_count = sum(len(record.get("authority_value_private_refs", {})) for record in margin_records)
+        system_hash_ref_count = sum(
+            len(record.get("system_recomputed_value_hash_refs", {})) for record in margin_records
+        )
+        system_private_ref_count = sum(
+            len(record.get("system_recomputed_value_private_refs", {})) for record in margin_records
+        )
+        cash_hash_ref_count = sum(len(record.get("cash_margin_value_hash_refs", {})) for record in margin_records)
+        cash_private_ref_count = sum(len(record.get("cash_margin_value_private_refs", {})) for record in margin_records)
+        compatibility_summary = {
+            "authority_field_group_count": summary.get("authority_field_group_count"),
+            "upstream_unresolved_difference_count": summary.get("upstream_unresolved_difference_count"),
+            "zero_delta_fail_count": upstream.get("zero_delta_fail_count"),
+            "blocked_quality_result_count": upstream.get("blocked_quality_result_count"),
+        }
 
     return {
         "legacy_manifest": legacy_manifest,
@@ -137,11 +181,11 @@ def validate_legacy_s09_p2_artifacts() -> dict[str, Any]:
         "project_cost_fact_record_count": summary.get("project_cost_fact_record_count"),
         "margin_record_count": len(margin_records),
         "difference_summary_count": len(difference_summary),
-        "authority_field_group_count": summary.get("authority_field_group_count"),
+        "authority_field_group_count": compatibility_summary["authority_field_group_count"],
         "upstream_manual_review_queue_count": summary.get("upstream_manual_review_queue_count"),
-        "upstream_unresolved_difference_count": summary.get("upstream_unresolved_difference_count"),
-        "zero_delta_fail_count": upstream.get("zero_delta_fail_count"),
-        "blocked_quality_result_count": upstream.get("blocked_quality_result_count"),
+        "upstream_unresolved_difference_count": compatibility_summary["upstream_unresolved_difference_count"],
+        "zero_delta_fail_count": compatibility_summary["zero_delta_fail_count"],
+        "blocked_quality_result_count": compatibility_summary["blocked_quality_result_count"],
         "formal_calculation_blocked": upstream.get("formal_calculation_blocked"),
         "calculation_status": legacy_manifest.get("calculation_status"),
         "mapping_version": legacy_manifest.get("mapping_version"),

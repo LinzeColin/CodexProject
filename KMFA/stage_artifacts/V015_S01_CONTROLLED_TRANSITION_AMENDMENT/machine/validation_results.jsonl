@@ -1,0 +1,9 @@
+{"validation_id":"stage_review_strict_dependency","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/check_v015_s01_stage_review.py --require-source-package --require-validation-receipts --require-dependency-validators","result":"PASS","exit_code":0}
+{"validation_id":"roadmap_governance_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/v015_roadmap_governance_sync.py --check","result":"PASS","exit_code":0}
+{"validation_id":"amendment_focused_tests","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest KMFA.tests.test_v015_s01_controlled_transition_amendment -q","result":"PASS","exit_code":0}
+{"validation_id":"governance_project_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/validate_project_governance.py --project KMFA","result":"PASS","exit_code":0}
+{"validation_id":"lean_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/lean_governance.py validate --project KMFA","result":"PASS","exit_code":0}
+{"validation_id":"governance_sync_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B scripts/validate_governance_sync.py --changed-only --enforce-sync","result":"PASS","exit_code":0}
+{"validation_id":"no_float_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/check_no_float_money.py","result":"PASS","exit_code":0}
+{"validation_id":"no_omission_check","command":"PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B KMFA/tools/no_omission_check.py","result":"PASS","exit_code":0}
+{"validation_id":"structured_public_diff_checks","command":"structured parse plus public-safety scan plus git diff --check for transition scope","result":"PASS","exit_code":0}

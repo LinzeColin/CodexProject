@@ -14,8 +14,18 @@ KMFA delivery follows the owner contract:
 
 ## Current Delivery Scope
 
+当前 v1.5 主线：S21-P1 报告模型已通过唯一一次 20 项正式验收，只开放下一次独立 Run 中尚未开始的 S21-P2。S21-P3、GitHub 上传和 App 重装保持关闭。
+
 | Item | Status |
 |---|---|
+| S21-P1 报告模型 | PASSED |
+| S20 整体复审 | PASSED |
+| S20-P1 数据更新 | PASSED |
+| S20-P2 人工确认工作台 | PASSED |
+| S20-P3 重新计算与发布联动 | PASSED |
+| S19-P1 税务与发票事实 | PASSED |
+| S19-P2 政策资格 | PASSED |
+| S19-P3 税务与政策报告 | PASSED |
 | S01-P1 | completed |
 | S01-P2 | completed_validated |
 | S01-P3 | completed_validated |

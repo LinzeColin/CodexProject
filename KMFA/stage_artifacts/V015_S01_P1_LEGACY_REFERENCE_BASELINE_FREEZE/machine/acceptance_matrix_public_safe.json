@@ -1,0 +1,28 @@
+{
+  "schema_version": "kmfa.v015.s01_p1_acceptance_matrix.v1",
+  "project_id": "KMFA",
+  "target_release": "v1.5",
+  "stage_id": "S01",
+  "phase_id": "P1",
+  "acceptance_id": "ACC-KMFA-V015-S01-P1-LEGACY-REFERENCE-BASELINE-FREEZE",
+  "evidence_validation_status": "PASS",
+  "phase_acceptance_status": "NOT_PASSED",
+  "quality_gate_passed": false,
+  "check_count": 12,
+  "check_pass_count": 9,
+  "check_fail_count": 3,
+  "checks": [
+    {"check_id": "taskpack_fingerprint_locked", "result": "PASS"},
+    {"check_id": "repository_commit_reconstructable", "result": "PASS"},
+    {"check_id": "tracked_metadata_reconstructable", "result": "PASS"},
+    {"check_id": "legacy_static_target_reconstructable", "result": "PASS"},
+    {"check_id": "installed_app_fingerprint_comparable", "result": "PASS"},
+    {"check_id": "desktop_screenshot_indexed", "result": "PASS"},
+    {"check_id": "mobile_screenshot_indexed", "result": "PASS"},
+    {"check_id": "raw_root_unchanged", "result": "PASS"},
+    {"check_id": "public_repo_safety", "result": "PASS"},
+    {"check_id": "real_application_runtime_identified", "result": "FAIL", "finding": "RUNTIME_NOT_FOUND"},
+    {"check_id": "real_runtime_routes_inventoried", "result": "FAIL", "finding": "STATIC_SAMPLE_ONLY"},
+    {"check_id": "full_app_reconstructable_from_tracked_source", "result": "FAIL", "finding": "APP_BUILDER_INSTALLER_NOT_TRACKED"}
+  ]
+}

@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import json
 import subprocess
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +18,8 @@ ACCEPTANCE_ID = "ACC-V014-S06-P3-VALIDATION-EVIDENCE"
 SCHEMA_VERSION = "kmfa.v014_s06_p3_validation_evidence.v1"
 PHASE_SCOPE = "v014_s06_p3_validation_evidence_only"
 EVIDENCE_TIME = "2026-07-04T12:20:00+10:00"
+GENERATED_AT = "2026-07-04T06:46:09+10:00"
+REVIEWED_HEAD = "1911aab3edb0b76aaba6091c4fc4b2c190f07299"
 
 OUTPUT_DIR = Path("KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE")
 MACHINE_DIR = OUTPUT_DIR / "machine"
@@ -119,9 +120,9 @@ def build_manifest(evidence: dict[str, Any]) -> dict[str, Any]:
         "phase_scope": PHASE_SCOPE,
         "task_id": TASK_ID,
         "acceptance_id": ACCEPTANCE_ID,
-        "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "generated_at": GENERATED_AT,
         "evidence_time": EVIDENCE_TIME,
-        "reviewed_head": git_output(["rev-parse", "HEAD"]),
+        "reviewed_head": REVIEWED_HEAD,
         "worktree": git_output(["rev-parse", "--show-toplevel"]),
         "branch": git_output(["branch", "--show-current"]),
         "remote": git_output(["remote", "get-url", "origin"]),

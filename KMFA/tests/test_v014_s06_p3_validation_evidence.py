@@ -1,6 +1,7 @@
 import csv
 import importlib
 import json
+import os
 import unittest
 from pathlib import Path
 
@@ -19,7 +20,8 @@ class V014S06P3ValidationEvidenceTests(unittest.TestCase):
             return
         generator = importlib.import_module("KMFA.tools.v014_s06_p3_validation_evidence")
         checker = importlib.import_module("KMFA.tools.check_v014_s06_p3_validation_evidence")
-        generator.main()
+        if os.environ.get("KMFA_VALIDATION_READ_ONLY") != "1":
+            generator.main()
         cls.validation_result = checker.validate_v014_s06_p3_validation_evidence()
         cls.generator = generator
 

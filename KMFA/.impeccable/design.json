@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-15T00:00:00+10:00",
+  "title": "Design System: KMFA 经营分析系统",
+  "extensions": {
+    "colorMeta": {
+      "business-navy": {"role": "primary", "displayName": "经营海军蓝", "canonical": "#102F50", "tonalRamp": ["#F1F6FA", "#D8E6F0", "#AFC9DC", "#17679B", "#102F50", "#0A2138"]},
+      "action-blue": {"role": "primary", "displayName": "行动业务蓝", "canonical": "#17679B", "tonalRamp": ["#EDF6FB", "#D5EAF5", "#8FC3DF", "#17679B", "#114B74", "#0B3552"]},
+      "page-cool": {"role": "neutral", "displayName": "冷灰页面", "canonical": "#F3F6F8", "tonalRamp": ["#FFFFFF", "#F8FAFB", "#F3F6F8", "#CFDAE3", "#5E6D79", "#152331"]}
+    },
+    "typographyMeta": {
+      "headline": {"displayName": "页面标题", "purpose": "每页唯一主标题"},
+      "title": {"displayName": "区域标题", "purpose": "工作区和详情分组"},
+      "body": {"displayName": "正文", "purpose": "中文说明和数据内容"},
+      "label": {"displayName": "标签", "purpose": "表头、状态和字段名"}
+    },
+    "shadows": [
+      {"name": "floating-panel", "value": "0 18px 48px rgba(16,47,80,.18)", "purpose": "详情抽屉或受控弹层"},
+      {"name": "transient", "value": "0 8px 24px rgba(16,47,80,.10)", "purpose": "临时提示或窄幅菜单"}
+    ],
+    "motion": [
+      {"name": "state-change", "value": "180ms ease", "purpose": "选择、展开和焦点状态变化"},
+      {"name": "panel-change", "value": "220ms ease", "purpose": "详情工作区进入与返回"}
+    ],
+    "breakpoints": [
+      {"name": "compact", "value": "760px"},
+      {"name": "workspace", "value": "980px"}
+    ]
+  },
+  "components": [
+    {
+      "name": "主要按钮",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "当前页面最重要且安全的下一步。",
+      "html": "<button class=\"ds-btn-primary\">继续处理</button>",
+      "css": ".ds-btn-primary{border:1px solid #17679B;border-radius:6px;background:#17679B;color:#fff;padding:9px 14px;font:700 14px/1.4 -apple-system,BlinkMacSystemFont,\"Segoe UI\",\"PingFang SC\",\"Microsoft YaHei\",Arial,sans-serif;transition:background 180ms ease}.ds-btn-primary:hover{background:#114B74}.ds-btn-primary:focus-visible{outline:3px solid rgba(23,103,155,.28);outline-offset:2px}.ds-btn-primary:active{background:#0B3552}"
+    },
+    {
+      "name": "次要按钮",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "返回、取消和次级查看动作。",
+      "html": "<button class=\"ds-btn-secondary\">返回检查板</button>",
+      "css": ".ds-btn-secondary{border:1px solid #CFDAE3;border-radius:6px;background:#fff;color:#114B74;padding:9px 14px;font:700 14px/1.4 -apple-system,BlinkMacSystemFont,\"Segoe UI\",\"PingFang SC\",\"Microsoft YaHei\",Arial,sans-serif;transition:background 180ms ease,border-color 180ms ease}.ds-btn-secondary:hover{background:#EDF6FB;border-color:#17679B}.ds-btn-secondary:focus-visible{outline:3px solid rgba(23,103,155,.28);outline-offset:2px}"
+    },
+    {
+      "name": "搜索输入框",
+      "kind": "input",
+      "description": "按业务文字搜索检查项。",
+      "html": "<label class=\"ds-search-label\">搜索检查项<input class=\"ds-search\" placeholder=\"例如：回款、成本、票据\"></label>",
+      "css": ".ds-search-label{display:grid;gap:6px;color:#152331;font:700 12px/1.4 -apple-system,BlinkMacSystemFont,\"Segoe UI\",\"PingFang SC\",\"Microsoft YaHei\",Arial,sans-serif}.ds-search{min-height:40px;border:1px solid #CFDAE3;border-radius:6px;background:#fff;color:#152331;padding:9px 11px;font:400 14px/1.5 inherit}.ds-search:hover{border-color:#8EA9BC}.ds-search:focus{border-color:#17679B;outline:3px solid rgba(23,103,155,.20)}"
+    },
+    {
+      "name": "状态徽标",
+      "kind": "chip",
+      "refersTo": "status-chip",
+      "description": "用文字、符号和小面积颜色共同表达状态。",
+      "html": "<button class=\"ds-status\"><span aria-hidden=\"true\">!</span> 需确认</button>",
+      "css": ".ds-status{display:inline-flex;align-items:center;gap:5px;border:1px solid #B7CCE0;border-radius:999px;background:#EDF6FB;color:#114B74;padding:4px 8px;font:700 12px/1.4 -apple-system,BlinkMacSystemFont,\"Segoe UI\",\"PingFang SC\",\"Microsoft YaHei\",Arial,sans-serif}.ds-status:hover{border-color:#17679B}.ds-status:focus-visible{outline:3px solid rgba(23,103,155,.28);outline-offset:2px}"
+    },
+    {
+      "name": "检查板工作面",
+      "kind": "card",
+      "description": "承载工具栏、矩阵和详情的平面容器。",
+      "html": "<section class=\"ds-workspace\"><strong>数据检查板</strong><p>查看状态、影响和下一步。</p></section>",
+      "css": ".ds-workspace{border:1px solid #CFDAE3;border-radius:8px;background:#fff;color:#152331;padding:16px;font:400 14px/1.6 -apple-system,BlinkMacSystemFont,\"Segoe UI\",\"PingFang SC\",\"Microsoft YaHei\",Arial,sans-serif}.ds-workspace strong{display:block;color:#102F50;font-size:18px}.ds-workspace p{margin:6px 0 0;color:#5E6D79}"
+    }
+  ],
+  "narrative": {
+    "northStar": "可信经营台",
+    "overview": "KMFA 像一张经过整理的经营工作台：可靠、克制、信息紧凑，先帮助用户完成判断和处理，再提供专业证据。",
+    "keyCharacteristics": ["中文优先", "商务蓝主导", "紧凑可读", "标准交互", "后端事实只读"],
+    "rules": [
+      {"name": "小面积状态色规则", "body": "状态色只用于徽标、符号、图标和短文字，不得铺满大面积区域。", "section": "colors"},
+      {"name": "中文任务优先规则", "body": "默认界面先说明状态、影响和下一步，机器字段后置。", "section": "typography"},
+      {"name": "静态平面规则", "body": "静态工作区靠边框、间距和背景分层，无交互关系时不加阴影。", "section": "elevation"}
+    ],
+    "dos": ["使用商务蓝、白色和浅蓝灰", "同时显示状态文字与符号", "保留清晰键盘焦点", "返回时恢复筛选和滚动位置"],
+    "donts": ["不要做技术控制台或字段墙", "不要使用装饰性卡片陈列", "不要使用巨大告警色块", "不要只用颜色表达状态", "不要让前端直接改写后端状态"]
+  }
+}
