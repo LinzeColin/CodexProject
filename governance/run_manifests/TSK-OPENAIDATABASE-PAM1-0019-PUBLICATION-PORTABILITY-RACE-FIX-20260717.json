@@ -8,14 +8,14 @@
   ],
   "iteration_id": "ST10-PHC-OPENAIDATABASE-PAM1-0019-003",
   "generated_at": "2026-07-16T23:50:21Z",
-  "implementation_base_sha": "8fa394a6879b9cd05a87ea74515667dcb70883e3",
+  "implementation_base_sha": "c0c6fafe9f580b09ed9cc380cfbedd188a1b7430",
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c3dd95aa3741e75b7a6b9deabb1b749bb81c4800408bb6246a70bdc19508b31b",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d3336d6e836d94094d6af5cb9d2ce4e19b9a52adffebccf6b6ecce6e5b5894fd",
   "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the nineteen non-manifest closure files; this manifest is excluded to avoid self-reference.",
   "ci_attestation_subject": "Task37 accepted-main hygiene, recovery clean-clone portability and exact-base Settlement race remediation",
   "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_PR_REQUIRED_CHECKS",
   "gate_status": "PASS_LOCAL_REMEDIATION_PENDING_REMOTE_ACCEPTANCE",
-  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects, normalize commit time from epoch to UTC Z and write canonical explicit ZIP32 bytes, refresh both tracked Agent views to the accepted canonical source commit, register only the four exact append-only governance OIDs introduced by the intervening accepted main commits, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
+  "summary": "Close the production-publication defects exposed after the first trusted Settlement: replace the local-only repository-hygiene baseline with an accepted public-main tree, rebind snapshot recovery to a reachable commit, source all members from its Git objects, normalize commit time from epoch to UTC Z and write canonical explicit ZIP32 bytes, refresh both tracked Agent views to the accepted canonical source commit, register only the six exact append-only governance OIDs introduced by the intervening accepted main commits, and require Settlement to compare the live main ref with the exact tested base immediately before merge.",
   "scope": {
     "new_business_sample_files": 0,
     "canonical_or_raw_business_data_files_modified": 0,
@@ -121,6 +121,7 @@
     "https://github.com/LinzeColin/CodexProject/commit/f97f6826794c73128afa38ca907b618115a06893",
     "https://github.com/LinzeColin/CodexProject/commit/b9c5a5d747f99e35247b2a23141be7caf4588353",
     "https://github.com/LinzeColin/CodexProject/commit/8fa394a6879b9cd05a87ea74515667dcb70883e3",
+    "https://github.com/LinzeColin/CodexProject/commit/c0c6fafe9f580b09ed9cc380cfbedd188a1b7430",
     ".github/workflows/agent-loop-settlement.yml",
     "OpenAIDatabase/config/evaluation/memory_snapshot_recovery_v1.json",
     "OpenAIDatabase/docs/governance/events.jsonl",
@@ -130,14 +131,14 @@
   "test_commands": [
     "python3 -B -m unittest -q tests.agent_loop.test_workflow_contract tests.governance.test_repository_hygiene",
     "python3 -B scripts/workflow_security_audit.py audit --json",
-    "python3 -B scripts/governance_id_audit.py --base-ref 8fa394a6879b9cd05a87ea74515667dcb70883e3 --json",
+    "python3 -B scripts/governance_id_audit.py --base-ref c0c6fafe9f580b09ed9cc380cfbedd188a1b7430 --json",
     "python3 -B scripts/repository_hygiene_audit.py --tree-ish HEAD",
     "python3 -B OpenAIDatabase/scripts/evaluate_memory_snapshot_recovery.py --database-dir OpenAIDatabase --write",
     "python3 -B OpenAIDatabase/scripts/evaluate_memory_retrieval_performance.py --database-dir OpenAIDatabase --write",
     "python3 -B OpenAIDatabase/scripts/evaluate_memory_production_acceptance.py --database-dir OpenAIDatabase --phase candidate --artifact-ref CANDIDATE_TREE --reuse-current-reports --write",
     "python3 -B OpenAIDatabase/scripts/memory.py --database-dir OpenAIDatabase build --agent-views --check",
     "cd OpenAIDatabase && python3 -B scripts/run_verification.py --tier security",
-    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref 8fa394a6879b9cd05a87ea74515667dcb70883e3"
+    "python3 -B scripts/lean_governance.py ci --changed-only --base-ref c0c6fafe9f580b09ed9cc380cfbedd188a1b7430"
   ],
   "test_results": [
     {
@@ -153,7 +154,7 @@
     {
       "command": "repository hygiene audit",
       "result": "PASS",
-      "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; the intervening accepted main commits add exactly four reviewed single-line append-only governance OIDs; zero policy errors and zero violations."
+      "observed": "Public reachable baseline tree 0669f6c51940477894d1a8303511063872e5266e; the intervening accepted main commits add exactly six reviewed single-line append-only governance OIDs; zero policy errors and zero violations."
     },
     {
       "command": "generated Agent view source binding",
@@ -178,7 +179,7 @@
     {
       "command": "immutable Governance ID V2 audit",
       "result": "PASS",
-      "observed": "Allocated EVT.OpenAIDatabase.PAM1.0020 through registry revision 95; all 13,227 identifier references resolve exactly once, with zero new positional IDs or errors."
+      "observed": "Allocated EVT.OpenAIDatabase.PAM1.0020 through registry revision 95; all 13,230 identifier references resolve exactly once, with zero new positional IDs or errors."
     },
     {
       "command": "snapshot and production acceptance unit regression",
