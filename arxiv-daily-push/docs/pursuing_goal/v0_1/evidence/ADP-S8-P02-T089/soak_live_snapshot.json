@@ -1,0 +1,16 @@
+{
+  "source": "live cn_run_log (adp-mirror), read-only",
+  "captured_note": "daily cron run manifests; result != 失败 counts as a healthy day (no Sev-1/2)",
+  "rows": [
+    {
+      "as_of_date": "2026-07-16",
+      "result": "降级",
+      "at": "2026-07-16T03:05:42.500Z"
+    },
+    {
+      "as_of_date": "2026-07-15",
+      "result": "正常",
+      "at": "2026-07-15T03:31:24.835Z"
+    }
+  ]
+}

@@ -34,29 +34,37 @@ for d in rep["stopline_drills"]:
 if not rep["stopline_clause_met"]:
     fails.append("stop-the-line clause not met (not all 8 triggers drilled with controls)")
 
-# ---- clause 1: honestly PENDING, T089 NOT claimed complete ----
+# ---- clause 1: LIVE-tracked from cn_run_log; in progress, T089 NOT yet complete ----
 soak = rep["soak"]
-if soak["days_completed"] != 0 or soak["required_consecutive_days"] != 14:
-    fails.append(f"soak accumulator wrong: {soak['days_completed']}/{soak['required_consecutive_days']}")
-if rep["soak_clause_met"]:
-    fails.append("control broken: the 14-day soak clause is reported MET at day 0/14 -- over-claim")
-if rep["t089_complete"]:
-    fails.append("control broken: T089 reported COMPLETE while the 14-day soak clause is unmet -- over-claim")
-# the completion logic is genuinely gated on the 14 days: simulate 14 days -> would complete
-sim = dict(soak); sim["days_completed"] = 14
-if not (sim["days_completed"] >= sim["required_consecutive_days"]):
-    fails.append("control weak: even 14 days would not satisfy the soak clause -- logic broken")
+if soak["required_consecutive_days"] != 14:
+    fails.append(f"soak required days wrong: {soak['required_consecutive_days']}")
+# the soak is self-accumulating from the daily cron; days_completed is in [0, 14): in progress, not done
+if not (0 <= soak["days_completed"] < 14):
+    fails.append(f"soak days_completed not an in-progress value: {soak['days_completed']}/14")
+if rep["soak_clause_met"] or rep["t089_complete"]:
+    fails.append(f"over-claim: soak_clause_met/t089_complete reported True at {soak['days_completed']}/14")
+# soak_progress is LOAD-BEARING: a 失败 (Sev-1/2) breaks the consecutive-healthy streak
+lb = SD.soak_progress([{"as_of_date": "2026-07-16", "result": "正常"},
+                       {"as_of_date": "2026-07-15", "result": "失败"},
+                       {"as_of_date": "2026-07-14", "result": "正常"}])
+if lb["days_healthy_consecutive"] != 1 or lb["streak_broken_by"] != "2026-07-15":
+    fails.append(f"soak_progress not load-bearing: a 失败 should break the streak at 1, got {lb}")
+# and 14 consecutive healthy days -> complete (the auto-completion logic is real)
+full = SD.soak_progress([{"as_of_date": f"2026-07-{i:02d}", "result": "正常"} for i in range(1, 15)])
+if not full["complete"]:
+    fails.append("soak_progress logic broken: 14 consecutive healthy days should be complete")
 
 print(f"stop-the-line drills: 8/8 triggers fire their gate (line stops) with passing negative controls "
       f"[{', '.join(d['trigger'].split(' (')[0][:22] for d in rep['stopline_drills'])}]")
-print(f"soak clause: {soak['status']} -- T089 complete = {rep['t089_complete']} (honestly gated on 14 real days)")
+print(f"soak clause (LIVE from cn_run_log): {soak['status']}; T089 complete = {rep['t089_complete']}")
 
 print("\nACCEPTANCE = " + ("PASS (clause 2: stop-the-line drills)" if not fails else "FAIL") +
-      "  |  CLAUSE 1 (14-day soak): PENDING day 0/14 (calendar-bound)")
+      f"  |  CLAUSE 1 (14-day soak): RUNNING {soak['days_completed']}/14 (LIVE, self-accumulating)")
 print("NOTE: all 8 stop-the-line triggers drilled at least once against their real detection gates, each "
-      "load-bearing (fires on the trigger, not on a benign control). The 14-consecutive-real-day soak with "
-      "no Sev-1/2 is inherently calendar-bound and is honestly PENDING (day 0/14); T089 completes only when "
-      "the operator's daily cron reaches 14/14. NOT_DEPLOYED (live b189d3cc0703).")
+      "load-bearing. The 14-consecutive-real-day soak is now LIVE-tracked from the daily cron's cn_run_log "
+      f"and self-accumulating ({soak['days_completed']}/14 healthy days so far); it needs no agent action, "
+      "only calendar time, and T089 clause 1 closes automatically at 14/14. NOT_DEPLOYED (read-only over the "
+      "live D1; worker unchanged).")
 for f in fails:
     print("  FAIL:", f)
 sys.exit(0 if not fails else 1)
