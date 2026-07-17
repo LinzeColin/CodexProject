@@ -33,5 +33,6 @@
   "adversarial_review": "6 轮。第 1 轮 BLOCK 抓到真实代码缺陷 6 条（全部属实）；第 2/3/4/5 轮 BLOCK ★全是证据造假★（把参数错误当承重、贴了别条查询的 COVERING 计划、把「我测不出来」写成「不可能测出来」、写入上界差 8 倍且与同文件自相矛盾、把自己的取值说成 API 强制上限且该假话写进了发货代码注释）。第 6 轮 CONFIRMED_SOUND，并用密码学方式确认「本轮唯一代码增量就是那条注释」（还原注释即精确复现前一版 stamp 28236c23f417）。代码只在第 1 轮有真缺陷。实施者未自签。",
   "root_cause_recorded": "一个假前提被写下来，然后被信任。第 2/3/4 轮里证伪材料一直就在包内 —— 不是缺数据，是没去验自己写下的那句话。",
   "live_verification": "验收 2 已在生产被真实执行：cron 未跑故 cn_item_meta 尚不存在，每次页面加载的 attachMeta 都真实撞上 D1 'no such table'，而 / /library /radar /watchlist /system 全部 200 且渲染真实内容 —— 真 D1 的真错误打在真生产上，原文照常呈现。",
-  "not_yet_verified": "enrichMeta 的首次真实执行在下一次 cron（30 20 * * * UTC）。未强行绕过幂等守卫：绕过需删当天 cn_run_log 行，会连带重跑 ingestAll/selectDaily 并可能改掉 Owner 今天已发布的当日精选。故 batch([SELECT,SELECT]) 的 D1 契约（全仓唯一一处，无仓内先例）、真实查询计划、真实 cron CPU 余量三项仍待首次 cron 后实查，检查清单见 test-results/deploy_verify.txt。"
+  "not_yet_verified": "缩到两项，均待下一次 cron（30 20 * * * UTC）：真实 cron 的 CPU 余量；OpenAlex 首次真实批量的命中率与 counts.meta。检查清单见 test-results/deploy_verify.txt。（未强行绕过幂等守卫：绕过需删当天 cn_run_log 行，会连带重跑 selectDaily 并可能改掉 Owner 已发布的当日精选。）",
+  "batch_select_contract_settled": "★复核残余风险 #1 已结清★：用 wrangler dev --remote（探针代码从未 deploy，生产 worker 一字未动）对真实 adp-mirror D1 跑与 enrichMeta 逐字一致的两条按板 SELECT，经 batch() 提交：batch_is_array=true, batch_len=2, each_has_results=[true,true], rows_per_board=[200,200]（恰好=META_SCAN，LIMIT 在真 D1 上生效）, merged_rows=400，样本是真实 medRxiv 条目。→ D1 的 batch() 确实为 SELECT 返回 .results，所惧的静默空转不存在。探针唯一的写操作是发货代码自己的幂等 CREATE TABLE IF NOT EXISTS cn_item_meta（空表，今晚 cron 本来也会建）；未触碰任何既有行，事后实查 rows=0，站点全部 200。"
 }

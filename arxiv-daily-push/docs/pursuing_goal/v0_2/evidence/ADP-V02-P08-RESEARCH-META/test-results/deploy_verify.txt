@@ -43,3 +43,35 @@ cron 尚未跑过，故 `cn_item_meta` 这张表【还不存在】。
   SELECT COUNT(*) FROM cn_item_meta WHERE found=1;        -- 真正补上的
   SELECT is_preprint, COUNT(*) FROM cn_item_meta WHERE found=1 GROUP BY is_preprint;  -- 预印本/期刊两侧都要有
   以及 /system 或 cn_run_log 里的 counts.meta = {requested, matched}
+
+## ★复核残余风险 #1 已用真实 D1 结清（不再是「待首次 cron」）★
+复核第 6 轮的原话：`env.DB.batch([q1,q2])` 读 SELECT 是**全仓唯一**一处，无仓内先例，
+「只能由首次 cron 结清」。若该契约与文档不符，`results` 会为空 →
+**enrichMeta 静默什么都不补、不报错、不降级** —— 本项目最怕的「看着绿、其实什么都没做」。
+
+不必等 16 小时：用 `wrangler dev --remote` 把**本地探针代码**跑在 Cloudflare 边缘、
+绑**真实的 adp-mirror D1** 上（**探针从未被 deploy**，生产 worker 一字未动）。
+探针跑的是与 enrichMeta **逐字一致**的那两条按板 SELECT，经 `batch()` 提交：
+
+  batch_is_array : true
+  batch_len      : 2
+  each_has_results: [true, true]
+  rows_per_board : [200, 200]        ← 恰好 = META_SCAN，说明 LIMIT ?3 在真 D1 上确实绑住了
+  merged_rows    : 400
+  sample         : feed:fdbad9f7… https://www.medrxiv.org/content/10.64898/2026.07…
+  VERDICT        : D1 batch() DOES return .results for SELECTs -> enrichMeta will see candidates
+
+**结论：所惧的静默空转不存在。** `parts.map(p => p.results)` 的读法正确，
+Cloudflare 文档的 `D1Result[]` 契约在真实 D1 上成立，且 `LIMIT` 实测生效（每板恰好 200 行）。
+
+**诚实说明探针做了什么写操作**：它执行了发货代码 `metaTables()` 的那条
+`CREATE TABLE IF NOT EXISTS cn_item_meta`（幂等，建的是一张**空表**，今晚 cron 本来也会建）。
+**没有触碰任何既有表的任何既有行**。事后实查：`cn_item_meta exists: True | rows: 0` ——
+表在、行数为 0（没有伪造任何数据），且 / /library /watchlist 仍全部 200。
+
+## 仍待首次 cron（缩到两项）
+1. 真实 cron 的 CPU 余量（本地 metaDoi 200 行 0.03–0.07ms，远低于 10ms，但未在真 cron 里测）。
+2. OpenAlex 首次真实批量的命中率与 counts.meta。
+   首次 cron 后核对：
+     SELECT COUNT(*) FROM cn_item_meta WHERE found=1;
+     SELECT is_preprint, COUNT(*) FROM cn_item_meta WHERE found=1 GROUP BY is_preprint;

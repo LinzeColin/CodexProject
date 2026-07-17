@@ -137,5 +137,9 @@ board2 的 RSS 里本来就混着大量新闻（`science-news`、`ieee-spectrum`
 - 元数据徽章用**独立的 `title`** 标注出处（`OpenAlex 研究元数据·第三方来源·非原文抽取`），与「确定性抽取自原文」的徽章**分开** —— 证据来源不能混为一谈。
 - `cn_item_meta` 的孤儿行（其 `cn_items` 已被 prune）在每次 cron **无条件**清理。
   （第一版把清理放在「有新条目要补」的分支里 → 稳态下**永远不跑**，而稳态恰恰就是孤儿堆积的时候。被我自己的测试当场抓到。）
-- `env.DB.batch([q1,q2])` 读 SELECT 结果：这是**全仓唯一**一处用 `batch()` 跑 SELECT 的地方（其余 6 处都是写）。
-  正确性依据是 Cloudflare 文档的 `D1Result[]` 契约（复核核对过），**没有仓内先例**。如实记录。
+- `env.DB.batch([q1,q2])` 读 SELECT 结果：这是**全仓唯一**一处用 `batch()` 跑 SELECT 的地方（其余 6 处都是写），
+  **没有仓内先例**。复核把它列为「只能由首次 cron 结清」的头号残余风险 —— 因为若契约不符，`results` 会为空，
+  enrichMeta 会**静默什么都不补、不报错、不降级**。
+  **已用真实 D1 结清**（`wrangler dev --remote`，探针从未 deploy、生产 worker 未动）：
+  `each_has_results=[true,true]`、`rows_per_board=[200,200]`（恰好 = `META_SCAN`，证明 `LIMIT` 在真 D1 上也绑住了）、
+  `merged_rows=400`、样本为真实 medRxiv 条目 → **契约成立，静默空转不存在**。详见 `test-results/deploy_verify.txt`。
