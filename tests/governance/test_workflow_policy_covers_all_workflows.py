@@ -44,6 +44,26 @@ class TestWorkflowPolicyCoversAllWorkflows(unittest.TestCase):
         self.assertEqual(stale, [],
                          "workflow_policy.json references workflow(s) that no longer exist:\n  " + "\n  ".join(stale))
 
+    def test_role_matrix_is_rendered_from_the_policy(self):
+        """docs/governance/WORKFLOW_ROLE_MATRIX.md is a DERIVED view of workflow_policy.json. Editing the
+        policy without re-rendering it makes CI fail with `workflow role matrix drift` — which is exactly
+        what happened when the visual-gate workflow was registered. `render` writes to stdout (there is no
+        --write), so the regeneration step is easy to forget; assert the sync locally instead.
+        """
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "workflow_security_audit", ROOT / "scripts" / "workflow_security_audit.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        # Call the SAME entry point CI calls -- no skip fallback: a guard that quietly skips is not a guard.
+        report = mod.check_render(root=ROOT)
+        self.assertEqual(
+            report["status"], "PASS",
+            "WORKFLOW_ROLE_MATRIX.md is out of sync with workflow_policy.json ({}). Regenerate it:\n"
+            "  python3 -B scripts/workflow_security_audit.py render > docs/governance/WORKFLOW_ROLE_MATRIX.md"
+            .format(report.get("errors")))
+
     def test_registered_roles_are_unique(self):
         """The audit counts duplicate roles; a copy-pasted entry that forgets to change `role` would
         otherwise sail through this test while failing CI."""
