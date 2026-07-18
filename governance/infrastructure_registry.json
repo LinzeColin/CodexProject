@@ -62,9 +62,42 @@
     { "workload": "nab", "surface": "cloudflare", "url": "https://nab.linzezhang.com", "status": "live" },
     { "workload": "eei", "surface": "cloudflare", "url": "https://codex-eei.linzezhang35.workers.dev", "status": "domain_manual_step_pending" }
   ],
+  "dormant_resources": [
+    {
+      "resource_id": "adp-origin-dns",
+      "kind": "dns_record",
+      "surface": "cloudflare",
+      "name": "adp-origin.linzezhang.com",
+      "verified_state": "2026-07-18 复核：仍解析(A 104.21.56.51 / 172.67.177.253、AAAA 2606:4700:3032::ac43:b1fd)，HTTP 530(指向已停机 tunnel，无连接器)。",
+      "why_dormant": "S3 切换后 adp.linzezhang.com 已绑 adp-cloud Worker 自定义域；此 origin 记录是旧 tunnel 直连路径的遗留，不在任何服务路径上。",
+      "disposition": "Owner 可在 Cloudflare DNS 删除此记录；不影响 adp.linzezhang.com(已验证 200，走 Worker 非 tunnel)。基建变更属 Owner，本表只登记不代删。",
+      "not_in_serving_path_proof": "adp.linzezhang.com=200(adp-cloud Worker)；adp-origin=530(无连接器)。"
+    },
+    {
+      "resource_id": "adp-tunnel",
+      "kind": "cloudflare_tunnel",
+      "surface": "cloudflare",
+      "name": "adp (Cloudflare Tunnel 对象)",
+      "verified_state": "连接器已下线(本地 cloudflared 二进制/token/LaunchAgent 于 2026-07-15 清除，见 arxiv-daily-push/CHANGELOG.md『ChatGPT deep-dive button + local cleanup』条)；云端 tunnel 对象仍注册——adp-origin 返回 530 即其存在证据。",
+      "why_dormant": "旧【R6 本地系统 + tunnel 直连】架构的云端一半；切到 adp-cloud Worker 后不再承载任何主机名。",
+      "disposition": "Owner 可在 Cloudflare Zero Trust > Tunnels 删除该 tunnel。属 Owner 基建操作，本表只登记不代删。",
+      "not_in_serving_path_proof": "无连接器在线(530)；正牌流量走 Worker 自定义域。"
+    },
+    {
+      "resource_id": "adp-mirror-worker",
+      "kind": "worker",
+      "surface": "cloudflare",
+      "name": "adp-mirror (旧 Worker)",
+      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)。",
+      "why_dormant": "被 adp-cloud 取代；CHANGELOG 记『left dormant for the Owner to delete』。仅 workers.dev 子域可达，无自定义域绑定。",
+      "disposition": "Owner 可在 Cloudflare Workers 删除 adp-mirror；删前确认无其他绑定。属 Owner 基建操作，本表只登记不代删。",
+      "not_in_serving_path_proof": "adp.linzezhang.com 自定义域已绑 adp-cloud；adp-mirror 仅 workers.dev 子域可达，不承载正牌域名。"
+    }
+  ],
   "open_owner_decisions": [
     "OVH VPS 的角色：主部署节点候选，但哪些(若有)workload 迁入未定——迁移属 Owner 逐项决策，涉付费/ops 增量。",
     "Coolify 装好后编排哪些 workload。",
-    "Cloudflare 免费档 workload 与 VPS 的分工边界(建议见 distinction_note)。"
+    "Cloudflare 免费档 workload 与 VPS 的分工边界(建议见 distinction_note)。",
+    "删除 3 个已登记的废弃资源(adp-origin DNS / adp tunnel / adp-mirror worker，见 dormant_resources)——降低治理面；删除属 Owner 基建操作，本表只登记不代删。"
   ]
 }

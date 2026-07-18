@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-INFRA-REGISTRY-DORMANT-RESOURCES-20260718",
+  "project_id": "root",
+  "task_id": "ROOT-INFRA-REGISTRY-DORMANT-RESOURCES",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260718-UNIFY-GOVERNANCE",
+  "generated_at": "2026-07-19T02:20:00Z",
+  "implementation_base_sha": "292039c5854d09b279e9507b19c3b37b27670f3c",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1b6f1aa63f1b434d824ed2890e09fe624fbc835457e9a99f362422520cdcb59d",
+  "self_reference_policy": "SHA-256 over sorted(path.utf8 + file.bytes) for 2 non-manifest changed files(validate_governance_sync.tree_hash 的真实算法,非散文里的 NUL/LF 版);changed_files_* 列全部 3 个含本 manifest;hash 排除本 manifest。",
+  "ci_attestation_subject": "统一治理:把 3 个实测确认的废弃 Cloudflare 资源(adp-origin DNS 记录/adp Tunnel 对象/旧 adp-mirror worker)登记进 infrastructure_registry.dormant_resources,并加承重守卫。",
+  "ci_run_reference": "LOCAL_FULL_CI_STEP_PASS_PENDING_REMOTE",
+  "gate_status": "PASS_LOCAL",
+  "summary": "Owner 指令『一定要统一治理,降低治理复杂度』。统一治理入口 infrastructure_registry.json 此前只登记活跃 surface/workload,漏了 3 个已退役但云端仍存在的资源——这正是治理漏洞。本次实测确认后登记:(1)adp-origin.linzezhang.com DNS 记录仍解析、HTTP 530(指向已停机 tunnel);(2)名为 adp 的 Cloudflare Tunnel 对象仍注册、连接器 2026-07-16 已清(530 即证据);(3)旧 adp-mirror worker 在 adp-mirror.linzezhang35.workers.dev 仍 HTTP 200、但已从 adp.linzezhang.com 自定义域摘除。三者均不在服务路径(adp.linzezhang.com=200 走 adp-cloud Worker,已验证)。每条附可执行 disposition(Owner 在 CF 控制台删,本表只登记不代删)。守卫 test_infrastructure_registry 扩展 _dormant_violations()+3 负控(漏disposition/活域误标dormant/指向不存在surface),均实跑触发。★不删任何云资源(基建变更属 Owner);不动活服务。★",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "cloud_resource_mutation": 0
+  },
+  "changed_files_declared": [
+    "governance/infrastructure_registry.json",
+    "governance/run_manifests/TSK-ROOT-INFRA-REGISTRY-DORMANT-RESOURCES-20260718.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "changed_files_actual": [
+    "governance/infrastructure_registry.json",
+    "governance/run_manifests/TSK-ROOT-INFRA-REGISTRY-DORMANT-RESOURCES-20260718.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "required_governance_files": [
+    "governance/infrastructure_registry.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "updated_governance_files": [
+    "governance/infrastructure_registry.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "evidence_refs": [
+    "governance/infrastructure_registry.json",
+    "tests/governance/test_infrastructure_registry.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_infrastructure_registry",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_infrastructure_registry",
+      "result": "PASS",
+      "detail": "6 tests OK;新增 test_dormant_resources_tracked_and_well_formed + test_dormant_violation_check_is_not_vacuous;三负控独立复核各自触发精确消息(NC1漏disposition/NC2活域误标/NC3不存在surface)。"
+    }
+  ],
+  "stop_conditions": [
+    "★推送前跑全套 CI 审计(lean_governance ci / repository_hygiene / root_cleanliness / workflow_security / governance_id / information_quality / validate_governance_sync / tests.governance),别只跑 lean_governance ci——本会话已因漏跑红过两次。",
+    "本表只登记废弃资源事实,不代删——删除属 Owner 基建操作。dormant_resources 每条必须有非空 disposition,否则守卫报错。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯治理登记,零副作用,不触碰任何云资源或活服务。"
+  },
+  "unresolved_risks": [
+    "3 个废弃资源仍占用云端(DNS 记录/tunnel/worker),需 Owner 在 CF 控制台删除才真正降面;本表只把它们从『未追踪』变为『已追踪待删』。",
+    "adp-mirror worker 仍 200 可达(workers.dev),删前 Owner 宜确认无其他隐性绑定。"
+  ],
+  "next_allowed_task": "确认 main CI 转绿(Project Governance);Owner 决定是否删除 3 个已登记废弃资源。"
+}
