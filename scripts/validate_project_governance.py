@@ -87,6 +87,10 @@ INFRA_DIRS = {
     "outputs",
     "scripts",
     "venv",
+    # 文档/骨架目录(README+模板/清单 md,无 VERSION/pyproject/模型),非代码项目,随 PR #285 引入;
+    # 有 README.md(属 PROJECT_MARKERS)会被 discover_project_dirs 误当项目,列入 INFRA_DIRS 排除。
+    "GOLDEN_PATH",
+    "INVENTORY",
 }
 PARAMETER_REQUIRED_COLUMNS = [
     "parameter_id",

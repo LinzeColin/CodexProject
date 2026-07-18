@@ -1,0 +1,95 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-FIX-285-GOVERNANCE-GATES-20260718",
+  "project_id": "root",
+  "task_id": "ROOT-FIX-285-GOVERNANCE-GATES",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260718-UNBREAK-MAIN",
+  "generated_at": "2026-07-19T00:30:00Z",
+  "implementation_base_sha": "2532b2cfcb80d48292f0710c9f7a8f203560cf8d",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:8a810a9e9bb7906a0a83e3292650868dfabe94bfba5ad12696921d42a7027629",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 5 non-manifest changed files;changed_files_* list all 6 incl this manifest;hash excludes it.",
+  "ci_attestation_subject": "修 PR #285 遗留的治理门禁红:GOLDEN_PATH/INVENTORY 入 INFRA_DIRS + 登记并合规化 linze-golden-path.reusable.yml(钉 SHA/超时/concurrency/inputs 走 env)",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "PR #285(Owner 合的 Golden Path 骨架)合并时 CI 已 failure:①新增 GOLDEN_PATH/INVENTORY 顶层目录(有 README 属 PROJECT_MARKER)被 discover_project_dirs 当成未注册项目;②新增 linze-golden-path.reusable.yml 未登记、checkout 未钉 SHA(它自己标了 TODO)、3 job 无超时、无 concurrency、把 inputs 直接拼进 run(注入纪律违规)。本次做【机械合规,不动其 3-job Coolify 部署设计】:GOLDEN_PATH/INVENTORY 入 INFRA_DIRS(文档/骨架非项目);workflow 钉 checkout SHA(仓库已批准的同一 SHA,完成 #285 自己的 TODO)、3 job 加 timeout-minutes、加 concurrency(同服务串行)、verify/home-sync 的 inputs.service_name 从 run 挪到 env;workflow_policy 登记该 workflow + 重渲染角色矩阵。让 main 从红转绿。★不动 #285 的部署设计与占位 job 语义★,若其线程有别的生产化意图以其为准。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "fixes_prior_pr": "#285"
+  },
+  "changed_files_declared": [
+    ".github/workflows/linze-golden-path.reusable.yml",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ROOT-FIX-285-GOVERNANCE-GATES-20260718.json",
+    "governance/workflow_policy.json",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/linze-golden-path.reusable.yml",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ROOT-FIX-285-GOVERNANCE-GATES-20260718.json",
+    "governance/workflow_policy.json",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "required_governance_files": [
+    "governance/workflow_policy.json",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "updated_governance_files": [
+    "governance/workflow_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "evidence_refs": [
+    ".github/workflows/linze-golden-path.reusable.yml",
+    "governance/workflow_policy.json",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_infra_dirs_exclusions",
+    "python3 scripts/workflow_security_audit.py audit",
+    "python3 scripts/validate_project_governance.py",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_infra_dirs_exclusions",
+      "result": "PASS",
+      "detail": "GOLDEN_PATH/INVENTORY 在 INFRA_DIRS 被排除、真项目 arxiv-daily-push 仍被发现。承重:临时去掉排除→discover 又含 GOLDEN_PATH。"
+    },
+    {
+      "command": "workflow_security_audit audit + check-render",
+      "result": "PASS",
+      "detail": "unowned/unpinned/超时/concurrency/direct-context 全清零;角色矩阵重渲染。"
+    },
+    {
+      "command": "validate_project_governance",
+      "result": "PASS",
+      "detail": "不再报 GOLDEN_PATH/INVENTORY 未覆盖。"
+    }
+  ],
+  "stop_conditions": [
+    "★不改 #285 的 3-job Coolify 部署设计/占位语义★:本次只做仓库硬性门禁的机械合规,productionization(真部署逻辑替换占位)属 #285 线程。",
+    "不要从 INFRA_DIRS 删掉 GOLDEN_PATH/INVENTORY(它们有 README 会被误当项目;守卫已钉)。",
+    "reusable workflow 的 inputs 必须走 env 不拼 run;action 必须钉 SHA。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯治理合规,无生产/数据副作用。"
+  },
+  "unresolved_risks": [
+    "★如实记★:#285 的 3 个 job 仍是占位(契约/测试/home-sync 都是 echo 占位),真正的部署契约与 home 卡片生成未实现——那是 #285 线程的 productionization,本次不做,只让骨架通过门禁。",
+    "若 #285 线程随后重构该 workflow,本次的 env/超时/concurrency 可能需与其新版合并。"
+  ],
+  "next_allowed_task": "main 应转绿;#285 线程按其计划 productionize golden-path(替换占位 job、接真实契约/home 同步)。"
+}

@@ -26,19 +26,28 @@ on:
 permissions:
   contents: read
 
+# 同一服务的部署串行, 不互相取消 (Coolify 部署不可并发覆盖)。
+concurrency:
+  group: golden-path-${{ inputs.service_name }}
+  cancel-in-progress: false
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4  # TODO: 生产化前钉 SHA
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: 契约与测试占位
+        env:
+          SERVICE_NAME: ${{ inputs.service_name }}   # 不可信输入走 env, 不直接拼进 run (供应链/注入纪律)
         run: |
-          echo "verify service=${{ inputs.service_name }}"
+          echo "verify service=$SERVICE_NAME"
           # 各仓在此接入自身 lint/test/契约校验; 失败即阻断部署 (Gate)。
 
   deploy:
     needs: verify
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: 触发 Coolify 部署 (不可变版本)
         env:
@@ -57,9 +66,12 @@ jobs:
   home-sync:
     needs: deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: 生成/更新 home.linzezhang.com 跳转卡片 (占位)
+        env:
+          SERVICE_NAME: ${{ inputs.service_name }}   # 不可信输入走 env
         run: |
-          echo "home-sync ${{ inputs.service_name }}"
+          echo "home-sync $SERVICE_NAME"
           # 后续: 读取 Coolify 该应用的 FQDN, 生成 LinzeHomeHub projects.json 卡片,
           #       production 健康后自动出现在 home.linzezhang.com。

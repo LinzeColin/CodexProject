@@ -441,6 +441,31 @@
         "scripts/adp_liveness_check.py"
       ],
       "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/linze-golden-path.reusable.yml",
+      "name": "linze-golden-path",
+      "role": "golden_path_coolify_deploy",
+      "owner": "@LinzeColin",
+      "purpose": "可复用(workflow_call)golden-path 模板:各服务 caller 调用它,verify→触发 Coolify 部署→home 跳转同步(PR #285 的统一部署骨架)。",
+      "triggers": [
+        "workflow_call"
+      ],
+      "permissions": {
+        "contents": "read"
+      },
+      "expected_jobs": [
+        "verify",
+        "deploy",
+        "home-sync"
+      ],
+      "trust_boundary": "reusable_workflow_call_only;Coolify secrets 由 caller 经 secrets 传入,不硬编码;不可信 inputs 走 env 不拼进 run",
+      "failure_behavior": "verify 失败阻断部署;部署未入队 job 失败;仅被显式 caller 调用,不自触发。",
+      "local_dependencies": [
+        "GOLDEN_PATH/caller-example.yml"
+      ],
+      "untrusted_prompt_input": false,
+      "registered_note": "PR #285 引入但未登记且留有 TODO(致 main CI unowned/unpinned/无超时/无 concurrency/inputs 拼 run);本次按仓库硬性门禁做机械合规(钉 SHA/加超时/concurrency/inputs 走 env/登记),不动其 3-job Coolify 部署设计。"
     }
   ],
   "retired_or_merged": [
