@@ -1,0 +1,12 @@
+# ADP-V02-P14 changed files
+
+  arxiv-daily-push/deploy/cloudflare/worker_cloud.js  +50/-3
+  build_id=24ffba0cdecf(线上已部署 Version 0078911e)
+
+## 证据
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/TASK_REPORT.md
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/changed_files.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/cost_value.json
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/git.diff
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_evidence.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_verify.mjs

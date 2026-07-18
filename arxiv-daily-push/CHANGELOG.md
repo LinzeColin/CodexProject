@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-07-18 Australia/Sydney - ADP V0.2 P14: /system 来源健康与维护看板 (PRODUCTION DEPLOY 24ffba0cdecf; product_version 0.35.0)
+- cn_sources 里 healthStmt 一直在写 health/连续失败/last_fetch，但 /system 只做了汇总徽章、从不逐源细列。
+  P09 查出的 6 个被数据中心 IP 挡住的官方源在页面上看不清。
+- 做法：/system 加只读『来源健康与维护』卡片，逐源列 健康/连续失败/上次抓取，自动停用›降级›陈旧排前面；
+  maintenanceGrid 一次只读 SELECT，maintenanceHTML 排序渲染，try/catch 兜底不带 /system 下线。
+- 诚实边界：这是 T044 的健康/维护半部，不是单位成本(每源子请求成本没采集,不臆造)；last_fetch 是上次尝试非上次成功,已标注。
+- ★复核 2 轮 R1 BLOCK 属实：s.fails 是这张表唯一没过 esc 的 DB 值,违反本文件『每个 DB 值都转义』铁律,测试也漏了这条 sink
+  (潜伏注入,现网只 healthStmt 写整数、外部触发不了,但确是缺陷)。R2 修:esc(s.fails)+验证器补 sink 覆盖(承重)+clamp;
+  复核穷尽扫 maintenanceHTML 全部 12 处插值确认再无裸拼 DB 值。CONFIRMED_SOUND,未自签。
+- 上线:/build.json=24ffba0cdecf、6 路由 200、维护卡片渲染(37 源/异常 6 排前);13 断言全绿。
+
 ## 2026-07-18 Australia/Sydney - ADP V0.2 P13: /api/runhealth 让 watchdog 抓 P08 真实病 (PRODUCTION DEPLOY 9df554e13297; product_version 0.34.0)
 - 长期稳定 watchdog(上一阶段)抓不到 **P08 的真实病**：元数据补全被 **429 限流风暴**打成 0(补 0 条)，摄入/选择正常——绿着补 0。
   原因：公共端点不暴露每轮 meta 计数。

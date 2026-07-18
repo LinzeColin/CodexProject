@@ -1,0 +1,20 @@
+{
+  "task": "ADP-V02-P14-SOURCE-MAINTENANCE",
+  "program": "ADP V0.2 / 长期稳定 / 观测性",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "9df554e13297",
+  "live_build_after": "24ffba0cdecf",
+  "deploy_version_id": "0078911e-f5d1-4993-a657-bf1bc324c2bd",
+  "objective": "把 cn_sources 里 healthStmt 一直在写、但 /system 只做了个汇总徽章、从未逐源露出的运维事实(health/连续失败/上次抓取)呈现出来。P09 查出的 6 个被数据中心 IP 挡住的官方源,现在在 /system 一眼可见、按严重度排序。任务 T044 的可操作半部。",
+  "what": "/system 加只读『来源健康与维护』卡片:每源 健康(正常/降级/自动停用)、连续失败数、上次抓取(尝试)距今、陈旧★。自动停用›降级›陈旧排前面。maintenanceGrid 一次只读 SELECT cn_sources,maintenanceHTML 排序渲染。try/catch 兜底不带 /system 下线。",
+  "honest_scope": "这是 T044 的【健康/维护】半部,不是【单位成本】——真正的每源子请求成本没被采集,不臆造成本数字。last_fetch 是【上次抓取尝试】(healthStmt 每次成功/失败都写),不是上次成功;健康看 health/连续失败,新鲜度看 last_fetch。文案已如实标注。",
+  "review": "★2 轮,R1 BLOCK 属实,R2 CONFIRMED_SOUND,未自签。★ R1:s.fails 是这张表【唯一】没过 esc 的 DB 值,违反本文件『每个 DB 值都转义(连 health 枚举都 esc)』的铁律,且我的测试没喂非数字值、漏了这条 sink(潜伏/纵深防御型注入,现网写路径只有 healthStmt 写整数、外部触发不了,但确是客观缺陷)。R2:esc(s.fails) 修好、验证器补 sink 覆盖断言(承重:退回裸拼→污染泄漏)、age_days clamp 未来时钟;复核穷尽扫了 maintenanceHTML 全部 12 处插值确认再无裸拼 DB 值。",
+  "value": "6 个被墙源(gnews-us-tech/science-advances 自动停用、cell/cell-neuron/lancet/stats-gov 降级)现在在 /system 一眼可见、带失败次数和新鲜度。长期稳定/运维可见性。线上验证:登记 37 源,正常 31/异常 6/自动停用 2。",
+  "non_blocking_disposition": "①重复扫 cn_sources(覆盖网格已扫一次):保留独立查询不合并——coverageGrid 是 P09 复核过、带承重注释的,为约 74 行/次(对 5M/天可忽略)去碰它风险大于收益;如实记为已知冗余、可接受、将来可合并。②验证器硬编码 SELECT+重实现 grid():真 sink(maintenanceHTML)是抽取发货本体实测;grid 是简单算术重实现,已披露。复核均接受。",
+  "verification": "线上 /build.json=24ffba0cdecf、6 路由 200、/system 渲染出维护卡片(37 源、异常 6 排前);验证器 13 断言全绿(含污染 fails 转义)。",
+  "adversarial_review": "2 轮,R1 BLOCK(fails 未转义 sink),R2 CONFIRMED_SOUND,未自签。",
+  "residual_risks": ["污染的 fails 会让排序比较得 NaN→同源任意次序(仅在库被污染前提下,渲染面已转义,无安全含义,复核记录不要求改)。","clamp 把损坏/未来时间戳显示成 0 天前/新鲜,比 -N 天前少一点异常可见性(纯 cosmetic)。"],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 9df554e13297。纯只读渲染卡片,删掉无副作用、无数据影响。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

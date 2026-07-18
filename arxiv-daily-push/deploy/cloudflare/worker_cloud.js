@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '9df554e13297', source_sha256: '9df554e132976ee49818b1d6a2aa3d41b91dfa0eccae4caa38e83a720a549460', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '24ffba0cdecf', source_sha256: '24ffba0cdecfb4ffce37f54dda5db0444d08b31f77c88d3c6096269db9c93ab0', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1425,6 +1425,51 @@ function coverageHTML(g) {
       arXiv 自 1991 年、Nature 自 1869 年就在了，空着只因<b>我们没有回填</b>。缺口是真的，写清楚比藏起来强。</p>
     <table><tr><th>来源</th><th>板块</th><th>条目</th><th>覆盖月数</th><th>已覆盖区间</th></tr>${rows || '<tr><td colspan=5>尚无来源</td></tr>'}</table></div>`;
 }
+// ───────────────────────── T044 来源健康与维护看板 ─────────────────────────
+// 覆盖网格答「覆盖了多少」；这里答「哪些源在坏、连续失败几次、上次抓取多久前」——把 cn_sources 里
+// healthStmt 一直在写、但 /system 只做了个汇总徽章、从未逐源细列的【运维事实】呈现出来。P09 查出的
+// 6 个被数据中心 IP 挡住的源在这里一目了然。★纯呈现,不采集,坏了不许把 /system 带下线★(与覆盖同纪律)。
+// 诚实边界：这是 T044 里【可操作的那半(健康/维护)】。真正的「单位成本」需要每源的子请求计量,worker
+// 现在没存这个数据,故不臆造成本数字。last_fetch 是【上次抓取尝试】(healthStmt 每次成功/失败都写),
+// 不是上次成功——所以健康看 health/连续失败,新鲜度看 last_fetch。
+async function maintenanceGrid(env) {
+  const now = Date.now();
+  const { results } = await env.DB.prepare(
+    'SELECT id, board_id, name, health, consecutive_failures, last_fetch FROM cn_sources ORDER BY board_id, id').all();
+  const per = (results || []).map(s => {
+    const lf = s.last_fetch ? Date.parse(s.last_fetch) : null;
+    const ageDays = (lf && !isNaN(lf)) ? Math.max(0, Math.floor((now - lf) / 864e5)) : null;  // clamp 未来时钟
+    return { id: s.id, board_id: s.board_id, health: s.health || 'active',
+             fails: s.consecutive_failures || 0, age_days: ageDays,
+             stale: ageDays === null || ageDays > 3 };   // >3 天未被抓取(或从未) = 陈旧(轮转没轮到/新源)
+  });
+  return {
+    total: per.length,
+    unhealthy: per.filter(x => x.health !== 'active').length,
+    disabled: per.filter(x => x.health === 'disabled_auto').length,
+    stale: per.filter(x => x.stale).length,
+    per,
+  };
+}
+function maintenanceHTML(g) {
+  const rank = h => h === 'disabled_auto' ? 0 : h === 'degraded' ? 1 : 2;   // 需关注的排前面
+  const sorted = [...g.per].sort((a, b) => rank(a.health) - rank(b.health) || b.fails - a.fails || (b.age_days || 0) - (a.age_days || 0));
+  const badge = h => h === 'active' ? '<span class="badge ok">正常</span>'
+    : h === 'disabled_auto' ? '<span class="badge">自动停用</span>' : '<span class="badge">降级</span>';
+  const rows = sorted.map(s => `<tr><td class="mt">${esc(s.id)}</td>
+    <td class="mt">${esc(BOARD_NAMES[s.board_id] || s.board_id || '')}</td>
+    <td class="mt">${badge(s.health)}</td>
+    <td class="mt">${s.fails ? esc(s.fails) : '—'}</td>
+    <td class="mt">${s.age_days === null ? '从未' : s.age_days + ' 天前'}${s.stale ? ' ★' : ''}</td></tr>`).join('');
+  return `<div class="card" style="margin-top:14px"><h2>来源健康与维护</h2>
+    <p class="mt">登记 ${g.total} 个源：<span class="badge ok">正常 ${g.total - g.unhealthy}</span>
+      <span class="badge">异常 ${g.unhealthy}</span>
+      ${g.disabled ? `<span class="badge">自动停用 ${g.disabled}</span>` : ''}
+      ${g.stale ? `<span class="badge">★超 3 天未抓取 ${g.stale}（表内打★）</span>` : ''}</p>
+    <p class="mt">这是 cn_sources 已记录、覆盖网格没逐源细列的<b>运维事实</b>：哪些源在坏、连续失败几次、上次抓取多久前。
+      需要关注的（自动停用 › 降级 › 陈旧）排在前面 —— 比如被数据中心 IP 挡住的那几个官方源。</p>
+    <table><tr><th>来源</th><th>板块</th><th>健康</th><th>连续失败</th><th>上次抓取(尝试)</th></tr>${rows || '<tr><td colspan=5>尚无来源</td></tr>'}</table></div>`;
+}
 async function systemPage(env) {
   const { results: runs } = await env.DB.prepare('SELECT * FROM cn_run_log ORDER BY at DESC LIMIT 14').all();
   const rows = (runs || []).map(r => {
@@ -1434,13 +1479,15 @@ async function systemPage(env) {
       <td class="mt">${esc(r.note || '')}</td></tr>`;
   }).join('');
   const total = await env.DB.prepare('SELECT COUNT(*) n FROM cn_items').first();
-  let covHTML = '';
+  let covHTML = '', maintHTML = '';
   try { covHTML = coverageHTML(await coverageGrid(env)); }
   catch (e) { covHTML = ''; }   // 覆盖视图坏了不许把 /system 带下线（与 P08 attachMeta 同一条纪律）
+  try { maintHTML = maintenanceHTML(await maintenanceGrid(env)); }
+  catch (e) { maintHTML = ''; }  // 维护看板坏了同样不许把 /system 带下线
   return PAGE('/system', `<div class="card"><h1>系统与来源</h1>
     <p class="mt">整套系统跑在 Cloudflare（Workers + D1 + 每日 cron），不依赖任何本机。当前候选库 ${total ? total.n : 0} 条。</p>
     <table><tr><th>日期</th><th>结果</th><th>抓取/候选</th><th>说明</th></tr>${rows || '<tr><td colspan=4>尚无运行</td></tr>'}</table>
-      </div>${covHTML}<div class="card">
+      </div>${covHTML}${maintHTML}<div class="card">
     <p style="margin-top:14px"><button onclick="run(this)">立即运行一次每日流水线</button> <span id="rr" class="mt"></span></p>
     <script>async function run(b){b.disabled=true;b.setAttribute('aria-busy','true');var rr=document.getElementById('rr');rr.removeAttribute('data-state');rr.textContent='运行中…（抓取全网可能需十几秒）';
       try{const res=await fetch('/api/run',{method:'POST'});if(!res.ok)throw new Error(res.status);const j=await res.json();

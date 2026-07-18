@@ -1,0 +1,120 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P14-SOURCE-MAINTENANCE-20260718",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P14-SOURCE-MAINTENANCE",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260718-ADP-LONGTERM-STABILITY",
+  "generated_at": "2026-07-18T23:59:30Z",
+  "implementation_base_sha": "bf03fcadf12195a5414d006c76869f2776f8b7b1",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:457023faca0e7d084e3ffe969289ed3d11715a9889f2fb58c251d9b15576b900",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 18 non-manifest changed files;changed_files_* list all 19 incl this manifest;hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P14:/system 只读来源健康维护看板(P09 的 6 个被墙源一眼可见);复核 R1 BLOCK(s.fails 唯一未转义)R2 CONFIRMED_SOUND",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (2 rounds; R1 BLOCK unescaped fails sink, R2 sound; not self-signed)",
+  "summary": "/system 加只读来源健康维护卡片,逐源露出 cn_sources 的 health/连续失败/last_fetch(P09 的 6 个被墙源一眼可见、按严重度排序)。T044 健康半部、非单位成本(每源子请求成本没采集,不臆造;已诚实标注)。★复核 2 轮 R1 BLOCK 属实:s.fails 是这张表唯一没过 esc 的 DB 值,违反本文件『每个 DB 值都转义(连 health 都 esc)』铁律,测试也漏(潜伏注入,现网只 healthStmt 写整数外部触发不了)。R2 修 esc(s.fails)+验证器补 sink 覆盖(承重:退回裸拼→污染泄漏)+age clamp;复核穷尽扫 maintenanceHTML 12 处插值确认再无裸拼。CONFIRMED_SOUND 未自签。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_verify.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P14-SOURCE-MAINTENANCE-20260718.json",
+    "tests/governance/test_adp_maintenance_card_escapes.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_verify.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P14-SOURCE-MAINTENANCE-20260718.json",
+    "tests/governance/test_adp_maintenance_card_escapes.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "tests/governance/test_adp_maintenance_card_escapes.py"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "tests/governance/test_adp_maintenance_card_escapes.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_verify.mjs"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P14-SOURCE-MAINTENANCE/test-results/maint_verify.mjs",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "maint_verify.mjs(13 断言,真 node:sqlite,抽取发货 maintenanceHTML)",
+      "result": "PASS",
+      "detail": "汇总/排序/陈旧★/从未 + 复核 R1 的污染 fails 转义(承重:退回裸拼→污染泄漏)。"
+    },
+    {
+      "command": "生产部署验证",
+      "result": "PASS",
+      "detail": "Version 0078911e;/build.json=24ffba0cdecf;6 路由 200;/system 渲染维护卡片,37 源、异常 6 排前(6 个被墙源可见)。"
+    }
+  ],
+  "stop_conditions": [
+    "★HTML 边界每个 DB 值都必须 esc★:s.fails 曾是唯一漏的(复核 R1);别再拿『这列是 INTEGER』豁免转义,本仓连 health 枚举都 esc。",
+    "不要为这个看板去合并/改动 P09 复核过的 coverageGrid 查询(冗余扫描此规模可接受,风险大于收益)。",
+    "维护看板坏了不许把 /system 带下线(try/catch 兜底)。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <prev> 回 9df554e13297。",
+    "repo": "git revert 本 commit。纯只读渲染,无数据影响。"
+  },
+  "unresolved_risks": [
+    "污染 fails→排序比较 NaN→同源任意次序(仅库被污染前提,渲染已转义,无安全含义,复核不要求改)。",
+    "clamp 把损坏/未来时间戳显示成 0 天前(纯 cosmetic)。",
+    "单位成本半部未做(数据未采集)。"
+  ],
+  "next_allowed_task": "Owner 可据此看板决定 6 个被墙源(自动停用/降级的那些)的去留;或指下一个方向。"
+}
