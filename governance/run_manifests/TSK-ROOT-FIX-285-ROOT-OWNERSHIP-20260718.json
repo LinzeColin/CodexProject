@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-FIX-285-ROOT-OWNERSHIP-20260718",
+  "project_id": "root",
+  "task_id": "ROOT-FIX-285-ROOT-OWNERSHIP",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260718-UNBREAK-MAIN",
+  "generated_at": "2026-07-19T01:00:00Z",
+  "implementation_base_sha": "75514aabef8e0413476eccd49e238ee9f85ed58b",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:ea65426d185fd3620781e337abf4d6512ae49235fb8e4df558a6773e02661567",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 2 non-manifest changed files;changed_files_* list all 3 incl this manifest;hash excludes it.",
+  "ci_attestation_subject": "修 #285 遗留的第二道 root 门禁:GOLDEN_PATH/INVENTORY/OPERATIONS 登记进 root_cleanliness_budget.owned_root_items(kind=directory)",
+  "ci_run_reference": "LOCAL_FULL_CI_STEP_PASS_PENDING_REMOTE",
+  "gate_status": "PASS_LOCAL",
+  "summary": "上一提交(75514aabe)修了 #285 的项目注册表+workflow 门禁,但 CI 仍红:另有一道我本地漏跑的审计 root_cleanliness_audit.py 报『unowned root items: GOLDEN_PATH, INVENTORY, OPERATIONS』——#285 加的三个顶层目录没登记进 governance/root_cleanliness_budget.json 的 owned_root_items。★根因(我的疏忽):上次本地门禁没跑 root_cleanliness_audit,只跑了 repository_hygiene_audit,漏了这道★。本次把三目录登记为 owned(kind=directory,首次写成 dir 被审计判非法、已改),并把它加进 test_infra_dirs_exclusions 守卫(承重:去掉登记→审计报未拥有)。不动 #285 内容。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "fixes_prior_pr": "#285",
+    "fixes_prior_commit": "75514aabe"
+  },
+  "changed_files_declared": [
+    "governance/root_cleanliness_budget.json",
+    "governance/run_manifests/TSK-ROOT-FIX-285-ROOT-OWNERSHIP-20260718.json",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "changed_files_actual": [
+    "governance/root_cleanliness_budget.json",
+    "governance/run_manifests/TSK-ROOT-FIX-285-ROOT-OWNERSHIP-20260718.json",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "required_governance_files": [
+    "governance/root_cleanliness_budget.json",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "updated_governance_files": [
+    "governance/root_cleanliness_budget.json",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "evidence_refs": [
+    "governance/root_cleanliness_budget.json",
+    "tests/governance/test_infra_dirs_exclusions.py"
+  ],
+  "test_commands": [
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B -m unittest tests.governance.test_infra_dirs_exclusions",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "root_cleanliness_audit",
+      "result": "PASS",
+      "detail": "不再报 unowned root items;三目录 kind=directory 合法。"
+    },
+    {
+      "command": "test_infra_dirs_exclusions",
+      "result": "PASS",
+      "detail": "新增 test_285_root_dirs_are_owned_in_root_cleanliness_budget;承重:去掉登记→审计报未拥有。"
+    }
+  ],
+  "stop_conditions": [
+    "★推送前把 CI 的所有审计脚本本地跑一遍★:本次红就是因为我漏跑 root_cleanliness_audit(只跑了 repository_hygiene)。CI push 路径含 root_cleanliness_audit/workflow_security/governance_id/information_quality 等多道,别只跑 lean_governance ci。",
+    "owned_root_items 的目录 kind 必须是 'directory' 不是 'dir'(审计只认 file/directory)。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯治理登记,无副作用。"
+  },
+  "unresolved_risks": [
+    "#285 的占位 job 仍未 productionize(同上一提交如实记),属其线程。"
+  ],
+  "next_allowed_task": "确认 main CI 转绿(Project Governance)。"
+}

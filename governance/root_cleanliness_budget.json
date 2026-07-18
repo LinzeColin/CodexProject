@@ -21,10 +21,34 @@
   "allowed_active_scope_exclusions": [],
   "owned_root_items": [
     {
+      "path": ".agents",
+      "kind": "directory",
+      "owner": "root-agent-tooling",
+      "purpose": "Repository-local reusable agent skills"
+    },
+    {
+      "path": ".claude",
+      "kind": "directory",
+      "owner": "root-agent-adapter",
+      "purpose": "Claude repository configuration"
+    },
+    {
+      "path": ".codex",
+      "kind": "directory",
+      "owner": "root-agent-tooling",
+      "purpose": "Codex hooks and configuration templates"
+    },
+    {
       "path": ".gitattributes",
       "kind": "file",
       "owner": "root-governance",
       "purpose": "Git path and binary handling policy"
+    },
+    {
+      "path": ".github",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "GitHub workflow and ownership controls"
     },
     {
       "path": ".gitignore",
@@ -45,10 +69,34 @@
       "purpose": "Claude adapter entrypoint"
     },
     {
+      "path": "FINAL_ACCEPTANCE_BUNDLE",
+      "kind": "directory",
+      "owner": "legacy-acceptance-evidence",
+      "purpose": "Retained acceptance evidence pending a dedicated disposition task"
+    },
+    {
+      "path": "GOLDEN_PATH",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "CI golden-path reusable-workflow 模板与调用示例(PR #285)"
+    },
+    {
+      "path": "INVENTORY",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "域-服务映射/仓库清单/oracle 等清单文档(PR #285)"
+    },
+    {
       "path": "LICENSE",
       "kind": "file",
       "owner": "repository-owner",
       "purpose": "Repository license"
+    },
+    {
+      "path": "OPERATIONS",
+      "kind": "directory",
+      "owner": "root-governance",
+      "purpose": "运维 Runbook 等运维文档(PR #285)"
     },
     {
       "path": "PRODUCT.md",
@@ -63,42 +111,6 @@
       "purpose": "Stable human navigation entrypoint"
     },
     {
-      "path": "pytest.ini",
-      "kind": "file",
-      "owner": "root-testing",
-      "purpose": "Shared Python test configuration"
-    },
-    {
-      "path": ".agents",
-      "kind": "directory",
-      "owner": "root-agent-tooling",
-      "purpose": "Repository-local reusable agent skills"
-    },
-    {
-      "path": ".claude",
-      "kind": "directory",
-      "owner": "root-agent-adapter",
-      "purpose": "Claude repository configuration"
-    },
-    {
-      "path": ".codex",
-      "kind": "directory",
-      "owner": "root-agent-tooling",
-      "purpose": "Codex hooks and configuration templates"
-    },
-    {
-      "path": ".github",
-      "kind": "directory",
-      "owner": "root-governance",
-      "purpose": "GitHub workflow and ownership controls"
-    },
-    {
-      "path": "FINAL_ACCEPTANCE_BUNDLE",
-      "kind": "directory",
-      "owner": "legacy-acceptance-evidence",
-      "purpose": "Retained acceptance evidence pending a dedicated disposition task"
-    },
-    {
       "path": "docs",
       "kind": "directory",
       "owner": "root-governance",
@@ -109,6 +121,12 @@
       "kind": "directory",
       "owner": "root-governance",
       "purpose": "Canonical root policies, registries, schemas, and compact receipts"
+    },
+    {
+      "path": "pytest.ini",
+      "kind": "file",
+      "owner": "root-testing",
+      "purpose": "Shared Python test configuration"
     },
     {
       "path": "scripts",

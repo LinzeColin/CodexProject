@@ -55,6 +55,21 @@ class TestInfraDirsExclusions(unittest.TestCase):
             self.assertIn("arxiv-daily-push", set(self.m.discover_project_dirs()),
                           "arxiv-daily-push must still be discovered -- the exclusion over-reached")
 
+    def test_285_root_dirs_are_owned_in_root_cleanliness_budget(self):
+        """Excluding a dir from the PROJECT registry is not enough -- a separate audit
+        (root_cleanliness_audit) requires every top-level entry to be declared owned in
+        governance/root_cleanliness_budget.json. #285 added GOLDEN_PATH/INVENTORY/OPERATIONS without
+        that declaration, which is the second gate that kept main red. Pin the ownership so it does not
+        regress (kind must be 'directory', which the audit validates)."""
+        import json
+        budget = json.loads((ROOT / "governance" / "root_cleanliness_budget.json").read_text(encoding="utf-8"))
+        owned = {it.get("path"): it.get("kind") for it in budget.get("owned_root_items", [])}
+        for name in ("GOLDEN_PATH", "INVENTORY", "OPERATIONS"):
+            if (ROOT / name).is_dir():
+                self.assertEqual(owned.get(name), "directory",
+                                 "{} must be declared as an owned root item (kind 'directory') in "
+                                 "root_cleanliness_budget.json, or root_cleanliness_audit reddens main.".format(name))
+
 
 if __name__ == "__main__":
     unittest.main()
