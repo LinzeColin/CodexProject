@@ -1,0 +1,13 @@
+ADP-V02-P13 runhealth+meta 证据
+
+== 线上 /api/runhealth（部署后，只读）==
+{"runhealth":"adp-latest-completed-run","writes_nothing":true,"latest":{"as_of_date":"2026-07-17","result":"降级","at":"2026-07-17T04:15:29.026Z","arxiv":220,"biorxiv":30,"feeds":189,"candidates":546,"meta":null,"degraded":["feed:science-advances","a0:stats-gov"]}}
+
+== watchdog 线上（meta 检查已激活）==
+  ok    runhealth 2026-07-17: no meta counts (nothing to enrich, or run predates meta)
+OK: ADP live and producing
+
+== 决定性承重：429 风暴（真 P08）现在会红 ==
+  429 风暴 meta=null+degraded[meta:http429]    -> RED SILENT ZERO: metadata enrichment errored out entirely (['met
+  真实全 404 matched0 无 meta 错                  -> GREEN
+  健康 12/12                                   -> GREEN

@@ -1,0 +1,242 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 3738e17d4..539266b52 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: 'e8491f75970f', source_sha256: 'e8491f75970fbda50d64b30c847e030ce925eefb5a487b68dd682f04191ce88e', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
++const BUILD = { build_id: '9df554e13297', source_sha256: '9df554e132976ee49818b1d6a2aa3d41b91dfa0eccae4caa38e83a720a549460', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -1960,6 +1960,23 @@ export default {
+           last_run: last ? JSON.parse(last.value) : null,
+         });
+       }
++      if (p === '/api/runhealth') {
++        // 只读观测：最近一次【真正跑过】的运行(正常/降级/弃权，即跑过 enrichMeta 的)的解析后 counts。
++        // 关键是暴露 meta{requested,matched} —— 让 liveness watchdog 能抓【元数据静默零】(P08 的病：
++        // requested>0 但 matched=0，摄入/选择正常，绿着补 0 条元数据)。/system 不渲染每轮 meta，故需本端点。不写。
++        const r = await env.DB.prepare(
++          "SELECT as_of_date, result, counts_json, at FROM cn_run_log WHERE result IN ('正常','降级','弃权') ORDER BY at DESC LIMIT 1").first();
++        let c = {};
++        if (r) { try { c = JSON.parse(r.counts_json || '{}'); } catch (e) { } }
++        return jsonResp({
++          runhealth: 'adp-latest-completed-run', writes_nothing: true,
++          latest: r ? {
++            as_of_date: r.as_of_date, result: r.result, at: r.at,
++            arxiv: c.arxiv || 0, biorxiv: c.biorxiv || 0, feeds: c.feeds || 0, candidates: c.candidates || 0,
++            meta: c.meta || null, degraded: c.degraded || [],
++          } : null,
++        });
++      }
+       if (p === '/api/a0-canary') {
+         // S3-P03-T040 canary，P04 升级：用与生产 cron 同一个 parseA0 解析器逐源实测边缘可达性与产出，
+         // 不再用重复的内联正则（旧正则只认 /YYYY-MM/DD/ 旧链接形态，所以只吐 2019/2020 老文件）。
+diff --git a/scripts/adp_liveness_check.py b/scripts/adp_liveness_check.py
+index f70af2c7c..8521f44eb 100644
+--- a/scripts/adp_liveness_check.py
++++ b/scripts/adp_liveness_check.py
+@@ -10,15 +10,15 @@ WHAT IT COVERS (only what a public endpoint actually exposes):
+   * the newest COMPLETED run ingested arXiv=0 (ingest broken) or selected 候选=0 on a run that meant
+     to select (selection broken);
+   * no completed run in the visible history, or the newest completed run is stale;
++  * ★metadata enrichment silent-zero -- P08's ACTUAL disease★: the newest completed run's enrichment
++    ERRORED to zero (a 429/5xx/timeout storm -> 补 0 条元数据) while ingest and selection were fine.
++    The tell is a `meta:*` error marker in the run's `degraded` list -- NOT a bare matched=0, which on a
++    clean all-404 night just means the DOIs are genuinely not in OpenAlex. This needs the per-run meta
++    counts + degraded, which `/system` does not render, so it reads them from `/api/runhealth`. That
++    endpoint ships alongside this check; until it is live the metadata check is skipped with a note
++    (tolerant), so this script is safe to run against a worker that predates the endpoint.
+   * backfill (P12) degrading (via /api/backfill).
+ 
+-WHAT IT DOES NOT COVER, stated honestly: P08's ACTUAL disease was metadata enrichment returning 0
+-(matched=0) while arXiv ingest and selection were fine -- a green run with a silent METADATA zero.
+-`/system` does not render the per-run meta counts, so this watchdog CANNOT see that specific failure.
+-Closing that gap needs a worker change to expose meta match-rate on a public endpoint; until then this
+-catches ingest/selection/failure/staleness/backfill silent-zeros, not metadata ones. Do not read it as
+-"it would have caught P08" -- it would not have.
+-
+ It hits ONLY public ADP endpoints, read-only, with retries so a transient edge timeout is not a false
+ alarm. It is deliberately lenient where a zero is legitimate (bioRxiv/board feeds on a given day, or a
+ 弃权/abstain run selecting nothing) and strict where a zero means breakage.
+@@ -31,6 +31,7 @@ import json
+ import re
+ import sys
+ import time
++import urllib.error
+ import urllib.request
+ 
+ BASE = "https://adp.linzezhang.com"
+@@ -97,17 +98,83 @@ def evaluate_runs(sysbody, max_run_age_days, today):
+     return ok, fail
+ 
+ 
++def evaluate_runhealth(runhealth):
++    """Pure logic (no network): given /api/runhealth JSON (or None), detect P08's metadata silent-zero.
++
++    ★The real P08 is a 429 storm★: enrichMeta early-returns when EVERY DOI errors
++    (worker_cloud.js:775 `if (errs === dois.length) return;`) -- BEFORE it sets counts.meta -- so on the
++    disease night `meta` is UNSET, not `matched:0`. The signal that survives is the `meta:http429...`
++    marker the worker deliberately keeps in `counts.degraded` ("the signal that hid P08"). So this MUST
++    inspect `degraded`, not only `meta.matched`. Rules:
++      * a `meta:` error marker in degraded AND (meta unset OR matched==0) -> RED (enrichment errored to
++        zero: the 429/5xx/timeout storm -- P08);
++      * meta.matched==0 with NO meta error marker -> treated as genuine absence (all 404) -> OK. CAVEAT
++        (not resolvable here): a P10-class malformed-DOI encoding regression ALSO manifests as all-404
++        with no error marker, and would be misclassified OK. That is indistinguishable from genuine
++        absence in {requested,matched,degraded} -- catching it belongs in P10's DOI-encoding unit tests,
++        not this probe, which is scoped to the P08 429-storm. Flagging every whiteout would just cry
++        wolf on legitimate all-absent nights.
++      * partial or full match, or 0 requested, or meta simply absent with no error -> OK.
++    Tolerant of the endpoint being absent (None/no latest) -- returns a note, not a failure."""
++    ok, fail = [], []
++    if not isinstance(runhealth, dict):
++        return ok, fail
++    latest = runhealth.get("latest")
++    if not latest:
++        ok.append("runhealth: no completed run to inspect")
++        return ok, fail
++    date, res = latest.get("as_of_date"), latest.get("result")
++    degraded = latest.get("degraded") or []
++    meta_errs = [d for d in degraded if isinstance(d, str) and d.startswith("meta:")]
++    meta = latest.get("meta")
++    if isinstance(meta, dict):
++        req = int(meta.get("requested") or 0)
++        matched = int(meta.get("matched") or 0)
++        if req > 0 and matched == 0 and meta_errs:
++            fail.append("SILENT ZERO: metadata matched 0 of {} DOIs on {} ({}) due to errors {} -- "
++                        "P08's disease (enrichment errored to zero)".format(req, date, res, meta_errs))
++        elif req > 0 and matched == 0:
++            # no meta error marker -> treated as genuine absence. (A P10-class malformed-DOI regression
++            # would look identical here and slip through -- see docstring; that's P10's test's job.)
++            ok.append("runhealth {}: 0 matched of {} with no meta errors -- treated as genuine absence".format(date, req))
++        elif req == 0:
++            ok.append("runhealth {}: 0 DOIs requested (nothing to enrich)".format(date))
++        else:
++            ok.append("runhealth {}: meta matched {}/{}".format(date, matched, req))
++    else:
++        # meta UNSET: the all-error early-return (429 storm) leaves meta unset but marks degraded.
++        if meta_errs:
++            fail.append("SILENT ZERO: metadata enrichment errored out entirely ({}) on {} ({}) -- recorded "
++                        "no matches; the 429-storm early-return that hid P08".format(meta_errs, date, res))
++        else:
++            ok.append("runhealth {}: no meta counts (nothing to enrich, or run predates meta)".format(date))
++    return ok, fail
++
++
+ def _get(path, tries=3, timeout=25):
+-    """GET with retries; returns (status, body) or (None, error) on total failure."""
+-    last = None
++    """GET with retries. Returns (status, body). A real HTTP response with a 4xx/5xx status returns
++    that code (so a 404 for a not-yet-deployed endpoint is distinguishable from network-unreachable);
++    only a genuine network failure after retries returns (None, error)."""
++    last, last_5xx = None, None
+     for i in range(tries):
+         try:
+             req = urllib.request.Request(BASE + path, headers={"User-Agent": "adp-liveness/1"})
+             with urllib.request.urlopen(req, timeout=timeout) as r:
+                 return r.status, r.read().decode("utf-8", "replace")
+-        except Exception as e:  # transient edge timeout / 5xx -> retry
++        except urllib.error.HTTPError as e:  # the server answered with a status -- NOT unreachable
++            try:
++                body = e.read().decode("utf-8", "replace")
++            except Exception:
++                body = ""
++            if 400 <= e.code < 500:
++                return e.code, body          # client error is definitive -- return it, no retry
++            last_5xx = (e.code, body)         # 5xx may be a transient edge blip -> retry, remember last
++            time.sleep(2 * (i + 1))
++        except Exception as e:  # transient timeout / DNS / connection -> retry
+             last = "{}: {}".format(type(e).__name__, e)
+             time.sleep(2 * (i + 1))
++    if last_5xx is not None:
++        return last_5xx                       # persistent 5xx after retries -> surface the status
+     return None, last
+ 
+ 
+@@ -174,6 +241,26 @@ def main():
+         except Exception as e:
+             health_fail.append("/api/backfill did not parse: {}".format(e))
+ 
++    # 5. ★metadata silent-zero (P08's disease)★ via /api/runhealth. Tolerant: 404 = endpoint not yet
++    #    deployed -> note, not failure, so this script runs safely against a worker predating it.
++    st, body = _get("/api/runhealth")
++    if st == 200:
++        try:
++            r_ok, r_fail = evaluate_runhealth(json.loads(body))
++            ok.extend(r_ok); health_fail.extend(r_fail)
++        except Exception as e:
++            health_fail.append("/api/runhealth did not parse: {}".format(e))
++    elif st == 404:
++        # 404 = endpoint not deployed (or rolled back) -- tolerated so this runs against an older worker.
++        ok.append("/api/runhealth 404 -- metadata check skipped (endpoint not deployed here)")
++    elif st is None:
++        infra_fail.append("/api/runhealth unreachable ({})".format(body))
++    else:
++        # deployed but erroring (5xx/403/...) -- do NOT silently skip: the watchdog would go blind to
++        # exactly the metadata failure it exists to catch. A broken health endpoint is itself a failure.
++        health_fail.append("/api/runhealth returned HTTP {} -- endpoint deployed but broken; metadata "
++                           "silent-zero can no longer be checked".format(st))
++
+     # ---- report ----
+     for line in ok:
+         print("  ok    " + line)
+diff --git a/tests/governance/test_adp_liveness_check.py b/tests/governance/test_adp_liveness_check.py
+index 71f16f9b4..6927c4b9e 100644
+--- a/tests/governance/test_adp_liveness_check.py
++++ b/tests/governance/test_adp_liveness_check.py
+@@ -104,6 +104,51 @@ class TestAdpLivenessCheck(unittest.TestCase):
+         ok, fail = self.m.evaluate_runs("<html>no run table here</html>", 3, TODAY)
+         self.assertTrue(fail, "an unparseable /system passed vacuously -- watchdog would be blind")
+ 
++    # ---- metadata silent-zero (P08's disease) via /api/runhealth ----
++    def test_the_429_storm_meta_unset_but_degraded_marked_is_caught(self):
++        """★The real P08★: all DOIs 429 -> enrichMeta early-returns before setting meta, so meta is
++        UNSET but degraded carries a meta:http429 marker. The first version missed this entirely
++        (keyed only off meta.matched). Must RED off the degraded marker."""
++        rh = {"latest": {"as_of_date": "2026-07-18", "result": "降级", "meta": None,
++                         "degraded": ["meta:http429x12"]}}
++        ok, fail = self.m.evaluate_runhealth(rh)
++        self.assertTrue(any("SILENT ZERO" in x for x in fail),
++                        "429-storm (meta unset, degraded meta:http429) NOT caught: ok={} fail={}".format(ok, fail))
++
++    def test_metadata_matched_zero_with_error_marker_is_caught(self):
++        """meta present, matched=0, AND a meta: error marker -> errored to zero -> disease."""
++        rh = {"latest": {"as_of_date": "2026-07-17", "result": "降级",
++                         "meta": {"requested": 12, "matched": 0}, "degraded": ["meta:http429x8"]}}
++        ok, fail = self.m.evaluate_runhealth(rh)
++        self.assertTrue(any("SILENT ZERO" in x for x in fail), "errored-to-zero not caught: {}".format(fail))
++
++    def test_all_404_no_errors_is_not_flagged(self):
++        """matched=0 with NO meta error marker = the DOIs are genuinely absent from OpenAlex (404 is
++        knowledge). Not breakage -- must NOT RED (avoid crying wolf on legitimate absence)."""
++        rh = {"latest": {"as_of_date": "2026-07-17", "result": "降级",
++                         "meta": {"requested": 12, "matched": 0}, "degraded": []}}
++        ok, fail = self.m.evaluate_runhealth(rh)
++        self.assertEqual(fail, [], "genuine all-404 wrongly flagged: {}".format(fail))
++
++    def test_metadata_partial_match_with_error_marker_is_not_flagged(self):
++        """Some 429s but some matched -> partial, degraded marks it but matched>0 -> not the disease."""
++        rh = {"latest": {"as_of_date": "2026-07-17", "result": "降级",
++                         "meta": {"requested": 12, "matched": 7}, "degraded": ["meta:http429x2"]}}
++        ok, fail = self.m.evaluate_runhealth(rh)
++        self.assertEqual(fail, [], "partial match wrongly flagged: {}".format(fail))
++
++    def test_metadata_zero_requested_is_not_flagged(self):
++        rh = {"latest": {"as_of_date": "2026-07-17", "result": "正常", "meta": {"requested": 0, "matched": 0}}}
++        ok, fail = self.m.evaluate_runhealth(rh)
++        self.assertEqual(fail, [], "zero-requested wrongly flagged: {}".format(fail))
++
++    def test_runhealth_endpoint_absent_or_no_meta_is_tolerated(self):
++        """None / no latest / meta unset with NO error marker -> skip, never a false alarm."""
++        for rh in (None, {}, {"latest": None},
++                   {"latest": {"as_of_date": "2026-07-17", "meta": None, "degraded": []}}):
++            ok, fail = self.m.evaluate_runhealth(rh)
++            self.assertEqual(fail, [], "tolerated case wrongly flagged for {}: {}".format(rh, fail))
++
+     def test_the_liveness_workflow_stays_read_only(self):
+         """The workflow probes the LIVE site, so it must never gain write power or handle secrets, and
+         must never trigger on a PR (which would hit production on every push). Pin those properties so a

@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-07-18 Australia/Sydney - ADP V0.2 P13: /api/runhealth 让 watchdog 抓 P08 真实病 (PRODUCTION DEPLOY 9df554e13297; product_version 0.34.0)
+- 长期稳定 watchdog(上一阶段)抓不到 **P08 的真实病**：元数据补全被 **429 限流风暴**打成 0(补 0 条)，摄入/选择正常——绿着补 0。
+  原因：公共端点不暴露每轮 meta 计数。
+- 做法：worker 加**只读** `/api/runhealth`(一次 D1 SELECT，writes_nothing)暴露最近一次真正跑过的运行的 counts(含 meta+degraded)；
+  watchdog 据此判 P08。
+- ★关键★：真 P08 是 429 风暴 → enrichMeta 在 errs===dois.length 时**早退**(worker:775)，在设 counts.meta(812)**之前**就 return，
+  故那晚 meta **未设**、不是 matched:0。唯一幸存信号是 worker 特意留在 degraded 的 `meta:http429` 标记。所以 watchdog **读 degraded**：
+  degraded 有 meta: 错误标记 且(meta 未设 或 matched=0)→红。全 404 无 meta 错=DOI 真不在 OpenAlex=知识,不报警。
+- ★复核 2 轮,R1 BLOCK 属实且致命：watchdog 号称防 P08 却看不到 P08(只看 matched,而 429 那晚 meta 未设→端点 meta:null→判良性→绿)。
+  附带查出端点 5xx 被当 404 静默跳过、_get 丢 5xx 重试。三条全修,R2 CONFIRMED_SOUND,未自签。worker 未动(检测全在 watchdog)。
+- 已知残余(如实记)：全 404 分辨不出 P10 式 DOI 编码回归(属 P10 单测的活,本探针不抓,已在 docstring 标注)。
+- 上线:/build.json=9df554e13297、6 路由 200、/api/runhealth 200(部署前 404)、watchdog meta 检查已激活;18 断言全绿。
+
 ## 2026-07-18 Australia/Sydney - ADP V0.2 P12: arXiv 历史回填，填覆盖债务 (PRODUCTION DEPLOY e8491f75970f; product_version 0.33.0)
 - `/system` 覆盖网格实测**时间覆盖率 1.5%**（69/4699 格，4630 格从未回填）——P09 量出的、通往 goal「全面」的真实距离。
   不是来源不存在，是**我们从没抓过那些月份**。P12 逐夜回填 arXiv 历史论文，把这条债务还起来。

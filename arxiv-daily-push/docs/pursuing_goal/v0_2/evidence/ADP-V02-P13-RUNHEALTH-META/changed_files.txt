@@ -1,0 +1,15 @@
+# ADP-V02-P13 changed files
+
+  arxiv-daily-push/deploy/cloudflare/worker_cloud.js  +18/-1
+  scripts/adp_liveness_check.py  +97/-10
+  tests/governance/test_adp_liveness_check.py  +45/-0
+  build_id=9df554e13297(线上已部署 Version 96afed49)
+
+## 证据
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/TASK_REPORT.md
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/changed_files.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/cost_value.json
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/git.diff
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/runhealth_evidence.txt
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/test_adp_liveness_check.py
+  arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/unit_tests.txt

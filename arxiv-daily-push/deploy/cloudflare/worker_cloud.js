@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'e8491f75970f', source_sha256: 'e8491f75970fbda50d64b30c847e030ce925eefb5a487b68dd682f04191ce88e', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: '9df554e13297', source_sha256: '9df554e132976ee49818b1d6a2aa3d41b91dfa0eccae4caa38e83a720a549460', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1958,6 +1958,23 @@ export default {
           backfill: 'arxiv-oai-datestamp-walk', writes_nothing: true,
           cursor: cur ? cur.value : null, start: BACKFILL_START, pages_per_night: BACKFILL_PAGES,
           last_run: last ? JSON.parse(last.value) : null,
+        });
+      }
+      if (p === '/api/runhealth') {
+        // 只读观测：最近一次【真正跑过】的运行(正常/降级/弃权，即跑过 enrichMeta 的)的解析后 counts。
+        // 关键是暴露 meta{requested,matched} —— 让 liveness watchdog 能抓【元数据静默零】(P08 的病：
+        // requested>0 但 matched=0，摄入/选择正常，绿着补 0 条元数据)。/system 不渲染每轮 meta，故需本端点。不写。
+        const r = await env.DB.prepare(
+          "SELECT as_of_date, result, counts_json, at FROM cn_run_log WHERE result IN ('正常','降级','弃权') ORDER BY at DESC LIMIT 1").first();
+        let c = {};
+        if (r) { try { c = JSON.parse(r.counts_json || '{}'); } catch (e) { } }
+        return jsonResp({
+          runhealth: 'adp-latest-completed-run', writes_nothing: true,
+          latest: r ? {
+            as_of_date: r.as_of_date, result: r.result, at: r.at,
+            arxiv: c.arxiv || 0, biorxiv: c.biorxiv || 0, feeds: c.feeds || 0, candidates: c.candidates || 0,
+            meta: c.meta || null, degraded: c.degraded || [],
+          } : null,
         });
       }
       if (p === '/api/a0-canary') {

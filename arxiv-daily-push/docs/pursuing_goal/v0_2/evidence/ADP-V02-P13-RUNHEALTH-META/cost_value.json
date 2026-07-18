@@ -1,0 +1,25 @@
+{
+  "task": "ADP-V02-P13-RUNHEALTH-META",
+  "program": "ADP V0.2 生产集成 / 长期稳定",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "e8491f75970f",
+  "live_build_after": "9df554e13297",
+  "deploy_version_id": "96afed49-d7eb-48e9-9485-34bec48c87ae",
+  "objective": "让 liveness watchdog 能抓到 P08 的【真实病】：元数据补全被 429 限流风暴打成 0(补 0 条元数据)，而摄入/选择正常——绿着补 0，正是本会话反复的那个病。原 watchdog 看不到它(公共端点不暴露每轮 meta 计数)。",
+  "what": "worker 加只读端点 /api/runhealth，暴露最近一次【真正跑过】的运行的解析后 counts(含 meta{requested,matched} 与 degraded)。watchdog 据此判 P08：degraded 里有 meta: 错误标记 且(meta 未设或 matched=0)→红。",
+  "why_degraded_not_matched": "★关键★：真 P08 是 429 风暴 → enrichMeta 在 errs===dois.length 时【早退】(worker:775)，在设 counts.meta(worker:812) 【之前】就 return，故那晚 meta 根本未设、不是 matched:0。唯一幸存的信号是 worker 特意留在 degraded 里的 meta:http429 标记(worker 注释：『429 正是让 P08 隐形整整一轮的那个信号』)。所以 watchdog 必须读 degraded，不能只看 matched。",
+  "not_a_false_positive": "全 404(matched=0 但无 meta 错误标记)= DOI 确实不在 OpenAlex，是【知识】不是故障 → 不报警(不对合法的全缺席狼来了)。已知残余(不阻塞)：P10 那种 DOI 编码 bug 也会表现成全 404，本探针分辨不出——那属于 P10 的编码单测的活，不属于这条存活探针。已在 docstring 如实标注。",
+  "review": "★2 轮，R1 BLOCK 属实且致命，R2 CONFIRMED_SOUND，未自签。★ R1：watchdog 号称防 P08 却看不到 P08——它只看 meta.matched，而 429 风暴那晚 meta 未设，端点返回 meta:null，检查判良性→绿。复核逐字复现。且查出两条附带缺陷：端点 5xx 被当 404 静默跳过(watchdog 对自己的盲区盲)、以及 _get 改动丢了对 5xx 的重试(瞬时 5xx 会误红整条路由)。R2 三条全修并复验：改读 degraded 标记(429 风暴现在红)、5xx→health_fail、_get 恢复 5xx 重试+持久 5xx 才上报。",
+  "worker_change": "仅加一个只读端点(一次 D1 SELECT，writes_nothing)。P08 检测逻辑全在 watchdog 脚本里改，worker 不含检测逻辑。DIR-007：/api/runhealth 是罕访调试端点，每次一读，无 cron/子请求增量。",
+  "tolerance": "watchdog 对端点缺席(404)容忍(跳过 meta，不误红)，故可安全跑在还没这端点的旧 worker 上；但端点若部署后 5xx 坏了→报警(不静默盲)。",
+  "value": "P08 的病——绿色 cron 背后元数据补 0——现在会在定时 watchdog 里【变红】，和它抓摄入/选择静默零一样。这是本会话起点那个病，终于被自动盯住了。",
+  "verification": "线上 /build.json=9df554e13297、6 路由 200、/api/runhealth 200(部署前 404)；watchdog 线上 exit=0 且 meta 检查已激活；18 断言全绿(含决定性用例 test_the_429_storm_meta_unset_but_degraded_marked_is_caught)。",
+  "adversarial_review": "2 轮，R1 BLOCK(watchdog 看不到 P08 + 5xx 盲区 + 丢 5xx 重试)，R2 CONFIRMED_SOUND，未自签。",
+  "residual_risks": [
+    "全 404 无法与 P10 式 DOI 编码回归区分(两者都表现成全缺席)——本探针不抓,属 P10 单测的活,已如实标注,非本阶段范围。",
+    "matched=0 且恰有一条无关 meta 错(如 11 个真 404 + 1 个 timeout)会红——罕见,且『全白 + 有错』值得一看,可接受的灵敏度。"
+  ],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 e8491f75970f。端点纯只读,删掉无副作用。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

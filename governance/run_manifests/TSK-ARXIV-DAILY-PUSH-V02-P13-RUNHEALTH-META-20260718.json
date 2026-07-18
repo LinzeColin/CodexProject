@@ -1,0 +1,124 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P13-RUNHEALTH-META-20260718",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P13-RUNHEALTH-META",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260718-ADP-LONGTERM-STABILITY",
+  "generated_at": "2026-07-18T23:10:00Z",
+  "implementation_base_sha": "dd1725de46eeaa49947251dba1672ad824510d35",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f035288bbc96da0c89ce1b1048b657e651512bcd72446463dba92b07c9222fc5",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 21 non-manifest changed files; changed_files_* list all 22 including this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P13：只读 /api/runhealth 让 liveness watchdog 抓 P08 真实病(429 风暴打 0 元数据)；复核 R1 BLOCK(watchdog 看不到 P08)R2 CONFIRMED_SOUND",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (2 rounds; R1 BLOCK watchdog-blind-to-P08 + 5xx-self-blindness + lost-5xx-retry, R2 sound; not self-signed)",
+  "summary": "worker 加只读 /api/runhealth 暴露每轮 meta+degraded,让 watchdog 抓 P08 真实病:429 风暴打 0 元数据、绿着补 0。★真 P08 那晚 enrichMeta 早退(worker:775)在设 counts.meta(812)前 return,meta 未设、不是 matched:0;唯一信号是 worker 特意留在 degraded 的 meta:http429 标记,故 watchdog 读 degraded 而非只看 matched。★复核 2 轮 R1 BLOCK 属实且致命(watchdog 号称防 P08 却看不到 P08,复核逐字复现;附带 5xx 被当 404 静默跳过、_get 丢 5xx 重试),三条全修 R2 CONFIRMED_SOUND 未自签。worker 未被检测逻辑触碰(只加只读端点)。全 404 无 meta 错=真缺席不报警;不抓 P10 式编码回归(已如实标注)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/runhealth_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/test_adp_liveness_check.py",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/unit_tests.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P13-RUNHEALTH-META-20260718.json",
+    "scripts/adp_liveness_check.py",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/runhealth_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/test_adp_liveness_check.py",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/unit_tests.txt",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P13-RUNHEALTH-META-20260718.json",
+    "scripts/adp_liveness_check.py",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/runhealth_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P13-RUNHEALTH-META/test-results/test_adp_liveness_check.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_adp_liveness_check",
+    "python3 scripts/adp_liveness_check.py",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_adp_liveness_check (18 断言)",
+      "result": "PASS",
+      "detail": "含决定性 test_the_429_storm_meta_unset_but_degraded_marked_is_caught;全 404 不误报;5xx→health_fail;端点缺席容忍。"
+    },
+    {
+      "command": "生产部署验证",
+      "result": "PASS",
+      "detail": "Version 96afed49;/build.json=9df554e13297;6 路由 200;/api/runhealth 200(部署前 404);watchdog 线上 exit=0 且 meta 检查激活。"
+    }
+  ],
+  "stop_conditions": [
+    "★watchdog 判 P08 必须读 degraded 的 meta: 标记,不能只看 matched★:真 P08(429 风暴)那晚 enrichMeta 早退、meta 未设,只看 matched 会漏(复核 R1 的病)。",
+    "不要对全 404(无 meta 错)报警:那是真缺席、是知识,报了就对合法夜狼来了。",
+    "/api/runhealth 保持只读(一次 SELECT,writes_nothing);端点若 5xx 坏了要报警(不静默盲)。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <prev> 回 e8491f75970f。",
+    "repo": "git revert 本 commit。端点纯只读删掉无副作用。"
+  },
+  "unresolved_risks": [
+    "全 404 分辨不出 P10 式 DOI 编码回归(属 P10 单测的活,本探针不抓,已 docstring 标注)。",
+    "matched=0 且恰有一条无关 meta 错会红(罕见,可接受灵敏度)。"
+  ],
+  "next_allowed_task": "今晚 cron + enrichMeta 跑过后,读 /api/runhealth 的 latest.meta 确认 watchdog 对真实 meta 数据判定正确;继续盯 counts.degraded 的 meta:http429。"
+}
