@@ -1,0 +1,65 @@
+# Linze Golden Path — 可复用工作流 (STAGE-13.1 骨架)
+# 任何达到「开发完成定义」的可部署项目, 用一个 caller 调用本工作流即可:
+# 自动 verify -> (build) -> 触发 Coolify 部署 -> home 跳转链接同步。
+# 注意: 生产化前把所有 action 固定到 commit SHA (铁律: 供应链最小信任)。
+name: linze-golden-path
+
+on:
+  workflow_call:
+    inputs:
+      service_name:
+        description: "服务名 (对应 linze-service.yaml 的 service_id)"
+        required: true
+        type: string
+      coolify_app_uuid:
+        description: "Coolify 应用 uuid (由 Coolify API 预建)"
+        required: true
+        type: string
+    secrets:
+      COOLIFY_BASE_URL:
+        description: "Coolify API 基址, 例如 https://server.linzezhang.com"
+        required: true
+      COOLIFY_API_TOKEN:
+        description: "Coolify API token (最小 deploy 权限)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4  # TODO: 生产化前钉 SHA
+      - name: 契约与测试占位
+        run: |
+          echo "verify service=${{ inputs.service_name }}"
+          # 各仓在此接入自身 lint/test/契约校验; 失败即阻断部署 (Gate)。
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: 触发 Coolify 部署 (不可变版本)
+        env:
+          BASE: ${{ secrets.COOLIFY_BASE_URL }}
+          TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+          APP: ${{ inputs.coolify_app_uuid }}
+        run: |
+          set -euo pipefail
+          echo "触发部署: $APP"
+          resp=$(curl -fsSL -X GET \
+            -H "Authorization: Bearer $TOKEN" \
+            "$BASE/api/v1/deploy?uuid=$APP&force=false")
+          echo "$resp"
+          echo "$resp" | grep -q deployment_uuid || { echo "部署未入队"; exit 1; }
+
+  home-sync:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 生成/更新 home.linzezhang.com 跳转卡片 (占位)
+        run: |
+          echo "home-sync ${{ inputs.service_name }}"
+          # 后续: 读取 Coolify 该应用的 FQDN, 生成 LinzeHomeHub projects.json 卡片,
+          #       production 健康后自动出现在 home.linzezhang.com。

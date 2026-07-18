@@ -1,0 +1,14 @@
+# 放到某个可部署仓的 .github/workflows/deploy.yml
+name: deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  golden-path:
+    uses: LinzeColin/CodexProject/.github/workflows/linze-golden-path.reusable.yml@main
+    with:
+      service_name: my-service
+      coolify_app_uuid: "<Coolify 预建的 app uuid>"
+    secrets:
+      COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
+      COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
