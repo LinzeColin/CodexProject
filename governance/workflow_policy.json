@@ -418,6 +418,29 @@
         "tests/agent_loop"
       ],
       "untrusted_prompt_input": false
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-liveness.yml",
+      "name": "arXiv Daily Push Liveness",
+      "role": "adp_liveness_watchdog",
+      "owner": "@LinzeColin",
+      "purpose": "长期稳定 watchdog: probe public ADP endpoints on a schedule and go RED when the live system is up but silently not producing (a green cron hiding a silent zero).",
+      "triggers": [
+        "schedule",
+        "workflow_dispatch"
+      ],
+      "permissions": {
+        "contents": "read"
+      },
+      "expected_jobs": [
+        "liveness"
+      ],
+      "trust_boundary": "read_only_public_endpoint_probe_no_secrets",
+      "failure_behavior": "RED on recent-failure / arXiv=0 / 候选=0 / stale / no-completed-run / backfill-degraded; read-only, no side effects. Deleting the schedule block stops scheduled probing.",
+      "local_dependencies": [
+        "scripts/adp_liveness_check.py"
+      ],
+      "untrusted_prompt_input": false
     }
   ],
   "retired_or_merged": [

@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-ADP-LIVENESS-WORKFLOW-REGISTER-20260718",
+  "project_id": "root",
+  "task_id": "ROOT-ADP-LIVENESS-WORKFLOW-REGISTER",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260718-ADP-LONGTERM-STABILITY",
+  "generated_at": "2026-07-18T21:00:00Z",
+  "implementation_base_sha": "bb1ba9a44cd2b2374f2ce26ad53b503cebdf651c",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:19f6cdfe6737cdd99d8ed22f266e98a5bed8c7fd581ff4959c837b359569d3d6",
+  "self_reference_policy": "SHA-256 over sorted path, NUL, file SHA-256 hex and LF tuples for the 4 non-manifest changed files; changed_files_* list all 5 including this manifest; hash excludes it.",
+  "ci_attestation_subject": "修正 bb1ba9a44：把 liveness workflow 登记进 workflow_policy.json（原提交漏登记→CI workflow-security 会红）+ SHA-pin actions + 重渲染 role matrix + workflow 只读守卫",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "summary": "★如实记：修我自己的失误★。上一提交 bb1ba9a44 加了 .github/workflows/arxiv-daily-push-liveness.yml 却【没登记进 governance/workflow_policy.json】——workflow_security_audit 会报 unowned workflow，CI 的 project-governance 会红。根因：我把本地检查和 commit 串在同一个 bash 块里，看到 workflow-security exit=1 却因为链式执行照样 commit+push 了。而且本地那次 audit 之所以先前显示 PASS，是因为当时 workflow 文件完全未被 git 追踪、audit 的 git 枚举看不见它——git add -N 之后才现形(与 P06 记录的『本地 pre-commit audit 对正在新增的文件是空的』同一个盲点)。修法：登记 workflow(role=adp_liveness_watchdog、permissions contents:read、triggers schedule+dispatch)；actions 从 @v4/@v5 tag 改成 repo 约定的 SHA-pin(action_pins 里已批准的同一 SHA)；重渲染 docs/governance/WORKFLOW_ROLE_MATRIX.md(它是 workflow_policy.json 的派生视图)；新增 test_the_liveness_workflow_stays_read_only 守卫(承重：加 pull_request 触发或 write 权限即红)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "worker_change": 0,
+    "fixes_prior_commit": "bb1ba9a44"
+  },
+  "changed_files_declared": [
+    ".github/workflows/arxiv-daily-push-liveness.yml",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ROOT-ADP-LIVENESS-WORKFLOW-REGISTER-20260718.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/arxiv-daily-push-liveness.yml",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/run_manifests/TSK-ROOT-ADP-LIVENESS-WORKFLOW-REGISTER-20260718.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "required_governance_files": [
+    "governance/workflow_policy.json",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "updated_governance_files": [
+    "governance/workflow_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "tests/governance/test_adp_liveness_check.py"
+  ],
+  "evidence_refs": [
+    "governance/workflow_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    ".github/workflows/arxiv-daily-push-liveness.yml"
+  ],
+  "test_commands": [
+    "python3 scripts/workflow_security_audit.py audit",
+    "python3 scripts/workflow_security_audit.py check-render",
+    "python3 -B -m unittest tests.governance.test_adp_liveness_check",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "workflow_security_audit audit + check-render",
+      "result": "PASS",
+      "detail": "unowned 0、unpinned 0、dup_role 0、render drift 0。role matrix 已重渲染含 adp_liveness_watchdog。"
+    },
+    {
+      "command": "test_adp_liveness_check (12 断言)",
+      "result": "PASS",
+      "detail": "新增 test_the_liveness_workflow_stays_read_only；承重：临时加 pull_request 触发即红。"
+    }
+  ],
+  "stop_conditions": [
+    "★不要把本地检查和 commit 串在一个 bash 块里★：看到 exit≠0 要停，别让链式执行照样 commit(本次失误的直接原因)。",
+    "新增 workflow 必须【同一提交】登记进 workflow_policy.json 并重渲染 WORKFLOW_ROLE_MATRIX.md，否则 CI workflow-security 红。",
+    "liveness workflow 保持只读(contents:read、无 secret、不在 PR 触发)——守卫已钉死。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit + bb1ba9a44。"
+  },
+  "unresolved_risks": [
+    "与上一提交 bb1ba9a44 之间存在一个 CI 会红的中间态(bb1ba9a44 的 workflow 未登记)；本提交修复，HEAD 绿。中间提交红是如实的历史，不改写。"
+  ],
+  "next_allowed_task": "确认本提交 CI 绿(尤其 project-governance 的 workflow-security)。"
+}

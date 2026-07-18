@@ -104,6 +104,33 @@ class TestAdpLivenessCheck(unittest.TestCase):
         ok, fail = self.m.evaluate_runs("<html>no run table here</html>", 3, TODAY)
         self.assertTrue(fail, "an unparseable /system passed vacuously -- watchdog would be blind")
 
+    def test_the_liveness_workflow_stays_read_only(self):
+        """The workflow probes the LIVE site, so it must never gain write power or handle secrets, and
+        must never trigger on a PR (which would hit production on every push). Pin those properties so a
+        later edit that adds `contents: write`, a secret, or a `pull_request` trigger fails here."""
+        wf = ROOT / ".github" / "workflows" / "arxiv-daily-push-liveness.yml"
+        self.assertTrue(wf.is_file(), "liveness workflow missing: {}".format(wf))
+        text = wf.read_text(encoding="utf-8")
+        import re
+        # triggers: only schedule + workflow_dispatch
+        for bad in ("pull_request", "pull_request_target"):
+            self.assertNotIn(bad + ":", text,
+                             "liveness workflow must not trigger on {} -- it would hit the live site on PRs".format(bad))
+        self.assertIn("workflow_dispatch", text)
+        self.assertIn("schedule", text)
+        # permissions: read-only, no write scope anywhere
+        self.assertRegex(text, r"permissions:\s*\n\s*contents:\s*read",
+                         "liveness workflow must declare permissions: contents: read")
+        self.assertNotRegex(text, r":\s*write\b", "liveness workflow must not grant any write permission")
+        # no secrets in a read-only public probe
+        self.assertNotIn("secrets.", text, "liveness workflow must not reference any secret")
+        # actions SHA-pinned (repo convention), not bare tags
+        for m in re.finditer(r"uses:\s*([^\s]+)", text):
+            ref = m.group(1)
+            if ref.startswith("actions/") or "/" in ref:
+                self.assertRegex(ref, r"@[0-9a-f]{40}$",
+                                 "action {} must be SHA-pinned (repo workflow-security convention)".format(ref))
+
 
 if __name__ == "__main__":
     unittest.main()
