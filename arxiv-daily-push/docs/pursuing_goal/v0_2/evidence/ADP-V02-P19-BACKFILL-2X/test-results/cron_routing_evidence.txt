@@ -1,0 +1,15 @@
+test_at_most_one_configured_cron_falls_to_the_default_branch (tests.governance.test_adp_worker_cron_routing.TestAdpWorkerCronRouting)
+Every configured cron except the daily default must be explicitly routed. ... ok
+test_backfill_throughput_policy_two_slots (tests.governance.test_adp_worker_cron_routing.TestAdpWorkerCronRouting)
+P19 policy pin: coverage debt is paid at TWO backfill invocations per day. ... ok
+test_every_handled_cron_is_actually_scheduled (tests.governance.test_adp_worker_cron_routing.TestAdpWorkerCronRouting)
+A `event.cron === X` branch for a cron not in the config is dead routing (X never fires). ... ok
+test_the_worker_and_config_were_parsed (tests.governance.test_adp_worker_cron_routing.TestAdpWorkerCronRouting)
+Non-vacuity: both files must exist and the config must declare at least one cron. ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.004s
+
+OK
+
+=== 负控(本轮实跑): 去掉 '30 2' 路由分支 → 守卫 FAIL(吞吐 pin+else 分支双杀),还原后 OK ===

@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'd0ebaee1f43c', source_sha256: 'd0ebaee1f43c20d236db07cc85a640428e5246ff74ec8518b36e199f4b80712d', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+const BUILD = { build_id: '983af33c8352', source_sha256: '983af33c83524ebd1e3cd6b95afad14f36dd95d916f082bb3c655c3c31301f5e', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -124,7 +124,7 @@ const BATCH_CHUNK = 80;         // 每个 D1 batch 的语句数上限
 // P12 历史回填：把 /system 覆盖网格的时间覆盖债务逐夜填起来（实测起点 1.5%）。
 // 依据本会话实测：OAI 页 ~1300 条；resumptionToken 无状态、值里编码 from=YYYY-MM-DD → 游标 = 持久化日期。
 const BACKFILL_START = '2016-01-01';   // 与覆盖网格 COVERAGE_START 一致
-const BACKFILL_PAGES = 1;              // 每夜 OAI 页数（1 页≈1 外部子请求≈1300 条）；32+1=33/50，DIR-007 保守起步
+const BACKFILL_PAGES = 1;              // 每次回填 invocation 的 OAI 页数。实测账(P19 修正旧注释):1 fetch + ceil(1300/BATCH_CHUNK=80)=17 个 D1 batch + 游标写 ≈19/50,留量足;提速走多 cron 槽(每 invocation 独立预算),不提本值(XML 解析 CPU 未实测双倍)
 const BACKFILL_SPAN_DAYS = 366;        // 单夜 until 窗口跨度上限（封顶到 today）
 function chunk(arr, n) { const o = []; for (let i = 0; i < arr.length; i += n) o.push(arr.slice(i, i + n)); return o; }
 
@@ -2019,7 +2019,7 @@ export default {
         const last = await env.DB.prepare("SELECT value FROM cn_meta WHERE key='backfill_last'").first();
         return jsonResp({
           backfill: 'arxiv-oai-datestamp-walk', writes_nothing: true,
-          cursor: cur ? cur.value : null, start: BACKFILL_START, pages_per_night: BACKFILL_PAGES,
+          cursor: cur ? cur.value : null, start: BACKFILL_START, pages_per_run: BACKFILL_PAGES, runs_per_day: 2, pages_per_night: BACKFILL_PAGES * 2,
           last_run: last ? JSON.parse(last.value) : null,
         });
       }
@@ -2189,7 +2189,7 @@ export default {
   async scheduled(event, env, ctx) {
     // ★按 cron 路由到【不同的 invocation】★：回填独享自己的 50 外部 + 1000 内部子请求预算与 CPU 预算，
     // 绝不与当日流水线共享（复核 R1：叠在同一 invocation 会撞 50 上限 → 插入抛错被吞 → 游标永不推进 → P08 病）。
-    if (event.cron === '30 8 * * *') ctx.waitUntil(backfillArxiv(env).catch(() => { }));
+    if (event.cron === '30 8 * * *' || event.cron === '30 2 * * *') ctx.waitUntil(backfillArxiv(env).catch(() => { }));  // P19:两个回填槽,各自独立 invocation/预算,游标单调保证幂等
     else ctx.waitUntil(runDaily(env, 'cron'));
   },
 };

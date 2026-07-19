@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-20 Australia/Sydney - ADP V0.2 P19: 回填吞吐 2x——第二个回填 cron 槽 (PRODUCTION DEPLOY 983af33c8352; product_version 0.40.0)
+- P12 的提速门正式打开(其 stop_condition:读到 backfill_last.ms 前不加大 PAGES——首跑已实测 ms=11736):
+  1 页/夜≈5 天 arXiv,补完 2016+ 约需 2 年,对「全面」太慢。
+- **不提 PAGES**(单 invocation 双倍 XML 解析 CPU 未实测,免费档上限含糊):改加**第二个回填 cron 槽 `30 2 * * *`**
+  ——每 invocation 独立 50 子请求预算、与已验证首跑完全同型(11.7s/1300 行);游标单调保证两槽幂等。吞吐 2 倍,补完周期 2 年→约 1 年。
+- ★过程发现:部署撞 CF 10072「账号 cron 上限 5 已满」——废弃 adp-mirror worker 的旧 cron 仍每晚空转打生产 D1
+  (被幂等守卫挡住,即 /system 日志每日两条「幂等跳过」),并占满槽位。Owner 2026-07-20 授权后**只摘其触发器**
+  (worker 本体未动仍 200,基建注册表 dormant 条目已如实更新);随后三调度挂载成功。★
+- 127 行陈旧预算注释修正(实测账:1 fetch+17 D1 batch+游标写≈19/50,非旧注释的 33/50);/api/backfill 增
+  `pages_per_run/runs_per_day`,`pages_per_night` 语义改为每夜总页数=2(无外部读者,兼容)。
+- 路由守卫(P12 的 config↔handler 一致性设计)自动覆盖新槽;另加**吞吐政策 pin**(≥2 个显式路由的回填槽,
+  防静默减半);负控实跑:去掉第二槽路由→守卫真 FAIL(吞吐 pin+else 分支双杀),还原后 OK。
+- 首夜双跑证据(02:30/08:30 UTC)延迟到明晨读 /api/backfill 游标增量;独立对抗复核进行中(终裁回写前不作 CONFIRMED 声称)。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 P18: 标题面 deMath + 不等式数学盲区 (PRODUCTION DEPLOY d0ebaee1f43c; product_version 0.39.0)
 - P17 审查者留了标题面线索;本次先**线上实测坐实**再动手(verify-real-before-building):/search 结果里
   arxiv:1310.5162 标题裸呈现 `$C1$-Genericity…`,该条 /item h1 与浏览器 tab 同裸。

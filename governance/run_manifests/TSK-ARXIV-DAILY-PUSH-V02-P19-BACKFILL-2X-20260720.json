@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P19-BACKFILL-2X-20260720",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P19-BACKFILL-2X",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260720-ADP-COVERAGE-THROUGHPUT",
+  "generated_at": "2026-07-20T00:40:00Z",
+  "implementation_base_sha": "6ef568b5b20838b651524d30142b4e9920e83493",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:6289d09288b59464b9e08b0d8ff555c8c6b2ad19c099475e67027aa4acfbfa45",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 21 non-manifest changed files; changed_files_* list all 22 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P19: 回填吞吐 2x(第二 cron 槽 30 2 UTC);撞 CF 10072 后 Owner 授权摘废弃 adp-mirror 空转触发器;独立对抗复核待返回(不自签)。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (线上自哈希亲算/两项破坏测试重放双杀/两槽幂等全交错对抗推演/零预签/base_commit 真伪亲比;审查者如实声明验证边界:CF 挂载以旁证链核实,首夜双跑为时间门;复核复算子请求账≈20/50,注释≈19 漏计 last_run 写,余量巨大非问题;实施者未自签)",
+  "summary": "P12 提速门开(首跑 ms=11736 满足其 stop_condition)后:不提 PAGES(双倍 XML 解析 CPU 未实测),加第二回填 cron 槽 30 2 UTC——每 invocation 独立 50 子请求预算、与已验证首跑完全同型(11.7s/1300 行/约 19/50)、游标单调+OAI-busy 不推进天然幂等;吞吐 2x,2016+ 补完 2 年→约 1 年。★撞 CF 10072 账号 cron 上限 5 已满(注册表 23 行本记着此约束):/system 每日两条幂等跳过=废弃 adp-mirror 旧 cron 每晚空转打生产 D1 且占满槽位;Owner 2026-07-20 授权后只摘其触发器(worker 本体未动仍 200,注册表 dormant 条目如实更新);随后三调度挂载成功★。修 127 行陈旧预算注释(33/50→实测 19/50);/api/backfill 增 pages_per_run/runs_per_day(grep 证实无外部读者)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/test-results/cron_routing_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/test-results/deploy_and_slots_evidence.txt",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P19-BACKFILL-2X-20260720.json",
+    "tests/governance/test_adp_worker_cron_routing.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/test-results/cron_routing_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/test-results/deploy_and_slots_evidence.txt",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P19-BACKFILL-2X-20260720.json",
+    "tests/governance/test_adp_worker_cron_routing.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_worker_cron_routing.py",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_worker_cron_routing.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/test-results/cron_routing_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P19-BACKFILL-2X/test-results/deploy_and_slots_evidence.txt"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_adp_worker_cron_routing",
+    "python3 -m unittest tests.governance.test_infrastructure_registry",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_adp_worker_cron_routing(P12 3 测试+P19 吞吐 pin)",
+      "result": "PASS",
+      "detail": "4/4;负控实跑:去 30 2 路由分支→FAIL(吞吐 pin+else 检查双杀),还原后 OK。"
+    },
+    {
+      "command": "test_infrastructure_registry",
+      "result": "PASS",
+      "detail": "6/6;dormant adp-mirror 条目更新(摘触发器纪录)后结构守卫仍绿。"
+    },
+    {
+      "command": "生产部署",
+      "result": "PASS",
+      "detail": "三调度(30 20/30 8/30 2)挂载;/build.json=983af33c8352;/api/backfill 新字段 live;adp-mirror 摘后 200。"
+    }
+  ],
+  "stop_conditions": [
+    "★两个回填槽是吞吐政策(吞吐 pin 钉住);要降速须先改该守卫并留证据★",
+    "不提 BACKFILL_PAGES 除非实测单 invocation 双页 CPU;提速优先走 cron 槽(每 invocation 独立预算)。",
+    "账号 cron 槽 3/5:再加触发器前先查 infrastructure_registry 的槽约束与现占用。"
+  ],
+  "rollback": {
+    "production": "wrangler_cloud.jsonc 去 30 2 重新 triggers deploy 即回 1x;worker revert 本 commit。adp-mirror 触发器可由 Owner 重挂(本体未动)。",
+    "repo": "git revert 本 commit。"
+  },
+  "unresolved_risks": [
+    "首夜双跑证据是时间门:明晨 08:30 UTC 后读 /api/backfill 游标应进两窗(今晨单跑进一窗为对照)。",
+    "OAI 503 时该槽不推游标次夜重试(P12 设计,双槽同样成立)。"
+  ],
+  "next_allowed_task": "明晨读 /api/backfill 游标增量闭合首夜双跑证据;或 Owner 指方向。"
+}

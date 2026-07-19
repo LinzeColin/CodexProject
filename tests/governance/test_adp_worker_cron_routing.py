@@ -75,6 +75,22 @@ class TestAdpWorkerCronRouting(unittest.TestCase):
             "That branch can never run; the intended handler is silently dead. Config crons: {}".format(
                 dead, self.config))
 
+    def test_backfill_throughput_policy_two_slots(self):
+        """P19 policy pin: coverage debt is paid at TWO backfill invocations per day.
+
+        P12 shipped one backfill cron (30 8 UTC, PAGES=1 ~= 1300 rows ~= 5 days of arXiv per night --
+        a ~2-year horizon to fill 2016+). Once the first live run measured ms=11736 (P12's own
+        stop-condition gate for scaling), P19 added a second slot (30 2 UTC): each invocation keeps the
+        PROVEN per-run profile (own 50-subrequest budget, ~19/50 used, same wall/CPU), and the monotonic
+        cursor makes runs idempotent, so two slots is the safe 2x. This pin fails if someone drops back
+        to one explicitly-routed cron, halving throughput silently -- the agreement checks above would
+        stay green for that regression, so this is the only guard that notices."""
+        self.assertGreaterEqual(
+            len(set(self.handled)), 2,
+            "fewer than 2 crons are explicitly routed (backfill slots): {} -- P19's 2x coverage "
+            "throughput was silently reverted; see the P19 evidence bundle before changing this "
+            "deliberately.".format(sorted(set(self.handled))))
+
     def test_at_most_one_configured_cron_falls_to_the_default_branch(self):
         """Every configured cron except the daily default must be explicitly routed.
 

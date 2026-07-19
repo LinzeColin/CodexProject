@@ -1,0 +1,24 @@
+{
+  "task": "ADP-V02-P19-BACKFILL-2X",
+  "program": "ADP V0.2 / 全面 / 长期稳定",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "d0ebaee1f43c",
+  "live_build_after": "983af33c8352",
+  "deploy_version_id": "script 983af33c8352 + triggers(30 20/30 8/30 2) 20260720",
+  "objective": "P12 stop_condition(读到 ms 前不加大 PAGES)已被首跑 ms=11736 满足,提速门开;1 页/夜≈5 天 arXiv,补完 2016+ 约 2 年,对全面太慢。",
+  "what": "不提 PAGES(双倍 XML 解析 CPU 未实测不赌);加第二回填 cron 槽 30 2 UTC——每 invocation 独立 50 子请求预算、与已验证首跑完全同型(11.7s/1300 行/约19/50)、游标单调+OAI-busy 不推进天然幂等;吞吐 2x,补完 2 年→约 1 年。修 127 行陈旧预算注释(33/50→实测 19/50);/api/backfill 增 pages_per_run/runs_per_day(无外部读者)。",
+  "incident": "撞 CF 10072 账号 cron 上限 5 已满(注册表 23 行本就记着——先查自己的注册表);证据链:/system 每日两条幂等跳过=废弃 adp-mirror 旧 cron 每晚空转打生产 D1 且占满槽位;Owner 2026-07-20 授权后只摘其触发器(wrangler triggers deploy 空 crons,本体未动仍 200),随后三调度挂载成功;注册表 dormant 条目如实更新;副产品:消除死 worker 夜写生产库的运维异味。",
+  "honest_scope": "每 invocation 剖面同型是设计等价(同代码/PAGES/预算)非双跑实测,首夜证据(02:30+08:30 后游标应进两窗)明晨补;摘触发器是 Owner 授权的最小操作,worker 删除仍属 Owner;账号 cron 3/5 留 2 空槽。",
+  "verifier": "路由守卫(P12 config↔handler 一致性设计)自动覆盖新槽+新增吞吐政策 pin(>=2 显式回填槽防静默减半);负控实跑:去 30 2 路由→守卫 FAIL(吞吐 pin+else 检查双杀),还原 OK。4/4。",
+  "ci_guard": "tests/governance/test_adp_worker_cron_routing.py(P12 原有 3 测试+P19 吞吐 pin)。",
+  "value": "覆盖债务偿还速度 2x(2600 行/夜),2016+ 补完约 1 年;顺带清除废弃 worker 空转 cron(运维异味+槽位)。",
+  "verification": "triggers deploy 三调度成功;/build.json=983af33c8352;/api/backfill 新字段 live;adp-mirror 摘后 200;守卫 4/4+负控实跑;首夜双跑证据时间门明晨读游标增量。",
+  "adversarial_review": "CONFIRMED_SOUND(独立对抗复核 CONFIRMED_SOUND(线上自哈希亲算、破坏测试双杀重放、幂等全交错对抗推演、零预签、base_commit 真伪亲比;审查者如实声明其验证边界:CF 触发器挂载无法只读直证,以幂等跳过历史/10072 报文/注册表约束链旁证,首夜双跑为记录自带的时间门);未自签)。复核复算子请求账≈20/50(注释≈19 漏计 last_run 写,余量巨大非问题,如实记录)。",
+  "residual_risks": [
+    "OAI 对 02:30/08:30 两窗各一次抓取——礼貌性无虞;若 OAI 忙(503)该槽不推游标次夜重试(P12 设计)。",
+    "两槽同夜命中同游标窗口的重复抓取:不可能(第一槽 setCursor 后第二槽从新游标起;即便首槽失败不推进,第二槽重试同窗幂等 ON CONFLICT 去重)。"
+  ],
+  "reversibility": "wrangler_cloud.jsonc 去掉 30 2 * * * 重新 triggers deploy 即回 1x;worker revert 本 commit。adp-mirror 触发器可由 Owner 随时重挂(其 worker 未动)。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

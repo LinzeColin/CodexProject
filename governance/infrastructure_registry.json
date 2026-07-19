@@ -23,7 +23,12 @@
         "Cron：5 触发器/账户(免费)"
       ],
       "detail_ref": "governance/cloudflare/deployments.json, governance/cloudflare/projects.yaml",
-      "workloads": ["arxiv-daily-push", "linze-home-hub", "nab", "eei"]
+      "workloads": [
+        "arxiv-daily-push",
+        "linze-home-hub",
+        "nab",
+        "eei"
+      ]
     },
     {
       "surface_id": "ovh-vps-sgp1",
@@ -33,7 +38,10 @@
       "arch": "amd64 (x86_64, Intel Haswell)",
       "specs": "2 vCore / 3.7GB RAM / 40GB SSD / Ubuntu 24.04 LTS",
       "cost_aud_month_approx": 7.4,
-      "network": { "ipv4": "139.99.61.6", "ipv6": "2402:1f00:8000:800::1ac3" },
+      "network": {
+        "ipv4": "139.99.61.6",
+        "ipv6": "2402:1f00:8000:800::1ac3"
+      },
       "access": "纯 SSH key。key 名 linze-ovh-production；私钥仅在本机 _protected/，经部署 Secret 槽位 PRIMARY_HOST_SSH_KEY_FILE 引用(值不入仓)。",
       "status": "provisioned_and_taken_over_baseline; Docker/防火墙/自动更新/Coolify 待装(下一阶段)",
       "role_intended": "主部署节点候选(跨会话 ovh 线程通报)。但【是否/哪些】workload 迁入【未定，属 Owner 逐项决策】(涉付费/ops 增量)。",
@@ -57,10 +65,31 @@
     }
   ],
   "workload_placement": [
-    { "workload": "arxiv-daily-push", "surface": "cloudflare", "url": "https://adp.linzezhang.com", "status": "live", "note": "免费档、边缘、无状态定时——留 Cloudflare 最省，勿迁。" },
-    { "workload": "linze-home-hub", "surface": "cloudflare", "url": "https://home.linzezhang.com", "status": "live" },
-    { "workload": "nab", "surface": "cloudflare", "url": "https://nab.linzezhang.com", "status": "live" },
-    { "workload": "eei", "surface": "cloudflare", "url": "https://codex-eei.linzezhang35.workers.dev", "status": "domain_manual_step_pending" }
+    {
+      "workload": "arxiv-daily-push",
+      "surface": "cloudflare",
+      "url": "https://adp.linzezhang.com",
+      "status": "live",
+      "note": "免费档、边缘、无状态定时——留 Cloudflare 最省，勿迁。"
+    },
+    {
+      "workload": "linze-home-hub",
+      "surface": "cloudflare",
+      "url": "https://home.linzezhang.com",
+      "status": "live"
+    },
+    {
+      "workload": "nab",
+      "surface": "cloudflare",
+      "url": "https://nab.linzezhang.com",
+      "status": "live"
+    },
+    {
+      "workload": "eei",
+      "surface": "cloudflare",
+      "url": "https://codex-eei.linzezhang35.workers.dev",
+      "status": "domain_manual_step_pending"
+    }
   ],
   "dormant_resources": [
     {
@@ -88,7 +117,7 @@
       "kind": "worker",
       "surface": "cloudflare",
       "name": "adp-mirror (旧 Worker)",
-      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)。",
+      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)；2026-07-20 Owner 授权后已摘除其全部 cron 触发器(仅调度,worker 本体未动仍 200)——此前其旧 cron 每晚空转打生产 D1(被幂等守卫挡为『幂等跳过』)且占满账号 5 个 cron 槽,曾阻塞 adp-cloud 第三回填槽(CF 错误 10072)。",
       "why_dormant": "被 adp-cloud 取代；CHANGELOG 记『left dormant for the Owner to delete』。仅 workers.dev 子域可达，无自定义域绑定。",
       "disposition": "Owner 可在 Cloudflare Workers 删除 adp-mirror；删前确认无其他绑定。属 Owner 基建操作，本表只登记不代删。",
       "not_in_serving_path_proof": "adp.linzezhang.com 自定义域已绑 adp-cloud；adp-mirror 仅 workers.dev 子域可达，不承载正牌域名。"

@@ -1,0 +1,7 @@
+# ADP-V02-P19 变更文件(4 个核心文件;治理/证据/manifest 另计)
+
+ arxiv-daily-push/deploy/cloudflare/worker_cloud.js |  8 ++--
+ .../deploy/cloudflare/wrangler_cloud.jsonc         |  2 +-
+ governance/infrastructure_registry.json            | 43 ++++++++++++++++++----
+ tests/governance/test_adp_worker_cron_routing.py   | 16 ++++++++
+ 4 files changed, 57 insertions(+), 12 deletions(-)

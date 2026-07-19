@@ -1,0 +1,11 @@
+=== 线上三调度(triggers deploy 输出) ===
+schedule: 30 20 * * * / 30 8 * * * / 30 2 * * *  (adp-cloud, 2026-07-20)
+=== CF 10072 证据 ===
+PUT /workers/scripts/adp-cloud/schedules → 400 {"code":10072,"message":"You have exceeded the limit of 5 cron triggers..."}
+=== adp-mirror 触发器摘除(Owner 2026-07-20 授权) ===
+wrangler triggers deploy --config {name: adp-mirror, triggers:{crons:[]}} → Deployed adp-mirror triggers
+adp-mirror.workers.dev 摘除后仍 HTTP 200(worker 本体未动)
+=== /api/backfill 新字段(live) ===
+{"backfill":"arxiv-oai-datestamp-walk","writes_nothing":true,"cursor":"2016-01-13","start":"2016-01-01","pages_per_run":1,"runs_per_day":2,"pages_per_night":2,"last_run":{"at":"2026-07-19T08:31:09.970Z","ms":11736,"degraded":[],"from":"2016-01-08","until":"2017-01-08","pages":1,"rows":1300,"cursor_next":"2016-01-13","more":true}}
+=== /build.json(live) ===
+{"build_id":"983af33c8352","source_sha256":"983af33c83524ebd1e3cd6b95afad14f36dd95d916f082bb3c655c3c31301f5e","schema_version":"cn_v0_3","built_at":"2026-07-19"}

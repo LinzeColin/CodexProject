@@ -1,0 +1,153 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 64a41f23e..0a5bd4974 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: 'd0ebaee1f43c', source_sha256: 'd0ebaee1f43c20d236db07cc85a640428e5246ff74ec8518b36e199f4b80712d', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
++const BUILD = { build_id: '983af33c8352', source_sha256: '983af33c83524ebd1e3cd6b95afad14f36dd95d916f082bb3c655c3c31301f5e', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -124,7 +124,7 @@ const BATCH_CHUNK = 80;         // 每个 D1 batch 的语句数上限
+ // P12 历史回填：把 /system 覆盖网格的时间覆盖债务逐夜填起来（实测起点 1.5%）。
+ // 依据本会话实测：OAI 页 ~1300 条；resumptionToken 无状态、值里编码 from=YYYY-MM-DD → 游标 = 持久化日期。
+ const BACKFILL_START = '2016-01-01';   // 与覆盖网格 COVERAGE_START 一致
+-const BACKFILL_PAGES = 1;              // 每夜 OAI 页数（1 页≈1 外部子请求≈1300 条）；32+1=33/50，DIR-007 保守起步
++const BACKFILL_PAGES = 1;              // 每次回填 invocation 的 OAI 页数。实测账(P19 修正旧注释):1 fetch + ceil(1300/BATCH_CHUNK=80)=17 个 D1 batch + 游标写 ≈19/50,留量足;提速走多 cron 槽(每 invocation 独立预算),不提本值(XML 解析 CPU 未实测双倍)
+ const BACKFILL_SPAN_DAYS = 366;        // 单夜 until 窗口跨度上限（封顶到 today）
+ function chunk(arr, n) { const o = []; for (let i = 0; i < arr.length; i += n) o.push(arr.slice(i, i + n)); return o; }
+ 
+@@ -2019,7 +2019,7 @@ export default {
+         const last = await env.DB.prepare("SELECT value FROM cn_meta WHERE key='backfill_last'").first();
+         return jsonResp({
+           backfill: 'arxiv-oai-datestamp-walk', writes_nothing: true,
+-          cursor: cur ? cur.value : null, start: BACKFILL_START, pages_per_night: BACKFILL_PAGES,
++          cursor: cur ? cur.value : null, start: BACKFILL_START, pages_per_run: BACKFILL_PAGES, runs_per_day: 2, pages_per_night: BACKFILL_PAGES * 2,
+           last_run: last ? JSON.parse(last.value) : null,
+         });
+       }
+@@ -2189,7 +2189,7 @@ export default {
+   async scheduled(event, env, ctx) {
+     // ★按 cron 路由到【不同的 invocation】★：回填独享自己的 50 外部 + 1000 内部子请求预算与 CPU 预算，
+     // 绝不与当日流水线共享（复核 R1：叠在同一 invocation 会撞 50 上限 → 插入抛错被吞 → 游标永不推进 → P08 病）。
+-    if (event.cron === '30 8 * * *') ctx.waitUntil(backfillArxiv(env).catch(() => { }));
++    if (event.cron === '30 8 * * *' || event.cron === '30 2 * * *') ctx.waitUntil(backfillArxiv(env).catch(() => { }));  // P19:两个回填槽,各自独立 invocation/预算,游标单调保证幂等
+     else ctx.waitUntil(runDaily(env, 'cron'));
+   },
+ };
+diff --git a/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc b/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc
+index 009995042..135c308c1 100644
+--- a/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc
++++ b/arxiv-daily-push/deploy/cloudflare/wrangler_cloud.jsonc
+@@ -31,5 +31,5 @@
+   // 20:30 UTC（=悉尼 06:30）跑完整当日流水线：抓取→选择→讲义→建卡→run_log
+   // 08:30 UTC = P12 历史回填，★独立 invocation★：独享 50 外部 + 1000 内部子请求预算与整个 CPU 预算，
+   //   与当日流水线完全不共享（复核 R1 的 BLOCK 就是「回填叠在 runDaily 同一个 invocation 里会撞 50 上限」）。
+-  "triggers": { "crons": ["30 20 * * *", "30 8 * * *"] }
++  "triggers": { "crons": ["30 20 * * *", "30 8 * * *", "30 2 * * *"] }
+ }
+diff --git a/governance/infrastructure_registry.json b/governance/infrastructure_registry.json
+index 20114f787..e12653e65 100644
+--- a/governance/infrastructure_registry.json
++++ b/governance/infrastructure_registry.json
+@@ -23,7 +23,12 @@
+         "Cron：5 触发器/账户(免费)"
+       ],
+       "detail_ref": "governance/cloudflare/deployments.json, governance/cloudflare/projects.yaml",
+-      "workloads": ["arxiv-daily-push", "linze-home-hub", "nab", "eei"]
++      "workloads": [
++        "arxiv-daily-push",
++        "linze-home-hub",
++        "nab",
++        "eei"
++      ]
+     },
+     {
+       "surface_id": "ovh-vps-sgp1",
+@@ -33,7 +38,10 @@
+       "arch": "amd64 (x86_64, Intel Haswell)",
+       "specs": "2 vCore / 3.7GB RAM / 40GB SSD / Ubuntu 24.04 LTS",
+       "cost_aud_month_approx": 7.4,
+-      "network": { "ipv4": "139.99.61.6", "ipv6": "2402:1f00:8000:800::1ac3" },
++      "network": {
++        "ipv4": "139.99.61.6",
++        "ipv6": "2402:1f00:8000:800::1ac3"
++      },
+       "access": "纯 SSH key。key 名 linze-ovh-production；私钥仅在本机 _protected/，经部署 Secret 槽位 PRIMARY_HOST_SSH_KEY_FILE 引用(值不入仓)。",
+       "status": "provisioned_and_taken_over_baseline; Docker/防火墙/自动更新/Coolify 待装(下一阶段)",
+       "role_intended": "主部署节点候选(跨会话 ovh 线程通报)。但【是否/哪些】workload 迁入【未定，属 Owner 逐项决策】(涉付费/ops 增量)。",
+@@ -57,10 +65,31 @@
+     }
+   ],
+   "workload_placement": [
+-    { "workload": "arxiv-daily-push", "surface": "cloudflare", "url": "https://adp.linzezhang.com", "status": "live", "note": "免费档、边缘、无状态定时——留 Cloudflare 最省，勿迁。" },
+-    { "workload": "linze-home-hub", "surface": "cloudflare", "url": "https://home.linzezhang.com", "status": "live" },
+-    { "workload": "nab", "surface": "cloudflare", "url": "https://nab.linzezhang.com", "status": "live" },
+-    { "workload": "eei", "surface": "cloudflare", "url": "https://codex-eei.linzezhang35.workers.dev", "status": "domain_manual_step_pending" }
++    {
++      "workload": "arxiv-daily-push",
++      "surface": "cloudflare",
++      "url": "https://adp.linzezhang.com",
++      "status": "live",
++      "note": "免费档、边缘、无状态定时——留 Cloudflare 最省，勿迁。"
++    },
++    {
++      "workload": "linze-home-hub",
++      "surface": "cloudflare",
++      "url": "https://home.linzezhang.com",
++      "status": "live"
++    },
++    {
++      "workload": "nab",
++      "surface": "cloudflare",
++      "url": "https://nab.linzezhang.com",
++      "status": "live"
++    },
++    {
++      "workload": "eei",
++      "surface": "cloudflare",
++      "url": "https://codex-eei.linzezhang35.workers.dev",
++      "status": "domain_manual_step_pending"
++    }
+   ],
+   "dormant_resources": [
+     {
+@@ -88,7 +117,7 @@
+       "kind": "worker",
+       "surface": "cloudflare",
+       "name": "adp-mirror (旧 Worker)",
+-      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)。",
++      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)；2026-07-20 Owner 授权后已摘除其全部 cron 触发器(仅调度,worker 本体未动仍 200)——此前其旧 cron 每晚空转打生产 D1(被幂等守卫挡为『幂等跳过』)且占满账号 5 个 cron 槽,曾阻塞 adp-cloud 第三回填槽(CF 错误 10072)。",
+       "why_dormant": "被 adp-cloud 取代；CHANGELOG 记『left dormant for the Owner to delete』。仅 workers.dev 子域可达，无自定义域绑定。",
+       "disposition": "Owner 可在 Cloudflare Workers 删除 adp-mirror；删前确认无其他绑定。属 Owner 基建操作，本表只登记不代删。",
+       "not_in_serving_path_proof": "adp.linzezhang.com 自定义域已绑 adp-cloud；adp-mirror 仅 workers.dev 子域可达，不承载正牌域名。"
+diff --git a/tests/governance/test_adp_worker_cron_routing.py b/tests/governance/test_adp_worker_cron_routing.py
+index 368b28631..a30d7b911 100644
+--- a/tests/governance/test_adp_worker_cron_routing.py
++++ b/tests/governance/test_adp_worker_cron_routing.py
+@@ -75,6 +75,22 @@ class TestAdpWorkerCronRouting(unittest.TestCase):
+             "That branch can never run; the intended handler is silently dead. Config crons: {}".format(
+                 dead, self.config))
+ 
++    def test_backfill_throughput_policy_two_slots(self):
++        """P19 policy pin: coverage debt is paid at TWO backfill invocations per day.
++
++        P12 shipped one backfill cron (30 8 UTC, PAGES=1 ~= 1300 rows ~= 5 days of arXiv per night --
++        a ~2-year horizon to fill 2016+). Once the first live run measured ms=11736 (P12's own
++        stop-condition gate for scaling), P19 added a second slot (30 2 UTC): each invocation keeps the
++        PROVEN per-run profile (own 50-subrequest budget, ~19/50 used, same wall/CPU), and the monotonic
++        cursor makes runs idempotent, so two slots is the safe 2x. This pin fails if someone drops back
++        to one explicitly-routed cron, halving throughput silently -- the agreement checks above would
++        stay green for that regression, so this is the only guard that notices."""
++        self.assertGreaterEqual(
++            len(set(self.handled)), 2,
++            "fewer than 2 crons are explicitly routed (backfill slots): {} -- P19's 2x coverage "
++            "throughput was silently reverted; see the P19 evidence bundle before changing this "
++            "deliberately.".format(sorted(set(self.handled))))
++
+     def test_at_most_one_configured_cron_falls_to_the_default_branch(self):
+         """Every configured cron except the daily default must be explicitly routed.
+ 
