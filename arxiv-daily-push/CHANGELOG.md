@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 P17: 讲义/摘要渲染剥内联 LaTeX 数学定界符 (PRODUCTION DEPLOY 9b978f42ee16; product_version 0.38.0)
+- 观察线上讲义:「证据与数字」把 `$H = 0.91$ bits` 的**裸 LaTeX 美元符**原样呈现给读者——权威面上的生成噪音。
+- 修:渲染层 `deMath`(esc 之前跑,纯删字符零注入面)——只在「像数学」时剥 `$…$`/`$$…$$` 定界符
+  (内含 `=\^_{}` 之一,或无空白);含空白无数学符的 `$5 and $10 billion` **金融货币绝不动**(board-4 有真货币)。
+  应用于讲义句渲染 `esc(deMath(x.text))` + itemPage 摘要段 `esc(deMath(item.summary))`。
+- ★教训又来一次:第一版只修了 lessonHTML 两面,线上复验发现摘要段仍残留 3 处(9→3)——补上第三面才清零(9→3→0,
+  存证 test-results/live_before_after.txt)。验证器静态断言现在钉死两类渲染面。★
+- 验证器 `tools/verify_lesson_demath.mjs` 抽取已部署 esc+deMath+lessonHTML 实跑(NRR 实测句/希腊字母/货币保留/
+  未配对 $ 不动),负控证明 esc-only 旧渲染保留裸 $;Python 守卫 `tests/governance/test_adp_lesson_demath.py`。
+- 渲染层修复 → 存储/现算讲义全部即时受益,线上验证裸 $ 清零、数值原样保留。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 P16: 每板块每条目都有讲义（跨板块空盒修复） (PRODUCTION DEPLOY e8d9f0c0fe59; product_version 0.37.0)
 - 挑剔地看**线上**知识库时发现：board-2(期刊)/board-3(政策) 条目的 item 页与复习页「显示答案/讲义」
   揭示的是**空盒 `<p></p>`**——用户对着空内容做主动回忆。根因：`makeLesson` 只为每日 pick 生成讲义，

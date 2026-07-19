@@ -1,0 +1,6 @@
+# ADP-V02-P17 变更文件(3 个核心代码文件;治理/证据/manifest 另计;R2 修正后终版)
+
+ arxiv-daily-push/deploy/cloudflare/worker_cloud.js | 12 ++-
+ arxiv-daily-push/tools/verify_lesson_demath.mjs    | 64 +++++++++++++++
+ tests/governance/test_adp_lesson_demath.py         | 94 ++++++++++++++++++++++
+ 3 files changed, 166 insertions(+), 4 deletions(-)

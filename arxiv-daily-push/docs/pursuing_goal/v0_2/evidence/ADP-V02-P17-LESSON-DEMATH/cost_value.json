@@ -1,0 +1,24 @@
+{
+  "task": "ADP-V02-P17-LESSON-DEMATH",
+  "program": "ADP V0.2 / 权威 / 深度 / 内容质量",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "e8d9f0c0fe59",
+  "live_build_after": "9b978f42ee16",
+  "deploy_version_id": "7aabe930-fe00-4c9f-9b08-84bf92331e37",
+  "objective": "线上讲义「证据与数字」把 $H = 0.91$ bits 的裸 LaTeX 美元符原样呈现给读者——权威面生成噪音;arXiv 摘要普遍含内联数学,每篇都可能中。",
+  "what": "渲染层 deMath(esc 之前跑,纯删字符零注入面):像数学才剥 $…$/$$…$$ 定界符(内含 =\\^_{} 或无空白);含空白无数学符保持原样——金融货币 raised $5 billion and $10 billion 绝不动,未配对 $ 不动。应用于讲义句 esc(deMath(x.text)) + itemPage 摘要段 esc(deMath(item.summary))。渲染层修复→存储/现算讲义全部即时受益。",
+  "honest_scope": "只剥定界符不渲染数学($\\alpha$→\\alpha,LaTeX 命令仍在但无 $ 噪音);完整数学渲染(KaTeX)对 worker 过重不做。启发式非完美:$100$ vs $200$(无空白)会剥——摘要里这种几乎总是数学,可接受。只动渲染层,存储数据一字未改。",
+  "lesson_learned": "第一版只修 lessonHTML 两面,线上复验发现摘要段残留 3 处(9→3 未清零),补第三面才 9→3→0;早前说'6处'是打印切片[:6]所致实为 9,被存证脚本 assert 抓出——两个教训都进了验证器静态断言与存证。",
+  "verifier": "tools/verify_lesson_demath.mjs 抽取已部署 esc+deMath+lessonHTML 实跑 4 夹具(NRR 实测/希腊字母/货币保留/未配对$),负控逐字复现 esc-only 旧渲染证明保留裸 $;静态断言钉两渲染面。exit0。",
+  "ci_guard": "tests/governance/test_adp_lesson_demath.py 静态钉 deMath+启发式+两面;负控在逐字 pre-fix 源触发>=3;node 在场跑行为验证器。5/5。",
+  "value": "权威面清噪:讲义与摘要不再把 LaTeX 源码噪音塞给读者;金融板块货币安全。渲染层=所有存量+增量讲义即时受益。",
+  "verification": "线上 /build.json=9b978f42ee16;NRR 条目裸 $ 9处(3面x3片段)→0,数值 H = 0.91/1.0-bit/H = 0.15 原样保留(存证 live_before_after.txt 记录 9→3→0 全链)。",
+  "adversarial_review": "CONFIRMED_SOUND(2 轮:R1 技术项全过——线上清零/货币安全/2 项破坏测试/9→3→0 结构性证实——但抓出实施者把结论预写进三份治理记录,判 BLOCK 正确;去预签修正后 R2 CONFIRMED_SOUND;实施者未自签)",
+  "residual_risks": [
+    "$\\alpha$ 剥后仍显 \\alpha(LaTeX 命令未渲染,如实呈现优于 $ 噪音)。",
+    "无空白纯数字 $100$ 会剥(摘要里几乎总是数学非货币)。"
+  ],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 e8d9f0c0fe59。渲染层纯删字符,回退即恢复原样。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

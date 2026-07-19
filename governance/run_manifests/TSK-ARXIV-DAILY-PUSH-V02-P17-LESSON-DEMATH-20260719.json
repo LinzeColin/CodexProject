@@ -1,0 +1,135 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P17-LESSON-DEMATH-20260719",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P17-LESSON-DEMATH",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-AUTHORITY-POLISH",
+  "generated_at": "2026-07-19T13:30:00Z",
+  "implementation_base_sha": "266813c70a1f18cd3e3820e755b9c96d80e3af31",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:a316828787be92b07235ad4a87a7189d0c22536fc4668c58887b4f62eb74c1bc",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 21 non-manifest changed files; changed_files_* list all 22 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P17: 讲义/摘要渲染剥内联 LaTeX 数学定界符(金融货币绝不动);第一版漏摘要段被线上复验抓出(9→3→0);独立对抗复核待返回(不自签)。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (2 轮:R1 技术项全过——线上清零/货币安全/2 项破坏测试/9→3→0 结构性证实——但抓出实施者把结论预写进三份治理记录,判 BLOCK 正确;去预签修正后 R2 CONFIRMED_SOUND;实施者未自签)",
+  "summary": "观察线上讲义把 $H = 0.91$ bits 裸 LaTeX 美元符呈现给读者(权威面生成噪音)。渲染层 deMath(esc 前跑,纯删字符零注入面):像数学才剥(内含 =\\^_{} 或无空白),金融货币 $5 and $10 billion 绝不动、未配对 $ 不动;应用于讲义句 esc(deMath(x.text)) + itemPage 摘要段 esc(deMath(item.summary))。★第一版只修 lessonHTML 两面,线上复验抓出摘要段残留 3 处(9→3→0)才补全;早前'6处'是打印切片实为 9,被存证 assert 抓出——两教训都进验证器/存证★。渲染层修复→存储/现算讲义全部即时受益。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/demath_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/live_before_after.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/verify_lesson_demath.mjs",
+    "arxiv-daily-push/tools/verify_lesson_demath.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P17-LESSON-DEMATH-20260719.json",
+    "tests/governance/test_adp_lesson_demath.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/demath_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/live_before_after.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/verify_lesson_demath.mjs",
+    "arxiv-daily-push/tools/verify_lesson_demath.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P17-LESSON-DEMATH-20260719.json",
+    "tests/governance/test_adp_lesson_demath.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_lesson_demath.py",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_lesson_demath.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/demath_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P17-LESSON-DEMATH/test-results/live_before_after.txt"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/tools/verify_lesson_demath.mjs",
+    "python3 -m unittest tests.governance.test_adp_lesson_demath",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "verify_lesson_demath.mjs(抽取已部署 esc+deMath+lessonHTML)",
+      "result": "PASS",
+      "detail": "NRR 实测句剥净且数值保留/希腊字母/货币保留/未配对$不动;负控 esc-only 旧渲染保留裸 $;静态钉两渲染面。"
+    },
+    {
+      "command": "test_adp_lesson_demath.py",
+      "result": "PASS",
+      "detail": "5/5:静态钉 deMath+像数学启发式+两面;负控在逐字 pre-fix 源触发;行为验证器(本地 node)。"
+    },
+    {
+      "command": "生产部署+线上即时验证",
+      "result": "PASS",
+      "detail": "Version 7aabe930;/build.json=9b978f42ee16;NRR 裸 $ 9处→0,数值原样保留(存证 live_before_after.txt)。"
+    }
+  ],
+  "stop_conditions": [
+    "★讲义句与摘要段两类渲染面都必须过 deMath★:第一版正是漏了摘要段(9→3 未清零)。",
+    "deMath 必须保留像数学启发式:退化成无条件剥会吃掉金融货币 $5 and $10。",
+    "deMath 只在渲染层跑(esc 之前):别把剥过的文本写回存储。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <prev> 回 e8d9f0c0fe59。",
+    "repo": "git revert 本 commit。渲染层纯删字符,回退即恢复。"
+  },
+  "unresolved_risks": [
+    "$\\alpha$ 剥后仍显 \\alpha(不渲染数学,如实呈现)。",
+    "无空白纯数字 $100$ 会剥(摘要里几乎总是数学)。"
+  ],
+  "next_allowed_task": "今晚 20:30 UTC cron 后读 /today 确认 P15 去重+P17 清噪都体现在新讲义;或 Owner 指方向。"
+}

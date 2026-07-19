@@ -1,0 +1,15 @@
+抽取自: /private/tmp/claude-501/-Users-linzezhang-Documents-Codex-main-worktree-CodexProject-adp/6c611ddc-f264-4d55-9b19-b0f39a03415d/scratchpad/recover/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+  ✅ [线上实际观察(NRR):$H = 0.91$ bits]
+  ✅ [希腊字母与上下标]
+  ✅ [金融货币绝不动(board-4)]
+  ✅ [单个未配对 $ 不动]
+     ↳ 负控成立:旧渲染(esc-only,无 deMath)在同一夹具保留裸 $H = 0.91$/$1.0$
+  ✅ 发货源 lessonHTML 句渲染走 esc(deMath(x.text))
+  ✅ 发货源 itemPage 摘要段走 esc(deMath(item.summary))
+
+PASS: 数学定界符剥净、货币保留,负控证明旧渲染保留裸 $。
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.052s
+
+OK

@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'e8d9f0c0fe59', source_sha256: 'e8d9f0c0fe599a90ae7ed07ce98d188930b82ab2f5259c88b7c691ff1c0f6df8', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+const BUILD = { build_id: '9b978f42ee16', source_sha256: '9b978f42ee166b1e9b9dbceaa38713214652ef439cfcdfc19b1c1c46e9867d74', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1561,10 +1561,14 @@ function deepDiveBtn(item, label) {
 }
 // T084 证据/推断区分：讲义是「依据原文自动生成的结构化推断」，与「原文（证据）」明确区分，避免读者误把推断当原文。
 const PROVENANCE_NOTE = '<p class="mt"><span class="badge">讲义·推断</span> 依据「原文」自动生成的结构化摘要（推断），非原文表述；以原文为准。</p>';
+// 讲义渲染层的轻量 LaTeX 内联数学清理:arXiv 摘要常含 $H=0.91$ 式内联数学,裸 $ 呈现给读者读作生成 bug(损权威)。
+// 只在「像数学」时剥 $ 定界符——内含 =\^_{} 之一(如 $H=0.91$/$\alpha$),或无空白(如 $1.0$);
+// 含空白且无数学符的 $…$ 保持原样(金融文本 "raised $5 and $10 billion" 的货币绝不动)。在 esc 之前跑,纯删字符、零注入面。
+const deMath = t => String(t == null ? '' : t).replace(/\$\$?([^$]+)\$\$?/g, (m, inner) => (/[=\\^_{}]/.test(inner) || !/\s/.test(inner)) ? inner : m);
 function lessonHTML(lesson) {
   if (!lesson) return '';
   return PROVENANCE_NOTE + JSON.parse(lesson.sections_json).map((s, i) =>
-    `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`).join('');
+    `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(deMath(x.text))}</p>`).join('')}`).join('');
 }
 function itemListHTML(items, { study = true } = {}) {
   if (!items.length) return '<p class="mt">暂无条目。</p>';
@@ -1908,11 +1912,11 @@ async function itemPage(env, id) {
     <h1>${esc(item.title)}</h1>
     <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
     ${factsheetHTML(item)}
-    ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
+    ${item.summary ? `<p>${esc(deMath(item.summary))}</p>` : ''}
     ${review ? '' : `<button class="btn-sm" data-id="${esc(item.id)}" onclick="study(this)">加入复习队列</button>`}
     <p style="margin:8px 0 0">${deepDiveBtn(item)}</p></div>`;
   if (lesson) body += `<div class="card"><h2>讲义</h2>${lessonHTML(lesson)}</div>`;
-  if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc((item.summary || '').slice(0, 500))}</p>`, null);
+  if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc(deMath((item.summary || '').slice(0, 500)))}</p>`, null);
   return PAGE('/', body + STUDY_JS, { title: item.title.slice(0, 40) });
 }
 

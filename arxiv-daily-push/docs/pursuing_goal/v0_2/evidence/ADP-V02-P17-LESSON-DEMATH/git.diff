@@ -1,0 +1,213 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 87263724f..97cddf35b 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: 'e8d9f0c0fe59', source_sha256: 'e8d9f0c0fe599a90ae7ed07ce98d188930b82ab2f5259c88b7c691ff1c0f6df8', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
++const BUILD = { build_id: '9b978f42ee16', source_sha256: '9b978f42ee166b1e9b9dbceaa38713214652ef439cfcdfc19b1c1c46e9867d74', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -1561,10 +1561,14 @@ function deepDiveBtn(item, label) {
+ }
+ // T084 证据/推断区分：讲义是「依据原文自动生成的结构化推断」，与「原文（证据）」明确区分，避免读者误把推断当原文。
+ const PROVENANCE_NOTE = '<p class="mt"><span class="badge">讲义·推断</span> 依据「原文」自动生成的结构化摘要（推断），非原文表述；以原文为准。</p>';
++// 讲义渲染层的轻量 LaTeX 内联数学清理:arXiv 摘要常含 $H=0.91$ 式内联数学,裸 $ 呈现给读者读作生成 bug(损权威)。
++// 只在「像数学」时剥 $ 定界符——内含 =\^_{} 之一(如 $H=0.91$/$\alpha$),或无空白(如 $1.0$);
++// 含空白且无数学符的 $…$ 保持原样(金融文本 "raised $5 and $10 billion" 的货币绝不动)。在 esc 之前跑,纯删字符、零注入面。
++const deMath = t => String(t == null ? '' : t).replace(/\$\$?([^$]+)\$\$?/g, (m, inner) => (/[=\\^_{}]/.test(inner) || !/\s/.test(inner)) ? inner : m);
+ function lessonHTML(lesson) {
+   if (!lesson) return '';
+   return PROVENANCE_NOTE + JSON.parse(lesson.sections_json).map((s, i) =>
+-    `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`).join('');
++    `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(deMath(x.text))}</p>`).join('')}`).join('');
+ }
+ function itemListHTML(items, { study = true } = {}) {
+   if (!items.length) return '<p class="mt">暂无条目。</p>';
+@@ -1908,11 +1912,11 @@ async function itemPage(env, id) {
+     <h1>${esc(item.title)}</h1>
+     <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
+     ${factsheetHTML(item)}
+-    ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
++    ${item.summary ? `<p>${esc(deMath(item.summary))}</p>` : ''}
+     ${review ? '' : `<button class="btn-sm" data-id="${esc(item.id)}" onclick="study(this)">加入复习队列</button>`}
+     <p style="margin:8px 0 0">${deepDiveBtn(item)}</p></div>`;
+   if (lesson) body += `<div class="card"><h2>讲义</h2>${lessonHTML(lesson)}</div>`;
+-  if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc((item.summary || '').slice(0, 500))}</p>`, null);
++  if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc(deMath((item.summary || '').slice(0, 500)))}</p>`, null);
+   return PAGE('/', body + STUDY_JS, { title: item.title.slice(0, 40) });
+ }
+ 
+diff --git a/arxiv-daily-push/tools/verify_lesson_demath.mjs b/arxiv-daily-push/tools/verify_lesson_demath.mjs
+new file mode 100644
+index 000000000..351f65b85
+--- /dev/null
++++ b/arxiv-daily-push/tools/verify_lesson_demath.mjs
+@@ -0,0 +1,64 @@
++#!/usr/bin/env node
++// 载荷型再推导验证器：讲义渲染层剥内联 LaTeX 数学定界符($…$),且绝不动金融货币文本。
++// 抽取【已部署】worker_cloud.js 的 esc+deMath+lessonHTML 实跑;负控:旧渲染(无 deMath)在同一夹具上
++// 保留裸 $——证明夹具能判别、断言承重。跑法：node arxiv-daily-push/tools/verify_lesson_demath.mjs
++import fs from 'node:fs';
++import path from 'node:path';
++import url from 'node:url';
++
++const HERE = path.dirname(url.fileURLToPath(import.meta.url));
++const WORKER = path.resolve(HERE, '..', 'deploy', 'cloudflare', 'worker_cloud.js');
++const SRC = fs.readFileSync(WORKER, 'utf8');
++
++function extract(anchorStart, anchorEnd) {
++  const a = SRC.indexOf(anchorStart);
++  const b = a < 0 ? -1 : SRC.indexOf(anchorEnd, a + anchorStart.length); // anchorEnd 从 a 之后找
++  if (a < 0 || b < 0) throw new Error(`无法定位 ${anchorStart}..${anchorEnd}——锚点变了,改验证器别让它空过`);
++  return SRC.slice(a, b);
++}
++// esc 与 deMath+lessonHTML 都从发货源抽取,不复刻
++const escSrc = extract('const esc = ', '\n');                    // esc 是单行 const 箭头函数
++const coreSrc = extract('const deMath', 'function itemListHTML');
++// eslint-disable-next-line no-new-func
++const { lessonHTML, deMath } = new Function(
++  'PROVENANCE_NOTE', escSrc + '\n' + coreSrc + '\n return { lessonHTML, deMath };')('');
++
++const mkLesson = texts => ({ sections_json: JSON.stringify([{ title: '证据与数字', sentences: texts.map(text => ({ text })) }]) });
++
++const CASES = [
++  { name: '线上实际观察(NRR):$H = 0.91$ bits', text: 'maintains high output entropy ($H = 0.91$ bits, near the $1.0$-bit maximum), while $H = 0.15$ collapses.',
++    wantGone: ['$H = 0.91$', '$1.0$', '$H = 0.15$'], wantKept: ['H = 0.91', '1.0-bit', 'H = 0.15'] },
++  { name: '希腊字母与上下标', text: 'the $\\alpha$-phase decays as $x^2_i$ under $T_{c}$.',
++    wantGone: ['$\\alpha$', '$x^2_i$', '$T_{c}$'], wantKept: ['x^2_i'] },
++  { name: '金融货币绝不动(board-4)', text: 'the Fed raised $5 billion and later $10 billion in facilities.',
++    wantGone: [], wantKept: ['$5 billion', '$10 billion'] },
++  { name: '单个未配对 $ 不动', text: 'it costs $100 million overall.', wantGone: [], wantKept: ['$100 million'] },
++];
++
++let fail = 0;
++console.log('抽取自:', WORKER);
++for (const c of CASES) {
++  const html = lessonHTML(mkLesson([c.text]));
++  const badLeft = c.wantGone.filter(g => html.includes(g.replace(/&/g,'&amp;')));
++  const missing = c.wantKept.filter(k => !html.includes(k));
++  if (badLeft.length || missing.length) { fail++; console.log(`  ❌ [${c.name}] 裸残留=${JSON.stringify(badLeft)} 误删=${JSON.stringify(missing)}`); }
++  else console.log(`  ✅ [${c.name}]`);
++}
++// 负控:旧渲染(esc(x.text) 无 deMath)必保留裸 $——证明夹具承重
++{
++  // 逐字复现修复前的句渲染:`<p>${esc(x.text)}</p>`
++  const escOnly = new Function('t', escSrc + '\n return esc(t);');
++  const t = CASES[0].text;
++  const oldHtml = `<p>${escOnly(t)}</p>`;
++  const stillHas = ['$H = 0.91$', '$1.0$'].every(g => oldHtml.includes(g));
++  if (!stillHas) { fail++; console.log('  ❌ 负控失效:旧渲染本应保留裸 $ 却没有——夹具不判别,断言不承重'); }
++  else console.log('     ↳ 负控成立:旧渲染(esc-only,无 deMath)在同一夹具保留裸 $H = 0.91$/$1.0$');
++}
++// 静态:发货源 lessonHTML 句子 + itemPage 摘要段都必须经 deMath(线上残留 3 处裸 $ 正是摘要段漏掉的教训)
++if (!/esc\(deMath\(x\.text\)\)/.test(SRC)) { fail++; console.log('  ❌ 发货源 lessonHTML 未经 deMath 渲染句子'); }
++else console.log('  ✅ 发货源 lessonHTML 句渲染走 esc(deMath(x.text))');
++if (!/esc\(deMath\(item\.summary\)\)/.test(SRC)) { fail++; console.log('  ❌ 发货源 itemPage 摘要段未经 deMath——首版修复正是漏了它,线上残留 3 处裸 $'); }
++else console.log('  ✅ 发货源 itemPage 摘要段走 esc(deMath(item.summary))');
++
++console.log(fail === 0 ? '\nPASS: 数学定界符剥净、货币保留,负控证明旧渲染保留裸 $。' : `\nFAIL: ${fail} 项`);
++process.exit(fail === 0 ? 0 : 1);
+diff --git a/tests/governance/test_adp_lesson_demath.py b/tests/governance/test_adp_lesson_demath.py
+new file mode 100644
+index 000000000..0bbc1d8cc
+--- /dev/null
++++ b/tests/governance/test_adp_lesson_demath.py
+@@ -0,0 +1,94 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Guard: lesson/summary rendering strips inline LaTeX math delimiters, and never touches currency.
++
++P17 observed on the LIVE site that lesson text rendered raw LaTeX inline-math delimiters to the reader
++("$H = 0.91$ bits, near the $1.0$-bit maximum") -- generation-bug noise on an authority-facing surface.
++Fix: a display-layer `deMath` applied (before esc) to lesson sentences AND the item-page summary
++paragraph. It strips `$...$`/`$$...$$` ONLY when the inside looks like math (contains one of =\\^_{}
++or has no whitespace); `$5 and $10 billion` style finance text is left alone (board-4 sources carry
++real currency).
++
++Lesson learned twice in one phase: the FIRST fix covered only lessonHTML and the live page still
++showed 3 bare fragments from the summary paragraph -- caught by re-verifying online (9 -> 3 -> 0; the earlier '6' was a [:6] print slice).
++This guard pins BOTH surfaces so neither regresses silently.
++
++CI push has no Node; the behavioural proof lives in `arxiv-daily-push/tools/verify_lesson_demath.mjs`
++(extracts shipped esc+deMath+lessonHTML, runs the observed NRR case, Greek letters, currency
++preservation, unpaired-$ cases, plus a negative control proving the esc-only pre-fix render keeps the
++bare $). This Python guard is the CI-safe anchor with its own negative control.
++"""
++import pathlib
++import re
++import shutil
++import subprocess
++import unittest
++
++ROOT = pathlib.Path(__file__).resolve().parents[2]
++WORKER = ROOT / "arxiv-daily-push" / "deploy" / "cloudflare" / "worker_cloud.js"
++VERIFIER = ROOT / "arxiv-daily-push" / "tools" / "verify_lesson_demath.mjs"
++
++# The exact pre-fix render lines (what shipped the bare $): esc() without deMath on both surfaces.
++PRE_FIX_SNIPPET = r"""
++    `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`).join('');
++    ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
++"""
++
++
++def _demath_violations(src):
++    """Defects that would let bare $math$ reach the reader. Empty == fixed."""
++    v = []
++    if "const deMath" not in src:
++        v.append("deMath is missing entirely -- raw $...$ reaches the reader")
++    if not re.search(r"esc\(deMath\(x\.text\)\)", src):
++        v.append("lessonHTML renders sentences without deMath (bare $ in lesson body)")
++    if not re.search(r"esc\(deMath\(item\.summary\)\)", src):
++        v.append("item-page summary paragraph without deMath -- the exact surface the first fix "
++                 "missed (live page kept 3 bare fragments)")
++    return v
++
++
++class TestAdpLessonDemath(unittest.TestCase):
++    def setUp(self):
++        self.assertTrue(WORKER.is_file(), "deployed worker missing: {}".format(WORKER))
++        self.src = WORKER.read_text(encoding="utf-8")
++
++    def test_shipped_worker_demaths_both_surfaces(self):
++        self.assertEqual(
++            _demath_violations(self.src), [],
++            "shipped worker can render bare $math$ to the reader -- see violations above.")
++
++    def test_demath_guards_currency(self):
++        """The heuristic must keep the finance-text guard: only strip when inner looks like math."""
++        m = re.search(r"const deMath = .*", self.src)
++        self.assertIsNotNone(m, "deMath definition not found")
++        line = m.group(0)
++        self.assertIn("[=\\\\^_{}]", line,
++                      "deMath lost its looks-like-math test -- it would strip '$5 and $10' finance text")
++        self.assertIn("\\s", line,
++                      "deMath lost its no-whitespace alternative -- '$1.0$' style would stay bare")
++
++    def test_negative_control_prefix_code_is_flagged(self):
++        """Non-vacuity: the detector must flag the exact pre-fix render (esc without deMath)."""
++        viols = _demath_violations(PRE_FIX_SNIPPET)
++        self.assertGreaterEqual(
++            len(viols), 3,
++            "detector did not flag the pre-fix esc-only render on all surfaces (got {}) -- it "
++            "under-checks and could pass a regressed worker vacuously.".format(viols))
++
++    def test_behavioural_verifier_exists(self):
++        self.assertTrue(VERIFIER.is_file(), "behavioural verifier missing: {}".format(VERIFIER))
++        body = VERIFIER.read_text(encoding="utf-8")
++        self.assertIn("金融货币绝不动", body, "verifier lost its currency-preservation case")
++        self.assertIn("负控", body, "verifier lost its negative control")
++
++    @unittest.skipUnless(shutil.which("node"), "node not on PATH (CI push path); behavioural check runs locally")
++    def test_behavioural_verifier_passes(self):
++        r = subprocess.run(["node", str(VERIFIER)], capture_output=True, text=True, timeout=60, cwd=str(ROOT))
++        self.assertEqual(r.returncode, 0,
++                         "behavioural verifier failed:\nSTDOUT:\n{}\nSTDERR:\n{}".format(r.stdout, r.stderr))
++        self.assertIn("负控成立", r.stdout, "negative control did not fire -- assertion not load-bearing")
++
++
++if __name__ == "__main__":
++    unittest.main()
