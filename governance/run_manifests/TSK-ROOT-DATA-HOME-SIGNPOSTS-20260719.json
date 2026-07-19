@@ -1,0 +1,103 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-DATA-HOME-SIGNPOSTS-20260719",
+  "project_id": "root",
+  "task_id": "ROOT-DATA-HOME-SIGNPOSTS",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260719-PRIVATE-DATABASE-SIGNPOSTS",
+  "generated_at": "2026-07-19T12:30:00Z",
+  "implementation_base_sha": "1ed5330f6b641c4981492fd42cbc1ba076c04ae7",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2c9f14384c59629e5c85b6b28d7a680a09b776fa594f23f8f601bef536b07ca7",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 3 non-manifest changed files;changed_files_* list all 4 incl this manifest;hash excludes it.",
+  "ci_attestation_subject": "登记全仓统一数据落地处 Private-Database 路牌；修正 AGENTS.md 过时的已迁出清单；修复 CLAUDE.md 指向已迁出 OpenAIDatabase 的断链导入",
+  "ci_run_reference": "LOCAL_FULL_AUDIT_RUN_NO_NEW_FAILURES_PENDING_REMOTE",
+  "gate_status": "PASS_LOCAL_WITH_PREEXISTING_REDS_NOT_FROM_THIS_CHANGE",
+  "summary": "全仓数据统一落地处 LinzeColin/Private-Database（由 KMFA-Private-Runtime 更名，PRIVATE）已建成并完成实迁：Private-KMDatabase(53 对象/125M，manifest 与云端对象集合比对 0 缺 0 多)、Private-AgentDatabase(691 文件/448M)、Private-MetaDatabase(占位)。本提交在本仓落三处路牌，使任何在开发的 agent 与后续新 agent 都知道去哪找数据、把数据传到哪：①AGENTS.md 加数据路牌并★修正过时的已迁出清单★——KMFA/KM_IDSystem/PFI/OpenAIDatabase 四次迁移完成后清单未同步，过时清单会让 agent 把迁出误判为数据丢失并尝试恢复（死循环）；②★修复 CLAUDE.md 的断链★——它仍 @import 已迁往 AgentDatabase 的 OpenAIDatabase/data/derived/personalization/claude_personalization.md（本仓 0 跟踪文件、目录已不存在），该导入静默失败，另有 route_agent_resources.py 路径同样失效；AGENTS.md 受 4KB 低 token 预算约束，故压缩迁出清单腾出空间，落地 4092/4096。★本次刻意不含 arxiv-daily-push 交接文件★：实测把该文件纳入变更集会把整个 ADP 项目拖进 changed-scope，触发 validate_information_quality 报出 ADP 自身在途的治理错误（OWNER_STATUS 长行、ASSURANCE_STATUS 的 REVIEW8/readiness、NEXT_TASK_DEPS 未满足、development_events.jsonl 十余条 STALE_PENDING），而这些正是 ADP 线程当前正在修的文件；去改它们会与其在途编辑相撞。故数据地址改由 ADP 线程并入其自有交接提交。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "governance/run_manifests/TSK-ROOT-DATA-HOME-SIGNPOSTS-20260719.json",
+    "tests/governance/test_agents_md_migration_signposts.py"
+  ],
+  "changed_files_actual": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "governance/run_manifests/TSK-ROOT-DATA-HOME-SIGNPOSTS-20260719.json",
+    "tests/governance/test_agents_md_migration_signposts.py"
+  ],
+  "required_governance_files": [
+    "AGENTS.md",
+    "tests/governance/test_agents_md_migration_signposts.py"
+  ],
+  "updated_governance_files": [
+    "AGENTS.md",
+    "tests/governance/test_agents_md_migration_signposts.py"
+  ],
+  "evidence_refs": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "tests/governance/test_agents_md_migration_signposts.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_agents_md_migration_signposts",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root . --json",
+    "python3 -B scripts/workflow_security_audit.py --root . --json",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_agents_md_migration_signposts",
+      "result": "PASS",
+      "detail": "4 项全过。★破坏验证已实跑★：从 AGENTS.md 抽掉 PFI -> 失败并报出确切缺失项；删掉数据路牌 -> 失败；还原后复跑全过、体积 4092。"
+    },
+    {
+      "command": "validate_information_quality --changed-only",
+      "result": "PASS",
+      "detail": "摘出 arxiv-daily-push 交接文件后转 PASS；纳入该文件时会拖 ADP 全项目进 scope 并报其在途错误（已实测确认因果）。"
+    },
+    {
+      "command": "root_cleanliness_audit / repository_hygiene_audit / governance_id_audit",
+      "result": "PASS",
+      "detail": "三条均 rc=0。"
+    },
+    {
+      "command": "workflow_security_audit",
+      "result": "PREEXISTING_FAIL_NOT_FROM_THIS_CHANGE",
+      "detail": "★已 stash 实证★：在干净 origin/main（无本变更）上同样 FAIL —— .github/workflows/linze-golden-path.reusable.yml job topology drift ['deploy','home-sync','smoke','verify']。属基建/KMFA 线 Coolify 工作流，非本次改动，未触碰。"
+    },
+    {
+      "command": "tests.governance.test_retired_project_registry",
+      "result": "PREEXISTING_FAIL_NOT_FROM_THIS_CHANGE",
+      "detail": "★已 stash 实证★：干净 main 上同样 FAIL —— test_wda_tree_matches_retirement_implementation_base 的 base sha d26a9f23 树内无 WDA。与 ⑧ WDA 双平面升级同源，待该任务处理。"
+    },
+    {
+      "command": "validate_ci_attestation",
+      "result": "LOCAL_ENV_ONLY_NOT_A_REAL_FAILURE",
+      "detail": "本地 Python 3.9.6 无 datetime.UTC（需 3.11+）；CI 用 3.12。干净 main 上同样报同一 ImportError，非代码问题。"
+    }
+  ],
+  "stop_conditions": [
+    "推送前把 CI 的所有审计脚本本地跑一遍（root_cleanliness / repository_hygiene / workflow_security / governance_id / information_quality），别只跑 lean_governance ci。",
+    "AGENTS.md 4KB 预算：新增内容必须先压缩既有行腾空间，禁止越预算。",
+    "新证据一律用 TSK- 命名空间；governance/run_manifests 下非 TSK- 文件是只读遗留归档，不得新增或重新锚定其基线。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯文档/路牌与测试，无运行时副作用；Private-Database 侧数据不受影响。"
+  },
+  "unresolved_risks": [
+    "本仓源侧仍保留已迁出数据的副本（属 Phase B，须待 KMFA/MemoryAtlas 线程切到 private_db_client.py 后再删，否则断其本地读取）。",
+    "arxiv-daily-push 迁往 MetaDatabase（④）与旧治理框架退休（⑦⑧）仍待 ADP 线程完全停写后执行，本提交不触碰。"
+  ],
+  "next_allowed_task": "确认 main CI（Project Governance）转绿。"
+}

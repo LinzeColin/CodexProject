@@ -7,7 +7,8 @@
 本仓库正拆分为独立仓库，目录消失是有意迁移，不是数据丢失。
 
 - 禁止从 Git 历史、revert 或备份恢复任何消失的目录/文件；禁止把迁出报告为事故。
-- 已迁出：`whkmSalary -> LinzeColin/KMOS`；`Alpha/FIFA/QBVS/MetaDatabase/Serenity-Alipay/EEI -> LinzeColin/MetaDatabase`；治理框架 -> `LinzeColin/Governance`（本仓库暂保留副本）。不得“修复”这些项目。
+- 已迁出：whkmSalary/KMFA/KM_IDSystem->KMOS；Alpha/FIFA/QBVS/MetaDatabase/Serenity-Alipay/EEI/PFI->MetaDatabase；OpenAIDatabase->AgentDatabase；治理->Governance。禁“修复”。
+- 数据存 Private-Database，禁 clone。
 - 有疑问立即停下询问 owner，禁止自行恢复。
 - Agent 历史/会话只沿公开 `LinzeColin/AgentDatabase` 路线交付；只允许通过 credential/public-safety gate 的脱敏摘要或已授权 Release 附件，永久禁止 access-granting material。
 - Clean Memory V3 不得改仓库可见性，不得路由到误建的 `AgentDatabase-Private`。
