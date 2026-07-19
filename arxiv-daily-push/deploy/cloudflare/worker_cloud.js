@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '983af33c8352', source_sha256: '983af33c83524ebd1e3cd6b95afad14f36dd95d916f082bb3c655c3c31301f5e', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+const BUILD = { build_id: 'c2ccc1fd01ec', source_sha256: 'c2ccc1fd01ecbbfc846241a7a4380de182c4a20cd8215903ba3e65b2b1e0de15', schema_version: 'cn_v0_3', built_at: '2026-07-20' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -66,10 +66,10 @@ const REGISTRY = [
     { id: 'nature-comms', name: 'Nature Communications', platform: 'nature.com 官方 RSS', website: 'https://www.nature.com/ncomms', method: 'rss', feed: 'https://www.nature.com/ncomms.rss', official: 1 },
     { id: 'science-advances', name: 'Science Advances', platform: 'science.org 官方 RSS', website: 'https://www.science.org', method: 'rss', feed: 'https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv', official: 1 },
     { id: 'science-news', name: 'Science 新闻', platform: 'science.org 官方 RSS', website: 'https://www.science.org', method: 'rss', feed: 'https://www.science.org/rss/news_current.xml', official: 1 },
-    { id: 'cell', name: 'Cell 本刊', platform: 'cell.com 官方 RSS', website: 'https://www.cell.com', method: 'rss', feed: 'https://www.cell.com/cell/current.rss', official: 1 },
-    { id: 'cell-neuron', name: 'Neuron', platform: 'cell.com 官方 RSS', website: 'https://www.cell.com', method: 'rss', feed: 'https://www.cell.com/neuron/current.rss', official: 1 },
+    { id: 'cell', name: 'Cell 本刊', platform: 'ScienceDirect 官方 RSS(P20:cell.com 对数据中心 IP 403,改用同刊 SD 官方源)', website: 'https://www.cell.com', method: 'rss', feed: 'https://rss.sciencedirect.com/publication/science/00928674', official: 1 },
+    { id: 'cell-neuron', name: 'Neuron', platform: 'ScienceDirect 官方 RSS(P20 同上)', website: 'https://www.cell.com', method: 'rss', feed: 'https://rss.sciencedirect.com/publication/science/08966273', official: 1 },
     { id: 'pnas', name: 'PNAS 最新', platform: 'pnas.org 官方 RSS', website: 'https://www.pnas.org', method: 'rss', feed: 'https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=pnas', official: 1 },
-    { id: 'lancet', name: 'The Lancet', platform: 'thelancet.com 官方 RSS', website: 'https://www.thelancet.com', method: 'rss', feed: 'https://www.thelancet.com/rssfeed/lancet_current.xml', official: 1 },
+    { id: 'lancet', name: 'The Lancet', platform: 'ScienceDirect 官方 RSS(P20:thelancet.com 对数据中心 IP 403,改用同刊 SD 官方源)', website: 'https://www.thelancet.com', method: 'rss', feed: 'https://rss.sciencedirect.com/publication/science/01406736', official: 1 },
     { id: 'nejm', name: 'NEJM', platform: 'nejm.org 官方 RSS', website: 'https://www.nejm.org', method: 'rss', feed: 'https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss', official: 1 },
     { id: 'jama', name: 'JAMA', platform: 'jamanetwork.com 官方 RSS', website: 'https://jamanetwork.com', method: 'rss', feed: 'https://jamanetwork.com/rss/site_3/67.xml', official: 1 },
     { id: 'bmj', name: 'The BMJ', platform: 'bmj.com 官方 RSS', website: 'https://www.bmj.com', method: 'rss', feed: 'https://www.bmj.com/rss/recent.xml', official: 1 },
@@ -100,7 +100,7 @@ const REGISTRY = [
     { id: 'ftc-press', name: 'FTC 新闻稿', platform: 'ftc.gov 官方 RSS', website: 'https://www.ftc.gov', method: 'rss', feed: 'https://www.ftc.gov/feeds/press-release.xml', official: 1 },
     { id: 'nist-news', name: 'NIST', platform: 'nist.gov 官方 RSS', website: 'https://www.nist.gov', method: 'rss', feed: 'https://www.nist.gov/news-events/news/rss.xml', official: 1 },
     { id: 'whitehouse-actions', name: '白宫总统令', platform: 'whitehouse.gov 官方 RSS', website: 'https://www.whitehouse.gov', method: 'rss', feed: 'https://www.whitehouse.gov/presidential-actions/feed/', official: 1 },
-    { id: 'gnews-us-tech', name: '美国科技监管与反垄断', platform: 'Google News RSS 聚合', website: 'https://news.google.com', method: 'rss', feed: 'https://news.google.com/rss/search?q=US%20tech%20regulation%20OR%20antitrust%20FTC%20SEC&hl=en-US&gl=US&ceid=US:en', official: 0 },
+    { id: 'gnews-us-tech', name: '美国科技监管与反垄断', platform: 'Bing News RSS 聚合(P20:Google News 实测非硬墙而是【间歇 503】——边缘 6 次 2 成功/4 失败,连败 3 次即 disabled_auto;Bing 稳定 200,故换源;查询简化——实测 OR 语法返回 0 条)', website: 'https://www.bing.com', method: 'rss', feed: 'https://www.bing.com/news/search?q=FTC+antitrust&format=rss&mkt=en-US', official: 0 },
   ]},
 ];
 const BOARD_NAMES = Object.fromEntries(REGISTRY.map(b => [b.board, b.name]));

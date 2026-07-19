@@ -1,0 +1,156 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P20-SOURCE-REPLACEMENT-20260720",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P20-SOURCE-REPLACEMENT",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260720-ADP-SOURCE-RECOVERY",
+  "generated_at": "2026-07-20T07:10:00Z",
+  "implementation_base_sha": "05e9f629ca63a7462d6b333a92a70daffe7a4d1a",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1b2b511d499a900214109b5b57be5fc4495d315f20de612b6812a187b41a891b",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 27 non-manifest changed files; changed_files_* list all 28 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P20: 4 个不可达源换替代端点;推翻自己的假前提(gnews 非硬墙而是间歇 503);独立对抗复核待返回(不自签)。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (2 轮:R1 BLOCK 抓出 live≠git 漂移[stamp 后改源未重 stamp/部署]+实施者声称未实跑的自哈希验证[与 P18 D2 同型]+HANDOFF 未纳 manifest;修正后 R2 CONFIRMED_SOUND,审查者亲手复算全串戳、全量套件比对 failures 47→45 无新红、旧戳仅剩历史叙述语境、零预签、事故记录无淡化;实施者未自签)",
+  "summary": "Owner 选『先试替代端点』。临时 adp-probe worker 从 CF 边缘实测(探完已删),切换 4 源:cell/cell-neuron/lancet→ScienceDirect 官方 RSS(200/70·52·87 条),gnews-us-tech→Bing News RSS(200/11 条)。★推翻自己的假前提:原记 6 源全被墙,边缘 6 次实测显示 Google News 非硬墙而是间歇 503(2×200/78 条+4×503),真实病因是间歇失败+无重试;cell/lancet 才是确定性 403(3/3);已写进源码说明+验证器诚实性钉;若为 gnews 加重试,原源可能不用换★。验证器抽取已部署 parseFeed 实跑 4 份真实 XML+负控(403 页 0 条)+切换前前置负控(4 静态钉 FAIL)。未解 2 源如实(science-advances 硬墙需 PubMed 解析层、stats-gov 边缘超时)。",
+  "scope": {
+    "new_business_sample_files": 4,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/edge_probe_results.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/p20_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/verify_p20_replacement_feeds.mjs",
+    "arxiv-daily-push/tools/specimens_p20/bing.xml",
+    "arxiv-daily-push/tools/specimens_p20/cell.xml",
+    "arxiv-daily-push/tools/specimens_p20/lancet.xml",
+    "arxiv-daily-push/tools/specimens_p20/neuron.xml",
+    "arxiv-daily-push/tools/verify_p20_replacement_feeds.mjs",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P20-SOURCE-REPLACEMENT-20260720.json",
+    "tests/governance/test_adp_source_replacement.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/edge_probe_results.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/p20_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/verify_p20_replacement_feeds.mjs",
+    "arxiv-daily-push/tools/specimens_p20/bing.xml",
+    "arxiv-daily-push/tools/specimens_p20/cell.xml",
+    "arxiv-daily-push/tools/specimens_p20/lancet.xml",
+    "arxiv-daily-push/tools/specimens_p20/neuron.xml",
+    "arxiv-daily-push/tools/verify_p20_replacement_feeds.mjs",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P20-SOURCE-REPLACEMENT-20260720.json",
+    "tests/governance/test_adp_source_replacement.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "governance/infrastructure_registry.json",
+    "tests/governance/test_adp_source_replacement.py",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/p20_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P20-SOURCE-REPLACEMENT/test-results/edge_probe_results.txt"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/tools/verify_p20_replacement_feeds.mjs",
+    "python3 -m unittest tests.governance.test_adp_source_replacement",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "verify_p20_replacement_feeds.mjs",
+      "result": "PASS",
+      "detail": "4 真实 XML 样本解析合格(20/20/20/11 条)+负控(403 页 0 条)+5 静态钉(4 配置+1 诚实性);切换前前置负控实跑 4 静态钉 FAIL。"
+    },
+    {
+      "command": "test_adp_source_replacement.py",
+      "result": "PASS",
+      "detail": "5/5:4 替换端点钉+诚实性钉(间歇 503)+未解 2 源不得静默删除钉+样本存在钉;负控实跑:回退一个 feed→守卫真 FAIL,还原后 OK。"
+    },
+    {
+      "command": "边缘可达性实测(临时 adp-probe,已删)",
+      "result": "PASS",
+      "detail": "新端点 4×200;旧端点 cell 3/3 403(硬墙)、gnews 6 次 2 成功 4 失败(间歇非硬墙)、science.org 403、stats.gov.cn 超时。"
+    },
+    {
+      "command": "生产部署",
+      "result": "PASS",
+      "detail": "Version 353d7330;/build.json=c2ccc1fd01ec;三调度保持。"
+    }
+  ],
+  "stop_conditions": [
+    "★不得把『间歇失败』记成『被墙』★:gnews 是间歇 503(实测 6 次 2 成功),cell/lancet 才是确定性 403;诚实性钉钉住此区分。",
+    "未解 2 源(science-advances/stats-gov)不得为凑数硬塞替代源——如实留在 /system 异常名单。",
+    "验证新源抓取必须等 cron 或另建证据,★不得为验证绕过幂等守卫★(本阶段手动 /api/run 被正确挡住,未绕过)。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <prev> 回 983af33c8352。",
+    "repo": "git revert 本 commit。纯 feed URL 切换,回退即恢复旧端点。"
+  },
+  "unresolved_risks": [
+    "SD RSS 单点:3 个板块二源同源,若改版/限流同时受影响(健康守卫+watchdog 可见)。",
+    "Bing 查询简化后主题精度低于原 Google News 复杂查询。",
+    "★首夜新源实际抓取证据是时间门:明日 20:30 cron 后读 /system 来源健康,4 源应转 active★。",
+    "gnews 的更优解可能是给原 Google News 加重试/退避而非换源——本阶段未做,留给后续。",
+    "★R1 复核抓出 live≠git 漂移(stamp 后又改源未重 stamp/部署),已修:重 stamp c2ccc1fd01ec+重部署 70505e3d+11 处旧戳修正+两守卫转绿;教训已写入 HANDOFF 教训 5★"
+  ],
+  "next_allowed_task": "明日 cron 后验 4 源转 active;或给 gnews 原源加重试再评估是否回切;或诊断 stats-gov 超时。"
+}

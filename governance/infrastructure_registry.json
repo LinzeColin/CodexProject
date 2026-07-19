@@ -117,9 +117,9 @@
       "kind": "worker",
       "surface": "cloudflare",
       "name": "adp-mirror (旧 Worker)",
-      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)；2026-07-20 Owner 授权后已摘除其全部 cron 触发器(仅调度,worker 本体未动仍 200)——此前其旧 cron 每晚空转打生产 D1(被幂等守卫挡为『幂等跳过』)且占满账号 5 个 cron 槽,曾阻塞 adp-cloud 第三回填槽(CF 错误 10072)。",
+      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)；2026-07-20 Owner 授权后已摘除其全部 cron 触发器(仅调度,worker 本体未动仍 200)——此前其旧 cron 每晚空转打生产 D1(被幂等守卫挡为『幂等跳过』)且占满账号 5 个 cron 槽,曾阻塞 adp-cloud 第三回填槽(CF 错误 10072)。；★2026-07-20 Owner 授权后已用 wrangler delete 删除 worker 本体(workers.dev 由 200 变 500,活服务 adp.linzezhang.com 仍 200 无恙)——本条目保留作删除存档。★",
       "why_dormant": "被 adp-cloud 取代；CHANGELOG 记『left dormant for the Owner to delete』。仅 workers.dev 子域可达，无自定义域绑定。",
-      "disposition": "Owner 可在 Cloudflare Workers 删除 adp-mirror；删前确认无其他绑定。属 Owner 基建操作，本表只登记不代删。",
+      "disposition": "已于 2026-07-20 按 Owner 授权删除(wrangler delete adp-mirror);无需进一步操作。",
       "not_in_serving_path_proof": "adp.linzezhang.com 自定义域已绑 adp-cloud；adp-mirror 仅 workers.dev 子域可达，不承载正牌域名。"
     }
   ],
@@ -127,6 +127,6 @@
     "OVH VPS 的角色：主部署节点候选，但哪些(若有)workload 迁入未定——迁移属 Owner 逐项决策，涉付费/ops 增量。",
     "Coolify 装好后编排哪些 workload。",
     "Cloudflare 免费档 workload 与 VPS 的分工边界(建议见 distinction_note)。",
-    "删除 3 个已登记的废弃资源(adp-origin DNS / adp tunnel / adp-mirror worker，见 dormant_resources)——降低治理面；删除属 Owner 基建操作，本表只登记不代删。"
+    "删除剩余 2 个废弃资源(adp-origin DNS 记录 / adp Tunnel 对象)——Owner 已表态自行控制台删除(2026-07-20);adp-mirror worker 已按授权由 wrangler 删除。"
   ]
 }

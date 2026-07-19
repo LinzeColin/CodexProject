@@ -1,0 +1,15 @@
+P20 边缘可达性实测(临时 adp-probe worker,从 Cloudflare 边缘 IP;探完已删除)
+=== 候选替代端点 ===
+cell   → rss.sciencedirect.com/publication/science/00928674  HTTP 200 items=70 bytes=48895 ms=24
+neuron → …/08966273                                          HTTP 200 items=52 bytes=33419 ms=22
+lancet → …/01406736                                          HTTP 200 items=87 bytes=51312 ms=19
+gnews  → bing.com/news/search?q=FTC+antitrust&format=rss      HTTP 200 items=11 bytes=9223 ms=351
+=== 旧端点对照(证明切换必要) ===
+cell.com/cell/current.rss                x3 → 403 / 403 / 403   ★确定性硬墙★
+science.org showFeed sciadv              → 403
+news.google.com/rss/search (生产原 URL)  x6 → 503,503,200(78条),503,503,200(78条)
+   ★非硬墙,是间歇 503(约 67% 失败率);连败 3 次触发 disabled_auto——真实病因是间歇失败+无重试★
+stats.gov.cn/sj/zxfb/                    → 边缘 30s 超时(未定性,留待后续诊断)
+=== 结论 ===
+4 源可换(cell/neuron/lancet 硬墙必换;gnews 间歇→换稳定源)
+2 源未解(science-advances 硬墙需 PubMed 解析层;stats-gov 超时需单独诊断)

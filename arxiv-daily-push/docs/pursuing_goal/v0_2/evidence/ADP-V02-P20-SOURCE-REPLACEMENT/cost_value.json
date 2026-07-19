@@ -1,0 +1,24 @@
+{
+  "task": "ADP-V02-P20-SOURCE-REPLACEMENT",
+  "program": "ADP V0.2 / 全面 / 多板块",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "983af33c8352",
+  "live_build_after": "c2ccc1fd01ec",
+  "deploy_version_id": "70505e3d-b129-495b-8893-64a685e9249e",
+  "objective": "Owner 就 6 个被墙源选『先试替代端点』(不花钱、不违 DIR-007)。临时 adp-probe worker 从 CF 边缘 IP 实测候选与对照,探完已删。",
+  "what": "切换 4 源:cell/cell-neuron/lancet→ScienceDirect 官方 RSS(边缘 200/70·52·87 条);gnews-us-tech→Bing News RSS(200/11 条,查询简化——OR 语法实测 0 条)。",
+  "key_correction": "★推翻自己的假前提:原记『6 源全被数据中心 IP 墙』。边缘 6 次实测显示 Google News 非硬墙而是间歇 503(2×200/78 条+4×503,约 67% 失败),连败 3 次触发 disabled_auto——真实病因是间歇失败+无重试;cell/lancet 才是确定性 403(3/3)。已写进源码 platform 说明+验证器诚实性钉。对下一步有实际意义:若为 gnews 加重试/退避,Google News 原源可能不用换。★",
+  "honest_scope": "未解决 2 源:science-advances(science.org 确定性 403,PubMed 替代需额外解析层)、stats-gov(边缘 30s 超时未定性需诊断)——没为凑数硬塞。首夜新源实际抓取是时间门:今日 cron 已跑,手动 /api/run 被幂等守卫正确挡住(未绕过守卫验证),明日 20:30 cron 后读 /system 来源健康应转 active。SD RSS 每次 20 条(=MAX_ITEMS_PER_FEED)且日期在 description 文本无独立标签(published 为 null),与现有 31 个 rss 源同标准非缺陷。",
+  "verifier": "verify_p20_replacement_feeds.mjs 抽取已部署 parseFeed(含 stripTags/decodeEntities/tag 依赖链,不复刻)实跑 4 份真实 XML 样本(specimens_p20/);负控:403 拦截页解析 0 条;★切换前前置负控实跑:配置未切时 4 静态钉 FAIL,证明能抓配置没切★;静态钉含诚实性钉(源码必须记为间歇 503)。",
+  "value": "6 个长期不可达源中 4 个恢复(板块二顶级期刊 3 个 + 板块四 1 个),直击『全面/多板块』;更重要的是纠正了一个会误导后续决策的错误诊断。",
+  "verification": "线上 /build.json=c2ccc1fd01ec;验证器 exit0(4 夹具+负控+5 静态钉);边缘实测存证 edge_probe_results.txt(候选+旧端点对照+6 次 Google News 采样)。",
+  "adversarial_review": "CONFIRMED_SOUND(独立对抗复核 2 轮:R1 BLOCK(★live≠git 漂移:stamp+部署后又改源却未重 stamp/重部署,且实施者把未实跑的『自哈希亲算』写进复核清单——与 P18 D2 同型复发;另 HANDOFF.md 未纳 manifest 致 ci STOP★)判得对;修正后 R2 CONFIRMED_SOUND(审查者亲手复算全串戳、全量套件比对确认 failures 47→45 恰为两条自伤消失且无新红、旧戳仅剩 1 处历史叙述语境、零预签、事故记录无淡化无推诿);未自签)",
+  "residual_risks": [
+    "SD RSS 若改版或限流,3 个板块二源同时受影响(单点);健康守卫会标 degraded,watchdog 可见。",
+    "Bing News 查询简化后主题精度低于原 Google News 复杂查询(OR 语法不可用)。",
+    "未解 2 源仍在 /system 维护卡显示为异常——如实展示,非隐藏。"
+  ],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 983af33c8352。纯 REGISTRY feed URL 切换,回退即恢复旧端点(旧端点仍 403/间歇 503)。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

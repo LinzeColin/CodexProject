@@ -1,0 +1,239 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 0a5bd4974..3264b4818 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: '983af33c8352', source_sha256: '983af33c83524ebd1e3cd6b95afad14f36dd95d916f082bb3c655c3c31301f5e', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
++const BUILD = { build_id: 'c2ccc1fd01ec', source_sha256: 'c2ccc1fd01ecbbfc846241a7a4380de182c4a20cd8215903ba3e65b2b1e0de15', schema_version: 'cn_v0_3', built_at: '2026-07-20' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -66,10 +66,10 @@ const REGISTRY = [
+     { id: 'nature-comms', name: 'Nature Communications', platform: 'nature.com 官方 RSS', website: 'https://www.nature.com/ncomms', method: 'rss', feed: 'https://www.nature.com/ncomms.rss', official: 1 },
+     { id: 'science-advances', name: 'Science Advances', platform: 'science.org 官方 RSS', website: 'https://www.science.org', method: 'rss', feed: 'https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv', official: 1 },
+     { id: 'science-news', name: 'Science 新闻', platform: 'science.org 官方 RSS', website: 'https://www.science.org', method: 'rss', feed: 'https://www.science.org/rss/news_current.xml', official: 1 },
+-    { id: 'cell', name: 'Cell 本刊', platform: 'cell.com 官方 RSS', website: 'https://www.cell.com', method: 'rss', feed: 'https://www.cell.com/cell/current.rss', official: 1 },
+-    { id: 'cell-neuron', name: 'Neuron', platform: 'cell.com 官方 RSS', website: 'https://www.cell.com', method: 'rss', feed: 'https://www.cell.com/neuron/current.rss', official: 1 },
++    { id: 'cell', name: 'Cell 本刊', platform: 'ScienceDirect 官方 RSS(P20:cell.com 对数据中心 IP 403,改用同刊 SD 官方源)', website: 'https://www.cell.com', method: 'rss', feed: 'https://rss.sciencedirect.com/publication/science/00928674', official: 1 },
++    { id: 'cell-neuron', name: 'Neuron', platform: 'ScienceDirect 官方 RSS(P20 同上)', website: 'https://www.cell.com', method: 'rss', feed: 'https://rss.sciencedirect.com/publication/science/08966273', official: 1 },
+     { id: 'pnas', name: 'PNAS 最新', platform: 'pnas.org 官方 RSS', website: 'https://www.pnas.org', method: 'rss', feed: 'https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=pnas', official: 1 },
+-    { id: 'lancet', name: 'The Lancet', platform: 'thelancet.com 官方 RSS', website: 'https://www.thelancet.com', method: 'rss', feed: 'https://www.thelancet.com/rssfeed/lancet_current.xml', official: 1 },
++    { id: 'lancet', name: 'The Lancet', platform: 'ScienceDirect 官方 RSS(P20:thelancet.com 对数据中心 IP 403,改用同刊 SD 官方源)', website: 'https://www.thelancet.com', method: 'rss', feed: 'https://rss.sciencedirect.com/publication/science/01406736', official: 1 },
+     { id: 'nejm', name: 'NEJM', platform: 'nejm.org 官方 RSS', website: 'https://www.nejm.org', method: 'rss', feed: 'https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss', official: 1 },
+     { id: 'jama', name: 'JAMA', platform: 'jamanetwork.com 官方 RSS', website: 'https://jamanetwork.com', method: 'rss', feed: 'https://jamanetwork.com/rss/site_3/67.xml', official: 1 },
+     { id: 'bmj', name: 'The BMJ', platform: 'bmj.com 官方 RSS', website: 'https://www.bmj.com', method: 'rss', feed: 'https://www.bmj.com/rss/recent.xml', official: 1 },
+@@ -100,7 +100,7 @@ const REGISTRY = [
+     { id: 'ftc-press', name: 'FTC 新闻稿', platform: 'ftc.gov 官方 RSS', website: 'https://www.ftc.gov', method: 'rss', feed: 'https://www.ftc.gov/feeds/press-release.xml', official: 1 },
+     { id: 'nist-news', name: 'NIST', platform: 'nist.gov 官方 RSS', website: 'https://www.nist.gov', method: 'rss', feed: 'https://www.nist.gov/news-events/news/rss.xml', official: 1 },
+     { id: 'whitehouse-actions', name: '白宫总统令', platform: 'whitehouse.gov 官方 RSS', website: 'https://www.whitehouse.gov', method: 'rss', feed: 'https://www.whitehouse.gov/presidential-actions/feed/', official: 1 },
+-    { id: 'gnews-us-tech', name: '美国科技监管与反垄断', platform: 'Google News RSS 聚合', website: 'https://news.google.com', method: 'rss', feed: 'https://news.google.com/rss/search?q=US%20tech%20regulation%20OR%20antitrust%20FTC%20SEC&hl=en-US&gl=US&ceid=US:en', official: 0 },
++    { id: 'gnews-us-tech', name: '美国科技监管与反垄断', platform: 'Bing News RSS 聚合(P20:Google News 实测非硬墙而是【间歇 503】——边缘 6 次 2 成功/4 失败,连败 3 次即 disabled_auto;Bing 稳定 200,故换源;查询简化——实测 OR 语法返回 0 条)', website: 'https://www.bing.com', method: 'rss', feed: 'https://www.bing.com/news/search?q=FTC+antitrust&format=rss&mkt=en-US', official: 0 },
+   ]},
+ ];
+ const BOARD_NAMES = Object.fromEntries(REGISTRY.map(b => [b.board, b.name]));
+diff --git a/arxiv-daily-push/tools/verify_p20_replacement_feeds.mjs b/arxiv-daily-push/tools/verify_p20_replacement_feeds.mjs
+new file mode 100644
+index 000000000..8573aa927
+--- /dev/null
++++ b/arxiv-daily-push/tools/verify_p20_replacement_feeds.mjs
+@@ -0,0 +1,57 @@
++#!/usr/bin/env node
++// P20 载荷型验证器:6 个被墙源中 4 个的替代端点(SD RSS x3 + Bing News RSS)——
++// (a) 边缘可达性由临时探针 worker 实测(记录在 evidence:200 + 70/52/87/11 条);
++// (b) 本验证器证【解析器兼容】:抽取【已部署】parseFeed 实跑 4 个真实 XML 样本(specimens_p20/),
++//     断言逐源解析出足量条目且 title/link/published 齐;负控:403 拦截页 HTML 必须解析 0 条(计数器不空转)。
++// (c) 静态钉:发货源 REGISTRY 中 4 源的 feed 已指向替代端点。
++import fs from 'node:fs'; import path from 'node:path'; import url from 'node:url';
++const HERE = path.dirname(url.fileURLToPath(import.meta.url));
++const WORKER = path.resolve(HERE, '..', 'deploy', 'cloudflare', 'worker_cloud.js');
++const SRC = fs.readFileSync(WORKER, 'utf8');
++function extract(a, b) { const i = SRC.indexOf(a); const j = i < 0 ? -1 : SRC.indexOf(b, i + a.length); if (i < 0 || j < 0) throw new Error('锚点变了: ' + a); return SRC.slice(i, j); }
++// 抽取解析链:tag/stripTags 工具 + MAX_ITEMS_PER_FEED + parseFeed(不复刻)
++const utils = extract('function stripTags', 'function parseFeed');  // 含 stripTags/decodeEntities/tag 全依赖链
++const pf = extract('function parseFeed', 'function parseOaiArxiv');
++const maxc = SRC.match(/const MAX_ITEMS_PER_FEED = \d+;/)[0];
++// eslint-disable-next-line no-new-func
++const { parseFeed } = new Function(maxc + '\n' + utils + '\n' + pf + '\n return { parseFeed };')();
++
++const CASES = [
++  { f: 'cell.xml',   min: 15, why: 'Cell → rss.sciencedirect.com/publication/science/00928674 (边缘实测 200/70 条)' },
++  { f: 'neuron.xml', min: 15, why: 'Neuron → …/08966273 (边缘实测 200/52 条)' },
++  { f: 'lancet.xml', min: 15, why: 'Lancet → …/01406736 (边缘实测 200/87 条)' },
++  { f: 'bing.xml',   min: 5,  why: 'gnews-us-tech → Bing News RSS q=FTC+antitrust (边缘实测 200/11 条)' },
++];
++let fail = 0;
++console.log('抽取自:', WORKER);
++for (const c of CASES) {
++  const xml = fs.readFileSync(path.join(HERE, 'specimens_p20', c.f), 'utf8');
++  const items = parseFeed(xml);
++  const good = items.filter(i => i.title && /^https?:/.test(i.link));
++  const dated = items.filter(i => i.published);  // SD RSS 日期在 description 文本、无独立标签→published 常为 null;与现有 31 个 rss 源同标准,不作 fail 条件
++  const ok = good.length >= c.min;
++  console.log(`  ${ok ? '✅' : '❌'} [${c.f}] 解析 ${items.length} 条(合格 ${good.length},带日期 ${dated.length},需≥${c.min}) — ${c.why}`);
++  if (!ok) fail++;
++}
++// 负控:403 拦截页(HTML 无 <item>)必须 0 条——证明上面的计数不是空转
++const blockPage = '<!DOCTYPE html><html><head><title>Access Denied</title></head><body><h1>403</h1><p>blocked</p></body></html>';
++const nc = parseFeed(blockPage);
++if (nc.length !== 0) { fail++; console.log('  ❌ 负控失效:拦截页竟解析出', nc.length, '条'); }
++else console.log('     ↳ 负控成立:403 拦截页解析 0 条(计数承重)');
++// 静态钉:REGISTRY 已指向替代端点
++const PINS = [
++  ["cell → SD RSS", "feed: 'https://rss.sciencedirect.com/publication/science/00928674'"],
++  ["neuron → SD RSS", "feed: 'https://rss.sciencedirect.com/publication/science/08966273'"],
++  ["lancet → SD RSS", "feed: 'https://rss.sciencedirect.com/publication/science/01406736'"],
++  ["gnews → Bing RSS", "feed: 'https://www.bing.com/news/search?q=FTC+antitrust&format=rss&mkt=en-US'"],
++];
++// P20 诚实性钉:gnews 的病因必须记为【间歇 503】而非硬墙(边缘实测 6 次:2×200/78 条 + 4×503)。
++// cell/lancet 才是确定性 403(3/3)。把二者混为一谈=过度推断,曾是本次的错误判断。
++if (!/间歇 503/.test(SRC)) { fail++; console.log('  ❌ 发货源未如实记录 gnews 是间歇 503(非硬墙)——过度推断会误导后人'); }
++else console.log('  ✅ 发货源如实区分:gnews=间歇 503,cell/lancet=确定性 403');
++for (const [name, needle] of PINS) {
++  if (!SRC.includes(needle)) { fail++; console.log(`  ❌ 发货源 REGISTRY 未指向替代端点: ${name}`); }
++  else console.log(`  ✅ REGISTRY 指向替代端点: ${name}`);
++}
++console.log(fail === 0 ? '\nPASS: 4 个替代端点解析兼容 + 负控承重 + 配置已切换。' : `\nFAIL: ${fail}`);
++process.exit(fail === 0 ? 0 : 1);
+diff --git a/governance/infrastructure_registry.json b/governance/infrastructure_registry.json
+index e12653e65..dcbefde0b 100644
+--- a/governance/infrastructure_registry.json
++++ b/governance/infrastructure_registry.json
+@@ -117,9 +117,9 @@
+       "kind": "worker",
+       "surface": "cloudflare",
+       "name": "adp-mirror (旧 Worker)",
+-      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)；2026-07-20 Owner 授权后已摘除其全部 cron 触发器(仅调度,worker 本体未动仍 200)——此前其旧 cron 每晚空转打生产 D1(被幂等守卫挡为『幂等跳过』)且占满账号 5 个 cron 槽,曾阻塞 adp-cloud 第三回填槽(CF 错误 10072)。",
++      "verified_state": "2026-07-18 复核：adp-mirror.linzezhang35.workers.dev 仍 HTTP 200(worker 仍部署)；但已于 S3(Cloud-native rebuild Stage 3)从 adp.linzezhang.com 自定义域摘除(CHANGELOG 2026-07-15)；2026-07-20 Owner 授权后已摘除其全部 cron 触发器(仅调度,worker 本体未动仍 200)——此前其旧 cron 每晚空转打生产 D1(被幂等守卫挡为『幂等跳过』)且占满账号 5 个 cron 槽,曾阻塞 adp-cloud 第三回填槽(CF 错误 10072)。；★2026-07-20 Owner 授权后已用 wrangler delete 删除 worker 本体(workers.dev 由 200 变 500,活服务 adp.linzezhang.com 仍 200 无恙)——本条目保留作删除存档。★",
+       "why_dormant": "被 adp-cloud 取代；CHANGELOG 记『left dormant for the Owner to delete』。仅 workers.dev 子域可达，无自定义域绑定。",
+-      "disposition": "Owner 可在 Cloudflare Workers 删除 adp-mirror；删前确认无其他绑定。属 Owner 基建操作，本表只登记不代删。",
++      "disposition": "已于 2026-07-20 按 Owner 授权删除(wrangler delete adp-mirror);无需进一步操作。",
+       "not_in_serving_path_proof": "adp.linzezhang.com 自定义域已绑 adp-cloud；adp-mirror 仅 workers.dev 子域可达，不承载正牌域名。"
+     }
+   ],
+@@ -127,6 +127,6 @@
+     "OVH VPS 的角色：主部署节点候选，但哪些(若有)workload 迁入未定——迁移属 Owner 逐项决策，涉付费/ops 增量。",
+     "Coolify 装好后编排哪些 workload。",
+     "Cloudflare 免费档 workload 与 VPS 的分工边界(建议见 distinction_note)。",
+-    "删除 3 个已登记的废弃资源(adp-origin DNS / adp tunnel / adp-mirror worker，见 dormant_resources)——降低治理面；删除属 Owner 基建操作，本表只登记不代删。"
++    "删除剩余 2 个废弃资源(adp-origin DNS 记录 / adp Tunnel 对象)——Owner 已表态自行控制台删除(2026-07-20);adp-mirror worker 已按授权由 wrangler 删除。"
+   ]
+ }
+diff --git a/tests/governance/test_adp_source_replacement.py b/tests/governance/test_adp_source_replacement.py
+new file mode 100644
+index 000000000..5de3b2318
+--- /dev/null
++++ b/tests/governance/test_adp_source_replacement.py
+@@ -0,0 +1,110 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Guard: the P20 replacement feeds stay wired, and the reachability diagnosis stays honest.
++
++P20 replaced 4 long-unreachable sources after probing candidate endpoints from a Cloudflare EDGE IP
++(temporary `adp-probe` worker, deleted after use):
++
++    cell / cell-neuron / lancet -> rss.sciencedirect.com official per-journal RSS  (edge: 200, 70/52/87 items)
++    gnews-us-tech               -> bing.com/news/search ... format=rss             (edge: 200, 11 items)
++
++The probe also OVERTURNED the implementer's own prior claim. The repo had recorded all six blocked
++sources as "walled off by datacenter IP". Six edge samples of the production Google News URL returned
++2x200 (78 items) and 4x503 -- Google News is NOT hard-walled, it is ~67% INTERMITTENT. The real cause
++there is intermittent failure + no retry (3 consecutive failures trip `disabled_auto`). cell/lancet by
++contrast returned 403 on 3/3. That distinction matters for the NEXT decision: adding retry/backoff to
++the original Google News feed may make the Bing swap unnecessary.
++
++This guard pins both halves:
++  * the four feeds still point at the replacement endpoints (a silent revert re-breaks them), and
++  * the source keeps the honest wording (`间歇 503`) so nobody re-flattens "intermittent" into "walled",
++    which is exactly the over-generalisation this phase had to correct.
++
++The behavioural proof (shipped parseFeed run over 4 real XML specimens + a 403-block-page negative
++control) lives in `arxiv-daily-push/tools/verify_p20_replacement_feeds.mjs`; CI's push path has no
++Node, so this Python guard is the CI-safe anchor and carries its own negative control.
++"""
++import pathlib
++import re
++import shutil
++import subprocess
++import unittest
++
++ROOT = pathlib.Path(__file__).resolve().parents[2]
++WORKER = ROOT / "arxiv-daily-push" / "deploy" / "cloudflare" / "worker_cloud.js"
++VERIFIER = ROOT / "arxiv-daily-push" / "tools" / "verify_p20_replacement_feeds.mjs"
++SPECIMENS = ROOT / "arxiv-daily-push" / "tools" / "specimens_p20"
++
++REPLACEMENTS = {
++    "cell": "https://rss.sciencedirect.com/publication/science/00928674",
++    "cell-neuron": "https://rss.sciencedirect.com/publication/science/08966273",
++    "lancet": "https://rss.sciencedirect.com/publication/science/01406736",
++    "gnews-us-tech": "https://www.bing.com/news/search?q=FTC+antitrust&format=rss&mkt=en-US",
++}
++# The exact pre-P20 config (endpoints proven unreachable/intermittent from the edge).
++PRE_FIX_SNIPPET = """
++    { id: 'cell', method: 'rss', feed: 'https://www.cell.com/cell/current.rss' },
++    { id: 'gnews-us-tech', platform: 'Google News RSS 聚合', method: 'rss', feed: 'https://news.google.com/rss/search?q=x' },
++"""
++
++
++def _replacement_violations(src):
++    """Defects that would silently restore unreachable feeds or flatten the diagnosis. Empty == fixed."""
++    v = []
++    for sid, feed in REPLACEMENTS.items():
++        if feed not in src:
++            v.append("source {!r} no longer points at its P20 replacement endpoint {!r} -- a silent "
++                     "revert puts it back on an endpoint the edge probe proved unusable".format(sid, feed))
++    # honesty pin: gnews must stay recorded as INTERMITTENT, not as a hard wall
++    if "间歇 503" not in src:
++        v.append("the gnews reachability note lost its 『间歇 503』 wording -- P20 measured 2x200/4x503 "
++                 "from the edge; recording it as a hard wall is the over-generalisation this phase "
++                 "corrected, and it would hide that retry/backoff is the cheaper fix")
++    return v
++
++
++class TestAdpSourceReplacement(unittest.TestCase):
++    def setUp(self):
++        self.assertTrue(WORKER.is_file(), "deployed worker missing: {}".format(WORKER))
++        self.src = WORKER.read_text(encoding="utf-8")
++
++    def test_shipped_worker_uses_replacement_feeds(self):
++        self.assertEqual(
++            _replacement_violations(self.src), [],
++            "shipped worker regressed on P20's replacement feeds / honest diagnosis -- see above.")
++
++    def test_negative_control_prefix_config_is_flagged(self):
++        """Non-vacuity: the detector must fire on the exact pre-P20 config (old feeds, no honesty note)."""
++        viols = _replacement_violations(PRE_FIX_SNIPPET)
++        self.assertGreaterEqual(
++            len(viols), 5,
++            "detector did not flag the pre-P20 config on all four feeds plus the honesty pin (got {}) -- "
++            "it under-checks and could pass a regressed worker vacuously.".format(viols))
++
++    def test_unresolved_sources_are_not_silently_dropped(self):
++        """P20 fixed 4 of 6. The other two must remain registered (visible as unhealthy), not deleted.
++
++        Quietly removing a source that cannot be fetched would make /system look clean while coverage
++        silently shrank -- the same 'green while broken' shape this project keeps guarding against."""
++        for sid in ("science-advances", "stats-gov"):
++            self.assertIn("id: '{}'".format(sid), self.src,
++                          "{} was removed from the registry instead of being left visibly unhealthy; "
++                          "P20 fixed 4 of 6 sources and must not hide the remaining 2".format(sid))
++
++    def test_behavioural_verifier_and_specimens_exist(self):
++        self.assertTrue(VERIFIER.is_file(), "behavioural verifier missing: {}".format(VERIFIER))
++        self.assertTrue(SPECIMENS.is_dir(), "XML specimens missing: {}".format(SPECIMENS))
++        xmls = sorted(p.name for p in SPECIMENS.glob("*.xml"))
++        self.assertGreaterEqual(len(xmls), 4,
++                                "expected 4 real feed specimens for the replacement endpoints, found {}".format(xmls))
++
++    @unittest.skipUnless(shutil.which("node"), "node not on PATH (CI push path); behavioural check runs locally")
++    def test_behavioural_verifier_passes(self):
++        r = subprocess.run(["node", str(VERIFIER)], capture_output=True, text=True, timeout=60, cwd=str(ROOT))
++        self.assertEqual(r.returncode, 0,
++                         "behavioural verifier failed:\nSTDOUT:\n{}\nSTDERR:\n{}".format(r.stdout, r.stderr))
++        self.assertIn("负控成立", r.stdout, "negative control did not fire -- assertion not load-bearing")
++
++
++if __name__ == "__main__":
++    unittest.main()

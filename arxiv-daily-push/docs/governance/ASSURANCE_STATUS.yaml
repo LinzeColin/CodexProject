@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260720-ADP-V02-P19-BACKFILL-2X-DEPLOY"
-source_snapshot_hash: "sha256:bd345d8e1de6d00e95348907a7fe5ceb0a42fab804168e19bffc0a96b77ed2c2"
+as_of_event_id: "EVENT-20260720-ADP-V02-P20-SOURCE-REPLACEMENT-DEPLOY"
+source_snapshot_hash: "sha256:fa6baa0ccf1542109f84ece9543c66e8811a4b9e9ccb163209724475e12ce275"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
 snapshot_event_time: "2026-07-19T15:00:00+10:00"
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 170
+    precommit_pending_events: 171
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

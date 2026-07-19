@@ -1,0 +1,6 @@
+# ADP-V02-P20 变更文件(核心;治理/证据/manifest 另计)
+
+ arxiv-daily-push/deploy/cloudflare/worker_cloud.js | 10 ++--
+ .../tools/verify_p20_replacement_feeds.mjs         | 57 ++++++++++++++++++++++
+ governance/infrastructure_registry.json            |  6 +--
+ 3 files changed, 65 insertions(+), 8 deletions(-)

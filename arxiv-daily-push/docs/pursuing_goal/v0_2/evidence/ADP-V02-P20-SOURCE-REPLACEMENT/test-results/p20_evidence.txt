@@ -1,0 +1,13 @@
+抽取自: /private/tmp/claude-501/-Users-linzezhang-Documents-Codex-main-worktree-CodexProject-adp/6c611ddc-f264-4d55-9b19-b0f39a03415d/scratchpad/recover/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+  ✅ [cell.xml] 解析 20 条(合格 20,带日期 0,需≥15) — Cell → rss.sciencedirect.com/publication/science/00928674 (边缘实测 200/70 条)
+  ✅ [neuron.xml] 解析 20 条(合格 20,带日期 0,需≥15) — Neuron → …/08966273 (边缘实测 200/52 条)
+  ✅ [lancet.xml] 解析 20 条(合格 20,带日期 0,需≥15) — Lancet → …/01406736 (边缘实测 200/87 条)
+  ✅ [bing.xml] 解析 11 条(合格 11,带日期 11,需≥5) — gnews-us-tech → Bing News RSS q=FTC+antitrust (边缘实测 200/11 条)
+     ↳ 负控成立:403 拦截页解析 0 条(计数承重)
+  ✅ 发货源如实区分:gnews=间歇 503,cell/lancet=确定性 403
+  ✅ REGISTRY 指向替代端点: cell → SD RSS
+  ✅ REGISTRY 指向替代端点: neuron → SD RSS
+  ✅ REGISTRY 指向替代端点: lancet → SD RSS
+  ✅ REGISTRY 指向替代端点: gnews → Bing RSS
+
+PASS: 4 个替代端点解析兼容 + 负控承重 + 配置已切换。

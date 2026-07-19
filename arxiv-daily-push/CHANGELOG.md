@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-20 Australia/Sydney - ADP V0.2 P20: 4 个不可达源换替代端点 (PRODUCTION DEPLOY c2ccc1fd01ec; product_version 0.41.0)
+- Owner 选「先试替代端点」(不花钱)。临时部署 adp-probe worker 从**Cloudflare 边缘 IP** 实测候选端点(探完已删)。
+- 切换 4 源:cell/cell-neuron/lancet → **ScienceDirect 官方 RSS**(同刊官方源,边缘 200/70·52·87 条);
+  gnews-us-tech → **Bing News RSS**(边缘 200/11 条;查询简化——实测 OR 语法返回 0 条)。
+- ★推翻我自己的假前提:原以为 6 源全是「数据中心 IP 被墙」。边缘实测 6 次显示 **Google News 不是硬墙,
+  是间歇 503**(2 次 200/78 条 + 4 次 503,约 67% 失败率)——连败 3 次触发 disabled_auto,真实病因是
+  **间歇失败 + 无重试**。cell/lancet 才是确定性 403(3/3)。已把该区分写进源码说明,并加**诚实性守卫**钉住,
+  防止后人再把两者混为一谈。★
+- 验证器 `tools/verify_p20_replacement_feeds.mjs`:抽取【已部署】parseFeed 实跑 4 份真实 XML 样本
+  (specimens_p20/,本机抓取),断言逐源解析出足量条目;负控:403 拦截页必须解析 0 条;静态钉 4 源配置已切换
+  + 诚实性钉(必须记为间歇 503)。**切换前先跑过一次,4 个静态钉 FAIL——前置证明验证器能抓「配置没切」**。
+- 未解决 2 源(如实):science-advances(science.org 硬墙,PubMed 替代需额外解析层)、stats-gov(边缘 30s 超时,需单独诊断)。
+- 独立对抗复核进行中(终裁回写前不作 CONFIRMED 声称)。
+
 ## 2026-07-20 Australia/Sydney - ADP V0.2 P19: 回填吞吐 2x——第二个回填 cron 槽 (PRODUCTION DEPLOY 983af33c8352; product_version 0.40.0)
 - P12 的提速门正式打开(其 stop_condition:读到 backfill_last.ms 前不加大 PAGES——首跑已实测 ms=11736):
   1 页/夜≈5 天 arXiv,补完 2016+ 约需 2 年,对「全面」太慢。
