@@ -15,6 +15,36 @@ on:
         description: "Coolify 应用 uuid (由 Coolify API 预建)"
         required: true
         type: string
+      home_live_url:
+        description: "home 卡片 liveUrl (*.linzezhang.com); 留空则跳过 home 同步"
+        required: false
+        default: ""
+        type: string
+      home_name:
+        description: "home 卡片显示名"
+        required: false
+        default: ""
+        type: string
+      home_category:
+        description: "home 卡片分类"
+        required: false
+        default: "Cloud Service"
+        type: string
+      home_summary:
+        description: "home 卡片一句话简介"
+        required: false
+        default: ""
+        type: string
+      home_fallback_url:
+        description: "home 卡片回退链接 (通常 GitHub 源)"
+        required: false
+        default: ""
+        type: string
+      home_mode:
+        description: "home 卡片视觉 mode (voyage/archive/garden)"
+        required: false
+        default: "voyage"
+        type: string
     secrets:
       COOLIFY_BASE_URL:
         description: "Coolify API 基址, 例如 https://server.linzezhang.com"
@@ -22,6 +52,9 @@ on:
       COOLIFY_API_TOKEN:
         description: "Coolify API token (最小 deploy 权限)"
         required: true
+      HOME_SYNC_TOKEN:
+        description: "对 LinzeHomeHub 有 contents:write 的 token; 缺失则跳过 home 同步"
+        required: false
 
 permissions:
   contents: read
@@ -67,11 +100,35 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # 仅当提供了 liveUrl 且配置了写 token 时才同步 home
+    if: ${{ inputs.home_live_url != '' }}
     steps:
-      - name: 生成/更新 home.linzezhang.com 跳转卡片 (占位)
+      - name: 取出 Golden Path 工具
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          repository: LinzeColin/CodexProject
+          sparse-checkout: GOLDEN_PATH/tools
+          sparse-checkout-cone-mode: false
+      - name: upsert home.linzezhang.com 跳转卡片
         env:
-          SERVICE_NAME: ${{ inputs.service_name }}   # 不可信输入走 env
+          GITHUB_TOKEN: ${{ secrets.HOME_SYNC_TOKEN }}
+          SERVICE_NAME: ${{ inputs.service_name }}
+          HOME_NAME: ${{ inputs.home_name }}
+          HOME_CATEGORY: ${{ inputs.home_category }}
+          HOME_SUMMARY: ${{ inputs.home_summary }}
+          HOME_LIVE_URL: ${{ inputs.home_live_url }}
+          HOME_FALLBACK_URL: ${{ inputs.home_fallback_url }}
+          HOME_MODE: ${{ inputs.home_mode }}
         run: |
-          echo "home-sync $SERVICE_NAME"
-          # 后续: 读取 Coolify 该应用的 FQDN, 生成 LinzeHomeHub projects.json 卡片,
-          #       production 健康后自动出现在 home.linzezhang.com。
+          set -euo pipefail
+          if [ -z "${GITHUB_TOKEN:-}" ]; then
+            echo "未配置 HOME_SYNC_TOKEN, 跳过 home 同步 (非致命)"; exit 0
+          fi
+          python3 GOLDEN_PATH/tools/home_sync.py \
+            --id "$SERVICE_NAME" \
+            --name "${HOME_NAME:-$SERVICE_NAME}" \
+            --category "$HOME_CATEGORY" \
+            --summary "$HOME_SUMMARY" \
+            --live-url "$HOME_LIVE_URL" \
+            --fallback-url "$HOME_FALLBACK_URL" \
+            --mode "$HOME_MODE"

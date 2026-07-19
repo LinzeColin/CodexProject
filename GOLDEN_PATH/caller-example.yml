@@ -1,14 +1,24 @@
-# 放到某个可部署仓的 .github/workflows/deploy.yml
+# 放到任意可部署仓的 .github/workflows/deploy.yml
+# 达到「开发完成定义」后, push 到 main 即自动: verify -> 部署到云 -> (可选) home 挂链接。
 name: deploy
 on:
   push:
     branches: [main]
+
 jobs:
   golden-path:
     uses: LinzeColin/CodexProject/.github/workflows/linze-golden-path.reusable.yml@main
     with:
-      service_name: my-service
-      coolify_app_uuid: "<Coolify 预建的 app uuid>"
+      service_name: my-service                    # = linze-service.yaml 的 service_id
+      coolify_app_uuid: "REPLACE_WITH_COOLIFY_UUID"
+      # ↓ 可选: 提供 home_live_url 即自动在 home.linzezhang.com 生成跳转卡片
+      home_live_url: "https://my-service.linzezhang.com"
+      home_name: "我的服务"
+      home_category: "Cloud Service"
+      home_summary: "一句话简介"
+      home_fallback_url: "https://github.com/LinzeColin/MyRepo"
+      home_mode: "voyage"
     secrets:
       COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
       COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+      HOME_SYNC_TOKEN: ${{ secrets.HOME_SYNC_TOKEN }}   # 可选; 缺失则跳过 home 同步
