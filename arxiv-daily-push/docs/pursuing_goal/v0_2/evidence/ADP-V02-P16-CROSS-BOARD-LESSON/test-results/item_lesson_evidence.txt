@@ -1,0 +1,14 @@
+抽取自: /private/tmp/claude-501/-Users-linzezhang-Documents-Codex-main-worktree-CodexProject-adp/6c611ddc-f264-4d55-9b19-b0f39a03415d/scratchpad/recover/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+  ✅ [board3 政策(无摘要,如国务院批复)] 修复后现算八段讲义非空
+     ↳ 负控成立:旧逻辑此条产出空盒 <p></p>（正是线上观察到的缺陷）
+  ✅ [board2 期刊(无摘要)] 修复后现算八段讲义非空
+     ↳ 负控成立:旧逻辑此条产出空盒 <p></p>（正是线上观察到的缺陷）
+  ✅ [board1 arXiv(正常摘要)] 修复后现算八段讲义非空
+  ✅ 发货源 itemPage+reviewPage 均有现算回退(2 处)
+
+PASS: 每板块每条目都有非空讲义,负控证明旧逻辑对无摘要条目产空盒。
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.047s
+
+OK

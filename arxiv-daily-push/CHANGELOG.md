@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 P16: 每板块每条目都有讲义（跨板块空盒修复） (PRODUCTION DEPLOY e8d9f0c0fe59; product_version 0.37.0)
+- 挑剔地看**线上**知识库时发现：board-2(期刊)/board-3(政策) 条目的 item 页与复习页「显示答案/讲义」
+  揭示的是**空盒 `<p></p>`**——用户对着空内容做主动回忆。根因：`makeLesson` 只为每日 pick 生成讲义，
+  非 pick 的板块二/三/四条目 `cn_lessons` 无行，渲染退回 `lesson ? lessonHTML : <p>{summary}</p>`，
+  而政策/期刊条目摘要为空 → `<p></p>`。这是「多板块/权威/深度」的系统性缺陷（非 arXiv 板块是多板块系统的一半意义）。
+- 修：itemPage 与 reviewPage 无存储讲义时 `lesson = stored || { sections_json: JSON.stringify(buildLesson(item)) }`
+  ——确定性**现算**八段讲义（走 P15 去重后的 buildLesson，摘要空则回退为可读提示）；复习页 SELECT 补
+  `i.categories, i.board_id` 供 buildLesson。纯展示层：零 DB 写、零外部调用、确定性。
+- 线上即时验证：board-3 政策项 revealBox 从 `<p></p>` → 482 字符完整八段；board-2 期刊同；board-1 不变。
+- 验证器 `tools/verify_item_lesson_fallback.mjs` 抽取**已部署** buildLesson 实跑，负控证明旧逻辑对无摘要条目产空盒。
+  Python 守卫 `tests/governance/test_adp_item_lesson_fallback.py` 静态钉两处 fallback + reviewPage SELECT 补字段。
+
 ## 2026-07-18 Australia/Sydney - ADP V0.2 P15: 讲义八段跨段逐字去重 (PRODUCTION DEPLOY e6b266d0874b; product_version 0.36.0)
 - 挑剔地看**线上**今日讲义发现：第 3 段「机制拆解」最后一句与第 4 段「证据与数字」**一字不差重复**。
   根因 `buildLesson` 各段从**重叠句池**取句（机制拆解=`sents.slice(2,5)`、证据与数字=含数字句、

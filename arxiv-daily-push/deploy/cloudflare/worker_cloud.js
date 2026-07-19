@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: 'e6b266d0874b', source_sha256: 'e6b266d0874bb22f45c32af9e1e85ba96360d03459372669b028a562b461fcda', schema_version: 'cn_v0_3', built_at: '2026-07-18' };
+const BUILD = { build_id: 'e8d9f0c0fe59', source_sha256: 'e8d9f0c0fe599a90ae7ed07ce98d188930b82ab2f5259c88b7c691ff1c0f6df8', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1604,11 +1604,12 @@ async function reviewPage(env) {
   const now = nowISO();
   const v = await computeVitals(env);
   const dueRow = await env.DB.prepare(
-    "SELECT r.*, i.title, i.summary, i.url FROM cn_reviews r JOIN cn_items i ON i.id=r.item_id WHERE r.due_at<=? AND r.reps>0 ORDER BY r.due_at ASC LIMIT 1").bind(now).first();
+    "SELECT r.*, i.title, i.summary, i.url, i.categories, i.board_id FROM cn_reviews r JOIN cn_items i ON i.id=r.item_id WHERE r.due_at<=? AND r.reps>0 ORDER BY r.due_at ASC LIMIT 1").bind(now).first();
   let body = vitalsCard(v);
   if (dueRow) {
-    const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
-    const reveal = lesson ? lessonHTML(lesson) : `<p>${esc((dueRow.summary || '').slice(0, 500))}</p>`;
+    const stored = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
+    // 无存储讲义则确定性现算(同 itemPage),让板块二/三/四到期卡也有八段讲义可复习,而非空盒
+    const reveal = lessonHTML(stored || { sections_json: JSON.stringify(buildLesson(dueRow)) });
     body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(dueRow.title)}</h1>
       <p class="mt"><a href="${safeHref(dueRow.url)}" rel="noopener">原文</a> · <a href="/item/${encodeURIComponent(dueRow.item_id)}">详情</a></p>
       <p style="margin:4px 0 0">${deepDiveBtn(dueRow)}</p></div>`;
@@ -1897,7 +1898,10 @@ async function historyPage(env) {
 async function itemPage(env, id) {
   const item = await env.DB.prepare("SELECT * FROM cn_items WHERE id=?").bind(id).first();
   if (!item) return null;
-  const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(id).first();
+  const stored = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(id).first();
+  // 无存储讲义(板块二/三/四条目从不当每日 pick、cn_lessons 无行)则确定性现算,保证每板块每条目都有八段讲义
+  // (走 P15 去重后的 buildLesson)。纯展示层:零 DB 写、零外部调用、确定性;摘要为空时 buildLesson 回退为可读提示。
+  const lesson = stored || { sections_json: JSON.stringify(buildLesson(item)) };
   const review = await env.DB.prepare("SELECT * FROM cn_reviews WHERE item_id=?").bind(id).first();
   await attachMeta(env, [item]);
   let body = `<div class="card"><p class="mt"><a href="/board/${esc(item.board_id)}">← ${esc(BOARD_NAMES[item.board_id] || item.board_id)}</a></p>

@@ -1,0 +1,6 @@
+# ADP-V02-P16 变更文件(3 个核心代码文件;治理/证据/manifest 另计)
+
+ arxiv-daily-push/deploy/cloudflare/worker_cloud.js | 14 ++--
+ .../tools/verify_item_lesson_fallback.mjs          | 63 ++++++++++++++
+ tests/governance/test_adp_item_lesson_fallback.py  | 97 ++++++++++++++++++++++
+ 3 files changed, 169 insertions(+), 5 deletions(-)

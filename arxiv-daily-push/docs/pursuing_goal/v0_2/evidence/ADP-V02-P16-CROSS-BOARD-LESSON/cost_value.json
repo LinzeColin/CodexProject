@@ -1,0 +1,20 @@
+{
+  "task": "ADP-V02-P16-CROSS-BOARD-LESSON",
+  "program": "ADP V0.2 / 多板块 / 权威 / 深度",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "e6b266d0874b",
+  "live_build_after": "e8d9f0c0fe59",
+  "deploy_version_id": "531a40fe-bbea-4fc8-ab37-e0f521f98760",
+  "objective": "挑剔看线上知识库发现 board-2(期刊)/board-3(政策)条目 item 页与复习页『显示答案/讲义』揭示的是空盒<p></p>——用户对着空内容做主动回忆。根因 makeLesson 只为每日 pick 生成讲义,非 pick 的板块二三四条目 cn_lessons 无行,渲染退回 lesson?lessonHTML:<p>{summary}</p>,而政策/期刊摘要空→<p></p>。多板块/权威/深度的系统性缺陷(非 arXiv 板块是多板块系统一半意义)。",
+  "what": "itemPage 与 reviewPage 无存储讲义时 lesson=stored||{sections_json:JSON.stringify(buildLesson(item))} 确定性现算(走 P15 去重版 buildLesson,摘要空则可读回退);复习页 SELECT 补 i.categories,i.board_id 供 buildLesson。纯展示层:零 DB 写、零外部调用、确定性;itemPage 讲义卡也对每条目显示。",
+  "honest_scope": "现算讲义对无摘要条目是可读回退提示,非从无到有编内容(buildLesson 抽不到就回退,绝不臆造)。只改渲染;不动抓取/选择/排程/DB;历史存储讲义不受影响,但现算路径永远走最新 buildLesson。未改 makeLesson『只为 pick 生成存储讲义』策略——现算回退已覆盖展示,无需为每条目写库(省 D1 写、避 DIR-007 子请求)。",
+  "verifier": "tools/verify_item_lesson_fallback.mjs 抽取已部署 buildLesson 实跑3夹具(board-3 政策无摘要/board-2 期刊无摘要/board-1 arXiv 正常),断言现算八段非空;负控逐字复现旧 reveal 选取逻辑证明它对无摘要条目产空盒<p></p>;静态断言发货源 itemPage+reviewPage 均含现算回退(>=2)。3/3+负控+静态过 exit0。",
+  "ci_guard": "tests/governance/test_adp_item_lesson_fallback.py 静态钉两处 fallback+reviewPage SELECT 补 categories/board_id;负控在逐字 pre-fix 源触发(缺 fallback+瘦 JOIN);node 在场另跑行为验证器(CI push 无 node 自动 skip)。",
+  "value": "每板块每条目都有非空讲义,消除跨板块空盒。非 arXiv 板块(期刊/政策/金融)——多板块系统一半意义——现在也有可复习内容。系统性修复(整类无讲义条目),非一次性。",
+  "verification": "线上 /build.json=e8d9f0c0fe59;★即时线上验证(不需等 cron):board-3 政策项 revealBox 从<p></p>(7字符)→482字符完整八段,board-2 期刊同,board-1 arXiv 不变★;验证器 exit0(3夹具+负控);Python 守卫 4/4;node --check 通过。",
+  "adversarial_review": "CONFIRMED_SOUND(独立复核亲手 curl 线上验证 board-2/3 revealBox 非空八段+破坏测试:删 itemPage 现算回退→验证器与 Python 守卫双 FAIL 证明静态断言承重;独立复算 content_tree_hash 逐字相等、自哈希自洽、边界诚实、无自签无造假;实施者未自签)。",
+  "residual_risks": ["现算讲义每次渲染都跑一遍 buildLesson(纯字符串处理,对无摘要条目更快;单次 item/review 请求可忽略,不进 cron 热路径)。","无摘要条目八段全是回退提示,信息量有限——但如实标注『摘要过短请精读』,优于空盒;真正内容需 Owner 决定是否为这些源接入正文抓取(门控)。"],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 e6b266d0874b。纯展示层现算回退,回退无数据影响(仅回到空盒渲染)。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

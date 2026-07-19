@@ -1,0 +1,213 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 74cac236c..87263724f 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: 'e6b266d0874b', source_sha256: 'e6b266d0874bb22f45c32af9e1e85ba96360d03459372669b028a562b461fcda', schema_version: 'cn_v0_3', built_at: '2026-07-18' };
++const BUILD = { build_id: 'e8d9f0c0fe59', source_sha256: 'e8d9f0c0fe599a90ae7ed07ce98d188930b82ab2f5259c88b7c691ff1c0f6df8', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -1604,11 +1604,12 @@ async function reviewPage(env) {
+   const now = nowISO();
+   const v = await computeVitals(env);
+   const dueRow = await env.DB.prepare(
+-    "SELECT r.*, i.title, i.summary, i.url FROM cn_reviews r JOIN cn_items i ON i.id=r.item_id WHERE r.due_at<=? AND r.reps>0 ORDER BY r.due_at ASC LIMIT 1").bind(now).first();
++    "SELECT r.*, i.title, i.summary, i.url, i.categories, i.board_id FROM cn_reviews r JOIN cn_items i ON i.id=r.item_id WHERE r.due_at<=? AND r.reps>0 ORDER BY r.due_at ASC LIMIT 1").bind(now).first();
+   let body = vitalsCard(v);
+   if (dueRow) {
+-    const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
+-    const reveal = lesson ? lessonHTML(lesson) : `<p>${esc((dueRow.summary || '').slice(0, 500))}</p>`;
++    const stored = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
++    // 无存储讲义则确定性现算(同 itemPage),让板块二/三/四到期卡也有八段讲义可复习,而非空盒
++    const reveal = lessonHTML(stored || { sections_json: JSON.stringify(buildLesson(dueRow)) });
+     body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(dueRow.title)}</h1>
+       <p class="mt"><a href="${safeHref(dueRow.url)}" rel="noopener">原文</a> · <a href="/item/${encodeURIComponent(dueRow.item_id)}">详情</a></p>
+       <p style="margin:4px 0 0">${deepDiveBtn(dueRow)}</p></div>`;
+@@ -1897,7 +1898,10 @@ async function historyPage(env) {
+ async function itemPage(env, id) {
+   const item = await env.DB.prepare("SELECT * FROM cn_items WHERE id=?").bind(id).first();
+   if (!item) return null;
+-  const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(id).first();
++  const stored = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(id).first();
++  // 无存储讲义(板块二/三/四条目从不当每日 pick、cn_lessons 无行)则确定性现算,保证每板块每条目都有八段讲义
++  // (走 P15 去重后的 buildLesson)。纯展示层:零 DB 写、零外部调用、确定性;摘要为空时 buildLesson 回退为可读提示。
++  const lesson = stored || { sections_json: JSON.stringify(buildLesson(item)) };
+   const review = await env.DB.prepare("SELECT * FROM cn_reviews WHERE item_id=?").bind(id).first();
+   await attachMeta(env, [item]);
+   let body = `<div class="card"><p class="mt"><a href="/board/${esc(item.board_id)}">← ${esc(BOARD_NAMES[item.board_id] || item.board_id)}</a></p>
+diff --git a/arxiv-daily-push/tools/verify_item_lesson_fallback.mjs b/arxiv-daily-push/tools/verify_item_lesson_fallback.mjs
+new file mode 100644
+index 000000000..4e773fe54
+--- /dev/null
++++ b/arxiv-daily-push/tools/verify_item_lesson_fallback.mjs
+@@ -0,0 +1,63 @@
++#!/usr/bin/env node
++// 载荷型再推导验证器：证明【每个板块每个条目都有可读讲义】——item/复习页无存储讲义时确定性现算
++// buildLesson,而非旧行为的空盒 `<p></p>`。抽取【已部署】worker_cloud.js 的 splitSentences+buildLesson
++// 实跑;负控：逐字复现旧的 reveal 选取逻辑,证明它对【无摘要且无存储讲义】的板块二/三/四条目产出空盒。
++// 跑法：node arxiv-daily-push/tools/verify_item_lesson_fallback.mjs   退出 0=全过。不改数据、不联网。
++import fs from 'node:fs';
++import path from 'node:path';
++import url from 'node:url';
++
++const HERE = path.dirname(url.fileURLToPath(import.meta.url));
++const WORKER = path.resolve(HERE, '..', 'deploy', 'cloudflare', 'worker_cloud.js');
++const BOARD_NAMES = { 1: '板块一', 2: '板块二', 3: '板块三', 4: '板块四' };
++const SRC = fs.readFileSync(WORKER, 'utf8');
++
++function loadShipped() {
++  const start = SRC.indexOf('function splitSentences');
++  const end = SRC.indexOf('async function makeLesson');
++  if (start < 0 || end < 0 || end <= start) throw new Error('无法定位 splitSentences..makeLesson——锚点变了,改验证器别让它空过');
++  // eslint-disable-next-line no-new-func
++  return new Function('BOARD_NAMES', SRC.slice(start, end) + '\n return { buildLesson, splitSentences };')(BOARD_NAMES);
++}
++
++// 现网 reveal 选取：新(现算回退) vs 旧(空盒)。lessonHTML 用不到,这里只判「内容是否为空」。
++function newRevealNonEmpty(stored, item, buildLesson) {
++  const lesson = stored || { sections_json: JSON.stringify(buildLesson(item)) };
++  const secs = JSON.parse(lesson.sections_json);
++  // 八段每段至少一句(含回退)→ 现算讲义永不空
++  return secs.length === 8 && secs.every(s => s.sentences && s.sentences.length >= 1);
++}
++function oldRevealInner(stored, item) {
++  // 逐字复现修复前 itemPage/reviewPage 的三元选取(stored 存在才渲染,否则退摘要 500 字)
++  return stored ? '<<lessonHTML>>' : `<p>${(item.summary || '').slice(0, 500)}</p>`;
++}
++
++const { buildLesson } = loadShipped();
++const FIXTURES = [
++  { name: 'board3 政策(无摘要,如国务院批复)', it: { title: '国务院关于《扩大消费"十五五"规划》的批复', board_id: 3, categories: '', summary: '' }, emptyOld: true },
++  { name: 'board2 期刊(无摘要)',            it: { title: 'Exogenous creatine promotes tumor metastasis', board_id: 2, categories: '', summary: '' }, emptyOld: true },
++  { name: 'board1 arXiv(正常摘要)',         it: { title: 'NRR-Core', board_id: 1, categories: 'cs.CL,cs.AI', summary: 'Systems that optimize a single output risk losing ambiguity. With incomplete context, interpretations compress prematurely. We specify NRR as an interface. It reports H = 0.91 bits in a synthetic task.' }, emptyOld: false },
++];
++
++let fail = 0;
++console.log('抽取自:', WORKER);
++for (const fx of FIXTURES) {
++  // 1) 修复后:无存储讲义也非空(八段齐、每段有句)
++  const okNew = newRevealNonEmpty(null, fx.it, buildLesson);
++  // 2) 负控:旧逻辑对无摘要条目产出空盒 `<p></p>`
++  const oldInner = oldRevealInner(null, fx.it);
++  const oldEmpty = oldInner === '<p></p>';
++  if (!okNew) { fail++; console.log(`  ❌ [${fx.name}] 修复后现算讲义仍空/不足八段`); }
++  else console.log(`  ✅ [${fx.name}] 修复后现算八段讲义非空`);
++  if (fx.emptyOld) {
++    if (!oldEmpty) { fail++; console.log(`  ❌ [${fx.name}] 负控失效:旧逻辑本应产空盒却没有(${oldInner.slice(0,40)})——夹具不判别,修复无意义`); }
++    else console.log(`     ↳ 负控成立:旧逻辑此条产出空盒 <p></p>（正是线上观察到的缺陷）`);
++  }
++}
++// 3) 静态:发货源 itemPage 与 reviewPage 都必须有现算回退,否则某一页仍空
++const fallbackCount = (SRC.match(/stored \|\| \{ sections_json: JSON\.stringify\(buildLesson\(/g) || []).length;
++if (fallbackCount < 2) { fail++; console.log(`  ❌ 发货源现算回退只出现 ${fallbackCount} 次(应 >=2: itemPage + reviewPage)`); }
++else console.log(`  ✅ 发货源 itemPage+reviewPage 均有现算回退(${fallbackCount} 处)`);
++
++console.log(fail === 0 ? '\nPASS: 每板块每条目都有非空讲义,负控证明旧逻辑对无摘要条目产空盒。' : `\nFAIL: ${fail} 项`);
++process.exit(fail === 0 ? 0 : 1);
+diff --git a/tests/governance/test_adp_item_lesson_fallback.py b/tests/governance/test_adp_item_lesson_fallback.py
+new file mode 100644
+index 000000000..961d1f99b
+--- /dev/null
++++ b/tests/governance/test_adp_item_lesson_fallback.py
+@@ -0,0 +1,97 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Guard: every item — on ANY board — renders a lesson, never an empty box.
++
++P16 found (by browsing the LIVE site) that board-2/3/4 items showed an EMPTY `<div id=revealBox><p></p>`
++in both the /item page and the /review flow: `makeLesson` only runs for the daily PICK, so non-picked
++items (journals/policy/finance) have no `cn_lessons` row, and the render fell back to
++`lesson ? lessonHTML(lesson) : <p>{summary}</p>` — which for a summary-less policy/journal item is
++`<p></p>`. A user doing active-recall review of such a card had nothing to recall.
++
++The fix makes both render paths fall back to an ON-THE-FLY deterministic `buildLesson(item)` (no DB
++write, no external call, uses the P15-deduped builder) when there is no stored lesson:
++`const lesson = stored || { sections_json: JSON.stringify(buildLesson(item)) }`. `buildLesson` returns
++8 sections whose per-section fallbacks are readable prompts even when the summary is empty, so every
++item on every board now has a non-empty lesson.
++
++CI push has no Node, so the load-bearing behavioural proof lives in
++`arxiv-daily-push/tools/verify_item_lesson_fallback.mjs` (extracts the shipped buildLesson, proves the
++on-the-fly lesson is non-empty for a summary-less board-2/3 item, and via negative control proves the
++PRE-FIX selection yields the empty `<p></p>` box). This Python guard pins the fix statically and proves
++non-vacuity by flagging the exact pre-fix code.
++"""
++import pathlib
++import re
++import shutil
++import subprocess
++import unittest
++
++ROOT = pathlib.Path(__file__).resolve().parents[2]
++WORKER = ROOT / "arxiv-daily-push" / "deploy" / "cloudflare" / "worker_cloud.js"
++VERIFIER = ROOT / "arxiv-daily-push" / "tools" / "verify_item_lesson_fallback.mjs"
++
++FALLBACK_RE = re.compile(r"stored \|\| \{ sections_json: JSON\.stringify\(buildLesson\(")
++
++# Exact pre-fix render selection (item page + review page) — the code that shipped the empty box.
++PRE_FIX_SNIPPET = r"""
++  const lesson = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ...").bind(id).first();
++  if (lesson) body += `<div class="card"><h2>讲义</h2>${lessonHTML(lesson)}</div>`;
++  if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc((item.summary || '').slice(0, 500))}</p>`, null);
++  // review page:
++    "SELECT r.*, i.title, i.summary, i.url FROM cn_reviews r JOIN cn_items i ON i.id=r.item_id ...";
++    const reveal = lesson ? lessonHTML(lesson) : `<p>${esc((dueRow.summary || '').slice(0, 500))}</p>`;
++"""
++
++
++def _fallback_violations(src):
++    """Defects that would let an item render an empty lesson box. Empty == fixed."""
++    v = []
++    n = len(FALLBACK_RE.findall(src))
++    if n < 2:
++        v.append("on-the-fly buildLesson fallback appears {}x; need >=2 (itemPage + reviewPage) or a "
++                 "board-2/3/4 item with no stored lesson renders an empty <p></p> box".format(n))
++    # the review page JOIN must expose categories+board_id, or buildLesson(dueRow) loses 领域脉络/板块 fallback
++    review_join = re.search(r"SELECT r\.\*, i\.title, i\.summary, i\.url(.*?)FROM cn_reviews r JOIN cn_items i", src)
++    if review_join:
++        cols = review_join.group(1)
++        if "i.categories" not in cols or "i.board_id" not in cols:
++            v.append("review-page JOIN does not select i.categories+i.board_id, so buildLesson(dueRow) "
++                     "cannot build 领域脉络/board fallbacks for a summary-less due card")
++    return v
++
++
++class TestAdpItemLessonFallback(unittest.TestCase):
++    def setUp(self):
++        self.assertTrue(WORKER.is_file(), "deployed worker missing: {}".format(WORKER))
++        self.src = WORKER.read_text(encoding="utf-8")
++
++    def test_shipped_worker_has_onthefly_fallback(self):
++        self.assertEqual(
++            _fallback_violations(self.src), [],
++            "shipped worker can still render an empty lesson box on some board -- see violations above.")
++
++    def test_negative_control_prefix_code_is_flagged(self):
++        """Non-vacuity: the detector MUST fire on the exact pre-fix code (no fallback, thin JOIN)."""
++        viols = _fallback_violations(PRE_FIX_SNIPPET)
++        self.assertTrue(viols, "detector did not flag the pre-fix code -- it under-checks and could pass "
++                               "a regressed worker vacuously.")
++        # specifically both the missing-fallback and the thin-JOIN defects must be caught
++        self.assertTrue(any("fallback appears 0x" in v or "appears 0x" in v for v in viols),
++                        "detector missed the absent on-the-fly fallback in pre-fix code: {}".format(viols))
++
++    def test_behavioural_verifier_exists(self):
++        self.assertTrue(VERIFIER.is_file(), "behavioural verifier missing: {}".format(VERIFIER))
++        body = VERIFIER.read_text(encoding="utf-8")
++        self.assertIn("newRevealNonEmpty", body, "verifier lost its non-empty check")
++        self.assertIn("oldRevealInner", body, "verifier lost its empty-box negative control")
++
++    @unittest.skipUnless(shutil.which("node"), "node not on PATH (CI push path); behavioural check runs locally")
++    def test_behavioural_verifier_passes(self):
++        r = subprocess.run(["node", str(VERIFIER)], capture_output=True, text=True, timeout=60, cwd=str(ROOT))
++        self.assertEqual(r.returncode, 0,
++                         "behavioural verifier failed:\nSTDOUT:\n{}\nSTDERR:\n{}".format(r.stdout, r.stderr))
++        self.assertIn("负控成立", r.stdout, "negative controls did not fire -- assertion not load-bearing")
++
++
++if __name__ == "__main__":
++    unittest.main()

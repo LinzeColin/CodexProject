@@ -1,0 +1,135 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P16-CROSS-BOARD-LESSON-20260719",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P16-CROSS-BOARD-LESSON",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260719-ADP-MULTIBOARD-AUTHORITY",
+  "generated_at": "2026-07-19T14:00:00Z",
+  "implementation_base_sha": "ac011820f3e4f376bc3c66c299101d1d2e889504",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2fae784dfdc4ad41027b9291a4ed379fd6743cd4f9481a6fb64d849b51f28fd1",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 21 non-manifest changed files; changed_files_* list all 22 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P16: 每板块每条目都有讲义(跨板块空盒修复);验证器抽取已部署 buildLesson 实跑+负控证明旧逻辑产空盒;线上即时验证 board-3 revealBox <p></p>→482字符八段;独立对抗复核待返回(不自签)。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (独立对抗复核亲手 curl 线上验证 board-2/3 revealBox 非空八段+破坏测试:删 itemPage 现算回退→验证器与 Python 守卫双 FAIL 证明静态断言承重;独立复算 content_tree_hash 逐字相等、自哈希自洽、边界诚实、无自签无造假;实施者未自签)",
+  "summary": "挑剔看线上知识库发现 board-2(期刊)/board-3(政策)条目 item/复习页『显示讲义』是空盒<p></p>——用户对空内容做主动回忆。根因 makeLesson 只为每日 pick 生成讲义,非 pick 的板块二三四条目 cn_lessons 无行,渲染退回 lesson?lessonHTML:<p>{summary}</p>,政策/期刊摘要空→<p></p>。修:itemPage/reviewPage 无存储讲义时 lesson=stored||{sections_json:JSON.stringify(buildLesson(item))} 确定性现算(走 P15 去重版,摘要空则可读回退),复习页 SELECT 补 i.categories/i.board_id。纯展示层零 DB 写零外部调用。线上即时验证 board-3 revealBox <p></p>(7字符)→482字符完整八段。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/item_lesson_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/live_board3_revealbox.html",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/verify_item_lesson_fallback.mjs",
+    "arxiv-daily-push/tools/verify_item_lesson_fallback.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P16-CROSS-BOARD-LESSON-20260719.json",
+    "tests/governance/test_adp_item_lesson_fallback.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/item_lesson_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/live_board3_revealbox.html",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/verify_item_lesson_fallback.mjs",
+    "arxiv-daily-push/tools/verify_item_lesson_fallback.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P16-CROSS-BOARD-LESSON-20260719.json",
+    "tests/governance/test_adp_item_lesson_fallback.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_item_lesson_fallback.py",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_item_lesson_fallback.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/item_lesson_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P16-CROSS-BOARD-LESSON/test-results/live_board3_revealbox.html"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/tools/verify_item_lesson_fallback.mjs",
+    "python3 -m unittest tests.governance.test_adp_item_lesson_fallback",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "verify_item_lesson_fallback.mjs(抽取已部署 buildLesson,3 夹具)",
+      "result": "PASS",
+      "detail": "board-3/2 无摘要项现算八段非空+负控证明旧逻辑产空盒<p></p>;board-1 正常;发货源2处 fallback。"
+    },
+    {
+      "command": "test_adp_item_lesson_fallback.py",
+      "result": "PASS",
+      "detail": "4/4:静态钉两处 fallback+reviewPage SELECT 补字段+负控在 pre-fix 源触发+行为验证器(本地 node)。"
+    },
+    {
+      "command": "生产部署+线上即时验证",
+      "result": "PASS",
+      "detail": "Version 531a40fe;/build.json=e8d9f0c0fe59;board-3 revealBox <p></p>→482字符八段,board-2 同,board-1 不变。"
+    }
+  ],
+  "stop_conditions": [
+    "★每板块每条目都必须有非空讲义★:itemPage/reviewPage 无存储讲义要现算 buildLesson,别退回可能为空的裸摘要。",
+    "现算讲义只在展示层:别顺手把它写进 cn_lessons(会引入 D1 写、碰 DIR-007 子请求预算)。",
+    "reviewPage SELECT 必须带 i.categories/i.board_id,否则 buildLesson(dueRow) 的领域脉络/板块回退缺字段。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <prev> 回 e6b266d0874b。",
+    "repo": "git revert 本 commit。纯展示层现算,回退仅回到空盒渲染,无数据影响。"
+  },
+  "unresolved_risks": [
+    "无摘要条目八段全回退提示,信息量有限(如实标注,优于空盒);真正正文需 Owner 决定是否为这些源接入抓取(门控)。",
+    "每次 item/review 渲染跑一遍 buildLesson(纯字符串,单请求可忽略,不进 cron 热路径)。"
+  ],
+  "next_allowed_task": "Owner 可决定是否为板块二/三/四源接入正文抓取(让现算讲义有真内容);或指下一方向。"
+}
