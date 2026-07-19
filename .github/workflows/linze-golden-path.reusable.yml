@@ -67,37 +67,108 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-      - name: 契约与测试占位
-        env:
-          SERVICE_NAME: ${{ inputs.service_name }}   # 不可信输入走 env, 不直接拼进 run (供应链/注入纪律)
+
+      # 硬 Gate 1: 明文 Secret 扫描 —— 命中即阻断部署
+      - name: Secret 扫描 (硬阻断)
         run: |
-          echo "verify service=$SERVICE_NAME"
-          # 各仓在此接入自身 lint/test/契约校验; 失败即阻断部署 (Gate)。
+          set -uo pipefail
+          PAT='BEGIN (RSA|OPENSSH|DSA|EC|PGP) PRIVATE KEY|ghp_[A-Za-z0-9]{30,}|gho_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|nskey_live_[A-Za-z0-9]{20,}|cfut_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}'
+          HITS=$(grep -rInE "$PAT" . \
+            --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv --exclude-dir=dist \
+            --exclude='*.lock' --exclude='package-lock.json' --exclude='*.min.js' \
+            --exclude='linze-golden-path.reusable.yml' 2>/dev/null | head -20 || true)
+          if [ -n "$HITS" ]; then
+            echo "::error::检测到疑似明文 Secret, 阻断部署:"; echo "$HITS"; exit 1
+          fi
+          echo "Secret 扫描通过"
+
+      # 硬 Gate 2: 项目自检 (按语言识别; 有 lint/test/build 就必须过)
+      - name: 项目自检
+        env:
+          SERVICE_NAME: ${{ inputs.service_name }}
+        run: |
+          set -uo pipefail
+          echo "自检 service=$SERVICE_NAME"
+          RC=0
+          if [ -f package.json ]; then
+            echo "-- Node --"
+            npm ci --no-audit --no-fund || npm install --no-audit --no-fund || RC=1
+            for S in lint test build; do
+              if node -e "const s=require('./package.json').scripts||{};process.exit(s['"'"'$S'"'"']?0:1)" 2>/dev/null; then
+                echo "运行 npm run $S"; npm run "$S" || RC=1
+              else echo "(无 $S 脚本, 跳过)"; fi
+            done
+          fi
+          if [ -f pyproject.toml ] || [ -f requirements.txt ] || ls *.py >/dev/null 2>&1; then
+            echo "-- Python 语法门 --"
+            python3 -m compileall -q . >/dev/null 2>&1 || { echo "::error::Python 语法检查失败"; RC=1; }
+          fi
+          [ "$RC" -eq 0 ] || { echo "::error::项目自检失败, 阻断部署"; exit 1; }
+          echo "项目自检通过"
 
   deploy:
     needs: verify
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
-      - name: 触发 Coolify 部署 (不可变版本)
+      - name: 触发 Coolify 部署
+        id: trigger
         env:
           BASE: ${{ secrets.COOLIFY_BASE_URL }}
           TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
           APP: ${{ inputs.coolify_app_uuid }}
         run: |
           set -euo pipefail
-          echo "触发部署: $APP"
-          resp=$(curl -fsSL -X GET \
-            -H "Authorization: Bearer $TOKEN" \
-            "$BASE/api/v1/deploy?uuid=$APP&force=false")
+          resp=$(curl -fsSL -H "Authorization: Bearer $TOKEN" "$BASE/api/v1/deploy?uuid=$APP&force=false")
           echo "$resp"
-          echo "$resp" | grep -q deployment_uuid || { echo "部署未入队"; exit 1; }
+          UUID=$(printf '%s' "$resp" | python3 -c "import sys,json;d=json.load(sys.stdin);print((d.get('deployments') or [{}])[0].get('deployment_uuid',''))")
+          [ -n "$UUID" ] || { echo "::error::部署未入队"; exit 1; }
+          echo "uuid=$UUID" >> "$GITHUB_OUTPUT"
+
+      # 硬 Gate 3: 部署必须真成功
+      - name: 等待部署完成
+        env:
+          BASE: ${{ secrets.COOLIFY_BASE_URL }}
+          TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+          DUUID: ${{ steps.trigger.outputs.uuid }}
+        run: |
+          set -uo pipefail
+          for i in $(seq 1 60); do
+            ST=$(curl -fsSL -H "Authorization: Bearer $TOKEN" "$BASE/api/v1/deployments/$DUUID" 2>/dev/null | python3 -c "import sys,json;print(json.load(sys.stdin).get('status',''))" 2>/dev/null || echo "")
+            echo "[$i] 部署状态: ${ST:-查询中}"
+            case "$ST" in
+              finished|success) echo "部署成功"; exit 0 ;;
+              failed|error|cancelled) echo "::error::部署失败 ($ST)"; exit 1 ;;
+            esac
+            sleep 20
+          done
+          echo "::error::部署超时"; exit 1
+
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ inputs.home_live_url != '' }}
+    steps:
+      # 硬 Gate 4: 线上冒烟 —— 外部真可达才允许挂 home 链接 (不制造死链)
+      - name: 外部健康冒烟
+        env:
+          URL: ${{ inputs.home_live_url }}
+        run: |
+          set -uo pipefail
+          for i in $(seq 1 15); do
+            CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "$URL" 2>/dev/null || echo 000)
+            echo "[$i] $URL -> $CODE"
+            case "$CODE" in 2*|3*) echo "冒烟通过"; exit 0 ;; esac
+            sleep 15
+          done
+          echo "::error::线上冒烟失败, 不挂 home 链接"; exit 1
 
   home-sync:
-    needs: deploy
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # 仅当提供了 liveUrl 且配置了写 token 时才同步 home
