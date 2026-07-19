@@ -1,0 +1,24 @@
+{
+  "task": "ADP-V02-P18-TITLE-DEMATH",
+  "program": "ADP V0.2 / 权威 / 深度 / 内容质量",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "9b978f42ee16",
+  "live_build_after": "d0ebaee1f43c",
+  "deploy_version_id": "714fbd7c-bca4-4cc0-950a-5156a5a67dcd",
+  "objective": "P17 审查者留标题面线索;线上实测坐实(/search 里 arxiv:1310.5162 标题裸呈现 $C1$-Genericity,该条 h1 与浏览器 tab 同裸)才动手——verify-real-before-building。",
+  "what": "8 个标题相关面全过 deMath(itemListHTML/radar/真 history 列表行、item/today h1、复习页 h1、tab 渲染点+itemPage tab 传参点;slice 全在 deMath 之后)。不等式盲区修复+启发式收紧:<> 子句为「<=24 字符且无 3+ 字母词才算数学」——审查者对抗用例 $5 < previous high and $9 货币保留,失败方向保守。",
+  "honest_scope": "同 P17 启发式家族:只剥定界符不渲染数学。deepDivePrompt 里标题保留原始 $(喂模型的忠实原文,非展示面)。factsheet 用 title 只做抽取不直渲,无需改。",
+  "lesson_learned": "R1 BLOCK 两硬伤都属实:D1 radar 误标 history、真 history 面漏修且复扫没扫过 /history(声称面≠实际面);D2 不等式夹具双重转义零判别力,且『破坏测试必 FAIL』是未实跑的断言。修正:夹具原始文本+escLike 统一转义+expectNoDollar 硬断言(结构性杜绝),两项破坏测试本轮实跑(FAIL/还原一致);D3『概率为零』改为如实接受风险表述。",
+  "verifier": "verify_lesson_demath.mjs 终版:7 夹具(含审查者对抗用例)+负控+9 静态钉(7 标题 pin),exit0;两项破坏测试实跑 FAIL、还原字节一致。",
+  "ci_guard": "test_adp_lesson_demath.py 5/5;负控 pre-fix 触发 10 项;符集断言拆三子句(基础类+[<>] 子句+散文卫兵 [A-Za-z]{3,})。",
+  "value": "标题——所有列表/详情/tab 的第一眼面——不再有 LaTeX 噪音;不等式数学(arXiv 常见)纳入剥离;权威观感闭环。",
+  "verification": "线上 /build.json=d0ebaee1f43c;6 页复扫(1310.5162/NRR/search/首页/history/radar)裸 $ 全 0;剥后 C1-Genericity/0 < m < d 保留(存证 live_before_after.txt 含 R1 修正链)。",
+  "adversarial_review": "CONFIRMED_SOUND(独立对抗复核 2 轮:R1 BLOCK(D1 radar 误标 history 且真 history 漏修/复扫未含;D2 不等式夹具双重转义空转且破坏测试断言未实跑;D3 概率为零过度声称——全判得对),修正后 R2 CONFIRMED_SOUND(审查者亲手重放两项破坏测试、自造对抗探针确认货币方向保守、确认零预签);未自签)",
+  "residual_risks": [
+    "无空白纯数字 $100$ 会剥(摘要里几乎总是数学)。",
+    "含 <> 且 <=24 字符且恰无 3+ 字母词的货币速记($5<x<10 价格带)理论会被剥——真实语料未见,观察到再收窄;方向已保守(有整词即保留)。"
+  ],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 9b978f42ee16。渲染层纯删字符,回退即恢复。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

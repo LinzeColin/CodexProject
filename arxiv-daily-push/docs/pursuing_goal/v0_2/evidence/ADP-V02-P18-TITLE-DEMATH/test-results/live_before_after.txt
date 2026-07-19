@@ -1,0 +1,12 @@
+线上前后对照(P18 标题面+不等式盲区;含 R1 修正链):
+观察起点: /search 里 arxiv:1310.5162 标题裸呈现 "$C1$-Genericity…";该条 /item h1 与浏览器 tab 同裸。
+第一版(6 面 deMath, build 2b6b0fab7e59): h1/tab/搜索清了,同页仍剩 2 处 '$0 < m < d$'(不等式盲区,线上复验抓出)。
+第二版(符集+<>,build 4f550eb72818): 四页扫零。但独立复核 R1 BLOCK 抓出两硬伤:
+  D1 「history 列表行」实为 radar(1324 行);真 /history 标题行(1895 行 s.title)没修,复扫也没扫过 /history;
+  D2 不等式夹具双重转义永不匹配=零判别力,「符集破坏测试必 FAIL」是实施者未实跑的断言。
+终版(R1 修正, build d0ebaee1f43c):
+  真 history 面 + itemPage tab 传参(slice 挪 deMath 后)补修;<> 启发式收紧(<=24 字符且无 3+ 字母词,
+  审查者对抗用例 'prices moved from $5 < previous high and $9 later' 货币现在保留——失败方向回归保守);
+  验证器夹具改原始文本+escLike 统一转义+expectNoDollar 硬断言;两项破坏测试本轮【实跑】:
+  去 <> 子句→不等式夹具 FAIL(exit1)、history 面回退→history pin FAIL(exit1),还原字节一致。
+  线上复扫 6 页(1310.5162/NRR/search/首页/★history★/radar)裸 $ 全 0;剥后 'C1-Genericity'/'0 < m < d' 保留。

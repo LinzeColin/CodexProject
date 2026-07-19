@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '9b978f42ee16', source_sha256: '9b978f42ee166b1e9b9dbceaa38713214652ef439cfcdfc19b1c1c46e9867d74', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+const BUILD = { build_id: 'd0ebaee1f43c', source_sha256: 'd0ebaee1f43c20d236db07cc85a640428e5246ff74ec8518b36e199f4b80712d', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -1182,7 +1182,7 @@ requestAnimationFrame(step);setTimeout(settle,1500);}
 const FX_LAYERS = `<div class="fx fx-cosmos" aria-hidden="true"><div class="band"></div><div class="neb blue"></div><div class="neb violet"></div><div class="neb teal"></div><div class="stars"></div><div class="stars near"></div><div class="meteor"></div></div><div class="fx fx-minimal" aria-hidden="true"><div class="toplight"></div><div class="vignette"></div></div><div class="fx fx-techno" aria-hidden="true"><div class="cloud" style="top:6%;left:-10%"></div><div class="cloud c2"></div><div class="cloud c3"></div></div><div class="forest-slopes" aria-hidden="true"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,120 L0,70 Q360,10 720,64 T1440,52 L1440,120 Z" fill="#2e7d5b" opacity="0.16"/><path d="M0,120 L0,96 Q480,44 900,92 T1440,84 L1440,120 Z" fill="#3c7ea0" opacity="0.14"/></svg></div>`;
 const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar" data-fx="none" data-hero="none"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${opts.title ? esc(opts.title) + ' · ' : ''}ADP 前沿学习</title>
+<title>${opts.title ? esc(deMath(opts.title)) + ' · ' : ''}ADP 前沿学习</title>
 <meta name="description" content="${esc(META_DESC)}">
 <meta name="theme-color" content="#f3eee1">
 <meta property="og:title" content="ADP 前沿学习"><meta property="og:description" content="${esc(META_DESC)}"><meta property="og:type" content="website">
@@ -1269,7 +1269,7 @@ async function todayPage(env) {
   let body = `<span id="todaymain"></span>` + vitalsCard(v) + `<div class="card"><h2>为什么今天选它</h2><p>${esc(sel.why)}</p>
     <p class="mt">决策日期 ${esc(sel.as_of_date)} · ${esc(BOARD_NAMES[sel.board_id] || sel.board_id || '')}${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p></div>`;
   if (item) {
-    body += `<div class="card"><h1>${esc(item.title)}</h1>
+    body += `<div class="card"><h1>${esc(deMath(item.title))}</h1>
       <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a></p>
       ${factsheetHTML(item)}
       <p style="margin:4px 0 2px">${deepDiveBtn(item)}</p>`;
@@ -1321,7 +1321,7 @@ async function radarPage(env) {
         : `SELECT id, title, url, board_id FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC LIMIT 6`
     ).bind(...(b.id === 'board5' ? [] : [b.id])).all();
     if ((items || []).length) body += `<h3>最新条目</h3><ul class="mt">${items.map(it =>
-      `<li><a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 90))}</a></li>`).join('')}</ul>`;
+      `<li><a href="/item/${encodeURIComponent(it.id)}">${esc(deMath(it.title).slice(0, 90))}</a></li>`).join('')}</ul>`;
     body += `<p style="margin-top:8px"><a class="pill-link" href="/board/${b.id}">查看全部 ${cmap[b.id] || 0} 条 →</a></p></div>`;
   }
   return PAGE('/radar', body, { title: '前沿雷达' });
@@ -1562,9 +1562,9 @@ function deepDiveBtn(item, label) {
 // T084 证据/推断区分：讲义是「依据原文自动生成的结构化推断」，与「原文（证据）」明确区分，避免读者误把推断当原文。
 const PROVENANCE_NOTE = '<p class="mt"><span class="badge">讲义·推断</span> 依据「原文」自动生成的结构化摘要（推断），非原文表述；以原文为准。</p>';
 // 讲义渲染层的轻量 LaTeX 内联数学清理:arXiv 摘要常含 $H=0.91$ 式内联数学,裸 $ 呈现给读者读作生成 bug(损权威)。
-// 只在「像数学」时剥 $ 定界符——内含 =\^_{} 之一(如 $H=0.91$/$\alpha$),或无空白(如 $1.0$);
+// 只在「像数学」时剥 $ 定界符——内含 =\^_{} 之一(如 $H=0.91$/$\alpha$),或无空白(如 $1.0$),或含 <> 的短式(<=24 字符且无 3+ 字母词,如 $0 < m < d$——散文/货币语境有整词,不会误剥);
 // 含空白且无数学符的 $…$ 保持原样(金融文本 "raised $5 and $10 billion" 的货币绝不动)。在 esc 之前跑,纯删字符、零注入面。
-const deMath = t => String(t == null ? '' : t).replace(/\$\$?([^$]+)\$\$?/g, (m, inner) => (/[=\\^_{}]/.test(inner) || !/\s/.test(inner)) ? inner : m);
+const deMath = t => String(t == null ? '' : t).replace(/\$\$?([^$]+)\$\$?/g, (m, inner) => (/[=\\^_{}]/.test(inner) || !/\s/.test(inner) || (/[<>]/.test(inner) && inner.length <= 24 && !/[A-Za-z]{3,}/.test(inner))) ? inner : m);
 function lessonHTML(lesson) {
   if (!lesson) return '';
   return PROVENANCE_NOTE + JSON.parse(lesson.sections_json).map((s, i) =>
@@ -1573,7 +1573,7 @@ function lessonHTML(lesson) {
 function itemListHTML(items, { study = true } = {}) {
   if (!items.length) return '<p class="mt">暂无条目。</p>';
   return items.map(it => `<div class="itemrow"><div class="body">
-    <a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 110))}</a>
+    <a href="/item/${encodeURIComponent(it.id)}">${esc(deMath(it.title).slice(0, 110))}</a>
     <div class="mt">${esc(BOARD_NAMES[it.board_id] || it.board_id || '')}${it.published_at ? ' · ' + esc(it.published_at.slice(0, 10)) : ''} · <a href="${safeHref(it.url)}" rel="noopener">原文</a></div>
     ${factsheetHTML(it)}
     </div>${study ? `<button class="btn-sm" data-id="${esc(it.id)}" onclick="study(this)">学这个</button>` : ''}</div>`).join('');
@@ -1614,7 +1614,7 @@ async function reviewPage(env) {
     const stored = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
     // 无存储讲义则确定性现算(同 itemPage),让板块二/三/四到期卡也有八段讲义可复习,而非空盒
     const reveal = lessonHTML(stored || { sections_json: JSON.stringify(buildLesson(dueRow)) });
-    body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(dueRow.title)}</h1>
+    body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(deMath(dueRow.title))}</h1>
       <p class="mt"><a href="${safeHref(dueRow.url)}" rel="noopener">原文</a> · <a href="/item/${encodeURIComponent(dueRow.item_id)}">详情</a></p>
       <p style="margin:4px 0 0">${deepDiveBtn(dueRow)}</p></div>`;
     body += graderHTML(dueRow.item_id, reveal, '/review');
@@ -1892,7 +1892,7 @@ async function historyPage(env) {
     "SELECT s.*, i.title FROM cn_selections s LEFT JOIN cn_items i ON i.id=s.item_id ORDER BY s.as_of_date DESC LIMIT 40").all();
   const rows = (results || []).map(s => s.abstain
     ? `<tr><td class="mt">${esc(s.as_of_date)}</td><td colspan=2><span class="badge info">弃权</span> ${esc((s.abstain_reason || '').slice(0, 60))}</td></tr>`
-    : `<tr><td class="mt">${esc(s.as_of_date)}</td><td><a href="/item/${encodeURIComponent(s.item_id || '')}">${esc((s.title || s.item_id || '').slice(0, 70))}</a></td>
+    : `<tr><td class="mt">${esc(s.as_of_date)}</td><td><a href="/item/${encodeURIComponent(s.item_id || '')}">${esc(deMath(s.title || s.item_id || '').slice(0, 70))}</a></td>
        <td class="mt">${esc(BOARD_NAMES[s.board_id] || '')} · ${s.score != null ? Number(s.score).toFixed(0) : '—'}</td></tr>`).join('');
   return PAGE('/history', `<div class="card"><h1>往期精选</h1>
     <table><tr><th>日期</th><th>标题</th><th>板块·分</th></tr>${rows || '<tr><td colspan=3>暂无。</td></tr>'}</table></div>`, { title: '往期精选' });
@@ -1909,7 +1909,7 @@ async function itemPage(env, id) {
   const review = await env.DB.prepare("SELECT * FROM cn_reviews WHERE item_id=?").bind(id).first();
   await attachMeta(env, [item]);
   let body = `<div class="card"><p class="mt"><a href="/board/${esc(item.board_id)}">← ${esc(BOARD_NAMES[item.board_id] || item.board_id)}</a></p>
-    <h1>${esc(item.title)}</h1>
+    <h1>${esc(deMath(item.title))}</h1>
     <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
     ${factsheetHTML(item)}
     ${item.summary ? `<p>${esc(deMath(item.summary))}</p>` : ''}
@@ -1917,7 +1917,7 @@ async function itemPage(env, id) {
     <p style="margin:8px 0 0">${deepDiveBtn(item)}</p></div>`;
   if (lesson) body += `<div class="card"><h2>讲义</h2>${lessonHTML(lesson)}</div>`;
   if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc(deMath((item.summary || '').slice(0, 500)))}</p>`, null);
-  return PAGE('/', body + STUDY_JS, { title: item.title.slice(0, 40) });
+  return PAGE('/', body + STUDY_JS, { title: deMath(item.title).slice(0, 40) });
 }
 
 async function studyItem(env, id) {

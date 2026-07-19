@@ -1,0 +1,25 @@
+抽取自: /private/tmp/claude-501/-Users-linzezhang-Documents-Codex-main-worktree-CodexProject-adp/6c611ddc-f264-4d55-9b19-b0f39a03415d/scratchpad/recover/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+  ✅ [线上实际观察(NRR):$H = 0.91$ bits]
+  ✅ [希腊字母与上下标]
+  ✅ [金融货币绝不动(board-4)]
+  ✅ [单个未配对 $ 不动]
+  ✅ [标题面(线上实测 arxiv:1310.5162)]
+  ✅ [不等式数学(线上实测——P18 首版启发式盲区;原始文本,由 escLike 统一转义)]
+  ✅ [两美元额夹不等号(审查者对抗用例——散文有整词,收紧后货币必须保留)]
+     ↳ 负控成立:旧渲染(esc-only,无 deMath)在同一夹具保留裸 $H = 0.91$/$1.0$
+  ✅ 发货源 lessonHTML 句渲染走 esc(deMath(x.text))
+  ✅ 发货源 itemPage 摘要段走 esc(deMath(item.summary))
+  ✅ 标题面走 deMath: itemListHTML 列表行
+  ✅ 标题面走 deMath: radar 列表行(R1 前误标为 history)
+  ✅ 标题面走 deMath: history 列表行(真;R1 抓出漏修)
+  ✅ 标题面走 deMath: item/today 页 h1
+  ✅ 标题面走 deMath: 复习页 h1
+  ✅ 标题面走 deMath: 浏览器 tab 标题(渲染点)
+  ✅ 标题面走 deMath: itemPage tab 传参(slice 在 deMath 后,防孤 $)
+
+PASS: 数学定界符剥净、货币保留,负控证明旧渲染保留裸 $。
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.049s
+
+OK

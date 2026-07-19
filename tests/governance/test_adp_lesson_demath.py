@@ -32,6 +32,8 @@ VERIFIER = ROOT / "arxiv-daily-push" / "tools" / "verify_lesson_demath.mjs"
 PRE_FIX_SNIPPET = r"""
     `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`).join('');
     ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
+    <a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 110))}</a>
+    <h1>${esc(item.title)}</h1>
 """
 
 
@@ -45,6 +47,19 @@ def _demath_violations(src):
     if not re.search(r"esc\(deMath\(item\.summary\)\)", src):
         v.append("item-page summary paragraph without deMath -- the exact surface the first fix "
                  "missed (live page kept 3 bare fragments)")
+    # P18: title surfaces -- live production showed a bare "$C1$-Genericity..." title on /search,
+    # the item h1 and the browser tab. slice must run AFTER deMath so truncation can't split a $-pair.
+    for pat, what in (
+        (r"esc\(deMath\(it\.title\)\.slice\(0, 110\)\)", "itemListHTML row title"),
+        (r"esc\(deMath\(it\.title\)\.slice\(0, 90\)\)", "radar row title (P18 R1: was mislabelled 'history')"),
+        (r"esc\(deMath\(s\.title \|\| s\.item_id \|\| ''\)\.slice\(0, 70\)\)", "history row title (the REAL one R1 caught unfixed)"),
+        (r"esc\(deMath\(item\.title\)\)", "item/today page h1 title"),
+        (r"esc\(deMath\(dueRow\.title\)\)", "review page h1 title"),
+        (r"esc\(deMath\(opts\.title\)\)", "browser tab <title> render"),
+        (r"title: deMath\(item\.title\)\.slice\(0, 40\)", "itemPage tab-title arg (slice AFTER deMath, no lone $)"),
+    ):
+        if not re.search(pat, src):
+            v.append("title surface without deMath: " + what + " (live bug: $C1$-Genericity rendered bare)")
     return v
 
 
@@ -64,7 +79,12 @@ class TestAdpLessonDemath(unittest.TestCase):
         self.assertIsNotNone(m, "deMath definition not found")
         line = m.group(0)
         self.assertIn("[=\\\\^_{}]", line,
-                      "deMath lost its looks-like-math test -- it would strip '$5 and $10' finance text")
+                      "deMath lost its base looks-like-math class -- '$5 and $10' finance text gets stripped")
+        self.assertIn("[<>]", line,
+                      "deMath lost its inequality clause -- '$0 < m < d' (the live P18 gap) stays bare")
+        self.assertIn("[A-Za-z]{3,}", line,
+                      "deMath's inequality clause lost its prose guard -- reviewer's adversarial case "
+                      "'$5 < previous high and $9' would get its currency eaten (aggressive failure direction)")
         self.assertIn("\\s", line,
                       "deMath lost its no-whitespace alternative -- '$1.0$' style would stay bare")
 
@@ -72,7 +92,7 @@ class TestAdpLessonDemath(unittest.TestCase):
         """Non-vacuity: the detector must flag the exact pre-fix render (esc without deMath)."""
         viols = _demath_violations(PRE_FIX_SNIPPET)
         self.assertGreaterEqual(
-            len(viols), 3,
+            len(viols), 10,  # 3 lesson/summary defects + 7 title-surface defects
             "detector did not flag the pre-fix esc-only render on all surfaces (got {}) -- it "
             "under-checks and could pass a regressed worker vacuously.".format(viols))
 

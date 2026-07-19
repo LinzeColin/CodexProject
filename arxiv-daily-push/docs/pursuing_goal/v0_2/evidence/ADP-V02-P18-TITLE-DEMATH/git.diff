@@ -1,0 +1,215 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 97cddf35b..64a41f23e 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: '9b978f42ee16', source_sha256: '9b978f42ee166b1e9b9dbceaa38713214652ef439cfcdfc19b1c1c46e9867d74', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
++const BUILD = { build_id: 'd0ebaee1f43c', source_sha256: 'd0ebaee1f43c20d236db07cc85a640428e5246ff74ec8518b36e199f4b80712d', schema_version: 'cn_v0_3', built_at: '2026-07-19' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -1182,7 +1182,7 @@ requestAnimationFrame(step);setTimeout(settle,1500);}
+ const FX_LAYERS = `<div class="fx fx-cosmos" aria-hidden="true"><div class="band"></div><div class="neb blue"></div><div class="neb violet"></div><div class="neb teal"></div><div class="stars"></div><div class="stars near"></div><div class="meteor"></div></div><div class="fx fx-minimal" aria-hidden="true"><div class="toplight"></div><div class="vignette"></div></div><div class="fx fx-techno" aria-hidden="true"><div class="cloud" style="top:6%;left:-10%"></div><div class="cloud c2"></div><div class="cloud c3"></div></div><div class="forest-slopes" aria-hidden="true"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,120 L0,70 Q360,10 720,64 T1440,52 L1440,120 Z" fill="#2e7d5b" opacity="0.16"/><path d="M0,120 L0,96 Q480,44 900,92 T1440,84 L1440,120 Z" fill="#3c7ea0" opacity="0.14"/></svg></div>`;
+ const PAGE = (page, body, opts = {}) => `<!doctype html><html lang="zh-CN" data-theme="warm" data-nav="sidebar" data-fx="none" data-hero="none"><head><meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+-<title>${opts.title ? esc(opts.title) + ' · ' : ''}ADP 前沿学习</title>
++<title>${opts.title ? esc(deMath(opts.title)) + ' · ' : ''}ADP 前沿学习</title>
+ <meta name="description" content="${esc(META_DESC)}">
+ <meta name="theme-color" content="#f3eee1">
+ <meta property="og:title" content="ADP 前沿学习"><meta property="og:description" content="${esc(META_DESC)}"><meta property="og:type" content="website">
+@@ -1269,7 +1269,7 @@ async function todayPage(env) {
+   let body = `<span id="todaymain"></span>` + vitalsCard(v) + `<div class="card"><h2>为什么今天选它</h2><p>${esc(sel.why)}</p>
+     <p class="mt">决策日期 ${esc(sel.as_of_date)} · ${esc(BOARD_NAMES[sel.board_id] || sel.board_id || '')}${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p></div>`;
+   if (item) {
+-    body += `<div class="card"><h1>${esc(item.title)}</h1>
++    body += `<div class="card"><h1>${esc(deMath(item.title))}</h1>
+       <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a></p>
+       ${factsheetHTML(item)}
+       <p style="margin:4px 0 2px">${deepDiveBtn(item)}</p>`;
+@@ -1321,7 +1321,7 @@ async function radarPage(env) {
+         : `SELECT id, title, url, board_id FROM cn_items WHERE board_id=? ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC LIMIT 6`
+     ).bind(...(b.id === 'board5' ? [] : [b.id])).all();
+     if ((items || []).length) body += `<h3>最新条目</h3><ul class="mt">${items.map(it =>
+-      `<li><a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 90))}</a></li>`).join('')}</ul>`;
++      `<li><a href="/item/${encodeURIComponent(it.id)}">${esc(deMath(it.title).slice(0, 90))}</a></li>`).join('')}</ul>`;
+     body += `<p style="margin-top:8px"><a class="pill-link" href="/board/${b.id}">查看全部 ${cmap[b.id] || 0} 条 →</a></p></div>`;
+   }
+   return PAGE('/radar', body, { title: '前沿雷达' });
+@@ -1562,9 +1562,9 @@ function deepDiveBtn(item, label) {
+ // T084 证据/推断区分：讲义是「依据原文自动生成的结构化推断」，与「原文（证据）」明确区分，避免读者误把推断当原文。
+ const PROVENANCE_NOTE = '<p class="mt"><span class="badge">讲义·推断</span> 依据「原文」自动生成的结构化摘要（推断），非原文表述；以原文为准。</p>';
+ // 讲义渲染层的轻量 LaTeX 内联数学清理:arXiv 摘要常含 $H=0.91$ 式内联数学,裸 $ 呈现给读者读作生成 bug(损权威)。
+-// 只在「像数学」时剥 $ 定界符——内含 =\^_{} 之一(如 $H=0.91$/$\alpha$),或无空白(如 $1.0$);
++// 只在「像数学」时剥 $ 定界符——内含 =\^_{} 之一(如 $H=0.91$/$\alpha$),或无空白(如 $1.0$),或含 <> 的短式(<=24 字符且无 3+ 字母词,如 $0 < m < d$——散文/货币语境有整词,不会误剥);
+ // 含空白且无数学符的 $…$ 保持原样(金融文本 "raised $5 and $10 billion" 的货币绝不动)。在 esc 之前跑,纯删字符、零注入面。
+-const deMath = t => String(t == null ? '' : t).replace(/\$\$?([^$]+)\$\$?/g, (m, inner) => (/[=\\^_{}]/.test(inner) || !/\s/.test(inner)) ? inner : m);
++const deMath = t => String(t == null ? '' : t).replace(/\$\$?([^$]+)\$\$?/g, (m, inner) => (/[=\\^_{}]/.test(inner) || !/\s/.test(inner) || (/[<>]/.test(inner) && inner.length <= 24 && !/[A-Za-z]{3,}/.test(inner))) ? inner : m);
+ function lessonHTML(lesson) {
+   if (!lesson) return '';
+   return PROVENANCE_NOTE + JSON.parse(lesson.sections_json).map((s, i) =>
+@@ -1573,7 +1573,7 @@ function lessonHTML(lesson) {
+ function itemListHTML(items, { study = true } = {}) {
+   if (!items.length) return '<p class="mt">暂无条目。</p>';
+   return items.map(it => `<div class="itemrow"><div class="body">
+-    <a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 110))}</a>
++    <a href="/item/${encodeURIComponent(it.id)}">${esc(deMath(it.title).slice(0, 110))}</a>
+     <div class="mt">${esc(BOARD_NAMES[it.board_id] || it.board_id || '')}${it.published_at ? ' · ' + esc(it.published_at.slice(0, 10)) : ''} · <a href="${safeHref(it.url)}" rel="noopener">原文</a></div>
+     ${factsheetHTML(it)}
+     </div>${study ? `<button class="btn-sm" data-id="${esc(it.id)}" onclick="study(this)">学这个</button>` : ''}</div>`).join('');
+@@ -1614,7 +1614,7 @@ async function reviewPage(env) {
+     const stored = await env.DB.prepare("SELECT * FROM cn_lessons WHERE item_id=? ORDER BY created_at DESC LIMIT 1").bind(dueRow.item_id).first();
+     // 无存储讲义则确定性现算(同 itemPage),让板块二/三/四到期卡也有八段讲义可复习,而非空盒
+     const reveal = lessonHTML(stored || { sections_json: JSON.stringify(buildLesson(dueRow)) });
+-    body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(dueRow.title)}</h1>
++    body += `<div class="card"><p class="mt">还有 ${v.due} 项到期</p><h1>${esc(deMath(dueRow.title))}</h1>
+       <p class="mt"><a href="${safeHref(dueRow.url)}" rel="noopener">原文</a> · <a href="/item/${encodeURIComponent(dueRow.item_id)}">详情</a></p>
+       <p style="margin:4px 0 0">${deepDiveBtn(dueRow)}</p></div>`;
+     body += graderHTML(dueRow.item_id, reveal, '/review');
+@@ -1892,7 +1892,7 @@ async function historyPage(env) {
+     "SELECT s.*, i.title FROM cn_selections s LEFT JOIN cn_items i ON i.id=s.item_id ORDER BY s.as_of_date DESC LIMIT 40").all();
+   const rows = (results || []).map(s => s.abstain
+     ? `<tr><td class="mt">${esc(s.as_of_date)}</td><td colspan=2><span class="badge info">弃权</span> ${esc((s.abstain_reason || '').slice(0, 60))}</td></tr>`
+-    : `<tr><td class="mt">${esc(s.as_of_date)}</td><td><a href="/item/${encodeURIComponent(s.item_id || '')}">${esc((s.title || s.item_id || '').slice(0, 70))}</a></td>
++    : `<tr><td class="mt">${esc(s.as_of_date)}</td><td><a href="/item/${encodeURIComponent(s.item_id || '')}">${esc(deMath(s.title || s.item_id || '').slice(0, 70))}</a></td>
+        <td class="mt">${esc(BOARD_NAMES[s.board_id] || '')} · ${s.score != null ? Number(s.score).toFixed(0) : '—'}</td></tr>`).join('');
+   return PAGE('/history', `<div class="card"><h1>往期精选</h1>
+     <table><tr><th>日期</th><th>标题</th><th>板块·分</th></tr>${rows || '<tr><td colspan=3>暂无。</td></tr>'}</table></div>`, { title: '往期精选' });
+@@ -1909,7 +1909,7 @@ async function itemPage(env, id) {
+   const review = await env.DB.prepare("SELECT * FROM cn_reviews WHERE item_id=?").bind(id).first();
+   await attachMeta(env, [item]);
+   let body = `<div class="card"><p class="mt"><a href="/board/${esc(item.board_id)}">← ${esc(BOARD_NAMES[item.board_id] || item.board_id)}</a></p>
+-    <h1>${esc(item.title)}</h1>
++    <h1>${esc(deMath(item.title))}</h1>
+     <p class="mt">${esc(item.authors || '')}${item.categories ? ' · ' + esc(item.categories) : ''}${item.published_at ? ' · ' + esc(item.published_at.slice(0, 10)) : ''} · <a href="${safeHref(item.url)}" rel="noopener">原文</a>${review ? ' · 证据态 ' + esc(review.evidence_state) : ''}</p>
+     ${factsheetHTML(item)}
+     ${item.summary ? `<p>${esc(deMath(item.summary))}</p>` : ''}
+@@ -1917,7 +1917,7 @@ async function itemPage(env, id) {
+     <p style="margin:8px 0 0">${deepDiveBtn(item)}</p></div>`;
+   if (lesson) body += `<div class="card"><h2>讲义</h2>${lessonHTML(lesson)}</div>`;
+   if (review) body += graderHTML(item.id, lesson ? lessonHTML(lesson) : `<p>${esc(deMath((item.summary || '').slice(0, 500)))}</p>`, null);
+-  return PAGE('/', body + STUDY_JS, { title: item.title.slice(0, 40) });
++  return PAGE('/', body + STUDY_JS, { title: deMath(item.title).slice(0, 40) });
+ }
+ 
+ async function studyItem(env, id) {
+diff --git a/arxiv-daily-push/tools/verify_lesson_demath.mjs b/arxiv-daily-push/tools/verify_lesson_demath.mjs
+index 351f65b85..b70fa72b0 100644
+--- a/arxiv-daily-push/tools/verify_lesson_demath.mjs
++++ b/arxiv-daily-push/tools/verify_lesson_demath.mjs
+@@ -27,21 +27,31 @@ const mkLesson = texts => ({ sections_json: JSON.stringify([{ title: '证据与
+ 
+ const CASES = [
+   { name: '线上实际观察(NRR):$H = 0.91$ bits', text: 'maintains high output entropy ($H = 0.91$ bits, near the $1.0$-bit maximum), while $H = 0.15$ collapses.',
+-    wantGone: ['$H = 0.91$', '$1.0$', '$H = 0.15$'], wantKept: ['H = 0.91', '1.0-bit', 'H = 0.15'] },
++    wantGone: ['$H = 0.91$', '$1.0$', '$H = 0.15$'], wantKept: ['H = 0.91', '1.0-bit', 'H = 0.15'], expectNoDollar: true },
+   { name: '希腊字母与上下标', text: 'the $\\alpha$-phase decays as $x^2_i$ under $T_{c}$.',
+-    wantGone: ['$\\alpha$', '$x^2_i$', '$T_{c}$'], wantKept: ['x^2_i'] },
++    wantGone: ['$\\alpha$', '$x^2_i$', '$T_{c}$'], wantKept: ['x^2_i'], expectNoDollar: true },
+   { name: '金融货币绝不动(board-4)', text: 'the Fed raised $5 billion and later $10 billion in facilities.',
+     wantGone: [], wantKept: ['$5 billion', '$10 billion'] },
+   { name: '单个未配对 $ 不动', text: 'it costs $100 million overall.', wantGone: [], wantKept: ['$100 million'] },
++  { name: '标题面(线上实测 arxiv:1310.5162)', text: '$C1$-Genericity of Symplectic Diffeomorphisms and Lower Bounds',
++    wantGone: ['$C1$'], wantKept: ['C1-Genericity'], expectNoDollar: true },
++  { name: '不等式数学(线上实测——P18 首版启发式盲区;原始文本,由 escLike 统一转义)', text: 'for dimensions $0 < m < d$ the bound holds.',
++    wantGone: ['$0 < m < d$'], wantKept: ['0 < m < d'], expectNoDollar: true },
++  { name: '两美元额夹不等号(审查者对抗用例——散文有整词,收紧后货币必须保留)', text: 'prices moved from $5 < previous high and $9 later.',
++    wantGone: [], wantKept: ['$5 <', '$9 later'] },
+ ];
+ 
+ let fail = 0;
+ console.log('抽取自:', WORKER);
++// escLike 镜像发货 esc 对 &<> 的转义:夹具一律写【原始文本】,由这里统一转义一次再匹配。
++// (P18 R1 硬伤 D2:不等式夹具写成预转义形态又被二次转义,变成永不匹配的空转夹具——本结构性修复杜绝整类问题。)
++const escLike = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+ for (const c of CASES) {
+   const html = lessonHTML(mkLesson([c.text]));
+-  const badLeft = c.wantGone.filter(g => html.includes(g.replace(/&/g,'&amp;')));
+-  const missing = c.wantKept.filter(k => !html.includes(k));
+-  if (badLeft.length || missing.length) { fail++; console.log(`  ❌ [${c.name}] 裸残留=${JSON.stringify(badLeft)} 误删=${JSON.stringify(missing)}`); }
++  const badLeft = c.wantGone.filter(g => html.includes(escLike(g)));
++  const missing = c.wantKept.filter(k => !html.includes(escLike(k)));
++  const dollarLeak = c.expectNoDollar && html.includes('$');
++  if (badLeft.length || missing.length || dollarLeak) { fail++; console.log(`  ❌ [${c.name}] 裸残留=${JSON.stringify(badLeft)} 误删=${JSON.stringify(missing)} 硬断言$泄漏=${!!dollarLeak}`); }
+   else console.log(`  ✅ [${c.name}]`);
+ }
+ // 负控:旧渲染(esc(x.text) 无 deMath)必保留裸 $——证明夹具承重
+@@ -59,6 +69,20 @@ if (!/esc\(deMath\(x\.text\)\)/.test(SRC)) { fail++; console.log('  ❌ 发货
+ else console.log('  ✅ 发货源 lessonHTML 句渲染走 esc(deMath(x.text))');
+ if (!/esc\(deMath\(item\.summary\)\)/.test(SRC)) { fail++; console.log('  ❌ 发货源 itemPage 摘要段未经 deMath——首版修复正是漏了它,线上残留 3 处裸 $'); }
+ else console.log('  ✅ 发货源 itemPage 摘要段走 esc(deMath(item.summary))');
++// P18:标题面(线上实测 $C1$-Genericity 裸呈现于搜索/看板/条目 h1/浏览器 tab)。列表行 slice 必须在 deMath 之后。
++const TITLE_PINS = [
++  ['itemListHTML 列表行', /esc\(deMath\(it\.title\)\.slice\(0, 110\)\)/],
++  ['radar 列表行(R1 前误标为 history)', /esc\(deMath\(it\.title\)\.slice\(0, 90\)\)/],
++  ['history 列表行(真;R1 抓出漏修)', /esc\(deMath\(s\.title \|\| s\.item_id \|\| ''\)\.slice\(0, 70\)\)/],
++  ['item/today 页 h1',    /esc\(deMath\(item\.title\)\)/],
++  ['复习页 h1',           /esc\(deMath\(dueRow\.title\)\)/],
++  ['浏览器 tab 标题(渲染点)', /esc\(deMath\(opts\.title\)\)/],
++  ['itemPage tab 传参(slice 在 deMath 后,防孤 $)', /title: deMath\(item\.title\)\.slice\(0, 40\)/],
++];
++for (const [name, re] of TITLE_PINS) {
++  if (!re.test(SRC)) { fail++; console.log(`  ❌ 发货源标题面未过 deMath: ${name}`); }
++  else console.log(`  ✅ 标题面走 deMath: ${name}`);
++}
+ 
+ console.log(fail === 0 ? '\nPASS: 数学定界符剥净、货币保留,负控证明旧渲染保留裸 $。' : `\nFAIL: ${fail} 项`);
+ process.exit(fail === 0 ? 0 : 1);
+diff --git a/tests/governance/test_adp_lesson_demath.py b/tests/governance/test_adp_lesson_demath.py
+index 0bbc1d8cc..8187e8399 100644
+--- a/tests/governance/test_adp_lesson_demath.py
++++ b/tests/governance/test_adp_lesson_demath.py
+@@ -32,6 +32,8 @@ VERIFIER = ROOT / "arxiv-daily-push" / "tools" / "verify_lesson_demath.mjs"
+ PRE_FIX_SNIPPET = r"""
+     `<h3>${i + 1}. ${esc(s.title)}</h3>${(s.sentences || []).map(x => `<p>${esc(x.text)}</p>`).join('')}`).join('');
+     ${item.summary ? `<p>${esc(item.summary)}</p>` : ''}
++    <a href="/item/${encodeURIComponent(it.id)}">${esc(it.title.slice(0, 110))}</a>
++    <h1>${esc(item.title)}</h1>
+ """
+ 
+ 
+@@ -45,6 +47,19 @@ def _demath_violations(src):
+     if not re.search(r"esc\(deMath\(item\.summary\)\)", src):
+         v.append("item-page summary paragraph without deMath -- the exact surface the first fix "
+                  "missed (live page kept 3 bare fragments)")
++    # P18: title surfaces -- live production showed a bare "$C1$-Genericity..." title on /search,
++    # the item h1 and the browser tab. slice must run AFTER deMath so truncation can't split a $-pair.
++    for pat, what in (
++        (r"esc\(deMath\(it\.title\)\.slice\(0, 110\)\)", "itemListHTML row title"),
++        (r"esc\(deMath\(it\.title\)\.slice\(0, 90\)\)", "radar row title (P18 R1: was mislabelled 'history')"),
++        (r"esc\(deMath\(s\.title \|\| s\.item_id \|\| ''\)\.slice\(0, 70\)\)", "history row title (the REAL one R1 caught unfixed)"),
++        (r"esc\(deMath\(item\.title\)\)", "item/today page h1 title"),
++        (r"esc\(deMath\(dueRow\.title\)\)", "review page h1 title"),
++        (r"esc\(deMath\(opts\.title\)\)", "browser tab <title> render"),
++        (r"title: deMath\(item\.title\)\.slice\(0, 40\)", "itemPage tab-title arg (slice AFTER deMath, no lone $)"),
++    ):
++        if not re.search(pat, src):
++            v.append("title surface without deMath: " + what + " (live bug: $C1$-Genericity rendered bare)")
+     return v
+ 
+ 
+@@ -64,7 +79,12 @@ class TestAdpLessonDemath(unittest.TestCase):
+         self.assertIsNotNone(m, "deMath definition not found")
+         line = m.group(0)
+         self.assertIn("[=\\\\^_{}]", line,
+-                      "deMath lost its looks-like-math test -- it would strip '$5 and $10' finance text")
++                      "deMath lost its base looks-like-math class -- '$5 and $10' finance text gets stripped")
++        self.assertIn("[<>]", line,
++                      "deMath lost its inequality clause -- '$0 < m < d' (the live P18 gap) stays bare")
++        self.assertIn("[A-Za-z]{3,}", line,
++                      "deMath's inequality clause lost its prose guard -- reviewer's adversarial case "
++                      "'$5 < previous high and $9' would get its currency eaten (aggressive failure direction)")
+         self.assertIn("\\s", line,
+                       "deMath lost its no-whitespace alternative -- '$1.0$' style would stay bare")
+ 
+@@ -72,7 +92,7 @@ class TestAdpLessonDemath(unittest.TestCase):
+         """Non-vacuity: the detector must flag the exact pre-fix render (esc without deMath)."""
+         viols = _demath_violations(PRE_FIX_SNIPPET)
+         self.assertGreaterEqual(
+-            len(viols), 3,
++            len(viols), 10,  # 3 lesson/summary defects + 7 title-surface defects
+             "detector did not flag the pre-fix esc-only render on all surfaces (got {}) -- it "
+             "under-checks and could pass a regressed worker vacuously.".format(viols))
+ 

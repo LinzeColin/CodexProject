@@ -1,0 +1,6 @@
+# ADP-V02-P18 变更文件(3 个核心代码文件;R1 修正后终版)
+
+ arxiv-daily-push/deploy/cloudflare/worker_cloud.js | 22 +++++++-------
+ arxiv-daily-push/tools/verify_lesson_demath.mjs    | 34 ++++++++++++++++++----
+ tests/governance/test_adp_lesson_demath.py         | 24 +++++++++++++--
+ 3 files changed, 62 insertions(+), 18 deletions(-)

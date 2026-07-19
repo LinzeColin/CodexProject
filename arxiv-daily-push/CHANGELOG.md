@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-07-19 Australia/Sydney - ADP V0.2 P18: 标题面 deMath + 不等式数学盲区 (PRODUCTION DEPLOY d0ebaee1f43c; product_version 0.39.0)
+- P17 审查者留了标题面线索;本次先**线上实测坐实**再动手(verify-real-before-building):/search 结果里
+  arxiv:1310.5162 标题裸呈现 `$C1$-Genericity…`,该条 /item h1 与浏览器 tab 同裸。
+- 修:标题渲染面全过 deMath——itemListHTML 列表行(boards/search/library)、radar 列表行、★真 /history 标题行
+  (R1 抓出第一版把 radar 误标成 history、真 history 漏修)★、item/today h1、复习页 h1、浏览器 tab `<title>`
+  渲染点与 itemPage 传参点(slice 全挪到 deMath **之后**,截断不产生半个 $ 对)。
+- ★线上复验又抓一个盲区:同页仍剩 `$0 < m < d$`(不等式内含 `<>`,不在数学符集且有空白→没剥)。
+  <> 启发式★收紧★为「<=24 字符且无 3+ 字母词才算数学」——审查者对抗用例 `$5 < previous high and $9`
+  的货币现在保留,失败方向回归保守(宁留 $ 不吃货币);终版全页清零、剥后不等式文本保留。★
+- 验证器扩标题夹具($C1$)+不等式夹具+5 静态钉(标题面);Python 守卫 `_demath_violations` 扩 5 标题钉、
+  负控 pre-fix 片段补标题旧渲染(触发项 3→8)。
+- 线上终验:6 页复扫(1310.5162/NRR/搜索/首页/★history★/radar)裸 $ 全 0;/build.json=d0ebaee1f43c。
+
 ## 2026-07-19 Australia/Sydney - ADP V0.2 P17: 讲义/摘要渲染剥内联 LaTeX 数学定界符 (PRODUCTION DEPLOY 9b978f42ee16; product_version 0.38.0)
 - 观察线上讲义:「证据与数字」把 `$H = 0.91$ bits` 的**裸 LaTeX 美元符**原样呈现给读者——权威面上的生成噪音。
 - 修:渲染层 `deMath`(esc 之前跑,纯删字符零注入面)——只在「像数学」时剥 `$…$`/`$$…$$` 定界符
