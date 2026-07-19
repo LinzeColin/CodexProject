@@ -72,10 +72,11 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       # 硬 Gate 1: 明文 Secret 扫描 —— 命中即阻断部署
+      # 私钥须匹配完整 PEM 头(带 ----- 包围), 避免把"检测脚本里的模式字符串"误判为泄露
       - name: Secret 扫描 (硬阻断)
         run: |
           set -uo pipefail
-          PAT='BEGIN (RSA|OPENSSH|DSA|EC|PGP) PRIVATE KEY|ghp_[A-Za-z0-9]{30,}|gho_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|nskey_live_[A-Za-z0-9]{20,}|cfut_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}'
+          PAT='-----BEGIN (RSA|OPENSSH|DSA|EC|PGP )?PRIVATE KEY-----|ghp_[A-Za-z0-9]{30,}|gho_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|nskey_live_[A-Za-z0-9]{20,}|cfut_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}'
           HITS=$(grep -rInE "$PAT" . \
             --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv --exclude-dir=dist \
             --exclude='*.lock' --exclude='package-lock.json' --exclude='*.min.js' \
