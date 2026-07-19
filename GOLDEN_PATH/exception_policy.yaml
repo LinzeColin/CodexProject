@@ -1,0 +1,16 @@
+# STAGE-14.4 例外分类 —— 不伪造上线, 但必须可发现
+schema_version: 1
+categories:
+  library:      不部署; home 卡片指 GitHub 源
+  data:         不部署; 数据契约项目按 non-runtime 登记
+  archive:      不部署; 只保留目录入口
+  macos-only:   引擎依赖 macOS(launchd/Apple Mail/本地网关), 云端只上公开面
+  blocked:      依赖不可用或未通过 Gate; 显示状态而非死链
+current_exceptions:
+  - {id: serenity-alipay, category: macos-only, note: 引擎 macOS 本地(launchd+Apple Mail+moomoo/OpenD); 云端仅公开 cockpit}
+  - {id: pfi,             category: macos-only, note: 多系统引擎受控运行; 云端仅公开边界说明页}
+  - {id: kmdatabase,      category: data,       note: 数据契约组件, 不造服务}
+  - {id: governance,      category: archive,    note: 治理仓, 非运行}
+  - {id: codexproject,    category: library,    note: 工具与工作流仓, 非运行}
+  - {id: qbvs,            category: blocked,    note: 路线图硬排除, 零部署资源}
+  - {id: fifa,            category: blocked,    note: 将被 ABD 取代, 由 ABD 线程完成后删除}

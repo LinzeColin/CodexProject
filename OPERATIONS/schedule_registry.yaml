@@ -1,0 +1,58 @@
+# STAGE-18.3 定时任务统一登记 — 每个任务唯一 owner, 错峰, 可审计
+# 生成依据: 2026-07-20 主机 /etc/cron.d + systemd timers + 容器内 crontab 实测盘点
+schema_version: 1
+timezone_note: 主机 UTC; KMFA 容器内 TZ=Asia/Shanghai(业务锚北京时间)
+
+platform_tasks:            # owner: 平台线程(本线程)
+  - id: cf-seat-fuse
+    cron: "*/30 * * * *"   # UTC
+    command: /usr/local/bin/linze-cf-seat-fuse.sh
+    purpose: Cloudflare Access 免费席位熔断(≥45/50 停用 IdP, <40 恢复)
+    owner: platform
+    log: /srv/linze/logs/cf-seat-fuse.log
+  - id: coolify-backup
+    cron: "17 3 * * *"
+    command: /usr/local/bin/linze-coolify-backup.sh
+    purpose: Coolify 控制面 DB+配置 本地备份(留 14 份)
+    owner: platform
+    log: /srv/linze/logs/coolify-backup.log
+  - id: identity-backup
+    cron: "37 3 * * *"
+    command: /usr/local/bin/linze-identity-backup.sh
+    purpose: Keycloak 身份库备份
+    owner: platform
+    log: /srv/linze/logs/identity-backup.log
+  - id: offsite-backup
+    cron: "40 3 * * *"
+    command: /usr/local/bin/linze-offsite-backup.sh
+    purpose: 全量加密备份推 OCI 对象存储(服务器外副本)
+    owner: platform
+    log: /srv/linze/logs/offsite-backup.log
+  - id: link-health
+    cron: "20 4 * * *"
+    command: /usr/local/bin/linze-link-health.sh
+    purpose: STAGE-15.4 死链巡检(home 卡片 liveUrl 全量探测)
+    owner: platform
+    log: /srv/linze/logs/link-health.log
+
+kmfa_tasks:                # owner: KMFA 开发线程; 容器内 crontab, 北京时间
+  - {id: attendance-morning, cron: "35 10 * * *", owner: kmfa, note: 晨报考勤(真实投递观察期)}
+  - {id: attendance-evening, cron: "5 20 * * *",  owner: kmfa, note: 晚报考勤(真实投递观察期)}
+  - {id: work-check-morning, cron: "35 11 * * *", owner: kmfa, note: 目标路径依赖 OneDrive, 云端 CONFIG_MISSING}
+  - {id: work-check-evening, cron: "5 17 * * *",  owner: kmfa}
+  - {id: fund-weekly,        cron: "0 11 * * 1,6", owner: kmfa}
+  - {id: mgmt-monthly,       cron: "0 9 1 * *",   owner: kmfa}
+  - {id: upstream-archive,   cron: "0 11 * * *",  owner: kmfa}
+  - {id: self-audit,         cron: "0 1 * * 0",   owner: kmfa, note: 周度自检, 期望 rc=0}
+  - {id: daily-backup,       cron: "30 0 * * *",  owner: kmfa}
+  - {id: dws-keepalive,      cron: "20 */4 * * *", owner: kmfa, note: 维持 dws 登录态}
+
+os_managed:                # owner: 操作系统, 不干预
+  - {id: unattended-upgrades, note: 自动安全更新}
+  - {id: logrotate, note: 日志轮转}
+  - {id: fstrim/e2scrub/sysstat/man-db/fwupd, note: 发行版默认维护}
+
+concurrency_policy:
+  - 平台备份任务错峰: 03:17 / 03:37 / 03:40, 互不重叠
+  - KMFA 业务任务集中在北京 09:00-20:05, 与凌晨备份天然错开
+  - 每个任务唯一 owner, 禁止两个 owner 调度同一逻辑任务
