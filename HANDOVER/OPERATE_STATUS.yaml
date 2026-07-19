@@ -1,0 +1,21 @@
+# STAGE-19.4 逐服务 OPERATE 裁决 (2026-07-20)
+schema_version: 1
+services:
+  - {id: home,     url: "https://home.linzezhang.com",    status: OPERATE, deploy: golden-path-auto, notes: 静态站; CF边缘缓存; 卡片自动同步}
+  - {id: account,  url: "https://account.linzezhang.com", status: OPERATE, deploy: coolify-compose,  notes: Keycloak; 四登录通道全实测; 邮件经 SMTP 桥接}
+  - {id: server,   url: "https://server.linzezhang.com",  status: OPERATE, deploy: coolify-self,     notes: 控制面; 仅 owner 登录; API 供 CI 触发部署}
+  - {id: status,   url: "https://status.linzezhang.com",  status: OPERATE, deploy: coolify-compose,  notes: Gatus 健康看板}
+  - {id: nab,      url: "https://nab.linzezhang.com",     status: OPERATE, deploy: golden-path-auto, notes: 由不稳 CF Worker 迁入; 漏洞已清零}
+  - {id: serenity, url: "https://serenity.linzezhang.com",status: OPERATE, deploy: golden-path-auto, notes: 仅公开 cockpit; 引擎 macOS-only 例外}
+  - {id: pfi,      url: "https://pfi.linzezhang.com",     status: OPERATE, deploy: golden-path-auto, notes: 仅公开边界页; 引擎受控运行}
+  - {id: kmfa-app, url: "https://kmfa.linzezhang.com",    status: OPERATE, deploy: coolify-compose,  notes: 财务面板; Cloudflare Access 仅 owner; 未授权 302}
+  - {id: kmfa-skills, url: null,                          status: OPERATE, deploy: coolify-compose,  notes: 无入站 worker; self-audit rc=0; 真实投递观察期(3天)}
+  - {id: memory-atlas, url: "https://memoryatlas.linzezhang.com", status: OPERATE, deploy: cloudflare-pages, notes: 由 AgentDatabase 线程维护}
+blocked_or_excluded:
+  - {id: qbvs, reason: 路线图硬排除, evidence: 树中不存在, action: 零部署}
+  - {id: fifa, reason: 将被 ABD 取代, action: 不部署; 由 ABD 线程完成后删除}
+  - {id: wda,  reason: 已淘汰, action: 不管}
+  - {id: eva,  reason: 已淘汰, action: 不管}
+pending_other_threads:
+  - {id: whkmsalary, owner: kmfa, action: 整合进 KMFA(改 KMOS 仓代码)}
+  - {ids: [kmfa, kmids, eei, alpha, adp, abd], owner: 各活跃开发线程, action: 开发完成后经 Golden Path 自助上车}

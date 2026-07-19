@@ -1,0 +1,20 @@
+# 放到项目仓 .github/workflows/deploy.yml —— 接入 Golden Path 全部即成
+name: deploy
+on:
+  push:
+    branches: [main]
+    # 单体仓可省 paths; monorepo 子项目务必加路径过滤,避免互相触发
+    # paths: ['<子目录>/**']
+jobs:
+  golden-path:
+    uses: LinzeColin/CodexProject/.github/workflows/linze-golden-path.reusable.yml@main
+    with:
+      service_name: <service-id>
+      coolify_app_uuid: "<由 tools/bootstrap_new_project.py 生成>"
+      home_live_url: "https://<service>.linzezhang.com"   # 留空则跳过 home 挂链
+      home_name: "<显示名>"
+      home_summary: "<一句话简介>"
+      home_fallback_url: "https://github.com/LinzeColin/<repo>/tree/main/<path>"
+    secrets:
+      COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
+      COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
