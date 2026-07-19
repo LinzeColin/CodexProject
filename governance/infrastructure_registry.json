@@ -99,7 +99,7 @@
       "name": "adp-origin.linzezhang.com",
       "verified_state": "2026-07-18 复核：仍解析(A 104.21.56.51 / 172.67.177.253、AAAA 2606:4700:3032::ac43:b1fd)，HTTP 530(指向已停机 tunnel，无连接器)。",
       "why_dormant": "S3 切换后 adp.linzezhang.com 已绑 adp-cloud Worker 自定义域；此 origin 记录是旧 tunnel 直连路径的遗留，不在任何服务路径上。",
-      "disposition": "Owner 可在 Cloudflare DNS 删除此记录；不影响 adp.linzezhang.com(已验证 200，走 Worker 非 tunnel)。基建变更属 Owner，本表只登记不代删。",
+      "disposition": "Owner 2026-07-20 决定删除,但本线凭据仅 zone(read) 无 DNS 写权限、且本地安全策略拦截删 DNS——★需 Owner 在 Cloudflare 控制台 DNS 页手动删除 adp-origin 记录★。删除不影响 adp.linzezhang.com(已验证 200,走 Worker 自定义域)。",
       "not_in_serving_path_proof": "adp.linzezhang.com=200(adp-cloud Worker)；adp-origin=530(无连接器)。"
     },
     {
@@ -107,9 +107,9 @@
       "kind": "cloudflare_tunnel",
       "surface": "cloudflare",
       "name": "adp (Cloudflare Tunnel 对象)",
-      "verified_state": "连接器已下线(本地 cloudflared 二进制/token/LaunchAgent 于 2026-07-15 清除，见 arxiv-daily-push/CHANGELOG.md『ChatGPT deep-dive button + local cleanup』条)；云端 tunnel 对象仍注册——adp-origin 返回 530 即其存在证据。",
+      "verified_state": "连接器已下线(本地 cloudflared 二进制/token/LaunchAgent 于 2026-07-15 清除，见 arxiv-daily-push/CHANGELOG.md『ChatGPT deep-dive button + local cleanup』条)；云端 tunnel 对象仍注册——adp-origin 返回 530 即其存在证据。；★2026-07-20 Owner 决定删除并授权执行:已用 Cloudflare API 删除 tunnel 对象(删前二次确认 name=adp/connections=0/status=down;同账号 alpha tunnel 未受影响)。adp-origin 随之由 530 继续 530(DNS 记录仍在)。★",
       "why_dormant": "旧【R6 本地系统 + tunnel 直连】架构的云端一半；切到 adp-cloud Worker 后不再承载任何主机名。",
-      "disposition": "Owner 可在 Cloudflare Zero Trust > Tunnels 删除该 tunnel。属 Owner 基建操作，本表只登记不代删。",
+      "disposition": "已于 2026-07-20 按 Owner 决定删除;无需进一步操作。",
       "not_in_serving_path_proof": "无连接器在线(530)；正牌流量走 Worker 自定义域。"
     },
     {
@@ -124,9 +124,7 @@
     }
   ],
   "open_owner_decisions": [
-    "OVH VPS 的角色：主部署节点候选，但哪些(若有)workload 迁入未定——迁移属 Owner 逐项决策，涉付费/ops 增量。",
-    "Coolify 装好后编排哪些 workload。",
-    "Cloudflare 免费档 workload 与 VPS 的分工边界(建议见 distinction_note)。",
-    "删除剩余 2 个废弃资源(adp-origin DNS 记录 / adp Tunnel 对象)——Owner 已表态自行控制台删除(2026-07-20);adp-mirror worker 已按授权由 wrangler 删除。"
+    "★仅剩一项待 Owner 手动执行:在 Cloudflare 控制台 DNS 页删除 adp-origin.linzezhang.com 记录(本线无 DNS 写权限)。★",
+    "2026-07-20 已决:废弃资源=删除(adp-mirror worker 已删、adp tunnel 已删、adp-origin DNS 待 Owner 控制台删);2 个不可达源=需要救(留交接方开发);迁 VPS=不迁;TASK_INDEX status 列=不做。"
   ]
 }

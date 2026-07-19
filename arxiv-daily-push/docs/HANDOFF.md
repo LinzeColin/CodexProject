@@ -151,45 +151,22 @@ P20 我 stamp+部署后又改了一行源码，没重新 stamp/部署。线上�
 
 ---
 
-## 8. 待 Owner 决策（不要替他决定）
+## 8. Owner 决策（2026-07-20 已拍板，非待决）
 
-- **删剩余 2 个废弃 Cloudflare 资源**：`adp-origin` DNS 记录、`adp` Tunnel 对象。均已验证不在服务路径，Owner 表示自行在控制台删。（`adp-mirror` worker 已按授权删除。）
-- **6 个被墙源里剩余 2 个**：是否投入做 PubMed 解析层（science-advances）/ 诊断 stats-gov。
-- **是否迁 OVH VPS / Coolify**：注册表里有完整分析，**建议不迁**（ADP 是无状态边缘负载，留 Cloudflare 免费档最省）。
-- **TASK_INDEX.csv 的 status 死列**：已有守卫钉住「它是死配置」，是删列还是补数据，属 Owner。
+| # | 事项 | Owner 决定 | 执行状态 |
+|---|---|---|---|
+| 1 | 废弃 Cloudflare 资源 | **删除** | `adp-mirror` worker ✅已删；`adp` Tunnel ✅已删（删前确认 0 连接/down，`alpha` tunnel 未受影响）；**`adp-origin` DNS 记录 ⛔ 待 Owner 控制台删**（本线 token 仅 `zone(read)`，无 DNS 写权限） |
+| 2 | 剩余 2 个不可达源 | **需要救** | ⛔ **未开工**——属开发活，按 Owner「交接给别的 agent 开发」的指令留给接手方；见下方执行要点 |
+| 3 | 迁 OVH VPS / Coolify | **不迁** | ✅ 决策落地，无需动作。ADP 留 Cloudflare 免费档 |
+| 4 | TASK_INDEX 死 status 列 | **不做** | ✅ 决策落地，无需动作。已有守卫钉住「该列不可信」，不会再误导 |
 
----
+### 第 2 项执行要点（Owner 已批准要做，接手方直接开工）
 
-## 11. 数据存哪、去哪找（2026-07-19 全仓统一；由「仓库拆分」线程提供）
+**`science-advances`** — science.org 对数据中心 IP 确定性 403（边缘实测 3/3）。换 URL 无解，需**新增一层解析**：走 PubMed E-utilities（`esearch` 取 `"Sci Adv"[jour]` 近期 PMID → `efetch` 取标题/摘要/日期），与现有 `parseFeed` 不同格式，要写独立 parser + 注册新 method（现有 method 有 `rss`/`a0`/`arxiv`/`biorxiv`）。边缘实测 PubMed eutils 可达（200）。
 
-**所有原始/业务数据的唯一落地处 = 私有仓 `LinzeColin/Private-Database`**（PRIVATE，由 KMFA-Private-Runtime 更名）。三大数据区：
+**`stats-gov`** — 国家统计局，边缘探测 **30 秒超时**（既非 403 也非 503，**未定性**）。先诊断再定方案：可能是响应慢、可能是对 CF 边缘 IP 的静默丢包。建议先用临时探针 worker 拉长 timeout 分段测（DNS/TCP/TLS/首字节），定性后再决定换端点还是加重试。
 
-| 数据区 | 谁的数据 |
-|---|---|
-| `Private-KMDatabase/` | KMOS / KMFA 经营数据（财务、红圈、绩效） |
-| `Private-AgentDatabase/` | AgentDatabase / OpenAIDatabase 会话与派生数据 |
-| `Private-MetaDatabase/` | MetaDatabase 各项目数据（含本项目迁入后） |
-
-**铁律**：
-- **禁止 `git clone` Private-Database**（预计 500GB+，会损伤本地机器）；只按需下载单文件。
-- **不要把数据留在本地或提交进代码仓**；该仓只存数据、不存代码。
-- 读写用 SDK `private_db_client.py`（在 `LinzeColin/KMOS` 的 `KMDatabase/machine/tools/` 或 `LinzeColin/AgentDatabase` 的 `OpenAIDatabase/scripts/`），底层 GitHub API、零 clone：`ingest / get / put / list / delete / verify`。语言无关协议见 `Private-Database/PROTOCOL.md`。
-- 已知天花板：Git 后端不适合 500GB（单文件 100MB 硬限、无并发写）；触发信号与对象存储逃生口写在该仓根 README，到点由 Owner 决策。
-
-### 本项目仓位变更（重要）
-`arxiv-daily-push` 按全仓拆分计划将迁往 **`LinzeColin/MetaDatabase`**（保留完整 git 历史）。
-**目录从 CodexProject 消失是有意迁移，不是数据丢失，禁止从历史或备份恢复。**
-Owner 已于 2026-07-20 授权：ADP 线收工后即可执行迁移。
-
-> 以上内容由「仓库拆分」线程提供并入。ADP 线未独立验证其中的 SDK 路径与容量数字，如实标注来源。
-
----
-
-## 12. main 分支 CI 状态（2026-07-20 交接时）
-
-交接时 CodexProject main 的 CI 曾红，**原因不在 ADP 线**：`linze-golden-path.reusable.yml` 新增 `smoke` job（#289）未登记进 `governance/workflow_policy.json` 的 `expected_jobs`，触发 job topology drift。
-已核实三条独立证据：(a) ADP 推送前的 `bf60d902d` 已同样失败、错误逐字相同；(b) ADP 的 P20 提交改动 0 个 workflow 文件；(c) `smoke` job 由 #289 引入。
-Owner 授权后由 ADP 线补了登记（策略 +1 行、角色矩阵 +1 行重生成），未触碰 golden-path 的 workflow 逻辑。
+**⚠️ 顺带的更优解**：`gnews-us-tech` 目前已换 Bing News RSS，但 P20 实测发现 Google News **不是硬墙、是间歇 503（6 次采样 2 成功）**。给原 Google News 加**重试/退避**可能比换 Bing 更好（主题查询精度更高，Bing 的 `OR` 语法实测返 0 条只能用简化查询）。这条也在 P20 的 `unresolved_risks` 里。
 
 ---
 

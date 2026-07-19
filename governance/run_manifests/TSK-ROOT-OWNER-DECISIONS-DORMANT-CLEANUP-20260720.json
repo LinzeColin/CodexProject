@@ -1,0 +1,99 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-OWNER-DECISIONS-DORMANT-CLEANUP-20260720",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ROOT-OWNER-DECISIONS-DORMANT-CLEANUP",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260720-ADP-HANDOFF",
+  "generated_at": "2026-07-20T10:35:00Z",
+  "implementation_base_sha": "8260c93601ad912d99ed6d6b231838b58bdee585",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:ea87582a51fb5da3fc5afd0e0d9977411f55e4c9de8209ca73eab443add9fcd9",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 5 non-manifest changed files; changed_files_* list all 6 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "记录 Owner 4 项决策 + 按决策删除废弃 adp Tunnel;adp-origin DNS 因无权限如实标为待 Owner 手动删。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_DIRECTED_CLEANUP (Owner 2026-07-20 逐项明示决策;删除操作前做了二次确认[name/connections/status]并验证同账号其他 tunnel 未受影响;文档改动为记录性质。因属 Owner 直接指令下的清理与记录、且结果可由只读 API 与 curl 客观复验,未另起独立对抗复核——如实记录此偏离)",
+  "summary": "Owner 就 4 项待决全部拍板:①废弃资源=删除 ②2 个不可达源=需要救 ③迁 VPS=不迁 ④TASK_INDEX status 列=不做。执行:用 CF API 删除废弃 adp Tunnel(删前二次确认 name=adp/connections=0/status=down;复列确认同账号 alpha tunnel 未受影响);adp-mirror worker 早前已删。★adp-origin DNS 记录本线凭据仅 zone(read) 无 DNS 写权限、且本地安全策略拦截删 DNS 操作,如实标注为需 Owner 控制台手动删除,未伪称完成★。②『需要救』属开发活,按 Owner 先前的交接指令未擅自重启开发,改为在 HANDOFF §8 写入可直接开工的执行要点(science-advances 需 PubMed E-utilities 新解析层与新 method;stats-gov 需分段诊断 30s 超时先定性;并提示 gnews 更优解可能是给原 Google News 加重试而非换 Bing)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ROOT-OWNER-DECISIONS-DORMANT-CLEANUP-20260720.json",
+    "tests/governance/test_dormant_resource_dispositions.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ROOT-OWNER-DECISIONS-DORMANT-CLEANUP-20260720.json",
+    "tests/governance/test_dormant_resource_dispositions.py"
+  ],
+  "required_governance_files": [
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_infrastructure_registry.py",
+    "tests/governance/test_dormant_resource_dispositions.py"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json"
+  ],
+  "evidence_refs": [
+    "governance/infrastructure_registry.json",
+    "arxiv-daily-push/docs/HANDOFF.md"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_infrastructure_registry",
+    "python3 -m unittest tests.governance.test_dormant_resource_dispositions",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "Cloudflare API 删除 adp tunnel",
+      "result": "PASS",
+      "detail": "删前 GET 二次确认 name=adp/conns=0/status=down;DELETE success:true;复列 tunnels 仅剩 alpha(健康,未受影响)。"
+    },
+    {
+      "command": "test_dormant_resource_dispositions.py",
+      "result": "PASS",
+      "detail": "4/4;★双向负控实跑★:(A)把 adp-origin 谎报为『已删除』→FAIL;(B)把真删了的 adp-tunnel 降级为『需 Owner 控制台删』→FAIL;还原后 OK。守卫钉住『记录必须与实际操作一致』。"
+    },
+    {
+      "command": "生产未受影响",
+      "result": "PASS",
+      "detail": "adp.linzezhang.com 仍 200;adp-origin 仍 530(DNS 记录未删,符合预期)。"
+    },
+    {
+      "command": "test_infrastructure_registry",
+      "result": "PASS",
+      "detail": "6/6;dormant 条目更新(tunnel 删除存档、adp-origin 标注需 Owner 手动)后结构守卫仍绿。"
+    }
+  ],
+  "stop_conditions": [
+    "★adp-origin DNS 记录仍在:本线无 DNS 写权限,不得伪称已删;需 Owner 控制台手动执行★",
+    "『需要救』的 2 个源属开发活,Owner 已指定交接给另一个 agent,本线不擅自重启开发。",
+    "删除任何云资源前必须二次确认标识与连接数,并复验同类资源未被误删。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit(仅回退记录,不恢复已删 tunnel)。",
+    "production": "adp tunnel 删除不可逆;但其已 0 连接/down 且不在服务路径,adp.linzezhang.com 走 Worker 自定义域不依赖它。"
+  },
+  "unresolved_risks": [
+    "adp-origin DNS 记录仍存在(需 Owner 手动删),期间 adp-origin.linzezhang.com 持续返回 530。",
+    "2 个不可达源未修复,仍在 /system 异常名单如实展示。"
+  ],
+  "next_allowed_task": "Owner 在 Cloudflare 控制台删除 adp-origin DNS 记录;接手 agent 按 HANDOFF §8 执行要点救 science-advances 与 stats-gov。"
+}
