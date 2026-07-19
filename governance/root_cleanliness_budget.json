@@ -81,6 +81,12 @@
       "purpose": "CI golden-path reusable-workflow 模板与调用示例(PR #285)"
     },
     {
+      "path": "HANDOVER",
+      "kind": "directory",
+      "owner": "root-agent-tooling",
+      "purpose": "由 PR #289(golden-path/KMFA 线)引入的 Owner 交接资料(OPERATE_STATUS.yaml / OWNER_GUIDE.md);随该 PR 提交但漏登记本预算,2026-07-20 由 ADP 线经 Owner 授权补登。归属仍属 golden-path 线。"
+    },
+    {
       "path": "INVENTORY",
       "kind": "directory",
       "owner": "root-governance",

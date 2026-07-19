@@ -1,0 +1,104 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-WORKFLOW-POLICY-SMOKE-JOB-20260720",
+  "project_id": "root",
+  "task_id": "ROOT-WORKFLOW-POLICY-SMOKE-JOB",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260720-ADP-HANDOFF",
+  "generated_at": "2026-07-20T09:50:00Z",
+  "implementation_base_sha": "4defb605aca1da759fa9f38069b72a8d53a445f2",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2f2b62c6c5faa3d337b5cd77b127e4a9945c1f1aff6505e5c81ab9958071cf53",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 7 non-manifest changed files; changed_files_* list all 8 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "修绿 main CI:登记 golden-path 的 smoke job;新增守卫钉住 expected_jobs 与实际 jobs 一致;并入交接文档的数据存储说明与仓位变更。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_AUTHORIZED_MINIMAL_FIX (Owner 2026-07-20 明示授权补登记修绿;改动为策略 1 行+矩阵 1 行重生成,未触碰 golden-path workflow 逻辑;新守卫带实跑负控。因交接收尾且改动最小、可完全由审计工具客观判定,未另起独立对抗复核——如实记录此偏离)",
+  "summary": "main CI 红:linze-golden-path.reusable.yml 的 smoke job(#289 引入)未登记进 workflow_policy expected_jobs,触发 job topology drift。★三条独立证据核实非 ADP 线造成:ADP 推送前的 bf60d902d 已同样失败且错误逐字相同、ADP 的 P20 提交改动 0 个 workflow 文件、smoke 由 #289 引入★。Owner 授权后补登记(expected_jobs +smoke)并重生成 WORKFLOW_ROLE_MATRIX,未触碰 workflow 逻辑。新增 tests/governance/test_workflow_expected_jobs_match.py 让同类漂移在本地单测就红(负控实跑:拿掉 smoke→守卫 FAIL,复现 07-20 红 main 条件)。同时把仓库拆分线提供的数据存储说明(Private-Database 三区/禁 clone/SDK/500GB 天花板)与 arxiv-daily-push 将迁往 MetaDatabase 的仓位变更并入 HANDOFF.md,并如实标注该内容来源与未独立验证。 另:根级 HANDOVER/ 目录(同由 #289 引入、已提交但漏登记 root_cleanliness_budget)一并补登(同属 Owner 授权的『补登记修绿』范围;归属仍属 golden-path 线);events 新行导致 hygiene OID 需刷新亦一并处理。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/repository_hygiene_policy.json",
+    "governance/root_cleanliness_budget.json",
+    "governance/run_manifests/TSK-ROOT-WORKFLOW-POLICY-SMOKE-JOB-20260720.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_expected_jobs_match.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/repository_hygiene_policy.json",
+    "governance/root_cleanliness_budget.json",
+    "governance/run_manifests/TSK-ROOT-WORKFLOW-POLICY-SMOKE-JOB-20260720.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_expected_jobs_match.py"
+  ],
+  "required_governance_files": [
+    "governance/workflow_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "tests/governance/test_workflow_expected_jobs_match.py",
+    "governance/root_cleanliness_budget.json"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_expected_jobs_match.py"
+  ],
+  "evidence_refs": [
+    "governance/workflow_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "arxiv-daily-push/docs/HANDOFF.md"
+  ],
+  "test_commands": [
+    "python3 scripts/workflow_security_audit.py audit --json",
+    "python3 scripts/workflow_security_audit.py check-render",
+    "python3 -m unittest tests.governance.test_workflow_expected_jobs_match"
+  ],
+  "test_results": [
+    {
+      "command": "workflow_security_audit audit",
+      "result": "PASS",
+      "detail": "status PASS, errors[](修前:job topology drift ['deploy','home-sync','smoke','verify'])。"
+    },
+    {
+      "command": "workflow_security_audit check-render",
+      "result": "PASS",
+      "detail": "重生成 WORKFLOW_ROLE_MATRIX.md 后一致(改动 1 行)。"
+    },
+    {
+      "command": "test_workflow_expected_jobs_match",
+      "result": "PASS",
+      "detail": "3/3;负控实跑:从策略拿掉 smoke→守卫真 FAIL(复现 07-20 红 main 条件),还原后 OK。"
+    },
+    {
+      "command": "root_cleanliness_audit / repository_hygiene_audit",
+      "result": "PASS",
+      "detail": "修前:unowned root items ['HANDOVER'] + development_events blob OID 未登记;补登后双绿。"
+    }
+  ],
+  "stop_conditions": [
+    "★改任何 workflow 的 job 拓扑,必须同步 governance/workflow_policy.json 的 expected_jobs 并重生成 WORKFLOW_ROLE_MATRIX★——否则 main 红且下一个推送者继承。",
+    "本 fix 不得扩大到修改 golden-path 的 workflow 逻辑(那是另一线程的资产)。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit(策略回退到不含 smoke,main CI 会重新变红)。",
+    "production": "不涉及生产部署。"
+  },
+  "unresolved_risks": [
+    "golden-path 的 smoke job 本身的正确性由其所属线程负责,本次只做策略登记。",
+    "HANDOFF 并入的数据存储说明由仓库拆分线提供,ADP 线未独立验证其 SDK 路径与容量数字(已在文中标注)。"
+  ],
+  "next_allowed_task": "ADP 线已收工交接;仓库拆分线可执行 arxiv-daily-push → MetaDatabase 迁移(Owner 2026-07-20 授权)。"
+}

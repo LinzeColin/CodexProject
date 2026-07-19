@@ -457,6 +457,7 @@
       "expected_jobs": [
         "verify",
         "deploy",
+        "smoke",
         "home-sync"
       ],
       "trust_boundary": "reusable_workflow_call_only;Coolify secrets 由 caller 经 secrets 传入,不硬编码;不可信 inputs 走 env 不拼进 run",
