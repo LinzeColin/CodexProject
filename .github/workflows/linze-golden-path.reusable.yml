@@ -113,16 +113,17 @@ jobs:
       # STAGE-13.3: 依赖漏洞扫描 + SBOM 制品(可追溯; 记录不阻断, 避免上游 CVE 卡死发布)
       - name: SBOM 与依赖漏洞扫描
         run: |
-          set -uo pipefail
+          set +e            # 零漏洞时 grep 返回 1, 不可让 -e/pipefail 误判为失败
           docker run --rm -v "$PWD":/src -w /src aquasec/trivy:latest fs --quiet --scanners vuln --severity HIGH,CRITICAL --format json -o /src/sbom-vuln.json . 2>/dev/null || true
           docker run --rm -v "$PWD":/src -w /src aquasec/trivy:latest fs --quiet --format cyclonedx -o /src/sbom.cdx.json . 2>/dev/null || true
           if [ -f sbom-vuln.json ]; then
-            H=$(grep -o '"Severity":"HIGH"' sbom-vuln.json | wc -l | tr -d ' ')
-            C=$(grep -o '"Severity":"CRITICAL"' sbom-vuln.json | wc -l | tr -d ' ')
+            H=$(grep -o '"Severity":"HIGH"' sbom-vuln.json 2>/dev/null | wc -l | tr -d ' ')
+            C=$(grep -o '"Severity":"CRITICAL"' sbom-vuln.json 2>/dev/null | wc -l | tr -d ' ')
             echo "依赖漏洞: HIGH=$H CRITICAL=$C (详见 SBOM 制品)"
           else
             echo "(无扫描输出, 跳过)"
           fi
+          exit 0            # 扫描仅记录, 不阻断发布
 
       - name: 上传 SBOM 制品
         if: always()
