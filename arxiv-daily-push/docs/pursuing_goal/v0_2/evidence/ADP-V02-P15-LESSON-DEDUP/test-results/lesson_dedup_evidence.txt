@@ -1,0 +1,14 @@
+抽取自: /private/tmp/claude-501/-Users-linzezhang-Documents-Codex-main-worktree-CodexProject-adp/6c611ddc-f264-4d55-9b19-b0f39a03415d/scratchpad/recover/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+  ✅ [INTSD(线上实际观察到重复的那篇)] 修复后无跨段重复
+     ↳ 负控成立：旧逻辑在此确产生重复 [["机制拆解","证据与数字"]]
+  ✅ [cats 为空(领域脉络回退到 sents[2:3] 与机制拆解重叠)] 修复后无跨段重复
+     ↳ 负控成立：旧逻辑在此确产生重复 [["领域脉络","机制拆解"]]
+  ✅ [数字句在开头(人话版与证据与数字重叠)] 修复后无跨段重复
+     ↳ 负控成立：旧逻辑在此确产生重复 [["人话版","证据与数字"]]
+
+PASS: 修复消除全部跨段重复，且负控证明断言承重。
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.047s
+
+OK

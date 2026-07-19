@@ -1,0 +1,6 @@
+# ADP-V02-P15 变更文件（3 个代码文件；证据/manifest 另计）
+
+ arxiv-daily-push/deploy/cloudflare/worker_cloud.js |  22 ++--
+ arxiv-daily-push/tools/verify_lesson_dedup.mjs     | 106 ++++++++++++++++++
+ tests/governance/test_adp_lesson_dedup.py          | 124 +++++++++++++++++++++
+ 3 files changed, 245 insertions(+), 7 deletions(-)

@@ -1,0 +1,284 @@
+diff --git a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+index 3b525f3f2..74cac236c 100644
+--- a/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
++++ b/arxiv-daily-push/deploy/cloudflare/worker_cloud.js
+@@ -9,7 +9,7 @@
+ // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
+ // build_id/source_sha256 are a self-excluding hash: reset both values back to their
+ // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
+-const BUILD = { build_id: '24ffba0cdecf', source_sha256: '24ffba0cdecfb4ffce37f54dda5db0444d08b31f77c88d3c6096269db9c93ab0', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
++const BUILD = { build_id: 'e6b266d0874b', source_sha256: 'e6b266d0874bb22f45c32af9e1e85ba96360d03459372669b028a562b461fcda', schema_version: 'cn_v0_3', built_at: '2026-07-18' };
+ 
+ // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
+ // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
+@@ -615,14 +615,22 @@ function splitSentences(text) {
+ function buildLesson(it) {
+   const sents = splitSentences(it.summary);
+   const cats = (it.categories || '').split(',').filter(Boolean);
+-  const numeric = sents.filter(s => /\d/.test(s));
+-  const limits = sents.filter(s => /(however|but|limit|only|fail|不足|局限|但|然而|仅)/i.test(s));
++  // 去重：一句话只进它最专属的段落，绝不在多段逐字重复(损「深度/权威」)。认领优先级——
++  // 人话版(开头两句) › 证据与数字(含数字) › 反例与边界(局限词)；机制拆解/领域脉络取中段句时排除已认领句。
++  const intro = sents.slice(0, 2);
++  const numeric = sents.filter(s => /\d/.test(s) && !intro.includes(s)).slice(0, 3);
++  const limits = sents.filter(s => /(however|but|limit|only|fail|不足|局限|但|然而|仅)/i.test(s) && !intro.includes(s) && !numeric.includes(s));
++  const claimed = new Set([...intro, ...numeric, ...limits]);
++  // 领域脉络无类目时回退到中段句：先认领，机制拆解再排除，避免二者共用 sents[2] 逐字重复。
++  const loreSents = cats.length ? [] : sents.slice(2, 3).filter(s => !claimed.has(s));
++  loreSents.forEach(s => claimed.add(s));
++  const mechanism = sents.slice(2, 5).filter(s => !claimed.has(s));
+   const sec = (title, arr, fallback) => ({ title, sentences: (arr.length ? arr : [fallback]).slice(0, 4).map(text => ({ text })) });
+   return [
+-    sec('人话版', sents.slice(0, 2), `本文标题：${it.title}。摘要过短，请点原文精读。`),
+-    sec('领域脉络', cats.length ? [`本文类目：${cats.slice(0, 5).join('、')}，属于其所在研究脉络的最新进展。`] : sents.slice(2, 3), `来源板块：${BOARD_NAMES[it.board_id] || it.board_id}。`),
+-    sec('机制拆解', sents.slice(2, 5), '摘要未展开方法细节——精读时重点看方法/模型部分。'),
+-    sec('证据与数字', numeric.slice(0, 3), '摘要未给出量化结果——留意原文的实验与数据。'),
++    sec('人话版', intro, `本文标题：${it.title}。摘要过短，请点原文精读。`),
++    sec('领域脉络', cats.length ? [`本文类目：${cats.slice(0, 5).join('、')}，属于其所在研究脉络的最新进展。`] : loreSents, `来源板块：${BOARD_NAMES[it.board_id] || it.board_id}。`),
++    sec('机制拆解', mechanism, '摘要未展开方法细节——精读时重点看方法/模型部分。'),
++    sec('证据与数字', numeric, '摘要未给出量化结果——留意原文的实验与数据。'),
+     sec('反例与边界', limits, '摘要未声明局限与反例——这是需要警惕的信号，精读时先问边界。'),
+     sec('跨领域连接与意外收获', cats.length >= 2 ? [`横跨 ${cats.length} 个类目（${cats.slice(0, 4).join('、')}），关注其在你兴趣板块间的迁移面。`] : [], '思考本文机制能否迁移到你正在跟进的问题。'),
+     sec('可复用方法', [], '把本文机制与你手头项目对照，找一个两周内能验证的最小实验。'),
+diff --git a/arxiv-daily-push/tools/verify_lesson_dedup.mjs b/arxiv-daily-push/tools/verify_lesson_dedup.mjs
+new file mode 100644
+index 000000000..436ba4e87
+--- /dev/null
++++ b/arxiv-daily-push/tools/verify_lesson_dedup.mjs
+@@ -0,0 +1,106 @@
++#!/usr/bin/env node
++// 载荷型再推导验证器：抽取【已部署】worker_cloud.js 的 splitSentences+buildLesson 实跑，
++// 证明修复后【同一句摘要绝不在多个讲义段落逐字重复】；并用【负控】证明该断言承重——
++// pre-fix 旧逻辑在同一夹具上必然产生跨段重复。跑法：node arxiv-daily-push/tools/verify_lesson_dedup.mjs
++// 退出 0=全过；非 0=失败(附原因)。不改数据、不联网、纯函数验证。
++import fs from 'node:fs';
++import path from 'node:path';
++import url from 'node:url';
++
++const HERE = path.dirname(url.fileURLToPath(import.meta.url));
++const WORKER = path.resolve(HERE, '..', 'deploy', 'cloudflare', 'worker_cloud.js');
++const BOARD_NAMES = { 1: '板块一', 2: '板块二', 3: '板块三', 4: '板块四' };
++
++// —— 抽取【线上真实代码】：从 splitSentences 到 makeLesson 之间(含 buildLesson)，绝不复刻 ——
++function loadShipped() {
++  const src = fs.readFileSync(WORKER, 'utf8');
++  const start = src.indexOf('function splitSentences');
++  const end = src.indexOf('async function makeLesson');
++  if (start < 0 || end < 0 || end <= start) throw new Error('无法在 worker 中定位 splitSentences..makeLesson 区间——锚点变了，改验证器别让它空过');
++  const slice = src.slice(start, end);
++  // eslint-disable-next-line no-new-func
++  const factory = new Function('BOARD_NAMES', slice + '\n return { buildLesson, splitSentences };');
++  return factory(BOARD_NAMES);
++}
++
++// —— 负控参照：P-DEDUP 之前的 buildLesson(逐字保留旧逻辑，仅用于证明夹具能判别) ——
++function buildLessonPreFix(it, splitSentences) {
++  const sents = splitSentences(it.summary);
++  const cats = (it.categories || '').split(',').filter(Boolean);
++  const numeric = sents.filter(s => /\d/.test(s));
++  const limits = sents.filter(s => /(however|but|limit|only|fail|不足|局限|但|然而|仅)/i.test(s));
++  const sec = (title, arr, fallback) => ({ title, sentences: (arr.length ? arr : [fallback]).slice(0, 4).map(text => ({ text })) });
++  return [
++    sec('人话版', sents.slice(0, 2), `本文标题：${it.title}。摘要过短，请点原文精读。`),
++    sec('领域脉络', cats.length ? [`本文类目：${cats.slice(0, 5).join('、')}，属于其所在研究脉络的最新进展。`] : sents.slice(2, 3), `来源板块：${BOARD_NAMES[it.board_id] || it.board_id}。`),
++    sec('机制拆解', sents.slice(2, 5), 'fb-机制'),
++    sec('证据与数字', numeric.slice(0, 3), 'fb-证据'),
++    sec('反例与边界', limits, 'fb-反例'),
++    sec('跨领域连接与意外收获', cats.length >= 2 ? [`横跨 ${cats.length} 个类目`] : [], 'fb-跨'),
++    sec('可复用方法', [], 'fb-复用'),
++    sec('术语表', [], 'fb-术语'),
++  ];
++}
++
++// 找出【一句摘要文本出现在 >=2 个段落】的跨段重复(生成串/回退串各段唯一，不会误判)。
++function crossSectionDupes(sections, abstractSents) {
++  const setAbs = new Set(abstractSents);
++  const seen = new Map(); // text -> [titles]
++  for (const sec of sections) {
++    for (const { text } of sec.sentences) {
++      if (!setAbs.has(text)) continue; // 只看摘要原句，忽略生成/回退串
++      if (!seen.has(text)) seen.set(text, []);
++      seen.get(text).push(sec.title);
++    }
++  }
++  return [...seen.entries()].filter(([, titles]) => titles.length >= 2)
++    .map(([text, titles]) => ({ text: text.slice(0, 60) + '…', sections: titles }));
++}
++
++// —— 夹具 ——
++const FIXTURES = [
++  {
++    name: 'INTSD(线上实际观察到重复的那篇)',
++    it: {
++      title: 'Benchmarking Nighttime Traffic Sign Recognition', board_id: 1, categories: 'cs.CV,cs.CY',
++      summary: 'Traffic signboards are vital for road safety and intelligent transportation systems. Yet, recognizing traffic signs at night remains underexplored due to the scarcity of real-world public datasets capturing low-light degradations and distractor classes. Existing benchmarks are predominantly daytime and do not reflect challenges such as headlight glare, motion blur, sensor noise, and vandalized or ambiguous signage. To address these gaps, we introduce INTSD, a large-scale nighttime traffic sign dataset collected across diverse regions of India. INTSD contains street-level images spanning 41 traffic signboard classes, multiple distractor categories, and varied lighting and weather conditions, designed to support both detection and fine-grained classification under nighttime scenarios. Additionally, we present LENS-Net, a strong baseline that integrates an adaptive illumination-aware detector with a multimodal classifier.',
++    },
++    expectPreFixDup: true, // 旧逻辑必在此产生重复(数字句落在 slice(2,5))
++  },
++  {
++    name: 'cats 为空(领域脉络回退到 sents[2:3] 与机制拆解重叠)',
++    it: {
++      title: 'No categories case', board_id: 2, categories: '',
++      summary: 'This paper studies a system. The second sentence sets context here. The third sentence describes the core mechanism in detail. A fourth sentence adds more method description. A fifth closes it out cleanly.',
++    },
++    expectPreFixDup: true, // 旧逻辑：领域脉络=sents[2:3]、机制拆解=sents[2:5] → sents[2] 重复
++  },
++  {
++    name: '数字句在开头(人话版与证据与数字重叠)',
++    it: {
++      title: 'Numeric in intro', board_id: 3, categories: 'stat.ML',
++      summary: 'We evaluate across 5 datasets in this work. The context sentence follows without numbers here. Then a mechanism sentence with no digits at all. Another plain method sentence continues. Final wrap up sentence here.',
++    },
++    expectPreFixDup: true, // 旧逻辑：人话版=sents[0:2] 含数字句、证据与数字=numeric 也含它 → 重复
++  },
++];
++
++// —— 执行 ——
++let fail = 0;
++const { buildLesson, splitSentences } = loadShipped();
++console.log('抽取自:', WORKER);
++for (const fx of FIXTURES) {
++  const abs = splitSentences(fx.it.summary);
++  const now = buildLesson(fx.it);
++  const pre = buildLessonPreFix(fx.it, splitSentences);
++  const dupNow = crossSectionDupes(now, abs);
++  const dupPre = crossSectionDupes(pre, abs);
++  const okNow = dupNow.length === 0;
++  const okNC = fx.expectPreFixDup ? dupPre.length > 0 : true; // 负控：旧逻辑应产生重复
++  if (!okNow) { fail++; console.log(`  ❌ [${fx.name}] 修复后仍有跨段重复:`, JSON.stringify(dupNow)); }
++  else console.log(`  ✅ [${fx.name}] 修复后无跨段重复`);
++  if (!okNC) { fail++; console.log(`  ❌ [${fx.name}] 负控失效：旧逻辑本应产生重复却没有——夹具不判别，断言不承重`); }
++  else if (fx.expectPreFixDup) console.log(`     ↳ 负控成立：旧逻辑在此确产生重复 ${JSON.stringify(dupPre.map(d => d.sections))}`);
++}
++console.log(fail === 0 ? '\nPASS: 修复消除全部跨段重复，且负控证明断言承重。' : `\nFAIL: ${fail} 项`);
++process.exit(fail === 0 ? 0 : 1);
+diff --git a/tests/governance/test_adp_lesson_dedup.py b/tests/governance/test_adp_lesson_dedup.py
+new file mode 100644
+index 000000000..20d1189f4
+--- /dev/null
++++ b/tests/governance/test_adp_lesson_dedup.py
+@@ -0,0 +1,124 @@
++#!/usr/bin/env python3
++# -*- coding: utf-8 -*-
++"""Guard: the deterministic lesson builder never puts the SAME abstract sentence in two sections.
++
++P15 found (by observing the LIVE site) that the daily lesson rendered the same abstract sentence
++verbatim in two sections at once -- e.g. a numeric sentence landed in both `机制拆解` (positional
++`sents.slice(2,5)`) and `证据与数字` (`numeric`), and when an item had no categories the `领域脉络`
++fallback (`sents.slice(2,3)`) duplicated `机制拆解`. Duplicated content in an authority-facing
++"cognitive system" reads as a generation bug and dilutes depth. The fix makes each sentence go to
++exactly one section: specific sections (人话版/证据与数字/反例与边界, then 领域脉络's positional
++fallback) claim their sentences into a `claimed` set, and `机制拆解`/`领域脉络` exclude anything
++already claimed.
++
++CI's push path has no Node, so the load-bearing BEHAVIOURAL re-derivation lives in
++`arxiv-daily-push/tools/verify_lesson_dedup.mjs` (it extracts the shipped buildLesson, runs it over
++fixtures, and proves via negative controls that the PRE-FIX logic duplicated on every path). This
++Python guard is the CI-safe regression anchor: it pins the dedup MECHANISM in the shipped source and
++proves it is non-vacuous by running the same detector over the exact pre-fix code and requiring it to
++fire. If `node` happens to be present locally it also runs the behavioural verifier.
++"""
++import os
++import pathlib
++import re
++import shutil
++import subprocess
++import unittest
++
++ROOT = pathlib.Path(__file__).resolve().parents[2]
++WORKER = ROOT / "arxiv-daily-push" / "deploy" / "cloudflare" / "worker_cloud.js"
++VERIFIER = ROOT / "arxiv-daily-push" / "tools" / "verify_lesson_dedup.mjs"
++
++# The exact pre-fix buildLesson body (the code that shipped the duplicate). Used ONLY as the negative
++# control: the detector below MUST flag it, or the detector proves nothing about the real worker.
++PRE_FIX_SNIPPET = r"""
++function buildLesson(it) {
++  const sents = splitSentences(it.summary);
++  const cats = (it.categories || '').split(',').filter(Boolean);
++  const numeric = sents.filter(s => /\d/.test(s));
++  const limits = sents.filter(s => /(however|but|limit|only|fail|不足|局限|但|然而|仅)/i.test(s));
++  const sec = (title, arr, fallback) => ({ title, sentences: (arr.length ? arr : [fallback]).slice(0, 4).map(text => ({ text })) });
++  return [
++    sec('人话版', sents.slice(0, 2), `x`),
++    sec('领域脉络', cats.length ? [`y`] : sents.slice(2, 3), `z`),
++    sec('机制拆解', sents.slice(2, 5), 'a'),
++    sec('证据与数字', numeric.slice(0, 3), 'b'),
++    sec('反例与边界', limits, 'c'),
++  ];
++}
++"""
++
++
++def _extract_build_lesson(src):
++    m = re.search(r"function buildLesson\(it\)\s*\{.*?\nasync function makeLesson", src, re.S)
++    if m:
++        return m.group(0)
++    # PRE_FIX_SNIPPET has no makeLesson after it -- fall back to "to end of function at col-0 brace".
++    m = re.search(r"function buildLesson\(it\)\s*\{.*?\n\}", src, re.S)
++    return m.group(0) if m else None
++
++
++def _dedup_violations(build_lesson_src):
++    """Return the list of dedup-mechanism defects in a buildLesson source string. Empty == deduped.
++
++    Each check keys on a concrete symptom of the pre-fix (duplicating) shape, so the SAME function
++    both passes the real (fixed) worker and fires on PRE_FIX_SNIPPET (non-vacuity)."""
++    v = []
++    # 1) 机制拆解 must draw from a claimed-excluded set, never the raw positional slice.
++    if re.search(r"'机制拆解',\s*sents\.slice\(", build_lesson_src):
++        v.append("机制拆解 draws raw sents.slice(...) (no dedup) -- a positional sentence can dup 证据与数字/领域脉络")
++    # 2) the claim-set must exist.
++    if "new Set([" not in build_lesson_src or "claimed" not in build_lesson_src:
++        v.append("missing `claimed` Set -- nothing prevents a sentence appearing in two sections")
++    # 3) mechanism must actually exclude claimed sentences.
++    if "!claimed.has(s)" not in build_lesson_src:
++        v.append("mechanism does not filter out already-claimed sentences (!claimed.has(s) absent)")
++    # 4) numeric must be intro-filtered so an opening numeric sentence can't dup 人话版.
++    if re.search(r"const numeric = sents\.filter\(s => /\\d/\.test\(s\)\);", build_lesson_src):
++        v.append("numeric not intro-filtered -- a numeric opening sentence dups 人话版 and 证据与数字")
++    return v
++
++
++class TestAdpLessonDedup(unittest.TestCase):
++    def setUp(self):
++        self.assertTrue(WORKER.is_file(), "deployed worker missing: {}".format(WORKER))
++        self.src = _extract_build_lesson(WORKER.read_text(encoding="utf-8"))
++        self.assertIsNotNone(
++            self.src,
++            "could not locate buildLesson in worker_cloud.js -- it was renamed/moved; update this guard "
++            "deliberately, don't let it pass vacuously.")
++
++    def test_shipped_worker_is_deduped(self):
++        self.assertEqual(
++            _dedup_violations(self.src), [],
++            "shipped buildLesson has a cross-section duplication defect -- see violations above.")
++
++    def test_negative_control_prefix_code_is_flagged(self):
++        """Non-vacuity: the detector MUST fire on the exact pre-fix code, on every dedup dimension."""
++        pre = _extract_build_lesson(PRE_FIX_SNIPPET)
++        self.assertIsNotNone(pre, "pre-fix snippet did not parse -- fix the fixture")
++        viols = _dedup_violations(pre)
++        # all four symptoms must be present, or the detector under-checks the real worker
++        self.assertEqual(len(viols), 4,
++                         "detector did not flag all pre-fix defects (got {}): it under-checks and could "
++                         "pass a regressed worker vacuously.".format(viols))
++
++    def test_behavioural_verifier_exists(self):
++        """The load-bearing behavioural proof (extract shipped code + run + negative controls) is in-repo."""
++        self.assertTrue(VERIFIER.is_file(), "behavioural verifier missing: {}".format(VERIFIER))
++        body = VERIFIER.read_text(encoding="utf-8")
++        self.assertIn("crossSectionDupes", body, "verifier lost its dup detector")
++        self.assertIn("buildLessonPreFix", body, "verifier lost its negative control")
++
++    @unittest.skipUnless(shutil.which("node"), "node not on PATH (CI push path); behavioural check runs locally")
++    def test_behavioural_verifier_passes(self):
++        """When Node is available, actually run the shipped code over fixtures and require 0 dupes."""
++        r = subprocess.run(["node", str(VERIFIER)], capture_output=True, text=True, timeout=60,
++                           cwd=str(ROOT))
++        self.assertEqual(r.returncode, 0,
++                         "behavioural verifier failed:\nSTDOUT:\n{}\nSTDERR:\n{}".format(r.stdout, r.stderr))
++        self.assertIn("负控成立", r.stdout, "negative controls did not fire -- assertion not load-bearing")
++
++
++if __name__ == "__main__":
++    unittest.main()

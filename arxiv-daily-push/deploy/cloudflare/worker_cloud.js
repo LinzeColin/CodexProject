@@ -9,7 +9,7 @@
 // Build identity (ADP-S1-P01-T010): read-only /build.json + footer build id. No secret.
 // build_id/source_sha256 are a self-excluding hash: reset both values back to their
 // zero-placeholders ('0'*12 and '0'*64) and sha256 the file to reproduce source_sha256.
-const BUILD = { build_id: '24ffba0cdecf', source_sha256: '24ffba0cdecfb4ffce37f54dda5db0444d08b31f77c88d3c6096269db9c93ab0', schema_version: 'cn_v0_3', built_at: '2026-07-17' };
+const BUILD = { build_id: 'e6b266d0874b', source_sha256: 'e6b266d0874bb22f45c32af9e1e85ba96360d03459372669b028a562b461fcda', schema_version: 'cn_v0_3', built_at: '2026-07-18' };
 
 // ── S3-P03-T040 Board 3 官方视图 A0 canary 切换（Owner S3 Exit 已批准 A0 晋级）──
 // 默认关 = 部署即基线（生产 Board 3 与六主题不变）。开=Board 3 只把 A0 官方原文作默认证据、媒体降为 discovery。
@@ -615,14 +615,22 @@ function splitSentences(text) {
 function buildLesson(it) {
   const sents = splitSentences(it.summary);
   const cats = (it.categories || '').split(',').filter(Boolean);
-  const numeric = sents.filter(s => /\d/.test(s));
-  const limits = sents.filter(s => /(however|but|limit|only|fail|不足|局限|但|然而|仅)/i.test(s));
+  // 去重：一句话只进它最专属的段落，绝不在多段逐字重复(损「深度/权威」)。认领优先级——
+  // 人话版(开头两句) › 证据与数字(含数字) › 反例与边界(局限词)；机制拆解/领域脉络取中段句时排除已认领句。
+  const intro = sents.slice(0, 2);
+  const numeric = sents.filter(s => /\d/.test(s) && !intro.includes(s)).slice(0, 3);
+  const limits = sents.filter(s => /(however|but|limit|only|fail|不足|局限|但|然而|仅)/i.test(s) && !intro.includes(s) && !numeric.includes(s));
+  const claimed = new Set([...intro, ...numeric, ...limits]);
+  // 领域脉络无类目时回退到中段句：先认领，机制拆解再排除，避免二者共用 sents[2] 逐字重复。
+  const loreSents = cats.length ? [] : sents.slice(2, 3).filter(s => !claimed.has(s));
+  loreSents.forEach(s => claimed.add(s));
+  const mechanism = sents.slice(2, 5).filter(s => !claimed.has(s));
   const sec = (title, arr, fallback) => ({ title, sentences: (arr.length ? arr : [fallback]).slice(0, 4).map(text => ({ text })) });
   return [
-    sec('人话版', sents.slice(0, 2), `本文标题：${it.title}。摘要过短，请点原文精读。`),
-    sec('领域脉络', cats.length ? [`本文类目：${cats.slice(0, 5).join('、')}，属于其所在研究脉络的最新进展。`] : sents.slice(2, 3), `来源板块：${BOARD_NAMES[it.board_id] || it.board_id}。`),
-    sec('机制拆解', sents.slice(2, 5), '摘要未展开方法细节——精读时重点看方法/模型部分。'),
-    sec('证据与数字', numeric.slice(0, 3), '摘要未给出量化结果——留意原文的实验与数据。'),
+    sec('人话版', intro, `本文标题：${it.title}。摘要过短，请点原文精读。`),
+    sec('领域脉络', cats.length ? [`本文类目：${cats.slice(0, 5).join('、')}，属于其所在研究脉络的最新进展。`] : loreSents, `来源板块：${BOARD_NAMES[it.board_id] || it.board_id}。`),
+    sec('机制拆解', mechanism, '摘要未展开方法细节——精读时重点看方法/模型部分。'),
+    sec('证据与数字', numeric, '摘要未给出量化结果——留意原文的实验与数据。'),
     sec('反例与边界', limits, '摘要未声明局限与反例——这是需要警惕的信号，精读时先问边界。'),
     sec('跨领域连接与意外收获', cats.length >= 2 ? [`横跨 ${cats.length} 个类目（${cats.slice(0, 4).join('、')}），关注其在你兴趣板块间的迁移面。`] : [], '思考本文机制能否迁移到你正在跟进的问题。'),
     sec('可复用方法', [], '把本文机制与你手头项目对照，找一个两周内能验证的最小实验。'),

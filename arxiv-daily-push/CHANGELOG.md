@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-18 Australia/Sydney - ADP V0.2 P15: 讲义八段跨段逐字去重 (PRODUCTION DEPLOY e6b266d0874b; product_version 0.36.0)
+- 挑剔地看**线上**今日讲义发现：第 3 段「机制拆解」最后一句与第 4 段「证据与数字」**一字不差重复**。
+  根因 `buildLesson` 各段从**重叠句池**取句（机制拆解=`sents.slice(2,5)`、证据与数字=含数字句、
+  领域脉络无类目时=`sents.slice(2,3)`、反例与边界=含局限词句），同句命中两段就逐字重复；数字/局限句
+  常落摘要中段 → 系统性、每篇都可能中的内容质量缺陷，损深度/权威。
+- 修：一句只进最专属段落（人话版 › 证据与数字 › 反例与边界 › 领域脉络位置回退），依次写入 `claimed`
+  集合，机制拆解/领域脉络取中段句时 `!claimed.has(s)` 排除已认领句。八段标题/顺序/回退/确定性不变，
+  仅修句子分配；`template_ver` 不动（同模板 bugfix）。
+- 验证器 `tools/verify_lesson_dedup.mjs` 抽取**已部署** buildLesson 实跑 3 夹具无跨段重复，**负控**证明
+  旧逻辑在每条路径（INTSD:机制拆解↔证据与数字；cats空:领域脉络↔机制拆解；数字句开头:人话版↔证据与数字）
+  确会重复→断言承重；该验证器**部署前抓出我第一版修复漏掉领域脉络↔机制拆解路径**，补 loreSents 认领后才 3/3 过。
+- Python 守卫 `tests/governance/test_adp_lesson_dedup.py` 静态钉去重机制 + 负控在逐字 pre-fix 源上触发 4 项。
+- 线上 `/build.json=e6b266d0874b`；讲义读存储 sections_json，修复对**今晚 20:30 UTC cron 起新讲义**生效，历史不回溯。
+
 ## 2026-07-18 Australia/Sydney - ADP V0.2 P14: /system 来源健康与维护看板 (PRODUCTION DEPLOY 24ffba0cdecf; product_version 0.35.0)
 - cn_sources 里 healthStmt 一直在写 health/连续失败/last_fetch，但 /system 只做了汇总徽章、从不逐源细列。
   P09 查出的 6 个被数据中心 IP 挡住的官方源在页面上看不清。

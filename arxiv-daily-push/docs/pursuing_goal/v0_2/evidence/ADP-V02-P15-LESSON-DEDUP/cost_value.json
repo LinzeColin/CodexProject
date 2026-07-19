@@ -1,0 +1,20 @@
+{
+  "task": "ADP-V02-P15-LESSON-DEDUP",
+  "program": "ADP V0.2 / 深度 / 权威 / 内容质量",
+  "release_mode": "PRODUCTION",
+  "live_build_before": "24ffba0cdecf",
+  "live_build_after": "e6b266d0874b",
+  "deploy_version_id": "337e0a80-94a7-4eca-9244-4828fe3ec628",
+  "objective": "挑剔地看线上今日讲义时发现:第3段『机制拆解』最后一句与第4段『证据与数字』一字不差重复。根因 buildLesson 各段从重叠句池取句(机制拆解=sents.slice(2,5)、证据与数字=含数字句、领域脉络无类目时=sents.slice(2,3)、反例与边界=含局限词句),同句命中两段就逐字重复。数字/局限句常在摘要中段→系统性、每篇都可能中的内容质量缺陷,损深度/权威。",
+  "what": "一句只进最专属段落:人话版(开头两句)›证据与数字(数字句)›反例与边界(局限句)›领域脉络位置回退句,依次写入 claimed 集合;机制拆解/领域脉络取中段句时 !claimed.has(s) 排除已认领句。数字/局限句也排除开头两句。八段标题/顺序/回退/确定性不变,仅修句子分配;template_ver 不动(同模板 bugfix)。",
+  "honest_scope": "讲义从存储 sections_json 渲染,修复对今晚 20:30 UTC cron 起的新讲义生效;历史讲义不回溯(属历史)。故不做线上肉眼验证,线上证明是抽取已部署代码实跑(build 戳 e6b266d0874b 已确认线上一致)。纯 buildLesson 展示层去重,不改抽取/选择/排程。",
+  "verifier": "arxiv-daily-push/tools/verify_lesson_dedup.mjs 从已部署 worker 抽取 splitSentences+buildLesson 实跑3夹具,断言无摘要原句出现在≥2段;负控内联 pre-fix 旧逻辑跑同一夹具,证明它在每条路径(INTSD:机制拆解↔证据与数字;cats空:领域脉络↔机制拆解;数字句开头:人话版↔证据与数字)确会重复→断言承重。开发中该验证器抓出我第一版修复漏掉领域脉络↔机制拆解路径,补 loreSents 认领后才3/3过。",
+  "ci_guard": "tests/governance/test_adp_lesson_dedup.py 静态钉去重机制在线上源存在+负控在逐字 pre-fix 源上要求4项缺陷全触发;node 在场另跑行为验证器(CI push 无 node 自动 skip,静态仍跑)。",
+  "value": "每篇讲义消除跨段逐字重复,提升深度/权威阅读质量。系统性修复(整类跨段重复),非一次性 cosmetic。",
+  "verification": "线上 /build.json=e6b266d0874b(=Version 337e0a80)、首页200+footer戳一致、/api/runhealth 正常(590候选);验证器 exit0(3/3无重复+3负控触发);Python 守卫 4/4。",
+  "adversarial_review": "CONFIRMED_SOUND(独立复核亲手实跑全部承重项+2项破坏测试:mechanism 改回 raw slice→验证器 FAIL、删 claimed→守卫 FAIL,证明二者承重;核实部署自哈希自洽、边界诚实、无自签无造假;实施者未自签)。",
+  "residual_risks": ["数字/局限句若唯一且落在开头两句,对应专属段落显示回退文案(如『摘要未给出量化结果』)而数字其实在人话版内——边缘情形,回退文案指『量化结果/实验数据』,开头描述性数字非严格『结果』,可接受且无重复优先。","历史讲义(07-18及以前存储)仍含旧重复,不回溯重写。"],
+  "reversibility": "revert 本 commit + wrangler versions deploy 回 24ffba0cdecf。纯 buildLesson 确定性去重,回退无数据影响(仅影响回退后新生成讲义的分句)。",
+  "model_calls": 0,
+  "recurring_cloud_cost_delta_usd_month": 0
+}

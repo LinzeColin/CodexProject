@@ -1,0 +1,134 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ARXIV-DAILY-PUSH-V02-P15-LESSON-DEDUP-20260718",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-V02-P15-LESSON-DEDUP",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260718-ADP-DEPTH-AUTHORITY",
+  "generated_at": "2026-07-18T23:59:30Z",
+  "implementation_base_sha": "802156db8d112f51468eb99a30f66bfe5cb96c79",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:6e753c49691fb9496cd773337da40a4e0fd1678f7aa90fe6f6a1bb80c6e80a41",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 20 non-manifest changed files; changed_files_* list all 21 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "ADP V0.2 P15: 讲义八段跨段逐字去重;验证器抽取已部署 buildLesson 实跑+3负控,部署前抓出第一版修复漏洞;独立对抗复核待返回(不自签)。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "CONFIRMED_SOUND (独立对抗复核亲手实跑全部承重项+2项破坏测试:mechanism 改回 raw slice→验证器 FAIL、删 claimed→守卫 FAIL 证明二者承重;核实部署自哈希自洽、边界诚实、无自签无造假;实施者未自签)",
+  "summary": "观察线上讲义发现『机制拆解』末句与『证据与数字』一字不差重复。根因 buildLesson 各段从重叠句池(机制拆解=sents.slice(2,5)、证据与数字=含数字句、领域脉络无类目=sents.slice(2,3)、反例与边界=含局限词)取句,同句命中两段即逐字重复;数字/局限句常在摘要中段→系统性、每篇都可能中,损深度/权威。修:一句只进最专属段落(人话版›证据与数字›反例与边界›领域脉络位置回退),依次写入 claimed 集合,机制拆解/领域脉络取中段句 !claimed.has 排除已认领;八段标题/顺序/回退/确定性不变。验证器抽取已部署 buildLesson 实跑3夹具无重复+3负控证明旧逻辑每条路径确重复(承重),★部署前抓出第一版修复漏掉领域脉络↔机制拆解路径★。Python 守卫静态钉机制+负控在逐字 pre-fix 源触发4项。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 1
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/test-results/lesson_dedup_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/test-results/lesson_dedup_verify.mjs",
+    "arxiv-daily-push/tools/verify_lesson_dedup.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P15-LESSON-DEDUP-20260718.json",
+    "tests/governance/test_adp_lesson_dedup.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/deploy/cloudflare/worker_cloud.js",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/test-results/lesson_dedup_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/test-results/lesson_dedup_verify.mjs",
+    "arxiv-daily-push/tools/verify_lesson_dedup.mjs",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ARXIV-DAILY-PUSH-V02-P15-LESSON-DEDUP-20260718.json",
+    "tests/governance/test_adp_lesson_dedup.py"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_lesson_dedup.py",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_adp_lesson_dedup.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/TASK_REPORT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/cost_value.json",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/changed_files.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/git.diff",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/test-results/lesson_dedup_evidence.txt",
+    "arxiv-daily-push/docs/pursuing_goal/v0_2/evidence/ADP-V02-P15-LESSON-DEDUP/test-results/lesson_dedup_verify.mjs"
+  ],
+  "test_commands": [
+    "node arxiv-daily-push/tools/verify_lesson_dedup.mjs",
+    "python3 -m unittest tests.governance.test_adp_lesson_dedup",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "verify_lesson_dedup.mjs (抽取已部署 buildLesson,3 夹具)",
+      "result": "PASS",
+      "detail": "3/3 无跨段重复;3 负控全触发(INTSD:机制拆解↔证据与数字;cats空:领域脉络↔机制拆解;数字句开头:人话版↔证据与数字)→断言承重。"
+    },
+    {
+      "command": "test_adp_lesson_dedup.py",
+      "result": "PASS",
+      "detail": "4/4:静态钉去重机制在线上源+负控在逐字 pre-fix 源触发4项+行为验证器(本地 node)。"
+    },
+    {
+      "command": "生产部署验证",
+      "result": "PASS",
+      "detail": "Version 337e0a80;/build.json=e6b266d0874b;首页200+footer戳一致;/api/runhealth 正常(590候选)。"
+    }
+  ],
+  "stop_conditions": [
+    "★讲义任一段落绝不与另一段落逐字重复同一摘要句★:验证器的三条负控就是这条铁律,别为省事退回 raw sents.slice/numeric。",
+    "讲义读存储 sections_json:改 buildLesson 只影响新生成讲义,历史不回溯(别误以为改完立刻线上可见)。",
+    "template_ver 不动:这是同模板 bugfix,别顺手 bump 引发下游 template-changed 逻辑。"
+  ],
+  "rollback": {
+    "production": "npx wrangler@4 versions deploy <prev> 回 24ffba0cdecf。",
+    "repo": "git revert 本 commit。buildLesson 确定性去重,回退无数据影响。"
+  },
+  "unresolved_risks": [
+    "数字/局限句若唯一且在开头两句,对应专属段落显示回退文案而数字其实在人话版内(边缘,回退文案指量化结果、开头描述性数字非严格结果,可接受)。",
+    "历史讲义(07-18及以前存储)仍含旧重复,不回溯重写。"
+  ],
+  "next_allowed_task": "今晚 20:30 UTC cron 后可读 /today 肉眼确认新讲义无跨段重复;或 Owner 指下一方向。"
+}

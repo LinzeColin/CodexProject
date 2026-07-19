@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260718-ADP-V02-P14-SOURCE-MAINTENANCE-DEPLOY"
-source_snapshot_hash: "sha256:d60eef32ddaa0658c3eab2eff45591a7b172745eb5597fdd0b90b4a6a6b936d0"
+as_of_event_id: "EVENT-20260718-ADP-V02-P15-LESSON-DEDUP-DEPLOY"
+source_snapshot_hash: "sha256:9c5e58b338f9d7e0363de737de5cabb4683e3f5d407d41bab516988a9dbdaac7"
 source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
 snapshot_event_time: "2026-07-19T15:00:00+10:00"
@@ -62,7 +62,7 @@ dimensions:
     tree_bound_events: 17
     commit_bound_events: 13
     legacy_unbound_events: 334
-    precommit_pending_events: 165
+    precommit_pending_events: 166
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
