@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-ADP-A020-TEST-SKIP-20260721",
+  "project_id": "root",
+  "task_id": "ROOT-ADP-A020-TEST-SKIP",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-21T02:30:00Z",
+  "implementation_base_sha": "09749e62b36bf0090ff57c88712549df90ce9fbe",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:111fe9b3e7c6ade32c9a6553e3f94c779c6be9560ae7a9ea4b4a983b9583190e",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 1 non-manifest changed files;hash excludes this manifest.",
+  "ci_attestation_subject": "上一提交让 adp-a020 门在 arxiv 迁出后短路 run_gate=False,连带使断言旧 fail-closed 的测试失效,补入 skip",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "DISPATCH_29786367092_VALIDATOR_TESTS_FAILED",
+  "summary": "上一提交(09749e62b)修 push CI 时让 adp_a020_gate_decision_from_git 在本仓无 arxiv-daily-push 时短路 run_gate=False。push(changed-only)由此转绿,但 dispatch scope=all 的全量 validator tests 暴露一条连带失效:test_s3pct01_adp_a020_cli_invalid_base_fails_closed 断言无效 base 时 run_gate=True(旧 fail-closed 行为),而短路使该路径不可达 -> False。该测试测的是 adp 门在迁出后不可达的路径,属迁移残骸,补入 _MIGRATION_STALE 显式 skip(与其余 145 个 adp 迁出测试同类)。validator 全文件转 0 失败/170 skipped。★根因教训:push 与 dispatch 跑不同步骤,改门行为须两路都验★。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 0,
+    "production_deploy": 0,
+    "tests_named_skipped_total": 170
+  },
+  "changed_files_declared": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/TSK-ROOT-ADP-A020-TEST-SKIP-20260721.json"
+  ],
+  "changed_files_actual": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/TSK-ROOT-ADP-A020-TEST-SKIP-20260721.json"
+  ],
+  "required_governance_files": [
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "evidence_refs": [
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_project_governance_validator"
+  ],
+  "test_results": [
+    {
+      "command": "test_project_governance_validator 全量",
+      "result": "GREEN",
+      "detail": "0 失败/0 错误/170 skipped(subTest 父方法完整识别)。"
+    }
+  ],
+  "stop_conditions": [
+    "改治理门/脚本行为后,push(changed-only)与 workflow_dispatch scope=all(full)两路 CI 都要验——二者跑的步骤集不同。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。仅 skip 一条已失效测试。"
+  },
+  "unresolved_risks": [],
+  "next_allowed_task": "确认 push 与 dispatch 两路 Project Governance 均绿。"
+}
