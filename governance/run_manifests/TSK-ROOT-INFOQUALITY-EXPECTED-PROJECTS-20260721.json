@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-INFOQUALITY-EXPECTED-PROJECTS-20260721",
+  "project_id": "root",
+  "task_id": "ROOT-INFOQUALITY-EXPECTED-PROJECTS",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-21T00:40:00Z",
+  "implementation_base_sha": "4ded2396031d1c7b29c294a43c2d7cf095636131",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d85c51e8a6a79c056a95e6fecb2b4e2badfd557629c00b32aa3bec44f5b1b713",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 2 non-manifest changed files;hash excludes this manifest.",
+  "ci_attestation_subject": "validate_information_quality 的 EXPECTED_PROJECTS 同步迁移(10 迁出项目 -> 空),修夜间 CI『Validate all information quality』步骤",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "WORKFLOW_DISPATCH_29784933354_INFOQUALITY_STEP_FAILED",
+  "summary": "上一 CI(run 29784933354)validator tests 已绿,但『Validate all information quality』步骤 21 error 全是已迁出项目(Alpha/EEI/EVA_OS/FIFA/OpMe/OpenAIDatabase/PFI/Serenity/whkm/arxiv)。根因:scripts/validate_information_quality.py 的硬编码常量 EXPECTED_PROJECTS 仍列这 10 个,而拆分后 projects.yaml 的 projects 为 []——check_project_set 逐个误报 PROJECT_SET/PROJECT_DIR/README_PROJECT。修:EXPECTED_PROJECTS 置空以与注册表一致。新增承重测试 test_information_quality_expected_projects(锁常量==活跃注册表,且 --all --fail-on-error 须 rc=0;破坏验证:塞一项 Ghost -> 测试失败,已实跑)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 0,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_information_quality_expected_projects.py",
+    "governance/run_manifests/TSK-ROOT-INFOQUALITY-EXPECTED-PROJECTS-20260721.json"
+  ],
+  "changed_files_actual": [
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_information_quality_expected_projects.py",
+    "governance/run_manifests/TSK-ROOT-INFOQUALITY-EXPECTED-PROJECTS-20260721.json"
+  ],
+  "required_governance_files": [
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_information_quality_expected_projects.py"
+  ],
+  "updated_governance_files": [
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_information_quality_expected_projects.py"
+  ],
+  "evidence_refs": [
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_information_quality_expected_projects.py"
+  ],
+  "test_commands": [
+    "python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "python3 -m unittest tests.governance.test_information_quality_expected_projects"
+  ],
+  "test_results": [
+    {
+      "command": "validate_information_quality --all --fast --fail-on-error",
+      "result": "PASS(rc=0)",
+      "detail": "修前 21 error;修后 rc=0。changed-only 亦 PASS。"
+    },
+    {
+      "command": "test_information_quality_expected_projects",
+      "result": "PASS",
+      "detail": "2 项过;★破坏验证实跑★:塞 Ghost -> 失败。"
+    }
+  ],
+  "stop_conditions": [
+    "治理脚本里凡硬编码项目集的常量,迁移后必须同步;新增守卫已锁 EXPECTED_PROJECTS。",
+    "generate_governance_dashboard.py(21处)/lean_governance.py(15处)仍有硬编码项目引用,以真实 CI 逐步驱动修复,勿预防性乱改。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯常量同步+守卫测试,无运行时副作用。"
+  },
+  "unresolved_risks": [
+    "其他治理脚本(dashboard/lean_governance)含硬编码迁出项目引用,可能在后续 CI 步骤(如 Verify generated governance dashboard)暴露,届时逐个修。"
+  ],
+  "next_allowed_task": "workflow_dispatch 复验夜间 Project Governance。"
+}

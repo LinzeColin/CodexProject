@@ -20,18 +20,12 @@ import generate_governance_dashboard as dashboard
 sys.dont_write_bytecode = True
 
 ROOT = structural.ROOT
-EXPECTED_PROJECTS = {
-    "Alpha": "Alpha",
-    "EEI": "EEI",
-    "EVA_OS": "EVA_OS",
-    "FIFA": "FIFA",
-    "OpMe_System": "OpMe_System",
-    "OpenAIDatabase": "OpenAIDatabase",
-    "PFI_BIG_DATA_SIMULATOR": "PFI/大数据模拟器",
-    "Serenity-Alipay": "Serenity-Alipay",
-    "whkmSalary": "whkmSalary",
-    "arxiv-daily-push": "arxiv-daily-push",
-}
+# 仓库拆分后本仓活跃项目归零：上列 10 个项目已全部迁出（Alpha/EEI/EVA_OS/FIFA/OpMe_System/
+# OpenAIDatabase/PFI/Serenity-Alipay/whkmSalary/arxiv-daily-push -> KMOS/MetaDatabase/AgentDatabase/
+# Archive），governance/projects.yaml 的 projects 现为 []。此期望集须与之一致，否则 check_project_set
+# 会为每个已迁出项目误报 PROJECT_SET/PROJECT_DIR/README_PROJECT。将来若本仓重新登记活跃项目，
+# 在此同步补入（并确保其目录与 README 到位）。
+EXPECTED_PROJECTS: dict[str, str] = {}
 PLACEHOLDERS = ("DETERMINISTIC_GENERATION", "CURRENT_CHECKOUT", "CURRENT_CHECKOUT_TREE")
 BARE_PENDING = re.compile(r"(?<![A-Z0-9_])PENDING(?![A-Z0-9_])")
 DIMENSION_STATUSES = {
