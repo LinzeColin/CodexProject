@@ -23,19 +23,10 @@ class GovernanceArtifactPolicyTests(unittest.TestCase):
         self.assertEqual(summary["status"], "PASS", summary["errors"])
         self.assertEqual(summary["duplicate_editable_truth_count"], 0)
         self.assertTrue(all(item["matches"] for item in summary["retained_legacy"]))
-        openai_database = next(
-            item
-            for item in summary["retained_legacy"]
-            if item["path"] == "OpenAIDatabase/docs/governance"
-        )
-        self.assertEqual(
-            openai_database["current"],
-            {
-                "count": 14,
-                "bytes": 334805,
-                "sha256": "c455178e70d2dec8b94ed7cc25fd7a0a73da0b44977aae162bf1f7e6dbf86d01",
-            },
-        )
+        # 已剪除：原此处断言 retained_legacy 中 "OpenAIDatabase/docs/governance" 的
+        # 基线快照(14 文件/334805 字节/固定 sha256)。OpenAIDatabase 于 2026-07-17 迁往
+        # LinzeColin/AgentDatabase，该 retained_legacy 条目随之移除，next() 必然 StopIteration。
+        # 上方三条通用断言（status/duplicate/所有 retained_legacy 均 matches）仍然承重。
 
     def test_duplicate_editable_canonical_fact_domain_fails(self) -> None:
         policy = copy.deepcopy(self.policy)
@@ -87,17 +78,10 @@ class GovernanceArtifactPolicyTests(unittest.TestCase):
         )
         self.assertTrue(any("append-only" in error for error in modified_receipt), modified_receipt)
 
-    def test_openai_database_legacy_allowlist_locks_only_registered_views(self) -> None:
-        legacy = artifacts.validate_changed_entries(
-            [{"status": "M", "path": "OpenAIDatabase/docs/governance/STATUS.md"}],
-            self.policy,
-        )
-        self.assertTrue(any("retained legacy evidence is read-only" in error for error in legacy), legacy)
-        canonical = artifacts.validate_changed_entries(
-            [{"status": "M", "path": "OpenAIDatabase/docs/governance/project.yaml"}],
-            self.policy,
-        )
-        self.assertFalse(any("retained legacy evidence is read-only" in error for error in canonical), canonical)
+    # 已退休：test_openai_database_legacy_allowlist_locks_only_registered_views
+    # 它断言 artifact_policy 把 OpenAIDatabase 的遗留视图锁为只读；OpenAIDatabase 于
+    # 2026-07-17 迁往 LinzeColin/AgentDatabase 时，该策略条目已一并移除（现策略中
+    # OpenAIDatabase 出现 0 次），断言主体不复存在，故随之退休。
 
     def test_new_tracked_full_log_fails(self) -> None:
         errors = artifacts.validate_changed_entries(

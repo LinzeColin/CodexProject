@@ -87,7 +87,21 @@ class TestGeneratedProjectViewsMatchGenerator(unittest.TestCase):
 
     def test_tracked_views_match_a_fresh_render(self):
         live = self._live_projects()
-        self.assertTrue(live, "no project with renderable governance views -- this guard protects nothing")
+        if not live:
+            # 仓库拆分完成后本仓活跃项目为零，已无可渲染的项目视图。
+            # 原哨兵 assertTrue(live, ...) 的用意是「别让本测试悄悄空转」，零项目时会误报。
+            # 改为：零项目必须是「项目都迁出了」这一可证事实，而非注册表异常清空。
+            registry = self.gen.load_registry() if hasattr(self.gen, "load_registry") else None
+            import yaml as _yaml
+            registry = registry or _yaml.safe_load(
+                (ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8")
+            )
+            migrated = registry.get("migrated_projects") or []
+            self.assertGreaterEqual(
+                len(migrated), 1,
+                "本仓无可渲染项目视图，且注册表无 migrated 记录——这不是拆分完成，而是注册表异常。",
+            )
+            return
 
         drifted = []
         for project in live:

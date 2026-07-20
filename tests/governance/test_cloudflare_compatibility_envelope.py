@@ -35,10 +35,17 @@ EXPECTED_EVIDENCE_COMMITS = {
     "pfi": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935",
     "serenity-alipay": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935",
 }
+# CF-L2-20260710 是一次已完成交付的历史证据。其中 OpenAIDatabase 已迁往 LinzeColin/AgentDatabase、
+# PFI 已迁往 LinzeColin/MetaDatabase，两者的 delivery_tasks.yaml 随项目迁走，本仓不再持有。
+# 部署事实本身仍由本仓 governance/cloudflare/deployments.json 保存并被本文件其余用例校验。
 PROJECT_TASK_FILES = (
     ROOT / "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
     ROOT / "PFI/docs/governance/delivery_tasks.yaml",
 )
+MIGRATED_TASK_FILE_OWNERS = {
+    "OpenAIDatabase": "LinzeColin/AgentDatabase",
+    "PFI": "LinzeColin/MetaDatabase",
+}
 
 
 class CloudflareCompatibilityGovernanceTests(unittest.TestCase):
@@ -55,9 +62,38 @@ class CloudflareCompatibilityGovernanceTests(unittest.TestCase):
                     self.assertFalse(record["actual_url"])
 
     def test_each_changed_project_has_the_cloudflare_delivery_task(self) -> None:
+        """交付任务记录：仍在本仓的项目直接校验；已迁出的改为校验迁移登记。
+
+        原实现无条件读取各项目的 delivery_tasks.yaml。OpenAIDatabase 与 PFI 迁出后该文件
+        随项目走，本仓读不到 -> 测试永久 FileNotFoundError，反而掩盖了它该守的东西。
+        现改为：文件在则照旧断言；不在则必须能在注册表里证明该项目确已迁出（而非凭空消失）。
+        """
+        import yaml
+
+        registry = yaml.safe_load(
+            (ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8")
+        )
+        migrated = {
+            entry["project_id"]: entry
+            for entry in (registry.get("migrated_projects") or [])
+            if isinstance(entry, dict)
+        }
         for path in PROJECT_TASK_FILES:
+            project_id = path.relative_to(ROOT).parts[0]
             with self.subTest(path=path):
-                self.assertIn('task_id: "CF-L2-20260710"', path.read_text(encoding="utf-8"))
+                if path.exists():
+                    self.assertIn('task_id: "CF-L2-20260710"', path.read_text(encoding="utf-8"))
+                    continue
+                # 文件不在 -> 该项目必须已登记迁出，且目标仓与预期一致
+                self.assertIn(
+                    project_id, migrated,
+                    f"{project_id} 的 delivery_tasks.yaml 不在本仓，且注册表无迁出登记——"
+                    f"这不是迁移，是文件凭空消失。",
+                )
+                self.assertEqual(
+                    migrated[project_id]["target_repo"],
+                    MIGRATED_TASK_FILE_OWNERS[project_id],
+                )
 
     def test_required_l2_online_surfaces_are_verified(self) -> None:
         document = json.loads(DEPLOYMENTS.read_text(encoding="utf-8"))

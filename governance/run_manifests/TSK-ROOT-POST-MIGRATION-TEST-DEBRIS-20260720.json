@@ -1,0 +1,93 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-POST-MIGRATION-TEST-DEBRIS-20260720",
+  "project_id": "root",
+  "task_id": "ROOT-POST-MIGRATION-TEST-DEBRIS",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-REPOSITORY-SPLIT-ADP",
+  "generated_at": "2026-07-20T13:30:00Z",
+  "implementation_base_sha": "54c0165bb4b2fb24d671b5630a9f61c00a4e56e6",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:b3e0485ce43f72f4f53f34ab64b5d9dcd01dfd6705d1ecee8330cf6799c306d2",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 4 surviving non-manifest changed files;hash excludes this manifest.",
+  "ci_attestation_subject": "清理历次迁移在治理测试里留下的残骸：陈旧断言、指向已迁走项目的引用、以及零项目后误报的哨兵",
+  "ci_run_reference": "LOCAL_FULL_AUDIT_PASS_PENDING_REMOTE",
+  "gate_status": "PASS_LOCAL",
+  "summary": "★这些红全部是我自己历次迁移留下的债，本次一并还清★。对干净 origin/main 建基线逐条差分：治理测试失败 6 -> 1。①退休 test_openai_database_id_migration 与 test_openai_database_lean_convergence——主体 OpenAIDatabase 已迁往 AgentDatabase，且二者 import 本仓独有的 governance_id_audit / generate_governance_dashboard，实测无法随迁（ModuleNotFoundError）；替代保障已核实：AgentDatabase 有专门的 OpenAIDatabase Governance 工作流且实测 success。②剪除 test_governance_artifact_policy 中两处陈旧断言：其一断言策略把 OpenAIDatabase 遗留视图锁只读（现策略中 OpenAIDatabase 出现 0 次），其二 next() 取 retained_legacy 里的 OpenAIDatabase 条目必然 StopIteration。③test_cloudflare_compatibility_envelope 无条件读 OpenAIDatabase/PFI 的 delivery_tasks.yaml -> 永久 FileNotFoundError；改为文件在则照旧断言、不在则必须能在注册表证明该项目确已迁出且目标仓相符（把死引用换成活断言）。④test_generated_project_views_match_generator 与 test_repository_hygiene 的两个哨兵假设『至少有项目/至少有大对象』，零项目、大对象随项目迁走后误报；改为保住『别空转』原意的等价断言（前者要求注册表有 migrated 记录，后者对大对象+归档之和断言）。★中途我一度裁剪 repository_hygiene_policy 的 retained_objects（删 6 条指向已迁项目的），但发现剪得不一致——另有 8 条按 prefix 写的同类条目未被覆盖，且该策略是锚定已复核对象指纹的历史基线，不该由我单方面裁剪，已完整回退。★",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 0,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "tests/governance/test_repository_hygiene.py",
+    "governance/run_manifests/TSK-ROOT-POST-MIGRATION-TEST-DEBRIS-20260720.json",
+    "(deleted) tests/governance/test_openai_database_id_migration.py",
+    "(deleted) tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "changed_files_actual": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "tests/governance/test_repository_hygiene.py",
+    "governance/run_manifests/TSK-ROOT-POST-MIGRATION-TEST-DEBRIS-20260720.json",
+    "(deleted) tests/governance/test_openai_database_id_migration.py",
+    "(deleted) tests/governance/test_openai_database_lean_convergence.py"
+  ],
+  "required_governance_files": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "updated_governance_files": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "evidence_refs": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_governance_artifact_policy.py",
+    "tests/governance/test_repository_hygiene.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.<each>",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 -B scripts/workflow_security_audit.py audit",
+    "python3 -B scripts/governance_id_audit.py --root ."
+  ],
+  "test_results": [
+    {
+      "command": "tests/governance 全量对基线差分",
+      "result": "6_FAILURES_REDUCED_TO_1",
+      "detail": "唯一残留 test_repository_hygiene::test_new_large_archive_runtime_noise_and_backup_producer_fail（夹具写入未被 git add 的 .DS_Store 却期望 tracked_runtime_noise 违规码）——★已 stash 实证★在干净 main 上同样失败，与仓库拆分无关、非本线程引入，留给该审计的属主。"
+    },
+    {
+      "command": "四项审计",
+      "result": "PASS",
+      "detail": "root_cleanliness / repository_hygiene / workflow_security / governance_id 全 rc=0。"
+    }
+  ],
+  "stop_conditions": [
+    "推送前把 CI 的所有审计脚本本地跑一遍。",
+    "改 .github/workflows/ 必须走 SSH（PAT 无 workflow scope）。",
+    "不要单方面裁剪 repository_hygiene_policy 的 retained_objects——它是锚定已复核对象指纹的历史基线。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯测试与断言清理，无运行时副作用。"
+  },
+  "unresolved_risks": [
+    "旧项目治理框架仍在（validate_project_governance 被 14 个文件依赖、含必须保留的仓级审计），⑦ 需先分离再退休，不可整体删除。"
+  ],
+  "next_allowed_task": "⑧ WDA 双平面升级；⑩ 全 8 仓终验。"
+}
