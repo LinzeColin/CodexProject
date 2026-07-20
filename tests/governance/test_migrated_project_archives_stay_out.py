@@ -59,6 +59,70 @@ class MigratedProjectArchivesStayOutTests(unittest.TestCase):
             f"留存策略仍指向已删除的归档路径（悬空引用）：{dangling}",
         )
 
+    def test_migrated_project_governance_evidence_stays_out(self) -> None:
+        """★承重★：已迁出项目的治理证据不得回流。
+
+        2026-07-20 经 Owner 授权，把 496 个属已迁出项目的证据迁至
+        `LinzeColin/Archive` 的 `_codexproject_legacy/governance_evidence/`
+        （云端验收 497 文件到位后才删源）：`run_manifests/` 非 TSK- 遗留清单 480 个、
+        `stage_gates/` 16 个。本仓保留其自身的 96 条遗留清单、TSK- 新证据与 48 条阶段门。
+
+        回流会让本仓重新堆积已不相干项目的记录，也会让防篡改基线对不上。
+        """
+        migrated_markers = (
+            "ADP", "ARXIV", "OPENAI", "KM_IDSYSTEM", "KMIDS", "ALPHA",
+            "FIFA", "QBVS", "EEI", "SERENITY", "WHKM", "METADATABASE",
+        )
+        offenders = []
+        for directory in ("run_manifests", "stage_gates"):
+            base = ROOT / "governance" / directory
+            if not base.is_dir():
+                continue
+            for path in base.rglob("*"):
+                if not path.is_file():
+                    continue
+                name = path.name.upper()
+                # TSK- 是本仓当前的新证据命名空间，不受此限
+                if name.startswith("TSK-"):
+                    continue
+                if any(marker in name for marker in migrated_markers):
+                    offenders.append(str(path.relative_to(ROOT)))
+        self.assertEqual(
+            sorted(offenders), [],
+            "这些已迁出项目的治理证据回流到本仓了（权威副本在 "
+            "LinzeColin/Archive 的 _codexproject_legacy/governance_evidence/）：\n"
+            + "\n".join(sorted(offenders)[:10]),
+        )
+
+    def test_tamper_baselines_match_current_content(self) -> None:
+        """★承重★：防篡改锁必须与当前实际内容严丝合缝。
+
+        清理后重新锚定了 run_manifests(576->96) 与 stage_gates(64->48) 的基线。
+        锁与内容一旦对不上，说明有人动了冻结集合却没走 Owner 授权流程。
+        """
+        import importlib.util
+        import sys
+
+        scripts = str(ROOT / "scripts")
+        if scripts not in sys.path:
+            sys.path.insert(0, scripts)
+        spec = importlib.util.spec_from_file_location(
+            "gap_baseline_test", ROOT / "scripts" / "governance_artifact_policy.py"
+        )
+        gap = importlib.util.module_from_spec(spec)
+        sys.modules["gap_baseline_test"] = gap
+        assert spec.loader is not None
+        spec.loader.exec_module(gap)
+
+        policy = json.loads((ROOT / "governance" / "artifact_policy.json").read_text(encoding="utf-8"))
+        drift = []
+        for item in policy.get("retained_legacy_collections") or []:
+            current = gap.collection_metrics(ROOT, item)
+            expected = item.get("baseline") or {}
+            if current != expected:
+                drift.append(f"{item.get('path')} 期望={expected} 实际={current}")
+        self.assertEqual(drift, [], "防篡改基线与实际内容漂移：\n" + "\n".join(drift))
+
     # 刻意不在此断言「所有留存规则目标都必须存在」：
     # 该策略另有 6 条按 path 指向 OpenAIDatabase / PFI / arxiv-daily-push 的条目，
     # 其文件已随项目迁出。它们是锚定已复核对象指纹的历史基线，且其中

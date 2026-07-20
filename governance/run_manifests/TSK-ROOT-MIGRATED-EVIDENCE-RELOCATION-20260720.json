@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-MIGRATED-EVIDENCE-RELOCATION-20260720",
+  "project_id": "root",
+  "task_id": "ROOT-MIGRATED-EVIDENCE-RELOCATION",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-20T14:40:00Z",
+  "implementation_base_sha": "d100cdd8532be744768026fd4a7d3381865ec6f2",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:05706e5b506ce0e16027aee06952b33970087dbdb40eff7de3a17788ffb8f3fc",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 2 surviving non-manifest changed files;496 deletions carry no content;hash excludes this manifest.",
+  "ci_attestation_subject": "Owner 授权：把 496 个已迁出项目的治理证据迁至 Archive 仓，并按迁出后真实内容重新锚定防篡改基线",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "LOCAL_FULL_AUDIT_PASS_PENDING_REMOTE",
+  "summary": "★Owner 2026-07-20 明确授权的冻结集合迁移★。artifact_policy 的 retained_legacy_collections 对本批文件设有防篡改锁（mutable:false，锁定 count/bytes/sha256），条款为 read_only_until_owner_authorized_migration——本次正是该条款预期的授权迁移。迁出 496 个属已迁出项目的证据：run_manifests 非 TSK- 遗留清单 480 个（ADP/arxiv/OpenAIDatabase/EEI/PFI/Alpha/FIFA/QBVS/Serenity-Alipay/whkmSalary/KM_IDSystem）、stage_gates 16 个。★先完整迁入 LinzeColin/Archive 的 _codexproject_legacy/governance_evidence/ 并云端验收 497 文件到位，才删本仓副本★（铁律：目标验证通过才删源）。本仓保留其自身的 96 条遗留清单、72 条 TSK- 新证据、48 条阶段门。重新上锁未手算指纹，而是直接调用门禁自身的 collection_metrics() 取删除后真实值写回，确保锁与内容严丝合缝：run_manifests 576->96（4583520->1064957 字节）、stage_gates 64->48（3666070->3639665 字节）；ci_attestations 与 review_bundles 未涉及，锁原样不动。governance/ 由 13M 降至 6.7M，仓内跟踪文件 1149->520。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "files_removed": 496,
+    "tamper_baselines_repinned": [
+      "governance/run_manifests",
+      "governance/stage_gates"
+    ],
+    "owner_authorization": "OWNER_AUTHORIZED_MIGRATION_2026-07-20"
+  },
+  "changed_files_declared": [
+    "governance/artifact_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py",
+    "governance/run_manifests/TSK-ROOT-MIGRATED-EVIDENCE-RELOCATION-20260720.json",
+    "(deleted) 496 files under governance/run_manifests and governance/stage_gates"
+  ],
+  "changed_files_actual": [
+    "governance/artifact_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py",
+    "governance/run_manifests/TSK-ROOT-MIGRATED-EVIDENCE-RELOCATION-20260720.json",
+    "(deleted) 496 files under governance/run_manifests and governance/stage_gates"
+  ],
+  "required_governance_files": [
+    "governance/artifact_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py"
+  ],
+  "updated_governance_files": [
+    "governance/artifact_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py"
+  ],
+  "evidence_refs": [
+    "governance/artifact_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_migrated_project_archives_stay_out",
+    "python3 -B scripts/lean_governance.py artifact-audit --json",
+    "python3 -B scripts/lean_governance.py artifact-check-render",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 -B scripts/workflow_security_audit.py audit",
+    "python3 -B scripts/governance_id_audit.py --root ."
+  ],
+  "test_results": [
+    {
+      "command": "artifact-audit / artifact-check-render",
+      "result": "PASS",
+      "detail": "重新锚定后 status=PASS、errors 为空 —— 证明防篡改锁与迁出后的真实内容严丝合缝，未出现漂移。"
+    },
+    {
+      "command": "test_migrated_project_archives_stay_out",
+      "result": "PASS",
+      "detail": "4 项全过。★破坏验证已实跑★：投放一个 ADP 证据文件回本仓 -> 失败；把锁的 count 篡改为 999 -> 失败；还原后 4 项全过。"
+    },
+    {
+      "command": "七项审计",
+      "result": "PASS",
+      "detail": "root_cleanliness / repository_hygiene / workflow_security / check-render / governance_id / artifact-audit / artifact-check-render 全 rc=0。"
+    },
+    {
+      "command": "tests/governance 全量",
+      "result": "ZERO_NEW_FAILURES",
+      "detail": "失败数 1，与清理前基线相同（test_repository_hygiene 的 tracked_runtime_noise 夹具问题，已实证在干净 main 上同样失败，非本线程引入）。"
+    }
+  ],
+  "stop_conditions": [
+    "重新锚定防篡改基线必须调用门禁自身的 collection_metrics() 取值，禁止手算或估算。",
+    "冻结集合的任何变动都需 Owner 明确授权；本次授权仅覆盖已迁出项目的证据，不含本仓自身记录。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit 可恢复本仓文件与旧基线；权威副本已在 LinzeColin/Archive 的 _codexproject_legacy/governance_evidence/（497 文件）。"
+  },
+  "unresolved_risks": [
+    "repository_hygiene_policy 仍有 6 条按 path 指向已迁出项目的 retained_objects（其中 PFI_V025_SOURCE_TASKPACK 被 test_cleanmem_public_split_safety 按 id 锚定），裁剪会连锁破坏，属另一独立事项。"
+  ],
+  "next_allowed_task": "确认 main CI 转绿。"
+}

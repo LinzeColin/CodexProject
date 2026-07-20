@@ -141,9 +141,9 @@
       "reason": "Historical run evidence remains reference-compatible; new Task Runs use compact TSK receipts.",
       "mutable": false,
       "baseline": {
-        "bytes": 4583520,
-        "count": 576,
-        "sha256": "23c615da37375df9e553b2a5b646a3d3f781895573c2256b21ed8c609df03bed"
+        "count": 96,
+        "bytes": 1064957,
+        "sha256": "e6617d16056f753f6871cbdcc8b41a28e228fee02e07206f23e8605b981fae51"
       }
     },
     {
@@ -180,9 +180,9 @@
       "reason": "Historical stage-gate fixtures remain readable; future full reports and logs belong in CI artifacts.",
       "mutable": false,
       "baseline": {
-        "count": 64,
-        "bytes": 3666070,
-        "sha256": "19c08320c9f61b4e2f21f427db0a03a4672c7c25d74a73ce0abd94e14c39f684"
+        "count": 48,
+        "bytes": 3639665,
+        "sha256": "32270fbe51623e59c89e4d48a032d11d014addbc770a58b19e73cd2a90a7040a"
       }
     }
   ],
