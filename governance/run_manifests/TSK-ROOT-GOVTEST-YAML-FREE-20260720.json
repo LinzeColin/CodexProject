@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-GOVTEST-YAML-FREE-20260720",
+  "project_id": "root",
+  "task_id": "ROOT-GOVTEST-YAML-FREE",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-20T22:30:00Z",
+  "implementation_base_sha": "a97a2bd8df4e1a4485aa22c354bd2fd8ecaa8a67",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:9a850dafbfe73da356ebbc9d2b9e36f9396830b41b611ee88b6724eba201b331",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 3 non-manifest changed files;hash excludes this manifest.",
+  "ci_attestation_subject": "治理测试改用仓库自带 yaml-free load_yaml,消除 CI(不装 pyyaml)下 ModuleNotFoundError",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "LOCAL_NOYAML_SIM_PASS_PENDING_REMOTE",
+  "summary": "修复夜间 Project Governance 的一部分红:三个治理测试直接 import yaml,而 CI 的『Run full governance validator tests』步骤不装 pyyaml(仓库脚本 load_yaml 设计为 ImportError 回退到纯 Python fallback_yaml_load)。改为统一走 validate_project_governance.load_yaml。其中两个(test_cloudflare_compatibility_envelope、test_generated_project_views_match_generator)是我本会话清理时引入的直接 import yaml,属我的回归;第三个(test_human_entry_markdown_contract)是既有顶层 import yaml,一并修。★用 sitecustomize 屏蔽 yaml 精确复现 CI 无 yaml 环境,三者从 ModuleNotFoundError -> PASS;有 yaml 环境同样 PASS★。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 0,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_human_entry_markdown_contract.py",
+    "governance/run_manifests/TSK-ROOT-GOVTEST-YAML-FREE-20260720.json"
+  ],
+  "changed_files_actual": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_human_entry_markdown_contract.py",
+    "governance/run_manifests/TSK-ROOT-GOVTEST-YAML-FREE-20260720.json"
+  ],
+  "required_governance_files": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_human_entry_markdown_contract.py"
+  ],
+  "updated_governance_files": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_human_entry_markdown_contract.py"
+  ],
+  "evidence_refs": [
+    "tests/governance/test_cloudflare_compatibility_envelope.py",
+    "tests/governance/test_generated_project_views_match_generator.py",
+    "tests/governance/test_human_entry_markdown_contract.py"
+  ],
+  "test_commands": [
+    "PYTHONPATH=<noyaml> python3 -m unittest tests.governance.<each>",
+    "python3 -m unittest tests.governance.<each>"
+  ],
+  "test_results": [
+    {
+      "command": "三测试 · 无yaml + 有yaml 双环境",
+      "result": "PASS",
+      "detail": "sitecustomize 置 sys.modules['yaml']=None 复现 CI;三者双环境全 PASS。"
+    }
+  ],
+  "stop_conditions": [
+    "治理测试读 yaml 一律走 validate_project_governance.load_yaml,禁止直接 import yaml(CI 不装 pyyaml)。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯测试加载方式修正,无运行时副作用。"
+  },
+  "unresolved_risks": [
+    "★夜间 Project Governance 仍有约 238 个失败,来自 test_project_governance_validator.py(11187行/338方法)中针对已迁出项目(EVA/arxiv/OPME/PFI/Serenity/OpenAI/whkm/Alpha/FIFA/ADP/EEI)的陈旧断言——本次未动,属独立的大规模迁移残骸清理,已连续红 10+ 晚(schedule-only,不阻塞 push/PR)。"
+  ],
+  "next_allowed_task": "决定 test_project_governance_validator.py 的 238 个迁走项目陈旧测试:整体退休 vs 外科式移除。"
+}

@@ -91,11 +91,8 @@ class TestGeneratedProjectViewsMatchGenerator(unittest.TestCase):
             # 仓库拆分完成后本仓活跃项目为零，已无可渲染的项目视图。
             # 原哨兵 assertTrue(live, ...) 的用意是「别让本测试悄悄空转」，零项目时会误报。
             # 改为：零项目必须是「项目都迁出了」这一可证事实，而非注册表异常清空。
-            registry = self.gen.load_registry() if hasattr(self.gen, "load_registry") else None
-            import yaml as _yaml
-            registry = registry or _yaml.safe_load(
-                (ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8")
-            )
+            # 用与 setUpClass 相同的 yaml-free 加载器（CI 不装 pyyaml；直接 import yaml 会崩）
+            registry = self.gen.structural.load_yaml(self.gen.structural.PROJECTS_FILE)
             migrated = registry.get("migrated_projects") or []
             self.assertGreaterEqual(
                 len(migrated), 1,

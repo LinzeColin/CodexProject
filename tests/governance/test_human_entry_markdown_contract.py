@@ -1,11 +1,30 @@
+import importlib.util
+import sys
 import unittest
 from pathlib import Path
 
-import yaml
-
 
 ROOT = Path(__file__).resolve().parents[2]
+SCRIPTS = ROOT / "scripts"
 HUMAN_ENTRY_STEMS = ("功能清单", "开发记录", "模型参数文件")
+
+
+def load_yaml(path: Path):
+    """走仓库自带的 yaml-free 加载器（CI 治理测试步骤不装 pyyaml）。
+
+    `validate_project_governance.load_yaml` 在无 pyyaml 时回退到纯 Python 的
+    `fallback_yaml_load`；测试里直接 `import yaml` 会在 CI `ModuleNotFoundError`。
+    """
+    if str(SCRIPTS) not in sys.path:
+        sys.path.insert(0, str(SCRIPTS))
+    spec = importlib.util.spec_from_file_location(
+        "vpg_human_entry_test", SCRIPTS / "validate_project_governance.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["vpg_human_entry_test"] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module.load_yaml(path)
 
 
 def registered_project_paths() -> list[str]:
@@ -14,7 +33,7 @@ def registered_project_paths() -> list[str]:
     A regex over every `path:` line also swept up retired and migrated
     projects, whose directories are not required to be present here.
     """
-    registry = yaml.safe_load((ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8"))
+    registry = load_yaml(ROOT / "governance" / "projects.yaml")
     return [
         entry["path"]
         for entry in registry.get("projects", [])
@@ -29,9 +48,7 @@ class HumanEntryMarkdownContractTests(unittest.TestCase):
             # 仓库拆分完成后本仓活跃项目可以为零。原哨兵 assertGreaterEqual(len(paths), 1)
             # 的用意是「别让本测试悄悄变成空转」，零活跃时它会误报。改为：零活跃必须是
             # 「项目都迁出了」这一可证事实，而不是注册表被意外清空/损坏。
-            registry = yaml.safe_load(
-                (ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8")
-            )
+            registry = load_yaml(ROOT / "governance" / "projects.yaml")
             migrated = registry.get("migrated_projects") or []
             retired = registry.get("retired_projects") or []
             self.assertGreaterEqual(

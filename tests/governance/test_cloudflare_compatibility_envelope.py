@@ -1,11 +1,33 @@
 from __future__ import annotations
 
+import importlib.util
 import json
+import sys
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+SCRIPTS = ROOT / "scripts"
+
+
+def governance_load_yaml(path: Path):
+    """用仓库自带的 yaml-free 加载器读 yaml。
+
+    CI 的治理测试步骤不安装 pyyaml（`validate_project_governance.load_yaml` 会 ImportError
+    回退到纯 Python 的 `fallback_yaml_load`）。测试里直接 `import yaml` 会在 CI 环境
+    `ModuleNotFoundError`——必须走这条与 CI 一致的路径。
+    """
+    if str(SCRIPTS) not in sys.path:
+        sys.path.insert(0, str(SCRIPTS))
+    spec = importlib.util.spec_from_file_location(
+        "vpg_cloudflare_test", SCRIPTS / "validate_project_governance.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["vpg_cloudflare_test"] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module.load_yaml(path)
 DEPLOYMENTS = ROOT / "governance/cloudflare/deployments.json"
 RUN_MANIFEST = ROOT / "governance/run_manifests/CF-L2-20260710.json"
 REQUIRED_PROJECTS = {
@@ -68,11 +90,7 @@ class CloudflareCompatibilityGovernanceTests(unittest.TestCase):
         随项目走，本仓读不到 -> 测试永久 FileNotFoundError，反而掩盖了它该守的东西。
         现改为：文件在则照旧断言；不在则必须能在注册表里证明该项目确已迁出（而非凭空消失）。
         """
-        import yaml
-
-        registry = yaml.safe_load(
-            (ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8")
-        )
+        registry = governance_load_yaml(ROOT / "governance" / "projects.yaml")
         migrated = {
             entry["project_id"]: entry
             for entry in (registry.get("migrated_projects") or [])
