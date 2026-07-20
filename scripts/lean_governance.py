@@ -2755,6 +2755,28 @@ def adp_a020_gate_decision_from_git(base_ref: str | None = None, *, projects_fil
     config = governance.load_yaml(projects_file)
     if not isinstance(config, dict):
         raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
+    # arxiv-daily-push 已于仓库拆分迁往 LinzeColin/MetaDatabase：本仓不再持有其源码/测试，
+    # 该供应链门（跑 arxiv-daily-push/tests/test_security_boundary.py）无对象可 gate。此处短路为
+    # run_gate=False，避免 fail-closed 触发已不存在的测试导致 push CI 报 ModuleNotFoundError。
+    # 该门的职责随项目迁往目标仓，由 MetaDatabase 的 CI 承接。
+    if not (ROOT / ADP_A020_PROJECT_PATH).is_dir():
+        return {
+            "schema_version": 1,
+            "gate": "ADP-A020",
+            "run_gate": False,
+            "reason": "adp_project_migrated_out_of_repository",
+            "base_ref": base_ref or "",
+            "base_ref_status": "resolved",
+            "error_code": "",
+            "changed_file_count": 0,
+            "changed_files": [],
+            "matched_files": [],
+            "roi_telemetry": {
+                "before": "fixed_run_on_pull_request_push_changed_only",
+                "after": "path_aware_fail_closed",
+                "ci_substep": "Run ADP supply-chain A-020 gate",
+            },
+        }
     try:
         changed = git_content_changed_files(base_ref, root=ROOT)
     except governance.GovernanceDiffError as exc:

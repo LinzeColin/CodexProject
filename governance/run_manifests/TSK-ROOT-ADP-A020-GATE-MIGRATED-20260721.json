@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-ADP-A020-GATE-MIGRATED-20260721",
+  "project_id": "root",
+  "task_id": "ROOT-ADP-A020-GATE-MIGRATED",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-21T02:10:00Z",
+  "implementation_base_sha": "220c7f8421ec12e0ab933c5439db0ca754b42878",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:b1de1d571ebe88c078e0215c9b471d1fefef9e4771a1d1e43702e3dcef3e778e",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 2 non-manifest changed files;hash excludes this manifest.",
+  "ci_attestation_subject": "arxiv 迁出后 ADP A-020 供应链门短路为不运行,修 push CI 的 ModuleNotFoundError",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "PUSH_RUN_29785962985_ADP_A020_STEP_FAILED",
+  "summary": "★workflow_dispatch scope=all 已全绿(整条 Project Governance success),但 push 触发的 run 仍红★:push 走 changed-only 路径,含『Run ADP supply-chain A-020 gate』步,跑 arxiv-daily-push/tests/test_security_boundary.py。arxiv-daily-push 已迁往 MetaDatabase,该测试不在本仓 -> ModuleNotFoundError。根因:预检 adp_a020_gate_decision 在 root 治理文件变更时 fail-closed 成 run_gate=true(我 push 改了 scripts/tests 等 root 文件),触发 Run 步跑已不存在的测试。这是我迁 arxiv 时漏掉的工作流残骸(该门只引用于 lean_governance.py 与 project-governance.yml,entry_gates/workflow_policy 均不依赖,已核)。修:在 adp_a020_gate_decision_from_git 加早退——本仓无 arxiv-daily-push 目录时直接 run_gate=False(reason=adp_project_migrated_out_of_repository),免动工作流(免 SSH)。门的职责随项目迁往 MetaDatabase 的 CI。新增承重守卫 test_adp_a020_gate_after_migration。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 0,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_adp_a020_gate_after_migration.py",
+    "governance/run_manifests/TSK-ROOT-ADP-A020-GATE-MIGRATED-20260721.json"
+  ],
+  "changed_files_actual": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_adp_a020_gate_after_migration.py",
+    "governance/run_manifests/TSK-ROOT-ADP-A020-GATE-MIGRATED-20260721.json"
+  ],
+  "required_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_adp_a020_gate_after_migration.py"
+  ],
+  "updated_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_adp_a020_gate_after_migration.py"
+  ],
+  "evidence_refs": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_adp_a020_gate_after_migration.py"
+  ],
+  "test_commands": [
+    "python3 scripts/lean_governance.py adp-a020-gate --base-ref origin/main",
+    "python3 -m unittest tests.governance.test_adp_a020_gate_after_migration"
+  ],
+  "test_results": [
+    {
+      "command": "adp-a020-gate",
+      "result": "run_gate=False",
+      "detail": "reason=adp_project_migrated_out_of_repository(带/不带 base-ref 均 False)。"
+    },
+    {
+      "command": "test_adp_a020_gate_after_migration",
+      "result": "PASS",
+      "detail": "arxiv 不在本仓时断言 run_gate False。"
+    }
+  ],
+  "stop_conditions": [
+    "项目迁出后,凡在 root 工作流里引用其源码/测试的门必须短路或移除;prefer 代码侧短路(免改工作流免 SSH)。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯 gate 决策短路+守卫,无运行时副作用。"
+  },
+  "unresolved_risks": [],
+  "next_allowed_task": "确认 push 与 workflow_dispatch 两路 Project Governance 均绿。"
+}
