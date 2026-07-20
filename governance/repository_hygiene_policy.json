@@ -361,36 +361,6 @@
       "max_bytes": 809988
     },
     {
-      "id": "EVA_LEGACY_HANDOFF_ARCHIVE",
-      "path": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip",
-      "kinds": [
-        "archive"
-      ],
-      "owner": "root governance archive owner",
-      "purpose": "Read-only legacy handoff compatibility artifact",
-      "consumer": "Historical Other8 handoff references",
-      "retention": "locked_legacy_baseline_until_owner_migration",
-      "recovery": "Git baseline blob 432435b0313629a85b7a40c2684fb1115dc99737",
-      "confidentiality": "legacy_repository_evidence",
-      "change_policy": "baseline_oid_only",
-      "max_bytes": 107173
-    },
-    {
-      "id": "KM_IDSYSTEM_LEGACY_ARCHIVE",
-      "path": "governance/archive/other8_wave1_pending/KM_IDSystem/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_web_pdf_enhanced.zip",
-      "kinds": [
-        "archive"
-      ],
-      "owner": "root governance archive owner",
-      "purpose": "Read-only legacy generated-output compatibility artifact",
-      "consumer": "Historical KM_IDSystem evidence references",
-      "retention": "locked_legacy_baseline_until_owner_migration",
-      "recovery": "Git baseline blob 3b3b990def0659a201ddb0f4413b02ec0439ff9b",
-      "confidentiality": "legacy_repository_evidence",
-      "change_policy": "baseline_oid_only",
-      "max_bytes": 75207
-    },
-    {
       "id": "ADP_FRONTEND_BASELINE_V1_ARCHIVE",
       "path": "arxiv-daily-push/docs/design/前端呈现基线_v1/_原始存档/ADP主题动效v1.1.zip",
       "kinds": [

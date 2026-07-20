@@ -1,0 +1,88 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-MIGRATED-ARCHIVE-CLEANUP-20260720",
+  "project_id": "root",
+  "task_id": "ROOT-MIGRATED-ARCHIVE-CLEANUP",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-20T14:00:00Z",
+  "implementation_base_sha": "87b4f26b14b1b0254cade1a748e1b98c581a9ec6",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:874368d90f8adbccf4d05fdd4d39dea8d7292e3f1be68bed286df6e84bc843f5",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 2 surviving non-manifest changed files;133 deletions carry no content;hash excludes this manifest.",
+  "ci_attestation_subject": "清出本仓 governance/archive 下 133 个已迁出项目的历史归档，内容先保全至 Archive 仓再删源",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "LOCAL_FULL_AUDIT_PASS_PENDING_REMOTE",
+  "summary": "Owner 反馈本仓「一地鸡毛、垃圾文件」，本次清第一批：governance/archive/other8_wave1_pending/ 共 133 文件 2MB，全属已迁出/已归档项目（Alpha 74、EVA_OS 40、KM_IDSystem 18）。★逐文件内容哈希比对后分类处置，未一刀切★：①EVA_OS 40 个与 LinzeColin/Archive 的 EVA_OS/ 下文件 40/40 内容完全相同，属纯重复，直接删除；②Alpha 0/74、KM_IDSystem 2/18 命中重复，即绝大多数为本仓独有，★不能删★——已先迁入 Archive 仓 _codexproject_legacy/ 并云端验收 93 文件到位（74+18+README），确认目标保全后才删本仓副本（铁律：目标验证通过才删源）。放 Archive 而非各自项目仓：这些是历史备份/交付产物不是活跃代码，放回 MetaDatabase/KMOS 会污染其活跃工作区。同步移除 repository_hygiene_policy 中指向被删文件的 2 条留存规则（EVA_LEGACY_HANDOFF_ARCHIVE / KM_IDSYSTEM_LEGACY_ARCHIVE），否则策略指向空气。governance/ 由 13M 降至 11M。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "files_removed": 133,
+    "bytes_freed_approx": 2097152
+  },
+  "changed_files_declared": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py",
+    "governance/run_manifests/TSK-ROOT-MIGRATED-ARCHIVE-CLEANUP-20260720.json",
+    "(deleted) governance/archive/other8_wave1_pending/** 133 files"
+  ],
+  "changed_files_actual": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py",
+    "governance/run_manifests/TSK-ROOT-MIGRATED-ARCHIVE-CLEANUP-20260720.json",
+    "(deleted) governance/archive/other8_wave1_pending/** 133 files"
+  ],
+  "required_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py"
+  ],
+  "updated_governance_files": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py"
+  ],
+  "evidence_refs": [
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_migrated_project_archives_stay_out.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_migrated_project_archives_stay_out",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 -B scripts/workflow_security_audit.py audit",
+    "python3 -B scripts/governance_id_audit.py --root .",
+    "python3 -B scripts/lean_governance.py artifact-audit --json"
+  ],
+  "test_results": [
+    {
+      "command": "test_migrated_project_archives_stay_out",
+      "result": "PASS",
+      "detail": "★破坏验证已实跑★：重建归档目录 -> 失败；复活已退休的留存规则 -> 失败；还原后 2 项全过。"
+    },
+    {
+      "command": "四审计 + artifact-audit",
+      "result": "PASS",
+      "detail": "root_cleanliness / repository_hygiene / workflow_security / governance_id 全 rc=0；artifact-audit status=PASS 无 errors，证明被冻结锚定的集合（run_manifests 非 TSK- 576 条、stage_gates 64、review_bundles 15、ci_attestations 1）未受本次清理影响。"
+    },
+    {
+      "command": "tests/governance 全量",
+      "result": "ZERO_NEW_FAILURES",
+      "detail": "失败数 1，与清理前基线相同（唯一残留 test_repository_hygiene 的 tracked_runtime_noise 夹具问题，已实证在干净 main 上同样失败，非本线程引入）。"
+    }
+  ],
+  "stop_conditions": [
+    "删已迁出项目的材料前必须逐文件内容哈希比对：重复才可删，独有必须先迁走并云端验收。",
+    "不要单方面裁剪 repository_hygiene_policy 中锚定历史指纹的 retained_objects——另有 6 条按 path 指向已迁出项目，其中 PFI_V025_SOURCE_TASKPACK 被 test_cleanmem_public_split_safety 按 id 锚定，裁剪会连锁破坏，需 Owner 授权的独立迁移。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit 可恢复本仓文件；Alpha/KM_IDSystem 的权威副本已在 LinzeColin/Archive 的 _codexproject_legacy/。"
+  },
+  "unresolved_risks": [
+    "governance/ 仍有 656 个被冻结锚定的治理证据（run_manifests 非 TSK- 576 / stage_gates 64 / review_bundles 15 / ci_attestations 1），其中约 533 条属已迁出项目（ADP 437、OpenAI 32、ARXIV 22、EEI 14 等）。策略明写 retention=read_only_until_owner_authorized_migration、mutable=false 并锁死数量与 sha256，清理必须由 Owner 授权并重新锚定基线，本次未动。"
+  ],
+  "next_allowed_task": "确认 main CI 转绿；如 Owner 授权，再清理 656 个冻结治理证据中属已迁出项目的部分。"
+}
