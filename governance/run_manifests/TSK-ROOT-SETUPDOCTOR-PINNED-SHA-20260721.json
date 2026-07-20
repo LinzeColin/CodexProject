@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-SETUPDOCTOR-PINNED-SHA-20260721",
+  "project_id": "root",
+  "task_id": "ROOT-SETUPDOCTOR-PINNED-SHA",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-21T01:40:00Z",
+  "implementation_base_sha": "31f93a29e337ae83029acefbef50246df3ad2b8e",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:44553c06bab97c316182ba64ea4a5bd71ad0e0af0a03453216112a7df82403f2",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 2 non-manifest changed files;hash excludes this manifest.",
+  "ci_attestation_subject": "setup_doctor 的 upload-artifact 检查接受 pinned SHA,修 CI『Write CI attestation』步骤(dispatch 专属)",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "WORKFLOW_DISPATCH_29785619827_ATTESTATION_STEP_FAILED",
+  "summary": "上一 CI(run 29785619827)★夜间 schedule 会跑的 5 步全 success(validator tests/info quality/registered scopes/verify generated dashboard/upload views)——夜间慢性红已消★。唯一失败是『Write CI attestation』(仅 workflow_dispatch scope=all 触发,夜间不跑):其末尾 governance_setup_doctor.py --check-github 的 workflow_entry_gates 有一项 ci_attestation_uploaded_as_artifact 用正则 actions/upload-artifact@v[4-9] 只认版本标签,而本仓工作流按安全最佳实践 pin 成 commit SHA(actions/upload-artifact@043fb46… # v7),误判 false -> entry_gates FAIL -> setup_doctor 非零 -> 步骤红。修:正则放宽为 @(?:v[4-9]|[0-9a-f]{40}) 同时接受标签与 pinned SHA。新增承重守卫 test_setup_doctor_entry_gates(锁 entry_gates 全过 + upload-artifact 项对 pinned-SHA 判 true;破坏验证:退回只认标签 -> 失败,已实跑)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 0,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_setup_doctor_entry_gates.py",
+    "governance/run_manifests/TSK-ROOT-SETUPDOCTOR-PINNED-SHA-20260721.json"
+  ],
+  "changed_files_actual": [
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_setup_doctor_entry_gates.py",
+    "governance/run_manifests/TSK-ROOT-SETUPDOCTOR-PINNED-SHA-20260721.json"
+  ],
+  "required_governance_files": [
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_setup_doctor_entry_gates.py"
+  ],
+  "updated_governance_files": [
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_setup_doctor_entry_gates.py"
+  ],
+  "evidence_refs": [
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_setup_doctor_entry_gates.py"
+  ],
+  "test_commands": [
+    "python3 scripts/governance_setup_doctor.py --json",
+    "python3 -m unittest tests.governance.test_setup_doctor_entry_gates"
+  ],
+  "test_results": [
+    {
+      "command": "governance_setup_doctor --json",
+      "result": "PASS(rc=0)",
+      "detail": "workflow_entry_gates 由 FAIL 转 PASS(唯一 false 项 ci_attestation_uploaded_as_artifact 已修);overall WARN(非 FAIL),rc=0。"
+    },
+    {
+      "command": "test_setup_doctor_entry_gates",
+      "result": "PASS",
+      "detail": "2 项过;★破坏验证实跑★:正则退回只认 @vN -> 失败。"
+    }
+  ],
+  "stop_conditions": [
+    "治理脚本里凡断言 action 版本的正则须同时接受 @vN 标签与 40 位 pinned SHA(本仓 pin SHA 是安全最佳实践)。",
+    "夜间 Project Governance 已绿;Write CI attestation 属 dispatch scope=all 专属步,与夜间无关。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。纯正则放宽+守卫测试,无运行时副作用。"
+  },
+  "unresolved_risks": [],
+  "next_allowed_task": "workflow_dispatch scope=all 复验整条 Project Governance 全绿。"
+}

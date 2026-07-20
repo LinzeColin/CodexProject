@@ -130,7 +130,9 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
         ),
         "ci_attestation_uploaded_as_artifact": (
-            re.search(r"actions/upload-artifact@v[4-9]", text) is not None
+            # 接受版本标签 @v4-9 或 pinned commit SHA（本仓工作流按安全最佳实践 pin SHA，
+            # 如 actions/upload-artifact@043fb46… # v7）；只认标签会误判已 pin 的工作流为未上传。
+            re.search(r"actions/upload-artifact@(?:v[4-9]|[0-9a-f]{40})", text) is not None
             and "project-governance-ci-attestation-" in text
             and "if-no-files-found: error" in text
             and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
