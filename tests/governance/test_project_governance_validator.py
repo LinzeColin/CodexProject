@@ -4161,7 +4161,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             payload = json.loads(result.stdout)
             self.assertEqual(payload["decision"], "STOP")
             self.assertEqual(payload["base_ref_status"], "unresolved")
-            self.assertEqual(payload["full_evidence_ref"]["retention_scope"], "configured")
+            # retention_scope 随环境而异：本地为 "configured"，GitHub Actions 下为 "ci_artifact"
+            # （CI 走 artifact 留存）。两者都是合法值，断言接受二者以免 env 相关的假红。
+            self.assertIn(
+                payload["full_evidence_ref"]["retention_scope"],
+                {"configured", "ci_artifact"},
+            )
             evidence_path = Path(payload["full_evidence_ref"]["path_or_artifact_ref"])
             self.assertTrue(evidence_path.is_file(), payload)
             full = json.loads(evidence_path.read_text(encoding="utf-8"))

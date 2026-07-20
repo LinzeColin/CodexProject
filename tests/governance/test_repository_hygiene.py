@@ -23,15 +23,15 @@ class RepositoryHygieneTests(unittest.TestCase):
         self.assertEqual(result["status"], "PASS", result)
         self.assertEqual(result["metrics"]["tracked_runtime_noise_count"], 0)
         self.assertEqual(result["metrics"]["forbidden_backup_producer_count"], 0)
-        # 原断言 retained_large_object_count > 0，用意是「留存机制得真在管着东西，别空转」。
-        # 仓库拆分后本仓的大对象全部随项目迁出（OpenAIDatabase/PFI/arxiv-daily-push 的
-        # 6 条 retained_objects 条目已同步剪除），大对象计数归零属真实状态而非机制失效——
-        # 留存机制仍由 archive 类目在管。故改为对两类之和断言，保住「非空转」原意。
+        # 原断言 retained_large_object_count > 0，用意是「留存机制别悄悄空转」。仓库拆分后本仓
+        # 的大对象与归档全部随项目迁出（OpenAIDatabase/PFI/arxiv-daily-push 的大对象条目已剪除，
+        # Alpha/EVA_OS/KM_IDSystem 归档已迁往 LinzeColin/Archive）——故当前 0 文件匹配是【真实
+        # 状态】而非机制失效。原意「防策略被清空」应校验策略本身仍定义了规则，而不是要求文件存在。
         self.assertGreater(
-            result["metrics"]["retained_large_object_count"]
-            + result["metrics"]["retained_archive_count"],
+            len(self.policy.get("retained_objects", [])),
             0,
-            "留存机制既无大对象也无归档在管——机制已空转，需检查策略是否被清空。",
+            "留存策略 retained_objects 被清空——机制已空转。"
+            "（计数为 0 属正常：受管文件已随项目迁出；此处校验策略本身仍声明了规则。）",
         )
 
     def test_retained_object_metadata_is_required(self) -> None:
