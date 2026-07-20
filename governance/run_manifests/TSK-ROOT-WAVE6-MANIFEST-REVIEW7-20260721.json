@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-WAVE6-MANIFEST-REVIEW7-20260721",
+  "project_id": "root",
+  "task_id": "ROOT-WAVE6-MANIFEST-REVIEW7",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-CODEXPROJECT-DECLUTTER",
+  "generated_at": "2026-07-21T01:10:00Z",
+  "implementation_base_sha": "f4321a185b10f3f87c8aeabe9dcb66344957c501",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:95ce723e3fb720703c3e47ff15dd675ebfd727b3105d4b1e92e39a816d9f8f85",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 3 non-(this-TSK-)manifest changed files;hash excludes this manifest.",
+  "ci_attestation_subject": "补齐 GOV-SPLIT-WAVE6 的 Review7 字段并重锚 legacy 基线,修夜间 Validate all registered scopes 步骤",
+  "gate_status": "PASS_LOCAL",
+  "ci_run_reference": "WORKFLOW_DISPATCH_29785199725_REGSCOPES_STEP_FAILED",
+  "summary": "上一 CI(run 29785199725)信息质量已绿,但『Validate all registered scopes』(lean_governance validate --all)失败:唯一不合规清单 GOV-SPLIT-WAVE6-20260717.json 声明 schema_version 2 却缺 Review7 必填字段(binding_status/changed_files_*/ci_*/evidence_refs/implementation_base_sha/required|updated_governance_files/test_*)。它是 wave-6 迁移证据(KM_IDSystem/OpenAIDatabase/KMFA/PFI),同伴 non-TSK- 清单都有字段,故它是异类。补齐字段(binding_status=LEGACY_UNBOUND、implementation_base_sha=null-sha 表未绑定、其余从其自身 content_records 派生)使其与 lean_governance validate --all 一致。因它属冻结 legacy 归档,改后 run_manifests retained_legacy 基线 sha256 漂移(count 96 不变),用 governance_artifact_policy.collection_metrics 重锚。新增承重守卫 test_run_manifest_review7_conformance(遍历全部 schema>=2 清单锁 Review7 字段与合法 binding_status;破坏验证:删 binding_status -> 失败,已实跑)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "legacy_baseline_repinned": "governance/run_manifests"
+  },
+  "changed_files_declared": [
+    "governance/artifact_policy.json",
+    "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json",
+    "tests/governance/test_run_manifest_review7_conformance.py",
+    "governance/run_manifests/TSK-ROOT-WAVE6-MANIFEST-REVIEW7-20260721.json"
+  ],
+  "changed_files_actual": [
+    "governance/artifact_policy.json",
+    "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json",
+    "tests/governance/test_run_manifest_review7_conformance.py",
+    "governance/run_manifests/TSK-ROOT-WAVE6-MANIFEST-REVIEW7-20260721.json"
+  ],
+  "required_governance_files": [
+    "governance/artifact_policy.json",
+    "tests/governance/test_run_manifest_review7_conformance.py"
+  ],
+  "updated_governance_files": [
+    "governance/artifact_policy.json",
+    "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json",
+    "tests/governance/test_run_manifest_review7_conformance.py"
+  ],
+  "evidence_refs": [
+    "governance/artifact_policy.json",
+    "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json",
+    "tests/governance/test_run_manifest_review7_conformance.py"
+  ],
+  "test_commands": [
+    "python3 scripts/lean_governance.py validate --all --semantic --drift-report",
+    "python3 scripts/lean_governance.py artifact-audit --json",
+    "python3 -m unittest tests.governance.test_run_manifest_review7_conformance"
+  ],
+  "test_results": [
+    {
+      "command": "lean_governance validate --all",
+      "result": "PASS(rc=0)",
+      "detail": "修前 GOV-SPLIT-WAVE6 报缺字段+invalid binding_status;修后 rc=0。"
+    },
+    {
+      "command": "artifact-audit / check-render",
+      "result": "PASS",
+      "detail": "重锚 run_manifests 基线后 status=PASS(count 96,sha e6617d16->c42a9525)。"
+    },
+    {
+      "command": "test_run_manifest_review7_conformance",
+      "result": "PASS",
+      "detail": "2 项过;★破坏验证实跑★:删 binding_status -> 失败。"
+    }
+  ],
+  "stop_conditions": [
+    "schema_version>=2 的 run manifest 必须带全 Review7 字段;历史清单缺字段用 binding_status=LEGACY_UNBOUND 补齐,勿降 schema。",
+    "改冻结 legacy 集合(run_manifests 非 TSK-)后必须用 collection_metrics 重锚基线,禁手算。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。清单字段补齐+基线重锚+守卫测试,无运行时副作用。"
+  },
+  "unresolved_risks": [
+    "generate_governance_dashboard.py/lean_governance.py 仍有硬编码迁出项目引用,可能在后续 CI 步骤暴露,以真实 CI 逐步驱动。"
+  ],
+  "next_allowed_task": "workflow_dispatch 复验夜间 Project Governance。"
+}

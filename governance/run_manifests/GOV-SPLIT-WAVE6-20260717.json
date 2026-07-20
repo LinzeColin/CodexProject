@@ -55,5 +55,41 @@
   "owner_decision": "OWNER_AUTHORIZED_REPOSITORY_SPLIT_2026-07-17",
   "raw_private_data_read_or_written": false,
   "status": "completed",
-  "gate_status": "PASS"
+  "gate_status": "PASS",
+  "binding_status": "LEGACY_UNBOUND",
+  "implementation_base_sha": "0000000000000000000000000000000000000000",
+  "ci_attestation_subject": "wave-6 源侧删除迁移（KM_IDSystem/OpenAIDatabase/KMFA/PFI 迁往 KMOS/AgentDatabase/MetaDatabase）",
+  "ci_run_reference": "LEGACY_UNBOUND_PRE_REVIEW7_20260717",
+  "changed_files_declared": [
+    "README.md",
+    "governance/projects.yaml",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "changed_files_actual": [
+    "README.md",
+    "governance/projects.yaml",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "required_governance_files": [
+    "governance/projects.yaml",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "updated_governance_files": [
+    "governance/projects.yaml",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "test_commands": [
+    "python3 -B -m unittest tests.governance.test_retired_project_registry"
+  ],
+  "test_results": [
+    {
+      "command": "tests.governance.test_retired_project_registry",
+      "result": "LEGACY_UNBOUND",
+      "detail": "wave-6 迁移当时记录;2026-07-21 补齐 Review7 必填字段使 schema_version 2 清单与 lean_governance validate --all 一致(此前缺字段拖红夜间 Validate all registered scopes 步骤)。binding_status=LEGACY_UNBOUND:历史迁移记录,不绑定 CI attestation。"
+    }
+  ]
 }
