@@ -2510,7 +2510,11 @@ def select_projects(
         changed = structural.git_changed_files(base_ref)
         selected = [project for project in projects if structural.project_matches_changed(project, changed)]
         include_root = any(path in changed for path in ROOT_OUTPUT_REL_PATHS)
-    return selected, include_root
+        return selected, include_root
+    # 既不指定项目也非 changed-only（如 `--write --all`）：渲染全部项目 + root。
+    # 原实现漏了这一档，selected/include_root 未赋值 -> UnboundLocalError；
+    # 仓库拆分后本仓活跃项目归零（projects == []）使该路径每次都被触发而崩溃。
+    return list(projects), True
 
 
 def legacy_project_views_frozen(project_path: Path) -> bool:
