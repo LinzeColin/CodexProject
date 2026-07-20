@@ -155,7 +155,7 @@ P20 我 stamp+部署后又改了一行源码，没重新 stamp/部署。线上�
 
 | # | 事项 | Owner 决定 | 执行状态 |
 |---|---|---|---|
-| 1 | 废弃 Cloudflare 资源 | **删除** | `adp-mirror` worker ✅已删；`adp` Tunnel ✅已删（删前确认 0 连接/down，`alpha` tunnel 未受影响）；**`adp-origin` DNS 记录 ⛔ 待 Owner 控制台删**（本线 token 仅 `zone(read)`，无 DNS 写权限） |
+| 1 | 废弃 Cloudflare 资源 | **删除** | ✅ **三个全部清理完毕**：`adp-mirror` worker（wrangler delete）、`adp` Tunnel（CF API，删前确认 0 连接/down、`alpha` 未受影响）、`adp-origin` DNS 记录（Owner 控制台删除，ADP 线实测复验：dig 无 A/AAAA、HTTP 530→000）。生产 `adp.linzezhang.com` 全程 200 未受影响 |
 | 2 | 剩余 2 个不可达源 | **需要救** | ⛔ **未开工**——属开发活，按 Owner「交接给别的 agent 开发」的指令留给接手方；见下方执行要点 |
 | 3 | 迁 OVH VPS / Coolify | **不迁** | ✅ 决策落地，无需动作。ADP 留 Cloudflare 免费档 |
 | 4 | TASK_INDEX 死 status 列 | **不做** | ✅ 决策落地，无需动作。已有守卫钉住「该列不可信」，不会再误导 |

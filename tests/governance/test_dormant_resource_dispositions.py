@@ -68,16 +68,26 @@ class TestDormantResourceDispositions(unittest.TestCase):
                 "{} was actually deleted on 2026-07-20 (wrangler delete / Cloudflare API, each with a "
                 "pre-delete identity+connection check); its disposition must keep recording that.".format(rid))
 
-    def test_owner_pending_item_is_not_marked_done(self):
-        """adp-origin DNS was NOT deleted -- this line has zone(read) only. It must not claim otherwise."""
+    def test_all_three_dormant_resources_are_recorded_as_deleted(self):
+        """All three dormant resources were deleted on 2026-07-20; each entry must record that.
+
+        History (why this assertion inverted): when first written, `adp-origin-dns` was still LIVE --
+        this line holds a zone(read) credential and local policy blocks DNS deletion, so the guard
+        required its disposition to keep saying "the Owner must do it". The Owner then deleted it in
+        the Cloudflare dashboard, and this line re-verified independently (dig returns no A/AAAA;
+        HTTP went 530 -> 000; adp.linzezhang.com still 200, build unchanged). The guard's premise
+        expired, so the assertion follows the facts rather than the other way round.
+
+        What it still protects: none of the three may be quietly downgraded back to a pending to-do,
+        and (via test_no_entry_claims_done_and_pending_at_once) none may claim both states at once."""
         by_id = {i.get("resource_id"): str(i.get("disposition", "")) for i in self.items}
-        self.assertIn("adp-origin-dns", by_id, "the adp-origin DNS entry disappeared from the registry")
-        disp = by_id["adp-origin-dns"]
-        self.assertRegex(
-            disp, PENDING_RE,
-            "adp-origin DNS still exists (this line cannot delete it: zone(read) credential + local "
-            "policy blocks DNS deletion). Its disposition must keep saying the Owner has to do it in "
-            "the dashboard -- marking it done would send people looking for a resource that is live.")
+        for rid in ("adp-mirror-worker", "adp-tunnel", "adp-origin-dns"):
+            self.assertIn(rid, by_id, "dormant entry {} disappeared from the registry".format(rid))
+            self.assertRegex(
+                by_id[rid], DONE_RE,
+                "{} was deleted on 2026-07-20 and independently re-verified; its disposition must keep "
+                "recording that. Downgrading it back to a pending item would resurrect a to-do that no "
+                "longer exists.".format(rid))
 
 
 if __name__ == "__main__":

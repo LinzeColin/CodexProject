@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-DORMANT-CLEANUP-COMPLETE-20260720",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ROOT-DORMANT-CLEANUP-COMPLETE",
+  "acceptance_ids": [
+    "ACC-ADP-V03-48H-LOOP"
+  ],
+  "iteration_id": "ITER-20260720-ADP-HANDOFF",
+  "generated_at": "2026-07-20T11:15:00Z",
+  "implementation_base_sha": "465c1cd2c520cd875fef1356cf720c0772dd3731",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:96e83dd3b105aa2b92932524d880beb8e78e6ee72500559d9dc79c51d0d6ccd1",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 5 non-manifest changed files; changed_files_* list all 6 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "三个废弃资源清理完毕(Owner 删除 adp-origin DNS 经 ADP 线独立实测复验);守卫前提失效后按事实反转并保留双向负控。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_DIRECTED_CLEANUP_VERIFIED (Owner 执行 DNS 删除后,ADP 线未仅凭告知即记录,而是独立实测复验[dig 无记录/HTTP 530→000/生产 200 未变];守卫按失效前提反转并保留双向负控实跑。属 Owner 指令下的清理与记录、结果可由 dig 与 curl 客观复验,未另起独立对抗复核——如实记录此偏离)",
+  "summary": "★三个废弃资源全部清理完毕★:adp-mirror worker、adp tunnel 由 ADP 线经授权删除;adp-origin DNS 由 Owner 在 Cloudflare 后台删除。★ADP 线未仅凭 Owner 告知即记录『已删除』,而是独立实测复验:dig A/AAAA 均无记录、HTTP 由 530 变 000、adp.linzezhang.com 仍 200 且 build 未变★。注册表废弃资源待办清零。守卫 test_owner_pending_item_is_not_marked_done 的前提(adp-origin 仍存活)已失效,按事实反转为『三者都必须记为已删除』,保留并实跑双向负控(降级回待办→FAIL;既称已删又称待办→FAIL)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ROOT-DORMANT-CLEANUP-COMPLETE-20260720.json",
+    "tests/governance/test_dormant_resource_dispositions.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/docs/HANDOFF.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "governance/run_manifests/TSK-ROOT-DORMANT-CLEANUP-COMPLETE-20260720.json",
+    "tests/governance/test_dormant_resource_dispositions.py"
+  ],
+  "required_governance_files": [
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_dormant_resource_dispositions.py"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/infrastructure_registry.json",
+    "governance/repository_hygiene_policy.json",
+    "tests/governance/test_dormant_resource_dispositions.py"
+  ],
+  "evidence_refs": [
+    "governance/infrastructure_registry.json",
+    "arxiv-daily-push/docs/HANDOFF.md"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_dormant_resource_dispositions tests.governance.test_infrastructure_registry",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "独立实测复验 Owner 的 DNS 删除",
+      "result": "PASS",
+      "detail": "dig adp-origin A/AAAA → 空;curl → HTTP 000(此前 530);adp.linzezhang.com → 200,build c2ccc1fd01ec 未变。未仅凭告知记录。"
+    },
+    {
+      "command": "test_dormant_resource_dispositions + test_infrastructure_registry",
+      "result": "PASS",
+      "detail": "10/10;双向负控实跑:(A)把已删降级回待办→FAIL;(B)既称已删又称待办→FAIL;还原后 OK。"
+    }
+  ],
+  "stop_conditions": [
+    "★三个废弃资源均已删除并实测复验,记录不得降级回『待办』(会resurrect 不存在的 to-do)★",
+    "不得仅凭他人告知即在治理记录里写『已完成』——必须独立复验(本次 dig+curl)。",
+    "守卫前提失效时,应按事实更新守卫并保留负控,不得为过门而削弱断言。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit(仅回退记录)。",
+    "production": "删除不可逆;三者均已验证不在服务路径,adp.linzezhang.com 全程 200。"
+  },
+  "unresolved_risks": [
+    "剩余 2 个不可达源(science-advances/stats-gov)Owner 已决定『需要救』但属开发活,按 Owner 交接指令留给接手 agent(执行要点见 HANDOFF §8)。"
+  ],
+  "next_allowed_task": "接手 agent 按 HANDOFF §8 救 science-advances 与 stats-gov;或 Owner 另行指示。"
+}
