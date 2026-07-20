@@ -85,12 +85,7 @@ project_governance_files:
   - "docs/governance/OWNER_STATUS.md"
   - "VERSION"
   - "CHANGELOG.md"
-projects:
-  - project_id: "arxiv-daily-push"
-    path: "arxiv-daily-push"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
+projects: []
 retired_projects:
   - project_id: "WDA"
     path: "WDA"
@@ -235,3 +230,15 @@ migrated_projects:
     reactivation_requires_owner_authorization: true
     evidence_refs:
       - "governance/run_manifests/GOV-SPLIT-WAVE6-20260717.json"
+  - project_id: "arxiv-daily-push"
+    path: "arxiv-daily-push"
+    status: "migrated"
+    migrated_at: "2026-07-20"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "arxiv-daily-push"
+    source_tree_sha: "4022eb2b14deb89457720ef95deec9a4ef38414b"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/TSK-ROOT-ADP-MIGRATION-SOURCE-REMOVAL-20260720.json"

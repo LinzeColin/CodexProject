@@ -1,0 +1,140 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-ADP-MIGRATION-SOURCE-REMOVAL-20260720",
+  "project_id": "root",
+  "task_id": "ROOT-ADP-MIGRATION-SOURCE-REMOVAL",
+  "acceptance_ids": [
+    "ACC-ROOT-GOVERNANCE"
+  ],
+  "iteration_id": "ITER-20260720-REPOSITORY-SPLIT-ADP",
+  "generated_at": "2026-07-20T12:00:00Z",
+  "implementation_base_sha": "f7973fecdcda366ce1b27b5cb7e3e956564a458f",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:22dc48ae0909a94c0aa2806d6e7008723c02907f33910147dae0586ee8288f08",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for 8 surviving non-manifest changed files;2154 deletions carry no content;hash excludes this manifest.",
+  "ci_attestation_subject": "arxiv-daily-push 迁往 MetaDatabase 后的源侧删除：目录、10 个工作流、根级依赖移除，登记迁出并退休其工作流",
+  "ci_run_reference": "LOCAL_FULL_AUDIT_PASS_PENDING_REMOTE",
+  "gate_status": "PASS_LOCAL",
+  "summary": "④ 收尾。★铁律：目标验证通过才删源★——先在 LinzeColin/MetaDatabase 验完才回头删本仓：迁入时 tree sha 4022eb2b14deb89457720ef95deec9a4ef38414b 与源位级一致、2132 文件、801 条历史可 git log -- 追溯；目标仓 Dual-Plane Governance CI 绿；迁入的 stage1-bootstrap 工作流已在目标仓实跑 success。本次源侧删除：①移除 arxiv-daily-push/ 全部 2132 文件；②移除其 10 个 .github/workflows/arxiv-daily-push-*.yml（filter-repo 不覆盖 .github/，故须单独搬+删）；③移除 liveness 依赖的根级 scripts/adp_liveness_check.py 与 tests/governance/test_adp_liveness_check.py（已随迁）；④projects.yaml 活跃条目转 migrated 并留告示牌（防 agent 误判数据丢失去恢复）；⑤10 个工作流以跨仓替代物记法 LinzeColin/MetaDatabase:<path> 登记退休；⑥README 用 generate_governance_dashboard 重生成（消除断链与手改留下的空行漂移）；⑦AGENTS.md 迁出清单补 arxiv-daily-push（4088/4096，压缩 治理->Governance 一项腾出空间——该指针本就有歧义，治理框架仍在本仓）。★本仓活跃项目自此归零★。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0,
+    "files_removed": 2154,
+    "active_project_count_after": 0,
+    "migrated_project_count_after": 12
+  },
+  "changed_files_declared": [
+    "AGENTS.md",
+    "README.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-ROOT-ADP-MIGRATION-SOURCE-REMOVAL-20260720.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_retired_project_registry.py",
+    "tests/governance/test_root_cleanliness.py",
+    "(deleted) arxiv-daily-push/** 2132 files",
+    "(deleted) .github/workflows/arxiv-daily-push-*.yml 10 files",
+    "(deleted) scripts/adp_liveness_check.py",
+    "(deleted) tests/governance/test_adp_liveness_check.py",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "tests/governance/test_human_entry_markdown_contract.py",
+    "(deleted) tests/governance/test_adp_*.py 10 files"
+  ],
+  "changed_files_actual": [
+    "AGENTS.md",
+    "README.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/TSK-ROOT-ADP-MIGRATION-SOURCE-REMOVAL-20260720.json",
+    "governance/workflow_policy.json",
+    "tests/governance/test_retired_project_registry.py",
+    "tests/governance/test_root_cleanliness.py",
+    "(deleted) arxiv-daily-push/** 2132 files",
+    "(deleted) .github/workflows/arxiv-daily-push-*.yml 10 files",
+    "(deleted) scripts/adp_liveness_check.py",
+    "(deleted) tests/governance/test_adp_liveness_check.py",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "tests/governance/test_human_entry_markdown_contract.py",
+    "(deleted) tests/governance/test_adp_*.py 10 files"
+  ],
+  "required_governance_files": [
+    "AGENTS.md",
+    "governance/projects.yaml",
+    "governance/workflow_policy.json",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "updated_governance_files": [
+    "AGENTS.md",
+    "governance/projects.yaml",
+    "governance/workflow_policy.json",
+    "tests/governance/test_retired_project_registry.py",
+    "tests/governance/test_root_cleanliness.py"
+  ],
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "governance/workflow_policy.json",
+    "tests/governance/test_retired_project_registry.py"
+  ],
+  "test_commands": [
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 -B scripts/workflow_security_audit.py audit",
+    "python3 -B scripts/governance_id_audit.py --root .",
+    "python3 -B -m unittest tests.governance.test_retired_project_registry",
+    "python3 -B -m unittest tests.governance.test_root_cleanliness",
+    "python3 -B -m unittest tests.governance.test_migrated_workflow_retirement",
+    "python3 -B -m unittest tests.governance.test_agents_md_migration_signposts"
+  ],
+  "test_results": [
+    {
+      "command": "全部审计与治理测试",
+      "result": "PASS",
+      "detail": "删源前实测爆炸半径为 4 处断裂，逐条修复后全绿；详见下列专项。"
+    },
+    {
+      "command": "governance_id_audit",
+      "result": "FIXED_REGRESSION",
+      "detail": "★删源过程中我一度改坏它★：活跃项目归零后 projects.yaml 的 `projects:` 成为空键，YAML 解析为 None，_project_entries 的 `for item in projects` 抛 TypeError。已改写为显式空列表 `projects: []` 修复。"
+    },
+    {
+      "command": "test_root_cleanliness",
+      "result": "PASS",
+      "detail": "两处因零活跃项目暴露的问题已修：①README 改用 generate_governance_dashboard.render_readme 重生成（手删行会留多余空行，破坏确定性输出断言）；②test_duplicate_registry_identity_fails_closed 原用 projects[0] 造重复项，零活跃时 IndexError——改为活跃为空时自造种子，保住『重复标识必须 fail-closed』这条承重断言。"
+    },
+    {
+      "command": "test_wda_tree_matches_retirement_implementation_base",
+      "result": "FIXED_LONGSTANDING_RED",
+      "detail": "★修好一条长期红★：清单里的 implementation_base_sha d26a9f23… 已是 bad object（仓库拆分期间多次 filter-repo 重写历史致其不可达），该测试自那以后永久报 CalledProcessError，反而掩盖了它本该守护的不变量。改为：树 sha 断言恒定执行（当前 HEAD:WDA == 清单 wda_tree_sha == 590af7312e72b3c68302020aabbba8f396f1a398，实测相等，WDA 自退休零改动），base 提交仅在可达时才交叉验证。★破坏验证已实跑★：向 WDA/README.md 追加一个字节 -> 承重断言失败；还原后复跑全过。"
+    },
+    {
+      "command": "tests/governance 全量对基线差分",
+      "result": "ZERO_NEW_FAILURES",
+      "detail": "★已建干净 origin/main 基线逐条差分★:基线 8 个失败 -> 本变更后 6 个,且全部命中[既有]标记,零新增。减少的两个:test_adp_canonical_governance_oids 随其余 10 个 ADP 测试迁往 MetaDatabase(它们引用 arxiv-daily-push 代码、属该项目资产,filter-repo 只带目录带不走根级测试);test_retired_project_registry 被本次修好(见 FIXED_LONGSTANDING_RED)。迁入 MetaDatabase 后实跑 11 个 ADP 测试 10 通过,唯一失败者在源仓干净 main 上同样失败,属既有随迁。"
+    },
+    {
+      "command": "test_human_entry_markdown_contract",
+      "result": "FIXED_REGRESSION",
+      "detail": "★删源过程中我一度改坏它★:其哨兵 assertGreaterEqual(len(paths),1) 假设至少一个活跃项目,归零后误报。改为:零活跃时必须能证明是『项目都迁出了』(migrated+retired 非空),而非注册表被意外清空——保住哨兵防空转的原意。"
+    },
+    {
+      "command": "workflow_security_audit check-render",
+      "result": "PASS",
+      "detail": "按 ADP 线程的提醒,改动工作流集合后重跑 render 同步 docs/governance/WORKFLOW_ROLE_MATRIX.md(10 增 10 删),check-render 转 PASS。"
+    }
+  ],
+  "stop_conditions": [
+    "推送前把 CI 的所有审计脚本本地跑一遍，别只跑 lean_governance ci。",
+    "改 .github/workflows/ 必须用 SSH 远端推：HTTPS 的 PAT 无 workflow scope，会 remote rejected。",
+    "AGENTS.md 4KB 预算：新增内容必须先压缩既有行腾空间。",
+    "新证据一律用 TSK- 命名空间；run_manifests 下非 TSK- 文件是只读遗留归档。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit 可恢复本仓文件；arxiv-daily-push 的权威副本在 LinzeColin/MetaDatabase（完整历史），本仓恢复仅为应急，正常情况下不应恢复——见 AGENTS.md P0『禁止从历史或备份恢复已迁出目录』。"
+  },
+  "unresolved_risks": [
+    "本仓活跃项目归零，旧项目治理框架（lean_governance/validate_project_governance/11187 行测试）已无治理对象，属 ⑦ 的退休范围；但 project-governance.yml 同时承载 workflow_security/root_cleanliness/repository_hygiene/governance_id 等仓级审计，且 projects.yaml 被 10 个文件引用（含基建线在用的 root_cleanliness_audit 与 cloudflare 校验），不可整体删除，须分离后再退休。",
+    "arxiv-daily-push 的 production-trial 工作流在目标仓存在悬空引用 scripts/validate_project_governance.py（本仓专有、未随迁），该工作流从未运行过，已在目标仓 WORKFLOWS_MIGRATION_NOTES.md 如实登记。"
+  ],
+  "next_allowed_task": "确认 main CI（Project Governance）转绿后，推进 ⑦ 旧项目治理框架分离与退休。"
+}

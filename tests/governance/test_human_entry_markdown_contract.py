@@ -25,7 +25,21 @@ def registered_project_paths() -> list[str]:
 class HumanEntryMarkdownContractTests(unittest.TestCase):
     def test_registered_projects_use_markdown_human_entries(self) -> None:
         paths = registered_project_paths()
-        self.assertGreaterEqual(len(paths), 1)
+        if not paths:
+            # 仓库拆分完成后本仓活跃项目可以为零。原哨兵 assertGreaterEqual(len(paths), 1)
+            # 的用意是「别让本测试悄悄变成空转」，零活跃时它会误报。改为：零活跃必须是
+            # 「项目都迁出了」这一可证事实，而不是注册表被意外清空/损坏。
+            registry = yaml.safe_load(
+                (ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8")
+            )
+            migrated = registry.get("migrated_projects") or []
+            retired = registry.get("retired_projects") or []
+            self.assertGreaterEqual(
+                len(migrated) + len(retired), 1,
+                "活跃项目为零，且注册表既无 migrated 也无 retired 记录——"
+                "这不是拆分完成，而是注册表异常清空。",
+            )
+            return
 
         for project_path in paths:
             project_root = ROOT / project_path

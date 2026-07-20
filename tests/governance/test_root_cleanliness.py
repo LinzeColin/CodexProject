@@ -89,7 +89,14 @@ class RootCleanlinessTests(unittest.TestCase):
 
     def test_duplicate_registry_identity_fails_closed(self) -> None:
         registry = copy.deepcopy(self.registry)
-        registry["projects"].append(copy.deepcopy(registry["projects"][0]))
+        # 活跃项目可能为空（全部迁出后）：此时自造种子，保住"重复标识必须 fail-closed"这条承重断言
+        seed = copy.deepcopy(registry["projects"][0]) if registry["projects"] else {
+            "project_id": "DUP-PROBE",
+            "path": "DUP-PROBE",
+            "ci_mode": "required",
+            "migration": {"version": "lean-v2"},
+        }
+        registry["projects"] = [*registry["projects"], copy.deepcopy(seed), copy.deepcopy(seed)]
         result = self.run_audit(registry=registry)
         self.assertFalse(result["pass"])
         self.assertTrue(any("duplicate registry project_id" in item for item in result["errors"]), result)

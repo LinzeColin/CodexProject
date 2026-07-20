@@ -172,221 +172,6 @@
       "untrusted_prompt_input": false
     },
     {
-      "path": ".github/workflows/arxiv-daily-push-manual-delivery-test.yml",
-      "name": "arXiv Daily Push manual B1 text SMTP test",
-      "role": "adp_manual_delivery_test",
-      "owner": "@LinzeColin",
-      "purpose": "Run one explicitly confirmed Stage 1 SMTP delivery test from the default branch.",
-      "triggers": [
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "guard",
-        "manual-delivery-test"
-      ],
-      "trust_boundary": "manual_secret_gated_inputs_via_environment",
-      "failure_behavior": "Guard skips delivery unless the exact confirmation is present; runtime errors fail the job.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
-      "name": "arXiv Daily Push live all-arXiv cloud dry-run",
-      "role": "adp_cloud_dry_run",
-      "owner": "@LinzeColin",
-      "purpose": "Run the live-fetch path with production delivery disabled and artifact-only evidence.",
-      "triggers": [
-        "pull_request",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "live-all-arxiv-dry-run",
-        "runtime-change-scope"
-      ],
-      "trust_boundary": "pr_or_manual_readonly",
-      "failure_behavior": "Governance-only changes skip runtime work; runtime failure fails closed.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-production-trial.yml",
-      "name": "arXiv Daily Push production trial bootstrap",
-      "role": "adp_production_preflight",
-      "owner": "@LinzeColin",
-      "purpose": "Perform a manually confirmed production preflight without enabling a schedule or release.",
-      "triggers": [
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "guard",
-        "preflight"
-      ],
-      "trust_boundary": "manual_secret_gated_inputs_via_environment",
-      "failure_behavior": "Unconfirmed dispatch is skipped; failed preflight remains a blocking artifact.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push",
-        "arxiv-daily-push/tests",
-        "scripts/validate_project_governance.py"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-provisioning-audit.yml",
-      "name": "arXiv Daily Push provisioning audit",
-      "role": "adp_provisioning_audit",
-      "owner": "@LinzeColin",
-      "purpose": "Audit names-only secret/variable readiness and emit non-secret evidence.",
-      "triggers": [
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "provisioning-audit"
-      ],
-      "trust_boundary": "manual_secret_names_only_inputs_via_environment",
-      "failure_behavior": "Missing readiness remains explicit; suspected secret values are never printed.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-real-backfill.yml",
-      "name": "arXiv Daily Push real 30-day backfill",
-      "role": "adp_historical_backfill",
-      "owner": "@LinzeColin",
-      "purpose": "Run bounded historical replay evidence when runtime paths change or on manual dispatch.",
-      "triggers": [
-        "pull_request",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "real-arxiv-30-day-backfill",
-        "runtime-change-scope"
-      ],
-      "trust_boundary": "pr_or_manual_readonly_inputs_via_environment",
-      "failure_behavior": "Governance-only changes skip runtime work; replay or validation failure blocks.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-scheduled.yml",
-      "name": "arXiv Daily Push scheduled Stage 1 text gate",
-      "role": "adp_scheduled_delivery",
-      "owner": "@LinzeColin",
-      "purpose": "Run health, daily, or watchdog modes only when production variables and gates allow it.",
-      "triggers": [
-        "schedule",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "actions": "read",
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "gate",
-        "scheduled"
-      ],
-      "trust_boundary": "schedule_or_manual_secret_gated_inputs_via_environment",
-      "failure_behavior": "Disabled gates skip delivery; artifact restore is read-only and delivery failures block.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
-      "name": "arXiv Daily Push Stage 1 bootstrap",
-      "role": "adp_stage1_bootstrap",
-      "owner": "@LinzeColin",
-      "purpose": "Validate Stage 1 migration/bootstrap with delivery and release mutations disabled.",
-      "triggers": [
-        "pull_request",
-        "push",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "runtime-change-scope",
-        "stage1-bootstrap"
-      ],
-      "trust_boundary": "pr_push_or_manual_readonly",
-      "failure_behavior": "Governance-only changes skip runtime work; migration/bootstrap validation failure blocks.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-trial-start.yml",
-      "name": "arXiv Daily Push trial start Stage 1 text gate",
-      "role": "adp_trial_start",
-      "owner": "@LinzeColin",
-      "purpose": "Start the explicitly confirmed text-only trial after preflight, source, SMTP, and scheduler plans.",
-      "triggers": [
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "trial-start"
-      ],
-      "trust_boundary": "manual_secret_gated_inputs_via_environment",
-      "failure_behavior": "No confirmation means no job; any prerequisite failure blocks trial start.",
-      "local_dependencies": [
-        "arxiv-daily-push/src/arxiv_daily_push"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-visual-gate.yml",
-      "name": "arXiv Daily Push six-theme visual/motion gate",
-      "role": "adp_visual_motion_gate",
-      "owner": "@LinzeColin",
-      "purpose": "Gate the Owner-signed six-theme visual/motion contract: block any contract element changed without a recorded approval, and any unregistered theme/ambience layer.",
-      "triggers": [
-        "pull_request",
-        "push",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "visual-motion-gate"
-      ],
-      "trust_boundary": "pr_push_or_manual_readonly",
-      "failure_behavior": "A six-theme visual/motion contract element changed without an approval record, or an unregistered theme/ambience was introduced, blocks the push. Approved changes are recorded in arxiv-daily-push/docs/design/visual_change_approvals.json and the baseline is re-frozen.",
-      "local_dependencies": [
-        "arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_regression_ci.py",
-        "arxiv-daily-push/docs/pursuing_goal/v0_1/tools/visual_baseline.py"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
       "path": ".github/workflows/project-governance.yml",
       "name": "Project Governance",
       "role": "transaction_ci",
@@ -416,29 +201,6 @@
         "governance/repository_hygiene_policy.json",
         "tests/governance",
         "tests/agent_loop"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/arxiv-daily-push-liveness.yml",
-      "name": "arXiv Daily Push Liveness",
-      "role": "adp_liveness_watchdog",
-      "owner": "@LinzeColin",
-      "purpose": "长期稳定 watchdog: probe public ADP endpoints on a schedule and go RED when the live system is up but silently not producing (a green cron hiding a silent zero).",
-      "triggers": [
-        "schedule",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "liveness"
-      ],
-      "trust_boundary": "read_only_public_endpoint_probe_no_secrets",
-      "failure_behavior": "RED on recent-failure / arXiv=0 / 候选=0 / stale / no-completed-run / backfill-degraded; read-only, no side effects. Deleting the schedule block stops scheduled probing.",
-      "local_dependencies": [
-        "scripts/adp_liveness_check.py"
       ],
       "untrusted_prompt_input": false
     },
@@ -490,6 +252,86 @@
       "owner": "@LinzeColin",
       "replacement": "LinzeColin/AgentDatabase:.github/workflows/dual-plane.yml",
       "reason": "OpenAIDatabase 已于 2026-07-17 迁往 LinzeColin/AgentDatabase（仓库拆分第6波，权限隔离）；项目专属工作流随项目一并迁走，本仓不再持有。 替代物在 LinzeColin/AgentDatabase 仓内的 Dual-Plane Governance 工作流。"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-liveness.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-liveness.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-manual-delivery-test.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-manual-delivery-test.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-production-trial.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-production-trial.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-provisioning-audit.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-provisioning-audit.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-real-backfill.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-real-backfill.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-scheduled.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-scheduled.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-trial-start.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-trial-start.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/arxiv-daily-push-visual-gate.yml",
+      "disposition": "MIGRATED_WITH_PROJECT_TO_ANOTHER_REPOSITORY",
+      "owner": "@LinzeColin",
+      "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-visual-gate.yml",
+      "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
+      "retired_at": "2026-07-20"
     }
   ]
 }

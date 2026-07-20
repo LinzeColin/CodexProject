@@ -1,3 +1,0 @@
-mentions=7 entities=4 audit=applied/True low_conf=pending_review
-
-ACCEPTANCE = PASS

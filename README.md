@@ -13,7 +13,7 @@ LinzeColin 的多项目源码与治理入口。根目录只保留稳定导航和
 
 | Project | Path | Entry |
 |---|---|---|
-| `arxiv-daily-push` | `arxiv-daily-push` | [README](arxiv-daily-push/README.md) · [AGENTS](arxiv-daily-push/AGENTS.md) |
+
 
 ## Retired projects
 

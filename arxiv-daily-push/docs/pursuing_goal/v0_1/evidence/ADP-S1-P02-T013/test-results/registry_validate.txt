@@ -1,2 +1,0 @@
-registry: source_registry.json (33 sources)
-RESULT: VALID
