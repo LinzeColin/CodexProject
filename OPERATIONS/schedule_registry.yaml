@@ -34,6 +34,12 @@ platform_tasks:            # owner: 平台线程(本线程)
     purpose: STAGE-15.4 死链巡检(home 卡片 liveUrl 全量探测)
     owner: platform
     log: /srv/linze/logs/link-health.log
+  - id: status-collector
+    cron: "*/1 * * * *"    # UTC; 每分钟
+    command: /etc/cron.d/linze-status -> python3 /srv/linze/apps/status/collector/collect.py
+    purpose: status.linzezhang.com 云平台总览采集(Coolify/主机/证书/备份/汇率/价格 -> snapshot.json;慢变量节流)
+    owner: platform
+    log: /srv/linze/apps/status/collect.log
 
 kmfa_tasks:                # owner: KMFA 开发线程; 容器内 crontab, 北京时间
   - {id: attendance-morning, cron: "35 10 * * *", owner: kmfa, note: 晨报考勤(真实投递观察期)}
