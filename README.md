@@ -1,6 +1,15 @@
 # CodexProject 主仓库
 
-LinzeColin 的多项目源码与治理入口。根目录只保留稳定导航和公共治理边界；项目状态、运行证据与实现细节留在对应项目。
+LinzeColin 的多项目源码与治理入口。根目录只保留稳定导航和公共治理边界；项目状态、运行证据与实现细节留在对应项目。多仓拆分后本仓保留治理骨架与退役项目 `WDA` 的历史。
+
+## 📦 数据落地政策（长期有效 · 自运行分仓治理）
+
+**本仓只存代码与治理，长期/业务/运行时数据不入本仓。** 开发中产生的任何需长期存储的数据
+（原始业务数据、导出件、数据库、内容寻址对象、运行时快照、含 PII 的记录等）
+一律写入私有仓 `LinzeColin/Private-Database` 对应数据区，**不要提交进本仓**：
+KM 经营数据 → `Private-KMDatabase/`；Agent 会话/记忆 → `Private-AgentDatabase/`；其余项目数据 → `Private-MetaDatabase/`。
+用 `private_db_client.py` 免 clone 读写（`ingest/get/list/verify`），Private-Database 禁止 `git clone`；派生/临时/可再生产物走 `.gitignore`。
+**一次分清、长期自运行，不再需要人工反复迁移。**（`AGENTS.md` 已将本条列为执行契约。）
 
 ## Governance Entry
 
