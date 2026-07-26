@@ -215,6 +215,34 @@ also compare the changed paths with the base commit. The renderer writes only to
 stdout, and `artifact-check-render` proves two identical renders plus zero
 repository write delta.
 
+## 零 Agent 依赖 / 零 Token 消耗
+
+**目标:系统在没有任何 agent、没有任何模型调用的情况下自己长期跑下去。**
+Agent 只属于「开发期」,不得成为「运行期」的必要零件。新开发一律照此方向设计。
+
+1. **运行期禁止调用任何推理接口。** 线上代码(前端 / 采集器 / cron / 自愈脚本 / Worker)
+   不得请求 OpenAI、Anthropic、Gemini 等模型接口,也不得依赖 agent 定时来「跑一下」。
+   违反视为架构缺陷,不是功能。
+2. **数据靠派生,不靠生成。** 新指标优先从**已采到的数据**纯计算推导;其次才是新增
+   便宜的只读 API 轮询;**永远不要**用模型去总结、猜测或补全运行期数据。
+3. **自运行 + 自愈。** 新增后台工作必须是 cron/systemd 定时器,且要能被自愈机制看住;
+   不允许出现「要人手动跑一下」或「等 agent 来跑」的环节。
+
+配套要求:
+
+- **额度可见**:新接的外部服务把用量/额度接进可观测面;取不到时如实标 `UNAVAILABLE`,
+  **绝不估算、绝不编造费用**。
+- **成本可验**:以供应商账单口径为准(如 GitHub `billing/usage` 的 `netAmount`)。
+- **凭据最小化**:能不新增 token 就搭已有机制的车。
+
+**开发期例外**:agent 工具(如 `scripts/agent_loop/`)允许调用模型,前提是
+**不进任何生产镜像**、只由 CI/人工触发,并登记进守卫的显式白名单。
+
+**机器判定**:`tests/governance/test_zero_agent_runtime.py` 校验本节存在,并扫描
+运行期源码中的推理接口域名;例外必须显式加进 `DEV_TIME_ALLOWLIST`。
+参考实现(全 0 agent / 0 token):`LinzeHomeHub/status/` 的 cron 采集与自愈引擎、
+每日加密备份上 GitHub、home 的全仓关系图(纯派生 `graph.json`,浏览器直读)。
+
 ## Run Modes And Writes
 
 | Mode | Baseline | Deep validation | Repository writes |
