@@ -11,6 +11,32 @@ KM 经营数据 → `Private-KMDatabase/`；Agent 会话/记忆 → `Private-Age
 用 `private_db_client.py` 免 clone 读写（`ingest/get/list/verify`），Private-Database 禁止 `git clone`；派生/临时/可再生产物走 `.gitignore`。
 **一次分清、长期自运行，不再需要人工反复迁移。**（`AGENTS.md` 已将本条列为执行契约。）
 
+## 🧭 基础设施路牌（读这里,别乱猜)
+
+**云服务器 / 云数据库 / 各家 API 与 token 的完整配置,不在本仓,在本机受保护目录。**
+本仓是公开仓,**任何凭据、私钥、源站 IP 都不得写进来**。要接手运维,按顺序读这三份:
+
+| 顺序 | 本机路径(不在 git 里) | 里面有什么 |
+|---|---|---|
+| 1 | `_protected/alpha_deploy_private/INFRA_CONFIG.md` | **总册**:服务器规格与 SSH 方式、三个 Postgres 怎么连、域名路由表、cron 清单、凭据索引、备份恢复、排障命令、已知隐患 |
+| 2 | `_protected/alpha_deploy_private/HANDOVER_PROMPT_FOR_CODEX.md` | 交接手册:各服务现状、踩过的坑、改代码的正确流程 |
+| 3 | `_protected/alpha_deploy_private/linze_ovh_vps1_operate_status.md` | 完整进度台账 |
+
+上述路径相对于本机工作间根目录 `~/Documents/Codex/GithubProject/`。
+
+### 硬性边界(违反会出事)
+
+- **凭据只存 `_protected/`,权限 0600,永不 commit、永不上传。** 本仓、任何公开仓都不许出现 token/私钥/密码/源站 IP。
+- **服务器主机名走域名,不写 IP**:站点都在 Cloudflare 后面,写出源站 IP 等于废掉源站隐藏。
+- **数据库不对外**:三个 Postgres 都只在 Docker 内网,必须先 SSH 再 `docker exec`;**不要为了方便去发布端口**。
+- **改运维代码的流程**见 `HANDOVER_PROMPT_FOR_CODEX.md`,不要直接在生产机改文件后不回写仓库。
+
+### 在线只读入口(公开,不含敏感信息)
+
+- 云平台总览(项目/主机/成本/用量/自愈/GitHub 六个二级页):<https://status.linzezhang.com>
+- 运维健康探活:<https://uptime.linzezhang.com>
+- 价格设置 与 GitHub 私有全量:`status.linzezhang.com/admin` 与 `/admin/github`,**仅 owner 本人可见**(Cloudflare Access + 后端 JWT 双校验,匿名 302)。
+
 ## Governance Entry
 
 - 执行契约：[AGENTS.md](AGENTS.md)

@@ -1,0 +1,80 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-INFRA-SIGNPOST-20260726",
+  "project_id": "root",
+  "task_id": "ROOT-INFRA-SIGNPOST",
+  "acceptance_ids": [
+    "ACC-ROOT-DOC-SIGNPOST"
+  ],
+  "iteration_id": "ITER-20260726-STATUS-IA",
+  "generated_at": "2026-07-26T11:40:00Z",
+  "implementation_base_sha": "9cef2e11f9fbe3929b9aa6f66ed2bbf858f41b9d",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:cfc88accc184f1605ddf0b9d8ba78ce9cf3731fca6902f42e228b2b22027cba4",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 2 non-manifest changed files; changed_files_* list all 3 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "根 README 增加基础设施路牌(指向 _protected 配置总册),并新增公开仓凭据泄露守卫测试。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_REQUESTED_DOC_CHANGE (Owner 2026-07-26 明确要求「codexproject 的 readme 留下路牌和指示」;改动仅文档 + 新增守卫测试,零业务逻辑、零 workflow 触碰,可由测试客观判定,故未另起对抗复核——如实记录此偏离)",
+  "summary": "Owner 要求在公开仓 CodexProject 的根 README 留下基础设施「路牌」,让接手者(含容易乱猜的助手)直接找到本机 _protected/alpha_deploy_private/ 下的配置总册 INFRA_CONFIG.md、交接手册与进度台账,而不是自行推测服务器与数据库配置。同批在 _protected(不入 git)新写 INFRA_CONFIG.md,内容为实机只读盘点结果:主机规格与 SSH 方式、三个 Postgres(eei/keycloak/coolify,均不对外发布端口)的连接命令、域名路由表、cron 清单、凭据索引(只写位置不写值)、备份恢复步骤、排障命令与已知隐患。README 侧只放路径与边界,**不含任何凭据、私钥或源站 IP**。新增 tests/governance/test_readme_infra_signpost.py 作为公开仓红线守卫:正控校验路牌要素在位,负控禁止裸 IPv4/PAT/私钥/内联凭据出现在 README(源站 IP 会废掉 Cloudflare 源站隐藏)。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "README.md",
+    "governance/run_manifests/TSK-ROOT-INFRA-SIGNPOST-20260726.json",
+    "tests/governance/test_readme_infra_signpost.py"
+  ],
+  "changed_files_actual": [
+    "README.md",
+    "governance/run_manifests/TSK-ROOT-INFRA-SIGNPOST-20260726.json",
+    "tests/governance/test_readme_infra_signpost.py"
+  ],
+  "required_governance_files": [
+    "README.md",
+    "tests/governance/test_readme_infra_signpost.py",
+    "governance/run_manifests/TSK-ROOT-INFRA-SIGNPOST-20260726.json"
+  ],
+  "updated_governance_files": [
+    "README.md",
+    "tests/governance/test_readme_infra_signpost.py"
+  ],
+  "evidence_refs": [
+    "README.md",
+    "tests/governance/test_readme_infra_signpost.py"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_readme_infra_signpost",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_readme_infra_signpost",
+      "result": "PASS",
+      "detail": "3/3 通过;负控实跑:往 README 注入假源站 IP 与假 PAT -> 守卫真 FAIL(报『裸 IPv4 地址』),还原后恢复 PASS。"
+    },
+    {
+      "command": "root_cleanliness_audit",
+      "result": "PASS",
+      "detail": "unowned_items 为空;新增文件均落在既有受管目录(tests/governance、governance/run_manifests),未新增根条目。"
+    }
+  ],
+  "stop_conditions": [
+    "★公开仓 README/任何入仓文件都不得出现凭据、私钥或源站 IP★——守卫测试会红;真泄露需立即轮换对应凭据。",
+    "凭据只存本机 _protected/(0600),永不 commit、永不上传。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit(路牌与守卫一并回退)。",
+    "production": "不涉及生产部署。"
+  },
+  "unresolved_risks": [
+    "INFRA_CONFIG.md 位于本机 _protected/,不入 git、无版本历史;若本机丢失需从备份恢复。",
+    "盘点中发现的隐患(Traefik dashboard 8080 无认证暴露、github_backup_pat 曾明文出现建议轮换)已记入总册第 10 节,本次不修。"
+  ],
+  "next_allowed_task": "按 Owner 优先级继续;隐患修复需单独授权。"
+}
