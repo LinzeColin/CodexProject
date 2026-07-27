@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-BUSINESS-FLOW-20260727",
+  "project_id": "root",
+  "task_id": "ROOT-BUSINESS-FLOW",
+  "acceptance_ids": ["ACC-ROOT-BUSINESS-FLOW"],
+  "iteration_id": "ITER-20260727-BUSINESS-FLOW",
+  "generated_at": "2026-07-27T04:45:00Z",
+  "implementation_base_sha": "2256dcde6fd7cbd61f08d04daae655459a0a825e",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d1ac699b6b86dc1f84d8abf07acd504eba37d780de0d8b201f0a0857ce070f07",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 2 non-manifest changed files; changed_files_* list all 3 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "STANDARD.md 写入「业务流登记 / 软件内部功能实现监控」全域契约,并加可机器判定的守卫。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_REQUESTED_GOVERNANCE (Owner 2026-07-27 指出既有的「功能」页与「运行」页实质是同一件事,都在回答『部署好了吗』而非『业务跑通了吗』;要求做软件内部功能实现程度监控、每个业务流纵向切片的通畅与健康,并明确「每个项目都有自己的模式,不需要统一格式类型,只需要统一数据治理接口、UIUX 呈现、双向监控实时更新」。本次仅文档契约 + 守卫测试,零业务逻辑、零 workflow 触碰,可由测试客观判定,故未另起对抗复核——如实记录此偏离)",
+  "summary": "把「业务流登记 / 软件内部功能实现监控」写成全域执行契约(落点 STANDARD.md:根 AGENTS.md 4088B/预算 4096B 无处可加,按其自身指引落细则文件,未动 AGENTS.md)。七条主规则:①有 project.yaml 就必须发布 flow.yaml 且**合入 main** 才算数(PR/worktree 里的不计入,数据源必须可复核),未登记由 status 自动列出;②**统一接口不统一内容**——阶段有几段/叫什么/什么顺序由各项目按自身业务语义定义,强行统一即削足适履,全域只统一 schema 字段、探针类型库、状态语义与呈现语言;③状态四态 ok/warn/blocked_by_policy/not_implemented,其中 blocked_by_policy 表示『按规定就不该通』(如合规禁止投递到群),缺此一态会把合规策略整片标红、假红泛滥后真故障就没人看;④双向:自报 state 与只读实测 probe 必须交叉校验,不符要单独标出而非二选一——人手维护的矩阵正是从这里开始与现实脱节;⑤缺陷逐条挂在 基线×阶段 上,格子须可点开看证据/自报与实测/缺陷与起始日期;⑥逐日归档且**同一天取最差的一次**,据此才答得出『从哪天开始不对』;⑦传导必须标注,上游断则下游的绿无意义。安全条款(不可让步):flow.yaml 来自代码仓,对执行探针的主机是**不可信输入**,探针一律按类型由采集器自行构造命令,绝不执行登记文件里的自由字符串(无自由 SQL/无自由 shell、路径限根并拒 ..、单元名/容器名/匹配串过白名单、URL 限 https),且只看元信息绝不读业务数据内容。新增 tests/governance/test_business_flow_contract.py(5 项)。★修正过一次装饰性断言:原先用 assertIn(state, body) 校验四态,负控实测发现把枚举行里的 blocked_by_policy 删掉守卫依然全绿(该词在解释段仍出现),已改为钉在四态枚举行本身,重跑负控确认转红。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-BUSINESS-FLOW-20260727.json",
+    "tests/governance/test_business_flow_contract.py"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-BUSINESS-FLOW-20260727.json",
+    "tests/governance/test_business_flow_contract.py"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_business_flow_contract.py",
+    "governance/run_manifests/TSK-ROOT-BUSINESS-FLOW-20260727.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_business_flow_contract.py"
+  ],
+  "evidence_refs": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_business_flow_contract.py"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_business_flow_contract",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 -B scripts/governance_id_audit.py --root . --json",
+    "python3 -B scripts/workflow_security_audit.py audit",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_business_flow_contract",
+      "result": "PASS",
+      "detail": "5/5。负控三组实跑:①整节删除 -> 5 项全 FAIL;②弱化『绝不执行自由字符串』-> FAIL;③删掉四态枚举里的 blocked_by_policy -> **首轮未触发**,暴露该断言是装饰性的(该词在解释段仍在),改为钉在枚举行后重跑转红。还原后均恢复 PASS。"
+    },
+    {"command": "root_cleanliness_audit", "result": "PASS", "detail": "pass=true,errors 为空;AGENTS.md 未触碰。"},
+    {"command": "repository_hygiene_audit", "result": "PASS", "detail": "status PASS。"},
+    {"command": "governance_id_audit", "result": "PASS", "detail": "status PASS,errors 0。"},
+    {"command": "workflow_security_audit", "result": "PASS", "detail": "status PASS;本次未触碰任何 workflow。"},
+    {"command": "lean_governance ci --changed-only", "result": "PENDING", "detail": "补齐本 manifest 后执行,结果见 PR checks。"}
+  ],
+  "stop_conditions": [
+    "★探针实现不得执行登记文件里的自由字符串;新增探针类型必须同步扩展白名单校验与沙箱断言★",
+    "★状态四态不得删减;删掉 blocked_by_policy 会把合规策略整片标红,假红泛滥后真故障无人看★",
+    "业务流登记未合入 main 的一律算未登记,不得把 PR/worktree 内容当成事实。",
+    "运维纵向切片与业务纵向切片不得合并成同一张表,否则两个问题都没人回答。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit(契约段与守卫一并回退)。",
+    "production": "不涉及生产部署;实现侧在 LinzeHomeHub PR #30,可独立回退。"
+  },
+  "unresolved_risks": [
+    "契约按文本要素匹配,能挡整段删除与关键条款稀释,挡不住语义被改写成同字面不同含义;需 review 把关。",
+    "探针沙箱按类型白名单;新增探针类型若忘记加校验就会开口子,已在 stop_conditions 明确要求同步扩展。",
+    "自报与实测的交叉校验只能发现『登记与现实不符』,发现不了『登记与实测都错但一致』;这类只能靠 owner 复核。"
+  ],
+  "next_allowed_task": "按 Owner 优先级继续。"
+}
