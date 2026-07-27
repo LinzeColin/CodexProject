@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-PROJECT-REGISTRY-20260727",
+  "project_id": "root",
+  "task_id": "ROOT-PROJECT-REGISTRY",
+  "acceptance_ids": [
+    "ACC-ROOT-PROJECT-REGISTRY"
+  ],
+  "iteration_id": "ITER-20260727-FLOW-V2",
+  "generated_at": "2026-07-27T11:20:00Z",
+  "implementation_base_sha": "ee930bf42b564b56f230d4a961b5863615eda4f6",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2624ae842d91e663bba9d06094cac59d2f604e7a7f63c36e0ecffacba8077600",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 2 non-manifest changed files; changed_files_* list all 3 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "STANDARD.md 写入「项目即登记」契约:长得像项目的目录必须有治理文件,否则显式豁免并写明理由。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_REQUESTED_GOVERNANCE (Owner 2026-07-27:「全仓都需要写入治理规则、登记流程」「目前活跃的项目有 kmfa,cyberboss」;本次仅文档契约 + 守卫测试,零业务逻辑、零 workflow 触碰,可由测试客观判定,故未另起对抗复核——如实记录此偏离)",
+  "summary": "补「部署即登记」「业务流登记」之前缺的那一环:还没有治理文件的项目。缺了它前两条都白搭——项目在写出治理文件之前对监控中枢是彻底隐形的,不在分母里,覆盖率不掉、未登记数不涨、看板一切正常,隐形不会让任何指标变红。实测(2026-07-27)全仓扫出 10 个这样的目录,其中 MetaDatabase/CyberBoss 有 634 个文件、是 owner 明确在跑的活跃项目,而监控中枢一个字都看不到。五条:①有 README/AGENTS/VERSION 之一的顶层目录必须有 project.yaml(机器判据,不靠人声明);②不自动下结论、强制表态,只有补文件或显式豁免两条出路,沉默不是选项;③豁免必须带理由且公开可复核,无理由豁免=永久黑洞;④治理文件先于第一行业务代码,顺序反了中间那段就是隐形期;⑤如实优先于好看,合成验收通过不等于真实链路跑通,宁可一片 not_built 不要一格假 healthy。实现侧扫描与豁免断言在 LinzeHomeHub#42(已合入 main),含两条负控。CyberBoss 自身的治理档已在 MetaDatabase#142 补齐并合入。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-PROJECT-REGISTRY-20260727.json",
+    "tests/governance/test_project_registry_contract.py"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-PROJECT-REGISTRY-20260727.json",
+    "tests/governance/test_project_registry_contract.py"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_registry_contract.py",
+    "governance/run_manifests/TSK-ROOT-PROJECT-REGISTRY-20260727.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-PROJECT-REGISTRY-20260727.json",
+    "tests/governance/test_project_registry_contract.py"
+  ],
+  "evidence_refs": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_registry_contract.py",
+    "LinzeColin/LinzeHomeHub#42",
+    "LinzeColin/MetaDatabase#142"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_project_registry_contract",
+    "python3 scripts/validate_governance_sync.py",
+    "python3 scripts/root_cleanliness_audit.py",
+    "python3 scripts/repository_hygiene_audit.py",
+    "python3 scripts/governance_id_audit.py"
+  ],
+  "test_results": [
+    {
+      "command": "python3 -m unittest tests.governance.test_project_registry_contract",
+      "result": "PASS",
+      "detail": "4 用例通过。"
+    },
+    {
+      "command": "root_cleanliness_audit",
+      "result": "PASS",
+      "detail": "status PASS。"
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "detail": "status PASS。"
+    },
+    {
+      "command": "governance_id_audit",
+      "result": "PASS",
+      "detail": "无冲突。"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/governance",
+      "result": "PRE-EXISTING FAILURES",
+      "detail": "2 处 FAIL(test_readme_is_exact_deterministic_generator_output、test_new_large_archive_runtime_noise_and_backup_producer_fail)在 origin/main 未加改动时同样存在,已对拍确认与本次无关,本次未修。"
+    }
+  ],
+  "stop_conditions": [
+    "★长得像项目的目录只有两条出路:补治理文件,或显式豁免并写明理由。沉默不是选项★",
+    "★合成验收通过不得填成 healthy;没跑起来就写 not_built★"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit。",
+    "production": "不涉及生产部署。"
+  },
+  "unresolved_risks": [
+    "「长得像项目」用 README/AGENTS/VERSION 作机器判据,可能有假阳性;靠显式豁免收敛,每条要写理由。",
+    "本条只在监控中枢侧扫描,各仓本地没有 pre-commit 拦截;真正堵死要在各仓加钩子,是后续工作。"
+  ],
+  "next_allowed_task": "按 Owner 优先级继续。"
+}
