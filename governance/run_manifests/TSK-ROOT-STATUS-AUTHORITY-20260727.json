@@ -1,0 +1,107 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-STATUS-AUTHORITY-20260727",
+  "project_id": "root",
+  "task_id": "ROOT-STATUS-AUTHORITY",
+  "acceptance_ids": [
+    "ACC-ROOT-STATUS-AUTHORITY"
+  ],
+  "iteration_id": "ITER-20260727-FLOW-V2",
+  "generated_at": "2026-07-27T10:40:00Z",
+  "implementation_base_sha": "66950000a7924de196b49ee7f2fd946dc6d3bc03",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:881fbd3f2ebcd050a8f6445ba7a31ee651dabc40cbcfecc2fa8e80c1e14c5818",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 2 non-manifest changed files; changed_files_* list all 3 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "STANDARD.md 写入「status 是权威监控中枢」全域契约(开工第一步/收尾最后一步、单一权威、双向回流、过期降级、四个一级状态),并加可机器判定的守卫。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_REQUESTED_GOVERNANCE (Owner 2026-07-27:「status 是任意开发 agent 都需要访问的第一步和收尾的最后一步，是所有项目的权威监控中枢」;本次仅文档契约 + 守卫测试,零业务逻辑、零 workflow 触碰,可由测试客观判定,故未另起对抗复核——如实记录此偏离)",
+  "summary": "把「status 是权威监控中枢」写成全域执行契约。七条:①开工第一步/收尾最后一步强制读 status;②单一权威,任何仓不得自建第二块健康看板(两块必然漂移);③双向——status 主机侧探不到的步骤,项目必须自己吐 docs/governance/flow_state.json,status 只读不写;④回流带时间戳,过期一律降级成「不确定」,既不算通过也不算断了;⑤绝不能拿相邻信号冒充这一步的产出(「容器还活着」≠「结算数据导出了」),宁可覆盖率难看不要假覆盖;⑥给人看的一级状态只有四个(通/断了/没做/不确定),机器的七态属子状态,不平铺给人;⑦status 自己不豁免。第③条不是可选项:实测线上 49 个在跑的程序,KM_IDSystem/whkmSalary/arxiv-daily-push 一个都不属于它们(合计 70 步=28%),主机侧探针对它们永远探不到,其余系统全装满天花板也只有 72%。第⑥条依据同样是实测:七个状态色两两对比度全部 <3:1,颜色其实一个状态都分不开。新增 tests/governance/test_status_authority_contract.py 让契约可被机器判定,并已跑负控(删掉「宁可覆盖率难看不要假覆盖」一条即变红)。实现侧断言在 LinzeHomeHub/status(PR #38 已合入 main),含过期降级/状态词白名单/项目间不串三条负控。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-STATUS-AUTHORITY-20260727.json",
+    "tests/governance/test_status_authority_contract.py"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-STATUS-AUTHORITY-20260727.json",
+    "tests/governance/test_status_authority_contract.py"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_status_authority_contract.py",
+    "governance/run_manifests/TSK-ROOT-STATUS-AUTHORITY-20260727.json"
+  ],
+  "stop_conditions": [
+    "★回流记录过期必须降级成「不确定」,既不得算通过(假绿)也不得算断了(假红)★",
+    "★不得拿相邻信号冒充某一步的产出;发现即视为假覆盖,回滚该探针声明★",
+    "给人看的一级状态必须正好四个;要加第五个必须先改本契约并说明依据。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit(契约段与守卫一并回退)。",
+    "production": "不涉及生产部署。"
+  },
+  "unresolved_risks": [
+    "「开工第一步/收尾最后一步」目前靠契约约束,没有机器强制;要强制需要在各仓的 agent 入口加钩子,是后续工作。",
+    "回流通道已落地但**尚无任何项目开始吐 flow_state.json**,所以自动核查覆盖率此刻仍是 15%,离 owner 定的 85% 差 178 步。"
+  ],
+  "next_allowed_task": "按 Owner 优先级继续。",
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-STATUS-AUTHORITY-20260727.json",
+    "tests/governance/test_status_authority_contract.py"
+  ],
+  "evidence_refs": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_status_authority_contract.py",
+    "LinzeHomeHub/status/docs/FLOW_STATE_CONTRACT.md",
+    "LinzeColin/LinzeHomeHub#38"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_status_authority_contract",
+    "python3 scripts/validate_governance_sync.py",
+    "python3 scripts/root_cleanliness_audit.py",
+    "python3 scripts/repository_hygiene_audit.py",
+    "python3 scripts/governance_id_audit.py",
+    "python3 -m unittest discover -s tests/governance"
+  ],
+  "test_results": [
+    {
+      "command": "python3 -m unittest tests.governance.test_status_authority_contract",
+      "result": "PASS",
+      "detail": "4 用例通过;负控:删掉「宁可覆盖率难看，不要假覆盖」后立即 FAIL。"
+    },
+    {
+      "command": "root_cleanliness_audit",
+      "result": "PASS",
+      "detail": "status PASS。"
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "detail": "status PASS,violations 为空。"
+    },
+    {
+      "command": "validate_governance_sync",
+      "result": "PASS",
+      "detail": "补本 manifest 前报 root: Root governance change requires updated run_manifest;补后 PASS。"
+    },
+    {
+      "command": "governance_id_audit",
+      "result": "PASS",
+      "detail": "无冲突。"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/governance",
+      "result": "PRE-EXISTING FAILURES",
+      "detail": "2 处 FAIL(test_readme_is_exact_deterministic_generator_output、test_new_large_archive_runtime_noise_and_backup_producer_fail)在 origin/main 上**未加任何改动时同样存在**,已对拍确认与本次改动无关;本次未修,如实记录。"
+    }
+  ]
+}
