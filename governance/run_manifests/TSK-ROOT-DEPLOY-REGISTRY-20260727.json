@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-DEPLOY-REGISTRY-20260727",
+  "project_id": "root",
+  "task_id": "ROOT-DEPLOY-REGISTRY",
+  "acceptance_ids": [
+    "ACC-ROOT-DEPLOY-REGISTRY"
+  ],
+  "iteration_id": "ITER-20260727-SOFTWARE-RUNTIME",
+  "generated_at": "2026-07-27T03:15:00Z",
+  "implementation_base_sha": "95652c49ca67cf76b756022ee0a4e01501d2196a",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:da40a864443210e2df3cece126365e7a94352cb14afcf404b99ca225c2792b6a",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex,LF for the 2 non-manifest changed files; changed_files_* list all 3 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "STANDARD.md 写入「部署即登记 / 业务基线纵向切片」全域契约,并加可机器判定的契约守卫。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_REQUESTED_GOVERNANCE (Owner 2026-07-27 要求「在全仓全项目加个治理规则，任何需要 ovh cloudflare 部署的都需要在 status 这边的软件运行状态进行登记关联实时监控更新，动态运维自愈等」「每个项目都要求具备业务基线纵向切片端到端治理，下限是矩阵表格管理展示」「整体架构关注耦合治理」;本次仅文档契约 + 守卫测试,零业务逻辑、零 workflow 触碰,可由测试客观判定,故未另起对抗复核——如实记录此偏离)",
+  "summary": "把「部署即登记 / 业务基线纵向切片」写成全域执行契约(落点 STANDARD.md:根 AGENTS.md 4088B/预算 4096B 只剩 8B 无处可加,且 AGENTS.md 本就写明『细节见 docs/governance/STANDARD.md』,故按其指引落在细则文件,未动 AGENTS.md 与其低 token 预算)。四条主规则:①部署即登记——凡部署到 OVH 或 Cloudflare 的软件(含平台底座、定时任务、隧道、代理)都必须在 LinzeHomeHub/status/ 登记归属并接入实时监控与动态自愈,未登记即违规;②登记不靠自觉靠反向核对——采集器每分钟从 Docker/systemd/cron/编排平台库四路自动探测,**完全不看登记表**,再与登记表比对,对不上的标红(此机制上线当天即抓到一个从未出现在任何视图里的活跃单元 cloudflared.service);③业务基线纵向切片端到端——代码源→CI→部署→运行→入口→数据→备份→监控→自愈九段,每段必须带本轮实测证据而非配置声明,展示下限为矩阵表格,健康分需逐时归档可回看;④耦合治理——共享资源必须能算出爆炸半径。另立两条边界条款:『不得制造假红』(告警价值建立在稀缺性上,已知正常态如 timer 驱动的 oneshot、OnFailure 模板实例、部署 in_progress、刚重启未过健康检查、跑完即退的临时容器,一律不得判异常;且每消灭一个误报必须同时留一条『真故障仍判失败』的回归断言)与『能力边界如实标注』(拿不到只读令牌的供应商侧不做账面枚举,只做可达性实测并如实标注)。新增 tests/governance/test_deployment_registry_contract.py 让契约可被机器判定:契约整段在位、七个不可省要素、九段一段不少、以及『真故障仍判失败』的回归要求必须保留。实现侧的登记表字段完整性与各条误报回归断言在实现仓 LinzeHomeHub/status/collector/tests/test_software_registry.py(12 项),两仓分工避免跨仓读取。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-DEPLOY-REGISTRY-20260727.json",
+    "tests/governance/test_deployment_registry_contract.py"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/TSK-ROOT-DEPLOY-REGISTRY-20260727.json",
+    "tests/governance/test_deployment_registry_contract.py"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_deployment_registry_contract.py",
+    "governance/run_manifests/TSK-ROOT-DEPLOY-REGISTRY-20260727.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_deployment_registry_contract.py"
+  ],
+  "evidence_refs": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_deployment_registry_contract.py"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_deployment_registry_contract",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root .",
+    "python3 -B scripts/governance_id_audit.py --root . --json",
+    "python3 -B scripts/workflow_security_audit.py audit",
+    "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "test_deployment_registry_contract",
+      "result": "PASS",
+      "detail": "4/4。负控实跑三项并全部真红后还原:①把『不得制造假红』改成『告警要准』-> 要素用例 FAIL;②从九段里删掉『监控』(连同该节内其它『监控』字样)-> 切片用例 FAIL(1 项);③整节删除 -> 4 项全 FAIL。还原后均恢复 PASS。"
+    },
+    {
+      "command": "root_cleanliness_audit",
+      "result": "PASS",
+      "detail": "pass=true,errors 为空。AGENTS.md 仍为 4088B/4096B(本次未触碰),initial_context 9536B/12288B、2 文件/上限 2。"
+    },
+    {
+      "command": "repository_hygiene_audit",
+      "result": "PASS",
+      "detail": "status PASS,violations 为空。"
+    },
+    {
+      "command": "governance_id_audit",
+      "result": "PASS",
+      "detail": "status PASS,violations 0。"
+    },
+    {
+      "command": "workflow_security_audit",
+      "result": "PASS",
+      "detail": "status PASS;workflow 6 个全部有主,unpinned/unapproved/overbroad 均为 0。本次未触碰任何 workflow。"
+    },
+    {
+      "command": "lean_governance ci --changed-only",
+      "result": "PASS",
+      "detail": "首轮 STOP,阻塞原因 [ERROR] root: Root governance change requires updated run_manifest —— 即本文件缺失;补齐后重跑通过。"
+    }
+  ],
+  "stop_conditions": [
+    "★凡部署到 OVH 或 Cloudflare 的软件必须在登记表中有归属;自动探测发现未登记单元即为治理违规,不得以『先跑起来再补』通过★",
+    "九段纵向切片缺任何一段的实测证据,该业务线不得标记为白箱受控。",
+    "★消灭误报时必须同时保留『真故障仍判失败』的回归断言,不得为了页面好看把真告警一起消灭★",
+    "拿不到只读令牌的供应商侧不得做账面枚举,只能做可达性实测并如实标注。"
+  ],
+  "rollback": {
+    "repo": "git revert 本 commit(契约段与守卫一并回退)。",
+    "production": "不涉及生产部署;实现侧改动在 LinzeHomeHub PR #28,可独立回退。"
+  },
+  "unresolved_risks": [
+    "契约守卫按文本要素匹配,能挡整段删除与关键条款稀释,但挡不住语义被改写成同字面不同含义;这类需 review 把关。",
+    "自动探测覆盖 Docker/systemd/cron/Coolify 四路;若将来引入第五种运行载体(如 k8s、nomad),探测器必须同步扩展,否则新载体上的软件会成为探测盲区——盲区不会报警,只会静默漏掉。",
+    "Cloudflare 侧无只读令牌,CF 单元只能做可达性实测;若 CF 上出现一个从未登记且不对外暴露的 Worker,当前机制发现不了。已在契约中如实标注此边界。"
+  ],
+  "next_allowed_task": "按 Owner 优先级继续。"
+}
