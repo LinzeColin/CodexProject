@@ -1,0 +1,65 @@
+# 业务流登记 —— WDA
+#
+# ★ 这份登记的全部内容就是一句话:**这个项目还没开工。**
+#
+#   docs/governance/STATUS.md 的原话:
+#     Status: `definition_pending`   Version: `0.0.0`
+#     Product scope: not defined     Runtime code: none
+#     Models/formulas/parameters: not applicable during bootstrap
+#     Production readiness: not applicable
+#
+#   OWNER_STATUS.md:「WDA 已建立干净的本地单项目工作树和治理入口,
+#   但**还不是可用产品**。下一步必须先定义产品目标、用户、范围、数据边界……」
+#
+# ★ 所以下面每一格都是 not_built,没有一格标绿。
+#   登记一个还没定义范围的项目,唯一诚实的写法就是**全部如实标未建**。
+#   等它真的开工,再按实际形态改阶段名和状态 —— 现在的阶段划分只是占位。
+#
+# ★ 没有任何探针:没有运行代码、没有部署单元、没有 CI 产出,
+#   **一格也探不到,实测覆盖 0%**。这一整表是纯自报,不要当成核查结果。
+#   (探针不是越多越好 —— 给一个不存在的东西装探针,只会造出假绿。)
+
+schema: linze.flow.v1
+project: WDA
+repo: CodexProject
+authority: WDA/docs/governance/(STATUS.md / OWNER_STATUS.md / DELIVERY_PLAN.md)
+stages: [define, build, verify, deliver]
+stage_names:
+  define: 定义范围
+  build: 构建实现
+  verify: 验证
+  deliver: 交付
+stage_meaning:
+  define: 定义产品目标、用户、范围、数据边界与验收标准
+  build: 运行代码实现
+  verify: 按验收标准核对
+  deliver: 交到使用者手上
+
+coupling_rule: >-
+  上游任一 stage 为 blocked / blocked_by_input / blocked_by_policy / not_built 时,
+  下游依赖它的 stage 不得标 healthy —— 必须降级并具名上游原因。
+
+measurement: >-
+  本项目**没有任何自动探针**。没有运行代码、没有部署单元、没有 CI 产出,
+  status 一格也探不到。整表为自报,实测覆盖 0%。
+
+baselines:
+  - id: BL-WDA-BOOTSTRAP
+    name: 项目定义与起步
+    priority: P3
+    note: >-
+      休眠项目。治理入口已建好,产品本身一行运行代码都没有。
+      当前任务 WDA-STAGE0-P1,状态 definition_pending。
+    cells:
+      define:
+        state: not_built
+        evidence: "STATUS.md 原文「Product scope: not defined」,当前阶段 WDA-STAGE0-P1"
+      build:
+        state: not_built
+        evidence: "STATUS.md 原文「Runtime code: none」"
+      verify:
+        state: not_built
+        evidence: "没有实现,无从验证;STATUS.md「Production readiness: not applicable」"
+      deliver:
+        state: not_built
+        evidence: 无交付物
