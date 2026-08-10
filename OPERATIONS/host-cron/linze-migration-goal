@@ -1,0 +1,11 @@
+# 迁移验收 —— 每天 05:50 UTC 跑一次,12 项全绿才算生产是好的。
+# 不只是"迁移当天用一次":第 6/8/9/10/11/12 项检查的都是**会静默失效**的东西
+# (常驻服务没起、密钥变空、R2 令牌没放行本机 IP、影子容器重启后没回来、
+#  配置里还指着退役主机、rclone 版本缺后端)。这些坏掉时域名照样 200。
+#
+# 注意 pipefail:不加的话管道退出码取自 logger(恒 0),脚本失败会被吞掉,
+# cron 层面永远看不到红 —— 那正是这套检查最不该有的失效方式。
+# 看结果:journalctl -t linze-migration-goal -n 40
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+50 5 * * * root set -o pipefail; /usr/local/bin/linze-migration-goal.sh 2>&1 | /usr/bin/logger -t linze-migration-goal

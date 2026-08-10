@@ -1,0 +1,1 @@
+*/30 * * * * root /usr/local/bin/linze-cf-seat-fuse.sh >> /srv/linze/logs/cf-seat-fuse.log 2>&1

@@ -1,0 +1,1 @@
+*/5 * * * * root /usr/local/bin/linze-status-r2-mirror.sh

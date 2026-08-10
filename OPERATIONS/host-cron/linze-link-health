@@ -1,0 +1,1 @@
+20 4 * * * root /usr/local/bin/linze-link-health.sh >> /srv/linze/logs/link-health.log 2>&1

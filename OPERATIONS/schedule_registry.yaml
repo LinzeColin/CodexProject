@@ -1,5 +1,13 @@
 # STAGE-18.3 定时任务统一登记 — 每个任务唯一 owner, 错峰, 可审计
 # 生成依据: 2026-07-20 主机 /etc/cron.d + systemd timers + 容器内 crontab 实测盘点
+#
+# 2026-08-11 起,这张表里 command 指向的脚本**源码已经进仓**:
+#   OPERATIONS/host-bin/   ← /usr/local/bin/
+#   OPERATIONS/host-cron/  ← /etc/cron.d/
+# 在此之前它们只存在于生产主机上(登记了路径、没有代码),机器没了就没了。
+# 仓是源、主机是部署产物;改动先改仓再部署。两边是否分叉:
+#   bash OPERATIONS/check-host-drift.sh
+# 说明与部署步骤见 OPERATIONS/README.md。
 schema_version: 1
 timezone_note: 主机 UTC; KMFA 容器内 TZ=Asia/Shanghai(业务锚北京时间)
 

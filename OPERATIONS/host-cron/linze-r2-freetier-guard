@@ -1,0 +1,7 @@
+# R2 免费额度守卫 —— Owner 铁律「不允许任何收费行为」的机器执行体。
+# 每 6 小时一次：桶默认存储类非 Standard 立即自动熔断改回；存量非 Standard 对象、
+# 本计费周期用量投影超免费额度 -> 判定写 /srv/linze/apps/status/data/r2_free_tier_guard.json。
+# 自身不产生任何 R2 计费操作（走 CF 控制面 API + GraphQL Analytics，不走 S3 数据面）。
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+10 */6 * * * root flock -n /tmp/linze-r2-freetier-guard.lock /usr/local/bin/linze-r2-free-tier-guard.py >> /srv/linze/logs/r2-free-tier-guard.log 2>&1

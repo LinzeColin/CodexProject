@@ -1,0 +1,1 @@
+40 3 * * * root /usr/local/bin/linze-offsite-backup.sh >> /srv/linze/logs/offsite-backup.log 2>&1
