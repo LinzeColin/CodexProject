@@ -1,0 +1,1 @@
+37 3 * * * root /usr/local/bin/linze-identity-backup.sh >> /srv/linze/logs/identity-backup.log 2>&1

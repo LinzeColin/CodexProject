@@ -1,0 +1,1 @@
+17 3 * * * root /usr/local/bin/linze-coolify-backup.sh >> /srv/linze/logs/coolify-backup.log 2>&1

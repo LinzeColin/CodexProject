@@ -1,0 +1,3 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/1 * * * * ubuntu cd /srv/linze/apps/status && /usr/bin/python3 collector/collect.py >> /srv/linze/apps/status/collect.log 2>&1
