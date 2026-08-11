@@ -11,9 +11,29 @@ no(){ printf "  ✗ %s\n" "$*"; FAIL=$((FAIL+1)); }
 
 echo "═══ 迁移验收 $(date -u +%FT%TZ) ═══"
 
-echo "【1】9 个域名对外可访问"
-for h in home pfi serenity kmfa account uptime jobhunt status server; do
-  d="$h.linzezhang.com"
+echo "【1】域名对外可访问(清单从 Cloudflare DNS 动态取,不手写)"
+# 2026-08-11 事故:这里原来手写 9 个域名,而 **weread 和 weread-api 不在里面**。
+# 结果 weread 的边缘链路断了整整一天(Worker 回源 weread-api → traefik 无此 Host → 503),
+# 用户打开就是「账户服务尚未完成安全连接」,而这 13 项验收**全绿**。
+# 又一次「口径只覆盖子集却当成全局」—— 手写清单必然漏,而且漏的那个永远不会自己冒出来。
+#
+# 现在从 Cloudflare DNS 拉真实子域列表。拉不到就**退回内置清单并报一条**,
+# 不能因为取不到清单就当成"没有域名要测"(那是最坏的假绿)。
+DOMS=""
+# 清单由 /usr/local/bin/linze-cf-web-domains.py 从 Cloudflare DNS 拉。
+# 拆成独立脚本而不是内嵌 python:第一版内嵌时被 shell 逐层吞掉引号,静默取不到清单。
+if [ -r /etc/linze/cf-dns.env ]; then
+  set -a; . /etc/linze/cf-dns.env; set +a
+  DOMS=$(/usr/local/bin/linze-cf-web-domains.py 2>/dev/null)
+fi
+if [ -z "$DOMS" ]; then
+  # 取不到清单**必须报一条**,不能当成"没有域名要测" —— 那是最坏的假绿。
+  no "取不到 Cloudflare DNS 清单,退回内置列表(可能漏测新域名)"
+  DOMS=$(printf "%s\n" home pfi serenity kmfa account uptime jobhunt status server weread weread-api \
+    | sed "s/$/.linzezhang.com/")
+fi
+echo "    本轮测 $(printf "%s\n" "$DOMS" | grep -c .) 个域名"
+for d in $DOMS; do
   # 单次 curl 偶尔会返回 000(自己超时,不是服务坏) —— 2026-08-10 连跑三次就中了一次。
   # 这脚本挂着每日 cron,单次判定会周期性假红;而假红比没有告警更糟。所以失败重试一次,
   # 两次都不通才算真不通。真出故障时两次一样红,灵敏度没有损失。

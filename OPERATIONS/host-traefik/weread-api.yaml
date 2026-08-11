@@ -1,0 +1,39 @@
+# weread-api.linzezhang.com 的 traefik 路由。
+#
+# 为什么单独一个文件:coolify.yaml 是 Coolify 自动生成的,顶部明写「不要手工编辑」——
+# 它每次重新生成都会把手工加的东西冲掉。traefik 的 file provider 扫整个 dynamic/ 目录,
+# 所以独立文件同样生效,而且不会被 Coolify 覆盖。
+#
+# 2026-08-11 事故:VPS-1 → VPS-3 迁移时**漏了这条路由**,导致
+#   Cloudflare Worker(weread-port) 回源 https://weread-api.linzezhang.com → traefik 无此 Host
+#   → 落到 default_redirect_503 → 503 → 页面显示「账户服务尚未完成安全连接」。
+# 而同一时刻 127.0.0.1:8788/readyz 是 200、systemd 服务全 active、13 项验收全绿 ——
+# **服务健康 ≠ 用户能用**,中间还隔着一条谁都没在看的边缘链路。
+#
+# 后端指向 10.0.1.1:8789 = weread-port-traefik-bridge.socket(systemd socket 激活),
+# 它再转发到 127.0.0.1:8788。不直接指 127.0.0.1:8788:traefik 在容器里,
+# 它的 127.0.0.1 是容器自己,够不到宿主机的服务 —— 这正是那个 bridge 存在的理由。
+http:
+  routers:
+    weread-api-https:
+      entryPoints:
+        - https
+      rule: "Host(`weread-api.linzezhang.com`)"
+      service: weread-api
+      tls:
+        certResolver: letsencrypt
+    weread-api-http:
+      entryPoints:
+        - http
+      rule: "Host(`weread-api.linzezhang.com`)"
+      middlewares:
+        - redirect-to-https
+      service: weread-api
+  services:
+    weread-api:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.1.1:8789"
+        # Worker 那边的账户代理预算是 45s,这里必须留出余量,避免两端同时超时
+        responseForwarding:
+          flushInterval: 100ms

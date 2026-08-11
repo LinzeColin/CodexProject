@@ -66,3 +66,24 @@ done
 
 **这张表本身就是交付的一部分** —— 下一个人接手时,能一眼看出"仓里没有的是哪些、
 为什么没有",而不是以为仓 = 全部。
+
+## host-traefik/ —— 反向代理路由
+
+对应主机 `/data/coolify/proxy/dynamic/`。
+
+**为什么单独放而不是塞进 `coolify.yaml`**:那个文件由 Coolify 自动生成,顶部明写
+「不要手工编辑」—— 它每次重新生成会把手工加的东西冲掉。traefik 的 file provider
+扫整个 `dynamic/` 目录,独立文件同样生效且不会被覆盖。
+
+**2026-08-11 事故**:VPS-1 → VPS-3 迁移时漏了 `weread-api.linzezhang.com` 这条路由。
+后果是一条**谁都没在看的边缘链路**断了整天:
+
+    Cloudflare Worker(weread-port) → 回源 https://weread-api.linzezhang.com
+      → traefik 无此 Host → 落到 default_redirect_503 → 503
+      → 页面显示「账户服务尚未完成安全连接」
+
+而同一时刻:`127.0.0.1:8788/readyz` 返回 200、systemd 服务全 active、
+13 项验收**全绿**、9 个域名全 200。**服务健康 ≠ 用户能用。**
+
+漏掉的原因是验收的域名清单**手写了 9 个,weread 和 weread-api 都不在里面**。
+现已改成从 Cloudflare DNS 动态取(21 个),见 `host-bin/linze-cf-web-domains.py`。
