@@ -39,6 +39,24 @@ for d in $DOMS; do
   # 两次都不通才算真不通。真出故障时两次一样红,灵敏度没有损失。
   c=$(curl -s -o /dev/null -w '%{http_code}' -m 15 -L "https://$d/" 2>/dev/null)
   case "$c" in 2*|3*) ;; *) sleep 3; c=$(curl -s -o /dev/null -w '%{http_code}' -m 25 -L "https://$d/" 2>/dev/null) ;; esac
+  # 已知**有意停用**的域名:有 DNS 记录但服务从未部署或被治理明确关停。
+  # 报成故障就是永久假红,而假红比没有告警更糟 —— 习惯了红色,真出事那次也没人看。
+  # 但也**不能从清单里删掉**:那样它们就彻底消失在视野外,哪天悄悄活过来也没人知道。
+  # 所以单独列一类:显示为「已停用」,不计入失败,但仍然逐个探、状态变了会看出来。
+  #
+  #   alpha —— 交易下单系统。它自己的治理写着「默认失败关闭,仓库默认 DISABLED,
+  #            十一项门禁全过才可真实下单」,ASSURANCE_STATUS 里 methodological_rationale
+  #            仍是 UNVERIFIED。**不启动它**:启动一个自我声明 DISABLED 的交易系统不是修复。
+  #   signal-lattice —— journalctl 里 "No entries",在 VPS-1 上就从未真正跑起来过;
+  #            它的隧道 signal-lattice-cloudflared 也一直 disabled。
+  #
+  # 要让哪个重新上线,是 owner 的决定,不是验收脚本能替他做的。
+  case " alpha.linzezhang.com signal-lattice.linzezhang.com " in
+    *" $d "*)
+      case "$c" in 200|301|302|304|401|403) no "$d ($c) —— 登记为已停用,却活过来了,需确认";;
+                   *) printf "  ○ %s (%s) 已停用(有意,不计失败)\n" "$d" "$c";; esac
+      continue ;;
+  esac
   case "$c" in 200|301|302|304|401|403) ok "$d ($c)";; *) no "$d ($c)";; esac
 done
 
@@ -223,7 +241,15 @@ done
 # coolify-sentinel 例外:它的 restart=no 是设计如此,Coolify 启动时会自己重建它。
 # 这不是猜的 —— 2026-08-10 那次重启实测:主机 19:47 重启,sentinel 19:48:12 自己起来了。
 # 不排除它就会天天报一条永远修不掉的红,而假红比没有告警更糟:习惯了红色,真出事那次也没人看。
-cbad=$(docker ps --format '{{.Names}}' 2>/dev/null | grep -vx 'coolify-sentinel' | while read -r c; do
+# 除了 coolify-sentinel,还要排除**一次性任务容器**:名字里带 -run- / acceptance-run /
+# -build- 的那类跑完就退,restart=no 正是它们该有的策略。
+# 2026-08-11 实测:另一个会话起了 jobhuntbot-online-acceptance-run-54c3ae4cbc8a,
+# 这条检查当场报红 —— 而它 2 分钟后自己就没了。这种"来去频繁的临时容器"会让每日
+# cron 周期性假红,而假红比没有告警更糟。
+# 判据按**名字形态**而不是镜像名:名字是 docker 层面稳定可见的,镜像 tag 会变。
+cbad=$(docker ps --format '{{.Names}}' 2>/dev/null \
+        | grep -vx 'coolify-sentinel' \
+        | grep -vE -- '-run-|acceptance-run|-build-|_run_' | while read -r c; do
   [ -n "$c" ] || continue
   p=$(docker inspect -f '{{.HostConfig.RestartPolicy.Name}}' "$c" 2>/dev/null)
   [ "$p" = "no" ] || [ -z "$p" ] && echo "$c"
