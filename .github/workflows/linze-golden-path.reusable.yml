@@ -149,7 +149,7 @@ jobs:
           APP: ${{ inputs.coolify_app_uuid }}
         run: |
           set -euo pipefail
-          resp=$(curl -fsSL -H "Authorization: Bearer $TOKEN" "$BASE/api/v1/deploy?uuid=$APP&force=false")
+          resp=$(curl -fsSL -X POST -H "Authorization: Bearer $TOKEN" "$BASE/api/v1/deploy?uuid=$APP&force=false")
           echo "$resp"
           UUID=$(printf '%s' "$resp" | python3 -c "import sys,json;d=json.load(sys.stdin);print((d.get('deployments') or [{}])[0].get('deployment_uuid',''))")
           [ -n "$UUID" ] || { echo "::error::部署未入队"; exit 1; }
