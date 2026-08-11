@@ -8,4 +8,4 @@
 # 看结果:journalctl -t linze-migration-goal -n 40
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-50 5 * * * root set -o pipefail; /usr/local/bin/linze-migration-goal.sh 2>&1 | /usr/bin/logger -t linze-migration-goal
+50 5 * * * root set -o pipefail; set -a; . /etc/linze/cf-dns.env; set +a; /usr/local/bin/linze-migration-goal.sh 2>&1 | /usr/bin/logger -t linze-migration-goal
