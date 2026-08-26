@@ -1,0 +1,66 @@
+# Deploy DSH + dsh-dingtalk to OVH VPS-3
+# 手动触发: 需要 SSH 私钥（通过 GitHub Secrets 传入）
+name: deploy-dsh-dingtalk
+
+on:
+  workflow_dispatch:
+    inputs:
+      ssh_key:
+        description: "SSH private key for VPS-3 (ubuntu@15.235.141.201)"
+        required: true
+        type: string
+      dingtalk_client_id:
+        description: "DingTalk Client ID"
+        required: false
+        type: string
+      dingtalk_client_secret:
+        description: "DingTalk Client Secret"
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ github.event.inputs.ssh_key }}" > ~/.ssh/vps3_key
+          chmod 600 ~/.ssh/vps3_key
+          ssh-keyscan -H 15.235.141.201 >> ~/.ssh/known_hosts
+
+      - name: Install DSH on VPS
+        run: |
+          ssh -i ~/.ssh/vps3_key ubuntu@15.235.141.201 bash << 'SCRIPT'
+            set -euo pipefail
+            echo "=== System Info ==="
+            hostname; uname -a
+
+            echo "=== Install Node.js 24 ==="
+            if ! node --version &>/dev/null; then
+              curl -fsSL https://deb.nodesource.com/setup_24.x | sudo bash -
+              sudo apt-get install -y nodejs
+            fi
+            echo "Node: $(node --version)"
+
+            echo "=== Install pnpm ==="
+            if ! pnpm --version &>/dev/null; then
+              sudo npm install -g pnpm
+            fi
+            echo "pnpm: $(pnpm --version)"
+
+            echo "=== Setup DSH ==="
+            mkdir -p ~/.dsh/profiles/web ~/.dsh/plugins
+
+            echo "=== Install dsh-dingtalk plugin ==="
+            npx @dingtalk-real-ai/dsh-dingtalk@latest --version
+
+            echo "=== Deployment complete ==="
+            echo "Next: run 'npx @dingtalk-real-ai/dsh-dingtalk@latest setup' to configure"
+SCRIPT
+
+      - name: Verify deployment
+        run: |
+          ssh -i ~/.ssh/vps3_key ubuntu@15.235.141.201 "node --version && pnpm --version && which npx"
