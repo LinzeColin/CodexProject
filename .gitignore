@@ -59,3 +59,6 @@ arxiv-daily-push/deploy/cloudflare/.wrangler/
 
 # New evidence command logs stay untracked artifacts (root-governance-artifact-policy-v1)
 arxiv-daily-push/docs/pursuing_goal/v0_1/evidence/**/commands.log
+
+# Cloudflare wrangler local cache (contains account id); never commit
+.wrangler/
