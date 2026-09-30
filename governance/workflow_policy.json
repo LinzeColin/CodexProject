@@ -74,104 +74,6 @@
   ],
   "workflows": [
     {
-      "path": ".github/workflows/agent-loop-retrospective.yml",
-      "name": "Agent Loop - Retrospective",
-      "role": "transaction_retrospective",
-      "owner": "@LinzeColin",
-      "purpose": "Create an advisory post-close retrospective and PR comment; never settlement evidence.",
-      "triggers": [
-        "pull_request",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read",
-        "pull-requests": "write"
-      },
-      "expected_jobs": [
-        "retrospective"
-      ],
-      "trust_boundary": "untrusted_prompt_readonly_sandbox",
-      "failure_behavior": "N/A output without the model secret; comment and artifact remain advisory.",
-      "local_dependencies": [
-        ".github/codex/prompts/codex-retrospective.md"
-      ],
-      "untrusted_prompt_input": true
-    },
-    {
-      "path": ".github/workflows/agent-loop-review-existing-pr.yml",
-      "name": "Agent Loop - Review Existing PR",
-      "role": "advisory_pr_review",
-      "owner": "@LinzeColin",
-      "purpose": "Review a PR in a read-only Codex sandbox and publish an advisory comment.",
-      "triggers": [
-        "pull_request",
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read",
-        "pull-requests": "write"
-      },
-      "expected_jobs": [
-        "review-existing-pr"
-      ],
-      "trust_boundary": "untrusted_prompt_readonly_sandbox",
-      "failure_behavior": "Fail before review when the model secret is unavailable; no merge authority.",
-      "local_dependencies": [
-        ".github/codex/prompts/codex-review.md",
-        "scripts/agent_loop/architect_review.py"
-      ],
-      "untrusted_prompt_input": true
-    },
-    {
-      "path": ".github/workflows/agent-loop-run-approved-taskpack.yml",
-      "name": "Agent Loop - Validate Approved Task Pack",
-      "role": "taskpack_validation",
-      "owner": "@LinzeColin",
-      "purpose": "Validate an explicitly supplied Task Pack without branch, PR, Issue, or merge mutation.",
-      "triggers": [
-        "workflow_dispatch"
-      ],
-      "permissions": {
-        "contents": "read"
-      },
-      "expected_jobs": [
-        "validate-taskpack"
-      ],
-      "trust_boundary": "manual_input_via_environment_readonly",
-      "failure_behavior": "Validation failure stops without creating a transaction object.",
-      "local_dependencies": [
-        "scripts/agent_loop/validate_taskpack.py"
-      ],
-      "untrusted_prompt_input": false
-    },
-    {
-      "path": ".github/workflows/agent-loop-settlement.yml",
-      "name": "Agent Loop Settlement",
-      "role": "transaction_settlement",
-      "owner": "@LinzeColin",
-      "purpose": "Settle or janitor one marker-bound transaction using trusted default-branch code and live APIs only.",
-      "triggers": [
-        "schedule",
-        "workflow_dispatch",
-        "workflow_run"
-      ],
-      "permissions": {
-        "actions": "read",
-        "checks": "read",
-        "contents": "write",
-        "issues": "write",
-        "pull-requests": "write"
-      },
-      "expected_jobs": [
-        "janitor",
-        "settlement"
-      ],
-      "trust_boundary": "trusted_default_branch_live_api_only",
-      "failure_behavior": "Fail closed; close/delete only exact authorized objects, and never execute PR code or artifacts.",
-      "local_dependencies": [],
-      "untrusted_prompt_input": false
-    },
-    {
       "path": ".github/workflows/project-governance.yml",
       "name": "Project Governance",
       "role": "transaction_ci",
@@ -332,6 +234,46 @@
       "replacement": "LinzeColin/MetaDatabase:.github/workflows/arxiv-daily-push-visual-gate.yml",
       "reason": "arxiv-daily-push 于 2026-07-20 随仓库拆分迁往 LinzeColin/MetaDatabase（tree sha 位级一致、完整历史保留）；本工作流随项目迁走，并在目标仓实跑验证（stage1-bootstrap 已 success）。本仓不再持有其代码路径，故此处退休、替代物指向目标仓同名工作流。",
       "retired_at": "2026-07-20"
+    },
+    {
+      "path": ".github/workflows/agent-loop-retrospective.yml",
+      "disposition": "RETIRED_BY_OWNER_DECISION",
+      "owner": "@LinzeColin",
+      "replacement": ".github/workflows/project-governance.yml",
+      "reason": "Agent Loop - Retrospective：Owner 2026-09-30 决定退役 Agent Loop（Automation C）：Settlement 是每 5 分钟的清道夫，累计运行 1,469 次，最近一次仍是 JANITOR=NOOP reason=ref_absent（分支都已不存在）；仓库 0 个开放 PR，Owner 现行做法是 agent 自审合并自己的 PR，这套机器已无处理对象。4 个 workflow 一并删除；scripts/agent_loop 与 docs/governance/agent_loop 作历史留档保留，不再有执行入口。 替代物：仅保留 Project Governance 作为唯一的 PR/main 门。",
+      "retired_at": "2026-09-30"
+    },
+    {
+      "path": ".github/workflows/agent-loop-review-existing-pr.yml",
+      "disposition": "RETIRED_BY_OWNER_DECISION",
+      "owner": "@LinzeColin",
+      "replacement": ".github/workflows/project-governance.yml",
+      "reason": "Agent Loop - Review Existing PR：Owner 2026-09-30 决定退役 Agent Loop（Automation C）：Settlement 是每 5 分钟的清道夫，累计运行 1,469 次，最近一次仍是 JANITOR=NOOP reason=ref_absent（分支都已不存在）；仓库 0 个开放 PR，Owner 现行做法是 agent 自审合并自己的 PR，这套机器已无处理对象。4 个 workflow 一并删除；scripts/agent_loop 与 docs/governance/agent_loop 作历史留档保留，不再有执行入口。 替代物：仅保留 Project Governance 作为唯一的 PR/main 门。",
+      "retired_at": "2026-09-30"
+    },
+    {
+      "path": ".github/workflows/agent-loop-run-approved-taskpack.yml",
+      "disposition": "RETIRED_BY_OWNER_DECISION",
+      "owner": "@LinzeColin",
+      "replacement": ".github/workflows/project-governance.yml",
+      "reason": "Agent Loop - Validate Approved Task Pack：Owner 2026-09-30 决定退役 Agent Loop（Automation C）：Settlement 是每 5 分钟的清道夫，累计运行 1,469 次，最近一次仍是 JANITOR=NOOP reason=ref_absent（分支都已不存在）；仓库 0 个开放 PR，Owner 现行做法是 agent 自审合并自己的 PR，这套机器已无处理对象。4 个 workflow 一并删除；scripts/agent_loop 与 docs/governance/agent_loop 作历史留档保留，不再有执行入口。 替代物：仅保留 Project Governance 作为唯一的 PR/main 门。",
+      "retired_at": "2026-09-30"
+    },
+    {
+      "path": ".github/workflows/agent-loop-settlement.yml",
+      "disposition": "RETIRED_BY_OWNER_DECISION",
+      "owner": "@LinzeColin",
+      "replacement": ".github/workflows/project-governance.yml",
+      "reason": "Agent Loop Settlement：Owner 2026-09-30 决定退役 Agent Loop（Automation C）：Settlement 是每 5 分钟的清道夫，累计运行 1,469 次，最近一次仍是 JANITOR=NOOP reason=ref_absent（分支都已不存在）；仓库 0 个开放 PR，Owner 现行做法是 agent 自审合并自己的 PR，这套机器已无处理对象。4 个 workflow 一并删除；scripts/agent_loop 与 docs/governance/agent_loop 作历史留档保留，不再有执行入口。 替代物：仅保留 Project Governance 作为唯一的 PR/main 门。",
+      "retired_at": "2026-09-30"
+    },
+    {
+      "path": ".github/workflows/deploy-dsh-dingtalk.yml",
+      "disposition": "DELETED_UNSAFE_NEVER_REGISTERED",
+      "owner": "@LinzeColin",
+      "replacement": ".github/workflows/linze-golden-path.reusable.yml",
+      "reason": "2026-08-26 引入后一直未登记，Project Governance 第一步因此每天失败（unowned workflows）。无法补登记：它让 workflow_dispatch 输入框接收 VPS-3 的 SSH 私钥（公开仓运行页会显示输入值），${{ inputs }} 直接插值进 shell（违反 forbidden_direct_run_contexts），actions/checkout@v4 未按 SHA 固定，且无 permissions / timeout / concurrency。按「登记或删除」取删除。 替代物：可复用部署走 linze-golden-path（凭据走 Secrets，不走输入框）。",
+      "retired_at": "2026-09-30"
     }
   ]
 }

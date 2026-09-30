@@ -4,7 +4,6 @@
 # workflows enforce the merge policy. CODEOWNERS provides review visibility.
 
 /.github/workflows/ @LinzeColin
-/.github/workflows/agent-loop-* @LinzeColin
 /.github/codex/ @LinzeColin
 /docs/governance/agent_loop/ @LinzeColin
 /docs/governance/WORKFLOW_ROLE_MATRIX.md @LinzeColin

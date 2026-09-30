@@ -128,7 +128,8 @@ def validate_policy(policy: dict[str, Any], *, root: Path = ROOT) -> list[str]:
     settlement_role = str(requirements.get("settlement_role") or "")
     if roles.count(required_role) != 1:
         errors.append(f"required-check role must be unique: {required_role}")
-    if roles.count(settlement_role) != 1:
+    # Settlement 角色于 2026-09-30 随 Agent Loop 退役（Owner 决定）；保留「至多一个」，恢复时仍不得重复。
+    if roles.count(settlement_role) > 1:
         errors.append(f"settlement role must be unique: {settlement_role}")
 
     dispositions = policy.get("retired_or_merged")
@@ -556,7 +557,7 @@ def render_policy(policy: dict[str, Any]) -> str:
             "- Third-party actions use allowlisted 40-character commit SHAs; movable tags are comments only.",
             "- `pull_request_target` and nested project workflows are forbidden.",
             "- Untrusted strings enter shell only through environment variables; prompt-bearing workflows use a read-only Codex sandbox.",
-            "- The one Settlement role uses trusted default-branch code and live APIs only; it never checks out PR code or consumes artifacts/caches.",
+            "- At most one Settlement role may exist (currently retired); it must use trusted default-branch code and live APIs only, and never check out PR code or consume artifacts/caches.",
         ]
     )
     return "\n".join(lines) + "\n"
