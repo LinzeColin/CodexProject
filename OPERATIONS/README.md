@@ -16,6 +16,7 @@
 |---|---|---|
 | `host-bin/` | `/usr/local/bin/` | 定时任务与守卫脚本本体 |
 | `host-cron/` | `/etc/cron.d/` | 触发它们的 cron 条目 |
+| `host-etc/` | `/etc/` | 主机级配置(相对路径与 `/etc` 下一致)：`systemd/journald.conf.d/50-linze-size-cap.conf`(journal 上限 1G)、`logrotate.d/rsyslog`(syslog 每天轮转+maxsize+保留 7 份)，均为 2026-09-30 日志洪水治理所加 |
 | `schedule_registry.yaml` | —— | 调度登记表(谁在什么时候跑、日志在哪、谁负责) |
 | `runbook.md` | —— | 处置手册 |
 

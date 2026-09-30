@@ -1,11 +1,12 @@
 #!/bin/bash
-# 异地备份:每日 -> GitHub Release 资产(可轮转,不进 git 历史);每周日 -> OCI(备份的备份)
+# 异地备份:每日 -> GitHub Release 资产(可轮转,不进 git 历史)。
+# 2026-09-30:OCI 通道(原每周日再推一份)已整段移除——Owner:OCI 账号已过期,以后没有 OCI。
+#   09-06 起每周日的 OCI 上传全是 HTTP 400,而 GitHub Release 每天 201,整机备份没有因此少过一天。
 # 部署位置 /usr/local/bin/linze-offsite-backup.sh,由 root cron 每日 03:40 执行。
 set -uo pipefail
 TS=$(date -u +%Y%m%d-%H%M%S)
 DEST=/srv/linze/backups; STAGE="$DEST/.stage-$TS"
 ENCKEY=/srv/linze/secrets/backup_enc.key
-PAR=$(cat /srv/linze/secrets/oci_par_url 2>/dev/null)
 GH_TOKEN=$(cat /srv/linze/secrets/github_backup_pat 2>/dev/null)
 GH_REPO=LinzeColin/Private-Database
 GH_TAG=infra-backups
@@ -59,14 +60,13 @@ for x in a[:max(0, len(a)-$KEEP)]: print(x['id'])
   fi
 fi
 
-# ---- 备通道:OCI 仅每周日(PAR 只写不可删,降低累积压力)----
-OCI_CODE=skip
-if [ "$(date -u +%u)" = "7" ] && [ -n "$PAR" ]; then
-  OCI_CODE=$(curl -s -o /dev/null -w '%{http_code}' -T "$ENC" "${PAR}${NAME}")
-fi
+# ---- OCI 已退役(2026-09-30):原「每周日 PUT 到 OCI」整段删除 ----
+# 日志行仍保留 offsite= 这一列,值固定为 removed_oci_expired:读这行日志的采集器
+# (LinzeHomeHub status collector 只匹配 offsite=200 的历史行)不会因为少一列而解析错位。
+OCI_CODE=removed_oci_expired
 
 # ---- R2 写入禁用:零付费策略 ----
-# GitHub Release 仍保留每日 30 份，OCI 仍保留每周异地副本，本地密文仍保留。
+# GitHub Release 保留每日 30 份(唯一异地副本)，本地密文保留 2 份。
 # 不删除既有 R2 对象；这里只阻止按日期新增整机副本导致 Standard 容量持续增长。
 R2_CODE=disabled_zero_charge_policy
 

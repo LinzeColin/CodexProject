@@ -1,0 +1,29 @@
+# 来源：P0.5「Signal-Lattice 日志洪水」，2026-09-30。
+# 仓库副本：CodexProject/OPERATIONS/host-etc/logrotate.d/rsyslog（仓是源，主机是部署产物）
+#
+# 原文件（Ubuntu rsyslog 包自带）是 weekly + rotate 4：一个服务一天打 1 GB，
+# 一周内 syslog 就长到 3 GB+ 才轮转。改成：
+#   daily        每天轮转（logrotate.timer 每天 00:00 触发）
+#   maxsize 200M 单文件超过 200M 时，即使当天已轮转过也在下一次触发时立刻轮转
+#   rotate 7     只留 7 份
+#   compress     压缩；delaycompress 让最近一份保持明文便于 tail
+# 这是 dpkg conffile：rsyslog 包升级时若提示冲突，选「保留现有版本」。
+/var/log/syslog
+/var/log/mail.log
+/var/log/kern.log
+/var/log/auth.log
+/var/log/user.log
+/var/log/cron.log
+{
+	rotate 7
+	daily
+	maxsize 200M
+	missingok
+	notifempty
+	compress
+	delaycompress
+	sharedscripts
+	postrotate
+		/usr/lib/rsyslog/rsyslog-rotate
+	endscript
+}
