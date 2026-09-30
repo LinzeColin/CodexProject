@@ -4546,9 +4546,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         required_ci = (
             ROOT / ".github" / "workflows" / "project-governance.yml"
         ).read_text(encoding="utf-8")
-        settlement = (
-            ROOT / ".github" / "workflows" / "agent-loop-settlement.yml"
-        ).read_text(encoding="utf-8")
 
         self.assertIn("Zero-Open", agents)
         self.assertIn("TSK/ACC.<project>.<program>.<sequence>", agents)
@@ -4557,9 +4554,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIsNone(
             re.search(r"^\s+paths(?:-ignore)?:", required_ci, re.MULTILINE)
         )
-        self.assertIn("AUTOMATION_C_TRANSACTION_V1", settlement)
-        self.assertNotIn("actions/checkout@", settlement)
-        self.assertNotIn("gh issue", settlement)
+        # Settlement workflow 已随 Agent Loop 于 2026-09-30 退役，不再断言其内容。
+        self.assertFalse((ROOT / ".github" / "workflows" / "agent-loop-settlement.yml").exists())
 
     def test_shared_memory_root_adapters_use_one_bundle(self) -> None:
         claude_path = ROOT / "CLAUDE.md"

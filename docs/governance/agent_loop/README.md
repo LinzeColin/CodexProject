@@ -1,5 +1,7 @@
 # Agent Loop Engineering
 
+> **2026-09-30 退役（Owner 决定）**：Agent Loop / Automation C 的 4 个 GitHub workflow 已删除，仓库只保留 Project Governance 作为 PR/main 门。本文件与 `scripts/agent_loop/` 仅作历史留档，不再有执行入口。
+
 本目录定义 CodexProject 的 Automation C 控制面。它消费 Owner 已批准的
 dual-plane Task Pack，不替代 `AGENTS.md`、`docs/governance/STANDARD.md` 或
 项目级治理。

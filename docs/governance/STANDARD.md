@@ -420,6 +420,13 @@ Default to T0/T1. Upgrade only when concrete risk requires it.
 
 Do not apply T2/T3 governance computation to ordinary T0/T1 work.
 
+## Model Definition
+
+Model 包括 math/stat/ML、ranking/scoring、backtest、risk、salary/business formula、
+rule engine、heuristic、LLM routing/fallback；stack 名不是 model。无模型项目仍需
+evidence-backed `NOT_APPLICABLE` `MODEL_SPEC.md`。
+（2026-09-30 自根 `AGENTS.md` 移入：根文件须 <=4096 字节，本条只在涉及 model 的任务里才需要。）
+
 ## Agent Workflow
 
 1. Run compact baseline.

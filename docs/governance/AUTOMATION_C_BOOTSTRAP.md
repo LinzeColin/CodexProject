@@ -1,5 +1,7 @@
 # Automation C Owner Bootstrap Checklist
 
+> **2026-09-30 退役（Owner 决定）**：Agent Loop / Automation C 的 4 个 GitHub workflow 已删除，仓库只保留 Project Governance 作为 PR/main 门。本文件与 `scripts/agent_loop/` 仅作历史留档，不再有执行入口。
+
 Task: `TSK.CodexProject.REPO1.0002`
 Acceptance: `ACC.CodexProject.REPO1.0002`
 

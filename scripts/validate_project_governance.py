@@ -91,6 +91,8 @@ INFRA_DIRS = {
     # 有 README.md(属 PROJECT_MARKERS)会被 discover_project_dirs 误当项目,列入 INFRA_DIRS 排除。
     "GOLDEN_PATH",
     "INVENTORY",
+    # 运维 Runbook/主机脚本副本目录（PR #299-#302 引入），同样是 README + 文档/脚本，非代码项目。
+    "OPERATIONS",
 }
 PARAMETER_REQUIRED_COLUMNS = [
     "parameter_id",

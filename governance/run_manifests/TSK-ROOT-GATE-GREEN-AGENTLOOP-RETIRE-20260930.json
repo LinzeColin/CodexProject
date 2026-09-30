@@ -1,0 +1,155 @@
+{
+  "schema_version": 2,
+  "run_id": "TSK-ROOT-GATE-GREEN-AGENTLOOP-RETIRE-20260930",
+  "project_id": "root",
+  "task_id": "ROOT-GATE-GREEN-AGENTLOOP-RETIRE",
+  "acceptance_ids": [
+    "ACC-ROOT-GATE-GREEN-AGENTLOOP-RETIRE"
+  ],
+  "iteration_id": "ITER-20260930-GATE-GREEN",
+  "generated_at": "2026-09-30T09:40:09Z",
+  "implementation_base_sha": "87492d5770e8dbf69b3830789cbea7ee0637e0fe",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:da9c85da8cb3dc303858eca47de63d776a23fc7e2b213acbbec2e8c01cc06d8d",
+  "self_reference_policy": "SHA-256 over sorted path,NUL,file SHA-256 hex (DELETED for removed files),LF for the 20 non-manifest changed files; changed_files_* list all 21 incl this manifest; hash excludes it.",
+  "ci_attestation_subject": "Project Governance 按原 4096 字节预算变绿；Owner 2026-09-30 决定退役 Agent Loop（4 个 workflow）；未登记且不可登记的 deploy-dsh-dingtalk.yml 删除。",
+  "ci_run_reference": "LOCAL_FOCUSED_PASS_PENDING_REMOTE_CHECKS",
+  "gate_status": "PASS_LOCAL",
+  "review_verdict": "OWNER_DECISION_RECORDED (Owner 2026-09-30：治理统一为最小规范；退役 Agent Loop；预算不调、不为变绿改阈值)。红线内容与 README 铁律 7 逐条对过，R2 预算表原样移入 OPERATIONS/r2-cost-budget.md。",
+  "summary": "根因两个叠加：①08-26 新增 deploy-dsh-dingtalk.yml 未登记，Project Governance 第一步 unowned workflows 失败、后 17 步全跳过；②AGENTS.md 11,314 字节超过 4,096 预算（云成本红线长表 08-07..10 复制进来）。修法：AGENTS.md 只留指向 GithubProject/README.md 铁律 7 的一行（4,015 字节，初始上下文 9,463 字节），R2 预算表移入 OPERATIONS/r2-cost-budget.md，Model Definition 移入 STANDARD.md；deploy-dsh-dingtalk.yml 因把 SSH 私钥当输入框内容、inputs 直接插值、actions 未按 SHA 固定而无法登记，删除并留处置记录；Owner 决定退役 Agent Loop，删除 4 个 agent-loop-*.yml 并转入 retired_or_merged，审计脚本 Settlement 角色由恰好 1 个改为至多 1 个，相关测试改用 project-governance.yml 作夹具并保留同样负向断言；同时修被第一步遮住的每日全量检查里的两处：OPERATIONS 被 discover_project_dirs 误当项目（列入 INFRA_DIRS，同 GOLDEN_PATH/INVENTORY 先例）、README 手工加入的两段固定内容收进生成器模板（README 一字未变）；test_workflow_expected_jobs_match 的非空下限因登记 workflow 只剩 2 个由 3 改 2。预算与阈值均未调整。",
+  "scope": {
+    "new_business_sample_files": 0,
+    "canonical_or_raw_business_data_files_modified": 0,
+    "dependency_changes": 0,
+    "repository_root_policy_changed": 1,
+    "production_deploy": 0
+  },
+  "changed_files_declared": [
+    ".github/CODEOWNERS",
+    ".github/workflows/agent-loop-retrospective.yml",
+    ".github/workflows/agent-loop-review-existing-pr.yml",
+    ".github/workflows/agent-loop-run-approved-taskpack.yml",
+    ".github/workflows/agent-loop-settlement.yml",
+    ".github/workflows/deploy-dsh-dingtalk.yml",
+    "AGENTS.md",
+    "OPERATIONS/r2-cost-budget.md",
+    "docs/governance/AUTOMATION_C_BOOTSTRAP.md",
+    "docs/governance/STANDARD.md",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "docs/governance/agent_loop/README.md",
+    "governance/run_manifests/TSK-ROOT-GATE-GREEN-AGENTLOOP-RETIRE-20260930.json",
+    "governance/workflow_policy.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_project_governance.py",
+    "scripts/workflow_security_audit.py",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tests/governance/test_workflow_expected_jobs_match.py",
+    "tests/governance/test_workflow_security.py"
+  ],
+  "changed_files_actual": [
+    ".github/CODEOWNERS",
+    ".github/workflows/agent-loop-retrospective.yml",
+    ".github/workflows/agent-loop-review-existing-pr.yml",
+    ".github/workflows/agent-loop-run-approved-taskpack.yml",
+    ".github/workflows/agent-loop-settlement.yml",
+    ".github/workflows/deploy-dsh-dingtalk.yml",
+    "AGENTS.md",
+    "OPERATIONS/r2-cost-budget.md",
+    "docs/governance/AUTOMATION_C_BOOTSTRAP.md",
+    "docs/governance/STANDARD.md",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "docs/governance/agent_loop/README.md",
+    "governance/run_manifests/TSK-ROOT-GATE-GREEN-AGENTLOOP-RETIRE-20260930.json",
+    "governance/workflow_policy.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_project_governance.py",
+    "scripts/workflow_security_audit.py",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tests/governance/test_workflow_expected_jobs_match.py",
+    "tests/governance/test_workflow_security.py"
+  ],
+  "required_governance_files": [
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "governance/workflow_policy.json",
+    "tests/governance/test_workflow_security.py",
+    "governance/run_manifests/TSK-ROOT-GATE-GREEN-AGENTLOOP-RETIRE-20260930.json"
+  ],
+  "updated_governance_files": [
+    ".github/CODEOWNERS",
+    ".github/workflows/agent-loop-retrospective.yml",
+    ".github/workflows/agent-loop-review-existing-pr.yml",
+    ".github/workflows/agent-loop-run-approved-taskpack.yml",
+    ".github/workflows/agent-loop-settlement.yml",
+    ".github/workflows/deploy-dsh-dingtalk.yml",
+    "AGENTS.md",
+    "OPERATIONS/r2-cost-budget.md",
+    "docs/governance/AUTOMATION_C_BOOTSTRAP.md",
+    "docs/governance/STANDARD.md",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "docs/governance/agent_loop/README.md",
+    "governance/run_manifests/TSK-ROOT-GATE-GREEN-AGENTLOOP-RETIRE-20260930.json",
+    "governance/workflow_policy.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_project_governance.py",
+    "scripts/workflow_security_audit.py",
+    "tests/agent_loop/test_workflow_contract.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tests/governance/test_workflow_expected_jobs_match.py",
+    "tests/governance/test_workflow_security.py"
+  ],
+  "evidence_refs": [
+    "governance/workflow_policy.json",
+    "docs/governance/WORKFLOW_ROLE_MATRIX.md",
+    "OPERATIONS/r2-cost-budget.md",
+    "GithubProject/README.md#铁律7"
+  ],
+  "test_commands": [
+    "python3 -B scripts/workflow_security_audit.py audit --json",
+    "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+    "python3 -B scripts/repository_hygiene_audit.py --root . --tree-ish HEAD",
+    "python3 -B scripts/governance_id_audit.py --base-ref origin/main --json",
+    "python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py' -q",
+    "python3 scripts/lean_governance.py validate --all --semantic --drift-report",
+    "python3 -m pytest tests/governance -q"
+  ],
+  "test_results": [
+    {
+      "command": "python3 -B scripts/workflow_security_audit.py audit --json",
+      "result": "PASS",
+      "detail": "status PASS；workflow 2 个（project-governance、linze-golden-path），unowned 0，settlement_role_count 0；check-render PASS。"
+    },
+    {
+      "command": "python3 -B scripts/root_cleanliness_audit.py --root . --json",
+      "result": "PASS",
+      "detail": "pass true；AGENTS.md 4,015/4,096 字节，初始上下文 9,463/12,288 字节；预算文件未改。"
+    },
+    {
+      "command": "python3 -B scripts/repository_hygiene_audit.py --root . --tree-ish HEAD",
+      "result": "PASS",
+      "detail": "status PASS。"
+    },
+    {
+      "command": "python3 -B scripts/governance_id_audit.py --base-ref origin/main --json",
+      "result": "PASS",
+      "detail": "status PASS。"
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests/agent_loop -p 'test_*.py' -q",
+      "result": "PASS",
+      "detail": "19 用例通过。"
+    },
+    {
+      "command": "python3 scripts/lean_governance.py validate --all --semantic --drift-report",
+      "result": "PASS",
+      "detail": "errors 0；修前因 OPERATIONS 被当成项目目录而 errors 1。"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "result": "PASS_WITH_LOCAL_ENV_FAILURE",
+      "detail": "修前 9 败；修后仅 test_new_large_archive_runtime_noise_and_backup_producer_fail 一处，原因是本机全局 gitignore 含 .DS_Store，测试造的 .DS_Store 未被跟踪（本机环境问题，在 Linux CI 上核对，见 PR）；其余 289 通过。"
+    }
+  ]
+}

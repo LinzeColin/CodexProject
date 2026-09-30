@@ -21,31 +21,9 @@ class WorkflowContractTest(unittest.TestCase):
         self.assertIn("persist-credentials: false", workflow)
         self.assertIsNone(re.search(r"^\s+paths(?:-ignore)?:", workflow, re.MULTILINE))
 
-    def test_settlement_is_api_only_and_separate_from_ci(self) -> None:
-        workflow = self.read(".github/workflows/agent-loop-settlement.yml")
-        self.assertIn('workflows: ["Project Governance"]', workflow)
-        self.assertIn("pull-requests: write", workflow)
-        self.assertIn("contents: write", workflow)
-        self.assertIn("issues: write", workflow)
-        self.assertIn("workflow_run:", workflow)
-        self.assertIn("schedule:", workflow)
-        self.assertIn("AUTOMATION_C_TRANSACTION_V1", workflow)
-        self.assertIn("branch tip drifted; exact deletion refused", workflow)
-        self.assertIn("governance_run_id", workflow)
-        self.assertIn('main_ref = api("git/ref/heads/main")', workflow)
-        self.assertIn("live_main_sha != expected_base", workflow)
-        self.assertIn("AUTOMATION_C_MAX_AGE_MINUTES", workflow)
-        self.assertIn("ref_used_by_open_pr", workflow)
-        self.assertIn("CLOSE_ACCIDENTAL_ISSUE", workflow)
-        self.assertNotIn('method="POST"', workflow)
-        for forbidden in (
-            "actions/checkout@",
-            "download-artifact",
-            "upload-artifact",
-            "restore-cache",
-            "gh issue",
-        ):
-            self.assertNotIn(forbidden, workflow)
+    def test_agent_loop_workflows_are_retired(self) -> None:
+        """Agent Loop 4 个 workflow 于 2026-09-30 随 Owner 决定退役；不得悄悄复活。"""
+        self.assertEqual(list((ROOT / ".github" / "workflows").glob("agent-loop-*.yml")), [])
 
     def test_agent_runtime_has_no_issue_state_machine(self) -> None:
         runtime_files = list((ROOT / ".github" / "workflows").glob("agent-loop-*.yml"))
@@ -59,23 +37,6 @@ class WorkflowContractTest(unittest.TestCase):
                     self.assertNotIn(retired_state, text)
         self.assertFalse((ROOT / ".github" / "ISSUE_TEMPLATE" / "codex-task.yml").exists())
         self.assertFalse((ROOT / "scripts" / "agent_loop" / "build_prefilled_issue_url.py").exists())
-
-    def test_compatibility_workflow_is_validation_only(self) -> None:
-        workflow = self.read(".github/workflows/agent-loop-run-approved-taskpack.yml")
-        self.assertIn("contents: read", workflow)
-        self.assertIn("mutation: none", workflow)
-        for forbidden in ("contents: write", "pull-requests: write", "issues:", "gh pr create", "gh pr merge"):
-            self.assertNotIn(forbidden, workflow)
-
-    def test_review_roles_have_no_issue_permission(self) -> None:
-        for name in (
-            "agent-loop-review-existing-pr.yml",
-            "agent-loop-retrospective.yml",
-        ):
-            with self.subTest(name=name):
-                workflow = self.read(f".github/workflows/{name}")
-                self.assertNotIn("issues: write", workflow)
-                self.assertIn("persist-credentials: false", workflow)
 
 
 if __name__ == "__main__":

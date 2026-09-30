@@ -59,7 +59,9 @@ class TestWorkflowExpectedJobsMatch(unittest.TestCase):
         """Non-vacuity: the guard must be comparing a real, non-empty set of workflows."""
         self.assertTrue(POLICY.is_file(), "workflow policy missing: {}".format(POLICY))
         owned = _owned_workflows()
-        self.assertGreaterEqual(len(owned), 3,
+        # 下限 3 -> 2：2026-09-30 Owner 决定退役 Agent Loop（4 个 workflow），登记在案的 workflow 只剩
+        # project-governance 与 linze-golden-path 两个；仍是对真实非空集合的比对，不是空转。
+        self.assertGreaterEqual(len(owned), 2,
                                 "expected several policy-owned workflows declaring expected_jobs; found "
                                 "{} -- the guard would pass vacuously".format(len(owned)))
 
