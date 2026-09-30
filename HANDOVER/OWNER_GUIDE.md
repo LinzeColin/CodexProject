@@ -12,7 +12,7 @@
 | 运行状态 | https://status.linzezhang.com | 各服务健康看板 |
 | KMFA 财务面板 | https://kmfa.linzezhang.com | Cloudflare Access:输邮箱收验证码 |
 
-**你的账号**:`linzezhang35@gmail.com`,已是全部 9 个仓库的最高权限 + 身份系统管理员。
+**你的账号**:`LinzeColin@users.noreply.github.com`,已是全部 9 个仓库的最高权限 + 身份系统管理员。
 
 ## 二、日常你不用做的事(已全自动)
 - **新版本上线**:任何仓 push 到 main → 自动检查(密钥扫描/测试/构建)→ 自动部署 → 自动冒烟 → 自动更新 home 卡片。失败会**拦住不上线**,不会把坏版本推到线上。
