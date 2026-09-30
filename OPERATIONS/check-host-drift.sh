@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 核对 OPERATIONS/host-bin 与生产主机 /usr/local/bin 是否已分叉。
+# 核对 OPERATIONS/host-bin 与生产主机 /usr/local/bin、OPERATIONS/host-etc 与 /etc 是否已分叉。
 #
 # 为什么需要它:2026-08-11 把 14 个主机脚本收进仓之前,它们一年多只存在于机器上。
 # 现在两边各有一份,**分叉只是时间问题** —— 有人在机器上热改一行救急,忘了回写仓,
@@ -55,6 +55,24 @@ while read -r _ path; do
   n=$(basename "$path")
   [ -f "OPERATIONS/host-bin/$n" ] || { only_host=$((only_host+1)); say "  ✗ $n —— 主机上有,**仓里没有**(新脚本没进版本控制)"; }
 done <<< "$REMOTE"
+
+# host-etc:仓里 OPERATIONS/host-etc/<相对路径> ↔ 主机 /etc/<相对路径>(2026-09-30 新增:journald 上限、logrotate)
+ETC_FILES=$(cd OPERATIONS/host-etc 2>/dev/null && find . -type f | sed 's|^\./||' | sort)
+if [ -n "$ETC_FILES" ]; then
+  ETC_REMOTE=$(ssh -o BatchMode=yes -o ConnectTimeout=20 -i "$KEY" "ubuntu@$HOST" \
+    "sudo sha256sum $(printf '/etc/%s ' $ETC_FILES) 2>/dev/null" 2>/dev/null)
+  for rel in $ETC_FILES; do
+    a=$(shasum -a 256 "OPERATIONS/host-etc/$rel" 2>/dev/null | cut -d' ' -f1)
+    b=$(printf "%s\n" "$ETC_REMOTE" | awk -v n="/etc/$rel" '$2==n{print $1}')
+    if [ -z "$b" ]; then
+      only_repo=$((only_repo+1)); say "  ✗ /etc/$rel —— 仓里有,主机上没有(没部署?)"
+    elif [ "$a" = "$b" ]; then
+      same=$((same+1)); say "  ✓ /etc/$rel"
+    else
+      diff=$((diff+1)); say "  ✗ /etc/$rel —— **两边不一样**(仓 ${a:0:12} / 机 ${b:0:12})"
+    fi
+  done
+fi
 
 say ""
 if [ $((diff + only_repo + only_host)) -eq 0 ]; then

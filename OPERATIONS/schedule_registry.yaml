@@ -33,7 +33,7 @@ platform_tasks:            # owner: 平台线程(本线程)
   - id: offsite-backup
     cron: "40 3 * * *"
     command: /usr/local/bin/linze-offsite-backup.sh
-    purpose: 全量加密备份推 OCI 对象存储(服务器外副本)
+    purpose: 全量加密备份推 GitHub Release(Private-Database infra-backups,滚动 30 份,服务器外副本;OCI 通道 2026-09-30 已移除)
     owner: platform
     log: /srv/linze/logs/offsite-backup.log
   - id: link-health
